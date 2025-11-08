@@ -83,21 +83,24 @@ members.listByHome(homeId)
 - An invite is valid only if its home is active and the invite is not revoked.
 - Exactly one active invite per home (unique partial index on (homeId) where revokedAt IS NULL).
 - Owner cannot leave while other active members exist (must transfer ownership first).
+ - User self-delete integration: when a user invokes `users.selfDelete()` (see `docs/contracts/users_v1.md`), ownership of any homes with other active members is automatically transferred to the earliest active member; if no other active members exist, the home is deactivated and the owner's membership is closed.
 
 ## Versioning
 - Any breaking change creates `homes_v2.md` (or higher) and an ADR.
 - Repositories and BLoC must pin to a contract version.
 
 ## Related Flows & Diagrams
-- Pseudocode: Join Home `docs/flows/join.md`
-- Pseudocode: Invite Rotation `docs/flows/invite_rotation.md`
- - Flow: Transfer Owner `docs/flows/transfer_owner.md`
- - Flow: Leave Home `docs/flows/leave_home.md`
- - Flow: Kick Member `docs/flows/kick_member.md`
- - Diagram: Join `docs/diagrams/join_flow.mmd`
- - Diagram: Invite Rotation `docs/diagrams/invite_rotation.mmd`
-  - Diagram: Transfer Owner (flow) `docs/diagrams/transfer_owner_flow.mmd`
-  - Diagram: Ownership Model `docs/diagrams/ownership_model.mmd`
-  - Diagram: Home State `docs/diagrams/home_state.mmd`
-  - Diagram: Permissions `docs/diagrams/permissions_flow.mmd`
-  - Diagram: Owner Transfer `docs/diagrams/transfer_owner_sequence.mmd`
+- Pseudocode: Join Home `docs/flows/home_membership/join.md`
+- Pseudocode: Invite Rotation `docs/flows/home_membership/invite_rotation.md`
+ - Flow: Transfer Owner `docs/flows/home_membership/transfer_owner.md`
+ - Flow: Leave Home `docs/flows/home_membership/leave_home.md`
+ - Flow: Kick Member `docs/flows/home_membership/kick_member.md`
+ - Diagram: Join `docs/diagrams/home_membership/join_flow.mmd`
+ - Diagram: Invite Rotation `docs/diagrams/home_membership/invite_rotation.mmd`
+  - Diagram: Transfer Owner (flow) `docs/diagrams/home_membership/transfer_owner_flow.mmd`
+  - Diagram: Ownership Model `docs/diagrams/home_membership/ownership_model.mmd`
+  - Diagram: Home State `docs/diagrams/home_membership/home_state.mmd`
+  - Diagram: Permissions `docs/diagrams/home_membership/permissions_flow.mmd`
+  - Diagram: Owner Transfer `docs/diagrams/home_membership/transfer_owner_sequence.mmd`
+  - Diagram: Kick member `docs/diagrams/home_membership/kick_member.mmd`
+  - Diagram: Leave Home `docs/diagrams/home_membership/leave_home.mmd`
