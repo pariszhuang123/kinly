@@ -1,0 +1,12 @@
+{
+  "@@locale": "es",
+  "app_title": "Kinly",
+  "welcome_title": "Bienvenido a Kinly",
+  "welcome_create": "Crear un hogar",
+  "welcome_join": "Unirse a un hogar",
+  "create_title": "Crear hogar",
+  "join_title": "Unirse al hogar",
+  "join_hint": "Ingrese el código de invitación",
+  "join_submit": "Unirse",
+  "today_title": "Hoy"
+}

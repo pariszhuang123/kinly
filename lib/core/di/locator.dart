@@ -1,0 +1,13 @@
+import 'package:get_it/get_it.dart';
+import '../../data/repositories/auth_repository.dart';
+import '../auth/fake_auth_repository.dart';
+
+final sl = GetIt.instance;
+
+void setupDependencies() {
+  // TODO: register repositories and services here.
+  // sl.registerLazySingleton<AuthRepository>(() => SupabaseAuthRepository());
+  if (!sl.isRegistered<AuthRepository>()) {
+    sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepository());
+  }
+}
