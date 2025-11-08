@@ -11,4 +11,3 @@ class AuthSession {
   const AuthSession({required this.userId});
   final String userId;
 }
-

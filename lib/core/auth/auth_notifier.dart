@@ -22,4 +22,3 @@ class AuthNotifier extends ChangeNotifier {
     super.dispose();
   }
 }
-

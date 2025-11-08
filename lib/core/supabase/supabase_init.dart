@@ -12,4 +12,3 @@ Future<void> initSupabase() async {
     ),
   );
 }
-

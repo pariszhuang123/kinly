@@ -9,12 +9,11 @@ class CreateHomeScreen extends StatelessWidget {
     final s = S.of(context);
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(s.create_title, style: theme.textTheme.titleLarge)),
+      appBar: AppBar(
+        title: Text(s.create_title, style: theme.textTheme.titleLarge),
+      ),
       body: Center(
-        child: Text(
-          s.create_title,
-          style: theme.textTheme.titleLarge,
-        ),
+        child: Text(s.create_title, style: theme.textTheme.titleLarge),
       ),
     );
   }

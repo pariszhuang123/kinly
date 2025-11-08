@@ -10,4 +10,3 @@ class FakeHomeRepository implements HomeRepository {
     // No-op: pretend the join succeeded.
   }
 }
-

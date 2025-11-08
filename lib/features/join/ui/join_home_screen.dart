@@ -12,7 +12,9 @@ class JoinHomeScreen extends StatelessWidget {
     final s = S.of(context);
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(s.join_title, style: theme.textTheme.titleLarge)),
+      appBar: AppBar(
+        title: Text(s.join_title, style: theme.textTheme.titleLarge),
+      ),
       body: BlocProvider(
         create: (_) => JoinCodeCubit(),
         child: const _JoinForm(),

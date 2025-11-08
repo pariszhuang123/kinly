@@ -13,7 +13,9 @@ class WelcomeScreen extends StatelessWidget {
     final s = S.of(context);
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(s.app_title, style: theme.textTheme.titleLarge)),
+      appBar: AppBar(
+        title: Text(s.app_title, style: theme.textTheme.titleLarge),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

@@ -27,4 +27,3 @@ class FakeAuthRepository implements AuthRepository {
     _controller.add(null);
   }
 }
-
