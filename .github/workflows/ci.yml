@@ -189,11 +189,21 @@ jobs:
       SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       WEB_CLIENT_ID: ${{ secrets.WEB_CLIENT_ID }}
       IOS_CLIENT_ID: ${{ secrets.IOS_CLIENT_ID }}
-      DO_PLAY_UPLOAD: ${{ github.event_name == 'workflow_dispatch' && inputs.play_upload || vars.DO_PLAY_UPLOAD || 'false' }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Resolve Play upload flag
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.play_upload }}" = "true" ]; then
+            echo "DO_PLAY_UPLOAD=true" >> $GITHUB_ENV
+          elif [ "${{ vars.DO_PLAY_UPLOAD }}" = "true" ]; then
+            echo "DO_PLAY_UPLOAD=true" >> $GITHUB_ENV
+          else
+            echo "DO_PLAY_UPLOAD=false" >> $GITHUB_ENV
+          fi
 
       - uses: actions/setup-java@v4
         with:

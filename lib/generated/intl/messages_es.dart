@@ -22,18 +22,16 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
-        "create_title": MessageLookupByLibrary.simpleMessage("Crear hogar"),
-        "join_hint": MessageLookupByLibrary.simpleMessage(
-            "Ingrese el código de invitación"),
-        "join_submit": MessageLookupByLibrary.simpleMessage("Unirse"),
-        "join_title": MessageLookupByLibrary.simpleMessage("Unirse al hogar"),
-        "today_title": MessageLookupByLibrary.simpleMessage("Hoy"),
-        "welcome_create":
-            MessageLookupByLibrary.simpleMessage("Crear un hogar"),
-        "welcome_join":
-            MessageLookupByLibrary.simpleMessage("Unirse a un hogar"),
-        "welcome_title":
-            MessageLookupByLibrary.simpleMessage("Bienvenido a Kinly")
-      };
+    "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
+    "create_title": MessageLookupByLibrary.simpleMessage("Crear hogar"),
+    "join_hint": MessageLookupByLibrary.simpleMessage(
+      "Ingrese el código de invitación",
+    ),
+    "join_submit": MessageLookupByLibrary.simpleMessage("Unirse"),
+    "join_title": MessageLookupByLibrary.simpleMessage("Unirse al hogar"),
+    "today_title": MessageLookupByLibrary.simpleMessage("Hoy"),
+    "welcome_create": MessageLookupByLibrary.simpleMessage("Crear un hogar"),
+    "welcome_join": MessageLookupByLibrary.simpleMessage("Unirse a un hogar"),
+    "welcome_title": MessageLookupByLibrary.simpleMessage("Bienvenido a Kinly"),
+  };
 }

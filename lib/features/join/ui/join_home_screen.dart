@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/di/locator.dart';
+import '../../../data/repositories/home_repository.dart';
 
 class JoinHomeScreen extends StatelessWidget {
   const JoinHomeScreen({super.key});
@@ -36,12 +38,20 @@ class _JoinForm extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               final code = context.read<JoinCodeCubit>().state;
-              // TODO: call homes.join(code) via repository
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Join with code: $code')),
-              );
+              final repo = sl<HomeRepository>();
+              final messenger = ScaffoldMessenger.of(context);
+              try {
+                await repo.join(code);
+                messenger.showSnackBar(
+                  SnackBar(content: Text('Joined with code: $code')),
+                );
+              } catch (e) {
+                messenger.showSnackBar(
+                  SnackBar(content: Text('Join failed: $e')),
+                );
+              }
             },
             child: Text(s.join_submit),
           ),
