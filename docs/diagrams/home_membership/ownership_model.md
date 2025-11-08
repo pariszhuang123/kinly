@@ -2,7 +2,10 @@
 erDiagram
   USERS ||--o{ MEMBERSHIP : "has many (history)"
   HOMES ||--o{ MEMBERSHIP : "has many"
-  HOMES ||--|| USERS : "owned by"
+  
+  %% many homes per one user
+  HOMES }|--|| USERS : "owned by"
+
 
   HOMES {
     uuid id PK
@@ -25,6 +28,6 @@ erDiagram
 
 Notes
 - Exactly one active owner per home.
-- Home.active = true iff owner_id is not null.
+- Home.active = owner_id is not null.
 - Owner must have MEMBERSHIP with left_at IS NULL.
 

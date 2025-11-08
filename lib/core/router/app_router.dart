@@ -2,8 +2,8 @@ import 'package:go_router/go_router.dart';
 import '../auth/auth_notifier.dart';
 
 import '../../features/welcome/ui/welcome_screen.dart';
-import '../../features/create/ui/create_home_screen.dart';
-import '../../features/join/ui/join_home_screen.dart';
+import '../../features/home_membership/create/ui/create_home_screen.dart';
+import '../../features/home_membership/join/ui/join_home_screen.dart';
 import '../../features/today/ui/today_screen.dart';
 
 class AppRoutes {

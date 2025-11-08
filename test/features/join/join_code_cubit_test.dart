@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kinly/features/join/ui/join_home_screen.dart';
+import 'package:kinly/features/home_membership/join/ui/join_home_screen.dart';
 
 void main() {
   group('JoinCodeCubit', () {

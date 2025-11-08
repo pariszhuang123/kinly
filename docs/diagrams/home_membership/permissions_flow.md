@@ -1,6 +1,6 @@
 ```mermaid
 flowchart TD
-  A[Action requested] --> B{Actor is home.owner?}
+  A[Action requested] --> B{Caller is home.owner?}
   B -- yes --> C{Action}
   B -- no --> D[Forbidden]
 

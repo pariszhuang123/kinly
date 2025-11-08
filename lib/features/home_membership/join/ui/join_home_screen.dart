@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../generated/l10n.dart';
-import '../../../core/di/locator.dart';
-import '../../../data/repositories/home_repository.dart';
+import '../../../../generated/l10n.dart';
+import '../../../../core/di/locator.dart';
+import '../../../../data/repositories/home_repository.dart';
 
 class JoinHomeScreen extends StatelessWidget {
   const JoinHomeScreen({super.key});
