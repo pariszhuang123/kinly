@@ -1,12 +1,13 @@
 ```mermaid
 erDiagram
-  USERS ||--o{ MEMBERSHIP : has
-  HOMES ||--o{ MEMBERSHIP : has
+  USERS ||--o{ MEMBERSHIP : "has many (history)"
+  HOMES ||--o{ MEMBERSHIP : "has many"
+  HOMES ||--|| USERS : "owned by"
 
   HOMES {
     uuid id PK
     boolean active
-    uuid owner_id  // single owner (FK -> USERS.id)
+    uuid owner_id FK "single owner (ref USERS.id)"
   }
 
   USERS {
@@ -16,9 +17,10 @@ erDiagram
 
   MEMBERSHIP {
     uuid home_id FK
-    uuid user_id FK
-    timestamp left_at NULL
+    uuid user_id FK "only one ACTIVE row per user (enforce in SQL)"
+    timestamp left_at "NULL when active"
   }
+
 ```
 
 Notes

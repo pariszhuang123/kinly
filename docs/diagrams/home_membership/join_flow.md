@@ -1,3 +1,5 @@
+```mermaid
+
 flowchart TD
   A[Start: Authenticated user] --> B[Enter code C]
   B --> C{Find invite by C}
@@ -8,6 +10,7 @@ flowchart TD
   H -- no --> I[Error: Forbidden]
   H -- yes --> J{User has active membership?}
   J -- yes --> K[Error: Conflict]
-  J -- no --> L[Insert member(leftAt=NULL)]
+  J -- no --> L["Insert member(leftAt=NULL)"]
   L --> M[Return success]
 
+```

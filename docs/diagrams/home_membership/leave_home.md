@@ -1,18 +1,18 @@
 ```mermaid
 flowchart TD
-  A[Start: homes.leave(homeId)] --> B{Home active?}
+  A["Start: homes.leave(homeId)"] --> B{Home active?}
   B -- no --> X[Error: Forbidden]
   B -- yes --> C{Caller active member?}
   C -- no --> X
   C -- yes --> D{Caller is owner?}
-  D -- no --> E[Set caller.leftAt = now()]
+  D -- no --> E["Set caller.leftAt = now()"]
   E --> F{Any active members remain?}
   F -- yes --> Z[Return OK]
-  F -- no --> G[Set home.isActive=false; deactivatedAt=now()]
+  F -- no --> G["Set home.isActive=false; deactivatedAt=now()"]
   G --> Z
   D -- yes --> H{Other active members exist?}
   H -- yes --> Y[Error: Transfer required before leaving]
-  H -- no --> I[Set caller.leftAt = now(); Set home inactive]
+  H -- no --> I["Set caller.leftAt = now()"; Set home inactive]
   I --> Z
 ```
 

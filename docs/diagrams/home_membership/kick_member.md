@@ -1,6 +1,6 @@
 ```mermaid
 flowchart TD
-  A[Start: members.kick(homeId, targetUserId)] --> B{Home active?}
+  A["Start: members.kick(homeId, targetUserId)"] --> B{Home active?}
   B -- no --> X[Error: Forbidden]
   B -- yes --> C{Caller is owner?}
   C -- no --> X
@@ -8,7 +8,7 @@ flowchart TD
   D -- no --> Y[Error: NotFound/No-op]
   D -- yes --> E{Target is owner?}
   E -- yes --> X
-  E -- no --> F[Set target.leftAt = now()]
+  E -- no --> F["Set target.leftAt = now()"]
   F --> Z[Return OK]
 ```
 

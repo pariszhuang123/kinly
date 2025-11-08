@@ -10,7 +10,7 @@ flowchart TD
   A --> B
 ```
 
-- GitHub renders Mermaid in Markdown. For standalone `.mmd` files, link them from a Markdown file.
+- GitHub renders Mermaid in Markdown. For standalone `.md` files, link them from a Markdown file.
 
 ## Preview in VS Code
 - Open a Markdown file with a fenced `mermaid` block and use the built‑in Markdown Preview.
@@ -18,12 +18,12 @@ flowchart TD
 
 ## Export via CLI
 - One‑off export without installing globally:
-  - `npx @mermaid-js/mermaid-cli -i docs/diagrams/join_flow.mmd -o docs/diagrams/join_flow.svg`
+  - `npx @mermaid-js/mermaid-cli -i docs/diagrams/join_flow.md -o docs/diagrams/join_flow.svg`
 - Batch export example (PowerShell):
-  - `Get-ChildItem docs/diagrams/*.mmd | ForEach-Object { npx @mermaid-js/mermaid-cli -i $_.FullName -o ($_.FullName + '.svg') }`
+  - `Get-ChildItem docs/diagrams/*.md | ForEach-Object { npx @mermaid-js/mermaid-cli -i $_.FullName -o ($_.FullName + '.svg') }`
 
 ## Conventions
 - Keep diagrams small and focused on one flow.
-- Name files with the flow: `join_flow.mmd`, `invite_rotation.mmd`.
+- Name files with the flow: `join_flow.md`, `invite_rotation.md`.
 - Link diagrams from flows and contracts for traceability.
 

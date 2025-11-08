@@ -1,6 +1,6 @@
 ```mermaid
 flowchart TD
-  A[Start: homes.transferOwner(homeId, newOwnerId)] --> B{Home active?}
+  A["Start: homes.transferOwner(homeId, newOwnerId)"] --> B{Home active?}
   B -- no --> X[Error: Forbidden]
   B -- yes --> C{Caller is current owner?}
   C -- no --> X
