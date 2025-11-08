@@ -48,6 +48,7 @@ def main():
         "**/*.g.dart",
         "**/*.freezed.dart",
         "lib/l10n/**",
+        "lib/generated/**",  # exclude generated localization output
         "**/generated_plugin_registrant.dart",
         "lib/core/design_system/**",
     ]
@@ -101,4 +102,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
