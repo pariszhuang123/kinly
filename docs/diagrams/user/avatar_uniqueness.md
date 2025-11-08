@@ -1,8 +1,8 @@
 ```mermaid
 flowchart TD
-  A[Join/Create Home] --> B{Active member?}
-  B -- no --> X[Error]
-  B -- yes --> C{Has preferred avatar?}
+  A[Join/Create Home] --> B{Active member of other home?}
+  B -- yes --> X[Error]
+  B -- no --> C{Has preferred avatar?}
   C -- yes --> D{Preferred available in this home?}
   D -- yes --> E[Set members.avatar_key = preferred]
   D -- no --> F[Pick first available from catalog]
