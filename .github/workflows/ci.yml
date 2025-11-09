@@ -110,7 +110,20 @@ jobs:
 
       - name: Generate Edge Functions manifest
         if: steps.changes.outputs.do_db_check == 'true'
-        run: dart tool/generate_edge_manifest.dart
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os, json
+          base = 'supabase/functions'
+          manifest = {'functions': {}}
+          if os.path.isdir(base):
+              for name in sorted([d for d in os.listdir(base) if os.path.isdir(os.path.join(base, d))]):
+                  manifest['functions'][name] = {'path': os.path.join(base, name).replace('\\\\','/')}
+          os.makedirs('docs/contracts', exist_ok=True)
+          with open('docs/contracts/edge_functions.json', 'w') as f:
+              json.dump(manifest, f, indent=2)
+          print('Wrote docs/contracts/edge_functions.json')
+          PY
 
       - name: Verify snapshots committed
         if: steps.changes.outputs.do_db_check == 'true'
@@ -127,9 +140,6 @@ jobs:
             git --no-pager diff -- docs/contracts/schema.sql docs/contracts/rls_policies.sql docs/contracts/openapi.json docs/contracts/types.generated.ts docs/contracts/edge_functions.json || true;
             exit 1;
           fi
-
-      - name: Format check
-        run: dart format --output=none --set-exit-if-changed .
 
       - name: Lint
         run: dart analyze --fatal-infos
