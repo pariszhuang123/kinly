@@ -36,7 +36,6 @@ Then system assigns a different available avatar for U in H2
 ## Errors
 - Invalid avatar key (not in catalog) → Invalid.
 - Avatar already in use in this home → Conflict.
-- Not an active member or home inactive → Forbidden.
 
 ## Test Plan Map
 - Auto-assign gives an available key; uniqueness index enforces.

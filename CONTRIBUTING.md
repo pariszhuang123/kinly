@@ -39,6 +39,29 @@ Keep contributions small, testable, and linked to the contract version.
   - CLI export: `npx @mermaid-js/mermaid-cli -i docs/diagrams/join_flow.mmd -o join_flow.svg`
 - See `docs/diagrams/README.md` for details and examples.
 
+## Database & Contracts (Supabase) — source of truth
+- All DB changes must go through code: add SQL under `supabase/migrations/**` (and Edge Functions under `supabase/functions/**`). Do not edit remote DB without pulling diffs back.
+- Contracts are versioned in `docs/contracts/*_vN.md` with a fenced `contracts-json` block. Bump to `vN+1` for breaking changes; update in place for additive.
+- Registry is generated to `docs/contracts/registry.json` from the embedded blocks.
+
+### Local workflow (required before committing)
+- Windows: `powershell tool/snapshot_contracts.ps1`
+- macOS/Linux: `bash tool/snapshot_contracts.sh`
+- These scripts will:
+  - Start a local Supabase stack and apply migrations
+  - Dump snapshots: `schema.sql`, `rls_policies.sql`, `openapi.json`, `types.generated.ts`, `edge_functions.json`
+  - Regenerate `docs/contracts/registry.json` and validate it
+- Commit changes under both `supabase/**` and `docs/contracts/**`.
+
+### CI gates (drift prevention)
+- CI regenerates the registry and fails if `docs/contracts/registry.json` is stale.
+- On DB/Edge changes, CI starts local Supabase, applies migrations, regenerates snapshots, and fails if any changed files are not committed.
+- `supabase_dev` job depends on contracts drift checks and only runs when they pass.
+
+### Prereqs
+- Supabase CLI installed and Docker available locally for running snapshot scripts.
+- Dart SDK available to run tools under `tool/*.dart`.
+
 ## PR requirements
 - Use `.github/pull_request_template.md` and provide links to the flow and contract version.
 - If contracts change, create a new versioned doc (e.g., `homes_v2.md`) and an ADR.
@@ -48,4 +71,3 @@ Keep contributions small, testable, and linked to the contract version.
 - No direct Supabase/HTTP in UI or BLoC.
 - Writes only via approved RPCs; schema changes require migrations + RLS + reviews.
 - Keep platform parity (Android/iOS) and i18n scaffold current.
-

@@ -34,4 +34,3 @@ Then M’s membership.leftAt is set and M loses access to H
 - Non-owner tries to kick → forbidden.
 - Attempt to kick owner → forbidden.
 - Attempt to kick non-member/inactive member → not found/no-op.
-

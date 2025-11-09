@@ -1,0 +1,11 @@
+{
+  "name": "kinly-contracts",
+  "private": true,
+  "scripts": {
+    "contracts:extract": "dart tool/contracts_extract.dart",
+    "contracts:validate": "dart tool/validate_registry.dart docs/contracts/registry.json",
+    "contracts:snapshot:win": "powershell -ExecutionPolicy Bypass -File tool/snapshot_contracts.ps1",
+    "contracts:snapshot:unix": "bash tool/snapshot_contracts.sh"
+  }
+}
+

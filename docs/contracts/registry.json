@@ -1,0 +1,113 @@
+{
+  "generatedAt": "",
+  "domains": {
+    "users": {
+      "latest": "v1",
+      "docs": "docs/contracts/users_v1.md",
+      "entities": {
+        "UserProfile": {
+          "id": "uuid",
+          "email": "text|null",
+          "displayName": "text|null",
+          "avatarId": "uuid",
+          "deactivatedAt": "timestamptz|null"
+        }
+      },
+      "functions": {
+        "users.selfDelete": {
+          "type": "edge",
+          "auth": "service-role (self-only)",
+          "order": [
+            "db-first",
+            "anonymize",
+            "auth-delete"
+          ],
+          "effects": [
+            "auto-transfer-owned-homes-or-deactivate",
+            "close-nonowner-memberships",
+            "user_profile: email=NULL, displayName=NULL, avatarId=keep, deactivatedAt=now()"
+          ],
+          "calls": [
+            "homes.transferOwner"
+          ]
+        }
+      },
+      "rls": [
+        {
+          "table": "user_profile",
+          "rule": "deny when deactivatedAt IS NOT NULL"
+        }
+      ]
+    },
+    "homes": {
+      "latest": "v1",
+      "docs": "docs/contracts/homes_v1.md",
+      "entities": {
+        "Home": {
+          "id": "uuid",
+          "ownerUserId": "uuid",
+          "createdAt": "timestamptz",
+          "updatedAt": "timestamptz",
+          "isActive": "boolean",
+          "deactivatedAt": "timestamptz|null"
+        },
+        "Member": {
+          "userId": "uuid",
+          "homeId": "uuid",
+          "role": "text",
+          "createdAt": "timestamptz",
+          "updatedAt": "timestamptz",
+          "leftAt": "timestamptz|null"
+        },
+        "Invite": {
+          "id": "uuid",
+          "homeId": "uuid",
+          "code": "text",
+          "createdAt": "timestamptz",
+          "updatedAt": "timestamptz",
+          "revokedAt": "timestamptz|null"
+        }
+      },
+      "functions": {
+        "homes.create": {
+          "type": "rpc",
+          "caller": "authenticated"
+        },
+        "homes.join": {
+          "type": "rpc",
+          "caller": "authenticated"
+        },
+        "homes.transferOwner": {
+          "type": "rpc",
+          "caller": "owner-only"
+        },
+        "homes.leave": {
+          "type": "rpc",
+          "caller": "member"
+        },
+        "invites.getOrCreate": {
+          "type": "rpc",
+          "caller": "owner-only"
+        },
+        "invites.revoke": {
+          "type": "rpc",
+          "caller": "owner-only"
+        },
+        "invites.rotate": {
+          "type": "rpc",
+          "caller": "owner-only"
+        }
+      },
+      "rls": [
+        {
+          "table": "homes",
+          "rule": "inactive home denied"
+        },
+        {
+          "table": "members",
+          "rule": "member allowed; non-member denied"
+        }
+      ]
+    }
+  }
+}

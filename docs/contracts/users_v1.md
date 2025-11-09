@@ -4,6 +4,38 @@ Status: Draft for MVP (home-only)
 
 Scope: User authentication via Supabase OAuth (Google, Apple), logout, and account deletion (self-service Edge Function, soft-delete/anonymize PII).
 
+```contracts-json
+{
+  "domain": "users",
+  "version": "v1",
+  "entities": {
+    "UserProfile": {
+      "id": "uuid",
+      "email": "text|null",
+      "displayName": "text|null",
+      "avatarId": "uuid",
+      "deactivatedAt": "timestamptz|null"
+    }
+  },
+  "functions": {
+    "users.selfDelete": {
+      "type": "edge",
+      "auth": "service-role (self-only)",
+      "order": ["db-first", "anonymize", "auth-delete"],
+      "effects": [
+        "auto-transfer-owned-homes-or-deactivate",
+        "close-nonowner-memberships",
+        "user_profile: email=NULL, displayName=NULL, avatarId=keep, deactivatedAt=now()"
+      ],
+      "calls": ["homes.transferOwner"]
+    }
+  },
+  "rls": [
+    {"table": "user_profile", "rule": "deny when deactivatedAt IS NOT NULL"}
+  ]
+}
+```
+
 ## Entities
 
 UserProfile
@@ -64,4 +96,3 @@ users.selfDelete()
 - Owned homes with no other active members are deactivated during deletion; membership closed.
 - Non-owned memberships closed during deletion.
 - On creation, `avatarId` is set to the default avatar UUID.
-

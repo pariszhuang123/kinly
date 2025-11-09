@@ -34,6 +34,100 @@ jobs:
       - name: Restore packages
         run: flutter pub get
 
+      - name: Generate contracts registry
+        run: dart tool/contracts_extract.dart
+
+      - name: Validate registry structure
+        run: dart tool/validate_registry.dart docs/contracts/registry.json
+
+      - name: Verify registry committed
+        shell: bash
+        run: |
+          if [ -n "$(git status --porcelain docs/contracts/registry.json)" ]; then
+            echo "::error::docs/contracts/registry.json is out of date. Run: dart tool/contracts_extract.dart";
+            git --no-pager diff -- docs/contracts/registry.json || true;
+            exit 1;
+          fi
+
+  contracts_drift:
+    name: Contracts Drift (Local DB)
+    needs: [lint_test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect migration changes
+        id: changes
+        shell: bash
+        run: |
+          git fetch --no-tags --prune --depth=200 origin +refs/heads/main:refs/remotes/origin/main
+          CHANGED=$(git diff --name-only origin/main...HEAD | grep -E '^supabase/(migrations|functions|policies)/' || true)
+          if [ -n "$CHANGED" ]; then echo "do_db_check=true" >> $GITHUB_OUTPUT; else echo "do_db_check=false" >> $GITHUB_OUTPUT; fi
+
+      - uses: supabase/setup-cli@v1
+        if: steps.changes.outputs.do_db_check == 'true'
+        with:
+          version: latest
+
+      - name: Start local Supabase and reset DB
+        if: steps.changes.outputs.do_db_check == 'true'
+        run: |
+          supabase start
+          supabase db reset --force
+
+      - name: Wait for PostgREST
+        if: steps.changes.outputs.do_db_check == 'true'
+        shell: bash
+        run: |
+          set -e
+          for i in {1..60}; do
+            if curl -s -H 'Accept: application/openapi+json' http://127.0.0.1:54321/rest/v1/ > /dev/null; then
+              echo "PostgREST is up"; exit 0; fi; sleep 2; done
+          echo "::error::PostgREST did not become ready"; exit 1
+
+      - name: Dump schema (DDL only)
+        if: steps.changes.outputs.do_db_check == 'true'
+        run: |
+          supabase db dump --local --schema-only > docs/contracts/schema.sql
+
+      - name: Extract RLS policies
+        if: steps.changes.outputs.do_db_check == 'true'
+        shell: bash
+        run: |
+          awk '/CREATE POLICY|ENABLE ROW LEVEL SECURITY|FORCE ROW LEVEL SECURITY/ {print}' docs/contracts/schema.sql > docs/contracts/rls_policies.sql
+
+      - name: Dump OpenAPI (PostgREST)
+        if: steps.changes.outputs.do_db_check == 'true'
+        run: |
+          curl -s -H 'Accept: application/openapi+json' http://127.0.0.1:54321/rest/v1/ > docs/contracts/openapi.json
+
+      - name: Generate DB types (TypeScript)
+        if: steps.changes.outputs.do_db_check == 'true'
+        run: |
+          supabase gen types typescript --local > docs/contracts/types.generated.ts
+
+      - name: Generate Edge Functions manifest
+        if: steps.changes.outputs.do_db_check == 'true'
+        run: dart tool/generate_edge_manifest.dart
+
+      - name: Verify snapshots committed
+        if: steps.changes.outputs.do_db_check == 'true'
+        shell: bash
+        run: |
+          CHANGED=$(git status --porcelain \
+            docs/contracts/schema.sql \
+            docs/contracts/rls_policies.sql \
+            docs/contracts/openapi.json \
+            docs/contracts/types.generated.ts \
+            docs/contracts/edge_functions.json)
+          if [ -n "$CHANGED" ]; then
+            echo "::error::Contract snapshots are out of date. Commit updated schema/rls files.";
+            git --no-pager diff -- docs/contracts/schema.sql docs/contracts/rls_policies.sql docs/contracts/openapi.json docs/contracts/types.generated.ts docs/contracts/edge_functions.json || true;
+            exit 1;
+          fi
+
       - name: Format check
         run: dart format --output=none --set-exit-if-changed .
 
@@ -60,7 +154,7 @@ jobs:
 
   supabase_dev:
     name: Supabase Migrations (Dev)
-    needs: [lint_test]
+    needs: [lint_test, contracts_drift]
     runs-on: ubuntu-latest
     environment: dev
     env:
