@@ -140,6 +140,7 @@ jobs:
             git --no-pager diff -- docs/contracts/schema.sql docs/contracts/rls_policies.sql docs/contracts/openapi.json docs/contracts/types.generated.ts docs/contracts/edge_functions.json || true;
             exit 1;
           fi\n  supabase_dev:
+            
     name: Supabase Migrations (Dev)
     needs: [lint_test, contracts_drift]
     runs-on: ubuntu-latest
