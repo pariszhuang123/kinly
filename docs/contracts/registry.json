@@ -1,44 +1,6 @@
 {
   "generatedAt": "",
   "domains": {
-    "users": {
-      "latest": "v1",
-      "docs": "docs/contracts/users_v1.md",
-      "entities": {
-        "UserProfile": {
-          "id": "uuid",
-          "email": "text|null",
-          "displayName": "text|null",
-          "avatarId": "uuid",
-          "deactivatedAt": "timestamptz|null"
-        }
-      },
-      "functions": {
-        "users.selfDelete": {
-          "type": "edge",
-          "auth": "service-role (self-only)",
-          "order": [
-            "db-first",
-            "anonymize",
-            "auth-delete"
-          ],
-          "effects": [
-            "auto-transfer-owned-homes-or-deactivate",
-            "close-nonowner-memberships",
-            "user_profile: email=NULL, displayName=NULL, avatarId=keep, deactivatedAt=now()"
-          ],
-          "calls": [
-            "homes.transferOwner"
-          ]
-        }
-      },
-      "rls": [
-        {
-          "table": "user_profile",
-          "rule": "deny when deactivatedAt IS NOT NULL"
-        }
-      ]
-    },
     "homes": {
       "latest": "v1",
       "docs": "docs/contracts/homes_v1.md",
@@ -106,6 +68,44 @@
         {
           "table": "members",
           "rule": "member allowed; non-member denied"
+        }
+      ]
+    },
+    "users": {
+      "latest": "v1",
+      "docs": "docs/contracts/users_v1.md",
+      "entities": {
+        "UserProfile": {
+          "id": "uuid",
+          "email": "text|null",
+          "displayName": "text|null",
+          "avatarId": "uuid",
+          "deactivatedAt": "timestamptz|null"
+        }
+      },
+      "functions": {
+        "users.selfDelete": {
+          "type": "edge",
+          "auth": "service-role (self-only)",
+          "order": [
+            "db-first",
+            "anonymize",
+            "auth-delete"
+          ],
+          "effects": [
+            "auto-transfer-owned-homes-or-deactivate",
+            "close-nonowner-memberships",
+            "user_profile: email=NULL, displayName=NULL, avatarId=keep, deactivatedAt=now()"
+          ],
+          "calls": [
+            "homes.transferOwner"
+          ]
+        }
+      },
+      "rls": [
+        {
+          "table": "user_profile",
+          "rule": "deny when deactivatedAt IS NOT NULL"
         }
       ]
     }

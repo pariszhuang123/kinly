@@ -13,10 +13,11 @@ Future<void> main(List<String> args) async {
 
   final files =
       await root
-          .list(recursive: false)
-          .where((e) => e is File && e.path.endsWith('.md'))
-          .cast<File>()
-          .toList();
+            .list(recursive: false)
+            .where((e) => e is File && e.path.endsWith('.md'))
+            .cast<File>()
+            .toList()
+        ..sort((a, b) => a.path.compareTo(b.path));
 
   final domains =
       <String, Map<String, dynamic>>{}; // domain -> {versions: {vN: {...}}}
@@ -70,7 +71,9 @@ Future<void> main(List<String> args) async {
     'domains': <String, dynamic>{},
   };
 
-  (domains).forEach((domain, data) {
+  final domainNames = domains.keys.toList()..sort();
+  for (final domain in domainNames) {
+    final data = domains[domain]!;
     final versions = (data['versions'] as Map<String, dynamic>);
     String? latest;
     for (final v in versions.keys) {
@@ -78,7 +81,7 @@ Future<void> main(List<String> args) async {
         latest = v;
       } else {
         int a = int.tryParse(v.replaceFirst('v', '')) ?? 0;
-        int b = int.tryParse(latest.replaceFirst('v', '')) ?? 0;
+        int b = int.tryParse(latest!.replaceFirst('v', '')) ?? 0;
         if (a > b) latest = v;
       }
     }
@@ -91,11 +94,12 @@ Future<void> main(List<String> args) async {
       'functions': latestData['functions'],
       'rls': latestData['rls'],
     };
-  });
+  }
 
   final outFile = File('docs/contracts/registry.json');
   outFile.createSync(recursive: true);
-  outFile.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(out));
+  final jsonStr = const JsonEncoder.withIndent('  ').convert(out) + '\n';
+  outFile.writeAsStringSync(jsonStr);
   stdout.writeln('Wrote ${outFile.path}');
 }
 
