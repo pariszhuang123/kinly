@@ -76,3 +76,16 @@ COMMENT ON TRIGGER on_auth_user_created ON auth.users
   IS 'Auto-creates profile entry when a new user is added to auth.users.';
 
 
+-- 1. Add the new column `name`
+ALTER TABLE public.avatars
+ADD COLUMN name TEXT NOT NULL DEFAULT 'Unnamed Avatar';
+
+COMMENT ON COLUMN public.avatars.name IS 'Human-readable name describing what this avatar is about.';
+
+-- 2. Restrict category values to "animal" or "plant" using a CHECK constraint
+ALTER TABLE public.avatars
+ADD CONSTRAINT avatars_category_check
+CHECK (category IN ('animal', 'plant'));
+
+COMMENT ON CONSTRAINT avatars_category_check ON public.avatars
+IS 'Restricts category to only "animal" or "plant".';
