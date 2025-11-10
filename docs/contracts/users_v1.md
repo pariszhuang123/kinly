@@ -11,10 +11,18 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
   "entities": {
     "UserProfile": {
       "id": "uuid",
-      "email": "text|null",
-      "displayName": "text|null",
+      "email": "text",
+      "fullName": "text|null",
       "avatarId": "uuid",
+      "createdAt": "timestamptz",
       "deactivatedAt": "timestamptz|null"
+    },
+    "Avatar": {
+      "id": "uuid",
+      "storagePath": "text",
+      "category": "text",
+      "name": "text",
+      "createdAt": "timestamptz"
     }
   },
   "functions": {
@@ -25,13 +33,14 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
       "effects": [
         "auto-transfer-owned-homes-or-deactivate",
         "close-nonowner-memberships",
-        "user_profile: email=NULL, displayName=NULL, avatarId=keep, deactivatedAt=now()"
+        "user_profile: email=NULL, fullName=NULL, avatarId=keep"
       ],
       "calls": ["homes.transferOwner"]
     }
   },
   "rls": [
-    {"table": "user_profile", "rule": "deny when deactivatedAt IS NOT NULL"}
+    {"table": "public.profiles", "rule": "SELECT own row only; client writes revoked (triggers/RPC only)"},
+    {"table": "public.avatars", "rule": "SELECT allowed for authenticated users"}
   ]
 }
 ```
@@ -40,27 +49,32 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
 
 UserProfile
 - id (uuid, PK; equals Supabase Auth user id)
-- email (text, nullable)
-- displayName (text, nullable)
+- email (text, not null)
+- fullName (text, nullable)
 - avatarId (uuid, FK -> avatars.id)
-- createdAt (timestamp)
-- updatedAt (timestamp)
-- deactivatedAt (timestamp, NULL if active)
+- createdAt (timestamptz)
 
 Avatar
 - id (uuid, PK)
-- key (text, UNIQUE)  // optional human-friendly slug
-- image (text)
-- createdAt (timestamp)
-- updatedAt (timestamp)
+- storagePath (text)
+- category (text; allowed: 'animal' | 'plant')
+- name (text)
+- createdAt (timestamptz)
+
+## Naming Conventions
+- Database uses snake_case; contracts/DTOs use camelCase.
+- Repositories map DB → domain model so BLoC/UI only see camelCase.
+- Field mapping examples:
+  - createdAt ↔ created_at
+  - fullName ↔ full_name
+  - avatarId ↔ avatar_id
+  - storagePath ↔ storage_path
 
 ## Invariants
-- Active user iff `deactivatedAt IS NULL`.
-- If `deactivatedAt IS NOT NULL`, RLS denies all reads/writes for this user.
 - `UserProfile.id` must always match the Auth user id.
 - `UserProfile.avatarId` references `avatars.id`.
-- Default: on user creation, `avatarId` is set to a seeded default avatar UUID; all users begin linked to the same default avatar until they change it.
-- Member avatar uniqueness is enforced per home (see avatar uniqueness flow); `UserProfile.avatarId` is a preference and may differ from the final per-home assignment when conflicts exist.
+- On user creation, `avatarId` defaults to a seeded/first avatar.
+- Member avatar uniqueness may be enforced per home (see avatar uniqueness flow); `UserProfile.avatarId` is a preference and may differ from per-home assignment if conflicts exist.
 
 ## RPCs / Edge Functions
 
@@ -74,7 +88,7 @@ users.selfDelete()
 - DB changes:
   - Owned homes with no other active members: set `home.isActive=false`, set `home.deactivatedAt=now()`, set owner membership `leftAt=now()`.
   - Non-owned active memberships: set `leftAt=now()`.
-  - Anonymize `user_profile`: set `email` and `displayName` to NULL per policy; set `deactivatedAt=now()`; keep `avatarId` unchanged.
+  - Anonymize `user_profile`: set `email` and `full_name` to NULL per policy; keep `avatar_id` unchanged.
 - Finally, delete the Auth user.
 - Audit: write an audit row with `userId`, timestamp, homes affected, and action result; rate-limit to prevent abuse.
 
@@ -87,7 +101,8 @@ users.selfDelete()
 - Deactivated users cannot authenticate or access data.
 
 ## RLS (Overview)
-- `user_profile`: users may read/update their own row only when `deactivatedAt IS NULL`.
+- `public.profiles`: authenticated users may SELECT their own row only; client writes revoked (triggers/RPCs handle writes).
+- `public.avatars`: authenticated users may SELECT.
 - Edge Function uses service role; RLS still applies to client paths; function enforces self-only semantics.
 
 ## Test Plan Map

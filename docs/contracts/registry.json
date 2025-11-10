@@ -1,5 +1,5 @@
 {
-  "generatedAt": "",
+  "generatedAt": "2025-11-10T10:00:00Z",
   "domains": {
     "homes": {
       "latest": "v1",
@@ -78,9 +78,17 @@
         "UserProfile": {
           "id": "uuid",
           "email": "text|null",
-          "displayName": "text|null",
+          "fullName": "text|null",
           "avatarId": "uuid",
-          "deactivatedAt": "timestamptz|null"
+          "createdAt": "timestamptz",
+          "deactivated_at": "timestamptz|null"
+        },
+        "Avatar": {
+          "id": "uuid",
+          "storagePath": "text",
+          "category": "text",
+          "name": "text",
+          "createdAt": "timestamptz"
         }
       },
       "functions": {
@@ -104,8 +112,12 @@
       },
       "rls": [
         {
-          "table": "user_profile",
-          "rule": "deny when deactivatedAt IS NOT NULL"
+          "table": "public.profiles",
+          "rule": "SELECT own row only; client writes revoked (triggers/RPC only)"
+        },
+        {
+          "table": "public.avatars",
+          "rule": "SELECT allowed for authenticated users"
         }
       ]
     }

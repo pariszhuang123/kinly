@@ -3,7 +3,9 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   email       TEXT UNIQUE NOT NULL,  -- user email address from auth.users
   full_name   TEXT,                  -- optional display name
   avatar_id   UUID NOT NULL REFERENCES public.avatars(id), -- required FK to avatars table
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  deactivated_at timestamptz,       -- NULL = active
+
 );
 
 COMMENT ON TABLE  public.profiles                IS 'App-facing persona mirroring auth.users by id (1:1).';
@@ -12,6 +14,8 @@ COMMENT ON COLUMN public.profiles.email          IS 'User email address mirrored
 COMMENT ON COLUMN public.profiles.full_name      IS 'Optional display name.';
 COMMENT ON COLUMN public.profiles.avatar_id      IS 'FK to public.avatars.id (required avatar).';
 COMMENT ON COLUMN public.profiles.created_at     IS 'Profile creation timestamp (UTC).';
+COMMENT ON COLUMN public.profiles.deactivated_at IS
+  'Timestamp when the user deactivated or left the app. NULL = currently active. Used for soft-deletion and retention tracking.';
 
 
 
@@ -21,10 +25,12 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 REVOKE INSERT, UPDATE, DELETE ON public.profiles FROM anon, authenticated;
 GRANT SELECT ON public.profiles TO authenticated;
 
-CREATE POLICY IF NOT EXISTS profiles_select_authenticated
+DROP POLICY IF EXISTS profiles_select_authenticated ON public.profiles;
+
+CREATE POLICY profiles_select_authenticated
   ON public.profiles
   FOR SELECT
-    USING (id = (SELECT auth.uid()));
+  USING (id = (SELECT auth.uid()));
 
 
 
