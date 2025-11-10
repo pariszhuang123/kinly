@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   full_name   TEXT,                  -- optional display name
   avatar_id   UUID NOT NULL REFERENCES public.avatars(id), -- required FK to avatars table
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
-  deactivated_at timestamptz,       -- NULL = active
+  deactivated_at timestamptz       -- NULL = active
 
 );
 
