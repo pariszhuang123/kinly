@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-10T10:00:00Z",
+  "generatedAt": "",
   "domains": {
     "homes": {
       "latest": "v1",
@@ -77,11 +77,11 @@
       "entities": {
         "UserProfile": {
           "id": "uuid",
-          "email": "text|null",
+          "email": "text",
           "fullName": "text|null",
           "avatarId": "uuid",
           "createdAt": "timestamptz",
-          "deactivated_at": "timestamptz|null"
+          "deactivatedAt": "timestamptz|null"
         },
         "Avatar": {
           "id": "uuid",
@@ -103,7 +103,7 @@
           "effects": [
             "auto-transfer-owned-homes-or-deactivate",
             "close-nonowner-memberships",
-            "user_profile: email=NULL, displayName=NULL, avatarId=keep, deactivatedAt=now()"
+            "user_profile: email=NULL, fullName=NULL, avatarId=keep"
           ],
           "calls": [
             "homes.transferOwner"

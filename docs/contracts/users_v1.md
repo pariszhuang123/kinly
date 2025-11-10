@@ -53,6 +53,7 @@ UserProfile
 - fullName (text, nullable)
 - avatarId (uuid, FK -> avatars.id)
 - createdAt (timestamptz)
+- deactivatedAt (timestamptz, NULL if active)
 
 Avatar
 - id (uuid, PK)
@@ -88,7 +89,7 @@ users.selfDelete()
 - DB changes:
   - Owned homes with no other active members: set `home.isActive=false`, set `home.deactivatedAt=now()`, set owner membership `leftAt=now()`.
   - Non-owned active memberships: set `leftAt=now()`.
-  - Anonymize `user_profile`: set `email` and `full_name` to NULL per policy; keep `avatar_id` unchanged.
+  - Anonymize `user_profile`: set `email` and `full_name` to NULL; set `deactivated_at=now()`; keep `avatar_id` unchanged.
 - Finally, delete the Auth user.
 - Audit: write an audit row with `userId`, timestamp, homes affected, and action result; rate-limit to prevent abuse.
 
