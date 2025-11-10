@@ -41,7 +41,7 @@ CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = ""
+SET search_path = ''
 AS $$
 DECLARE
   default_avatar UUID;
