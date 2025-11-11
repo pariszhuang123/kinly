@@ -103,13 +103,13 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION public._gen_unique_username(p_email text, p_id uuid)
-RETURNS citext
+RETURNS public.citext
 LANGUAGE plpgsql
 SET search_path = ''
 AS $$
 DECLARE
-  base       citext;
-  candidate  citext;
+  base       public.citext;
+  candidate  public.citext;
   n          int := 0;
   max_tries  int := 100000;
   prefix_len int;
