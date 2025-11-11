@@ -19,7 +19,9 @@
           "type": "rpc",
           "auth": "anonymous",
           "impl": "public.check_app_version",
-          "args": {"client_version": "text"},
+          "args": {
+            "client_version": "text"
+          },
           "returns": "jsonb",
           "semantics": [
             "hardBlocked: client < minSupportedVersion",
@@ -28,10 +30,15 @@
         }
       },
       "rls": [
-        {"table": "public.app_version", "rule": "no client access; function-only (RLS enabled; anon/auth revoked)"}
+        {
+          "table": "public.app_version",
+          "rule": "no client access; function-only (RLS enabled; anon/auth revoked)"
+        }
       ],
       "db": {
-        "extensions": ["pgcrypto"],
+        "extensions": [
+          "pgcrypto"
+        ],
         "tables": {
           "public.app_version": {
             "indexes": [
@@ -47,15 +54,23 @@
         "functions": {
           "public.check_app_version": {
             "type": "rpc",
-            "args": {"client_version": "text"},
+            "args": {
+              "client_version": "text"
+            },
             "returns": "jsonb",
             "security": "definer",
             "owner": "postgres",
             "volatility": "stable",
             "nullInput": "returns null on null input",
             "grants": {
-              "schemaUsage": ["anon", "authenticated"],
-              "execute": ["anon", "authenticated"]
+              "schemaUsage": [
+                "anon",
+                "authenticated"
+              ],
+              "execute": [
+                "anon",
+                "authenticated"
+              ]
             }
           }
         }
