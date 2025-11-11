@@ -7,8 +7,8 @@ ALTER TABLE public.profiles
 
 COMMENT ON COLUMN public.profiles.username IS
   'Case-insensitive unique handle for user identification and @mentions. '
-  || 'Must be 3–30 chars long, start/end with a letter or number, and may contain dots or underscores in between. '
-  || 'Used for tagging (e.g., @username) and public display names.';
+  'Must be 3–30 chars long, start/end with a letter or number, and may contain dots or underscores in between. '
+  'Used for tagging (e.g., @username) and public display names.';
 COMMENT ON COLUMN public.profiles.updated_at     IS 'Profile updated timestamp (UTC).';
 
 
