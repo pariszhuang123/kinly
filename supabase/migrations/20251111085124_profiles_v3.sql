@@ -2,8 +2,8 @@ CREATE EXTENSION IF NOT EXISTS citext;
 
 -- 1️⃣ Add the username column
 ALTER TABLE public.profiles
-  ADD COLUMN IF NOT EXISTS username CITEXT NOT NULL;
-  ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  ADD COLUMN IF NOT EXISTS username CITEXT NOT NULL,
+  ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
 
 COMMENT ON COLUMN public.profiles.username IS
   'Case-insensitive unique handle for user identification and @mentions. '
