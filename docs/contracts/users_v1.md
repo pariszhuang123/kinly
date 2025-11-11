@@ -13,8 +13,10 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
       "id": "uuid",
       "email": "text",
       "fullName": "text|null",
+      "username": "citext",
       "avatarId": "uuid",
       "createdAt": "timestamptz",
+      "updatedAt": "timestamptz",
       "deactivatedAt": "timestamptz|null"
     },
     "Avatar": {
@@ -23,6 +25,9 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
       "category": "text",
       "name": "text",
       "createdAt": "timestamptz"
+    },
+    "ReservedUsername": {
+      "name": "citext"
     }
   },
   "functions": {
@@ -33,14 +38,15 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
       "effects": [
         "auto-transfer-owned-homes-or-deactivate",
         "close-nonowner-memberships",
-        "user_profile: email=NULL, fullName=NULL, avatarId=keep"
+        "user_profile: email=NULL, fullName=NULL, avatarId=keep, username=keep"
       ],
       "calls": ["homes.transferOwner"]
     }
   },
   "rls": [
     {"table": "public.profiles", "rule": "SELECT own row only; client writes revoked (triggers/RPC only)"},
-    {"table": "public.avatars", "rule": "SELECT allowed for authenticated users"}
+    {"table": "public.avatars", "rule": "SELECT allowed for authenticated users"},
+    {"table": "public.reserved_usernames", "rule": "no client access; RLS enabled; anon/auth revoked"}
   ]
 }
 ```
@@ -51,8 +57,10 @@ UserProfile
 - id (uuid, PK; equals Supabase Auth user id)
 - email (text, not null)
 - fullName (text, nullable)
+- username (citext, globally unique, case-insensitive; 3–30 chars, start/end alphanumeric, dots/underscores allowed between)
 - avatarId (uuid, FK -> avatars.id)
 - createdAt (timestamptz)
+- updatedAt (timestamptz)
 - deactivatedAt (timestamptz, NULL if active)
 
 Avatar
@@ -62,20 +70,27 @@ Avatar
 - name (text)
 - createdAt (timestamptz)
 
+ReservedUsername
+- name (citext, PK). Case-insensitive reserved handles that cannot be claimed by users.
+
 ## Naming Conventions
 - Database uses snake_case; contracts/DTOs use camelCase.
 - Repositories map DB → domain model so BLoC/UI only see camelCase.
 - Field mapping examples:
   - createdAt ↔ created_at
+  - updatedAt ↔ updated_at
   - fullName ↔ full_name
   - avatarId ↔ avatar_id
   - storagePath ↔ storage_path
+  - username ↔ username (1:1)
 
 ## Invariants
 - `UserProfile.id` must always match the Auth user id.
 - `UserProfile.avatarId` references `avatars.id`.
 - On user creation, `avatarId` defaults to a seeded/first avatar.
 - Member avatar uniqueness may be enforced per home (see avatar uniqueness flow); `UserProfile.avatarId` is a preference and may differ from per-home assignment if conflicts exist.
+- `UserProfile.username` is globally unique (case-insensitive CITEXT), validated by regex `^[a-z0-9](?:[a-z0-9._]{1,28})[a-z0-9]$`; values in `public.reserved_usernames` cannot be claimed.
+- On self delete, `username` is kept (not anonymized) so it can be displayed in gratitude/history views.
 
 ## RPCs / Edge Functions
 
@@ -89,7 +104,7 @@ users.selfDelete()
 - DB changes:
   - Owned homes with no other active members: set `home.isActive=false`, set `home.deactivatedAt=now()`, set owner membership `leftAt=now()`.
   - Non-owned active memberships: set `leftAt=now()`.
-  - Anonymize `user_profile`: set `email` and `full_name` to NULL; set `deactivated_at=now()`; keep `avatar_id` unchanged.
+  - Anonymize `user_profile`: set `email` and `full_name` to NULL; set `deactivated_at=now()`; keep `avatar_id` and `username` unchanged.
 - Finally, delete the Auth user.
 - Audit: write an audit row with `userId`, timestamp, homes affected, and action result; rate-limit to prevent abuse.
 
@@ -104,6 +119,7 @@ users.selfDelete()
 ## RLS (Overview)
 - `public.profiles`: authenticated users may SELECT their own row only; client writes revoked (triggers/RPCs handle writes).
 - `public.avatars`: authenticated users may SELECT.
+- `public.reserved_usernames`: no client access; RLS enabled; anon/auth revoked.
 - Edge Function uses service role; RLS still applies to client paths; function enforces self-only semantics.
 
 ## Test Plan Map
@@ -112,3 +128,7 @@ users.selfDelete()
 - Owned homes with no other active members are deactivated during deletion; membership closed.
 - Non-owned memberships closed during deletion.
 - On creation, `avatarId` is set to the default avatar UUID.
+- Username:
+  - Auto-generated, unique, lowercase, matches format; reserved names blocked.
+  - On self delete, username remains visible in downstream views (e.g., gratitude table).
+

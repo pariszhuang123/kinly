@@ -79,8 +79,10 @@
           "id": "uuid",
           "email": "text",
           "fullName": "text|null",
+          "username": "citext",
           "avatarId": "uuid",
           "createdAt": "timestamptz",
+          "updatedAt": "timestamptz",
           "deactivatedAt": "timestamptz|null"
         },
         "Avatar": {
@@ -89,6 +91,9 @@
           "category": "text",
           "name": "text",
           "createdAt": "timestamptz"
+        },
+        "ReservedUsername": {
+          "name": "citext"
         }
       },
       "functions": {
@@ -103,11 +108,43 @@
           "effects": [
             "auto-transfer-owned-homes-or-deactivate",
             "close-nonowner-memberships",
-            "user_profile: email=NULL, fullName=NULL, avatarId=keep"
+            "user_profile: email=NULL, fullName=NULL, avatarId=keep, username=keep"
           ],
           "calls": [
             "homes.transferOwner"
           ]
+        }
+      },
+      "db": {
+        "extensions": ["citext"],
+        "triggers": {
+          "public.handle_new_user": {
+            "type": "trigger",
+            "table": "auth.users",
+            "event": "AFTER INSERT",
+            "returns": "trigger",
+            "security": "definer",
+            "notes": "On new auth user, creates profile with default avatar and generated username."
+          }
+        },
+        "functions": {
+          "public._gen_unique_username": {
+            "type": "internal",
+            "args": {"p_emaail": "text", "p_id": "uuid"},
+            "returns": "citext",
+            "volatility": "volatile",
+            "notes": "Generates a unique username; enforces regex; skips reserved names; uses advisory lock; citext + unique index ensures case-insensitive uniqueness."
+          }
+        },
+        "tables": {
+          "public.profiles": {
+            "indexes": ["uq_profiles_username(username)"],
+            "constraints": ["chk_profiles_username_format"]
+          },
+          "public.reserved_usernames": {
+            "indexes": ["PRIMARY KEY(name)"],
+            "constraints": []
+          }
         }
       },
       "rls": [
@@ -118,6 +155,10 @@
         {
           "table": "public.avatars",
           "rule": "SELECT allowed for authenticated users"
+        },
+        {
+          "table": "public.reserved_usernames",
+          "rule": "no client access; RLS enabled; anon/auth revoked"
         }
       ]
     }
