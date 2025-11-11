@@ -1,6 +1,66 @@
 {
   "generatedAt": "",
   "domains": {
+    "app": {
+      "latest": "v1",
+      "docs": "docs/contracts/app_v1.md",
+      "entities": {
+        "AppVersion": {
+          "id": "uuid",
+          "versionNumber": "text",
+          "minSupportedVersion": "text",
+          "isCurrent": "boolean",
+          "releaseDate": "timestamptz",
+          "notes": "text|null"
+        }
+      },
+      "functions": {
+        "app.checkVersion": {
+          "type": "rpc",
+          "auth": "anonymous",
+          "impl": "public.check_app_version",
+          "args": {"client_version": "text"},
+          "returns": "jsonb",
+          "semantics": [
+            "hardBlocked: client < minSupportedVersion",
+            "updateRecommended: client < currentVersion and not hardBlocked"
+          ]
+        }
+      },
+      "rls": [
+        {"table": "public.app_version", "rule": "no client access; function-only (RLS enabled; anon/auth revoked)"}
+      ],
+      "db": {
+        "extensions": ["pgcrypto"],
+        "tables": {
+          "public.app_version": {
+            "indexes": [
+              "uq_app_version(version_number)",
+              "uq_app_version_is_current_true((true)) WHERE is_current"
+            ],
+            "constraints": [
+              "chk_version_number",
+              "chk_min_supported"
+            ]
+          }
+        },
+        "functions": {
+          "public.check_app_version": {
+            "type": "rpc",
+            "args": {"client_version": "text"},
+            "returns": "jsonb",
+            "security": "definer",
+            "owner": "postgres",
+            "volatility": "stable",
+            "nullInput": "returns null on null input",
+            "grants": {
+              "schemaUsage": ["anon", "authenticated"],
+              "execute": ["anon", "authenticated"]
+            }
+          }
+        }
+      }
+    },
     "homes": {
       "latest": "v1",
       "docs": "docs/contracts/homes_v1.md",
@@ -77,7 +137,7 @@
       "entities": {
         "UserProfile": {
           "id": "uuid",
-          "email": "text",
+          "email": "text|null",
           "fullName": "text|null",
           "username": "citext",
           "avatarId": "uuid",

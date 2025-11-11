@@ -11,7 +11,7 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
   "entities": {
     "UserProfile": {
       "id": "uuid",
-      "email": "text",
+      "email": "text|null",
       "fullName": "text|null",
       "username": "citext",
       "avatarId": "uuid",
@@ -87,7 +87,7 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
 
 UserProfile
 - id (uuid, PK; equals Supabase Auth user id)
-- email (text, not null)
+- email (text|null)
 - fullName (text, nullable)
 - username (citext, globally unique, case-insensitive; 3–30 chars, start/end alphanumeric, dots/underscores allowed between)
 - avatarId (uuid, FK -> avatars.id)
@@ -121,6 +121,7 @@ ReservedUsername
 - `UserProfile.avatarId` references `avatars.id`.
 - On user creation, `avatarId` defaults to a seeded/first avatar.
 - Member avatar uniqueness may be enforced per home (see avatar uniqueness flow); `UserProfile.avatarId` is a preference and may differ from per-home assignment if conflicts exist.
+- `UserProfile.email` may be NULL when user asked to be deleted; when present it remains unique across users (Postgres UNIQUE allows multiple NULLs by design).
 - `UserProfile.username` is globally unique (case-insensitive CITEXT), validated by regex `^[a-z0-9](?:[a-z0-9._]{1,28})[a-z0-9]$`; values in `public.reserved_usernames` cannot be claimed.
 - On self delete, `username` is kept (not anonymized) so it can be displayed in gratitude/history views.
 
