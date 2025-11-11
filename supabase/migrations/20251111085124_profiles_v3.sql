@@ -1,4 +1,4 @@
-CREATE EXTENSION IF NOT EXISTS citext;
+CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;
 
 -- 1️⃣ Add the username column
 ALTER TABLE public.profiles
