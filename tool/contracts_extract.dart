@@ -81,7 +81,7 @@ Future<void> main(List<String> args) async {
         latest = v;
       } else {
         int a = int.tryParse(v.replaceFirst('v', '')) ?? 0;
-        int b = int.tryParse(latest!.replaceFirst('v', '')) ?? 0;
+        int b = int.tryParse(latest.replaceFirst('v', '')) ?? 0;
         if (a > b) latest = v;
       }
     }
@@ -98,7 +98,7 @@ Future<void> main(List<String> args) async {
 
   final outFile = File('docs/contracts/registry.json');
   outFile.createSync(recursive: true);
-  final jsonStr = const JsonEncoder.withIndent('  ').convert(out) + '\n';
+  final jsonStr = '${const JsonEncoder.withIndent('  ').convert(out)}\n';
   outFile.writeAsStringSync(jsonStr);
   stdout.writeln('Wrote ${outFile.path}');
 }
