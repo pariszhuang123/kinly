@@ -43,6 +43,38 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
       "calls": ["homes.transferOwner"]
     }
   },
+  "db": {
+    "extensions": ["citext"],
+    "triggers": {
+      "public.handle_new_user": {
+        "type": "trigger",
+        "table": "auth.users",
+        "event": "AFTER INSERT",
+        "returns": "trigger",
+        "security": "definer",
+        "notes": "On new auth user, creates profile with default avatar and generated username."
+      }
+    },
+    "functions": {
+      "public._gen_unique_username": {
+        "type": "internal",
+        "args": {"p_email": "text", "p_id": "uuid"},
+        "returns": "citext",
+        "volatility": "volatile",
+        "notes": "Generates a unique username; enforces regex; skips reserved names; uses advisory lock; citext + unique index ensures case-insensitive uniqueness."
+      }
+    },
+    "tables": {
+      "public.profiles": {
+        "indexes": ["uq_profiles_username(username)"],
+        "constraints": ["chk_profiles_username_format"]
+      },
+      "public.reserved_usernames": {
+        "indexes": ["PRIMARY KEY(name)"],
+        "constraints": []
+      }
+    }
+  },
   "rls": [
     {"table": "public.profiles", "rule": "SELECT own row only; client writes revoked (triggers/RPC only)"},
     {"table": "public.avatars", "rule": "SELECT allowed for authenticated users"},
@@ -131,4 +163,3 @@ users.selfDelete()
 - Username:
   - Auto-generated, unique, lowercase, matches format; reserved names blocked.
   - On self delete, username remains visible in downstream views (e.g., gratitude table).
-

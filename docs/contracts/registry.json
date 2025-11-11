@@ -130,7 +130,7 @@
         "functions": {
           "public._gen_unique_username": {
             "type": "internal",
-            "args": {"p_emaail": "text", "p_id": "uuid"},
+            "args": {"p_email": "text", "p_id": "uuid"},
             "returns": "citext",
             "volatility": "volatile",
             "notes": "Generates a unique username; enforces regex; skips reserved names; uses advisory lock; citext + unique index ensures case-insensitive uniqueness."

@@ -93,6 +93,32 @@ void main(List<String> args) {
         }
       }
     }
+
+    // Optional: db section for internal metadata (extensions/triggers/functions/tables)
+    if (d.containsKey('db')) {
+      final db = d['db'];
+      if (db is! Map<String, dynamic>) {
+        stderr.writeln('Domain $name: db must be object');
+        exit(1);
+      }
+      // Light validation only; keys are optional and schema can evolve.
+      if (db.containsKey('extensions') && db['extensions'] is! List) {
+        stderr.writeln('Domain $name: db.extensions must be array');
+        exit(1);
+      }
+      if (db.containsKey('triggers') && db['triggers'] is! Map) {
+        stderr.writeln('Domain $name: db.triggers must be object');
+        exit(1);
+      }
+      if (db.containsKey('functions') && db['functions'] is! Map) {
+        stderr.writeln('Domain $name: db.functions must be object');
+        exit(1);
+      }
+      if (db.containsKey('tables') && db['tables'] is! Map) {
+        stderr.writeln('Domain $name: db.tables must be object');
+        exit(1);
+      }
+    }
   }
   stdout.writeln('registry.json is valid');
 }

@@ -61,6 +61,7 @@ Future<void> main(List<String> args) async {
       'entities': json['entities'],
       'functions': json['functions'],
       'rls': json['rls'],
+      'db': json['db'],
     };
   }
 
@@ -87,13 +88,17 @@ Future<void> main(List<String> args) async {
     }
     if (latest == null) return;
     final latestData = versions[latest];
-    (out['domains'] as Map<String, dynamic>)[domain] = {
+    final domainObj = {
       'latest': latest,
       'docs': latestData['docs'],
       'entities': latestData['entities'],
       'functions': latestData['functions'],
       'rls': latestData['rls'],
     };
+    if (latestData['db'] != null) {
+      (domainObj as Map<String, dynamic>)['db'] = latestData['db'];
+    }
+    (out['domains'] as Map<String, dynamic>)[domain] = domainObj;
   }
 
   final outFile = File('docs/contracts/registry.json');
