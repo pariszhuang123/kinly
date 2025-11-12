@@ -1,0 +1,250 @@
+-- ---------------------------------------------------------------------
+-- RPCs for Homes/Memberships/Invites (RLS remains locked; RPC-only)
+-- ---------------------------------------------------------------------
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- Helper: current auth user
+CREATE OR REPLACE FUNCTION public._current_user_id()
+RETURNS uuid
+LANGUAGE sql
+STABLE
+AS $$
+  SELECT auth.uid();
+$$;
+
+CREATE OR REPLACE FUNCTION public.api_error(
+  p_code text,
+  p_msg text,
+  p_sqlstate text DEFAULT 'P0001',
+  p_details jsonb DEFAULT NULL,
+  p_hint text DEFAULT NULL
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY INVOKER
+AS $$
+BEGIN
+  RAISE EXCEPTION USING
+    MESSAGE = json_build_object('code', p_code, 'message', p_msg, 'details', p_details)::text,
+    ERRCODE = p_sqlstate,
+    DETAIL  = p_details::text,
+    HINT    = p_hint;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.api_assert(
+  p_condition boolean,
+  p_code text,
+  p_msg text,
+  p_sqlstate text DEFAULT 'P0001',
+  p_details jsonb DEFAULT NULL,
+  p_hint text DEFAULT NULL
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY INVOKER
+AS $$
+BEGIN
+  IF NOT coalesce(p_condition, false) THEN
+    PERFORM public.api_error(p_code, p_msg, p_sqlstate, p_details, p_hint);
+  END IF;
+END;
+$$;
+
+
+-- Helper: assert caller is authenticated
+CREATE OR REPLACE FUNCTION public._assert_authenticated()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY INVOKER
+AS $$
+BEGIN
+  IF auth.uid() IS NULL THEN
+    PERFORM public.api_error('UNAUTHORIZED', 'Authentication required', '28000');
+  END IF;
+END;
+$$;
+
+-- Helper: generate a 6-char Crockford Base32 code (no I/O/0/1)
+CREATE OR REPLACE FUNCTION public._gen_invite_code()
+RETURNS citext
+LANGUAGE plpgsql
+VOLATILE
+AS $$
+DECLARE
+  alphabet text := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  out_code text := '';
+  i int;
+  idx int;
+BEGIN
+  FOR i IN 1..6 LOOP
+    idx := 1 + floor(random() * length(alphabet))::int;
+    out_code := out_code || substr(alphabet, idx, 1);
+  END LOOP;
+  RETURN out_code::citext;
+END;
+$$;
+
+
+-- 1) One-active-invite-per-home safety (run once)
+CREATE UNIQUE INDEX IF NOT EXISTS uq_invites_active_one_per_home
+  ON public.invites (home_id)
+  WHERE revoked_at IS NULL;
+
+-- ---------------------------------------------------------------------
+-- homes.create() -> returns the created home row
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.homes_create_with_invite(p_name text)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_user uuid := auth.uid();
+  v_home public.homes;
+  v_inv  public.invites;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  -- Create home (add other NOT NULL cols as needed)
+  INSERT INTO public.homes (name, owner_user_id)
+  VALUES (p_name, v_user)
+  RETURNING * INTO v_home;
+
+  -- Create owner membership (current)
+  INSERT INTO public.memberships (user_id, home_id, role)
+  VALUES (v_user, v_home.id, 'owner');
+
+  -- Create first (active) invite. If one somehow exists, don’t rotate it.
+  INSERT INTO public.invites (home_id, code)
+  VALUES (v_home.id, public._gen_invite_code())
+  ON CONFLICT ON CONSTRAINT uq_invites_active_one_per_home DO NOTHING
+  RETURNING * INTO v_inv;
+
+  IF NOT FOUND THEN
+    SELECT * INTO v_inv
+    FROM public.invites
+    WHERE home_id = v_home.id AND revoked_at IS NULL
+    LIMIT 1;
+  END IF;
+
+  -- Return a stable API shape
+  RETURN jsonb_build_object(
+    'home', jsonb_build_object(
+      'id',            v_home.id,
+      'name',          v_home.name,
+      'owner_user_id', v_home.owner_user_id,
+      'created_at',    v_home.created_at
+    ),
+    'invite', jsonb_build_object(
+      'id',         v_inv.id,
+      'home_id',    v_inv.home_id,
+      'code',       v_inv.code,
+      'created_at', v_inv.created_at
+    )
+  );
+END;
+$$;
+
+-- ---------------------------------------------------------------------
+-- invites.revoke(home_id) -> returns the revoked row (if any)
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.invites_revoke(p_home_id uuid)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_user uuid := auth.uid();
+  v_inv  public.invites;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  -- 1️⃣ Must be the current owner
+  IF NOT EXISTS (
+    SELECT 1
+    FROM public.memberships m
+    WHERE m.user_id = v_user
+      AND m.home_id = p_home_id
+      AND m.role = 'owner'
+      AND m.is_current = TRUE
+  ) THEN
+    RETURN jsonb_build_object(
+      'status',  'error',
+      'code',    'forbidden',
+      'message', 'Only the current owner can revoke an invite.'
+    );
+  END IF;
+
+  -- 2️⃣ Revoke any active invite(s)
+  UPDATE public.invites i
+     SET revoked_at = now()
+   WHERE i.home_id = p_home_id
+     AND i.revoked_at IS NULL
+  RETURNING * INTO v_inv;
+
+  -- 3️⃣ If no active invite existed, return a soft info response
+  IF NOT FOUND THEN
+    RETURN jsonb_build_object(
+      'status',  'info',
+      'code',    'no_active_invite',
+      'message', 'No active invite was found to revoke.'
+    );
+  END IF;
+
+  -- 4️⃣ Return structured success payload
+  RETURN jsonb_build_object(
+    'status',      'success',
+    'code',        'invite_revoked',
+    'message',     'The active invite has been revoked successfully.',
+    'invite_id',   v_inv.id,
+    'home_id',     v_inv.home_id,
+    'revoked_at',  v_inv.revoked_at
+  );
+END;
+$$;
+
+-- ---------------------------------------------------------------------
+-- invites.rotate(home_id) -> returns the new active invite
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.invites_rotate(p_home_id uuid)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_user uuid := auth.uid();
+  v_new  public.invites;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  -- ensure caller is the current owner of an active home
+  IF NOT EXISTS (
+    SELECT 1
+    FROM public.memberships m
+    JOIN public.homes h ON h.id = m.home_id
+    WHERE m.user_id    = v_user
+      AND m.home_id    = p_home_id
+      AND m.role       = 'owner'
+      AND m.is_current = TRUE
+      AND h.is_active  = TRUE
+  ) THEN
+    RETURN jsonb_build_object(
+      'status','error',
+      'code','forbidden',
+      'message','Only the current owner of an active household can rotate invites.'
+    );
+  END IF;
+
+  -- revoke existing active invites
+  UPDATE public.invites
+     SET revoked_at = now()
+   WHERE home_id    = p_home_id
+     AND revoked_at IS NULL;
+
+  -- create a new invite; unique partial index enforces 1 active per home
+  INSERT INTO public.invites (home_id, code)
+  VALUES (p_home_id, public._gen_invite_code())

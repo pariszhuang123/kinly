@@ -2,6 +2,16 @@
 
 Tracks versioned contract changes and related ADRs.
 
+## v2 — Homes Memberships/Invites Alignment
+- Date: 2025-11-11
+- Scope: `docs/contracts/homes_v2.md`
+- Changes:
+  - Replace `Member` with append-only `Membership` stints (validFrom/validTo/isCurrent).
+  - Enforce: one current membership per user across homes; one current owner per home; no overlap per (user, home).
+  - Invites: `code` is `CITEXT` with Crockford Base32 (6 chars) and added `usedCount`; removed `updatedAt`.
+  - RLS: enabled on `homes`, `memberships`, and `invites`; anon/auth revoked on tables.
+- Notes: Contracts now reflect migration `20251111225015_home_membership_invites_table.sql`. Repositories should pin to v2.
+
 ## v1 — Home MVP
 - Date: 2025-11-03
 - Scope: `docs/contracts/homes_v1.md`

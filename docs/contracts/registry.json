@@ -77,8 +77,8 @@
       }
     },
     "homes": {
-      "latest": "v1",
-      "docs": "docs/contracts/homes_v1.md",
+      "latest": "v2",
+      "docs": "docs/contracts/homes_v2.md",
       "entities": {
         "Home": {
           "id": "uuid",
@@ -88,21 +88,24 @@
           "isActive": "boolean",
           "deactivatedAt": "timestamptz|null"
         },
-        "Member": {
+        "Membership": {
+          "id": "uuid",
           "userId": "uuid",
           "homeId": "uuid",
           "role": "text",
+          "validFrom": "timestamptz",
+          "validTo": "timestamptz|null",
+          "isCurrent": "boolean",
           "createdAt": "timestamptz",
-          "updatedAt": "timestamptz",
-          "leftAt": "timestamptz|null"
+          "updatedAt": "timestamptz"
         },
         "Invite": {
           "id": "uuid",
           "homeId": "uuid",
-          "code": "text",
-          "createdAt": "timestamptz",
-          "updatedAt": "timestamptz",
-          "revokedAt": "timestamptz|null"
+          "code": "citext",
+          "revokedAt": "timestamptz|null",
+          "usedCount": "int4",
+          "createdAt": "timestamptz"
         }
       },
       "functions": {
@@ -133,6 +136,14 @@
         "invites.rotate": {
           "type": "rpc",
           "caller": "owner-only"
+        },
+        "members.listActiveByHome": {
+          "type": "rpc",
+          "caller": "member"
+        },
+        "members.listByHome": {
+          "type": "rpc",
+          "caller": "member"
         }
       },
       "rls": [
@@ -141,8 +152,12 @@
           "rule": "inactive home denied"
         },
         {
-          "table": "members",
+          "table": "memberships",
           "rule": "member allowed; non-member denied"
+        },
+        {
+          "table": "invites",
+          "rule": "no client access; RPC-only"
         }
       ]
     },
