@@ -1,5 +1,5 @@
 {
-  "generatedAt": "",
+  "generatedAt": "2025-11-12T00:00:00Z",
   "domains": {
     "app": {
       "latest": "v1",
@@ -111,39 +111,99 @@
       "functions": {
         "homes.create": {
           "type": "rpc",
-          "caller": "authenticated"
+          "caller": "authenticated",
+          "impl": "public.homes_create_with_invite",
+          "args": { "p_name": "text" },
+          "returns": "jsonb",
+          "errors": ["UNAUTHORIZED"],
+          "notes": "Creates a home, owner membership, and initial invite; returns { home, invite }."
         },
         "homes.join": {
           "type": "rpc",
-          "caller": "authenticated"
+          "caller": "authenticated",
+          "impl": "public.homes_join",
+          "args": { "p_code": "text" },
+          "returns": "jsonb",
+          "errors": [
+            "INVALID_CODE",
+            "INACTIVE_INVITE",
+            "ALREADY_IN_OTHER_HOME",
+            "FORBIDDEN",
+            "UNAUTHORIZED"
+          ]
         },
         "homes.transferOwner": {
           "type": "rpc",
-          "caller": "owner-only"
+          "caller": "owner-only",
+          "impl": "public.homes_transfer_owner",
+          "args": { "p_home_id": "uuid", "p_new_owner_id": "uuid" },
+          "returns": "jsonb",
+          "errors": [
+            "INVALID_NEW_OWNER",
+            "NEW_OWNER_NOT_MEMBER",
+            "FORBIDDEN",
+            "UNAUTHORIZED"
+          ]
         },
         "homes.leave": {
           "type": "rpc",
-          "caller": "member"
+          "caller": "member",
+          "impl": "public.homes_leave",
+          "args": { "p_home_id": "uuid" },
+          "returns": "jsonb",
+          "errors": [
+            "NOT_MEMBER",
+            "OWNER_MUST_TRANSFER_FIRST",
+            "STATE_CHANGED_RETRY",
+            "FORBIDDEN",
+            "UNAUTHORIZED"
+          ]
         },
         "invites.getOrCreate": {
           "type": "rpc",
-          "caller": "owner-only"
+          "caller": "owner-only",
+          "status": "absent",
+          "notes": "Not present in DB; initial invite is created by homes.create; manual rotation via invites.rotate."
         },
         "invites.revoke": {
           "type": "rpc",
-          "caller": "owner-only"
+          "caller": "owner-only",
+          "impl": "public.invites_revoke",
+          "args": { "p_home_id": "uuid" },
+          "returns": "jsonb",
+          "errors": ["FORBIDDEN", "UNAUTHORIZED"],
+          "notes": "Idempotent when no active invite exists (returns info payload)."
         },
         "invites.rotate": {
           "type": "rpc",
-          "caller": "owner-only"
+          "caller": "owner-only",
+          "impl": "public.invites_rotate",
+          "args": { "p_home_id": "uuid" },
+          "returns": "jsonb",
+          "errors": ["FORBIDDEN", "UNAUTHORIZED"],
+          "notes": "Revokes existing active invite(s) and creates a new one; returns { invite_code }."
         },
         "members.listActiveByHome": {
           "type": "rpc",
-          "caller": "member"
+          "caller": "member",
+          "impl": "public.members_list_active_by_home",
+          "args": { "p_home_id": "uuid", "p_exclude_self": "boolean" },
+          "returns": {
+            "columns": {
+              "user_id": "uuid",
+              "username": "citext",
+              "role": "text",
+              "valid_from": "timestamptz",
+              "avatar_url": "text",
+              "can_transfer_to": "boolean"
+            }
+          }
         },
         "members.listByHome": {
           "type": "rpc",
-          "caller": "member"
+          "caller": "member",
+          "status": "absent",
+          "notes": "Not present in DB; historical memberships RPC TBD."
         }
       },
       "rls": [
@@ -159,7 +219,90 @@
           "table": "invites",
           "rule": "no client access; RPC-only"
         }
-      ]
+      ],
+      "db": {
+        "functions": {
+          "public.homes_create_with_invite": {
+            "type": "rpc",
+            "args": { "p_name": "text" },
+            "returns": "jsonb",
+            "security": "definer",
+            "volatility": "volatile",
+            "grants": {
+              "execute": ["authenticated"]
+            }
+          },
+          "public.homes_join": {
+            "type": "rpc",
+            "args": { "p_code": "text" },
+            "returns": "jsonb",
+            "security": "definer",
+            "volatility": "volatile",
+            "grants": {
+              "execute": ["authenticated"]
+            }
+          },
+          "public.homes_transfer_owner": {
+            "type": "rpc",
+            "args": { "p_home_id": "uuid", "p_new_owner_id": "uuid" },
+            "returns": "jsonb",
+            "security": "definer",
+            "volatility": "volatile",
+            "grants": {
+              "execute": ["authenticated"]
+            }
+          },
+          "public.homes_leave": {
+            "type": "rpc",
+            "args": { "p_home_id": "uuid" },
+            "returns": "jsonb",
+            "security": "definer",
+            "volatility": "volatile",
+            "grants": {
+              "execute": ["authenticated"]
+            }
+          },
+          "public.invites_revoke": {
+            "type": "rpc",
+            "args": { "p_home_id": "uuid" },
+            "returns": "jsonb",
+            "security": "definer",
+            "volatility": "volatile",
+            "grants": {
+              "execute": ["authenticated"]
+            }
+          },
+          "public.invites_rotate": {
+            "type": "rpc",
+            "args": { "p_home_id": "uuid" },
+            "returns": "jsonb",
+            "security": "definer",
+            "volatility": "volatile",
+            "grants": {
+              "execute": ["authenticated"]
+            }
+          },
+          "public.members_list_active_by_home": {
+            "type": "rpc",
+            "args": { "p_home_id": "uuid", "p_exclude_self": "boolean" },
+            "returns": {
+              "columns": {
+                "user_id": "uuid",
+                "username": "citext",
+                "role": "text",
+                "valid_from": "timestamptz",
+                "avatar_url": "text",
+                "can_transfer_to": "boolean"
+              }
+            },
+            "security": "definer",
+            "volatility": "volatile",
+            "grants": {
+              "execute": ["authenticated"]
+            }
+          }
+        }
+      }
     },
     "users": {
       "latest": "v1",

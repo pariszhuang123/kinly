@@ -1,3 +1,22 @@
+/// Repository boundary for Home membership operations.
+/// UI/BLoC should depend on this interface only.
+import '../../core/homes/models.dart';
 abstract class HomeRepository {
+  /// Join a home via invite code.
+  ///
+  /// Throws a domain-specific exception on failure (e.g., [HomeJoinException]).
   Future<void> join(String code);
+
+  /// Revoke the current active invite for a home (owner-only).
+  /// Idempotent when no active invite exists.
+  Future<void> revokeInvite(String homeId);
+
+  /// Rotate the invite for a home (owner-only) and return the new code.
+  Future<String> rotateInvite(String homeId);
+
+  /// Transfer ownership to another active member.
+  Future<void> transferOwner(String homeId, String newOwnerId);
+
+  /// Leave the specified home; returns details about outcome.
+  Future<LeaveResult> leave(String homeId);
 }
