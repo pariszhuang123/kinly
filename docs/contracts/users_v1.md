@@ -69,6 +69,10 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
         "indexes": ["uq_profiles_username(username)"],
         "constraints": ["chk_profiles_username_format"]
       },
+      "public.avatars": {
+        "indexes": ["pk_avatars(id)"],
+        "constraints": ["avatars_category_check (category IN ('animal','plant'))"]
+      },
       "public.reserved_usernames": {
         "indexes": ["PRIMARY KEY(name)"],
         "constraints": []

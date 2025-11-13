@@ -40,6 +40,7 @@ Invite
   "entities": {
     "Home": {
       "id": "uuid",
+      "name": "text",
       "ownerUserId": "uuid",
       "createdAt": "timestamptz",
       "updatedAt": "timestamptz",
@@ -67,21 +68,209 @@ Invite
     }
   },
   "functions": {
-    "homes.create": {"type": "rpc", "caller": "authenticated"},
-    "homes.join": {"type": "rpc", "caller": "authenticated"},
-    "homes.transferOwner": {"type": "rpc", "caller": "owner-only"},
-    "homes.leave": {"type": "rpc", "caller": "member"},
-    "invites.getOrCreate": {"type": "rpc", "caller": "owner-only"},
-    "invites.revoke": {"type": "rpc", "caller": "owner-only"},
-    "invites.rotate": {"type": "rpc", "caller": "owner-only"},
-    "members.listActiveByHome": {"type": "rpc", "caller": "member"},
-    "members.listByHome": {"type": "rpc", "caller": "member"}
+    "homes.create": {
+      "type": "rpc",
+      "caller": "authenticated",
+      "impl": "public.homes_create_with_invite",
+      "args": { "p_name": "text" },
+      "returns": "jsonb",
+      "errors": ["UNAUTHORIZED"],
+      "notes": "Creates a home, owner membership, and initial invite; returns { home, invite }."
+    },
+    "homes.join": {
+      "type": "rpc",
+      "caller": "authenticated",
+      "impl": "public.homes_join",
+      "args": { "p_code": "text" },
+      "returns": "jsonb",
+      "errors": [
+        "INVALID_CODE",
+        "INACTIVE_INVITE",
+        "ALREADY_IN_OTHER_HOME",
+        "FORBIDDEN",
+        "UNAUTHORIZED"
+      ]
+    },
+    "homes.transferOwner": {
+      "type": "rpc",
+      "caller": "owner-only",
+      "impl": "public.homes_transfer_owner",
+      "args": { "p_home_id": "uuid", "p_new_owner_id": "uuid" },
+      "returns": "jsonb",
+      "errors": [
+        "INVALID_NEW_OWNER",
+        "NEW_OWNER_NOT_MEMBER",
+        "FORBIDDEN",
+        "UNAUTHORIZED"
+      ]
+    },
+    "homes.leave": {
+      "type": "rpc",
+      "caller": "member",
+      "impl": "public.homes_leave",
+      "args": { "p_home_id": "uuid" },
+      "returns": "jsonb",
+      "errors": [
+        "NOT_MEMBER",
+        "OWNER_MUST_TRANSFER_FIRST",
+        "STATE_CHANGED_RETRY",
+        "FORBIDDEN",
+        "UNAUTHORIZED"
+      ]
+    },
+    "invites.getOrCreate": {
+      "type": "rpc",
+      "caller": "owner-only",
+      "status": "absent",
+      "notes": "Not present in DB; initial invite is created by homes.create; manual rotation via invites.rotate."
+    },
+    "invites.revoke": {
+      "type": "rpc",
+      "caller": "owner-only",
+      "impl": "public.invites_revoke",
+      "args": { "p_home_id": "uuid" },
+      "returns": "jsonb",
+      "errors": ["FORBIDDEN", "UNAUTHORIZED"],
+      "notes": "Idempotent when no active invite exists (returns info payload)."
+    },
+    "invites.rotate": {
+      "type": "rpc",
+      "caller": "owner-only",
+      "impl": "public.invites_rotate",
+      "args": { "p_home_id": "uuid" },
+      "returns": "jsonb",
+      "errors": ["FORBIDDEN", "UNAUTHORIZED"],
+      "notes": "Revokes existing active invite(s) and creates a new one; returns { invite_code }."
+    },
+    "membership.meCurrent": {
+      "type": "rpc",
+      "caller": "member",
+      "impl": "public.membership_me_current",
+      "args": {},
+      "returns": "jsonb",
+      "errors": ["UNAUTHORIZED"],
+      "notes": "Returns { ok: true, current: null | { user_id, home_id, role, valid_from } }"
+    },
+    "members.listActiveByHome": {
+      "type": "rpc",
+      "caller": "member",
+      "impl": "public.members_list_active_by_home",
+      "args": { "p_home_id": "uuid", "p_exclude_self": "boolean" },
+      "returns": {
+        "columns": {
+          "user_id": "uuid",
+          "username": "citext",
+          "role": "text",
+          "valid_from": "timestamptz",
+          "avatar_url": "text",
+          "can_transfer_to": "boolean"
+        }
+      }
+    },
+    "members.listByHome": {
+      "type": "rpc",
+      "caller": "member",
+      "status": "absent",
+      "notes": "Not present in DB; historical memberships RPC TBD."
+    }
   },
   "rls": [
     {"table": "homes", "rule": "inactive home denied"},
     {"table": "memberships", "rule": "member allowed; non-member denied"},
     {"table": "invites", "rule": "no client access; RPC-only"}
-  ]
+  ],
+  "db": {
+    "tables": {
+      "public.homes": {
+        "constraints": ["chk_homes_active_vs_deactivated_at"],
+        "indexes": ["pk_homes(id)"]
+      },
+      "public.memberships": {
+        "constraints": ["no_overlap_per_user_home"],
+        "indexes": [
+          "uq_memberships_user_one_current(user_id) WHERE is_current",
+          "uq_memberships_home_one_current_owner(home_id) WHERE is_current AND role = 'owner'"
+        ]
+      },
+      "public.invites": {
+        "constraints": [
+          "chk_invites_code_format",
+          "chk_invites_revoked_after_created",
+          "chk_invites_used_nonneg"
+        ],
+        "indexes": [
+          "uq_invites_active_one_per_home(home_id) WHERE revoked_at IS NULL",
+          "idx_invites_code_active(code) WHERE revoked_at IS NULL"
+        ]
+      }
+    },
+    "functions": {
+      "public.homes_create_with_invite": {
+        "type": "rpc",
+        "args": { "p_name": "text" },
+        "returns": "jsonb",
+        "security": "definer",
+        "volatility": "volatile",
+        "grants": { "execute": ["authenticated"] }
+      },
+      "public.homes_join": {
+        "type": "rpc",
+        "args": { "p_code": "text" },
+        "returns": "jsonb",
+        "security": "definer",
+        "volatility": "volatile",
+        "grants": { "execute": ["authenticated"] }
+      },
+      "public.homes_transfer_owner": {
+        "type": "rpc",
+        "args": { "p_home_id": "uuid", "p_new_owner_id": "uuid" },
+        "returns": "jsonb",
+        "security": "definer",
+        "volatility": "volatile",
+        "grants": { "execute": ["authenticated"] }
+      },
+      "public.homes_leave": {
+        "type": "rpc",
+        "args": { "p_home_id": "uuid" },
+        "returns": "jsonb",
+        "security": "definer",
+        "volatility": "volatile",
+        "grants": { "execute": ["authenticated"] }
+      },
+      "public.invites_revoke": {
+        "type": "rpc",
+        "args": { "p_home_id": "uuid" },
+        "returns": "jsonb",
+        "security": "definer",
+        "volatility": "volatile",
+        "grants": { "execute": ["authenticated"] }
+      },
+      "public.invites_rotate": {
+        "type": "rpc",
+        "args": { "p_home_id": "uuid" },
+        "returns": "jsonb",
+        "security": "definer",
+        "volatility": "volatile",
+        "grants": { "execute": ["authenticated"] }
+      },
+      "public.members_list_active_by_home": {
+        "type": "rpc",
+        "args": { "p_home_id": "uuid", "p_exclude_self": "boolean" },
+        "returns": "setof record",
+        "security": "definer",
+        "volatility": "stable",
+        "grants": { "execute": ["authenticated"] }
+      },
+      "public.membership_me_current": {
+        "type": "rpc",
+        "args": {},
+        "returns": "jsonb",
+        "security": "definer",
+        "volatility": "stable",
+        "grants": { "execute": ["authenticated"] }
+      }
+    }
+  }
 }
 ```
 
@@ -136,6 +325,10 @@ members.listActiveByHome(homeId)
 members.listByHome(homeId)
 - Lists all historical membership stints (current + past).
  - DB Impl: `public.members_list_by_home`
+
+membership.meCurrent()
+- Returns the caller's current membership details (homeId, role, validFrom) or null if not currently in a home.
+ - DB Impl: `public.membership_me_current`
 
 ## Errors
 - Format: exceptions include JSON message `{ code, message, details }` and SQLSTATE maps to HTTP.

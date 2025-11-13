@@ -16,6 +16,21 @@ Scope: Client app version checks at startup to determine hard block or soft upda
       "isCurrent": "boolean",
       "releaseDate": "timestamptz",
       "notes": "text|null"
+    },
+    "SharedPreference": {
+      "userId": "uuid",
+      "prefKey": "text",
+      "prefValue": "jsonb",
+      "createdAt": "timestamptz",
+      "updatedAt": "timestamptz"
+    },
+    "AnalyticsEvent": {
+      "id": "uuid",
+      "userId": "uuid",
+      "homeId": "uuid|null",
+      "eventType": "text",
+      "occurredAt": "timestamptz",
+      "metadata": "jsonb"
     }
   },
   "functions": {
@@ -43,6 +58,19 @@ Scope: Client app version checks at startup to determine hard block or soft upda
           "chk_version_number",
           "chk_min_supported"
         ]
+      },
+      "public.shared_preferences": {
+        "indexes": [
+          "pk_shared_preferences(user_id, pref_key)"
+        ],
+        "constraints": []
+      },
+      "public.analytics_events": {
+        "indexes": [
+          "idx_analytics_events_user_event_time(user_id, event_type, occurred_at)",
+          "idx_analytics_events_home_event_time(home_id, event_type, occurred_at)"
+        ],
+        "constraints": []
       }
     },
     "functions": {
@@ -62,7 +90,9 @@ Scope: Client app version checks at startup to determine hard block or soft upda
     }
   },
   "rls": [
-    {"table": "public.app_version", "rule": "no client access; function-only (RLS enabled; anon/auth revoked)"}
+    {"table": "public.app_version", "rule": "no client access; function-only (RLS enabled; anon/auth revoked)"},
+    {"table": "public.shared_preferences", "rule": "RPC-only access; rows scoped by user_id"},
+    {"table": "public.analytics_events", "rule": "append-only via RPCs; no direct client access"}
   ]
 }
 ```
@@ -76,6 +106,20 @@ AppVersion
 - isCurrent (boolean; only one row allowed via partial unique index)
 - releaseDate (timestamptz)
 - notes (text|null)
+
+SharedPreference
+- userId (uuid, PK part)
+- prefKey (text, PK part) — namespaced key such as `legal.consent.v1`
+- prefValue (jsonb) — arbitrary structured preference payload
+- createdAt / updatedAt (timestamptz) — managed by RPCs, not direct client writes
+
+AnalyticsEvent
+- id (uuid, PK)
+- userId (uuid) — actor
+- homeId (uuid|null) — optional context for home-scoped events
+- eventType (text) — e.g., `home.created`, `legal.consent.accepted`
+- occurredAt (timestamptz)
+- metadata (jsonb) — structured payload (validated per event by server logic)
 
 ## RPCs
 
