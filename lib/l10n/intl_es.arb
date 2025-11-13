@@ -6,29 +6,30 @@
   "welcome_join": "Unirse a un hogar",
   "create_title": "Crear hogar",
   "join_title": "Unirse al hogar",
-  "join_hint": "Introduce el código de invitación",
+  "join_hint": "Ingresa el código de invitación",
   "join_submit": "Unirse",
-  "today_title": "Hoy",
-  "login_tagline": "Juntos se siente más ligero",
-  "login_with_google": "Continuar con Google",
-  "login_consent_prefix": "He leído y acepto los ",
-  "login_terms": "Términos del servicio",
-  "login_privacy": "Política de privacidad",
-  "login_with_apple": "Continuar con Apple",
-  "logout": "Cerrar sesion",
-  "join_success": "Te uniste con el código {code}",
+  "join_success": "Te has unido con el código: {code}",
   "@join_success": {
+    "description": "Mensaje de snackbar que aparece cuando el usuario se une exitosamente",
     "placeholders": {
       "code": {
         "type": "String"
       }
     }
   },
-  "join_failed_generic": "No se pudo unir. Inténtalo de nuevo.",
-  "membership_status_checking": "Comprobando el estado del hogar…",
-  "membership_status_none": "Todavía no perteneces a un hogar.",
-  "membership_status_active": "Ya formas parte de un hogar.",
-  "today_no_membership": "Sin hogar activo. Crea o únete para ver esta pantalla.",
+  "join_failed_generic": "No se pudo unir. Por favor, inténtalo de nuevo.",
+  "today_title": "Hoy",
+  "login_tagline": "Juntos se siente más ligero",
+  "login_with_google": "Continuar con Google",
+  "login_with_apple": "Continuar con Apple",
+  "login_consent_prefix": "He leído y acepto los ",
+  "login_terms": "Términos del servicio",
+  "login_privacy": "Política de privacidad",
+  "logout": "Cerrar sesión",
+  "membership_status_checking": "Comprobando el estado de la membresía…",
+  "membership_status_none": "Aún no te has unido a un hogar.",
+  "membership_status_active": "Ya eres parte de un hogar.",
+  "today_no_membership": "Sin hogar activo todavía. Crea o únete para ver la vista de hoy.",
   "today_home_details": "Hogar actual: {homeId} • Rol: {role}",
   "@today_home_details": {
     "placeholders": {

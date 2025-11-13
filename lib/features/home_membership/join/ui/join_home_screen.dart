@@ -8,7 +8,6 @@ import '../../../../data/repositories/home_repository.dart';
 import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
-import '../../../auth/widgets/auth_sign_out_button.dart';
 import '../bloc/join_home_bloc.dart';
 
 class JoinHomeScreen extends StatelessWidget {
@@ -29,9 +28,15 @@ class JoinHomeScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(s.join_title, style: theme.textTheme.titleLarge),
-            actions: const [AuthSignOutButton()],
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  context.go(AppRoutes.start);
+                },
+              ),
+            ],
           ),
-          body: _JoinForm(initialCode: initialCode ?? ''),
         ),
       ),
     );

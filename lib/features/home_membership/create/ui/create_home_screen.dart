@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../generated/l10n.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
-import '../../../auth/widgets/auth_sign_out_button.dart';
+import '../../../../core/router/app_router.dart';
 
 class CreateHomeScreen extends StatelessWidget {
   const CreateHomeScreen({super.key});
@@ -15,8 +16,16 @@ class CreateHomeScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(s.create_title, style: theme.textTheme.titleLarge),
-          actions: const [AuthSignOutButton()],
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                context.go(AppRoutes.start);
+              },
+            ),
+          ],
         ),
+
         body: Center(
           child: Text(s.create_title, style: theme.textTheme.titleLarge),
         ),
