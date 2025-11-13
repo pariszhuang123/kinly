@@ -2,6 +2,7 @@ import 'dart:async';
 
 abstract class AuthRepository {
   Stream<AuthSession?> get session$;
+  AuthSession? get current;
   Future<void> signInWithGoogle();
   Future<void> signInWithApple();
   Future<void> signOut();

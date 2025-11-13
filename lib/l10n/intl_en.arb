@@ -8,5 +8,12 @@
   "join_title": "Join Home",
   "join_hint": "Enter invite code",
   "join_submit": "Join",
-  "today_title": "Today"
+  "today_title": "Today",
+  "login_tagline": "Together feels lighter",
+  "login_with_google": "Continue with Google",
+  "login_with_apple": "Continue with Apple",
+  "login_consent_prefix": "I have read and agree to the ",
+  "login_terms": "Service Terms",
+  "login_privacy": "Privacy Policy",
+  "logout": "Sign out"
 }

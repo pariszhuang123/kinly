@@ -28,10 +28,9 @@ class S {
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name =
-        (locale.countryCode?.isEmpty ?? false)
-            ? locale.languageCode
-            : locale.toString();
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -123,6 +122,71 @@ class S {
   /// `Today`
   String get today_title {
     return Intl.message('Today', name: 'today_title', desc: '', args: []);
+  }
+
+  /// `Together feels lighter`
+  String get login_tagline {
+    return Intl.message(
+      'Together feels lighter',
+      name: 'login_tagline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue with Google`
+  String get login_with_google {
+    return Intl.message(
+      'Continue with Google',
+      name: 'login_with_google',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue with Apple`
+  String get login_with_apple {
+    return Intl.message(
+      'Continue with Apple',
+      name: 'login_with_apple',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I have read and agree to the `
+  String get login_consent_prefix {
+    return Intl.message(
+      'I have read and agree to the ',
+      name: 'login_consent_prefix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Terms`
+  String get login_terms {
+    return Intl.message(
+      'Service Terms',
+      name: 'login_terms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy`
+  String get login_privacy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'login_privacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign out`
+  String get logout {
+    return Intl.message('Sign out', name: 'logout', desc: '', args: []);
   }
 }
 

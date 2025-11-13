@@ -25,10 +25,29 @@ class MessageLookup extends MessageLookupByLibrary {
     "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
     "create_title": MessageLookupByLibrary.simpleMessage("Crear hogar"),
     "join_hint": MessageLookupByLibrary.simpleMessage(
-      "Ingrese el código de invitación",
+      "Introduce el código de invitación",
     ),
     "join_submit": MessageLookupByLibrary.simpleMessage("Unirse"),
     "join_title": MessageLookupByLibrary.simpleMessage("Unirse al hogar"),
+    "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
+      "He leído y acepto los ",
+    ),
+    "login_privacy": MessageLookupByLibrary.simpleMessage(
+      "Política de privacidad",
+    ),
+    "login_tagline": MessageLookupByLibrary.simpleMessage(
+      "Juntos se siente más ligero",
+    ),
+    "login_terms": MessageLookupByLibrary.simpleMessage(
+      "Términos del servicio",
+    ),
+    "login_with_apple": MessageLookupByLibrary.simpleMessage(
+      "Continuar con Apple",
+    ),
+    "login_with_google": MessageLookupByLibrary.simpleMessage(
+      "Continuar con Google",
+    ),
+    "logout": MessageLookupByLibrary.simpleMessage("Cerrar sesion"),
     "today_title": MessageLookupByLibrary.simpleMessage("Hoy"),
     "welcome_create": MessageLookupByLibrary.simpleMessage("Crear un hogar"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("Unirse a un hogar"),

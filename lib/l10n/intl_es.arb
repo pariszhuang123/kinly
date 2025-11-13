@@ -6,7 +6,14 @@
   "welcome_join": "Unirse a un hogar",
   "create_title": "Crear hogar",
   "join_title": "Unirse al hogar",
-  "join_hint": "Ingrese el código de invitación",
+  "join_hint": "Introduce el código de invitación",
   "join_submit": "Unirse",
-  "today_title": "Hoy"
+  "today_title": "Hoy",
+  "login_tagline": "Juntos se siente más ligero",
+  "login_with_google": "Continuar con Google",
+  "login_consent_prefix": "He leído y acepto los ",
+  "login_terms": "Términos del servicio",
+  "login_privacy": "Política de privacidad",
+  "login_with_apple": "Continuar con Apple",
+  "logout": "Cerrar sesion"
 }

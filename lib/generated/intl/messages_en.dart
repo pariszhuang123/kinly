@@ -27,6 +27,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "join_hint": MessageLookupByLibrary.simpleMessage("Enter invite code"),
     "join_submit": MessageLookupByLibrary.simpleMessage("Join"),
     "join_title": MessageLookupByLibrary.simpleMessage("Join Home"),
+    "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
+      "I have read and agree to the ",
+    ),
+    "login_privacy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+    "login_tagline": MessageLookupByLibrary.simpleMessage(
+      "Together feels lighter",
+    ),
+    "login_terms": MessageLookupByLibrary.simpleMessage("Service Terms"),
+    "login_with_apple": MessageLookupByLibrary.simpleMessage(
+      "Continue with Apple",
+    ),
+    "login_with_google": MessageLookupByLibrary.simpleMessage(
+      "Continue with Google",
+    ),
+    "logout": MessageLookupByLibrary.simpleMessage("Sign out"),
     "today_title": MessageLookupByLibrary.simpleMessage("Today"),
     "welcome_create": MessageLookupByLibrary.simpleMessage("Create a Home"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("Join a Home"),

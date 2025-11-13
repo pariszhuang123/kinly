@@ -37,4 +37,10 @@ class FakeHomeRepository implements HomeRepository {
       roleBefore: 'member',
     );
   }
+
+  @override
+  Future<CurrentMembership?> getCurrentMembership() async {
+    // Pretend user has no membership by default
+    return null;
+  }
 }

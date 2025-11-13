@@ -183,6 +183,14 @@
           "errors": ["FORBIDDEN", "UNAUTHORIZED"],
           "notes": "Revokes existing active invite(s) and creates a new one; returns { invite_code }."
         },
+        "membership.meCurrent": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.membership_me_current",
+          "args": {},
+          "returns": "jsonb",
+          "notes": "Returns { ok: true, current: null | { user_id, home_id, role, valid_from } }"
+        },
         "members.listActiveByHome": {
           "type": "rpc",
           "caller": "member",

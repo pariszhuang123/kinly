@@ -81,4 +81,32 @@ class SupabaseHomeRepository implements HomeRepository {
       throw SupabaseErrorMapper.mapLeave(e);
     }
   }
+
+  @override
+  Future<CurrentMembership?> getCurrentMembership() async {
+    try {
+      final res = await _client.rpc('membership_me_current');
+      if (res is Map<String, dynamic>) {
+        final current = res['current'];
+        if (current == null) return null;
+        if (current is Map<String, dynamic>) {
+          return CurrentMembership.fromJson(current);
+        }
+        if (current is Map) {
+          return CurrentMembership.fromJson(current.cast<String, dynamic>());
+        }
+      }
+      if (res is Map) {
+        final current = res['current'];
+        if (current == null) return null;
+        if (current is Map) {
+          return CurrentMembership.fromJson(current.cast<String, dynamic>());
+        }
+      }
+      return null;
+    } catch (e) {
+      // This is a non-critical call for routing; treat errors as no-membership.
+      return null;
+    }
+  }
 }

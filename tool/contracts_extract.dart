@@ -96,7 +96,7 @@ Future<void> main(List<String> args) async {
       'rls': latestData['rls'],
     };
     if (latestData['db'] != null) {
-      (domainObj as Map<String, dynamic>)['db'] = latestData['db'];
+      (domainObj)['db'] = latestData['db'];
     }
     (out['domains'] as Map<String, dynamic>)[domain] = domainObj;
   }
