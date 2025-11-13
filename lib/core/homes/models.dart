@@ -51,3 +51,14 @@ class CurrentMembership {
   }
 }
 
+class HomeCreationResult {
+  final String homeId;
+
+  const HomeCreationResult({required this.homeId});
+
+  factory HomeCreationResult.fromJson(Map<String, dynamic> json) {
+    final home = (json['home'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final id = home['id'] as String? ?? '';
+    return HomeCreationResult(homeId: id);
+  }
+}

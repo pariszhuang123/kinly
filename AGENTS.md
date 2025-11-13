@@ -74,8 +74,8 @@ Entities:
     // Valid iff: home.isActive = true AND revokedAt IS NULL
   }
 
-- homes.create(name)
-  → Creates a home; caller becomes owner & active member.
+- homes.create()
+  → Creates a home; caller becomes owner & active member. Returns `{ home: { id } }`.
 
 - invites.getOrCreate(homeId)
   → Returns the current active invite for the home, or creates one if none exists.
@@ -134,4 +134,3 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 ## Deep Linking
 - Join flow: `/join/:code` → OAuth if needed → `homes.join(code)` → Hub.
 - Host/prefix TBD (e.g., `https://makinglifeeasie.com/kinly/join/:code`) — captured as TODO until assigned.
-

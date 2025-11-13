@@ -99,6 +99,46 @@ class S {
     );
   }
 
+  /// `We'll spin up your home instantly. You can rename and invite later.`
+  String get create_subtitle {
+    return Intl.message(
+      'We\'ll spin up your home instantly. You can rename and invite later.',
+      name: 'create_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create home`
+  String get create_submit {
+    return Intl.message(
+      'Create home',
+      name: 'create_submit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home created!`
+  String get create_success {
+    return Intl.message(
+      'Home created!',
+      name: 'create_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not create the home. Try again.`
+  String get create_failed_generic {
+    return Intl.message(
+      'Could not create the home. Try again.',
+      name: 'create_failed_generic',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Join Home`
   String get join_title {
     return Intl.message('Join Home', name: 'join_title', desc: '', args: []);
@@ -134,16 +174,6 @@ class S {
     return Intl.message(
       'Join failed. Please try again.',
       name: 'join_failed_generic',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Back to Start`
-  String get join_back_to_start {
-    return Intl.message(
-      'Back to Start',
-      name: 'join_back_to_start',
       desc: '',
       args: [],
     );
@@ -229,30 +259,30 @@ class S {
     );
   }
 
-  /// `You haven’t joined a home yet.`
+  /// `You haven't joined a home yet.`
   String get membership_status_none {
     return Intl.message(
-      'You haven’t joined a home yet.',
+      'You haven\'t joined a home yet.',
       name: 'membership_status_none',
       desc: '',
       args: [],
     );
   }
 
-  /// `You’re already part of a home.`
+  /// `You're already part of a home.`
   String get membership_status_active {
     return Intl.message(
-      'You’re already part of a home.',
+      'You\'re already part of a home.',
       name: 'membership_status_active',
       desc: '',
       args: [],
     );
   }
 
-  /// `No active home yet. Create or join to see today’s view.`
+  /// `No active home yet. Create or join to see today's view.`
   String get today_no_membership {
     return Intl.message(
-      'No active home yet. Create or join to see today’s view.',
+      'No active home yet. Create or join to see today\'s view.',
       name: 'today_no_membership',
       desc: '',
       args: [],

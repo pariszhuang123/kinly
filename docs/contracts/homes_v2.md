@@ -72,10 +72,10 @@ Invite
       "type": "rpc",
       "caller": "authenticated",
       "impl": "public.homes_create_with_invite",
-      "args": { "p_name": "text" },
+      "args": {},
       "returns": "jsonb",
       "errors": ["UNAUTHORIZED"],
-      "notes": "Creates a home, owner membership, and initial invite; returns { home, invite }."
+      "notes": "Creates a home, owner membership, and initial invite; returns { home: { id } }."
     },
     "homes.join": {
       "type": "rpc",
@@ -207,7 +207,7 @@ Invite
     "functions": {
       "public.homes_create_with_invite": {
         "type": "rpc",
-        "args": { "p_name": "text" },
+        "args": {},
         "returns": "jsonb",
         "security": "definer",
         "volatility": "volatile",
@@ -277,8 +277,8 @@ Invite
 ## RPCs / Endpoints
 
 homes.create()
-- Creates a home; caller becomes owner and a current membership stint (role=owner).
- - DB Impl: `public.homes_create`
+- Creates a home; caller becomes owner and a current membership stint (role=owner). Returns `{ home: { id } }`.
+ - DB Impl: `public.homes_create_with_invite`
 
 invites.getOrCreate(homeId)
 - Returns the current active invite for the home, or creates one if none exists.

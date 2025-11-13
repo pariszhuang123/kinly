@@ -6,9 +6,9 @@ Conventions
 - Given / When / Then format
 - Use isolated users and homes per test
 
-homes.create(name)
+homes.create()
 - Given unauthenticated → When call → Then unauthorized
-- Given user U → When create("My Home") → Then home created, ownerUserId=U, active member row, isActive=true
+- Given user U → When create() → Then home created, ownerUserId=U, active member row, isActive=true
 
 invites.getOrCreate(homeId)
 - Given owner or member → When call → Then returns active invite with code; creates if none
@@ -41,4 +41,3 @@ members.listActiveByHome(homeId)
 members.listByHome(homeId)
 - Given active member → When call → Then returns historical + active
 - Given stranger → Then forbidden
-

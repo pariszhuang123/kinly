@@ -24,6 +24,26 @@ class SupabaseHomeRepository implements HomeRepository {
   }
 
   @override
+  Future<HomeCreationResult> create() async {
+    try {
+      final res = await _client.rpc('homes_create_with_invite');
+      if (res is Map<String, dynamic>) {
+        return HomeCreationResult.fromJson(res);
+      }
+      if (res is Map) {
+        return HomeCreationResult.fromJson(res.cast<String, dynamic>());
+      }
+      throw HomeCreateException(
+        CreateHomeErrorCode.unknown,
+        'Unexpected response creating home',
+      );
+    } catch (e) {
+      if (e is HomeCreateException) rethrow;
+      throw SupabaseErrorMapper.mapCreate(e);
+    }
+  }
+
+  @override
   Future<void> revokeInvite(String homeId) async {
     try {
       await _client.rpc('invites_revoke', params: {

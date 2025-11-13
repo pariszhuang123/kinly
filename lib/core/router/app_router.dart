@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/home_membership/start/ui/start_home_provider.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
-import '../../features/home_membership/create/ui/create_home_screen.dart';
 import '../../features/home_membership/join/ui/join_home_screen.dart';
-import '../../features/home_membership/start/ui/start_home_screen.dart';
 import '../../features/today/ui/today_screen.dart';
 import '../../features/auth/bloc/auth_bloc.dart';
 import 'navigation_intents.dart';
@@ -65,12 +64,7 @@ GoRouter createRouter({
       GoRoute(
         path: AppRoutes.start,
         name: 'start',
-        builder: (context, state) => const StartHomeScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.create,
-        name: 'create',
-        builder: (context, state) => const CreateHomeScreen(),
+        builder: (context, state) => const StartHomeProvider(),
       ),
       GoRoute(
         path: AppRoutes.join,

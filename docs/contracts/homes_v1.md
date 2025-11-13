@@ -83,7 +83,7 @@ Invite
 
 ## RPCs / Endpoints
 
-homes.create(name)
+homes.create()
 - Creates a home; caller becomes owner and an active member.
 
 invites.getOrCreate(homeId)

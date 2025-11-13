@@ -5,6 +5,10 @@
   "welcome_create": "Create a Home",
   "welcome_join": "Join a Home",
   "create_title": "Create Home",
+  "create_subtitle": "We'll spin up your home instantly. You can rename and invite later.",
+  "create_submit": "Create home",
+  "create_success": "Home created!",
+  "create_failed_generic": "Could not create the home. Try again.",
   "join_title": "Join Home",
   "join_hint": "Enter invite code",
   "join_submit": "Join",
@@ -27,9 +31,9 @@
   "login_privacy": "Privacy Policy",
   "logout": "Sign out",
   "membership_status_checking": "Checking membership status…",
-  "membership_status_none": "You haven’t joined a home yet.",
-  "membership_status_active": "You’re already part of a home.",
-  "today_no_membership": "No active home yet. Create or join to see today’s view.",
+  "membership_status_none": "You haven't joined a home yet.",
+  "membership_status_active": "You're already part of a home.",
+  "today_no_membership": "No active home yet. Create or join to see today's view.",
   "today_home_details": "Current home: {homeId} • Role: {role}",
   "@today_home_details": {
     "placeholders": {

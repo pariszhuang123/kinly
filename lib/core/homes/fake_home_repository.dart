@@ -12,6 +12,12 @@ class FakeHomeRepository implements HomeRepository {
   }
 
   @override
+  Future<HomeCreationResult> create() async {
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    return const HomeCreationResult(homeId: 'fake-home-id');
+  }
+
+  @override
   Future<void> revokeInvite(String homeId) async {
     await Future<void>.delayed(const Duration(milliseconds: 150));
   }

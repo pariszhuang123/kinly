@@ -7,6 +7,9 @@ abstract class HomeRepository {
   /// Throws a domain-specific exception on failure (e.g., [HomeJoinException]).
   Future<void> join(String code);
 
+  /// Creates a new home owned by the caller and returns the created record.
+  Future<HomeCreationResult> create();
+
   /// Revoke the current active invite for a home (owner-only).
   /// Idempotent when no active invite exists.
   Future<void> revokeInvite(String homeId);

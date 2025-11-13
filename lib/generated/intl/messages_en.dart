@@ -27,8 +27,15 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
+    "create_failed_generic": MessageLookupByLibrary.simpleMessage(
+      "Could not create the home. Try again.",
+    ),
+    "create_submit": MessageLookupByLibrary.simpleMessage("Create home"),
+    "create_subtitle": MessageLookupByLibrary.simpleMessage(
+      "We\'ll spin up your home instantly. You can rename and invite later.",
+    ),
+    "create_success": MessageLookupByLibrary.simpleMessage("Home created!"),
     "create_title": MessageLookupByLibrary.simpleMessage("Create Home"),
-    "join_back_to_start": MessageLookupByLibrary.simpleMessage("Back to Start"),
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
       "Join failed. Please try again.",
     ),
@@ -52,17 +59,17 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "logout": MessageLookupByLibrary.simpleMessage("Sign out"),
     "membership_status_active": MessageLookupByLibrary.simpleMessage(
-      "You’re already part of a home.",
+      "You\'re already part of a home.",
     ),
     "membership_status_checking": MessageLookupByLibrary.simpleMessage(
       "Checking membership status…",
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
-      "You haven’t joined a home yet.",
+      "You haven\'t joined a home yet.",
     ),
     "today_home_details": m1,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
-      "No active home yet. Create or join to see today’s view.",
+      "No active home yet. Create or join to see today\'s view.",
     ),
     "today_title": MessageLookupByLibrary.simpleMessage("Today"),
     "welcome_create": MessageLookupByLibrary.simpleMessage("Create a Home"),
