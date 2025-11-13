@@ -8,15 +8,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:kinly/main.dart';
+import 'package:kinly/core/auth/fake_auth_repository.dart';
 import 'package:kinly/core/di/locator.dart';
+import 'package:kinly/core/homes/fake_home_repository.dart';
+import 'package:kinly/data/repositories/auth_repository.dart';
+import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/main.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() async {
     await sl.reset();
-    setupDependencies();
+    sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepository());
+    sl.registerLazySingleton<HomeRepository>(() => FakeHomeRepository());
   });
 
   testWidgets('App boots smoke test', (WidgetTester tester) async {

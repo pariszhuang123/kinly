@@ -72,10 +72,12 @@ void main() {
             userId: '123',
             membershipStatus: AuthMembershipStatus.unknown,
           ),
-          const AuthState(
-            status: AuthStatus.authenticated,
-            userId: '123',
-            membershipStatus: AuthMembershipStatus.active,
+          predicate<AuthState>(
+            (state) =>
+                state.status == AuthStatus.authenticated &&
+                state.membershipStatus == AuthMembershipStatus.active &&
+                state.membership?.homeId == 'home-1' &&
+                state.membership?.role == 'owner',
           ),
         ],
     verify: (_) {
@@ -172,6 +174,49 @@ void main() {
         ],
     verify: (_) {
       verify(() => authRepository.signOut()).called(1);
+    },
+  );
+
+  blocTest<AuthBloc, AuthState>(
+    'refreshes membership when requested while authenticated',
+    build: () {
+      when(
+        () => authRepository.current,
+      ).thenReturn(const AuthSession(userId: 'user-1'));
+      when(() => homeRepository.getCurrentMembership()).thenAnswer(
+        (_) async => CurrentMembership(
+          userId: 'user-1',
+          homeId: 'home-123',
+          role: 'member',
+          validFrom: DateTime.utc(2025, 1, 1),
+        ),
+      );
+      return buildBloc();
+    },
+    act: (bloc) async {
+      await Future<void>.delayed(Duration.zero);
+      bloc.add(const AuthMembershipRefreshRequested());
+    },
+    skip: 2,
+    expect:
+        () => [
+          predicate<AuthState>(
+            (state) =>
+                state.status == AuthStatus.authenticated &&
+                state.userId == 'user-1' &&
+                state.membershipStatus == AuthMembershipStatus.unknown,
+          ),
+          predicate<AuthState>(
+            (state) =>
+                state.status == AuthStatus.authenticated &&
+                state.membershipStatus == AuthMembershipStatus.active &&
+                state.membership?.homeId == 'home-123',
+          ),
+        ],
+    verify: (_) {
+      verify(
+        () => homeRepository.getCurrentMembership(),
+      ).called(greaterThanOrEqualTo(2));
     },
   );
 }

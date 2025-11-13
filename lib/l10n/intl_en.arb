@@ -8,6 +8,17 @@
   "join_title": "Join Home",
   "join_hint": "Enter invite code",
   "join_submit": "Join",
+  "join_success": "Joined with code: {code}",
+  "@join_success": {
+    "description": "Snackbar message displayed when the user joins successfully",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "join_failed_generic": "Join failed. Please try again.",
+  "join_back_to_start": "Back to Start",
   "today_title": "Today",
   "login_tagline": "Together feels lighter",
   "login_with_google": "Continue with Google",
@@ -15,5 +26,20 @@
   "login_consent_prefix": "I have read and agree to the ",
   "login_terms": "Service Terms",
   "login_privacy": "Privacy Policy",
-  "logout": "Sign out"
+  "logout": "Sign out",
+  "membership_status_checking": "Checking membership status…",
+  "membership_status_none": "You haven’t joined a home yet.",
+  "membership_status_active": "You’re already part of a home.",
+  "today_no_membership": "No active home yet. Create or join to see today’s view.",
+  "today_home_details": "Current home: {homeId} • Role: {role}",
+  "@today_home_details": {
+    "placeholders": {
+      "homeId": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -19,6 +19,10 @@ class AuthSignOutRequested extends AuthEvent {
   const AuthSignOutRequested();
 }
 
+class AuthMembershipRefreshRequested extends AuthEvent {
+  const AuthMembershipRefreshRequested();
+}
+
 class AuthErrorCleared extends AuthEvent {
   const AuthErrorCleared();
 }

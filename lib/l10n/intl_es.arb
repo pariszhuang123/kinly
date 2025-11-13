@@ -15,5 +15,29 @@
   "login_terms": "Términos del servicio",
   "login_privacy": "Política de privacidad",
   "login_with_apple": "Continuar con Apple",
-  "logout": "Cerrar sesion"
+  "logout": "Cerrar sesion",
+  "join_success": "Te uniste con el código {code}",
+  "@join_success": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "join_failed_generic": "No se pudo unir. Inténtalo de nuevo.",
+  "membership_status_checking": "Comprobando el estado del hogar…",
+  "membership_status_none": "Todavía no perteneces a un hogar.",
+  "membership_status_active": "Ya formas parte de un hogar.",
+  "today_no_membership": "Sin hogar activo. Crea o únete para ver esta pantalla.",
+  "today_home_details": "Hogar actual: {homeId} • Rol: {role}",
+  "@today_home_details": {
+    "placeholders": {
+      "homeId": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  }
 }

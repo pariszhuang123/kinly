@@ -119,6 +119,36 @@ class S {
     return Intl.message('Join', name: 'join_submit', desc: '', args: []);
   }
 
+  /// `Joined with code: {code}`
+  String join_success(String code) {
+    return Intl.message(
+      'Joined with code: $code',
+      name: 'join_success',
+      desc: 'Snackbar message displayed when the user joins successfully',
+      args: [code],
+    );
+  }
+
+  /// `Join failed. Please try again.`
+  String get join_failed_generic {
+    return Intl.message(
+      'Join failed. Please try again.',
+      name: 'join_failed_generic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back to Start`
+  String get join_back_to_start {
+    return Intl.message(
+      'Back to Start',
+      name: 'join_back_to_start',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Today`
   String get today_title {
     return Intl.message('Today', name: 'today_title', desc: '', args: []);
@@ -187,6 +217,56 @@ class S {
   /// `Sign out`
   String get logout {
     return Intl.message('Sign out', name: 'logout', desc: '', args: []);
+  }
+
+  /// `Checking membership status…`
+  String get membership_status_checking {
+    return Intl.message(
+      'Checking membership status…',
+      name: 'membership_status_checking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You haven’t joined a home yet.`
+  String get membership_status_none {
+    return Intl.message(
+      'You haven’t joined a home yet.',
+      name: 'membership_status_none',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You’re already part of a home.`
+  String get membership_status_active {
+    return Intl.message(
+      'You’re already part of a home.',
+      name: 'membership_status_active',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No active home yet. Create or join to see today’s view.`
+  String get today_no_membership {
+    return Intl.message(
+      'No active home yet. Create or join to see today’s view.',
+      name: 'today_no_membership',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current home: {homeId} • Role: {role}`
+  String today_home_details(String homeId, String role) {
+    return Intl.message(
+      'Current home: $homeId • Role: $role',
+      name: 'today_home_details',
+      desc: '',
+      args: [homeId, role],
+    );
   }
 }
 
