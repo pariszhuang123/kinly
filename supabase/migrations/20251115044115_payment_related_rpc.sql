@@ -35,8 +35,8 @@ $$;
 
 -- Detach subs for this user from this home (make them float again)
 CREATE OR REPLACE FUNCTION public._home_detach_subscription_to_home(
-  v_home_id uuid,
-  p_user_id uuid
+  _home_id uuid,
+  _user_id uuid
 )
 RETURNS void
 LANGUAGE plpgsql
@@ -47,8 +47,8 @@ BEGIN
   UPDATE public.user_subscriptions
   SET home_id    = NULL,
       updated_at = now()
-  WHERE user_id = p_user_id
-    AND home_id = v_home_id
+  WHERE user_id = _user_id
+    AND home_id = _home_id
     AND status IN ('active', 'cancelled');
 
   -- trigger on user_subscriptions will call home_entitlements_refresh(v_home_id)
@@ -377,7 +377,7 @@ $$;
 -- ---------------------------------------------------------------------
 -- homes.leave(home_id) 
 -- ---------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.homes_leave(v_home_id uuid)
+CREATE OR REPLACE FUNCTION public.homes_leave(p_home_id uuid)
 RETURNS jsonb
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -397,24 +397,24 @@ BEGIN
   -- Serialize with transfers/joins
   PERFORM 1
   FROM public.homes h
-  WHERE h.id = v_home_id
+  WHERE h.id = p_home_id
   FOR UPDATE;
 
   -- Must be a current member
   PERFORM public.api_assert(EXISTS (
     SELECT 1 FROM public.memberships m
      WHERE m.user_id = v_user
-       AND m.home_id = v_home_id
+       AND m.home_id = p_home_id
        AND m.is_current
   ), 'NOT_MEMBER', 'You are not a current member of this home.', '42501',
-     jsonb_build_object('homeId', v_home_id));
+     jsonb_build_object('homeId', p_home_id));
 
   -- Capture role (for response)
   SELECT m.role
     INTO v_role_before
     FROM public.memberships m
    WHERE m.user_id = v_user
-     AND m.home_id = v_home_id
+     AND m.home_id = p_home_id
      AND m.is_current
    LIMIT 1;
 
@@ -422,7 +422,7 @@ BEGIN
   SELECT EXISTS (
     SELECT 1 FROM public.memberships m
      WHERE m.user_id = v_user
-       AND m.home_id = v_home_id
+       AND m.home_id = p_home_id
        AND m.is_current
        AND m.role = 'owner'
   ) INTO v_is_owner;
@@ -430,7 +430,7 @@ BEGIN
   IF v_is_owner THEN
     SELECT COUNT(*) INTO v_other_members
       FROM public.memberships m
-     WHERE m.home_id = v_home_id
+     WHERE m.home_id = p_home_id
        AND m.is_current
        AND m.user_id <> v_user;
 
@@ -445,7 +445,7 @@ BEGIN
      SET valid_to  = now(),
          updated_at = now()
    WHERE user_id = v_user
-     AND home_id = v_home_id
+     AND home_id = p_home_id
      AND is_current
   RETURNING 1 INTO v_left_rows;
 
@@ -456,7 +456,7 @@ BEGIN
   -- Check remaining members
   SELECT COUNT(*) INTO v_members_left
     FROM public.memberships m
-   WHERE m.home_id = v_home_id
+   WHERE m.home_id = p_home_id
      AND m.is_current;
 
   IF v_members_left = 0 THEN
@@ -464,16 +464,16 @@ BEGIN
        SET is_active = FALSE,
            deactivated_at = now(),
            updated_at = now()
-     WHERE id = v_home_id;
+     WHERE id = p_home_id;
     v_deactivated := true;
   END IF;
 
   -- 8️⃣ Detach any existing live subscription from the home (if user has one unattached)
-  PERFORM public._home_detach_subscription_to_home(v_home_id, v_user);
+  PERFORM public._home_detach_subscription_to_home(p_home_id, v_user);
 
   -- 🔹 Reassign chores to owner if home still has members (and thus an owner)
   IF NOT v_deactivated THEN
-    PERFORM public.chores_reassign_on_member_leave(v_home_id, v_user);
+    PERFORM public.chores_reassign_on_member_leave(p_home_id, v_user);
   END IF;
 
 
