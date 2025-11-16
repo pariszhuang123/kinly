@@ -112,6 +112,43 @@
         }
       }
     },
+    "chores": {
+      "latest": "v1",
+      "docs": "docs/contracts/chores_v1.md",
+      "entities": {
+        "Chore": {
+          "id": "uuid",
+          "homeId": "uuid",
+          "createdByUserId": "uuid",
+          "assigneeUserId": "uuid|null",
+          "name": "text",
+          "startDate": "date",
+          "recurrence": "RecurrenceInterval",
+          "recurrenceCursor": "timestamptz|null",
+          "nextOccurrence": "date|null",
+          "expectationPhotoPath": "text|null",
+          "howToVideoUrl": "text|null",
+          "notes": "text|null",
+          "state": "ChoreState",
+          "completedAt": "timestamptz|null",
+          "createdAt": "timestamptz",
+          "updatedAt": "timestamptz"
+        },
+        "ChoreEvent": {
+          "id": "uuid",
+          "choreId": "uuid",
+          "homeId": "uuid",
+          "actorUserId": "uuid",
+          "eventType": "ChoreEventType",
+          "payload": "jsonb",
+          "occurredAt": "timestamptz",
+          "fromState": "ChoreState",
+          "ToState": "ChoreState"
+        }
+      },
+      "functions": null,
+      "rls": null
+    },
     "homes": {
       "latest": "v2",
       "docs": "docs/contracts/homes_v2.md",
