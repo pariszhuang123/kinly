@@ -63,9 +63,24 @@ jobs:
         shell: bash
         run: |
           git fetch --no-tags --prune --depth=200 origin +refs/heads/main:refs/remotes/origin/main
-          CHANGED=$(git diff --name-only origin/main...HEAD | grep -E '^supabase/(migrations|functions|policies)/' || true)
-          if [ -n "$CHANGED" ]; then echo "do_db_check=true" >> $GITHUB_OUTPUT; else echo "do_db_check=false" >> $GITHUB_OUTPUT; fi
+          BASE=$(if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then echo "HEAD~1"; elif [ -n "${{ github.base_ref }}" ]; then echo "origin/${{ github.base_ref }}"; else echo "origin/main"; fi)
+          echo "Comparing changes against $BASE"
 
+          # Show all changed files (for debugging)
+          git diff --name-only "$BASE"...HEAD
+
+          # Consider migrations, functions, policies, *and tests* as DB-related
+          MATCHED=$(git diff --name-only "$BASE"...HEAD | grep -E '^supabase/(migrations|functions|policies|tests)/' || true)
+
+          echo "DB-related changes:"
+          echo "$MATCHED"
+
+          if [ -n "$MATCHED" ]; then
+            echo "do_db_check=true" >> $GITHUB_OUTPUT
+          else
+            echo "do_db_check=false" >> $GITHUB_OUTPUT
+          fi
+          
       - uses: supabase/setup-cli@v1
         if: steps.changes.outputs.do_db_check == 'true'
         with:
@@ -76,7 +91,6 @@ jobs:
         run: |
           supabase start
           supabase db reset --force
-
       - name: Wait for PostgREST
         if: steps.changes.outputs.do_db_check == 'true'
         shell: bash
@@ -86,6 +100,24 @@ jobs:
             if curl -s -H 'Accept: application/openapi+json' http://127.0.0.1:54321/rest/v1/ > /dev/null; then
               echo "PostgREST is up"; exit 0; fi; sleep 2; done
           echo "::error::PostgREST did not become ready"; exit 1
+
+      - name: Install PostgreSQL client
+        if: steps.changes.outputs.do_db_check == 'true'
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Run pgTap suites
+        if: steps.changes.outputs.do_db_check == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          PORT=$(awk -F'=' '/^\s*port\s*=/{gsub(/ /,"",$2); print $2; exit}' supabase/config.toml)
+          PORT=${PORT:-54322}
+          URI="postgresql://postgres:postgres@127.0.0.1:${PORT}/postgres"
+          for file in supabase/tests/*.sql; do
+            echo "::group::pgTap $file"
+            psql "$URI" -v ON_ERROR_STOP=1 -f "$file"
+            echo "::endgroup::"
+          done
 
       - name: Dump schema (DDL only)
         if: steps.changes.outputs.do_db_check == 'true'

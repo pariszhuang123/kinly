@@ -2,7 +2,8 @@
 
 Status: Draft for alignment with new SQL
 
-Scope: Align contracts with the new homes/memberships/invites migration introducing append‑only membership stints and invite code details.
+Scope: Align contracts with the new homes/memberships/invites migration introducing append-only membership stints and invite code details.
+Related domain slices: household actions such as chores are documented in `docs/contracts/chores_v1.md`.
 
 ## Entities
 
@@ -278,6 +279,7 @@ Invite
 
 homes.create()
 - Creates a home; caller becomes owner and a current membership stint (role=owner). Returns `{ home: { id } }`.
+ - Seeds `home_entitlements` with `plan='free'` and invokes `_home_attach_subscription_to_home` so any pre-existing subscription from the creator funds the new home.
  - DB Impl: `public.homes_create_with_invite`
 
 invites.getOrCreate(homeId)
@@ -305,7 +307,7 @@ homes.join(code)
   - home.isActive = true
   - invite.revokedAt IS NULL
   - user has no other current membership (unique partial index enforces)
- - DB Impl: `public.homes_join`
+ - DB Impl: `public.homes_join` (attaches any floating subscription via `_home_attach_subscription_to_home`)
 
 homes.transferOwner(homeId, newOwnerId)
 - Transfers ownership (both users must be current members).
@@ -316,7 +318,7 @@ homes.leave(homeId)
 - If that was the last current member:
   - home.isActive = false
   - home.deactivatedAt = now()
- - DB Impl: `public.homes_leave`
+ - DB Impl: `public.homes_leave` (detaches the leaver’s subscription via `_home_detach_subscription_to_home` before reassigning chores; if the home deactivates the entitlement row downgrades through `home_entitlements_refresh`)
 
 members.listActiveByHome(homeId)
 - Lists current members only (isCurrent = true).

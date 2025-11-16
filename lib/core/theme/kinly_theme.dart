@@ -1,53 +1,12 @@
+// lib/core/theme/kinly_theme.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-@immutable
-class Spacing extends ThemeExtension<Spacing> {
-  const Spacing({
-    required this.xs,
-    required this.sm,
-    required this.md,
-    required this.lg,
-    required this.xl,
-  });
-
-  final double xs;
-  final double sm;
-  final double md;
-  final double lg;
-  final double xl;
-
-  @override
-  Spacing copyWith({
-    double? xs,
-    double? sm,
-    double? md,
-    double? lg,
-    double? xl,
-  }) {
-    return Spacing(
-      xs: xs ?? this.xs,
-      sm: sm ?? this.sm,
-      md: md ?? this.md,
-      lg: lg ?? this.lg,
-      xl: xl ?? this.xl,
-    );
-  }
-
-  @override
-  ThemeExtension<Spacing> lerp(ThemeExtension<Spacing>? other, double t) {
-    if (other is! Spacing) return this;
-    return Spacing(
-      xs: lerpDouble(xs, other.xs, t),
-      sm: lerpDouble(sm, other.sm, t),
-      md: lerpDouble(md, other.md, t),
-      lg: lerpDouble(lg, other.lg, t),
-      xl: lerpDouble(xl, other.xl, t),
-    );
-  }
-
-  static double lerpDouble(double a, double b, double t) => a + (b - a) * t;
-}
+import 'kinly_sections.dart';
+import 'spacing.dart';
+import 'radius.dart';
+import 'elevation.dart';
+import 'app_sizes.dart';
 
 ThemeData buildKinlyTheme(Brightness brightness) {
   final isDark = brightness == Brightness.dark;
@@ -128,6 +87,69 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     contentTextStyle: TextStyle(color: colorScheme.onInverseSurface),
   );
 
+  final sections =
+      isDark
+          ? const KinlySections(
+            flow: SectionColors(
+              background: Color(0xFF1F2623),
+              card: Color(0xFF27302B),
+              icon: Color(0xFFB8D9C7),
+              accent: Color(0xFFF5C96A),
+            ),
+            share: SectionColors(
+              background: Color(0xFF262018),
+              card: Color(0xFF30271B),
+              icon: Color(0xFFF5C96A),
+              accent: Color(0xFF88C7B0),
+            ),
+            pulse: SectionColors(
+              background: Color(0xFF2A2022),
+              card: Color(0xFF33252A),
+              icon: Color(0xFFFFB5A0),
+              accent: Color(0xFF88C7B0),
+            ),
+          )
+          : const KinlySections(
+            flow: SectionColors(
+              background: Color(0xFFE2F0E6), // sage
+              card: Color(0xFFD6E8DD),
+              icon: Color(0xFF366D59),
+              accent: Color(0xFFF5C96A),
+            ),
+            share: SectionColors(
+              background: Color(0xFFF9F4E8), // honey cream
+              card: Colors.white,
+              icon: Color(0xFFDAA24E),
+              accent: Color(0xFF366D59),
+            ),
+            pulse: SectionColors(
+              background: Color(0xFFFCEFEA),
+              card: Color(0xFFFFF7F3),
+              icon: Color(0xFFE48E73),
+              accent: Color(0xFF366D59),
+            ),
+          );
+
+  // Design tokens as ThemeExtensions
+  const spacing = Spacing(xs: 4, sm: 8, md: 12, lg: 16, xl: 24);
+  const corners = Corners(xs: 4, sm: 8, md: 12, lg: 20, xl: 28, pill: 999);
+  const elevations = Elevations(
+    level0: 0,
+    level1: 1,
+    level2: 3,
+    level3: 6,
+    level4: 8,
+  );
+  const appSizes = AppSizes(
+    iconSm: 16,
+    iconMd: 24,
+    iconLg: 40,
+    toolbarHeight: 56,
+    bottomNavHeight: 64,
+    fabDimension: 56,
+    maxContentWidth: 640, // used to keep content nicely sized on tablets
+  );
+
   return ThemeData(
     colorScheme: colorScheme,
     useMaterial3: true,
@@ -136,6 +158,6 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     scaffoldBackgroundColor: colorScheme.surface,
     elevatedButtonTheme: elevatedButtonTheme,
     snackBarTheme: snackBarTheme,
-    extensions: const [Spacing(xs: 4, sm: 8, md: 12, lg: 16, xl: 24)],
+    extensions: [spacing, corners, elevations, appSizes, sections],
   );
 }

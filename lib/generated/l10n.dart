@@ -184,6 +184,96 @@ class S {
     return Intl.message('Today', name: 'today_title', desc: '', args: []);
   }
 
+  /// `Quick Add`
+  String get quick_add_title {
+    return Intl.message(
+      'Quick Add',
+      name: 'quick_add_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Flow`
+  String get quick_add_flow_title {
+    return Intl.message(
+      'Flow',
+      name: 'quick_add_flow_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a task to Flow`
+  String get quick_add_flow_subtitle {
+    return Intl.message(
+      'Add a task to Flow',
+      name: 'quick_add_flow_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get quick_add_share_title {
+    return Intl.message(
+      'Share',
+      name: 'quick_add_share_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log a shared expense`
+  String get quick_add_share_subtitle {
+    return Intl.message(
+      'Log a shared expense',
+      name: 'quick_add_share_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Poll`
+  String get quick_add_poll_title {
+    return Intl.message(
+      'Poll',
+      name: 'quick_add_poll_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a quick home poll`
+  String get quick_add_poll_subtitle {
+    return Intl.message(
+      'Create a quick home poll',
+      name: 'quick_add_poll_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fair Share`
+  String get quick_add_fair_share_title {
+    return Intl.message(
+      'Fair Share',
+      name: 'quick_add_fair_share_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Record a fairness entry`
+  String get quick_add_fair_share_subtitle {
+    return Intl.message(
+      'Record a fairness entry',
+      name: 'quick_add_fair_share_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Together feels lighter`
   String get login_tagline {
     return Intl.message(

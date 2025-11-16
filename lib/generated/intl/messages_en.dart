@@ -67,6 +67,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "You haven\'t joined a home yet.",
     ),
+    "quick_add_fair_share_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Record a fairness entry",
+    ),
+    "quick_add_fair_share_title": MessageLookupByLibrary.simpleMessage(
+      "Fair Share",
+    ),
+    "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Add a task to Flow",
+    ),
+    "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Flow"),
+    "quick_add_poll_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Create a quick home poll",
+    ),
+    "quick_add_poll_title": MessageLookupByLibrary.simpleMessage("Poll"),
+    "quick_add_share_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Log a shared expense",
+    ),
+    "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Share"),
+    "quick_add_title": MessageLookupByLibrary.simpleMessage("Quick Add"),
     "today_home_details": m1,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",

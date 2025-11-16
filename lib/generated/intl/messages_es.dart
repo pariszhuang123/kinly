@@ -73,6 +73,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "Aún no te has unido a un hogar.",
     ),
+    "quick_add_fair_share_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Registrar una entrada de equidad",
+    ),
+    "quick_add_fair_share_title": MessageLookupByLibrary.simpleMessage(
+      "Fair Share",
+    ),
+    "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Añadir una tarea a Flow",
+    ),
+    "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Flow"),
+    "quick_add_poll_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Crear una encuesta rápida para el hogar",
+    ),
+    "quick_add_poll_title": MessageLookupByLibrary.simpleMessage("Encuesta"),
+    "quick_add_share_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Registrar un gasto compartido",
+    ),
+    "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Share"),
+    "quick_add_title": MessageLookupByLibrary.simpleMessage("Añadir rápido"),
     "today_home_details": m1,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "Sin hogar activo todavía. Crea o únete para ver la vista de hoy.",

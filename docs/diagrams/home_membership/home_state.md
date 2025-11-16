@@ -13,3 +13,4 @@ stateDiagram-v2
   end note
 ```
 
+See `docs/diagrams/chores/chore_flow.md` for the chore lifecycle that builds on top of active homes.

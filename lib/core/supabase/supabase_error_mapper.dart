@@ -329,6 +329,99 @@ class SupabaseErrorMapper {
     } catch (_) {}
     return _Parsed(code: '', message: message, details: null);
   }
+
+  /// Map chore RPC errors into [ChoreException].
+  static ChoreException mapChore(Object error) {
+    if (error is AuthException) {
+      return ChoreException(ChoreErrorCode.unauthorized, error.message);
+    }
+    if (error is PostgrestException) {
+      final parsed = _parseErrorJson(error.message);
+      switch (parsed.code) {
+        case 'INVALID_INPUT':
+        case 'INVALID_NAME':
+          return ChoreException(
+            ChoreErrorCode.invalidInput,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_STATE':
+          return ChoreException(
+            ChoreErrorCode.invalidState,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_MEDIA_PATH':
+          return ChoreException(
+            ChoreErrorCode.invalidMediaPath,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'ASSIGNEE_NOT_MEMBER':
+          return ChoreException(
+            ChoreErrorCode.assigneeNotMember,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'ALREADY_FINALIZED':
+          return ChoreException(
+            ChoreErrorCode.alreadyFinalized,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'PAYWALL_LIMIT_ACTIVE_CHORES':
+          return ChoreException(
+            ChoreErrorCode.paywallActiveCap,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'PAYWALL_LIMIT_CHORE_PHOTOS':
+          return ChoreException(
+            ChoreErrorCode.paywallMediaCap,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_START':
+          return ChoreException(
+            ChoreErrorCode.invalidStart,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'NOT_FOUND':
+        case 'CHORE_NOT_FOUND':
+          return ChoreException(
+            ChoreErrorCode.notFound,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'NOT_HOME_MEMBER':
+          return ChoreException(
+            ChoreErrorCode.notHomeMember,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'FORBIDDEN':
+          return ChoreException(
+            ChoreErrorCode.forbidden,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'UNAUTHORIZED':
+          return ChoreException(
+            ChoreErrorCode.unauthorized,
+            parsed.message,
+            details: parsed.details,
+          );
+        default:
+          return ChoreException(
+            ChoreErrorCode.unknown,
+            parsed.message,
+            details: parsed.details,
+          );
+      }
+    }
+    return ChoreException(ChoreErrorCode.unknown, error.toString());
+  }
 }
 
 class _Parsed {
@@ -397,4 +490,31 @@ class LeaveException implements Exception {
   LeaveException(this.code, this.message, {this.details});
   @override
   String toString() => 'LeaveException($code): $message';
+}
+
+enum ChoreErrorCode {
+  invalidInput,
+  invalidName,
+  invalidStart,
+  invalidState,
+  invalidMediaPath,
+  assigneeNotMember,
+  alreadyFinalized,
+  paywallActiveCap,
+  paywallMediaCap,
+  notFound,
+  notHomeMember,
+  forbidden,
+  unauthorized,
+  unknown,
+}
+
+class ChoreException implements Exception {
+  final ChoreErrorCode code;
+  final String message;
+  final Map<String, dynamic>? details;
+  const ChoreException(this.code, this.message, {this.details});
+
+  @override
+  String toString() => 'ChoreException($code): $message';
 }
