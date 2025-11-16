@@ -233,7 +233,7 @@ class TodayScreen extends StatelessWidget {
               break;
           }
         },
-        selectedItemColor: colorScheme.onSurface.withValues(alpha: 0.9),
+        selectedItemColor: colorScheme.onSurface.withValues(alpha: 1.0),
         unselectedItemColor: colorScheme.onSurface.withValues(alpha: 0.6),
         backgroundColor: colorScheme.surfaceContainerHigh,
         items: const [
