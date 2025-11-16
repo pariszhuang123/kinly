@@ -21,7 +21,7 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 REVOKE INSERT, UPDATE, DELETE ON public.profiles FROM anon, authenticated;
 GRANT SELECT ON public.profiles TO authenticated;
 
-CREATE POLICY IF NOT EXISTS profiles_select_authenticated
+CREATE POLICY profiles_select_authenticated
   ON public.profiles
   FOR SELECT
     USING (id = (SELECT auth.uid()));
