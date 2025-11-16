@@ -115,7 +115,7 @@ WITH res AS (
   ) AS payload
 )
 INSERT INTO tmp_chores (label, chore_id)
-SELECT 'one_off', (payload->>'id')::uuid FROM res;
+SELECT 'one_off', (payload).id FROM res;
 
 -- After creation, active_chores should be 1 (draft counts as a slot)
 SELECT is(
@@ -254,7 +254,7 @@ WITH res AS (
   ) AS payload
 )
 INSERT INTO tmp_chores (label, chore_id)
-SELECT 'photo_chore', (payload->>'id')::uuid FROM res;
+SELECT 'photo_chore', (payload).id FROM res;
 
 SELECT is(
   (SELECT chore_photos
