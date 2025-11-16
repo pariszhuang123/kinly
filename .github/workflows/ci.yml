@@ -90,7 +90,7 @@ jobs:
         if: steps.changes.outputs.do_db_check == 'true'
         run: |
           supabase start
-          supabase db reset --force
+          supabase db reset --yes
       - name: Wait for PostgREST
         if: steps.changes.outputs.do_db_check == 'true'
         shell: bash
