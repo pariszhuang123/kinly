@@ -1,4 +1,4 @@
-﻿project_id = "kinly-local"
+project_id = "kinly-local"
 
 [db]
 port = 54322
