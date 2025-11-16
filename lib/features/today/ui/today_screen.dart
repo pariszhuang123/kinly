@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/theme/app_sizes.dart';
+import '../../../../core/theme/kinly_sections.dart'; // 👈 NEW
 import '../domain/models.dart';
 import 'widgets/today_flow_section.dart';
 import 'widgets/today_share_section.dart';
@@ -23,6 +24,7 @@ class TodayScreen extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final sizes = theme.extension<AppSizes>();
+    final sections = theme.extension<KinlySections>()!; // 👈 NEW
 
     // Temporary mock data – later comes from TodayBloc / use case
     const tasks = <TodayFlowTask>[
@@ -184,7 +186,8 @@ class TodayScreen extends StatelessWidget {
                     ListTile(
                       leading: Icon(
                         Icons.checklist,
-                        color: colorScheme.primary,
+                        // 👇 Flow uses its section icon color (light/dark aware)
+                        color: sections.flow.icon,
                       ),
                       title: const Text('Add task (Flow)'),
                       onTap: () {
@@ -195,7 +198,8 @@ class TodayScreen extends StatelessWidget {
                     ListTile(
                       leading: Icon(
                         Icons.account_balance_wallet,
-                        color: colorScheme.primary,
+                        // 👇 Share uses its section icon color
+                        color: sections.share.icon,
                       ),
                       title: const Text('Add expense (Share)'),
                       onTap: () {

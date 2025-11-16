@@ -143,11 +143,116 @@
           "payload": "jsonb",
           "occurredAt": "timestamptz",
           "fromState": "ChoreState",
-          "ToState": "ChoreState"
+          "toState": "ChoreState"
         }
       },
-      "functions": null,
-      "rls": null
+      "functions": {
+        "chores.listForHome": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.chores_list_for_home",
+          "args": {
+            "p_home_id": "uuid"
+          },
+          "returns": {
+            "columns": {
+              "id": "uuid",
+              "home_id": "uuid",
+              "assignee_user_id": "uuid|null",
+              "name": "text",
+              "start_date": "date",
+              "assignee_full_name": "text|null",
+              "assignee_avatar_storage_path": "text|null"
+            }
+          }
+        },
+        "homeAssignees.list": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.home_assignees_list",
+          "args": {
+            "p_home_id": "uuid"
+          },
+          "returns": {
+            "columns": {
+              "user_id": "uuid",
+              "full_name": "text",
+              "email": "text",
+              "avatar_storage_path": "text|null"
+            }
+          }
+        },
+        "chores.create": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.chores_create",
+          "args": {
+            "p_home_id": "uuid",
+            "p_name": "text",
+            "p_assignee_user_id": "uuid|null",
+            "p_start_date": "date|null",
+            "p_recurrence": "RecurrenceInterval|null",
+            "p_how_to_video_url": "text|null",
+            "p_notes": "text|null",
+            "p_expectation_photo_path": "text|null"
+          },
+          "returns": "Chore"
+        },
+        "chores.getForHome": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.chores_get_for_home",
+          "args": {
+            "p_home_id": "uuid",
+            "p_chore_id": "uuid"
+          },
+          "returns": "jsonb"
+        },
+        "chores.update": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.chores_update",
+          "args": {
+            "p_chore_id": "uuid",
+            "p_name": "text",
+            "p_assignee_user_id": "uuid",
+            "p_start_date": "date",
+            "p_recurrence": "RecurrenceInterval|null",
+            "p_expectation_photo_path": "text|null",
+            "p_how_to_video_url": "text|null",
+            "p_notes": "text|null"
+          },
+          "returns": "Chore"
+        },
+        "chores.cancel": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.chores_cancel",
+          "args": {
+            "p_chore_id": "uuid"
+          },
+          "returns": "jsonb"
+        },
+        "chore.complete": {
+          "type": "rpc",
+          "caller": "assignee-only",
+          "impl": "public.chore_complete",
+          "args": {
+            "_chore_id": "uuid"
+          },
+          "returns": "jsonb"
+        }
+      },
+      "rls": [
+        {
+          "table": "public.chores",
+          "rule": "RLS enabled; anon/auth revoked; all client access via SECURITY DEFINER RPCs."
+        },
+        {
+          "table": "public.chore_events",
+          "rule": "RLS enabled; anon/auth revoked; rows inserted via trigger only; no direct client access."
+        }
+      ]
     },
     "homes": {
       "latest": "v2",

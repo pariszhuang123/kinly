@@ -12,9 +12,15 @@ ThemeData buildKinlyTheme(Brightness brightness) {
   final isDark = brightness == Brightness.dark;
 
   // Brand palette
-  const tealPrimary = Color(0xFF366D59); // Teal
-  const sageSecondary = Color(0xFF8BAA91); // Placeholder sage green
-  const honeyAccent = Color(0xFFF6B73C); // Honey
+  const tealBrand = Color(0xFF366D59); // Original Kinly teal (icons, accents)
+  const tealPrimary = Color(0xFF2F5B4B); // Deeper teal for AAA contrast
+  const sageSecondary = Color(0xFF8BAA91); // Sage (mainly backgrounds / fills)
+  const honeyAccent = Color(0xFFF6B73C); // Honey (mainly backgrounds / fills)
+
+  // AAA-safe text variants for sage/honey on light surfaces
+  const sageText = Color(0xFF3B5646); // ≈7.7:1 vs #FAFAF9
+  const honeyText = Color(0xFF704300); // ≈8.1:1 vs #FAFAF9
+
   final offWhite = isDark ? const Color(0xFF101312) : const Color(0xFFFAFAF9);
 
   final colorScheme = ColorScheme(
@@ -59,7 +65,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     surfaceTint: tealPrimary,
   );
 
-  // Typography: Display = Average Sans, Body = Open Sans
+  // Typography: Display = DM Sans, Body = Inter
   final baseText =
       isDark ? Typography.whiteMountainView : Typography.blackMountainView;
   final display = GoogleFonts.dmSansTextTheme(baseText);
@@ -87,9 +93,12 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     contentTextStyle: TextStyle(color: colorScheme.onInverseSurface),
   );
 
+  // Section palettes: light and dark
+  // Light mode updated for AAA-safe icon/text contrast on section backgrounds.
   final sections =
       isDark
           ? const KinlySections(
+            // DARK MODE: high-contrast already, keep as-is
             flow: SectionColors(
               background: Color(0xFF1F2623),
               card: Color(0xFF27302B),
@@ -110,23 +119,24 @@ ThemeData buildKinlyTheme(Brightness brightness) {
             ),
           )
           : const KinlySections(
+            // LIGHT MODE – tuned for better contrast but same moods
             flow: SectionColors(
-              background: Color(0xFFE2F0E6), // sage
+              background: Color(0xFFE2F0E6), // sagey background
               card: Color(0xFFD6E8DD),
-              icon: Color(0xFF366D59),
-              accent: Color(0xFFF5C96A),
+              icon: Color(0xFF26473A), // deeper teal (~AAA vs background)
+              accent: Color(0xFFF5C96A), // decorative; text should use sageText
             ),
             share: SectionColors(
               background: Color(0xFFF9F4E8), // honey cream
               card: Colors.white,
-              icon: Color(0xFFDAA24E),
-              accent: Color(0xFF366D59),
+              icon: Color(0xFF704300), // honeyText (~AAA vs background)
+              accent: tealBrand, // brand teal accent
             ),
             pulse: SectionColors(
               background: Color(0xFFFCEFEA),
               card: Color(0xFFFFF7F3),
-              icon: Color(0xFFE48E73),
-              accent: Color(0xFF366D59),
+              icon: Color(0xFF7F2B0E), // deeper coral/rust (~AAA vs background)
+              accent: tealBrand,
             ),
           );
 
@@ -158,6 +168,60 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     scaffoldBackgroundColor: colorScheme.surface,
     elevatedButtonTheme: elevatedButtonTheme,
     snackBarTheme: snackBarTheme,
-    extensions: [spacing, corners, elevations, appSizes, sections],
+    extensions: [
+      spacing,
+      corners,
+      elevations,
+      appSizes,
+      sections,
+
+      // OPTIONAL: expose text-safe brand variants for use in widgets
+      const _KinlyBrandTextColors(
+        sageText: sageText,
+        honeyText: honeyText,
+        tealBrand: tealBrand,
+      ),
+    ],
   );
+}
+
+/// Optional helper ThemeExtension if you want to access the
+/// AAA-safe brand text colors from widgets via:
+/// `Theme.of(context).extension<_KinlyBrandTextColors>()`
+class _KinlyBrandTextColors extends ThemeExtension<_KinlyBrandTextColors> {
+  final Color sageText;
+  final Color honeyText;
+  final Color tealBrand;
+
+  const _KinlyBrandTextColors({
+    required this.sageText,
+    required this.honeyText,
+    required this.tealBrand,
+  });
+
+  @override
+  _KinlyBrandTextColors copyWith({
+    Color? sageText,
+    Color? honeyText,
+    Color? tealBrand,
+  }) {
+    return _KinlyBrandTextColors(
+      sageText: sageText ?? this.sageText,
+      honeyText: honeyText ?? this.honeyText,
+      tealBrand: tealBrand ?? this.tealBrand,
+    );
+  }
+
+  @override
+  _KinlyBrandTextColors lerp(
+    ThemeExtension<_KinlyBrandTextColors>? other,
+    double t,
+  ) {
+    if (other is! _KinlyBrandTextColors) return this;
+    return _KinlyBrandTextColors(
+      sageText: Color.lerp(sageText, other.sageText, t) ?? sageText,
+      honeyText: Color.lerp(honeyText, other.honeyText, t) ?? honeyText,
+      tealBrand: Color.lerp(tealBrand, other.tealBrand, t) ?? tealBrand,
+    );
+  }
 }
