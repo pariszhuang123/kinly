@@ -53,7 +53,6 @@ SELECT set_config(
   true
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 WITH res AS (
   SELECT public.homes_create_with_invite('Membership Test Home') AS payload
@@ -96,8 +95,6 @@ WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
   AND revoked_at IS NULL
 LIMIT 1;
 
-RESET ROLE;
-
 -- -------------------------------------------------------------------
 -- Member joins via invite
 -- -------------------------------------------------------------------
@@ -107,14 +104,11 @@ SELECT set_config(
   true
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 -- homes.join(code) now returns jsonb, but we only need side-effects
 SELECT public.homes_join(
   (SELECT code FROM invite_codes WHERE label = 'primary')
 );
-
-RESET ROLE;
 
 -- -------------------------------------------------------------------
 -- membership_me_current returns NULL for outsider
@@ -125,7 +119,6 @@ SELECT set_config(
   true
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 WITH payload AS (
   SELECT public.membership_me_current() AS body
@@ -134,8 +127,6 @@ SELECT ok(
   (SELECT body->'current' IS NULL FROM payload),
   'membership_me_current returns null for non-members'
 );
-
-RESET ROLE;
 
 -- -------------------------------------------------------------------
 -- membership_me_current returns joined home for member
@@ -146,7 +137,6 @@ SELECT set_config(
   true
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 WITH payload AS (
   SELECT public.membership_me_current() AS body
@@ -157,8 +147,6 @@ SELECT is(
   'membership_me_current returns active home for member'
 );
 
-RESET ROLE;
-
 -- -------------------------------------------------------------------
 -- members_list_active_by_home excludes caller by default
 -- -------------------------------------------------------------------
@@ -168,7 +156,6 @@ SELECT set_config(
   true
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 WITH rows AS (
   SELECT *
@@ -182,8 +169,6 @@ SELECT is(
   'members_list_active_by_home excludes caller when p_exclude_self=TRUE'
 );
 
-RESET ROLE;
-
 -- -------------------------------------------------------------------
 -- members_list_active_by_home includes caller and exposes transfer flags
 -- -------------------------------------------------------------------
@@ -193,7 +178,6 @@ SELECT set_config(
   true
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 WITH rows AS (
   SELECT *
@@ -241,8 +225,6 @@ SELECT ok(
   ),
   'owner is not a transfer target'
 );
-
-RESET ROLE;
 
 -- -------------------------------------------------------------------
 -- Constraint: user may not hold two current memberships simultaneously

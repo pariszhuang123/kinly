@@ -58,17 +58,18 @@ FROM tmp_users
 ON CONFLICT (id) DO NOTHING;
 
 -- Owner creates a home with invite
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 WITH res AS (
   SELECT public.homes_create_with_invite('Primary Home') AS payload
 )
 INSERT INTO tmp_homes (label, home_id)
 SELECT 'primary', (payload->'home'->>'id')::uuid FROM res;
-
-RESET ROLE;
 
 SELECT ok(
   (SELECT COUNT(*) FROM tmp_homes WHERE label = 'primary' AND home_id IS NOT NULL) = 1,
@@ -105,17 +106,18 @@ SELECT ok(
 );
 
 -- Owner cannot leave before transferring ownership
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 SELECT throws_like(
   $$ SELECT public.homes_leave((SELECT home_id FROM tmp_homes WHERE label = 'primary')); $$,
   '%OWNER_MUST_TRANSFER_FIRST%',
   'owner must transfer ownership before leaving'
 );
-
-RESET ROLE;
 
 -- Capture initial invite code
 INSERT INTO invite_codes (label, code)
@@ -126,11 +128,14 @@ WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
 LIMIT 1;
 
 -- Owner rotates invite
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
+
 SELECT public.invites_rotate((SELECT home_id FROM tmp_homes WHERE label = 'primary'));
-RESET ROLE;
 
 SELECT ok(
   EXISTS (
@@ -157,9 +162,12 @@ SELECT isnt(
 );
 
 -- Non-owner cannot rotate invites
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 SELECT throws_like(
   $$ SELECT public.invites_rotate((SELECT home_id FROM tmp_homes WHERE label = 'primary')); $$,
@@ -167,14 +175,17 @@ SELECT throws_like(
   'non-owner cannot rotate invites'
 );
 
-RESET ROLE;
-
 -- Member joins via active invite
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
-SELECT public.homes_join((SELECT code FROM invite_codes WHERE label = 'active_after_rotate'));
-RESET ROLE;
+
+SELECT public.homes_join(
+  (SELECT code FROM invite_codes WHERE label = 'active_after_rotate')
+);
 
 SELECT ok(
   EXISTS (
@@ -198,9 +209,13 @@ SELECT is(
   'joining increments invite used_count'
 );
 
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
+
 WITH payload AS (
   SELECT public.membership_me_current() AS body
 )
@@ -209,17 +224,19 @@ SELECT is(
   (SELECT home_id::text FROM tmp_homes WHERE label = 'primary'),
   'membership_me_current reports the joined home'
 );
-RESET ROLE;
 
 -- Transfer ownership from original owner to member_one
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
+
 SELECT public.homes_transfer_owner(
   (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
   (SELECT user_id FROM tmp_users WHERE label = 'member_one')
 );
-RESET ROLE;
 
 SELECT ok(
   EXISTS (
@@ -244,10 +261,16 @@ SELECT ok(
 );
 
 -- New owner revokes invites
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
-SELECT public.invites_revoke((SELECT home_id FROM tmp_homes WHERE label = 'primary'));
+
+SELECT public.invites_revoke(
+  (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+);
 
 -- Second revoke returns no_active_invite info
 WITH revoke_payload AS (
@@ -259,20 +282,25 @@ SELECT is(
   'second invites_revoke returns no_active_invite when nothing to revoke'
 );
 
-RESET ROLE;
-
 SELECT is(
-  (SELECT COUNT(*) FROM public.invites WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary') AND revoked_at IS NULL),
+  (SELECT COUNT(*) FROM public.invites
+    WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+      AND revoked_at IS NULL),
   0,
   'invites_revoke clears active invites'
 );
 
 -- Rotate again for later tests
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
-SELECT public.invites_rotate((SELECT home_id FROM tmp_homes WHERE label = 'primary'));
-RESET ROLE;
+
+SELECT public.invites_rotate(
+  (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+);
 
 INSERT INTO invite_codes (label, code)
 SELECT 'post_transfer', code::text
@@ -288,11 +316,16 @@ SELECT ok(
 );
 
 -- Original owner (now member) can leave successfully
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
-SELECT public.homes_leave((SELECT home_id FROM tmp_homes WHERE label = 'primary'));
-RESET ROLE;
+
+SELECT public.homes_leave(
+  (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+);
 
 SELECT ok(
   NOT EXISTS (
@@ -304,9 +337,13 @@ SELECT ok(
   'member leave clears current membership'
 );
 
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
+
 WITH payload AS (
   SELECT public.membership_me_current() AS body
 )
@@ -314,14 +351,18 @@ SELECT ok(
   (SELECT body->'current' IS NULL FROM payload),
   'membership_me_current is null after leaving the home'
 );
-RESET ROLE;
 
 -- New owner leaves last, deactivating the home
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
-SELECT public.homes_leave((SELECT home_id FROM tmp_homes WHERE label = 'primary'));
-RESET ROLE;
+
+SELECT public.homes_leave(
+  (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+);
 
 SELECT ok(
   EXISTS (
@@ -334,19 +375,26 @@ SELECT ok(
 );
 
 -- Joining an inactive home fails even with a saved code
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'member_two'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'member_two'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
+
 SELECT throws_like(
   $$ SELECT public.homes_join((SELECT code FROM invite_codes WHERE label = 'post_transfer')); $$,
   '%INACTIVE_INVITE%',
   'inactive home blocks new joins'
 );
-RESET ROLE;
 
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
+
 WITH payload AS (
   SELECT public.membership_me_current() AS body
 )
@@ -354,7 +402,6 @@ SELECT ok(
   (SELECT body->'current' IS NULL FROM payload),
   'membership_me_current is null for former owner after leaving'
 );
-RESET ROLE;
 
 SELECT * FROM finish();
 ROLLBACK;

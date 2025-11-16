@@ -54,9 +54,12 @@ FROM tmp_ids
 ON CONFLICT (home_id) DO NOTHING;
 
 -- Simulate authenticated context for RLS + auth.uid()
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_ids), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_ids),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 -- 1️⃣ Initial counters
 SELECT is(
@@ -239,15 +242,18 @@ SELECT 'third', (payload->'chore'->>'id')::uuid
 FROM res;
 
 -- 9️⃣ Simulate nearing the active chore limit (set to 20) and ensure create fails
-RESET ROLE;
 SELECT public._home_usage_increment(
   (SELECT home_id FROM tmp_ids),
   19, -- current active=1 -> push to 20
   0
 );
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_ids), true);
+
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_ids),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 SELECT throws_like(
   $$
@@ -267,18 +273,20 @@ SELECT throws_like(
 );
 
 -- 🔟 Reset active count back down
-RESET ROLE;
 SELECT public._home_usage_increment(
   (SELECT home_id FROM tmp_ids),
   -19,
   0
 );
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_ids), true);
+
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_ids),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 -- 1️⃣1 Simulate photo cap (set cached count to 15) and ensure save fails when adding new photo
-RESET ROLE;
 SELECT public._home_usage_increment(
   (SELECT home_id FROM tmp_ids),
   0,
@@ -288,9 +296,13 @@ SELECT public._home_usage_increment(
     WHERE home_id = (SELECT home_id FROM tmp_ids)
   ), 0)
 );
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_ids), true);
+
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_ids),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 SELECT throws_like(
   $$

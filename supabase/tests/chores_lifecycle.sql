@@ -50,9 +50,12 @@ FROM tmp_users
 ON CONFLICT (id) DO NOTHING;
 
 -- Owner creates a home via homes_create_with_invite
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 WITH res AS (
   SELECT public.homes_create_with_invite() AS payload
@@ -67,16 +70,17 @@ WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
   AND revoked_at IS NULL
 LIMIT 1;
 
-RESET ROLE;
-
 -- Helper joins home via homes_join
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'helper'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'helper'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
-SELECT public.homes_join((SELECT code FROM invite_codes WHERE label = 'primary'));
-
-RESET ROLE;
+SELECT public.homes_join(
+  (SELECT code FROM invite_codes WHERE label = 'primary')
+);
 
 -- -------------------------------------------------------------------
 -- Create initial one-off chore (no assignee yet ⇒ state = draft)
@@ -91,9 +95,12 @@ RESET ROLE;
 --   p_expectation_photo_path DEFAULT NULL
 -- )
 -- -------------------------------------------------------------------
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 WITH res AS (
   SELECT public.chores_create(
@@ -109,8 +116,6 @@ WITH res AS (
 )
 INSERT INTO tmp_chores (label, chore_id)
 SELECT 'one_off', (payload->>'id')::uuid FROM res;
-
-RESET ROLE;
 
 -- After creation, active_chores should be 1 (draft counts as a slot)
 SELECT is(
@@ -138,9 +143,12 @@ SELECT is(
 --   * set state = active
 --   * NOT change usage counters
 -- -------------------------------------------------------------------
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 SELECT public.chores_update(
   (SELECT chore_id FROM tmp_chores WHERE label = 'one_off'),
@@ -152,8 +160,6 @@ SELECT public.chores_update(
   NULL,                                                      -- leave how_to_video_url
   'Do the laundry'                                           -- keep notes
 );
-
-RESET ROLE;
 
 -- Assignee should now be helper
 SELECT is(
@@ -187,13 +193,16 @@ SELECT ok(
 -- -------------------------------------------------------------------
 -- Helper completes the one-off chore via chore_complete
 -- -------------------------------------------------------------------
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'helper'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'helper'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
-SELECT public.chore_complete((SELECT chore_id FROM tmp_chores WHERE label = 'one_off'));
-
-RESET ROLE;
+SELECT public.chore_complete(
+  (SELECT chore_id FROM tmp_chores WHERE label = 'one_off')
+);
 
 SELECT is(
   (SELECT state::text
@@ -225,9 +234,12 @@ SELECT ok(
 -- Create recurring chore with expectation photo
 -- This should increment both active_chores (by 1) and chore_photos (by 1).
 -- -------------------------------------------------------------------
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
 WITH res AS (
   SELECT public.chores_create(
@@ -243,8 +255,6 @@ WITH res AS (
 )
 INSERT INTO tmp_chores (label, chore_id)
 SELECT 'photo_chore', (payload->>'id')::uuid FROM res;
-
-RESET ROLE;
 
 SELECT is(
   (SELECT chore_photos
@@ -263,13 +273,16 @@ SELECT is(
 -- -------------------------------------------------------------------
 -- Cancel recurring chore
 -- -------------------------------------------------------------------
-SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SET LOCAL ROLE authenticated;
 
-SELECT public.chores_cancel((SELECT chore_id FROM tmp_chores WHERE label = 'photo_chore'));
-
-RESET ROLE;
+SELECT public.chores_cancel(
+  (SELECT chore_id FROM tmp_chores WHERE label = 'photo_chore')
+);
 
 SELECT is(
   (SELECT state::text
