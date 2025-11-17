@@ -309,7 +309,7 @@ SELECT is(
 -- chores should be excluded.
 SELECT is(
   (
-    SELECT count(*)
+    SELECT count(*)::integer
     FROM public.chores_list_for_home(
       (SELECT home_id FROM tmp_homes WHERE label = 'primary')
     )
