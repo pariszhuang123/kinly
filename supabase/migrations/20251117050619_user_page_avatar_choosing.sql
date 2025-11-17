@@ -91,37 +91,41 @@ BEGIN
   -- ✅ Use shared helper for effective plan
   v_plan := public._home_effective_plan(p_home_id);
 
+  IF v_plan IS NULL THEN
+    v_plan := 'free';
+  END IF;
+
   -- Avatars already used by *other* current members in this home
-  WITH used_by_others AS (
-    SELECT DISTINCT p.avatar_id
-    FROM public.memberships m
-    JOIN public.profiles p
-      ON p.id = m.user_id
-    WHERE m.home_id = p_home_id
-      AND m.is_current = TRUE
-      AND p.deactivated_at IS NULL
-      AND p.id <> v_self_user
-  )
   RETURN QUERY
-  SELECT
-    a.id,
-    a.storage_path,
-    a.category
-  FROM public.avatars a
-  LEFT JOIN used_by_others u
-    ON u.avatar_id = a.id
-  WHERE
-    (
-      -- plan gating
-      v_plan <> 'free'
-      OR (v_plan = 'free' AND a.category = 'animal')
+    WITH used_by_others AS (
+      SELECT DISTINCT p.avatar_id
+      FROM public.memberships m
+      JOIN public.profiles p
+        ON p.id = m.user_id
+      WHERE m.home_id = p_home_id
+        AND m.is_current = TRUE
+        AND p.deactivated_at IS NULL
+        AND p.id <> v_self_user
     )
-    AND (
-      u.avatar_id IS NULL
-      OR a.id = v_self_avatar
-    )
-  ORDER BY
-    a.created_at ASC;
+    SELECT
+      a.id,
+      a.storage_path,
+      a.category
+    FROM public.avatars a
+    LEFT JOIN used_by_others u
+      ON u.avatar_id = a.id
+    WHERE
+      (
+        -- plan gating
+        v_plan <> 'free'
+        OR (v_plan = 'free' AND a.category = 'animal')
+      )
+      AND (
+        u.avatar_id IS NULL           -- not used by others
+        OR a.id = v_self_avatar       -- always allow my current avatar
+      )
+    ORDER BY
+      a.created_at ASC;
 END;
 $$;
 
