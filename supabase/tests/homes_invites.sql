@@ -66,7 +66,7 @@ SELECT set_config(
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 WITH res AS (
-  SELECT public.homes_create_with_invite('Primary Home') AS payload
+  SELECT public.homes_create_with_invite() AS payload
 )
 INSERT INTO tmp_homes (label, home_id)
 SELECT 'primary', (payload->'home'->>'id')::uuid FROM res;

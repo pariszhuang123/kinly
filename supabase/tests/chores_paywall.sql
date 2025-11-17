@@ -236,10 +236,9 @@ SELECT 'third', (chore).id
 FROM res;
 
 -- 9️⃣ Simulate nearing the active chore limit (set to 20) and ensure create fails
-SELECT public._home_usage_increment(
+SELECT public._home_usage_apply_delta(
   (SELECT home_id FROM tmp_ids),
-  19, -- current active=1 -> push to 20
-  0
+  jsonb_build_object('active_chores', 19) -- current active=1 -> push to 20
 );
 
 SELECT set_config(
@@ -267,10 +266,9 @@ SELECT throws_like(
 );
 
 -- 🔟 Reset active count back down
-SELECT public._home_usage_increment(
+SELECT public._home_usage_apply_delta(
   (SELECT home_id FROM tmp_ids),
-  -19,
-  0
+  jsonb_build_object('active_chores', -19)
 );
 
 SELECT set_config(
@@ -281,14 +279,16 @@ SELECT set_config(
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 -- 1️⃣1 Simulate photo cap (set cached count to 15) and ensure save fails when adding new photo
-SELECT public._home_usage_increment(
+SELECT public._home_usage_apply_delta(
   (SELECT home_id FROM tmp_ids),
-  0,
-  15 - COALESCE((
-    SELECT chore_photos
-    FROM public.home_usage_counters
-    WHERE home_id = (SELECT home_id FROM tmp_ids)
-  ), 0)
+  jsonb_build_object(
+    'chore_photos',
+    15 - COALESCE((
+      SELECT chore_photos
+      FROM public.home_usage_counters
+      WHERE home_id = (SELECT home_id FROM tmp_ids)
+    ), 0)
+  )
 );
 
 SELECT set_config(

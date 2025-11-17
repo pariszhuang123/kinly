@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/features/home_membership/join/bloc/join_home_bloc.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
@@ -57,19 +58,46 @@ void main() {
             const JoinHomeState(code: 'CODE99', status: JoinHomeStatus.editing),
     act: (bloc) => bloc.add(const JoinHomeSubmitted()),
     expect:
-        () => [
-          const JoinHomeState(
+        () => const [
+          JoinHomeState(code: 'CODE99', status: JoinHomeStatus.submitting),
+          JoinHomeState(
             code: 'CODE99',
-            status: JoinHomeStatus.submitting,
-          ),
-          isA<JoinHomeState>().having(
-            (s) => s.status,
-            'status',
-            JoinHomeStatus.failure,
+            status: JoinHomeStatus.failure,
+            errorMessage: 'Exception: boom',
           ),
         ],
     verify: (_) {
       verify(() => homeRepository.join('CODE99')).called(1);
+    },
+  );
+
+  blocTest<JoinHomeBloc, JoinHomeState>(
+    'surfaces friendly message when home is at the member limit',
+    build: () {
+      when(() => homeRepository.join(any())).thenThrow(
+        HomeJoinException(
+          JoinErrorCode.paywallLimitActiveMembers,
+          'Free plan allows up to 4 active members per home.',
+        ),
+      );
+      return buildBloc();
+    },
+    seed:
+        () =>
+            const JoinHomeState(code: 'FULLHM', status: JoinHomeStatus.editing),
+    act: (bloc) => bloc.add(const JoinHomeSubmitted()),
+    expect:
+        () => const [
+          JoinHomeState(code: 'FULLHM', status: JoinHomeStatus.submitting),
+          JoinHomeState(
+            code: 'FULLHM',
+            status: JoinHomeStatus.failure,
+            errorMessage:
+                'This home has reached its member limit. Ask the owner to upgrade or remove a member.',
+          ),
+        ],
+    verify: (_) {
+      verify(() => homeRepository.join('FULLHM')).called(1);
     },
   );
 }

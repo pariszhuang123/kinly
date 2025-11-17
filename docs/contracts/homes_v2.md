@@ -88,6 +88,7 @@ Invite
         "INVALID_CODE",
         "INACTIVE_INVITE",
         "ALREADY_IN_OTHER_HOME",
+        "PAYWALL_LIMIT_ACTIVE_MEMBERS",
         "FORBIDDEN",
         "UNAUTHORIZED"
       ]
@@ -203,6 +204,18 @@ Invite
           "uq_invites_active_one_per_home(home_id) WHERE revoked_at IS NULL",
           "idx_invites_code_active(code) WHERE revoked_at IS NULL"
         ]
+      },
+      "public.home_plan_limits": {
+        "constraints": [
+          "pk_home_plan_limits(plan, metric)"
+        ],
+        "indexes": []
+      },
+      "public.home_usage_counters": {
+        "constraints": [],
+        "indexes": [
+          "pk_home_usage_counters(home_id)"
+        ]
       }
     },
     "functions": {
@@ -307,6 +320,9 @@ homes.join(code)
   - home.isActive = true
   - invite.revokedAt IS NULL
   - user has no other current membership (unique partial index enforces)
+- Paywall:
+  - `_home_assert_quota(homeId, jsonb_build_object('active_members', 1))` enforces `home_plan_limits` before inserting the membership.
+  - Free homes raise `PAYWALL_LIMIT_ACTIVE_MEMBERS` when moving past the active-member cap; premium homes bypass the quota.
  - DB Impl: `public.homes_join` (attaches any floating subscription via `_home_attach_subscription_to_home`)
 
 homes.transferOwner(homeId, newOwnerId)
@@ -331,6 +347,21 @@ members.listByHome(homeId)
 membership.meCurrent()
 - Returns the caller's current membership details (homeId, role, validFrom) or null if not currently in a home.
  - DB Impl: `public.membership_me_current`
+
+profile.me()
+- Returns `{ user_id, username, avatar_storage_path }` for the authenticated caller’s active profile.
+- DB Impl: `public.profile_me`
+
+profile.identityUpdate(username, avatarId)
+- Validates username shape/uniqueness, enforces avatar existence, and applies plan gating (free plans limited to `category='animal'`).
+- Ensures no other active member in the caller’s home already uses the avatar (`memberships.is_current = TRUE` uniqueness guard).
+- Returns `{ username, avatar_id, avatar_storage_path }`.
+- DB Impl: `public.profile_identity_update`
+
+avatars.listForHome(homeId)
+- Lists available avatars ordered by `created_at ASC`, scoped to the caller and hides avatars already picked by other members (except the caller’s current avatar).
+- Plan-aware: uses `_home_effective_plan` so free homes only see the allowed categories.
+- DB Impl: `public.avatars_list_for_home`
 
 ## Errors
 - Format: exceptions include JSON message `{ code, message, details }` and SQLSTATE maps to HTTP.

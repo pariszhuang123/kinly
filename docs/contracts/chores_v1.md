@@ -9,7 +9,7 @@ Scope: Defines the household chore lifecycle for the Home-only MVP so UI, BLoC, 
 - Recurring chores follow a fixed cadence. Backend roll-forward advances to the first occurrence on/after today so clients show a single actionable row.
 - Expectation photos live in Supabase Storage under `storage://households/{homeId}/chores/{choreId}/expectation.jpg`. Clients never store raw URLs; repositories fetch signed URLs on demand.
 - Every meaningful state change emits a `chore_events` record (`create`, `activate`, `update`, `complete`, `cancel`) to power audits, notifications, analytics, and debugging.
-- Free plan guardrails: homes without an active premium entitlement are capped at 20 active chores and 15 expectation photos across all chores. Premium homes (`home_entitlements.plan = 'premium'` and `expires_at > now()`) bypass the cap. Counts are cached per home in `home_usage_counters` so paywall checks are O(1).
+- Free plan guardrails: homes without an active premium entitlement are capped at 20 active chores and 15 expectation photos across all chores. Premium homes (`home_entitlements.plan = 'premium'` and `expires_at > now()`) bypass the cap. Counts are cached per home in `home_usage_counters` so paywall checks are O(1), and the per-plan limits live in `home_plan_limits` so `_home_assert_quota(homeId, deltas jsonb)` can enforce/raise meaningful errors.
 - Lifecycle diagram reference: `docs/diagrams/chores/chore_flow.md`.
 
 ## Entities
@@ -293,7 +293,7 @@ Used in the `assignees` array:
   - Caller: authenticated member of `homeId`.
   - Args: `{ homeId, name, assigneeUserId?, startDate?, recurrence?, notes?, howToVideoUrl?, expectationPhotoPath? }`
   - Returns: `ChoreDto`
-  - Effects: inserts draft chore (or `state='active'` if assignee provided), sets cursor/occurrence, emits `chore_events(event_type='create')`, increments `home_usage_counters.active_chores` (+`chore_photos` if a path is provided). Enforces `_home_assert_within_free_limits` prior to insert.
+  - Effects: inserts draft chore (or `state='active'` if assignee provided), sets cursor/occurrence, emits `chore_events(event_type='create')`, increments `home_usage_counters.active_chores` (+`chore_photos` if a path is provided). Enforces `_home_assert_quota(home_id, jsonb_build_object('active_chores', 1, 'chore_photos', photoDelta))` prior to insert.
   - Errors: `PAYWALL_LIMIT_ACTIVE_CHORES`, `PAYWALL_LIMIT_CHORE_PHOTOS`, `INVALID_INPUT`, `NOT_HOME_MEMBER`.
 
 - ### chores.update

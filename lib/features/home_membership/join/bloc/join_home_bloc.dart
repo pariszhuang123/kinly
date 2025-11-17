@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../data/repositories/home_repository.dart';
+import '../../../../core/supabase/supabase_error_mapper.dart';
 
 part 'join_home_event.dart';
 part 'join_home_state.dart';
@@ -41,7 +42,7 @@ class JoinHomeBloc extends Bloc<JoinHomeEvent, JoinHomeState> {
       emit(
         state.copyWith(
           status: JoinHomeStatus.failure,
-          errorMessage: error.toString(),
+          errorMessage: _mapJoinErrorMessage(error),
         ),
       );
     }
@@ -49,5 +50,17 @@ class JoinHomeBloc extends Bloc<JoinHomeEvent, JoinHomeState> {
 
   void _onReset(JoinHomeReset event, Emitter<JoinHomeState> emit) {
     emit(const JoinHomeState());
+  }
+
+  String _mapJoinErrorMessage(Object error) {
+    if (error is HomeJoinException) {
+      switch (error.code) {
+        case JoinErrorCode.paywallLimitActiveMembers:
+          return 'This home has reached its member limit. Ask the owner to upgrade or remove a member.';
+        default:
+          return error.message;
+      }
+    }
+    return error.toString();
   }
 }

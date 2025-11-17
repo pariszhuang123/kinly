@@ -55,7 +55,7 @@ SELECT set_config(
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 WITH res AS (
-  SELECT public.homes_create_with_invite('Membership Test Home') AS payload
+  SELECT public.homes_create_with_invite() AS payload
 )
 INSERT INTO tmp_homes (label, home_id)
 SELECT
@@ -110,6 +110,12 @@ SELECT public.homes_join(
   (SELECT code FROM invite_codes WHERE label = 'primary')
 );
 
+-- Reduce the free-plan active_members limit for the next checks (owner + 1 member).
+UPDATE public.home_plan_limits
+   SET max_value = 2
+ WHERE plan = 'free'
+   AND metric = 'active_members';
+
 -- -------------------------------------------------------------------
 -- membership_me_current returns NULL for outsider
 -- -------------------------------------------------------------------
@@ -146,6 +152,30 @@ SELECT is(
   (SELECT home_id::text FROM tmp_homes WHERE label = 'primary'),
   'membership_me_current returns active home for member'
 );
+
+-- With limit tightened, inviting another member should be blocked by the paywall.
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'outsider'),
+  true
+);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
+SELECT throws_like(
+  $$
+  SELECT public.homes_join(
+    (SELECT code FROM invite_codes WHERE label = 'primary')
+  )
+  $$,
+  '%PAYWALL_LIMIT_ACTIVE_MEMBERS%',
+  'free homes cannot exceed the active member cap'
+);
+
+-- Restore default limit for other tests.
+UPDATE public.home_plan_limits
+   SET max_value = 4
+ WHERE plan = 'free'
+   AND metric = 'active_members';
 
 -- -------------------------------------------------------------------
 -- members_list_active_by_home excludes caller by default

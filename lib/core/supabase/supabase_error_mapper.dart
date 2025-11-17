@@ -8,6 +8,7 @@ enum JoinErrorCode {
   invalidCode,
   inactiveInvite,
   alreadyInOtherHome,
+  paywallLimitActiveMembers,
   unauthorized,
   forbidden,
   unknown,
@@ -79,6 +80,12 @@ class SupabaseErrorMapper {
         case 'INACTIVE_INVITE':
           return HomeJoinException(
             JoinErrorCode.inactiveInvite,
+            humanMessage,
+            details: details,
+          );
+        case 'PAYWALL_LIMIT_ACTIVE_MEMBERS':
+          return HomeJoinException(
+            JoinErrorCode.paywallLimitActiveMembers,
             humanMessage,
             details: details,
           );

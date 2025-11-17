@@ -34,7 +34,7 @@ Use pgTAP (preferred) or `supabase db test` harness to exercise the new RPCs und
 - [ ] Invalid expectation photo paths fail with `INVALID_MEDIA_PATH`.
 - [ ] `chores_update` rejects non-members and enforces the assignee belongs to the same home.
 - [ ] Completing a cancelled chore raises `ALREADY_FINALIZED` (or equivalent business error).
-- [ ] Paywall enforcement (free homes only):
+- [ ] Paywall enforcement (free homes only, configured via `home_plan_limits` + `_home_assert_quota`):
   - Creating the 21st active chore returns `PAYWALL_LIMIT_ACTIVE_CHORES`; enabling premium (`home_entitlements.plan='premium'` with `expires_at` in the future) lifts the cap.
   - Adding the 16th expectation photo via create/update returns `PAYWALL_LIMIT_CHORE_PHOTOS`; removing a photo frees the slot.
   - Counters stay consistent after each flow (no negative values, premium homes bypass the checks but counters still update).

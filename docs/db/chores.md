@@ -15,7 +15,10 @@ Source migrations:
   - Triggers keep `home_entitlements` up to date when rows insert/update/delete or when subscriptions attach/detach from homes.
 - `public.home_usage_counters`
   - `home_id` (PK/FK), `active_chores`, `chore_photos`, `updated_at`.
-  - Maintained by RPCs via `_home_usage_increment` so paywall checks never scan `chores`.
+  - Maintained by RPCs via `_home_usage_apply_delta` so paywall checks never scan `chores`.
+- `public.home_plan_limits`
+  - `(plan, metric)` PK describing how many `active_chores`, `chore_photos`, or `active_members` each plan allows.
+  - Seeded with the free-tier defaults (20/15/4) but editable by admins for experiments.
 - `public.chores`
   - FK: `home_id -> homes.id`, `created_by_user_id -> profiles.id`, optional `assignee_user_id -> profiles.id`.
   - Columns: `start_date`, `recurrence` (`recurrence_interval` enum), `recurrence_cursor`, `next_occurrence`, `expectation_photo_path`, `how_to_video_url`, `notes`, `state` (`chore_state` enum), timestamps.
@@ -39,7 +42,7 @@ Source migrations:
 
 ## Helper functions
 - Entitlements: `_home_is_premium(home_id)` selects from `home_entitlements`, `home_entitlements_refresh(home_id)` recomputes the cache, and helper RPCs `_home_attach_subscription_to_home/_home_detach_subscription_to_home` keep `user_subscriptions.home_id` aligned with memberships.
-- Quotas: `_home_assert_within_free_limits(home_id, active_delta, photo_delta)` reads cached counters and raises `PAYWALL_LIMIT_ACTIVE_CHORES` / `PAYWALL_LIMIT_CHORE_PHOTOS` when free-tier caps would be exceeded. `_home_usage_increment(home_id, active_delta, photo_delta)` atomically adjusts cached values (create/update/cancel/complete flows call it).
+- Quotas: `_home_assert_quota(home_id, jsonb_deltas)` reads cached counters + `home_plan_limits` and raises `PAYWALL_LIMIT_ACTIVE_CHORES` / `PAYWALL_LIMIT_CHORE_PHOTOS` / `PAYWALL_LIMIT_ACTIVE_MEMBERS` when free-tier caps would be exceeded. `_home_usage_apply_delta(home_id, jsonb_deltas)` atomically adjusts cached values (create/update/cancel/complete flows call it).
 - Membership helpers: `is_home_member`, `is_home_owner`, `_assert_home_member`.
 - Scheduling helpers: `_chore_interval`, `_chore_roll_forward`, `_chore_compute_schedule`.
 - Event helper: `_chore_emit_event`.
@@ -63,4 +66,4 @@ All RPCs are `SECURITY DEFINER`, use `_assert_home_member`, and call `api_error/
 - Policies (`storage.objects`) ensure path prefix matches a home the caller belongs to (insert/select/update/delete).
 - Expectation photos stored at `households/{homeId}/chores/{choreId}/expectation.jpg`; DB stores the path only.
 
-Free tier limits enforced inside `chores_create`/`chores_update`: max 20 active chores and 15 expectation photos per home. Errors bubble up as `PAYWALL_LIMIT_ACTIVE_CHORES` / `PAYWALL_LIMIT_CHORE_PHOTOS`, backed by the cached values in `home_usage_counters`.
+Free tier limits enforced inside `chores_create`/`chores_update`: max 20 active chores and 15 expectation photos per home. Errors bubble up as `PAYWALL_LIMIT_ACTIVE_CHORES` / `PAYWALL_LIMIT_CHORE_PHOTOS` from `_home_assert_quota`, backed by the cached values in `home_usage_counters` + thresholds from `home_plan_limits`.

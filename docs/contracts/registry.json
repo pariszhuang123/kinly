@@ -335,6 +335,7 @@
             "INVALID_CODE",
             "INACTIVE_INVITE",
             "ALREADY_IN_OTHER_HOME",
+            "PAYWALL_LIMIT_ACTIVE_MEMBERS",
             "FORBIDDEN",
             "UNAUTHORIZED"
           ]
@@ -440,6 +441,66 @@
           "caller": "member",
           "status": "absent",
           "notes": "Not present in DB; historical memberships RPC TBD."
+        },
+        "profiles.me": {
+          "type": "rpc",
+          "auth": "authenticated",
+          "impl": "public.profile_me",
+          "args": {},
+          "returns": {
+            "columns": {
+              "user_id": "uuid",
+              "username": "citext",
+              "avatar_storage_path": "text"
+            }
+          },
+          "errors": [
+            "UNAUTHORIZED"
+          ]
+        },
+        "profiles.identityUpdate": {
+          "type": "rpc",
+          "auth": "authenticated",
+          "impl": "public.profile_identity_update",
+          "args": {
+            "p_username": "citext",
+            "p_avatar_id": "uuid"
+          },
+          "returns": {
+            "columns": {
+              "username": "citext",
+              "avatar_id": "uuid",
+              "avatar_storage_path": "text"
+            }
+          },
+          "errors": [
+            "INVALID_USERNAME",
+            "USERNAME_TAKEN",
+            "AVATAR_NOT_FOUND",
+            "AVATAR_NOT_ALLOWED_FOR_PLAN",
+            "AVATAR_IN_USE",
+            "PROFILE_NOT_FOUND",
+            "UNAUTHORIZED"
+          ]
+        },
+        "avatars.listForHome": {
+          "type": "rpc",
+          "auth": "authenticated",
+          "impl": "public.avatars_list_for_home",
+          "args": {
+            "p_home_id": "uuid"
+          },
+          "returns": {
+            "columns": {
+              "id": "uuid",
+              "storage_path": "text",
+              "category": "text"
+            }
+          },
+          "errors": [
+            "NOT_MEMBER",
+            "UNAUTHORIZED"
+          ]
         }
       },
       "rls": [

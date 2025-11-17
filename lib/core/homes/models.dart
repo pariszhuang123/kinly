@@ -16,14 +16,26 @@ class LeaveResult {
   factory LeaveResult.fromJson(Map<String, dynamic> json) {
     final code = (json['code'] as String?)?.toUpperCase();
     final data = (json['data'] as Map?)?.cast<String, dynamic>() ?? const {};
-    final deactivated = (data['homeDeactivated'] as bool?) ?? false;
+    final deactivated =
+        (data['home_deactivated'] as bool?) ??
+        (data['homeDeactivated'] as bool?) ??
+        false;
+    final membersRemainingValue =
+        data.containsKey('members_remaining')
+            ? data['members_remaining']
+            : data['membersRemaining'];
+    final roleBeforeValue =
+        data.containsKey('role_before')
+            ? data['role_before']
+            : data['roleBefore'];
     return LeaveResult(
-      outcome: code == 'HOME_DEACTIVATED'
-          ? LeaveOutcome.homeDeactivated
-          : LeaveOutcome.leftOk,
+      outcome:
+          code == 'HOME_DEACTIVATED'
+              ? LeaveOutcome.homeDeactivated
+              : LeaveOutcome.leftOk,
       homeDeactivated: deactivated,
-      membersRemaining: (data['membersRemaining'] as num?)?.toInt() ?? 0,
-      roleBefore: data['roleBefore'] as String?,
+      membersRemaining: (membersRemainingValue as num?)?.toInt() ?? 0,
+      roleBefore: roleBeforeValue as String?,
     );
   }
 }
