@@ -172,7 +172,7 @@ WITH res AS (
   SELECT public.chores_create(
     p_home_id                := (SELECT home_id FROM tmp_ids),
     p_name                   := 'Second chore',
-    p_assignee_user_id       := NULL,
+    p_assignee_user_id       := (SELECT user_id FROM tmp_ids),  -- 👈 assign to test user
     p_start_date             := current_date,
     p_recurrence             := 'none'::public.recurrence_interval,
     p_how_to_video_url       := NULL,
@@ -194,22 +194,13 @@ SELECT is(
   'active counter increments for second chore'
 );
 
--- 1) Make the current JWT sub match the assignee of the "second" chore
+-- 1) Ensure we are acting as the test user (the assignee)
 SELECT set_config(
   'request.jwt.claim.sub',
-  (
-    SELECT assignee_user_id::text
-    FROM public.chores
-    WHERE id = (SELECT chore_id FROM chore_ids WHERE label = 'second')
-  ),
+  (SELECT user_id::text FROM tmp_ids),
   true
 );
-
-SELECT set_config(
-  'request.jwt.claim.role',
-  'authenticated',
-  true
-);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 -- 2) Now complete the chore as the correct assignee
 SELECT public.chore_complete(
