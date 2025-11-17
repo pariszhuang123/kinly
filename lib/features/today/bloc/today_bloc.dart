@@ -2,7 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/chores/models.dart'; // ChoreListEntry, etc.
+import '../../../core/profile/models.dart';
 import '../../../data/repositories/chores_repository.dart';
+import '../../../data/repositories/profile_repository.dart';
 import '../domain/models.dart'; // TodayFlowTask etc.
 
 part 'today_event.dart';
@@ -10,12 +12,15 @@ part 'today_state.dart';
 
 class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final ChoresRepository _choresRepository;
+  final ProfileRepository _profileRepository;
   final String _homeId;
 
   TodayBloc({
     required ChoresRepository choresRepository,
+    required ProfileRepository profileRepository,
     required String homeId,
   }) : _choresRepository = choresRepository,
+       _profileRepository = profileRepository,
        _homeId = homeId,
        super(const TodayState.loading()) {
     on<TodayStarted>(_onStarted);
@@ -40,11 +45,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     Emitter<TodayState> emit, {
     bool isRefresh = false,
   }) async {
+    TodayUserProfile? profile = state.profile;
     try {
       if (!isRefresh) {
-        emit(const TodayState.loading());
+        emit(TodayState.loading(profile: profile));
       }
 
+      final profileFuture = _profileRepository.getCurrentProfile();
       final draftsFuture = _choresRepository.listTodayFlow(
         homeId: _homeId,
         state: ChoreState.draft,
@@ -54,6 +61,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         state: ChoreState.active,
       );
 
+      profile = await _resolveProfile(profileFuture, fallback: profile);
       final drafts = await draftsFuture;
       final active = await activeFuture;
 
@@ -68,6 +76,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       emit(
         TodayState.loaded(
           flowTasks: flowTasks,
+          profile: profile,
           // later: you can add today’s expenses, gratitude items, etc.
         ),
       );
@@ -77,9 +86,27 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         TodayState.failure(
           message: "Could not load today's chores. Please try again.",
           error: error,
+          profile: profile,
         ),
       );
       // optional: log error/stackTrace via your logger/Sentry here
+    }
+  }
+
+  Future<TodayUserProfile?> _resolveProfile(
+    Future<UserProfile?> future, {
+    TodayUserProfile? fallback,
+  }) async {
+    try {
+      final profile = await future;
+      if (profile == null) return fallback;
+      return TodayUserProfile(
+        userId: profile.userId,
+        username: profile.username,
+        avatarUrl: profile.avatarUrl,
+      );
+    } catch (_) {
+      return fallback;
     }
   }
 

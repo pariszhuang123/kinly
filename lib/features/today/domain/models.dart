@@ -59,3 +59,19 @@ class TodayShareExpense extends Equatable {
   @override
   List<Object?> get props => [id, title, amount, isUpcoming];
 }
+
+/// View model representing the current user shown in the Today header.
+class TodayUserProfile extends Equatable {
+  final String userId;
+  final String username;
+  final String? avatarUrl;
+
+  const TodayUserProfile({
+    required this.userId,
+    required this.username,
+    this.avatarUrl,
+  });
+
+  @override
+  List<Object?> get props => [userId, username, avatarUrl];
+}

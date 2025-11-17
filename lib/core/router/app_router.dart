@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/repositories/chores_repository.dart';
+import '../../data/repositories/profile_repository.dart';
 import '../../features/today/ui/today_provider.dart';
 import '../../features/home_membership/start/ui/start_home_provider.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
@@ -86,7 +88,8 @@ GoRouter createRouter({
           final homeId = authBloc.state.membership!.homeId;
           return TodayProvider(
             homeId: homeId,
-            choresRepository: sl(), // or sl<ChoresRepository>()
+            choresRepository: sl<ChoresRepository>(),
+            profileRepository: sl<ProfileRepository>(),
           );
         },
       ),

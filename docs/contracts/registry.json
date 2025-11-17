@@ -441,66 +441,6 @@
           "caller": "member",
           "status": "absent",
           "notes": "Not present in DB; historical memberships RPC TBD."
-        },
-        "profiles.me": {
-          "type": "rpc",
-          "auth": "authenticated",
-          "impl": "public.profile_me",
-          "args": {},
-          "returns": {
-            "columns": {
-              "user_id": "uuid",
-              "username": "citext",
-              "avatar_storage_path": "text"
-            }
-          },
-          "errors": [
-            "UNAUTHORIZED"
-          ]
-        },
-        "profiles.identityUpdate": {
-          "type": "rpc",
-          "auth": "authenticated",
-          "impl": "public.profile_identity_update",
-          "args": {
-            "p_username": "citext",
-            "p_avatar_id": "uuid"
-          },
-          "returns": {
-            "columns": {
-              "username": "citext",
-              "avatar_id": "uuid",
-              "avatar_storage_path": "text"
-            }
-          },
-          "errors": [
-            "INVALID_USERNAME",
-            "USERNAME_TAKEN",
-            "AVATAR_NOT_FOUND",
-            "AVATAR_NOT_ALLOWED_FOR_PLAN",
-            "AVATAR_IN_USE",
-            "PROFILE_NOT_FOUND",
-            "UNAUTHORIZED"
-          ]
-        },
-        "avatars.listForHome": {
-          "type": "rpc",
-          "auth": "authenticated",
-          "impl": "public.avatars_list_for_home",
-          "args": {
-            "p_home_id": "uuid"
-          },
-          "returns": {
-            "columns": {
-              "id": "uuid",
-              "storage_path": "text",
-              "category": "text"
-            }
-          },
-          "errors": [
-            "NOT_MEMBER",
-            "UNAUTHORIZED"
-          ]
         }
       },
       "rls": [
@@ -545,6 +485,18 @@
             "indexes": [
               "uq_invites_active_one_per_home(home_id) WHERE revoked_at IS NULL",
               "idx_invites_code_active(code) WHERE revoked_at IS NULL"
+            ]
+          },
+          "public.home_plan_limits": {
+            "constraints": [
+              "pk_home_plan_limits(plan, metric)"
+            ],
+            "indexes": []
+          },
+          "public.home_usage_counters": {
+            "constraints": [],
+            "indexes": [
+              "pk_home_usage_counters(home_id)"
             ]
           }
         },
@@ -704,6 +656,69 @@
           "calls": [
             "homes.transferOwner"
           ]
+        },
+        "users.profileMe": {
+          "type": "rpc",
+          "auth": "authenticated",
+          "caller": "member",
+          "impl": "public.profile_me",
+          "args": {},
+          "returns": {
+            "columns": {
+              "user_id": "uuid",
+              "username": "citext",
+              "avatar_storage_path": "text"
+            }
+          },
+          "notes": [
+            "SECURITY DEFINER + `_assert_authenticated`",
+            "Filters out deactivated profiles and joins avatars table for storage_path"
+          ]
+        },
+        "profile.identityUpdate": {
+          "type": "rpc",
+          "auth": "authenticated",
+          "caller": "member",
+          "impl": "public.profile_identity_update",
+          "args": {
+            "p_username": "citext",
+            "p_avatar_id": "uuid"
+          },
+          "returns": {
+            "columns": {
+              "username": "citext",
+              "avatar_id": "uuid",
+              "avatar_storage_path": "text"
+            }
+          },
+          "errors": [
+            "INVALID_USERNAME",
+            "AVATAR_NOT_FOUND",
+            "AVATAR_NOT_ALLOWED_FOR_PLAN",
+            "AVATAR_IN_USE",
+            "PROFILE_NOT_FOUND",
+            "USERNAME_TAKEN"
+          ]
+        },
+        "avatars.listForHome": {
+          "type": "rpc",
+          "auth": "authenticated",
+          "caller": "member",
+          "impl": "public.avatars_list_for_home",
+          "args": {
+            "p_home_id": "uuid"
+          },
+          "returns": {
+            "columns": {
+              "id": "uuid",
+              "storage_path": "text",
+              "category": "text"
+            }
+          },
+          "notes": [
+            "Enforces home membership + effective plan gating (free plan limited to animal category)",
+            "Ensures uniqueness by excluding avatars already in use by other current members"
+          ]
         }
       },
       "rls": [
@@ -744,6 +759,59 @@
             "returns": "citext",
             "volatility": "volatile",
             "notes": "Generates a unique username; enforces regex; skips reserved names; uses advisory lock; citext + unique index ensures case-insensitive uniqueness."
+          },
+          "public.profile_me": {
+            "type": "rpc",
+            "args": {},
+            "returns": {
+              "user_id": "uuid",
+              "username": "citext",
+              "avatar_storage_path": "text"
+            },
+            "security": "definer",
+            "volatility": "stable",
+            "grants": {
+              "execute": [
+                "authenticated"
+              ]
+            }
+          },
+          "public.avatars_list_for_home": {
+            "type": "rpc",
+            "args": {
+              "p_home_id": "uuid"
+            },
+            "returns": {
+              "id": "uuid",
+              "storage_path": "text",
+              "category": "text"
+            },
+            "security": "definer",
+            "volatility": "stable",
+            "grants": {
+              "execute": [
+                "authenticated"
+              ]
+            }
+          },
+          "public.profile_identity_update": {
+            "type": "rpc",
+            "args": {
+              "p_username": "citext",
+              "p_avatar_id": "uuid"
+            },
+            "returns": {
+              "username": "citext",
+              "avatar_id": "uuid",
+              "avatar_storage_path": "text"
+            },
+            "security": "definer",
+            "volatility": "volatile",
+            "grants": {
+              "execute": [
+                "authenticated"
+              ]
+            }
           }
         },
         "tables": {

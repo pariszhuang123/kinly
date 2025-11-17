@@ -32,7 +32,6 @@ class TodayScreen extends StatelessWidget {
 
     final now = DateTime.now();
     final partOfDay = _partOfDay(now);
-    const userName = 'Paris'; // later from profile BLoC
 
     // For now: expenses still mocked
     const expenses = <TodayShareExpense>[
@@ -76,11 +75,27 @@ class TodayScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TodayHeader(partOfDay: partOfDay, userName: userName),
+                      BlocBuilder<TodayBloc, TodayState>(
+                        buildWhen:
+                            (previous, current) =>
+                                previous.profile != current.profile ||
+                                previous.isLoading != current.isLoading,
+                        builder: (context, state) {
+                          return TodayHeader(
+                            partOfDay: partOfDay,
+                            profile: state.profile,
+                          );
+                        },
+                      ),
                       SizedBox(height: spacing.xl),
 
-                      // 🔹 Bloc-powered Flow section
+                      // dY"1 Bloc-powered Flow section
                       BlocBuilder<TodayBloc, TodayState>(
+                        buildWhen:
+                            (previous, current) =>
+                                previous.flowTasks != current.flowTasks ||
+                                previous.isLoading != current.isLoading ||
+                                previous.message != current.message,
                         builder: (context, state) {
                           if (state.isLoading) {
                             return const Center(
@@ -88,9 +103,7 @@ class TodayScreen extends StatelessWidget {
                             );
                           }
 
-                          if (state is TodayState &&
-                              state.flowTasks.isEmpty &&
-                              state.message != null) {
+                          if (state.flowTasks.isEmpty && state.message != null) {
                             // Error state with message
                             return Text(
                               state.message!,

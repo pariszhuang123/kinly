@@ -41,6 +41,64 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
         "user_profile: email=NULL, fullName=NULL, avatarId=keep, username=keep"
       ],
       "calls": ["homes.transferOwner"]
+    },
+    "users.profileMe": {
+      "type": "rpc",
+      "auth": "authenticated",
+      "caller": "member",
+      "impl": "public.profile_me",
+      "args": {},
+      "returns": {
+        "columns": {
+          "user_id": "uuid",
+          "username": "citext",
+          "avatar_storage_path": "text"
+        }
+      },
+      "notes": [
+        "SECURITY DEFINER + `_assert_authenticated`",
+        "Filters out deactivated profiles and joins avatars table for storage_path"
+      ]
+    },
+    "profile.identityUpdate": {
+      "type": "rpc",
+      "auth": "authenticated",
+      "caller": "member",
+      "impl": "public.profile_identity_update",
+      "args": { "p_username": "citext", "p_avatar_id": "uuid" },
+      "returns": {
+        "columns": {
+          "username": "citext",
+          "avatar_id": "uuid",
+          "avatar_storage_path": "text"
+        }
+      },
+      "errors": [
+        "INVALID_USERNAME",
+        "AVATAR_NOT_FOUND",
+        "AVATAR_NOT_ALLOWED_FOR_PLAN",
+        "AVATAR_IN_USE",
+        "PROFILE_NOT_FOUND",
+        "USERNAME_TAKEN"
+      ]
+    },
+    "avatars.listForHome": {
+      "type": "rpc",
+      "auth": "authenticated",
+      "caller": "member",
+      "impl": "public.avatars_list_for_home",
+      "args": { "p_home_id": "uuid" },
+      "returns": {
+        "columns": {
+          "id": "uuid",
+          "storage_path": "text",
+          "category": "text"
+        }
+      },
+      "notes": [
+        "Enforces home membership + effective plan gating (free plan limited to animal category)",
+        "Ensures uniqueness by excluding avatars already in use by other current members"
+      ]
     }
   },
   "db": {
@@ -62,6 +120,42 @@ Scope: User authentication via Supabase OAuth (Google, Apple), logout, and accou
         "returns": "citext",
         "volatility": "volatile",
         "notes": "Generates a unique username; enforces regex; skips reserved names; uses advisory lock; citext + unique index ensures case-insensitive uniqueness."
+      },
+      "public.profile_me": {
+        "type": "rpc",
+        "args": {},
+        "returns": {
+          "user_id": "uuid",
+          "username": "citext",
+          "avatar_storage_path": "text"
+        },
+        "security": "definer",
+        "volatility": "stable",
+        "grants": {"execute": ["authenticated"]}
+      },
+      "public.avatars_list_for_home": {
+        "type": "rpc",
+        "args": {"p_home_id": "uuid"},
+        "returns": {
+          "id": "uuid",
+          "storage_path": "text",
+          "category": "text"
+        },
+        "security": "definer",
+        "volatility": "stable",
+        "grants": {"execute": ["authenticated"]}
+      },
+      "public.profile_identity_update": {
+        "type": "rpc",
+        "args": {"p_username": "citext", "p_avatar_id": "uuid"},
+        "returns": {
+          "username": "citext",
+          "avatar_id": "uuid",
+          "avatar_storage_path": "text"
+        },
+        "security": "definer",
+        "volatility": "volatile",
+        "grants": {"execute": ["authenticated"]}
       }
     },
     "tables": {
