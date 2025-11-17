@@ -194,10 +194,29 @@ SELECT is(
   'active counter increments for second chore'
 );
 
+-- 1) Make the current JWT sub match the assignee of the "second" chore
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (
+    SELECT assignee_user_id::text
+    FROM public.chores
+    WHERE id = (SELECT chore_id FROM chore_ids WHERE label = 'second')
+  ),
+  true
+);
+
+SELECT set_config(
+  'request.jwt.claim.role',
+  'authenticated',
+  true
+);
+
+-- 2) Now complete the chore as the correct assignee
 SELECT public.chore_complete(
   (SELECT chore_id FROM chore_ids WHERE label = 'second')
 );
 
+-- 3) Assert the counter
 SELECT is(
   COALESCE((
     SELECT active_chores
