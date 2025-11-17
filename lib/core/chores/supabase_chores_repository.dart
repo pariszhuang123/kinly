@@ -155,6 +155,38 @@ class SupabaseChoresRepository implements ChoresRepository {
     }
   }
 
+  @override
+  Future<List<TodayFlowEntry>> listTodayFlow({
+    required String homeId,
+    required ChoreState state,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'today_flow_list',
+        params: {
+          'p_home_id': homeId,
+          'p_state': state.wireValue,
+        },
+      );
+
+      if (response is List) {
+        return response
+            .map(
+              (raw) =>
+                  TodayFlowEntry.fromJson((raw as Map).cast<String, dynamic>()),
+            )
+            .toList(growable: false);
+      }
+
+      throw const ChoreException(
+        ChoreErrorCode.unknown,
+        'Malformed today flow payload from Supabase.',
+      );
+    } catch (error) {
+      throw SupabaseErrorMapper.mapChore(error);
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // GET FOR HOME (single chore + assignees) - chores_get_for_home
   // ---------------------------------------------------------------------------

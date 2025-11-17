@@ -2,10 +2,8 @@ import 'package:get_it/get_it.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/chores_repository.dart';
 import '../../data/repositories/home_repository.dart';
-import '../auth/fake_auth_repository.dart';
 import '../auth/supabase_auth_repository.dart';
 import '../chores/supabase_chores_repository.dart';
-import '../homes/fake_home_repository.dart';
 import '../homes/supabase_home_repository.dart';
 
 final sl = GetIt.instance;

@@ -142,6 +142,39 @@ class ChoreListEntry {
 }
 
 // -----------------------------------------------------------------------------
+// Today flow entry: today_flow_list
+// -----------------------------------------------------------------------------
+
+class TodayFlowEntry {
+  final String id;
+  final String homeId;
+  final String name;
+  final DateTime startDate;
+  final ChoreState state;
+
+  const TodayFlowEntry({
+    required this.id,
+    required this.homeId,
+    required this.name,
+    required this.startDate,
+    required this.state,
+  });
+
+  factory TodayFlowEntry.fromJson(Map<String, dynamic> json) {
+    return TodayFlowEntry(
+      id: json['id'] as String,
+      homeId: json['home_id'] as String,
+      name: json['name'] as String,
+      startDate: _parseDate(json['start_date'])!,
+      state: ChoreStateWire.fromWire(json['state'] as String?),
+    );
+  }
+
+  bool get isDraft => state == ChoreState.draft;
+  bool get isActive => state == ChoreState.active;
+}
+
+// -----------------------------------------------------------------------------
 // Assignee summary + details: chores_get_for_home, home_assignees_list
 // -----------------------------------------------------------------------------
 

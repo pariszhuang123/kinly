@@ -36,6 +36,12 @@ abstract class ChoresRepository {
   /// Lists actionable chores for a home (minimal view rows).
   Future<List<ChoreListEntry>> listForHome(String homeId);
 
+  /// Lists chores for the Today flow filtered by [state].
+  Future<List<TodayFlowEntry>> listTodayFlow({
+    required String homeId,
+    required ChoreState state,
+  });
+
   /// Full chore + list of eligible assignees for edit/view.
   /// Wraps `chores_get_for_home`.
   Future<ChoreDetails> getForHome({

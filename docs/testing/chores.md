@@ -27,7 +27,8 @@ Use pgTAP (preferred) or `supabase db test` harness to exercise the new RPCs und
 5. **Cancel**
    - [ ] Cancelling allowed only for draft/active states, emits `event_type='cancel'`, and decrements `home_usage_counters.active_chores`.
 6. **List**
-   - [ ] `chores_list_for_home` omits cancelled chores and completed one-offs. (Temporary ordering by `created_at ASC` until the next-occurrence view ships.)
+   - [ ] `chores_list_for_home` omits cancelled chores and completed one-offs. (Ordering now `start_date DESC` then `created_at DESC` until the next-occurrence view ships.)
+   - [ ] `today_flow_list(home_id, state)` enforces `_assert_home_member`, returns rows ordered by `start_date ASC` / `created_at ASC`, and scopes `state='active'` results to chores assigned to `auth.uid()` while drafts omit the assignee filter.
 
 ### Edge cases
 - [ ] Invalid expectation photo paths fail with `INVALID_MEDIA_PATH`.

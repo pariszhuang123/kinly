@@ -67,6 +67,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "You haven\'t joined a home yet.",
     ),
+    "navExplore": MessageLookupByLibrary.simpleMessage("Explore"),
+    "navHub": MessageLookupByLibrary.simpleMessage("Hub"),
+    "navToday": MessageLookupByLibrary.simpleMessage("Today"),
     "quick_add_fair_share_subtitle": MessageLookupByLibrary.simpleMessage(
       "Record a fairness entry",
     ),

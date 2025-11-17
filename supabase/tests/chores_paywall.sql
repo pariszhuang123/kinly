@@ -83,10 +83,10 @@ WITH res AS (
     p_how_to_video_url       := NULL,
     p_notes                  := NULL,
     p_expectation_photo_path := NULL
-  ) AS payload
+  ) AS chore
 )
 INSERT INTO chore_ids (label, chore_id)
-SELECT 'first', (payload->'chore'->>'id')::uuid
+SELECT 'first', (chore).id
 FROM res;
 
 SELECT is(
@@ -196,10 +196,10 @@ WITH res AS (
     p_how_to_video_url       := NULL,
     p_notes                  := NULL,
     p_expectation_photo_path := NULL
-  ) AS payload
+  ) AS chore
 )
 INSERT INTO chore_ids (label, chore_id)
-SELECT 'second', (payload->'chore'->>'id')::uuid
+SELECT 'second', (chore).id
 FROM res;
 
 SELECT is(
@@ -235,10 +235,10 @@ WITH res AS (
     p_how_to_video_url       := NULL,
     p_notes                  := NULL,
     p_expectation_photo_path := NULL
-  ) AS payload
+  ) AS chore
 )
 INSERT INTO chore_ids (label, chore_id)
-SELECT 'third', (payload->'chore'->>'id')::uuid
+SELECT 'third', (chore).id
 FROM res;
 
 -- 9️⃣ Simulate nearing the active chore limit (set to 20) and ensure create fails

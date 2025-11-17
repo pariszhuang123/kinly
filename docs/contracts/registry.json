@@ -166,6 +166,30 @@
             }
           }
         },
+        "todayFlow.list": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.today_flow_list",
+          "args": {
+            "p_home_id": "uuid",
+            "p_state": "public.chore_state"
+          },
+          "returns": {
+            "columns": {
+              "id": "uuid",
+              "home_id": "uuid",
+              "name": "text",
+              "start_date": "date",
+              "state": "public.chore_state"
+            },
+            "ordering": "start_date ASC, created_at ASC",
+            "notes": [
+              "Requires `_assert_home_member`",
+              "When `p_state='active'`, rows are limited to chores assigned to `auth.uid()`",
+              "When `p_state='draft'`, all draft chores for the home are returned"
+            ]
+          }
+        },
         "homeAssignees.list": {
           "type": "rpc",
           "caller": "member",

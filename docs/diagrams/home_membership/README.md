@@ -31,7 +31,7 @@ Each Mermaid file in this folder visualizes a different part of that lifecycle.
 | **invite_rotation.md** | Explains how invite links are rotated or revoked once used or expired. |
 | **join_flow.md** | Details the process of a user joining a home via an invite code. |
 | **kick_member.md** | Describes how an owner removes a member from a home and what database updates occur. |
-| **leave_home.md** | Shows how members voluntarily leave a home and how `left_at` timestamps are set. |
+| **leave_home.md** | Shows how members voluntarily leave a home and how `is_current` flips to `FALSE` (emulating the legacy `left_at` semantics). |
 | **ownership_model.md** | ER diagram summarizing relationships between `homes`, `users`, and `membership`. |
 | **permissions_flow.md** | Illustrates the logic that enforces permissions (e.g., who can transfer, kick, or invite). |
 | **transfer_owner_flow.md** | Flow of transferring ownership from one user to another (checks, errors, success). |
@@ -41,7 +41,7 @@ Each Mermaid file in this folder visualizes a different part of that lifecycle.
 
 ## 🧩 Business Rules
 
-- A **user can belong to only one active home** (`membership.left_at IS NULL` ensures uniqueness).
+- A **user can belong to only one active home** (`membership.is_current = TRUE` ensures uniqueness).
 - Every **home has exactly one owner** (`homes.owner_id`).
 - The **owner must also have an active membership** in the same home.
 - Invitations can be **revoked or rotated** automatically after use or expiry.

@@ -53,5 +53,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "navToday": "Hoy",
+  "navExplore": "Explorar",
+  "navHub": "Centro"
 }

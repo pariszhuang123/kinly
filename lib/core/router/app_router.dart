@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/today/ui/today_provider.dart';
 import '../../features/home_membership/start/ui/start_home_provider.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
 import '../../features/home_membership/join/ui/join_home_screen.dart';
-import '../../features/today/ui/today_screen.dart';
 import '../../features/auth/bloc/auth_bloc.dart';
 import 'navigation_intents.dart';
+import '../di/locator.dart';
 
 class AppRoutes {
   static const welcome = '/';
@@ -81,7 +82,13 @@ GoRouter createRouter({
       GoRoute(
         path: AppRoutes.today,
         name: 'today',
-        builder: (context, state) => const TodayScreen(),
+        builder: (_, __) {
+          final homeId = authBloc.state.membership!.homeId;
+          return TodayProvider(
+            homeId: homeId,
+            choresRepository: sl(), // or sl<ChoresRepository>()
+          );
+        },
       ),
     ],
   );

@@ -12,7 +12,6 @@ flowchart TD
   G --> H
 
   subgraph Constraints
-    I["Unique index: (home_id, avatar_key) WHERE left_at IS NULL AND avatar_key IS NOT NULL"]
+    I["Unique index: (home_id, avatar_key) WHERE is_current AND avatar_key IS NOT NULL"]
   end
 ```
-

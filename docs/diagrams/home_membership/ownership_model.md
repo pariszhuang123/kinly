@@ -21,7 +21,8 @@ erDiagram
   MEMBERSHIP {
     uuid home_id FK
     uuid user_id FK "only one ACTIVE row per user (enforce in SQL)"
-    timestamp left_at "NULL when active"
+    timestamptz valid_to "NULL when active"
+    boolean is_current "generated; TRUE when valid_to IS NULL"
   }
 
 ```
@@ -29,5 +30,4 @@ erDiagram
 Notes
 - Exactly one active owner per home.
 - Home.active = owner_id is not null.
-- Owner must have MEMBERSHIP with left_at IS NULL.
-
+- Owner must have MEMBERSHIP with is_current = TRUE.

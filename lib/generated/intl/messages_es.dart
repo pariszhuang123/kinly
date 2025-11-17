@@ -73,6 +73,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "Aún no te has unido a un hogar.",
     ),
+    "navExplore": MessageLookupByLibrary.simpleMessage("Explorar"),
+    "navHub": MessageLookupByLibrary.simpleMessage("Centro"),
+    "navToday": MessageLookupByLibrary.simpleMessage("Hoy"),
     "quick_add_fair_share_subtitle": MessageLookupByLibrary.simpleMessage(
       "Registrar una entrada de equidad",
     ),

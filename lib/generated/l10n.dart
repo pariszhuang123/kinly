@@ -388,6 +388,21 @@ class S {
       args: [homeId, role],
     );
   }
+
+  /// `Today`
+  String get navToday {
+    return Intl.message('Today', name: 'navToday', desc: '', args: []);
+  }
+
+  /// `Explore`
+  String get navExplore {
+    return Intl.message('Explore', name: 'navExplore', desc: '', args: []);
+  }
+
+  /// `Hub`
+  String get navHub {
+    return Intl.message('Hub', name: 'navHub', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
