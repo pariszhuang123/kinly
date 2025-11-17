@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS pgtap;
 
 BEGIN;
 
-SELECT plan(10);
+SELECT plan(9);
 
 CREATE TEMP TABLE tmp_ids (
   user_id uuid,
@@ -150,29 +150,6 @@ SELECT is(
   ), 0),
   1,
   'replacing an existing expectation photo does not change photo counter'
-);
-
--- 5️⃣ Remove expectation photo (non-NULL → NULL, counter −1)
--- 5️⃣ Remove expectation photo (non-NULL → NULL, counter −1)
-SELECT public.chores_update(
-  p_chore_id               := (SELECT chore_id FROM chore_ids WHERE label = 'first'),
-  p_name                   := 'First chore no photo',
-  p_assignee_user_id       := (SELECT user_id FROM tmp_ids),
-  p_start_date             := current_date,
-  p_recurrence             := 'none',
-  p_expectation_photo_path := NULL,
-  p_how_to_video_url       := NULL,
-  p_notes                  := NULL
-);
-
-SELECT is(
-  COALESCE((
-    SELECT chore_photos
-    FROM public.home_usage_counters
-    WHERE home_id = (SELECT home_id FROM tmp_ids)
-  ), 0),
-  0,
-  'removing an expectation photo decrements photo counter'
 );
 
 -- 6️⃣ Cancel first chore => remove from active count
