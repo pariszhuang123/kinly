@@ -100,7 +100,8 @@ SELECT is(
 );
 
 -- 3️⃣ Add expectation photo to first chore (first photo → +1)
-PERFORM public.chores_update(
+-- 3️⃣ Add expectation photo to first chore (first photo → +1)
+SELECT public.chores_update(
   p_chore_id               := (SELECT chore_id FROM chore_ids WHERE label = 'first'),
   p_name                   := 'First chore',
   p_assignee_user_id       := (SELECT user_id FROM tmp_ids),
@@ -125,7 +126,8 @@ SELECT is(
 );
 
 -- 4️⃣ Replace expectation photo (non-NULL → non-NULL, no counter change)
-PERFORM public.chores_update(
+-- 4️⃣ Replace expectation photo (non-NULL → non-NULL, no counter change)
+SELECT public.chores_update(
   p_chore_id               := (SELECT chore_id FROM chore_ids WHERE label = 'first'),
   p_name                   := 'First chore updated photo',
   p_assignee_user_id       := (SELECT user_id FROM tmp_ids),
@@ -151,7 +153,8 @@ SELECT is(
 );
 
 -- 5️⃣ Remove expectation photo (non-NULL → NULL, counter −1)
-PERFORM public.chores_update(
+-- 5️⃣ Remove expectation photo (non-NULL → NULL, counter −1)
+SELECT public.chores_update(
   p_chore_id               := (SELECT chore_id FROM chore_ids WHERE label = 'first'),
   p_name                   := 'First chore no photo',
   p_assignee_user_id       := (SELECT user_id FROM tmp_ids),
@@ -173,7 +176,9 @@ SELECT is(
 );
 
 -- 6️⃣ Cancel first chore => remove from active count
-PERFORM public.chores_cancel((SELECT chore_id FROM chore_ids WHERE label = 'first'));
+SELECT public.chores_cancel(
+  (SELECT chore_id FROM chore_ids WHERE label = 'first')
+);
 
 SELECT is(
   COALESCE((
@@ -212,7 +217,9 @@ SELECT is(
   'active counter increments for second chore'
 );
 
-PERFORM public.chore_complete((SELECT chore_id FROM chore_ids WHERE label = 'second'));
+SELECT public.chore_complete(
+  (SELECT chore_id FROM chore_ids WHERE label = 'second')
+);
 
 SELECT is(
   COALESCE((
