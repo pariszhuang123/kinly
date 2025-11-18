@@ -125,16 +125,18 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Find the running Postgres container started by `supabase start`
-          PG_CONTAINER=$(docker ps --filter "name=supabase_postgres" --format "{{.ID}}")
+          # Derive DB port from Supabase config (same as pgTap step)
+          PORT=$(awk -F'=' '/^\s*port\s*=/ {gsub(/ /,"",$2); print $2; exit}' supabase/config.toml)
+          PORT=${PORT:-54322}
 
-          # Dump schema using the server's own pg_dump
-          docker exec "$PG_CONTAINER" pg_dump \
-            --username=postgres \
+          URI="postgresql://postgres:postgres@127.0.0.1:${PORT}/postgres"
+
+          echo "Dumping schema from $URI"
+          pg_dump \
             --schema-only \
             --no-owner \
             --no-privileges \
-            postgres > docs/contracts/schema.sql
+            "$URI" > docs/contracts/schema.sql
 
       - name: Extract RLS policies
         if: steps.changes.outputs.do_db_check == 'true'
