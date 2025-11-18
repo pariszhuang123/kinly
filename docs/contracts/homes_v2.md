@@ -102,6 +102,7 @@ Invite
       "errors": [
         "INVALID_NEW_OWNER",
         "NEW_OWNER_NOT_MEMBER",
+        "STATE_CHANGED_RETRY",
         "FORBIDDEN",
         "UNAUTHORIZED"
       ]
@@ -327,6 +328,8 @@ homes.join(code)
 
 homes.transferOwner(homeId, newOwnerId)
 - Transfers ownership (both users must be current members).
+- Serializes with leave/join and emits `STATE_CHANGED_RETRY` if membership state changes mid-transfer.
+- After success the previous owner receives a new `member` stint so history and `membership.meCurrent` stay consistent.
  - DB Impl: `public.homes_transfer_owner`
 
 homes.leave(homeId)

@@ -352,6 +352,7 @@
           "errors": [
             "INVALID_NEW_OWNER",
             "NEW_OWNER_NOT_MEMBER",
+            "STATE_CHANGED_RETRY",
             "FORBIDDEN",
             "UNAUTHORIZED"
           ]

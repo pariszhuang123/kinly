@@ -194,8 +194,8 @@ WITH rows AS (
   )
 )
 SELECT is(
-  (SELECT count(*) FROM rows),
-  1,
+  (SELECT count(*)::integer FROM rows),
+  1::integer,
   'members_list_active_by_home excludes caller when p_exclude_self=TRUE'
 );
 
@@ -217,8 +217,8 @@ WITH rows AS (
   )
 )
 SELECT is(
-  (SELECT count(*) FROM rows),
-  2,
+  (SELECT count(*)::integer FROM rows),
+  2::integer,
   'members_list_active_by_home includes caller when p_exclude_self=false'
 );
 

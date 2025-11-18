@@ -57,6 +57,7 @@ SELECT set_config(
   (SELECT user_id::text FROM tmp_users WHERE label = 'helper'),
   true
 );
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT public.homes_join(
   (SELECT code
@@ -72,6 +73,7 @@ SELECT set_config(
   (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
   true
 );
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT public.chores_create(
   (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
@@ -134,6 +136,7 @@ SELECT set_config(
   (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
   true
 );
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT is(
   (
@@ -153,6 +156,7 @@ SELECT set_config(
   (SELECT user_id::text FROM tmp_users WHERE label = 'helper'),
   true
 );
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT is(
   (
@@ -172,6 +176,7 @@ SELECT set_config(
   (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
   true
 );
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT is(
   (
@@ -191,6 +196,7 @@ SELECT set_config(
   (SELECT user_id::text FROM tmp_users WHERE label = 'outsider'),
   true
 );
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT throws_ok(
   format(

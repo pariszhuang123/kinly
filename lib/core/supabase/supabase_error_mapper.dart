@@ -253,6 +253,12 @@ class SupabaseErrorMapper {
             parsed.message,
             details: parsed.details,
           );
+        case 'STATE_CHANGED_RETRY':
+          return TransferOwnerException(
+            TransferErrorCode.stateChangedRetry,
+            parsed.message,
+            details: parsed.details,
+          );
         case 'UNAUTHORIZED':
           return TransferOwnerException(
             TransferErrorCode.unauthorized,
@@ -467,6 +473,7 @@ enum TransferErrorCode {
   invalidNewOwner,
   newOwnerNotMember,
   forbidden,
+  stateChangedRetry,
   unauthorized,
   unknown,
 }

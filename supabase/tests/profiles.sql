@@ -125,4 +125,5 @@ SELECT ok(
   'premium homes can browse premium avatar categories'
 );
 
-COMMIT;
+SELECT * FROM finish();
+ROLLBACK;
