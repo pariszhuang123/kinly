@@ -17,7 +17,7 @@ class KinlyCircleAvatar extends StatelessWidget {
 
     return CircleAvatar(
       radius: radius,
-      backgroundColor: colorScheme.surfaceContainerHigh,
+      backgroundColor: Colors.transparent,
       backgroundImage:
           avatarUrl != null && !showsSvgAvatar
               ? NetworkImage(avatarUrl!)

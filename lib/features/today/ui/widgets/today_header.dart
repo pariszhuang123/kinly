@@ -47,11 +47,7 @@ class TodayHeader extends StatelessWidget {
           ),
         ),
         SizedBox(width: spacing.md),
-        KinlyCircleAvatar(
-          avatarUrl: profile?.avatarUrl,
-          username: profile?.username,
-          radius: 20,
-        ),
+        KinlyCircleAvatar(avatarUrl: profile?.avatarUrl, radius: 30),
       ],
     );
   }
