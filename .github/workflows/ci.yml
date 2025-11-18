@@ -101,9 +101,11 @@ jobs:
               echo "PostgREST is up"; exit 0; fi; sleep 2; done
           echo "::error::PostgREST did not become ready"; exit 1
 
-      - name: Install PostgreSQL client
+      - name: Install PostgreSQL client 17
         if: steps.changes.outputs.do_db_check == 'true'
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
 
       - name: Run pgTap suites
         if: steps.changes.outputs.do_db_check == 'true'
