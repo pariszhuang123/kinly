@@ -105,20 +105,6 @@ SELECT ok(
   'owner membership stint is created as current'
 );
 
--- Owner cannot leave before transferring ownership
-SELECT set_config(
-  'request.jwt.claim.sub',
-  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
-  true
-);
-SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-
-SELECT throws_like(
-  $$ SELECT public.homes_leave((SELECT home_id FROM tmp_homes WHERE label = 'primary')); $$,
-  '%OWNER_MUST_TRANSFER_FIRST%',
-  'owner must transfer ownership before leaving'
-);
-
 -- Capture initial invite code
 INSERT INTO invite_codes (label, code)
 SELECT 'initial', code::text
@@ -127,7 +113,7 @@ WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
   AND revoked_at IS NULL
 LIMIT 1;
 
--- Owner rotates invite
+-- Owner rotates invite (allowed)
 SELECT set_config(
   'request.jwt.claim.sub',
   (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
@@ -161,7 +147,7 @@ SELECT isnt(
   'invite rotation issues a new code'
 );
 
--- Non-owner cannot rotate invites
+-- Non-owner cannot rotate invites (expect FORBIDDEN)
 SELECT set_config(
   'request.jwt.claim.sub',
   (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
@@ -198,6 +184,28 @@ SELECT ok(
   'member joins home via invite code'
 );
 
+-- NOW: owner should not be allowed to leave while another member is current
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
+  true
+);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
+SELECT throws_like(
+  $$ SELECT public.homes_leave((SELECT home_id FROM tmp_homes WHERE label = 'primary')); $$,
+  '%OWNER_MUST_TRANSFER_FIRST%',
+  'owner must transfer ownership before leaving'
+);
+
+-- Back to member_one context
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
+  true
+);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
 SELECT is(
   (SELECT used_count FROM public.invites
     WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
@@ -208,13 +216,6 @@ SELECT is(
   1,
   'joining increments invite used_count'
 );
-
-SELECT set_config(
-  'request.jwt.claim.sub',
-  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
-  true
-);
-SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 WITH payload AS (
   SELECT public.membership_me_current() AS body
@@ -290,7 +291,7 @@ SELECT is(
   'invites_revoke clears active invites'
 );
 
--- Rotate again for later tests
+-- Rotate again for later tests (by new owner, allowed)
 SELECT set_config(
   'request.jwt.claim.sub',
   (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
