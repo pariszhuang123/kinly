@@ -121,8 +121,21 @@ jobs:
 
       - name: Dump schema (DDL only)
         if: steps.changes.outputs.do_db_check == 'true'
+        shell: bash
         run: |
-          supabase db dump --local --schema-only > docs/contracts/schema.sql
+          set -euo pipefail
+          # Reuse the Supabase local Postgres port from config.toml
+          PORT=$(awk -F'=' '/^\s*port\s*=/{gsub(/ /,"",$2); print $2; exit}' supabase/config.toml)
+          PORT=${PORT:-54322}
+
+          URI="postgresql://postgres:postgres@127.0.0.1:${PORT}/postgres"
+
+          # Schema-only, no ownership/privilege noise
+          pg_dump "$URI" \
+            --schema-only \
+            --no-owner \
+            --no-privileges \
+            > docs/contracts/schema.sql
 
       - name: Extract RLS policies
         if: steps.changes.outputs.do_db_check == 'true'
