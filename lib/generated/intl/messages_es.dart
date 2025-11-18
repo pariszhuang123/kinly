@@ -20,9 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  static String m0(code) => "Te has unido con el código: ${code}";
+  static String m1(code) => "Te has unido con el código: ${code}";
 
-  static String m1(homeId, role) => "Hogar actual: ${homeId} • Rol: ${role}";
+  static String m2(homeId, role) => "Hogar actual: ${homeId} • Rol: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -43,7 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ingresa el código de invitación",
     ),
     "join_submit": MessageLookupByLibrary.simpleMessage("Unirse"),
-    "join_success": m0,
+    "join_success": m1,
     "join_title": MessageLookupByLibrary.simpleMessage("Unirse al hogar"),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
       "He leído y acepto los ",
@@ -95,7 +95,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Share"),
     "quick_add_title": MessageLookupByLibrary.simpleMessage("Añadir rápido"),
-    "today_home_details": m1,
+    "todayEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Disfruta de la calma; Kinly te avisará cuando haya algo que hacer.",
+    ),
+    "todayEmptyCardBadge": MessageLookupByLibrary.simpleMessage(
+      "Tómate un respiro",
+    ),
+    "todayEmptyCardTitle": MessageLookupByLibrary.simpleMessage(
+      "Hoy lo tienes todo al día ✨",
+    ),
+    "today_home_details": m2,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "Sin hogar activo todavía. Crea o únete para ver la vista de hoy.",
     ),
@@ -103,5 +112,96 @@ class MessageLookup extends MessageLookupByLibrary {
     "welcome_create": MessageLookupByLibrary.simpleMessage("Crear un hogar"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("Unirse a un hogar"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("Bienvenido a Kinly"),
+    "todayAddShareComingSoon": MessageLookupByLibrary.simpleMessage(
+      "La función de gastos de Share llegará pronto.",
+    ),
+    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Agregar tarea (Flow)"),
+    "todayAddSheetShare": MessageLookupByLibrary.simpleMessage(
+      "Agregar gasto (Share)",
+    ),
+    "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
+      "Añade algo a tu hogar",
+    ),
+    "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "Agregar tarea de Flow",
+    ),
+    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage(
+      "Editar tarea de Flow",
+    ),
+    "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage(
+      "Nombre de la tarea",
+    ),
+    "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
+      "Ponle un título corto y claro",
+    ),
+    "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
+      "Dale un nombre a la tarea.",
+    ),
+    "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("Asignar a"),
+    "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
+      "Sin asignar",
+    ),
+    "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
+      "Elige a quién asignar esta tarea.",
+    ),
+    "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage("Fecha de inicio"),
+    "flowChoreRecurrenceLabel": MessageLookupByLibrary.simpleMessage("Repetición"),
+    "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage("Una vez"),
+    "flowChoreRecurrenceDaily": MessageLookupByLibrary.simpleMessage("Diario"),
+    "flowChoreRecurrenceWeekly": MessageLookupByLibrary.simpleMessage("Semanal"),
+    "flowChoreRecurrenceEvery2Weeks": MessageLookupByLibrary.simpleMessage(
+      "Cada 2 semanas",
+    ),
+    "flowChoreRecurrenceMonthly": MessageLookupByLibrary.simpleMessage("Mensual"),
+    "flowChoreRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
+      "Cada 2 meses",
+    ),
+    "flowChoreRecurrenceAnnual": MessageLookupByLibrary.simpleMessage("Anual"),
+    "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage("Notas"),
+    "flowChoreNotesHint": MessageLookupByLibrary.simpleMessage(
+      "Agrega contexto o recordatorios opcionales",
+    ),
+    "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage(
+      "Enlace de instrucciones",
+    ),
+    "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
+      "Pega un enlace de video o documento (opcional)",
+    ),
+    "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
+      "Foto de referencia",
+    ),
+    "flowChorePhotoHint": MessageLookupByLibrary.simpleMessage(
+      "storage/households/... (opcional)",
+    ),
+    "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage("Agregar tarea"),
+    "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage("Guardar tarea"),
+    "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos cargar esta tarea. Intenta de nuevo.",
+    ),
+    "flowChoreRetry": MessageLookupByLibrary.simpleMessage("Reintentar"),
+    "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
+      "Alcanzaste el límite gratuito de tareas activas. Mejora el plan para agregar más.",
+    ),
+    "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
+      "Alcanzaste el límite gratuito de fotos de referencia. Elimina una o mejora el plan.",
+    ),
+    "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
+      "Ese miembro no se puede asignar ahora.",
+    ),
+    "flowChoreErrorForbidden": MessageLookupByLibrary.simpleMessage(
+      "No tienes permiso para cambiar esta tarea.",
+    ),
+    "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
+      "Esa ruta de foto no es válida para este hogar.",
+    ),
+    "flowChoreErrorInvalidStart": MessageLookupByLibrary.simpleMessage(
+      "Elige una fecha de inicio válida.",
+    ),
+    "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
+      "Esta tarea no se puede actualizar en este momento.",
+    ),
+    "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
+      "No se pudo guardar la tarea. Intenta de nuevo.",
+    ),
   };
 }

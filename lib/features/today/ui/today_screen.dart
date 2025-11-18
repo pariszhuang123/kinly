@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/kinly_sections.dart';
+import '../../../../generated/l10n.dart';
+import '../../../../core/router/app_router.dart';
 import '../domain/models.dart';
 import '../bloc/today_bloc.dart';
 import 'widgets/today_flow_section.dart';
@@ -11,6 +14,7 @@ import 'widgets/today_share_section.dart';
 import 'widgets/today_header.dart';
 import 'widgets/today_add_sheet.dart';
 import '../../../core/ui/home_bottom_nav.dart';
+import '../../flow/domain/flow_chore_outcome.dart';
 
 class TodayScreen extends StatelessWidget {
   const TodayScreen({super.key});
@@ -25,6 +29,7 @@ class TodayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final s = S.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final sizes = theme.extension<AppSizes>();
@@ -103,7 +108,8 @@ class TodayScreen extends StatelessWidget {
                             );
                           }
 
-                          if (state.flowTasks.isEmpty && state.message != null) {
+                          if (state.flowTasks.isEmpty &&
+                              state.message != null) {
                             // Error state with message
                             return Text(
                               state.message!,
@@ -116,18 +122,14 @@ class TodayScreen extends StatelessWidget {
                           final tasks = state.flowTasks;
 
                           if (tasks.isEmpty) {
-                            return Text(
-                              "No chores for today yet. Add one to get things flowing.",
-                              style: theme.textTheme.bodyMedium,
-                            );
+                            return const SizedBox.shrink(); // nothing
                           }
 
                           return TodayFlowSection(
                             tasks: tasks,
-                            onTaskTap: (task) {
-                              // TODO: Navigate to Flow/task details
-                              debugPrint('Tapped task: ${task.title}');
-                            },
+                            onTaskTap:
+                                (task) =>
+                                    _openFlowChore(context, choreId: task.id),
                             onSeeAllTap: () {
                               // TODO: context.go('/flow');
                               debugPrint('See all Flow tasks');
@@ -159,8 +161,18 @@ class TodayScreen extends StatelessWidget {
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: colorScheme.primary,
-        onPressed: () {
-          TodayAddSheet.show(context, sections);
+        onPressed: () async {
+          await TodayAddSheet.show(
+            context,
+            sections,
+            onAddFlow: () => _openFlowChore(context),
+            onAddShare: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              messenger.showSnackBar(
+                SnackBar(content: Text(s.todayAddShareComingSoon)),
+              );
+            },
+          );
         },
         child: const Icon(Icons.add),
       ),
@@ -182,5 +194,17 @@ class TodayScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _openFlowChore(BuildContext context, {String? choreId}) async {
+    final path =
+        choreId == null
+            ? AppRoutes.flowChoreCreate
+            : AppRoutes.flowChoreEditPath(choreId);
+    final result = await context.push(path);
+    if (result is FlowChoreOutcome) {
+      if (!context.mounted) return;
+      context.read<TodayBloc>().add(const TodayRefreshed());
+    }
   }
 }

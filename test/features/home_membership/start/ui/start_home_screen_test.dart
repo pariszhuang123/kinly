@@ -7,10 +7,14 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/home_membership/start/ui/start_home_screen.dart';
+import 'package:kinly/features/home_membership/start/bloc/start_home_bloc.dart';
 import 'package:kinly/generated/l10n.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
+
+class _MockStartHomeBloc extends MockBloc<StartHomeEvent, StartHomeState>
+    implements StartHomeBloc {}
 
 class _FakeAuthEvent extends Fake implements AuthEvent {}
 
@@ -20,15 +24,24 @@ void main() {
   setUpAll(() {
     registerFallbackValue(_FakeAuthEvent());
     registerFallbackValue(_FakeAuthState());
+    registerFallbackValue(const StartHomeCreateRequested());
+    registerFallbackValue(const StartHomeState());
   });
 
   late _MockAuthBloc authBloc;
+  late _MockStartHomeBloc startHomeBloc;
 
   setUp(() {
     authBloc = _MockAuthBloc();
     when(
       () => authBloc.stream,
     ).thenAnswer((_) => const Stream<AuthState>.empty());
+
+    startHomeBloc = _MockStartHomeBloc();
+    when(
+      () => startHomeBloc.stream,
+    ).thenAnswer((_) => const Stream<StartHomeState>.empty());
+    when(() => startHomeBloc.state).thenReturn(const StartHomeState());
   });
 
   Widget _buildApp() {
@@ -40,8 +53,11 @@ void main() {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      home: BlocProvider<AuthBloc>.value(
-        value: authBloc,
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthBloc>.value(value: authBloc),
+          BlocProvider<StartHomeBloc>.value(value: startHomeBloc),
+        ],
         child: const StartHomeScreen(),
       ),
     );
@@ -55,7 +71,7 @@ void main() {
     await tester.pumpWidget(_buildApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('You haven’t joined a home yet.'), findsOneWidget);
+    expect(find.text("You haven't joined a home yet."), findsOneWidget);
   });
 
   testWidgets('shows message when membership status is active', (tester) async {
@@ -66,6 +82,6 @@ void main() {
     await tester.pumpWidget(_buildApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('You’re already part of a home.'), findsOneWidget);
+    expect(find.text("You're already part of a home."), findsOneWidget);
   });
 }

@@ -117,6 +117,12 @@ ThemeData buildKinlyTheme(Brightness brightness) {
               icon: Color(0xFFFFB5A0),
               accent: Color(0xFF88C7B0),
             ),
+            empty: SectionColors(
+              background: Color(0xFF2A2E2D),
+              card: Color(0xFF1D2120),
+              icon: Color(0xFFB8D9C7),
+              accent: Color(0xFF88C7B0),
+            ),
           )
           : const KinlySections(
             // LIGHT MODE – tuned for better contrast but same moods
@@ -137,6 +143,12 @@ ThemeData buildKinlyTheme(Brightness brightness) {
               card: Color(0xFFFFF7F3),
               icon: Color(0xFF7F2B0E), // deeper coral/rust (~AAA vs background)
               accent: tealBrand,
+            ),
+            empty: SectionColors(
+              background: Color(0xFFF4F6F5),
+              card: Color.fromARGB(255, 255, 255, 255),
+              icon: Color(0xFF6C7A75),
+              accent: Color(0xFFAAC7BD),
             ),
           );
 

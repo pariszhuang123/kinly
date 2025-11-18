@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../generated/l10n.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../domain/models.dart';
+import '../../../../core/ui/kinly_circle_avatar.dart';
 
 class TodayHeader extends StatelessWidget {
-  final String partOfDay;
+  final String partOfDay; // “morning”, “afternoon”, “evening”
   final TodayUserProfile? profile;
 
-  const TodayHeader({
-    super.key,
-    required this.partOfDay,
-    this.profile,
-  });
+  const TodayHeader({super.key, required this.partOfDay, this.profile});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
-    final displayName = profile?.username ?? 'friend';
-    final avatarUrl = profile?.avatarUrl;
-    final initials = _initialFor(profile?.username);
+    final displayName = profile?.username ?? S.of(context).friendDefaultName;
+
+    // Localize “Good morning / afternoon / evening”
+    final greeting = S.of(context).greetingPartOfDay(partOfDay, displayName);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,15 +29,16 @@ class TodayHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Good $partOfDay, $displayName',
+                greeting,
                 style: theme.textTheme.headlineSmall?.copyWith(
-                  color: colorScheme.primary,
+                  color: colorScheme.onSurface,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               SizedBox(height: spacing.xs),
+
               Text(
-                "Here's what's flowing in your home today.",
+                S.of(context).todayFlowSubtitle, // NEW localized subtitle
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
@@ -47,29 +47,12 @@ class TodayHeader extends StatelessWidget {
           ),
         ),
         SizedBox(width: spacing.md),
-        CircleAvatar(
+        KinlyCircleAvatar(
+          avatarUrl: profile?.avatarUrl,
+          username: profile?.username,
           radius: 20,
-          backgroundColor: colorScheme.surfaceContainerHigh,
-          backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl) : null,
-          child:
-              avatarUrl == null
-                  ? Text(
-                      initials,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.onSurface,
-                      ),
-                    )
-                  : null,
         ),
       ],
     );
-  }
-
-  String _initialFor(String? value) {
-    if (value == null) return '?';
-    final trimmed = value.trim();
-    if (trimmed.isEmpty) return '?';
-    return trimmed.substring(0, 1).toUpperCase();
   }
 }

@@ -5,35 +5,36 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/core/homes/models.dart';
-import 'package:kinly/features/auth/bloc/auth_bloc.dart';
+import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/features/today/bloc/today_bloc.dart';
+import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/features/today/ui/today_screen.dart';
 import 'package:kinly/generated/l10n.dart';
 
-class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
-    implements AuthBloc {}
+class _MockTodayBloc extends MockBloc<TodayEvent, TodayState>
+    implements TodayBloc {}
 
-class _FakeAuthEvent extends Fake implements AuthEvent {}
-
-class _FakeAuthState extends Fake implements AuthState {}
+class _FakeTodayEvent extends Fake implements TodayEvent {}
 
 void main() {
   setUpAll(() {
-    registerFallbackValue(_FakeAuthEvent());
-    registerFallbackValue(_FakeAuthState());
+    registerFallbackValue(_FakeTodayEvent());
+    registerFallbackValue(const TodayState.loading());
   });
 
-  late _MockAuthBloc authBloc;
+  late _MockTodayBloc todayBloc;
 
   setUp(() {
-    authBloc = _MockAuthBloc();
+    todayBloc = _MockTodayBloc();
     when(
-      () => authBloc.stream,
-    ).thenAnswer((_) => const Stream<AuthState>.empty());
+      () => todayBloc.stream,
+    ).thenAnswer((_) => const Stream<TodayState>.empty());
+    when(() => todayBloc.state).thenReturn(const TodayState.loading());
   });
 
   Widget _buildApp() {
     return MaterialApp(
+      theme: buildKinlyTheme(Brightness.light),
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -41,44 +42,32 @@ void main() {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      home: BlocProvider<AuthBloc>.value(
-        value: authBloc,
+      home: BlocProvider<TodayBloc>.value(
+        value: todayBloc,
         child: const TodayScreen(),
       ),
     );
   }
 
-  testWidgets('shows no membership message when user has none', (tester) async {
-    when(
-      () => authBloc.state,
-    ).thenReturn(const AuthState(membershipStatus: AuthMembershipStatus.none));
+  testWidgets('shows loading indicator while state is loading', (tester) async {
+    when(() => todayBloc.state).thenReturn(const TodayState.loading());
 
     await tester.pumpWidget(_buildApp());
-    await tester.pumpAndSettle();
+    await tester.pump();
 
-    expect(
-      find.text('No active home yet. Create or join to see today’s view.'),
-      findsOneWidget,
-    );
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  testWidgets('shows membership details when active', (tester) async {
-    when(() => authBloc.state).thenReturn(
-      AuthState(
-        status: AuthStatus.authenticated,
-        membershipStatus: AuthMembershipStatus.active,
-        membership: CurrentMembership(
-          userId: 'user-1',
-          homeId: 'home-42',
-          role: 'member',
-          validFrom: DateTime.utc(2025, 1, 1),
-        ),
+  testWidgets('renders Flow section when tasks are available', (tester) async {
+    when(() => todayBloc.state).thenReturn(
+      TodayState.loaded(
+        flowTasks: const [TodayFlowTask(id: '1', title: 'Take out trash')],
       ),
     );
 
     await tester.pumpWidget(_buildApp());
-    await tester.pumpAndSettle();
+    await tester.pump();
 
-    expect(find.text('Current home: home-42 • Role: member'), findsOneWidget);
+    expect(find.text('Take out trash'), findsOneWidget);
   });
 }

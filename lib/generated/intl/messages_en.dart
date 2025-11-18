@@ -20,9 +20,11 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(code) => "Joined with code: ${code}";
+  static String m0(partOfDay, name) => "Good ${partOfDay}, ${name}";
 
-  static String m1(homeId, role) => "Current home: ${homeId} • Role: ${role}";
+  static String m1(code) => "Joined with code: ${code}";
+
+  static String m2(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -36,12 +38,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "create_success": MessageLookupByLibrary.simpleMessage("Home created!"),
     "create_title": MessageLookupByLibrary.simpleMessage("Create Home"),
+    "friendDefaultName": MessageLookupByLibrary.simpleMessage("friend"),
+    "greetingPartOfDay": m0,
+    "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("name"),
+    "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
+      "part of day (morning/afternoon/evening)",
+    ),
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
       "Join failed. Please try again.",
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage("Enter invite code"),
     "join_submit": MessageLookupByLibrary.simpleMessage("Join"),
-    "join_success": m0,
+    "join_success": m1,
     "join_title": MessageLookupByLibrary.simpleMessage("Join Home"),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
       "I have read and agree to the ",
@@ -89,11 +97,105 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Share"),
     "quick_add_title": MessageLookupByLibrary.simpleMessage("Quick Add"),
-    "today_home_details": m1,
+    "todayAddShareComingSoon": MessageLookupByLibrary.simpleMessage(
+      "Share expenses coming soon.",
+    ),
+    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add task (Flow)"),
+    "todayAddSheetShare": MessageLookupByLibrary.simpleMessage(
+      "Add expense (Share)",
+    ),
+    "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage("Add to your home"),
+    "todayEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Enjoy the calm — Kinly will let you know when something needs your attention.",
+    ),
+    "todayEmptyCardBadge": MessageLookupByLibrary.simpleMessage(
+      "Take a breather",
+    ),
+    "todayEmptyCardTitle": MessageLookupByLibrary.simpleMessage(
+      "You\'re all caught up for today ✨",
+    ),
+    "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Here\'s what\'s flowing in your home today.",
+    ),
+    "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("Assign to"),
+    "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
+      "Unassigned",
+    ),
+    "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("Add Flow chore"),
+    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Edit Flow chore"),
+    "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
+      "That member can\'t be assigned right now.",
+    ),
+    "flowChoreErrorForbidden": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have permission to change this chore.",
+    ),
+    "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t save the chore. Please try again.",
+    ),
+    "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
+      "That photo path isn\'t valid for this home.",
+    ),
+    "flowChoreErrorInvalidStart": MessageLookupByLibrary.simpleMessage(
+      "Pick a valid start date.",
+    ),
+    "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
+      "This chore can\'t be updated right now.",
+    ),
+    "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
+      "You\'ve hit the free limit for active chores. Upgrade to add more.",
+    ),
+    "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
+      "You\'ve hit the free limit for expectation photos. Remove one or upgrade.",
+    ),
+    "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
+      "Paste a video or document link (optional)",
+    ),
+    "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage("How-to link"),
+    "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t load this chore. Please try again.",
+    ),
+    "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
+      "Give your task a short, clear title",
+    ),
+    "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage("Task name"),
+    "flowChoreNotesHint": MessageLookupByLibrary.simpleMessage(
+      "Add optional context or reminders",
+    ),
+    "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage("Notes"),
+    "flowChorePhotoHint": MessageLookupByLibrary.simpleMessage(
+      "storage/households/... (optional)",
+    ),
+    "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
+      "Expectation photo",
+    ),
+    "flowChoreRecurrenceAnnual": MessageLookupByLibrary.simpleMessage("Annual"),
+    "flowChoreRecurrenceDaily": MessageLookupByLibrary.simpleMessage("Daily"),
+    "flowChoreRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
+      "Every 2 months",
+    ),
+    "flowChoreRecurrenceEvery2Weeks": MessageLookupByLibrary.simpleMessage(
+      "Every 2 weeks",
+    ),
+    "flowChoreRecurrenceLabel": MessageLookupByLibrary.simpleMessage("Recurrence"),
+    "flowChoreRecurrenceMonthly": MessageLookupByLibrary.simpleMessage("Monthly"),
+    "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage("One time"),
+    "flowChoreRecurrenceWeekly": MessageLookupByLibrary.simpleMessage("Weekly"),
+    "flowChoreRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage("Start date"),
+    "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage("Add chore"),
+    "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage("Save chore"),
+    "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
+      "Pick someone to assign this chore to.",
+    ),
+    "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
+      "Give the chore a name.",
+    ),
+    "today_home_details": m2,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",
     ),
     "today_title": MessageLookupByLibrary.simpleMessage("Today"),
+    "unknownInitial": MessageLookupByLibrary.simpleMessage("?"),
     "welcome_create": MessageLookupByLibrary.simpleMessage("Create a Home"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("Join a Home"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("Welcome to Kinly"),

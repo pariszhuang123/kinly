@@ -31,11 +31,12 @@ class JoinHomeScreen extends StatelessWidget {
             actions: [
               IconButton(
                 icon: const Icon(Icons.close),
-                onPressed: () {
-                  context.go(AppRoutes.start);
-                },
+                onPressed: () => context.go(AppRoutes.start),
               ),
             ],
+          ),
+          body: SafeArea(
+            child: _JoinForm(initialCode: initialCode ?? ''),
           ),
         ),
       ),

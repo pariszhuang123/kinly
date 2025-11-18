@@ -1,0 +1,412 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+
+import '../../../core/chores/models.dart';
+import '../../../core/theme/kinly_sections.dart';
+import '../../../core/theme/spacing.dart';
+import '../../../core/supabase/supabase_error_mapper.dart';
+import '../../../generated/l10n.dart';
+import '../bloc/flow_chore_bloc.dart';
+import '../domain/flow_chore_form.dart';
+import '../domain/flow_chore_outcome.dart';
+
+class FlowChoreScreen extends StatefulWidget {
+  const FlowChoreScreen({super.key});
+
+  @override
+  State<FlowChoreScreen> createState() => _FlowChoreScreenState();
+}
+
+class _FlowChoreScreenState extends State<FlowChoreScreen> {
+  final _titleController = TextEditingController();
+  final _notesController = TextEditingController();
+  final _howToController = TextEditingController();
+  final _photoController = TextEditingController();
+  bool _hasHydratedControllers = false;
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _notesController.dispose();
+    _howToController.dispose();
+    _photoController.dispose();
+    super.dispose();
+  }
+
+  void _hydrateControllers(FlowChoreForm form) {
+    if (_hasHydratedControllers) return;
+    _titleController.text = form.title;
+    _notesController.text = form.notes;
+    _howToController.text = form.howToVideoUrl;
+    _photoController.text = form.expectationPhotoPath;
+    _hasHydratedControllers = true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return BlocConsumer<FlowChoreBloc, FlowChoreState>(
+      listenWhen:
+          (previous, current) =>
+              previous.successChoreId != current.successChoreId ||
+              previous.submissionErrorTick != current.submissionErrorTick,
+      listener: (context, state) {
+        if (state.successChoreId != null) {
+          Navigator.of(context).pop(
+            FlowChoreOutcome(
+              choreId: state.successChoreId!,
+              isUpdate: state.isEditMode,
+            ),
+          );
+          return;
+        }
+
+        if (state.submissionErrorTick > 0) {
+          final snackText = _mapSubmissionError(context, state);
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(snackText)));
+        }
+      },
+      builder: (context, state) {
+        if (!state.isLoading) {
+          _hydrateControllers(state.form);
+        }
+
+        final s = S.of(context);
+        final spacing = theme.extension<Spacing>();
+        final sections = theme.extension<KinlySections>();
+        final flowColors = sections?.flow;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              state.isEditMode ? s.flowChoreEditTitle : s.flowChoreCreateTitle,
+            ),
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(spacing?.lg ?? 16),
+              child:
+                  state.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : state.loadErrorMessage != null
+                      ? _FlowChoreError(
+                        message: s.flowChoreLoadError,
+                        onRetry:
+                            () => context.read<FlowChoreBloc>().add(
+                              const FlowChoreStarted(),
+                            ),
+                      )
+                      : _FlowChoreFormView(
+                        titleController: _titleController,
+                        notesController: _notesController,
+                        howToController: _howToController,
+                        photoController: _photoController,
+                        state: state,
+                        spacing: spacing,
+                        flowColors: flowColors,
+                      ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _mapSubmissionError(BuildContext context, FlowChoreState state) {
+    final s = S.of(context);
+    switch (state.submissionErrorCode) {
+      case ChoreErrorCode.paywallActiveCap:
+        return s.flowChoreErrorPaywallActiveCap;
+      case ChoreErrorCode.paywallMediaCap:
+        return s.flowChoreErrorPaywallMediaCap;
+      case ChoreErrorCode.assigneeNotMember:
+        return s.flowChoreErrorAssigneeNotMember;
+      case ChoreErrorCode.forbidden:
+      case ChoreErrorCode.unauthorized:
+      case ChoreErrorCode.notHomeMember:
+        return s.flowChoreErrorForbidden;
+      case ChoreErrorCode.invalidMediaPath:
+        return s.flowChoreErrorInvalidPhoto;
+      case ChoreErrorCode.invalidName:
+        return s.flowChoreValidationName;
+      case ChoreErrorCode.invalidStart:
+        return s.flowChoreErrorInvalidStart;
+      case ChoreErrorCode.invalidState:
+        return s.flowChoreErrorInvalidState;
+      default:
+        return state.submissionErrorMessage ?? s.flowChoreErrorGeneric;
+    }
+  }
+}
+
+class _FlowChoreFormView extends StatelessWidget {
+  const _FlowChoreFormView({
+    required this.titleController,
+    required this.notesController,
+    required this.howToController,
+    required this.photoController,
+    required this.state,
+    required this.spacing,
+    required this.flowColors,
+  });
+
+  final TextEditingController titleController;
+  final TextEditingController notesController;
+  final TextEditingController howToController;
+  final TextEditingController photoController;
+  final FlowChoreState state;
+  final Spacing? spacing;
+  final SectionColors? flowColors;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+    final form = state.form;
+    final hasAssigneeError =
+        state.showValidationErrors &&
+        state.isEditMode &&
+        form.assigneeUserId == null;
+    final dateLabel = DateFormat.yMMMMd().format(form.startDate);
+
+    return ListView(
+      children: [
+        TextField(
+          controller: titleController,
+          decoration: InputDecoration(
+            labelText: s.flowChoreNameLabel,
+            hintText: s.flowChoreNameHint,
+            errorText:
+                state.showValidationErrors && !form.isTitleValid
+                    ? s.flowChoreValidationName
+                    : null,
+          ),
+          textInputAction: TextInputAction.next,
+          onChanged:
+              (value) => context.read<FlowChoreBloc>().add(
+                FlowChoreTitleChanged(value),
+              ),
+        ),
+        SizedBox(height: spacing?.lg ?? 16),
+        Text(s.flowChoreAssigneeLabel, style: theme.textTheme.titleMedium),
+        SizedBox(height: spacing?.sm ?? 8),
+        _AssigneeChips(
+          assignees: state.assignees,
+          selectedUserId: form.assigneeUserId,
+        ),
+        if (hasAssigneeError)
+          Padding(
+            padding: EdgeInsets.only(top: spacing?.xs ?? 4),
+            child: Text(
+              s.flowChoreValidationAssignee,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ),
+        SizedBox(height: spacing?.lg ?? 16),
+        Text(s.flowChoreStartLabel, style: theme.textTheme.titleMedium),
+        SizedBox(height: spacing?.xs ?? 4),
+        OutlinedButton(
+          onPressed: () => _pickStartDate(context, form.startDate),
+          child: Text(dateLabel),
+        ),
+        SizedBox(height: spacing?.lg ?? 16),
+        DropdownButtonFormField<ChoreRecurrence>(
+          value: form.recurrence,
+          items:
+              ChoreRecurrence.values
+                  .map(
+                    (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(_recurrenceLabel(context, value)),
+                    ),
+                  )
+                  .toList(),
+          onChanged:
+              (value) => context.read<FlowChoreBloc>().add(
+                FlowChoreRecurrenceChanged(value!),
+              ),
+          decoration: InputDecoration(labelText: s.flowChoreRecurrenceLabel),
+        ),
+        SizedBox(height: spacing?.lg ?? 16),
+        TextField(
+          controller: notesController,
+          minLines: 3,
+          maxLines: 4,
+          decoration: InputDecoration(
+            labelText: s.flowChoreNotesLabel,
+            hintText: s.flowChoreNotesHint,
+          ),
+          onChanged:
+              (value) => context.read<FlowChoreBloc>().add(
+                FlowChoreNotesChanged(value),
+              ),
+        ),
+        SizedBox(height: spacing?.lg ?? 16),
+        TextField(
+          controller: howToController,
+          decoration: InputDecoration(
+            labelText: s.flowChoreHowToLabel,
+            hintText: s.flowChoreHowToHint,
+          ),
+          keyboardType: TextInputType.url,
+          onChanged:
+              (value) => context.read<FlowChoreBloc>().add(
+                FlowChoreHowToChanged(value),
+              ),
+        ),
+        SizedBox(height: spacing?.lg ?? 16),
+        TextField(
+          controller: photoController,
+          decoration: InputDecoration(
+            labelText: s.flowChorePhotoLabel,
+            hintText: s.flowChorePhotoHint,
+          ),
+          onChanged:
+              (value) => context.read<FlowChoreBloc>().add(
+                FlowChorePhotoChanged(value),
+              ),
+        ),
+        SizedBox(height: spacing?.xl ?? 24),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style:
+                flowColors != null
+                    ? ElevatedButton.styleFrom(
+                      backgroundColor: flowColors!.accent,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    )
+                    : null,
+            onPressed:
+                state.isSubmitting
+                    ? null
+                    : () => context.read<FlowChoreBloc>().add(
+                      const FlowChoreSubmitted(),
+                    ),
+            child:
+                state.isSubmitting
+                    ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                    : Text(
+                      state.isEditMode
+                          ? s.flowChoreSubmitUpdate
+                          : s.flowChoreSubmitCreate,
+                    ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _pickStartDate(BuildContext context, DateTime current) async {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 1, now.month, now.day);
+    final lastDate = DateTime(now.year + 2, now.month, now.day);
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: current,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+    if (picked != null) {
+      context.read<FlowChoreBloc>().add(FlowChoreStartDateChanged(picked));
+    }
+  }
+
+  String _recurrenceLabel(BuildContext context, ChoreRecurrence recurrence) {
+    final s = S.of(context);
+    switch (recurrence) {
+      case ChoreRecurrence.none:
+        return s.flowChoreRecurrenceNone;
+      case ChoreRecurrence.daily:
+        return s.flowChoreRecurrenceDaily;
+      case ChoreRecurrence.weekly:
+        return s.flowChoreRecurrenceWeekly;
+      case ChoreRecurrence.every2Weeks:
+        return s.flowChoreRecurrenceEvery2Weeks;
+      case ChoreRecurrence.monthly:
+        return s.flowChoreRecurrenceMonthly;
+      case ChoreRecurrence.every2Months:
+        return s.flowChoreRecurrenceEvery2Months;
+      case ChoreRecurrence.annual:
+        return s.flowChoreRecurrenceAnnual;
+    }
+  }
+}
+
+class _AssigneeChips extends StatelessWidget {
+  const _AssigneeChips({required this.assignees, required this.selectedUserId});
+
+  final List<ChoreAssigneeSummary> assignees;
+  final String? selectedUserId;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final spacing = Theme.of(context).extension<Spacing>();
+    final chips = <Widget>[
+      ChoiceChip(
+        label: Text(s.flowChoreAssigneeUnassigned),
+        selected: selectedUserId == null,
+        onSelected:
+            (selected) =>
+                selected
+                    ? context.read<FlowChoreBloc>().add(
+                      const FlowChoreAssigneeChanged(null),
+                    )
+                    : null,
+      ),
+    ];
+
+    for (final member in assignees) {
+      final label = member.fullName ?? s.friendDefaultName;
+      chips.add(
+        ChoiceChip(
+          label: Text(label),
+          selected: member.userId == selectedUserId,
+          onSelected:
+              (_) => context.read<FlowChoreBloc>().add(
+                FlowChoreAssigneeChanged(member.userId),
+              ),
+        ),
+      );
+    }
+
+    return Wrap(
+      spacing: spacing?.sm ?? 8,
+      runSpacing: spacing?.sm ?? 8,
+      children: chips,
+    );
+  }
+}
+
+class _FlowChoreError extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _FlowChoreError({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(message, textAlign: TextAlign.center),
+          const SizedBox(height: 16),
+          ElevatedButton(onPressed: onRetry, child: Text(s.flowChoreRetry)),
+        ],
+      ),
+    );
+  }
+}

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../data/repositories/chores_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../features/today/ui/today_provider.dart';
+import '../../features/flow/ui/flow_chore_provider.dart';
 import '../../features/home_membership/start/ui/start_home_provider.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
 import '../../features/home_membership/join/ui/join_home_screen.dart';
@@ -17,6 +18,10 @@ class AppRoutes {
   static const create = '/create';
   static const join = '/join';
   static const today = '/today';
+  static const flowChoreCreate = '/flow/chore/new';
+  static const flowChoreEdit = '/flow/chore/:choreId';
+
+  static String flowChoreEditPath(String choreId) => '/flow/chore/$choreId';
 }
 
 GoRouter createRouter({
@@ -90,6 +95,36 @@ GoRouter createRouter({
             homeId: homeId,
             choresRepository: sl<ChoresRepository>(),
             profileRepository: sl<ProfileRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.flowChoreCreate,
+        name: 'flowChoreCreate',
+        builder: (_, __) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Flow routes require an active membership.');
+          }
+          return FlowChoreProvider(
+            homeId: membership.homeId,
+            choresRepository: sl<ChoresRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.flowChoreEdit,
+        name: 'flowChoreEdit',
+        builder: (_, state) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Flow routes require an active membership.');
+          }
+          final choreId = state.pathParameters['choreId']!;
+          return FlowChoreProvider(
+            homeId: membership.homeId,
+            choresRepository: sl<ChoresRepository>(),
+            choreId: choreId,
           );
         },
       ),
