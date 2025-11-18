@@ -284,10 +284,10 @@ SELECT is(
 );
 
 SELECT is(
-  (SELECT COUNT(*) FROM public.invites
+  (SELECT COUNT(*)::integer FROM public.invites
     WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
       AND revoked_at IS NULL),
-  0,
+  0::integer,
   'invites_revoke clears active invites'
 );
 
