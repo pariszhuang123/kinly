@@ -140,7 +140,7 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT is(
   (
-    SELECT array_agg(name ORDER BY start_date, created_at)
+    SELECT array_agg(name ORDER BY start_date, name)
     FROM public.today_flow_list(
       (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
       'draft'
@@ -160,7 +160,7 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT is(
   (
-    SELECT array_agg(name ORDER BY start_date, created_at)
+    SELECT array_agg(name ORDER BY start_date, name)
     FROM public.today_flow_list(
       (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
       'active'
@@ -180,7 +180,7 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT is(
   (
-    SELECT array_agg(name ORDER BY start_date, created_at)
+    SELECT array_agg(name ORDER BY start_date, name)
     FROM public.today_flow_list(
       (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
       'active'
