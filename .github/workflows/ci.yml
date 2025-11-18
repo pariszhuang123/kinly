@@ -101,11 +101,11 @@ jobs:
               echo "PostgREST is up"; exit 0; fi; sleep 2; done
           echo "::error::PostgREST did not become ready"; exit 1
 
-      - name: Install PostgreSQL client 17
+      - name: Install PostgreSQL client
         if: steps.changes.outputs.do_db_check == 'true'
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-client-17
+          sudo apt-get install -y postgresql-client
 
       - name: Run pgTap suites
         if: steps.changes.outputs.do_db_check == 'true'
@@ -127,18 +127,11 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Derive DB port from Supabase config (same as pgTap step)
-          PORT=$(awk -F'=' '/^\s*port\s*=/ {gsub(/ /,"",$2); print $2; exit}' supabase/config.toml)
-          PORT=${PORT:-54322}
+          mkdir -p docs/contracts
 
-          URI="postgresql://postgres:postgres@127.0.0.1:${PORT}/postgres"
-
-          echo "Dumping schema from $URI"
-          pg_dump \
-            --schema-only \
-            --no-owner \
-            --no-privileges \
-            "$URI" > docs/contracts/schema.sql
+          # Use Supabase CLI to dump from the *local* stack.
+          # This runs pg_dump inside Supabase's own container, so versions always match.
+          supabase db dump --local -f docs/contracts/schema.sql
 
       - name: Extract RLS policies
         if: steps.changes.outputs.do_db_check == 'true'
