@@ -13,7 +13,7 @@ CREATE TEMP TABLE tmp_profile_ids (
 INSERT INTO public.avatars (id, storage_path, category, name)
 VALUES
   ('00000000-0000-4000-9000-000000000801', 'avatars/test-animal.png', 'animal', 'Test Animal Avatar'),
-  ('00000000-0000-4000-9000-000000000802', 'avatars/test-space.png',  'space',  'Test Space Avatar')
+  ('00000000-0000-4000-9000-000000000802', 'avatars/test-plant.png',  'plant',  'Test Plant Avatar')
 ON CONFLICT (id) DO NOTHING;
 
 -- Create the owner auth user (trigger seeds profiles automatically).
@@ -109,7 +109,7 @@ WITH payload AS (
 )
 SELECT is(
   (SELECT avatar_storage_path FROM payload),
-  'avatars/test-space.png',
+  'avatars/test-plant.png',
   'profile_me reflects the updated avatar storage path'
 );
 
@@ -120,7 +120,7 @@ SELECT ok(
     FROM public.avatars_list_for_home(
       (SELECT home_id FROM tmp_profile_ids)
     )
-    WHERE category = 'space'
+    WHERE category = 'plant'
   ),
   'premium homes can browse premium avatar categories'
 );
