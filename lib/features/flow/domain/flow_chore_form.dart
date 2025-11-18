@@ -69,4 +69,44 @@ class FlowChoreForm {
   }
 
   bool get isTitleValid => title.trim().isNotEmpty;
+
+  bool isEqualTo(FlowChoreForm other) {
+    return title == other.title &&
+        assigneeUserId == other.assigneeUserId &&
+        startDate.isAtSameMomentAs(other.startDate) &&
+        recurrence == other.recurrence &&
+        notes == other.notes &&
+        howToVideoUrl == other.howToVideoUrl &&
+        expectationPhotoPath == other.expectationPhotoPath;
+  }
+
+  bool isStartDateInRange(DateTime now) {
+    final today = DateTime(now.year, now.month, now.day);
+    final lastAllowed = DateTime(today.year + 1, today.month, today.day);
+    final start = DateTime(startDate.year, startDate.month, startDate.day);
+    return !start.isBefore(today) && !start.isAfter(lastAllowed);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FlowChoreForm &&
+          title == other.title &&
+          assigneeUserId == other.assigneeUserId &&
+          startDate.isAtSameMomentAs(other.startDate) &&
+          recurrence == other.recurrence &&
+          notes == other.notes &&
+          howToVideoUrl == other.howToVideoUrl &&
+          expectationPhotoPath == other.expectationPhotoPath;
+
+  @override
+  int get hashCode => Object.hash(
+    title,
+    assigneeUserId,
+    startDate.toIso8601String(),
+    recurrence,
+    notes,
+    howToVideoUrl,
+    expectationPhotoPath,
+  );
 }

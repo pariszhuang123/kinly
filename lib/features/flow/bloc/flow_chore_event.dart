@@ -70,3 +70,7 @@ class FlowChorePhotoChanged extends FlowChoreEvent {
 class FlowChoreSubmitted extends FlowChoreEvent {
   const FlowChoreSubmitted();
 }
+
+class FlowChoreDeleted extends FlowChoreEvent {
+  const FlowChoreDeleted();
+}

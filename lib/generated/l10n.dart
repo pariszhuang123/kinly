@@ -528,6 +528,7 @@ class S {
       args: [],
     );
   }
+
   /// `Add Flow chore`
   String get flowChoreCreateTitle {
     return Intl.message(
@@ -613,6 +614,16 @@ class S {
     return Intl.message(
       'Start date',
       name: 'flowChoreStartLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick a date between today and a year from now.`
+  String get flowChoreValidationDate {
+    return Intl.message(
+      'Pick a date between today and a year from now.',
+      name: 'flowChoreValidationDate',
       desc: '',
       args: [],
     );
@@ -778,6 +789,56 @@ class S {
     );
   }
 
+  /// `Delete chore`
+  String get flowChoreDeleteButton {
+    return Intl.message(
+      'Delete chore',
+      name: 'flowChoreDeleteButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete this chore?`
+  String get flowChoreDeleteDialogTitle {
+    return Intl.message(
+      'Delete this chore?',
+      name: 'flowChoreDeleteDialogTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This removes the flow for everyone in your home.`
+  String get flowChoreDeleteDialogMessage {
+    return Intl.message(
+      'This removes the flow for everyone in your home.',
+      name: 'flowChoreDeleteDialogMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get flowChoreDeleteCancel {
+    return Intl.message(
+      'Cancel',
+      name: 'flowChoreDeleteCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get flowChoreDeleteConfirm {
+    return Intl.message(
+      'Delete',
+      name: 'flowChoreDeleteConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `We couldn't load this chore. Please try again.`
   String get flowChoreLoadError {
     return Intl.message(
@@ -790,12 +851,7 @@ class S {
 
   /// `Retry`
   String get flowChoreRetry {
-    return Intl.message(
-      'Retry',
-      name: 'flowChoreRetry',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Retry', name: 'flowChoreRetry', desc: '', args: []);
   }
 
   /// `You've hit the free limit for active chores. Upgrade to add more.`
@@ -873,6 +929,86 @@ class S {
     return Intl.message(
       'Couldn\'t save the chore. Please try again.',
       name: 'flowChoreErrorGeneric',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing in Flow yet`
+  String get flowListEmptyTitle {
+    return Intl.message(
+      'Nothing in Flow yet',
+      name: 'flowListEmptyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add your first routine so everyone knows what to do.`
+  String get flowListEmptySubtitle {
+    return Intl.message(
+      'Add your first routine so everyone knows what to do.',
+      name: 'flowListEmptySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Draft`
+  String get flowListDraftLabel {
+    return Intl.message(
+      'Draft',
+      name: 'flowListDraftLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Overdue`
+  String get flowListOverdueLabel {
+    return Intl.message(
+      'Overdue',
+      name: 'flowListOverdueLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't load Flow tasks. Pull to refresh.`
+  String get flowListError {
+    return Intl.message(
+      'We couldn\'t load Flow tasks. Pull to refresh.',
+      name: 'flowListError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discover what's next`
+  String get exploreIntroTitle {
+    return Intl.message(
+      'Discover what\'s next',
+      name: 'exploreIntroTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Explore more ways to keep your home feeling lighter.`
+  String get exploreIntroSubtitle {
+    return Intl.message(
+      'Explore more ways to keep your home feeling lighter.',
+      name: 'exploreIntroSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review every Flow task and keep chores moving`
+  String get exploreFlowSubtitle {
+    return Intl.message(
+      'Review every Flow task and keep chores moving',
+      name: 'exploreFlowSubtitle',
       desc: '',
       args: [],
     );

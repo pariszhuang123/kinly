@@ -130,10 +130,7 @@ class TodayScreen extends StatelessWidget {
                             onTaskTap:
                                 (task) =>
                                     _openFlowChore(context, choreId: task.id),
-                            onSeeAllTap: () {
-                              // TODO: context.go('/flow');
-                              debugPrint('See all Flow tasks');
-                            },
+                            onSeeAllTap: () => context.go(AppRoutes.flow),
                           );
                         },
                       ),
@@ -185,7 +182,7 @@ class TodayScreen extends StatelessWidget {
             case 0:
               break;
             case 1:
-              // TODO: context.go('/explore');
+              context.go(AppRoutes.explore);
               break;
             case 2:
               // TODO: context.go('/hub');

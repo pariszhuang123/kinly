@@ -32,6 +32,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     on<FlowChoreHowToChanged>(_onHowToChanged);
     on<FlowChorePhotoChanged>(_onPhotoChanged);
     on<FlowChoreSubmitted>(_onSubmitted);
+    on<FlowChoreDeleted>(_onDeleted);
   }
 
   final String _homeId;
@@ -60,6 +61,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
           isLoading: false,
           assignees: assignees,
           form: form,
+          referenceForm: form,
           clearLoadError: true,
         ),
       );
@@ -136,7 +138,8 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     final form = state.form;
     final requiresAssignee = _choreId != null;
     final hasValidAssignee = !requiresAssignee || form.assigneeUserId != null;
-    if (!form.isTitleValid || !hasValidAssignee) {
+    final hasValidDate = form.isStartDateInRange(DateTime.now());
+    if (!form.isTitleValid || !hasValidAssignee || !hasValidDate) {
       emit(state.copyWith(showValidationErrors: true));
       return;
     }
@@ -144,6 +147,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     emit(
       state.copyWith(
         isSubmitting: true,
+        isDeleting: false,
         clearSuccess: true,
         clearSubmissionError: true,
       ),
@@ -180,7 +184,9 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       emit(
         state.copyWith(
           isSubmitting: false,
+          referenceForm: state.form,
           successChoreId: savedChore.id,
+          successWasDelete: false,
           showValidationErrors: false,
         ),
       );
@@ -188,6 +194,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       emit(
         state.copyWith(
           isSubmitting: false,
+          isDeleting: false,
           clearSuccess: true,
           submissionErrorCode: error.code,
           submissionErrorMessage: error.message,
@@ -198,6 +205,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       emit(
         state.copyWith(
           isSubmitting: false,
+          isDeleting: false,
           clearSuccess: true,
           submissionErrorCode: null,
           submissionErrorMessage: error.toString(),
@@ -211,5 +219,51 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     final trimmed = value.trim();
     if (trimmed.isEmpty) return null;
     return trimmed;
+  }
+
+  Future<void> _onDeleted(
+    FlowChoreDeleted event,
+    Emitter<FlowChoreState> emit,
+  ) async {
+    if (_choreId == null) return;
+    emit(
+      state.copyWith(
+        isDeleting: true,
+        isSubmitting: false,
+        clearSubmissionError: true,
+        clearSuccess: true,
+      ),
+    );
+
+    try {
+      await _choresRepository.cancel(_choreId);
+      emit(
+        state.copyWith(
+          isDeleting: false,
+          successChoreId: _choreId,
+          successWasDelete: true,
+        ),
+      );
+    } on ChoreException catch (error) {
+      emit(
+        state.copyWith(
+          isDeleting: false,
+          clearSuccess: true,
+          submissionErrorCode: error.code,
+          submissionErrorMessage: error.message,
+          submissionErrorTick: state.submissionErrorTick + 1,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isDeleting: false,
+          clearSuccess: true,
+          submissionErrorCode: null,
+          submissionErrorMessage: error.toString(),
+          submissionErrorTick: state.submissionErrorTick + 1,
+        ),
+      );
+    }
   }
 }

@@ -44,7 +44,7 @@ void main() {
     await sl.reset();
   });
 
-  Widget _buildApp(Widget child) {
+  Widget buildApp(Widget child) {
     return MaterialApp(
       localizationsDelegates: const [
         S.delegate,
@@ -62,7 +62,7 @@ void main() {
   ) async {
     when(() => homeRepository.join(any())).thenAnswer((_) async {});
 
-    await tester.pumpWidget(_buildApp(const JoinHomeScreen()));
+    await tester.pumpWidget(buildApp(const JoinHomeScreen()));
 
     var button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
     expect(button.onPressed, isNull);

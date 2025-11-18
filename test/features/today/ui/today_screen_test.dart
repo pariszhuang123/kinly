@@ -32,7 +32,7 @@ void main() {
     when(() => todayBloc.state).thenReturn(const TodayState.loading());
   });
 
-  Widget _buildApp() {
+  Widget buildApp() {
     return MaterialApp(
       theme: buildKinlyTheme(Brightness.light),
       localizationsDelegates: const [
@@ -52,7 +52,7 @@ void main() {
   testWidgets('shows loading indicator while state is loading', (tester) async {
     when(() => todayBloc.state).thenReturn(const TodayState.loading());
 
-    await tester.pumpWidget(_buildApp());
+    await tester.pumpWidget(buildApp());
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -65,7 +65,7 @@ void main() {
       ),
     );
 
-    await tester.pumpWidget(_buildApp());
+    await tester.pumpWidget(buildApp());
     await tester.pump();
 
     expect(find.text('Take out trash'), findsOneWidget);

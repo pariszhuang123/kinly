@@ -5,6 +5,8 @@ import '../../data/repositories/chores_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../features/today/ui/today_provider.dart';
 import '../../features/flow/ui/flow_chore_provider.dart';
+import '../../features/flow/ui/flow_list_provider.dart';
+import '../../features/explore/ui/explore_screen.dart';
 import '../../features/home_membership/start/ui/start_home_provider.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
 import '../../features/home_membership/join/ui/join_home_screen.dart';
@@ -18,6 +20,8 @@ class AppRoutes {
   static const create = '/create';
   static const join = '/join';
   static const today = '/today';
+  static const explore = '/explore';
+  static const flow = '/flow';
   static const flowChoreCreate = '/flow/chore/new';
   static const flowChoreEdit = '/flow/chore/:choreId';
 
@@ -95,6 +99,31 @@ GoRouter createRouter({
             homeId: homeId,
             choresRepository: sl<ChoresRepository>(),
             profileRepository: sl<ProfileRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.explore,
+        name: 'explore',
+        builder: (_, __) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Explore requires an active membership.');
+          }
+          return const ExploreScreen();
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.flow,
+        name: 'flow',
+        builder: (_, __) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Flow routes require an active membership.');
+          }
+          return FlowListProvider(
+            homeId: membership.homeId,
+            choresRepository: sl<ChoresRepository>(),
           );
         },
       ),

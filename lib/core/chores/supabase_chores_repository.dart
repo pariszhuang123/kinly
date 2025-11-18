@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/repositories/chores_repository.dart';
+import '../supabase/storage_path_resolver.dart';
 import '../supabase/supabase_error_mapper.dart';
 import 'models.dart';
 
@@ -140,8 +141,19 @@ class SupabaseChoresRepository implements ChoresRepository {
       if (response is List) {
         return response
             .map(
-              (raw) =>
-                  ChoreListEntry.fromJson((raw as Map).cast<String, dynamic>()),
+              (raw) {
+                final entry = ChoreListEntry.fromJson(
+                  (raw as Map).cast<String, dynamic>(),
+                );
+                final avatarUrl = storagePathToPublicUrl(
+                  _client,
+                  entry.assigneeAvatarStoragePath,
+                );
+                return entry.copyWith(
+                  assigneeAvatarStoragePath:
+                      avatarUrl ?? entry.assigneeAvatarStoragePath,
+                );
+              },
             )
             .toList(growable: false);
       }
@@ -231,9 +243,18 @@ class SupabaseChoresRepository implements ChoresRepository {
       if (response is List) {
         return response
             .map(
-              (raw) => ChoreAssigneeSummary.fromJson(
-                (raw as Map).cast<String, dynamic>(),
-              ),
+              (raw) {
+                final summary = ChoreAssigneeSummary.fromJson(
+                  (raw as Map).cast<String, dynamic>(),
+                );
+                final avatarUrl = storagePathToPublicUrl(
+                  _client,
+                  summary.avatarStoragePath,
+                );
+                return summary.copyWith(
+                  avatarStoragePath: avatarUrl ?? summary.avatarStoragePath,
+                );
+              },
             )
             .toList(growable: false);
       }

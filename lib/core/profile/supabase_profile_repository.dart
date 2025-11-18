@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/repositories/profile_repository.dart';
+import '../supabase/storage_path_resolver.dart';
 import 'models.dart';
 
 class SupabaseProfileRepository implements ProfileRepository {
@@ -19,7 +20,10 @@ class SupabaseProfileRepository implements ProfileRepository {
         (payload['avatar_storage_path'] as String?)?.trim().isEmpty ?? true
             ? null
             : payload['avatar_storage_path'] as String?;
-    return UserProfile.fromJson(payload, avatarUrl: _publicUrlFor(storagePath));
+    return UserProfile.fromJson(
+      payload,
+      avatarUrl: storagePathToPublicUrl(_client, storagePath),
+    );
   }
 
   Map<String, dynamic>? _coerceFirstRow(dynamic response) {
@@ -35,22 +39,6 @@ class SupabaseProfileRepository implements ProfileRepository {
     return null;
   }
 
-  String? _publicUrlFor(String? storagePath) {
-    if (storagePath == null || storagePath.isEmpty) return null;
-    final normalized = storagePath.trim();
-    if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
-      return normalized;
-    }
-    final separatorIndex = storagePath.indexOf('/');
-    final bucket =
-        separatorIndex == -1
-            ? 'avatars'
-            : storagePath.substring(0, separatorIndex);
-    final objectPath =
-        separatorIndex == -1
-            ? storagePath
-            : storagePath.substring(separatorIndex + 1);
-    if (objectPath.isEmpty) return null;
-    return _client.storage.from(bucket).getPublicUrl(objectPath);
-  }
+  // Left here because other repositories still rely on the helper, but
+  // profile repository now defers to [storagePathToPublicUrl].
 }

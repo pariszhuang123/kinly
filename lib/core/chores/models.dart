@@ -139,6 +139,23 @@ class ChoreListEntry {
           json['assignee_avatar_storage_path'] as String?,
     );
   }
+
+  ChoreListEntry copyWith({
+    String? assigneeUserId,
+    String? assigneeFullName,
+    String? assigneeAvatarStoragePath,
+  }) {
+    return ChoreListEntry(
+      id: id,
+      homeId: homeId,
+      name: name,
+      startDate: startDate,
+      assigneeUserId: assigneeUserId ?? this.assigneeUserId,
+      assigneeFullName: assigneeFullName ?? this.assigneeFullName,
+      assigneeAvatarStoragePath:
+          assigneeAvatarStoragePath ?? this.assigneeAvatarStoragePath,
+    );
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -199,6 +216,17 @@ class ChoreAssigneeSummary {
       userId: (json['user_id'] ?? json['id']) as String,
       fullName: json['full_name'] as String?,
       avatarStoragePath: json['avatar_storage_path'] as String?,
+    );
+  }
+
+  ChoreAssigneeSummary copyWith({
+    String? fullName,
+    String? avatarStoragePath,
+  }) {
+    return ChoreAssigneeSummary(
+      userId: userId,
+      fullName: fullName ?? this.fullName,
+      avatarStoragePath: avatarStoragePath ?? this.avatarStoragePath,
     );
   }
 }

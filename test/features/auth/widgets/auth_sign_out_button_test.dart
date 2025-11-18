@@ -26,7 +26,7 @@ void main() {
       bloc = _MockAuthBloc();
     });
 
-    Widget _buildHarness() {
+    Widget buildHarness() {
       return MaterialApp(
         localizationsDelegates: const [
           S.delegate,
@@ -49,7 +49,7 @@ void main() {
     testWidgets('dispatches AuthSignOutRequested when tapped', (tester) async {
       when(() => bloc.state).thenReturn(const AuthState());
 
-      await tester.pumpWidget(_buildHarness());
+      await tester.pumpWidget(buildHarness());
       await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.logout));
@@ -63,7 +63,7 @@ void main() {
         () => bloc.state,
       ).thenReturn(const AuthState(isLoading: true));
 
-      await tester.pumpWidget(_buildHarness());
+      await tester.pumpWidget(buildHarness());
       await tester.pumpAndSettle();
 
       final button = tester.widget<IconButton>(find.byType(IconButton));

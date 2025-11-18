@@ -7,6 +7,7 @@ import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/ui/kinly_circle_avatar.dart';
 import '../bloc/flow_chore_bloc.dart';
 import '../domain/flow_chore_form.dart';
 import '../domain/flow_chore_outcome.dart';
@@ -57,7 +58,8 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
           Navigator.of(context).pop(
             FlowChoreOutcome(
               choreId: state.successChoreId!,
-              isUpdate: state.isEditMode,
+              isUpdate: state.isEditMode && !state.successWasDelete,
+              isDeleted: state.successWasDelete,
             ),
           );
           return;
@@ -108,12 +110,46 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
                         state: state,
                         spacing: spacing,
                         flowColors: flowColors,
+                        onDeleteRequested:
+                            state.isEditMode
+                                ? () => _confirmDelete(context)
+                                : null,
                       ),
             ),
           ),
         );
       },
     );
+  }
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    final s = S.of(context);
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(s.flowChoreDeleteDialogTitle),
+          content: Text(s.flowChoreDeleteDialogMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(s.flowChoreDeleteCancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+              child: Text(s.flowChoreDeleteConfirm),
+            ),
+          ],
+        );
+      },
+    );
+    if (!context.mounted) return;
+    if (shouldDelete == true) {
+      context.read<FlowChoreBloc>().add(const FlowChoreDeleted());
+    }
   }
 
   String _mapSubmissionError(BuildContext context, FlowChoreState state) {
@@ -152,6 +188,7 @@ class _FlowChoreFormView extends StatelessWidget {
     required this.state,
     required this.spacing,
     required this.flowColors,
+    required this.onDeleteRequested,
   });
 
   final TextEditingController titleController;
@@ -161,17 +198,24 @@ class _FlowChoreFormView extends StatelessWidget {
   final FlowChoreState state;
   final Spacing? spacing;
   final SectionColors? flowColors;
+  final VoidCallback? onDeleteRequested;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = Theme.of(context);
     final form = state.form;
+    final showValidation = state.showValidationErrors;
+    final requiresAssignee = state.requiresAssignee;
     final hasAssigneeError =
-        state.showValidationErrors &&
-        state.isEditMode &&
-        form.assigneeUserId == null;
+        showValidation && requiresAssignee && form.assigneeUserId == null;
+    final hasDateError = showValidation && !state.isStartDateValid;
     final dateLabel = DateFormat.yMMMMd().format(form.startDate);
+    final canSubmit =
+        form.isTitleValid &&
+        (!requiresAssignee || form.assigneeUserId != null) &&
+        state.isStartDateValid;
+    final showDeleteCta = state.isEditMode && !state.hasChanges;
 
     return ListView(
       children: [
@@ -181,7 +225,7 @@ class _FlowChoreFormView extends StatelessWidget {
             labelText: s.flowChoreNameLabel,
             hintText: s.flowChoreNameHint,
             errorText:
-                state.showValidationErrors && !form.isTitleValid
+                showValidation && !form.isTitleValid
                     ? s.flowChoreValidationName
                     : null,
           ),
@@ -215,9 +259,19 @@ class _FlowChoreFormView extends StatelessWidget {
           onPressed: () => _pickStartDate(context, form.startDate),
           child: Text(dateLabel),
         ),
+        if (hasDateError)
+          Padding(
+            padding: EdgeInsets.only(top: spacing?.xs ?? 4),
+            child: Text(
+              s.flowChoreValidationDate,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ),
         SizedBox(height: spacing?.lg ?? 16),
         DropdownButtonFormField<ChoreRecurrence>(
-          value: form.recurrence,
+          initialValue: form.recurrence,
           items:
               ChoreRecurrence.values
                   .map(
@@ -275,33 +329,54 @@ class _FlowChoreFormView extends StatelessWidget {
         SizedBox(height: spacing?.xl ?? 24),
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton(
-            style:
-                flowColors != null
-                    ? ElevatedButton.styleFrom(
-                      backgroundColor: flowColors!.accent,
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    )
-                    : null,
-            onPressed:
-                state.isSubmitting
-                    ? null
-                    : () => context.read<FlowChoreBloc>().add(
-                      const FlowChoreSubmitted(),
+          child:
+              showDeleteCta
+                  ? ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.error,
+                      foregroundColor: theme.colorScheme.onError,
                     ),
-            child:
-                state.isSubmitting
-                    ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                    : Text(
-                      state.isEditMode
-                          ? s.flowChoreSubmitUpdate
-                          : s.flowChoreSubmitCreate,
-                    ),
-          ),
+                    onPressed:
+                        state.isDeleting || onDeleteRequested == null
+                            ? null
+                            : onDeleteRequested,
+                    child:
+                        state.isDeleting
+                            ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : Text(s.flowChoreDeleteButton),
+                  )
+                  : ElevatedButton(
+                    style:
+                        flowColors != null
+                            ? ElevatedButton.styleFrom(
+                              backgroundColor: flowColors!.accent,
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.onPrimary,
+                            )
+                            : null,
+                    onPressed:
+                        state.isSubmitting || !canSubmit
+                            ? null
+                            : () => context.read<FlowChoreBloc>().add(
+                              const FlowChoreSubmitted(),
+                            ),
+                    child:
+                        state.isSubmitting
+                            ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : Text(
+                              state.isEditMode
+                                  ? s.flowChoreSubmitUpdate
+                                  : s.flowChoreSubmitCreate,
+                            ),
+                  ),
         ),
       ],
     );
@@ -309,15 +384,15 @@ class _FlowChoreFormView extends StatelessWidget {
 
   Future<void> _pickStartDate(BuildContext context, DateTime current) async {
     final now = DateTime.now();
-    final firstDate = DateTime(now.year - 1, now.month, now.day);
-    final lastDate = DateTime(now.year + 2, now.month, now.day);
+    final firstDate = DateTime(now.year, now.month, now.day);
+    final lastDate = DateTime(now.year + 1, now.month, now.day);
     final picked = await showDatePicker(
       context: context,
       initialDate: current,
       firstDate: firstDate,
       lastDate: lastDate,
     );
-    if (picked != null) {
+    if (picked != null && context.mounted) {
       context.read<FlowChoreBloc>().add(FlowChoreStartDateChanged(picked));
     }
   }
@@ -353,38 +428,65 @@ class _AssigneeChips extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final spacing = Theme.of(context).extension<Spacing>();
-    final chips = <Widget>[
-      ChoiceChip(
-        label: Text(s.flowChoreAssigneeUnassigned),
-        selected: selectedUserId == null,
-        onSelected:
-            (selected) =>
-                selected
-                    ? context.read<FlowChoreBloc>().add(
-                      const FlowChoreAssigneeChanged(null),
-                    )
-                    : null,
-      ),
-    ];
-
-    for (final member in assignees) {
-      final label = member.fullName ?? s.friendDefaultName;
-      chips.add(
-        ChoiceChip(
-          label: Text(label),
-          selected: member.userId == selectedUserId,
-          onSelected:
-              (_) => context.read<FlowChoreBloc>().add(
-                FlowChoreAssigneeChanged(member.userId),
-              ),
-        ),
-      );
-    }
-
     return Wrap(
       spacing: spacing?.sm ?? 8,
       runSpacing: spacing?.sm ?? 8,
-      children: chips,
+      children: [
+        ChoiceChip(
+          label: Text(s.flowChoreAssigneeUnassigned),
+          selected: selectedUserId == null,
+          onSelected:
+              (selected) =>
+                  selected
+                      ? context.read<FlowChoreBloc>().add(
+                        const FlowChoreAssigneeChanged(null),
+                      )
+                      : null,
+        ),
+        for (final member in assignees)
+          _AvatarChoice(
+            avatarUrl: member.avatarStoragePath,
+            selected: member.userId == selectedUserId,
+            onTap:
+                () => context.read<FlowChoreBloc>().add(
+                  FlowChoreAssigneeChanged(member.userId),
+                ),
+          ),
+      ],
+    );
+  }
+}
+
+class _AvatarChoice extends StatelessWidget {
+  const _AvatarChoice({
+    required this.avatarUrl,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String? avatarUrl;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: selected ? colorScheme.primary : Colors.transparent,
+            width: 2,
+          ),
+        ),
+        child: KinlyCircleAvatar(
+          avatarUrl: avatarUrl,
+          radius: 22,
+        ),
+      ),
     );
   }
 }

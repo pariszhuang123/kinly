@@ -38,6 +38,121 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "create_success": MessageLookupByLibrary.simpleMessage("Home created!"),
     "create_title": MessageLookupByLibrary.simpleMessage("Create Home"),
+    "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Review every Flow task and keep chores moving",
+    ),
+    "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Explore more ways to keep your home feeling lighter.",
+    ),
+    "exploreIntroTitle": MessageLookupByLibrary.simpleMessage(
+      "Discover what\'s next",
+    ),
+    "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("Assign to"),
+    "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
+      "Unassigned",
+    ),
+    "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "Add Flow chore",
+    ),
+    "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage(
+      "Delete chore",
+    ),
+    "flowChoreDeleteCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "flowChoreDeleteConfirm": MessageLookupByLibrary.simpleMessage("Delete"),
+    "flowChoreDeleteDialogMessage": MessageLookupByLibrary.simpleMessage(
+      "This removes the flow for everyone in your home.",
+    ),
+    "flowChoreDeleteDialogTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete this chore?",
+    ),
+    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage(
+      "Edit Flow chore",
+    ),
+    "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
+      "That member can\'t be assigned right now.",
+    ),
+    "flowChoreErrorForbidden": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have permission to change this chore.",
+    ),
+    "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t save the chore. Please try again.",
+    ),
+    "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
+      "That photo path isn\'t valid for this home.",
+    ),
+    "flowChoreErrorInvalidStart": MessageLookupByLibrary.simpleMessage(
+      "Pick a valid start date.",
+    ),
+    "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
+      "This chore can\'t be updated right now.",
+    ),
+    "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
+      "You\'ve hit the free limit for active chores. Upgrade to add more.",
+    ),
+    "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
+      "You\'ve hit the free limit for expectation photos. Remove one or upgrade.",
+    ),
+    "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
+      "Paste a video or document link (optional)",
+    ),
+    "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage("How-to link"),
+    "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t load this chore. Please try again.",
+    ),
+    "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
+      "Give your task a short, clear title",
+    ),
+    "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage("Task name"),
+    "flowChoreNotesHint": MessageLookupByLibrary.simpleMessage(
+      "Add optional context or reminders",
+    ),
+    "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage("Notes"),
+    "flowChorePhotoHint": MessageLookupByLibrary.simpleMessage(
+      "storage/households/... (optional)",
+    ),
+    "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
+      "Expectation photo",
+    ),
+    "flowChoreRecurrenceAnnual": MessageLookupByLibrary.simpleMessage("Annual"),
+    "flowChoreRecurrenceDaily": MessageLookupByLibrary.simpleMessage("Daily"),
+    "flowChoreRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
+      "Every 2 months",
+    ),
+    "flowChoreRecurrenceEvery2Weeks": MessageLookupByLibrary.simpleMessage(
+      "Every 2 weeks",
+    ),
+    "flowChoreRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
+      "Recurrence",
+    ),
+    "flowChoreRecurrenceMonthly": MessageLookupByLibrary.simpleMessage(
+      "Monthly",
+    ),
+    "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage("One time"),
+    "flowChoreRecurrenceWeekly": MessageLookupByLibrary.simpleMessage("Weekly"),
+    "flowChoreRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage("Start date"),
+    "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage("Add chore"),
+    "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage("Save chore"),
+    "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
+      "Pick someone to assign this chore to.",
+    ),
+    "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
+      "Pick a date between today and a year from now.",
+    ),
+    "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
+      "Give the chore a name.",
+    ),
+    "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("Draft"),
+    "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
+      "Add your first routine so everyone knows what to do.",
+    ),
+    "flowListEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "Nothing in Flow yet",
+    ),
+    "flowListError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t load Flow tasks. Pull to refresh.",
+    ),
+    "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage("Overdue"),
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("friend"),
     "greetingPartOfDay": m0,
     "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("name"),
@@ -100,11 +215,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayAddShareComingSoon": MessageLookupByLibrary.simpleMessage(
       "Share expenses coming soon.",
     ),
-    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add task (Flow)"),
+    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage(
+      "Add task (Flow)",
+    ),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage(
       "Add expense (Share)",
     ),
-    "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage("Add to your home"),
+    "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
+      "Add to your home",
+    ),
     "todayEmptyBody": MessageLookupByLibrary.simpleMessage(
       "Enjoy the calm — Kinly will let you know when something needs your attention.",
     ),
@@ -116,79 +235,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Here\'s what\'s flowing in your home today.",
-    ),
-    "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("Assign to"),
-    "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
-      "Unassigned",
-    ),
-    "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("Add Flow chore"),
-    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Edit Flow chore"),
-    "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
-      "That member can\'t be assigned right now.",
-    ),
-    "flowChoreErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "You don\'t have permission to change this chore.",
-    ),
-    "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t save the chore. Please try again.",
-    ),
-    "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
-      "That photo path isn\'t valid for this home.",
-    ),
-    "flowChoreErrorInvalidStart": MessageLookupByLibrary.simpleMessage(
-      "Pick a valid start date.",
-    ),
-    "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
-      "This chore can\'t be updated right now.",
-    ),
-    "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "You\'ve hit the free limit for active chores. Upgrade to add more.",
-    ),
-    "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
-      "You\'ve hit the free limit for expectation photos. Remove one or upgrade.",
-    ),
-    "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
-      "Paste a video or document link (optional)",
-    ),
-    "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage("How-to link"),
-    "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load this chore. Please try again.",
-    ),
-    "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
-      "Give your task a short, clear title",
-    ),
-    "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage("Task name"),
-    "flowChoreNotesHint": MessageLookupByLibrary.simpleMessage(
-      "Add optional context or reminders",
-    ),
-    "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage("Notes"),
-    "flowChorePhotoHint": MessageLookupByLibrary.simpleMessage(
-      "storage/households/... (optional)",
-    ),
-    "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "Expectation photo",
-    ),
-    "flowChoreRecurrenceAnnual": MessageLookupByLibrary.simpleMessage("Annual"),
-    "flowChoreRecurrenceDaily": MessageLookupByLibrary.simpleMessage("Daily"),
-    "flowChoreRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
-      "Every 2 months",
-    ),
-    "flowChoreRecurrenceEvery2Weeks": MessageLookupByLibrary.simpleMessage(
-      "Every 2 weeks",
-    ),
-    "flowChoreRecurrenceLabel": MessageLookupByLibrary.simpleMessage("Recurrence"),
-    "flowChoreRecurrenceMonthly": MessageLookupByLibrary.simpleMessage("Monthly"),
-    "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage("One time"),
-    "flowChoreRecurrenceWeekly": MessageLookupByLibrary.simpleMessage("Weekly"),
-    "flowChoreRetry": MessageLookupByLibrary.simpleMessage("Retry"),
-    "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage("Start date"),
-    "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage("Add chore"),
-    "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage("Save chore"),
-    "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
-      "Pick someone to assign this chore to.",
-    ),
-    "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
-      "Give the chore a name.",
     ),
     "today_home_details": m2,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(

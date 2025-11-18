@@ -44,7 +44,7 @@ void main() {
     when(() => startHomeBloc.state).thenReturn(const StartHomeState());
   });
 
-  Widget _buildApp() {
+  Widget buildApp() {
     return MaterialApp(
       localizationsDelegates: const [
         S.delegate,
@@ -68,7 +68,7 @@ void main() {
       () => authBloc.state,
     ).thenReturn(const AuthState(membershipStatus: AuthMembershipStatus.none));
 
-    await tester.pumpWidget(_buildApp());
+    await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
     expect(find.text("You haven't joined a home yet."), findsOneWidget);
@@ -79,7 +79,7 @@ void main() {
       const AuthState(membershipStatus: AuthMembershipStatus.active),
     );
 
-    await tester.pumpWidget(_buildApp());
+    await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
     expect(find.text("You're already part of a home."), findsOneWidget);

@@ -1,5 +1,5 @@
-/// Repository boundary for Home membership operations.
-/// UI/BLoC should depend on this interface only.
+// Repository boundary for Home membership operations.
+// UI/BLoC should depend on this interface only.
 import '../../core/homes/models.dart';
 abstract class HomeRepository {
   /// Join a home via invite code.
