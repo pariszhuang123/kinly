@@ -80,17 +80,24 @@ jobs:
           else
             echo "do_db_check=false" >> $GITHUB_OUTPUT
           fi
-          
+
       - uses: supabase/setup-cli@v1
         if: steps.changes.outputs.do_db_check == 'true'
         with:
           version: latest
+
+      # Dart is needed because contracts_regen.sh calls `dart tool/...`
+      - uses: subosito/flutter-action@v2
+        if: steps.changes.outputs.do_db_check == 'true'
+        with:
+          channel: stable
 
       - name: Start local Supabase and reset DB
         if: steps.changes.outputs.do_db_check == 'true'
         run: |
           supabase start
           supabase db reset --yes
+
       - name: Wait for PostgREST
         if: steps.changes.outputs.do_db_check == 'true'
         shell: bash
@@ -121,50 +128,14 @@ jobs:
             echo "::endgroup::"
           done
 
-      - name: Dump schema (DDL only)
+      # 🔥 Unified: regenerate all contract snapshots using the same script as local
+      - name: Regenerate contract snapshots (same as local)
         if: steps.changes.outputs.do_db_check == 'true'
         shell: bash
         run: |
-          set -euo pipefail
-
-          mkdir -p docs/contracts
-
-          # Use Supabase CLI to dump from the *local* stack.
-          # This runs pg_dump inside Supabase's own container, so versions always match.
-          supabase db dump --local -f docs/contracts/schema.sql
-
-      - name: Extract RLS policies
-        if: steps.changes.outputs.do_db_check == 'true'
-        shell: bash
-        run: |
-          awk '/CREATE POLICY|ENABLE ROW LEVEL SECURITY|FORCE ROW LEVEL SECURITY/ {print}' docs/contracts/schema.sql > docs/contracts/rls_policies.sql
-
-      - name: Dump OpenAPI (PostgREST)
-        if: steps.changes.outputs.do_db_check == 'true'
-        run: |
-          curl -s -H 'Accept: application/openapi+json' http://127.0.0.1:54321/rest/v1/ > docs/contracts/openapi.json
-
-      - name: Generate DB types (TypeScript)
-        if: steps.changes.outputs.do_db_check == 'true'
-        run: |
-          supabase gen types typescript --local > docs/contracts/types.generated.ts
-
-      - name: Generate Edge Functions manifest
-        if: steps.changes.outputs.do_db_check == 'true'
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import os, json
-          base = 'supabase/functions'
-          manifest = {'functions': {}}
-          if os.path.isdir(base):
-              for name in sorted([d for d in os.listdir(base) if os.path.isdir(os.path.join(base, d))]):
-                  manifest['functions'][name] = {'path': os.path.join(base, name).replace('\\\\','/')}
-          os.makedirs('docs/contracts', exist_ok=True)
-          with open('docs/contracts/edge_functions.json', 'w') as f:
-              json.dump(manifest, f, indent=2)
-          print('Wrote docs/contracts/edge_functions.json')
-          PY
+          chmod +x tool/contracts_regen.sh
+          # DB is already freshly reset above, so plain run is fine.
+          ./tool/contracts_regen.sh
 
       - name: Verify snapshots committed
         if: steps.changes.outputs.do_db_check == 'true'
@@ -175,10 +146,17 @@ jobs:
             docs/contracts/rls_policies.sql \
             docs/contracts/openapi.json \
             docs/contracts/types.generated.ts \
-            docs/contracts/edge_functions.json)
+            docs/contracts/edge_functions.json \
+            docs/contracts/registry.json)
           if [ -n "$CHANGED" ]; then
             echo "::error::Contract snapshots are out of date. Commit updated schema/rls files.";
-            git --no-pager diff -- docs/contracts/schema.sql docs/contracts/rls_policies.sql docs/contracts/openapi.json docs/contracts/types.generated.ts docs/contracts/edge_functions.json || true;
+            git --no-pager diff -- \
+              docs/contracts/schema.sql \
+              docs/contracts/rls_policies.sql \
+              docs/contracts/openapi.json \
+              docs/contracts/types.generated.ts \
+              docs/contracts/edge_functions.json \
+              docs/contracts/registry.json || true;
             exit 1;
           fi
 

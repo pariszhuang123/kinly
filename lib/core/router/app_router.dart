@@ -4,12 +4,14 @@ import 'package:go_router/go_router.dart';
 import '../../data/repositories/chores_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../features/today/ui/today_provider.dart';
+import '../../features/flow/ui/flow_chore_detail_provider.dart';
 import '../../features/flow/ui/flow_chore_provider.dart';
 import '../../features/flow/ui/flow_list_provider.dart';
 import '../../features/explore/ui/explore_screen.dart';
 import '../../features/home_membership/start/ui/start_home_provider.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
 import '../../features/home_membership/join/ui/join_home_screen.dart';
+import '../../features/profile_settings/ui/profile_settings_provider.dart';
 import '../../features/auth/bloc/auth_bloc.dart';
 import 'navigation_intents.dart';
 import '../di/locator.dart';
@@ -27,8 +29,12 @@ class AppRoutes {
   static const flow = '/flow';
   static const flowChoreCreate = '/flow/chore/new';
   static const flowChoreEdit = '/flow/chore/:choreId';
+  static const flowChoreDetail = '/flow/chore/:choreId/detail';
+  static const profileSettings = '/settings/profile';
 
   static String flowChoreEditPath(String choreId) => '/flow/chore/$choreId';
+  static String flowChoreDetailPath(String choreId) =>
+      '/flow/chore/$choreId/detail';
 }
 
 GoRouter createRouter({
@@ -75,9 +81,11 @@ GoRouter createRouter({
       if (isWelcome) {
         return hasMembership ? AppRoutes.today : AppRoutes.start;
       }
+
       if (goingTo == AppRoutes.start && hasMembership) {
         return AppRoutes.today;
       }
+
       if (goingTo == AppRoutes.today && !hasMembership) {
         return AppRoutes.start;
       }
@@ -176,6 +184,39 @@ GoRouter createRouter({
             homeId: membership.homeId,
             choresRepository: sl<ChoresRepository>(),
             choreId: choreId,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.flowChoreDetail,
+        name: 'flowChoreDetail',
+        builder: (_, state) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Flow routes require an active membership.');
+          }
+          final choreId = state.pathParameters['choreId']!;
+          return FlowChoreDetailProvider(
+            homeId: membership.homeId,
+            choreId: choreId,
+            choresRepository: sl<ChoresRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.profileSettings,
+        name: 'profileSettings',
+        builder: (_, state) {
+          final args = state.extra as ProfileSettingsRouteArgs?;
+          final membership = authBloc.state.membership;
+          final homeId = args?.homeId ?? membership?.homeId;
+          if (homeId == null) {
+            throw StateError('Profile settings requires an active membership.');
+          }
+          return ProfileSettingsProvider(
+            homeId: homeId,
+            initialDisplayName: args?.displayName,
+            initialAvatarUrl: args?.avatarUrl,
           );
         },
       ),

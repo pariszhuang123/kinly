@@ -5,11 +5,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/features/today/bloc/today_bloc.dart';
 import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/features/today/ui/today_screen.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/features/today/ui/widgets/today_empty_state_card.dart';
 
 class _MockTodayBloc extends MockBloc<TodayEvent, TodayState>
     implements TodayBloc {}
@@ -61,7 +63,14 @@ void main() {
   testWidgets('renders Flow section when tasks are available', (tester) async {
     when(() => todayBloc.state).thenReturn(
       TodayState.loaded(
-        flowTasks: const [TodayFlowTask(id: '1', title: 'Take out trash')],
+        activeTasks: const [
+          TodayFlowTask(
+            id: '1',
+            title: 'Take out trash',
+            state: ChoreState.active,
+          ),
+        ],
+        draftTasks: const [],
       ),
     );
 
@@ -69,5 +78,16 @@ void main() {
     await tester.pump();
 
     expect(find.text('Take out trash'), findsOneWidget);
+  });
+
+  testWidgets('shows empty state card when no tasks', (tester) async {
+    when(
+      () => todayBloc.state,
+    ).thenReturn(const TodayState.loaded(activeTasks: [], draftTasks: []));
+
+    await tester.pumpWidget(buildApp());
+    await tester.pump();
+
+    expect(find.byType(TodayEmptyStateCard), findsOneWidget);
   });
 }

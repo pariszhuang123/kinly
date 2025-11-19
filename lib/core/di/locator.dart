@@ -1,8 +1,10 @@
 import 'package:get_it/get_it.dart';
+import '../../data/repositories/account_repository.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/chores_repository.dart';
 import '../../data/repositories/home_repository.dart';
 import '../../data/repositories/profile_repository.dart';
+import '../account/supabase_account_repository.dart';
 import '../auth/supabase_auth_repository.dart';
 import '../chores/supabase_chores_repository.dart';
 import '../homes/supabase_home_repository.dart';
@@ -28,6 +30,11 @@ void setupDependencies() {
   if (!sl.isRegistered<ProfileRepository>()) {
     sl.registerLazySingleton<ProfileRepository>(
       () => SupabaseProfileRepository(),
+    );
+  }
+  if (!sl.isRegistered<AccountRepository>()) {
+    sl.registerLazySingleton<AccountRepository>(
+      () => SupabaseAccountRepository(),
     );
   }
 }

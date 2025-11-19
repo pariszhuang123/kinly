@@ -1,0 +1,15 @@
+*** Update File: lib/features/home_membership/start/ui/start_home_screen.dart
+@@
+-            if (state.status == StartHomeStatus.success) {
+-              context.read<AuthBloc>().add(
+-                const AuthMembershipRefreshRequested(),
+-              );
+-
+-              context.go(AppRoutes.today);
+-            }
++            if (state.status == StartHomeStatus.success) {
++              context.read<AuthBloc>().add(
++                const AuthMembershipRefreshRequested(),
++              );
++            }
+*** End Patch

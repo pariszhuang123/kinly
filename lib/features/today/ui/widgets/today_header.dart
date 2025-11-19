@@ -8,8 +8,14 @@ import '../../../../core/ui/kinly_circle_avatar.dart';
 class TodayHeader extends StatelessWidget {
   final String partOfDay; // “morning”, “afternoon”, “evening”
   final TodayUserProfile? profile;
+  final VoidCallback? onAvatarTap;
 
-  const TodayHeader({super.key, required this.partOfDay, this.profile});
+  const TodayHeader({
+    super.key,
+    required this.partOfDay,
+    this.profile,
+    this.onAvatarTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +53,20 @@ class TodayHeader extends StatelessWidget {
           ),
         ),
         SizedBox(width: spacing.md),
-        KinlyCircleAvatar(avatarUrl: profile?.avatarUrl, radius: 30),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onAvatarTap,
+            borderRadius: BorderRadius.circular(32),
+            child: Padding(
+              padding: EdgeInsets.all(spacing.xs / 2),
+              child: KinlyCircleAvatar(
+                avatarUrl: profile?.avatarUrl,
+                radius: 30,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
