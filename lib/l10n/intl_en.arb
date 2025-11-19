@@ -70,6 +70,17 @@
   "greetingPartOfDay_partOfDay": "part of day (morning/afternoon/evening)",
   "greetingPartOfDay_name": "name",
   "todayFlowSubtitle": "Here's what's flowing in your home today.",
+  "todayFlowTabActive": "Active",
+  "todayFlowTabDrafts": "Drafts",
+  "todayFlowSeeAll": "See all ({count})",
+  "@todayFlowSeeAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayFlowBadgeNew": "new today",
   "flowChoreCreateTitle": "Add Flow chore",
   "flowChoreEditTitle": "Edit Flow chore",
   "flowChoreNameLabel": "Task name",
@@ -111,6 +122,12 @@
   "flowChoreErrorInvalidStart": "Pick a valid start date.",
   "flowChoreErrorInvalidState": "This chore can't be updated right now.",
   "flowChoreErrorGeneric": "Couldn't save the chore. Please try again.",
+  "flowChoreDetailTitle": "Chore details",
+  "flowChoreDetailUnassigned": "Unassigned",
+  "flowChoreDetailNoNotes": "No notes yet.",
+  "flowChoreDetailNoHowTo": "No how-to link provided.",
+  "flowChoreDetailCompleteButton": "Complete task",
+  "flowChoreDetailCompletionError": "Couldn't complete the chore. Please try again.",
   "flowListEmptyTitle": "Nothing in Flow yet",
   "flowListEmptySubtitle": "Add your first routine so everyone knows what to do.",
   "flowListDraftLabel": "Draft",

@@ -66,6 +66,17 @@
   "greetingPartOfDay_partOfDay": "parte del día (mañana/tarde/noche)",
   "greetingPartOfDay_name": "nombre",
   "todayFlowSubtitle": "Esto es lo que fluye en tu hogar hoy.",
+  "todayFlowTabActive": "Activas",
+  "todayFlowTabDrafts": "Borradores",
+  "todayFlowSeeAll": "Ver todo ({count})",
+  "@todayFlowSeeAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayFlowBadgeNew": "nuevo hoy",
   "todayAddSheetTitle": "Añade algo a tu hogar",
   "todayAddSheetFlow": "Agregar tarea (Flow)",
   "todayAddSheetShare": "Agregar gasto (Share)",
@@ -111,6 +122,12 @@
   "flowChoreErrorInvalidStart": "Elige una fecha de inicio válida.",
   "flowChoreErrorInvalidState": "Esta tarea no se puede actualizar en este momento.",
   "flowChoreErrorGeneric": "No se pudo guardar la tarea. Intenta de nuevo.",
+  "flowChoreDetailTitle": "Detalles de la tarea",
+  "flowChoreDetailUnassigned": "Sin asignar",
+  "flowChoreDetailNoNotes": "Sin notas.",
+  "flowChoreDetailNoHowTo": "Sin enlace de instrucciones.",
+  "flowChoreDetailCompleteButton": "Completar tarea",
+  "flowChoreDetailCompletionError": "No se pudo completar la tarea. Intenta de nuevo.",
   "flowListEmptyTitle": "Aún no hay Flows",
   "flowListEmptySubtitle": "Agrega tu primera rutina para que todos sepan qué hacer.",
   "flowListDraftLabel": "Borrador",

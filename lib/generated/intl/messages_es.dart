@@ -26,6 +26,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(homeId, role) => "Hogar actual: ${homeId} • Rol: ${role}";
 
+  static String m3(count) => "Ver todo (${count})";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
@@ -76,6 +78,22 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
       "No se pudo guardar la tarea. Intenta de nuevo.",
+    ),
+    "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
+      "Detalles de la tarea",
+    ),
+    "flowChoreDetailUnassigned": MessageLookupByLibrary.simpleMessage(
+      "Sin asignar",
+    ),
+    "flowChoreDetailNoNotes": MessageLookupByLibrary.simpleMessage("Sin notas."),
+    "flowChoreDetailNoHowTo": MessageLookupByLibrary.simpleMessage(
+      "Sin enlace de instrucciones.",
+    ),
+    "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
+      "Completar tarea",
+    ),
+    "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
+      "No se pudo completar la tarea. Intenta de nuevo.",
     ),
     "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
       "Esa ruta de foto no es válida para este hogar.",
@@ -254,6 +272,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Esto es lo que fluye en tu hogar hoy.",
     ),
+    "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
+    "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
+    "todayFlowSeeAll": m3,
+    "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
     "today_home_details": m2,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "Sin hogar activo todavía. Crea o únete para ver la vista de hoy.",

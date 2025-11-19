@@ -529,6 +529,42 @@ class S {
     );
   }
 
+  String get todayFlowTabActive {
+    return Intl.message(
+      'Active',
+      name: 'todayFlowTabActive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get todayFlowTabDrafts {
+    return Intl.message(
+      'Drafts',
+      name: 'todayFlowTabDrafts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String todayFlowSeeAll(int count) {
+    return Intl.message(
+      'See all ($count)',
+      name: 'todayFlowSeeAll',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  String get todayFlowBadgeNew {
+    return Intl.message(
+      'new today',
+      name: 'todayFlowBadgeNew',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Add Flow chore`
   String get flowChoreCreateTitle {
     return Intl.message(
@@ -929,6 +965,60 @@ class S {
     return Intl.message(
       'Couldn\'t save the chore. Please try again.',
       name: 'flowChoreErrorGeneric',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get flowChoreDetailTitle {
+    return Intl.message(
+      'Chore details',
+      name: 'flowChoreDetailTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get flowChoreDetailUnassigned {
+    return Intl.message(
+      'Unassigned',
+      name: 'flowChoreDetailUnassigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get flowChoreDetailNoNotes {
+    return Intl.message(
+      'No notes yet.',
+      name: 'flowChoreDetailNoNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get flowChoreDetailNoHowTo {
+    return Intl.message(
+      'No how-to link provided.',
+      name: 'flowChoreDetailNoHowTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get flowChoreDetailCompleteButton {
+    return Intl.message(
+      'Complete task',
+      name: 'flowChoreDetailCompleteButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get flowChoreDetailCompletionError {
+    return Intl.message(
+      'Couldn\'t complete the chore. Please try again.',
+      name: 'flowChoreDetailCompletionError',
       desc: '',
       args: [],
     );

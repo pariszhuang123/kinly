@@ -1,29 +1,42 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../core/chores/models.dart';
+
 /// A minimal representation of a task shown on the Today page.
 /// This is a *view model* for the Today feature –
 /// the Flow feature can have a richer FlowTask entity if needed.
 class TodayFlowTask extends Equatable {
   final String id;
   final String title;
+  final ChoreState state;
   final bool isNewToday;
 
   const TodayFlowTask({
     required this.id,
     required this.title,
+    required this.state,
     this.isNewToday = false,
   });
 
-  TodayFlowTask copyWith({String? id, String? title, bool? isNewToday}) {
+  TodayFlowTask copyWith({
+    String? id,
+    String? title,
+    ChoreState? state,
+    bool? isNewToday,
+  }) {
     return TodayFlowTask(
       id: id ?? this.id,
       title: title ?? this.title,
+      state: state ?? this.state,
       isNewToday: isNewToday ?? this.isNewToday,
     );
   }
 
+  bool get isDraft => state == ChoreState.draft;
+  bool get isActive => state == ChoreState.active;
+
   @override
-  List<Object?> get props => [id, title, isNewToday];
+  List<Object?> get props => [id, title, state, isNewToday];
 }
 
 /// A minimal representation of an expense shown on the Today page.

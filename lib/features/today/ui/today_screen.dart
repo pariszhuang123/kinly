@@ -13,6 +13,7 @@ import 'widgets/today_flow_section.dart';
 import 'widgets/today_share_section.dart';
 import 'widgets/today_header.dart';
 import 'widgets/today_add_sheet.dart';
+import 'widgets/today_empty_state_card.dart';
 import '../../../core/ui/home_bottom_nav.dart';
 import '../../flow/domain/flow_chore_outcome.dart';
 
@@ -98,7 +99,8 @@ class TodayScreen extends StatelessWidget {
                       BlocBuilder<TodayBloc, TodayState>(
                         buildWhen:
                             (previous, current) =>
-                                previous.flowTasks != current.flowTasks ||
+                                previous.activeTasks != current.activeTasks ||
+                                previous.draftTasks != current.draftTasks ||
                                 previous.isLoading != current.isLoading ||
                                 previous.message != current.message,
                         builder: (context, state) {
@@ -108,28 +110,23 @@ class TodayScreen extends StatelessWidget {
                             );
                           }
 
-                          if (state.flowTasks.isEmpty &&
-                              state.message != null) {
-                            // Error state with message
-                            return Text(
-                              state.message!,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.error,
-                              ),
-                            );
-                          }
-
-                          final tasks = state.flowTasks;
-
-                          if (tasks.isEmpty) {
-                            return const SizedBox.shrink(); // nothing
+                          if (!state.hasFlowContent) {
+                            if (state.message != null) {
+                              return Text(
+                                state.message!,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.error,
+                                ),
+                              );
+                            }
+                            return const TodayEmptyStateCard();
                           }
 
                           return TodayFlowSection(
-                            tasks: tasks,
+                            activeTasks: state.activeTasks,
+                            draftTasks: state.draftTasks,
                             onTaskTap:
-                                (task) =>
-                                    _openFlowChore(context, choreId: task.id),
+                                (task) => _handleFlowTaskTap(context, task),
                             onSeeAllTap: () => context.go(AppRoutes.flow),
                           );
                         },
@@ -191,6 +188,28 @@ class TodayScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _handleFlowTaskTap(
+    BuildContext context,
+    TodayFlowTask task,
+  ) async {
+    if (task.isActive) {
+      await _openFlowChoreDetail(context, choreId: task.id);
+    } else {
+      await _openFlowChore(context, choreId: task.id);
+    }
+  }
+
+  Future<void> _openFlowChoreDetail(
+    BuildContext context, {
+    required String choreId,
+  }) async {
+    final result = await context.push(AppRoutes.flowChoreDetailPath(choreId));
+    if (result is FlowChoreOutcome) {
+      if (!context.mounted) return;
+      context.read<TodayBloc>().add(const TodayRefreshed());
+    }
   }
 
   Future<void> _openFlowChore(BuildContext context, {String? choreId}) async {

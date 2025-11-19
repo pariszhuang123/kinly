@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../data/repositories/chores_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../features/today/ui/today_provider.dart';
+import '../../features/flow/ui/flow_chore_detail_provider.dart';
 import '../../features/flow/ui/flow_chore_provider.dart';
 import '../../features/flow/ui/flow_list_provider.dart';
 import '../../features/explore/ui/explore_screen.dart';
@@ -24,8 +25,11 @@ class AppRoutes {
   static const flow = '/flow';
   static const flowChoreCreate = '/flow/chore/new';
   static const flowChoreEdit = '/flow/chore/:choreId';
+  static const flowChoreDetail = '/flow/chore/:choreId/detail';
 
   static String flowChoreEditPath(String choreId) => '/flow/chore/$choreId';
+  static String flowChoreDetailPath(String choreId) =>
+      '/flow/chore/$choreId/detail';
 }
 
 GoRouter createRouter({
@@ -154,6 +158,22 @@ GoRouter createRouter({
             homeId: membership.homeId,
             choresRepository: sl<ChoresRepository>(),
             choreId: choreId,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.flowChoreDetail,
+        name: 'flowChoreDetail',
+        builder: (_, state) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Flow routes require an active membership.');
+          }
+          final choreId = state.pathParameters['choreId']!;
+          return FlowChoreDetailProvider(
+            homeId: membership.homeId,
+            choreId: choreId,
+            choresRepository: sl<ChoresRepository>(),
           );
         },
       ),
