@@ -249,6 +249,46 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileGenericError": MessageLookupByLibrary.simpleMessage(
       "Something went wrong. Please try again.",
     ),
+    "profileIdentityAvatarEmpty": MessageLookupByLibrary.simpleMessage(
+      "No avatars are available right now. Try again soon.",
+    ),
+    "profileIdentityAvatarSectionDescription":
+        MessageLookupByLibrary.simpleMessage(
+          "Each avatar is unique inside your home.",
+        ),
+    "profileIdentityAvatarSectionTitle": MessageLookupByLibrary.simpleMessage(
+      "Pick an avatar",
+    ),
+    "profileIdentityLoadError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t load your profile right now.",
+    ),
+    "profileIdentityRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "profileIdentitySaveButton": MessageLookupByLibrary.simpleMessage(
+      "Save changes",
+    ),
+    "profileIdentitySubtitle": MessageLookupByLibrary.simpleMessage(
+      "Pick a username and avatar for your home.",
+    ),
+    "profileIdentitySuccessMessage": MessageLookupByLibrary.simpleMessage(
+      "Profile updated.",
+    ),
+    "profileIdentityTitle": MessageLookupByLibrary.simpleMessage(
+      "Edit profile",
+    ),
+    "profileIdentityUsernameEmptyError": MessageLookupByLibrary.simpleMessage(
+      "Enter a username to continue.",
+    ),
+    "profileIdentityUsernameFormatError": MessageLookupByLibrary.simpleMessage(
+      "Use 3-30 lowercase letters or numbers. You can include dots or underscores in the middle.",
+    ),
+    "profileIdentityUsernameHint": MessageLookupByLibrary.simpleMessage(
+      "letters, numbers, . or _",
+    ),
+    "profileIdentityUsernameLabel": MessageLookupByLibrary.simpleMessage(
+      "Username",
+    ),
+    "profileIdentityUsernamePreviewFallback":
+        MessageLookupByLibrary.simpleMessage("your username"),
     "profileInfoHubLoadError": MessageLookupByLibrary.simpleMessage(
       "The Info Hub couldn\'t load. Check your connection.",
     ),

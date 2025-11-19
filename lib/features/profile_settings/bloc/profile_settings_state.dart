@@ -9,13 +9,30 @@ enum ProfileSettingsAction {
 }
 
 class ProfileSettingsUser extends Equatable {
-  const ProfileSettingsUser({required this.displayName, this.avatarUrl});
+  const ProfileSettingsUser({
+    required this.displayName,
+    this.avatarUrl,
+    this.avatarStoragePath,
+  });
 
   final String displayName;
   final String? avatarUrl;
+  final String? avatarStoragePath;
+
+  ProfileSettingsUser copyWith({
+    String? displayName,
+    String? avatarUrl,
+    String? avatarStoragePath,
+  }) {
+    return ProfileSettingsUser(
+      displayName: displayName ?? this.displayName,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      avatarStoragePath: avatarStoragePath ?? this.avatarStoragePath,
+    );
+  }
 
   @override
-  List<Object?> get props => [displayName, avatarUrl];
+  List<Object?> get props => [displayName, avatarUrl, avatarStoragePath];
 }
 
 class ProfileSettingsState extends Equatable {

@@ -194,6 +194,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      # 🔥 Free disk space on runner to avoid "No space left on device"
+      - name: Free disk space
+        run: |
+          echo "Disk usage before cleanup:"
+          df -h
+
+          # Remove heavy, unused toolchains on ubuntu-latest
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+
+          # Clean any Docker artifacts if present
+          docker system prune -af || true
+
+          echo "Disk usage after cleanup:"
+          df -h
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -217,6 +234,10 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      # Optional but keeps project build dir small
+      - name: Flutter clean
+        run: flutter clean
 
       - name: Compute build number
         id: versioning
@@ -308,6 +329,20 @@ jobs:
             echo "DO_PLAY_UPLOAD=false" >> $GITHUB_ENV
           fi
 
+      # 🔥 Free disk space before big release build
+      - name: Free disk space
+        run: |
+          echo "Disk usage before cleanup:"
+          df -h
+
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          docker system prune -af || true
+
+          echo "Disk usage after cleanup:"
+          df -h
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -331,6 +366,9 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Flutter clean
+        run: flutter clean
 
       - name: Compute build number
         id: versioning

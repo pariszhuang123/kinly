@@ -22,3 +22,12 @@ class ProfileSettingsDeleteRequested extends ProfileSettingsEvent {
 class ProfileSettingsActionCleared extends ProfileSettingsEvent {
   const ProfileSettingsActionCleared();
 }
+
+class ProfileSettingsUserUpdated extends ProfileSettingsEvent {
+  const ProfileSettingsUserUpdated(this.user);
+
+  final ProfileSettingsUser user;
+
+  @override
+  List<Object?> get props => [user];
+}

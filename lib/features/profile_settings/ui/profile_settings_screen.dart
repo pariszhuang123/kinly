@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
+import '../../../core/router/app_router.dart';
+import '../../../core/profile/models.dart';
 import '../../../generated/l10n.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../bloc/profile_settings_bloc.dart';
+import '../edit/profile_identity_provider.dart';
 import 'info_hub_webview.dart';
 
 class ProfileSettingsScreen extends StatelessWidget {
@@ -28,6 +32,10 @@ class ProfileSettingsScreen extends StatelessWidget {
                 _ProfileHeader(
                   user: state.user,
                   isLoading: state.isLoadingUser,
+                  onAvatarTap: () => _openProfileIdentity(
+                    context,
+                    user: state.user,
+                  ),
                 ),
                 SizedBox(height: spacing.xl),
                 _ProfileSettingsCard(
@@ -218,6 +226,43 @@ class ProfileSettingsScreen extends StatelessWidget {
     }
   }
 
+  Future<void> _openProfileIdentity(
+    BuildContext context, {
+    required ProfileSettingsUser? user,
+  }) async {
+    final authBloc = context.read<AuthBloc>();
+    final membership = authBloc.state.membership;
+    if (membership == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(S.of(context).profileMissingHomeError)),
+      );
+      return;
+    }
+    final args = ProfileIdentityRouteArgs(
+      homeId: membership.homeId,
+      initialUsername: user?.displayName,
+      initialAvatarStoragePath: user?.avatarStoragePath,
+      initialAvatarUrl: user?.avatarUrl,
+    );
+    final result = await context.push(
+      AppRoutes.profileIdentity,
+      extra: args,
+    );
+    if (result is UserProfile && context.mounted) {
+      final updated = ProfileSettingsUser(
+        displayName: result.username,
+        avatarUrl: result.avatarUrl,
+        avatarStoragePath: result.avatarStoragePath,
+      );
+      context
+          .read<ProfileSettingsBloc>()
+          .add(ProfileSettingsUserUpdated(updated));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(S.of(context).profileIdentitySuccessMessage)),
+      );
+    }
+  }
+
   Future<void> _contactSupport(BuildContext context) async {
     final s = S.of(context);
     final uri = Uri(
@@ -241,10 +286,15 @@ class ProfileSettingsScreen extends StatelessWidget {
 }
 
 class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({required this.user, required this.isLoading});
+  const _ProfileHeader({
+    required this.user,
+    required this.isLoading,
+    this.onAvatarTap,
+  });
 
   final ProfileSettingsUser? user;
   final bool isLoading;
+  final VoidCallback? onAvatarTap;
 
   @override
   Widget build(BuildContext context) {
@@ -259,28 +309,35 @@ class _ProfileHeader extends StatelessWidget {
 
     return Column(
       children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            KinlyCircleAvatar(avatarUrl: user?.avatarUrl, radius: 44),
-            if (isLoading)
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    shape: BoxShape.circle,
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(56),
+            onTap: onAvatarTap,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                KinlyCircleAvatar(avatarUrl: user?.avatarUrl, radius: 44),
+                if (isLoading)
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        shape: BoxShape.circle,
+                      ),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation(colorScheme.primary),
+                      ),
+                    ),
                   ),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation(colorScheme.primary),
-                  ),
-                ),
-              ),
-          ],
+              ],
+            ),
+          ),
         ),
         SizedBox(height: spacing.sm),
         Text(

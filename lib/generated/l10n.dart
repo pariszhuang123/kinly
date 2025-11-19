@@ -28,10 +28,9 @@ class S {
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name =
-        (locale.countryCode?.isEmpty ?? false)
-            ? locale.languageCode
-            : locale.toString();
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -1130,6 +1129,146 @@ class S {
     return Intl.message(
       'Manage your account preferences and home access.',
       name: 'profileSettingsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit profile`
+  String get profileIdentityTitle {
+    return Intl.message(
+      'Edit profile',
+      name: 'profileIdentityTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick a username and avatar for your home.`
+  String get profileIdentitySubtitle {
+    return Intl.message(
+      'Pick a username and avatar for your home.',
+      name: 'profileIdentitySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Username`
+  String get profileIdentityUsernameLabel {
+    return Intl.message(
+      'Username',
+      name: 'profileIdentityUsernameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `letters, numbers, . or _`
+  String get profileIdentityUsernameHint {
+    return Intl.message(
+      'letters, numbers, . or _',
+      name: 'profileIdentityUsernameHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a username to continue.`
+  String get profileIdentityUsernameEmptyError {
+    return Intl.message(
+      'Enter a username to continue.',
+      name: 'profileIdentityUsernameEmptyError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use 3-30 lowercase letters or numbers. You can include dots or underscores in the middle.`
+  String get profileIdentityUsernameFormatError {
+    return Intl.message(
+      'Use 3-30 lowercase letters or numbers. You can include dots or underscores in the middle.',
+      name: 'profileIdentityUsernameFormatError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick an avatar`
+  String get profileIdentityAvatarSectionTitle {
+    return Intl.message(
+      'Pick an avatar',
+      name: 'profileIdentityAvatarSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Each avatar is unique inside your home.`
+  String get profileIdentityAvatarSectionDescription {
+    return Intl.message(
+      'Each avatar is unique inside your home.',
+      name: 'profileIdentityAvatarSectionDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No avatars are available right now. Try again soon.`
+  String get profileIdentityAvatarEmpty {
+    return Intl.message(
+      'No avatars are available right now. Try again soon.',
+      name: 'profileIdentityAvatarEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't load your profile right now.`
+  String get profileIdentityLoadError {
+    return Intl.message(
+      'We couldn\'t load your profile right now.',
+      name: 'profileIdentityLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get profileIdentityRetry {
+    return Intl.message(
+      'Retry',
+      name: 'profileIdentityRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save changes`
+  String get profileIdentitySaveButton {
+    return Intl.message(
+      'Save changes',
+      name: 'profileIdentitySaveButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile updated.`
+  String get profileIdentitySuccessMessage {
+    return Intl.message(
+      'Profile updated.',
+      name: 'profileIdentitySuccessMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `your username`
+  String get profileIdentityUsernamePreviewFallback {
+    return Intl.message(
+      'your username',
+      name: 'profileIdentityUsernamePreviewFallback',
       desc: '',
       args: [],
     );

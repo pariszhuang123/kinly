@@ -26,6 +26,7 @@ class ProfileSettingsBloc
     on<ProfileSettingsLeaveRequested>(_onLeaveRequested);
     on<ProfileSettingsDeleteRequested>(_onDeleteRequested);
     on<ProfileSettingsActionCleared>(_onActionCleared);
+    on<ProfileSettingsUserUpdated>(_onUserUpdated);
   }
 
   final ProfileRepository _profileRepository;
@@ -120,11 +121,19 @@ class ProfileSettingsBloc
     );
   }
 
+  void _onUserUpdated(
+    ProfileSettingsUserUpdated event,
+    Emitter<ProfileSettingsState> emit,
+  ) {
+    emit(state.copyWith(user: event.user));
+  }
+
   ProfileSettingsUser? _mapProfile(UserProfile? profile) {
     if (profile == null) return null;
     return ProfileSettingsUser(
       displayName: profile.username,
       avatarUrl: profile.avatarUrl,
+      avatarStoragePath: profile.avatarStoragePath,
     );
   }
 }

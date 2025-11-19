@@ -269,6 +269,46 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileGenericError": MessageLookupByLibrary.simpleMessage(
       "Algo salió mal. Inténtalo otra vez.",
     ),
+    "profileIdentityAvatarEmpty": MessageLookupByLibrary.simpleMessage(
+      "No hay avatares disponibles por ahora. Inténtalo más tarde.",
+    ),
+    "profileIdentityAvatarSectionDescription":
+        MessageLookupByLibrary.simpleMessage(
+          "Cada avatar es único dentro de tu hogar.",
+        ),
+    "profileIdentityAvatarSectionTitle": MessageLookupByLibrary.simpleMessage(
+      "Elige un avatar",
+    ),
+    "profileIdentityLoadError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos cargar tu perfil en este momento.",
+    ),
+    "profileIdentityRetry": MessageLookupByLibrary.simpleMessage("Reintentar"),
+    "profileIdentitySaveButton": MessageLookupByLibrary.simpleMessage(
+      "Guardar cambios",
+    ),
+    "profileIdentitySubtitle": MessageLookupByLibrary.simpleMessage(
+      "Elige tu nombre de usuario y avatar para el hogar.",
+    ),
+    "profileIdentitySuccessMessage": MessageLookupByLibrary.simpleMessage(
+      "Perfil actualizado.",
+    ),
+    "profileIdentityTitle": MessageLookupByLibrary.simpleMessage(
+      "Editar perfil",
+    ),
+    "profileIdentityUsernameEmptyError": MessageLookupByLibrary.simpleMessage(
+      "Ingresa un nombre de usuario.",
+    ),
+    "profileIdentityUsernameFormatError": MessageLookupByLibrary.simpleMessage(
+      "Usa de 3 a 30 caracteres en minúscula o números. Puedes incluir puntos o guiones bajos en medio.",
+    ),
+    "profileIdentityUsernameHint": MessageLookupByLibrary.simpleMessage(
+      "letras, números, . o _",
+    ),
+    "profileIdentityUsernameLabel": MessageLookupByLibrary.simpleMessage(
+      "Nombre de usuario",
+    ),
+    "profileIdentityUsernamePreviewFallback":
+        MessageLookupByLibrary.simpleMessage("tu usuario"),
     "profileInfoHubLoadError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar el Info Hub. Revisa tu conexión.",
     ),

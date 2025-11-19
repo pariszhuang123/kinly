@@ -12,6 +12,7 @@ import '../../features/home_membership/start/ui/start_home_provider.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
 import '../../features/home_membership/join/ui/join_home_screen.dart';
 import '../../features/profile_settings/ui/profile_settings_provider.dart';
+import '../../features/profile_settings/edit/profile_identity_provider.dart';
 import '../../features/auth/bloc/auth_bloc.dart';
 import 'navigation_intents.dart';
 import '../di/locator.dart';
@@ -31,6 +32,7 @@ class AppRoutes {
   static const flowChoreEdit = '/flow/chore/:choreId';
   static const flowChoreDetail = '/flow/chore/:choreId/detail';
   static const profileSettings = '/settings/profile';
+  static const profileIdentity = '/settings/profile/identity';
 
   static String flowChoreEditPath(String choreId) => '/flow/chore/$choreId';
   static String flowChoreDetailPath(String choreId) =>
@@ -217,6 +219,24 @@ GoRouter createRouter({
             homeId: homeId,
             initialDisplayName: args?.displayName,
             initialAvatarUrl: args?.avatarUrl,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.profileIdentity,
+        name: 'profileIdentity',
+        builder: (_, state) {
+          final args = state.extra as ProfileIdentityRouteArgs?;
+          final membership = authBloc.state.membership;
+          final homeId = args?.homeId ?? membership?.homeId;
+          if (homeId == null) {
+            throw StateError('Profile identity requires an active membership.');
+          }
+          return ProfileIdentityProvider(
+            homeId: homeId,
+            initialUsername: args?.initialUsername,
+            initialAvatarStoragePath: args?.initialAvatarStoragePath,
+            initialAvatarUrl: args?.initialAvatarUrl,
           );
         },
       ),

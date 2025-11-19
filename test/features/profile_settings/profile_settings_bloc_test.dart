@@ -41,6 +41,7 @@ void main() {
       userId: 'user-1',
       username: 'Avery',
       avatarUrl: 'https://example.com/avatar.png',
+      avatarStoragePath: 'avatars/avery.svg',
     );
 
     blocTest<ProfileSettingsBloc, ProfileSettingsState>(
@@ -60,6 +61,7 @@ void main() {
           user: ProfileSettingsUser(
             displayName: userProfile.username,
             avatarUrl: userProfile.avatarUrl,
+            avatarStoragePath: userProfile.avatarStoragePath,
           ),
         );
         return [loading, loaded];
@@ -165,6 +167,30 @@ void main() {
           actionMessage: 'Exception: delete failed',
         );
         return [progress, failure];
+      },
+    );
+
+    blocTest<ProfileSettingsBloc, ProfileSettingsState>(
+      'updates user when ProfileSettingsUserUpdated is received',
+      build: buildBloc,
+      act: (bloc) {
+        const updated = ProfileSettingsUser(
+          displayName: 'Taylor',
+          avatarUrl: 'https://example.com/taylor.svg',
+          avatarStoragePath: 'avatars/taylor.svg',
+        );
+        bloc.add(const ProfileSettingsUserUpdated(updated));
+      },
+      expect: () {
+        final initial = ProfileSettingsState.initial();
+        final updatedState = initial.copyWith(
+          user: const ProfileSettingsUser(
+            displayName: 'Taylor',
+            avatarUrl: 'https://example.com/taylor.svg',
+            avatarStoragePath: 'avatars/taylor.svg',
+          ),
+        );
+        return [updatedState];
       },
     );
   });
