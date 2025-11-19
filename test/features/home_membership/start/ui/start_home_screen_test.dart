@@ -84,4 +84,42 @@ void main() {
 
     expect(find.text("You're already part of a home."), findsOneWidget);
   });
+
+  testWidgets('disables create/join buttons when membership not none', (
+    tester,
+  ) async {
+    when(() => authBloc.state).thenReturn(
+      const AuthState(membershipStatus: AuthMembershipStatus.active),
+    );
+
+    await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
+
+    final createButton = tester.widget<ElevatedButton>(
+      find.widgetWithText(ElevatedButton, 'Create a Home'),
+    );
+    final joinButton = tester.widget<ElevatedButton>(
+      find.widgetWithText(ElevatedButton, 'Join a Home'),
+    );
+    expect(createButton.onPressed, isNull);
+    expect(joinButton.onPressed, isNull);
+  });
+
+  testWidgets('enables buttons when membership status is none', (tester) async {
+    when(() => authBloc.state).thenReturn(
+      const AuthState(membershipStatus: AuthMembershipStatus.none),
+    );
+
+    await tester.pumpWidget(buildApp());
+    await tester.pump();
+
+    final createButton = tester.widget<ElevatedButton>(
+      find.widgetWithText(ElevatedButton, 'Create a Home'),
+    );
+    final joinButton = tester.widget<ElevatedButton>(
+      find.widgetWithText(ElevatedButton, 'Join a Home'),
+    );
+    expect(createButton.onPressed, isNotNull);
+    expect(joinButton.onPressed, isNotNull);
+  });
 }

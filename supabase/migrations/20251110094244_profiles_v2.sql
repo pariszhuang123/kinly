@@ -91,3 +91,20 @@ CHECK (category IN ('animal', 'plant'));
 
 COMMENT ON CONSTRAINT avatars_category_check ON public.avatars
 IS 'Restricts category to only "animal" or "plant".';
+
+
+CREATE OR REPLACE FUNCTION public.profiles_delete_account()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+BEGIN
+  -- TODO: Replace with actual delete logic once RPC is implemented.
+  RAISE NOTICE 'profiles_delete_account stub invoked';
+  RETURN;
+END;
+$$;
+
+COMMENT ON FUNCTION public.profiles_delete_account()
+IS 'Stub RPC placeholder for deleting the authenticated user profile/account.';

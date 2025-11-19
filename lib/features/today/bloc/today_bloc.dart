@@ -65,19 +65,19 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       final drafts = await draftsFuture;
       final active = await activeFuture;
 
-      // Drafts (unassigned) read as "new today" items, followed by active tasks.
-      final flowTasks = <TodayFlowTask>[
-        ...drafts.map(
-          (entry) => _mapEntryToTodayTask(entry, isNewTodayOverride: true),
-        ),
-        ...active.map(_mapEntryToTodayTask),
-      ];
+      final draftTasks = drafts
+          .map((entry) => _mapEntryToTodayTask(entry, isNewTodayOverride: true))
+          .toList(growable: false);
+      final activeTasks = active
+          .map(_mapEntryToTodayTask)
+          .toList(growable: false);
 
       emit(
         TodayState.loaded(
-          flowTasks: flowTasks,
+          activeTasks: activeTasks,
+          draftTasks: draftTasks,
           profile: profile,
-          // later: you can add today’s expenses, gratitude items, etc.
+          // later: you can add today's expenses, gratitude items, etc.
         ),
       );
     } catch (error) {
@@ -117,6 +117,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     return TodayFlowTask(
       id: entry.id,
       title: entry.name,
+      state: entry.state,
       isNewToday: isNewTodayOverride ?? entry.isDraft,
     );
   }

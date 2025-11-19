@@ -17,6 +17,14 @@ class StartHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = Theme.of(context);
+    final membershipStatus = context.select(
+      (AuthBloc bloc) => bloc.state.membershipStatus,
+    );
+    final membershipMessage = switch (membershipStatus) {
+      AuthMembershipStatus.unknown => s.membership_status_checking,
+      AuthMembershipStatus.none => s.membership_status_none,
+      AuthMembershipStatus.active => s.membership_status_active,
+    };
 
     return AuthErrorListener(
       child: Scaffold(
@@ -34,18 +42,20 @@ class StartHomeScreen extends StatelessWidget {
             }
 
             if (state.status == StartHomeStatus.success) {
-              // 1️⃣ Refresh membership in AuthBloc
+              // Refresh membership; router redirects handle navigation.
               context.read<AuthBloc>().add(
                 const AuthMembershipRefreshRequested(),
               );
 
-              // 2️⃣ Navigate to Today
-              context.go(AppRoutes.today);
             }
           },
           builder: (context, state) {
-            final isLoading = state.status == StartHomeStatus.loading;
+            final isCreating =
+                state.status == StartHomeStatus.loading ||
+                state.status == StartHomeStatus.success;
 
+            final canManageHome =
+                membershipStatus == AuthMembershipStatus.none;
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -58,21 +68,10 @@ class StartHomeScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
-                  BlocBuilder<AuthBloc, AuthState>(
-                    builder: (context, authState) {
-                      final message = switch (authState.membershipStatus) {
-                        AuthMembershipStatus.unknown =>
-                          s.membership_status_checking,
-                        AuthMembershipStatus.none => s.membership_status_none,
-                        AuthMembershipStatus.active =>
-                          s.membership_status_active,
-                      };
-                      return Text(
-                        message,
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyMedium,
-                      );
-                    },
+                  Text(
+                    membershipMessage,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -83,7 +82,7 @@ class StartHomeScreen extends StatelessWidget {
                   const Spacer(),
                   KinlyButton.primary(
                     onPressed:
-                        isLoading
+                        isCreating || !canManageHome
                             ? null
                             : () {
                               context.read<StartHomeBloc>().add(
@@ -91,7 +90,7 @@ class StartHomeScreen extends StatelessWidget {
                               );
                             },
                     label:
-                        isLoading
+                        isCreating
                             ? s
                                 .membership_status_checking // or a dedicated "Creating home..."
                             : s.welcome_create,
@@ -99,7 +98,9 @@ class StartHomeScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   KinlyButton.primary(
                     onPressed:
-                        isLoading ? null : () => context.go(AppRoutes.join),
+                        isCreating || !canManageHome
+                            ? null
+                            : () => context.go(AppRoutes.join),
                     label: s.welcome_join,
                   ),
                 ],
@@ -111,3 +112,4 @@ class StartHomeScreen extends StatelessWidget {
     );
   }
 }
+
