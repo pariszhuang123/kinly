@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import '../../../data/repositories/account_repository.dart';
 import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/profile_repository.dart';
+import '../../../core/homes/models.dart';
 import '../../../core/profile/models.dart';
 
 part 'profile_settings_event.dart';
@@ -24,6 +25,7 @@ class ProfileSettingsBloc
        super(ProfileSettingsState.initial(user: initialUser)) {
     on<ProfileSettingsStarted>(_onStarted);
     on<ProfileSettingsLeaveRequested>(_onLeaveRequested);
+    on<ProfileSettingsTransferOwnerRequested>(_onTransferOwnerRequested);
     on<ProfileSettingsDeleteRequested>(_onDeleteRequested);
     on<ProfileSettingsActionCleared>(_onActionCleared);
     on<ProfileSettingsUserUpdated>(_onUserUpdated);
@@ -38,13 +40,59 @@ class ProfileSettingsBloc
     ProfileSettingsStarted event,
     Emitter<ProfileSettingsState> emit,
   ) async {
-    emit(state.copyWith(isLoadingUser: true));
+    emit(
+      state.copyWith(
+        isLoadingUser: true,
+        leaveEligibilityLoading: true,
+        leaveEligibilityError: null,
+      ),
+    );
+    await _loadProfile(emit);
+    await _loadLeaveEligibility(emit);
+  }
+
+  Future<void> _loadProfile(Emitter<ProfileSettingsState> emit) async {
     try {
       final profile = await _profileRepository.getCurrentProfile();
       final mapped = _mapProfile(profile);
       emit(state.copyWith(isLoadingUser: false, user: mapped ?? state.user));
     } catch (_) {
       emit(state.copyWith(isLoadingUser: false));
+    }
+  }
+
+  Future<void> _loadLeaveEligibility(
+    Emitter<ProfileSettingsState> emit,
+  ) async {
+    try {
+      final membership = await _homeRepository.getCurrentMembership();
+      if (membership == null) {
+        emit(
+          state.copyWith(
+            leaveEligibilityLoading: false,
+            leaveEligibilityError: 'missing-membership',
+            membership: null,
+            activeMembers: const <HomeMemberSummary>[],
+          ),
+        );
+        return;
+      }
+      final members = await _homeRepository.listActiveMembers(_homeId);
+      emit(
+        state.copyWith(
+          leaveEligibilityLoading: false,
+          leaveEligibilityError: null,
+          membership: membership,
+          activeMembers: members,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          leaveEligibilityLoading: false,
+          leaveEligibilityError: error.toString(),
+        ),
+      );
     }
   }
 
@@ -72,6 +120,37 @@ class ProfileSettingsBloc
         state.copyWith(
           leaveInProgress: false,
           action: ProfileSettingsAction.leaveFailure,
+          actionMessage: error.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onTransferOwnerRequested(
+    ProfileSettingsTransferOwnerRequested event,
+    Emitter<ProfileSettingsState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        transferInProgress: true,
+        action: ProfileSettingsAction.none,
+        actionMessage: null,
+      ),
+    );
+    try {
+      await _homeRepository.transferOwner(_homeId, event.newOwnerUserId);
+      emit(
+        state.copyWith(
+          transferInProgress: false,
+          action: ProfileSettingsAction.transferSuccess,
+        ),
+      );
+      add(const ProfileSettingsLeaveRequested());
+    } catch (error) {
+      emit(
+        state.copyWith(
+          transferInProgress: false,
+          action: ProfileSettingsAction.transferFailure,
           actionMessage: error.toString(),
         ),
       );

@@ -296,12 +296,33 @@ class MessageLookup extends MessageLookupByLibrary {
       "Open the Kinly Notion hub in-app.",
     ),
     "profileInfoHubTitle": MessageLookupByLibrary.simpleMessage("Info Hub"),
+    "profileLeaveEligibilityError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t load your home members. Try again.",
+    ),
+    "profileLeaveEligibilityLoading": MessageLookupByLibrary.simpleMessage(
+      "Checking your home members…",
+    ),
     "profileLeaveHomeSubtitle": MessageLookupByLibrary.simpleMessage(
       "Stop sharing with this home. Owners must transfer ownership first.",
     ),
     "profileLeaveHomeTitle": MessageLookupByLibrary.simpleMessage("Leave home"),
+    "profileLeaveOwnerNoEligibleMembers": MessageLookupByLibrary.simpleMessage(
+      "No one else can take ownership right now. Try again later.",
+    ),
+    "profileLeaveOwnerSoloMessage": MessageLookupByLibrary.simpleMessage(
+      "You\'re the last member. Leaving will deactivate this home for everyone.",
+    ),
     "profileLeaveSuccessMessage": MessageLookupByLibrary.simpleMessage(
       "You left your home.",
+    ),
+    "profileLeaveTransferSheetSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Select who should become the new owner before you leave.",
+    ),
+    "profileLeaveTransferSheetTitle": MessageLookupByLibrary.simpleMessage(
+      "Transfer ownership",
+    ),
+    "profileLeaveTransferSuccessMessage": MessageLookupByLibrary.simpleMessage(
+      "Ownership transferred. Finishing your leave…",
     ),
     "profileLogoutDialogMessage": MessageLookupByLibrary.simpleMessage(
       "You\'ll need to sign in again to access your home.",

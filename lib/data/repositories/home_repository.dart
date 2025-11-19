@@ -24,6 +24,12 @@ abstract class HomeRepository {
   /// Leave the specified home; returns details about outcome.
   Future<LeaveResult> leave(String homeId);
 
+  /// Lists active members for the given home.
+  Future<List<HomeMemberSummary>> listActiveMembers(
+    String homeId, {
+    bool excludeSelf = false,
+  });
+
   /// Returns the caller's current membership, or null if none.
   Future<CurrentMembership?> getCurrentMembership();
 }

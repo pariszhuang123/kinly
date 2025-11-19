@@ -1294,6 +1294,76 @@ class S {
     );
   }
 
+  /// `Checking your home members…`
+  String get profileLeaveEligibilityLoading {
+    return Intl.message(
+      'Checking your home members…',
+      name: 'profileLeaveEligibilityLoading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't load your home members. Try again.`
+  String get profileLeaveEligibilityError {
+    return Intl.message(
+      'We couldn\'t load your home members. Try again.',
+      name: 'profileLeaveEligibilityError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You're the last member. Leaving will deactivate this home for everyone.`
+  String get profileLeaveOwnerSoloMessage {
+    return Intl.message(
+      'You\'re the last member. Leaving will deactivate this home for everyone.',
+      name: 'profileLeaveOwnerSoloMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No one else can take ownership right now. Try again later.`
+  String get profileLeaveOwnerNoEligibleMembers {
+    return Intl.message(
+      'No one else can take ownership right now. Try again later.',
+      name: 'profileLeaveOwnerNoEligibleMembers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transfer ownership`
+  String get profileLeaveTransferSheetTitle {
+    return Intl.message(
+      'Transfer ownership',
+      name: 'profileLeaveTransferSheetTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select who should become the new owner before you leave.`
+  String get profileLeaveTransferSheetSubtitle {
+    return Intl.message(
+      'Select who should become the new owner before you leave.',
+      name: 'profileLeaveTransferSheetSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ownership transferred. Finishing your leave…`
+  String get profileLeaveTransferSuccessMessage {
+    return Intl.message(
+      'Ownership transferred. Finishing your leave…',
+      name: 'profileLeaveTransferSuccessMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Info Hub`
   String get profileInfoHubTitle {
     return Intl.message(

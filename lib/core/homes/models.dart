@@ -63,6 +63,39 @@ class CurrentMembership {
   }
 }
 
+class HomeMemberSummary {
+  final String userId;
+  final String username;
+  final String role;
+  final DateTime validFrom;
+  final String? avatarUrl;
+  final bool canTransferTo;
+
+  const HomeMemberSummary({
+    required this.userId,
+    required this.username,
+    required this.role,
+    required this.validFrom,
+    this.avatarUrl,
+    this.canTransferTo = false,
+  });
+
+  factory HomeMemberSummary.fromJson(Map<String, dynamic> json) {
+    return HomeMemberSummary(
+      userId: json['user_id'] as String,
+      username: json['username'] as String? ?? '',
+      role: json['role'] as String? ?? 'member',
+      validFrom:
+          _parseTimestamp(json['valid_from']) ??
+          DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+      avatarUrl: json['avatar_url'] as String?,
+      canTransferTo: (json['can_transfer_to'] as bool?) ?? false,
+    );
+  }
+
+  bool get isOwner => role.toLowerCase() == 'owner';
+}
+
 class HomeCreationResult {
   final String homeId;
 
@@ -73,4 +106,10 @@ class HomeCreationResult {
     final id = home['id'] as String? ?? '';
     return HomeCreationResult(homeId: id);
   }
+}
+
+DateTime? _parseTimestamp(Object? value) {
+  if (value == null) return null;
+  final dt = DateTime.parse(value as String);
+  return dt.isUtc ? dt : dt.toUtc();
 }

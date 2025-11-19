@@ -49,4 +49,13 @@ class FakeHomeRepository implements HomeRepository {
     // Pretend user has no membership by default
     return null;
   }
+
+  @override
+  Future<List<HomeMemberSummary>> listActiveMembers(
+    String homeId, {
+    bool excludeSelf = false,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    return const [];
+  }
 }

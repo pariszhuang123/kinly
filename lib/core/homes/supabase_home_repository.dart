@@ -88,6 +88,34 @@ class SupabaseHomeRepository implements HomeRepository {
   }
 
   @override
+  Future<List<HomeMemberSummary>> listActiveMembers(
+    String homeId, {
+    bool excludeSelf = false,
+  }) async {
+    try {
+      final res = await _client.rpc(
+        'members_list_active_by_home',
+        params: {
+          'p_home_id': homeId,
+          'p_exclude_self': excludeSelf,
+        },
+      );
+      if (res is List) {
+        return res
+            .map(
+              (raw) => HomeMemberSummary.fromJson(
+                (raw as Map).cast<String, dynamic>(),
+              ),
+            )
+            .toList(growable: false);
+      }
+      throw Exception('Unexpected response when listing members');
+    } catch (error) {
+      throw Exception('Failed to load members: $error');
+    }
+  }
+
+  @override
   Future<LeaveResult> leave(String homeId) async {
     try {
       final res = await _client.rpc(

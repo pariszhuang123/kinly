@@ -19,6 +19,12 @@ void main() {
   late _MockProfileRepository profileRepository;
   late _MockHomeRepository homeRepository;
   late _MockAccountRepository accountRepository;
+  final currentMembership = CurrentMembership(
+    userId: 'user-1',
+    homeId: 'home-1',
+    role: 'member',
+    validFrom: DateTime(2024, 1, 1),
+  );
 
   ProfileSettingsBloc buildBloc({ProfileSettingsUser? initialUser}) {
     return ProfileSettingsBloc(
@@ -34,6 +40,15 @@ void main() {
     profileRepository = _MockProfileRepository();
     homeRepository = _MockHomeRepository();
     accountRepository = _MockAccountRepository();
+    when(() => homeRepository.getCurrentMembership()).thenAnswer(
+      (_) async => currentMembership,
+    );
+    when(
+      () => homeRepository.listActiveMembers(
+        any(),
+        excludeSelf: any(named: 'excludeSelf'),
+      ),
+    ).thenAnswer((_) async => const <HomeMemberSummary>[]);
   });
 
   group('ProfileSettingsBloc', () {
@@ -50,12 +65,19 @@ void main() {
         when(
           () => profileRepository.getCurrentProfile(),
         ).thenAnswer((_) async => userProfile);
+        when(() => homeRepository.listActiveMembers(any())).thenAnswer(
+          (_) async => const <HomeMemberSummary>[],
+        );
         return buildBloc();
       },
       act: (bloc) => bloc.add(const ProfileSettingsStarted()),
       expect: () {
         final initial = ProfileSettingsState.initial();
-        final loading = initial.copyWith(isLoadingUser: true);
+        final loading = initial.copyWith(
+          isLoadingUser: true,
+          leaveEligibilityLoading: true,
+          leaveEligibilityError: null,
+        );
         final loaded = loading.copyWith(
           isLoadingUser: false,
           user: ProfileSettingsUser(
@@ -64,10 +86,18 @@ void main() {
             avatarStoragePath: userProfile.avatarStoragePath,
           ),
         );
-        return [loading, loaded];
+        final leaveReady = loaded.copyWith(
+          leaveEligibilityLoading: false,
+          leaveEligibilityError: null,
+          membership: currentMembership,
+          activeMembers: const <HomeMemberSummary>[],
+        );
+        return [loading, loaded, leaveReady];
       },
       verify: (_) {
         verify(() => profileRepository.getCurrentProfile()).called(1);
+        verify(() => homeRepository.getCurrentMembership()).called(1);
+        verify(() => homeRepository.listActiveMembers(any())).called(1);
       },
     );
 
@@ -167,6 +197,83 @@ void main() {
           actionMessage: 'Exception: delete failed',
         );
         return [progress, failure];
+      },
+    );
+
+    blocTest<ProfileSettingsBloc, ProfileSettingsState>(
+      'emits leave success after transferring ownership',
+      build: () {
+        when(
+          () => homeRepository.transferOwner(any(), any()),
+        ).thenAnswer((_) async => {});
+        when(() => homeRepository.leave(any())).thenAnswer(
+          (_) async => const LeaveResult(
+            outcome: LeaveOutcome.leftOk,
+            homeDeactivated: false,
+            membersRemaining: 2,
+            roleBefore: 'owner',
+          ),
+        );
+        return buildBloc();
+      },
+      act: (bloc) =>
+          bloc.add(const ProfileSettingsTransferOwnerRequested('user-2')),
+      expect: () {
+        final initial = ProfileSettingsState.initial();
+        final transferProgress = initial.copyWith(
+          transferInProgress: true,
+          action: ProfileSettingsAction.none,
+          actionMessage: null,
+        );
+        final transferSuccess = transferProgress.copyWith(
+          transferInProgress: false,
+          action: ProfileSettingsAction.transferSuccess,
+        );
+        final leaveProgress = transferSuccess.copyWith(
+          leaveInProgress: true,
+          action: ProfileSettingsAction.none,
+          actionMessage: null,
+        );
+        final leaveSuccess = leaveProgress.copyWith(
+          leaveInProgress: false,
+          action: ProfileSettingsAction.leaveSuccess,
+        );
+        return [
+          transferProgress,
+          transferSuccess,
+          leaveProgress,
+          leaveSuccess,
+        ];
+      },
+      verify: (_) {
+        verify(() => homeRepository.transferOwner('home-1', 'user-2')).called(1);
+        verify(() => homeRepository.leave('home-1')).called(1);
+      },
+    );
+
+    blocTest<ProfileSettingsBloc, ProfileSettingsState>(
+      'emits failure when transferring ownership fails',
+      build: () {
+        when(
+          () => homeRepository.transferOwner(any(), any()),
+        ).thenThrow(Exception('transfer failed'));
+        return buildBloc();
+      },
+      act: (bloc) =>
+          bloc.add(const ProfileSettingsTransferOwnerRequested('user-3')),
+      expect: () {
+        final initial = ProfileSettingsState.initial();
+        final transferProgress = initial.copyWith(
+          transferInProgress: true,
+          action: ProfileSettingsAction.none,
+          actionMessage: null,
+        );
+        final transferFailure = transferProgress.copyWith(
+          transferInProgress: false,
+          action: ProfileSettingsAction.transferFailure,
+          actionMessage: 'Exception: transfer failed',
+        );
+        return [transferProgress, transferFailure];
       },
     );
 

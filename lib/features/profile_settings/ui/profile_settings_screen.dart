@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/homes/models.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/router/app_router.dart';
@@ -45,11 +46,11 @@ class ProfileSettingsScreen extends StatelessWidget {
                       subtitle: S.of(context).profileLeaveHomeSubtitle,
                       icon: Icons.exit_to_app_rounded,
                       destructive: false,
-                      showProgress: state.leaveInProgress,
+                      showProgress: state.isLeaveActionBusy,
                       onTap:
-                          state.leaveInProgress
+                          state.isLeaveActionBusy
                               ? null
-                              : () => _confirmLeave(context),
+                              : () => _handleLeaveTap(context),
                     ),
                     const Divider(height: 0),
                     _ProfileSettingsTile(
@@ -124,6 +125,14 @@ class ProfileSettingsScreen extends StatelessWidget {
       case ProfileSettingsAction.leaveFailure:
         showError();
         break;
+      case ProfileSettingsAction.transferSuccess:
+        messenger.showSnackBar(
+          SnackBar(content: Text(s.profileLeaveTransferSuccessMessage)),
+        );
+        break;
+      case ProfileSettingsAction.transferFailure:
+        showError();
+        break;
       case ProfileSettingsAction.deleteSuccess:
         messenger.showSnackBar(
           SnackBar(content: Text(s.profileDeleteSuccessMessage)),
@@ -146,14 +155,80 @@ class ProfileSettingsScreen extends StatelessWidget {
     }
   }
 
-  Future<void> _confirmLeave(BuildContext context) async {
+  Future<void> _handleLeaveTap(BuildContext context) async {
+    final bloc = context.read<ProfileSettingsBloc>();
+    final state = bloc.state;
     final s = S.of(context);
-    final confirmed = await showDialog<bool>(
+    final messenger = ScaffoldMessenger.of(context);
+
+    if (state.leaveEligibilityLoading) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(s.profileLeaveEligibilityLoading)),
+      );
+      return;
+    }
+
+    if (state.leaveEligibilityError != null) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(s.profileLeaveEligibilityError)),
+      );
+      return;
+    }
+
+    final membership = state.membership;
+    if (membership == null) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(s.profileMissingHomeError)),
+      );
+      return;
+    }
+
+    final isOwner = state.isOwner;
+    final hasOtherMembers = state.otherActiveMembers.isNotEmpty;
+
+    if (!isOwner || !hasOtherMembers) {
+      final message =
+          isOwner && !hasOtherMembers
+              ? s.profileLeaveOwnerSoloMessage
+              : s.profileConfirmLeaveMessage;
+      final confirmed = await _showLeaveConfirmationDialog(
+        context,
+        message: message,
+      );
+      if (confirmed == true && context.mounted) {
+        bloc.add(const ProfileSettingsLeaveRequested());
+      }
+      return;
+    }
+
+    final candidates = state.transferCandidates;
+    if (candidates.isEmpty) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(s.profileLeaveOwnerNoEligibleMembers)),
+      );
+      return;
+    }
+
+    final selectedUserId = await _showTransferOwnershipSheet(
+      context,
+      candidates,
+    );
+    if (selectedUserId != null && context.mounted) {
+      bloc.add(ProfileSettingsTransferOwnerRequested(selectedUserId));
+    }
+  }
+
+  Future<bool?> _showLeaveConfirmationDialog(
+    BuildContext context, {
+    required String message,
+  }) {
+    final s = S.of(context);
+    return showDialog<bool>(
       context: context,
       builder:
           (_) => AlertDialog(
             title: Text(s.profileConfirmLeaveTitle),
-            content: Text(s.profileConfirmLeaveMessage),
+            content: Text(message),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -166,11 +241,83 @@ class ProfileSettingsScreen extends StatelessWidget {
             ],
           ),
     );
-    if (confirmed == true && context.mounted) {
-      context.read<ProfileSettingsBloc>().add(
-        const ProfileSettingsLeaveRequested(),
-      );
-    }
+  }
+
+  Future<String?> _showTransferOwnershipSheet(
+    BuildContext context,
+    List<HomeMemberSummary> candidates,
+  ) {
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final colorScheme = theme.colorScheme;
+    final s = S.of(context);
+
+    return showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      builder:
+          (sheetContext) {
+            final media = MediaQuery.of(sheetContext);
+            final bottomPadding = media.viewPadding.bottom + media.viewInsets.bottom;
+            return SafeArea(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                spacing.lg,
+                spacing.lg,
+                spacing.lg,
+                spacing.lg + bottomPadding,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    SizedBox(height: spacing.md),
+                    Text(
+                      s.profileLeaveTransferSheetTitle,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: spacing.sm),
+                    Text(
+                      s.profileLeaveTransferSheetSubtitle,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: spacing.lg),
+                    Wrap(
+                      spacing: spacing.md,
+                      runSpacing: spacing.md,
+                      alignment: WrapAlignment.center,
+                      children:
+                          candidates
+                              .map(
+                                (member) => _TransferCandidateButton(
+                                  member: member,
+                                  onSelected: () =>
+                                      Navigator.of(sheetContext).pop(member.userId),
+                                ),
+                              )
+                              .toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+          },
+    );
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
@@ -426,6 +573,56 @@ class _ProfileSettingsTile extends StatelessWidget {
               )
               : const Icon(Icons.chevron_right),
       onTap: showProgress ? null : onTap,
+    );
+  }
+}
+
+class _TransferCandidateButton extends StatelessWidget {
+  const _TransferCandidateButton({
+    required this.member,
+    required this.onSelected,
+  });
+
+  final HomeMemberSummary member;
+  final VoidCallback onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final s = S.of(context);
+    final displayName =
+        member.username.isNotEmpty ? member.username : s.friendDefaultName;
+
+    return SizedBox(
+      width: 92,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(48),
+              onTap: onSelected,
+              child: Padding(
+                padding: EdgeInsets.all(spacing.xs),
+                child: KinlyCircleAvatar(
+                  avatarUrl: member.avatarUrl,
+                  radius: 34,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: spacing.xs),
+          Text(
+            displayName,
+            style: theme.textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 }

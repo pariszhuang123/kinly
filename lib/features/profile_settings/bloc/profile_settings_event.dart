@@ -15,6 +15,15 @@ class ProfileSettingsLeaveRequested extends ProfileSettingsEvent {
   const ProfileSettingsLeaveRequested();
 }
 
+class ProfileSettingsTransferOwnerRequested extends ProfileSettingsEvent {
+  const ProfileSettingsTransferOwnerRequested(this.newOwnerUserId);
+
+  final String newOwnerUserId;
+
+  @override
+  List<Object?> get props => [newOwnerUserId];
+}
+
 class ProfileSettingsDeleteRequested extends ProfileSettingsEvent {
   const ProfileSettingsDeleteRequested();
 }

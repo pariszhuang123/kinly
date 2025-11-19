@@ -316,14 +316,35 @@ class MessageLookup extends MessageLookupByLibrary {
       "Abre el hub de Notion de Kinly dentro de la app.",
     ),
     "profileInfoHubTitle": MessageLookupByLibrary.simpleMessage("Info Hub"),
+    "profileLeaveEligibilityError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos cargar a los miembros de tu hogar. Intenta nuevamente.",
+    ),
+    "profileLeaveEligibilityLoading": MessageLookupByLibrary.simpleMessage(
+      "Comprobando los miembros del hogar…",
+    ),
     "profileLeaveHomeSubtitle": MessageLookupByLibrary.simpleMessage(
       "Deja de compartir con este hogar. La persona propietaria debe transferir primero.",
     ),
     "profileLeaveHomeTitle": MessageLookupByLibrary.simpleMessage(
       "Salir del hogar",
     ),
+    "profileLeaveOwnerNoEligibleMembers": MessageLookupByLibrary.simpleMessage(
+      "Nadie más puede asumir la propiedad ahora mismo. Intenta más tarde.",
+    ),
+    "profileLeaveOwnerSoloMessage": MessageLookupByLibrary.simpleMessage(
+      "Eres la última persona miembro. Salir desactivará este hogar para todas las personas.",
+    ),
     "profileLeaveSuccessMessage": MessageLookupByLibrary.simpleMessage(
       "Saliste de tu hogar.",
+    ),
+    "profileLeaveTransferSheetSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Selecciona quién será la nueva persona propietaria antes de salir.",
+    ),
+    "profileLeaveTransferSheetTitle": MessageLookupByLibrary.simpleMessage(
+      "Transferir propiedad",
+    ),
+    "profileLeaveTransferSuccessMessage": MessageLookupByLibrary.simpleMessage(
+      "Propiedad transferida. Terminando tu salida…",
     ),
     "profileLogoutDialogMessage": MessageLookupByLibrary.simpleMessage(
       "Necesitarás iniciar sesión otra vez para acceder a tu hogar.",
