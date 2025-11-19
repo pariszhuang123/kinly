@@ -231,6 +231,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "navExplore": MessageLookupByLibrary.simpleMessage("Explorar"),
     "navHub": MessageLookupByLibrary.simpleMessage("Centro"),
     "navToday": MessageLookupByLibrary.simpleMessage("Hoy"),
+    "offline_body": MessageLookupByLibrary.simpleMessage(
+      "Kinly necesita internet. Comprueba tu señal e inténtalo de nuevo.",
+    ),
+    "offline_retry": MessageLookupByLibrary.simpleMessage("Reintentar"),
+    "offline_title": MessageLookupByLibrary.simpleMessage("Sin conexión"),
     "profileActionCancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage("Continuar"),
     "profileConfirmDeleteMessage": MessageLookupByLibrary.simpleMessage(

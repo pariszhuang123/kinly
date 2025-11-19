@@ -9,6 +9,7 @@ import '../auth/supabase_auth_repository.dart';
 import '../chores/supabase_chores_repository.dart';
 import '../homes/supabase_home_repository.dart';
 import '../profile/supabase_profile_repository.dart';
+import '../network/connectivity_monitor.dart';
 
 final sl = GetIt.instance;
 
@@ -35,6 +36,11 @@ void setupDependencies() {
   if (!sl.isRegistered<AccountRepository>()) {
     sl.registerLazySingleton<AccountRepository>(
       () => SupabaseAccountRepository(),
+    );
+  }
+  if (!sl.isRegistered<ConnectivityMonitor>()) {
+    sl.registerLazySingleton<ConnectivityMonitor>(
+      () => ConnectivityMonitor()..initialize(),
     );
   }
 }

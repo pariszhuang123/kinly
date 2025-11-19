@@ -54,6 +54,9 @@
       }
     }
   },
+  "offline_title": "Sin conexión",
+  "offline_body": "Kinly necesita internet. Comprueba tu señal e inténtalo de nuevo.",
+  "offline_retry": "Reintentar",
   "navToday": "Hoy",
   "navExplore": "Explorar",
   "navHub": "Centro",

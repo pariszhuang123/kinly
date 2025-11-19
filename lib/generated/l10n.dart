@@ -429,6 +429,31 @@ class S {
     );
   }
 
+  /// `You're offline`
+  String get offline_title {
+    return Intl.message(
+      'You\'re offline',
+      name: 'offline_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kinly needs an internet connection. Check your signal and try again.`
+  String get offline_body {
+    return Intl.message(
+      'Kinly needs an internet connection. Check your signal and try again.',
+      name: 'offline_body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try again`
+  String get offline_retry {
+    return Intl.message('Try again', name: 'offline_retry', desc: '', args: []);
+  }
+
   /// `Today`
   String get navToday {
     return Intl.message('Today', name: 'navToday', desc: '', args: []);

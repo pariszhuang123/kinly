@@ -58,6 +58,9 @@
       }
     }
   },
+  "offline_title": "You're offline",
+  "offline_body": "Kinly needs an internet connection. Check your signal and try again.",
+  "offline_retry": "Try again",
   "navToday": "Today",
   "navExplore": "Explore",
   "navHub": "Hub",

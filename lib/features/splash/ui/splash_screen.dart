@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'widgets/kinly_logo.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -39,11 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
           children: [
             RotationTransition(
               turns: _controller,
-              child: SvgPicture.asset(
-                'assets/icons/logo/Kinly logo.svg',
-                width: 96,
-                height: 96,
-              ),
+              child: const KinlyLogo(),
             ),
             const SizedBox(height: 24),
             Text(

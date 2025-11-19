@@ -6,11 +6,14 @@ import 'core/config/app_config.dart';
 import 'core/di/locator.dart';
 import 'core/router/app_router.dart';
 import 'core/router/go_router_refresh_stream.dart';
+import 'core/network/connectivity_monitor.dart';
 import 'core/supabase/supabase_init.dart';
 import 'core/theme/kinly_theme.dart';
 import 'data/repositories/auth_repository.dart';
 import 'data/repositories/home_repository.dart';
 import 'features/auth/bloc/auth_bloc.dart';
+import 'features/offline/bloc/connectivity_cubit.dart';
+import 'features/offline/ui/connectivity_gate.dart';
 import 'generated/l10n.dart';
 
 Future<void> main() async {
@@ -30,6 +33,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final AuthBloc _authBloc;
+  late final ConnectivityCubit _connectivityCubit;
   late final GoRouterRefreshStream _routerRefresh;
   late final RouterConfig<Object> _router;
 
@@ -38,7 +42,10 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     final authRepo = sl<AuthRepository>();
     final homeRepo = sl<HomeRepository>();
+    final connectivityMonitor = sl<ConnectivityMonitor>();
+
     _authBloc = AuthBloc(authRepository: authRepo, homeRepository: homeRepo);
+    _connectivityCubit = ConnectivityCubit(monitor: connectivityMonitor);
     _routerRefresh = GoRouterRefreshStream(_authBloc.stream);
     _router = createRouter(
       authBloc: _authBloc,
@@ -50,31 +57,23 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     _routerRefresh.dispose();
     _authBloc.close();
+    _connectivityCubit.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _authBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _authBloc),
+        BlocProvider.value(value: _connectivityCubit),
+      ],
       child: MaterialApp.router(
         onGenerateTitle: (context) => S.of(context).app_title,
         routerConfig: _router,
-        // Show a simple fallback while the router builds to avoid a black screen
         builder: (context, child) {
-          if (child != null) return child;
-          return Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text('Starting Kinly (${AppConfig.env})'),
-                ],
-              ),
-            ),
-          );
+          final resolvedChild = child ?? const _RouterInitializingFallback();
+          return ConnectivityGate(child: resolvedChild);
         },
         theme: buildKinlyTheme(Brightness.light),
         darkTheme: buildKinlyTheme(Brightness.dark),
@@ -85,6 +84,26 @@ class _MyAppState extends State<MyApp> {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
+      ),
+    );
+  }
+}
+
+class _RouterInitializingFallback extends StatelessWidget {
+  const _RouterInitializingFallback();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text('Starting Kinly (${AppConfig.env})'),
+          ],
+        ),
       ),
     );
   }
