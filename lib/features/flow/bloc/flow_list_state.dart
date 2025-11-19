@@ -29,8 +29,7 @@ class FlowListState extends Equatable {
       status: status ?? this.status,
       items: items ?? this.items,
       isRefreshing: isRefreshing ?? this.isRefreshing,
-      errorMessage:
-          clearError ? null : (errorMessage ?? this.errorMessage),
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       lastUpdated: lastUpdated ?? this.lastUpdated,
     );
   }

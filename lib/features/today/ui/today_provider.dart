@@ -21,11 +21,12 @@ class TodayProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<TodayBloc>(
-      create: (_) => TodayBloc(
-        choresRepository: choresRepository,
-        profileRepository: profileRepository,
-        homeId: homeId,
-      ),
+      create:
+          (_) => TodayBloc(
+            choresRepository: choresRepository,
+            profileRepository: profileRepository,
+            homeId: homeId,
+          ),
       child: const TodayScreen(),
     );
   }

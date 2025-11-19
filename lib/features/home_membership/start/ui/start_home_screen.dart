@@ -86,9 +86,9 @@ class StartHomeScreen extends StatelessWidget {
                         isLoading
                             ? null
                             : () {
-                              context
-                                  .read<StartHomeBloc>()
-                                  .add(const StartHomeCreateRequested());
+                              context.read<StartHomeBloc>().add(
+                                const StartHomeCreateRequested(),
+                              );
                             },
                     label:
                         isLoading

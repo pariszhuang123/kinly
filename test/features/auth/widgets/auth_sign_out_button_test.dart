@@ -37,11 +37,7 @@ void main() {
         supportedLocales: S.delegate.supportedLocales,
         home: BlocProvider<AuthBloc>.value(
           value: bloc,
-          child: Scaffold(
-            appBar: AppBar(
-              actions: const [AuthSignOutButton()],
-            ),
-          ),
+          child: Scaffold(appBar: AppBar(actions: const [AuthSignOutButton()])),
         ),
       );
     }
@@ -59,9 +55,7 @@ void main() {
     });
 
     testWidgets('is disabled while auth bloc is loading', (tester) async {
-      when(
-        () => bloc.state,
-      ).thenReturn(const AuthState(isLoading: true));
+      when(() => bloc.state).thenReturn(const AuthState(isLoading: true));
 
       await tester.pumpWidget(buildHarness());
       await tester.pumpAndSettle();

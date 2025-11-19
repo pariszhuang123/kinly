@@ -219,10 +219,7 @@ class ChoreAssigneeSummary {
     );
   }
 
-  ChoreAssigneeSummary copyWith({
-    String? fullName,
-    String? avatarStoragePath,
-  }) {
+  ChoreAssigneeSummary copyWith({String? fullName, String? avatarStoragePath}) {
     return ChoreAssigneeSummary(
       userId: userId,
       fullName: fullName ?? this.fullName,

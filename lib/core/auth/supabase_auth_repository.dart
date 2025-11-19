@@ -12,11 +12,9 @@ import '../../data/repositories/auth_repository.dart';
 import '../config/app_config.dart';
 
 class SupabaseAuthRepository implements AuthRepository {
-  SupabaseAuthRepository({
-    SupabaseClient? client,
-    GoogleSignIn? googleSignIn,
-  })  : _client = client ?? Supabase.instance.client,
-        _googleSignIn = googleSignIn ?? _buildDefaultGoogleSignIn() {
+  SupabaseAuthRepository({SupabaseClient? client, GoogleSignIn? googleSignIn})
+    : _client = client ?? Supabase.instance.client,
+      _googleSignIn = googleSignIn ?? _buildDefaultGoogleSignIn() {
     _sessionController = StreamController<AuthSession?>.broadcast();
     // Seed current state
     final current = _client.auth.currentSession;
@@ -40,7 +38,8 @@ class SupabaseAuthRepository implements AuthRepository {
   Stream<AuthSession?> get session$ => _sessionController.stream;
 
   @override
-  AuthSession? get current => _current ??
+  AuthSession? get current =>
+      _current ??
       (_client.auth.currentSession != null
           ? AuthSession(userId: _client.auth.currentSession!.user.id)
           : null);

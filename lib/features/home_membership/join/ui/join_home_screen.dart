@@ -35,9 +35,7 @@ class JoinHomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          body: SafeArea(
-            child: _JoinForm(initialCode: initialCode ?? ''),
-          ),
+          body: SafeArea(child: _JoinForm(initialCode: initialCode ?? '')),
         ),
       ),
     );

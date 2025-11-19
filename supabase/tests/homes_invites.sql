@@ -1,4 +1,4 @@
-CREATE EXTENSION IF NOT EXISTS pgtap;
+SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 

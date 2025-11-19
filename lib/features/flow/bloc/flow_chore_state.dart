@@ -88,9 +88,7 @@ class FlowChoreState extends Equatable {
       successChoreId:
           clearSuccess ? null : successChoreId ?? this.successChoreId,
       successWasDelete:
-          clearSuccess
-              ? false
-              : successWasDelete ?? this.successWasDelete,
+          clearSuccess ? false : successWasDelete ?? this.successWasDelete,
       submissionErrorCode:
           clearSubmissionError
               ? null

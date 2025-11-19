@@ -6,18 +6,20 @@ import '../supabase/supabase_error_mapper.dart';
 
 class SupabaseHomeRepository implements HomeRepository {
   final SupabaseClient _client;
-  SupabaseHomeRepository({SupabaseClient? client}) : _client = client ?? Supabase.instance.client;
+  SupabaseHomeRepository({SupabaseClient? client})
+    : _client = client ?? Supabase.instance.client;
 
   @override
   Future<void> join(String code) async {
     if (code.trim().isEmpty) {
-      throw HomeJoinException(JoinErrorCode.invalidCode, 'Invite code cannot be empty');
+      throw HomeJoinException(
+        JoinErrorCode.invalidCode,
+        'Invite code cannot be empty',
+      );
     }
     try {
       // SQL function name: public.homes_join(p_code text)
-      await _client.rpc('homes_join', params: {
-        'p_code': code,
-      });
+      await _client.rpc('homes_join', params: {'p_code': code});
     } catch (e) {
       throw SupabaseErrorMapper.mapJoin(e);
     }
@@ -46,9 +48,7 @@ class SupabaseHomeRepository implements HomeRepository {
   @override
   Future<void> revokeInvite(String homeId) async {
     try {
-      await _client.rpc('invites_revoke', params: {
-        'p_home_id': homeId,
-      });
+      await _client.rpc('invites_revoke', params: {'p_home_id': homeId});
     } catch (e) {
       throw SupabaseErrorMapper.mapRevoke(e);
     }
@@ -57,14 +57,18 @@ class SupabaseHomeRepository implements HomeRepository {
   @override
   Future<String> rotateInvite(String homeId) async {
     try {
-      final res = await _client.rpc('invites_rotate', params: {
-        'p_home_id': homeId,
-      });
+      final res = await _client.rpc(
+        'invites_rotate',
+        params: {'p_home_id': homeId},
+      );
       if (res is Map && res['invite_code'] is String) {
         return res['invite_code'] as String;
       }
       // If shape changes unexpectedly, still surface a typed error
-      throw InviteRotateException(RotateErrorCode.unknown, 'Missing invite_code in response');
+      throw InviteRotateException(
+        RotateErrorCode.unknown,
+        'Missing invite_code in response',
+      );
     } catch (e) {
       if (e is InviteRotateException) rethrow;
       throw SupabaseErrorMapper.mapRotate(e);
@@ -74,10 +78,10 @@ class SupabaseHomeRepository implements HomeRepository {
   @override
   Future<void> transferOwner(String homeId, String newOwnerId) async {
     try {
-      await _client.rpc('homes_transfer_owner', params: {
-        'p_home_id': homeId,
-        'p_new_owner_id': newOwnerId,
-      });
+      await _client.rpc(
+        'homes_transfer_owner',
+        params: {'p_home_id': homeId, 'p_new_owner_id': newOwnerId},
+      );
     } catch (e) {
       throw SupabaseErrorMapper.mapTransfer(e);
     }
@@ -86,9 +90,10 @@ class SupabaseHomeRepository implements HomeRepository {
   @override
   Future<LeaveResult> leave(String homeId) async {
     try {
-      final res = await _client.rpc('homes_leave', params: {
-        'p_home_id': homeId,
-      });
+      final res = await _client.rpc(
+        'homes_leave',
+        params: {'p_home_id': homeId},
+      );
       if (res is Map<String, dynamic>) {
         return LeaveResult.fromJson(res);
       }

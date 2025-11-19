@@ -19,10 +19,9 @@ class FlowListProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create:
-          (_) => FlowListBloc(
-            homeId: homeId,
-            choresRepository: choresRepository,
-          )..add(const FlowListRequested()),
+          (_) =>
+              FlowListBloc(homeId: homeId, choresRepository: choresRepository)
+                ..add(const FlowListRequested()),
       child: const FlowListScreen(),
     );
   }

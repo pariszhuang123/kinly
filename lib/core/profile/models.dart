@@ -11,10 +11,7 @@ class UserProfile {
     this.avatarUrl,
   });
 
-  factory UserProfile.fromJson(
-    Map<String, dynamic> json, {
-    String? avatarUrl,
-  }) {
+  factory UserProfile.fromJson(Map<String, dynamic> json, {String? avatarUrl}) {
     return UserProfile(
       userId: json['user_id'] as String,
       username: json['username'] as String,

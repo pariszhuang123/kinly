@@ -11,4 +11,3 @@ class NavigationIntents {
     _pendingJoinCode = code;
   }
 }
-

@@ -27,14 +27,13 @@ class TodayState extends Equatable {
     TodayUserProfile? profile,
     String? message,
     Object? error,
-  })
-    : this._(
-        isLoading: false,
-        flowTasks: const [],
-        profile: profile,
-        message: message,
-        error: error,
-      );
+  }) : this._(
+         isLoading: false,
+         flowTasks: const [],
+         profile: profile,
+         message: message,
+         error: error,
+       );
 
   @override
   List<Object?> get props => [isLoading, flowTasks, profile, message, error];
