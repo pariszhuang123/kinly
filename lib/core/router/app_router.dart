@@ -14,8 +14,11 @@ import '../../features/auth/bloc/auth_bloc.dart';
 import 'navigation_intents.dart';
 import '../di/locator.dart';
 
+import '../../features/splash/ui/splash_screen.dart';
+
 class AppRoutes {
-  static const welcome = '/';
+  static const splash = '/';
+  static const welcome = '/welcome';
   static const start = '/start';
   static const create = '/create';
   static const join = '/join';
@@ -33,19 +36,27 @@ GoRouter createRouter({
   required Listenable refreshListenable,
 }) {
   return GoRouter(
+    initialLocation: AppRoutes.splash,
     refreshListenable: refreshListenable,
     redirect: (context, state) {
       final authState = authBloc.state;
-      final isLoggedIn = authState.status == AuthStatus.authenticated;
+      final authStatus = authState.status;
+      final isLoggedIn = authStatus == AuthStatus.authenticated;
       final uri = state.uri;
       final goingTo = uri.path;
+      final isSplash = goingTo == AppRoutes.splash;
       final isWelcome = goingTo == AppRoutes.welcome;
+
+      if (authStatus == AuthStatus.unknown) {
+        return isSplash ? null : AppRoutes.splash;
+      }
 
       if (!isLoggedIn) {
         final segs = uri.pathSegments;
         if (segs.isNotEmpty && segs.first == 'join' && segs.length >= 2) {
           NavigationIntents.setPendingJoinCode(segs[1]);
         }
+        if (isSplash) return AppRoutes.welcome;
         if (!isWelcome) return AppRoutes.welcome;
         return null;
       }
@@ -53,14 +64,20 @@ GoRouter createRouter({
       final membershipStatus = authState.membershipStatus;
       final membershipKnown = membershipStatus != AuthMembershipStatus.unknown;
       if (!membershipKnown) {
-        return null; // wait until membership resolved
+        return isSplash ? null : AppRoutes.splash;
       }
       final hasMembership = membershipStatus == AuthMembershipStatus.active;
+
+      if (isSplash) {
+        return hasMembership ? AppRoutes.today : AppRoutes.start;
+      }
 
       if (isWelcome) {
         return hasMembership ? AppRoutes.today : AppRoutes.start;
       }
-
+      if (goingTo == AppRoutes.start && hasMembership) {
+        return AppRoutes.today;
+      }
       if (goingTo == AppRoutes.today && !hasMembership) {
         return AppRoutes.start;
       }
@@ -68,6 +85,11 @@ GoRouter createRouter({
       return null;
     },
     routes: <RouteBase>[
+      GoRoute(
+        path: AppRoutes.splash,
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: AppRoutes.welcome,
         name: 'welcome',
