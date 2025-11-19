@@ -529,6 +529,7 @@ class S {
     );
   }
 
+  /// `Active`
   String get todayFlowTabActive {
     return Intl.message(
       'Active',
@@ -538,6 +539,7 @@ class S {
     );
   }
 
+  /// `Drafts`
   String get todayFlowTabDrafts {
     return Intl.message(
       'Drafts',
@@ -547,6 +549,7 @@ class S {
     );
   }
 
+  /// `See all ({count})`
   String todayFlowSeeAll(int count) {
     return Intl.message(
       'See all ($count)',
@@ -556,6 +559,7 @@ class S {
     );
   }
 
+  /// `new today`
   String get todayFlowBadgeNew {
     return Intl.message(
       'new today',
@@ -970,6 +974,7 @@ class S {
     );
   }
 
+  /// `Chore details`
   String get flowChoreDetailTitle {
     return Intl.message(
       'Chore details',
@@ -979,6 +984,7 @@ class S {
     );
   }
 
+  /// `Unassigned`
   String get flowChoreDetailUnassigned {
     return Intl.message(
       'Unassigned',
@@ -988,6 +994,7 @@ class S {
     );
   }
 
+  /// `No notes yet.`
   String get flowChoreDetailNoNotes {
     return Intl.message(
       'No notes yet.',
@@ -997,6 +1004,7 @@ class S {
     );
   }
 
+  /// `No how-to link provided.`
   String get flowChoreDetailNoHowTo {
     return Intl.message(
       'No how-to link provided.',
@@ -1006,6 +1014,7 @@ class S {
     );
   }
 
+  /// `Complete task`
   String get flowChoreDetailCompleteButton {
     return Intl.message(
       'Complete task',
@@ -1015,6 +1024,7 @@ class S {
     );
   }
 
+  /// `Couldn't complete the chore. Please try again.`
   String get flowChoreDetailCompletionError {
     return Intl.message(
       'Couldn\'t complete the chore. Please try again.',
@@ -1099,6 +1109,276 @@ class S {
     return Intl.message(
       'Review every Flow task and keep chores moving',
       name: 'exploreFlowSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile & home`
+  String get profileSettingsTitle {
+    return Intl.message(
+      'Profile & home',
+      name: 'profileSettingsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage your account preferences and home access.`
+  String get profileSettingsSubtitle {
+    return Intl.message(
+      'Manage your account preferences and home access.',
+      name: 'profileSettingsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave home`
+  String get profileLeaveHomeTitle {
+    return Intl.message(
+      'Leave home',
+      name: 'profileLeaveHomeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop sharing with this home. Owners must transfer ownership first.`
+  String get profileLeaveHomeSubtitle {
+    return Intl.message(
+      'Stop sharing with this home. Owners must transfer ownership first.',
+      name: 'profileLeaveHomeSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Info Hub`
+  String get profileInfoHubTitle {
+    return Intl.message(
+      'Info Hub',
+      name: 'profileInfoHubTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open the Kinly Notion hub in-app.`
+  String get profileInfoHubSubtitle {
+    return Intl.message(
+      'Open the Kinly Notion hub in-app.',
+      name: 'profileInfoHubSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The Info Hub couldn't load. Check your connection.`
+  String get profileInfoHubLoadError {
+    return Intl.message(
+      'The Info Hub couldn\'t load. Check your connection.',
+      name: 'profileInfoHubLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact us`
+  String get profileContactUsTitle {
+    return Intl.message(
+      'Contact us',
+      name: 'profileContactUsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email support@makinglifeeasie.com`
+  String get profileContactUsSubtitle {
+    return Intl.message(
+      'Email support@makinglifeeasie.com',
+      name: 'profileContactUsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact us`
+  String get profileContactEmailSubject {
+    return Intl.message(
+      'Contact us',
+      name: 'profileContactEmailSubject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't open your email app. Try again.`
+  String get profileContactLaunchError {
+    return Intl.message(
+      'We couldn\'t open your email app. Try again.',
+      name: 'profileContactLaunchError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log out`
+  String get profileLogoutTitle {
+    return Intl.message(
+      'Log out',
+      name: 'profileLogoutTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign out of Kinly on this device.`
+  String get profileLogoutSubtitle {
+    return Intl.message(
+      'Sign out of Kinly on this device.',
+      name: 'profileLogoutSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign out?`
+  String get profileLogoutDialogTitle {
+    return Intl.message(
+      'Sign out?',
+      name: 'profileLogoutDialogTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You'll need to sign in again to access your home.`
+  String get profileLogoutDialogMessage {
+    return Intl.message(
+      'You\'ll need to sign in again to access your home.',
+      name: 'profileLogoutDialogMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete account`
+  String get profileDeleteAccountTitle {
+    return Intl.message(
+      'Delete account',
+      name: 'profileDeleteAccountTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove your Kinly account and profile data.`
+  String get profileDeleteAccountSubtitle {
+    return Intl.message(
+      'Remove your Kinly account and profile data.',
+      name: 'profileDeleteAccountSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave this home?`
+  String get profileConfirmLeaveTitle {
+    return Intl.message(
+      'Leave this home?',
+      name: 'profileConfirmLeaveTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You'll lose access to Flow, shared history, and invites.`
+  String get profileConfirmLeaveMessage {
+    return Intl.message(
+      'You\'ll lose access to Flow, shared history, and invites.',
+      name: 'profileConfirmLeaveMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete your account?`
+  String get profileConfirmDeleteTitle {
+    return Intl.message(
+      'Delete your account?',
+      name: 'profileConfirmDeleteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This removes your account and signs you out. This cannot be undone.`
+  String get profileConfirmDeleteMessage {
+    return Intl.message(
+      'This removes your account and signs you out. This cannot be undone.',
+      name: 'profileConfirmDeleteMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get profileActionCancel {
+    return Intl.message(
+      'Cancel',
+      name: 'profileActionCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get profileActionConfirm {
+    return Intl.message(
+      'Continue',
+      name: 'profileActionConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You left your home.`
+  String get profileLeaveSuccessMessage {
+    return Intl.message(
+      'You left your home.',
+      name: 'profileLeaveSuccessMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your account will be deleted shortly. We'll sign you out.`
+  String get profileDeleteSuccessMessage {
+    return Intl.message(
+      'Your account will be deleted shortly. We\'ll sign you out.',
+      name: 'profileDeleteSuccessMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something went wrong. Please try again.`
+  String get profileGenericError {
+    return Intl.message(
+      'Something went wrong. Please try again.',
+      name: 'profileGenericError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't find your current home. Try again.`
+  String get profileMissingHomeError {
+    return Intl.message(
+      'We couldn\'t find your current home. Try again.',
+      name: 'profileMissingHomeError',
       desc: '',
       args: [],
     );

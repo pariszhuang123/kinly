@@ -16,6 +16,8 @@ import 'widgets/today_add_sheet.dart';
 import 'widgets/today_empty_state_card.dart';
 import '../../../core/ui/home_bottom_nav.dart';
 import '../../flow/domain/flow_chore_outcome.dart';
+import '../../profile_settings/ui/profile_settings_provider.dart';
+import '../../auth/bloc/auth_bloc.dart';
 
 class TodayScreen extends StatelessWidget {
   const TodayScreen({super.key});
@@ -90,6 +92,11 @@ class TodayScreen extends StatelessWidget {
                           return TodayHeader(
                             partOfDay: partOfDay,
                             profile: state.profile,
+                            onAvatarTap:
+                                () => _openProfileSettings(
+                                  context,
+                                  profile: state.profile,
+                                ),
                           );
                         },
                       ),
@@ -222,5 +229,26 @@ class TodayScreen extends StatelessWidget {
       if (!context.mounted) return;
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
+  }
+
+  Future<void> _openProfileSettings(
+    BuildContext context, {
+    TodayUserProfile? profile,
+  }) async {
+    final authBloc = context.read<AuthBloc>();
+    final membership = authBloc.state.membership;
+    if (membership == null) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.showSnackBar(
+        SnackBar(content: Text(S.of(context).profileMissingHomeError)),
+      );
+      return;
+    }
+    final args = ProfileSettingsRouteArgs(
+      homeId: membership.homeId,
+      displayName: profile?.username,
+      avatarUrl: profile?.avatarUrl,
+    );
+    await context.push(AppRoutes.profileSettings, extra: args);
   }
 }

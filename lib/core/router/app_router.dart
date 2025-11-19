@@ -11,6 +11,7 @@ import '../../features/explore/ui/explore_screen.dart';
 import '../../features/home_membership/start/ui/start_home_provider.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
 import '../../features/home_membership/join/ui/join_home_screen.dart';
+import '../../features/profile_settings/ui/profile_settings_provider.dart';
 import '../../features/auth/bloc/auth_bloc.dart';
 import 'navigation_intents.dart';
 import '../di/locator.dart';
@@ -26,6 +27,7 @@ class AppRoutes {
   static const flowChoreCreate = '/flow/chore/new';
   static const flowChoreEdit = '/flow/chore/:choreId';
   static const flowChoreDetail = '/flow/chore/:choreId/detail';
+  static const profileSettings = '/settings/profile';
 
   static String flowChoreEditPath(String choreId) => '/flow/chore/$choreId';
   static String flowChoreDetailPath(String choreId) =>
@@ -63,6 +65,10 @@ GoRouter createRouter({
 
       if (isWelcome) {
         return hasMembership ? AppRoutes.today : AppRoutes.start;
+      }
+
+      if (goingTo == AppRoutes.start && hasMembership) {
+        return AppRoutes.today;
       }
 
       if (goingTo == AppRoutes.today && !hasMembership) {
@@ -174,6 +180,23 @@ GoRouter createRouter({
             homeId: membership.homeId,
             choreId: choreId,
             choresRepository: sl<ChoresRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.profileSettings,
+        name: 'profileSettings',
+        builder: (_, state) {
+          final args = state.extra as ProfileSettingsRouteArgs?;
+          final membership = authBloc.state.membership;
+          final homeId = args?.homeId ?? membership?.homeId;
+          if (homeId == null) {
+            throw StateError('Profile settings requires an active membership.');
+          }
+          return ProfileSettingsProvider(
+            homeId: homeId,
+            initialDisplayName: args?.displayName,
+            initialAvatarUrl: args?.avatarUrl,
           );
         },
       ),

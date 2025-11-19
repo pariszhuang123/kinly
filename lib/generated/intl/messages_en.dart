@@ -24,9 +24,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m1(code) => "Joined with code: ${code}";
 
-  static String m2(homeId, role) => "Current home: ${homeId} • Role: ${role}";
+  static String m2(count) => "See all (${count})";
 
-  static String m3(count) => "See all (${count})";
+  static String m3(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -67,6 +67,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreDeleteDialogTitle": MessageLookupByLibrary.simpleMessage(
       "Delete this chore?",
     ),
+    "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
+      "Complete task",
+    ),
+    "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t complete the chore. Please try again.",
+    ),
+    "flowChoreDetailNoHowTo": MessageLookupByLibrary.simpleMessage(
+      "No how-to link provided.",
+    ),
+    "flowChoreDetailNoNotes": MessageLookupByLibrary.simpleMessage(
+      "No notes yet.",
+    ),
+    "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
+      "Chore details",
+    ),
+    "flowChoreDetailUnassigned": MessageLookupByLibrary.simpleMessage(
+      "Unassigned",
+    ),
     "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage(
       "Edit Flow chore",
     ),
@@ -78,24 +96,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t save the chore. Please try again.",
-    ),
-    "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
-      "Chore details",
-    ),
-    "flowChoreDetailUnassigned": MessageLookupByLibrary.simpleMessage(
-      "Unassigned",
-    ),
-    "flowChoreDetailNoNotes": MessageLookupByLibrary.simpleMessage(
-      "No notes yet.",
-    ),
-    "flowChoreDetailNoHowTo": MessageLookupByLibrary.simpleMessage(
-      "No how-to link provided.",
-    ),
-    "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
-      "Complete task",
-    ),
-    "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t complete the chore. Please try again.",
     ),
     "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
       "That photo path isn\'t valid for this home.",
@@ -213,6 +213,75 @@ class MessageLookup extends MessageLookupByLibrary {
     "navExplore": MessageLookupByLibrary.simpleMessage("Explore"),
     "navHub": MessageLookupByLibrary.simpleMessage("Hub"),
     "navToday": MessageLookupByLibrary.simpleMessage("Today"),
+    "profileActionCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "profileActionConfirm": MessageLookupByLibrary.simpleMessage("Continue"),
+    "profileConfirmDeleteMessage": MessageLookupByLibrary.simpleMessage(
+      "This removes your account and signs you out. This cannot be undone.",
+    ),
+    "profileConfirmDeleteTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete your account?",
+    ),
+    "profileConfirmLeaveMessage": MessageLookupByLibrary.simpleMessage(
+      "You\'ll lose access to Flow, shared history, and invites.",
+    ),
+    "profileConfirmLeaveTitle": MessageLookupByLibrary.simpleMessage(
+      "Leave this home?",
+    ),
+    "profileContactEmailSubject": MessageLookupByLibrary.simpleMessage(
+      "Contact us",
+    ),
+    "profileContactLaunchError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t open your email app. Try again.",
+    ),
+    "profileContactUsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Email support@makinglifeeasie.com",
+    ),
+    "profileContactUsTitle": MessageLookupByLibrary.simpleMessage("Contact us"),
+    "profileDeleteAccountSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Remove your Kinly account and profile data.",
+    ),
+    "profileDeleteAccountTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete account",
+    ),
+    "profileDeleteSuccessMessage": MessageLookupByLibrary.simpleMessage(
+      "Your account will be deleted shortly. We\'ll sign you out.",
+    ),
+    "profileGenericError": MessageLookupByLibrary.simpleMessage(
+      "Something went wrong. Please try again.",
+    ),
+    "profileInfoHubLoadError": MessageLookupByLibrary.simpleMessage(
+      "The Info Hub couldn\'t load. Check your connection.",
+    ),
+    "profileInfoHubSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Open the Kinly Notion hub in-app.",
+    ),
+    "profileInfoHubTitle": MessageLookupByLibrary.simpleMessage("Info Hub"),
+    "profileLeaveHomeSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Stop sharing with this home. Owners must transfer ownership first.",
+    ),
+    "profileLeaveHomeTitle": MessageLookupByLibrary.simpleMessage("Leave home"),
+    "profileLeaveSuccessMessage": MessageLookupByLibrary.simpleMessage(
+      "You left your home.",
+    ),
+    "profileLogoutDialogMessage": MessageLookupByLibrary.simpleMessage(
+      "You\'ll need to sign in again to access your home.",
+    ),
+    "profileLogoutDialogTitle": MessageLookupByLibrary.simpleMessage(
+      "Sign out?",
+    ),
+    "profileLogoutSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Sign out of Kinly on this device.",
+    ),
+    "profileLogoutTitle": MessageLookupByLibrary.simpleMessage("Log out"),
+    "profileMissingHomeError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t find your current home. Try again.",
+    ),
+    "profileSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Manage your account preferences and home access.",
+    ),
+    "profileSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "Profile & home",
+    ),
     "quick_add_fair_share_subtitle": MessageLookupByLibrary.simpleMessage(
       "Record a fairness entry",
     ),
@@ -253,14 +322,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayEmptyCardTitle": MessageLookupByLibrary.simpleMessage(
       "You\'re all caught up for today ✨",
     ),
+    "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
+    "todayFlowSeeAll": m2,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Here\'s what\'s flowing in your home today.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "todayFlowSeeAll": m3,
-    "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
-    "today_home_details": m2,
+    "today_home_details": m3,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",
     ),
