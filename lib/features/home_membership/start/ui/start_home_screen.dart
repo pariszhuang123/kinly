@@ -85,9 +85,9 @@ class StartHomeScreen extends StatelessWidget {
                         isCreating || !canManageHome
                             ? null
                             : () {
-                              context
-                                  .read<StartHomeBloc>()
-                                  .add(const StartHomeCreateRequested());
+                              context.read<StartHomeBloc>().add(
+                                const StartHomeCreateRequested(),
+                              );
                             },
                     label:
                         isCreating

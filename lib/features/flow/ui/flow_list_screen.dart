@@ -47,9 +47,10 @@ class FlowListScreen extends StatelessWidget {
                 case FlowListStatus.failure:
                   return _FlowListError(
                     message: state.errorMessage ?? s.flowListError,
-                    onRetry: () => context
-                        .read<FlowListBloc>()
-                        .add(const FlowListRequested()),
+                    onRetry:
+                        () => context.read<FlowListBloc>().add(
+                          const FlowListRequested(),
+                        ),
                   );
                 case FlowListStatus.success:
                   if (state.items.isEmpty) {
@@ -58,7 +59,8 @@ class FlowListScreen extends StatelessWidget {
                   return _FlowList(
                     items: state.items,
                     onRefresh: () => _handleRefresh(context),
-                    onItemTap: (entry) => _openChore(context, choreId: entry.id),
+                    onItemTap:
+                        (entry) => _openChore(context, choreId: entry.id),
                   );
                 case FlowListStatus.initial:
                   return const SizedBox.shrink();
@@ -175,10 +177,7 @@ class _FlowListTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text(
-                      entry.name,
-                      style: theme.textTheme.titleMedium,
-                    ),
+                    child: Text(entry.name, style: theme.textTheme.titleMedium),
                   ),
                   _AssigneeAvatar(entry: entry, flowColors: flowColors),
                 ],
@@ -186,7 +185,11 @@ class _FlowListTile extends StatelessWidget {
               SizedBox(height: spacing?.sm ?? 8),
               Row(
                 children: [
-                  Icon(Icons.calendar_today_rounded, size: 16, color: flowColors?.accent ?? colorScheme.primary),
+                  Icon(
+                    Icons.calendar_today_rounded,
+                    size: 16,
+                    color: flowColors?.accent ?? colorScheme.primary,
+                  ),
                   SizedBox(width: spacing?.xs ?? 6),
                   Text(
                     dateText,
@@ -232,9 +235,9 @@ class _AssigneeAvatar extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color:
-              (flowColors?.accent ?? theme.colorScheme.primary)
-                  .withValues(alpha: 0.2),
+          color: (flowColors?.accent ?? theme.colorScheme.primary).withValues(
+            alpha: 0.2,
+          ),
           borderRadius: BorderRadius.circular(999),
         ),
         child: Text(
@@ -313,7 +316,10 @@ class _FlowListError extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(onPressed: onRetry, child: Text(S.of(context).flowChoreRetry)),
+          ElevatedButton(
+            onPressed: onRetry,
+            child: Text(S.of(context).flowChoreRetry),
+          ),
         ],
       ),
     );

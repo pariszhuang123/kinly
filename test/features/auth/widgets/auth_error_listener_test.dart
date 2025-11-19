@@ -30,9 +30,9 @@ void main() {
         when(() => bloc.state).thenReturn(const AuthState());
         whenListen(
           bloc,
-          Stream<AuthState>.fromIterable(
-            const [AuthState(errorMessage: 'Boom')],
-          ),
+          Stream<AuthState>.fromIterable(const [
+            AuthState(errorMessage: 'Boom'),
+          ]),
           initialState: const AuthState(),
         );
 
@@ -40,9 +40,7 @@ void main() {
           MaterialApp(
             home: BlocProvider<AuthBloc>.value(
               value: bloc,
-              child: const AuthErrorListener(
-                child: Scaffold(body: SizedBox()),
-              ),
+              child: const AuthErrorListener(child: Scaffold(body: SizedBox())),
             ),
           ),
         );
@@ -54,32 +52,27 @@ void main() {
       },
     );
 
-    testWidgets(
-      'does nothing when errorMessage is null',
-      (tester) async {
-        when(() => bloc.state).thenReturn(const AuthState());
-        whenListen(
-          bloc,
-          const Stream<AuthState>.empty(),
-          initialState: const AuthState(),
-        );
+    testWidgets('does nothing when errorMessage is null', (tester) async {
+      when(() => bloc.state).thenReturn(const AuthState());
+      whenListen(
+        bloc,
+        const Stream<AuthState>.empty(),
+        initialState: const AuthState(),
+      );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: BlocProvider<AuthBloc>.value(
-              value: bloc,
-              child: const AuthErrorListener(
-                child: Scaffold(body: SizedBox()),
-              ),
-            ),
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<AuthBloc>.value(
+            value: bloc,
+            child: const AuthErrorListener(child: Scaffold(body: SizedBox())),
           ),
-        );
+        ),
+      );
 
-        await tester.pump();
+      await tester.pump();
 
-        expect(find.byType(SnackBar), findsNothing);
-        verifyNever(() => bloc.add(any<AuthEvent>()));
-      },
-    );
+      expect(find.byType(SnackBar), findsNothing);
+      verifyNever(() => bloc.add(any<AuthEvent>()));
+    });
   });
 }

@@ -43,12 +43,7 @@ class FlowListBloc extends Bloc<FlowListEvent, FlowListState> {
     required bool showLoader,
   }) async {
     if (showLoader) {
-      emit(
-        state.copyWith(
-          status: FlowListStatus.loading,
-          clearError: true,
-        ),
-      );
+      emit(state.copyWith(status: FlowListStatus.loading, clearError: true));
     }
 
     try {

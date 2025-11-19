@@ -140,21 +140,19 @@ class SupabaseChoresRepository implements ChoresRepository {
 
       if (response is List) {
         return response
-            .map(
-              (raw) {
-                final entry = ChoreListEntry.fromJson(
-                  (raw as Map).cast<String, dynamic>(),
-                );
-                final avatarUrl = storagePathToPublicUrl(
-                  _client,
-                  entry.assigneeAvatarStoragePath,
-                );
-                return entry.copyWith(
-                  assigneeAvatarStoragePath:
-                      avatarUrl ?? entry.assigneeAvatarStoragePath,
-                );
-              },
-            )
+            .map((raw) {
+              final entry = ChoreListEntry.fromJson(
+                (raw as Map).cast<String, dynamic>(),
+              );
+              final avatarUrl = storagePathToPublicUrl(
+                _client,
+                entry.assigneeAvatarStoragePath,
+              );
+              return entry.copyWith(
+                assigneeAvatarStoragePath:
+                    avatarUrl ?? entry.assigneeAvatarStoragePath,
+              );
+            })
             .toList(growable: false);
       }
 
@@ -175,10 +173,7 @@ class SupabaseChoresRepository implements ChoresRepository {
     try {
       final response = await _client.rpc(
         'today_flow_list',
-        params: {
-          'p_home_id': homeId,
-          'p_state': state.wireValue,
-        },
+        params: {'p_home_id': homeId, 'p_state': state.wireValue},
       );
 
       if (response is List) {
@@ -242,20 +237,18 @@ class SupabaseChoresRepository implements ChoresRepository {
 
       if (response is List) {
         return response
-            .map(
-              (raw) {
-                final summary = ChoreAssigneeSummary.fromJson(
-                  (raw as Map).cast<String, dynamic>(),
-                );
-                final avatarUrl = storagePathToPublicUrl(
-                  _client,
-                  summary.avatarStoragePath,
-                );
-                return summary.copyWith(
-                  avatarStoragePath: avatarUrl ?? summary.avatarStoragePath,
-                );
-              },
-            )
+            .map((raw) {
+              final summary = ChoreAssigneeSummary.fromJson(
+                (raw as Map).cast<String, dynamic>(),
+              );
+              final avatarUrl = storagePathToPublicUrl(
+                _client,
+                summary.avatarStoragePath,
+              );
+              return summary.copyWith(
+                avatarStoragePath: avatarUrl ?? summary.avatarStoragePath,
+              );
+            })
             .toList(growable: false);
       }
 

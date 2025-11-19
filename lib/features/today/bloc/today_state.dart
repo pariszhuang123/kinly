@@ -44,6 +44,7 @@ class TodayState extends Equatable {
          isLoading: false,
          activeTasks: const [],
          draftTasks: const [],
+         flowTasks: const [],
          profile: profile,
          message: message,
          error: error,

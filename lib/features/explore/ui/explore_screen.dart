@@ -25,10 +25,7 @@ class ExploreScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                s.exploreIntroTitle,
-                style: theme.textTheme.headlineSmall,
-              ),
+              Text(s.exploreIntroTitle, style: theme.textTheme.headlineSmall),
               SizedBox(height: spacing.sm),
               Text(
                 s.exploreIntroSubtitle,

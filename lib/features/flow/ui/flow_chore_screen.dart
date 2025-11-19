@@ -482,10 +482,7 @@ class _AvatarChoice extends StatelessWidget {
             width: 2,
           ),
         ),
-        child: KinlyCircleAvatar(
-          avatarUrl: avatarUrl,
-          radius: 22,
-        ),
+        child: KinlyCircleAvatar(avatarUrl: avatarUrl, radius: 22),
       ),
     );
   }
