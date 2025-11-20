@@ -6,12 +6,16 @@ class AppConfig {
   // Optional: for native Google Sign-In flow (not needed for Supabase PKCE)
   static const webClientId = String.fromEnvironment('WEB_CLIENT_ID');
   static const iosClientId = String.fromEnvironment('IOS_CLIENT_ID');
+  static const iosStoreUrl = String.fromEnvironment('IOS_STORE_URL');
+  static const androidStoreUrl = String.fromEnvironment('ANDROID_STORE_URL');
 
   static void validate() {
     final missing = <String>[];
     if (supabaseUrl.isEmpty) missing.add('SUPABASE_URL');
     if (supabaseAnonKey.isEmpty) missing.add('SUPABASE_ANON_KEY');
     if (deeplinkHost.isEmpty) missing.add('DEEPLINK_HOST');
+    if (iosStoreUrl.isEmpty) missing.add('IOS_STORE_URL');
+    if (androidStoreUrl.isEmpty) missing.add('ANDROID_STORE_URL');
     if (missing.isNotEmpty) {
       throw StateError('Missing dart-define(s): ${missing.join(', ')}');
     }

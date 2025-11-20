@@ -18,9 +18,12 @@ import 'navigation_intents.dart';
 import '../di/locator.dart';
 
 import '../../features/splash/ui/splash_screen.dart';
+import '../../features/version_gating/bloc/app_version_cubit.dart';
+import '../../features/version_gating/ui/force_update_screen.dart';
 
 class AppRoutes {
   static const splash = '/';
+  static const forceUpdate = '/force-update';
   static const welcome = '/welcome';
   static const start = '/start';
   static const create = '/create';
@@ -41,6 +44,7 @@ class AppRoutes {
 
 GoRouter createRouter({
   required AuthBloc authBloc,
+  required AppVersionCubit appVersionCubit,
   required Listenable refreshListenable,
 }) {
   return GoRouter(
@@ -52,6 +56,15 @@ GoRouter createRouter({
       final isLoggedIn = authStatus == AuthStatus.authenticated;
       final uri = state.uri;
       final goingTo = uri.path;
+      final isForceUpdate = goingTo == AppRoutes.forceUpdate;
+      final forceUpdateRequired =
+          appVersionCubit.state.status == AppVersionStatus.hardBlocked;
+      if (forceUpdateRequired && !isForceUpdate) {
+        return AppRoutes.forceUpdate;
+      }
+      if (!forceUpdateRequired && isForceUpdate) {
+        return AppRoutes.splash;
+      }
       final isSplash = goingTo == AppRoutes.splash;
       final isWelcome = goingTo == AppRoutes.welcome;
 
@@ -95,6 +108,11 @@ GoRouter createRouter({
       return null;
     },
     routes: <RouteBase>[
+      GoRoute(
+        path: AppRoutes.forceUpdate,
+        name: 'forceUpdate',
+        builder: (context, state) => const ForceUpdateScreen(),
+      ),
       GoRoute(
         path: AppRoutes.splash,
         name: 'splash',

@@ -2,17 +2,24 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-/// Bridges a [Stream] to GoRouter via [Listenable] notifications.
+/// Bridges one or more streams to GoRouter via [Listenable] notifications.
 class GoRouterRefreshStream extends ChangeNotifier {
-  GoRouterRefreshStream(Stream<dynamic> stream) {
-    _subscription = stream.listen((_) => notifyListeners());
+  GoRouterRefreshStream(Stream<dynamic> stream) : this.multi([stream]);
+
+  GoRouterRefreshStream.multi(Iterable<Stream<dynamic>> streams) {
+    _subscriptions = [
+      for (final stream in streams)
+        stream.listen((_) => notifyListeners()),
+    ];
   }
 
-  late final StreamSubscription<dynamic> _subscription;
+  late final List<StreamSubscription<dynamic>> _subscriptions;
 
   @override
   void dispose() {
-    _subscription.cancel();
+    for (final sub in _subscriptions) {
+      sub.cancel();
+    }
     super.dispose();
   }
 }

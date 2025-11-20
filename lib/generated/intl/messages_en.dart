@@ -20,13 +20,16 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(partOfDay, name) => "Good ${partOfDay}, ${name}";
+  static String m0(client, current) =>
+      "Your version: ${client}\nLatest version: ${current}";
 
-  static String m1(code) => "Joined with code: ${code}";
+  static String m1(partOfDay, name) => "Good ${partOfDay}, ${name}";
 
-  static String m2(count) => "See all (${count})";
+  static String m2(code) => "Joined with code: ${code}";
 
-  static String m3(homeId, role) => "Current home: ${homeId} • Role: ${role}";
+  static String m3(count) => "See all (${count})";
+
+  static String m4(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -173,8 +176,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "We couldn\'t load Flow tasks. Pull to refresh.",
     ),
     "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage("Overdue"),
+    "force_update_body": MessageLookupByLibrary.simpleMessage(
+      "This version of Kinly is no longer supported. Please install the newest release to continue.",
+    ),
+    "force_update_button": MessageLookupByLibrary.simpleMessage("Update Kinly"),
+    "force_update_notes_label": MessageLookupByLibrary.simpleMessage(
+      "What\'s new",
+    ),
+    "force_update_title": MessageLookupByLibrary.simpleMessage(
+      "Update required",
+    ),
+    "force_update_version_details": m0,
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("friend"),
-    "greetingPartOfDay": m0,
+    "greetingPartOfDay": m1,
     "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("name"),
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "part of day (morning/afternoon/evening)",
@@ -184,7 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage("Enter invite code"),
     "join_submit": MessageLookupByLibrary.simpleMessage("Join"),
-    "join_success": m1,
+    "join_success": m2,
     "join_title": MessageLookupByLibrary.simpleMessage("Join Home"),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
       "I have read and agree to the ",
@@ -389,13 +403,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "You\'re all caught up for today ✨",
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
-    "todayFlowSeeAll": m2,
+    "todayFlowSeeAll": m3,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Here\'s what\'s flowing in your home today.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "today_home_details": m3,
+    "today_home_details": m4,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",
     ),

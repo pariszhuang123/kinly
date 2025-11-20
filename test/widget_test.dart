@@ -9,10 +9,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:kinly/core/auth/fake_auth_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/homes/fake_home_repository.dart';
+import 'package:kinly/data/repositories/app_version_repository.dart';
 import 'package:kinly/core/network/connectivity_monitor.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
@@ -23,10 +25,20 @@ void main() {
 
   setUp(() async {
     await sl.reset();
+    PackageInfo.setMockInitialValues(
+      appName: 'Kinly',
+      packageName: 'com.kinly.app',
+      version: '1.0.0',
+      buildNumber: '1',
+      buildSignature: 'test',
+    );
     sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepository());
     sl.registerLazySingleton<HomeRepository>(() => FakeHomeRepository());
     sl.registerLazySingleton<ConnectivityMonitor>(
       () => _FakeConnectivityMonitor()..initialize(),
+    );
+    sl.registerLazySingleton<AppVersionRepository>(
+      () => _FakeAppVersionRepository(),
     );
   });
 
@@ -60,5 +72,20 @@ class _FakeConnectivityMonitor implements ConnectivityMonitor {
   @override
   Future<void> dispose() async {
     await _controller.close();
+  }
+}
+
+class _FakeAppVersionRepository implements AppVersionRepository {
+  @override
+  Future<AppVersionStatusResult> checkVersion({
+    required String clientVersion,
+  }) async {
+    return AppVersionStatusResult(
+      clientVersion: clientVersion,
+      currentVersion: clientVersion,
+      minSupportedVersion: clientVersion,
+      hardBlocked: false,
+      updateRecommended: false,
+    );
   }
 }

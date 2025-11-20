@@ -454,6 +454,56 @@ class S {
     return Intl.message('Try again', name: 'offline_retry', desc: '', args: []);
   }
 
+  /// `Update required`
+  String get force_update_title {
+    return Intl.message(
+      'Update required',
+      name: 'force_update_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This version of Kinly is no longer supported. Please install the newest release to continue.`
+  String get force_update_body {
+    return Intl.message(
+      'This version of Kinly is no longer supported. Please install the newest release to continue.',
+      name: 'force_update_body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What's new`
+  String get force_update_notes_label {
+    return Intl.message(
+      'What\'s new',
+      name: 'force_update_notes_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update Kinly`
+  String get force_update_button {
+    return Intl.message(
+      'Update Kinly',
+      name: 'force_update_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your version: {client}\nLatest version: {current}`
+  String force_update_version_details(String client, String current) {
+    return Intl.message(
+      'Your version: $client\nLatest version: $current',
+      name: 'force_update_version_details',
+      desc: '',
+      args: [client, current],
+    );
+  }
+
   /// `Today`
   String get navToday {
     return Intl.message('Today', name: 'navToday', desc: '', args: []);

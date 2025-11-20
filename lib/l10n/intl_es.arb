@@ -57,6 +57,21 @@
   "offline_title": "Sin conexión",
   "offline_body": "Kinly necesita internet. Comprueba tu señal e inténtalo de nuevo.",
   "offline_retry": "Reintentar",
+  "force_update_title": "Actualización requerida",
+  "force_update_body": "Esta versión de Kinly ya no es compatible. Instala la versión más reciente para continuar.",
+  "force_update_notes_label": "Novedades",
+  "force_update_button": "Actualizar Kinly",
+  "force_update_version_details": "Tu versión: {client}\nÚltima versión: {current}",
+  "@force_update_version_details": {
+    "placeholders": {
+      "client": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
+    }
+  },
   "navToday": "Hoy",
   "navExplore": "Explorar",
   "navHub": "Centro",

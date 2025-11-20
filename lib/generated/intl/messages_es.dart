@@ -20,13 +20,16 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  static String m0(partOfDay, name) => "Buen ${partOfDay}, ${name}";
+  static String m0(client, current) =>
+      "Tu versión: ${client}\nÚltima versión: ${current}";
 
-  static String m1(code) => "Te has unido con el cÃ³digo: ${code}";
+  static String m1(partOfDay, name) => "Buen ${partOfDay}, ${name}";
 
-  static String m2(count) => "Ver todo (${count})";
+  static String m2(code) => "Te has unido con el cÃ³digo: ${code}";
 
-  static String m3(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
+  static String m3(count) => "Ver todo (${count})";
+
+  static String m4(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -185,8 +188,21 @@ class MessageLookup extends MessageLookupByLibrary {
       "No pudimos cargar las tareas de Flow. Desliza para actualizar.",
     ),
     "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage("Atrasado"),
+    "force_update_body": MessageLookupByLibrary.simpleMessage(
+      "Esta versión de Kinly ya no es compatible. Instala la versión más reciente para continuar.",
+    ),
+    "force_update_button": MessageLookupByLibrary.simpleMessage(
+      "Actualizar Kinly",
+    ),
+    "force_update_notes_label": MessageLookupByLibrary.simpleMessage(
+      "Novedades",
+    ),
+    "force_update_title": MessageLookupByLibrary.simpleMessage(
+      "Actualización requerida",
+    ),
+    "force_update_version_details": m0,
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("amigo"),
-    "greetingPartOfDay": m0,
+    "greetingPartOfDay": m1,
     "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("nombre"),
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "parte del dÃ­a (maÃ±ana/tarde/noche)",
@@ -198,7 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ingresa el cÃ³digo de invitaciÃ³n",
     ),
     "join_submit": MessageLookupByLibrary.simpleMessage("Unirse"),
-    "join_success": m1,
+    "join_success": m2,
     "join_title": MessageLookupByLibrary.simpleMessage("Unirse al hogar"),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
       "He leÃ­do y acepto los ",
@@ -411,13 +427,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Hoy lo tienes todo al dÃ­a âœ¨",
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
-    "todayFlowSeeAll": m2,
+    "todayFlowSeeAll": m3,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Esto es lo que fluye en tu hogar hoy.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
-    "today_home_details": m3,
+    "today_home_details": m4,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "Sin hogar activo todavÃ­a. Crea o Ãºnete para ver la vista de hoy.",
     ),
