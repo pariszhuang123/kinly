@@ -49,6 +49,9 @@ jobs:
             exit 1;
           fi
 
+      - name: Check UI strings localized
+        run: dart run tool/check_i18n.dart
+
   contracts_drift:
     name: Contracts Drift (Local DB)
     needs: [lint_test]

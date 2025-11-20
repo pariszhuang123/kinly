@@ -117,7 +117,8 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 ## Guardrails (Prohibited)
 - No direct Supabase/HTTP in UI/BLoC.
 - No schema change without migration + RLS policies + reviews.
-- No hard‑coded UI strings (use i18n).
+- No hard‑coded UI strings (use i18n). Run `dart run tool/check_i18n.dart`
+  before submitting a PR; reviewers (Codex) will block if this check fails.
 - No ad‑hoc logging (no `print`/`debugPrint`/console writes); all logs go through `core/logging/logger.dart` via DI so Release can route them.
 - No public endpoints for invites or joins.
 - No writes outside approved RPCs.
