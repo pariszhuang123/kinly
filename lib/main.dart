@@ -170,7 +170,7 @@ class _RouterInitializingFallback extends StatelessWidget {
           children: [
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
-            Text('Starting Kinly (${AppConfig.env})'),
+            Text(S.of(context).bootstrap_initializing(AppConfig.env)),
           ],
         ),
       ),

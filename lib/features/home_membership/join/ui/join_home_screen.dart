@@ -80,11 +80,12 @@ class _JoinFormState extends State<_JoinForm> {
           if (!mounted) return;
           context.go(AppRoutes.today);
         } else if (state.status == JoinHomeStatus.failure) {
+          final errorText = _resolveErrorText(context, state);
           messenger
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage ?? s.join_failed_generic),
+                content: Text(errorText),
               ),
             );
         }
@@ -128,5 +129,26 @@ class _JoinFormState extends State<_JoinForm> {
         ),
       ),
     );
+  }
+
+  String _resolveErrorText(BuildContext context, JoinHomeState state) {
+    final s = S.of(context);
+    switch (state.errorType) {
+      case JoinHomeErrorType.invalidCode:
+        return s.join_error_invalid_code;
+      case JoinHomeErrorType.inactiveInvite:
+        return s.join_error_inactive_invite;
+      case JoinHomeErrorType.alreadyInOtherHome:
+        return s.join_error_already_in_other_home;
+      case JoinHomeErrorType.paywallLimit:
+        return s.join_error_paywall_limit;
+      case JoinHomeErrorType.unauthorized:
+        return s.join_error_unauthorized;
+      case JoinHomeErrorType.forbidden:
+        return s.join_error_forbidden;
+      case JoinHomeErrorType.unknown:
+      case null:
+        return state.errorMessage ?? s.join_failed_generic;
+    }
   }
 }

@@ -1,6 +1,14 @@
-﻿{
+{
   "@@locale": "es",
   "app_title": "Kinly",
+  "bootstrap_initializing": "Iniciando Kinly ({env})",
+  "@bootstrap_initializing": {
+    "placeholders": {
+      "env": {
+        "type": "String"
+      }
+    }
+  },
   "welcome_title": "Bienvenido a Kinly",
   "welcome_create": "Crear un hogar",
   "welcome_join": "Unirse a un hogar",
@@ -22,6 +30,12 @@
     }
   },
   "join_failed_generic": "No se pudo unir. Por favor, intÃ©ntalo de nuevo.",
+  "join_error_invalid_code": "Ese código de invitación no es válido.",
+  "join_error_inactive_invite": "Esa invitación ya no está activa. Pide al dueño un nuevo código.",
+  "join_error_already_in_other_home": "Ya perteneces a otro hogar. Debes dejarlo antes de unirte.",
+  "join_error_paywall_limit": "Este hogar alcanzó su límite de miembros. Pide al dueño que mejore el plan o libere un lugar.",
+  "join_error_unauthorized": "Inicia sesión para unirte a este hogar.",
+  "join_error_forbidden": "No tienes permiso para unirte a este hogar.",
   "today_title": "Hoy",
   "quick_add_title": "AÃ±adir rÃ¡pido",
   "quick_add_flow_title": "Flow",
@@ -35,13 +49,15 @@
   "login_tagline": "Juntos se siente mÃ¡s ligero",
   "login_with_google": "Continuar con Google",
   "login_with_apple": "Continuar con Apple",
-  "login_consent_prefix": "He leÃ­do y acepto los ",
+  "login_consent_prefix": "He leído y acepto los ",
+  "login_consent_connector": " y ",
   "login_terms": "TÃ©rminos del servicio",
   "login_privacy": "PolÃ­tica de privacidad",
   "logout": "Cerrar sesiÃ³n",
   "membership_status_checking": "Comprobando el estado de la membresÃ­aâ€¦",
   "membership_status_none": "AÃºn no te has unido a un hogar.",
   "membership_status_active": "Ya eres parte de un hogar.",
+  "authMembershipLoadFailed": "No pudimos actualizar tu membresía del hogar. Inténtalo de nuevo.",
   "today_no_membership": "Sin hogar activo todavÃ­a. Crea o Ãºnete para ver la vista de hoy.",
   "today_home_details": "Hogar actual: {homeId} â€¢ Rol: {role}",
   "@today_home_details": {
@@ -83,7 +99,11 @@
   "greetingPartOfDay": "Buen {partOfDay}, {name}",
   "greetingPartOfDay_partOfDay": "parte del dÃ­a (maÃ±ana/tarde/noche)",
   "greetingPartOfDay_name": "nombre",
+  "greetingPartMorning": "mañana",
+  "greetingPartAfternoon": "tarde",
+  "greetingPartEvening": "noche",
   "todayFlowSubtitle": "Esto es lo que fluye en tu hogar hoy.",
+  "todayFlowSectionTitle": "Flow",
   "todayFlowTabActive": "Activas",
   "todayFlowTabDrafts": "Borradores",
   "todayFlowSeeAll": "Ver todo ({count})",
@@ -95,6 +115,12 @@
     }
   },
   "todayFlowBadgeNew": "nuevo hoy",
+  "todayShareSectionTitle": "Share",
+  "todayShareBadgeUpcoming": "próximamente",
+  "todayShareSeeAll": "Ver todos los gastos",
+  "todayShareSampleGroceries": "Compras compartidas de ayer",
+  "todayShareSampleRent": "Recordatorio de renta pronto",
+  "todayShareSampleInternet": "Factura de internet esta semana",
   "todayAddSheetTitle": "AÃ±ade algo a tu hogar",
   "todayAddSheetFlow": "Agregar tarea (Flow)",
   "todayAddSheetShare": "Agregar gasto (Share)",
@@ -159,12 +185,12 @@
   "profileIdentityTitle": "Editar perfil",
   "profileIdentitySubtitle": "Elige tu nombre de usuario y avatar para el hogar.",
   "profileIdentityUsernameLabel": "Nombre de usuario",
-  "profileIdentityUsernameHint": "letras, n\u00fameros, . o _",
+  "profileIdentityUsernameHint": "letras, números, . o _",
   "profileIdentityUsernameEmptyError": "Ingresa un nombre de usuario.",
-  "profileIdentityUsernameFormatError": "Usa de 3 a 30 caracteres en min\u00fascula o n\u00fameros. Puedes incluir puntos o guiones bajos en medio.",
+  "profileIdentityUsernameFormatError": "Usa de 3 a 30 caracteres en minúscula o números. Puedes incluir puntos o guiones bajos en medio.",
   "profileIdentityAvatarSectionTitle": "Elige un avatar",
-  "profileIdentityAvatarSectionDescription": "Cada avatar es \u00fanico dentro de tu hogar.",
-  "profileIdentityAvatarEmpty": "No hay avatares disponibles por ahora. Int\u00e9ntalo m\u00e1s tarde.",
+  "profileIdentityAvatarSectionDescription": "Cada avatar es único dentro de tu hogar.",
+  "profileIdentityAvatarEmpty": "No hay avatares disponibles por ahora. Inténtalo más tarde.",
   "profileIdentityLoadError": "No pudimos cargar tu perfil en este momento.",
   "profileIdentityRetry": "Reintentar",
   "profileIdentitySaveButton": "Guardar cambios",
@@ -203,7 +229,3 @@
   "profileGenericError": "Algo salió mal. Inténtalo otra vez.",
   "profileMissingHomeError": "No encontramos tu hogar actual. Inténtalo nuevamente."
 }
-
-
-
-

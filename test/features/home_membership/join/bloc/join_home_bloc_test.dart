@@ -64,6 +64,7 @@ void main() {
             code: 'CODE99',
             status: JoinHomeStatus.failure,
             errorMessage: 'Exception: boom',
+            errorType: JoinHomeErrorType.unknown,
           ),
         ],
     verify: (_) {
@@ -92,8 +93,8 @@ void main() {
           JoinHomeState(
             code: 'FULLHM',
             status: JoinHomeStatus.failure,
-            errorMessage:
-                'This home has reached its member limit. Ask the owner to upgrade or remove a member.',
+            errorMessage: 'Free plan allows up to 4 active members per home.',
+            errorType: JoinHomeErrorType.paywallLimit,
           ),
         ],
     verify: (_) {

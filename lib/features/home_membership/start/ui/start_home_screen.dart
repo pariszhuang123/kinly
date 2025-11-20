@@ -34,11 +34,16 @@ class StartHomeScreen extends StatelessWidget {
         ),
         body: BlocConsumer<StartHomeBloc, StartHomeState>(
           listener: (context, state) {
-            if (state.status == StartHomeStatus.failure &&
-                state.errorMessage != null) {
+            if (state.status == StartHomeStatus.failure) {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+              ).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    state.errorMessage ?? s.create_failed_generic,
+                  ),
+                ),
+              );
             }
 
             if (state.status == StartHomeStatus.success) {

@@ -24,6 +24,7 @@ class JoinHomeBloc extends Bloc<JoinHomeEvent, JoinHomeState> {
         code: event.code.trim(),
         status: JoinHomeStatus.editing,
         errorMessage: null,
+        errorType: null,
       ),
     );
   }
@@ -34,15 +35,29 @@ class JoinHomeBloc extends Bloc<JoinHomeEvent, JoinHomeState> {
   ) async {
     if (!state.canSubmit || state.status == JoinHomeStatus.submitting) return;
 
-    emit(state.copyWith(status: JoinHomeStatus.submitting, errorMessage: null));
+    emit(
+      state.copyWith(
+        status: JoinHomeStatus.submitting,
+        errorMessage: null,
+        errorType: null,
+      ),
+    );
     try {
       await _homeRepository.join(state.code);
-      emit(state.copyWith(status: JoinHomeStatus.success));
+      emit(
+        state.copyWith(
+          status: JoinHomeStatus.success,
+          errorType: null,
+          errorMessage: null,
+        ),
+      );
     } catch (error) {
+      final mapped = _mapJoinError(error);
       emit(
         state.copyWith(
           status: JoinHomeStatus.failure,
-          errorMessage: _mapJoinErrorMessage(error),
+          errorMessage: mapped.message,
+          errorType: mapped.type,
         ),
       );
     }
@@ -52,15 +67,42 @@ class JoinHomeBloc extends Bloc<JoinHomeEvent, JoinHomeState> {
     emit(const JoinHomeState());
   }
 
-  String _mapJoinErrorMessage(Object error) {
+  _JoinErrorResult _mapJoinError(Object error) {
     if (error is HomeJoinException) {
-      switch (error.code) {
-        case JoinErrorCode.paywallLimitActiveMembers:
-          return 'This home has reached its member limit. Ask the owner to upgrade or remove a member.';
-        default:
-          return error.message;
-      }
+      return _JoinErrorResult(
+        type: _mapJoinErrorType(error.code),
+        message: error.message,
+      );
     }
-    return error.toString();
+    return _JoinErrorResult(
+      type: JoinHomeErrorType.unknown,
+      message: error.toString(),
+    );
   }
+
+  JoinHomeErrorType _mapJoinErrorType(JoinErrorCode code) {
+    switch (code) {
+      case JoinErrorCode.invalidCode:
+        return JoinHomeErrorType.invalidCode;
+      case JoinErrorCode.inactiveInvite:
+        return JoinHomeErrorType.inactiveInvite;
+      case JoinErrorCode.alreadyInOtherHome:
+        return JoinHomeErrorType.alreadyInOtherHome;
+      case JoinErrorCode.paywallLimitActiveMembers:
+        return JoinHomeErrorType.paywallLimit;
+      case JoinErrorCode.unauthorized:
+        return JoinHomeErrorType.unauthorized;
+      case JoinErrorCode.forbidden:
+        return JoinHomeErrorType.forbidden;
+      case JoinErrorCode.unknown:
+        return JoinHomeErrorType.unknown;
+    }
+  }
+}
+
+class _JoinErrorResult {
+  const _JoinErrorResult({this.type, this.message});
+
+  final JoinHomeErrorType? type;
+  final String? message;
 }

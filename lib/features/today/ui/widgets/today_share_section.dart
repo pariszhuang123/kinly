@@ -3,6 +3,7 @@ import '../../../../core/ui/section_container.dart';
 import '../../../../core/ui/section_list_card.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
+import '../../../../generated/l10n.dart';
 import '../../domain/models.dart';
 
 class TodayShareSection extends StatelessWidget {
@@ -21,11 +22,12 @@ class TodayShareSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final sections = Theme.of(context).extension<KinlySections>()!;
     final spacing = Theme.of(context).extension<Spacing>();
+    final s = S.of(context);
     final visibleExpenses =
         expenses.length > 3 ? expenses.take(3).toList() : expenses;
 
     return SectionContainer(
-      title: 'Share',
+      title: s.todayShareSectionTitle,
       colors: sections.share,
       child: Column(
         children: [
@@ -35,7 +37,7 @@ class TodayShareSection extends StatelessWidget {
               icon: Icons.savings_rounded,
               title: e.title,
               trailingText: '\$${e.amount.toStringAsFixed(2)}',
-              badgeText: e.isUpcoming ? 'upcoming' : null,
+              badgeText: e.isUpcoming ? s.todayShareBadgeUpcoming : null,
               onTap: () => onExpenseTap(e),
             ),
           ),
@@ -47,7 +49,7 @@ class TodayShareSection extends StatelessWidget {
                 child: TextButton(
                   onPressed: onSeeAllTap,
                   child: Text(
-                    'See all expenses',
+                    s.todayShareSeeAll,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: sections.share.icon,
                       fontWeight: FontWeight.w500,

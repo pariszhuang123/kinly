@@ -11,6 +11,8 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  static const membershipLoadFailedKey = 'auth.membership_load_failed';
+
   AuthBloc({
     required AuthRepository authRepository,
     required HomeRepository homeRepository,
@@ -131,7 +133,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           membershipStatus: AuthMembershipStatus.unknown,
           membership: null,
-          errorMessage: 'Failed to load membership: $error',
+          errorMessage: membershipLoadFailedKey,
         ),
       );
     }

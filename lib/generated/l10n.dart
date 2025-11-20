@@ -59,6 +59,16 @@ class S {
     return Intl.message('Kinly', name: 'app_title', desc: '', args: []);
   }
 
+  /// `Starting Kinly ({env})`
+  String bootstrap_initializing(String env) {
+    return Intl.message(
+      'Starting Kinly ($env)',
+      name: 'bootstrap_initializing',
+      desc: '',
+      args: [env],
+    );
+  }
+
   /// `Welcome to Kinly`
   String get welcome_title {
     return Intl.message(
@@ -174,6 +184,66 @@ class S {
     return Intl.message(
       'Join failed. Please try again.',
       name: 'join_failed_generic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `That invite code doesn't look right.`
+  String get join_error_invalid_code {
+    return Intl.message(
+      'That invite code doesn\'t look right.',
+      name: 'join_error_invalid_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `That invite is no longer active. Ask the owner for a new code.`
+  String get join_error_inactive_invite {
+    return Intl.message(
+      'That invite is no longer active. Ask the owner for a new code.',
+      name: 'join_error_inactive_invite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You're already in another home. Leave it before joining a new one.`
+  String get join_error_already_in_other_home {
+    return Intl.message(
+      'You\'re already in another home. Leave it before joining a new one.',
+      name: 'join_error_already_in_other_home',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This home has reached its member limit. Ask the owner to upgrade or remove a member.`
+  String get join_error_paywall_limit {
+    return Intl.message(
+      'This home has reached its member limit. Ask the owner to upgrade or remove a member.',
+      name: 'join_error_paywall_limit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please sign in to join this home.`
+  String get join_error_unauthorized {
+    return Intl.message(
+      'Please sign in to join this home.',
+      name: 'join_error_unauthorized',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You don't have permission to join this home.`
+  String get join_error_forbidden {
+    return Intl.message(
+      'You don\'t have permission to join this home.',
+      name: 'join_error_forbidden',
       desc: '',
       args: [],
     );
@@ -354,6 +424,16 @@ class S {
     );
   }
 
+  /// ` & `
+  String get login_consent_connector {
+    return Intl.message(
+      ' & ',
+      name: 'login_consent_connector',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Service Terms`
   String get login_terms {
     return Intl.message(
@@ -404,6 +484,16 @@ class S {
     return Intl.message(
       'You\'re already part of a home.',
       name: 'membership_status_active',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't refresh your home membership. Please try again.`
+  String get authMembershipLoadFailed {
+    return Intl.message(
+      'We couldn\'t refresh your home membership. Please try again.',
+      name: 'authMembershipLoadFailed',
       desc: '',
       args: [],
     );
@@ -594,11 +684,51 @@ class S {
     );
   }
 
+  /// `morning`
+  String get greetingPartMorning {
+    return Intl.message(
+      'morning',
+      name: 'greetingPartMorning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `afternoon`
+  String get greetingPartAfternoon {
+    return Intl.message(
+      'afternoon',
+      name: 'greetingPartAfternoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `evening`
+  String get greetingPartEvening {
+    return Intl.message(
+      'evening',
+      name: 'greetingPartEvening',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Here's what's flowing in your home today.`
   String get todayFlowSubtitle {
     return Intl.message(
       'Here\'s what\'s flowing in your home today.',
       name: 'todayFlowSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Flow`
+  String get todayFlowSectionTitle {
+    return Intl.message(
+      'Flow',
+      name: 'todayFlowSectionTitle',
       desc: '',
       args: [],
     );
@@ -639,6 +769,66 @@ class S {
     return Intl.message(
       'new today',
       name: 'todayFlowBadgeNew',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get todayShareSectionTitle {
+    return Intl.message(
+      'Share',
+      name: 'todayShareSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `upcoming`
+  String get todayShareBadgeUpcoming {
+    return Intl.message(
+      'upcoming',
+      name: 'todayShareBadgeUpcoming',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `See all expenses`
+  String get todayShareSeeAll {
+    return Intl.message(
+      'See all expenses',
+      name: 'todayShareSeeAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared groceries from yesterday`
+  String get todayShareSampleGroceries {
+    return Intl.message(
+      'Shared groceries from yesterday',
+      name: 'todayShareSampleGroceries',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rent reminder coming up`
+  String get todayShareSampleRent {
+    return Intl.message(
+      'Rent reminder coming up',
+      name: 'todayShareSampleRent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Internet bill this week`
+  String get todayShareSampleInternet {
+    return Intl.message(
+      'Internet bill this week',
+      name: 'todayShareSampleInternet',
       desc: '',
       args: [],
     );

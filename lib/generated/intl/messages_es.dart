@@ -20,20 +20,26 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  static String m0(client, current) =>
+  static String m0(env) => "Iniciando Kinly (${env})";
+
+  static String m1(client, current) =>
       "Tu versión: ${client}\nÚltima versión: ${current}";
 
-  static String m1(partOfDay, name) => "Buen ${partOfDay}, ${name}";
+  static String m2(partOfDay, name) => "Buen ${partOfDay}, ${name}";
 
-  static String m2(code) => "Te has unido con el cÃ³digo: ${code}";
+  static String m3(code) => "Te has unido con el cÃ³digo: ${code}";
 
-  static String m3(count) => "Ver todo (${count})";
+  static String m4(count) => "Ver todo (${count})";
 
-  static String m4(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
+  static String m5(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
+    "authMembershipLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "No pudimos actualizar tu membresía del hogar. Inténtalo de nuevo.",
+    ),
+    "bootstrap_initializing": m0,
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
       "No se pudo crear el hogar. Intenta de nuevo.",
     ),
@@ -200,12 +206,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "force_update_title": MessageLookupByLibrary.simpleMessage(
       "Actualización requerida",
     ),
-    "force_update_version_details": m0,
+    "force_update_version_details": m1,
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("amigo"),
-    "greetingPartOfDay": m1,
+    "greetingPartAfternoon": MessageLookupByLibrary.simpleMessage("tarde"),
+    "greetingPartEvening": MessageLookupByLibrary.simpleMessage("noche"),
+    "greetingPartMorning": MessageLookupByLibrary.simpleMessage("mañana"),
+    "greetingPartOfDay": m2,
     "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("nombre"),
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "parte del dÃ­a (maÃ±ana/tarde/noche)",
+    ),
+    "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
+      "Ya perteneces a otro hogar. Debes dejarlo antes de unirte.",
+    ),
+    "join_error_forbidden": MessageLookupByLibrary.simpleMessage(
+      "No tienes permiso para unirte a este hogar.",
+    ),
+    "join_error_inactive_invite": MessageLookupByLibrary.simpleMessage(
+      "Esa invitación ya no está activa. Pide al dueño un nuevo código.",
+    ),
+    "join_error_invalid_code": MessageLookupByLibrary.simpleMessage(
+      "Ese código de invitación no es válido.",
+    ),
+    "join_error_paywall_limit": MessageLookupByLibrary.simpleMessage(
+      "Este hogar alcanzó su límite de miembros. Pide al dueño que mejore el plan o libere un lugar.",
+    ),
+    "join_error_unauthorized": MessageLookupByLibrary.simpleMessage(
+      "Inicia sesión para unirte a este hogar.",
     ),
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
       "No se pudo unir. Por favor, intÃ©ntalo de nuevo.",
@@ -214,10 +241,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ingresa el cÃ³digo de invitaciÃ³n",
     ),
     "join_submit": MessageLookupByLibrary.simpleMessage("Unirse"),
-    "join_success": m2,
+    "join_success": m3,
     "join_title": MessageLookupByLibrary.simpleMessage("Unirse al hogar"),
+    "login_consent_connector": MessageLookupByLibrary.simpleMessage(" y "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
-      "He leÃ­do y acepto los ",
+      "He leído y acepto los ",
     ),
     "login_privacy": MessageLookupByLibrary.simpleMessage(
       "PolÃ­tica de privacidad",
@@ -427,13 +455,30 @@ class MessageLookup extends MessageLookupByLibrary {
       "Hoy lo tienes todo al dÃ­a âœ¨",
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
-    "todayFlowSeeAll": m3,
+    "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
+    "todayFlowSeeAll": m4,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Esto es lo que fluye en tu hogar hoy.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
-    "today_home_details": m4,
+    "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage(
+      "próximamente",
+    ),
+    "todayShareSampleGroceries": MessageLookupByLibrary.simpleMessage(
+      "Compras compartidas de ayer",
+    ),
+    "todayShareSampleInternet": MessageLookupByLibrary.simpleMessage(
+      "Factura de internet esta semana",
+    ),
+    "todayShareSampleRent": MessageLookupByLibrary.simpleMessage(
+      "Recordatorio de renta pronto",
+    ),
+    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Share"),
+    "todayShareSeeAll": MessageLookupByLibrary.simpleMessage(
+      "Ver todos los gastos",
+    ),
+    "today_home_details": m5,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "Sin hogar activo todavÃ­a. Crea o Ãºnete para ver la vista de hoy.",
     ),

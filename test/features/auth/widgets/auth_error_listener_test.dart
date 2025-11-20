@@ -1,11 +1,13 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/auth/widgets/auth_error_listener.dart';
+import 'package:kinly/generated/l10n.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
@@ -36,14 +38,7 @@ void main() {
           initialState: const AuthState(),
         );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: BlocProvider<AuthBloc>.value(
-              value: bloc,
-              child: const AuthErrorListener(child: Scaffold(body: SizedBox())),
-            ),
-          ),
-        );
+        await tester.pumpWidget(_buildApp(bloc));
 
         await tester.pump(); // allow listener to process stream event
 
@@ -60,14 +55,7 @@ void main() {
         initialState: const AuthState(),
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: BlocProvider<AuthBloc>.value(
-            value: bloc,
-            child: const AuthErrorListener(child: Scaffold(body: SizedBox())),
-          ),
-        ),
-      );
+      await tester.pumpWidget(_buildApp(bloc));
 
       await tester.pump();
 
@@ -75,4 +63,20 @@ void main() {
       verifyNever(() => bloc.add(any<AuthEvent>()));
     });
   });
+}
+
+Widget _buildApp(AuthBloc bloc) {
+  return MaterialApp(
+    localizationsDelegates: const [
+      S.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: S.delegate.supportedLocales,
+    home: BlocProvider<AuthBloc>.value(
+      value: bloc,
+      child: const AuthErrorListener(child: Scaffold(body: SizedBox())),
+    ),
+  );
 }

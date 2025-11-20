@@ -112,7 +112,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 ),
                               ),
                             ),
-                            const Text(' & '),
+                            Text(s.login_consent_connector),
                             InkWell(
                               onTap: () => _open(_privacyUri),
                               child: Text(

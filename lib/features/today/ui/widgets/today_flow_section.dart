@@ -25,6 +25,7 @@ class TodayFlowSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final sections = Theme.of(context).extension<KinlySections>()!;
     final spacing = Theme.of(context).extension<Spacing>();
+    final s = S.of(context);
     final colors = sections.flow;
     final tabs = _buildTabs(context);
 
@@ -35,7 +36,7 @@ class TodayFlowSection extends StatelessWidget {
 
     if (tabs.length == 1) {
       return SectionContainer(
-        title: 'Flow',
+        title: s.todayFlowSectionTitle,
         colors: colors,
         child: Column(
           children: [
@@ -62,7 +63,7 @@ class TodayFlowSection extends StatelessWidget {
         builder: (context) {
           final controller = DefaultTabController.of(context);
           return SectionContainer(
-            title: 'Flow',
+            title: s.todayFlowSectionTitle,
             colors: colors,
             child: Column(
               children: [

@@ -20,20 +20,26 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(client, current) =>
+  static String m0(env) => "Starting Kinly (${env})";
+
+  static String m1(client, current) =>
       "Your version: ${client}\nLatest version: ${current}";
 
-  static String m1(partOfDay, name) => "Good ${partOfDay}, ${name}";
+  static String m2(partOfDay, name) => "Good ${partOfDay}, ${name}";
 
-  static String m2(code) => "Joined with code: ${code}";
+  static String m3(code) => "Joined with code: ${code}";
 
-  static String m3(count) => "See all (${count})";
+  static String m4(count) => "See all (${count})";
 
-  static String m4(homeId, role) => "Current home: ${homeId} • Role: ${role}";
+  static String m5(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
+    "authMembershipLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t refresh your home membership. Please try again.",
+    ),
+    "bootstrap_initializing": m0,
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
       "Could not create the home. Try again.",
     ),
@@ -186,20 +192,42 @@ class MessageLookup extends MessageLookupByLibrary {
     "force_update_title": MessageLookupByLibrary.simpleMessage(
       "Update required",
     ),
-    "force_update_version_details": m0,
+    "force_update_version_details": m1,
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("friend"),
-    "greetingPartOfDay": m1,
+    "greetingPartAfternoon": MessageLookupByLibrary.simpleMessage("afternoon"),
+    "greetingPartEvening": MessageLookupByLibrary.simpleMessage("evening"),
+    "greetingPartMorning": MessageLookupByLibrary.simpleMessage("morning"),
+    "greetingPartOfDay": m2,
     "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("name"),
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "part of day (morning/afternoon/evening)",
+    ),
+    "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
+      "You\'re already in another home. Leave it before joining a new one.",
+    ),
+    "join_error_forbidden": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have permission to join this home.",
+    ),
+    "join_error_inactive_invite": MessageLookupByLibrary.simpleMessage(
+      "That invite is no longer active. Ask the owner for a new code.",
+    ),
+    "join_error_invalid_code": MessageLookupByLibrary.simpleMessage(
+      "That invite code doesn\'t look right.",
+    ),
+    "join_error_paywall_limit": MessageLookupByLibrary.simpleMessage(
+      "This home has reached its member limit. Ask the owner to upgrade or remove a member.",
+    ),
+    "join_error_unauthorized": MessageLookupByLibrary.simpleMessage(
+      "Please sign in to join this home.",
     ),
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
       "Join failed. Please try again.",
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage("Enter invite code"),
     "join_submit": MessageLookupByLibrary.simpleMessage("Join"),
-    "join_success": m2,
+    "join_success": m3,
     "join_title": MessageLookupByLibrary.simpleMessage("Join Home"),
+    "login_consent_connector": MessageLookupByLibrary.simpleMessage(" & "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
       "I have read and agree to the ",
     ),
@@ -403,13 +431,28 @@ class MessageLookup extends MessageLookupByLibrary {
       "You\'re all caught up for today ✨",
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
-    "todayFlowSeeAll": m3,
+    "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
+    "todayFlowSeeAll": m4,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Here\'s what\'s flowing in your home today.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "today_home_details": m4,
+    "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("upcoming"),
+    "todayShareSampleGroceries": MessageLookupByLibrary.simpleMessage(
+      "Shared groceries from yesterday",
+    ),
+    "todayShareSampleInternet": MessageLookupByLibrary.simpleMessage(
+      "Internet bill this week",
+    ),
+    "todayShareSampleRent": MessageLookupByLibrary.simpleMessage(
+      "Rent reminder coming up",
+    ),
+    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Share"),
+    "todayShareSeeAll": MessageLookupByLibrary.simpleMessage(
+      "See all expenses",
+    ),
+    "today_home_details": m5,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",
     ),

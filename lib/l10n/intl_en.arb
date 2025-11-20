@@ -1,6 +1,14 @@
 {
   "@@locale": "en",
   "app_title": "Kinly",
+  "bootstrap_initializing": "Starting Kinly ({env})",
+  "@bootstrap_initializing": {
+    "placeholders": {
+      "env": {
+        "type": "String"
+      }
+    }
+  },
   "welcome_title": "Welcome to Kinly",
   "welcome_create": "Create a Home",
   "welcome_join": "Join a Home",
@@ -22,6 +30,12 @@
     }
   },
   "join_failed_generic": "Join failed. Please try again.",
+  "join_error_invalid_code": "That invite code doesn't look right.",
+  "join_error_inactive_invite": "That invite is no longer active. Ask the owner for a new code.",
+  "join_error_already_in_other_home": "You're already in another home. Leave it before joining a new one.",
+  "join_error_paywall_limit": "This home has reached its member limit. Ask the owner to upgrade or remove a member.",
+  "join_error_unauthorized": "Please sign in to join this home.",
+  "join_error_forbidden": "You don't have permission to join this home.",
   "today_title": "Today",
   "quick_add_title": "Quick Add",
   "quick_add_flow_title": "Flow",
@@ -40,12 +54,14 @@
   "login_with_google": "Continue with Google",
   "login_with_apple": "Continue with Apple",
   "login_consent_prefix": "I have read and agree to the ",
+  "login_consent_connector": " & ",
   "login_terms": "Service Terms",
   "login_privacy": "Privacy Policy",
   "logout": "Sign out",
   "membership_status_checking": "Checking membership status…",
   "membership_status_none": "You haven't joined a home yet.",
   "membership_status_active": "You're already part of a home.",
+  "authMembershipLoadFailed": "We couldn't refresh your home membership. Please try again.",
   "today_no_membership": "No active home yet. Create or join to see today's view.",
   "today_home_details": "Current home: {homeId} • Role: {role}",
   "@today_home_details": {
@@ -87,7 +103,11 @@
   "greetingPartOfDay": "Good {partOfDay}, {name}",
   "greetingPartOfDay_partOfDay": "part of day (morning/afternoon/evening)",
   "greetingPartOfDay_name": "name",
+  "greetingPartMorning": "morning",
+  "greetingPartAfternoon": "afternoon",
+  "greetingPartEvening": "evening",
   "todayFlowSubtitle": "Here's what's flowing in your home today.",
+  "todayFlowSectionTitle": "Flow",
   "todayFlowTabActive": "Active",
   "todayFlowTabDrafts": "Drafts",
   "todayFlowSeeAll": "See all ({count})",
@@ -99,6 +119,12 @@
     }
   },
   "todayFlowBadgeNew": "new today",
+  "todayShareSectionTitle": "Share",
+  "todayShareBadgeUpcoming": "upcoming",
+  "todayShareSeeAll": "See all expenses",
+  "todayShareSampleGroceries": "Shared groceries from yesterday",
+  "todayShareSampleRent": "Rent reminder coming up",
+  "todayShareSampleInternet": "Internet bill this week",
   "flowChoreCreateTitle": "Add Flow chore",
   "flowChoreEditTitle": "Edit Flow chore",
   "flowChoreNameLabel": "Task name",

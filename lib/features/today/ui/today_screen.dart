@@ -49,19 +49,23 @@ class TodayScreen extends StatelessWidget {
     final partOfDay = _partOfDay(now);
 
     // For now: expenses still mocked
-    const expenses = <TodayShareExpense>[
+    final expenses = <TodayShareExpense>[
       TodayShareExpense(
         id: '1',
-        title: 'Shared groceries from yesterday',
+        title: s.todayShareSampleGroceries,
         amount: 28.50,
       ),
       TodayShareExpense(
         id: '2',
-        title: 'Rent reminder coming up',
+        title: s.todayShareSampleRent,
         amount: 650,
         isUpcoming: true,
       ),
-      TodayShareExpense(id: '3', title: 'Internet bill this week', amount: 75),
+      TodayShareExpense(
+        id: '3',
+        title: s.todayShareSampleInternet,
+        amount: 75,
+      ),
     ];
 
     return Scaffold(
