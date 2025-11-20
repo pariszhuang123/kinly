@@ -12,6 +12,8 @@ import 'core/router/go_router_refresh_stream.dart';
 import 'core/network/connectivity_monitor.dart';
 import 'core/supabase/supabase_init.dart';
 import 'core/theme/kinly_theme.dart';
+import 'core/logging/logger.dart';
+import 'core/logging/debug_logger.dart';
 import 'data/repositories/app_version_repository.dart';
 import 'data/repositories/auth_repository.dart';
 import 'data/repositories/home_repository.dart';
@@ -42,17 +44,24 @@ class _MyAppState extends State<MyApp> {
   late final ConnectivityCubit _connectivityCubit;
   late final GoRouterRefreshStream _routerRefresh;
   late final RouterConfig<Object> _router;
+  late final Logger _logger;
+
+  static const _logTag = 'Bootstrap';
 
   @override
   void initState() {
     super.initState();
+    _logger = _resolveLogger();
     final authRepo = sl<AuthRepository>();
     final homeRepo = sl<HomeRepository>();
     final connectivityMonitor = sl<ConnectivityMonitor>();
     final appVersionRepository = sl<AppVersionRepository>();
 
     _authBloc = AuthBloc(authRepository: authRepo, homeRepository: homeRepo);
-    _appVersionCubit = AppVersionCubit(repository: appVersionRepository);
+    _appVersionCubit = AppVersionCubit(
+      repository: appVersionRepository,
+      logger: _logger,
+    );
     _connectivityCubit = ConnectivityCubit(monitor: connectivityMonitor);
     _routerRefresh = GoRouterRefreshStream.multi([
       _authBloc.stream,
@@ -66,16 +75,31 @@ class _MyAppState extends State<MyApp> {
     unawaited(_startVersionCheck());
   }
 
+  Logger _resolveLogger() {
+    if (sl.isRegistered<Logger>()) {
+      return sl<Logger>();
+    }
+    const fallback = DebugLogger();
+    sl.registerSingleton<Logger>(fallback);
+    return fallback;
+  }
+
   Future<void> _startVersionCheck() async {
     try {
       final info = await PackageInfo.fromPlatform();
       final normalizedVersion = _normalizeVersion(info.version);
-      debugPrint(
+      _logger.info(
         'Kinly client version: ${info.version} (normalized: $normalizedVersion)',
+        tag: _logTag,
       );
       await _appVersionCubit.checkForUpdates(clientVersion: normalizedVersion);
-    } catch (error) {
-      debugPrint('PackageInfo lookup failed: $error');
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'PackageInfo lookup failed: $error',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
       await _appVersionCubit.checkForUpdates(clientVersion: '0.0.0');
     }
   }
@@ -85,11 +109,14 @@ class _MyAppState extends State<MyApp> {
     if (match != null) {
       final core = match.group(1)!;
       if (core != version) {
-        debugPrint('Normalized version "$version" to "$core"');
+        _logger.debug('Normalized version "$version" to "$core"', tag: _logTag);
       }
       return core;
     }
-    debugPrint('Unable to parse version "$version"; defaulting to 0.0.0');
+    _logger.warn(
+      'Unable to parse version "$version"; defaulting to 0.0.0',
+      tag: _logTag,
+    );
     return '0.0.0';
   }
 

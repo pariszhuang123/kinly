@@ -118,8 +118,15 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - No direct Supabase/HTTP in UI/BLoC.
 - No schema change without migration + RLS policies + reviews.
 - No hard‑coded UI strings (use i18n).
+- No ad‑hoc logging (no `print`/`debugPrint`/console writes); all logs go through `core/logging/logger.dart` via DI so Release can route them.
 - No public endpoints for invites or joins.
 - No writes outside approved RPCs.
+
+## Logging Standard
+- Ownership: Planner defines taxonomy + severity expectations, Docs maintains this section, Release verifies sinks in CI.
+- Implementation: UI/BLoC/Repositories resolve `Logger` from `get_it` (or inject it) and call `debug/info/warn/error`.
+- Tests: provide a fake `Logger` or rely on the default `DebugLogger`; never reintroduce `print`/`debugPrint`.
+- Tech debt: if a new sink or structured schema is needed, raise a Planner ticket + ADR before modifying the contract.
 
 ## Governance & Review
 - Approvals: Schema/Migration/RLS → DB + Planner; Deep‑link logic → Deep Linking + Planner; CI/Infra → Release + Planner.

@@ -12,12 +12,17 @@ import '../homes/supabase_home_repository.dart';
 import '../profile/supabase_profile_repository.dart';
 import '../app_version/supabase_app_version_repository.dart';
 import '../network/connectivity_monitor.dart';
+import '../logging/logger.dart';
+import '../logging/debug_logger.dart';
 
 final sl = GetIt.instance;
 
 void setupDependencies() {
   // TODO: register repositories and services here.
   // sl.registerLazySingleton<AuthRepository>(() => SupabaseAuthRepository());
+  if (!sl.isRegistered<Logger>()) {
+    sl.registerLazySingleton<Logger>(() => const DebugLogger());
+  }
   if (!sl.isRegistered<AuthRepository>()) {
     sl.registerLazySingleton<AuthRepository>(() => SupabaseAuthRepository());
   }

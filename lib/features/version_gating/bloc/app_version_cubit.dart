@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/repositories/app_version_repository.dart';
+import '../../../core/logging/debug_logger.dart';
+import '../../../core/logging/logger.dart';
 
 enum AppVersionStatus {
   initial,
@@ -65,11 +66,17 @@ class AppVersionState extends Equatable {
 }
 
 class AppVersionCubit extends Cubit<AppVersionState> {
-  AppVersionCubit({required AppVersionRepository repository})
-      : _repository = repository,
+  AppVersionCubit({
+    required AppVersionRepository repository,
+    Logger? logger,
+  })  : _repository = repository,
+        _logger = logger ?? const DebugLogger(),
         super(const AppVersionState());
 
   final AppVersionRepository _repository;
+  final Logger _logger;
+
+  static const _logTag = 'AppVersionCubit';
 
   Future<void> checkForUpdates({required String clientVersion}) async {
     if (state.status == AppVersionStatus.checking &&
@@ -83,7 +90,7 @@ class AppVersionCubit extends Cubit<AppVersionState> {
         errorMessage: null,
       ),
     );
-    _log('Checking version for $clientVersion');
+    _logger.info('Checking version for $clientVersion', tag: _logTag);
     try {
       final result = await _repository.checkVersion(
         clientVersion: clientVersion,
@@ -102,22 +109,24 @@ class AppVersionCubit extends Cubit<AppVersionState> {
           releasedAt: result.releasedAt,
         ),
       );
-      _log(
+      _logger.debug(
         'Server current=${result.currentVersion} min=${result.minSupportedVersion} '
         'hardBlocked=${result.hardBlocked} updateRecommended=${result.updateRecommended}',
+        tag: _logTag,
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
       emit(
         state.copyWith(
           status: AppVersionStatus.failed,
           errorMessage: error.toString(),
         ),
       );
-      _log('Version check failed: $error');
+      _logger.error(
+        'Version check failed: $error',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
-  }
-
-  void _log(String message) {
-    debugPrint('[AppVersionCubit] $message');
   }
 }

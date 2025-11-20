@@ -60,7 +60,7 @@ class TodayFlowSection extends StatelessWidget {
       length: tabs.length,
       child: Builder(
         builder: (context) {
-          final controller = DefaultTabController.of(context)!;
+          final controller = DefaultTabController.of(context);
           return SectionContainer(
             title: 'Flow',
             colors: colors,
@@ -70,8 +70,8 @@ class TodayFlowSection extends StatelessWidget {
                   controller: controller,
                   tabs: tabs.map((tab) => Tab(text: tab.label)).toList(),
                   labelColor: colors.icon,
-                  indicatorColor: colors.accent ?? colors.icon,
-                  unselectedLabelColor: colors.icon.withOpacity(0.6),
+                  indicatorColor: colors.accent,
+                  unselectedLabelColor: colors.icon.withValues(alpha: 0.6),
                 ),
                 SizedBox(height: spacing?.sm ?? 8),
                 AnimatedBuilder(

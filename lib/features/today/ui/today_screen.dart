@@ -18,9 +18,14 @@ import '../../../core/ui/home_bottom_nav.dart';
 import '../../flow/domain/flow_chore_outcome.dart';
 import '../../profile_settings/ui/profile_settings_provider.dart';
 import '../../auth/bloc/auth_bloc.dart';
+import '../../../../core/di/locator.dart';
+import '../../../../core/logging/logger.dart';
+import '../../../../core/logging/debug_logger.dart';
 
 class TodayScreen extends StatelessWidget {
   const TodayScreen({super.key});
+
+  static const _shareLogTag = 'TodayShare';
 
   String _partOfDay(DateTime now) {
     final hour = now.hour;
@@ -37,6 +42,8 @@ class TodayScreen extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final sizes = theme.extension<AppSizes>();
     final sections = theme.extension<KinlySections>()!;
+    final logger =
+        sl.isRegistered<Logger>() ? sl<Logger>() : const DebugLogger();
 
     final now = DateTime.now();
     final partOfDay = _partOfDay(now);
@@ -145,10 +152,16 @@ class TodayScreen extends StatelessWidget {
                       TodayShareSection(
                         expenses: expenses,
                         onExpenseTap: (expense) {
-                          debugPrint('Tapped expense: ${expense.title}');
+                          logger.debug(
+                            'Tapped expense: ${expense.title}',
+                            tag: _shareLogTag,
+                          );
                         },
                         onSeeAllTap: () {
-                          debugPrint('See all expenses');
+                          logger.info(
+                            'See all expenses tapped',
+                            tag: _shareLogTag,
+                          );
                         },
                       ),
                     ],
