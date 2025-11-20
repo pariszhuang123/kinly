@@ -1,4 +1,6 @@
-enum LeaveOutcome { leftOk, homeDeactivated }
+import 'enums/leave_outcome.dart';
+
+export 'enums/leave_outcome.dart';
 
 class LeaveResult {
   final LeaveOutcome outcome;

@@ -1,45 +1,10 @@
-// models.dart
+import 'enums/chore_completion_status.dart';
+import 'enums/chore_recurrence.dart';
+import 'enums/chore_state.dart';
 
-// -----------------------------------------------------------------------------
-// Enums: recurrence + state
-// -----------------------------------------------------------------------------
-
-enum ChoreRecurrence {
-  none('none'),
-  daily('daily'),
-  weekly('weekly'),
-  every2Weeks('every_2_weeks'),
-  monthly('monthly'),
-  every2Months('every_2_months'),
-  annual('annual');
-
-  const ChoreRecurrence(this.wireValue);
-  final String wireValue;
-}
-
-extension ChoreRecurrenceWire on ChoreRecurrence {
-  static ChoreRecurrence fromWire(String? wire) {
-    if (wire == null) return ChoreRecurrence.none;
-    return ChoreRecurrence.values.firstWhere(
-      (value) => value.wireValue == wire,
-      orElse: () => ChoreRecurrence.none,
-    );
-  }
-}
-
-enum ChoreState { draft, active, completed, cancelled }
-
-extension ChoreStateWire on ChoreState {
-  String get wireValue => name;
-
-  static ChoreState fromWire(String? wire) {
-    if (wire == null) return ChoreState.draft;
-    return ChoreState.values.firstWhere(
-      (value) => value.wireValue == wire,
-      orElse: () => ChoreState.draft,
-    );
-  }
-}
+export 'enums/chore_completion_status.dart';
+export 'enums/chore_recurrence.dart';
+export 'enums/chore_state.dart';
 
 // -----------------------------------------------------------------------------
 // Core entity: Chore (matches public.chores row)
@@ -258,24 +223,6 @@ class ChoreDetails {
 // -----------------------------------------------------------------------------
 // Completion: chore_complete result
 // -----------------------------------------------------------------------------
-
-enum ChoreCompletionStatus {
-  nonRecurringCompleted('non_recurring_completed'),
-  alreadyCompletedForCycle('already_completed_for_cycle'),
-  // Note: SQL returns 'recurring completed' with a space.
-  recurringCompleted('recurring completed');
-
-  const ChoreCompletionStatus(this.wireValue);
-  final String wireValue;
-
-  static ChoreCompletionStatus fromWire(String? wire) {
-    if (wire == null) return ChoreCompletionStatus.nonRecurringCompleted;
-    return ChoreCompletionStatus.values.firstWhere(
-      (value) => value.wireValue == wire,
-      orElse: () => ChoreCompletionStatus.nonRecurringCompleted,
-    );
-  }
-}
 
 /// Matches the JSON returned by public.chore_complete(_chore_id uuid)
 class ChoreCompletionResult {

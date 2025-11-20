@@ -1,7 +1,9 @@
-enum LogLevel { debug, info, warning, error }
+import 'enums/log_level.dart';
 
-/// Small abstraction around log output so we can swap sinks later (Crashlytics,
-/// remote logging, etc.) without updating every call site.
+export 'enums/log_level.dart';
+
+/// Small abstraction around log output so we can swap sinks later
+/// (Crashlytics, remote logging, etc.) without updating every call site.
 abstract class Logger {
   void log(
     LogLevel level,
@@ -44,13 +46,4 @@ abstract class Logger {
         error: error,
         stackTrace: stackTrace,
       );
-}
-
-extension LogLevelX on LogLevel {
-  String get label => switch (this) {
-        LogLevel.debug => 'DEBUG',
-        LogLevel.info => 'INFO',
-        LogLevel.warning => 'WARN',
-        LogLevel.error => 'ERROR',
-      };
 }

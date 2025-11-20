@@ -2,17 +2,11 @@ import 'dart:convert';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// Error codes emitted by database RPCs via public.api_error/api_assert.
-/// Keep these in sync with SQL migrations.
-enum JoinErrorCode {
-  invalidCode,
-  inactiveInvite,
-  alreadyInOtherHome,
-  paywallLimitActiveMembers,
-  unauthorized,
-  forbidden,
-  unknown,
-}
+import 'enums/chore_error_code.dart';
+import 'enums/home_error_codes.dart';
+
+export 'enums/chore_error_code.dart';
+export 'enums/home_error_codes.dart';
 
 class HomeJoinException implements Exception {
   final JoinErrorCode code;
@@ -23,13 +17,6 @@ class HomeJoinException implements Exception {
 
   @override
   String toString() => 'HomeJoinException($code): $message';
-}
-
-enum CreateHomeErrorCode {
-  alreadyInOtherHome,
-  unauthorized,
-  forbidden,
-  unknown,
 }
 
 class HomeCreateException implements Exception {
@@ -444,9 +431,6 @@ class _Parsed {
   _Parsed({required this.code, required this.message, required this.details});
 }
 
-// Rotate
-enum RotateErrorCode { forbidden, unauthorized, unknown }
-
 class InviteRotateException implements Exception {
   final RotateErrorCode code;
   final String message;
@@ -456,9 +440,6 @@ class InviteRotateException implements Exception {
   String toString() => 'InviteRotateException($code): $message';
 }
 
-// Revoke
-enum RevokeErrorCode { forbidden, unauthorized, unknown }
-
 class InviteRevokeException implements Exception {
   final RevokeErrorCode code;
   final String message;
@@ -466,16 +447,6 @@ class InviteRevokeException implements Exception {
   InviteRevokeException(this.code, this.message, {this.details});
   @override
   String toString() => 'InviteRevokeException($code): $message';
-}
-
-// Transfer
-enum TransferErrorCode {
-  invalidNewOwner,
-  newOwnerNotMember,
-  forbidden,
-  stateChangedRetry,
-  unauthorized,
-  unknown,
 }
 
 class TransferOwnerException implements Exception {
@@ -487,16 +458,6 @@ class TransferOwnerException implements Exception {
   String toString() => 'TransferOwnerException($code): $message';
 }
 
-// Leave
-enum LeaveErrorCode {
-  notMember,
-  ownerMustTransferFirst,
-  stateChangedRetry,
-  forbidden,
-  unauthorized,
-  unknown,
-}
-
 class LeaveException implements Exception {
   final LeaveErrorCode code;
   final String message;
@@ -504,23 +465,6 @@ class LeaveException implements Exception {
   LeaveException(this.code, this.message, {this.details});
   @override
   String toString() => 'LeaveException($code): $message';
-}
-
-enum ChoreErrorCode {
-  invalidInput,
-  invalidName,
-  invalidStart,
-  invalidState,
-  invalidMediaPath,
-  assigneeNotMember,
-  alreadyFinalized,
-  paywallActiveCap,
-  paywallMediaCap,
-  notFound,
-  notHomeMember,
-  forbidden,
-  unauthorized,
-  unknown,
 }
 
 class ChoreException implements Exception {

@@ -123,6 +123,12 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - No public endpoints for invites or joins.
 - No writes outside approved RPCs.
 
+## Shared Enums
+- Domain-owned/shared enums live in `lib/core/<domain>/enums/` (e.g., `lib/core/homes/enums/leave_outcome.dart`).
+- Keep BLoC/UI-only enums next to the widget/state files that own them; only promote to `lib/core/.../enums` if they are part of a cross-agent contract.
+- Repositories and Supabase/DB co-own the enums under `lib/core/**/enums`; update both sides when contract values change.
+- Run `dart run tool/check_enums.dart` locally and in CI; it fails if a `lib/core/**` file defines an enum outside an `enums/` folder.
+
 ## Logging Standard
 - Ownership: Planner defines taxonomy + severity expectations, Docs maintains this section, Release verifies sinks in CI.
 - Implementation: UI/BLoC/Repositories resolve `Logger` from `get_it` (or inject it) and call `debug/info/warn/error`.

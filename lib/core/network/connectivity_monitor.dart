@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
-enum ConnectivityStatus { unknown, online, offline }
+import 'enums/connectivity_status.dart';
+
+export 'enums/connectivity_status.dart';
 
 class ConnectivityMonitor {
   ConnectivityMonitor({

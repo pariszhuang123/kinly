@@ -52,6 +52,9 @@ jobs:
       - name: Check UI strings localized
         run: dart run tool/check_i18n.dart
 
+      - name: Check shared enums grouped
+        run: dart run tool/check_enums.dart
+
   contracts_drift:
     name: Contracts Drift (Local DB)
     needs: [lint_test]
