@@ -1101,6 +1101,14 @@ REVOKE ALL ON FUNCTION public.expenses_get_created_by_me(
   uuid                 -- p_home_id
 ) FROM PUBLIC, anon, authenticated;
 
+REVOKE ALL ON FUNCTION public._expenses_prepare_split_buffer(
+  uuid,
+  uuid,
+  bigint,
+  public.expense_split_type,
+  uuid[],
+  jsonb
+) FROM PUBLIC, anon, authenticated;
 
 -- 2) Expose to the roles that should be able to call them
 GRANT EXECUTE ON FUNCTION public.expenses_create(
@@ -1126,3 +1134,4 @@ GRANT EXECUTE ON FUNCTION public.expenses_get_current_owed(
 GRANT EXECUTE ON FUNCTION public.expenses_get_created_by_me(
   uuid
 ) TO authenticated;
+
