@@ -31,7 +31,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(count) => "See all (${count})";
 
-  static String m5(homeId, role) => "Current home: ${homeId} • Role: ${role}";
+  static String m5(count) =>
+      "${Intl.plural(count, one: '${count} payment pending', other: '${count} payments pending')}";
+
+  static String m6(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -482,6 +485,38 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Choose how you want to split this expense.",
     ),
+    "shareEditClose": MessageLookupByLibrary.simpleMessage("Close"),
+    "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t load that draft.",
+    ),
+    "shareEditNotAllowed": MessageLookupByLibrary.simpleMessage(
+      "This share can’t be edited anymore because it\'s already locked.",
+    ),
+    "shareEditSplitsLocked": MessageLookupByLibrary.simpleMessage(
+      "Splits are locked because someone already paid. You can still update the description and notes.",
+    ),
+    "shareEditSubmit": MessageLookupByLibrary.simpleMessage("Update"),
+    "shareEditSuccess": MessageLookupByLibrary.simpleMessage("Share updated."),
+    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Finish draft"),
+    "shareOwedDetailEmpty": MessageLookupByLibrary.simpleMessage(
+      "You\'re all caught up with this person.",
+    ),
+    "shareOwedDetailError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t mark that share paid. Try again.",
+    ),
+    "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage("Mark as paid"),
+    "shareOwedDetailSelectionLabel": MessageLookupByLibrary.simpleMessage(
+      "Select an expense to continue.",
+    ),
+    "shareOwedDetailSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Select the expense you just settled.",
+    ),
+    "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage(
+      "Payment recorded.",
+    ),
+    "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage(
+      "Pending payment",
+    ),
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage(
       "Add task (Flow)",
     ),
@@ -508,7 +543,17 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
+    "todayShareActiveSubtitle": m5,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("upcoming"),
+    "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Finish the split to publish this expense.",
+    ),
+    "todayShareEmptyState": MessageLookupByLibrary.simpleMessage(
+      "Nothing to see here yet. As you log expenses or start drafts, they\'ll appear in Share.",
+    ),
+    "todayShareError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t refresh Share right now.",
+    ),
     "todayShareSampleGroceries": MessageLookupByLibrary.simpleMessage(
       "Shared groceries from yesterday",
     ),
@@ -522,7 +567,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayShareSeeAll": MessageLookupByLibrary.simpleMessage(
       "See all expenses",
     ),
-    "today_home_details": m5,
+    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Active"),
+    "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
+    "today_home_details": m6,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",
     ),

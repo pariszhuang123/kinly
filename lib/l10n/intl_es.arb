@@ -121,6 +121,33 @@
   "todayShareSampleGroceries": "Compras compartidas de ayer",
   "todayShareSampleRent": "Recordatorio de renta pronto",
   "todayShareSampleInternet": "Factura de internet esta semana",
+  "todayShareEmptyState": "Aún no hay nada aquí. Cuando registres gastos o empieces borradores, aparecerán en Share.",
+  "todayShareTabActive": "Activas",
+  "todayShareTabDrafts": "Borradores",
+  "todayShareError": "No pudimos actualizar Share en este momento.",
+  "todayShareActiveSubtitle": "{count, plural, one {{count} pago pendiente} other {{count} pagos pendientes}}",
+  "@todayShareActiveSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayShareDraftSubtitle": "Completa la división para publicar este gasto.",
+  "shareOwedDetailTitle": "Pago pendiente",
+  "shareOwedDetailSubtitle": "Selecciona el gasto que acabas de pagar.",
+  "shareOwedDetailEmpty": "Estás al día con esta persona.",
+  "shareOwedDetailSelectionLabel": "Selecciona un gasto para continuar.",
+  "shareOwedDetailPaid": "Marcar como pagado",
+  "shareOwedDetailSuccess": "Pago registrado.",
+  "shareOwedDetailError": "No pudimos marcar ese pago. Inténtalo de nuevo.",
+  "shareEditTitle": "Terminar borrador",
+  "shareEditSubmit": "Actualizar",
+  "shareEditSuccess": "Gasto actualizado.",
+  "shareEditLoadError": "No pudimos cargar ese borrador.",
+  "shareEditNotAllowed": "Este gasto ya no se puede editar porque está bloqueado.",
+  "shareEditSplitsLocked": "Las divisiones están bloqueadas porque alguien ya pagó. Aún puedes actualizar la descripción y las notas.",
+  "shareEditClose": "Cerrar",
   "shareCreateTitle": "Crear gasto compartido",
   "shareCreateDescriptionLabel": "DescripciA?n",
   "shareCreateDescriptionHint": "p. ej. Compra de supermercado",

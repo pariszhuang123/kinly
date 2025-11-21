@@ -95,7 +95,11 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
         final s = S.of(context);
 
         return Scaffold(
-          appBar: AppBar(title: Text(s.shareCreateTitle)),
+          appBar: AppBar(
+            title: Text(
+              state.isEditing ? s.shareEditTitle : s.shareCreateTitle,
+            ),
+          ),
           body: SafeArea(
             child: Padding(
               padding: EdgeInsets.all(spacing.lg),
@@ -171,6 +175,7 @@ class _ShareCreateForm extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final showValidation = state.showValidationErrors;
     final customSummary = state.evaluateCustomSplit();
+    final locked = state.isAmountLocked;
 
     return ListView(
       children: [
@@ -193,6 +198,7 @@ class _ShareCreateForm extends StatelessWidget {
         TextField(
           controller: amountController,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          enabled: !locked,
           decoration: InputDecoration(
             labelText: s.shareCreateAmountLabel,
             hintText: s.shareCreateAmountHint,
@@ -228,12 +234,15 @@ class _ShareCreateForm extends StatelessWidget {
               state.form.splitMode != null
                   ? {state.form.splitMode!}
                   : <ShareSplitMode>{},
-          onSelectionChanged: (selection) {
-            if (selection.isEmpty) return;
-            context.read<ShareCreateBloc>().add(
-              ShareCreateSplitModeChanged(selection.first),
-            );
-          },
+          onSelectionChanged:
+              locked
+                  ? null
+                  : (selection) {
+                    if (selection.isEmpty) return;
+                    context.read<ShareCreateBloc>().add(
+                      ShareCreateSplitModeChanged(selection.first),
+                    );
+                  },
         ),
         SizedBox(height: spacing.lg),
         Text(
@@ -255,6 +264,7 @@ class _ShareCreateForm extends StatelessWidget {
             spacing,
             customSummary,
             showValidation,
+            locked,
           ),
         SizedBox(height: spacing.lg),
         TextField(
@@ -282,7 +292,8 @@ class _ShareCreateForm extends StatelessWidget {
                     )
                     : null,
             onPressed:
-                state.isSubmitting
+                state.isSubmitting ||
+                        (state.isEditing && state.form.splitMode == null)
                     ? null
                     : () => context.read<ShareCreateBloc>().add(
                       const ShareCreateSubmitted(),
@@ -294,7 +305,9 @@ class _ShareCreateForm extends StatelessWidget {
                       width: 20,
                       child: KinlyLoader(size: 20),
                     )
-                    : Text(s.shareCreateSubmit),
+                    : Text(
+                      state.isEditing ? s.shareEditSubmit : s.shareCreateSubmit,
+                    ),
           ),
         ),
       ],
@@ -307,6 +320,7 @@ class _ShareCreateForm extends StatelessWidget {
     Spacing spacing,
     ShareCustomSplitSummary customSummary,
     bool showValidation,
+    bool locked,
   ) {
     final theme = Theme.of(context);
     final s = S.of(context);
@@ -337,14 +351,25 @@ class _ShareCreateForm extends StatelessWidget {
               participant: participant,
               controller: controller,
               selected: isSelected,
+              enabled: !locked && isSelected,
               onToggled:
-                  (value) => context.read<ShareCreateBloc>().add(
-                    ShareCreateParticipantToggled(participant.userId, value),
-                  ),
+                  locked
+                      ? null
+                      : (value) => context.read<ShareCreateBloc>().add(
+                        ShareCreateParticipantToggled(
+                          participant.userId,
+                          value,
+                        ),
+                      ),
               onAmountChanged:
-                  (value) => context.read<ShareCreateBloc>().add(
-                    ShareCreateCustomAmountChanged(participant.userId, value),
-                  ),
+                  locked
+                      ? null
+                      : (value) => context.read<ShareCreateBloc>().add(
+                        ShareCreateCustomAmountChanged(
+                          participant.userId,
+                          value,
+                        ),
+                      ),
             );
           }),
           if (errorText != null)
@@ -364,6 +389,16 @@ class _ShareCreateForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (locked)
+          Padding(
+            padding: EdgeInsets.only(bottom: spacing.xs),
+            child: Text(
+              s.shareEditSplitsLocked,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
         Wrap(
           spacing: spacing.sm,
           runSpacing: spacing.sm,
@@ -376,12 +411,14 @@ class _ShareCreateForm extends StatelessWidget {
                   label: Text(participant.displayName),
                   selected: isSelected,
                   onSelected:
-                      (selected) => context.read<ShareCreateBloc>().add(
-                        ShareCreateParticipantToggled(
-                          participant.userId,
-                          selected,
-                        ),
-                      ),
+                      locked
+                          ? null
+                          : (selected) => context.read<ShareCreateBloc>().add(
+                            ShareCreateParticipantToggled(
+                              participant.userId,
+                              selected,
+                            ),
+                          ),
                   avatar: KinlyCircleAvatar(
                     avatarUrl: participant.avatarUrl,
                     radius: 16,
@@ -391,7 +428,8 @@ class _ShareCreateForm extends StatelessWidget {
                 );
               }).toList(),
         ),
-        if (showValidation &&
+        if (!locked &&
+            showValidation &&
             splitMode == ShareSplitMode.equal &&
             !state.hasEqualSelection)
           Padding(
@@ -431,6 +469,7 @@ class _CustomSplitRow extends StatelessWidget {
     required this.participant,
     required this.controller,
     required this.selected,
+    required this.enabled,
     required this.onToggled,
     required this.onAmountChanged,
   });
@@ -438,8 +477,9 @@ class _CustomSplitRow extends StatelessWidget {
   final ShareParticipant participant;
   final TextEditingController controller;
   final bool selected;
-  final ValueChanged<bool> onToggled;
-  final ValueChanged<String> onAmountChanged;
+  final bool enabled;
+  final ValueChanged<bool>? onToggled;
+  final ValueChanged<String>? onAmountChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -458,7 +498,8 @@ class _CustomSplitRow extends StatelessWidget {
         children: [
           Checkbox(
             value: selected,
-            onChanged: (value) => onToggled(value ?? false),
+            onChanged:
+                enabled ? (value) => onToggled?.call(value ?? false) : null,
           ),
           KinlyCircleAvatar(avatarUrl: participant.avatarUrl, radius: 20),
           SizedBox(width: spacing.sm),
@@ -472,7 +513,7 @@ class _CustomSplitRow extends StatelessWidget {
             width: 110,
             child: TextField(
               controller: controller,
-              enabled: selected,
+              enabled: enabled,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),

@@ -58,7 +58,7 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pump();
 
-    expect(find.byType(KinlyLoader), findsOneWidget);
+    expect(find.byType(KinlyLoader), findsWidgets);
   });
 
   testWidgets('renders Flow section when tasks are available', (tester) async {
@@ -72,6 +72,8 @@ void main() {
           ),
         ],
         draftTasks: const [],
+        shareOwed: const [],
+        shareDrafts: const [],
       ),
     );
 
@@ -84,7 +86,14 @@ void main() {
   testWidgets('shows empty state card when no tasks', (tester) async {
     when(
       () => todayBloc.state,
-    ).thenReturn(const TodayState.loaded(activeTasks: [], draftTasks: []));
+    ).thenReturn(
+      const TodayState.loaded(
+        activeTasks: [],
+        draftTasks: [],
+        shareOwed: [],
+        shareDrafts: [],
+      ),
+    );
 
     await tester.pumpWidget(buildApp());
     await tester.pump();

@@ -12,15 +12,14 @@ class ShareCreateForm extends Equatable {
     required this.splitMode,
     required Set<String> selectedParticipantIds,
     required Map<String, String> customAmountInputs,
-  }) :
-        selectedParticipantIds = Set.unmodifiable(
-          selectedParticipantIds is LinkedHashSet<String>
-              ? selectedParticipantIds
-              : LinkedHashSet<String>.from(selectedParticipantIds),
-        ),
-        customAmountInputs = Map.unmodifiable(
-          Map<String, String>.from(customAmountInputs),
-        );
+  }) : selectedParticipantIds = Set.unmodifiable(
+         selectedParticipantIds is LinkedHashSet<String>
+             ? selectedParticipantIds
+             : LinkedHashSet<String>.from(selectedParticipantIds),
+       ),
+       customAmountInputs = Map.unmodifiable(
+         Map<String, String>.from(customAmountInputs),
+       );
 
   factory ShareCreateForm.initial() {
     return ShareCreateForm(
@@ -58,8 +57,7 @@ class ShareCreateForm extends Equatable {
           selectedParticipantIds != null
               ? LinkedHashSet<String>.from(selectedParticipantIds)
               : this.selectedParticipantIds,
-      customAmountInputs:
-          customAmountInputs ?? this.customAmountInputs,
+      customAmountInputs: customAmountInputs ?? this.customAmountInputs,
     );
   }
 
@@ -114,8 +112,9 @@ class ShareCreateForm extends Equatable {
   @override
   List<Object?> get props {
     final selection = selectedParticipantIds.toList()..sort();
-    final customEntries = customAmountInputs.entries.toList()
-      ..sort((a, b) => a.key.compareTo(b.key));
+    final customEntries =
+        customAmountInputs.entries.toList()
+          ..sort((a, b) => a.key.compareTo(b.key));
     return [
       description,
       amountInput,

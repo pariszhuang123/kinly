@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(32);
+SELECT plan(37);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -621,6 +621,72 @@ SELECT is(
   0,
   'Active expense without payments reports zero paid shares'
 );
+
+-- expenses_get_for_edit returns detail payload for creator
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'creator'),
+  true
+);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
+WITH payload AS (
+  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')) AS body
+)
+SELECT is(
+  (SELECT body->>'description' FROM payload),
+  'Shared dinner',
+  'expenses_get_for_edit returns description'
+);
+
+WITH payload AS (
+  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')) AS body
+)
+SELECT is(
+  (SELECT jsonb_array_length(body->'splits') FROM payload),
+  2,
+  'expenses_get_for_edit includes split rows'
+);
+
+WITH payload AS (
+  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')) AS body
+)
+SELECT ok(
+  (SELECT (body->>'amount_locked')::boolean = false FROM payload),
+  'Draft expense leaves amount_locked=false'
+);
+
+WITH payload AS (
+  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')) AS body
+)
+SELECT ok(
+  (SELECT (body->>'amount_locked')::boolean = true FROM payload),
+  'Active expense with paid shares locks amount editing'
+);
+
+-- Non-creator cannot call expenses_get_for_edit
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
+  true
+);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+SELECT pg_temp.expect_api_error(
+  format($sql$
+    SELECT public.expenses_get_for_edit('%s');
+  $sql$,
+    (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
+  ),
+  'NOT_CREATOR',
+  'Non-creators cannot fetch expenses_get_for_edit'
+);
+
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'creator'),
+  true
+);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT * FROM finish();
 ROLLBACK;

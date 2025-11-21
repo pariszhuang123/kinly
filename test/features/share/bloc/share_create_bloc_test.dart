@@ -20,11 +20,18 @@ void main() {
   late _MockExpensesRepository expensesRepository;
   late _MockHomeRepository homeRepository;
 
-  ShareCreateBloc buildBloc() {
+  ShareCreateBloc buildBloc({
+    ShareCreateForm? initialForm,
+    String? editingExpenseId,
+    bool isAmountLocked = false,
+  }) {
     return ShareCreateBloc(
       homeId: 'home-1',
       expensesRepository: expensesRepository,
       homeRepository: homeRepository,
+      initialForm: initialForm,
+      editingExpenseId: editingExpenseId,
+      amountLocked: isAmountLocked,
     );
   }
 
@@ -58,6 +65,9 @@ void main() {
   ShareCreateState seededState({
     ShareCreateForm? form,
     List<ShareParticipant>? participants,
+    bool isEditing = false,
+    String? editingExpenseId,
+    bool isAmountLocked = false,
   }) {
     final baseParticipants =
         participants ??
@@ -78,7 +88,11 @@ void main() {
           splitMode: ShareSplitMode.equal,
           selectedParticipantIds: {'member_a', 'member_b', 'member_self'},
         );
-    return ShareCreateState.initial().copyWith(
+    return ShareCreateState.initial(
+      isEditing: isEditing,
+      editingExpenseId: editingExpenseId,
+      isAmountLocked: isAmountLocked,
+    ).copyWith(
       isLoading: false,
       participants: baseParticipants,
       form: baseForm,
@@ -113,10 +127,9 @@ void main() {
         isLoading: true,
         clearLoadError: true,
       );
-      final loadedForm =
-          ShareCreateForm.initial().copyWith(
-            selectedParticipantIds: {'member_a', 'member_b', 'member_self'},
-          );
+      final loadedForm = ShareCreateForm.initial().copyWith(
+        selectedParticipantIds: {'member_a', 'member_b', 'member_self'},
+      );
       final loadedParticipants = members
           .map(
             (m) => ShareParticipant(
@@ -136,10 +149,7 @@ void main() {
     },
     verify: (_) {
       verify(
-        () => homeRepository.listActiveMembers(
-          'home-1',
-          excludeSelf: false,
-        ),
+        () => homeRepository.listActiveMembers('home-1', excludeSelf: false),
       ).called(1);
     },
   );
@@ -222,9 +232,7 @@ void main() {
       return _emptySeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [
-      _emptySeed.copyWith(showValidationErrors: true),
-    ],
+    expect: () => [_emptySeed.copyWith(showValidationErrors: true)],
   );
 
   late ShareCreateState _equalSeed;
@@ -307,19 +315,19 @@ void main() {
       return _customSeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [
-      _customSeed.copyWith(showValidationErrors: true),
-    ],
+    expect: () => [_customSeed.copyWith(showValidationErrors: true)],
     verify: (_) {
-      verifyNever(() => expensesRepository.create(
-        homeId: any(named: 'homeId'),
-        amountCents: any(named: 'amountCents'),
-        description: any(named: 'description'),
-        notes: any(named: 'notes'),
-        splitType: any(named: 'splitType'),
-        memberIds: any(named: 'memberIds'),
-        customSplits: any(named: 'customSplits'),
-      ));
+      verifyNever(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+        ),
+      );
     },
   );
 
@@ -343,10 +351,7 @@ void main() {
           customSplits: any(named: 'customSplits'),
         ),
       ).thenThrow(
-        const ExpenseException(
-          ExpenseErrorCode.invalidAmount,
-          'invalid',
-        ),
+        const ExpenseException(ExpenseErrorCode.invalidAmount, 'invalid'),
       );
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
@@ -364,6 +369,176 @@ void main() {
         submissionErrorTick: submitting.submissionErrorTick + 1,
       );
       return [submitting, failure];
+    },
+  );
+
+  late ShareCreateState _editSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'requires split selection when editing',
+    build: () => buildBloc(editingExpenseId: 'expense-draft'),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Draft expense',
+        amountInput: '15.00',
+      );
+      _editSeed = seededState(
+        form: form,
+        isEditing: true,
+        editingExpenseId: 'expense-draft',
+      );
+      return _editSeed;
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () => [_editSeed.copyWith(showValidationErrors: true)],
+  );
+
+  late ShareCreateState _editSuccessSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'submits edit via repository when split provided',
+    build: () => buildBloc(editingExpenseId: 'expense-draft'),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Draft expense',
+        amountInput: '30.00',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_a', 'member_b'},
+      );
+      _editSuccessSeed = seededState(
+        form: form,
+        isEditing: true,
+        editingExpenseId: 'expense-draft',
+      );
+      return _editSuccessSeed;
+    },
+    setUp: () {
+      when(
+        () => expensesRepository.edit(
+          expenseId: any(named: 'expenseId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+        ),
+      ).thenAnswer(
+        (_) async => Expense(
+          id: 'expense-draft',
+          homeId: 'home-1',
+          createdByUserId: 'user-1',
+          status: ExpenseStatus.active,
+          splitType: ExpenseSplitType.equal,
+          amountCents: 3000,
+          description: 'Draft expense',
+          notes: null,
+          createdAt: DateTime.now().toUtc(),
+          updatedAt: DateTime.now().toUtc(),
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () {
+      final submitting = _editSuccessSeed.copyWith(
+        isSubmitting: true,
+        showValidationErrors: true,
+        clearSubmissionError: true,
+        clearSuccess: true,
+      );
+      final success = submitting.copyWith(
+        isSubmitting: false,
+        showValidationErrors: false,
+        successExpenseId: 'expense-draft',
+      );
+      return [submitting, success];
+    },
+    verify: (_) {
+      verify(
+        () => expensesRepository.edit(
+          expenseId: 'expense-draft',
+          amountCents: 3000,
+          description: 'Draft expense',
+          notes: null,
+          splitType: ExpenseSplitType.equal,
+          memberIds: ['member_a', 'member_b'],
+          customSplits: null,
+        ),
+      ).called(1);
+    },
+  );
+
+  late ShareCreateState _lockedSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'allows editing description when amount is locked',
+    build:
+        () => buildBloc(editingExpenseId: 'expense-paid', isAmountLocked: true),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Paid expense',
+        amountInput: '30.00',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_a', 'member_b'},
+      );
+      _lockedSeed = seededState(
+        form: form,
+        isEditing: true,
+        editingExpenseId: 'expense-paid',
+        isAmountLocked: true,
+      );
+      return _lockedSeed;
+    },
+    setUp: () {
+      when(
+        () => expensesRepository.edit(
+          expenseId: any(named: 'expenseId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+        ),
+      ).thenAnswer(
+        (_) async => Expense(
+          id: 'expense-paid',
+          homeId: 'home-1',
+          createdByUserId: 'user-1',
+          status: ExpenseStatus.active,
+          splitType: ExpenseSplitType.equal,
+          amountCents: 3000,
+          description: 'Paid expense updated',
+          notes: 'note',
+          createdAt: DateTime.now().toUtc(),
+          updatedAt: DateTime.now().toUtc(),
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () {
+      final submitting = _lockedSeed.copyWith(
+        isSubmitting: true,
+        showValidationErrors: true,
+        clearSubmissionError: true,
+        clearSuccess: true,
+      );
+      final success = submitting.copyWith(
+        isSubmitting: false,
+        showValidationErrors: false,
+        successExpenseId: 'expense-paid',
+      );
+      return [submitting, success];
+    },
+    verify: (_) {
+      verify(
+        () => expensesRepository.edit(
+          expenseId: 'expense-paid',
+          amountCents: 3000,
+          description: 'Paid expense',
+          notes: null,
+          splitType: null,
+          memberIds: null,
+          customSplits: null,
+        ),
+      ).called(1);
     },
   );
 }

@@ -23,6 +23,7 @@ import '../../features/splash/ui/splash_screen.dart';
 import '../../features/version_gating/bloc/app_version_cubit.dart';
 import '../../features/version_gating/ui/force_update_screen.dart';
 import '../../features/share/ui/share_create_provider.dart';
+import '../../features/share/ui/share_edit_provider.dart';
 
 class AppRoutes {
   static const splash = '/';
@@ -38,12 +39,15 @@ class AppRoutes {
   static const flowChoreEdit = '/flow/chore/:choreId';
   static const flowChoreDetail = '/flow/chore/:choreId/detail';
   static const shareCreate = '/share/new';
+  static const shareDraftEdit = '/share/:expenseId/edit';
   static const profileSettings = '/settings/profile';
   static const profileIdentity = '/settings/profile/identity';
 
   static String flowChoreEditPath(String choreId) => '/flow/chore/$choreId';
   static String flowChoreDetailPath(String choreId) =>
       '/flow/chore/$choreId/detail';
+  static String shareDraftEditPath(String expenseId) =>
+      '/share/$expenseId/edit';
 }
 
 GoRouter createRouter({
@@ -153,6 +157,7 @@ GoRouter createRouter({
             homeId: homeId,
             choresRepository: sl<ChoresRepository>(),
             profileRepository: sl<ProfileRepository>(),
+            expensesRepository: sl<ExpensesRepository>(),
           );
         },
       ),
@@ -237,6 +242,23 @@ GoRouter createRouter({
           }
           return ShareCreateProvider(
             homeId: membership.homeId,
+            expensesRepository: sl<ExpensesRepository>(),
+            homeRepository: sl<HomeRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.shareDraftEdit,
+        name: 'shareDraftEdit',
+        builder: (_, state) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Share routes require an active membership.');
+          }
+          final expenseId = state.pathParameters['expenseId']!;
+          return ShareEditProvider(
+            homeId: membership.homeId,
+            expenseId: expenseId,
             expensesRepository: sl<ExpensesRepository>(),
             homeRepository: sl<HomeRepository>(),
           );

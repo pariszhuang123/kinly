@@ -1,65 +1,314 @@
 import 'package:flutter/material.dart';
-import '../../../../core/ui/section_container.dart';
-import '../../../../core/ui/section_list_card.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../core/ui/kinly_loader.dart';
+import '../../../../core/ui/section_container.dart';
 import '../../../../generated/l10n.dart';
+import '../../bloc/today_bloc.dart';
 import '../../domain/models.dart';
 
-class TodayShareSection extends StatelessWidget {
-  final List<TodayShareExpense> expenses;
-  final void Function(TodayShareExpense) onExpenseTap;
-  final VoidCallback onSeeAllTap;
+class TodayShareSectionContainer extends StatelessWidget {
+  const TodayShareSectionContainer({
+    super.key,
+    required this.onOwedTap,
+    required this.onDraftTap,
+  });
 
+  final void Function(TodayShareOwed) onOwedTap;
+  final void Function(TodayShareDraft) onDraftTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TodayBloc, TodayState>(
+      buildWhen:
+          (previous, current) =>
+              previous.shareOwed != current.shareOwed ||
+              previous.shareDrafts != current.shareDrafts ||
+              previous.shareErrorMessage != current.shareErrorMessage ||
+              previous.isLoading != current.isLoading,
+      builder: (context, state) {
+        if (state.isLoading && !state.hasShareContent) {
+          return const Center(child: KinlyLoader(size: 40));
+        }
+        if (!state.hasShareContent) {
+          return _ShareEmptyState(message: S.of(context).todayShareEmptyState);
+        }
+        return TodayShareSection(
+          owed: state.shareOwed,
+          drafts: state.shareDrafts,
+          errorMessage: state.shareErrorMessage,
+          onOwedTap: onOwedTap,
+          onDraftTap: onDraftTap,
+        );
+      },
+    );
+  }
+}
+
+class TodayShareSection extends StatelessWidget {
   const TodayShareSection({
     super.key,
-    required this.expenses,
-    required this.onExpenseTap,
-    required this.onSeeAllTap,
+    required this.owed,
+    required this.drafts,
+    required this.onOwedTap,
+    required this.onDraftTap,
+    this.errorMessage,
   });
+
+  final List<TodayShareOwed> owed;
+  final List<TodayShareDraft> drafts;
+  final void Function(TodayShareOwed) onOwedTap;
+  final void Function(TodayShareDraft) onDraftTap;
+  final String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
     final sections = Theme.of(context).extension<KinlySections>()!;
     final spacing = Theme.of(context).extension<Spacing>();
     final s = S.of(context);
-    final visibleExpenses =
-        expenses.length > 3 ? expenses.take(3).toList() : expenses;
+    final colors = sections.share;
+    final tabs = _buildTabs(s);
+
+    if (tabs.isEmpty) {
+      return _ShareEmptyState(message: s.todayShareEmptyState);
+    }
+
+    final content = Column(
+      children: [
+        if (errorMessage != null)
+          Padding(
+            padding: EdgeInsets.only(bottom: spacing?.sm ?? 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                s.todayShareError,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: colors.icon),
+              ),
+            ),
+          ),
+        if (tabs.length == 1)
+          tabs.single.builder(context)
+        else
+          DefaultTabController(
+            length: tabs.length,
+            child: Builder(
+              builder: (context) {
+                final controller = DefaultTabController.of(context);
+                return Column(
+                  children: [
+                    TabBar(
+                      controller: controller,
+                      tabs: tabs.map((tab) => Tab(text: tab.label)).toList(),
+                      labelColor: colors.icon,
+                      indicatorColor: colors.accent,
+                      unselectedLabelColor: colors.icon.withValues(alpha: 0.6),
+                    ),
+                    SizedBox(height: spacing?.sm ?? 8),
+                    AnimatedBuilder(
+                      animation: controller,
+                      builder: (context, _) {
+                        final tab = tabs[controller.index];
+                        return tab.builder(context);
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+      ],
+    );
 
     return SectionContainer(
       title: s.todayShareSectionTitle,
-      colors: sections.share,
-      child: Column(
-        children: [
-          ...visibleExpenses.map(
-            (e) => SectionListCard(
-              colors: sections.share,
-              icon: Icons.savings_rounded,
-              title: e.title,
-              trailingText: '\$${e.amount.toStringAsFixed(2)}',
-              badgeText: e.isUpcoming ? s.todayShareBadgeUpcoming : null,
-              onTap: () => onExpenseTap(e),
-            ),
+      colors: colors,
+      child: content,
+    );
+  }
+
+  List<_ShareTab> _buildTabs(S s) {
+    final tabs = <_ShareTab>[];
+    if (owed.isNotEmpty) {
+      tabs.add(
+        _ShareTab(
+          label: s.todayShareTabActive,
+          builder: (context) => _OwedList(owed: owed, onTap: onOwedTap),
+        ),
+      );
+    }
+    if (drafts.isNotEmpty) {
+      tabs.add(
+        _ShareTab(
+          label: s.todayShareTabDrafts,
+          builder: (context) => _DraftList(drafts: drafts, onTap: onDraftTap),
+        ),
+      );
+    }
+    return tabs;
+  }
+}
+
+class _OwedList extends StatelessWidget {
+  const _OwedList({required this.owed, required this.onTap});
+
+  final List<TodayShareOwed> owed;
+  final void Function(TodayShareOwed) onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = Theme.of(context).extension<Spacing>()!;
+    final s = S.of(context);
+    return Column(
+      children: [
+        for (final entry in owed) ...[
+          _ShareCard(
+            leading: KinlyCircleAvatar(avatarUrl: entry.avatarUrl, radius: 20),
+            title: entry.displayName,
+            subtitle: s.todayShareActiveSubtitle(entry.items.length),
+            amountLabel: _formatCurrency(entry.totalOwedCents),
+            onTap: () => onTap(entry),
           ),
-          if (expenses.length > 3)
-            Padding(
-              padding: EdgeInsets.only(top: spacing?.sm ?? 8),
-              child: Align(
-                alignment: Alignment.center,
-                child: TextButton(
-                  onPressed: onSeeAllTap,
-                  child: Text(
-                    s.todayShareSeeAll,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: sections.share.icon,
-                      fontWeight: FontWeight.w500,
+          if (entry != owed.last) SizedBox(height: spacing.sm),
+        ],
+      ],
+    );
+  }
+}
+
+class _DraftList extends StatelessWidget {
+  const _DraftList({required this.drafts, required this.onTap});
+
+  final List<TodayShareDraft> drafts;
+  final void Function(TodayShareDraft) onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = Theme.of(context).extension<Spacing>()!;
+    final s = S.of(context);
+    return Column(
+      children: [
+        for (final draft in drafts) ...[
+          _ShareCard(
+            leading: Icon(
+              Icons.edit_note_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            title: draft.description,
+            subtitle: s.todayShareDraftSubtitle,
+            amountLabel: _formatCurrency(draft.amountCents),
+            onTap: () => onTap(draft),
+          ),
+          if (draft != drafts.last) SizedBox(height: spacing.sm),
+        ],
+      ],
+    );
+  }
+}
+
+class _ShareCard extends StatelessWidget {
+  const _ShareCard({
+    required this.leading,
+    required this.title,
+    required this.subtitle,
+    required this.amountLabel,
+    required this.onTap,
+  });
+
+  final Widget leading;
+  final String title;
+  final String subtitle;
+  final String amountLabel;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      borderRadius: BorderRadius.circular(16),
+      color: theme.colorScheme.surfaceContainerHighest,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              leading,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-        ],
+              const SizedBox(width: 12),
+              Text(
+                amountLabel,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
+}
+
+class _ShareEmptyState extends StatelessWidget {
+  const _ShareEmptyState({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final sections = Theme.of(context).extension<KinlySections>()!;
+    return SectionContainer(
+      title: S.of(context).todayShareSectionTitle,
+      colors: sections.share,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Center(
+          child: Text(
+            message,
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ShareTab {
+  const _ShareTab({required this.label, required this.builder});
+
+  final String label;
+  final WidgetBuilder builder;
+}
+
+String _formatCurrency(int amountCents) {
+  final formatter = NumberFormat.simpleCurrency(decimalDigits: 2);
+  return formatter.format(amountCents / 100.0);
 }

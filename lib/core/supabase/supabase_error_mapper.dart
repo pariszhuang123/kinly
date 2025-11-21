@@ -523,6 +523,12 @@ class SupabaseErrorMapper {
             parsed.message,
             details: parsed.details,
           );
+        case 'EDIT_NOT_ALLOWED':
+          return ExpenseException(
+            ExpenseErrorCode.editNotAllowed,
+            parsed.message,
+            details: parsed.details,
+          );
         case 'FORBIDDEN':
           return ExpenseException(
             ExpenseErrorCode.forbidden,

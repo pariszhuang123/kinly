@@ -824,6 +824,198 @@ class S {
     );
   }
 
+  /// `Nothing to see here yet. As you log expenses or start drafts, they'll appear in Share.`
+  String get todayShareEmptyState {
+    return Intl.message(
+      'Nothing to see here yet. As you log expenses or start drafts, they\'ll appear in Share.',
+      name: 'todayShareEmptyState',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active`
+  String get todayShareTabActive {
+    return Intl.message(
+      'Active',
+      name: 'todayShareTabActive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Drafts`
+  String get todayShareTabDrafts {
+    return Intl.message(
+      'Drafts',
+      name: 'todayShareTabDrafts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't refresh Share right now.`
+  String get todayShareError {
+    return Intl.message(
+      'We couldn\'t refresh Share right now.',
+      name: 'todayShareError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, one {{count} payment pending} other {{count} payments pending}}`
+  String todayShareActiveSubtitle(int count) {
+    return Intl.plural(
+      count,
+      one: '$count payment pending',
+      other: '$count payments pending',
+      name: 'todayShareActiveSubtitle',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Finish the split to publish this expense.`
+  String get todayShareDraftSubtitle {
+    return Intl.message(
+      'Finish the split to publish this expense.',
+      name: 'todayShareDraftSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending payment`
+  String get shareOwedDetailTitle {
+    return Intl.message(
+      'Pending payment',
+      name: 'shareOwedDetailTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select the expense you just settled.`
+  String get shareOwedDetailSubtitle {
+    return Intl.message(
+      'Select the expense you just settled.',
+      name: 'shareOwedDetailSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You're all caught up with this person.`
+  String get shareOwedDetailEmpty {
+    return Intl.message(
+      'You\'re all caught up with this person.',
+      name: 'shareOwedDetailEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select an expense to continue.`
+  String get shareOwedDetailSelectionLabel {
+    return Intl.message(
+      'Select an expense to continue.',
+      name: 'shareOwedDetailSelectionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mark as paid`
+  String get shareOwedDetailPaid {
+    return Intl.message(
+      'Mark as paid',
+      name: 'shareOwedDetailPaid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment recorded.`
+  String get shareOwedDetailSuccess {
+    return Intl.message(
+      'Payment recorded.',
+      name: 'shareOwedDetailSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't mark that share paid. Try again.`
+  String get shareOwedDetailError {
+    return Intl.message(
+      'We couldn\'t mark that share paid. Try again.',
+      name: 'shareOwedDetailError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finish draft`
+  String get shareEditTitle {
+    return Intl.message(
+      'Finish draft',
+      name: 'shareEditTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update`
+  String get shareEditSubmit {
+    return Intl.message('Update', name: 'shareEditSubmit', desc: '', args: []);
+  }
+
+  /// `Share updated.`
+  String get shareEditSuccess {
+    return Intl.message(
+      'Share updated.',
+      name: 'shareEditSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't load that draft.`
+  String get shareEditLoadError {
+    return Intl.message(
+      'We couldn\'t load that draft.',
+      name: 'shareEditLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This share can’t be edited anymore because it's already locked.`
+  String get shareEditNotAllowed {
+    return Intl.message(
+      'This share can’t be edited anymore because it\'s already locked.',
+      name: 'shareEditNotAllowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Splits are locked because someone already paid. You can still update the description and notes.`
+  String get shareEditSplitsLocked {
+    return Intl.message(
+      'Splits are locked because someone already paid. You can still update the description and notes.',
+      name: 'shareEditSplitsLocked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get shareEditClose {
+    return Intl.message('Close', name: 'shareEditClose', desc: '', args: []);
+  }
+
   /// `Create share`
   String get shareCreateTitle {
     return Intl.message(

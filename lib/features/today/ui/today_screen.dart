@@ -19,6 +19,8 @@ import '../../flow/domain/flow_chore_outcome.dart';
 import '../../../../core/di/locator.dart';
 import '../../../../core/logging/logger.dart';
 import '../../../../core/logging/debug_logger.dart';
+import '../../../../data/repositories/expenses_repository.dart';
+import '../../share/ui/share_owed_detail_screen.dart';
 
 class TodayScreen extends StatelessWidget {
   const TodayScreen({super.key});
@@ -45,22 +47,6 @@ class TodayScreen extends StatelessWidget {
 
     final now = DateTime.now();
     final partOfDay = _partOfDay(now);
-
-    // For now: expenses still mocked
-    final expenses = <TodayShareExpense>[
-      TodayShareExpense(
-        id: '1',
-        title: s.todayShareSampleGroceries,
-        amount: 28.50,
-      ),
-      TodayShareExpense(
-        id: '2',
-        title: s.todayShareSampleRent,
-        amount: 650,
-        isUpcoming: true,
-      ),
-      TodayShareExpense(id: '3', title: s.todayShareSampleInternet, amount: 75),
-    ];
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -100,20 +86,20 @@ class TodayScreen extends StatelessWidget {
 
                       SizedBox(height: spacing.lg),
 
-                      // Share section still static for now
-                      TodayShareSection(
-                        expenses: expenses,
-                        onExpenseTap: (expense) {
-                          logger.debug(
-                            'Tapped expense: ${expense.title}',
-                            tag: _shareLogTag,
-                          );
-                        },
-                        onSeeAllTap: () {
+                      TodayShareSectionContainer(
+                        onOwedTap: (owed) {
                           logger.info(
-                            'See all expenses tapped',
+                            'Tapped owed entry: ${owed.displayName}',
                             tag: _shareLogTag,
                           );
+                          _openShareOwedDetail(context, owed);
+                        },
+                        onDraftTap: (draft) {
+                          logger.info(
+                            'Tapped draft share: ${draft.expenseId}',
+                            tag: _shareLogTag,
+                          );
+                          _openShareDraftEdit(context, draft);
                         },
                       ),
                     ],
@@ -195,9 +181,48 @@ class TodayScreen extends StatelessWidget {
     final result = await context.push<bool>(AppRoutes.shareCreate);
     if (result == true && context.mounted) {
       final s = S.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(s.shareCreateSuccess)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(s.shareCreateSuccess)));
+    }
+  }
+
+  Future<void> _openShareOwedDetail(
+    BuildContext context,
+    TodayShareOwed owed,
+  ) async {
+    final repository = sl<ExpensesRepository>();
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder:
+            (_) => ShareOwedDetailScreen(
+              owed: owed,
+              expensesRepository: repository,
+            ),
+      ),
+    );
+    if (result == true && context.mounted) {
+      final s = S.of(context);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(s.shareOwedDetailSuccess)));
+      context.read<TodayBloc>().add(const TodayRefreshed());
+    }
+  }
+
+  Future<void> _openShareDraftEdit(
+    BuildContext context,
+    TodayShareDraft draft,
+  ) async {
+    final result = await context.push<bool>(
+      AppRoutes.shareDraftEditPath(draft.expenseId),
+    );
+    if (result == true && context.mounted) {
+      final s = S.of(context);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(s.shareEditSuccess)));
+      context.read<TodayBloc>().add(const TodayRefreshed());
     }
   }
 }

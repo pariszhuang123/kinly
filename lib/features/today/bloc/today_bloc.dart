@@ -2,8 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/chores/models.dart'; // ChoreListEntry, etc.
+import '../../../core/expenses/models.dart';
 import '../../../core/profile/models.dart';
 import '../../../data/repositories/chores_repository.dart';
+import '../../../data/repositories/expenses_repository.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../domain/models.dart'; // TodayFlowTask etc.
 
@@ -13,14 +15,17 @@ part 'today_state.dart';
 class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final ChoresRepository _choresRepository;
   final ProfileRepository _profileRepository;
+  final ExpensesRepository _expensesRepository;
   final String _homeId;
 
   TodayBloc({
     required ChoresRepository choresRepository,
     required ProfileRepository profileRepository,
+    required ExpensesRepository expensesRepository,
     required String homeId,
   }) : _choresRepository = choresRepository,
        _profileRepository = profileRepository,
+       _expensesRepository = expensesRepository,
        _homeId = homeId,
        super(const TodayState.loading()) {
     on<TodayStarted>(_onStarted);
@@ -48,7 +53,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     TodayUserProfile? profile = state.profile;
     try {
       if (!isRefresh) {
-        emit(TodayState.loading(profile: profile));
+        emit(
+          TodayState.loading(
+            profile: profile,
+            shareOwed: state.shareOwed,
+            shareDrafts: state.shareDrafts,
+          ),
+        );
       }
 
       final profileFuture = _profileRepository.getCurrentProfile();
@@ -64,6 +75,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       profile = await _resolveProfile(profileFuture, fallback: profile);
       final drafts = await draftsFuture;
       final active = await activeFuture;
+      final shareSnapshot = await _loadShareSnapshot();
 
       final draftTasks = drafts
           .map((entry) => _mapEntryToTodayTask(entry, isNewTodayOverride: true))
@@ -76,6 +88,9 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         TodayState.loaded(
           activeTasks: activeTasks,
           draftTasks: draftTasks,
+          shareOwed: shareSnapshot.owed,
+          shareDrafts: shareSnapshot.drafts,
+          shareErrorMessage: shareSnapshot.errorMessage,
           profile: profile,
           // later: you can add today's expenses, gratitude items, etc.
         ),
@@ -87,6 +102,9 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           message: "Could not load today's chores. Please try again.",
           error: error,
           profile: profile,
+          shareOwed: state.shareOwed,
+          shareDrafts: state.shareDrafts,
+          shareErrorMessage: state.shareErrorMessage,
         ),
       );
       // optional: log error/stackTrace via your logger/Sentry here
@@ -121,4 +139,39 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       isNewToday: isNewTodayOverride ?? entry.isDraft,
     );
   }
+
+  Future<_ShareSnapshot> _loadShareSnapshot() async {
+    try {
+      final owed = await _expensesRepository.listCurrentOwed(homeId: _homeId);
+      final created = await _expensesRepository.listCreatedByMe(
+        homeId: _homeId,
+      );
+      final owedView = owed
+          .map(TodayShareOwed.fromModel)
+          .toList(growable: false);
+      final drafts = created
+          .where((entry) => entry.status == ExpenseStatus.draft)
+          .map(TodayShareDraft.fromSummary)
+          .toList(growable: false);
+      return _ShareSnapshot(owed: owedView, drafts: drafts);
+    } catch (error) {
+      return _ShareSnapshot(
+        owed: const [],
+        drafts: const [],
+        errorMessage: error.toString(),
+      );
+    }
+  }
+}
+
+class _ShareSnapshot {
+  const _ShareSnapshot({
+    required this.owed,
+    required this.drafts,
+    this.errorMessage,
+  });
+
+  final List<TodayShareOwed> owed;
+  final List<TodayShareDraft> drafts;
+  final String? errorMessage;
 }

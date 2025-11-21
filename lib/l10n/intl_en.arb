@@ -124,6 +124,33 @@
   "todayShareSampleGroceries": "Shared groceries from yesterday",
   "todayShareSampleRent": "Rent reminder coming up",
   "todayShareSampleInternet": "Internet bill this week",
+  "todayShareEmptyState": "Nothing to see here yet. As you log expenses or start drafts, they'll appear in Share.",
+  "todayShareTabActive": "Active",
+  "todayShareTabDrafts": "Drafts",
+  "todayShareError": "We couldn't refresh Share right now.",
+  "todayShareActiveSubtitle": "{count, plural, one {{count} payment pending} other {{count} payments pending}}",
+  "@todayShareActiveSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayShareDraftSubtitle": "Finish the split to publish this expense.",
+  "shareOwedDetailTitle": "Pending payment",
+  "shareOwedDetailSubtitle": "Select the expense you just settled.",
+  "shareOwedDetailEmpty": "You're all caught up with this person.",
+  "shareOwedDetailSelectionLabel": "Select an expense to continue.",
+  "shareOwedDetailPaid": "Mark as paid",
+  "shareOwedDetailSuccess": "Payment recorded.",
+  "shareOwedDetailError": "We couldn't mark that share paid. Try again.",
+  "shareEditTitle": "Finish draft",
+  "shareEditSubmit": "Update",
+  "shareEditSuccess": "Share updated.",
+  "shareEditLoadError": "We couldn't load that draft.",
+  "shareEditNotAllowed": "This share can’t be edited anymore because it's already locked.",
+  "shareEditSplitsLocked": "Splits are locked because someone already paid. You can still update the description and notes.",
+  "shareEditClose": "Close",
   "shareCreateTitle": "Create share",
   "shareCreateDescriptionLabel": "Description",
   "shareCreateDescriptionHint": "e.g. Grocery run",

@@ -976,6 +976,7 @@ export type Database = {
       }
       expenses_get_created_by_me: { Args: { p_home_id: string }; Returns: Json }
       expenses_get_current_owed: { Args: { p_home_id: string }; Returns: Json }
+      expenses_get_for_edit: { Args: { p_expense_id: string }; Returns: Json }
       expenses_mark_share_paid: {
         Args: { p_expense_id: string }
         Returns: {

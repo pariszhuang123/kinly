@@ -31,7 +31,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(count) => "Ver todo (${count})";
 
-  static String m5(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
+  static String m5(count) =>
+      "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} pagos pendientes')}";
+
+  static String m6(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -509,6 +512,42 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Elige cA?mo quieres dividir este gasto.",
     ),
+    "shareEditClose": MessageLookupByLibrary.simpleMessage("Cerrar"),
+    "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos cargar ese borrador.",
+    ),
+    "shareEditNotAllowed": MessageLookupByLibrary.simpleMessage(
+      "Este gasto ya no se puede editar porque está bloqueado.",
+    ),
+    "shareEditSplitsLocked": MessageLookupByLibrary.simpleMessage(
+      "Las divisiones están bloqueadas porque alguien ya pagó. Aún puedes actualizar la descripción y las notas.",
+    ),
+    "shareEditSubmit": MessageLookupByLibrary.simpleMessage("Actualizar"),
+    "shareEditSuccess": MessageLookupByLibrary.simpleMessage(
+      "Gasto actualizado.",
+    ),
+    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Terminar borrador"),
+    "shareOwedDetailEmpty": MessageLookupByLibrary.simpleMessage(
+      "Estás al día con esta persona.",
+    ),
+    "shareOwedDetailError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos marcar ese pago. Inténtalo de nuevo.",
+    ),
+    "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage(
+      "Marcar como pagado",
+    ),
+    "shareOwedDetailSelectionLabel": MessageLookupByLibrary.simpleMessage(
+      "Selecciona un gasto para continuar.",
+    ),
+    "shareOwedDetailSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Selecciona el gasto que acabas de pagar.",
+    ),
+    "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage(
+      "Pago registrado.",
+    ),
+    "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage(
+      "Pago pendiente",
+    ),
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage(
       "Agregar tarea (Flow)",
     ),
@@ -535,8 +574,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
+    "todayShareActiveSubtitle": m5,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage(
       "próximamente",
+    ),
+    "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Completa la división para publicar este gasto.",
+    ),
+    "todayShareEmptyState": MessageLookupByLibrary.simpleMessage(
+      "Aún no hay nada aquí. Cuando registres gastos o empieces borradores, aparecerán en Share.",
+    ),
+    "todayShareError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos actualizar Share en este momento.",
     ),
     "todayShareSampleGroceries": MessageLookupByLibrary.simpleMessage(
       "Compras compartidas de ayer",
@@ -551,7 +600,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayShareSeeAll": MessageLookupByLibrary.simpleMessage(
       "Ver todos los gastos",
     ),
-    "today_home_details": m5,
+    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
+    "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
+    "today_home_details": m6,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "Sin hogar activo todavÃ­a. Crea o Ãºnete para ver la vista de hoy.",
     ),

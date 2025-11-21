@@ -1,10 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../core/chores/models.dart';
+import '../../../core/expenses/models.dart';
 
 /// A minimal representation of a task shown on the Today page.
-/// This is a *view model* for the Today feature –
-/// the Flow feature can have a richer FlowTask entity if needed.
 class TodayFlowTask extends Equatable {
   final String id;
   final String title;
@@ -39,38 +38,96 @@ class TodayFlowTask extends Equatable {
   List<Object?> get props => [id, title, state, isNewToday];
 }
 
-/// A minimal representation of an expense shown on the Today page.
-/// Again, this is a Today-facing model; the Share feature
-/// can use a more detailed domain entity if it wants.
-class TodayShareExpense extends Equatable {
-  final String id;
-  final String title;
-  final double amount;
-  final bool isUpcoming;
-
-  const TodayShareExpense({
-    required this.id,
-    required this.title,
-    required this.amount,
-    this.isUpcoming = false,
+class TodayShareOwedItem extends Equatable {
+  const TodayShareOwedItem({
+    required this.expenseId,
+    required this.description,
+    required this.amountCents,
   });
 
-  TodayShareExpense copyWith({
-    String? id,
-    String? title,
-    double? amount,
-    bool? isUpcoming,
-  }) {
-    return TodayShareExpense(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      amount: amount ?? this.amount,
-      isUpcoming: isUpcoming ?? this.isUpcoming,
+  final String expenseId;
+  final String description;
+  final int amountCents;
+
+  factory TodayShareOwedItem.fromModel(ExpenseOwedItem model) {
+    return TodayShareOwedItem(
+      expenseId: model.expenseId,
+      description: model.description,
+      amountCents: model.amountCents,
     );
   }
 
+  double get amount => amountCents / 100.0;
+
   @override
-  List<Object?> get props => [id, title, amount, isUpcoming];
+  List<Object?> get props => [expenseId, description, amountCents];
+}
+
+class TodayShareOwed extends Equatable {
+  const TodayShareOwed({
+    required this.payerUserId,
+    required this.displayName,
+    required this.totalOwedCents,
+    required this.items,
+    this.avatarUrl,
+  });
+
+  final String payerUserId;
+  final String displayName;
+  final String? avatarUrl;
+  final int totalOwedCents;
+  final List<TodayShareOwedItem> items;
+
+  factory TodayShareOwed.fromModel(ExpenseOwedGroup group) {
+    return TodayShareOwed(
+      payerUserId: group.payerUserId,
+      displayName: group.payerDisplay,
+      avatarUrl: group.payerAvatarUrl,
+      totalOwedCents: group.totalOwedCents,
+      items: group.items
+          .map(TodayShareOwedItem.fromModel)
+          .toList(growable: false),
+    );
+  }
+
+  double get totalOwed => totalOwedCents / 100.0;
+
+  @override
+  List<Object?> get props => [
+    payerUserId,
+    displayName,
+    avatarUrl,
+    totalOwedCents,
+    items,
+  ];
+}
+
+class TodayShareDraft extends Equatable {
+  const TodayShareDraft({
+    required this.expenseId,
+    required this.description,
+    required this.amountCents,
+    required this.createdAt,
+  });
+
+  final String expenseId;
+  final String description;
+  final int amountCents;
+  final DateTime createdAt;
+
+  factory TodayShareDraft.fromSummary(ExpenseCreatedSummary summary) {
+    return TodayShareDraft(
+      expenseId: summary.expenseId,
+      description: summary.description,
+      amountCents: summary.amountCents,
+      createdAt: summary.createdAt,
+    );
+  }
+
+  double get amount => amountCents / 100.0;
+
+  @override
+  List<Object?> get props => [expenseId, description, amountCents, createdAt];
 }
 
 /// View model representing the current user shown in the Today header.

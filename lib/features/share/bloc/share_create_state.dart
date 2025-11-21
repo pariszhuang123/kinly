@@ -12,11 +12,19 @@ class ShareCreateState extends Equatable {
     required this.submissionErrorMessage,
     required this.submissionErrorTick,
     required this.successExpenseId,
+    required this.isEditing,
+    required this.editingExpenseId,
+    required this.isAmountLocked,
   }) : participants = List.unmodifiable(participants);
 
-  factory ShareCreateState.initial() {
+  factory ShareCreateState.initial({
+    ShareCreateForm? form,
+    bool isEditing = false,
+    String? editingExpenseId,
+    bool isAmountLocked = false,
+  }) {
     return ShareCreateState(
-      form: ShareCreateForm.initial(),
+      form: form ?? ShareCreateForm.initial(),
       participants: const [],
       isLoading: true,
       isSubmitting: false,
@@ -26,6 +34,9 @@ class ShareCreateState extends Equatable {
       submissionErrorMessage: null,
       submissionErrorTick: 0,
       successExpenseId: null,
+      isEditing: isEditing,
+      editingExpenseId: editingExpenseId,
+      isAmountLocked: isAmountLocked,
     );
   }
 
@@ -39,6 +50,9 @@ class ShareCreateState extends Equatable {
   final String? submissionErrorMessage;
   final int submissionErrorTick;
   final String? successExpenseId;
+  final bool isEditing;
+  final String? editingExpenseId;
+  final bool isAmountLocked;
 
   ShareCreateState copyWith({
     ShareCreateForm? form,
@@ -54,6 +68,9 @@ class ShareCreateState extends Equatable {
     int? submissionErrorTick,
     String? successExpenseId,
     bool clearSuccess = false,
+    bool? isEditing,
+    String? editingExpenseId,
+    bool? isAmountLocked,
   }) {
     return ShareCreateState(
       form: form ?? this.form,
@@ -74,6 +91,9 @@ class ShareCreateState extends Equatable {
       submissionErrorTick: submissionErrorTick ?? this.submissionErrorTick,
       successExpenseId:
           clearSuccess ? null : successExpenseId ?? this.successExpenseId,
+      isEditing: isEditing ?? this.isEditing,
+      editingExpenseId: editingExpenseId ?? this.editingExpenseId,
+      isAmountLocked: isAmountLocked ?? this.isAmountLocked,
     );
   }
 
@@ -123,6 +143,9 @@ class ShareCreateState extends Equatable {
     submissionErrorMessage,
     submissionErrorTick,
     successExpenseId,
+    isEditing,
+    editingExpenseId,
+    isAmountLocked,
   ];
 }
 

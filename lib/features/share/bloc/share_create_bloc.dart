@@ -19,10 +19,20 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     required String homeId,
     required ExpensesRepository expensesRepository,
     required HomeRepository homeRepository,
+    ShareCreateForm? initialForm,
+    String? editingExpenseId,
+    bool amountLocked = false,
   }) : _homeId = homeId,
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
-       super(ShareCreateState.initial()) {
+       super(
+         ShareCreateState.initial(
+           form: initialForm,
+           isEditing: editingExpenseId != null,
+           editingExpenseId: editingExpenseId,
+           isAmountLocked: amountLocked,
+         ),
+       ) {
     on<ShareCreateParticipantsRequested>(_onParticipantsRequested);
     on<ShareCreateDescriptionChanged>(_onDescriptionChanged);
     on<ShareCreateAmountChanged>(_onAmountChanged);
@@ -41,12 +51,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     ShareCreateParticipantsRequested event,
     Emitter<ShareCreateState> emit,
   ) async {
-    emit(
-      state.copyWith(
-        isLoading: true,
-        clearLoadError: true,
-      ),
-    );
+    emit(state.copyWith(isLoading: true, clearLoadError: true));
     try {
       final members = await _homeRepository.listActiveMembers(
         _homeId,
@@ -62,9 +67,10 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
           )
           .toList(growable: false);
       final availableIds = participants.map((p) => p.userId).toList();
-      Set<String> nextSelection = state.form.selectedParticipantIds
-          .where((id) => availableIds.contains(id))
-          .toSet();
+      Set<String> nextSelection =
+          state.form.selectedParticipantIds
+              .where((id) => availableIds.contains(id))
+              .toSet();
       if (nextSelection.isEmpty && availableIds.isNotEmpty) {
         nextSelection = LinkedHashSet<String>.from(availableIds);
       }
@@ -86,10 +92,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
       );
     } catch (error) {
       emit(
-        state.copyWith(
-          isLoading: false,
-          loadErrorMessage: error.toString(),
-        ),
+        state.copyWith(isLoading: false, loadErrorMessage: error.toString()),
       );
     }
   }
@@ -134,10 +137,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     ShareCreateCustomAmountChanged event,
     Emitter<ShareCreateState> emit,
   ) {
-    final updated = state.form.updateCustomAmount(
-      event.userId,
-      event.amount,
-    );
+    final updated = state.form.updateCustomAmount(event.userId, event.amount);
     emit(state.copyWith(form: updated));
   }
 
@@ -151,19 +151,26 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     final amountValid = amountCents != null && amountCents > 0;
     var isValid = descriptionValid && amountValid;
     final splitMode = form.splitMode;
+    final isEditing = state.isEditing;
+    final editingExpenseId = state.editingExpenseId;
+    final amountLocked = state.isAmountLocked;
 
     List<String>? memberIds;
     List<ExpenseCustomSplitInput>? customSplits;
     ExpenseSplitType? splitType;
 
-    if (isValid && splitMode == ShareSplitMode.equal) {
+    if (isEditing && (splitMode == null || editingExpenseId == null)) {
+      isValid = false;
+    }
+
+    if (!amountLocked && isValid && splitMode == ShareSplitMode.equal) {
       if (form.selectedParticipantIds.length < 2) {
         isValid = false;
       } else {
         memberIds = form.selectedParticipantIds.toList(growable: false);
         splitType = ExpenseSplitType.equal;
       }
-    } else if (isValid && splitMode == ShareSplitMode.custom) {
+    } else if (!amountLocked && isValid && splitMode == ShareSplitMode.custom) {
       final summary = state.evaluateCustomSplit();
       if (!summary.isValid) {
         isValid = false;
@@ -178,6 +185,10 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
             .toList(growable: false);
         splitType = ExpenseSplitType.custom;
       }
+    } else if (amountLocked) {
+      memberIds = null;
+      customSplits = null;
+      splitType = null;
     }
 
     if (!isValid) {
@@ -196,15 +207,26 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
 
     try {
       final normalizedNotes = _normalize(form.notes);
-      final saved = await _expensesRepository.create(
-        homeId: _homeId,
-        amountCents: amountCents!,
-        description: form.description.trim(),
-        notes: normalizedNotes,
-        splitType: splitType,
-        memberIds: memberIds,
-        customSplits: customSplits,
-      );
+      final saved =
+          isEditing
+              ? await _expensesRepository.edit(
+                expenseId: editingExpenseId!,
+                amountCents: amountCents!,
+                description: form.description.trim(),
+                notes: normalizedNotes,
+                splitType: splitType,
+                memberIds: memberIds,
+                customSplits: customSplits,
+              )
+              : await _expensesRepository.create(
+                homeId: _homeId,
+                amountCents: amountCents!,
+                description: form.description.trim(),
+                notes: normalizedNotes,
+                splitType: splitType,
+                memberIds: memberIds,
+                customSplits: customSplits,
+              );
       emit(
         state.copyWith(
           isSubmitting: false,
