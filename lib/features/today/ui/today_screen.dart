@@ -132,12 +132,7 @@ class TodayScreen extends StatelessWidget {
             context,
             sections,
             onAddFlow: () => _openFlowChore(context),
-            onAddShare: () async {
-              final messenger = ScaffoldMessenger.of(context);
-              messenger.showSnackBar(
-                SnackBar(content: Text(s.todayAddShareComingSoon)),
-              );
-            },
+            onAddShare: () => _openShareCreate(context),
           );
         },
         child: const Icon(Icons.add),
@@ -193,6 +188,16 @@ class TodayScreen extends StatelessWidget {
     if (result is FlowChoreOutcome) {
       if (!context.mounted) return;
       context.read<TodayBloc>().add(const TodayRefreshed());
+    }
+  }
+
+  Future<void> _openShareCreate(BuildContext context) async {
+    final result = await context.push<bool>(AppRoutes.shareCreate);
+    if (result == true && context.mounted) {
+      final s = S.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(s.shareCreateSuccess)),
+      );
     }
   }
 }

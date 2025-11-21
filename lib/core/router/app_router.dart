@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/repositories/chores_repository.dart';
+import '../../data/repositories/expenses_repository.dart';
 import '../../data/repositories/profile_repository.dart';
+import '../../data/repositories/home_repository.dart';
 import '../../features/today/ui/today_provider.dart';
 import '../../features/flow/ui/flow_chore_detail_provider.dart';
 import '../../features/flow/ui/flow_chore_provider.dart';
@@ -20,6 +22,7 @@ import '../di/locator.dart';
 import '../../features/splash/ui/splash_screen.dart';
 import '../../features/version_gating/bloc/app_version_cubit.dart';
 import '../../features/version_gating/ui/force_update_screen.dart';
+import '../../features/share/ui/share_create_provider.dart';
 
 class AppRoutes {
   static const splash = '/';
@@ -34,6 +37,7 @@ class AppRoutes {
   static const flowChoreCreate = '/flow/chore/new';
   static const flowChoreEdit = '/flow/chore/:choreId';
   static const flowChoreDetail = '/flow/chore/:choreId/detail';
+  static const shareCreate = '/share/new';
   static const profileSettings = '/settings/profile';
   static const profileIdentity = '/settings/profile/identity';
 
@@ -220,6 +224,21 @@ GoRouter createRouter({
             homeId: membership.homeId,
             choreId: choreId,
             choresRepository: sl<ChoresRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.shareCreate,
+        name: 'shareCreate',
+        builder: (_, __) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Share routes require an active membership.');
+          }
+          return ShareCreateProvider(
+            homeId: membership.homeId,
+            expensesRepository: sl<ExpensesRepository>(),
+            homeRepository: sl<HomeRepository>(),
           );
         },
       ),

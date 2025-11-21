@@ -3,11 +3,13 @@ import '../../data/repositories/account_repository.dart';
 import '../../data/repositories/app_version_repository.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/chores_repository.dart';
+import '../../data/repositories/expenses_repository.dart';
 import '../../data/repositories/home_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../account/supabase_account_repository.dart';
 import '../auth/supabase_auth_repository.dart';
 import '../chores/supabase_chores_repository.dart';
+import '../expenses/supabase_expenses_repository.dart';
 import '../homes/supabase_home_repository.dart';
 import '../profile/supabase_profile_repository.dart';
 import '../app_version/supabase_app_version_repository.dart';
@@ -53,6 +55,11 @@ void setupDependencies() {
   if (!sl.isRegistered<AppVersionRepository>()) {
     sl.registerLazySingleton<AppVersionRepository>(
       () => SupabaseAppVersionRepository(),
+    );
+  }
+  if (!sl.isRegistered<ExpensesRepository>()) {
+    sl.registerLazySingleton<ExpensesRepository>(
+      () => SupabaseExpensesRepository(),
     );
   }
 }

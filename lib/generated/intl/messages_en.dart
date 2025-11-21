@@ -409,8 +409,78 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Share"),
     "quick_add_title": MessageLookupByLibrary.simpleMessage("Quick Add"),
-    "todayAddShareComingSoon": MessageLookupByLibrary.simpleMessage(
-      "Share expenses coming soon.",
+    "shareCreateAmountHint": MessageLookupByLibrary.simpleMessage("0.00"),
+    "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("Amount"),
+    "shareCreateCustomAmountLabel": MessageLookupByLibrary.simpleMessage(
+      "Amount",
+    ),
+    "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
+      "Enter what each person owes. The total must match the amount above.",
+    ),
+    "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
+      "e.g. Grocery run",
+    ),
+    "shareCreateDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "Description",
+    ),
+    "shareCreateErrorForbidden": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have permission to create this share right now.",
+    ),
+    "shareCreateErrorGeneric": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t create share. Try again.",
+    ),
+    "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t load your household members.",
+    ),
+    "shareCreateNotesHint": MessageLookupByLibrary.simpleMessage(
+      "Optional context everyone can see",
+    ),
+    "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("Notes"),
+    "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
+      "You need at least two household members to split an expense.",
+    ),
+    "shareCreateParticipantsLabel": MessageLookupByLibrary.simpleMessage(
+      "Who\'s sharing?",
+    ),
+    "shareCreateRetry": MessageLookupByLibrary.simpleMessage("Try again"),
+    "shareCreateSplitCustom": MessageLookupByLibrary.simpleMessage(
+      "Custom split",
+    ),
+    "shareCreateSplitEqual": MessageLookupByLibrary.simpleMessage(
+      "Split automatically",
+    ),
+    "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage("Split type"),
+    "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Create"),
+    "shareCreateSuccess": MessageLookupByLibrary.simpleMessage(
+      "Share created.",
+    ),
+    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Create share"),
+    "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid amount greater than zero.",
+    ),
+    "shareCreateValidationCustomAmounts": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid amount for each selected person.",
+    ),
+    "shareCreateValidationCustomParticipants":
+        MessageLookupByLibrary.simpleMessage(
+          "Custom split needs at least two people.",
+        ),
+    "shareCreateValidationCustomSinglePayer":
+        MessageLookupByLibrary.simpleMessage(
+          "One person can\'t cover the entire amount when using a custom split.",
+        ),
+    "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
+      "Custom shares must add up to the amount above.",
+    ),
+    "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
+      "Enter a description.",
+    ),
+    "shareCreateValidationEqualParticipants":
+        MessageLookupByLibrary.simpleMessage(
+          "Select at least two people to split the amount.",
+        ),
+    "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
+      "Choose how you want to split this expense.",
     ),
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage(
       "Add task (Flow)",

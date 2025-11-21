@@ -1,0 +1,21 @@
+/// Error codes returned by expenses.* RPCs.
+enum ExpenseErrorCode {
+  invalidHome,
+  invalidAmount,
+  invalidDescription,
+  invalidNotes,
+  notHomeMember,
+  homeInactive,
+  invalidSplit,
+  splitMembersRequired,
+  invalidDebtor,
+  splitSumMismatch,
+  notFound,
+  notCreator,
+  invalidState,
+  splitRequired,
+  lockedAfterPayment,
+  forbidden,
+  unauthorized,
+  unknown,
+}

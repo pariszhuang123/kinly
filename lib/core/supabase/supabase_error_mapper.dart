@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'enums/chore_error_code.dart';
+import 'enums/expense_error_code.dart';
 import 'enums/home_error_codes.dart';
 
 export 'enums/chore_error_code.dart';
+export 'enums/expense_error_code.dart';
 export 'enums/home_error_codes.dart';
 
 class HomeJoinException implements Exception {
@@ -422,6 +424,127 @@ class SupabaseErrorMapper {
     }
     return ChoreException(ChoreErrorCode.unknown, error.toString());
   }
+
+  /// Maps expenses RPC errors into [ExpenseException].
+  static ExpenseException mapExpense(Object error) {
+    if (error is AuthException) {
+      return ExpenseException(ExpenseErrorCode.unauthorized, error.message);
+    }
+    if (error is PostgrestException) {
+      final parsed = _parseErrorJson(error.message);
+      switch (parsed.code) {
+        case 'INVALID_HOME':
+          return ExpenseException(
+            ExpenseErrorCode.invalidHome,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_AMOUNT':
+          return ExpenseException(
+            ExpenseErrorCode.invalidAmount,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_DESCRIPTION':
+          return ExpenseException(
+            ExpenseErrorCode.invalidDescription,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_NOTES':
+          return ExpenseException(
+            ExpenseErrorCode.invalidNotes,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'NOT_HOME_MEMBER':
+          return ExpenseException(
+            ExpenseErrorCode.notHomeMember,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'HOME_INACTIVE':
+          return ExpenseException(
+            ExpenseErrorCode.homeInactive,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_SPLIT':
+          return ExpenseException(
+            ExpenseErrorCode.invalidSplit,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'SPLIT_MEMBERS_REQUIRED':
+          return ExpenseException(
+            ExpenseErrorCode.splitMembersRequired,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_DEBTOR':
+          return ExpenseException(
+            ExpenseErrorCode.invalidDebtor,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'SPLIT_SUM_MISMATCH':
+          return ExpenseException(
+            ExpenseErrorCode.splitSumMismatch,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'NOT_FOUND':
+          return ExpenseException(
+            ExpenseErrorCode.notFound,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'NOT_CREATOR':
+          return ExpenseException(
+            ExpenseErrorCode.notCreator,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_STATE':
+          return ExpenseException(
+            ExpenseErrorCode.invalidState,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'SPLIT_REQUIRED':
+          return ExpenseException(
+            ExpenseErrorCode.splitRequired,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'EXPENSE_LOCKED_AFTER_PAYMENT':
+          return ExpenseException(
+            ExpenseErrorCode.lockedAfterPayment,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'FORBIDDEN':
+          return ExpenseException(
+            ExpenseErrorCode.forbidden,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'UNAUTHORIZED':
+          return ExpenseException(
+            ExpenseErrorCode.unauthorized,
+            parsed.message,
+            details: parsed.details,
+          );
+        default:
+          return ExpenseException(
+            ExpenseErrorCode.unknown,
+            parsed.message,
+            details: parsed.details,
+          );
+      }
+    }
+    return ExpenseException(ExpenseErrorCode.unknown, error.toString());
+  }
 }
 
 class _Parsed {
@@ -475,4 +598,15 @@ class ChoreException implements Exception {
 
   @override
   String toString() => 'ChoreException($code): $message';
+}
+
+class ExpenseException implements Exception {
+  final ExpenseErrorCode code;
+  final String message;
+  final Map<String, dynamic>? details;
+
+  const ExpenseException(this.code, this.message, {this.details});
+
+  @override
+  String toString() => 'ExpenseException($code): $message';
 }

@@ -374,16 +374,6 @@ class S {
     );
   }
 
-  /// `Share expenses coming soon.`
-  String get todayAddShareComingSoon {
-    return Intl.message(
-      'Share expenses coming soon.',
-      name: 'todayAddShareComingSoon',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Together feels lighter`
   String get login_tagline {
     return Intl.message(
@@ -829,6 +819,286 @@ class S {
     return Intl.message(
       'Internet bill this week',
       name: 'todayShareSampleInternet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create share`
+  String get shareCreateTitle {
+    return Intl.message(
+      'Create share',
+      name: 'shareCreateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description`
+  String get shareCreateDescriptionLabel {
+    return Intl.message(
+      'Description',
+      name: 'shareCreateDescriptionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `e.g. Grocery run`
+  String get shareCreateDescriptionHint {
+    return Intl.message(
+      'e.g. Grocery run',
+      name: 'shareCreateDescriptionHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount`
+  String get shareCreateAmountLabel {
+    return Intl.message(
+      'Amount',
+      name: 'shareCreateAmountLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `0.00`
+  String get shareCreateAmountHint {
+    return Intl.message(
+      '0.00',
+      name: 'shareCreateAmountHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Split type`
+  String get shareCreateSplitLabel {
+    return Intl.message(
+      'Split type',
+      name: 'shareCreateSplitLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Split automatically`
+  String get shareCreateSplitEqual {
+    return Intl.message(
+      'Split automatically',
+      name: 'shareCreateSplitEqual',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom split`
+  String get shareCreateSplitCustom {
+    return Intl.message(
+      'Custom split',
+      name: 'shareCreateSplitCustom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Who's sharing?`
+  String get shareCreateParticipantsLabel {
+    return Intl.message(
+      'Who\'s sharing?',
+      name: 'shareCreateParticipantsLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You need at least two household members to split an expense.`
+  String get shareCreateParticipantsEmpty {
+    return Intl.message(
+      'You need at least two household members to split an expense.',
+      name: 'shareCreateParticipantsEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes`
+  String get shareCreateNotesLabel {
+    return Intl.message(
+      'Notes',
+      name: 'shareCreateNotesLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Optional context everyone can see`
+  String get shareCreateNotesHint {
+    return Intl.message(
+      'Optional context everyone can see',
+      name: 'shareCreateNotesHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter what each person owes. The total must match the amount above.`
+  String get shareCreateCustomHelper {
+    return Intl.message(
+      'Enter what each person owes. The total must match the amount above.',
+      name: 'shareCreateCustomHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount`
+  String get shareCreateCustomAmountLabel {
+    return Intl.message(
+      'Amount',
+      name: 'shareCreateCustomAmountLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create`
+  String get shareCreateSubmit {
+    return Intl.message(
+      'Create',
+      name: 'shareCreateSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a description.`
+  String get shareCreateValidationDescription {
+    return Intl.message(
+      'Enter a description.',
+      name: 'shareCreateValidationDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a valid amount greater than zero.`
+  String get shareCreateValidationAmount {
+    return Intl.message(
+      'Enter a valid amount greater than zero.',
+      name: 'shareCreateValidationAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose how you want to split this expense.`
+  String get shareCreateValidationSplit {
+    return Intl.message(
+      'Choose how you want to split this expense.',
+      name: 'shareCreateValidationSplit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select at least two people to split the amount.`
+  String get shareCreateValidationEqualParticipants {
+    return Intl.message(
+      'Select at least two people to split the amount.',
+      name: 'shareCreateValidationEqualParticipants',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom split needs at least two people.`
+  String get shareCreateValidationCustomParticipants {
+    return Intl.message(
+      'Custom split needs at least two people.',
+      name: 'shareCreateValidationCustomParticipants',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a valid amount for each selected person.`
+  String get shareCreateValidationCustomAmounts {
+    return Intl.message(
+      'Enter a valid amount for each selected person.',
+      name: 'shareCreateValidationCustomAmounts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom shares must add up to the amount above.`
+  String get shareCreateValidationCustomSum {
+    return Intl.message(
+      'Custom shares must add up to the amount above.',
+      name: 'shareCreateValidationCustomSum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One person can't cover the entire amount when using a custom split.`
+  String get shareCreateValidationCustomSinglePayer {
+    return Intl.message(
+      'One person can\'t cover the entire amount when using a custom split.',
+      name: 'shareCreateValidationCustomSinglePayer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't load your household members.`
+  String get shareCreateLoadError {
+    return Intl.message(
+      'We couldn\'t load your household members.',
+      name: 'shareCreateLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try again`
+  String get shareCreateRetry {
+    return Intl.message(
+      'Try again',
+      name: 'shareCreateRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't create share. Try again.`
+  String get shareCreateErrorGeneric {
+    return Intl.message(
+      'Couldn\'t create share. Try again.',
+      name: 'shareCreateErrorGeneric',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You don't have permission to create this share right now.`
+  String get shareCreateErrorForbidden {
+    return Intl.message(
+      'You don\'t have permission to create this share right now.',
+      name: 'shareCreateErrorForbidden',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share created.`
+  String get shareCreateSuccess {
+    return Intl.message(
+      'Share created.',
+      name: 'shareCreateSuccess',
       desc: '',
       args: [],
     );

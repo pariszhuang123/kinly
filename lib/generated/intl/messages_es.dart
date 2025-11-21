@@ -433,8 +433,81 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Share"),
     "quick_add_title": MessageLookupByLibrary.simpleMessage("AÃ±adir rÃ¡pido"),
-    "todayAddShareComingSoon": MessageLookupByLibrary.simpleMessage(
-      "La funciÃ³n de gastos de Share llegarÃ¡ pronto.",
+    "shareCreateAmountHint": MessageLookupByLibrary.simpleMessage("0.00"),
+    "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("Monto"),
+    "shareCreateCustomAmountLabel": MessageLookupByLibrary.simpleMessage(
+      "Monto",
+    ),
+    "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
+      "Ingresa lo que debe cada persona. El total debe coincidir con el monto.",
+    ),
+    "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
+      "p. ej. Compra de supermercado",
+    ),
+    "shareCreateDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "DescripciA?n",
+    ),
+    "shareCreateErrorForbidden": MessageLookupByLibrary.simpleMessage(
+      "No tienes permiso para crear este gasto ahora.",
+    ),
+    "shareCreateErrorGeneric": MessageLookupByLibrary.simpleMessage(
+      "No se pudo crear el gasto. Intenta otra vez.",
+    ),
+    "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos cargar a los miembros del hogar.",
+    ),
+    "shareCreateNotesHint": MessageLookupByLibrary.simpleMessage(
+      "Contexto opcional visible para todos",
+    ),
+    "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("Notas"),
+    "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
+      "Necesitas al menos dos miembros para dividir un gasto.",
+    ),
+    "shareCreateParticipantsLabel": MessageLookupByLibrary.simpleMessage(
+      "A?QuiA?nes comparten?",
+    ),
+    "shareCreateRetry": MessageLookupByLibrary.simpleMessage(
+      "Intentar de nuevo",
+    ),
+    "shareCreateSplitCustom": MessageLookupByLibrary.simpleMessage(
+      "DivisiA?n personalizada",
+    ),
+    "shareCreateSplitEqual": MessageLookupByLibrary.simpleMessage(
+      "Dividir automA?ticamente",
+    ),
+    "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage(
+      "Tipo de divisiA?n",
+    ),
+    "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Crear"),
+    "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Gasto creado."),
+    "shareCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "Crear gasto compartido",
+    ),
+    "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
+      "Ingresa un monto vA?lido mayor que cero.",
+    ),
+    "shareCreateValidationCustomAmounts": MessageLookupByLibrary.simpleMessage(
+      "Ingresa un monto vA?lido para cada persona seleccionada.",
+    ),
+    "shareCreateValidationCustomParticipants":
+        MessageLookupByLibrary.simpleMessage(
+          "La divisiA?n personalizada necesita al menos dos personas.",
+        ),
+    "shareCreateValidationCustomSinglePayer": MessageLookupByLibrary.simpleMessage(
+      "Una sola persona no puede cubrir todo el monto en una divisiA?n personalizada.",
+    ),
+    "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
+      "Los montos personalizados deben sumar el total.",
+    ),
+    "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
+      "Ingresa una descripciA?n.",
+    ),
+    "shareCreateValidationEqualParticipants":
+        MessageLookupByLibrary.simpleMessage(
+          "Selecciona al menos dos personas para dividir el monto.",
+        ),
+    "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
+      "Elige cA?mo quieres dividir este gasto.",
     ),
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage(
       "Agregar tarea (Flow)",
