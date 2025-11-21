@@ -281,8 +281,7 @@ BEGIN
     IF p_member_ids IS NULL OR array_length(p_member_ids, 1) IS NULL THEN
       PERFORM public.api_error(
         'SPLIT_MEMBERS_REQUIRED',
-        -- 👇 wording assumes creator is always included
-        'Provide at least one other member for an equal split.',
+        'Provide at least one member for an equal split.',
         '22023'
       );
     END IF;
@@ -334,18 +333,14 @@ BEGIN
     PERFORM public.api_error('INVALID_SPLIT', 'Unknown split type.', '22023');
   END IF;
 
-  -- -------------------------------------------------------------------
   -- Validations
-  -- -------------------------------------------------------------------
   SELECT COUNT(*) INTO v_split_count
   FROM pg_temp.expense_split_buffer;
 
-  -- 👇 NEW semantics: at least one debtor
-  -- (creator is always part of the expense via UI)
-  IF v_split_count < 1 THEN
+  IF v_split_count = 0 THEN
     PERFORM public.api_error(
       'SPLIT_MEMBERS_REQUIRED',
-      'Split expenses must include at least two people (you and at least one other).',
+      'Split members are required when defining an active expense.',
       '22023'
     );
   END IF;
