@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/homes/models.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
+import '../../../core/ui/kinly_loader.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/profile/models.dart';
 import '../../../generated/l10n.dart';
@@ -476,10 +477,7 @@ class _ProfileHeader extends StatelessWidget {
                         color: colorScheme.surface,
                         shape: BoxShape.circle,
                       ),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(colorScheme.primary),
-                      ),
+                      child: KinlyLoader(size: 14, color: colorScheme.primary),
                     ),
                   ),
               ],
@@ -566,10 +564,7 @@ class _ProfileSettingsTile extends StatelessWidget {
               ? SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation(leadingColor),
-                ),
+                child: KinlyLoader(size: 18, color: leadingColor),
               )
               : const Icon(Icons.chevron_right),
       onTap: showProgress ? null : onTap,

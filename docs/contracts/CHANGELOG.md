@@ -2,6 +2,15 @@
 
 Tracks versioned contract changes and related ADRs.
 
+## v1 — Expenses MVP
+- Date: 2025-11-20
+- Scope: `docs/contracts/expenses_v1.md`
+- Changes:
+  - Define `Expense`, `ExpenseSplit`, and `ExpenseSummaryDto` entities plus enums.
+  - Document lifecycle (draft → active → cancelled), debtor-only payments, derived summary fields, and access patterns.
+  - 2025-11-21: Capture Supabase requirements: tables, grants, and RPCs (`expenses.create`, `expenses.edit`, `expenses.markSharePaid`, `expenses.cancel`, `expenses.getCurrentOwed`, `expenses.getCreatedByMe`). Tables remain RPC-only with RLS disabled + GRANT revokes per ADR-0003 (`docs/adr/ADR-0003-expenses-rpc-only-access.md`).
+- Notes: Home members can author expenses; drafts stay private; Today/Explore surfaces consume the summary RPCs.
+
 ## v2 — Homes Memberships/Invites Alignment
 - Date: 2025-11-11
 - Scope: `docs/contracts/homes_v2.md`

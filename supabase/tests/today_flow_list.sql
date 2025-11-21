@@ -198,7 +198,7 @@ SELECT set_config(
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
-SELECT throws_ok(
+SELECT throws_like(
   format(
     $fmt$
     SELECT *
@@ -206,7 +206,7 @@ SELECT throws_ok(
     $fmt$,
     (SELECT home_id FROM tmp_homes WHERE label = 'primary')
   ),
-  '42501',
+  '%"code" : "NOT_HOME_MEMBER"%',
   'non-members cannot list today flow data'
 );
 

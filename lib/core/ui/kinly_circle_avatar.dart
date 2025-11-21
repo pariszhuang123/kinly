@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'kinly_loader.dart';
+
 class KinlyCircleAvatar extends StatelessWidget {
   final String? avatarUrl;
   final double radius;
@@ -38,14 +40,7 @@ class KinlyCircleAvatar extends StatelessWidget {
               fit: BoxFit.cover,
               placeholderBuilder:
                   (_) => Center(
-                    child: SizedBox(
-                      width: radius,
-                      height: radius,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: colorScheme.primary,
-                      ),
-                    ),
+                    child: KinlyLoader(size: radius, color: colorScheme.primary),
                   ),
             ),
           ),

@@ -8,6 +8,7 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
+import '../../../core/ui/kinly_loader.dart';
 import '../bloc/flow_chore_bloc.dart';
 import '../domain/flow_chore_form.dart';
 import '../domain/flow_chore_outcome.dart';
@@ -93,7 +94,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
               padding: EdgeInsets.all(spacing?.lg ?? 16),
               child:
                   state.isLoading
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const Center(child: KinlyLoader(size: 40))
                       : state.loadErrorMessage != null
                       ? _FlowChoreError(
                         message: s.flowChoreLoadError,
@@ -345,7 +346,7 @@ class _FlowChoreFormView extends StatelessWidget {
                             ? const SizedBox(
                               height: 20,
                               width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: KinlyLoader(size: 20),
                             )
                             : Text(s.flowChoreDeleteButton),
                   )
@@ -369,7 +370,7 @@ class _FlowChoreFormView extends StatelessWidget {
                             ? const SizedBox(
                               height: 20,
                               width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: KinlyLoader(size: 20),
                             )
                             : Text(
                               state.isEditMode

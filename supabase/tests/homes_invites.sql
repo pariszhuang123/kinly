@@ -348,8 +348,9 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 WITH payload AS (
   SELECT public.membership_me_current() AS body
 )
-SELECT ok(
-  (SELECT body->'current' IS NULL FROM payload),
+SELECT is(
+  (SELECT jsonb_typeof(body->'current') FROM payload),
+  'null',
   'membership_me_current is null after leaving the home'
 );
 
@@ -399,8 +400,9 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 WITH payload AS (
   SELECT public.membership_me_current() AS body
 )
-SELECT ok(
-  (SELECT body->'current' IS NULL FROM payload),
+SELECT is(
+  (SELECT jsonb_typeof(body->'current') FROM payload),
+  'null',
   'membership_me_current is null for former owner after leaving'
 );
 

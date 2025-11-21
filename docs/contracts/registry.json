@@ -278,6 +278,123 @@
         }
       ]
     },
+    "expenses": {
+      "latest": "v1",
+      "docs": "docs/contracts/expenses_v1.md",
+      "entities": {
+        "Expense": {
+          "id": "uuid",
+          "homeId": "uuid",
+          "createdByUserId": "uuid",
+          "status": "ExpenseStatus",
+          "splitType": "ExpenseSplitType|null",
+          "amountCents": "bigint",
+          "description": "text",
+          "notes": "text|null",
+          "createdAt": "timestamptz",
+          "updatedAt": "timestamptz"
+        },
+        "ExpenseSplit": {
+          "expenseId": "uuid",
+          "debtorUserId": "uuid",
+          "amountCents": "bigint",
+          "status": "ExpenseShareStatus",
+          "markedPaidAt": "timestamptz|null"
+        },
+        "ExpenseSummaryDto": {
+          "id": "uuid",
+          "homeId": "uuid",
+          "createdByUserId": "uuid",
+          "status": "ExpenseStatus",
+          "splitType": "ExpenseSplitType|null",
+          "amountCents": "bigint",
+          "description": "text",
+          "createdAt": "timestamptz",
+          "totalShares": "int",
+          "paidShares": "int",
+          "paidAmountCents": "bigint",
+          "allPaid": "boolean"
+        }
+      },
+      "functions": {
+        "expenses.create": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.expenses_create",
+          "args": {
+            "p_home_id": "uuid",
+            "p_amount_cents": "bigint",
+            "p_description": "text",
+            "p_notes": "text|null",
+            "p_split_mode": "ExpenseSplitType|null",
+            "p_member_ids": "uuid[]|null",
+            "p_splits": "jsonb|null"
+          },
+          "returns": "Expense"
+        },
+        "expenses.edit": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.expenses_edit",
+          "args": {
+            "p_expense_id": "uuid",
+            "p_amount_cents": "bigint",
+            "p_description": "text",
+            "p_notes": "text|null",
+            "p_split_mode": "ExpenseSplitType|null",
+            "p_member_ids": "uuid[]|null",
+            "p_splits": "jsonb|null"
+          },
+          "returns": "Expense"
+        },
+        "expenses.markSharePaid": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.expenses_mark_share_paid",
+          "args": {
+            "p_expense_id": "uuid"
+          },
+          "returns": "ExpenseSplit"
+        },
+        "expenses.cancel": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.expenses_cancel",
+          "args": {
+            "p_expense_id": "uuid"
+          },
+          "returns": "Expense"
+        },
+        "expenses.getCurrentOwed": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.expenses_get_current_owed",
+          "args": {
+            "p_home_id": "uuid"
+          },
+          "returns": "jsonb"
+        },
+        "expenses.getCreatedByMe": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.expenses_get_created_by_me",
+          "args": {
+            "p_home_id": "uuid"
+          },
+          "returns": "jsonb"
+        }
+      },
+      "rls": [
+        {
+          "table": "public.expenses",
+          "rule": "RLS disabled; anon/auth/ service roles have no grants. All read/write access flows through SECURITY DEFINER RPCs."
+        },
+        {
+          "table": "public.expense_splits",
+          "rule": "RLS disabled; anon/auth have no grants. Splits are only visible/mutated inside SECURITY DEFINER RPCs."
+        }
+      ]
+    },
     "homes": {
       "latest": "v2",
       "docs": "docs/contracts/homes_v2.md",

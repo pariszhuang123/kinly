@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../core/chores/models.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/ui/kinly_loader.dart';
 import '../bloc/flow_chore_detail_bloc.dart';
 import '../domain/flow_chore_outcome.dart';
 
@@ -47,7 +48,7 @@ class FlowChoreDetailScreen extends StatelessWidget {
           },
           builder: (context, state) {
             if (state.isLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: KinlyLoader(size: 40));
             }
 
             if (state.loadErrorMessage != null) {
@@ -277,11 +278,9 @@ class _CompletionButton extends StatelessWidget {
                 ? SizedBox(
                   width: 18,
                   height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation(
-                      Theme.of(context).colorScheme.onPrimary,
-                    ),
+                  child: KinlyLoader(
+                    size: 18,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 )
                 : Text(s.flowChoreDetailCompleteButton),

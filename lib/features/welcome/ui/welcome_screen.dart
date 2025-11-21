@@ -11,6 +11,7 @@ import '../../../design_system/kinly_button.dart';
 import '../../../generated/l10n.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/widgets/auth_error_listener.dart';
+import '../../splash/ui/widgets/kinly_logo.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -73,11 +74,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 children: [
                   const SizedBox(height: 24),
                   // Logo/title
-                  Text(
-                    s.app_title,
-                    style: theme.textTheme.headlineMedium,
-                    textAlign: TextAlign.center,
-                  ),
+                  KinlyLogo(),
                   const SizedBox(height: 8),
                   Text(
                     s.login_tagline,

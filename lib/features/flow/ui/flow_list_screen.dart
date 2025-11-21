@@ -10,6 +10,7 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
+import '../../../core/ui/kinly_loader.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/flow_list_bloc.dart';
 import '../domain/flow_chore_outcome.dart';
@@ -43,7 +44,7 @@ class FlowListScreen extends StatelessWidget {
             builder: (context, state) {
               switch (state.status) {
                 case FlowListStatus.loading:
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: KinlyLoader(size: 40));
                 case FlowListStatus.failure:
                   return _FlowListError(
                     message: state.errorMessage ?? s.flowListError,

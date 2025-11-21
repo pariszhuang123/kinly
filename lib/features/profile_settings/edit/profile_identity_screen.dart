@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
+import '../../../core/ui/kinly_loader.dart';
 import '../../../core/profile/models.dart';
 import '../../../generated/l10n.dart';
 import 'bloc/profile_identity_bloc.dart';
@@ -139,7 +140,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                             ),
                             SizedBox(height: spacing.md),
                             if (state.isLoading)
-                              const Center(child: CircularProgressIndicator())
+                              const Center(child: KinlyLoader(size: 32))
                             else if (state.avatars.isEmpty)
                               Text(
                                 s.profileIdentityAvatarEmpty,
@@ -176,11 +177,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                                 ? SizedBox(
                                   height: 20,
                                   width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation(
-                                      theme.colorScheme.onPrimary,
-                                    ),
+                                  child: KinlyLoader(
+                                    size: 20,
+                                    color: theme.colorScheme.onPrimary,
                                   ),
                                 )
                                 : Text(s.profileIdentitySaveButton),

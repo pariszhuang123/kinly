@@ -22,6 +22,7 @@ import 'features/offline/bloc/connectivity_cubit.dart';
 import 'features/offline/ui/connectivity_gate.dart';
 import 'features/version_gating/bloc/app_version_cubit.dart';
 import 'generated/l10n.dart';
+import 'core/ui/kinly_loader.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -168,7 +169,7 @@ class _RouterInitializingFallback extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const CircularProgressIndicator(),
+            const KinlyLoader(size: 56),
             const SizedBox(height: 16),
             Text(S.of(context).bootstrap_initializing(AppConfig.env)),
           ],

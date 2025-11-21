@@ -8,6 +8,7 @@ import '../../../../data/repositories/home_repository.dart';
 import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
+import '../../../../core/ui/kinly_loader.dart';
 import '../bloc/join_home_bloc.dart';
 
 class JoinHomeScreen extends StatelessWidget {
@@ -119,7 +120,7 @@ class _JoinFormState extends State<_JoinForm> {
                           ? const SizedBox(
                             height: 16,
                             width: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            child: KinlyLoader(size: 16),
                           )
                           : Text(s.join_submit),
                 ),

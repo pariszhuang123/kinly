@@ -37,17 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            RotationTransition(
-              turns: _controller,
-              child: const KinlyLogo(),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Kinly',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            RotationTransition(turns: _controller, child: const KinlyLogo()),
           ],
         ),
       ),

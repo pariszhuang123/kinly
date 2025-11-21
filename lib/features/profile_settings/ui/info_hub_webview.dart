@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../generated/l10n.dart';
+import '../../../core/ui/kinly_loader.dart';
 
 class InfoHubWebViewScreen extends StatefulWidget {
   const InfoHubWebViewScreen({super.key});
@@ -62,10 +63,7 @@ class _InfoHubWebViewScreenState extends State<InfoHubWebViewScreen> {
               child: SizedBox(
                 width: 24,
                 height: 24,
-                child: CircularProgressIndicator(
-                  value: _progress == 0 ? null : _progress,
-                  strokeWidth: 2,
-                ),
+                child: const KinlyLoader(size: 20),
               ),
             ),
           const SizedBox(width: 16),

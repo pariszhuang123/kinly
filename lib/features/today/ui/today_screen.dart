@@ -1,3 +1,4 @@
+// lib/features/today/ui/today_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -9,15 +10,12 @@ import '../../../../generated/l10n.dart';
 import '../../../../core/router/app_router.dart';
 import '../domain/models.dart';
 import '../bloc/today_bloc.dart';
-import 'widgets/today_flow_section.dart';
+import 'widgets/today_header_container.dart';
+import 'widgets/today_flow_section_container.dart';
 import 'widgets/today_share_section.dart';
-import 'widgets/today_header.dart';
 import 'widgets/today_add_sheet.dart';
-import 'widgets/today_empty_state_card.dart';
 import '../../../core/ui/home_bottom_nav.dart';
 import '../../flow/domain/flow_chore_outcome.dart';
-import '../../profile_settings/ui/profile_settings_provider.dart';
-import '../../auth/bloc/auth_bloc.dart';
 import '../../../../core/di/locator.dart';
 import '../../../../core/logging/logger.dart';
 import '../../../../core/logging/debug_logger.dart';
@@ -61,11 +59,7 @@ class TodayScreen extends StatelessWidget {
         amount: 650,
         isUpcoming: true,
       ),
-      TodayShareExpense(
-        id: '3',
-        title: s.todayShareSampleInternet,
-        amount: 75,
-      ),
+      TodayShareExpense(id: '3', title: s.todayShareSampleInternet, amount: 75),
     ];
 
     return Scaffold(
@@ -94,60 +88,14 @@ class TodayScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      BlocBuilder<TodayBloc, TodayState>(
-                        buildWhen:
-                            (previous, current) =>
-                                previous.profile != current.profile ||
-                                previous.isLoading != current.isLoading,
-                        builder: (context, state) {
-                          return TodayHeader(
-                            partOfDay: partOfDay,
-                            profile: state.profile,
-                            onAvatarTap:
-                                () => _openProfileSettings(
-                                  context,
-                                  profile: state.profile,
-                                ),
-                          );
-                        },
-                      ),
+                      // 🔹 Header now modular
+                      TodayHeaderContainer(partOfDay: partOfDay),
                       SizedBox(height: spacing.xl),
 
-                      // dY"1 Bloc-powered Flow section
-                      BlocBuilder<TodayBloc, TodayState>(
-                        buildWhen:
-                            (previous, current) =>
-                                previous.activeTasks != current.activeTasks ||
-                                previous.draftTasks != current.draftTasks ||
-                                previous.isLoading != current.isLoading ||
-                                previous.message != current.message,
-                        builder: (context, state) {
-                          if (state.isLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-
-                          if (!state.hasFlowContent) {
-                            if (state.message != null) {
-                              return Text(
-                                state.message!,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: colorScheme.error,
-                                ),
-                              );
-                            }
-                            return const TodayEmptyStateCard();
-                          }
-
-                          return TodayFlowSection(
-                            activeTasks: state.activeTasks,
-                            draftTasks: state.draftTasks,
-                            onTaskTap:
-                                (task) => _handleFlowTaskTap(context, task),
-                            onSeeAllTap: () => context.go(AppRoutes.flow),
-                          );
-                        },
+                      // 🔹 Flow section now modular
+                      TodayFlowSectionContainer(
+                        onTaskTap: (task) => _handleFlowTaskTap(context, task),
+                        onSeeAllTap: () => context.go(AppRoutes.flow),
                       ),
 
                       SizedBox(height: spacing.lg),
@@ -246,26 +194,5 @@ class TodayScreen extends StatelessWidget {
       if (!context.mounted) return;
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
-  }
-
-  Future<void> _openProfileSettings(
-    BuildContext context, {
-    TodayUserProfile? profile,
-  }) async {
-    final authBloc = context.read<AuthBloc>();
-    final membership = authBloc.state.membership;
-    if (membership == null) {
-      final messenger = ScaffoldMessenger.of(context);
-      messenger.showSnackBar(
-        SnackBar(content: Text(S.of(context).profileMissingHomeError)),
-      );
-      return;
-    }
-    final args = ProfileSettingsRouteArgs(
-      homeId: membership.homeId,
-      displayName: profile?.username,
-      avatarUrl: profile?.avatarUrl,
-    );
-    await context.push(AppRoutes.profileSettings, extra: args);
   }
 }

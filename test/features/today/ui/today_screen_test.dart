@@ -12,6 +12,7 @@ import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/features/today/ui/today_screen.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/features/today/ui/widgets/today_empty_state_card.dart';
+import 'package:kinly/core/ui/kinly_loader.dart';
 
 class _MockTodayBloc extends MockBloc<TodayEvent, TodayState>
     implements TodayBloc {}
@@ -57,7 +58,7 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pump();
 
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(KinlyLoader), findsOneWidget);
   });
 
   testWidgets('renders Flow section when tasks are available', (tester) async {

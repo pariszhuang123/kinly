@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(12);
+SELECT plan(13);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -129,8 +129,9 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 WITH payload AS (
   SELECT public.membership_me_current() AS body
 )
-SELECT ok(
-  (SELECT body->'current' IS NULL FROM payload),
+SELECT is(
+  (SELECT jsonb_typeof(body->'current') FROM payload),
+  'null',
   'membership_me_current returns null for non-members'
 );
 
