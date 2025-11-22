@@ -58,7 +58,7 @@ class ExploreScreen extends StatelessWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-              context.go(AppRoutes.today);
+              context.push(AppRoutes.today);
               break;
             case 1:
               break;

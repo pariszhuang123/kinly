@@ -3459,6 +3459,12 @@ BEGIN
     );
   END IF;
 
+  --------------------------------------------------------------------
+  -- Ensure caller has a unique avatar within this home (plan-gated)
+  -- This now runs even if they are already a member of the home.
+  --------------------------------------------------------------------
+  PERFORM public._ensure_unique_avatar_for_home(v_home_id, v_user);
+
   -- Already current member of this same home
   IF EXISTS (
     SELECT 1
@@ -3516,11 +3522,8 @@ BEGIN
 
   -- Attach Subscription to home
   PERFORM public._home_attach_subscription_to_home(v_user, v_home_id);
-  -- Ensure caller has a unique avatar within this home (plan-gated)
-  PERFORM public._ensure_unique_avatar_for_home(v_home_id, v_user);
 
   -- Success response
-
   RETURN jsonb_build_object(
     'status',  'success',
     'code',    'joined',

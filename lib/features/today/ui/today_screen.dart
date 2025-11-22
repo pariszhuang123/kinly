@@ -85,9 +85,7 @@ class TodayScreen extends StatelessWidget {
                       BlocBuilder<TodayBloc, TodayState>(
                         builder: (context, state) {
                           if (state.isLoading) {
-                            return const Center(
-                              child: KinlyLoader(),
-                            );
+                            return const Center(child: KinlyLoader());
                           }
 
                           final hasFlow = state.hasFlowContent;
@@ -106,7 +104,8 @@ class TodayScreen extends StatelessWidget {
                                   onTaskTap:
                                       (task) =>
                                           _handleFlowTaskTap(context, task),
-                                  onSeeAllTap: () => context.go(AppRoutes.flow),
+                                  onSeeAllTap:
+                                      () => context.push(AppRoutes.flow),
                                 ),
                                 SizedBox(height: spacing.lg),
                               ],
@@ -161,7 +160,7 @@ class TodayScreen extends StatelessWidget {
             case 0:
               break;
             case 1:
-              context.go(AppRoutes.explore);
+              context.push(AppRoutes.explore);
               break;
             case 2:
               // TODO: context.go('/hub');
