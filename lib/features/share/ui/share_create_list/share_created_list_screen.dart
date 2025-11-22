@@ -5,14 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../core/router/app_router.dart';
-import '../../../core/theme/kinly_sections.dart';
-import '../../../core/theme/spacing.dart';
-import '../../../core/ui/kinly_loader.dart';
-import '../../../generated/l10n.dart';
-import '../bloc/share_created_list_bloc.dart';
-import 'share_edit_outcome.dart';
-import 'share_edit_route_args.dart';
+import '../../../../core/router/app_router.dart';
+import '../../../../core/theme/kinly_sections.dart';
+import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/kinly_loader.dart';
+import '../../../../generated/l10n.dart';
+import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
+import '../share_edit_outcome.dart';
+import '../share_edit_route_args.dart';
 
 class ShareCreatedListScreen extends StatelessWidget {
   const ShareCreatedListScreen({super.key});
@@ -48,9 +48,9 @@ class ShareCreatedListScreen extends StatelessWidget {
                   return _ShareCreatedListError(
                     message: state.errorMessage ?? s.shareCreatedListError,
                     onRetry:
-                        () => context
-                            .read<ShareCreatedListBloc>()
-                            .add(const ShareCreatedListRequested()),
+                        () => context.read<ShareCreatedListBloc>().add(
+                          const ShareCreatedListRequested(),
+                        ),
                   );
                 case ShareCreatedListStatus.success:
                   if (state.entries.isEmpty) {
@@ -81,7 +81,8 @@ class ShareCreatedListScreen extends StatelessWidget {
     final completer = Completer<void>();
     late final StreamSubscription<ShareCreatedListState> sub;
     sub = bloc.stream.listen((state) {
-      if (!state.isRefreshing && state.status != ShareCreatedListStatus.loading) {
+      if (!state.isRefreshing &&
+          state.status != ShareCreatedListStatus.loading) {
         completer.complete();
         sub.cancel();
       }
@@ -98,8 +99,8 @@ class ShareCreatedListScreen extends StatelessWidget {
         context,
       ).showSnackBar(SnackBar(content: Text(s.shareCreateSuccess)));
       context.read<ShareCreatedListBloc>().add(
-            const ShareCreatedListRefreshed(),
-          );
+        const ShareCreatedListRefreshed(),
+      );
     }
   }
 
@@ -117,8 +118,8 @@ class ShareCreatedListScreen extends StatelessWidget {
         context,
       ).showSnackBar(SnackBar(content: Text(s.shareEditSuccess)));
       context.read<ShareCreatedListBloc>().add(
-            const ShareCreatedListRefreshed(),
-          );
+        const ShareCreatedListRefreshed(),
+      );
       return;
     }
     if (result == ShareEditOutcome.updated && context.mounted) {
@@ -127,8 +128,8 @@ class ShareCreatedListScreen extends StatelessWidget {
         context,
       ).showSnackBar(SnackBar(content: Text(s.shareEditSuccess)));
       context.read<ShareCreatedListBloc>().add(
-            const ShareCreatedListRefreshed(),
-          );
+        const ShareCreatedListRefreshed(),
+      );
       return;
     }
     if (result == ShareEditOutcome.deleted && context.mounted) {
@@ -137,8 +138,8 @@ class ShareCreatedListScreen extends StatelessWidget {
         context,
       ).showSnackBar(SnackBar(content: Text(s.shareEditDeleteSuccess)));
       context.read<ShareCreatedListBloc>().add(
-            const ShareCreatedListRefreshed(),
-          );
+        const ShareCreatedListRefreshed(),
+      );
     }
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/repositories/expenses_repository.dart';
-import '../../../data/repositories/home_repository.dart';
-import '../bloc/share_create_bloc.dart';
+import '../../../../data/repositories/expenses_repository.dart';
+import '../../../../data/repositories/home_repository.dart';
+import '../../bloc/share_create_bloc/share_create_bloc.dart';
 import 'share_create_screen.dart';
 
 class ShareCreateProvider extends StatelessWidget {

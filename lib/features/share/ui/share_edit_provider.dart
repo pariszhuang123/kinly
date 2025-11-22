@@ -7,10 +7,10 @@ import '../../../core/ui/kinly_loader.dart';
 import '../../../generated/l10n.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../data/repositories/home_repository.dart';
-import '../bloc/share_create_bloc.dart';
+import '../bloc/share_create_bloc/share_create_bloc.dart';
 import '../domain/share_create_form.dart';
 import '../domain/share_split_mode.dart';
-import 'share_create_screen.dart';
+import 'share_create/share_create_screen.dart';
 
 class ShareEditProvider extends StatelessWidget {
   const ShareEditProvider({

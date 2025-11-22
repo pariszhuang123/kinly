@@ -7,7 +7,7 @@ import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/data/repositories/expenses_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
-import 'package:kinly/features/share/bloc/share_create_bloc.dart';
+import 'package:kinly/features/share/bloc/share_create_bloc/share_create_bloc.dart';
 import 'package:kinly/features/share/domain/share_create_form.dart';
 import 'package:kinly/features/share/domain/share_participant.dart';
 import 'package:kinly/features/share/domain/share_split_mode.dart';

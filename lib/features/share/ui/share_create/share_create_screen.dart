@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/supabase/supabase_error_mapper.dart';
-import '../../../core/theme/kinly_sections.dart';
-import '../../../core/theme/spacing.dart';
-import '../../../core/ui/kinly_circle_avatar.dart';
-import '../../../core/ui/kinly_loader.dart';
-import '../../../generated/l10n.dart';
-import '../bloc/share_create_bloc.dart';
-import '../domain/share_create_form.dart';
-import '../domain/share_participant.dart';
-import '../domain/share_split_mode.dart';
-import 'share_edit_outcome.dart';
+import '../../../../core/supabase/supabase_error_mapper.dart';
+import '../../../../core/theme/kinly_sections.dart';
+import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../core/ui/kinly_loader.dart';
+import '../../../../generated/l10n.dart';
+import '../../bloc/share_create_bloc/share_create_bloc.dart';
+import '../../domain/share_create_form.dart';
+import '../../domain/share_participant.dart';
+import '../../domain/share_split_mode.dart';
+import '../share_edit_outcome.dart';
 
 class ShareCreateScreen extends StatefulWidget {
   const ShareCreateScreen({super.key, this.allowDelete = false});

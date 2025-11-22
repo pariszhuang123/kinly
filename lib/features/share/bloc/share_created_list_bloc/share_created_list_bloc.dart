@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../core/expenses/models.dart';
-import '../../../data/repositories/expenses_repository.dart';
+import '../../../../core/expenses/models.dart';
+import '../../../../data/repositories/expenses_repository.dart';
 
 part 'share_created_list_event.dart';
 part 'share_created_list_state.dart';
@@ -60,9 +60,7 @@ class ShareCreatedListBloc
           .where((summary) => summary.status != ExpenseStatus.cancelled)
           .map(ShareCreatedListEntry.fromSummary)
           .toList(growable: false)
-        ..sort(
-          (a, b) => b.createdAt.compareTo(a.createdAt),
-        );
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
       emit(
         state.copyWith(
           status: ShareCreatedListStatus.success,

@@ -8,7 +8,7 @@ Scope: Defines the household shared expenses lifecycle for the Home-only MVP so 
 - Any active home member can author expenses. The author (payer) is the only person who can edit or cancel that expense.
 - Expenses start as a **draft** (quick capture) and become **active** once the creator defines how the cost is split. Drafts are visible only to the creator; active expenses are visible to the entire home.
 - The split can be `equal` (integer division in cents across selected members; remainder flows to the last entry) or `custom` (explicit cents per debtor). Drafts keep `splitType = NULL`.
-- Splits live in `expense_splits`. Each row is “debtor X owes Y cents to the creator for this expense.” Payment tracking is per split; there is no top-level “paid” flag.
+- Splits live in `expense_splits`. Each row is “debtor X owes Y cents to the creator for this expense.” Payment tracking is per split; there is no top-level “paid” flag. The creator’s own share is implicit (total amount minus the sum of debtor rows) so the creator can allocate part of the cost to themselves without generating a split entry.
 - Each debtor can mark their own share as paid (idempotent; no partial payments). Once any share is paid, the amount and split structure become immutable.
 - The Today surface shows only “what I owe” grouped by payer. Explore → Share lists expenses authored by the caller with derived progress like “2 of 3 shares paid.”
 - Fully paid is a derived view: `allPaid = (totalShares > 0 AND paidShares = totalShares)`. UI can hide settled expenses using this flag without mutating status.
@@ -211,8 +211,8 @@ Projection for list views (Explore → Share, repository caches).
 - **Creator-only edits**: only `createdByUserId` can update or cancel an expense. Drafts remain private to the creator.
 - **Draft vs. active**: `p_split_mode IS NULL` creates or keeps a draft. Passing `equal/custom` promotes the record to `status='active'` and `splitType=p_split_mode`. Once active, it never reverts to draft.
 - **Amounts**: `amountCents` must be positive and ≤ 9,000,000,000,000 (safety cap). Description must be 1–280 chars after trim; notes ≤ 2,000 chars.
-- **Equal split**: `p_member_ids` must be a non-empty array of distinct active members of the home (excluding the creator). Server performs integer division in cents; remainder flows to the last member in the provided order.
-- **Custom split**: `p_splits` is a non-empty JSON array of `{ "user_id": uuid, "amount_cents": bigint }`. All debtors must be active members (not the creator). Sum of `amount_cents` must equal `amountCents`.
+- **Equal split**: `p_member_ids` must include at least one active member other than the creator. The creator may be included to record their portion, but split rows are written only for non-creator debtors. Server performs integer division in cents; remainder flows to the last entry in the provided order.
+- **Custom split**: `p_splits` is a non-empty JSON array of `{ "user_id": uuid, "amount_cents": bigint }`. All debtors must be active members of the home. Entries for the creator are allowed (to represent the creator’s share) but are filtered out before persisting splits. Sum of `amount_cents` must equal `amountCents`, and at least one non-creator debtor must be present.
 - **Editing drafts**: `expenses.edit` requires `p_split_mode` when the existing status is `draft` so edits promote to `active`.
 - **Editing active expenses**: If any split is `status='paid'`, only `description` and `notes` can change; amount/split structure updates raise `EXPENSE_LOCKED_AFTER_PAYMENT`. When no split is paid, the creator can rebuild the split (equal/custom) as long as validations pass. Changing the amount on an active expense without providing split details raises `SPLIT_REQUIRED`.
 - **Mark paid**: only the debtor for a split can mark it paid, and only when `status='active'`. Action is idempotent.
