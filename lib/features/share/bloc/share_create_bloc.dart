@@ -41,6 +41,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     on<ShareCreateParticipantToggled>(_onParticipantToggled);
     on<ShareCreateCustomAmountChanged>(_onCustomAmountChanged);
     on<ShareCreateSubmitted>(_onSubmitted);
+    on<ShareCreateDeleted>(_onDeleted);
   }
 
   final String _homeId;
@@ -66,19 +67,24 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
             ),
           )
           .toList(growable: false);
+
       final availableIds = participants.map((p) => p.userId).toList();
       Set<String> nextSelection =
           state.form.selectedParticipantIds
               .where((id) => availableIds.contains(id))
               .toSet();
+
+      // Default to all if nothing selected but participants exist
       if (nextSelection.isEmpty && availableIds.isNotEmpty) {
         nextSelection = LinkedHashSet<String>.from(availableIds);
       }
+
       final filteredAmounts = Map.fromEntries(
         state.form.customAmountInputs.entries.where(
           (entry) => availableIds.contains(entry.key),
         ),
       );
+
       emit(
         state.copyWith(
           isLoading: false,
@@ -88,6 +94,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
             customAmountInputs: filteredAmounts,
           ),
           clearLoadError: true,
+          // NOTE: this is hydration, not a user edit, so we DO NOT touch hasUserEdits here
         ),
       );
     } catch (error) {
@@ -101,28 +108,48 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     ShareCreateDescriptionChanged event,
     Emitter<ShareCreateState> emit,
   ) {
-    emit(state.copyWith(form: state.form.copyWith(description: event.value)));
+    emit(
+      state.copyWith(
+        form: state.form.copyWith(description: event.value),
+        hasUserEdits: true,
+      ),
+    );
   }
 
   void _onAmountChanged(
     ShareCreateAmountChanged event,
     Emitter<ShareCreateState> emit,
   ) {
-    emit(state.copyWith(form: state.form.copyWith(amountInput: event.value)));
+    emit(
+      state.copyWith(
+        form: state.form.copyWith(amountInput: event.value),
+        hasUserEdits: true,
+      ),
+    );
   }
 
   void _onSplitModeChanged(
     ShareCreateSplitModeChanged event,
     Emitter<ShareCreateState> emit,
   ) {
-    emit(state.copyWith(form: state.form.copyWith(splitMode: event.mode)));
+    emit(
+      state.copyWith(
+        form: state.form.copyWith(splitMode: event.mode),
+        hasUserEdits: true,
+      ),
+    );
   }
 
   void _onNotesChanged(
     ShareCreateNotesChanged event,
     Emitter<ShareCreateState> emit,
   ) {
-    emit(state.copyWith(form: state.form.copyWith(notes: event.value)));
+    emit(
+      state.copyWith(
+        form: state.form.copyWith(notes: event.value),
+        hasUserEdits: true,
+      ),
+    );
   }
 
   void _onParticipantToggled(
@@ -130,7 +157,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     Emitter<ShareCreateState> emit,
   ) {
     final form = state.form.updateSelection(event.userId, event.isSelected);
-    emit(state.copyWith(form: form));
+    emit(state.copyWith(form: form, hasUserEdits: true));
   }
 
   void _onCustomAmountChanged(
@@ -138,7 +165,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     Emitter<ShareCreateState> emit,
   ) {
     final updated = state.form.updateCustomAmount(event.userId, event.amount);
-    emit(state.copyWith(form: updated));
+    emit(state.copyWith(form: updated, hasUserEdits: true));
   }
 
   Future<void> _onSubmitted(
@@ -159,7 +186,10 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     List<ExpenseCustomSplitInput>? customSplits;
     ExpenseSplitType? splitType;
 
-    if (isEditing && (splitMode == null || editingExpenseId == null)) {
+    // For edit mode, we require splitMode + editing id unless amountLocked
+    if (isEditing &&
+        !amountLocked &&
+        (splitMode == null || editingExpenseId == null)) {
       isValid = false;
     }
 
@@ -186,6 +216,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
         splitType = ExpenseSplitType.custom;
       }
     } else if (amountLocked) {
+      // When amount/splits are locked, we don't send new split info
       memberIds = null;
       customSplits = null;
       splitType = null;
@@ -227,6 +258,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
                 memberIds: memberIds,
                 customSplits: customSplits,
               );
+
       emit(
         state.copyWith(
           isSubmitting: false,
@@ -250,6 +282,43 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
           submissionErrorCode: ExpenseErrorCode.unknown,
           submissionErrorMessage: error.toString(),
           submissionErrorTick: state.submissionErrorTick + 1,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onDeleted(
+    ShareCreateDeleted event,
+    Emitter<ShareCreateState> emit,
+  ) async {
+    if (!state.isEditing || state.editingExpenseId == null) {
+      return;
+    }
+
+    emit(state.copyWith(isDeleting: true, clearDeletionError: true));
+
+    try {
+      await _expensesRepository.cancel(state.editingExpenseId!);
+      emit(
+        state.copyWith(
+          isDeleting: false,
+          deletionSuccessTick: state.deletionSuccessTick + 1,
+        ),
+      );
+    } on ExpenseException catch (error) {
+      emit(
+        state.copyWith(
+          isDeleting: false,
+          deletionErrorMessage: error.message,
+          deletionErrorTick: state.deletionErrorTick + 1,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isDeleting: false,
+          deletionErrorMessage: error.toString(),
+          deletionErrorTick: state.deletionErrorTick + 1,
         ),
       );
     }

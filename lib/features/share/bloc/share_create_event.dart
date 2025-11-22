@@ -70,3 +70,7 @@ class ShareCreateCustomAmountChanged extends ShareCreateEvent {
 class ShareCreateSubmitted extends ShareCreateEvent {
   const ShareCreateSubmitted();
 }
+
+class ShareCreateDeleted extends ShareCreateEvent {
+  const ShareCreateDeleted();
+}

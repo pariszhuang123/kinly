@@ -25,6 +25,7 @@ import '../../features/version_gating/ui/force_update_screen.dart';
 import '../../features/share/ui/share_create_provider.dart';
 import '../../features/share/ui/share_created_list_provider.dart';
 import '../../features/share/ui/share_edit_provider.dart';
+import '../../features/share/ui/share_edit_route_args.dart';
 
 class AppRoutes {
   static const splash = '/';
@@ -272,11 +273,13 @@ GoRouter createRouter({
             throw StateError('Share routes require an active membership.');
           }
           final expenseId = state.pathParameters['expenseId']!;
+          final args = state.extra as ShareEditRouteArgs?;
           return ShareEditProvider(
             homeId: membership.homeId,
             expenseId: expenseId,
             expensesRepository: sl<ExpensesRepository>(),
             homeRepository: sl<HomeRepository>(),
+            allowDelete: args?.allowDelete ?? false,
           );
         },
       ),

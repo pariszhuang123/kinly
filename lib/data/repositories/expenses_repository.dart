@@ -38,6 +38,9 @@ abstract class ExpensesRepository {
 
   /// Marks the caller's share as paid for the given [expenseId].
   Future<void> markSharePaid(String expenseId);
+
+  /// Cancels an expense created by the caller (draft or active without payments).
+  Future<Expense> cancel(String expenseId);
 }
 
 /// Payload for custom split entries accepted by Supabase RPCs.

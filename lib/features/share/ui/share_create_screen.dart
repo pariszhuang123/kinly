@@ -11,9 +11,12 @@ import '../bloc/share_create_bloc.dart';
 import '../domain/share_create_form.dart';
 import '../domain/share_participant.dart';
 import '../domain/share_split_mode.dart';
+import 'share_edit_outcome.dart';
 
 class ShareCreateScreen extends StatefulWidget {
-  const ShareCreateScreen({super.key});
+  const ShareCreateScreen({super.key, this.allowDelete = false});
+
+  final bool allowDelete;
 
   @override
   State<ShareCreateScreen> createState() => _ShareCreateScreenState();
@@ -76,10 +79,18 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
       listenWhen:
           (previous, current) =>
               previous.successExpenseId != current.successExpenseId ||
-              previous.submissionErrorTick != current.submissionErrorTick,
+              previous.submissionErrorTick != current.submissionErrorTick ||
+              previous.deletionErrorTick != current.deletionErrorTick ||
+              previous.deletionSuccessTick != current.deletionSuccessTick,
       listener: (context, state) {
+        final s = S.of(context);
+        if (state.deletionSuccessTick > 0) {
+          Navigator.of(context).pop(ShareEditOutcome.deleted);
+          return;
+        }
         if (state.successExpenseId != null) {
-          Navigator.of(context).pop(true);
+          final result = state.isEditing ? ShareEditOutcome.updated : true;
+          Navigator.of(context).pop(result);
           return;
         }
         if (state.submissionErrorTick > 0) {
@@ -87,6 +98,12 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(snackText)));
+        }
+        if (state.deletionErrorTick > 0) {
+          final message = state.deletionErrorMessage ?? s.shareEditDeleteError;
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(message)));
         }
       },
       builder: (context, state) {
@@ -99,6 +116,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
             title: Text(
               state.isEditing ? s.shareEditTitle : s.shareCreateTitle,
             ),
+            // 👇 AppBar delete button removed – primary button handles delete now
           ),
           body: SafeArea(
             child: Padding(
@@ -121,6 +139,11 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
                         amountController: _amountController,
                         notesController: _notesController,
                         customControllers: _customControllers,
+                        allowDelete: widget.allowDelete,
+                        onDeleteRequested:
+                            widget.allowDelete
+                                ? () => _confirmDelete(context)
+                                : null,
                       ),
             ),
           ),
@@ -149,6 +172,39 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
         return state.submissionErrorMessage ?? s.shareCreateErrorGeneric;
     }
   }
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    if (!widget.allowDelete) return;
+    final bloc = context.read<ShareCreateBloc>();
+    final s = S.of(context);
+    final theme = Theme.of(context);
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(s.shareEditDeleteConfirmTitle),
+          content: Text(s.shareEditDeleteConfirmMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(s.shareEditDeleteCancel),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: theme.colorScheme.error,
+                foregroundColor: theme.colorScheme.onError,
+              ),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(s.shareEditDeleteConfirm),
+            ),
+          ],
+        );
+      },
+    );
+    if (shouldDelete == true && mounted) {
+      bloc.add(const ShareCreateDeleted());
+    }
+  }
 }
 
 class _ShareCreateForm extends StatelessWidget {
@@ -159,6 +215,8 @@ class _ShareCreateForm extends StatelessWidget {
     required this.amountController,
     required this.notesController,
     required this.customControllers,
+    required this.allowDelete,
+    required this.onDeleteRequested,
   });
 
   final ShareCreateState state;
@@ -168,6 +226,12 @@ class _ShareCreateForm extends StatelessWidget {
   final TextEditingController notesController;
   final Map<String, TextEditingController> customControllers;
 
+  /// Whether delete is allowed at all for this screen
+  final bool allowDelete;
+
+  /// Callback to trigger delete (shows confirm dialog + dispatches event)
+  final VoidCallback? onDeleteRequested;
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -176,6 +240,40 @@ class _ShareCreateForm extends StatelessWidget {
     final showValidation = state.showValidationErrors;
     final customSummary = state.evaluateCustomSplit();
     final locked = state.isAmountLocked;
+
+    // ------------------------------------------------------------------
+    // Primary button behaviour:
+    // - Create mode: always "Create"
+    // - Edit, pristine, allowDelete: "Delete" (no edits made yet)
+    // - Edit, dirty: "Update"
+    // ------------------------------------------------------------------
+    final isEditing = state.isEditing;
+    final isPristineEdit = isEditing && !state.hasUserEdits;
+    final canDelete = allowDelete && isPristineEdit;
+
+    final String primaryLabel;
+    if (!isEditing) {
+      primaryLabel = s.shareCreateSubmit;
+    } else if (canDelete) {
+      primaryLabel = s.shareEditDeleteButton; // e.g. "Delete"
+    } else {
+      primaryLabel = s.shareEditSubmit; // e.g. "Update"
+    }
+
+    final bool shouldDisable =
+        state.isSubmitting ||
+        state.isDeleting ||
+        // Only require splitMode when doing create/update.
+        (!canDelete && isEditing && state.form.splitMode == null);
+
+    void handlePrimaryPressed() {
+      if (shouldDisable) return;
+      if (canDelete) {
+        onDeleteRequested?.call();
+      } else {
+        context.read<ShareCreateBloc>().add(const ShareCreateSubmitted());
+      }
+    }
 
     return ListView(
       children: [
@@ -291,23 +389,15 @@ class _ShareCreateForm extends StatelessWidget {
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     )
                     : null,
-            onPressed:
-                state.isSubmitting ||
-                        (state.isEditing && state.form.splitMode == null)
-                    ? null
-                    : () => context.read<ShareCreateBloc>().add(
-                      const ShareCreateSubmitted(),
-                    ),
+            onPressed: shouldDisable ? null : handlePrimaryPressed,
             child:
-                state.isSubmitting
+                state.isSubmitting || state.isDeleting
                     ? const SizedBox(
                       height: 20,
                       width: 20,
                       child: KinlyLoader(size: 20),
                     )
-                    : Text(
-                      state.isEditing ? s.shareEditSubmit : s.shareCreateSubmit,
-                    ),
+                    : Text(primaryLabel),
           ),
         ),
       ],

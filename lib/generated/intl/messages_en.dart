@@ -518,6 +518,21 @@ class MessageLookup extends MessageLookupByLibrary {
       "Choose how you want to split this expense.",
     ),
     "shareEditClose": MessageLookupByLibrary.simpleMessage("Close"),
+    "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("Delete"),
+    "shareEditDeleteCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "shareEditDeleteConfirm": MessageLookupByLibrary.simpleMessage("Delete"),
+    "shareEditDeleteConfirmMessage": MessageLookupByLibrary.simpleMessage(
+      "This removes the draft for everyone.",
+    ),
+    "shareEditDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete this share?",
+    ),
+    "shareEditDeleteError": MessageLookupByLibrary.simpleMessage(
+      "Couldn't delete this share. Try again.",
+    ),
+    "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
+      "Share deleted.",
+    ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load that draft.",
     ),

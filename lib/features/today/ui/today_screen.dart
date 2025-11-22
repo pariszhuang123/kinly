@@ -21,6 +21,8 @@ import '../../../../core/logging/logger.dart';
 import '../../../../core/logging/debug_logger.dart';
 import '../../../../data/repositories/expenses_repository.dart';
 import '../../share/ui/share_owed_detail_screen.dart';
+import '../../share/ui/share_edit_route_args.dart';
+import '../../share/ui/share_edit_outcome.dart';
 
 class TodayScreen extends StatelessWidget {
   const TodayScreen({super.key});
@@ -213,14 +215,21 @@ class TodayScreen extends StatelessWidget {
     BuildContext context,
     TodayShareDraft draft,
   ) async {
-    final result = await context.push<bool>(
+    final result = await context.push(
       AppRoutes.shareDraftEditPath(draft.expenseId),
+      extra: const ShareEditRouteArgs(allowDelete: false),
     );
-    if (result == true && context.mounted) {
-      final s = S.of(context);
+    if (!context.mounted) return;
+    final s = S.of(context);
+    if (result == true || result == ShareEditOutcome.updated) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(s.shareEditSuccess)));
+      context.read<TodayBloc>().add(const TodayRefreshed());
+    } else if (result == ShareEditOutcome.deleted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(s.shareEditDeleteSuccess)));
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
   }

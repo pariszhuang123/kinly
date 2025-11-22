@@ -6,15 +6,20 @@ class ShareCreateState extends Equatable {
     required List<ShareParticipant> participants,
     required this.isLoading,
     required this.isSubmitting,
+    required this.isDeleting,
     required this.showValidationErrors,
     required this.loadErrorMessage,
     required this.submissionErrorCode,
     required this.submissionErrorMessage,
     required this.submissionErrorTick,
+    required this.deletionErrorMessage,
+    required this.deletionErrorTick,
+    required this.deletionSuccessTick,
     required this.successExpenseId,
     required this.isEditing,
     required this.editingExpenseId,
     required this.isAmountLocked,
+    required this.hasUserEdits,
   }) : participants = List.unmodifiable(participants);
 
   factory ShareCreateState.initial({
@@ -28,15 +33,20 @@ class ShareCreateState extends Equatable {
       participants: const [],
       isLoading: true,
       isSubmitting: false,
+      isDeleting: false,
       showValidationErrors: false,
       loadErrorMessage: null,
       submissionErrorCode: null,
       submissionErrorMessage: null,
       submissionErrorTick: 0,
+      deletionErrorMessage: null,
+      deletionErrorTick: 0,
+      deletionSuccessTick: 0,
       successExpenseId: null,
       isEditing: isEditing,
       editingExpenseId: editingExpenseId,
       isAmountLocked: isAmountLocked,
+      hasUserEdits: false, // starts as "pristine"
     );
   }
 
@@ -44,21 +54,30 @@ class ShareCreateState extends Equatable {
   final List<ShareParticipant> participants;
   final bool isLoading;
   final bool isSubmitting;
+  final bool isDeleting;
   final bool showValidationErrors;
   final String? loadErrorMessage;
   final ExpenseErrorCode? submissionErrorCode;
   final String? submissionErrorMessage;
   final int submissionErrorTick;
+  final String? deletionErrorMessage;
+  final int deletionErrorTick;
+  final int deletionSuccessTick;
   final String? successExpenseId;
   final bool isEditing;
   final String? editingExpenseId;
   final bool isAmountLocked;
+
+  /// Tracks whether the user has made *any* edits in this session.
+  /// Used by the primary button to decide between Delete vs Update.
+  final bool hasUserEdits;
 
   ShareCreateState copyWith({
     ShareCreateForm? form,
     List<ShareParticipant>? participants,
     bool? isLoading,
     bool? isSubmitting,
+    bool? isDeleting,
     bool? showValidationErrors,
     String? loadErrorMessage,
     bool clearLoadError = false,
@@ -66,17 +85,23 @@ class ShareCreateState extends Equatable {
     String? submissionErrorMessage,
     bool clearSubmissionError = false,
     int? submissionErrorTick,
+    String? deletionErrorMessage,
+    bool clearDeletionError = false,
+    int? deletionErrorTick,
+    int? deletionSuccessTick,
     String? successExpenseId,
     bool clearSuccess = false,
     bool? isEditing,
     String? editingExpenseId,
     bool? isAmountLocked,
+    bool? hasUserEdits,
   }) {
     return ShareCreateState(
       form: form ?? this.form,
       participants: participants ?? this.participants,
       isLoading: isLoading ?? this.isLoading,
       isSubmitting: isSubmitting ?? this.isSubmitting,
+      isDeleting: isDeleting ?? this.isDeleting,
       showValidationErrors: showValidationErrors ?? this.showValidationErrors,
       loadErrorMessage:
           clearLoadError ? null : loadErrorMessage ?? this.loadErrorMessage,
@@ -89,20 +114,29 @@ class ShareCreateState extends Equatable {
               ? null
               : submissionErrorMessage ?? this.submissionErrorMessage,
       submissionErrorTick: submissionErrorTick ?? this.submissionErrorTick,
+      deletionErrorMessage:
+          clearDeletionError
+              ? null
+              : deletionErrorMessage ?? this.deletionErrorMessage,
+      deletionErrorTick: deletionErrorTick ?? this.deletionErrorTick,
+      deletionSuccessTick: deletionSuccessTick ?? this.deletionSuccessTick,
       successExpenseId:
           clearSuccess ? null : successExpenseId ?? this.successExpenseId,
       isEditing: isEditing ?? this.isEditing,
       editingExpenseId: editingExpenseId ?? this.editingExpenseId,
       isAmountLocked: isAmountLocked ?? this.isAmountLocked,
+      hasUserEdits: hasUserEdits ?? this.hasUserEdits,
     );
   }
 
   bool get hasEqualSelection => form.selectedParticipantIds.length >= 2;
 
+  /// Builds a summary of the custom split state for validation + RPC input.
   ShareCustomSplitSummary evaluateCustomSplit() {
-    final total = form.amountCents;
+    final int? total = form.amountCents;
     final entries = <ShareCustomSplitEntry>[];
     var hasInvalidAmounts = false;
+
     for (final userId in form.selectedParticipantIds) {
       final cents = ShareCreateForm.parseCurrency(
         form.customAmountInputs[userId] ?? '',
@@ -113,10 +147,14 @@ class ShareCreateState extends Equatable {
       }
       entries.add(ShareCustomSplitEntry(userId: userId, amountCents: cents));
     }
+
     final hasInsufficientParticipants = entries.length < 2;
-    final sum = entries.fold<int>(0, (sum, entry) => sum + entry.amountCents);
-    final sumMatchesTotal = total != null && sum == total;
-    final hasSinglePayer =
+    final int sum = entries.fold<int>(
+      0,
+      (sum, entry) => sum + entry.amountCents,
+    );
+    final bool sumMatchesTotal = total != null && sum == total;
+    final bool hasSinglePayer =
         total != null &&
         entries.length == 1 &&
         entries.first.amountCents == total;
@@ -137,15 +175,20 @@ class ShareCreateState extends Equatable {
     participants,
     isLoading,
     isSubmitting,
+    isDeleting,
     showValidationErrors,
     loadErrorMessage,
     submissionErrorCode,
     submissionErrorMessage,
     submissionErrorTick,
+    deletionErrorMessage,
+    deletionErrorTick,
+    deletionSuccessTick,
     successExpenseId,
     isEditing,
     editingExpenseId,
     isAmountLocked,
+    hasUserEdits,
   ];
 }
 

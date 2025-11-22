@@ -160,6 +160,26 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     }
   }
 
+  @override
+  Future<Expense> cancel(String expenseId) async {
+    try {
+      final response = await _client.rpc(
+        'expenses_cancel',
+        params: {'p_expense_id': expenseId},
+      );
+      final payload = _coerceMap(response);
+      if (payload == null) {
+        throw const ExpenseException(
+          ExpenseErrorCode.unknown,
+          'Malformed expense payload from Supabase.',
+        );
+      }
+      return Expense.fromJson(payload);
+    } catch (error) {
+      throw SupabaseErrorMapper.mapExpense(error);
+    }
+  }
+
   Map<String, dynamic>? _coerceMap(dynamic value) {
     if (value is Map<String, dynamic>) return value;
     if (value is Map) return value.cast<String, dynamic>();

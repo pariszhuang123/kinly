@@ -1016,6 +1016,76 @@ class S {
     return Intl.message('Close', name: 'shareEditClose', desc: '', args: []);
   }
 
+  /// `Delete`
+  String get shareEditDeleteButton {
+    return Intl.message(
+      'Delete',
+      name: 'shareEditDeleteButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete this share?`
+  String get shareEditDeleteConfirmTitle {
+    return Intl.message(
+      'Delete this share?',
+      name: 'shareEditDeleteConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This removes the draft for everyone.`
+  String get shareEditDeleteConfirmMessage {
+    return Intl.message(
+      'This removes the draft for everyone.',
+      name: 'shareEditDeleteConfirmMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get shareEditDeleteCancel {
+    return Intl.message(
+      'Cancel',
+      name: 'shareEditDeleteCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get shareEditDeleteConfirm {
+    return Intl.message(
+      'Delete',
+      name: 'shareEditDeleteConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't delete this share. Try again.`
+  String get shareEditDeleteError {
+    return Intl.message(
+      'Couldn\'t delete this share. Try again.',
+      name: 'shareEditDeleteError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share deleted.`
+  String get shareEditDeleteSuccess {
+    return Intl.message(
+      'Share deleted.',
+      name: 'shareEditDeleteSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Create share`
   String get shareCreateTitle {
     return Intl.message(

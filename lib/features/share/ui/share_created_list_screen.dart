@@ -11,6 +11,8 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/share_created_list_bloc.dart';
+import 'share_edit_outcome.dart';
+import 'share_edit_route_args.dart';
 
 class ShareCreatedListScreen extends StatelessWidget {
   const ShareCreatedListScreen({super.key});
@@ -62,7 +64,7 @@ class ShareCreatedListScreen extends StatelessWidget {
                     entries: state.entries,
                     shareColors: shareColors,
                     onRefresh: () => _handleRefresh(context),
-                    onDraftTap: (entry) => _openShareDraft(context, entry),
+                    onEntryTap: (entry) => _openShareEntry(context, entry),
                   );
                 case ShareCreatedListStatus.initial:
                   return const SizedBox.shrink();
@@ -101,19 +103,39 @@ class ShareCreatedListScreen extends StatelessWidget {
     }
   }
 
-  Future<void> _openShareDraft(
+  Future<void> _openShareEntry(
     BuildContext context,
     ShareCreatedListEntry entry,
   ) async {
-    if (!entry.isDraft) return;
-    final result = await context.push<bool>(
+    final result = await context.push(
       AppRoutes.shareDraftEditPath(entry.expenseId),
+      extra: const ShareEditRouteArgs(allowDelete: true),
     );
     if (result == true && context.mounted) {
       final s = S.of(context);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(s.shareEditSuccess)));
+      context.read<ShareCreatedListBloc>().add(
+            const ShareCreatedListRefreshed(),
+          );
+      return;
+    }
+    if (result == ShareEditOutcome.updated && context.mounted) {
+      final s = S.of(context);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(s.shareEditSuccess)));
+      context.read<ShareCreatedListBloc>().add(
+            const ShareCreatedListRefreshed(),
+          );
+      return;
+    }
+    if (result == ShareEditOutcome.deleted && context.mounted) {
+      final s = S.of(context);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(s.shareEditDeleteSuccess)));
       context.read<ShareCreatedListBloc>().add(
             const ShareCreatedListRefreshed(),
           );
@@ -126,13 +148,13 @@ class _ShareCreatedList extends StatelessWidget {
     required this.entries,
     required this.shareColors,
     required this.onRefresh,
-    required this.onDraftTap,
+    required this.onEntryTap,
   });
 
   final List<ShareCreatedListEntry> entries;
   final SectionColors? shareColors;
   final Future<void> Function() onRefresh;
-  final void Function(ShareCreatedListEntry) onDraftTap;
+  final void Function(ShareCreatedListEntry) onEntryTap;
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +169,7 @@ class _ShareCreatedList extends StatelessWidget {
           return _ShareCreatedCard(
             entry: entry,
             shareColors: shareColors,
-            onTap: entry.isDraft ? () => onDraftTap(entry) : null,
+            onTap: () => onEntryTap(entry),
           );
         },
       ),

@@ -545,6 +545,21 @@ class MessageLookup extends MessageLookupByLibrary {
       "Elige cA?mo quieres dividir este gasto.",
     ),
     "shareEditClose": MessageLookupByLibrary.simpleMessage("Cerrar"),
+    "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("Eliminar"),
+    "shareEditDeleteCancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
+    "shareEditDeleteConfirm": MessageLookupByLibrary.simpleMessage("Eliminar"),
+    "shareEditDeleteConfirmMessage": MessageLookupByLibrary.simpleMessage(
+      "Esto quitar� el borrador para todos.",
+    ),
+    "shareEditDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "�Eliminar este gasto?",
+    ),
+    "shareEditDeleteError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos eliminar este gasto. Int�ntalo de nuevo.",
+    ),
+    "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
+      "Gasto eliminado.",
+    ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar ese borrador.",
     ),

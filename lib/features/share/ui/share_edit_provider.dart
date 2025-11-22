@@ -19,12 +19,14 @@ class ShareEditProvider extends StatelessWidget {
     required this.expenseId,
     required this.expensesRepository,
     required this.homeRepository,
+    this.allowDelete = false,
   });
 
   final String homeId;
   final String expenseId;
   final ExpensesRepository expensesRepository;
   final HomeRepository homeRepository;
+  final bool allowDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +95,7 @@ class ShareEditProvider extends StatelessWidget {
                 editingExpenseId: expense.id,
                 amountLocked: detail.amountLocked,
               )..add(const ShareCreateParticipantsRequested()),
-          child: const ShareCreateScreen(),
+          child: ShareCreateScreen(allowDelete: allowDelete),
         );
       },
     );
