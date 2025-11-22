@@ -207,6 +207,7 @@ class _FlowChoreFormView extends StatelessWidget {
     final theme = Theme.of(context);
     final form = state.form;
     final showValidation = state.showValidationErrors;
+    final isEditMode = state.isEditMode;
     final requiresAssignee = state.requiresAssignee;
     final hasAssigneeError =
         showValidation && requiresAssignee && form.assigneeUserId == null;
@@ -267,7 +268,7 @@ class _FlowChoreFormView extends StatelessWidget {
                 color: theme.colorScheme.error,
               ),
             ),
-          ),
+        ),
         SizedBox(height: spacing?.lg ?? 16),
         DropdownButtonFormField<ChoreRecurrence>(
           initialValue: form.recurrence,
@@ -287,45 +288,57 @@ class _FlowChoreFormView extends StatelessWidget {
           decoration: InputDecoration(labelText: s.flowChoreRecurrenceLabel),
         ),
         SizedBox(height: spacing?.lg ?? 16),
-        TextField(
-          controller: notesController,
-          minLines: 3,
-          maxLines: 4,
-          decoration: InputDecoration(
-            labelText: s.flowChoreNotesLabel,
-            hintText: s.flowChoreNotesHint,
-          ),
-          onChanged:
-              (value) => context.read<FlowChoreBloc>().add(
-                FlowChoreNotesChanged(value),
+        if (isEditMode)
+          ...[
+            TextField(
+              controller: notesController,
+              minLines: 3,
+              maxLines: 4,
+              decoration: InputDecoration(
+                labelText: s.flowChoreNotesLabel,
+                hintText: s.flowChoreNotesHint,
               ),
-        ),
-        SizedBox(height: spacing?.lg ?? 16),
-        TextField(
-          controller: howToController,
-          decoration: InputDecoration(
-            labelText: s.flowChoreHowToLabel,
-            hintText: s.flowChoreHowToHint,
-            errorText: hasHowToError ? s.flowChoreValidationHowToUrl : null,
-          ),
-          keyboardType: TextInputType.url,
-          onChanged:
-              (value) => context.read<FlowChoreBloc>().add(
-                FlowChoreHowToChanged(value),
+              onChanged:
+                  (value) => context.read<FlowChoreBloc>().add(
+                    FlowChoreNotesChanged(value),
+                  ),
+            ),
+            SizedBox(height: spacing?.lg ?? 16),
+            TextField(
+              controller: howToController,
+              decoration: InputDecoration(
+                labelText: s.flowChoreHowToLabel,
+                hintText: s.flowChoreHowToHint,
+                errorText: hasHowToError ? s.flowChoreValidationHowToUrl : null,
               ),
-        ),
-        SizedBox(height: spacing?.lg ?? 16),
-        TextField(
-          controller: photoController,
-          decoration: InputDecoration(
-            labelText: s.flowChorePhotoLabel,
-            hintText: s.flowChorePhotoHint,
-          ),
-          onChanged:
-              (value) => context.read<FlowChoreBloc>().add(
-                FlowChorePhotoChanged(value),
+              keyboardType: TextInputType.url,
+              onChanged:
+                  (value) => context.read<FlowChoreBloc>().add(
+                    FlowChoreHowToChanged(value),
+                  ),
+            ),
+            SizedBox(height: spacing?.lg ?? 16),
+            TextField(
+              controller: photoController,
+              decoration: InputDecoration(
+                labelText: s.flowChorePhotoLabel,
+                hintText: s.flowChorePhotoHint,
               ),
-        ),
+              onChanged:
+                  (value) => context.read<FlowChoreBloc>().add(
+                    FlowChorePhotoChanged(value),
+                  ),
+            ),
+          ]
+        else
+          _OptionalDetailsExpansion(
+            spacing: spacing,
+            s: s,
+            hasHowToError: hasHowToError,
+            notesController: notesController,
+            howToController: howToController,
+            photoController: photoController,
+          ),
         SizedBox(height: spacing?.xl ?? 24),
         SizedBox(
           width: double.infinity,
@@ -506,6 +519,85 @@ class _FlowChoreError extends StatelessWidget {
           Text(message, textAlign: TextAlign.center),
           const SizedBox(height: 16),
           ElevatedButton(onPressed: onRetry, child: Text(s.flowChoreRetry)),
+        ],
+      ),
+    );
+  }
+}
+
+class _OptionalDetailsExpansion extends StatelessWidget {
+  const _OptionalDetailsExpansion({
+    required this.spacing,
+    required this.s,
+    required this.hasHowToError,
+    required this.notesController,
+    required this.howToController,
+    required this.photoController,
+  });
+
+  final Spacing? spacing;
+  final S s;
+  final bool hasHowToError;
+  final TextEditingController notesController;
+  final TextEditingController howToController;
+  final TextEditingController photoController;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    return Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ExpansionTile(
+        initiallyExpanded: hasHowToError,
+        title: Text(
+          s.flowChoreDetailMoreInfoTitle,
+          style: theme.textTheme.titleMedium,
+        ),
+        childrenPadding: EdgeInsets.fromLTRB(16, 0, 16, spacing?.md ?? 16),
+        children: [
+          TextField(
+            controller: notesController,
+            minLines: 3,
+            maxLines: 4,
+            decoration: InputDecoration(
+              labelText: s.flowChoreNotesLabel,
+              hintText: s.flowChoreNotesHint,
+            ),
+            onChanged:
+                (value) => context.read<FlowChoreBloc>().add(
+                  FlowChoreNotesChanged(value),
+                ),
+          ),
+          SizedBox(height: spacing?.lg ?? 16),
+          TextField(
+            controller: howToController,
+            decoration: InputDecoration(
+              labelText: s.flowChoreHowToLabel,
+              hintText: s.flowChoreHowToHint,
+              errorText: hasHowToError ? s.flowChoreValidationHowToUrl : null,
+            ),
+            keyboardType: TextInputType.url,
+            onChanged:
+                (value) => context.read<FlowChoreBloc>().add(
+                  FlowChoreHowToChanged(value),
+                ),
+          ),
+          SizedBox(height: spacing?.lg ?? 16),
+          TextField(
+            controller: photoController,
+            decoration: InputDecoration(
+              labelText: s.flowChorePhotoLabel,
+              hintText: s.flowChorePhotoHint,
+            ),
+            onChanged:
+                (value) => context.read<FlowChoreBloc>().add(
+                  FlowChorePhotoChanged(value),
+                ),
+          ),
         ],
       ),
     );

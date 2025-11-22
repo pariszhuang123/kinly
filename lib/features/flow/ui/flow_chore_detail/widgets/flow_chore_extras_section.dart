@@ -35,43 +35,35 @@ class FlowChoreExtrasSection extends StatelessWidget {
         expectationPhotoUrl != null && expectationPhotoUrl!.isNotEmpty;
 
     return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(spacing?.md ?? 16),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Theme(
-        data: theme.copyWith(
-          dividerColor: Colors.transparent,
-          listTileTheme: theme.listTileTheme.copyWith(
-            dense: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-          ),
-        ),
-        child: ExpansionTile(
-          title: Text(
-            // add a specific key later if you like
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
             s.flowChoreDetailMoreInfoTitle,
             style: theme.textTheme.titleMedium,
           ),
-          childrenPadding: EdgeInsets.fromLTRB(16, 0, 16, spacing?.md ?? 16),
-          children: [
-            _FlowDetailSection(title: notesLabel, body: notesBody),
+          SizedBox(height: spacing?.md ?? 16),
+          _FlowDetailSection(title: notesLabel, body: notesBody),
+          SizedBox(height: spacing?.md ?? 16),
+          _FlowDetailSection(
+            title: howToLabel,
+            body: howToBody,
+            onTap: onHowToTap,
+          ),
+          if (hasExpectationPhoto) ...[
             SizedBox(height: spacing?.md ?? 16),
-            _FlowDetailSection(
-              title: howToLabel,
-              body: howToBody,
-              onTap: onHowToTap,
+            _ExpectationPhotoSection(
+              title: expectationPhotoLabel ?? s.flowChoreExpectationPhotoLabel,
+              photoUrl: expectationPhotoUrl!,
             ),
-            if (hasExpectationPhoto) ...[
-              SizedBox(height: spacing?.md ?? 16),
-              _ExpectationPhotoSection(
-                title:
-                    expectationPhotoLabel ?? s.flowChoreExpectationPhotoLabel,
-                photoUrl: expectationPhotoUrl!,
-              ),
-            ],
           ],
-        ),
+        ],
       ),
     );
   }
