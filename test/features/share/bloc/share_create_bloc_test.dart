@@ -154,7 +154,7 @@ void main() {
     },
   );
 
-  late ShareCreateState _draftSeed;
+  late ShareCreateState draftSeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'submits draft without split when no mode chosen',
     build: () => buildBloc(),
@@ -164,8 +164,8 @@ void main() {
         amountInput: '12.00',
         selectedParticipantIds: {'member_a', 'member_self'},
       );
-      _draftSeed = seededState(form: form);
-      return _draftSeed;
+      draftSeed = seededState(form: form);
+      return draftSeed;
     },
     setUp: () {
       when(
@@ -195,7 +195,7 @@ void main() {
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
     expect: () {
-      final submitting = _draftSeed.copyWith(
+      final submitting = draftSeed.copyWith(
         isSubmitting: true,
         showValidationErrors: true,
         clearSubmissionError: true,
@@ -223,25 +223,25 @@ void main() {
     },
   );
 
-  late ShareCreateState _emptySeed;
+  late ShareCreateState emptySeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'sets validation flag when inputs missing',
     build: () => buildBloc(),
     seed: () {
-      _emptySeed = seededState(form: ShareCreateForm.initial());
-      return _emptySeed;
+      emptySeed = seededState(form: ShareCreateForm.initial());
+      return emptySeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [_emptySeed.copyWith(showValidationErrors: true)],
+    expect: () => [emptySeed.copyWith(showValidationErrors: true)],
   );
 
-  late ShareCreateState _equalSeed;
+  late ShareCreateState equalSeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'submits equal split successfully',
     build: () => buildBloc(),
     seed: () {
-      _equalSeed = seededState();
-      return _equalSeed;
+      equalSeed = seededState();
+      return equalSeed;
     },
     setUp: () {
       when(
@@ -271,7 +271,7 @@ void main() {
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
     expect: () {
-      final submitting = _equalSeed.copyWith(
+      final submitting = equalSeed.copyWith(
         isSubmitting: true,
         showValidationErrors: true,
         clearSubmissionError: true,
@@ -299,7 +299,7 @@ void main() {
     },
   );
 
-  late ShareCreateState _customSeed;
+  late ShareCreateState customSeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'prevents submitting when custom split sum mismatches',
     build: () => buildBloc(),
@@ -311,11 +311,11 @@ void main() {
         selectedParticipantIds: {'member_a', 'member_b'},
         customAmountInputs: const {'member_a': '4', 'member_b': '3'},
       );
-      _customSeed = seededState(form: form);
-      return _customSeed;
+      customSeed = seededState(form: form);
+      return customSeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [_customSeed.copyWith(showValidationErrors: true)],
+    expect: () => [customSeed.copyWith(showValidationErrors: true)],
     verify: (_) {
       verifyNever(
         () => expensesRepository.create(
@@ -331,13 +331,13 @@ void main() {
     },
   );
 
-  late ShareCreateState _errorSeed;
+  late ShareCreateState errorSeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'emits submission error when repository throws',
     build: () => buildBloc(),
     seed: () {
-      _errorSeed = seededState();
-      return _errorSeed;
+      errorSeed = seededState();
+      return errorSeed;
     },
     setUp: () {
       when(
@@ -356,7 +356,7 @@ void main() {
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
     expect: () {
-      final submitting = _errorSeed.copyWith(
+      final submitting = errorSeed.copyWith(
         isSubmitting: true,
         showValidationErrors: true,
         clearSubmissionError: true,
@@ -372,7 +372,7 @@ void main() {
     },
   );
 
-  late ShareCreateState _editSeed;
+  late ShareCreateState editSeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'requires split selection when editing',
     build: () => buildBloc(editingExpenseId: 'expense-draft'),
@@ -381,18 +381,18 @@ void main() {
         description: 'Draft expense',
         amountInput: '15.00',
       );
-      _editSeed = seededState(
+      editSeed = seededState(
         form: form,
         isEditing: true,
         editingExpenseId: 'expense-draft',
       );
-      return _editSeed;
+      return editSeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [_editSeed.copyWith(showValidationErrors: true)],
+    expect: () => [editSeed.copyWith(showValidationErrors: true)],
   );
 
-  late ShareCreateState _editSuccessSeed;
+  late ShareCreateState editSuccessSeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'submits edit via repository when split provided',
     build: () => buildBloc(editingExpenseId: 'expense-draft'),
@@ -403,12 +403,12 @@ void main() {
         splitMode: ShareSplitMode.equal,
         selectedParticipantIds: {'member_a', 'member_b'},
       );
-      _editSuccessSeed = seededState(
+      editSuccessSeed = seededState(
         form: form,
         isEditing: true,
         editingExpenseId: 'expense-draft',
       );
-      return _editSuccessSeed;
+      return editSuccessSeed;
     },
     setUp: () {
       when(
@@ -438,7 +438,7 @@ void main() {
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
     expect: () {
-      final submitting = _editSuccessSeed.copyWith(
+      final submitting = editSuccessSeed.copyWith(
         isSubmitting: true,
         showValidationErrors: true,
         clearSubmissionError: true,
@@ -466,7 +466,7 @@ void main() {
     },
   );
 
-  late ShareCreateState _lockedSeed;
+  late ShareCreateState lockedSeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'allows editing description when amount is locked',
     build:
@@ -478,13 +478,13 @@ void main() {
         splitMode: ShareSplitMode.equal,
         selectedParticipantIds: {'member_a', 'member_b'},
       );
-      _lockedSeed = seededState(
+      lockedSeed = seededState(
         form: form,
         isEditing: true,
         editingExpenseId: 'expense-paid',
         isAmountLocked: true,
       );
-      return _lockedSeed;
+      return lockedSeed;
     },
     setUp: () {
       when(
@@ -514,7 +514,7 @@ void main() {
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
     expect: () {
-      final submitting = _lockedSeed.copyWith(
+      final submitting = lockedSeed.copyWith(
         isSubmitting: true,
         showValidationErrors: true,
         clearSubmissionError: true,

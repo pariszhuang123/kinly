@@ -23,6 +23,7 @@ import '../../features/splash/ui/splash_screen.dart';
 import '../../features/version_gating/bloc/app_version_cubit.dart';
 import '../../features/version_gating/ui/force_update_screen.dart';
 import '../../features/share/ui/share_create_provider.dart';
+import '../../features/share/ui/share_created_list_provider.dart';
 import '../../features/share/ui/share_edit_provider.dart';
 
 class AppRoutes {
@@ -40,6 +41,7 @@ class AppRoutes {
   static const flowChoreDetail = '/flow/chore/:choreId/detail';
   static const shareCreate = '/share/new';
   static const shareDraftEdit = '/share/:expenseId/edit';
+  static const shareCreatedList = '/share/created';
   static const profileSettings = '/settings/profile';
   static const profileIdentity = '/settings/profile/identity';
 
@@ -229,6 +231,20 @@ GoRouter createRouter({
             homeId: membership.homeId,
             choreId: choreId,
             choresRepository: sl<ChoresRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.shareCreatedList,
+        name: 'shareCreatedList',
+        builder: (_, __) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Share routes require an active membership.');
+          }
+          return ShareCreatedListProvider(
+            homeId: membership.homeId,
+            expensesRepository: sl<ExpensesRepository>(),
           );
         },
       ),

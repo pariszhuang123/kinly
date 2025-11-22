@@ -36,6 +36,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m6(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
 
+  static String m7(paid, total) => "${paid} de ${total} pagos completos";
+
+  static String m8(paidAmount, totalAmount) =>
+      "${paidAmount} de ${totalAmount} recolectados";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
@@ -55,7 +60,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Revisa cada tarea de Flow y mantÃ©n las tareas en movimiento",
     ),
-    "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
+  
+    "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Revisa cada gasto Share que creaste y sigue los pagos.",
+    ),  "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
       "Explora mÃ¡s maneras de mantener tu hogar liviano.",
     ),
     "exploreIntroTitle": MessageLookupByLibrary.simpleMessage(
@@ -483,7 +491,31 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Crear"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Gasto creado."),
-    "shareCreateTitle": MessageLookupByLibrary.simpleMessage(
+
+    "shareCreatedListActiveAmount": m8,
+    "shareCreatedListActiveSubtitle": m7,
+    "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
+      "Sin asignar",
+    ),
+    "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Divide el monto para asignar a cada persona antes de publicar.",
+    ),
+    "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
+      "Crea un Share para verlo listado aqu?.",
+    ),
+    "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "A?n no hay gastos",
+    ),
+    "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos cargar tus gastos compartidos. Desliza para actualizar.",
+    ),
+    "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage("Pagado"),
+    "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage(
+      "Intentar de nuevo",
+    ),
+    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage(
+      "Tus gastos compartidos",
+    ),    "shareCreateTitle": MessageLookupByLibrary.simpleMessage(
       "Crear gasto compartido",
     ),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(

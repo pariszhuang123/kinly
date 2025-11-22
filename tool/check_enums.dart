@@ -1,7 +1,7 @@
 import 'dart:io';
 
 /// Simple guardrail that ensures shared enums inside lib/core live under
-/// lib/core/<domain>/enums so each agent can locate and version contracts.
+/// lib/core/&lt;domain&gt;/enums so each agent can locate and version contracts.
 Future<void> main(List<String> args) async {
   final projectRoot = Directory.current;
   final libCore = Directory('${projectRoot.path}${Platform.pathSeparator}lib${Platform.pathSeparator}core');

@@ -234,6 +234,37 @@
   "exploreIntroTitle": "Discover what's next",
   "exploreIntroSubtitle": "Explore more ways to keep your home feeling lighter.",
   "exploreFlowSubtitle": "Review every Flow task and keep chores moving",
+  "exploreShareSubtitle": "See every Share you've created and track payments.",
+  "shareCreatedListTitle": "Your shares",
+  "shareCreatedListEmptyTitle": "No shares yet",
+  "shareCreatedListEmptySubtitle": "Create a Share to see it listed here.",
+  "shareCreatedListError": "We couldn't load your shares. Pull to refresh.",
+  "shareCreatedListRetry": "Try again",
+  "shareCreatedListActiveSubtitle": "{paid} of {total} paid",
+  "@shareCreatedListActiveSubtitle": {
+    "placeholders": {
+      "paid": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "shareCreatedListActiveAmount": "{paidAmount} of {totalAmount} collected",
+  "@shareCreatedListActiveAmount": {
+    "placeholders": {
+      "paidAmount": {
+        "type": "String"
+      },
+      "totalAmount": {
+        "type": "String"
+      }
+    }
+  },
+  "shareCreatedListDraftSubtitle": "Split it to assign each person before publishing.",
+  "shareCreatedListDraftBadge": "Unassigned",
+  "shareCreatedListPaidBadge": "Paid off",
   "profileSettingsTitle": "Profile & home",
   "profileSettingsSubtitle": "Manage your account preferences and home access.",
   "profileIdentityTitle": "Edit profile",

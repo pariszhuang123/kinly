@@ -36,6 +36,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m6(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
+  static String m7(paid, total) => "${paid} of ${total} paid";
+
+  static String m8(paidAmount, totalAmount) =>
+      "${paidAmount} of ${totalAmount} collected";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
@@ -54,6 +59,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "create_title": MessageLookupByLibrary.simpleMessage("Create Home"),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Review every Flow task and keep chores moving",
+    ),
+    "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
+      "See every Share you've created and track payments.",
     ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
       "Explore more ways to keep your home feeling lighter.",
@@ -456,6 +464,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Create"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage(
       "Share created.",
+    ),
+    "shareCreatedListActiveAmount": m8,
+    "shareCreatedListActiveSubtitle": m7,
+    "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
+      "Unassigned",
+    ),
+    "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Split it to assign each person before publishing.",
+    ),
+    "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
+      "Create a Share to see it listed here.",
+    ),
+    "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "No shares yet",
+    ),
+    "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
+      "We couldn't load your shares. Pull to refresh.",
+    ),
+    "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage(
+      "Paid off",
+    ),
+    "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage("Try again"),
+    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage(
+      "Your shares",
     ),
     "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Create share"),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(

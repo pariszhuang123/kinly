@@ -1841,6 +1841,116 @@ class S {
     );
   }
 
+  /// `See every Share you've created and track payments.`
+  String get exploreShareSubtitle {
+    return Intl.message(
+      'See every Share you\'ve created and track payments.',
+      name: 'exploreShareSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your shares`
+  String get shareCreatedListTitle {
+    return Intl.message(
+      'Your shares',
+      name: 'shareCreatedListTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No shares yet`
+  String get shareCreatedListEmptyTitle {
+    return Intl.message(
+      'No shares yet',
+      name: 'shareCreatedListEmptyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a Share to see it listed here.`
+  String get shareCreatedListEmptySubtitle {
+    return Intl.message(
+      'Create a Share to see it listed here.',
+      name: 'shareCreatedListEmptySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't load your shares. Pull to refresh.`
+  String get shareCreatedListError {
+    return Intl.message(
+      'We couldn\'t load your shares. Pull to refresh.',
+      name: 'shareCreatedListError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try again`
+  String get shareCreatedListRetry {
+    return Intl.message(
+      'Try again',
+      name: 'shareCreatedListRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{paid} of {total} paid`
+  String shareCreatedListActiveSubtitle(int paid, int total) {
+    return Intl.message(
+      '$paid of $total paid',
+      name: 'shareCreatedListActiveSubtitle',
+      desc: '',
+      args: [paid, total],
+    );
+  }
+
+  /// `{paidAmount} of {totalAmount} collected`
+  String shareCreatedListActiveAmount(String paidAmount, String totalAmount) {
+    return Intl.message(
+      '$paidAmount of $totalAmount collected',
+      name: 'shareCreatedListActiveAmount',
+      desc: '',
+      args: [paidAmount, totalAmount],
+    );
+  }
+
+  /// `Split it to assign each person before publishing.`
+  String get shareCreatedListDraftSubtitle {
+    return Intl.message(
+      'Split it to assign each person before publishing.',
+      name: 'shareCreatedListDraftSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unassigned`
+  String get shareCreatedListDraftBadge {
+    return Intl.message(
+      'Unassigned',
+      name: 'shareCreatedListDraftBadge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paid off`
+  String get shareCreatedListPaidBadge {
+    return Intl.message(
+      'Paid off',
+      name: 'shareCreatedListPaidBadge',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Profile & home`
   String get profileSettingsTitle {
     return Intl.message(

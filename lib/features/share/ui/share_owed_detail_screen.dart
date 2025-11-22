@@ -154,12 +154,11 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
   }
 
   Future<void> _markPaid() async {
-    final context = this.context;
-    final s = S.of(context);
+    final strings = S.of(context);
     final expenseId = _selectedExpenseId;
     if (expenseId == null) {
       setState(() {
-        _errorMessage = s.shareOwedDetailSelectionLabel;
+        _errorMessage = strings.shareOwedDetailSelectionLabel;
       });
       return;
     }
@@ -175,13 +174,13 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
       if (!mounted) return;
       setState(() {
         _isSubmitting = false;
-        _errorMessage = error.message ?? s.shareOwedDetailError;
+        _errorMessage = error.message;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
         _isSubmitting = false;
-        _errorMessage = s.shareOwedDetailError;
+        _errorMessage = strings.shareOwedDetailError;
       });
     }
   }

@@ -234,6 +234,37 @@
   "exploreIntroTitle": "Descubre quÃ© sigue",
   "exploreIntroSubtitle": "Explora mÃ¡s maneras de mantener tu hogar liviano.",
   "exploreFlowSubtitle": "Revisa cada tarea de Flow y mantÃ©n las tareas en movimiento",
+  "exploreShareSubtitle": "Revisa cada gasto Share que creaste y sigue los pagos.",
+  "shareCreatedListTitle": "Tus gastos compartidos",
+  "shareCreatedListEmptyTitle": "A?n no hay gastos",
+  "shareCreatedListEmptySubtitle": "Crea un Share para verlo listado aqu?.",
+  "shareCreatedListError": "No pudimos cargar tus gastos compartidos. Desliza para actualizar.",
+  "shareCreatedListRetry": "Intentar de nuevo",
+  "shareCreatedListActiveSubtitle": "{paid} de {total} pagos completos",
+  "@shareCreatedListActiveSubtitle": {
+    "placeholders": {
+      "paid": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "shareCreatedListActiveAmount": "{paidAmount} de {totalAmount} recolectados",
+  "@shareCreatedListActiveAmount": {
+    "placeholders": {
+      "paidAmount": {
+        "type": "String"
+      },
+      "totalAmount": {
+        "type": "String"
+      }
+    }
+  },
+  "shareCreatedListDraftSubtitle": "Divide el monto para asignar a cada persona antes de publicar.",
+  "shareCreatedListDraftBadge": "Sin asignar",
+  "shareCreatedListPaidBadge": "Pagado",
   "profileSettingsTitle": "Perfil y hogar",
   "profileSettingsSubtitle": "Administra tus preferencias y el acceso a tu hogar.",
   "profileIdentityTitle": "Editar perfil",
