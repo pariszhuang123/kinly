@@ -145,7 +145,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enlace de instrucciones",
     ),
     "flowChoreHowToLaunchError": MessageLookupByLibrary.simpleMessage(
-      "No pudimos abrir ese enlace. IntA�ntalo de nuevo.",
+      "No pudimos abrir ese enlace. Inténtalo de nuevo.",
     ),
     "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar esta tarea. Intenta de nuevo.",
@@ -160,11 +160,31 @@ class MessageLookup extends MessageLookupByLibrary {
       "Agrega contexto o recordatorios opcionales",
     ),
     "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage("Notas"),
+    "flowChorePhotoCaptureCta": MessageLookupByLibrary.simpleMessage(
+      "Add expectation photo",
+    ),
     "flowChorePhotoHint": MessageLookupByLibrary.simpleMessage(
       "storage/households/... (opcional)",
     ),
     "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
       "Foto de referencia",
+    ),
+    "flowChorePhotoLoadError": MessageLookupByLibrary.simpleMessage(
+      "Could not load photo",
+    ),
+    "flowChorePhotoPermissionDenied": MessageLookupByLibrary.simpleMessage(
+      "Camera permission is required to take a photo.",
+    ),
+    "flowChorePhotoPermissionOpenSettings":
+        MessageLookupByLibrary.simpleMessage("Open settings"),
+    "flowChorePhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
+      "Add a photo to show what great looks like",
+    ),
+    "flowChorePhotoRetakeCta": MessageLookupByLibrary.simpleMessage(
+      "Retake photo",
+    ),
+    "flowChorePhotoUploadError": MessageLookupByLibrary.simpleMessage(
+      "Could not upload the photo. Try again.",
     ),
     "flowChoreRecurrenceAnnual": MessageLookupByLibrary.simpleMessage("Anual"),
     "flowChoreRecurrenceDaily": MessageLookupByLibrary.simpleMessage("Diario"),

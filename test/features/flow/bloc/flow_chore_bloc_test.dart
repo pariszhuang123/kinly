@@ -3,13 +3,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/core/chores/models.dart';
+import 'package:kinly/core/media/expectation_photo_service.dart';
 import 'package:kinly/data/repositories/chores_repository.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_bloc.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}
+class _MockExpectationPhotoService extends Mock
+    implements ExpectationPhotoService {}
 
 void main() {
   late _MockChoresRepository choresRepository;
+  late _MockExpectationPhotoService expectationPhotoService;
 
   final sampleChore = Chore(
     id: 'chore-123',
@@ -34,17 +38,26 @@ void main() {
     return FlowChoreBloc(
       homeId: 'home-1',
       choresRepository: choresRepository,
+      expectationPhotoService: expectationPhotoService,
     );
   }
 
   setUpAll(() {
     registerFallbackValue(ChoreRecurrence.none);
+    registerFallbackValue(DateTime.now());
   });
 
   setUp(() {
     choresRepository = _MockChoresRepository();
+    expectationPhotoService = _MockExpectationPhotoService();
     when(() => choresRepository.listAssigneesForHome(any()))
         .thenAnswer((_) async => const []);
+    when(
+      () => expectationPhotoService.captureAndUpload(
+        homeId: any(named: 'homeId'),
+        choreId: any(named: 'choreId'),
+      ),
+    ).thenThrow(UnimplementedError());
   });
 
   blocTest<FlowChoreBloc, FlowChoreState>(

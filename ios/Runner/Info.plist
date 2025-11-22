@@ -57,5 +57,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Kinly needs camera access to capture expectation photos for chores.</string>
 </dict>
 </plist>

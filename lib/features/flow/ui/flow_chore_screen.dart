@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/chores/models.dart';
 import '../../../core/theme/kinly_sections.dart';
@@ -24,7 +25,6 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
   final _titleController = TextEditingController();
   final _notesController = TextEditingController();
   final _howToController = TextEditingController();
-  final _photoController = TextEditingController();
   bool _hasHydratedControllers = false;
 
   @override
@@ -32,7 +32,6 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
     _titleController.dispose();
     _notesController.dispose();
     _howToController.dispose();
-    _photoController.dispose();
     super.dispose();
   }
 
@@ -41,7 +40,6 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
     _titleController.text = form.title;
     _notesController.text = form.notes;
     _howToController.text = form.howToVideoUrl;
-    _photoController.text = form.expectationPhotoPath;
     _hasHydratedControllers = true;
   }
 
@@ -53,8 +51,31 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
       listenWhen:
           (previous, current) =>
               previous.successChoreId != current.successChoreId ||
-              previous.submissionErrorTick != current.submissionErrorTick,
+              previous.submissionErrorTick != current.submissionErrorTick ||
+              previous.photoErrorTick != current.photoErrorTick,
       listener: (context, state) {
+        if (state.photoErrorTick > 0) {
+          final s = S.of(context);
+          final isPermission = state.photoErrorMessage == 'permission';
+          final snackText =
+              isPermission
+                  ? s.flowChorePhotoPermissionDenied
+                  : s.flowChorePhotoUploadError;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(snackText),
+              action:
+                  state.isCameraPermissionPermanentlyDenied
+                      ? SnackBarAction(
+                        label: s.flowChorePhotoPermissionOpenSettings,
+                        onPressed: openAppSettings,
+                      )
+                      : null,
+            ),
+          );
+          return;
+        }
+
         if (state.successChoreId != null) {
           Navigator.of(context).pop(
             FlowChoreOutcome(
@@ -107,10 +128,14 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
                         titleController: _titleController,
                         notesController: _notesController,
                         howToController: _howToController,
-                        photoController: _photoController,
                         state: state,
                         spacing: spacing,
                         flowColors: flowColors,
+                        isUploadingPhoto: state.isUploadingPhoto,
+                        onPhotoCapture:
+                            () => context.read<FlowChoreBloc>().add(
+                              const FlowChorePhotoCaptureRequested(),
+                            ),
                         onDeleteRequested:
                             state.isEditMode
                                 ? () => _confirmDelete(context)
@@ -185,20 +210,22 @@ class _FlowChoreFormView extends StatelessWidget {
     required this.titleController,
     required this.notesController,
     required this.howToController,
-    required this.photoController,
     required this.state,
     required this.spacing,
     required this.flowColors,
+    required this.isUploadingPhoto,
+    required this.onPhotoCapture,
     required this.onDeleteRequested,
   });
 
   final TextEditingController titleController;
   final TextEditingController notesController;
   final TextEditingController howToController;
-  final TextEditingController photoController;
   final FlowChoreState state;
   final Spacing? spacing;
   final SectionColors? flowColors;
+  final bool isUploadingPhoto;
+  final VoidCallback onPhotoCapture;
   final VoidCallback? onDeleteRequested;
 
   @override
@@ -268,7 +295,7 @@ class _FlowChoreFormView extends StatelessWidget {
                 color: theme.colorScheme.error,
               ),
             ),
-        ),
+          ),
         SizedBox(height: spacing?.lg ?? 16),
         DropdownButtonFormField<ChoreRecurrence>(
           initialValue: form.recurrence,
@@ -288,56 +315,52 @@ class _FlowChoreFormView extends StatelessWidget {
           decoration: InputDecoration(labelText: s.flowChoreRecurrenceLabel),
         ),
         SizedBox(height: spacing?.lg ?? 16),
-        if (isEditMode)
-          ...[
-            TextField(
-              controller: notesController,
-              minLines: 3,
-              maxLines: 4,
-              decoration: InputDecoration(
-                labelText: s.flowChoreNotesLabel,
-                hintText: s.flowChoreNotesHint,
-              ),
-              onChanged:
-                  (value) => context.read<FlowChoreBloc>().add(
-                    FlowChoreNotesChanged(value),
-                  ),
+        if (isEditMode) ...[
+          TextField(
+            controller: notesController,
+            minLines: 3,
+            maxLines: 4,
+            decoration: InputDecoration(
+              labelText: s.flowChoreNotesLabel,
+              hintText: s.flowChoreNotesHint,
             ),
-            SizedBox(height: spacing?.lg ?? 16),
-            TextField(
-              controller: howToController,
-              decoration: InputDecoration(
-                labelText: s.flowChoreHowToLabel,
-                hintText: s.flowChoreHowToHint,
-                errorText: hasHowToError ? s.flowChoreValidationHowToUrl : null,
-              ),
-              keyboardType: TextInputType.url,
-              onChanged:
-                  (value) => context.read<FlowChoreBloc>().add(
-                    FlowChoreHowToChanged(value),
-                  ),
+            onChanged:
+                (value) => context.read<FlowChoreBloc>().add(
+                  FlowChoreNotesChanged(value),
+                ),
+          ),
+          SizedBox(height: spacing?.lg ?? 16),
+          TextField(
+            controller: howToController,
+            decoration: InputDecoration(
+              labelText: s.flowChoreHowToLabel,
+              hintText: s.flowChoreHowToHint,
+              errorText: hasHowToError ? s.flowChoreValidationHowToUrl : null,
             ),
-            SizedBox(height: spacing?.lg ?? 16),
-            TextField(
-              controller: photoController,
-              decoration: InputDecoration(
-                labelText: s.flowChorePhotoLabel,
-                hintText: s.flowChorePhotoHint,
-              ),
-              onChanged:
-                  (value) => context.read<FlowChoreBloc>().add(
-                    FlowChorePhotoChanged(value),
-                  ),
-            ),
-          ]
-        else
+            keyboardType: TextInputType.url,
+            onChanged:
+                (value) => context.read<FlowChoreBloc>().add(
+                  FlowChoreHowToChanged(value),
+                ),
+          ),
+          SizedBox(height: spacing?.lg ?? 16),
+          _ExpectationPhotoPicker(
+            spacing: spacing,
+            s: s,
+            isUploading: isUploadingPhoto,
+            photoUrl: form.expectationPhotoPath,
+            onCapture: onPhotoCapture,
+          ),
+        ] else
           _OptionalDetailsExpansion(
             spacing: spacing,
             s: s,
             hasHowToError: hasHowToError,
             notesController: notesController,
             howToController: howToController,
-            photoController: photoController,
+            isUploadingPhoto: isUploadingPhoto,
+            photoUrl: form.expectationPhotoPath,
+            onPhotoCapture: onPhotoCapture,
           ),
         SizedBox(height: spacing?.xl ?? 24),
         SizedBox(
@@ -397,9 +420,11 @@ class _FlowChoreFormView extends StatelessWidget {
 
   Future<void> _pickStartDate(BuildContext context, DateTime current) async {
     final now = DateTime.now();
-    final firstDate = DateTime(now.year, now.month, now.day).subtract(
-      const Duration(days: 1),
-    );
+    final firstDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(const Duration(days: 1));
     final lastDate = DateTime(now.year + 1, now.month, now.day);
     final picked = await showDatePicker(
       context: context,
@@ -532,7 +557,9 @@ class _OptionalDetailsExpansion extends StatelessWidget {
     required this.hasHowToError,
     required this.notesController,
     required this.howToController,
-    required this.photoController,
+    required this.isUploadingPhoto,
+    required this.photoUrl,
+    required this.onPhotoCapture,
   });
 
   final Spacing? spacing;
@@ -540,7 +567,9 @@ class _OptionalDetailsExpansion extends StatelessWidget {
   final bool hasHowToError;
   final TextEditingController notesController;
   final TextEditingController howToController;
-  final TextEditingController photoController;
+  final bool isUploadingPhoto;
+  final String photoUrl;
+  final VoidCallback onPhotoCapture;
 
   @override
   Widget build(BuildContext context) {
@@ -587,19 +616,117 @@ class _OptionalDetailsExpansion extends StatelessWidget {
                 ),
           ),
           SizedBox(height: spacing?.lg ?? 16),
-          TextField(
-            controller: photoController,
-            decoration: InputDecoration(
-              labelText: s.flowChorePhotoLabel,
-              hintText: s.flowChorePhotoHint,
-            ),
-            onChanged:
-                (value) => context.read<FlowChoreBloc>().add(
-                  FlowChorePhotoChanged(value),
-                ),
+          _ExpectationPhotoPicker(
+            spacing: spacing,
+            s: s,
+            isUploading: isUploadingPhoto,
+            photoUrl: photoUrl,
+            onCapture: onPhotoCapture,
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ExpectationPhotoPicker extends StatelessWidget {
+  const _ExpectationPhotoPicker({
+    required this.spacing,
+    required this.s,
+    required this.isUploading,
+    required this.photoUrl,
+    required this.onCapture,
+  });
+
+  final Spacing? spacing;
+  final S s;
+  final bool isUploading;
+  final String photoUrl;
+  final VoidCallback onCapture;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final hasPhoto = photoUrl.trim().isNotEmpty;
+    final actionLabel =
+        hasPhoto ? s.flowChorePhotoRetakeCta : s.flowChorePhotoCaptureCta;
+
+    final preview = Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child:
+                hasPhoto
+                    ? ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        photoUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder:
+                            (_, __, ___) => Center(
+                              child: Text(
+                                s.flowChorePhotoLoadError,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.error,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                      ),
+                    )
+                    : Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.photo_camera_outlined,
+                            size: 32,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            s.flowChorePhotoPlaceholder,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+          ),
+          if (isUploading)
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.35),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Center(child: KinlyLoader(size: 32)),
+            ),
+        ],
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(s.flowChorePhotoLabel, style: theme.textTheme.titleMedium),
+        SizedBox(height: spacing?.xs ?? 8),
+        GestureDetector(
+          onTap: isUploading ? null : onCapture,
+          child: AspectRatio(aspectRatio: 4 / 3, child: preview),
+        ),
+        SizedBox(height: spacing?.sm ?? 8),
+        OutlinedButton.icon(
+          onPressed: isUploading ? null : onCapture,
+          icon: const Icon(Icons.photo_camera_outlined),
+          label: Text(actionLabel),
+        ),
+      ],
     );
   }
 }

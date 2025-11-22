@@ -49,9 +49,10 @@ class FlowChoreDetailView extends StatelessWidget {
             : null;
     final howToBody =
         normalizedHowToUrl ??
-            (chore.howToVideoUrl?.trim().isNotEmpty == true
-                ? chore.howToVideoUrl!.trim()
-                : s.flowChoreDetailNoHowTo);
+        (chore.howToVideoUrl?.trim().isNotEmpty == true
+            ? chore.howToVideoUrl!.trim()
+            : s.flowChoreDetailNoHowTo);
+    final expectationPhotoUrl = chore.expectationPhotoPath;
 
     final assigneeName = _resolveAssignee(context, details);
     final formattedDate = DateFormat.yMMMMd().format(chore.startDate);
@@ -88,8 +89,8 @@ class FlowChoreDetailView extends StatelessWidget {
                         normalizedHowToUrl != null
                             ? () => _launchHowToUrl(context, normalizedHowToUrl)
                             : null,
-                    // expectationPhotoLabel: s.flowChoreExpectationPhotoLabel,
-                    // expectationPhotoUrl: chore.expectationPhotoUrl,
+                    expectationPhotoLabel: s.flowChoreExpectationPhotoLabel,
+                    expectationPhotoUrl: expectationPhotoUrl,
                   ),
                 ],
               ),
@@ -185,7 +186,9 @@ Future<void> _launchHowToUrl(BuildContext context, String url) async {
 
   final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
   if (!launched) {
-    messenger.showSnackBar(SnackBar(content: Text(s.flowChoreHowToLaunchError)));
+    messenger.showSnackBar(
+      SnackBar(content: Text(s.flowChoreHowToLaunchError)),
+    );
   }
 }
 

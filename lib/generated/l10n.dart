@@ -1599,7 +1599,7 @@ class S {
   /// `We couldn't open that link. Try again.`
   String get flowChoreHowToLaunchError {
     return Intl.message(
-      "We couldn't open that link. Try again.",
+      'We couldn\'t open that link. Try again.',
       name: 'flowChoreHowToLaunchError',
       desc: '',
       args: [],
@@ -1621,6 +1621,76 @@ class S {
     return Intl.message(
       'storage/households/... (optional)',
       name: 'flowChorePhotoHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add expectation photo`
+  String get flowChorePhotoCaptureCta {
+    return Intl.message(
+      'Add expectation photo',
+      name: 'flowChorePhotoCaptureCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retake photo`
+  String get flowChorePhotoRetakeCta {
+    return Intl.message(
+      'Retake photo',
+      name: 'flowChorePhotoRetakeCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a photo to show what great looks like`
+  String get flowChorePhotoPlaceholder {
+    return Intl.message(
+      'Add a photo to show what great looks like',
+      name: 'flowChorePhotoPlaceholder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Camera permission is required to take a photo.`
+  String get flowChorePhotoPermissionDenied {
+    return Intl.message(
+      'Camera permission is required to take a photo.',
+      name: 'flowChorePhotoPermissionDenied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open settings`
+  String get flowChorePhotoPermissionOpenSettings {
+    return Intl.message(
+      'Open settings',
+      name: 'flowChorePhotoPermissionOpenSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not upload the photo. Try again.`
+  String get flowChorePhotoUploadError {
+    return Intl.message(
+      'Could not upload the photo. Try again.',
+      name: 'flowChorePhotoUploadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load photo`
+  String get flowChorePhotoLoadError {
+    return Intl.message(
+      'Could not load photo',
+      name: 'flowChorePhotoLoadError',
       desc: '',
       args: [],
     );

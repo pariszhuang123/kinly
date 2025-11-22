@@ -15,6 +15,10 @@ class FlowChoreState extends Equatable {
   final ChoreErrorCode? submissionErrorCode;
   final String? submissionErrorMessage;
   final int submissionErrorTick;
+  final bool isUploadingPhoto;
+  final String? photoErrorMessage;
+  final int photoErrorTick;
+  final bool isCameraPermissionPermanentlyDenied;
 
   const FlowChoreState({
     required this.form,
@@ -31,6 +35,10 @@ class FlowChoreState extends Equatable {
     required this.submissionErrorCode,
     required this.submissionErrorMessage,
     required this.submissionErrorTick,
+    required this.isUploadingPhoto,
+    required this.photoErrorMessage,
+    required this.photoErrorTick,
+    required this.isCameraPermissionPermanentlyDenied,
   });
 
   factory FlowChoreState.initial({
@@ -52,6 +60,10 @@ class FlowChoreState extends Equatable {
       submissionErrorCode: null,
       submissionErrorMessage: null,
       submissionErrorTick: 0,
+      isUploadingPhoto: false,
+      photoErrorMessage: null,
+      photoErrorTick: 0,
+      isCameraPermissionPermanentlyDenied: false,
     );
   }
 
@@ -73,6 +85,11 @@ class FlowChoreState extends Equatable {
     String? submissionErrorMessage,
     bool clearSubmissionError = false,
     int? submissionErrorTick,
+    bool? isUploadingPhoto,
+    String? photoErrorMessage,
+    bool clearPhotoError = false,
+    int? photoErrorTick,
+    bool? isCameraPermissionPermanentlyDenied,
   }) {
     return FlowChoreState(
       form: form ?? this.form,
@@ -98,6 +115,13 @@ class FlowChoreState extends Equatable {
               ? null
               : submissionErrorMessage ?? this.submissionErrorMessage,
       submissionErrorTick: submissionErrorTick ?? this.submissionErrorTick,
+      isUploadingPhoto: isUploadingPhoto ?? this.isUploadingPhoto,
+      photoErrorMessage:
+          clearPhotoError ? null : photoErrorMessage ?? this.photoErrorMessage,
+      photoErrorTick: photoErrorTick ?? this.photoErrorTick,
+      isCameraPermissionPermanentlyDenied:
+          isCameraPermissionPermanentlyDenied ??
+          this.isCameraPermissionPermanentlyDenied,
     );
   }
 
@@ -121,5 +145,9 @@ class FlowChoreState extends Equatable {
     submissionErrorMessage,
     submissionErrorTick,
     successWasDelete,
+    isUploadingPhoto,
+    photoErrorMessage,
+    photoErrorTick,
+    isCameraPermissionPermanentlyDenied,
   ];
 }

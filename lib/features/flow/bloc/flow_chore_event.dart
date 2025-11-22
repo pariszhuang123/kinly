@@ -67,6 +67,10 @@ class FlowChorePhotoChanged extends FlowChoreEvent {
   List<Object?> get props => [photoPath];
 }
 
+class FlowChorePhotoCaptureRequested extends FlowChoreEvent {
+  const FlowChorePhotoCaptureRequested();
+}
+
 class FlowChoreSubmitted extends FlowChoreEvent {
   const FlowChoreSubmitted();
 }

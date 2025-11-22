@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../core/chores/models.dart';
+import '../../../core/media/expectation_photo_service.dart';
+import '../../../core/media/supabase_media_repository.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../data/repositories/chores_repository.dart';
 import '../domain/flow_chore_form.dart';
@@ -14,9 +16,13 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     required String homeId,
     String? choreId,
     required ChoresRepository choresRepository,
+    ExpectationPhotoService? expectationPhotoService,
   }) : _homeId = homeId,
        _choreId = choreId,
        _choresRepository = choresRepository,
+       _expectationPhotoService =
+           expectationPhotoService ??
+           ExpectationPhotoService(mediaRepository: SupabaseMediaRepository()),
        super(
          FlowChoreState.initial(
            isEditMode: choreId != null,
@@ -31,6 +37,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     on<FlowChoreNotesChanged>(_onNotesChanged);
     on<FlowChoreHowToChanged>(_onHowToChanged);
     on<FlowChorePhotoChanged>(_onPhotoChanged);
+    on<FlowChorePhotoCaptureRequested>(_onPhotoCaptureRequested);
     on<FlowChoreSubmitted>(_onSubmitted);
     on<FlowChoreDeleted>(_onDeleted);
   }
@@ -38,6 +45,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
   final String _homeId;
   final String? _choreId;
   final ChoresRepository _choresRepository;
+  final ExpectationPhotoService _expectationPhotoService;
 
   Future<void> _onStarted(
     FlowChoreStarted event,
@@ -131,6 +139,53 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     );
   }
 
+  Future<void> _onPhotoCaptureRequested(
+    FlowChorePhotoCaptureRequested event,
+    Emitter<FlowChoreState> emit,
+  ) async {
+    if (state.isUploadingPhoto) return;
+    emit(
+      state.copyWith(
+        isUploadingPhoto: true,
+        clearPhotoError: true,
+        isCameraPermissionPermanentlyDenied: false,
+      ),
+    );
+
+    try {
+      final upload = await _expectationPhotoService.captureAndUpload(
+        homeId: _homeId,
+        choreId: _choreId,
+      );
+      emit(
+        state.copyWith(
+          isUploadingPhoto: false,
+          form: state.form.copyWith(expectationPhotoPath: upload.publicUrl),
+          clearPhotoError: true,
+        ),
+      );
+    } on CameraPermissionException catch (error) {
+      emit(
+        state.copyWith(
+          isUploadingPhoto: false,
+          isCameraPermissionPermanentlyDenied: error.permanentlyDenied,
+          photoErrorMessage: 'permission',
+          photoErrorTick: state.photoErrorTick + 1,
+        ),
+      );
+    } on CameraCaptureCancelled {
+      emit(state.copyWith(isUploadingPhoto: false));
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isUploadingPhoto: false,
+          photoErrorMessage: error.toString(),
+          photoErrorTick: state.photoErrorTick + 1,
+        ),
+      );
+    }
+  }
+
   Future<void> _onSubmitted(
     FlowChoreSubmitted event,
     Emitter<FlowChoreState> emit,
@@ -140,7 +195,10 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     final hasValidAssignee = !requiresAssignee || form.assigneeUserId != null;
     final hasValidDate = form.isStartDateInRange(DateTime.now());
     final hasValidHowTo = form.isHowToUrlValid;
-    if (!form.isTitleValid || !hasValidAssignee || !hasValidDate || !hasValidHowTo) {
+    if (!form.isTitleValid ||
+        !hasValidAssignee ||
+        !hasValidDate ||
+        !hasValidHowTo) {
       emit(state.copyWith(showValidationErrors: true));
       return;
     }
