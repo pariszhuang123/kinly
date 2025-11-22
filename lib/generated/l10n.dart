@@ -1586,6 +1586,26 @@ class S {
     );
   }
 
+  /// `Enter a valid link that starts with http or https.`
+  String get flowChoreValidationHowToUrl {
+    return Intl.message(
+      'Enter a valid link that starts with http or https.',
+      name: 'flowChoreValidationHowToUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't open that link. Try again.`
+  String get flowChoreHowToLaunchError {
+    return Intl.message(
+      "We couldn't open that link. Try again.",
+      name: 'flowChoreHowToLaunchError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Expectation photo`
   String get flowChorePhotoLabel {
     return Intl.message(

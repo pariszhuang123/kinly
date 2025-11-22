@@ -211,11 +211,9 @@ class _FlowChoreFormView extends StatelessWidget {
     final hasAssigneeError =
         showValidation && requiresAssignee && form.assigneeUserId == null;
     final hasDateError = showValidation && !state.isStartDateValid;
+    final hasHowToError = showValidation && !form.isHowToUrlValid;
     final dateLabel = DateFormat.yMMMMd().format(form.startDate);
-    final canSubmit =
-        form.isTitleValid &&
-        (!requiresAssignee || form.assigneeUserId != null) &&
-        state.isStartDateValid;
+    final canSubmit = !state.isSubmitting;
     final showDeleteCta = state.isEditMode && !state.hasChanges;
 
     return ListView(
@@ -308,6 +306,7 @@ class _FlowChoreFormView extends StatelessWidget {
           decoration: InputDecoration(
             labelText: s.flowChoreHowToLabel,
             hintText: s.flowChoreHowToHint,
+            errorText: hasHowToError ? s.flowChoreValidationHowToUrl : null,
           ),
           keyboardType: TextInputType.url,
           onChanged:
@@ -385,7 +384,9 @@ class _FlowChoreFormView extends StatelessWidget {
 
   Future<void> _pickStartDate(BuildContext context, DateTime current) async {
     final now = DateTime.now();
-    final firstDate = DateTime(now.year, now.month, now.day);
+    final firstDate = DateTime(now.year, now.month, now.day).subtract(
+      const Duration(days: 1),
+    );
     final lastDate = DateTime(now.year + 1, now.month, now.day);
     final picked = await showDatePicker(
       context: context,

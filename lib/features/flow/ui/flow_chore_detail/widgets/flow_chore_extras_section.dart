@@ -11,6 +11,7 @@ class FlowChoreExtrasSection extends StatelessWidget {
     required this.notesBody,
     required this.howToLabel,
     required this.howToBody,
+    this.onHowToTap,
     this.expectationPhotoLabel,
     this.expectationPhotoUrl,
   });
@@ -19,6 +20,7 @@ class FlowChoreExtrasSection extends StatelessWidget {
   final String notesBody;
   final String howToLabel;
   final String howToBody;
+  final VoidCallback? onHowToTap;
   final String? expectationPhotoLabel;
   final String? expectationPhotoUrl;
 
@@ -55,7 +57,11 @@ class FlowChoreExtrasSection extends StatelessWidget {
           children: [
             _FlowDetailSection(title: notesLabel, body: notesBody),
             SizedBox(height: spacing?.md ?? 16),
-            _FlowDetailSection(title: howToLabel, body: howToBody),
+            _FlowDetailSection(
+              title: howToLabel,
+              body: howToBody,
+              onTap: onHowToTap,
+            ),
             if (hasExpectationPhoto) ...[
               SizedBox(height: spacing?.md ?? 16),
               _ExpectationPhotoSection(
@@ -72,15 +78,38 @@ class FlowChoreExtrasSection extends StatelessWidget {
 }
 
 class _FlowDetailSection extends StatelessWidget {
-  const _FlowDetailSection({required this.title, required this.body});
+  const _FlowDetailSection({required this.title, required this.body, this.onTap});
 
   final String title;
   final String body;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isLink = onTap != null;
+    final bodyText = Text(
+      body,
+      style: theme.textTheme.bodyLarge?.copyWith(
+        color: isLink ? colorScheme.primary : null,
+        decoration: isLink ? TextDecoration.underline : null,
+      ),
+    );
+    final bodyContent =
+        isLink
+            ? GestureDetector(
+              onTap: onTap,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(child: bodyText),
+                  const SizedBox(width: 8),
+                  Icon(Icons.open_in_new, size: 16, color: colorScheme.primary),
+                ],
+              ),
+            )
+            : bodyText;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -98,7 +127,7 @@ class _FlowDetailSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(body, style: theme.textTheme.bodyLarge),
+          bodyContent,
         ],
       ),
     );

@@ -144,6 +144,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage(
       "Enlace de instrucciones",
     ),
+    "flowChoreHowToLaunchError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos abrir ese enlace. IntA�ntalo de nuevo.",
+    ),
     "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar esta tarea. Intenta de nuevo.",
     ),
@@ -196,6 +199,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
       "Elige una fecha entre hoy y dentro de un aÃ±o.",
+    ),
+    "flowChoreValidationHowToUrl": MessageLookupByLibrary.simpleMessage(
+      "Ingresa un enlace válido que empiece con http o https.",
     ),
     "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
       "Dale un nombre a la tarea.",

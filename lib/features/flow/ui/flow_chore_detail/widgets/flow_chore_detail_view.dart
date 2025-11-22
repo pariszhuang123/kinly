@@ -1,10 +1,12 @@
 // lib/features/flow/ui/widgets/flow_chore_detail_view.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../core/chores/models.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/kinly_loader.dart';
+import '../../../../../core/utils/url_validator.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../bloc/flow_chore_detail_bloc.dart';
 import 'flow_chore_core_info_section.dart';
@@ -41,6 +43,15 @@ class FlowChoreDetailView extends StatelessWidget {
     final details = state.details!;
     final chore = details.chore;
     final s = S.of(context);
+    final normalizedHowToUrl =
+        chore.howToVideoUrl != null
+            ? normalizeHttpUrlOrNull(chore.howToVideoUrl!)
+            : null;
+    final howToBody =
+        normalizedHowToUrl ??
+            (chore.howToVideoUrl?.trim().isNotEmpty == true
+                ? chore.howToVideoUrl!.trim()
+                : s.flowChoreDetailNoHowTo);
 
     final assigneeName = _resolveAssignee(context, details);
     final formattedDate = DateFormat.yMMMMd().format(chore.startDate);
@@ -72,10 +83,11 @@ class FlowChoreDetailView extends StatelessWidget {
                             ? chore.notes!
                             : s.flowChoreDetailNoNotes,
                     howToLabel: s.flowChoreHowToLabel,
-                    howToBody:
-                        chore.howToVideoUrl?.isNotEmpty == true
-                            ? chore.howToVideoUrl!
-                            : s.flowChoreDetailNoHowTo,
+                    howToBody: howToBody,
+                    onHowToTap:
+                        normalizedHowToUrl != null
+                            ? () => _launchHowToUrl(context, normalizedHowToUrl)
+                            : null,
                     // expectationPhotoLabel: s.flowChoreExpectationPhotoLabel,
                     // expectationPhotoUrl: chore.expectationPhotoUrl,
                   ),
@@ -165,6 +177,17 @@ class _CompletionButton extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // Top-level helpers
 // ─────────────────────────────────────────────────────────────────────────────
+
+Future<void> _launchHowToUrl(BuildContext context, String url) async {
+  final messenger = ScaffoldMessenger.of(context);
+  final s = S.of(context);
+  final uri = Uri.parse(url);
+
+  final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!launched) {
+    messenger.showSnackBar(SnackBar(content: Text(s.flowChoreHowToLaunchError)));
+  }
+}
 
 String _recurrenceLabel(BuildContext context, ChoreRecurrence recurrence) {
   final s = S.of(context);

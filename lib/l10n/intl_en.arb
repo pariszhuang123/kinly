@@ -208,6 +208,8 @@
   "flowChoreNotesHint": "Add optional context or reminders",
   "flowChoreHowToLabel": "How-to link",
   "flowChoreHowToHint": "Paste a video or document link (optional)",
+  "flowChoreValidationHowToUrl": "Enter a valid link that starts with http or https.",
+  "flowChoreHowToLaunchError": "We couldn't open that link. Try again.",
   "flowChorePhotoLabel": "Expectation photo",
   "flowChorePhotoHint": "storage/households/... (optional)",
   "flowChoreSubmitCreate": "Add chore",

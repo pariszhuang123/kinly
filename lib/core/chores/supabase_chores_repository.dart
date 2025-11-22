@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/repositories/chores_repository.dart';
 import '../supabase/storage_path_resolver.dart';
 import '../supabase/supabase_error_mapper.dart';
+import '../utils/url_validator.dart';
 import 'models.dart';
 
 class SupabaseChoresRepository implements ChoresRepository {
@@ -27,6 +28,8 @@ class SupabaseChoresRepository implements ChoresRepository {
     String? expectationPhotoPath,
   }) async {
     try {
+      final sanitizedHowTo =
+          howToVideoUrl == null ? null : normalizeHttpUrlOrNull(howToVideoUrl);
       final response = await _client.rpc(
         'chores_create',
         params: {
@@ -36,7 +39,7 @@ class SupabaseChoresRepository implements ChoresRepository {
           if (startDate != null) 'p_start_date': _toIsoDate(startDate),
           'p_recurrence': recurrence.wireValue,
           if (notes != null) 'p_notes': notes,
-          if (howToVideoUrl != null) 'p_how_to_video_url': howToVideoUrl,
+          'p_how_to_video_url': sanitizedHowTo,
           if (expectationPhotoPath != null)
             'p_expectation_photo_path': expectationPhotoPath,
         },
@@ -63,6 +66,8 @@ class SupabaseChoresRepository implements ChoresRepository {
     String? expectationPhotoPath,
   }) async {
     try {
+      final sanitizedHowTo =
+          howToVideoUrl == null ? null : normalizeHttpUrlOrNull(howToVideoUrl);
       final response = await _client.rpc(
         'chores_update',
         params: {
@@ -72,7 +77,7 @@ class SupabaseChoresRepository implements ChoresRepository {
           'p_start_date': _toIsoDate(startDate),
           if (recurrence != null) 'p_recurrence': recurrence.wireValue,
           if (notes != null) 'p_notes': notes,
-          if (howToVideoUrl != null) 'p_how_to_video_url': howToVideoUrl,
+          'p_how_to_video_url': sanitizedHowTo,
           if (expectationPhotoPath != null)
             'p_expectation_photo_path': expectationPhotoPath,
         },
@@ -291,9 +296,11 @@ class SupabaseChoresRepository implements ChoresRepository {
   }
 
   String _toIsoDate(DateTime date) {
-    final utc = date.toUtc();
-    // We only want YYYY-MM-DD for Postgres date columns.
-    return utc.toIso8601String().split('T').first;
+    // Use the calendar date as entered (no TZ conversion) to avoid off-by-one
+    // when users are ahead/behind UTC.
+    return '${date.year.toString().padLeft(4, '0')}-'
+        '${date.month.toString().padLeft(2, '0')}-'
+        '${date.day.toString().padLeft(2, '0')}';
   }
 
   Map<String, dynamic>? _coerceMap(dynamic value) {

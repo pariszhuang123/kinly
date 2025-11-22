@@ -142,6 +142,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Paste a video or document link (optional)",
     ),
     "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage("How-to link"),
+    "flowChoreHowToLaunchError": MessageLookupByLibrary.simpleMessage(
+      "We couldn't open that link. Try again.",
+    ),
     "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load this chore. Please try again.",
     ),
@@ -184,6 +187,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
       "Pick a date between today and a year from now.",
+    ),
+    "flowChoreValidationHowToUrl": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid link that starts with http or https.",
     ),
     "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
       "Give the chore a name.",

@@ -3,7 +3,7 @@ SET search_path = pgtap, public, auth, extensions;
 BEGIN;
 
 -- We now have 11 assertions (see bottom)
-SELECT plan(11);
+SELECT plan(13);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -117,6 +117,23 @@ WITH res AS (
 INSERT INTO tmp_chores (label, chore_id)
 SELECT 'one_off', (payload).id FROM res;
 
+SELECT throws_like(
+  $$
+    SELECT public.chores_create(
+      (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+      'Bad link chore',
+      NULL,
+      current_date,
+      'none',
+      'ftp://invalid-link',
+      NULL,
+      NULL
+    )
+  $$,
+  '%chores_how_to_video_url_scheme%',
+  'rejects non-http(s) how_to_video_url on create'
+);
+
 -- After creation, active_chores should be 1 (draft counts as a slot)
 SELECT is(
   (SELECT active_chores
@@ -149,6 +166,23 @@ SELECT set_config(
   true
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
+SELECT throws_like(
+  $$
+    SELECT public.chores_update(
+      (SELECT chore_id FROM tmp_chores WHERE label = 'one_off'),
+      'Laundry day',
+      (SELECT user_id FROM tmp_users WHERE label = 'helper'),
+      current_date,
+      NULL,
+      NULL,
+      'ftp://invalid-link',
+      NULL
+    )
+  $$,
+  '%chores_how_to_video_url_scheme%',
+  'rejects non-http(s) how_to_video_url on update'
+);
 
 SELECT public.chores_update(
   (SELECT chore_id FROM tmp_chores WHERE label = 'one_off'),

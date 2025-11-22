@@ -208,6 +208,8 @@
   "flowChoreNotesHint": "Agrega contexto o recordatorios opcionales",
   "flowChoreHowToLabel": "Enlace de instrucciones",
   "flowChoreHowToHint": "Pega un enlace de video o documento (opcional)",
+  "flowChoreValidationHowToUrl": "Ingresa un enlace válido que empiece con http o https.",
+  "flowChoreHowToLaunchError": "No pudimos abrir ese enlace. Inténtalo de nuevo.",
   "flowChorePhotoLabel": "Foto de referencia",
   "flowChorePhotoHint": "storage/households/... (opcional)",
   "flowChoreSubmitCreate": "Agregar tarea",

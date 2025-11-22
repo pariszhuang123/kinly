@@ -139,7 +139,8 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     final requiresAssignee = _choreId != null;
     final hasValidAssignee = !requiresAssignee || form.assigneeUserId != null;
     final hasValidDate = form.isStartDateInRange(DateTime.now());
-    if (!form.isTitleValid || !hasValidAssignee || !hasValidDate) {
+    final hasValidHowTo = form.isHowToUrlValid;
+    if (!form.isTitleValid || !hasValidAssignee || !hasValidDate || !hasValidHowTo) {
       emit(state.copyWith(showValidationErrors: true));
       return;
     }
@@ -155,7 +156,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
 
     try {
       final normalizedNotes = _normalizeOptional(form.notes);
-      final normalizedHowTo = _normalizeOptional(form.howToVideoUrl);
+      final normalizedHowTo = form.normalizedHowToUrl;
       final normalizedPhoto = _normalizeOptional(form.expectationPhotoPath);
 
       final savedChore =

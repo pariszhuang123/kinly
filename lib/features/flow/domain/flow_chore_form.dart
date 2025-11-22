@@ -1,4 +1,5 @@
 import '../../../core/chores/models.dart';
+import '../../../core/utils/url_validator.dart';
 
 const _unset = Object();
 
@@ -69,6 +70,9 @@ class FlowChoreForm {
   }
 
   bool get isTitleValid => title.trim().isNotEmpty;
+  bool get isHowToUrlValid =>
+      howToVideoUrl.trim().isEmpty || normalizeHttpUrlOrNull(howToVideoUrl) != null;
+  String? get normalizedHowToUrl => normalizeHttpUrlOrNull(howToVideoUrl);
 
   bool isEqualTo(FlowChoreForm other) {
     return title == other.title &&
@@ -82,9 +86,10 @@ class FlowChoreForm {
 
   bool isStartDateInRange(DateTime now) {
     final today = DateTime(now.year, now.month, now.day);
+    final earliest = today.subtract(const Duration(days: 1));
     final lastAllowed = DateTime(today.year + 1, today.month, today.day);
     final start = DateTime(startDate.year, startDate.month, startDate.day);
-    return !start.isBefore(today) && !start.isAfter(lastAllowed);
+    return !start.isBefore(earliest) && !start.isAfter(lastAllowed);
   }
 
   @override
