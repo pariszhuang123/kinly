@@ -256,9 +256,10 @@ CREATE OR REPLACE FUNCTION "public"."_expenses_prepare_split_buffer"("p_home_id"
     SET "search_path" TO ''
     AS $$
 DECLARE
-  v_split_count  integer;
-  v_split_sum    bigint;
-  v_member_count integer;
+  v_split_count         integer;
+  v_split_sum           bigint;
+  v_member_count        integer;
+  v_non_creator_members integer;
 BEGIN
   IF p_split_mode IS NULL THEN
     PERFORM public.api_error(
@@ -359,19 +360,6 @@ BEGIN
     );
   END IF;
 
-  -- Creator cannot owe themselves
-  IF EXISTS (
-    SELECT 1
-    FROM pg_temp.expense_split_buffer
-    WHERE debtor_user_id = p_creator_id
-  ) THEN
-    PERFORM public.api_error(
-      'INVALID_DEBTOR',
-      'Creators cannot owe themselves.',
-      '22023'
-    );
-  END IF;
-
   -- Each debtor appears only once
   SELECT COUNT(DISTINCT debtor_user_id)
   INTO v_member_count
@@ -396,6 +384,20 @@ BEGIN
       'Custom splits must add up to the total amount.',
       '22023',
       jsonb_build_object('amount', p_amount_cents, 'splitSum', v_split_sum)
+    );
+  END IF;
+
+  -- At least one non-creator debtor must be present for activated expenses
+  SELECT COUNT(*)
+  INTO v_non_creator_members
+  FROM pg_temp.expense_split_buffer
+  WHERE debtor_user_id <> p_creator_id;
+
+  IF v_non_creator_members = 0 THEN
+    PERFORM public.api_error(
+      'SPLIT_MEMBERS_REQUIRED',
+      'Include at least one other member in the split.',
+      '22023'
     );
   END IF;
 
@@ -2254,7 +2256,8 @@ BEGIN
            amount_cents,
            'unpaid',
            NULL
-    FROM pg_temp.expense_split_buffer;
+    FROM pg_temp.expense_split_buffer
+    WHERE debtor_user_id <> v_user;
   END IF;
 
   RETURN v_result;
@@ -2512,7 +2515,8 @@ BEGIN
            amount_cents,
            'unpaid',
            NULL
-    FROM pg_temp.expense_split_buffer;
+    FROM pg_temp.expense_split_buffer
+    WHERE debtor_user_id <> v_user;
   END IF;
 
   RETURN v_result;

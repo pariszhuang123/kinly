@@ -14,6 +14,7 @@ import 'widgets/today_header_container.dart';
 import 'widgets/today_flow_section_container.dart';
 import 'widgets/today_share_section.dart';
 import 'widgets/today_add_sheet.dart';
+import 'widgets/today_empty_state_card.dart';
 import '../../../core/ui/home_bottom_nav.dart';
 import '../../flow/domain/flow_chore_outcome.dart';
 import '../../../../core/di/locator.dart';
@@ -75,32 +76,57 @@ class TodayScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 🔹 Header now modular
+                      // 🔹 Header
                       TodayHeaderContainer(partOfDay: partOfDay),
                       SizedBox(height: spacing.xl),
 
-                      // 🔹 Flow section now modular
-                      TodayFlowSectionContainer(
-                        onTaskTap: (task) => _handleFlowTaskTap(context, task),
-                        onSeeAllTap: () => context.go(AppRoutes.flow),
-                      ),
+                      // 🔹 Today content driven by TodayBloc
+                      BlocBuilder<TodayBloc, TodayState>(
+                        builder: (context, state) {
+                          if (state.isLoading) {
+                            // You can swap this for a skeleton / loader later
+                            return const SizedBox.shrink();
+                          }
 
-                      SizedBox(height: spacing.lg),
+                          final hasFlow = state.hasFlowContent;
+                          final hasShare = state.hasShareContent;
 
-                      TodayShareSectionContainer(
-                        onOwedTap: (owed) {
-                          logger.info(
-                            'Tapped owed entry: ${owed.displayName}',
-                            tag: _shareLogTag,
+                          // If no Flow and no Share → show empty state card
+                          if (!hasFlow && !hasShare) {
+                            return const TodayEmptyStateCard();
+                          }
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (hasFlow) ...[
+                                TodayFlowSectionContainer(
+                                  onTaskTap:
+                                      (task) =>
+                                          _handleFlowTaskTap(context, task),
+                                  onSeeAllTap: () => context.go(AppRoutes.flow),
+                                ),
+                                SizedBox(height: spacing.lg),
+                              ],
+                              if (hasShare)
+                                TodayShareSectionContainer(
+                                  onOwedTap: (owed) {
+                                    logger.info(
+                                      'Tapped owed entry: ${owed.displayName}',
+                                      tag: _shareLogTag,
+                                    );
+                                    _openShareOwedDetail(context, owed);
+                                  },
+                                  onDraftTap: (draft) {
+                                    logger.info(
+                                      'Tapped draft share: ${draft.expenseId}',
+                                      tag: _shareLogTag,
+                                    );
+                                    _openShareDraftEdit(context, draft);
+                                  },
+                                ),
+                            ],
                           );
-                          _openShareOwedDetail(context, owed);
-                        },
-                        onDraftTap: (draft) {
-                          logger.info(
-                            'Tapped draft share: ${draft.expenseId}',
-                            tag: _shareLogTag,
-                          );
-                          _openShareDraftEdit(context, draft);
                         },
                       ),
                     ],
