@@ -1,0 +1,37 @@
+import 'package:flutter/material.dart';
+
+import '../../../../../core/theme/spacing.dart';
+import '../../../../../generated/l10n.dart';
+
+class ShareCreateError extends StatelessWidget {
+  const ShareCreateError({
+    super.key,
+    required this.message,
+    required this.onRetry,
+  });
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final s = S.of(context);
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            message,
+            style: theme.textTheme.bodyLarge,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: spacing.md),
+          ElevatedButton(onPressed: onRetry, child: Text(s.shareCreateRetry)),
+        ],
+      ),
+    );
+  }
+}

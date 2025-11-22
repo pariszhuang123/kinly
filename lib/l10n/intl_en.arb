@@ -233,6 +233,8 @@
   "flowChoreDetailNoHowTo": "No how-to link provided.",
   "flowChoreDetailCompleteButton": "Complete task",
   "flowChoreDetailCompletionError": "Couldn't complete the chore. Please try again.",
+  "flowChoreDetailMoreInfoTitle": "More details",
+  "flowChoreExpectationPhotoLabel": "Expectation photo",
   "flowListEmptyTitle": "Nothing in Flow yet",
   "flowListEmptySubtitle": "Add your first routine so everyone knows what to do.",
   "flowListDraftLabel": "Draft",

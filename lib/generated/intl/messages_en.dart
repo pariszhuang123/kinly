@@ -29,17 +29,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(code) => "Joined with code: ${code}";
 
-  static String m4(count) => "See all (${count})";
+  static String m4(paidAmount, totalAmount) =>
+      "${paidAmount} of ${totalAmount} collected";
 
-  static String m5(count) =>
+  static String m5(paid, total) => "${paid} of ${total} paid";
+
+  static String m6(count) => "See all (${count})";
+
+  static String m7(count) =>
       "${Intl.plural(count, one: '${count} payment pending', other: '${count} payments pending')}";
 
-  static String m6(homeId, role) => "Current home: ${homeId} • Role: ${role}";
-
-  static String m7(paid, total) => "${paid} of ${total} paid";
-
-  static String m8(paidAmount, totalAmount) =>
-      "${paidAmount} of ${totalAmount} collected";
+  static String m8(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -60,14 +60,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Review every Flow task and keep chores moving",
     ),
-    "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "See every Share you've created and track payments.",
-    ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
       "Explore more ways to keep your home feeling lighter.",
     ),
     "exploreIntroTitle": MessageLookupByLibrary.simpleMessage(
       "Discover what\'s next",
+    ),
+    "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
+      "See every Share you\'ve created and track payments.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("Assign to"),
     "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
@@ -92,6 +92,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t complete the chore. Please try again.",
+    ),
+    "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
+      "More details",
     ),
     "flowChoreDetailNoHowTo": MessageLookupByLibrary.simpleMessage(
       "No how-to link provided.",
@@ -131,6 +134,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
       "You\'ve hit the free limit for expectation photos. Remove one or upgrade.",
+    ),
+    "flowChoreExpectationPhotoLabel": MessageLookupByLibrary.simpleMessage(
+      "Expectation photo",
     ),
     "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
       "Paste a video or document link (optional)",
@@ -465,30 +471,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage(
       "Share created.",
     ),
-    "shareCreatedListActiveAmount": m8,
-    "shareCreatedListActiveSubtitle": m7,
-    "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
-      "Unassigned",
-    ),
-    "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Split it to assign each person before publishing.",
-    ),
-    "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Create a Share to see it listed here.",
-    ),
-    "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No shares yet",
-    ),
-    "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
-      "We couldn't load your shares. Pull to refresh.",
-    ),
-    "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage(
-      "Paid off",
-    ),
-    "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage("Try again"),
-    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage(
-      "Your shares",
-    ),
     "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Create share"),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
       "Enter a valid amount greater than zero.",
@@ -517,6 +499,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Choose how you want to split this expense.",
     ),
+    "shareCreatedListActiveAmount": m4,
+    "shareCreatedListActiveSubtitle": m5,
+    "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
+      "Unassigned",
+    ),
+    "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Split it to assign each person before publishing.",
+    ),
+    "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
+      "Create a Share to see it listed here.",
+    ),
+    "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "No shares yet",
+    ),
+    "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t load your shares. Pull to refresh.",
+    ),
+    "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage(
+      "Paid off",
+    ),
+    "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage("Try again"),
+    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage(
+      "Your shares",
+    ),
     "shareEditClose": MessageLookupByLibrary.simpleMessage("Close"),
     "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("Delete"),
     "shareEditDeleteCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -528,7 +534,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Delete this share?",
     ),
     "shareEditDeleteError": MessageLookupByLibrary.simpleMessage(
-      "Couldn't delete this share. Try again.",
+      "Couldn\'t delete this share. Try again.",
     ),
     "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
       "Share deleted.",
@@ -584,13 +590,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m4,
+    "todayFlowSeeAll": m6,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Here\'s what\'s flowing in your home today.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "todayShareActiveSubtitle": m5,
+    "todayShareActiveSubtitle": m7,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("upcoming"),
     "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
       "Finish the split to publish this expense.",
@@ -616,7 +622,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "today_home_details": m6,
+    "today_home_details": m8,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",
     ),

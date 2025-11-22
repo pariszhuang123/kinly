@@ -673,7 +673,7 @@ entries AS (
 )
 SELECT is(
   (SELECT "paidShares" FROM entries WHERE "expenseId" = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
-  1,
+  2,
   'Summary counts paid shares for active expense'
 );
 
@@ -693,7 +693,7 @@ entries AS (
 )
 SELECT is(
   (SELECT "paidAmountCents" FROM entries WHERE "expenseId" = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
-  40::bigint,
+  71::bigint,
   'Summary returns paid amount for active expense'
 );
 
@@ -733,8 +733,8 @@ entries AS (
 )
 SELECT is(
   (SELECT "paidShares" FROM entries WHERE "expenseId" = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
-  0,
-  'Active expense without payments reports zero paid shares'
+  1,
+  'Active expense without other payments still shows the creator share as paid'
 );
 
 -- expenses_get_for_edit returns detail payload for creator

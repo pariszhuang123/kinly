@@ -6,7 +6,7 @@ import '../../data/repositories/expenses_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../data/repositories/home_repository.dart';
 import '../../features/today/ui/today_provider.dart';
-import '../../features/flow/ui/flow_chore_detail_provider.dart';
+import '../../features/flow/ui/flow_chore_detail/flow_chore_detail_provider.dart';
 import '../../features/flow/ui/flow_chore_provider.dart';
 import '../../features/flow/ui/flow_list_provider.dart';
 import '../../features/explore/ui/explore_screen.dart';
@@ -23,7 +23,7 @@ import '../../features/splash/ui/splash_screen.dart';
 import '../../features/version_gating/bloc/app_version_cubit.dart';
 import '../../features/version_gating/ui/force_update_screen.dart';
 import '../../features/share/ui/share_create/share_create_provider.dart';
-import '../../features/share/ui/share_create_list/share_created_list_provider.dart';
+import '../../features/share/ui/share_created_list/share_created_list_provider.dart';
 import '../../features/share/ui/share_edit_provider.dart';
 import '../../features/share/ui/share_edit_route_args.dart';
 

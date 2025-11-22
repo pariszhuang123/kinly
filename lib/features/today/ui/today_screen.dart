@@ -8,6 +8,7 @@ import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../core/router/app_router.dart';
+import '../../../../core/ui/kinly_loader.dart';
 import '../domain/models.dart';
 import '../bloc/today_bloc.dart';
 import 'widgets/today_header_container.dart';
@@ -84,8 +85,9 @@ class TodayScreen extends StatelessWidget {
                       BlocBuilder<TodayBloc, TodayState>(
                         builder: (context, state) {
                           if (state.isLoading) {
-                            // You can swap this for a skeleton / loader later
-                            return const SizedBox.shrink();
+                            return const Center(
+                              child: KinlyLoader(),
+                            );
                           }
 
                           final hasFlow = state.hasFlowContent;

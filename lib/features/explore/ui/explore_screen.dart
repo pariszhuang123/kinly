@@ -39,7 +39,7 @@ class ExploreScreen extends StatelessWidget {
                 title: s.quick_add_flow_title,
                 subtitle: s.exploreFlowSubtitle,
                 icon: Icons.repeat_rounded,
-                onTap: () => context.go(AppRoutes.flow),
+                onTap: () => context.push(AppRoutes.flow),
               ),
               SizedBox(height: spacing.md),
               _ExploreCard(
@@ -47,7 +47,7 @@ class ExploreScreen extends StatelessWidget {
                 title: s.quick_add_share_title,
                 subtitle: s.exploreShareSubtitle,
                 icon: Icons.payments_rounded,
-                onTap: () => context.go(AppRoutes.shareCreatedList),
+                onTap: () => context.push(AppRoutes.shareCreatedList),
               ),
             ],
           ),

@@ -1831,6 +1831,26 @@ class S {
     );
   }
 
+  /// `More details`
+  String get flowChoreDetailMoreInfoTitle {
+    return Intl.message(
+      'More details',
+      name: 'flowChoreDetailMoreInfoTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expectation photo`
+  String get flowChoreExpectationPhotoLabel {
+    return Intl.message(
+      'Expectation photo',
+      name: 'flowChoreExpectationPhotoLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nothing in Flow yet`
   String get flowListEmptyTitle {
     return Intl.message(

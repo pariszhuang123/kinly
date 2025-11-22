@@ -25,16 +25,8 @@ class ShareOwedDetailScreen extends StatefulWidget {
 }
 
 class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
-  late String? _selectedExpenseId;
   bool _isSubmitting = false;
   String? _errorMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedExpenseId =
-        widget.owed.items.isNotEmpty ? widget.owed.items.first.expenseId : null;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +34,8 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>()!;
     final s = S.of(context);
+
+    final hasItems = widget.owed.items.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(title: Text(s.shareOwedDetailTitle)),
@@ -51,70 +45,14 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  KinlyCircleAvatar(
-                    avatarUrl: widget.owed.avatarUrl,
-                    radius: 28,
-                  ),
-                  SizedBox(width: spacing.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.owed.displayName,
-                          style: theme.textTheme.titleLarge,
-                        ),
-                        Text(
-                          s.shareOwedDetailSubtitle,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    _formatCurrency(widget.owed.totalOwedCents),
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+              _ShareOwedHeader(owed: widget.owed),
               SizedBox(height: spacing.lg),
-              if (widget.owed.items.isEmpty)
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      s.shareOwedDetailEmpty,
-                      style: theme.textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-              else
-                Expanded(
-                  child: ListView.separated(
-                    itemCount: widget.owed.items.length,
-                    separatorBuilder: (_, __) => SizedBox(height: spacing.sm),
-                    itemBuilder: (context, index) {
-                      final item = widget.owed.items[index];
-                      final selected = item.expenseId == _selectedExpenseId;
-                      return _DetailRow(
-                        description: item.description,
-                        amountLabel: _formatCurrency(item.amountCents),
-                        selected: selected,
-                        onTap:
-                            () => setState(() {
-                              _selectedExpenseId = item.expenseId;
-                              _errorMessage = null;
-                            }),
-                      );
-                    },
-                  ),
-                ),
+              Expanded(
+                child:
+                    hasItems
+                        ? _ShareOwedItemsList(items: widget.owed.items)
+                        : _ShareOwedEmptyState(message: s.shareOwedDetailEmpty),
+              ),
               if (_errorMessage != null) ...[
                 SizedBox(height: spacing.sm),
                 Text(
@@ -125,26 +63,13 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
                 ),
               ],
               SizedBox(height: spacing.lg),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: sections.share.accent,
-                    foregroundColor: theme.colorScheme.onPrimary,
-                  ),
-                  onPressed:
-                      _isSubmitting || _selectedExpenseId == null
-                          ? null
-                          : _markPaid,
-                  child:
-                      _isSubmitting
-                          ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: KinlyLoader(size: 20),
-                          )
-                          : Text(s.shareOwedDetailPaid),
-                ),
+              _ShareOwedMarkPaidButton(
+                isSubmitting: _isSubmitting,
+                isEnabled: !_isSubmitting && hasItems,
+                // You can later change this string to something like "Pay all"
+                label: s.shareOwedDetailPaid,
+                accentColor: sections.share.accent,
+                onPressed: (!_isSubmitting && hasItems) ? _markAllPaid : null,
               ),
             ],
           ),
@@ -153,21 +78,27 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     );
   }
 
-  Future<void> _markPaid() async {
+  /// Option A: loop over all owed items and call markSharePaid(expenseId)
+  Future<void> _markAllPaid() async {
     final strings = S.of(context);
-    final expenseId = _selectedExpenseId;
-    if (expenseId == null) {
+
+    if (widget.owed.items.isEmpty) {
       setState(() {
-        _errorMessage = strings.shareOwedDetailSelectionLabel;
+        _errorMessage = strings.shareOwedDetailEmpty;
       });
       return;
     }
+
     setState(() {
       _isSubmitting = true;
       _errorMessage = null;
     });
+
     try {
-      await widget.expensesRepository.markSharePaid(expenseId);
+      for (final item in widget.owed.items) {
+        await widget.expensesRepository.markSharePaid(item.expenseId);
+      }
+
       if (!mounted) return;
       Navigator.of(context).pop(true);
     } on ExpenseException catch (error) {
@@ -186,18 +117,137 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
   }
 }
 
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({
-    required this.description,
-    required this.amountLabel,
-    required this.selected,
-    required this.onTap,
+/// Header section: avatar, name, subtitle, total owed
+class _ShareOwedHeader extends StatelessWidget {
+  const _ShareOwedHeader({required this.owed});
+
+  final TodayShareOwed owed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final s = S.of(context);
+
+    return Row(
+      children: [
+        KinlyCircleAvatar(avatarUrl: owed.avatarUrl, radius: 28),
+        SizedBox(width: spacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(owed.displayName, style: theme.textTheme.titleLarge),
+              Text(
+                s.shareOwedDetailSubtitle,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Text(
+          _formatCurrency(owed.totalOwedCents),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Empty state when there are no owed items
+class _ShareOwedEmptyState extends StatelessWidget {
+  const _ShareOwedEmptyState({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Text(
+        message,
+        style: theme.textTheme.bodyLarge,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+/// List of all owed items, read-only (no selection)
+class _ShareOwedItemsList extends StatelessWidget {
+  const _ShareOwedItemsList({required this.items});
+
+  final List<TodayShareOwedItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = Theme.of(context).extension<Spacing>()!;
+
+    return ListView.separated(
+      itemCount: items.length,
+      separatorBuilder: (_, __) => SizedBox(height: spacing.sm),
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return _DetailRow(
+          description: item.description,
+          amountLabel: _formatCurrency(item.amountCents),
+        );
+      },
+    );
+  }
+}
+
+/// Footer button + loading state for marking all as paid
+class _ShareOwedMarkPaidButton extends StatelessWidget {
+  const _ShareOwedMarkPaidButton({
+    required this.isSubmitting,
+    required this.isEnabled,
+    required this.label,
+    required this.accentColor,
+    required this.onPressed,
   });
+
+  final bool isSubmitting;
+  final bool isEnabled;
+  final String label;
+  final Color accentColor;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: accentColor,
+          foregroundColor: theme.colorScheme.onPrimary,
+        ),
+        onPressed: isEnabled ? onPressed : null,
+        child:
+            isSubmitting
+                ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: KinlyLoader(size: 20),
+                )
+                : Text(label),
+      ),
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  const _DetailRow({required this.description, required this.amountLabel});
 
   final String description;
   final String amountLabel;
-  final bool selected;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -205,35 +255,27 @@ class _DetailRow extends StatelessWidget {
     return Material(
       borderRadius: BorderRadius.circular(16),
       color: theme.colorScheme.surfaceContainerHighest,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Row(
-            children: [
-              Icon(
-                selected
-                    ? Icons.radio_button_checked
-                    : Icons.radio_button_unchecked,
-                color:
-                    selected
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.onSurfaceVariant,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Icon(
+              Icons.circle,
+              size: 8,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(description, style: theme.textTheme.bodyLarge),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              amountLabel,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(description, style: theme.textTheme.bodyLarge),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                amountLabel,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

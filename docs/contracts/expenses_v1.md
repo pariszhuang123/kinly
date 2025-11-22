@@ -10,7 +10,7 @@ Scope: Defines the household shared expenses lifecycle for the Home-only MVP so 
 - The split can be `equal` (integer division in cents across selected members; remainder flows to the last entry) or `custom` (explicit cents per debtor). Drafts keep `splitType = NULL`.
 - Splits live in `expense_splits`. Each row is “debtor X owes Y cents to the creator for this expense.” Payment tracking is per split; there is no top-level “paid” flag. When the creator allocates a share to themselves it is stored as a split row marked `paid` immediately so edit flows can round-trip their portion without affecting “who still owes” calculations.
 - Each debtor can mark their own share as paid (idempotent; no partial payments). Once any share is paid, the amount and split structure become immutable.
-- The Today surface shows only “what I owe” grouped by payer. Explore → Share lists expenses authored by the caller with derived progress like “2 of 3 shares paid.”
+- The Today surface shows only "what I owe" grouped by payer. Explore + Share lists expenses authored by the caller with derived progress like "2 of 3 shares paid," and those counters include the creator's auto-paid share so "1 of 3" appears as soon as the payer covers their portion.
 - Fully paid is a derived view: `allPaid = (totalShares > 0 AND paidShares = totalShares)`. UI can hide settled expenses using this flag without mutating status.
 - Lifecycle illustration: `docs/diagrams/expenses/expense_lifecycle.md`.
 
@@ -47,8 +47,8 @@ Projection for list views (Explore → Share, repository caches).
 - `description: text`
 - `createdAt: timestamptz`
 - `totalShares: int`
-- `paidShares: int`
-- `paidAmountCents: bigint`
+- `paidShares: int` (counts the creator's auto-paid split plus any other member shares that have been marked paid)
+- `paidAmountCents: bigint` (sum of all paid splits, including the creator's auto-paid amount when present)
 - `allPaid: boolean` — `totalShares > 0 AND paidShares = totalShares`.
 
 ## Enums
@@ -217,7 +217,7 @@ Projection for list views (Explore → Share, repository caches).
 - **Editing active expenses**: If any split is `status='paid'`, only `description` and `notes` can change; amount/split structure updates raise `EXPENSE_LOCKED_AFTER_PAYMENT`. When no split is paid, the creator can rebuild the split (equal/custom) as long as validations pass. Changing the amount on an active expense without providing split details raises `SPLIT_REQUIRED`.
 - **Mark paid**: only the debtor for a split can mark it paid, and only when `status='active'`. Action is idempotent.
 - **Cancel**: only creators can cancel, and only when no splits have been paid. Cancelling drafts or actives sets `status='cancelled'` and keeps splits for audit.
-- **Summary RPCs**: `expenses.getCurrentOwed` returns owed items for `auth.uid()` grouped by payer; `expenses.getCreatedByMe` lists the caller’s authored expenses with derived totals.
+- **Summary RPCs**: `expenses.getCurrentOwed` returns owed items for `auth.uid()` grouped by payer; `expenses.getCreatedByMe` lists the caller's authored expenses with derived totals, and `paidShares/paidAmountCents` count the creator's auto-paid split so the progress bar reflects their own contribution.
 
 ## RPC endpoints
 
@@ -261,5 +261,5 @@ Projection for list views (Explore → Share, repository caches).
 1. **Split RPCs**: `expenses.create` and `expenses.edit` replace the single `expenses.save` entry point so migrations can evolve create-time vs. edit-time guards independently.
 2. **Per-split locking**: payments lock the amount/split to avoid reconciliation confusion. Creators can still tweak descriptions/notes post-payment.
 3. **Debtor-only payments**: empowers each member to acknowledge payment without letting creators “check off” unpaid shares.
-4. **Derived metrics**: summary RPCs expose `totalShares/paidShares/paidAmountCents/allPaid` so UI can express “2 of 3 paid” without additional client math.
+4. **Derived metrics**: summary RPCs expose `totalShares/paidShares/paidAmountCents/allPaid` so UI can express "2 of 3 paid" without additional client math, and those counters include the creator's auto-paid share for clearer progress messaging.
 5. **RPC-only access**: With RLS disabled and grants revoked, expenses tables stay invisible to clients unless they call the approved SECURITY DEFINER RPCs.

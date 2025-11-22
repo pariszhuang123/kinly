@@ -1721,6 +1721,8 @@ CREATE OR REPLACE FUNCTION "public"."chores_list_for_home"("p_home_id" "uuid") R
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
+DECLARE
+  v_user uuid := auth.uid();
 BEGIN
   PERFORM public._assert_authenticated();
   PERFORM public._assert_home_member(p_home_id);
@@ -1739,8 +1741,16 @@ BEGIN
     ON pa.id = c.assignee_user_id
   LEFT JOIN public.avatars a
     ON a.id = pa.avatar_id
-  WHERE c.home_id = p_home_id
+  WHERE
+    c.home_id = p_home_id
     AND c.state IN ('draft', 'active')
+    AND (
+      -- Active: visible to any member of the home
+      c.state = 'active'::public.chore_state
+
+      -- Draft: only visible to the creator
+      OR (c.state = 'draft'::public.chore_state AND c.created_by_user_id = v_user)
+    )
   ORDER BY 
     c.start_date DESC,
     c.created_at DESC;
@@ -2586,7 +2596,21 @@ BEGIN
     );
   END IF;
 
-  -- Build list of live expenses created by the current user
+  /*
+    Build list of live expenses created by the current user.
+
+    Rules:
+    - Include creator in the split stats so paidAmountCents / amountCents
+      reflects:
+        * 25/60 when only the creator has paid
+        * 60/60 when everyone has paid.
+    - Exclude expenses that:
+        * are fully paid (all shares paid), AND
+        * were created more than 14 days ago.
+    - Sort by:
+        1) payment status: unpaid → partial → fully paid
+        2) createdAt: newest first
+  */
   SELECT COALESCE(
            jsonb_agg(
              jsonb_build_object(
@@ -2614,7 +2638,17 @@ BEGIN
                    ELSE NULL
                  END
              )
-             ORDER BY e.created_at DESC, e.id
+             ORDER BY
+               -- payment status rank: 0 = unpaid, 1 = partial, 2 = fully paid
+               CASE
+                 WHEN COALESCE(stats.total_shares, 0) = 0 THEN 0                             -- treat as unpaid
+                 WHEN COALESCE(stats.paid_shares, 0) = 0 THEN 0                             -- unpaid
+                 WHEN COALESCE(stats.total_shares, 0) = COALESCE(stats.paid_shares, 0)
+                   THEN 2                                                                   -- fully paid
+                 ELSE 1                                                                     -- partially paid
+               END,
+               e.created_at DESC,
+               e.id
            ),
            '[]'::jsonb
          )
@@ -2631,11 +2665,17 @@ BEGIN
         MAX(s.marked_paid_at) FILTER (WHERE s.status = 'paid') AS max_paid_at
       FROM public.expense_splits s
       WHERE s.expense_id = e.id
-        AND s.debtor_user_id <> e.created_by_user_id
+      -- 👆 creator IS included here now
     ) stats ON TRUE
   WHERE e.home_id            = p_home_id
     AND e.created_by_user_id = v_user
-    AND e.status IN ('draft', 'active');
+    AND e.status IN ('draft', 'active')
+    -- Filter out fully-paid expenses older than 14 days
+    AND NOT (
+      COALESCE(stats.total_shares, 0) > 0
+      AND COALESCE(stats.total_shares, 0) = COALESCE(stats.paid_shares, 0)
+      AND e.created_at < (CURRENT_TIMESTAMP - INTERVAL '14 days')
+    );
 
   RETURN v_result;
 END;
@@ -4055,7 +4095,7 @@ CREATE OR REPLACE FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_sta
     SET "search_path" TO ''
     AS $$
 DECLARE
-  v_user uuid := auth.uid(); -- 👈 auto-resolve the assignee
+  v_user uuid := auth.uid();
 BEGIN
   PERFORM public._assert_authenticated();
   PERFORM public._assert_home_member(p_home_id);
@@ -4072,10 +4112,12 @@ BEGIN
     c.home_id = p_home_id
     AND c.state = p_state
     AND (
-        -- If it's draft, no assignee filter
-        p_state = 'draft'::public.chore_state
-        -- If it's active, only return chores assigned to *this user*
-        OR (p_state = 'active'::public.chore_state AND c.assignee_user_id = v_user)
+      -- 🟦 DRAFT: only creator sees it
+      (p_state = 'draft'::public.chore_state AND c.created_by_user_id = v_user)
+
+      -- 🟩 ACTIVE: only assigned user sees it
+      OR
+      (p_state = 'active'::public.chore_state AND c.assignee_user_id = v_user)
     )
   ORDER BY
     c.start_date ASC,
@@ -4981,6 +5023,12 @@ ALTER TABLE "public"."chore_events" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."chores" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."expense_splits" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."expenses" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."home_entitlements" ENABLE ROW LEVEL SECURITY;

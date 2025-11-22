@@ -1,145 +1,60 @@
-import 'dart:async';
-
+// lib/features/share/ui/widgets/share_created_list_view.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
-import '../share_edit_outcome.dart';
-import '../share_edit_route_args.dart';
 
-class ShareCreatedListScreen extends StatelessWidget {
-  const ShareCreatedListScreen({super.key});
+class ShareCreatedListView extends StatelessWidget {
+  const ShareCreatedListView({
+    super.key,
+    required this.state,
+    required this.shareColors,
+    required this.onRefreshRequested,
+    required this.onCreateTap,
+    required this.onEntryTap,
+  });
+
+  final ShareCreatedListState state;
+  final SectionColors? shareColors;
+  final Future<void> Function() onRefreshRequested;
+  final VoidCallback onCreateTap;
+  final void Function(ShareCreatedListEntry) onEntryTap;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final sections = theme.extension<KinlySections>();
-    final shareColors = sections?.share;
-    final spacing = theme.extension<Spacing>();
     final s = S.of(context);
 
-    return Scaffold(
-      backgroundColor: shareColors?.background ?? theme.colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor: shareColors?.background,
-        title: Text(s.shareCreatedListTitle),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: shareColors?.accent ?? theme.colorScheme.primary,
-        onPressed: () => _openShareCreate(context),
-        child: const Icon(Icons.add),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(spacing?.lg ?? 16),
-          child: BlocBuilder<ShareCreatedListBloc, ShareCreatedListState>(
-            builder: (context, state) {
-              switch (state.status) {
-                case ShareCreatedListStatus.loading:
-                  return const Center(child: KinlyLoader(size: 40));
-                case ShareCreatedListStatus.failure:
-                  return _ShareCreatedListError(
-                    message: state.errorMessage ?? s.shareCreatedListError,
-                    onRetry:
-                        () => context.read<ShareCreatedListBloc>().add(
-                          const ShareCreatedListRequested(),
-                        ),
-                  );
-                case ShareCreatedListStatus.success:
-                  if (state.entries.isEmpty) {
-                    return _ShareCreatedListEmpty(
-                      title: s.shareCreatedListEmptyTitle,
-                      subtitle: s.shareCreatedListEmptySubtitle,
-                      onCreateTap: () => _openShareCreate(context),
-                    );
-                  }
-                  return _ShareCreatedList(
-                    entries: state.entries,
-                    shareColors: shareColors,
-                    onRefresh: () => _handleRefresh(context),
-                    onEntryTap: (entry) => _openShareEntry(context, entry),
-                  );
-                case ShareCreatedListStatus.initial:
-                  return const SizedBox.shrink();
-              }
-            },
-          ),
-        ),
-      ),
-    );
-  }
+    switch (state.status) {
+      case ShareCreatedListStatus.loading:
+        return const Center(child: KinlyLoader(size: 40));
 
-  Future<void> _handleRefresh(BuildContext context) async {
-    final bloc = context.read<ShareCreatedListBloc>();
-    final completer = Completer<void>();
-    late final StreamSubscription<ShareCreatedListState> sub;
-    sub = bloc.stream.listen((state) {
-      if (!state.isRefreshing &&
-          state.status != ShareCreatedListStatus.loading) {
-        completer.complete();
-        sub.cancel();
-      }
-    });
-    bloc.add(const ShareCreatedListRefreshed());
-    await completer.future;
-  }
+      case ShareCreatedListStatus.failure:
+        return _ShareCreatedListError(
+          message: state.errorMessage ?? s.shareCreatedListError,
+          onRetry: onRefreshRequested,
+        );
 
-  Future<void> _openShareCreate(BuildContext context) async {
-    final result = await context.push<bool>(AppRoutes.shareCreate);
-    if (result == true && context.mounted) {
-      final s = S.of(context);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareCreateSuccess)));
-      context.read<ShareCreatedListBloc>().add(
-        const ShareCreatedListRefreshed(),
-      );
-    }
-  }
+      case ShareCreatedListStatus.success:
+        if (state.entries.isEmpty) {
+          return _ShareCreatedListEmpty(
+            title: s.shareCreatedListEmptyTitle,
+            subtitle: s.shareCreatedListEmptySubtitle,
+            onCreateTap: onCreateTap,
+          );
+        }
+        return _ShareCreatedList(
+          entries: state.entries,
+          shareColors: shareColors,
+          onRefresh: onRefreshRequested,
+          onEntryTap: onEntryTap,
+        );
 
-  Future<void> _openShareEntry(
-    BuildContext context,
-    ShareCreatedListEntry entry,
-  ) async {
-    final result = await context.push(
-      AppRoutes.shareDraftEditPath(entry.expenseId),
-      extra: const ShareEditRouteArgs(allowDelete: true),
-    );
-    if (result == true && context.mounted) {
-      final s = S.of(context);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareEditSuccess)));
-      context.read<ShareCreatedListBloc>().add(
-        const ShareCreatedListRefreshed(),
-      );
-      return;
-    }
-    if (result == ShareEditOutcome.updated && context.mounted) {
-      final s = S.of(context);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareEditSuccess)));
-      context.read<ShareCreatedListBloc>().add(
-        const ShareCreatedListRefreshed(),
-      );
-      return;
-    }
-    if (result == ShareEditOutcome.deleted && context.mounted) {
-      final s = S.of(context);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareEditDeleteSuccess)));
-      context.read<ShareCreatedListBloc>().add(
-        const ShareCreatedListRefreshed(),
-      );
+      case ShareCreatedListStatus.initial:
+        return const SizedBox.shrink();
     }
   }
 }
@@ -195,6 +110,7 @@ class _ShareCreatedCard extends StatelessWidget {
     final spacing = theme.extension<Spacing>();
     final s = S.of(context);
     final formatter = NumberFormat.simpleCurrency(decimalDigits: 2);
+
     final amountLabel = formatter.format(entry.amountCents / 100.0);
     final paidAmountLabel = formatter.format(entry.paidAmountCents / 100.0);
     final progressLabel = s.shareCreatedListActiveSubtitle(
@@ -315,6 +231,8 @@ class _ShareCreatedListEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final s = S.of(context);
+
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -334,7 +252,7 @@ class _ShareCreatedListEmpty extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: onCreateTap,
-            child: Text(S.of(context).shareCreateSubmit),
+            child: Text(s.shareCreateSubmit),
           ),
         ],
       ),
@@ -346,12 +264,13 @@ class _ShareCreatedListError extends StatelessWidget {
   const _ShareCreatedListError({required this.message, required this.onRetry});
 
   final String message;
-  final VoidCallback onRetry;
+  final Future<void> Function() onRetry;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final s = S.of(context);
+
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,

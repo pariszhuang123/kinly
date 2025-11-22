@@ -29,17 +29,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(code) => "Te has unido con el cÃ³digo: ${code}";
 
-  static String m4(count) => "Ver todo (${count})";
+  static String m4(paidAmount, totalAmount) =>
+      "${paidAmount} de ${totalAmount} recolectados";
 
-  static String m5(count) =>
+  static String m5(paid, total) => "${paid} de ${total} pagos completos";
+
+  static String m6(count) => "Ver todo (${count})";
+
+  static String m7(count) =>
       "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} pagos pendientes')}";
 
-  static String m6(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
-
-  static String m7(paid, total) => "${paid} de ${total} pagos completos";
-
-  static String m8(paidAmount, totalAmount) =>
-      "${paidAmount} de ${totalAmount} recolectados";
+  static String m8(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -60,14 +60,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Revisa cada tarea de Flow y mantÃ©n las tareas en movimiento",
     ),
-  
-    "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Revisa cada gasto Share que creaste y sigue los pagos.",
-    ),  "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
+    "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
       "Explora mÃ¡s maneras de mantener tu hogar liviano.",
     ),
     "exploreIntroTitle": MessageLookupByLibrary.simpleMessage(
       "Descubre quÃ© sigue",
+    ),
+    "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Revisa cada gasto Share que creaste y sigue los pagos.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("Asignar a"),
     "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
@@ -92,6 +92,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
       "No se pudo completar la tarea. Intenta de nuevo.",
+    ),
+    "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
+      "Más detalles",
     ),
     "flowChoreDetailNoHowTo": MessageLookupByLibrary.simpleMessage(
       "Sin enlace de instrucciones.",
@@ -131,6 +134,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
       "Alcanzaste el lÃ­mite gratuito de fotos de referencia. Elimina una o mejora el plan.",
+    ),
+    "flowChoreExpectationPhotoLabel": MessageLookupByLibrary.simpleMessage(
+      "Foto de referencia",
     ),
     "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
       "Pega un enlace de video o documento (opcional)",
@@ -491,31 +497,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Crear"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Gasto creado."),
-
-    "shareCreatedListActiveAmount": m8,
-    "shareCreatedListActiveSubtitle": m7,
-    "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
-      "Sin asignar",
-    ),
-    "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Divide el monto para asignar a cada persona antes de publicar.",
-    ),
-    "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Crea un Share para verlo listado aqu?.",
-    ),
-    "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "A?n no hay gastos",
-    ),
-    "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
-      "No pudimos cargar tus gastos compartidos. Desliza para actualizar.",
-    ),
-    "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage("Pagado"),
-    "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage(
-      "Intentar de nuevo",
-    ),
-    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage(
-      "Tus gastos compartidos",
-    ),    "shareCreateTitle": MessageLookupByLibrary.simpleMessage(
+    "shareCreateTitle": MessageLookupByLibrary.simpleMessage(
       "Crear gasto compartido",
     ),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
@@ -543,6 +525,30 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Elige cA?mo quieres dividir este gasto.",
+    ),
+    "shareCreatedListActiveAmount": m4,
+    "shareCreatedListActiveSubtitle": m5,
+    "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
+      "Sin asignar",
+    ),
+    "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Divide el monto para asignar a cada persona antes de publicar.",
+    ),
+    "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
+      "Crea un Share para verlo listado aqu?.",
+    ),
+    "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "A?n no hay gastos",
+    ),
+    "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos cargar tus gastos compartidos. Desliza para actualizar.",
+    ),
+    "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage("Pagado"),
+    "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage(
+      "Intentar de nuevo",
+    ),
+    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage(
+      "Tus gastos compartidos",
     ),
     "shareEditClose": MessageLookupByLibrary.simpleMessage("Cerrar"),
     "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("Eliminar"),
@@ -615,13 +621,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m4,
+    "todayFlowSeeAll": m6,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Esto es lo que fluye en tu hogar hoy.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
-    "todayShareActiveSubtitle": m5,
+    "todayShareActiveSubtitle": m7,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage(
       "próximamente",
     ),
@@ -649,7 +655,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
-    "today_home_details": m6,
+    "today_home_details": m8,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "Sin hogar activo todavÃ­a. Crea o Ãºnete para ver la vista de hoy.",
     ),

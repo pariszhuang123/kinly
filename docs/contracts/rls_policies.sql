@@ -4,6 +4,8 @@ ALTER TABLE "public"."avatars" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "avatars_select_authenticated" ON "public"."avatars" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") IS NOT NULL));
 ALTER TABLE "public"."chore_events" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."chores" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."expense_splits" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."expenses" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."home_entitlements" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."home_plan_limits" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."home_usage_counters" ENABLE ROW LEVEL SECURITY;
