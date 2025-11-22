@@ -338,10 +338,10 @@ BEGIN
   SELECT COUNT(*) INTO v_split_count
   FROM pg_temp.expense_split_buffer;
 
-  IF v_split_count = 0 THEN
+  IF v_split_count < 2 THEN
     PERFORM public.api_error(
       'SPLIT_MEMBERS_REQUIRED',
-      'Split members are required when defining an active expense.',
+      'Include at least two members in the split.',
       '22023'
     );
   END IF;
@@ -2087,6 +2087,7 @@ BEGIN
     FROM public.expense_splits s
     WHERE s.expense_id = v_expense.id
       AND s.status     = 'paid'
+      AND s.debtor_user_id <> v_expense.created_by_user_id
   )
   INTO v_has_paid;
 
@@ -2254,10 +2255,13 @@ BEGIN
     SELECT v_result.id,
            debtor_user_id,
            amount_cents,
-           'unpaid',
-           NULL
-    FROM pg_temp.expense_split_buffer
-    WHERE debtor_user_id <> v_user;
+           CASE
+             WHEN debtor_user_id = v_user
+               THEN 'paid'::public.expense_share_status
+             ELSE 'unpaid'::public.expense_share_status
+           END,
+           CASE WHEN debtor_user_id = v_user THEN now() ELSE NULL END
+    FROM pg_temp.expense_split_buffer;
   END IF;
 
   RETURN v_result;
@@ -2372,6 +2376,7 @@ BEGIN
     FROM public.expense_splits s
     WHERE s.expense_id = v_existing.id
       AND s.status     = 'paid'
+      AND s.debtor_user_id <> v_existing.created_by_user_id
   )
   INTO v_has_paid;
 
@@ -2513,10 +2518,13 @@ BEGIN
     SELECT v_result.id,
            debtor_user_id,
            amount_cents,
-           'unpaid',
-           NULL
-    FROM pg_temp.expense_split_buffer
-    WHERE debtor_user_id <> v_user;
+           CASE
+             WHEN debtor_user_id = v_user
+               THEN 'paid'::public.expense_share_status
+             ELSE 'unpaid'::public.expense_share_status
+           END,
+           CASE WHEN debtor_user_id = v_user THEN now() ELSE NULL END
+    FROM pg_temp.expense_split_buffer;
   END IF;
 
   RETURN v_result;
@@ -2612,18 +2620,19 @@ BEGIN
          )
   INTO v_result
   FROM public.expenses e
-  LEFT JOIN LATERAL (
-    SELECT
-      COUNT(*) AS total_shares,
-      COUNT(*) FILTER (WHERE s.status = 'paid') AS paid_shares,
-      COALESCE(
-        SUM(s.amount_cents) FILTER (WHERE s.status = 'paid'),
-        0
-      ) AS paid_amount_cents,
-      MAX(s.marked_paid_at) FILTER (WHERE s.status = 'paid') AS max_paid_at
-    FROM public.expense_splits s
-    WHERE s.expense_id = e.id
-  ) stats ON TRUE
+    LEFT JOIN LATERAL (
+      SELECT
+        COUNT(*) AS total_shares,
+        COUNT(*) FILTER (WHERE s.status = 'paid') AS paid_shares,
+        COALESCE(
+          SUM(s.amount_cents) FILTER (WHERE s.status = 'paid'),
+          0
+        ) AS paid_amount_cents,
+        MAX(s.marked_paid_at) FILTER (WHERE s.status = 'paid') AS max_paid_at
+      FROM public.expense_splits s
+      WHERE s.expense_id = e.id
+        AND s.debtor_user_id <> e.created_by_user_id
+    ) stats ON TRUE
   WHERE e.home_id            = p_home_id
     AND e.created_by_user_id = v_user
     AND e.status IN ('draft', 'active');
@@ -2836,12 +2845,13 @@ BEGIN
 
   IF v_expense.status = 'active' THEN
     SELECT EXISTS (
-      SELECT 1
-      FROM public.expense_splits s
-      WHERE s.expense_id = v_expense.id
-        AND s.status     = 'paid'
-    )
-    INTO v_has_paid_splits;
+    SELECT 1
+    FROM public.expense_splits s
+    WHERE s.expense_id = v_expense.id
+      AND s.status     = 'paid'
+      AND s.debtor_user_id <> v_expense.created_by_user_id
+  )
+  INTO v_has_paid_splits;
   END IF;
 
   v_amount_locked := v_expense.status = 'active' AND v_has_paid_splits;

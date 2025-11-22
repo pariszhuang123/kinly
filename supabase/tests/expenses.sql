@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(37);
+SELECT plan(47);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -232,6 +232,44 @@ SELECT set_config(
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 -- Active equal split creation
+SELECT pg_temp.expect_api_error(
+  format($sql$
+    SELECT public.expenses_create(
+      '%s',
+      101,
+      'Solo equal',
+      NULL,
+      'equal',
+      ARRAY['%s'::uuid],
+      NULL
+    );
+  $sql$,
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+    (SELECT user_id FROM tmp_users WHERE label = 'member_one')
+  ),
+  'SPLIT_MEMBERS_REQUIRED',
+  'Equal split rejects single-member selection'
+);
+
+SELECT pg_temp.expect_api_error(
+  format($sql$
+    SELECT public.expenses_create(
+      '%s',
+      101,
+      'Solo custom',
+      NULL,
+      'custom',
+      NULL,
+      '[{"user_id":"%s","amount_cents":101}]'::jsonb
+    );
+  $sql$,
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+    (SELECT user_id FROM tmp_users WHERE label = 'member_one')
+  ),
+  'SPLIT_MEMBERS_REQUIRED',
+  'Custom split rejects single-member selection'
+);
+
 WITH created AS (
   SELECT public.expenses_create(
     (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
@@ -241,7 +279,8 @@ WITH created AS (
     'equal',
     ARRAY[
       (SELECT user_id FROM tmp_users WHERE label = 'member_one'),
-      (SELECT user_id FROM tmp_users WHERE label = 'member_two')
+      (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
+      (SELECT user_id FROM tmp_users WHERE label = 'creator')
     ],
     NULL
   ) AS expense
@@ -251,15 +290,15 @@ SELECT 'active_equal', (expense).id FROM created;
 
 SELECT is(
   (SELECT COUNT(*)::int FROM public.expense_splits WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
-  2,
-  'Equal split inserts two rows'
+  3,
+  'Equal split stores rows for all selected members (creator included)'
 );
 
 SELECT is(
   (SELECT amount_cents FROM public.expense_splits
     WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
       AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_one')),
-  50::bigint,
+  33::bigint,
   'Equal split divides base amount evenly (member_one)'
 );
 
@@ -267,8 +306,31 @@ SELECT is(
   (SELECT amount_cents FROM public.expense_splits
     WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
       AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_two')),
-  51::bigint,
-  'Equal split remainder flows to last member'
+  33::bigint,
+  'Equal split divides base amount evenly (member_two)'
+);
+
+SELECT is(
+  (SELECT amount_cents FROM public.expense_splits
+    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
+      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
+  35::bigint,
+  'Creator receives the remaining cents in the split order'
+);
+
+SELECT is(
+  (SELECT status::text FROM public.expense_splits
+    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
+      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
+  'paid',
+  'Creator split row is marked paid immediately'
+);
+
+SELECT ok(
+  (SELECT marked_paid_at IS NOT NULL FROM public.expense_splits
+    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
+      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
+  'Creator split row records marked_paid_at'
 );
 
 -- Editing draft without split mode fails
@@ -299,7 +361,8 @@ SELECT public.expenses_edit(
   'equal',
   ARRAY[
     (SELECT user_id FROM tmp_users WHERE label = 'member_one'),
-    (SELECT user_id FROM tmp_users WHERE label = 'member_two')
+    (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
+    (SELECT user_id FROM tmp_users WHERE label = 'creator')
   ],
   NULL
 );
@@ -312,8 +375,23 @@ SELECT is(
 
 SELECT is(
   (SELECT COUNT(*)::int FROM public.expense_splits WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
-  2,
-  'Draft promotion inserts split rows'
+  3,
+  'Draft promotion inserts split rows for creator + members'
+);
+
+SELECT is(
+  (SELECT status::text FROM public.expense_splits
+    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')
+      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
+  'paid',
+  'Draft promotion marks creator share as paid'
+);
+
+SELECT ok(
+  (SELECT marked_paid_at IS NOT NULL FROM public.expense_splits
+    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')
+      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
+  'Draft promotion records marked_paid_at for creator share'
 );
 
 -- Active amount change without split data rejected
@@ -348,7 +426,13 @@ WITH custom AS (
       'user_id',
       (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
       'amount_cents',
-      61
+      30
+    ),
+    jsonb_build_object(
+      'user_id',
+      (SELECT user_id FROM tmp_users WHERE label = 'creator'),
+      'amount_cents',
+      31
     )
   ) AS body
 )
@@ -380,8 +464,24 @@ SELECT is(
   (SELECT amount_cents FROM public.expense_splits
     WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
       AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_two')),
-  61::bigint,
+  30::bigint,
   'Custom edit uses provided amount for member_two'
+);
+
+SELECT is(
+  (SELECT amount_cents FROM public.expense_splits
+    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
+      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
+  31::bigint,
+  'Custom edit persists the creator share and marks it paid'
+);
+
+SELECT is(
+  (SELECT status::text FROM public.expense_splits
+    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
+      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
+  'paid',
+  'Creator share remains paid after custom rebuild'
 );
 
 -- Member marks share paid
@@ -438,15 +538,27 @@ SELECT is(
   'Soft fields remain editable after payment'
 );
 
--- Non-debtor cannot mark share paid
-SELECT pg_temp.expect_api_error(
-  format($sql$
-    SELECT public.expenses_mark_share_paid('%s');
-  $sql$,
+-- Creator already paid share should remain paid (no-op)
+WITH payload AS (
+  SELECT public.expenses_mark_share_paid(
     (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-  ),
-  'NOT_FOUND',
-  'Creator cannot mark a share they do not owe'
+  ) AS split
+)
+SELECT is(
+  (SELECT (split).debtor_user_id FROM payload),
+  (SELECT user_id FROM tmp_users WHERE label = 'creator'),
+  'Creator mark_share_paid returns their own split row'
+);
+
+WITH payload AS (
+  SELECT public.expenses_mark_share_paid(
+    (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
+  ) AS split
+)
+SELECT is(
+  (SELECT (split).status::text FROM payload),
+  'paid',
+  'Creator mark_share_paid keeps status=paid'
 );
 
 -- Cancelling with paid share rejected
@@ -464,7 +576,10 @@ WITH created AS (
     'Snacks',
     NULL,
     'equal',
-    ARRAY[(SELECT user_id FROM tmp_users WHERE label = 'member_two')],
+    ARRAY[
+      (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
+      (SELECT user_id FROM tmp_users WHERE label = 'creator')
+    ],
     NULL
   ) AS expense
 )
@@ -501,7 +616,7 @@ WITH payload AS (
 )
 SELECT is(
   (SELECT (body->0->>'totalOwedCents')::bigint FROM payload),
-  2586::bigint,
+  1713::bigint,
   'Current owed sums unpaid cents across expenses'
 );
 
@@ -644,8 +759,8 @@ WITH payload AS (
 )
 SELECT is(
   (SELECT jsonb_array_length(body->'splits') FROM payload),
-  2,
-  'expenses_get_for_edit includes split rows'
+  3,
+  'expenses_get_for_edit includes all split rows (creator included)'
 );
 
 WITH payload AS (
