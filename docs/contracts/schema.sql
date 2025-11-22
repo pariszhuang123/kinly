@@ -251,6 +251,101 @@ $$;
 ALTER FUNCTION "public"."_current_user_id"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."_ensure_unique_avatar_for_home"("p_home_id" "uuid", "p_user_id" "uuid") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_avatar_before uuid;
+  v_new_avatar uuid;
+  v_plan text;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  -- Lock profile row for this user
+  SELECT p.avatar_id
+    INTO v_avatar_before
+  FROM public.profiles p
+  WHERE p.id = p_user_id
+    AND p.deactivated_at IS NULL
+  FOR UPDATE;
+
+  IF NOT FOUND THEN
+    PERFORM public.api_error(
+      'PROFILE_NOT_FOUND',
+      'Active profile not found for current user.',
+      '22000',
+      jsonb_build_object('user_id', p_user_id)
+    );
+  END IF;
+
+  -- Default plan to free if none found
+  v_plan := public._home_effective_plan(p_home_id);
+  IF v_plan IS NULL THEN
+    v_plan := 'free';
+  END IF;
+
+  -- If current avatar is unique in this home, keep it
+  IF v_avatar_before IS NOT NULL THEN
+    PERFORM 1
+    FROM public.memberships m
+    JOIN public.profiles pr
+      ON pr.id = m.user_id
+    WHERE m.home_id = p_home_id
+      AND m.is_current = TRUE
+      AND pr.deactivated_at IS NULL
+      AND pr.avatar_id = v_avatar_before
+      AND pr.id <> p_user_id;
+
+    IF NOT FOUND THEN
+      RETURN v_avatar_before;
+    END IF;
+  END IF;
+
+  -- Pick the first available avatar respecting plan and excluding other members
+  WITH used_by_others AS (
+    SELECT DISTINCT pr.avatar_id
+    FROM public.memberships m
+    JOIN public.profiles pr
+      ON pr.id = m.user_id
+    WHERE m.home_id = p_home_id
+      AND m.is_current = TRUE
+      AND pr.deactivated_at IS NULL
+      AND pr.id <> p_user_id
+  )
+  SELECT a.id
+    INTO v_new_avatar
+  FROM public.avatars a
+  LEFT JOIN used_by_others u
+    ON u.avatar_id = a.id
+  WHERE u.avatar_id IS NULL
+    AND (v_plan <> 'free' OR a.category = 'animal')
+  ORDER BY a.created_at ASC
+  LIMIT 1;
+
+  IF v_new_avatar IS NULL THEN
+    PERFORM public.api_error(
+      'NO_AVAILABLE_AVATAR',
+      'No available avatars for this home.',
+      'P0001',
+      jsonb_build_object('home_id', p_home_id, 'plan', v_plan)
+    );
+  END IF;
+
+  UPDATE public.profiles
+     SET avatar_id = v_new_avatar,
+         updated_at = now()
+   WHERE id = p_user_id
+     AND deactivated_at IS NULL;
+
+  RETURN v_new_avatar;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_ensure_unique_avatar_for_home"("p_home_id" "uuid", "p_user_id" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."_expenses_prepare_split_buffer"("p_home_id" "uuid", "p_creator_id" "uuid", "p_amount_cents" bigint, "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[] DEFAULT NULL::"uuid"[], "p_splits" "jsonb" DEFAULT NULL::"jsonb") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -1249,7 +1344,8 @@ CREATE TABLE IF NOT EXISTS "public"."chores" (
     CONSTRAINT "chk_chore_active_has_assignee" CHECK ((("state" <> 'active'::"public"."chore_state") OR ("assignee_user_id" IS NOT NULL))),
     CONSTRAINT "chk_chore_draft_without_assignee" CHECK ((("state" <> 'draft'::"public"."chore_state") OR ("assignee_user_id" IS NULL))),
     CONSTRAINT "chk_chore_expectation_path" CHECK ((("expectation_photo_path" IS NULL) OR ("expectation_photo_path" ~~ 'households/%'::"text"))),
-    CONSTRAINT "chk_chore_name_length" CHECK ((("char_length"("btrim"("name")) >= 1) AND ("char_length"("btrim"("name")) <= 140)))
+    CONSTRAINT "chk_chore_name_length" CHECK ((("char_length"("btrim"("name")) >= 1) AND ("char_length"("btrim"("name")) <= 140))),
+    CONSTRAINT "chores_how_to_video_url_scheme" CHECK ((("how_to_video_url" IS NULL) OR ("how_to_video_url" ~* '^https?://'::"text")))
 );
 
 
@@ -3420,6 +3516,10 @@ BEGIN
 
   -- Attach Subscription to home
   PERFORM public._home_attach_subscription_to_home(v_user, v_home_id);
+  -- Ensure caller has a unique avatar within this home (plan-gated)
+  PERFORM public._ensure_unique_avatar_for_home(v_home_id, v_user);
+
+  -- Success response
 
   RETURN jsonb_build_object(
     'status',  'success',
@@ -5409,6 +5509,13 @@ GRANT ALL ON FUNCTION "public"."_assert_home_member"("p_home_id" "uuid") TO "ser
 
 REVOKE ALL ON FUNCTION "public"."_current_user_id"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."_current_user_id"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."_ensure_unique_avatar_for_home"("p_home_id" "uuid", "p_user_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."_ensure_unique_avatar_for_home"("p_home_id" "uuid", "p_user_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."_ensure_unique_avatar_for_home"("p_home_id" "uuid", "p_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."_ensure_unique_avatar_for_home"("p_home_id" "uuid", "p_user_id" "uuid") TO "service_role";
 
 
 

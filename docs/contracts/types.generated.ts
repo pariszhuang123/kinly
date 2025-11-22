@@ -725,6 +725,10 @@ export type Database = {
       _assert_authenticated: { Args: never; Returns: undefined }
       _assert_home_member: { Args: { p_home_id: string }; Returns: undefined }
       _current_user_id: { Args: never; Returns: string }
+      _ensure_unique_avatar_for_home: {
+        Args: { p_home_id: string; p_user_id: string }
+        Returns: string
+      }
       _expenses_prepare_split_buffer: {
         Args: {
           p_amount_cents: number

@@ -24,6 +24,10 @@ INSERT INTO public.avatars (id, storage_path, category, name)
 VALUES ('00000000-0000-4000-8000-000000000711', 'avatars/default.png', 'animal', 'Today Flow Avatar')
 ON CONFLICT (id) DO NOTHING;
 
+INSERT INTO public.avatars (id, storage_path, category, name)
+VALUES ('00000000-0000-4000-8000-000000000712', 'avatars/today-alt.png', 'animal', 'Today Flow Avatar Alt')
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO auth.users (id, instance_id, email, raw_user_meta_data, raw_app_meta_data, aud, role, encrypted_password)
 SELECT
   user_id,

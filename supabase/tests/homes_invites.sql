@@ -37,6 +37,13 @@ INSERT INTO public.avatars (id, storage_path, category, name)
 VALUES ('00000000-0000-4000-8000-000000000501', 'avatars/default.png', 'animal', 'Test Avatar')
 ON CONFLICT (id) DO NOTHING;
 
+-- Additional avatars to allow unique assignment per home
+INSERT INTO public.avatars (id, storage_path, category, name)
+VALUES
+  ('00000000-0000-4000-8000-000000000502', 'avatars/alt-1.png', 'animal', 'Alt Avatar 1'),
+  ('00000000-0000-4000-8000-000000000503', 'avatars/alt-2.png', 'animal', 'Alt Avatar 2')
+ON CONFLICT (id) DO NOTHING;
+
 -- Seed logical users
 INSERT INTO tmp_users (label, user_id, email) VALUES
   ('owner',      '00000000-0000-4000-8000-000000000111', 'owner-test@example.com'),

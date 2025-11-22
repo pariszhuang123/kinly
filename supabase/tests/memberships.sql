@@ -30,6 +30,13 @@ INSERT INTO public.avatars (id, storage_path, category, name)
 VALUES ('00000000-0000-4000-8000-000000000601', 'avatars/default.png', 'animal', 'Membership Avatar')
 ON CONFLICT (id) DO NOTHING;
 
+-- Additional avatars so joins can assign unique per-home avatars
+INSERT INTO public.avatars (id, storage_path, category, name)
+VALUES
+  ('00000000-0000-4000-8000-000000000602', 'avatars/membership-alt1.png', 'animal', 'Membership Alt 1'),
+  ('00000000-0000-4000-8000-000000000603', 'avatars/membership-alt2.png', 'animal', 'Membership Alt 2')
+ON CONFLICT (id) DO NOTHING;
+
 -- Seed auth users
 INSERT INTO auth.users (id, instance_id, email, raw_user_meta_data, raw_app_meta_data, aud, role, encrypted_password)
 SELECT

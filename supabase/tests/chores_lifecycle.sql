@@ -35,6 +35,11 @@ INSERT INTO public.avatars (id, storage_path, category, name)
 VALUES ('00000000-0000-4000-8000-000000000701', 'avatars/default.png', 'animal', 'Chores Avatar')
 ON CONFLICT (id) DO NOTHING;
 
+-- Additional avatar to keep joins unique per home
+INSERT INTO public.avatars (id, storage_path, category, name)
+VALUES ('00000000-0000-4000-8000-000000000702', 'avatars/chores-alt.png', 'animal', 'Chores Avatar Alt')
+ON CONFLICT (id) DO NOTHING;
+
 -- Seed auth.users for owner + helper
 INSERT INTO auth.users (id, instance_id, email, raw_user_meta_data, raw_app_meta_data, aud, role, encrypted_password)
 SELECT
