@@ -1343,7 +1343,7 @@ CREATE TABLE IF NOT EXISTS "public"."chores" (
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     CONSTRAINT "chk_chore_active_has_assignee" CHECK ((("state" <> 'active'::"public"."chore_state") OR ("assignee_user_id" IS NOT NULL))),
     CONSTRAINT "chk_chore_draft_without_assignee" CHECK ((("state" <> 'draft'::"public"."chore_state") OR ("assignee_user_id" IS NULL))),
-    CONSTRAINT "chk_chore_expectation_path" CHECK ((("expectation_photo_path" IS NULL) OR ("expectation_photo_path" ~~ 'households/%'::"text"))),
+    CONSTRAINT "chk_chore_expectation_path" CHECK ((("expectation_photo_path" IS NULL) OR (("expectation_photo_path" !~ '^[a-zA-Z][a-zA-Z0-9+.-]*://'::"text") AND ("expectation_photo_path" ~ '^flow/[a-z0-9_-]+/[A-Za-z0-9_\\-/.]+$'::"text")))),
     CONSTRAINT "chk_chore_name_length" CHECK ((("char_length"("btrim"("name")) >= 1) AND ("char_length"("btrim"("name")) <= 140))),
     CONSTRAINT "chores_how_to_video_url_scheme" CHECK ((("how_to_video_url" IS NULL) OR ("how_to_video_url" ~* '^https?://'::"text")))
 );
@@ -1384,7 +1384,7 @@ COMMENT ON COLUMN "public"."chores"."next_occurrence" IS 'Next actionable due da
 
 
 
-COMMENT ON COLUMN "public"."chores"."expectation_photo_path" IS 'Supabase Storage path for expectation photos.';
+COMMENT ON COLUMN "public"."chores"."expectation_photo_path" IS 'Supabase Storage object path (no bucket/host) for chore photos.';
 
 
 

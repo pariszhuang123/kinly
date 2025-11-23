@@ -32,7 +32,7 @@ class FlowChoreExtrasSection extends StatelessWidget {
     final s = S.of(context);
 
     final hasExpectationPhoto =
-        expectationPhotoUrl != null && expectationPhotoUrl!.trim().isNotEmpty;
+        expectationPhotoUrl?.trim().isNotEmpty == true;
 
     return Container(
       width: double.infinity,

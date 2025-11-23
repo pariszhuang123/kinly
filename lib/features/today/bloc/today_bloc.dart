@@ -6,6 +6,7 @@ import '../../../core/expenses/models.dart';
 import '../../../core/profile/models.dart';
 import '../../../data/repositories/chores_repository.dart';
 import '../../../data/repositories/expenses_repository.dart';
+import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../domain/models.dart'; // TodayFlowTask etc.
 
@@ -16,16 +17,19 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final ChoresRepository _choresRepository;
   final ProfileRepository _profileRepository;
   final ExpensesRepository _expensesRepository;
+  final HomeRepository _homeRepository;
   final String _homeId;
 
   TodayBloc({
     required ChoresRepository choresRepository,
     required ProfileRepository profileRepository,
     required ExpensesRepository expensesRepository,
+    required HomeRepository homeRepository,
     required String homeId,
   }) : _choresRepository = choresRepository,
        _profileRepository = profileRepository,
        _expensesRepository = expensesRepository,
+       _homeRepository = homeRepository,
        _homeId = homeId,
        super(const TodayState.loading()) {
     on<TodayStarted>(_onStarted);
@@ -71,11 +75,30 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         homeId: _homeId,
         state: ChoreState.active,
       );
+      final membersFuture = _homeRepository.listActiveMembers(
+        _homeId,
+        excludeSelf: false,
+      );
 
-      profile = await _resolveProfile(profileFuture, fallback: profile);
+      final members = await membersFuture;
+      String? ownerUserId;
+      if (members.isNotEmpty) {
+        ownerUserId = members
+            .firstWhere(
+              (member) => member.isOwner,
+              orElse: () => members.first,
+            )
+            .userId;
+      }
+
+      profile = await _resolveProfile(
+        profileFuture,
+        fallback: profile,
+        ownerUserId: ownerUserId,
+      );
       final drafts = await draftsFuture;
       final active = await activeFuture;
-      final shareSnapshot = await _loadShareSnapshot();
+      final shareSnapshot = await _loadShareSnapshot(ownerUserId: ownerUserId);
 
       final draftTasks = drafts
           .map((entry) => _mapEntryToTodayTask(entry, isNewTodayOverride: true))
@@ -114,6 +137,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   Future<TodayUserProfile?> _resolveProfile(
     Future<UserProfile?> future, {
     TodayUserProfile? fallback,
+    String? ownerUserId,
   }) async {
     try {
       final profile = await future;
@@ -122,6 +146,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         userId: profile.userId,
         username: profile.username,
         avatarUrl: profile.avatarUrl,
+        isOwner: ownerUserId != null && profile.userId == ownerUserId,
       );
     } catch (_) {
       return fallback;
@@ -140,14 +165,19 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     );
   }
 
-  Future<_ShareSnapshot> _loadShareSnapshot() async {
+  Future<_ShareSnapshot> _loadShareSnapshot({String? ownerUserId}) async {
     try {
       final owed = await _expensesRepository.listCurrentOwed(homeId: _homeId);
       final created = await _expensesRepository.listCreatedByMe(
         homeId: _homeId,
       );
       final owedView = owed
-          .map(TodayShareOwed.fromModel)
+          .map(
+            (entry) => TodayShareOwed.fromModel(
+              entry,
+              ownerUserId: ownerUserId,
+            ),
+          )
           .toList(growable: false);
       final drafts = created
           .where((entry) => entry.status == ExpenseStatus.draft)

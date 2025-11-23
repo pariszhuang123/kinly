@@ -77,6 +77,7 @@ void main() {
                 userId: m.userId,
                 displayName: m.username,
                 avatarUrl: m.avatarUrl,
+                isOwner: m.isOwner,
               ),
             )
             .toList(growable: false);
@@ -136,6 +137,7 @@ void main() {
               userId: m.userId,
               displayName: m.username,
               avatarUrl: m.avatarUrl,
+              isOwner: m.isOwner,
             ),
           )
           .toList(growable: false);

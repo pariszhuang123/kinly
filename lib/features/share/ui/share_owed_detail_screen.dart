@@ -131,7 +131,11 @@ class _ShareOwedHeader extends StatelessWidget {
 
     return Row(
       children: [
-        KinlyCircleAvatar(avatarUrl: owed.avatarUrl, radius: 28),
+        KinlyCircleAvatar(
+          avatarUrl: owed.avatarUrl,
+          radius: 28,
+          isOwner: owed.isOwner,
+        ),
         SizedBox(width: spacing.md),
         Expanded(
           child: Column(

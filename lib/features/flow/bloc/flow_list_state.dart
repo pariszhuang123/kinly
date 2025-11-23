@@ -8,6 +8,7 @@ class FlowListState extends Equatable {
   final bool isRefreshing;
   final String? errorMessage;
   final DateTime? lastUpdated;
+  final String? ownerUserId;
 
   const FlowListState({
     this.status = FlowListStatus.initial,
@@ -15,6 +16,7 @@ class FlowListState extends Equatable {
     this.isRefreshing = false,
     this.errorMessage,
     this.lastUpdated,
+    this.ownerUserId,
   });
 
   FlowListState copyWith({
@@ -24,6 +26,7 @@ class FlowListState extends Equatable {
     String? errorMessage,
     bool clearError = false,
     DateTime? lastUpdated,
+    String? ownerUserId,
   }) {
     return FlowListState(
       status: status ?? this.status,
@@ -31,6 +34,7 @@ class FlowListState extends Equatable {
       isRefreshing: isRefreshing ?? this.isRefreshing,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       lastUpdated: lastUpdated ?? this.lastUpdated,
+      ownerUserId: ownerUserId ?? this.ownerUserId,
     );
   }
 
@@ -43,5 +47,6 @@ class FlowListState extends Equatable {
     isRefreshing,
     errorMessage,
     lastUpdated,
+    ownerUserId,
   ];
 }

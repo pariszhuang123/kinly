@@ -55,6 +55,104 @@ jobs:
       - name: Check shared enums grouped
         run: dart run tool/check_enums.dart
 
+  # 🧮 NEW: code size metrics with scc
+  code_metrics:
+    name: Codebase Metrics
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install scc
+        run: |
+          curl -L https://github.com/boyter/scc/releases/latest/download/scc_Linux_x86_64.tar.gz -o scc.tar.gz
+          tar -xzf scc.tar.gz
+          sudo mv scc /usr/local/bin/scc
+
+      # Human-readable summary in CI logs
+      - name: Run scc (summary)
+        run: |
+          scc . \
+            --include-ext dart,sql,yaml,sh \
+            --exclude-dir .git,build,.dart_tool,env \
+            --no-cocomo \
+            --ci
+
+      # JSON output for machine parsing
+      - name: Run scc (JSON output)
+        run: |
+          scc . \
+            --include-ext dart,sql,yaml,sh \
+            --exclude-dir .git,build,.dart_tool,env \
+            --no-cocomo \
+            --format json \
+            --output code_metrics.json
+
+      # Parse code_metrics.json and print a small summary
+      - name: Print metrics summary from JSON
+        run: |
+          python - << 'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("code_metrics.json")
+          if not path.exists():
+            print("code_metrics.json not found")
+            raise SystemExit(0)
+
+          data = json.loads(path.read_text())
+
+          # scc JSON output is typically a list of language entries.
+          # But we'll be defensive and handle a dict-with-Languages as well.
+          if isinstance(data, dict) and "Languages" in data:
+            languages = data["Languages"]
+          elif isinstance(data, list):
+            languages = data
+          else:
+            print("Unrecognized scc JSON structure:", type(data))
+            print("Raw:", data)
+            raise SystemExit(0)
+
+          # Build a map by language name (case-safe)
+          by_name = {}
+          for lang in languages:
+            name = lang.get("Name") or lang.get("name")
+            if name:
+              by_name[name] = lang
+
+          def get_stat(lang_name):
+            lang = by_name.get(lang_name)
+            if not lang:
+              return None
+            # scc uses capitalized keys; we also fall back to lowercase just in case.
+            code = lang.get("Code", lang.get("code", 0))
+            files = lang.get("Count", lang.get("nFiles", 0))
+            return int(code), int(files)
+
+          print("== Code metrics summary (from code_metrics.json) ==")
+
+          for name in ("Dart", "SQL", "YAML", "Shell"):
+            stat = get_stat(name)
+            if stat is None:
+              print(f"{name}: no files")
+            else:
+              code, files = stat
+              print(f"{name}: {code} lines of code across {files} files")
+
+          # Try to show the total if present
+          total = by_name.get("Total") or by_name.get("SUM")
+          if total:
+            t_code = total.get("Code", total.get("code", 0))
+            t_files = total.get("Count", total.get("nFiles", 0))
+            print(f"Total: {int(t_code)} lines of code across {int(t_files)} files")
+          PY
+
+      - name: Upload metrics artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-metrics
+          path: code_metrics.json
+
   contracts_drift:
     name: Contracts Drift (Local DB)
     needs: [lint_test]

@@ -5,20 +5,28 @@ import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/core/media/expectation_photo_service.dart';
 import 'package:kinly/core/media/media_repository.dart';
 import 'package:kinly/data/repositories/chores_repository.dart';
+import 'package:kinly/data/repositories/home_repository.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_bloc.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}
+class _MockHomeRepository extends Mock implements HomeRepository {}
 
 class _MockExpectationPhotoService extends Mock
     implements ExpectationPhotoService {}
 
 void main() {
   late ChoresRepository choresRepository;
+  late HomeRepository homeRepository;
   late ExpectationPhotoService photoService;
 
   setUp(() {
     choresRepository = _MockChoresRepository();
+    homeRepository = _MockHomeRepository();
     photoService = _MockExpectationPhotoService();
+    when(
+      () => homeRepository.listActiveMembers(any(),
+          excludeSelf: any(named: 'excludeSelf')),
+    ).thenAnswer((_) async => const []);
   });
 
   setUpAll(() {
@@ -27,7 +35,7 @@ void main() {
   });
 
   test(
-    'photo capture success toggles uploading state and stores public url',
+    'photo capture success toggles uploading state and stores storage path',
     () async {
       const upload = MediaUploadResult(
         storagePath: 'households/flow/expectations/home-1/temp/file.jpg',
@@ -43,6 +51,7 @@ void main() {
       final bloc = FlowChoreBloc(
         homeId: 'home-1',
         choresRepository: choresRepository,
+        homeRepository: homeRepository,
         expectationPhotoService: photoService,
       );
 
@@ -57,7 +66,7 @@ void main() {
           predicate<FlowChoreState>(
             (state) =>
                 !state.isUploadingPhoto &&
-                state.form.expectationPhotoPath == upload.publicUrl &&
+                state.form.expectationPhotoPath == upload.storagePath &&
                 state.photoErrorMessage == null,
           ),
         ]),
@@ -78,6 +87,7 @@ void main() {
       final bloc = FlowChoreBloc(
         homeId: 'home-1',
         choresRepository: choresRepository,
+        homeRepository: homeRepository,
         expectationPhotoService: photoService,
       );
 
@@ -101,9 +111,9 @@ void main() {
   );
 
   test(
-    'submit sends stored expectation photo url to repository',
+    'submit sends stored expectation photo path to repository',
     () async {
-      const photoUrl = 'https://example.com/photo.jpg';
+      const photoPath = 'flow/expectations/home-1/temp/file.jpg';
       when(
         () => choresRepository.create(
           homeId: any(named: 'homeId'),
@@ -118,27 +128,28 @@ void main() {
       ).thenAnswer(
         (_) async => _fakeChore(
           id: 'chore-1',
-          expectationPhotoPath: photoUrl,
+          expectationPhotoPath: photoPath,
         ),
       );
 
       final bloc = FlowChoreBloc(
         homeId: 'home-1',
         choresRepository: choresRepository,
+        homeRepository: homeRepository,
         expectationPhotoService: photoService,
       );
 
       addTearDown(bloc.close);
 
       bloc.add(const FlowChoreTitleChanged('Test chore'));
-      bloc.add(const FlowChorePhotoChanged(photoUrl));
+      bloc.add(const FlowChorePhotoChanged(photoPath));
       bloc.add(const FlowChoreSubmitted());
 
       final successState =
           await bloc.stream.firstWhere((state) => state.successChoreId != null);
 
       expect(successState.successChoreId, 'chore-1');
-      expect(successState.form.expectationPhotoPath, photoUrl);
+      expect(successState.form.expectationPhotoPath, photoPath);
       verify(
         () => choresRepository.create(
           homeId: 'home-1',
@@ -148,7 +159,7 @@ void main() {
           recurrence: ChoreRecurrence.none,
           notes: null,
           howToVideoUrl: null,
-          expectationPhotoPath: photoUrl,
+          expectationPhotoPath: photoPath,
         ),
       ).called(1);
     },
@@ -167,6 +178,7 @@ void main() {
       final bloc = FlowChoreBloc(
         homeId: 'home-1',
         choresRepository: choresRepository,
+        homeRepository: homeRepository,
         expectationPhotoService: photoService,
       );
 

@@ -64,6 +64,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
               userId: member.userId,
               displayName: member.username,
               avatarUrl: member.avatarUrl,
+              isOwner: member.isOwner,
             ),
           )
           .toList(growable: false);

@@ -161,6 +161,7 @@ GoRouter createRouter({
             choresRepository: sl<ChoresRepository>(),
             profileRepository: sl<ProfileRepository>(),
             expensesRepository: sl<ExpensesRepository>(),
+            homeRepository: sl<HomeRepository>(),
           );
         },
       ),
@@ -186,6 +187,7 @@ GoRouter createRouter({
           return FlowListProvider(
             homeId: membership.homeId,
             choresRepository: sl<ChoresRepository>(),
+            homeRepository: sl<HomeRepository>(),
           );
         },
       ),
@@ -200,6 +202,7 @@ GoRouter createRouter({
           return FlowChoreProvider(
             homeId: membership.homeId,
             choresRepository: sl<ChoresRepository>(),
+            homeRepository: sl<HomeRepository>(),
           );
         },
       ),
@@ -215,6 +218,7 @@ GoRouter createRouter({
           return FlowChoreProvider(
             homeId: membership.homeId,
             choresRepository: sl<ChoresRepository>(),
+            homeRepository: sl<HomeRepository>(),
             choreId: choreId,
           );
         },

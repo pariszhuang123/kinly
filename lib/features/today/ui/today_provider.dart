@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/repositories/chores_repository.dart';
 import '../../../data/repositories/expenses_repository.dart';
+import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../bloc/today_bloc.dart';
 import 'today_screen.dart';
@@ -12,6 +13,7 @@ class TodayProvider extends StatelessWidget {
   final ChoresRepository choresRepository;
   final ProfileRepository profileRepository;
   final ExpensesRepository expensesRepository;
+  final HomeRepository homeRepository;
 
   const TodayProvider({
     super.key,
@@ -19,6 +21,7 @@ class TodayProvider extends StatelessWidget {
     required this.choresRepository,
     required this.profileRepository,
     required this.expensesRepository,
+    required this.homeRepository,
   });
 
   @override
@@ -29,6 +32,7 @@ class TodayProvider extends StatelessWidget {
             choresRepository: choresRepository,
             profileRepository: profileRepository,
             expensesRepository: expensesRepository,
+            homeRepository: homeRepository,
             homeId: homeId,
           ),
       child: const TodayScreen(),

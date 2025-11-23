@@ -6,6 +6,7 @@ import '../../../core/media/expectation_photo_service.dart';
 import '../../../core/media/supabase_media_repository.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../data/repositories/chores_repository.dart';
+import '../../../data/repositories/home_repository.dart';
 import '../domain/flow_chore_form.dart';
 
 part 'flow_chore_event.dart';
@@ -16,10 +17,12 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     required String homeId,
     String? choreId,
     required ChoresRepository choresRepository,
+    required HomeRepository homeRepository,
     ExpectationPhotoService? expectationPhotoService,
   }) : _homeId = homeId,
        _choreId = choreId,
        _choresRepository = choresRepository,
+       _homeRepository = homeRepository,
        _expectationPhotoService =
            expectationPhotoService ??
            ExpectationPhotoService(mediaRepository: SupabaseMediaRepository()),
@@ -45,6 +48,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
   final String _homeId;
   final String? _choreId;
   final ChoresRepository _choresRepository;
+  final HomeRepository _homeRepository;
   final ExpectationPhotoService _expectationPhotoService;
 
   Future<void> _onStarted(
@@ -53,7 +57,28 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
   ) async {
     emit(state.copyWith(isLoading: true, clearLoadError: true));
     try {
+      final members = await _homeRepository.listActiveMembers(
+        _homeId,
+        excludeSelf: false,
+      );
+      final ownerUserId =
+          members.isNotEmpty
+              ? members.firstWhere(
+                (member) => member.isOwner,
+                orElse: () => members.first,
+              ).userId
+              : null;
       final assignees = await _choresRepository.listAssigneesForHome(_homeId);
+      final assigneesWithOwner =
+          assignees
+              .map(
+                (assignee) => assignee.copyWith(
+                  isOwner:
+                      ownerUserId != null &&
+                      assignee.userId == ownerUserId,
+                ),
+              )
+              .toList(growable: false);
       FlowChoreForm form = state.form;
 
       if (_choreId != null) {
@@ -67,7 +92,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       emit(
         state.copyWith(
           isLoading: false,
-          assignees: assignees,
+          assignees: assigneesWithOwner,
           form: form,
           referenceForm: form,
           clearLoadError: true,
@@ -160,7 +185,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       emit(
         state.copyWith(
           isUploadingPhoto: false,
-          form: state.form.copyWith(expectationPhotoPath: upload.publicUrl),
+          form: state.form.copyWith(expectationPhotoPath: upload.storagePath),
           clearPhotoError: true,
         ),
       );

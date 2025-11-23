@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../core/chores/models.dart';
+import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/chores_repository.dart';
 
 part 'flow_list_event.dart';
@@ -11,8 +12,10 @@ class FlowListBloc extends Bloc<FlowListEvent, FlowListState> {
   FlowListBloc({
     required String homeId,
     required ChoresRepository choresRepository,
+    required HomeRepository homeRepository,
   }) : _homeId = homeId,
        _choresRepository = choresRepository,
+       _homeRepository = homeRepository,
        super(const FlowListState()) {
     on<FlowListRequested>(_onRequested);
     on<FlowListRefreshed>(_onRefreshed);
@@ -20,6 +23,7 @@ class FlowListBloc extends Bloc<FlowListEvent, FlowListState> {
 
   final String _homeId;
   final ChoresRepository _choresRepository;
+  final HomeRepository _homeRepository;
 
   Future<void> _onRequested(
     FlowListRequested event,
@@ -47,6 +51,19 @@ class FlowListBloc extends Bloc<FlowListEvent, FlowListState> {
     }
 
     try {
+      final members = await _homeRepository.listActiveMembers(
+        _homeId,
+        excludeSelf: false,
+      );
+      String? ownerUserId;
+      if (members.isNotEmpty) {
+        ownerUserId =
+            (members.firstWhere(
+              (member) => member.isOwner,
+              orElse: () => members.first,
+            ))
+                .userId;
+      }
       final entries = await _choresRepository.listForHome(_homeId);
       emit(
         state.copyWith(
@@ -55,6 +72,7 @@ class FlowListBloc extends Bloc<FlowListEvent, FlowListState> {
           isRefreshing: false,
           clearError: true,
           lastUpdated: DateTime.now(),
+          ownerUserId: ownerUserId,
         ),
       );
     } catch (error) {

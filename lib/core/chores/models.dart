@@ -168,11 +168,13 @@ class ChoreAssigneeSummary {
   final String userId;
   final String? fullName;
   final String? avatarStoragePath;
+  final bool isOwner;
 
   const ChoreAssigneeSummary({
     required this.userId,
     this.fullName,
     this.avatarStoragePath,
+    this.isOwner = false,
   });
 
   factory ChoreAssigneeSummary.fromJson(Map<String, dynamic> json) {
@@ -181,14 +183,20 @@ class ChoreAssigneeSummary {
       userId: (json['user_id'] ?? json['id']) as String,
       fullName: json['full_name'] as String?,
       avatarStoragePath: json['avatar_storage_path'] as String?,
+      isOwner: json['is_owner'] as bool? ?? false,
     );
   }
 
-  ChoreAssigneeSummary copyWith({String? fullName, String? avatarStoragePath}) {
+  ChoreAssigneeSummary copyWith({
+    String? fullName,
+    String? avatarStoragePath,
+    bool? isOwner,
+  }) {
     return ChoreAssigneeSummary(
       userId: userId,
       fullName: fullName ?? this.fullName,
       avatarStoragePath: avatarStoragePath ?? this.avatarStoragePath,
+      isOwner: isOwner ?? this.isOwner,
     );
   }
 }

@@ -6,12 +6,14 @@ class ShareParticipant extends Equatable {
     required this.userId,
     required this.displayName,
     this.avatarUrl,
+    this.isOwner = false,
   });
 
   final String userId;
   final String displayName;
   final String? avatarUrl;
+  final bool isOwner;
 
   @override
-  List<Object?> get props => [userId, displayName, avatarUrl];
+  List<Object?> get props => [userId, displayName, avatarUrl, isOwner];
 }

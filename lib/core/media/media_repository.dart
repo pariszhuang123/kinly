@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
-/// Uploads media files to backing storage and returns both storage path and
-/// public URL (the households bucket is public for this feature).
+/// Uploads media files to backing storage and returns both the stored object
+/// path and a public URL constructed from it.
 class MediaUploadResult {
   const MediaUploadResult({required this.storagePath, required this.publicUrl});
 
-  /// Full `bucket/object_path` string (e.g. households/flow/...).
+  /// Object path within the bucket (no scheme/host), e.g. `flow/expectations/...`.
   final String storagePath;
 
   /// Publicly accessible URL for the uploaded asset.
@@ -13,13 +13,14 @@ class MediaUploadResult {
 }
 
 abstract class MediaRepository {
-  /// Uploads an expectation photo for a chore.
+  /// Uploads an expectation photo for a chore or related flow feature.
   ///
   /// The caller should supply the scoped home/chore IDs so the path is
   /// namespaced and obfuscated.
   Future<MediaUploadResult> uploadExpectationPhoto({
     required String homeId,
     String? choreId,
+    String featureSegment = 'expectations',
     required Uint8List bytes,
   });
 }

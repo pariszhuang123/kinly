@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/chores/models.dart';
+import '../../../core/supabase/storage_path_resolver.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
@@ -103,6 +105,10 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         final spacing = theme.extension<Spacing>();
         final sections = theme.extension<KinlySections>();
         final flowColors = sections?.flow;
+        final expectationPhotoUrl = storagePathToPublicUrl(
+          Supabase.instance.client,
+          state.form.expectationPhotoPath,
+        );
 
         return Scaffold(
           appBar: AppBar(
@@ -132,6 +138,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
                         spacing: spacing,
                         flowColors: flowColors,
                         isUploadingPhoto: state.isUploadingPhoto,
+                        expectationPhotoUrl: expectationPhotoUrl,
                         onPhotoCapture:
                             () => context.read<FlowChoreBloc>().add(
                               const FlowChorePhotoCaptureRequested(),
@@ -214,6 +221,7 @@ class _FlowChoreFormView extends StatelessWidget {
     required this.spacing,
     required this.flowColors,
     required this.isUploadingPhoto,
+    required this.expectationPhotoUrl,
     required this.onPhotoCapture,
     required this.onDeleteRequested,
   });
@@ -225,6 +233,7 @@ class _FlowChoreFormView extends StatelessWidget {
   final Spacing? spacing;
   final SectionColors? flowColors;
   final bool isUploadingPhoto;
+  final String? expectationPhotoUrl;
   final VoidCallback onPhotoCapture;
   final VoidCallback? onDeleteRequested;
 
@@ -240,6 +249,11 @@ class _FlowChoreFormView extends StatelessWidget {
         showValidation && requiresAssignee && form.assigneeUserId == null;
     final hasDateError = showValidation && !state.isStartDateValid;
     final hasHowToError = showValidation && !form.isHowToUrlValid;
+    final hasOptionalContent =
+        form.notes.trim().isNotEmpty ||
+        form.howToVideoUrl.trim().isNotEmpty ||
+        form.expectationPhotoPath.trim().isNotEmpty;
+    final expandOptional = hasOptionalContent || hasHowToError;
     final dateLabel = DateFormat.yMMMMd().format(form.startDate);
     final canSubmit = !state.isSubmitting;
     final showDeleteCta = state.isEditMode && !state.hasChanges;
@@ -315,53 +329,17 @@ class _FlowChoreFormView extends StatelessWidget {
           decoration: InputDecoration(labelText: s.flowChoreRecurrenceLabel),
         ),
         SizedBox(height: spacing?.lg ?? 16),
-        if (isEditMode) ...[
-          TextField(
-            controller: notesController,
-            minLines: 3,
-            maxLines: 4,
-            decoration: InputDecoration(
-              labelText: s.flowChoreNotesLabel,
-              hintText: s.flowChoreNotesHint,
-            ),
-            onChanged:
-                (value) => context.read<FlowChoreBloc>().add(
-                  FlowChoreNotesChanged(value),
-                ),
-          ),
-          SizedBox(height: spacing?.lg ?? 16),
-          TextField(
-            controller: howToController,
-            decoration: InputDecoration(
-              labelText: s.flowChoreHowToLabel,
-              hintText: s.flowChoreHowToHint,
-              errorText: hasHowToError ? s.flowChoreValidationHowToUrl : null,
-            ),
-            keyboardType: TextInputType.url,
-            onChanged:
-                (value) => context.read<FlowChoreBloc>().add(
-                  FlowChoreHowToChanged(value),
-                ),
-          ),
-          SizedBox(height: spacing?.lg ?? 16),
-          _ExpectationPhotoPicker(
-            spacing: spacing,
-            s: s,
-            isUploading: isUploadingPhoto,
-            photoUrl: form.expectationPhotoPath,
-            onCapture: onPhotoCapture,
-          ),
-        ] else
-          _OptionalDetailsExpansion(
-            spacing: spacing,
-            s: s,
-            hasHowToError: hasHowToError,
-            notesController: notesController,
-            howToController: howToController,
-            isUploadingPhoto: isUploadingPhoto,
-            photoUrl: form.expectationPhotoPath,
-            onPhotoCapture: onPhotoCapture,
-          ),
+        _OptionalDetailsExpansion(
+          spacing: spacing,
+          s: s,
+          hasHowToError: hasHowToError,
+          notesController: notesController,
+          howToController: howToController,
+          isUploadingPhoto: isUploadingPhoto,
+          photoUrl: expectationPhotoUrl,
+          onPhotoCapture: onPhotoCapture,
+          initiallyExpanded: expandOptional,
+        ),
         SizedBox(height: spacing?.xl ?? 24),
         SizedBox(
           width: double.infinity,
@@ -486,6 +464,7 @@ class _AssigneeChips extends StatelessWidget {
         for (final member in assignees)
           _AvatarChoice(
             avatarUrl: member.avatarStoragePath,
+            isOwner: member.isOwner,
             selected: member.userId == selectedUserId,
             onTap:
                 () => context.read<FlowChoreBloc>().add(
@@ -500,11 +479,13 @@ class _AssigneeChips extends StatelessWidget {
 class _AvatarChoice extends StatelessWidget {
   const _AvatarChoice({
     required this.avatarUrl,
+    required this.isOwner,
     required this.selected,
     required this.onTap,
   });
 
   final String? avatarUrl;
+  final bool isOwner;
   final bool selected;
   final VoidCallback onTap;
 
@@ -522,7 +503,11 @@ class _AvatarChoice extends StatelessWidget {
             width: 2,
           ),
         ),
-        child: KinlyCircleAvatar(avatarUrl: avatarUrl, radius: 22),
+        child: KinlyCircleAvatar(
+          avatarUrl: avatarUrl,
+          radius: 22,
+          isOwner: isOwner,
+        ),
       ),
     );
   }
@@ -560,6 +545,7 @@ class _OptionalDetailsExpansion extends StatelessWidget {
     required this.isUploadingPhoto,
     required this.photoUrl,
     required this.onPhotoCapture,
+    this.initiallyExpanded = false,
   });
 
   final Spacing? spacing;
@@ -568,8 +554,9 @@ class _OptionalDetailsExpansion extends StatelessWidget {
   final TextEditingController notesController;
   final TextEditingController howToController;
   final bool isUploadingPhoto;
-  final String photoUrl;
+  final String? photoUrl;
   final VoidCallback onPhotoCapture;
+  final bool initiallyExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -581,7 +568,7 @@ class _OptionalDetailsExpansion extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ExpansionTile(
-        initiallyExpanded: hasHowToError,
+        initiallyExpanded: initiallyExpanded || hasHowToError,
         title: Text(
           s.flowChoreDetailMoreInfoTitle,
           style: theme.textTheme.titleMedium,
@@ -641,31 +628,29 @@ class _ExpectationPhotoPicker extends StatelessWidget {
   final Spacing? spacing;
   final S s;
   final bool isUploading;
-  final String photoUrl;
+  final String? photoUrl;
   final VoidCallback onCapture;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final hasPhoto = photoUrl.trim().isNotEmpty;
-    final actionLabel =
-        hasPhoto ? s.flowChorePhotoRetakeCta : s.flowChorePhotoCaptureCta;
+    final hasPhoto = photoUrl?.trim().isNotEmpty == true;
 
     final preview = Container(
       decoration: BoxDecoration(
-        color: colorScheme.surfaceVariant,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Stack(
         children: [
           Positioned.fill(
             child:
-                hasPhoto
+                hasPhoto && photoUrl != null
                     ? ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(
-                        photoUrl,
+                        photoUrl!,
                         fit: BoxFit.cover,
                         errorBuilder:
                             (_, __, ___) => Center(
@@ -702,7 +687,7 @@ class _ExpectationPhotoPicker extends StatelessWidget {
           if (isUploading)
             Container(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.35),
+                color: Colors.black.withValues(alpha: 0.35),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Center(child: KinlyLoader(size: 32)),
@@ -719,12 +704,6 @@ class _ExpectationPhotoPicker extends StatelessWidget {
         GestureDetector(
           onTap: isUploading ? null : onCapture,
           child: AspectRatio(aspectRatio: 4 / 3, child: preview),
-        ),
-        SizedBox(height: spacing?.sm ?? 8),
-        OutlinedButton.icon(
-          onPressed: isUploading ? null : onCapture,
-          icon: const Icon(Icons.photo_camera_outlined),
-          label: Text(actionLabel),
         ),
       ],
     );

@@ -107,9 +107,9 @@ SELECT public.chores_update(
   p_assignee_user_id       := (SELECT user_id FROM tmp_ids),
   p_start_date             := current_date,
   p_recurrence             := 'none',
-  p_expectation_photo_path := 'households/'
-    || (SELECT home_id::text FROM tmp_ids)
-    || '/chores/'
+  p_expectation_photo_path := 'flow/expectations/'
+      || (SELECT home_id::text FROM tmp_ids)
+      || '/chores/'
     || (SELECT chore_id::text FROM chore_ids WHERE label = 'first'),
   p_how_to_video_url       := NULL,
   p_notes                  := NULL
@@ -133,9 +133,9 @@ SELECT public.chores_update(
   p_assignee_user_id       := (SELECT user_id FROM tmp_ids),
   p_start_date             := current_date,
   p_recurrence             := 'none',
-  p_expectation_photo_path := 'households/'
-    || (SELECT home_id::text FROM tmp_ids)
-    || '/chores/'
+  p_expectation_photo_path := 'flow/expectations/'
+      || (SELECT home_id::text FROM tmp_ids)
+      || '/chores/'
     || (SELECT chore_id::text FROM chore_ids WHERE label = 'first')
     || '/replacement.jpg',
   p_how_to_video_url       := NULL,
@@ -306,9 +306,9 @@ SELECT throws_like(
       p_assignee_user_id       := (SELECT user_id FROM tmp_ids),
       p_start_date             := current_date,
       p_recurrence             := 'none',
-      p_expectation_photo_path := 'households/'
-        || (SELECT home_id::text FROM tmp_ids)
-        || '/chores/'
+      p_expectation_photo_path := 'flow/expectations/'
+          || (SELECT home_id::text FROM tmp_ids)
+          || '/chores/'
         || (SELECT chore_id::text FROM chore_ids WHERE label = 'third'),
       p_how_to_video_url       := NULL,
       p_notes                  := NULL

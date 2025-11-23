@@ -70,6 +70,7 @@ class TodayShareOwed extends Equatable {
     required this.totalOwedCents,
     required this.items,
     this.avatarUrl,
+    this.isOwner = false,
   });
 
   final String payerUserId;
@@ -77,8 +78,12 @@ class TodayShareOwed extends Equatable {
   final String? avatarUrl;
   final int totalOwedCents;
   final List<TodayShareOwedItem> items;
+  final bool isOwner;
 
-  factory TodayShareOwed.fromModel(ExpenseOwedGroup group) {
+  factory TodayShareOwed.fromModel(
+    ExpenseOwedGroup group, {
+    String? ownerUserId,
+  }) {
     return TodayShareOwed(
       payerUserId: group.payerUserId,
       displayName: group.payerDisplay,
@@ -87,6 +92,7 @@ class TodayShareOwed extends Equatable {
       items: group.items
           .map(TodayShareOwedItem.fromModel)
           .toList(growable: false),
+      isOwner: ownerUserId != null && group.payerUserId == ownerUserId,
     );
   }
 
@@ -135,13 +141,15 @@ class TodayUserProfile extends Equatable {
   final String userId;
   final String username;
   final String? avatarUrl;
+  final bool isOwner;
 
   const TodayUserProfile({
     required this.userId,
     required this.username,
     this.avatarUrl,
+    this.isOwner = false,
   });
 
   @override
-  List<Object?> get props => [userId, username, avatarUrl];
+  List<Object?> get props => [userId, username, avatarUrl, isOwner];
 }

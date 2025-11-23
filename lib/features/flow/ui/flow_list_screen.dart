@@ -59,6 +59,7 @@ class FlowListScreen extends StatelessWidget {
                   }
                   return _FlowList(
                     items: state.items,
+                    ownerUserId: state.ownerUserId,
                     onRefresh: () => _handleRefresh(context),
                     onItemTap:
                         (entry) => _openChore(context, choreId: entry.id),
@@ -102,11 +103,13 @@ class FlowListScreen extends StatelessWidget {
 class _FlowList extends StatelessWidget {
   const _FlowList({
     required this.items,
+    required this.ownerUserId,
     required this.onRefresh,
     required this.onItemTap,
   });
 
   final List<ChoreListEntry> items;
+  final String? ownerUserId;
   final Future<void> Function() onRefresh;
   final void Function(ChoreListEntry) onItemTap;
 
@@ -127,6 +130,7 @@ class _FlowList extends StatelessWidget {
           return _FlowListTile(
             entry: entry,
             flowColors: flowColors,
+            ownerUserId: ownerUserId,
             onTap: () => onItemTap(entry),
           );
         },
@@ -139,11 +143,13 @@ class _FlowListTile extends StatelessWidget {
   const _FlowListTile({
     required this.entry,
     required this.flowColors,
+    required this.ownerUserId,
     required this.onTap,
   });
 
   final ChoreListEntry entry;
   final SectionColors? flowColors;
+  final String? ownerUserId;
   final VoidCallback onTap;
 
   @override
@@ -180,7 +186,11 @@ class _FlowListTile extends StatelessWidget {
                   Expanded(
                     child: Text(entry.name, style: theme.textTheme.titleMedium),
                   ),
-                  _AssigneeAvatar(entry: entry, flowColors: flowColors),
+                  _AssigneeAvatar(
+                    entry: entry,
+                    flowColors: flowColors,
+                    ownerUserId: ownerUserId,
+                  ),
                 ],
               ),
               SizedBox(height: spacing?.sm ?? 8),
@@ -222,10 +232,15 @@ class _FlowListTile extends StatelessWidget {
 }
 
 class _AssigneeAvatar extends StatelessWidget {
-  const _AssigneeAvatar({required this.entry, this.flowColors});
+  const _AssigneeAvatar({
+    required this.entry,
+    this.flowColors,
+    this.ownerUserId,
+  });
 
   final ChoreListEntry entry;
   final SectionColors? flowColors;
+  final String? ownerUserId;
 
   @override
   Widget build(BuildContext context) {
@@ -254,6 +269,7 @@ class _AssigneeAvatar extends StatelessWidget {
     return KinlyCircleAvatar(
       avatarUrl: entry.assigneeAvatarStoragePath,
       radius: 20,
+      isOwner: ownerUserId != null && entry.assigneeUserId == ownerUserId,
     );
   }
 }

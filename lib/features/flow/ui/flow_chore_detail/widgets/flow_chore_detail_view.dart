@@ -2,8 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/chores/models.dart';
+import '../../../../../core/supabase/storage_path_resolver.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/kinly_loader.dart';
 import '../../../../../core/utils/url_validator.dart';
@@ -52,7 +54,10 @@ class FlowChoreDetailView extends StatelessWidget {
         (chore.howToVideoUrl?.trim().isNotEmpty == true
             ? chore.howToVideoUrl!.trim()
             : s.flowChoreDetailNoHowTo);
-    final expectationPhotoUrl = chore.expectationPhotoPath;
+    final expectationPhotoUrl = storagePathToPublicUrl(
+      Supabase.instance.client,
+      chore.expectationPhotoPath,
+    );
 
     final assigneeName = _resolveAssignee(context, details);
     final formattedDate = DateFormat.yMMMMd().format(chore.startDate);

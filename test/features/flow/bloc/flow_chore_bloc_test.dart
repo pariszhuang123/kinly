@@ -5,14 +5,17 @@ import 'package:mocktail/mocktail.dart';
 import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/core/media/expectation_photo_service.dart';
 import 'package:kinly/data/repositories/chores_repository.dart';
+import 'package:kinly/data/repositories/home_repository.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_bloc.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}
+class _MockHomeRepository extends Mock implements HomeRepository {}
 class _MockExpectationPhotoService extends Mock
     implements ExpectationPhotoService {}
 
 void main() {
   late _MockChoresRepository choresRepository;
+  late _MockHomeRepository homeRepository;
   late _MockExpectationPhotoService expectationPhotoService;
 
   final sampleChore = Chore(
@@ -38,6 +41,7 @@ void main() {
     return FlowChoreBloc(
       homeId: 'home-1',
       choresRepository: choresRepository,
+      homeRepository: homeRepository,
       expectationPhotoService: expectationPhotoService,
     );
   }
@@ -49,7 +53,12 @@ void main() {
 
   setUp(() {
     choresRepository = _MockChoresRepository();
+    homeRepository = _MockHomeRepository();
     expectationPhotoService = _MockExpectationPhotoService();
+    when(
+      () => homeRepository.listActiveMembers(any(),
+          excludeSelf: any(named: 'excludeSelf')),
+    ).thenAnswer((_) async => const []);
     when(() => choresRepository.listAssigneesForHome(any()))
         .thenAnswer((_) async => const []);
     when(

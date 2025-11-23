@@ -1626,26 +1626,6 @@ class S {
     );
   }
 
-  /// `Add expectation photo`
-  String get flowChorePhotoCaptureCta {
-    return Intl.message(
-      'Add expectation photo',
-      name: 'flowChorePhotoCaptureCta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Retake photo`
-  String get flowChorePhotoRetakeCta {
-    return Intl.message(
-      'Retake photo',
-      name: 'flowChorePhotoRetakeCta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Add a photo to show what great looks like`
   String get flowChorePhotoPlaceholder {
     return Intl.message(

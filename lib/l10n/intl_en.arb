@@ -212,8 +212,6 @@
   "flowChoreHowToLaunchError": "We couldn't open that link. Try again.",
   "flowChorePhotoLabel": "Expectation photo",
   "flowChorePhotoHint": "storage/households/... (optional)",
-  "flowChorePhotoCaptureCta": "Add expectation photo",
-  "flowChorePhotoRetakeCta": "Retake photo",
   "flowChorePhotoPlaceholder": "Add a photo to show what great looks like",
   "flowChorePhotoPermissionDenied": "Camera permission is required to take a photo.",
   "flowChorePhotoPermissionOpenSettings": "Open settings",

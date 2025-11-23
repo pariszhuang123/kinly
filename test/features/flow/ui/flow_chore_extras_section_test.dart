@@ -7,7 +7,7 @@ import 'package:kinly/features/flow/ui/flow_chore_detail/widgets/flow_chore_extr
 import 'package:kinly/generated/l10n.dart';
 
 void main() {
-  Widget _wrapWithApp(Widget child) {
+  Widget wrapWithApp(Widget child) {
     return MaterialApp(
       localizationsDelegates: const [
         S.delegate,
@@ -31,7 +31,7 @@ void main() {
       (tester) async {
     var tapped = false;
     await tester.pumpWidget(
-      _wrapWithApp(
+      wrapWithApp(
         FlowChoreExtrasSection(
           notesLabel: 'Notes',
           notesBody: 'Use mild soap',
@@ -51,7 +51,7 @@ void main() {
 
   testWidgets('renders plain text when no how-to handler', (tester) async {
     await tester.pumpWidget(
-      _wrapWithApp(
+      wrapWithApp(
         FlowChoreExtrasSection(
           notesLabel: 'Notes',
           notesBody: 'Use mild soap',

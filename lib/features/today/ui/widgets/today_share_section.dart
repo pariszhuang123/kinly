@@ -168,7 +168,11 @@ class _OwedList extends StatelessWidget {
       children: [
         for (final entry in owed) ...[
           _ShareCard(
-            leading: KinlyCircleAvatar(avatarUrl: entry.avatarUrl, radius: 20),
+            leading: KinlyCircleAvatar(
+              avatarUrl: entry.avatarUrl,
+              radius: 20,
+              isOwner: entry.isOwner,
+            ),
             title: entry.displayName,
             subtitle: s.todayShareActiveSubtitle(entry.items.length),
             amountLabel: _formatCurrency(entry.totalOwedCents),

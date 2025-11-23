@@ -476,6 +476,7 @@ class _ParticipantsSection extends StatelessWidget {
                   avatar: KinlyCircleAvatar(
                     avatarUrl: participant.avatarUrl,
                     radius: 16,
+                    isOwner: participant.isOwner,
                   ),
                   selectedColor: shareColors?.accent.withValues(alpha: .18),
                   checkmarkColor: shareColors?.icon,
@@ -560,7 +561,11 @@ class _CustomSplitRow extends StatelessWidget {
             onChanged:
                 enabled ? (value) => onToggled?.call(value ?? false) : null,
           ),
-          KinlyCircleAvatar(avatarUrl: participant.avatarUrl, radius: 20),
+          KinlyCircleAvatar(
+            avatarUrl: participant.avatarUrl,
+            radius: 20,
+            isOwner: participant.isOwner,
+          ),
           SizedBox(width: spacing.sm),
           Expanded(
             child: Text(

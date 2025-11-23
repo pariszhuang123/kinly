@@ -63,6 +63,7 @@ class TodayHeader extends StatelessWidget {
               child: KinlyCircleAvatar(
                 avatarUrl: profile?.avatarUrl,
                 radius: 30,
+                isOwner: profile?.isOwner ?? false,
               ),
             ),
           ),

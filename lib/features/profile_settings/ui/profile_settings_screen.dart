@@ -33,6 +33,7 @@ class ProfileSettingsScreen extends StatelessWidget {
               children: [
                 _ProfileHeader(
                   user: state.user,
+                  isOwner: state.isOwner,
                   isLoading: state.isLoadingUser,
                   onAvatarTap: () => _openProfileIdentity(
                     context,
@@ -437,11 +438,13 @@ class _ProfileHeader extends StatelessWidget {
   const _ProfileHeader({
     required this.user,
     required this.isLoading,
+    this.isOwner = false,
     this.onAvatarTap,
   });
 
   final ProfileSettingsUser? user;
   final bool isLoading;
+  final bool isOwner;
   final VoidCallback? onAvatarTap;
 
   @override
@@ -465,7 +468,11 @@ class _ProfileHeader extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                KinlyCircleAvatar(avatarUrl: user?.avatarUrl, radius: 44),
+                KinlyCircleAvatar(
+                  avatarUrl: user?.avatarUrl,
+                  radius: 44,
+                  isOwner: isOwner,
+                ),
                 if (isLoading)
                   Positioned(
                     bottom: 0,
@@ -479,7 +486,7 @@ class _ProfileHeader extends StatelessWidget {
                       ),
                       child: KinlyLoader(size: 14, color: colorScheme.primary),
                     ),
-                  ),
+                ),
               ],
             ),
           ),
@@ -604,6 +611,7 @@ class _TransferCandidateButton extends StatelessWidget {
                 child: KinlyCircleAvatar(
                   avatarUrl: member.avatarUrl,
                   radius: 34,
+                  isOwner: member.isOwner,
                 ),
               ),
             ),

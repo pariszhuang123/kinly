@@ -160,9 +160,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Agrega contexto o recordatorios opcionales",
     ),
     "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage("Notas"),
-    "flowChorePhotoCaptureCta": MessageLookupByLibrary.simpleMessage(
-      "Add expectation photo",
-    ),
     "flowChorePhotoHint": MessageLookupByLibrary.simpleMessage(
       "storage/households/... (opcional)",
     ),
@@ -179,9 +176,6 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Open settings"),
     "flowChorePhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
       "Add a photo to show what great looks like",
-    ),
-    "flowChorePhotoRetakeCta": MessageLookupByLibrary.simpleMessage(
-      "Retake photo",
     ),
     "flowChorePhotoUploadError": MessageLookupByLibrary.simpleMessage(
       "Could not upload the photo. Try again.",
