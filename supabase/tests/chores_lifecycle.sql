@@ -289,7 +289,9 @@ WITH res AS (
     'weekly',
     NULL,  -- how_to_video_url
     NULL,  -- notes
-    'households/' || (SELECT home_id::text FROM tmp_homes WHERE label = 'primary') || '/chores/fridge'
+    'flow/expectations/'
+      || (SELECT home_id::text FROM tmp_homes WHERE label = 'primary')
+      || '/chores/fridge'
   ) AS payload
 )
 INSERT INTO tmp_chores (label, chore_id)
