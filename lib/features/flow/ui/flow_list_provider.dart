@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/repositories/chores_repository.dart';
 import '../../../data/repositories/home_repository.dart';
+import 'flow_list_filter.dart';
 import '../bloc/flow_list_bloc.dart';
 import 'flow_list_screen.dart';
 
@@ -10,12 +11,14 @@ class FlowListProvider extends StatelessWidget {
   final String homeId;
   final ChoresRepository choresRepository;
   final HomeRepository homeRepository;
+  final FlowListFilter filter;
 
   const FlowListProvider({
     super.key,
     required this.homeId,
     required this.choresRepository,
     required this.homeRepository,
+    this.filter = FlowListFilter.all,
   });
 
   @override
@@ -27,7 +30,7 @@ class FlowListProvider extends StatelessWidget {
             choresRepository: choresRepository,
             homeRepository: homeRepository,
           )..add(const FlowListRequested()),
-      child: const FlowListScreen(),
+      child: FlowListScreen(filter: filter),
     );
   }
 }

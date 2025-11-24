@@ -81,9 +81,9 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT public.chores_create(
   (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-  'Draft Soon',
+  'Draft Yesterday',
   NULL,
-  current_date,
+  current_date - 1,
   'none',
   NULL,
   'Draft chore happening first',
@@ -92,9 +92,9 @@ SELECT public.chores_create(
 
 SELECT public.chores_create(
   (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-  'Draft Later',
+  'Draft Today',
   NULL,
-  current_date + 2,
+  current_date,
   'none',
   NULL,
   'Draft chore happening later',
@@ -103,9 +103,9 @@ SELECT public.chores_create(
 
 SELECT public.chores_create(
   (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-  'Active Helper Soon',
+  'Active Due Yesterday',
   (SELECT user_id FROM tmp_users WHERE label = 'helper'),
-  current_date,
+  current_date - 1,
   'none',
   NULL,
   NULL,
@@ -114,9 +114,9 @@ SELECT public.chores_create(
 
 SELECT public.chores_create(
   (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-  'Active Helper Later',
+  'Active Due Today',
   (SELECT user_id FROM tmp_users WHERE label = 'helper'),
-  current_date + 3,
+  current_date,
   'none',
   NULL,
   NULL,
@@ -144,17 +144,17 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT is(
   (
-    SELECT array_agg(name ORDER BY start_date, name)
+    SELECT COALESCE(array_agg(name ORDER BY start_date, name), ARRAY[]::text[])
     FROM public.today_flow_list(
       (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
       'draft'
     )
   ),
-  ARRAY['Draft Soon', 'Draft Later']::text[],
-  'today_flow_list(draft) returns unassigned chores ordered by start date'
+  ARRAY['Draft Yesterday', 'Draft Today']::text[],
+  'today_flow_list(draft) returns creator drafts due today or earlier ordered by start date'
 );
 
--- Active listings: helper only sees chores assigned to them.
+-- Active listings: helper sees chores assigned to them, not creator-owned.
 SELECT set_config(
   'request.jwt.claim.sub',
   (SELECT user_id::text FROM tmp_users WHERE label = 'helper'),
@@ -164,17 +164,17 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT is(
   (
-    SELECT array_agg(name ORDER BY start_date, name)
+    SELECT COALESCE(array_agg(name ORDER BY start_date, name), ARRAY[]::text[])
     FROM public.today_flow_list(
       (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
       'active'
     )
   ),
-  ARRAY['Active Helper Soon', 'Active Helper Later']::text[],
-  'today_flow_list(active) returns helper-assigned chores ordered ASC'
+  ARRAY['Active Due Yesterday', 'Active Due Today']::text[],
+  'today_flow_list(active) returns helper-assigned chores due today or earlier ordered ASC'
 );
 
--- Owner calling active only sees their own assignment.
+-- Owner calling active does not see helper-assigned chores.
 SELECT set_config(
   'request.jwt.claim.sub',
   (SELECT user_id::text FROM tmp_users WHERE label = 'owner'),
@@ -184,14 +184,14 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 SELECT is(
   (
-    SELECT array_agg(name ORDER BY start_date, name)
+    SELECT COALESCE(array_agg(name ORDER BY start_date, name), ARRAY[]::text[])
     FROM public.today_flow_list(
       (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
       'active'
     )
   ),
-  ARRAY['Active Owner Task']::text[],
-  'today_flow_list(active) scopes results per member'
+  ARRAY[]::text[],
+  'today_flow_list(active) excludes chores not assigned to the caller'
 );
 
 -- Outsider cannot call the RPC.

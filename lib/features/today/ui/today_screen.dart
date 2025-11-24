@@ -17,6 +17,7 @@ import 'widgets/today_share_section.dart';
 import 'widgets/today_add_sheet.dart';
 import 'widgets/today_empty_state_card.dart';
 import '../../../core/ui/home_bottom_nav.dart';
+import '../../flow/ui/flow_list_filter.dart';
 import '../../flow/domain/flow_chore_outcome.dart';
 import '../../../../core/di/locator.dart';
 import '../../../../core/logging/logger.dart';
@@ -105,7 +106,7 @@ class TodayScreen extends StatelessWidget {
                                       (task) =>
                                           _handleFlowTaskTap(context, task),
                                   onSeeAllTap:
-                                      () => context.push(AppRoutes.flow),
+                                      (filter) => _openFlowList(context, filter),
                                 ),
                                 SizedBox(height: spacing.lg),
                               ],
@@ -191,6 +192,11 @@ class TodayScreen extends StatelessWidget {
       if (!context.mounted) return;
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
+  }
+
+  void _openFlowList(BuildContext context, FlowListFilter filter) {
+    final filterParam = filter.toQueryParam();
+    context.push('${AppRoutes.flow}?filter=$filterParam');
   }
 
   Future<void> _openFlowChore(BuildContext context, {String? choreId}) async {

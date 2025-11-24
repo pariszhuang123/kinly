@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../generated/l10n.dart';
+import 'flow_chore_expectation_photo_viewer.dart';
 
 class FlowChoreExtrasSection extends StatelessWidget {
   const FlowChoreExtrasSection({
@@ -139,6 +140,7 @@ class _ExpectationPhotoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final heroTag = 'flow-chore-photo-${photoUrl.hashCode}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,11 +152,26 @@ class _ExpectationPhotoSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: AspectRatio(
-            aspectRatio: 4 / 3,
-            child: Image.network(photoUrl, fit: BoxFit.cover),
+        GestureDetector(
+          onTap:
+              () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => FlowChoreExpectationPhotoViewerPage(
+                    photoUrl: photoUrl,
+                    heroTag: heroTag,
+                    title: title,
+                  ),
+                ),
+              ),
+          child: Hero(
+            tag: heroTag,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: AspectRatio(
+                aspectRatio: 4 / 3,
+                child: Image.network(photoUrl, fit: BoxFit.cover),
+              ),
+            ),
           ),
         ),
       ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/profile/enums/profile_error_code.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
@@ -206,8 +207,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
         }
         break;
       case ProfileIdentityAction.failure:
+        final message = _resolveActionMessage(state, s);
         messenger.showSnackBar(
-          SnackBar(content: Text(state.actionMessage ?? s.profileGenericError)),
+          SnackBar(content: Text(message)),
         );
         break;
       case ProfileIdentityAction.none:
@@ -223,6 +225,13 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
         s.profileIdentityUsernameFormatError,
       _ => null,
     };
+  }
+
+  String _resolveActionMessage(ProfileIdentityState state, S s) {
+    if (state.actionError == ProfileErrorCode.usernameTaken) {
+      return s.profileIdentityUsernameTakenError;
+    }
+    return state.actionMessage ?? s.profileGenericError;
   }
 }
 

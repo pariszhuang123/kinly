@@ -205,6 +205,48 @@ $$;
 ALTER FUNCTION "public"."_assert_authenticated"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."_assert_home_active"("p_home_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_is_active boolean;
+BEGIN
+  IF p_home_id IS NULL THEN
+    PERFORM public.api_error(
+      'INVALID_HOME',
+      'Home id is required.',
+      '22023'
+    );
+  END IF;
+
+  SELECT h.is_active
+  INTO v_is_active
+  FROM public.homes h
+  WHERE h.id = p_home_id;
+
+  IF NOT FOUND THEN
+    PERFORM public.api_error(
+      'HOME_NOT_FOUND',
+      'Home does not exist.',
+      'P0002',
+      jsonb_build_object('homeId', p_home_id)
+    );
+  ELSIF v_is_active IS DISTINCT FROM TRUE THEN
+    PERFORM public.api_error(
+      'HOME_INACTIVE',
+      'This home is no longer active.',
+      'P0004',
+      jsonb_build_object('homeId', p_home_id)
+    );
+  END IF;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_assert_home_active"("p_home_id" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."_assert_home_member"("p_home_id" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -238,6 +280,43 @@ $$;
 
 
 ALTER FUNCTION "public"."_assert_home_member"("p_home_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") RETURNS TABLE("id" "uuid", "home_id" "uuid", "assignee_user_id" "uuid", "created_by_user_id" "uuid", "name" "text", "state" "public"."chore_state", "current_due_date" "date", "created_at" timestamp with time zone, "assignee_full_name" "text", "assignee_avatar_storage_path" "text")
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user uuid := auth.uid();
+BEGIN
+  PERFORM public._assert_authenticated();
+  PERFORM public._assert_home_member(p_home_id);
+  PERFORM public._assert_home_active(p_home_id);
+
+  RETURN QUERY
+  SELECT
+    c.id,
+    c.home_id,
+    c.assignee_user_id,
+    c.created_by_user_id,
+    c.name,
+    c.state,
+    COALESCE(c.next_occurrence, c.start_date) AS current_due_date,
+    c.created_at,
+    pa.full_name AS assignee_full_name,
+    a.storage_path AS assignee_avatar_storage_path
+  FROM public.chores c
+  LEFT JOIN public.profiles pa
+    ON pa.id = c.assignee_user_id
+  LEFT JOIN public.avatars a
+    ON a.id = pa.avatar_id
+  WHERE
+    c.home_id = p_home_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."_current_user_id"() RETURNS "uuid"
@@ -1814,43 +1893,30 @@ ALTER FUNCTION "public"."chores_get_for_home"("p_home_id" "uuid", "p_chore_id" "
 
 
 CREATE OR REPLACE FUNCTION "public"."chores_list_for_home"("p_home_id" "uuid") RETURNS TABLE("id" "uuid", "home_id" "uuid", "assignee_user_id" "uuid", "name" "text", "start_date" "date", "assignee_full_name" "text", "assignee_avatar_storage_path" "text")
-    LANGUAGE "plpgsql" SECURITY DEFINER
+    LANGUAGE "sql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
-DECLARE
-  v_user uuid := auth.uid();
-BEGIN
-  PERFORM public._assert_authenticated();
-  PERFORM public._assert_home_member(p_home_id);
-
-  RETURN QUERY
   SELECT
-    c.id,
-    c.home_id,
-    c.assignee_user_id,
-    c.name,
-    c.start_date,
-    pa.full_name AS assignee_full_name,
-    a.storage_path AS assignee_avatar_storage_path
-  FROM public.chores c
-  LEFT JOIN public.profiles pa
-    ON pa.id = c.assignee_user_id
-  LEFT JOIN public.avatars a
-    ON a.id = pa.avatar_id
+    id,
+    home_id,
+    assignee_user_id,
+    name,
+    current_due_date AS start_date,
+    assignee_full_name,
+    assignee_avatar_storage_path
+  FROM public._chores_base_for_home(p_home_id)
   WHERE
-    c.home_id = p_home_id
-    AND c.state IN ('draft', 'active')
+    state IN ('draft', 'active')
     AND (
-      -- Active: visible to any member of the home
-      c.state = 'active'::public.chore_state
-
-      -- Draft: only visible to the creator
-      OR (c.state = 'draft'::public.chore_state AND c.created_by_user_id = v_user)
+      -- active: any member (already enforced by _assert_home_member)
+      state = 'active'::public.chore_state
+      -- draft: only creator can see
+      OR (state = 'draft'::public.chore_state
+          AND created_by_user_id = auth.uid())
     )
-  ORDER BY 
-    c.start_date DESC,
-    c.created_at DESC;
-END;
+  ORDER BY
+    current_due_date DESC,
+    created_at      DESC;
 $$;
 
 
@@ -2786,51 +2852,15 @@ CREATE OR REPLACE FUNCTION "public"."expenses_get_current_owed"("p_home_id" "uui
     SET "search_path" TO ''
     AS $$
 DECLARE
-  v_user           uuid;
-  v_result         jsonb;
-  v_home_is_active boolean;
+  v_user   uuid;
+  v_result jsonb;
 BEGIN
   PERFORM public._assert_authenticated();
   v_user := auth.uid();
 
-  IF p_home_id IS NULL THEN
-    PERFORM public.api_error(
-      'INVALID_HOME',
-      'Home id is required.',
-      '22023'
-    );
-  END IF;
-
-  -- Caller must be a current member of this home
-  PERFORM 1
-  FROM public.memberships m
-  WHERE m.home_id    = p_home_id
-    AND m.user_id    = v_user
-    AND m.is_current = TRUE
-  LIMIT 1;
-
-  IF NOT FOUND THEN
-    PERFORM public.api_error(
-      'NOT_HOME_MEMBER',
-      'You are not a member of this home.',
-      '42501',
-      jsonb_build_object('homeId', p_home_id, 'userId', v_user)
-    );
-  END IF;
-
-  -- Enforce home is active (mirror other expenses RPCs)
-  SELECT h.is_active
-  INTO v_home_is_active
-  FROM public.homes h
-  WHERE h.id = p_home_id;
-
-  IF v_home_is_active IS DISTINCT FROM TRUE THEN
-    PERFORM public.api_error(
-      'HOME_INACTIVE',
-      'This home is no longer active.',
-      'P0004'
-    );
-  END IF;
+  -- Membership + active checks (using shared helpers)
+  PERFORM public._assert_home_member(p_home_id);
+  PERFORM public._assert_home_active(p_home_id);
 
   -- Build owed summary for the current user in this home
   SELECT COALESCE(
@@ -2851,13 +2881,14 @@ BEGIN
     SELECT
       e.created_by_user_id           AS payer_user_id,
       COALESCE(p.full_name, p.email) AS payer_display,
-      a.storage_path                 AS payer_avatar_url,
+      a.storage_path                 AS payer_avatar_url,  -- payer MUST have avatar
       SUM(s.amount_cents)            AS total_owed_cents,
       jsonb_agg(
         jsonb_build_object(
           'expenseId',   e.id,
           'description', e.description,
-          'amountCents', s.amount_cents
+          'amountCents', s.amount_cents,
+          'notes',       e.notes
         )
         ORDER BY e.created_at DESC, e.id
       ) AS items
@@ -2867,7 +2898,7 @@ BEGIN
     JOIN public.profiles p
       ON p.id = e.created_by_user_id
     JOIN public.avatars a
-      ON a.id = p.avatar_id
+      ON a.id = p.avatar_id          -- inner join enforces "payer has avatar"
     WHERE e.home_id        = p_home_id
       AND e.status         = 'active'
       AND s.debtor_user_id = v_user
@@ -4194,38 +4225,32 @@ ALTER FUNCTION "public"."profile_me"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state") RETURNS TABLE("id" "uuid", "home_id" "uuid", "name" "text", "start_date" "date", "state" "public"."chore_state")
-    LANGUAGE "plpgsql" SECURITY DEFINER
+    LANGUAGE "sql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
-DECLARE
-  v_user uuid := auth.uid();
-BEGIN
-  PERFORM public._assert_authenticated();
-  PERFORM public._assert_home_member(p_home_id);
-
-  RETURN QUERY
   SELECT
-    c.id,
-    c.home_id,
-    c.name,
-    c.start_date,
-    c.state
-  FROM public.chores AS c
+    id,
+    home_id,
+    name,
+    current_due_date AS start_date,
+    state
+  FROM public._chores_base_for_home(p_home_id)
   WHERE
-    c.home_id = p_home_id
-    AND c.state = p_state
+    state = p_state
+    AND current_due_date <= current_date  -- due today or overdue
     AND (
-      -- 🟦 DRAFT: only creator sees it
-      (p_state = 'draft'::public.chore_state AND c.created_by_user_id = v_user)
+      -- 🟩 ACTIVE: only creator sees it
+      (p_state = 'draft'::public.chore_state
+       AND created_by_user_id = auth.uid())
 
-      -- 🟩 ACTIVE: only assigned user sees it
+      -- 🟦 DRAFT: only assignee sees it
       OR
-      (p_state = 'active'::public.chore_state AND c.assignee_user_id = v_user)
+      (p_state = 'active'::public.chore_state
+       AND assignee_user_id = auth.uid())
     )
   ORDER BY
-    c.start_date ASC,
-    c.created_at ASC;
-END;
+    current_due_date ASC,
+    created_at      ASC;
 $$;
 
 
@@ -5505,8 +5530,20 @@ GRANT ALL ON FUNCTION "public"."_assert_authenticated"() TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."_assert_home_active"("p_home_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."_assert_home_active"("p_home_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."_assert_home_active"("p_home_id" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."_assert_home_member"("p_home_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."_assert_home_member"("p_home_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") TO "service_role";
 
 
 

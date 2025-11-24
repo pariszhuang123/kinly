@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(47);
+SELECT plan(49);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,

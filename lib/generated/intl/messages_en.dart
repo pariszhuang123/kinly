@@ -365,6 +365,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileIdentityUsernameFormatError": MessageLookupByLibrary.simpleMessage(
       "Use 3-30 lowercase letters or numbers. You can include dots or underscores in the middle.",
     ),
+    "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
+      "That username is already taken. Try a different one.",
+    ),
     "profileIdentityUsernameHint": MessageLookupByLibrary.simpleMessage(
       "letters, numbers, . or _",
     ),

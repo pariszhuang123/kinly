@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/profile/models.dart';
+import '../../../../core/profile/enums/profile_error_code.dart';
+import '../../../../core/profile/profile_error_mapper.dart';
 import '../../../../data/repositories/profile_repository.dart';
 
 part 'profile_identity_event.dart';
@@ -43,6 +45,7 @@ class ProfileIdentityBloc
         loadErrorMessage: null,
         action: ProfileIdentityAction.none,
         actionMessage: null,
+        actionError: null,
         updatedProfile: null,
       ),
     );
@@ -120,6 +123,7 @@ class ProfileIdentityBloc
         isSubmitting: true,
         action: ProfileIdentityAction.none,
         actionMessage: null,
+        actionError: null,
         updatedProfile: null,
       ),
     );
@@ -137,14 +141,20 @@ class ProfileIdentityBloc
           initialAvatarId: state.selectedAvatarId,
           initialAvatarStoragePath: profile.avatarStoragePath,
           username: trimmedUsername,
+          actionError: null,
         ),
       );
     } catch (error) {
+      final mapped =
+          error is ProfileIdentityException
+              ? error
+              : ProfileErrorMapper.map(error);
       emit(
         state.copyWith(
           isSubmitting: false,
           action: ProfileIdentityAction.failure,
-          actionMessage: error.toString(),
+          actionMessage: mapped.message,
+          actionError: mapped.code,
         ),
       );
     }

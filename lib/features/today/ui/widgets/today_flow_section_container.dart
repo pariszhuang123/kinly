@@ -7,10 +7,11 @@ import '../../domain/models.dart';
 import 'today_flow_section.dart';
 import 'today_empty_state_card.dart';
 import '../../../../core/ui/kinly_loader.dart';
+import '../../../flow/ui/flow_list_filter.dart';
 
 class TodayFlowSectionContainer extends StatelessWidget {
   final void Function(TodayFlowTask task) onTaskTap;
-  final VoidCallback onSeeAllTap;
+  final void Function(FlowListFilter filter) onSeeAllTap;
 
   const TodayFlowSectionContainer({
     super.key,

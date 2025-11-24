@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../supabase/storage_path_resolver.dart';
 import 'models.dart';
+import 'profile_error_mapper.dart';
 
 class SupabaseProfileRepository implements ProfileRepository {
   SupabaseProfileRepository({SupabaseClient? client})
@@ -50,28 +51,33 @@ class SupabaseProfileRepository implements ProfileRepository {
     required String username,
     required String avatarId,
   }) async {
-    final response = await _client.rpc(
-      'profile_identity_update',
-      params: {'p_username': username, 'p_avatar_id': avatarId},
-    );
-    final payload = _coerceFirstRow(response);
-    if (payload == null) {
-      throw StateError('Failed to update profile identity.');
+    try {
+      final response = await _client.rpc(
+        'profile_identity_update',
+        params: {'p_username': username, 'p_avatar_id': avatarId},
+      );
+      final payload = _coerceFirstRow(response);
+      if (payload == null) {
+        throw StateError('Failed to update profile identity.');
+      }
+      final storagePath = payload['avatar_storage_path'] as String?;
+      final avatarUrl = storagePathToPublicUrl(_client, storagePath);
+      final authUserId =
+          _client.auth.currentUser?.id ?? _client.auth.currentSession?.user.id;
+      if (authUserId == null) {
+        throw StateError('Missing authenticated user for profile identity.');
+      }
+      return UserProfile(
+        userId: authUserId,
+        username: payload['username'] as String,
+        avatarId: payload['avatar_id'] as String?,
+        avatarStoragePath: storagePath,
+        avatarUrl: avatarUrl,
+      );
+    } catch (error) {
+      if (error is ProfileIdentityException) rethrow;
+      throw ProfileErrorMapper.map(error);
     }
-    final storagePath = payload['avatar_storage_path'] as String?;
-    final avatarUrl = storagePathToPublicUrl(_client, storagePath);
-    final authUserId =
-        _client.auth.currentUser?.id ?? _client.auth.currentSession?.user.id;
-    if (authUserId == null) {
-      throw StateError('Missing authenticated user for profile identity.');
-    }
-    return UserProfile(
-      userId: authUserId,
-      username: payload['username'] as String,
-      avatarId: payload['avatar_id'] as String?,
-      avatarStoragePath: storagePath,
-      avatarUrl: avatarUrl,
-    );
   }
 
   Map<String, dynamic>? _coerceFirstRow(dynamic response) {

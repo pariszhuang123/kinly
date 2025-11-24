@@ -13,6 +13,7 @@ import '../../features/explore/ui/explore_screen.dart';
 import '../../features/home_membership/start/ui/start_home_provider.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
 import '../../features/home_membership/join/ui/join_home_screen.dart';
+import '../../features/flow/ui/flow_list_filter.dart';
 import '../../features/profile_settings/ui/profile_settings_provider.dart';
 import '../../features/profile_settings/edit/profile_identity_provider.dart';
 import '../../features/auth/bloc/auth_bloc.dart';
@@ -179,15 +180,18 @@ GoRouter createRouter({
       GoRoute(
         path: AppRoutes.flow,
         name: 'flow',
-        builder: (_, __) {
+        builder: (_, state) {
           final membership = authBloc.state.membership;
           if (membership == null) {
             throw StateError('Flow routes require an active membership.');
           }
+          final filter =
+              FlowListFilter.fromQueryParam(state.uri.queryParameters['filter']);
           return FlowListProvider(
             homeId: membership.homeId,
             choresRepository: sl<ChoresRepository>(),
             homeRepository: sl<HomeRepository>(),
+            filter: filter,
           );
         },
       ),

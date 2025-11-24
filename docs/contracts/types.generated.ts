@@ -723,7 +723,23 @@ export type Database = {
     }
     Functions: {
       _assert_authenticated: { Args: never; Returns: undefined }
+      _assert_home_active: { Args: { p_home_id: string }; Returns: undefined }
       _assert_home_member: { Args: { p_home_id: string }; Returns: undefined }
+      _chores_base_for_home: {
+        Args: { p_home_id: string }
+        Returns: {
+          assignee_avatar_storage_path: string
+          assignee_full_name: string
+          assignee_user_id: string
+          created_at: string
+          created_by_user_id: string
+          current_due_date: string
+          home_id: string
+          id: string
+          name: string
+          state: Database["public"]["Enums"]["chore_state"]
+        }[]
+      }
       _current_user_id: { Args: never; Returns: string }
       _ensure_unique_avatar_for_home: {
         Args: { p_home_id: string; p_user_id: string }

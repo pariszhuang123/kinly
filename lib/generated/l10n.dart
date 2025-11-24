@@ -2192,6 +2192,16 @@ class S {
     );
   }
 
+  /// `That username is already taken. Try a different one.`
+  String get profileIdentityUsernameTakenError {
+    return Intl.message(
+      'That username is already taken. Try a different one.',
+      name: 'profileIdentityUsernameTakenError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Pick an avatar`
   String get profileIdentityAvatarSectionTitle {
     return Intl.message(

@@ -12,11 +12,14 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../generated/l10n.dart';
+import 'flow_list_filter.dart';
 import '../bloc/flow_list_bloc.dart';
 import '../domain/flow_chore_outcome.dart';
 
 class FlowListScreen extends StatelessWidget {
-  const FlowListScreen({super.key});
+  const FlowListScreen({super.key, this.filter = FlowListFilter.all});
+
+  final FlowListFilter filter;
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +57,12 @@ class FlowListScreen extends StatelessWidget {
                         ),
                   );
                 case FlowListStatus.success:
-                  if (state.items.isEmpty) {
+                  final filteredItems = _filteredItems(state.items);
+                  if (filteredItems.isEmpty) {
                     return _FlowListEmpty(onAddTap: () => _openChore(context));
                   }
                   return _FlowList(
-                    items: state.items,
+                    items: filteredItems,
                     ownerUserId: state.ownerUserId,
                     onRefresh: () => _handleRefresh(context),
                     onItemTap:
@@ -96,6 +100,17 @@ class FlowListScreen extends StatelessWidget {
     final result = await context.push(path);
     if (result is FlowChoreOutcome && context.mounted) {
       context.read<FlowListBloc>().add(const FlowListRefreshed());
+    }
+  }
+
+  List<ChoreListEntry> _filteredItems(List<ChoreListEntry> items) {
+    switch (filter) {
+      case FlowListFilter.active:
+        return items.where((entry) => entry.assigneeUserId != null).toList();
+      case FlowListFilter.drafts:
+        return items.where((entry) => entry.assigneeUserId == null).toList();
+      case FlowListFilter.all:
+        return items;
     }
   }
 }

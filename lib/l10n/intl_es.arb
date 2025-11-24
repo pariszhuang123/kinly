@@ -289,6 +289,7 @@
   "profileIdentityUsernameHint": "letras, números, . o _",
   "profileIdentityUsernameEmptyError": "Ingresa un nombre de usuario.",
   "profileIdentityUsernameFormatError": "Usa de 3 a 30 caracteres en minúscula o números. Puedes incluir puntos o guiones bajos en medio.",
+  "profileIdentityUsernameTakenError": "Ese nombre de usuario ya está en uso. Prueba con otro.",
   "profileIdentityAvatarSectionTitle": "Elige un avatar",
   "profileIdentityAvatarSectionDescription": "Cada avatar es único dentro de tu hogar.",
   "profileIdentityAvatarEmpty": "No hay avatares disponibles por ahora. Inténtalo más tarde.",

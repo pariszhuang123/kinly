@@ -387,6 +387,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileIdentityUsernameFormatError": MessageLookupByLibrary.simpleMessage(
       "Usa de 3 a 30 caracteres en minúscula o números. Puedes incluir puntos o guiones bajos en medio.",
     ),
+    "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
+      "Ese nombre de usuario ya está en uso. Prueba con otro.",
+    ),
     "profileIdentityUsernameHint": MessageLookupByLibrary.simpleMessage(
       "letras, números, . o _",
     ),

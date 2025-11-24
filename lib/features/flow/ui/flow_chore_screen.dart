@@ -243,7 +243,6 @@ class _FlowChoreFormView extends StatelessWidget {
     final theme = Theme.of(context);
     final form = state.form;
     final showValidation = state.showValidationErrors;
-    final isEditMode = state.isEditMode;
     final requiresAssignee = state.requiresAssignee;
     final hasAssigneeError =
         showValidation && requiresAssignee && form.assigneeUserId == null;

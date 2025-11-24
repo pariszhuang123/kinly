@@ -19,6 +19,7 @@ class ProfileIdentityState extends Equatable {
     required this.loadErrorMessage,
     required this.action,
     required this.actionMessage,
+    required this.actionError,
     required this.updatedProfile,
   });
 
@@ -41,6 +42,7 @@ class ProfileIdentityState extends Equatable {
       loadErrorMessage: null,
       action: ProfileIdentityAction.none,
       actionMessage: null,
+      actionError: null,
       updatedProfile: null,
     );
   }
@@ -58,6 +60,7 @@ class ProfileIdentityState extends Equatable {
   final String? loadErrorMessage;
   final ProfileIdentityAction action;
   final String? actionMessage;
+  final ProfileErrorCode? actionError;
   final UserProfile? updatedProfile;
 
   bool get canSubmit {
@@ -84,6 +87,7 @@ class ProfileIdentityState extends Equatable {
     Object? loadErrorMessage = _unset,
     ProfileIdentityAction? action,
     Object? actionMessage = _unset,
+    Object? actionError = _unset,
     Object? updatedProfile = _unset,
   }) {
     return ProfileIdentityState(
@@ -122,6 +126,10 @@ class ProfileIdentityState extends Equatable {
           actionMessage == _unset
               ? this.actionMessage
               : actionMessage as String?,
+      actionError:
+          actionError == _unset
+              ? this.actionError
+              : actionError as ProfileErrorCode?,
       updatedProfile:
           updatedProfile == _unset
               ? this.updatedProfile
@@ -146,6 +154,7 @@ class ProfileIdentityState extends Equatable {
     loadErrorMessage,
     action,
     actionMessage,
+    actionError,
     updatedProfile,
   ];
 }
