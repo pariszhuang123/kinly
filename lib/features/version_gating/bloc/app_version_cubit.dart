@@ -55,23 +55,21 @@ class AppVersionState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        clientVersion,
-        currentVersion,
-        minSupportedVersion,
-        notes,
-        releasedAt,
-        errorMessage,
-      ];
+    status,
+    clientVersion,
+    currentVersion,
+    minSupportedVersion,
+    notes,
+    releasedAt,
+    errorMessage,
+  ];
 }
 
 class AppVersionCubit extends Cubit<AppVersionState> {
-  AppVersionCubit({
-    required AppVersionRepository repository,
-    Logger? logger,
-  })  : _repository = repository,
-        _logger = logger ?? const DebugLogger(),
-        super(const AppVersionState());
+  AppVersionCubit({required AppVersionRepository repository, Logger? logger})
+    : _repository = repository,
+      _logger = logger ?? const DebugLogger(),
+      super(const AppVersionState());
 
   final AppVersionRepository _repository;
   final Logger _logger;
@@ -95,9 +93,10 @@ class AppVersionCubit extends Cubit<AppVersionState> {
       final result = await _repository.checkVersion(
         clientVersion: clientVersion,
       );
-      final status = result.hardBlocked
-          ? AppVersionStatus.hardBlocked
-          : result.updateRecommended
+      final status =
+          result.hardBlocked
+              ? AppVersionStatus.hardBlocked
+              : result.updateRecommended
               ? AppVersionStatus.updateRecommended
               : AppVersionStatus.upToDate;
       emit(

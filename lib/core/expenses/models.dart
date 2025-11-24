@@ -113,17 +113,20 @@ class ExpenseOwedItem {
     required this.expenseId,
     required this.description,
     required this.amountCents,
+    this.notes,
   });
 
   final String expenseId;
   final String description;
   final int amountCents;
+  final String? notes;
 
   factory ExpenseOwedItem.fromJson(Map<String, dynamic> json) {
     return ExpenseOwedItem(
       expenseId: json['expenseId'] as String,
       description: (json['description'] as String?) ?? '',
       amountCents: (json['amountCents'] as num).toInt(),
+      notes: json['notes'] as String?,
     );
   }
 }

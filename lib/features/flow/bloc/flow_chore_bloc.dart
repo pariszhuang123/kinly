@@ -63,22 +63,21 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       );
       final ownerUserId =
           members.isNotEmpty
-              ? members.firstWhere(
-                (member) => member.isOwner,
-                orElse: () => members.first,
-              ).userId
+              ? members
+                  .firstWhere(
+                    (member) => member.isOwner,
+                    orElse: () => members.first,
+                  )
+                  .userId
               : null;
       final assignees = await _choresRepository.listAssigneesForHome(_homeId);
-      final assigneesWithOwner =
-          assignees
-              .map(
-                (assignee) => assignee.copyWith(
-                  isOwner:
-                      ownerUserId != null &&
-                      assignee.userId == ownerUserId,
-                ),
-              )
-              .toList(growable: false);
+      final assigneesWithOwner = assignees
+          .map(
+            (assignee) => assignee.copyWith(
+              isOwner: ownerUserId != null && assignee.userId == ownerUserId,
+            ),
+          )
+          .toList(growable: false);
       FlowChoreForm form = state.form;
 
       if (_choreId != null) {

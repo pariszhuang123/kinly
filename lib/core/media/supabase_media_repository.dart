@@ -61,7 +61,10 @@ class SupabaseMediaRepository implements MediaRepository {
   }
 
   String _sanitizeFeature(String value) {
-    final sanitized = value.toLowerCase().replaceAll(RegExp(r'[^a-z0-9_-]'), '');
+    final sanitized = value.toLowerCase().replaceAll(
+      RegExp(r'[^a-z0-9_-]'),
+      '',
+    );
     return sanitized.isEmpty ? 'media' : sanitized;
   }
 

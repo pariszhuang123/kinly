@@ -17,17 +17,9 @@ enum CreateHomeErrorCode {
   unknown,
 }
 
-enum RotateErrorCode {
-  forbidden,
-  unauthorized,
-  unknown,
-}
+enum RotateErrorCode { forbidden, unauthorized, unknown }
 
-enum RevokeErrorCode {
-  forbidden,
-  unauthorized,
-  unknown,
-}
+enum RevokeErrorCode { forbidden, unauthorized, unknown }
 
 enum TransferErrorCode {
   invalidNewOwner,

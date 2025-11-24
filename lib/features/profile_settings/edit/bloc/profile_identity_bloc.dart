@@ -56,10 +56,7 @@ class ProfileIdentityBloc
       final username = profile?.username ?? state.username;
       final avatarStoragePath =
           profile?.avatarStoragePath ?? state.initialAvatarStoragePath;
-      final selectedAvatarId = _resolveAvatarId(
-        avatars,
-        avatarStoragePath,
-      );
+      final selectedAvatarId = _resolveAvatarId(avatars, avatarStoragePath);
       emit(
         state.copyWith(
           isLoading: false,
@@ -68,7 +65,8 @@ class ProfileIdentityBloc
           initialUsername: username,
           usernameError: _validateUsername(username),
           selectedAvatarId: selectedAvatarId,
-          selectedAvatarUrl: _resolveAvatarUrl(avatars, selectedAvatarId) ??
+          selectedAvatarUrl:
+              _resolveAvatarUrl(avatars, selectedAvatarId) ??
               state.selectedAvatarUrl,
           initialAvatarId: selectedAvatarId,
           initialAvatarStoragePath: avatarStoragePath,
@@ -76,10 +74,7 @@ class ProfileIdentityBloc
       );
     } catch (error) {
       emit(
-        state.copyWith(
-          isLoading: false,
-          loadErrorMessage: error.toString(),
-        ),
+        state.copyWith(isLoading: false, loadErrorMessage: error.toString()),
       );
     }
   }
@@ -103,16 +98,13 @@ class ProfileIdentityBloc
   ) {
     final avatar = state.avatars.firstWhere(
       (item) => item.id == event.avatarId,
-      orElse: () => const ProfileAvatar(
-        id: '',
-        storagePath: '',
-        category: '',
-      ),
+      orElse: () => const ProfileAvatar(id: '', storagePath: '', category: ''),
     );
     emit(
       state.copyWith(
         selectedAvatarId: event.avatarId,
-        selectedAvatarUrl: avatar.id.isEmpty ? state.selectedAvatarUrl : avatar.imageUrl,
+        selectedAvatarUrl:
+            avatar.id.isEmpty ? state.selectedAvatarUrl : avatar.imageUrl,
       ),
     );
   }
@@ -168,10 +160,7 @@ class ProfileIdentityBloc
     return null;
   }
 
-  String? _resolveAvatarId(
-    List<ProfileAvatar> avatars,
-    String? storagePath,
-  ) {
+  String? _resolveAvatarId(List<ProfileAvatar> avatars, String? storagePath) {
     if (storagePath == null || storagePath.isEmpty) return null;
     for (final avatar in avatars) {
       if (avatar.storagePath == storagePath) return avatar.id;
@@ -179,10 +168,7 @@ class ProfileIdentityBloc
     return null;
   }
 
-  String? _resolveAvatarUrl(
-    List<ProfileAvatar> avatars,
-    String? avatarId,
-  ) {
+  String? _resolveAvatarUrl(List<ProfileAvatar> avatars, String? avatarId) {
     if (avatarId == null) return null;
     for (final avatar in avatars) {
       if (avatar.id == avatarId) {

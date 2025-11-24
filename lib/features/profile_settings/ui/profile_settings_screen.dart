@@ -35,10 +35,8 @@ class ProfileSettingsScreen extends StatelessWidget {
                   user: state.user,
                   isOwner: state.isOwner,
                   isLoading: state.isLoadingUser,
-                  onAvatarTap: () => _openProfileIdentity(
-                    context,
-                    user: state.user,
-                  ),
+                  onAvatarTap:
+                      () => _openProfileIdentity(context, user: state.user),
                 ),
                 SizedBox(height: spacing.xl),
                 _ProfileSettingsCard(
@@ -257,68 +255,72 @@ class ProfileSettingsScreen extends StatelessWidget {
     return showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
-      builder:
-          (sheetContext) {
-            final media = MediaQuery.of(sheetContext);
-            final bottomPadding = media.viewPadding.bottom + media.viewInsets.bottom;
-            return SafeArea(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                spacing.lg,
-                spacing.lg,
-                spacing.lg,
-                spacing.lg + bottomPadding,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(2),
+      builder: (sheetContext) {
+        final media = MediaQuery.of(sheetContext);
+        final bottomPadding =
+            media.viewPadding.bottom + media.viewInsets.bottom;
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              spacing.lg,
+              spacing.lg,
+              spacing.lg,
+              spacing.lg + bottomPadding,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.3,
                       ),
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    SizedBox(height: spacing.md),
-                    Text(
-                      s.profileLeaveTransferSheetTitle,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                      textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: spacing.md),
+                  Text(
+                    s.profileLeaveTransferSheetTitle,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
-                    SizedBox(height: spacing.sm),
-                    Text(
-                      s.profileLeaveTransferSheetSubtitle,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: spacing.sm),
+                  Text(
+                    s.profileLeaveTransferSheetSubtitle,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
                     ),
-                    SizedBox(height: spacing.lg),
-                    Wrap(
-                      spacing: spacing.md,
-                      runSpacing: spacing.md,
-                      alignment: WrapAlignment.center,
-                      children:
-                          candidates
-                              .map(
-                                (member) => _TransferCandidateButton(
-                                  member: member,
-                                  onSelected: () =>
-                                      Navigator.of(sheetContext).pop(member.userId),
-                                ),
-                              )
-                              .toList(),
-                    ),
-                  ],
-                ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: spacing.lg),
+                  Wrap(
+                    spacing: spacing.md,
+                    runSpacing: spacing.md,
+                    alignment: WrapAlignment.center,
+                    children:
+                        candidates
+                            .map(
+                              (member) => _TransferCandidateButton(
+                                member: member,
+                                onSelected:
+                                    () => Navigator.of(
+                                      sheetContext,
+                                    ).pop(member.userId),
+                              ),
+                            )
+                            .toList(),
+                  ),
+                ],
               ),
             ),
-          );
-          },
+          ),
+        );
+      },
     );
   }
 
@@ -393,19 +395,16 @@ class ProfileSettingsScreen extends StatelessWidget {
       initialAvatarStoragePath: user?.avatarStoragePath,
       initialAvatarUrl: user?.avatarUrl,
     );
-    final result = await context.push(
-      AppRoutes.profileIdentity,
-      extra: args,
-    );
+    final result = await context.push(AppRoutes.profileIdentity, extra: args);
     if (result is UserProfile && context.mounted) {
       final updated = ProfileSettingsUser(
         displayName: result.username,
         avatarUrl: result.avatarUrl,
         avatarStoragePath: result.avatarStoragePath,
       );
-      context
-          .read<ProfileSettingsBloc>()
-          .add(ProfileSettingsUserUpdated(updated));
+      context.read<ProfileSettingsBloc>().add(
+        ProfileSettingsUserUpdated(updated),
+      );
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(S.of(context).profileIdentitySuccessMessage)),
       );
@@ -486,7 +485,7 @@ class _ProfileHeader extends StatelessWidget {
                       ),
                       child: KinlyLoader(size: 14, color: colorScheme.primary),
                     ),
-                ),
+                  ),
               ],
             ),
           ),

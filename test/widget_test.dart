@@ -50,8 +50,9 @@ void main() {
 }
 
 class _FakeConnectivityMonitor implements ConnectivityMonitor {
-  final _controller =
-      StreamController<ConnectivityStatus>.broadcast(sync: true);
+  final _controller = StreamController<ConnectivityStatus>.broadcast(
+    sync: true,
+  );
 
   @override
   Stream<ConnectivityStatus> get onStatusChange => _controller.stream;

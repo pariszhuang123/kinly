@@ -9,7 +9,9 @@ import 'package:kinly/data/repositories/home_repository.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_bloc.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}
+
 class _MockHomeRepository extends Mock implements HomeRepository {}
+
 class _MockExpectationPhotoService extends Mock
     implements ExpectationPhotoService {}
 
@@ -56,11 +58,14 @@ void main() {
     homeRepository = _MockHomeRepository();
     expectationPhotoService = _MockExpectationPhotoService();
     when(
-      () => homeRepository.listActiveMembers(any(),
-          excludeSelf: any(named: 'excludeSelf')),
+      () => homeRepository.listActiveMembers(
+        any(),
+        excludeSelf: any(named: 'excludeSelf'),
+      ),
     ).thenAnswer((_) async => const []);
-    when(() => choresRepository.listAssigneesForHome(any()))
-        .thenAnswer((_) async => const []);
+    when(
+      () => choresRepository.listAssigneesForHome(any()),
+    ).thenAnswer((_) async => const []);
     when(
       () => expectationPhotoService.captureAndUpload(
         homeId: any(named: 'homeId'),
@@ -79,21 +84,26 @@ void main() {
       bloc.add(const FlowChoreHowToChanged('ftp://not-allowed'));
       bloc.add(const FlowChoreSubmitted());
     },
-    expect: () => [
-      isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', true),
-      isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', false),
-      isA<FlowChoreState>().having((s) => s.form.title, 'title', 'Wash dishes'),
-      isA<FlowChoreState>().having(
-        (s) => s.form.howToVideoUrl,
-        'howToVideoUrl',
-        'ftp://not-allowed',
-      ),
-      isA<FlowChoreState>().having(
-        (s) => s.showValidationErrors,
-        'showValidationErrors',
-        true,
-      ),
-    ],
+    expect:
+        () => [
+          isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', true),
+          isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', false),
+          isA<FlowChoreState>().having(
+            (s) => s.form.title,
+            'title',
+            'Wash dishes',
+          ),
+          isA<FlowChoreState>().having(
+            (s) => s.form.howToVideoUrl,
+            'howToVideoUrl',
+            'ftp://not-allowed',
+          ),
+          isA<FlowChoreState>().having(
+            (s) => s.showValidationErrors,
+            'showValidationErrors',
+            true,
+          ),
+        ],
     verify: (_) {
       verify(() => choresRepository.listAssigneesForHome('home-1')).called(1);
       verifyNever(
@@ -134,22 +144,31 @@ void main() {
       bloc.add(const FlowChoreHowToChanged('  https://example.com/video '));
       bloc.add(const FlowChoreSubmitted());
     },
-    expect: () => [
-      isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', true),
-      isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', false),
-      isA<FlowChoreState>().having((s) => s.form.title, 'title', 'Wash dishes'),
-      isA<FlowChoreState>().having(
-        (s) => s.form.howToVideoUrl,
-        'howToVideoUrl',
-        '  https://example.com/video ',
-      ),
-      isA<FlowChoreState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-      isA<FlowChoreState>().having(
-        (s) => s.successChoreId,
-        'successChoreId',
-        sampleChore.id,
-      ),
-    ],
+    expect:
+        () => [
+          isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', true),
+          isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', false),
+          isA<FlowChoreState>().having(
+            (s) => s.form.title,
+            'title',
+            'Wash dishes',
+          ),
+          isA<FlowChoreState>().having(
+            (s) => s.form.howToVideoUrl,
+            'howToVideoUrl',
+            '  https://example.com/video ',
+          ),
+          isA<FlowChoreState>().having(
+            (s) => s.isSubmitting,
+            'isSubmitting',
+            true,
+          ),
+          isA<FlowChoreState>().having(
+            (s) => s.successChoreId,
+            'successChoreId',
+            sampleChore.id,
+          ),
+        ],
     verify: (_) {
       verify(
         () => choresRepository.create(

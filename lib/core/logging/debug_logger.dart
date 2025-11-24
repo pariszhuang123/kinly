@@ -23,14 +23,13 @@ class DebugLogger implements Logger {
     String? tag,
     Object? error,
     StackTrace? stackTrace,
-  }) =>
-      log(
-        LogLevel.warning,
-        message,
-        tag: tag,
-        error: error,
-        stackTrace: stackTrace,
-      );
+  }) => log(
+    LogLevel.warning,
+    message,
+    tag: tag,
+    error: error,
+    stackTrace: stackTrace,
+  );
 
   @override
   void error(
@@ -38,14 +37,13 @@ class DebugLogger implements Logger {
     String? tag,
     Object? error,
     StackTrace? stackTrace,
-  }) =>
-      log(
-        LogLevel.error,
-        message,
-        tag: tag,
-        error: error,
-        stackTrace: stackTrace,
-      );
+  }) => log(
+    LogLevel.error,
+    message,
+    tag: tag,
+    error: error,
+    stackTrace: stackTrace,
+  );
 
   @override
   void log(
@@ -67,9 +65,9 @@ class DebugLogger implements Logger {
 
 extension on LogLevel {
   int get priority => switch (this) {
-        LogLevel.debug => 500,
-        LogLevel.info => 800,
-        LogLevel.warning => 900,
-        LogLevel.error => 1000,
-      };
+    LogLevel.debug => 500,
+    LogLevel.info => 800,
+    LogLevel.warning => 900,
+    LogLevel.error => 1000,
+  };
 }

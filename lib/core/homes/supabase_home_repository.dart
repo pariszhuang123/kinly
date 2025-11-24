@@ -95,10 +95,7 @@ class SupabaseHomeRepository implements HomeRepository {
     try {
       final res = await _client.rpc(
         'members_list_active_by_home',
-        params: {
-          'p_home_id': homeId,
-          'p_exclude_self': excludeSelf,
-        },
+        params: {'p_home_id': homeId, 'p_exclude_self': excludeSelf},
       );
       if (res is List) {
         return res

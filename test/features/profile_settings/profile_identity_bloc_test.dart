@@ -51,59 +51,62 @@ void main() {
     blocTest<ProfileIdentityBloc, ProfileIdentityState>(
       'loads profile and avatars on start',
       build: () {
-        when(() => profileRepository.getCurrentProfile()).thenAnswer(
-          (_) async => userProfile,
-        );
+        when(
+          () => profileRepository.getCurrentProfile(),
+        ).thenAnswer((_) async => userProfile);
         when(
           () => profileRepository.listAvailableAvatars(any()),
         ).thenAnswer((_) async => avatars);
         return buildBloc();
       },
       act: (bloc) => bloc.add(const ProfileIdentityStarted()),
-      expect: () => [
-        isA<ProfileIdentityState>(), // loading snapshot
-        predicate<ProfileIdentityState>(
-          (state) =>
-              !state.isLoading &&
-              state.loadErrorMessage == null &&
-              state.avatars.length == avatars.length &&
-              state.selectedAvatarId == avatars.first.id &&
-              state.username == userProfile.username,
-        ),
-      ],
+      expect:
+          () => [
+            isA<ProfileIdentityState>(), // loading snapshot
+            predicate<ProfileIdentityState>(
+              (state) =>
+                  !state.isLoading &&
+                  state.loadErrorMessage == null &&
+                  state.avatars.length == avatars.length &&
+                  state.selectedAvatarId == avatars.first.id &&
+                  state.username == userProfile.username,
+            ),
+          ],
       verify: (_) {
         verify(() => profileRepository.getCurrentProfile()).called(1);
-        verify(() => profileRepository.listAvailableAvatars('home-1')).called(1);
+        verify(
+          () => profileRepository.listAvailableAvatars('home-1'),
+        ).called(1);
       },
     );
 
     blocTest<ProfileIdentityBloc, ProfileIdentityState>(
       'emits failure when loading avatars throws',
       build: () {
-        when(() => profileRepository.getCurrentProfile()).thenAnswer(
-          (_) async => userProfile,
-        );
+        when(
+          () => profileRepository.getCurrentProfile(),
+        ).thenAnswer((_) async => userProfile);
         when(
           () => profileRepository.listAvailableAvatars(any()),
         ).thenThrow(Exception('avatars failed'));
         return buildBloc();
       },
       act: (bloc) => bloc.add(const ProfileIdentityStarted()),
-      expect: () => [
-        isA<ProfileIdentityState>(),
-        predicate<ProfileIdentityState>(
-          (state) =>
-              !state.isLoading && state.loadErrorMessage != null,
-        ),
-      ],
+      expect:
+          () => [
+            isA<ProfileIdentityState>(),
+            predicate<ProfileIdentityState>(
+              (state) => !state.isLoading && state.loadErrorMessage != null,
+            ),
+          ],
     );
 
     blocTest<ProfileIdentityBloc, ProfileIdentityState>(
       'emits success after submitting updated identity',
       build: () {
-        when(() => profileRepository.getCurrentProfile()).thenAnswer(
-          (_) async => userProfile,
-        );
+        when(
+          () => profileRepository.getCurrentProfile(),
+        ).thenAnswer((_) async => userProfile);
         when(
           () => profileRepository.listAvailableAvatars(any()),
         ).thenAnswer((_) async => avatars);
@@ -129,19 +132,20 @@ void main() {
         bloc.add(const ProfileIdentityUsernameChanged('taylor'));
         bloc.add(const ProfileIdentitySubmitted());
       },
-      expect: () => [
-        isA<ProfileIdentityState>(),
-        isA<ProfileIdentityState>(),
-        isA<ProfileIdentityState>(),
-        isA<ProfileIdentityState>(),
-        isA<ProfileIdentityState>(),
-        predicate<ProfileIdentityState>(
-          (state) =>
-              state.action == ProfileIdentityAction.success &&
-              state.updatedProfile != null &&
-              state.updatedProfile!.username == 'taylor',
-        ),
-      ],
+      expect:
+          () => [
+            isA<ProfileIdentityState>(),
+            isA<ProfileIdentityState>(),
+            isA<ProfileIdentityState>(),
+            isA<ProfileIdentityState>(),
+            isA<ProfileIdentityState>(),
+            predicate<ProfileIdentityState>(
+              (state) =>
+                  state.action == ProfileIdentityAction.success &&
+                  state.updatedProfile != null &&
+                  state.updatedProfile!.username == 'taylor',
+            ),
+          ],
       verify: (_) {
         verify(
           () => profileRepository.updateIdentity(

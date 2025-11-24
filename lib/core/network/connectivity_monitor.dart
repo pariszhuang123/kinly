@@ -7,13 +7,13 @@ import 'enums/connectivity_status.dart';
 export 'enums/connectivity_status.dart';
 
 class ConnectivityMonitor {
-  ConnectivityMonitor({
-    InternetConnection? connection,
-  }) : _connection = connection ?? InternetConnection();
+  ConnectivityMonitor({InternetConnection? connection})
+    : _connection = connection ?? InternetConnection();
 
   final InternetConnection _connection;
-  final _statusController =
-      StreamController<ConnectivityStatus>.broadcast(sync: true);
+  final _statusController = StreamController<ConnectivityStatus>.broadcast(
+    sync: true,
+  );
 
   ConnectivityStatus _lastStatus = ConnectivityStatus.unknown;
   StreamSubscription<InternetStatus>? _subscription;

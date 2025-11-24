@@ -16,12 +16,12 @@ void main() {
   setUp(() {
     monitor = _MockConnectivityMonitor();
     statusController = StreamController<ConnectivityStatus>.broadcast();
-    when(() => monitor.onStatusChange).thenAnswer(
-      (_) => statusController.stream,
-    );
-    when(() => monitor.checkNow(force: any(named: 'force'))).thenAnswer(
-      (_) async => ConnectivityStatus.online,
-    );
+    when(
+      () => monitor.onStatusChange,
+    ).thenAnswer((_) => statusController.stream);
+    when(
+      () => monitor.checkNow(force: any(named: 'force')),
+    ).thenAnswer((_) async => ConnectivityStatus.online);
   });
 
   tearDown(() async {
@@ -35,13 +35,14 @@ void main() {
       statusController.add(ConnectivityStatus.offline);
       await Future<void>.value();
     },
-    expect: () => [
-      isA<ConnectivityState>().having(
-        (state) => state.status,
-        'status',
-        ConnectivityStatus.offline,
-      ),
-    ],
+    expect:
+        () => [
+          isA<ConnectivityState>().having(
+            (state) => state.status,
+            'status',
+            ConnectivityStatus.offline,
+          ),
+        ],
   );
 
   blocTest<ConnectivityCubit, ConnectivityState>(

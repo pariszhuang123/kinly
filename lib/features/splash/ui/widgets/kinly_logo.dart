@@ -2,10 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class KinlyLogo extends StatelessWidget {
-  const KinlyLogo({
-    super.key,
-    this.size = 96,
-  });
+  const KinlyLogo({super.key, this.size = 96});
 
   final double size;
 

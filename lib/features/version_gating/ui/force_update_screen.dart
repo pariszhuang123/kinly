@@ -57,10 +57,7 @@ class ForceUpdateScreen extends StatelessWidget {
                           style: theme.textTheme.titleMedium,
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          state.notes!,
-                          style: theme.textTheme.bodyMedium,
-                        ),
+                        Text(state.notes!, style: theme.textTheme.bodyMedium),
                       ],
                     ),
                   ),

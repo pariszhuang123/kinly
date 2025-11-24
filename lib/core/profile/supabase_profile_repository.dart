@@ -35,15 +35,13 @@ class SupabaseProfileRepository implements ProfileRepository {
     final rows = _coerceList(response);
     if (rows == null) return const [];
     return rows
-        .map(
-          (row) {
-            final storagePath = row['storage_path'] as String?;
-            return ProfileAvatar.fromJson(
-              row,
-              imageUrl: storagePathToPublicUrl(_client, storagePath),
-            );
-          },
-        )
+        .map((row) {
+          final storagePath = row['storage_path'] as String?;
+          return ProfileAvatar.fromJson(
+            row,
+            imageUrl: storagePathToPublicUrl(_client, storagePath),
+          );
+        })
         .toList(growable: false);
   }
 
@@ -54,10 +52,7 @@ class SupabaseProfileRepository implements ProfileRepository {
   }) async {
     final response = await _client.rpc(
       'profile_identity_update',
-      params: {
-        'p_username': username,
-        'p_avatar_id': avatarId,
-      },
+      params: {'p_username': username, 'p_avatar_id': avatarId},
     );
     final payload = _coerceFirstRow(response);
     if (payload == null) {
@@ -65,8 +60,8 @@ class SupabaseProfileRepository implements ProfileRepository {
     }
     final storagePath = payload['avatar_storage_path'] as String?;
     final avatarUrl = storagePathToPublicUrl(_client, storagePath);
-    final authUserId = _client.auth.currentUser?.id ??
-        _client.auth.currentSession?.user.id;
+    final authUserId =
+        _client.auth.currentUser?.id ?? _client.auth.currentSession?.user.id;
     if (authUserId == null) {
       throw StateError('Missing authenticated user for profile identity.');
     }

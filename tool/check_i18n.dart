@@ -17,8 +17,7 @@ Future<void> main(List<String> args) async {
   ];
 
   final violations = <_Violation>[];
-  await for (final entity
-      in libDir.list(recursive: true, followLinks: false)) {
+  await for (final entity in libDir.list(recursive: true, followLinks: false)) {
     if (entity is! File || !entity.path.endsWith('.dart')) continue;
     final normalizedPath = entity.path.replaceAll('\\', '/');
     if (skippedSegments.any(normalizedPath.contains)) continue;
@@ -27,8 +26,7 @@ Future<void> main(List<String> args) async {
     for (var i = 0; i < lines.length; i++) {
       final line = lines[i];
       final sanitized = line.split('//').first;
-      final violation =
-          _detectViolation(sanitized, normalizedPath, i + 1);
+      final violation = _detectViolation(sanitized, normalizedPath, i + 1);
       if (violation != null) {
         violations.add(violation);
       }

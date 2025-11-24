@@ -183,23 +183,49 @@ class _ShareOwedEmptyState extends StatelessWidget {
 }
 
 /// List of all owed items, read-only (no selection)
-class _ShareOwedItemsList extends StatelessWidget {
+class _ShareOwedItemsList extends StatefulWidget {
   const _ShareOwedItemsList({required this.items});
 
   final List<TodayShareOwedItem> items;
+
+  @override
+  State<_ShareOwedItemsList> createState() => _ShareOwedItemsListState();
+}
+
+class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
+  final Set<String> _expanded = <String>{};
+
+  bool _hasNotes(TodayShareOwedItem item) =>
+      (item.notes?.trim().isNotEmpty ?? false);
+
+  void _toggle(String expenseId) {
+    setState(() {
+      if (_expanded.contains(expenseId)) {
+        _expanded.remove(expenseId);
+      } else {
+        _expanded.add(expenseId);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final spacing = Theme.of(context).extension<Spacing>()!;
 
     return ListView.separated(
-      itemCount: items.length,
+      itemCount: widget.items.length,
       separatorBuilder: (_, __) => SizedBox(height: spacing.sm),
       itemBuilder: (context, index) {
-        final item = items[index];
+        final item = widget.items[index];
+        final hasNotes = _hasNotes(item);
+        final isExpanded = _expanded.contains(item.expenseId);
         return _DetailRow(
           description: item.description,
           amountLabel: _formatCurrency(item.amountCents),
+          notes: item.notes,
+          hasNotes: hasNotes,
+          isExpanded: isExpanded,
+          onToggle: hasNotes ? () => _toggle(item.expenseId) : null,
         );
       },
     );
@@ -248,26 +274,43 @@ class _ShareOwedMarkPaidButton extends StatelessWidget {
 }
 
 class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.description, required this.amountLabel});
+  const _DetailRow({
+    required this.description,
+    required this.amountLabel,
+    required this.hasNotes,
+    required this.isExpanded,
+    this.notes,
+    this.onToggle,
+  });
 
   final String description;
   final String amountLabel;
+  final String? notes;
+  final bool hasNotes;
+  final bool isExpanded;
+  final VoidCallback? onToggle;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      borderRadius: BorderRadius.circular(16),
-      color: theme.colorScheme.surfaceContainerHighest,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Row(
+    final noteText = notes?.trim();
+
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.circle,
-              size: 8,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+            if (hasNotes)
+              Icon(
+                isExpanded
+                    ? Icons.expand_less_rounded
+                    : Icons.expand_more_rounded,
+                size: 20,
+                color: theme.colorScheme.primary,
+              )
+            else
+              const SizedBox(width: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Text(description, style: theme.textTheme.bodyLarge),
@@ -280,6 +323,40 @@ class _DetailRow extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        if (hasNotes)
+          AnimatedSize(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeInOut,
+            child:
+                isExpanded
+                    ? Padding(
+                      padding: const EdgeInsets.only(
+                        left: 32,
+                        top: 8,
+                        right: 12,
+                      ),
+                      child: Text(
+                        noteText ?? '',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    )
+                    : const SizedBox.shrink(),
+          ),
+      ],
+    );
+
+    return Material(
+      borderRadius: BorderRadius.circular(16),
+      color: theme.colorScheme.surfaceContainerHighest,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onToggle,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: content,
         ),
       ),
     );

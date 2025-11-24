@@ -53,7 +53,8 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
               ),
               BlocListener<ProfileIdentityBloc, ProfileIdentityState>(
                 listenWhen:
-                    (previous, current) => previous.username != current.username,
+                    (previous, current) =>
+                        previous.username != current.username,
                 listener: (context, state) {
                   if (_controller.text == state.username) return;
                   _controller.value = TextEditingValue(
@@ -70,9 +71,10 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                 if (state.loadErrorMessage != null) {
                   return _ProfileIdentityError(
                     message: s.profileIdentityLoadError,
-                    onRetry: () => context
-                        .read<ProfileIdentityBloc>()
-                        .add(const ProfileIdentityStarted()),
+                    onRetry:
+                        () => context.read<ProfileIdentityBloc>().add(
+                          const ProfileIdentityStarted(),
+                        ),
                   );
                 }
 
@@ -92,10 +94,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                             Text(
                               s.profileIdentitySubtitle,
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                color:
-                                    theme.colorScheme.onSurface.withValues(
-                                      alpha: 0.7,
-                                    ),
+                                color: theme.colorScheme.onSurface.withValues(
+                                  alpha: 0.7,
+                                ),
                               ),
                             ),
                             SizedBox(height: spacing.lg),
@@ -115,9 +116,8 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                                 _LowercaseTextFormatter(),
                               ],
                               onChanged:
-                                  (value) => context
-                                      .read<ProfileIdentityBloc>()
-                                      .add(
+                                  (value) =>
+                                      context.read<ProfileIdentityBloc>().add(
                                         ProfileIdentityUsernameChanged(value),
                                       ),
                             ),
@@ -132,10 +132,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                             Text(
                               s.profileIdentityAvatarSectionDescription,
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                color:
-                                    theme.colorScheme.onSurface.withValues(
-                                      alpha: 0.7,
-                                    ),
+                                color: theme.colorScheme.onSurface.withValues(
+                                  alpha: 0.7,
+                                ),
                               ),
                             ),
                             SizedBox(height: spacing.md),
@@ -152,11 +151,13 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                               _AvatarGrid(
                                 avatars: state.avatars,
                                 selectedAvatarId: state.selectedAvatarId,
-                                onSelected: (avatarId) => context
-                                    .read<ProfileIdentityBloc>()
-                                    .add(
-                                      ProfileIdentityAvatarSelected(avatarId),
-                                    ),
+                                onSelected:
+                                    (avatarId) =>
+                                        context.read<ProfileIdentityBloc>().add(
+                                          ProfileIdentityAvatarSelected(
+                                            avatarId,
+                                          ),
+                                        ),
                               ),
                           ],
                         ),
@@ -168,9 +169,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                       child: ElevatedButton(
                         onPressed:
                             state.canSubmit
-                                ? () => context
-                                    .read<ProfileIdentityBloc>()
-                                    .add(const ProfileIdentitySubmitted())
+                                ? () => context.read<ProfileIdentityBloc>().add(
+                                  const ProfileIdentitySubmitted(),
+                                )
                                 : null,
                         child:
                             state.isSubmitting
@@ -195,10 +196,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
     );
   }
 
-  void _handleAction(
-    BuildContext context,
-    ProfileIdentityState state,
-  ) {
+  void _handleAction(BuildContext context, ProfileIdentityState state) {
     final messenger = ScaffoldMessenger.of(context);
     final s = S.of(context);
     switch (state.action) {
@@ -209,9 +207,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
         break;
       case ProfileIdentityAction.failure:
         messenger.showSnackBar(
-          SnackBar(
-            content: Text(state.actionMessage ?? s.profileGenericError),
-          ),
+          SnackBar(content: Text(state.actionMessage ?? s.profileGenericError)),
         );
         break;
       case ProfileIdentityAction.none:
@@ -219,10 +215,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
     }
   }
 
-  String? _mapUsernameError(
-    ProfileIdentityState state,
-    S s,
-  ) {
+  String? _mapUsernameError(ProfileIdentityState state, S s) {
     return switch (state.usernameError) {
       ProfileIdentityValidationError.empty =>
         s.profileIdentityUsernameEmptyError,
@@ -250,10 +243,7 @@ class _ProfilePreview extends StatelessWidget {
             : '@$username';
     return Column(
       children: [
-        KinlyCircleAvatar(
-          avatarUrl: avatarUrl,
-          radius: 48,
-        ),
+        KinlyCircleAvatar(avatarUrl: avatarUrl, radius: 48),
         SizedBox(height: spacing.sm),
         Text(
           display,
@@ -326,10 +316,7 @@ class _AvatarOption extends StatelessWidget {
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(
-              color: borderColor,
-              width: isSelected ? 2 : 1,
-            ),
+            border: Border.all(color: borderColor, width: isSelected ? 2 : 1),
           ),
           child: KinlyCircleAvatar(avatarUrl: avatar.imageUrl, radius: 30),
         ),
@@ -339,10 +326,7 @@ class _AvatarOption extends StatelessWidget {
 }
 
 class _ProfileIdentityError extends StatelessWidget {
-  const _ProfileIdentityError({
-    required this.message,
-    required this.onRetry,
-  });
+  const _ProfileIdentityError({required this.message, required this.onRetry});
 
   final String message;
   final VoidCallback onRetry;

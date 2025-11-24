@@ -636,6 +636,42 @@ SELECT is(
   'Current owed lists each unpaid split item'
 );
 
+WITH payload AS (
+  SELECT public.expenses_get_current_owed((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
+),
+items AS (
+  SELECT jsonb_array_elements(body->0->'items') AS item FROM payload
+),
+groceries AS (
+  SELECT item->>'notes' AS notes
+  FROM items
+  WHERE item->>'description' = 'Groceries final'
+  LIMIT 1
+)
+SELECT is(
+  (SELECT notes FROM groceries),
+  'still waiting',
+  'Current owed item includes notes when present'
+);
+
+WITH payload AS (
+  SELECT public.expenses_get_current_owed((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
+),
+items AS (
+  SELECT jsonb_array_elements(body->0->'items') AS item FROM payload
+),
+shared_dinner AS (
+  SELECT item->>'notes' AS notes
+  FROM items
+  WHERE item->>'description' = 'Shared dinner'
+  LIMIT 1
+)
+SELECT is(
+  (SELECT notes FROM shared_dinner),
+  'bring drinks',
+  'Current owed includes notes for each item when available'
+);
+
 -- Creator summary listing
 SELECT set_config(
   'request.jwt.claim.sub',

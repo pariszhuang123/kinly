@@ -30,8 +30,8 @@ class ConnectivityState extends Equatable {
 
 class ConnectivityCubit extends Cubit<ConnectivityState> {
   ConnectivityCubit({required ConnectivityMonitor monitor})
-      : _monitor = monitor,
-        super(const ConnectivityState()) {
+    : _monitor = monitor,
+      super(const ConnectivityState()) {
     _subscription = _monitor.onStatusChange.listen(_handleStatus);
   }
 
@@ -43,12 +43,7 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
   }
 
   void _handleStatus(ConnectivityStatus status) {
-    emit(
-      state.copyWith(
-        status: status,
-        lastCheckedAt: DateTime.now(),
-      ),
-    );
+    emit(state.copyWith(status: status, lastCheckedAt: DateTime.now()));
   }
 
   @override

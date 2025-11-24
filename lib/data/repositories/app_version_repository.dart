@@ -19,7 +19,5 @@ class AppVersionStatusResult {
 }
 
 abstract class AppVersionRepository {
-  Future<AppVersionStatusResult> checkVersion({
-    required String clientVersion,
-  });
+  Future<AppVersionStatusResult> checkVersion({required String clientVersion});
 }

@@ -61,8 +61,7 @@ class FlowListBloc extends Bloc<FlowListEvent, FlowListState> {
             (members.firstWhere(
               (member) => member.isOwner,
               orElse: () => members.first,
-            ))
-                .userId;
+            )).userId;
       }
       final entries = await _choresRepository.listForHome(_homeId);
       emit(

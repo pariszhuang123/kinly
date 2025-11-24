@@ -43,24 +43,27 @@ class TodayShareOwedItem extends Equatable {
     required this.expenseId,
     required this.description,
     required this.amountCents,
+    this.notes,
   });
 
   final String expenseId;
   final String description;
   final int amountCents;
+  final String? notes;
 
   factory TodayShareOwedItem.fromModel(ExpenseOwedItem model) {
     return TodayShareOwedItem(
       expenseId: model.expenseId,
       description: model.description,
       amountCents: model.amountCents,
+      notes: model.notes,
     );
   }
 
   double get amount => amountCents / 100.0;
 
   @override
-  List<Object?> get props => [expenseId, description, amountCents];
+  List<Object?> get props => [expenseId, description, amountCents, notes];
 }
 
 class TodayShareOwed extends Equatable {

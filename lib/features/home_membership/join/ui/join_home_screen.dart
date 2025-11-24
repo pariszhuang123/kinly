@@ -84,11 +84,7 @@ class _JoinFormState extends State<_JoinForm> {
           final errorText = _resolveErrorText(context, state);
           messenger
             ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(errorText),
-              ),
-            );
+            ..showSnackBar(SnackBar(content: Text(errorText)));
         }
       },
       child: Padding(

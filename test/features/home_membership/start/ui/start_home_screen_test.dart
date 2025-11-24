@@ -106,9 +106,9 @@ void main() {
   });
 
   testWidgets('enables buttons when membership status is none', (tester) async {
-    when(() => authBloc.state).thenReturn(
-      const AuthState(membershipStatus: AuthMembershipStatus.none),
-    );
+    when(
+      () => authBloc.state,
+    ).thenReturn(const AuthState(membershipStatus: AuthMembershipStatus.none));
 
     await tester.pumpWidget(buildApp());
     await tester.pump();

@@ -5,8 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:kinly/data/repositories/app_version_repository.dart';
 import 'package:kinly/features/version_gating/bloc/app_version_cubit.dart';
 
-class _MockAppVersionRepository extends Mock
-    implements AppVersionRepository {}
+class _MockAppVersionRepository extends Mock implements AppVersionRepository {}
 
 void main() {
   late _MockAppVersionRepository repository;
@@ -19,7 +18,8 @@ void main() {
     'emits upToDate when server reports no update',
     build: () {
       when(
-        () => repository.checkVersion(clientVersion: any(named: 'clientVersion')),
+        () =>
+            repository.checkVersion(clientVersion: any(named: 'clientVersion')),
       ).thenAnswer(
         (_) async => const AppVersionStatusResult(
           clientVersion: '1.0.0',
@@ -32,25 +32,27 @@ void main() {
       return AppVersionCubit(repository: repository);
     },
     act: (cubit) => cubit.checkForUpdates(clientVersion: '1.0.0'),
-    expect: () => [
-      isA<AppVersionState>().having(
-        (state) => state.status,
-        'status',
-        AppVersionStatus.checking,
-      ),
-      isA<AppVersionState>().having(
-        (state) => state.status,
-        'status',
-        AppVersionStatus.upToDate,
-      ),
-    ],
+    expect:
+        () => [
+          isA<AppVersionState>().having(
+            (state) => state.status,
+            'status',
+            AppVersionStatus.checking,
+          ),
+          isA<AppVersionState>().having(
+            (state) => state.status,
+            'status',
+            AppVersionStatus.upToDate,
+          ),
+        ],
   );
 
   blocTest<AppVersionCubit, AppVersionState>(
     'emits hardBlocked when RPC says so',
     build: () {
       when(
-        () => repository.checkVersion(clientVersion: any(named: 'clientVersion')),
+        () =>
+            repository.checkVersion(clientVersion: any(named: 'clientVersion')),
       ).thenAnswer(
         (_) async => const AppVersionStatusResult(
           clientVersion: '1.0.0',
@@ -63,40 +65,43 @@ void main() {
       return AppVersionCubit(repository: repository);
     },
     act: (cubit) => cubit.checkForUpdates(clientVersion: '1.0.0'),
-    expect: () => [
-      isA<AppVersionState>().having(
-        (state) => state.status,
-        'status',
-        AppVersionStatus.checking,
-      ),
-      isA<AppVersionState>().having(
-        (state) => state.status,
-        'status',
-        AppVersionStatus.hardBlocked,
-      ),
-    ],
+    expect:
+        () => [
+          isA<AppVersionState>().having(
+            (state) => state.status,
+            'status',
+            AppVersionStatus.checking,
+          ),
+          isA<AppVersionState>().having(
+            (state) => state.status,
+            'status',
+            AppVersionStatus.hardBlocked,
+          ),
+        ],
   );
 
   blocTest<AppVersionCubit, AppVersionState>(
     'emits failed when repository throws',
     build: () {
       when(
-        () => repository.checkVersion(clientVersion: any(named: 'clientVersion')),
+        () =>
+            repository.checkVersion(clientVersion: any(named: 'clientVersion')),
       ).thenThrow(Exception('network error'));
       return AppVersionCubit(repository: repository);
     },
     act: (cubit) => cubit.checkForUpdates(clientVersion: '1.0.0'),
-    expect: () => [
-      isA<AppVersionState>().having(
-        (state) => state.status,
-        'status',
-        AppVersionStatus.checking,
-      ),
-      isA<AppVersionState>().having(
-        (state) => state.status,
-        'status',
-        AppVersionStatus.failed,
-      ),
-    ],
+    expect:
+        () => [
+          isA<AppVersionState>().having(
+            (state) => state.status,
+            'status',
+            AppVersionStatus.checking,
+          ),
+          isA<AppVersionState>().having(
+            (state) => state.status,
+            'status',
+            AppVersionStatus.failed,
+          ),
+        ],
   );
 }

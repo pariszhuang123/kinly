@@ -4,7 +4,9 @@ import 'dart:io';
 /// lib/core/&lt;domain&gt;/enums so each agent can locate and version contracts.
 Future<void> main(List<String> args) async {
   final projectRoot = Directory.current;
-  final libCore = Directory('${projectRoot.path}${Platform.pathSeparator}lib${Platform.pathSeparator}core');
+  final libCore = Directory(
+    '${projectRoot.path}${Platform.pathSeparator}lib${Platform.pathSeparator}core',
+  );
   if (!libCore.existsSync()) {
     stdout.writeln('No lib/core directory found; skipping enum check.');
     return;

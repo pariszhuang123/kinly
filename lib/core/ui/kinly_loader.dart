@@ -31,9 +31,10 @@ class _KinlyLoaderState extends State<KinlyLoader>
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     )..repeat(reverse: true);
-    _scaleAnimation = Tween<double>(begin: 0.94, end: 1.06).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.94,
+      end: 1.06,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -46,10 +47,11 @@ class _KinlyLoaderState extends State<KinlyLoader>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final resolvedColor = widget.color ??
+    final resolvedColor =
+        widget.color ??
         (theme.brightness == Brightness.dark
-        ? colorScheme.onSurfaceVariant
-        : colorScheme.primary);
+            ? colorScheme.onSurfaceVariant
+            : colorScheme.primary);
 
     return ScaleTransition(
       scale: _scaleAnimation,

@@ -39,7 +39,10 @@ class KinlyCircleAvatar extends StatelessWidget {
               fit: BoxFit.cover,
               placeholderBuilder:
                   (_) => Center(
-                    child: KinlyLoader(size: radius, color: colorScheme.primary),
+                    child: KinlyLoader(
+                      size: radius,
+                      color: colorScheme.primary,
+                    ),
                   ),
             ),
           ),
@@ -55,10 +58,7 @@ class KinlyCircleAvatar extends StatelessWidget {
     final badge = Container(
       width: badgeSize,
       height: badgeSize,
-      decoration: BoxDecoration(
-        color: badgeBackground,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: badgeBackground, shape: BoxShape.circle),
       child: Padding(
         padding: const EdgeInsets.all(2),
         child: SvgPicture.asset(
@@ -76,12 +76,7 @@ class KinlyCircleAvatar extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Positioned.fill(child: avatar),
-          if (isOwner)
-            Positioned(
-              right: -2,
-              bottom: -2,
-              child: badge,
-            ),
+          if (isOwner) Positioned(right: -2, bottom: -2, child: badge),
         ],
       ),
     );

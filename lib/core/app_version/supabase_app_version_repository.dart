@@ -4,7 +4,7 @@ import '../../data/repositories/app_version_repository.dart';
 
 class SupabaseAppVersionRepository implements AppVersionRepository {
   SupabaseAppVersionRepository({SupabaseClient? client})
-      : _client = client ?? Supabase.instance.client;
+    : _client = client ?? Supabase.instance.client;
 
   final SupabaseClient _client;
 

@@ -83,12 +83,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       final members = await membersFuture;
       String? ownerUserId;
       if (members.isNotEmpty) {
-        ownerUserId = members
-            .firstWhere(
-              (member) => member.isOwner,
-              orElse: () => members.first,
-            )
-            .userId;
+        ownerUserId =
+            members
+                .firstWhere(
+                  (member) => member.isOwner,
+                  orElse: () => members.first,
+                )
+                .userId;
       }
 
       profile = await _resolveProfile(
@@ -173,10 +174,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       );
       final owedView = owed
           .map(
-            (entry) => TodayShareOwed.fromModel(
-              entry,
-              ownerUserId: ownerUserId,
-            ),
+            (entry) =>
+                TodayShareOwed.fromModel(entry, ownerUserId: ownerUserId),
           )
           .toList(growable: false);
       final drafts = created

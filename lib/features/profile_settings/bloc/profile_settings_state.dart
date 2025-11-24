@@ -111,7 +111,9 @@ class ProfileSettingsState extends Equatable {
               ? this.actionMessage
               : actionMessage as String?,
       membership:
-          membership == _unset ? this.membership : membership as CurrentMembership?,
+          membership == _unset
+              ? this.membership
+              : membership as CurrentMembership?,
       activeMembers:
           activeMembers == _unset
               ? this.activeMembers
@@ -138,8 +140,7 @@ class ProfileSettingsState extends Equatable {
     activeMembers,
   ];
 
-  bool get isOwner =>
-      (membership?.role.toLowerCase() ?? 'member') == 'owner';
+  bool get isOwner => (membership?.role.toLowerCase() ?? 'member') == 'owner';
 
   List<HomeMemberSummary> get otherActiveMembers {
     final currentUserId = membership?.userId;
@@ -153,8 +154,7 @@ class ProfileSettingsState extends Equatable {
     final currentUserId = membership?.userId;
     return activeMembers
         .where(
-          (member) =>
-              member.userId != currentUserId && member.canTransferTo,
+          (member) => member.userId != currentUserId && member.canTransferTo,
         )
         .toList(growable: false);
   }

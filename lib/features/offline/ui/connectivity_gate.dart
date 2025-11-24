@@ -6,10 +6,7 @@ import '../bloc/connectivity_cubit.dart';
 import 'offline_splash.dart';
 
 class ConnectivityGate extends StatelessWidget {
-  const ConnectivityGate({
-    super.key,
-    required this.child,
-  });
+  const ConnectivityGate({super.key, required this.child});
 
   final Widget child;
 

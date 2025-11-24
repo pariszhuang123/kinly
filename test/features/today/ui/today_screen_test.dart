@@ -84,9 +84,7 @@ void main() {
   });
 
   testWidgets('shows empty state card when no tasks', (tester) async {
-    when(
-      () => todayBloc.state,
-    ).thenReturn(
+    when(() => todayBloc.state).thenReturn(
       const TodayState.loaded(
         activeTasks: [],
         draftTasks: [],

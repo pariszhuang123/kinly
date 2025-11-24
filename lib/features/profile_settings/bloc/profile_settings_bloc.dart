@@ -61,9 +61,7 @@ class ProfileSettingsBloc
     }
   }
 
-  Future<void> _loadLeaveEligibility(
-    Emitter<ProfileSettingsState> emit,
-  ) async {
+  Future<void> _loadLeaveEligibility(Emitter<ProfileSettingsState> emit) async {
     try {
       final membership = await _homeRepository.getCurrentMembership();
       if (membership == null) {

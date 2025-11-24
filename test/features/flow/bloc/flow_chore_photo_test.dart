@@ -9,6 +9,7 @@ import 'package:kinly/data/repositories/home_repository.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_bloc.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}
+
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
 class _MockExpectationPhotoService extends Mock
@@ -24,8 +25,10 @@ void main() {
     homeRepository = _MockHomeRepository();
     photoService = _MockExpectationPhotoService();
     when(
-      () => homeRepository.listActiveMembers(any(),
-          excludeSelf: any(named: 'excludeSelf')),
+      () => homeRepository.listActiveMembers(
+        any(),
+        excludeSelf: any(named: 'excludeSelf'),
+      ),
     ).thenAnswer((_) async => const []);
   });
 
@@ -74,138 +77,124 @@ void main() {
     },
   );
 
-  test(
-    'upload failure emits error tick and message',
-    () async {
-      when(
-        () => photoService.captureAndUpload(
-          homeId: any(named: 'homeId'),
-          choreId: any(named: 'choreId'),
-        ),
-      ).thenThrow(Exception('upload failed'));
+  test('upload failure emits error tick and message', () async {
+    when(
+      () => photoService.captureAndUpload(
+        homeId: any(named: 'homeId'),
+        choreId: any(named: 'choreId'),
+      ),
+    ).thenThrow(Exception('upload failed'));
 
-      final bloc = FlowChoreBloc(
+    final bloc = FlowChoreBloc(
+      homeId: 'home-1',
+      choresRepository: choresRepository,
+      homeRepository: homeRepository,
+      expectationPhotoService: photoService,
+    );
+
+    addTearDown(bloc.close);
+
+    bloc.add(const FlowChorePhotoCaptureRequested());
+
+    await expectLater(
+      bloc.stream,
+      emitsInOrder([
+        predicate<FlowChoreState>((state) => state.isUploadingPhoto),
+        predicate<FlowChoreState>(
+          (state) =>
+              !state.isUploadingPhoto &&
+              state.photoErrorTick == 1 &&
+              state.photoErrorMessage?.contains('upload failed') == true,
+        ),
+      ]),
+    );
+  });
+
+  test('submit sends stored expectation photo path to repository', () async {
+    const photoPath = 'flow/expectations/home-1/temp/file.jpg';
+    when(
+      () => choresRepository.create(
+        homeId: any(named: 'homeId'),
+        name: any(named: 'name'),
+        assigneeUserId: any(named: 'assigneeUserId'),
+        startDate: any(named: 'startDate'),
+        recurrence: any(named: 'recurrence'),
+        notes: any(named: 'notes'),
+        howToVideoUrl: any(named: 'howToVideoUrl'),
+        expectationPhotoPath: any(named: 'expectationPhotoPath'),
+      ),
+    ).thenAnswer(
+      (_) async => _fakeChore(id: 'chore-1', expectationPhotoPath: photoPath),
+    );
+
+    final bloc = FlowChoreBloc(
+      homeId: 'home-1',
+      choresRepository: choresRepository,
+      homeRepository: homeRepository,
+      expectationPhotoService: photoService,
+    );
+
+    addTearDown(bloc.close);
+
+    bloc.add(const FlowChoreTitleChanged('Test chore'));
+    bloc.add(const FlowChorePhotoChanged(photoPath));
+    bloc.add(const FlowChoreSubmitted());
+
+    final successState = await bloc.stream.firstWhere(
+      (state) => state.successChoreId != null,
+    );
+
+    expect(successState.successChoreId, 'chore-1');
+    expect(successState.form.expectationPhotoPath, photoPath);
+    verify(
+      () => choresRepository.create(
         homeId: 'home-1',
-        choresRepository: choresRepository,
-        homeRepository: homeRepository,
-        expectationPhotoService: photoService,
-      );
+        name: 'Test chore',
+        assigneeUserId: null,
+        startDate: any(named: 'startDate'),
+        recurrence: ChoreRecurrence.none,
+        notes: null,
+        howToVideoUrl: null,
+        expectationPhotoPath: photoPath,
+      ),
+    ).called(1);
+  });
 
-      addTearDown(bloc.close);
+  test('permission denial surfaces error and permanent flag', () async {
+    when(
+      () => photoService.captureAndUpload(
+        homeId: any(named: 'homeId'),
+        choreId: any(named: 'choreId'),
+      ),
+    ).thenThrow(CameraPermissionException(permanentlyDenied: true));
 
-      bloc.add(const FlowChorePhotoCaptureRequested());
+    final bloc = FlowChoreBloc(
+      homeId: 'home-1',
+      choresRepository: choresRepository,
+      homeRepository: homeRepository,
+      expectationPhotoService: photoService,
+    );
 
-      await expectLater(
-        bloc.stream,
-        emitsInOrder([
-          predicate<FlowChoreState>((state) => state.isUploadingPhoto),
-          predicate<FlowChoreState>(
-            (state) =>
-                !state.isUploadingPhoto &&
-                state.photoErrorTick == 1 &&
-                state.photoErrorMessage?.contains('upload failed') == true,
-          ),
-        ]),
-      );
-    },
-  );
+    addTearDown(bloc.close);
 
-  test(
-    'submit sends stored expectation photo path to repository',
-    () async {
-      const photoPath = 'flow/expectations/home-1/temp/file.jpg';
-      when(
-        () => choresRepository.create(
-          homeId: any(named: 'homeId'),
-          name: any(named: 'name'),
-          assigneeUserId: any(named: 'assigneeUserId'),
-          startDate: any(named: 'startDate'),
-          recurrence: any(named: 'recurrence'),
-          notes: any(named: 'notes'),
-          howToVideoUrl: any(named: 'howToVideoUrl'),
-          expectationPhotoPath: any(named: 'expectationPhotoPath'),
+    bloc.add(const FlowChorePhotoCaptureRequested());
+
+    await expectLater(
+      bloc.stream,
+      emitsInOrder([
+        predicate<FlowChoreState>((state) => state.isUploadingPhoto),
+        predicate<FlowChoreState>(
+          (state) =>
+              !state.isUploadingPhoto &&
+              state.photoErrorTick == 1 &&
+              state.isCameraPermissionPermanentlyDenied,
         ),
-      ).thenAnswer(
-        (_) async => _fakeChore(
-          id: 'chore-1',
-          expectationPhotoPath: photoPath,
-        ),
-      );
-
-      final bloc = FlowChoreBloc(
-        homeId: 'home-1',
-        choresRepository: choresRepository,
-        homeRepository: homeRepository,
-        expectationPhotoService: photoService,
-      );
-
-      addTearDown(bloc.close);
-
-      bloc.add(const FlowChoreTitleChanged('Test chore'));
-      bloc.add(const FlowChorePhotoChanged(photoPath));
-      bloc.add(const FlowChoreSubmitted());
-
-      final successState =
-          await bloc.stream.firstWhere((state) => state.successChoreId != null);
-
-      expect(successState.successChoreId, 'chore-1');
-      expect(successState.form.expectationPhotoPath, photoPath);
-      verify(
-        () => choresRepository.create(
-          homeId: 'home-1',
-          name: 'Test chore',
-          assigneeUserId: null,
-          startDate: any(named: 'startDate'),
-          recurrence: ChoreRecurrence.none,
-          notes: null,
-          howToVideoUrl: null,
-          expectationPhotoPath: photoPath,
-        ),
-      ).called(1);
-    },
-  );
-
-  test(
-    'permission denial surfaces error and permanent flag',
-    () async {
-      when(
-        () => photoService.captureAndUpload(
-          homeId: any(named: 'homeId'),
-          choreId: any(named: 'choreId'),
-        ),
-      ).thenThrow(CameraPermissionException(permanentlyDenied: true));
-
-      final bloc = FlowChoreBloc(
-        homeId: 'home-1',
-        choresRepository: choresRepository,
-        homeRepository: homeRepository,
-        expectationPhotoService: photoService,
-      );
-
-      addTearDown(bloc.close);
-
-      bloc.add(const FlowChorePhotoCaptureRequested());
-
-      await expectLater(
-        bloc.stream,
-        emitsInOrder([
-          predicate<FlowChoreState>((state) => state.isUploadingPhoto),
-          predicate<FlowChoreState>(
-            (state) =>
-                !state.isUploadingPhoto &&
-                state.photoErrorTick == 1 &&
-                state.isCameraPermissionPermanentlyDenied,
-          ),
-        ]),
-      );
-    },
-  );
+      ]),
+    );
+  });
 }
 
-Chore _fakeChore({
-  required String id,
-  String? expectationPhotoPath,
-}) {
+Chore _fakeChore({required String id, String? expectationPhotoPath}) {
   final now = DateTime.now().toUtc();
   return Chore(
     id: id,

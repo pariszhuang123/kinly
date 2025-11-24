@@ -946,7 +946,8 @@ BEGIN
         jsonb_build_object(
           'expenseId',   e.id,
           'description', e.description,
-          'amountCents', s.amount_cents
+          'amountCents', s.amount_cents,
+          'notes',       e.notes
         )
         ORDER BY e.created_at DESC, e.id
       ) AS items

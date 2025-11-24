@@ -40,9 +40,9 @@ void main() {
     profileRepository = _MockProfileRepository();
     homeRepository = _MockHomeRepository();
     accountRepository = _MockAccountRepository();
-    when(() => homeRepository.getCurrentMembership()).thenAnswer(
-      (_) async => currentMembership,
-    );
+    when(
+      () => homeRepository.getCurrentMembership(),
+    ).thenAnswer((_) async => currentMembership);
     when(
       () => homeRepository.listActiveMembers(
         any(),
@@ -65,9 +65,9 @@ void main() {
         when(
           () => profileRepository.getCurrentProfile(),
         ).thenAnswer((_) async => userProfile);
-        when(() => homeRepository.listActiveMembers(any())).thenAnswer(
-          (_) async => const <HomeMemberSummary>[],
-        );
+        when(
+          () => homeRepository.listActiveMembers(any()),
+        ).thenAnswer((_) async => const <HomeMemberSummary>[]);
         return buildBloc();
       },
       act: (bloc) => bloc.add(const ProfileSettingsStarted()),
@@ -216,8 +216,9 @@ void main() {
         );
         return buildBloc();
       },
-      act: (bloc) =>
-          bloc.add(const ProfileSettingsTransferOwnerRequested('user-2')),
+      act:
+          (bloc) =>
+              bloc.add(const ProfileSettingsTransferOwnerRequested('user-2')),
       expect: () {
         final initial = ProfileSettingsState.initial();
         final transferProgress = initial.copyWith(
@@ -238,15 +239,12 @@ void main() {
           leaveInProgress: false,
           action: ProfileSettingsAction.leaveSuccess,
         );
-        return [
-          transferProgress,
-          transferSuccess,
-          leaveProgress,
-          leaveSuccess,
-        ];
+        return [transferProgress, transferSuccess, leaveProgress, leaveSuccess];
       },
       verify: (_) {
-        verify(() => homeRepository.transferOwner('home-1', 'user-2')).called(1);
+        verify(
+          () => homeRepository.transferOwner('home-1', 'user-2'),
+        ).called(1);
         verify(() => homeRepository.leave('home-1')).called(1);
       },
     );
@@ -259,8 +257,9 @@ void main() {
         ).thenThrow(Exception('transfer failed'));
         return buildBloc();
       },
-      act: (bloc) =>
-          bloc.add(const ProfileSettingsTransferOwnerRequested('user-3')),
+      act:
+          (bloc) =>
+              bloc.add(const ProfileSettingsTransferOwnerRequested('user-3')),
       expect: () {
         final initial = ProfileSettingsState.initial();
         final transferProgress = initial.copyWith(

@@ -4,10 +4,7 @@ import '../../../generated/l10n.dart';
 import '../../splash/ui/widgets/kinly_logo.dart';
 
 class OfflineSplash extends StatelessWidget {
-  const OfflineSplash({
-    super.key,
-    required this.onRetry,
-  });
+  const OfflineSplash({super.key, required this.onRetry});
 
   final VoidCallback onRetry;
 

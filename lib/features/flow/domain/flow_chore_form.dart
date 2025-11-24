@@ -71,7 +71,8 @@ class FlowChoreForm {
 
   bool get isTitleValid => title.trim().isNotEmpty;
   bool get isHowToUrlValid =>
-      howToVideoUrl.trim().isEmpty || normalizeHttpUrlOrNull(howToVideoUrl) != null;
+      howToVideoUrl.trim().isEmpty ||
+      normalizeHttpUrlOrNull(howToVideoUrl) != null;
   String? get normalizedHowToUrl => normalizeHttpUrlOrNull(howToVideoUrl);
 
   bool isEqualTo(FlowChoreForm other) {

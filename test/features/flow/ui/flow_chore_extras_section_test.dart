@@ -19,16 +19,15 @@ void main() {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        extensions: const [
-          Spacing(xs: 4, sm: 8, md: 12, lg: 16, xl: 24),
-        ],
+        extensions: const [Spacing(xs: 4, sm: 8, md: 12, lg: 16, xl: 24)],
       ),
       home: Scaffold(body: child),
     );
   }
 
-  testWidgets('renders how-to as clickable link when handler provided',
-      (tester) async {
+  testWidgets('renders how-to as clickable link when handler provided', (
+    tester,
+  ) async {
     var tapped = false;
     await tester.pumpWidget(
       wrapWithApp(
