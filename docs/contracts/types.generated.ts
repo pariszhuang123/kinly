@@ -357,6 +357,81 @@ export type Database = {
           },
         ]
       }
+      gratitude_wall_posts: {
+        Row: {
+          author_user_id: string
+          created_at: string
+          home_id: string
+          id: string
+          message: string | null
+          mood: Database["public"]["Enums"]["mood_scale"]
+        }
+        Insert: {
+          author_user_id: string
+          created_at?: string
+          home_id: string
+          id?: string
+          message?: string | null
+          mood: Database["public"]["Enums"]["mood_scale"]
+        }
+        Update: {
+          author_user_id?: string
+          created_at?: string
+          home_id?: string
+          id?: string
+          message?: string | null
+          mood?: Database["public"]["Enums"]["mood_scale"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gratitude_wall_posts_author_user_id_fkey"
+            columns: ["author_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gratitude_wall_posts_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gratitude_wall_reads: {
+        Row: {
+          home_id: string
+          last_read_at: string
+          user_id: string
+        }
+        Insert: {
+          home_id: string
+          last_read_at?: string
+          user_id: string
+        }
+        Update: {
+          home_id?: string
+          last_read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gratitude_wall_reads_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gratitude_wall_reads_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       home_entitlements: {
         Row: {
           created_at: string
@@ -385,6 +460,157 @@ export type Database = {
             columns: ["home_id"]
             isOneToOne: true
             referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      home_mood_entries: {
+        Row: {
+          comment: string | null
+          created_at: string
+          gratitude_post_id: string | null
+          home_id: string
+          id: string
+          iso_week: number
+          iso_week_year: number
+          mood: Database["public"]["Enums"]["mood_scale"]
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          gratitude_post_id?: string | null
+          home_id: string
+          id?: string
+          iso_week: number
+          iso_week_year: number
+          mood: Database["public"]["Enums"]["mood_scale"]
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          gratitude_post_id?: string | null
+          home_id?: string
+          id?: string
+          iso_week?: number
+          iso_week_year?: number
+          mood?: Database["public"]["Enums"]["mood_scale"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "home_mood_entries_gratitude_post_id_fkey"
+            columns: ["gratitude_post_id"]
+            isOneToOne: false
+            referencedRelation: "gratitude_wall_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "home_mood_entries_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "home_mood_entries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      home_mood_feedback_counters: {
+        Row: {
+          feedback_count: number
+          first_feedback_at: string | null
+          home_id: string
+          last_feedback_at: string | null
+          last_nps_at: string | null
+          last_nps_feedback_count: number
+          last_nps_score: number | null
+          nps_required: boolean
+          user_id: string
+        }
+        Insert: {
+          feedback_count?: number
+          first_feedback_at?: string | null
+          home_id: string
+          last_feedback_at?: string | null
+          last_nps_at?: string | null
+          last_nps_feedback_count?: number
+          last_nps_score?: number | null
+          nps_required?: boolean
+          user_id: string
+        }
+        Update: {
+          feedback_count?: number
+          first_feedback_at?: string | null
+          home_id?: string
+          last_feedback_at?: string | null
+          last_nps_at?: string | null
+          last_nps_feedback_count?: number
+          last_nps_score?: number | null
+          nps_required?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "home_mood_feedback_counters_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "home_mood_feedback_counters_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      home_nps: {
+        Row: {
+          created_at: string
+          home_id: string
+          id: string
+          nps_feedback_count: number
+          score: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          home_id: string
+          id?: string
+          nps_feedback_count: number
+          score: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          home_id?: string
+          id?: string
+          nps_feedback_count?: number
+          score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "home_nps_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "home_nps_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1013,6 +1239,25 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      gratitude_wall_list: {
+        Args: {
+          p_cursor_created_at?: string
+          p_cursor_id?: string
+          p_home_id: string
+          p_limit?: number
+        }
+        Returns: {
+          author_user_id: string
+          created_at: string
+          message: string
+          mood: Database["public"]["Enums"]["mood_scale"]
+          post_id: string
+        }[]
+      }
+      gratitude_wall_mark_read: {
+        Args: { p_home_id: string }
+        Returns: boolean
+      }
       home_assignees_list: {
         Args: { p_home_id: string }
         Returns: {
@@ -1025,6 +1270,24 @@ export type Database = {
       home_entitlements_refresh: {
         Args: { _home_id: string }
         Returns: undefined
+      }
+      home_nps_get_status: { Args: { p_home_id: string }; Returns: boolean }
+      home_nps_submit: {
+        Args: { p_home_id: string; p_score: number }
+        Returns: {
+          created_at: string
+          home_id: string
+          id: string
+          nps_feedback_count: number
+          score: number
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "home_nps"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       homes_create_with_invite: { Args: never; Returns: Json }
       homes_join: { Args: { p_code: string }; Returns: Json }
@@ -1051,6 +1314,19 @@ export type Database = {
         }[]
       }
       membership_me_current: { Args: never; Returns: Json }
+      mood_get_current_weekly: { Args: { p_home_id: string }; Returns: boolean }
+      mood_submit: {
+        Args: {
+          p_add_to_wall?: boolean
+          p_comment?: string
+          p_home_id: string
+          p_mood: Database["public"]["Enums"]["mood_scale"]
+        }
+        Returns: {
+          entry_id: string
+          gratitude_post_id: string
+        }[]
+      }
       profile_identity_update: {
         Args: { p_avatar_id: string; p_username: string }
         Returns: {
@@ -1088,6 +1364,12 @@ export type Database = {
       expense_split_type: "equal" | "custom"
       expense_status: "draft" | "active" | "cancelled"
       home_usage_metric: "active_chores" | "chore_photos" | "active_members"
+      mood_scale:
+        | "sunny"
+        | "partially_sunny"
+        | "cloudy"
+        | "rainy"
+        | "thunderstorm"
       recurrence_interval:
         | "none"
         | "daily"
@@ -1234,6 +1516,13 @@ export const Constants = {
       expense_split_type: ["equal", "custom"],
       expense_status: ["draft", "active", "cancelled"],
       home_usage_metric: ["active_chores", "chore_photos", "active_members"],
+      mood_scale: [
+        "sunny",
+        "partially_sunny",
+        "cloudy",
+        "rainy",
+        "thunderstorm",
+      ],
       recurrence_interval: [
         "none",
         "daily",
