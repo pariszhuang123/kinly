@@ -37,7 +37,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     onTertiary: const Color(0xFF1F1400),
     tertiaryContainer: const Color(0xFFFFE1A8),
     onTertiaryContainer: const Color(0xFF1F1400),
-    error: isDark ? Colors.red.shade300 : Colors.red.shade700,
+    error: isDark ? Colors.redAccent.shade200 : Colors.red.shade700,
     onError: Colors.white,
     errorContainer: Colors.red.shade100,
     onErrorContainer: Colors.red.shade900,
@@ -77,6 +77,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     titleLarge: display.titleLarge,
   );
 
+  /// Elevated buttons (legacy/non-M3 usage)
   final elevatedButtonTheme = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       minimumSize: const Size.fromHeight(48),
@@ -87,6 +88,30 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     ),
   );
 
+  /// FilledButton – primary CTA
+  final filledButtonTheme = FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      minimumSize: const Size.fromHeight(44),
+      backgroundColor: colorScheme.primary,
+      foregroundColor: colorScheme.onPrimary,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      textStyle: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+    ),
+  );
+
+  /// OutlinedButton – flips in dark mode (no teal-on-teal glow)
+  final outlinedButtonTheme = OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      minimumSize: const Size.fromHeight(40),
+      foregroundColor: isDark ? colorScheme.onSurface : colorScheme.primary,
+      side: BorderSide(
+        color: isDark ? colorScheme.outline : colorScheme.primary,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      textStyle: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+    ),
+  );
+
   final snackBarTheme = SnackBarThemeData(
     behavior: SnackBarBehavior.floating,
     backgroundColor: colorScheme.inverseSurface,
@@ -94,11 +119,10 @@ ThemeData buildKinlyTheme(Brightness brightness) {
   );
 
   // Section palettes: light and dark
-  // Light mode updated for AAA-safe icon/text contrast on section backgrounds.
   final sections =
       isDark
           ? const KinlySections(
-            // DARK MODE: high-contrast already, keep as-is
+            // DARK MODE
             flow: SectionColors(
               background: Color(0xFF1F2623),
               card: Color(0xFF27302B),
@@ -125,23 +149,23 @@ ThemeData buildKinlyTheme(Brightness brightness) {
             ),
           )
           : const KinlySections(
-            // LIGHT MODE – tuned for better contrast but same moods
+            // LIGHT MODE
             flow: SectionColors(
-              background: Color(0xFFE2F0E6), // sagey background
+              background: Color(0xFFE2F0E6),
               card: Color(0xFFD6E8DD),
-              icon: Color(0xFF26473A), // deeper teal (~AAA vs background)
-              accent: Color(0xFF26473A), // decorative; text should use sageText
+              icon: Color(0xFF26473A),
+              accent: Color(0xFF26473A),
             ),
             share: SectionColors(
-              background: Color(0xFFF9F4E8), // honey cream
+              background: Color(0xFFF9F4E8),
               card: Colors.white,
-              icon: Color(0xFF704300), // honeyText (~AAA vs background)
-              accent: tealBrand, // brand teal accent
+              icon: Color(0xFF704300),
+              accent: tealBrand,
             ),
             pulse: SectionColors(
               background: Color(0xFFFCEFEA),
               card: Color(0xFFFFF7F3),
-              icon: Color(0xFF7F2B0E), // deeper coral/rust (~AAA vs background)
+              icon: Color(0xFF7F2B0E),
               accent: tealBrand,
             ),
             empty: SectionColors(
@@ -169,7 +193,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     toolbarHeight: 56,
     bottomNavHeight: 64,
     fabDimension: 56,
-    maxContentWidth: 640, // used to keep content nicely sized on tablets
+    maxContentWidth: 640,
   );
 
   return ThemeData(
@@ -179,6 +203,8 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     textTheme: textTheme,
     scaffoldBackgroundColor: colorScheme.surface,
     elevatedButtonTheme: elevatedButtonTheme,
+    filledButtonTheme: filledButtonTheme,
+    outlinedButtonTheme: outlinedButtonTheme,
     snackBarTheme: snackBarTheme,
     extensions: [
       spacing,
@@ -186,8 +212,6 @@ ThemeData buildKinlyTheme(Brightness brightness) {
       elevations,
       appSizes,
       sections,
-
-      // OPTIONAL: expose text-safe brand variants for use in widgets
       const _KinlyBrandTextColors(
         sageText: sageText,
         honeyText: honeyText,

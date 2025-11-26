@@ -7,6 +7,7 @@ class HubState extends Equatable {
     required this.status,
     required this.members,
     required this.appLink,
+    required this.isOwner,
     this.invite,
     this.inviteLink,
     this.isRefreshing = false,
@@ -14,18 +15,20 @@ class HubState extends Equatable {
   });
 
   factory HubState.initial({required String appLink}) => HubState(
-    status: HubStatus.initial,
-    members: const [],
-    invite: null,
-    inviteLink: null,
-    appLink: appLink,
-  );
+        status: HubStatus.initial,
+        members: const [],
+        invite: null,
+        inviteLink: null,
+        appLink: appLink,
+        isOwner: false,
+      );
 
   final HubStatus status;
   final List<HomeMemberSummary> members;
   final HomeInvite? invite;
   final String? inviteLink;
   final String appLink;
+  final bool isOwner;
   final bool isRefreshing;
   final String? errorMessage;
 
@@ -43,6 +46,7 @@ class HubState extends Equatable {
     bool clearInvite = false,
     String? inviteLink,
     String? appLink,
+    bool? isOwner,
     bool? isRefreshing,
     String? errorMessage,
   }) {
@@ -52,6 +56,7 @@ class HubState extends Equatable {
       invite: clearInvite ? null : (invite ?? this.invite),
       inviteLink: clearInvite ? null : (inviteLink ?? this.inviteLink),
       appLink: appLink ?? this.appLink,
+      isOwner: isOwner ?? this.isOwner,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       errorMessage: errorMessage,
     );
@@ -59,12 +64,13 @@ class HubState extends Equatable {
 
   @override
   List<Object?> get props => [
-    status,
-    members,
-    invite,
-    inviteLink,
-    appLink,
-    isRefreshing,
-    errorMessage,
-  ];
+        status,
+        members,
+        invite,
+        inviteLink,
+        appLink,
+        isOwner,
+        isRefreshing,
+        errorMessage,
+      ];
 }

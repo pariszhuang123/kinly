@@ -18,6 +18,10 @@ abstract class HomeRepository {
   /// Rotate the invite for a home (owner-only) and return the new code.
   Future<String> rotateInvite(String homeId);
 
+  /// Returns the current active invite for a home without creating a new one.
+  /// Any active member may call this. Throws if no active invite exists.
+  Future<HomeInvite> getActiveInvite(String homeId);
+
   /// Returns the active invite for a home, creating one if missing (owner-only).
   Future<HomeInvite> getOrCreateInvite(String homeId);
 

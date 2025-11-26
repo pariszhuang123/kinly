@@ -654,13 +654,13 @@ class S {
     );
   }
 
-  /// `Join my Kinly home: {link}\nInvite code: {code}`
-  String hubShareInviteBody(Object link, Object code) {
+  /// `Welcome to our Kinly home! Enter this invite code: {code}\nDownload the Kinly app: {link}`
+  String hubShareInviteBody(Object code, Object link) {
     return Intl.message(
-      'Join my Kinly home: $link\\nInvite code: $code',
+      'Welcome to our Kinly home! Enter this invite code: $code\\nDownload the Kinly app: $link',
       name: 'hubShareInviteBody',
       desc: '',
-      args: [link, code],
+      args: [code, link],
     );
   }
 
@@ -674,21 +674,71 @@ class S {
     );
   }
 
-  /// `Download Kinly: {link}`
+  /// `Share Kinly so sharing feels lighter: {link}`
   String hubShareAppBody(Object link) {
     return Intl.message(
-      'Download Kinly: $link',
+      'Share Kinly so sharing feels lighter: $link',
       name: 'hubShareAppBody',
       desc: '',
       args: [link],
     );
   }
 
-  /// `Share app link`
+  /// `Share Kinly`
   String get hubShareAppCta {
     return Intl.message(
-      'Share app link',
+      'Share Kinly',
       name: 'hubShareAppCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy invite code`
+  String get hubCopyCode {
+    return Intl.message(
+      'Copy invite code',
+      name: 'hubCopyCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invite code copied`
+  String get hubCodeCopied {
+    return Intl.message(
+      'Invite code copied',
+      name: 'hubCodeCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rotate invite`
+  String get hubRotateInvite {
+    return Intl.message(
+      'Rotate invite',
+      name: 'hubRotateInvite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invite rotated`
+  String get hubRotateSuccess {
+    return Intl.message(
+      'Invite rotated',
+      name: 'hubRotateSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't rotate invite. Try again.`
+  String get hubRotateError {
+    return Intl.message(
+      'Couldn\'t rotate invite. Try again.',
+      name: 'hubRotateError',
       desc: '',
       args: [],
     );

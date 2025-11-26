@@ -23,6 +23,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
        super(HubState.initial(appLink: _resolveAppLink())) {
     on<HubStarted>(_onStarted);
     on<HubRefreshed>(_onRefreshed);
+    on<HubInviteRotated>(_onRotateInvite);
 
     add(const HubStarted());
   }
@@ -39,6 +40,30 @@ class HubBloc extends Bloc<HubEvent, HubState> {
     await _loadHub(emit, isRefresh: true);
   }
 
+  Future<void> _onRotateInvite(
+    HubInviteRotated event,
+    Emitter<HubState> emit,
+  ) async {
+    try {
+      await _homeRepository.rotateInvite(_homeId);
+      await _loadHub(emit, isRefresh: true);
+    } catch (error, stack) {
+      _logger.warn(
+        'Failed to rotate invite',
+        error: error,
+        stackTrace: stack,
+        tag: 'Hub',
+      );
+      emit(
+        state.copyWith(
+          status: HubStatus.failure,
+          isRefreshing: false,
+          errorMessage: error.toString(),
+        ),
+      );
+    }
+  }
+
   Future<void> _loadHub(
     Emitter<HubState> emit, {
     required bool isRefresh,
@@ -52,7 +77,10 @@ class HubBloc extends Bloc<HubEvent, HubState> {
     );
 
     List<HomeMemberSummary> members;
+    String? currentRole;
     try {
+      final membership = await _homeRepository.getCurrentMembership();
+      currentRole = membership?.role.toLowerCase();
       members = await _homeRepository.listActiveMembers(_homeId);
     } catch (error, stack) {
       _logger.error(
@@ -73,17 +101,28 @@ class HubBloc extends Bloc<HubEvent, HubState> {
 
     HomeInvite? invite;
     String? inviteLink;
+
+    // First try to fetch an existing invite (allowed for any active member).
     try {
-      invite = await _homeRepository.getOrCreateInvite(_homeId);
+      invite = await _homeRepository.getActiveInvite(_homeId);
       inviteLink = _buildInviteLink(invite);
     } catch (error, stack) {
       _logger.warn(
-        'Invite unavailable (non-owner or inactive home)',
+        'Active invite not found or unavailable',
         error: error,
         stackTrace: stack,
         tag: 'Hub',
       );
+      // Owners still get a best-effort create path if allowed.
+      try {
+        invite = await _homeRepository.getOrCreateInvite(_homeId);
+        inviteLink = _buildInviteLink(invite);
+      } catch (_) {
+        // Swallow; sharing will be disabled but hub still renders.
+      }
     }
+
+    final isOwner = (currentRole ?? '') == 'owner';
 
     emit(
       state.copyWith(
@@ -92,6 +131,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
         invite: invite,
         inviteLink: inviteLink,
         isRefreshing: false,
+        isOwner: isOwner,
       ),
     );
   }

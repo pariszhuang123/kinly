@@ -100,21 +100,26 @@
   "hubInviteCta": "Invite",
   "hubInviteUnavailable": "Couldn't load invite. Please try again.",
   "hubShareInviteTitle": "Invite to my Kinly home",
-  "hubShareInviteBody": "Join my Kinly home: {link}\\nInvite code: {code}",
+  "hubShareInviteBody": "Welcome to our Kinly home! Enter this invite code: {code}\nDownload the Kinly app: {link}",
   "@hubShareInviteBody": {
     "placeholders": {
-      "link": {},
-      "code": {}
+      "code": {},
+      "link": {}
     }
   },
   "hubShareAppTitle": "Get the Kinly app",
-  "hubShareAppBody": "Download Kinly: {link}",
+  "hubShareAppBody": "Share Kinly so sharing feels lighter: {link}",
   "@hubShareAppBody": {
     "placeholders": {
       "link": {}
     }
   },
-  "hubShareAppCta": "Share app link",
+  "hubShareAppCta": "Share Kinly",
+  "hubCopyCode": "Copy invite code",
+  "hubCodeCopied": "Invite code copied",
+  "hubRotateInvite": "Rotate invite",
+  "hubRotateSuccess": "Invite rotated",
+  "hubRotateError": "Couldn't rotate invite. Try again.",
   "hubQrTitle": "Share the app",
   "hubQrSubtitle": "Scan to download Kinly",
   "hubError": "Couldn't load Hub. Please try again.",

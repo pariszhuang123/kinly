@@ -14,3 +14,7 @@ class HubStarted extends HubEvent {
 class HubRefreshed extends HubEvent {
   const HubRefreshed();
 }
+
+class HubInviteRotated extends HubEvent {
+  const HubInviteRotated();
+}

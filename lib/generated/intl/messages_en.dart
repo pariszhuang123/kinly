@@ -27,10 +27,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(partOfDay, name) => "Good ${partOfDay}, ${name}";
 
-  static String m3(link) => "Download Kinly: ${link}";
+  static String m3(link) => "Share Kinly so sharing feels lighter: ${link}";
 
-  static String m4(link, code) =>
-      "Join my Kinly home: ${link}\\nInvite code: ${code}";
+  static String m4(code, link) =>
+      "Welcome to our Kinly home! Enter this invite code: ${code}\\nDownload the Kinly app: ${link}";
 
   static String m5(code) => "Joined with code: ${code}";
 
@@ -244,6 +244,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "part of day (morning/afternoon/evening)",
     ),
+    "hubCodeCopied": MessageLookupByLibrary.simpleMessage("Invite code copied"),
+    "hubCopyCode": MessageLookupByLibrary.simpleMessage("Copy invite code"),
     "hubError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t load Hub. Please try again.",
     ),
@@ -263,8 +265,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "hubQrTitle": MessageLookupByLibrary.simpleMessage("Share the app"),
     "hubRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "hubRotateError": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t rotate invite. Try again.",
+    ),
+    "hubRotateInvite": MessageLookupByLibrary.simpleMessage("Rotate invite"),
+    "hubRotateSuccess": MessageLookupByLibrary.simpleMessage("Invite rotated"),
     "hubShareAppBody": m3,
-    "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Share app link"),
+    "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Share Kinly"),
     "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
       "Get the Kinly app",
     ),
