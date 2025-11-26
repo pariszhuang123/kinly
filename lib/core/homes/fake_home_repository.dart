@@ -29,6 +29,18 @@ class FakeHomeRepository implements HomeRepository {
   }
 
   @override
+  Future<HomeInvite> getOrCreateInvite(String homeId) async {
+    await Future<void>.delayed(const Duration(milliseconds: 120));
+    return HomeInvite(
+      id: 'invite-id',
+      homeId: homeId,
+      code: 'abc123',
+      createdBy: 'user-1',
+      createdAt: DateTime.now().toUtc(),
+    );
+  }
+
+  @override
   Future<void> transferOwner(String homeId, String newOwnerId) async {
     await Future<void>.delayed(const Duration(milliseconds: 150));
   }

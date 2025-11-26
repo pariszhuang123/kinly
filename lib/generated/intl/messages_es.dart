@@ -27,19 +27,24 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(partOfDay, name) => "Buen ${partOfDay}, ${name}";
 
-  static String m3(code) => "Te has unido con el cÃ³digo: ${code}";
+  static String m3(link) => "Descarga Kinly: ${link}";
 
-  static String m4(paidAmount, totalAmount) =>
+  static String m4(link, code) =>
+      "Únete a mi hogar Kinly: ${link}\\nCódigo de invitación: ${code}";
+
+  static String m5(code) => "Te has unido con el cÃ³digo: ${code}";
+
+  static String m6(paidAmount, totalAmount) =>
       "${paidAmount} de ${totalAmount} recolectados";
 
-  static String m5(paid, total) => "${paid} de ${total} pagos completos";
+  static String m7(paid, total) => "${paid} de ${total} pagos completos";
 
-  static String m6(count) => "Ver todo (${count})";
+  static String m8(count) => "Ver todo (${count})";
 
-  static String m7(count) =>
+  static String m9(count) =>
       "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} pagos pendientes')}";
 
-  static String m8(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
+  static String m10(homeId, role) => "Hogar actual: ${homeId} â€¢ Rol: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -212,7 +217,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Elige a quiÃ©n asignar esta tarea.",
     ),
     "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
-      "Elige una fecha entre hoy y dentro de un aÃ±o.",
+      "Elige una fecha hasta un año desde hoy.",
     ),
     "flowChoreValidationHowToUrl": MessageLookupByLibrary.simpleMessage(
       "Ingresa un enlace válido que empiece con http o https.",
@@ -253,6 +258,38 @@ class MessageLookup extends MessageLookupByLibrary {
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "parte del dÃ­a (maÃ±ana/tarde/noche)",
     ),
+    "hubError": MessageLookupByLibrary.simpleMessage(
+      "No se pudo cargar Hub. Intenta de nuevo.",
+    ),
+    "hubInviteCta": MessageLookupByLibrary.simpleMessage("Invitar"),
+    "hubInviteUnavailable": MessageLookupByLibrary.simpleMessage(
+      "No se pudo cargar la invitación. Intenta de nuevo.",
+    ),
+    "hubMembersEmpty": MessageLookupByLibrary.simpleMessage(
+      "Aún no hay miembros activos.",
+    ),
+    "hubMembersSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Personas activas actualmente en este hogar.",
+    ),
+    "hubMembersTitle": MessageLookupByLibrary.simpleMessage(
+      "Miembros del hogar",
+    ),
+    "hubQrSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Escanea para descargar Kinly",
+    ),
+    "hubQrTitle": MessageLookupByLibrary.simpleMessage("Comparte la app"),
+    "hubRetry": MessageLookupByLibrary.simpleMessage("Reintentar"),
+    "hubShareAppBody": m3,
+    "hubShareAppCta": MessageLookupByLibrary.simpleMessage(
+      "Compartir enlace de la app",
+    ),
+    "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
+      "Consigue la app Kinly",
+    ),
+    "hubShareInviteBody": m4,
+    "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
+      "Invita a mi hogar Kinly",
+    ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
       "Ya perteneces a otro hogar. Debes dejarlo antes de unirte.",
     ),
@@ -278,7 +315,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ingresa el cÃ³digo de invitaciÃ³n",
     ),
     "join_submit": MessageLookupByLibrary.simpleMessage("Unirse"),
-    "join_success": m3,
+    "join_success": m5,
     "join_title": MessageLookupByLibrary.simpleMessage("Unirse al hogar"),
     "login_consent_connector": MessageLookupByLibrary.simpleMessage(" y "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
@@ -387,9 +424,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileIdentityUsernameFormatError": MessageLookupByLibrary.simpleMessage(
       "Usa de 3 a 30 caracteres en minúscula o números. Puedes incluir puntos o guiones bajos en medio.",
     ),
-    "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
-      "Ese nombre de usuario ya está en uso. Prueba con otro.",
-    ),
     "profileIdentityUsernameHint": MessageLookupByLibrary.simpleMessage(
       "letras, números, . o _",
     ),
@@ -398,6 +432,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "profileIdentityUsernamePreviewFallback":
         MessageLookupByLibrary.simpleMessage("tu usuario"),
+    "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
+      "Ese nombre de usuario ya está en uso. Prueba con otro.",
+    ),
     "profileInfoHubLoadError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar el Info Hub. Revisa tu conexión.",
     ),
@@ -549,8 +586,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Elige cA?mo quieres dividir este gasto.",
     ),
-    "shareCreatedListActiveAmount": m4,
-    "shareCreatedListActiveSubtitle": m5,
+    "shareCreatedListActiveAmount": m6,
+    "shareCreatedListActiveSubtitle": m7,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "Sin asignar",
     ),
@@ -644,13 +681,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m6,
+    "todayFlowSeeAll": m8,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Esto es lo que fluye en tu hogar hoy.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
-    "todayShareActiveSubtitle": m7,
+    "todayShareActiveSubtitle": m9,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage(
       "próximamente",
     ),
@@ -678,7 +715,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
-    "today_home_details": m8,
+    "today_home_details": m10,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "Sin hogar activo todavÃ­a. Crea o Ãºnete para ver la vista de hoy.",
     ),

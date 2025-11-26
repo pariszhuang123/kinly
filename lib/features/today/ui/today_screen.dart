@@ -106,7 +106,8 @@ class TodayScreen extends StatelessWidget {
                                       (task) =>
                                           _handleFlowTaskTap(context, task),
                                   onSeeAllTap:
-                                      (filter) => _openFlowList(context, filter),
+                                      (filter) =>
+                                          _openFlowList(context, filter),
                                 ),
                                 SizedBox(height: spacing.lg),
                               ],
@@ -171,7 +172,7 @@ class TodayScreen extends StatelessWidget {
               context.push(AppRoutes.explore);
               break;
             case 2:
-              // TODO: context.go('/hub');
+              context.go(AppRoutes.hub);
               break;
           }
         },

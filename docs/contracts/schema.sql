@@ -4150,6 +4150,87 @@ $$;
 ALTER FUNCTION "public"."homes_transfer_owner"("p_home_id" "uuid", "p_new_owner_id" "uuid") OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."invites" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "home_id" "uuid" NOT NULL,
+    "code" "public"."citext" NOT NULL,
+    "revoked_at" timestamp with time zone,
+    "used_count" integer DEFAULT 0 NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "chk_invites_code_format" CHECK (("upper"(("code")::"text") ~ '^[A-HJ-NP-Z2-9]{6}$'::"text")),
+    CONSTRAINT "chk_invites_revoked_after_created" CHECK ((("revoked_at" IS NULL) OR ("revoked_at" >= "created_at"))),
+    CONSTRAINT "chk_invites_used_nonneg" CHECK (("used_count" >= 0))
+);
+
+
+ALTER TABLE "public"."invites" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."invites" IS 'Permanent invitation codes for joining homes. Unlimited-use; owners can rotate by revoking.';
+
+
+
+COMMENT ON COLUMN "public"."invites"."id" IS 'Primary key (UUID).';
+
+
+
+COMMENT ON COLUMN "public"."invites"."home_id" IS 'FK to homes.id; identifies which home the code belongs to.';
+
+
+
+COMMENT ON COLUMN "public"."invites"."code" IS '6-char, typeable invite (A–H J–N P–Z, 2–9). Case-insensitive; normalized to uppercase.';
+
+
+
+COMMENT ON COLUMN "public"."invites"."revoked_at" IS 'UTC time when the invite was revoked by the owner; NULL means still active.';
+
+
+
+COMMENT ON COLUMN "public"."invites"."used_count" IS 'Analytics counter for how many times the code has been used.';
+
+
+
+COMMENT ON COLUMN "public"."invites"."created_at" IS 'UTC creation timestamp.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."invites_get_active"("p_home_id" "uuid") RETURNS "public"."invites"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_inv public.invites;
+BEGIN
+  -- Ensure caller is authenticated + active member of this home
+  PERFORM public._assert_home_member(p_home_id);
+
+  -- Fetch the current active invite (no side-effects)
+  SELECT *
+    INTO v_inv
+  FROM public.invites i
+  WHERE i.home_id   = p_home_id
+    AND i.revoked_at IS NULL
+  ORDER BY i.created_at DESC, i.id DESC
+  LIMIT 1;
+
+  IF NOT FOUND THEN
+    -- Use the same structured error pattern as your helpers
+    PERFORM public.api_error(
+      'INVITE_NOT_FOUND',
+      'No active invite exists for this home.',
+      'P0001',
+      jsonb_build_object('home_id', p_home_id)
+    );
+  END IF;
+
+  RETURN v_inv;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."invites_get_active"("p_home_id" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."invites_revoke"("p_home_id" "uuid") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -5129,50 +5210,6 @@ COMMENT ON COLUMN "public"."homes"."deactivated_at" IS 'Timestamp when the home 
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."invites" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "home_id" "uuid" NOT NULL,
-    "code" "public"."citext" NOT NULL,
-    "revoked_at" timestamp with time zone,
-    "used_count" integer DEFAULT 0 NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "chk_invites_code_format" CHECK (("upper"(("code")::"text") ~ '^[A-HJ-NP-Z2-9]{6}$'::"text")),
-    CONSTRAINT "chk_invites_revoked_after_created" CHECK ((("revoked_at" IS NULL) OR ("revoked_at" >= "created_at"))),
-    CONSTRAINT "chk_invites_used_nonneg" CHECK (("used_count" >= 0))
-);
-
-
-ALTER TABLE "public"."invites" OWNER TO "postgres";
-
-
-COMMENT ON TABLE "public"."invites" IS 'Permanent invitation codes for joining homes. Unlimited-use; owners can rotate by revoking.';
-
-
-
-COMMENT ON COLUMN "public"."invites"."id" IS 'Primary key (UUID).';
-
-
-
-COMMENT ON COLUMN "public"."invites"."home_id" IS 'FK to homes.id; identifies which home the code belongs to.';
-
-
-
-COMMENT ON COLUMN "public"."invites"."code" IS '6-char, typeable invite (A–H J–N P–Z, 2–9). Case-insensitive; normalized to uppercase.';
-
-
-
-COMMENT ON COLUMN "public"."invites"."revoked_at" IS 'UTC time when the invite was revoked by the owner; NULL means still active.';
-
-
-
-COMMENT ON COLUMN "public"."invites"."used_count" IS 'Analytics counter for how many times the code has been used.';
-
-
-
-COMMENT ON COLUMN "public"."invites"."created_at" IS 'UTC creation timestamp.';
-
-
-
 CREATE TABLE IF NOT EXISTS "public"."memberships" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -5855,7 +5892,22 @@ ALTER TABLE "public"."expense_splits" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."expenses" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."gratitude_wall_posts" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."gratitude_wall_reads" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."home_entitlements" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."home_mood_entries" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."home_mood_feedback_counters" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."home_nps" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."home_plan_limits" ENABLE ROW LEVEL SECURITY;
@@ -7829,6 +7881,17 @@ GRANT ALL ON FUNCTION "public"."interval_dist"(interval, interval) TO "service_r
 
 
 
+GRANT ALL ON TABLE "public"."invites" TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."invites_get_active"("p_home_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."invites_get_active"("p_home_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."invites_get_active"("p_home_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."invites_get_active"("p_home_id" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."invites_revoke"("p_home_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."invites_revoke"("p_home_id" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."invites_revoke"("p_home_id" "uuid") TO "authenticated";
@@ -8159,10 +8222,6 @@ GRANT ALL ON TABLE "public"."home_plan_limits" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."homes" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."invites" TO "service_role";
 
 
 

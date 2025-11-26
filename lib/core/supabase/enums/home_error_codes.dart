@@ -21,6 +21,13 @@ enum RotateErrorCode { forbidden, unauthorized, unknown }
 
 enum RevokeErrorCode { forbidden, unauthorized, unknown }
 
+enum InviteGetOrCreateErrorCode {
+  forbidden,
+  inactiveHome,
+  unauthorized,
+  unknown,
+}
+
 enum TransferErrorCode {
   invalidNewOwner,
   newOwnerNotMember,

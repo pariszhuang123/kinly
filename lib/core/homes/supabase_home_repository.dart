@@ -76,6 +76,29 @@ class SupabaseHomeRepository implements HomeRepository {
   }
 
   @override
+  Future<HomeInvite> getOrCreateInvite(String homeId) async {
+    try {
+      final res = await _client.rpc(
+        'invites_get_or_create',
+        params: {'p_home_id': homeId},
+      );
+      if (res is Map<String, dynamic>) {
+        return HomeInvite.fromJson(res);
+      }
+      if (res is Map) {
+        return HomeInvite.fromJson(res.cast<String, dynamic>());
+      }
+      throw InviteGetOrCreateException(
+        InviteGetOrCreateErrorCode.unknown,
+        'Unexpected response fetching invite',
+      );
+    } catch (e) {
+      if (e is InviteGetOrCreateException) rethrow;
+      throw SupabaseErrorMapper.mapInviteGetOrCreate(e);
+    }
+  }
+
+  @override
   Future<void> transferOwner(String homeId, String newOwnerId) async {
     try {
       await _client.rpc(

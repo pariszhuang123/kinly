@@ -296,15 +296,13 @@ homes.create()
  - Seeds `home_entitlements` with `plan='free'` and invokes `_home_attach_subscription_to_home` so any pre-existing subscription from the creator funds the new home.
  - DB Impl: `public.homes_create_with_invite`
 
-invites.getOrCreate(homeId)
-- Returns the current active invite for the home, or creates one if none exists.
-- No ttl/maxUses; permanent until revoked or home deactivated.
-- Caller: owner-only. Idempotent.
+invites.get_active(homeId)
+- Returns the current active invite for the home.
+- Caller: any active member can fetch. 
 - Behavior:
   - If an active invite exists (revokedAt IS NULL and home.isActive = true), returns it unchanged.
-  - If none exists and the home is active, inserts a new invite row (revokedAt = NULL) and returns it.
   - If the home is inactive, returns an error (forbidden/inactive).
- - DB Impl: `public.invites_get_or_create`
+ - DB Impl: `public.invites_get_active`
 
 invites.revoke(homeId)
 - Revokes the current active invite (disable without replacement).

@@ -94,6 +94,31 @@
   "navToday": "Today",
   "navExplore": "Explore",
   "navHub": "Hub",
+  "hubMembersTitle": "Home members",
+  "hubMembersSubtitle": "People currently active in this home.",
+  "hubMembersEmpty": "No active members yet.",
+  "hubInviteCta": "Invite",
+  "hubInviteUnavailable": "Couldn't load invite. Please try again.",
+  "hubShareInviteTitle": "Invite to my Kinly home",
+  "hubShareInviteBody": "Join my Kinly home: {link}\\nInvite code: {code}",
+  "@hubShareInviteBody": {
+    "placeholders": {
+      "link": {},
+      "code": {}
+    }
+  },
+  "hubShareAppTitle": "Get the Kinly app",
+  "hubShareAppBody": "Download Kinly: {link}",
+  "@hubShareAppBody": {
+    "placeholders": {
+      "link": {}
+    }
+  },
+  "hubShareAppCta": "Share app link",
+  "hubQrTitle": "Share the app",
+  "hubQrSubtitle": "Scan to download Kinly",
+  "hubError": "Couldn't load Hub. Please try again.",
+  "hubRetry": "Retry",
   "todayEmptyCardTitle": "You're all caught up for today ✨",
   "todayEmptyCardBadge": "Take a breather",
   "todayEmptyBody": "Enjoy the calm — Kinly will let you know when something needs your attention.",

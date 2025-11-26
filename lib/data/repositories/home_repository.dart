@@ -18,6 +18,9 @@ abstract class HomeRepository {
   /// Rotate the invite for a home (owner-only) and return the new code.
   Future<String> rotateInvite(String homeId);
 
+  /// Returns the active invite for a home, creating one if missing (owner-only).
+  Future<HomeInvite> getOrCreateInvite(String homeId);
+
   /// Transfer ownership to another active member.
   Future<void> transferOwner(String homeId, String newOwnerId);
 

@@ -110,6 +110,42 @@ class HomeCreationResult {
   }
 }
 
+class HomeInvite {
+  final String id;
+  final String homeId;
+  final String code;
+  final String createdBy;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+  final DateTime? revokedAt;
+
+  const HomeInvite({
+    required this.id,
+    required this.homeId,
+    required this.code,
+    required this.createdBy,
+    required this.createdAt,
+    this.updatedAt,
+    this.revokedAt,
+  });
+
+  bool get isActive => revokedAt == null;
+
+  factory HomeInvite.fromJson(Map<String, dynamic> json) {
+    return HomeInvite(
+      id: json['id'] as String? ?? '',
+      homeId: json['home_id'] as String? ?? '',
+      code: json['code'] as String? ?? '',
+      createdBy: json['created_by'] as String? ?? '',
+      createdAt:
+          _parseTimestamp(json['created_at']) ??
+          DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+      updatedAt: _parseTimestamp(json['updated_at']),
+      revokedAt: _parseTimestamp(json['revoked_at']),
+    );
+  }
+}
+
 DateTime? _parseTimestamp(Object? value) {
   if (value == null) return null;
   final dt = DateTime.parse(value as String);

@@ -28,10 +28,9 @@ class S {
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name =
-        (locale.countryCode?.isEmpty ?? false)
-            ? locale.languageCode
-            : locale.toString();
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -598,6 +597,136 @@ class S {
   /// `Hub`
   String get navHub {
     return Intl.message('Hub', name: 'navHub', desc: '', args: []);
+  }
+
+  /// `Home members`
+  String get hubMembersTitle {
+    return Intl.message(
+      'Home members',
+      name: 'hubMembersTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `People currently active in this home.`
+  String get hubMembersSubtitle {
+    return Intl.message(
+      'People currently active in this home.',
+      name: 'hubMembersSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No active members yet.`
+  String get hubMembersEmpty {
+    return Intl.message(
+      'No active members yet.',
+      name: 'hubMembersEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invite`
+  String get hubInviteCta {
+    return Intl.message('Invite', name: 'hubInviteCta', desc: '', args: []);
+  }
+
+  /// `Couldn't load invite. Please try again.`
+  String get hubInviteUnavailable {
+    return Intl.message(
+      'Couldn\'t load invite. Please try again.',
+      name: 'hubInviteUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invite to my Kinly home`
+  String get hubShareInviteTitle {
+    return Intl.message(
+      'Invite to my Kinly home',
+      name: 'hubShareInviteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join my Kinly home: {link}\nInvite code: {code}`
+  String hubShareInviteBody(Object link, Object code) {
+    return Intl.message(
+      'Join my Kinly home: $link\\nInvite code: $code',
+      name: 'hubShareInviteBody',
+      desc: '',
+      args: [link, code],
+    );
+  }
+
+  /// `Get the Kinly app`
+  String get hubShareAppTitle {
+    return Intl.message(
+      'Get the Kinly app',
+      name: 'hubShareAppTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Kinly: {link}`
+  String hubShareAppBody(Object link) {
+    return Intl.message(
+      'Download Kinly: $link',
+      name: 'hubShareAppBody',
+      desc: '',
+      args: [link],
+    );
+  }
+
+  /// `Share app link`
+  String get hubShareAppCta {
+    return Intl.message(
+      'Share app link',
+      name: 'hubShareAppCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share the app`
+  String get hubQrTitle {
+    return Intl.message(
+      'Share the app',
+      name: 'hubQrTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan to download Kinly`
+  String get hubQrSubtitle {
+    return Intl.message(
+      'Scan to download Kinly',
+      name: 'hubQrSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load Hub. Please try again.`
+  String get hubError {
+    return Intl.message(
+      'Couldn\'t load Hub. Please try again.',
+      name: 'hubError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get hubRetry {
+    return Intl.message('Retry', name: 'hubRetry', desc: '', args: []);
   }
 
   /// `You're all caught up for today ✨`
@@ -1457,10 +1586,10 @@ class S {
     );
   }
 
-  /// `Pick a date between today and a year from now.`
+  /// `Pick a date up to a year from today.`
   String get flowChoreValidationDate {
     return Intl.message(
-      'Pick a date between today and a year from now.',
+      'Pick a date up to a year from today.',
       name: 'flowChoreValidationDate',
       desc: '',
       args: [],

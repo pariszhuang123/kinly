@@ -13,6 +13,7 @@ import '../../features/explore/ui/explore_screen.dart';
 import '../../features/home_membership/start/ui/start_home_provider.dart';
 import '../../features/welcome/ui/welcome_screen.dart';
 import '../../features/home_membership/join/ui/join_home_screen.dart';
+import '../../features/hub/ui/hub_provider.dart';
 import '../../features/flow/ui/flow_list_filter.dart';
 import '../../features/profile_settings/ui/profile_settings_provider.dart';
 import '../../features/profile_settings/edit/profile_identity_provider.dart';
@@ -36,6 +37,7 @@ class AppRoutes {
   static const create = '/create';
   static const join = '/join';
   static const today = '/today';
+  static const hub = '/hub';
   static const explore = '/explore';
   static const flow = '/flow';
   static const flowChoreCreate = '/flow/chore/new';
@@ -178,6 +180,20 @@ GoRouter createRouter({
         },
       ),
       GoRoute(
+        path: AppRoutes.hub,
+        name: 'hub',
+        builder: (_, __) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Hub requires an active membership.');
+          }
+          return HubProvider(
+            homeId: membership.homeId,
+            homeRepository: sl<HomeRepository>(),
+          );
+        },
+      ),
+      GoRoute(
         path: AppRoutes.flow,
         name: 'flow',
         builder: (_, state) {
@@ -185,8 +201,9 @@ GoRouter createRouter({
           if (membership == null) {
             throw StateError('Flow routes require an active membership.');
           }
-          final filter =
-              FlowListFilter.fromQueryParam(state.uri.queryParameters['filter']);
+          final filter = FlowListFilter.fromQueryParam(
+            state.uri.queryParameters['filter'],
+          );
           return FlowListProvider(
             homeId: membership.homeId,
             choresRepository: sl<ChoresRepository>(),

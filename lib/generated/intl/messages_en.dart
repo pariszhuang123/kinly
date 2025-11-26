@@ -27,19 +27,24 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(partOfDay, name) => "Good ${partOfDay}, ${name}";
 
-  static String m3(code) => "Joined with code: ${code}";
+  static String m3(link) => "Download Kinly: ${link}";
 
-  static String m4(paidAmount, totalAmount) =>
+  static String m4(link, code) =>
+      "Join my Kinly home: ${link}\\nInvite code: ${code}";
+
+  static String m5(code) => "Joined with code: ${code}";
+
+  static String m6(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
 
-  static String m5(paid, total) => "${paid} of ${total} paid";
+  static String m7(paid, total) => "${paid} of ${total} paid";
 
-  static String m6(count) => "See all (${count})";
+  static String m8(count) => "See all (${count})";
 
-  static String m7(count) =>
+  static String m9(count) =>
       "${Intl.plural(count, one: '${count} payment pending', other: '${count} payments pending')}";
 
-  static String m8(homeId, role) => "Current home: ${homeId} • Role: ${role}";
+  static String m10(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -200,7 +205,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Pick someone to assign this chore to.",
     ),
     "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
-      "Pick a date between today and a year from now.",
+      "Pick a date up to a year from today.",
     ),
     "flowChoreValidationHowToUrl": MessageLookupByLibrary.simpleMessage(
       "Enter a valid link that starts with http or https.",
@@ -239,6 +244,34 @@ class MessageLookup extends MessageLookupByLibrary {
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "part of day (morning/afternoon/evening)",
     ),
+    "hubError": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t load Hub. Please try again.",
+    ),
+    "hubInviteCta": MessageLookupByLibrary.simpleMessage("Invite"),
+    "hubInviteUnavailable": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t load invite. Please try again.",
+    ),
+    "hubMembersEmpty": MessageLookupByLibrary.simpleMessage(
+      "No active members yet.",
+    ),
+    "hubMembersSubtitle": MessageLookupByLibrary.simpleMessage(
+      "People currently active in this home.",
+    ),
+    "hubMembersTitle": MessageLookupByLibrary.simpleMessage("Home members"),
+    "hubQrSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Scan to download Kinly",
+    ),
+    "hubQrTitle": MessageLookupByLibrary.simpleMessage("Share the app"),
+    "hubRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "hubShareAppBody": m3,
+    "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Share app link"),
+    "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
+      "Get the Kinly app",
+    ),
+    "hubShareInviteBody": m4,
+    "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
+      "Invite to my Kinly home",
+    ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
       "You\'re already in another home. Leave it before joining a new one.",
     ),
@@ -262,7 +295,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage("Enter invite code"),
     "join_submit": MessageLookupByLibrary.simpleMessage("Join"),
-    "join_success": m3,
+    "join_success": m5,
     "join_title": MessageLookupByLibrary.simpleMessage("Join Home"),
     "login_consent_connector": MessageLookupByLibrary.simpleMessage(" & "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
@@ -365,9 +398,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileIdentityUsernameFormatError": MessageLookupByLibrary.simpleMessage(
       "Use 3-30 lowercase letters or numbers. You can include dots or underscores in the middle.",
     ),
-    "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
-      "That username is already taken. Try a different one.",
-    ),
     "profileIdentityUsernameHint": MessageLookupByLibrary.simpleMessage(
       "letters, numbers, . or _",
     ),
@@ -376,6 +406,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "profileIdentityUsernamePreviewFallback":
         MessageLookupByLibrary.simpleMessage("your username"),
+    "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
+      "That username is already taken. Try a different one.",
+    ),
     "profileInfoHubLoadError": MessageLookupByLibrary.simpleMessage(
       "The Info Hub couldn\'t load. Check your connection.",
     ),
@@ -522,8 +555,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Choose how you want to split this expense.",
     ),
-    "shareCreatedListActiveAmount": m4,
-    "shareCreatedListActiveSubtitle": m5,
+    "shareCreatedListActiveAmount": m6,
+    "shareCreatedListActiveSubtitle": m7,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "Unassigned",
     ),
@@ -613,13 +646,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m6,
+    "todayFlowSeeAll": m8,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Here\'s what\'s flowing in your home today.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "todayShareActiveSubtitle": m7,
+    "todayShareActiveSubtitle": m9,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("upcoming"),
     "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
       "Finish the split to publish this expense.",
@@ -645,7 +678,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "today_home_details": m8,
+    "today_home_details": m10,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",
     ),

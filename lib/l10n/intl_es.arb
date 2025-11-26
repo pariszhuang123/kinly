@@ -91,6 +91,31 @@
   "navToday": "Hoy",
   "navExplore": "Explorar",
   "navHub": "Centro",
+  "hubMembersTitle": "Miembros del hogar",
+  "hubMembersSubtitle": "Personas activas actualmente en este hogar.",
+  "hubMembersEmpty": "Aún no hay miembros activos.",
+  "hubInviteCta": "Invitar",
+  "hubInviteUnavailable": "No se pudo cargar la invitación. Intenta de nuevo.",
+  "hubShareInviteTitle": "Invita a mi hogar Kinly",
+  "hubShareInviteBody": "Únete a mi hogar Kinly: {link}\\nCódigo de invitación: {code}",
+  "@hubShareInviteBody": {
+    "placeholders": {
+      "link": {},
+      "code": {}
+    }
+  },
+  "hubShareAppTitle": "Consigue la app Kinly",
+  "hubShareAppBody": "Descarga Kinly: {link}",
+  "@hubShareAppBody": {
+    "placeholders": {
+      "link": {}
+    }
+  },
+  "hubShareAppCta": "Compartir enlace de la app",
+  "hubQrTitle": "Comparte la app",
+  "hubQrSubtitle": "Escanea para descargar Kinly",
+  "hubError": "No se pudo cargar Hub. Intenta de nuevo.",
+  "hubRetry": "Reintentar",
   "todayEmptyCardTitle": "Hoy lo tienes todo al dÃ­a âœ¨",
   "todayEmptyCardBadge": "TÃ³mate un respiro",
   "todayEmptyBody": "Disfruta de la calma; Kinly te avisarÃ¡ cuando haya algo que hacer.",

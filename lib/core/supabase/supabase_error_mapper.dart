@@ -213,6 +213,51 @@ class SupabaseErrorMapper {
     return InviteRevokeException(RevokeErrorCode.unknown, error.toString());
   }
 
+  // ----- invites.get_or_create -----
+  static InviteGetOrCreateException mapInviteGetOrCreate(Object error) {
+    if (error is AuthException) {
+      return InviteGetOrCreateException(
+        InviteGetOrCreateErrorCode.unauthorized,
+        error.message,
+      );
+    }
+    if (error is PostgrestException) {
+      final parsed = _parseErrorJson(error.message);
+      final message = parsed.message.toLowerCase();
+      switch (parsed.code) {
+        case 'FORBIDDEN':
+          return InviteGetOrCreateException(
+            InviteGetOrCreateErrorCode.forbidden,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'UNAUTHORIZED':
+          return InviteGetOrCreateException(
+            InviteGetOrCreateErrorCode.unauthorized,
+            parsed.message,
+            details: parsed.details,
+          );
+        default:
+          if (message.contains('inactive') || message.contains('not found')) {
+            return InviteGetOrCreateException(
+              InviteGetOrCreateErrorCode.inactiveHome,
+              parsed.message,
+              details: parsed.details,
+            );
+          }
+          return InviteGetOrCreateException(
+            InviteGetOrCreateErrorCode.unknown,
+            parsed.message,
+            details: parsed.details,
+          );
+      }
+    }
+    return InviteGetOrCreateException(
+      InviteGetOrCreateErrorCode.unknown,
+      error.toString(),
+    );
+  }
+
   // ----- homes.transfer_owner -----
   static TransferOwnerException mapTransfer(Object error) {
     if (error is AuthException) {
@@ -576,6 +621,15 @@ class InviteRevokeException implements Exception {
   InviteRevokeException(this.code, this.message, {this.details});
   @override
   String toString() => 'InviteRevokeException($code): $message';
+}
+
+class InviteGetOrCreateException implements Exception {
+  final InviteGetOrCreateErrorCode code;
+  final String message;
+  final Map<String, dynamic>? details;
+  InviteGetOrCreateException(this.code, this.message, {this.details});
+  @override
+  String toString() => 'InviteGetOrCreateException($code): $message';
 }
 
 class TransferOwnerException implements Exception {

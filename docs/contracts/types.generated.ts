@@ -1296,6 +1296,23 @@ export type Database = {
         Args: { p_home_id: string; p_new_owner_id: string }
         Returns: Json
       }
+      invites_get_active: {
+        Args: { p_home_id: string }
+        Returns: {
+          code: string
+          created_at: string
+          home_id: string
+          id: string
+          revoked_at: string | null
+          used_count: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "invites"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       invites_revoke: { Args: { p_home_id: string }; Returns: Json }
       invites_rotate: { Args: { p_home_id: string }; Returns: Json }
       is_home_owner: {
