@@ -10,10 +10,12 @@ class ShareCreatedListProvider extends StatelessWidget {
     super.key,
     required this.homeId,
     required this.expensesRepository,
+    this.draftsOnly = false,
   });
 
   final String homeId;
   final ExpensesRepository expensesRepository;
+  final bool draftsOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class ShareCreatedListProvider extends StatelessWidget {
           (_) => ShareCreatedListBloc(
             homeId: homeId,
             expensesRepository: expensesRepository,
+            draftsOnly: draftsOnly,
           )..add(const ShareCreatedListRequested()),
       child: const ShareCreatedListScreen(),
     );

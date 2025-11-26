@@ -12,6 +12,9 @@ class OfflineSplash extends StatelessWidget {
   Widget build(BuildContext context) {
     final strings = S.of(context);
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -27,13 +30,22 @@ class OfflineSplash extends StatelessWidget {
                   strings.offline_title,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
+                    color:
+                        colors.onSurface, // uses KinlyTheme (light/dark aware)
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
                 Text(
                   strings.offline_body,
-                  style: theme.textTheme.bodyLarge,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    // Slightly softer body text; still uses the Kinly onSurface color
+                    color: colors.onSurface.withAlpha(
+                      isDark ? 210 : 185,
+                      // 210 ≈ 82% alpha
+                      // 185 ≈ 72% alpha
+                    ),
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
@@ -41,6 +53,7 @@ class OfflineSplash extends StatelessWidget {
                   onPressed: onRetry,
                   icon: const Icon(Icons.refresh),
                   label: Text(strings.offline_retry),
+                  // Colors & textStyle come from ElevatedButtonTheme in kinly_theme.dart
                 ),
               ],
             ),

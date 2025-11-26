@@ -246,14 +246,16 @@ GoRouter createRouter({
       GoRoute(
         path: AppRoutes.shareCreatedList,
         name: 'shareCreatedList',
-        builder: (_, __) {
+        builder: (_, state) {
           final membership = authBloc.state.membership;
           if (membership == null) {
             throw StateError('Share routes require an active membership.');
           }
+          final draftsOnly = state.extra is bool ? state.extra as bool : false;
           return ShareCreatedListProvider(
             homeId: membership.homeId,
             expensesRepository: sl<ExpensesRepository>(),
+            draftsOnly: draftsOnly,
           );
         },
       ),

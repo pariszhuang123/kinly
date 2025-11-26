@@ -87,10 +87,9 @@ class FlowChoreForm {
 
   bool isStartDateInRange(DateTime now) {
     final today = DateTime(now.year, now.month, now.day);
-    final earliest = today.subtract(const Duration(days: 1));
     final lastAllowed = DateTime(today.year + 1, today.month, today.day);
     final start = DateTime(startDate.year, startDate.month, startDate.day);
-    return !start.isBefore(earliest) && !start.isAfter(lastAllowed);
+    return !start.isAfter(lastAllowed);
   }
 
   @override

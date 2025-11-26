@@ -158,7 +158,6 @@ class _TaskList extends StatelessWidget {
         for (final task in visibleTasks) ...[
           SectionListCard(
             colors: colors,
-            icon: Icons.home_repair_service_rounded,
             title: task.title,
             badgeText: task.isNewToday ? s.todayFlowBadgeNew : null,
             onTap: () => onTaskTap(task),

@@ -26,7 +26,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
   final colorScheme = ColorScheme(
     brightness: brightness,
     primary: tealPrimary,
-    onPrimary: Colors.white,
+    onPrimary: isDark ? Colors.black : Colors.white,
     primaryContainer: const Color(0xFF5C8876),
     onPrimaryContainer: Colors.white,
     secondary: sageSecondary,
@@ -37,7 +37,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     onTertiary: const Color(0xFF1F1400),
     tertiaryContainer: const Color(0xFFFFE1A8),
     onTertiaryContainer: const Color(0xFF1F1400),
-    error: Colors.red.shade700,
+    error: isDark ? Colors.red.shade300 : Colors.red.shade700,
     onError: Colors.white,
     errorContainer: Colors.red.shade100,
     onErrorContainer: Colors.red.shade900,
@@ -103,7 +103,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
               background: Color(0xFF1F2623),
               card: Color(0xFF27302B),
               icon: Color(0xFFB8D9C7),
-              accent: Color(0xFFF5C96A),
+              accent: Color(0xFFB8D9C7),
             ),
             share: SectionColors(
               background: Color(0xFF262018),
@@ -130,7 +130,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
               background: Color(0xFFE2F0E6), // sagey background
               card: Color(0xFFD6E8DD),
               icon: Color(0xFF26473A), // deeper teal (~AAA vs background)
-              accent: Color(0xFFF5C96A), // decorative; text should use sageText
+              accent: Color(0xFF26473A), // decorative; text should use sageText
             ),
             share: SectionColors(
               background: Color(0xFFF9F4E8), // honey cream

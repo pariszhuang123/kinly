@@ -6,14 +6,14 @@ import '../theme/spacing.dart';
 ///
 /// You configure it with:
 /// - colors: SectionColors
-/// - icon: leading icon
+/// - icon: optional leading icon
 /// - title: main text
 /// - trailingText: e.g. amount
 /// - badgeText: e.g. "new today"
 /// - onTap: tap handler
 class SectionListCard extends StatelessWidget {
   final SectionColors colors;
-  final IconData icon;
+  final IconData? icon;
   final String title;
   final String? trailingText;
   final String? badgeText;
@@ -22,8 +22,8 @@ class SectionListCard extends StatelessWidget {
   const SectionListCard({
     super.key,
     required this.colors,
-    required this.icon,
     required this.title,
+    this.icon,
     this.trailingText,
     this.badgeText,
     this.onTap,
@@ -49,8 +49,10 @@ class SectionListCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, color: colors.icon),
-              SizedBox(width: spacing?.sm ?? 8),
+              if (icon != null) ...[
+                Icon(icon, color: colors.icon),
+                SizedBox(width: spacing?.sm ?? 8),
+              ],
               Expanded(
                 child: Text(
                   title,
@@ -62,11 +64,21 @@ class SectionListCard extends StatelessWidget {
               if (badgeText != null)
                 Padding(
                   padding: EdgeInsets.only(right: spacing?.xs ?? 4),
-                  child: Text(
-                    badgeText!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colors.accent,
-                      fontWeight: FontWeight.w600,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: spacing?.xs ?? 4,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colors.accent.withValues(alpha: .07),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      badgeText!,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colors.accent,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),

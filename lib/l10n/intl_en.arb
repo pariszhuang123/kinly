@@ -195,7 +195,7 @@
   "flowChoreAssigneeUnassigned": "Unassigned",
   "flowChoreValidationAssignee": "Pick someone to assign this chore to.",
   "flowChoreStartLabel": "Start date",
-  "flowChoreValidationDate": "Pick a date between today and a year from now.",
+  "flowChoreValidationDate": "Pick a date up to a year from today.",
   "flowChoreRecurrenceLabel": "Recurrence",
   "flowChoreRecurrenceNone": "One time",
   "flowChoreRecurrenceDaily": "Daily",

@@ -60,7 +60,6 @@ class _KinlyLoaderState extends State<KinlyLoader>
         width: widget.size,
         height: widget.size,
         semanticsLabel: widget.semanticLabel,
-        colorFilter: ColorFilter.mode(resolvedColor, BlendMode.srcIn),
       ),
     );
   }

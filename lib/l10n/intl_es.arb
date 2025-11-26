@@ -195,7 +195,7 @@
   "flowChoreAssigneeUnassigned": "Sin asignar",
   "flowChoreValidationAssignee": "Elige a quiÃ©n asignar esta tarea.",
   "flowChoreStartLabel": "Fecha de inicio",
-  "flowChoreValidationDate": "Elige una fecha entre hoy y dentro de un aÃ±o.",
+  "flowChoreValidationDate": "Elige una fecha hasta un a\u00f1o desde hoy.",
   "flowChoreRecurrenceLabel": "RepeticiÃ³n",
   "flowChoreRecurrenceNone": "Una vez",
   "flowChoreRecurrenceDaily": "Diario",

@@ -99,7 +99,10 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       );
       final drafts = await draftsFuture;
       final active = await activeFuture;
-      final shareSnapshot = await _loadShareSnapshot(ownerUserId: ownerUserId);
+      final shareSnapshot = await _loadShareSnapshot(
+        ownerUserId: ownerUserId,
+        currentUserId: profile?.userId,
+      );
 
       final draftTasks = drafts
           .map((entry) => _mapEntryToTodayTask(entry, isNewTodayOverride: true))
@@ -166,7 +169,10 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     );
   }
 
-  Future<_ShareSnapshot> _loadShareSnapshot({String? ownerUserId}) async {
+  Future<_ShareSnapshot> _loadShareSnapshot({
+    String? ownerUserId,
+    String? currentUserId,
+  }) async {
     try {
       final owed = await _expensesRepository.listCurrentOwed(homeId: _homeId);
       final created = await _expensesRepository.listCreatedByMe(
@@ -179,7 +185,12 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           )
           .toList(growable: false);
       final drafts = created
-          .where((entry) => entry.status == ExpenseStatus.draft)
+          .where(
+            (entry) =>
+                entry.status == ExpenseStatus.draft &&
+                (currentUserId == null ||
+                    entry.createdByUserId == currentUserId),
+          )
           .map(TodayShareDraft.fromSummary)
           .toList(growable: false);
       return _ShareSnapshot(owed: owedView, drafts: drafts);

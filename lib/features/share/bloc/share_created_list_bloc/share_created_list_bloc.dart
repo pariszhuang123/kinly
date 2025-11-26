@@ -12,6 +12,7 @@ class ShareCreatedListBloc
   ShareCreatedListBloc({
     required ExpensesRepository expensesRepository,
     required String homeId,
+    this.draftsOnly = false,
   }) : _expensesRepository = expensesRepository,
        _homeId = homeId,
        super(const ShareCreatedListState()) {
@@ -21,6 +22,7 @@ class ShareCreatedListBloc
 
   final ExpensesRepository _expensesRepository;
   final String _homeId;
+  final bool draftsOnly;
 
   Future<void> _onRequested(
     ShareCreatedListRequested event,
@@ -57,7 +59,11 @@ class ShareCreatedListBloc
         homeId: _homeId,
       );
       final entries = summaries
-          .where((summary) => summary.status != ExpenseStatus.cancelled)
+          .where(
+            (summary) =>
+                summary.status != ExpenseStatus.cancelled &&
+                (!draftsOnly || summary.status == ExpenseStatus.draft),
+          )
           .map(ShareCreatedListEntry.fromSummary)
           .toList(growable: false)
         ..sort((a, b) => b.createdAt.compareTo(a.createdAt));

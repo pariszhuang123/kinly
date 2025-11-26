@@ -117,12 +117,14 @@ class TodayShareDraft extends Equatable {
     required this.description,
     required this.amountCents,
     required this.createdAt,
+    required this.createdByUserId,
   });
 
   final String expenseId;
   final String description;
   final int amountCents;
   final DateTime createdAt;
+  final String createdByUserId;
 
   factory TodayShareDraft.fromSummary(ExpenseCreatedSummary summary) {
     return TodayShareDraft(
@@ -130,13 +132,20 @@ class TodayShareDraft extends Equatable {
       description: summary.description,
       amountCents: summary.amountCents,
       createdAt: summary.createdAt,
+      createdByUserId: summary.createdByUserId,
     );
   }
 
   double get amount => amountCents / 100.0;
 
   @override
-  List<Object?> get props => [expenseId, description, amountCents, createdAt];
+  List<Object?> get props => [
+    expenseId,
+    description,
+    amountCents,
+    createdAt,
+    createdByUserId,
+  ];
 }
 
 /// View model representing the current user shown in the Today header.

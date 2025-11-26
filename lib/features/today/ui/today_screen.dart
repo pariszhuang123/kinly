@@ -126,6 +126,13 @@ class TodayScreen extends StatelessWidget {
                                     );
                                     _openShareDraftEdit(context, draft);
                                   },
+                                  onSeeAllDraftsTap: () {
+                                    logger.info(
+                                      'Tapped see all share drafts',
+                                      tag: _shareLogTag,
+                                    );
+                                    _openShareCreatedList(context);
+                                  },
                                 ),
                             ],
                           );
@@ -213,7 +220,9 @@ class TodayScreen extends StatelessWidget {
 
   Future<void> _openShareCreate(BuildContext context) async {
     final result = await context.push<bool>(AppRoutes.shareCreate);
-    if (result == true && context.mounted) {
+    if (!context.mounted) return;
+    context.read<TodayBloc>().add(const TodayRefreshed());
+    if (result == true) {
       final s = S.of(context);
       ScaffoldMessenger.of(
         context,
@@ -265,5 +274,12 @@ class TodayScreen extends StatelessWidget {
       ).showSnackBar(SnackBar(content: Text(s.shareEditDeleteSuccess)));
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
+  }
+
+  Future<void> _openShareCreatedList(BuildContext context) async {
+    await context.push<bool>(
+      AppRoutes.shareCreatedList,
+      extra: true, // show drafts-only list
+    );
   }
 }

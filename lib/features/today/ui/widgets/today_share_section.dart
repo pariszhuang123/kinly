@@ -16,10 +16,12 @@ class TodayShareSectionContainer extends StatelessWidget {
     super.key,
     required this.onOwedTap,
     required this.onDraftTap,
+    required this.onSeeAllDraftsTap,
   });
 
   final void Function(TodayShareOwed) onOwedTap;
   final void Function(TodayShareDraft) onDraftTap;
+  final VoidCallback onSeeAllDraftsTap;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,7 @@ class TodayShareSectionContainer extends StatelessWidget {
           errorMessage: state.shareErrorMessage,
           onOwedTap: onOwedTap,
           onDraftTap: onDraftTap,
+          onSeeAllDraftsTap: onSeeAllDraftsTap,
         );
       },
     );
@@ -56,6 +59,7 @@ class TodayShareSection extends StatelessWidget {
     required this.drafts,
     required this.onOwedTap,
     required this.onDraftTap,
+    required this.onSeeAllDraftsTap,
     this.errorMessage,
   });
 
@@ -63,6 +67,7 @@ class TodayShareSection extends StatelessWidget {
   final List<TodayShareDraft> drafts;
   final void Function(TodayShareOwed) onOwedTap;
   final void Function(TodayShareDraft) onDraftTap;
+  final VoidCallback onSeeAllDraftsTap;
   final String? errorMessage;
 
   @override
@@ -71,7 +76,7 @@ class TodayShareSection extends StatelessWidget {
     final spacing = Theme.of(context).extension<Spacing>();
     final s = S.of(context);
     final colors = sections.share;
-    final tabs = _buildTabs(s);
+    final tabs = _buildTabs(s, colors);
 
     if (tabs.isEmpty) {
       return _ShareEmptyState(message: s.todayShareEmptyState);
@@ -132,7 +137,7 @@ class TodayShareSection extends StatelessWidget {
     );
   }
 
-  List<_ShareTab> _buildTabs(S s) {
+  List<_ShareTab> _buildTabs(S s, SectionColors colors) {
     final tabs = <_ShareTab>[];
     if (owed.isNotEmpty) {
       tabs.add(
@@ -146,7 +151,14 @@ class TodayShareSection extends StatelessWidget {
       tabs.add(
         _ShareTab(
           label: s.todayShareTabDrafts,
-          builder: (context) => _DraftList(drafts: drafts, onTap: onDraftTap),
+          builder: (context) {
+            return _DraftList(
+              drafts: drafts,
+              onTap: onDraftTap,
+              onSeeAllTap: onSeeAllDraftsTap,
+              colors: colors,
+            );
+          },
         ),
       );
     }
@@ -186,30 +198,52 @@ class _OwedList extends StatelessWidget {
 }
 
 class _DraftList extends StatelessWidget {
-  const _DraftList({required this.drafts, required this.onTap});
+  const _DraftList({
+    required this.drafts,
+    required this.onTap,
+    required this.colors,
+    this.onSeeAllTap,
+    this.maxVisible = 3,
+  });
 
   final List<TodayShareDraft> drafts;
   final void Function(TodayShareDraft) onTap;
+  final SectionColors colors;
+  final VoidCallback? onSeeAllTap;
+  final int maxVisible;
 
   @override
   Widget build(BuildContext context) {
     final spacing = Theme.of(context).extension<Spacing>()!;
     final s = S.of(context);
+    final visibleDrafts = drafts.take(maxVisible).toList(growable: false);
     return Column(
       children: [
-        for (final draft in drafts) ...[
+        for (final draft in visibleDrafts) ...[
           _ShareCard(
-            leading: Icon(
-              Icons.edit_note_rounded,
-              color: Theme.of(context).colorScheme.primary,
-            ),
             title: draft.description,
-            subtitle: s.todayShareDraftSubtitle,
             amountLabel: _formatCurrency(draft.amountCents),
             onTap: () => onTap(draft),
           ),
-          if (draft != drafts.last) SizedBox(height: spacing.sm),
+          if (draft != visibleDrafts.last) SizedBox(height: spacing.sm),
         ],
+        if (onSeeAllTap != null && drafts.length > maxVisible)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Align(
+              alignment: Alignment.center,
+              child: TextButton(
+                onPressed: onSeeAllTap,
+                child: Text(
+                  s.todayFlowSeeAll(drafts.length),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colors.icon,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -217,16 +251,16 @@ class _DraftList extends StatelessWidget {
 
 class _ShareCard extends StatelessWidget {
   const _ShareCard({
-    required this.leading,
     required this.title,
-    required this.subtitle,
     required this.amountLabel,
     required this.onTap,
+    this.leading,
+    this.subtitle,
   });
 
-  final Widget leading;
+  final Widget? leading;
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final String amountLabel;
   final VoidCallback onTap;
 
@@ -243,32 +277,33 @@ class _ShareCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Row(
             children: [
-              leading,
-              const SizedBox(width: 12),
+              if (leading != null) ...[leading!, const SizedBox(width: 12)],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: theme.textTheme.bodyLarge?.copyWith(
+                      style: theme.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle!,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
               const SizedBox(width: 12),
               Text(
                 amountLabel,
-                style: theme.textTheme.titleMedium?.copyWith(
+                style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
