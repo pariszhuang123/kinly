@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
 import '../../splash/ui/widgets/kinly_logo.dart';
 import '../bloc/app_version_cubit.dart';
@@ -63,10 +64,10 @@ class ForceUpdateScreen extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 32),
-                FilledButton.icon(
+                KinlyFilledButton.icon(
                   onPressed: () => _launchStore(),
-                  icon: const Icon(Icons.system_update),
-                  label: Text(strings.force_update_button),
+                  icon: Icons.system_update,
+                  label: strings.force_update_button,
                 ),
                 if (state.clientVersion != null) ...[
                   const SizedBox(height: 16),

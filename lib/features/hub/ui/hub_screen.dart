@@ -27,96 +27,105 @@ class HubScreen extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final sizes = theme.extension<AppSizes>();
 
-    return Scaffold(
-      backgroundColor: colorScheme.surface,
-      appBar: AppBar(
+    return PopScope(
+      // ❗ Prevent this route from being popped by back button / gesture
+      canPop: false,
+      child: Scaffold(
         backgroundColor: colorScheme.surface,
-        title: Text(S.of(context).navHub),
-      ),
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final maxWidth = sizes?.maxContentWidth ?? 640.0;
-            final width =
-                constraints.maxWidth < maxWidth
-                    ? constraints.maxWidth
-                    : maxWidth;
+        appBar: AppBar(
+          backgroundColor: colorScheme.surface,
+          title: Text(S.of(context).navHub),
+          // Just in case, make sure no back arrow is shown
+          automaticallyImplyLeading: false,
+        ),
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final maxWidth = sizes?.maxContentWidth ?? 640.0;
+              final width =
+                  constraints.maxWidth < maxWidth
+                      ? constraints.maxWidth
+                      : maxWidth;
 
-            return Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: width),
-                child: Padding(
-                  padding: EdgeInsets.all(spacing.lg),
-                  child: BlocBuilder<HubBloc, HubState>(
-                    builder: (context, state) {
-                      if (state.isLoading && !state.isRefreshing) {
-                        return const Center(child: KinlyLoader());
-                      }
+              return Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: width),
+                  child: Padding(
+                    padding: EdgeInsets.all(spacing.lg),
+                    child: BlocBuilder<HubBloc, HubState>(
+                      builder: (context, state) {
+                        if (state.isLoading && !state.isRefreshing) {
+                          return const Center(child: KinlyLoader());
+                        }
 
-                      if (state.isFailure) {
-                        return _HubError(
-                          onRetry:
-                              () => context.read<HubBloc>().add(
+                        if (state.isFailure) {
+                          return _HubError(
+                            onRetry:
+                                () => context.read<HubBloc>().add(
+                                  const HubRefreshed(),
+                                ),
+                          );
+                        }
+
+                        return RefreshIndicator(
+                          onRefresh:
+                              () async => context.read<HubBloc>().add(
                                 const HubRefreshed(),
                               ),
-                        );
-                      }
-
-                      return RefreshIndicator(
-                        onRefresh:
-                            () async => context.read<HubBloc>().add(
-                              const HubRefreshed(),
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                HubMembersSection(
+                                  state: state,
+                                  onInviteTap:
+                                      () => _shareInvite(context, state),
+                                  onCopyCode:
+                                      state.hasInvite
+                                          ? () =>
+                                              _copyInviteCode(context, state)
+                                          : null,
+                                  onRotateInvite:
+                                      state.isOwner
+                                          ? () => _rotateInvite(context)
+                                          : null,
+                                ),
+                                SizedBox(height: spacing.xl),
+                                HubQrSection(
+                                  state: state,
+                                  onShareAppTap:
+                                      () => _shareAppLink(context, state),
+                                  onQrTap: () => _showQrSheet(context, state),
+                                ),
+                              ],
                             ),
-                        child: SingleChildScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              HubMembersSection(
-                                state: state,
-                                onInviteTap: () => _shareInvite(context, state),
-                                onCopyCode:
-                                    state.hasInvite
-                                        ? () => _copyInviteCode(context, state)
-                                        : null,
-                                onRotateInvite:
-                                    state.isOwner
-                                        ? () => _rotateInvite(context)
-                                        : null,
-                              ),
-                              SizedBox(height: spacing.xl),
-                              HubQrSection(
-                                state: state,
-                                onShareAppTap:
-                                    () => _shareAppLink(context, state),
-                                onQrTap: () => _showQrSheet(context, state),
-                              ),
-                            ],
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-            );
+              );
+            },
+          ),
+        ),
+        bottomNavigationBar: HomeBottomNav(
+          currentIndex: 2,
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                context.go(AppRoutes.today);
+                break;
+              case 1:
+                context.go(AppRoutes.explore);
+                break;
+              case 2:
+                // Already on Hub
+                break;
+            }
           },
         ),
-      ),
-      bottomNavigationBar: HomeBottomNav(
-        currentIndex: 2,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              context.go(AppRoutes.today);
-              break;
-            case 1:
-              context.go(AppRoutes.explore);
-              break;
-            case 2:
-              break;
-          }
-        },
       ),
     );
   }

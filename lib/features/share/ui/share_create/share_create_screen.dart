@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
@@ -185,7 +186,6 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
 
     final bloc = context.read<ShareCreateBloc>();
     final s = S.of(context);
-    final theme = Theme.of(context);
 
     final shouldDelete = await showDialog<bool>(
       context: context,
@@ -198,13 +198,9 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
               onPressed: () => Navigator.of(context).pop(false),
               child: Text(s.shareEditDeleteCancel),
             ),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: theme.colorScheme.error,
-                foregroundColor: theme.colorScheme.onError,
-              ),
+            KinlyFilledButton.destructiveText(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text(s.shareEditDeleteConfirm),
+              label: s.shareEditDeleteConfirm,
             ),
           ],
         );

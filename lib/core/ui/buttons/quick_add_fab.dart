@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../theme/spacing.dart';
-import '../theme/kinly_sections.dart';
-import '../../generated/l10n.dart';
+import '../../theme/spacing.dart';
+import '../../theme/kinly_sections.dart';
+import '../../../generated/l10n.dart';
+import 'kinly_fab.dart';
 
 class KinlyQuickAddFab extends StatelessWidget {
   const KinlyQuickAddFab({
@@ -20,13 +21,9 @@ class KinlyQuickAddFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
-    return FloatingActionButton(
-      backgroundColor: cs.primary,
-      foregroundColor: cs.onPrimary,
+    return KinlyFab(
       onPressed: () => _showQuickAddSheet(context),
-      child: const Icon(Icons.add),
+      heroTag: 'quick_add_fab',
     );
   }
 

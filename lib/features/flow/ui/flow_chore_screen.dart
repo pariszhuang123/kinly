@@ -8,6 +8,7 @@ import '../../../core/chores/models.dart';
 import '../../../core/supabase/storage_path_resolver.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
+import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
@@ -295,9 +296,9 @@ class _FlowChoreFormView extends StatelessWidget {
         SizedBox(height: spacing?.lg ?? 16),
         Text(s.flowChoreStartLabel, style: theme.textTheme.titleMedium),
         SizedBox(height: spacing?.xs ?? 4),
-        OutlinedButton(
+        KinlyOutlinedButton.text(
           onPressed: () => _pickStartDate(context, form.startDate),
-          child: Text(dateLabel),
+          label: dateLabel,
         ),
         if (hasDateError)
           Padding(

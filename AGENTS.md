@@ -123,6 +123,11 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - No public endpoints for invites or joins.
 - No writes outside approved RPCs.
 - No raw `CircularProgressIndicator` usage; UI/BLoC agents must use `lib/core/ui/kinly_loader.dart` for loaders to keep branding consistent.
+- No raw Material buttons/FABs for CTAs. Use Kinly primitives so light/dark colors and spacing stay consistent:
+  - Filled CTAs: `lib/core/ui/buttons/kinly_filled_button.dart` (`text/icon`, `destructive*`, `fullWidth` as needed)
+  - Outlined CTAs: `lib/core/ui/buttons/kinly_outlined_button.dart` (`text/icon`, `compact/fullWidth`)
+  - FABs: `lib/core/ui/buttons/kinly_fab.dart` (inherits add-tile palette; supports hero/mini/tooltip)
+  - Add tile: `lib/core/ui/buttons/kinly_add_tile_button.dart`
 
 ## Shared Enums
 - Domain-owned/shared enums live in `lib/core/<domain>/enums/` (e.g., `lib/core/homes/enums/leave_outcome.dart`).

@@ -11,6 +11,7 @@ import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/buttons/kinly_fab.dart';
 import '../../../generated/l10n.dart';
 import 'flow_list_filter.dart';
 import '../bloc/flow_list_bloc.dart';
@@ -35,10 +36,9 @@ class FlowListScreen extends StatelessWidget {
         backgroundColor: flowColors?.background,
         title: Text(s.quick_add_flow_title),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: flowColors?.accent ?? theme.colorScheme.primary,
+      floatingActionButton: KinlyFab(
         onPressed: () => _openChore(context),
-        child: const Icon(Icons.add),
+        heroTag: 'flow_list_fab',
       ),
       body: SafeArea(
         child: Padding(

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/buttons/kinly_fab.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
 import '../share_edit_outcome.dart';
@@ -30,10 +31,9 @@ class ShareCreatedListScreen extends StatelessWidget {
         backgroundColor: shareColors?.background,
         title: Text(s.shareCreatedListTitle),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: shareColors?.accent ?? theme.colorScheme.primary,
+      floatingActionButton: KinlyFab(
         onPressed: () => _openShareCreate(context),
-        child: const Icon(Icons.add),
+        heroTag: 'share_created_list_fab',
       ),
       body: SafeArea(
         child: Padding(

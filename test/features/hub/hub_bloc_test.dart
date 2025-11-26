@@ -15,6 +15,13 @@ void main() {
   const homeId = 'home-1';
   late HomeRepository homeRepository;
 
+  final membership = CurrentMembership(
+    userId: 'user-1',
+    homeId: homeId,
+    role: 'owner',
+    validFrom: DateTime.now().toUtc(),
+  );
+
   final invite = HomeInvite(
     id: 'invite-1',
     homeId: homeId,
@@ -39,9 +46,15 @@ void main() {
   blocTest<HubBloc, HubState>(
     'loads members and invite on start',
     build: () {
+      when(() => homeRepository.getCurrentMembership()).thenAnswer(
+        (_) async => membership,
+      );
       when(
         () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
       ).thenAnswer((_) async => [member]);
+      when(() => homeRepository.getActiveInvite(homeId)).thenThrow(
+        Exception('no active invite'),
+      );
       when(
         () => homeRepository.getOrCreateInvite(homeId),
       ).thenAnswer((_) async => invite);
@@ -71,6 +84,9 @@ void main() {
   blocTest<HubBloc, HubState>(
     'emits failure when repository throws',
     build: () {
+      when(() => homeRepository.getCurrentMembership()).thenAnswer(
+        (_) async => membership,
+      );
       when(
         () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
       ).thenThrow(Exception('boom'));
@@ -94,9 +110,15 @@ void main() {
   blocTest<HubBloc, HubState>(
     'still succeeds when invite fails (non-owner)',
     build: () {
+      when(() => homeRepository.getCurrentMembership()).thenAnswer(
+        (_) async => membership,
+      );
       when(
         () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
       ).thenAnswer((_) async => [member]);
+      when(() => homeRepository.getActiveInvite(homeId)).thenThrow(
+        Exception('no active invite'),
+      );
       when(
         () => homeRepository.getOrCreateInvite(homeId),
       ).thenThrow(Exception('forbidden'));

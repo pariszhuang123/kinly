@@ -5,6 +5,7 @@ import '../../../../core/homes/models.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/buttons/kinly_outlined_button.dart';
+import '../../../../core/ui/buttons/kinly_add_tile_button.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/hub_bloc.dart';
 
@@ -104,7 +105,10 @@ class HubMembersSection extends StatelessWidget {
               separatorBuilder: (_, __) => SizedBox(width: spacing.md),
               itemBuilder: (context, index) {
                 if (index == members.length) {
-                  return _InviteTile(spacing: spacing, onTap: onInviteTap);
+                  return KinlyAddTileButton(
+                    label: s.hubInviteCta, // text is optional; you can set null
+                    onTap: onInviteTap,
+                  );
                 }
                 final member = members[index];
                 return _MemberTile(member: member, spacing: spacing);
@@ -114,7 +118,10 @@ class HubMembersSection extends StatelessWidget {
         else
           Padding(
             padding: EdgeInsets.only(top: spacing.md),
-            child: _InviteTile(spacing: spacing, onTap: onInviteTap),
+            child: KinlyAddTileButton(
+              label: s.hubInviteCta,
+              onTap: onInviteTap,
+            ),
           ),
       ],
     );
@@ -154,53 +161,6 @@ class _MemberTile extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _InviteTile extends StatelessWidget {
-  const _InviteTile({required this.spacing, required this.onTap});
-
-  final Spacing spacing;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final s = S.of(context);
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(Icons.add, color: colorScheme.onPrimaryContainer),
-          ),
-          SizedBox(height: spacing.sm),
-          SizedBox(
-            width: 64,
-            child: Text(
-              s.hubInviteCta,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.primary,
-                fontWeight: FontWeight.w600,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

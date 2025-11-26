@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/homes/models.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
+import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/profile/models.dart';
@@ -234,9 +235,9 @@ class ProfileSettingsScreen extends StatelessWidget {
                 onPressed: () => Navigator.of(context).pop(false),
                 child: Text(s.profileActionCancel),
               ),
-              FilledButton(
+              KinlyFilledButton.text(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text(s.profileActionConfirm),
+                label: s.profileActionConfirm,
               ),
             ],
           ),
@@ -364,9 +365,9 @@ class ProfileSettingsScreen extends StatelessWidget {
                 onPressed: () => Navigator.of(context).pop(false),
                 child: Text(s.profileActionCancel),
               ),
-              FilledButton(
+              KinlyFilledButton.text(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text(s.profileLogoutTitle),
+                label: s.profileLogoutTitle,
               ),
             ],
           ),

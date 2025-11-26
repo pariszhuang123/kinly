@@ -6,6 +6,7 @@ import '../../../core/profile/enums/profile_error_code.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/profile/models.dart';
 import '../../../generated/l10n.dart';
 import 'bloc/profile_identity_bloc.dart';
@@ -357,10 +358,7 @@ class _ProfileIdentityError extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: spacing.md),
-          OutlinedButton(
-            onPressed: onRetry,
-            child: Text(s.profileIdentityRetry),
-          ),
+          KinlyOutlinedButton.text(onPressed: onRetry, label: s.profileIdentityRetry),
         ],
       ),
     );

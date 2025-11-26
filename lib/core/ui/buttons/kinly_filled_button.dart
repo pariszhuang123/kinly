@@ -15,6 +15,7 @@ class KinlyFilledButton extends StatelessWidget {
     this.icon,
     this.compact = false,
     this.fullWidth = false,
+    this.destructive = false,
     super.key,
   });
 
@@ -25,6 +26,7 @@ class KinlyFilledButton extends StatelessWidget {
     required IconData icon,
     bool compact = false,
     bool fullWidth = false,
+    bool destructive = false,
     Key? key,
   }) {
     return KinlyFilledButton._(
@@ -33,6 +35,27 @@ class KinlyFilledButton extends StatelessWidget {
       icon: Icon(icon),
       compact: compact,
       fullWidth: fullWidth,
+      destructive: destructive,
+      key: key,
+    );
+  }
+
+  /// Icon + label destructive filled button (error colors).
+  factory KinlyFilledButton.destructiveIcon({
+    required VoidCallback onPressed,
+    required String label,
+    required IconData icon,
+    bool compact = false,
+    bool fullWidth = false,
+    Key? key,
+  }) {
+    return KinlyFilledButton.icon(
+      onPressed: onPressed,
+      label: label,
+      icon: icon,
+      compact: compact,
+      fullWidth: fullWidth,
+      destructive: true,
       key: key,
     );
   }
@@ -43,6 +66,7 @@ class KinlyFilledButton extends StatelessWidget {
     required String label,
     bool compact = false,
     bool fullWidth = false,
+    bool destructive = false,
     Key? key,
   }) {
     return KinlyFilledButton._(
@@ -51,6 +75,25 @@ class KinlyFilledButton extends StatelessWidget {
       icon: null,
       compact: compact,
       fullWidth: fullWidth,
+      destructive: destructive,
+      key: key,
+    );
+  }
+
+  /// Text-only destructive filled button (error colors).
+  factory KinlyFilledButton.destructiveText({
+    required VoidCallback onPressed,
+    required String label,
+    bool compact = false,
+    bool fullWidth = false,
+    Key? key,
+  }) {
+    return KinlyFilledButton.text(
+      onPressed: onPressed,
+      label: label,
+      compact: compact,
+      fullWidth: fullWidth,
+      destructive: true,
       key: key,
     );
   }
@@ -60,6 +103,7 @@ class KinlyFilledButton extends StatelessWidget {
   final Widget? icon;
   final bool compact;
   final bool fullWidth;
+  final bool destructive;
 
   @override
   Widget build(BuildContext context) {
@@ -90,13 +134,24 @@ class KinlyFilledButton extends StatelessWidget {
             )
             : Text(label, overflow: TextOverflow.ellipsis);
 
+    final backgroundColor =
+        destructive
+            ? colorScheme.error
+            : isDark
+            ? colorScheme.inversePrimary
+            : colorScheme.primary;
+    final foregroundColor =
+        destructive
+            ? colorScheme.onError
+            : isDark
+            ? colorScheme.onInverseSurface
+            : colorScheme.onPrimary;
+
     final button = FilledButton(
       onPressed: onPressed,
       style: FilledButton.styleFrom(
-        backgroundColor:
-            isDark ? colorScheme.inversePrimary : colorScheme.primary,
-        foregroundColor:
-            isDark ? colorScheme.onInverseSurface : colorScheme.onPrimary,
+        backgroundColor: backgroundColor,
+        foregroundColor: foregroundColor,
         padding: EdgeInsets.symmetric(
           horizontal: horizontal,
           vertical: vertical,
