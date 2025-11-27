@@ -47,7 +47,7 @@ class KinlyQuickAddFab extends StatelessWidget {
       builder: (context) {
         return SafeArea(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(
+            padding: EdgeInsetsDirectional.fromSTEB(
               spacing?.lg ?? 16,
               spacing?.md ?? 12,
               spacing?.lg ?? 16,
@@ -58,7 +58,7 @@ class KinlyQuickAddFab extends StatelessWidget {
               children: [
                 // Header
                 Align(
-                  alignment: Alignment.centerLeft,
+                  alignment: AlignmentDirectional.centerStart,
                   child: Text(
                     s.quick_add_title, // e.g. "Quick Add"
                     style: theme.textTheme.titleMedium,

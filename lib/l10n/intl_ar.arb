@@ -1,0 +1,422 @@
+{
+  "@@locale": "ar",
+  "app_title": "كينلي",
+
+  "bootstrap_initializing": "جاري تشغيل كينلي ({env})",
+  "@bootstrap_initializing": {
+    "placeholders": {
+      "env": {
+        "type": "String"
+      }
+    }
+  },
+
+  "welcome_title": "مرحبًا بك في كينلي",
+  "welcome_create": "إنشاء منزل",
+  "welcome_join": "الانضمام إلى منزل",
+
+  "create_title": "إنشاء منزل",
+  "create_subtitle": "سنقوم بإعداد منزلك فورًا. يمكنك إعادة التسمية ودعوة الآخرين لاحقًا.",
+  "create_submit": "إنشاء المنزل",
+  "create_success": "تم إنشاء المنزل بنجاح!",
+  "create_failed_generic": "تعذر إنشاء المنزل. يرجى المحاولة مرة أخرى.",
+
+  "join_title": "الانضمام إلى المنزل",
+  "join_hint": "أدخل رمز الدعوة",
+  "join_submit": "انضمام",
+  "join_success": "تم الانضمام باستخدام الرمز: {code}",
+  "@join_success": {
+    "description": "رسالة شريط الإشعار عند نجاح الانضمام",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "join_failed_generic": "تعذر إتمام الانضمام. حاول مرة أخرى.",
+  "join_error_invalid_code": "رمز الدعوة غير صحيح.",
+  "join_error_inactive_invite": "رمز الدعوة هذا لم يعد نشطًا. اطلب من المالك رمزًا جديدًا.",
+  "join_error_already_in_other_home": "أنت بالفعل في منزل آخر. غادره قبل الانضمام إلى منزل جديد.",
+  "join_error_paywall_limit": "وصل هذا المنزل إلى الحد الأقصى للأعضاء. اطلب من المالك الترقية أو إزالة عضو.",
+  "join_error_unauthorized": "يرجى تسجيل الدخول للانضمام إلى هذا المنزل.",
+  "join_error_forbidden": "ليس لديك صلاحية الانضمام إلى هذا المنزل.",
+
+  "today_title": "اليوم",
+
+  "quick_add_title": "إضافة سريعة",
+  "quick_add_flow_title": "Flow",
+  "quick_add_flow_subtitle": "إضافة مهمة إلى Flow",
+  "quick_add_share_title": "Share",
+  "quick_add_share_subtitle": "تسجيل مصروف مشترك",
+  "quick_add_poll_title": "استبيان",
+  "quick_add_poll_subtitle": "إنشاء استبيان سريع للمنزل",
+  "quick_add_fair_share_title": "الإنصاف",
+  "quick_add_fair_share_subtitle": "تسجيل ملاحظة عن الإنصاف",
+
+  "todayAddSheetTitle": "أضف إلى منزلك",
+  "todayAddSheetFlow": "إضافة مهمة (Flow)",
+  "todayAddSheetShare": "إضافة مصروف (Share)",
+
+  "login_tagline": "معًا تصبح الحياة أخف وأسهل",
+  "login_with_google": "المتابعة باستخدام Google",
+  "login_with_apple": "المتابعة باستخدام Apple",
+  "login_consent_prefix": "لقد قرأت ووافقت على ",
+  "login_consent_connector": " و ",
+  "login_terms": "شروط الخدمة",
+  "login_privacy": "سياسة الخصوصية",
+  "logout": "تسجيل الخروج",
+
+  "membership_status_checking": "جارٍ التحقق من حالة عضويتك…",
+  "membership_status_none": "لم تنضم إلى أي منزل بعد.",
+  "membership_status_active": "أنت بالفعل عضو في أحد المنازل.",
+  "authMembershipLoadFailed": "تعذر تحديث معلومات منزلك. يرجى المحاولة مرة أخرى.",
+
+  "today_no_membership": "لا يوجد منزل نشط حاليًا. أنشئ أو انضم إلى منزل لرؤية عرض اليوم.",
+  "today_home_details": "المنزل الحالي: {homeId} • الدور: {role}",
+  "@today_home_details": {
+    "placeholders": {
+      "homeId": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+
+  "offline_title": "أنت غير متصل",
+  "offline_body": "يتطلب كينلي اتصالًا بالإنترنت. تحقق من الشبكة وحاول مرة أخرى.",
+  "offline_retry": "إعادة المحاولة",
+
+  "force_update_title": "التحديث مطلوب",
+  "force_update_body": "هذا الإصدار من كينلي لم يعد مدعومًا. يرجى تثبيت أحدث إصدار للمتابعة.",
+  "force_update_notes_label": "ما الجديد",
+  "force_update_button": "تحديث كينلي",
+  "force_update_version_details": "نسختك: {client}\nأحدث إصدار: {current}",
+  "@force_update_version_details": {
+    "placeholders": {
+      "client": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+
+  "navToday": "اليوم",
+  "navExplore": "استكشاف",
+  "navHub": "المركز",
+
+  "hubMembersTitle": "أعضاء المنزل",
+  "hubMembersSubtitle": "الأشخاص النشطون حاليًا في هذا المنزل.",
+  "hubMembersEmpty": "لا يوجد أعضاء نشطون بعد.",
+  "hubInviteCta": "دعوة",
+  "hubInviteUnavailable": "تعذر تحميل الدعوة. يرجى المحاولة مرة أخرى.",
+
+  "hubShareInviteTitle": "دعوة إلى منزلي في كينلي",
+  "hubShareInviteBody": "مرحبًا بك في منزلنا على كينلي!\nاستخدم رمز الدعوة: {code}\nحمّل تطبيق كينلي: {link}",
+  "@hubShareInviteBody": {
+    "placeholders": {
+      "code": {},
+      "link": {}
+    }
+  },
+
+  "hubShareAppTitle": "الحصول على تطبيق كينلي",
+  "hubShareAppBody": "شارك كينلي ليصبح التعاون في المنزل أسهل: {link}",
+  "@hubShareAppBody": {
+    "placeholders": {
+      "link": {}
+    }
+  },
+  "hubShareAppCta": "مشاركة كينلي",
+
+  "hubCopyCode": "نسخ رمز الدعوة",
+  "hubCodeCopied": "تم نسخ رمز الدعوة",
+  "hubRotateInvite": "تجديد رمز الدعوة",
+  "hubRotateSuccess": "تم تجديد رمز الدعوة",
+  "hubRotateError": "تعذر تجديد رمز الدعوة. حاول مرة أخرى.",
+
+  "hubQrTitle": "مشاركة التطبيق",
+  "hubQrSubtitle": "امسح الكود لتحميل كينلي",
+  "hubError": "تعذر تحميل المركز. يرجى المحاولة مرة أخرى.",
+  "hubRetry": "إعادة المحاولة",
+
+  "todayEmptyCardTitle": "لقد أنهيت كل مهام اليوم ✨",
+  "todayEmptyCardBadge": "استمتع بالهدوء",
+  "todayEmptyBody": "استمتع بوقتك — سيُعلمك كينلي عندما يكون هناك ما يحتاج انتباهك.",
+
+  "friendDefaultName": "صديق",
+  "unknownInitial": "؟",
+
+  "greetingPartOfDay": "مرحبًا يا {name}",
+  "greetingPartOfDay_partOfDay": "جزء اليوم (صباح/ظهر/مساء)",
+  "greetingPartOfDay_name": "الاسم",
+  "greetingPartMorning": "صباح الخير",
+  "greetingPartAfternoon": "مساء الخير",
+  "greetingPartEvening": "مساء الخير",
+
+  "todayFlowSubtitle": "هذا ما يجري في منزلك اليوم.",
+  "todayFlowSectionTitle": "Flow",
+  "todayFlowTabActive": "نشطة",
+  "todayFlowTabDrafts": "مسودات",
+  "todayFlowSeeAll": "عرض الكل ({count})",
+  "@todayFlowSeeAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayFlowBadgeNew": "جديد اليوم",
+
+  "todayShareSectionTitle": "Share",
+  "todayShareBadgeUpcoming": "قريبًا",
+  "todayShareSeeAll": "عرض كل المصاريف",
+  "todayShareSampleGroceries": "مشتريات مشتركة من الأمس",
+  "todayShareSampleRent": "تذكير قريب بمبلغ الإيجار",
+  "todayShareSampleInternet": "فاتورة الإنترنت لهذا الأسبوع",
+  "todayShareEmptyState": "لا يوجد شيء هنا بعد. عند تسجيل مصاريف أو إنشاء مسودات، ستظهر في Share.",
+  "todayShareTabActive": "نشطة",
+  "todayShareTabDrafts": "مسودات",
+  "todayShareError": "تعذر تحديث قسم Share الآن.",
+
+  "todayShareActiveSubtitle": "{count, plural, one {{count} دفعة معلّقة} other {{count} دفعات معلّقة}}",
+  "@todayShareActiveSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayShareDraftSubtitle": "أكمل تقسيم المبلغ لنشر هذا المصروف.",
+
+  "shareOwedDetailTitle": "دفعة معلّقة",
+  "shareOwedDetailSubtitle": "اختر المصروف الذي قمت بتسديده.",
+  "shareOwedDetailEmpty": "لا توجد دفعات معلّقة مع هذا الشخص.",
+  "shareOwedDetailSelectionLabel": "اختر مصروفًا للمتابعة.",
+  "shareOwedDetailPaid": "وضع كمدفوع",
+  "shareOwedDetailSuccess": "تم تسجيل الدفعة.",
+  "shareOwedDetailError": "تعذر تسجيل هذه الدفعة. حاول مرة أخرى.",
+
+  "shareEditTitle": "إكمال المسودة",
+  "shareEditSubmit": "تحديث",
+  "shareEditSuccess": "تم تحديث المصروف.",
+  "shareEditLoadError": "تعذر تحميل هذه المسودة.",
+  "shareEditNotAllowed": "لا يمكن تعديل هذا المصروف لأنه أصبح مقفلًا.",
+  "shareEditSplitsLocked": "التقسيمات مقفلة لأن أحد الأعضاء دفع حصته بالفعل.",
+  "shareEditClose": "إغلاق",
+
+  "shareEditDeleteButton": "حذف",
+  "shareEditDeleteConfirmTitle": "حذف هذا المصروف؟",
+  "shareEditDeleteConfirmMessage": "سيتم حذف المسودة للجميع.",
+  "shareEditDeleteCancel": "إلغاء",
+  "shareEditDeleteConfirm": "حذف",
+  "shareEditDeleteError": "تعذر حذف هذا المصروف. حاول مرة أخرى.",
+  "shareEditDeleteSuccess": "تم حذف المصروف.",
+
+  "shareCreateTitle": "إنشاء مصروف",
+  "shareCreateDescriptionLabel": "الوصف",
+  "shareCreateDescriptionHint": "مثال: مشتريات البقالة",
+  "shareCreateAmountLabel": "المبلغ",
+  "shareCreateAmountHint": "0.00",
+  "shareCreateSplitLabel": "طريقة التقسيم",
+  "shareCreateSplitEqual": "تقسيم تلقائي",
+  "shareCreateSplitCustom": "تقسيم مخصص",
+  "shareCreateParticipantsLabel": "من يشارك؟",
+  "shareCreateParticipantsEmpty": "تحتاج إلى عضوين على الأقل في المنزل لتقسيم المصروف.",
+  "shareCreateNotesLabel": "ملاحظات",
+  "shareCreateNotesHint": "ملاحظات اختيارية يمكن للجميع رؤيتها",
+  "shareCreateCustomHelper": "أدخل المبلغ الخاص بكل شخص. يجب أن يساوي المجموع المبلغ الكلي.",
+  "shareCreateCustomAmountLabel": "المبلغ",
+  "shareCreateSubmit": "إنشاء",
+
+  "shareCreateValidationDescription": "يرجى إدخال وصف.",
+  "shareCreateValidationAmount": "أدخل مبلغًا صالحًا أكبر من صفر.",
+  "shareCreateValidationSplit": "اختر طريقة التقسيم.",
+  "shareCreateValidationEqualParticipants": "اختر عضوين على الأقل لتقسيم المبلغ.",
+  "shareCreateValidationCustomParticipants": "التقسيم المخصص يحتاج إلى عضوين على الأقل.",
+  "shareCreateValidationCustomAmounts": "أدخل مبلغًا صالحًا لكل شخص.",
+  "shareCreateValidationCustomSum": "يجب أن يتطابق مجموع المبالغ مع المبلغ الكلي.",
+  "shareCreateValidationCustomSinglePayer": "لا يمكن لشخص واحد دفع المبلغ كاملًا في التقسيم المخصص.",
+
+  "shareCreateLoadError": "تعذر تحميل أعضاء المنزل.",
+  "shareCreateRetry": "إعادة المحاولة",
+  "shareCreateErrorGeneric": "تعذر إنشاء المصروف. حاول مرة أخرى.",
+  "shareCreateErrorForbidden": "لا تملك صلاحية إنشاء هذا المصروف الآن.",
+  "shareCreateSuccess": "تم إنشاء المصروف.",
+
+  "flowChoreCreateTitle": "إضافة مهمة Flow",
+  "flowChoreEditTitle": "تعديل مهمة Flow",
+
+  "flowChoreNameLabel": "اسم المهمة",
+  "flowChoreNameHint": "اكتب عنوانًا قصيرًا وواضحًا للمهمة",
+  "flowChoreValidationName": "يرجى إدخال اسم للمهمة.",
+
+  "flowChoreAssigneeLabel": "تعيين إلى",
+  "flowChoreAssigneeUnassigned": "غير معيّن",
+  "flowChoreValidationAssignee": "اختر الشخص المسؤول عن هذه المهمة.",
+
+  "flowChoreStartLabel": "تاريخ البدء",
+  "flowChoreValidationDate": "اختر تاريخًا خلال سنة من اليوم.",
+
+  "flowChoreRecurrenceLabel": "التكرار",
+  "flowChoreRecurrenceNone": "مرة واحدة",
+  "flowChoreRecurrenceDaily": "يوميًا",
+  "flowChoreRecurrenceWeekly": "أسبوعيًا",
+  "flowChoreRecurrenceEvery2Weeks": "كل أسبوعين",
+  "flowChoreRecurrenceMonthly": "شهريًا",
+  "flowChoreRecurrenceEvery2Months": "كل شهرين",
+  "flowChoreRecurrenceAnnual": "سنويًا",
+
+  "flowChoreNotesLabel": "ملاحظات",
+  "flowChoreNotesHint": "أضف ملاحظات أو تذكيرات اختيارية",
+
+  "flowChoreHowToLabel": "رابط التعليمات",
+  "flowChoreHowToHint": "ألصق رابط فيديو أو مستند (اختياري)",
+  "flowChoreValidationHowToUrl": "أدخل رابطًا صالحًا يبدأ بـ http أو https.",
+  "flowChoreHowToLaunchError": "تعذر فتح هذا الرابط. حاول مرة أخرى.",
+
+  "flowChorePhotoLabel": "صورة التوقعات",
+  "flowChorePhotoHint": "storage/households/... (اختياري)",
+  "flowChorePhotoPlaceholder": "أضف صورة توضّح كيف يجب أن يبدو الأمر بشكل جيد",
+  "flowChorePhotoPermissionDenied": "يلزم منح إذن استخدام الكاميرا لالتقاط صورة.",
+  "flowChorePhotoPermissionOpenSettings": "فتح الإعدادات",
+  "flowChorePhotoUploadError": "تعذر رفع الصورة. حاول مرة أخرى.",
+  "flowChorePhotoLoadError": "تعذر تحميل الصورة.",
+
+  "flowChoreSubmitCreate": "إضافة المهمة",
+  "flowChoreSubmitUpdate": "حفظ التعديلات",
+
+  "flowChoreDeleteButton": "حذف المهمة",
+  "flowChoreDeleteDialogTitle": "حذف هذه المهمة؟",
+  "flowChoreDeleteDialogMessage": "سيتم إزالة هذه المهمة للجميع في المنزل.",
+  "flowChoreDeleteCancel": "إلغاء",
+  "flowChoreDeleteConfirm": "حذف",
+
+  "flowChoreLoadError": "تعذر تحميل هذه المهمة. يرجى المحاولة مرة أخرى.",
+  "flowChoreRetry": "إعادة المحاولة",
+
+  "flowChoreErrorPaywallActiveCap": "لقد وصلت إلى الحد المجاني للمهام النشطة. قم بالترقية لإضافة المزيد.",
+  "flowChoreErrorPaywallMediaCap": "لقد وصلت إلى الحد المجاني لصور التوقعات. احذف صورة أو قم بالترقية.",
+  "flowChoreErrorAssigneeNotMember": "لا يمكن تعيين هذه المهمة لهذا العضو حاليًا.",
+  "flowChoreErrorForbidden": "ليس لديك صلاحية تعديل هذه المهمة.",
+  "flowChoreErrorInvalidPhoto": "مسار الصورة غير صالح لهذا المنزل.",
+  "flowChoreErrorInvalidStart": "يرجى اختيار تاريخ بدء صالح.",
+  "flowChoreErrorInvalidState": "لا يمكن تعديل هذه المهمة في الوقت الحالي.",
+  "flowChoreErrorGeneric": "تعذر حفظ المهمة. يرجى المحاولة مرة أخرى.",
+
+  "flowChoreDetailTitle": "تفاصيل المهمة",
+  "flowChoreDetailUnassigned": "غير معيّن",
+  "flowChoreDetailNoNotes": "لا توجد ملاحظات بعد.",
+  "flowChoreDetailNoHowTo": "لا يوجد رابط تعليمات.",
+  "flowChoreDetailCompleteButton": "إكمال المهمة",
+  "flowChoreDetailCompletionError": "تعذر إكمال المهمة. حاول مرة أخرى.",
+
+  "flowChoreDetailMoreInfoTitle": "مزيد من التفاصيل",
+  "flowChoreExpectationPhotoLabel": "صورة التوقعات",
+
+  "flowListEmptyTitle": "لا توجد مهام Flow بعد",
+  "flowListEmptySubtitle": "أضف أول روتين ليعرف الجميع ما يجب فعله.",
+  "flowListDraftLabel": "مسودة",
+  "flowListOverdueLabel": "متأخرة",
+  "flowListError": "تعذر تحميل مهام Flow. اسحب للتحديث.",
+
+  "exploreIntroTitle": "اكتشف ما هو قادم",
+  "exploreIntroSubtitle": "استكشف المزيد من الطرق للحفاظ على انسجام منزلك.",
+  "exploreFlowSubtitle": "راجع جميع مهام Flow وحافظ على سير الأعمال.",
+  "exploreShareSubtitle": "شاهد كل المصاريف التي أنشأتها وتتبع المدفوعات.",
+
+  "shareCreatedListTitle": "مصاريفك",
+  "shareCreatedListEmptyTitle": "لا توجد مصاريف بعد",
+  "shareCreatedListEmptySubtitle": "أنشئ مصروفًا ليظهر في هذه القائمة.",
+  "shareCreatedListError": "تعذر تحميل قائمة المصاريف. اسحب للتحديث.",
+  "shareCreatedListRetry": "إعادة المحاولة",
+
+  "shareCreatedListActiveSubtitle": "{paid} من {total} مدفوع",
+  "@shareCreatedListActiveSubtitle": {
+    "placeholders": {
+      "paid": {
+        "type": "double"
+      },
+      "total": {
+        "type": "double"
+      }
+    }
+  },
+  "shareCreatedListActiveAmount": "{paidAmount} من {totalAmount} تم تحصيلها",
+  "@shareCreatedListActiveAmount": {
+    "placeholders": {
+      "paidAmount": {
+        "type": "String"
+      },
+      "totalAmount": {
+        "type": "String"
+      }
+    }
+  },
+  "shareCreatedListDraftSubtitle": "أكمل التقسيم لتعيين المبالغ قبل النشر.",
+  "shareCreatedListDraftBadge": "غير معيَّن",
+  "shareCreatedListPaidBadge": "مدفوع بالكامل",
+
+  "profileSettingsTitle": "الملف الشخصي والمنزل",
+  "profileSettingsSubtitle": "إدارة تفضيلات حسابك والوصول إلى المنزل.",
+
+  "profileIdentityTitle": "تعديل الملف الشخصي",
+  "profileIdentitySubtitle": "اختر اسم مستخدم وصورة رمزية لمنزلك.",
+  "profileIdentityUsernameLabel": "اسم المستخدم",
+  "profileIdentityUsernameHint": "أحرف، أرقام، . أو _",
+  "profileIdentityUsernameEmptyError": "يرجى إدخال اسم مستخدم للمتابعة.",
+  "profileIdentityUsernameFormatError": "استخدم 3–30 حرفًا صغيرة أو أرقامًا. يمكنك استخدام النقاط أو الشرطات السفلية في المنتصف.",
+  "profileIdentityUsernameTakenError": "اسم المستخدم هذا مستخدم بالفعل. جرّب اسمًا آخر.",
+  "profileIdentityAvatarSectionTitle": "اختر صورة رمزية",
+  "profileIdentityAvatarSectionDescription": "كل صورة رمزية فريدة داخل المنزل.",
+  "profileIdentityAvatarEmpty": "لا توجد صور رمزية متاحة الآن. حاول مرة أخرى لاحقًا.",
+  "profileIdentityLoadError": "تعذر تحميل ملفك الشخصي.",
+  "profileIdentityRetry": "إعادة المحاولة",
+  "profileIdentitySaveButton": "حفظ التغييرات",
+  "profileIdentitySuccessMessage": "تم تحديث الملف الشخصي.",
+  "profileIdentityUsernamePreviewFallback": "اسم المستخدم الخاص بك",
+
+  "profileLeaveHomeTitle": "مغادرة المنزل",
+  "profileLeaveHomeSubtitle": "إيقاف المشاركة مع هذا المنزل. يجب على المالك نقل الملكية أولًا.",
+  "profileLeaveEligibilityLoading": "جارٍ التحقق من أعضاء المنزل…",
+  "profileLeaveEligibilityError": "تعذر تحميل أعضاء المنزل. حاول مرة أخرى.",
+  "profileLeaveOwnerSoloMessage": "أنت آخر عضو في هذا المنزل. مغادرتك ستوقف هذا المنزل للجميع.",
+  "profileLeaveOwnerNoEligibleMembers": "لا يوجد من يمكنه تولي الملكية الآن. حاول مرة أخرى لاحقًا.",
+  "profileLeaveTransferSheetTitle": "نقل الملكية",
+  "profileLeaveTransferSheetSubtitle": "اختر من سيصبح المالك الجديد قبل مغادرتك.",
+  "profileLeaveTransferSuccessMessage": "تم نقل الملكية. جارٍ إكمال عملية مغادرتك…",
+
+  "profileInfoHubTitle": "مركز المعلومات",
+  "profileInfoHubSubtitle": "افتح مركز كينلي على Notion داخل التطبيق.",
+  "profileInfoHubLoadError": "تعذر تحميل مركز المعلومات. تحقق من اتصالك بالإنترنت.",
+
+  "profileContactUsTitle": "اتصل بنا",
+  "profileContactUsSubtitle": "البريد الإلكتروني: support@makinglifeeasie.com",
+  "profileContactEmailSubject": "اتصل بنا",
+  "profileContactLaunchError": "تعذر فتح تطبيق البريد. حاول مرة أخرى.",
+
+  "profileLogoutTitle": "تسجيل الخروج",
+  "profileLogoutSubtitle": "تسجيل الخروج من كينلي على هذا الجهاز.",
+  "profileLogoutDialogTitle": "تسجيل الخروج؟",
+  "profileLogoutDialogMessage": "ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى منزلك.",
+
+  "profileDeleteAccountTitle": "حذف الحساب",
+  "profileDeleteAccountSubtitle": "إزالة حسابك في كينلي وبيانات ملفك الشخصي.",
+
+  "profileConfirmLeaveTitle": "مغادرة هذا المنزل؟",
+  "profileConfirmLeaveMessage": "ستفقد الوصول إلى Flow والسجل والمشاركات في هذا المنزل.",
+
+  "profileConfirmDeleteTitle": "حذف حسابك؟",
+  "profileConfirmDeleteMessage": "سيتم حذف حسابك وتسجيل خروجك. لا يمكن التراجع عن هذا الإجراء.",
+
+  "profileActionCancel": "إلغاء",
+  "profileActionConfirm": "متابعة",
+
+  "profileLeaveSuccessMessage": "لقد غادرت المنزل.",
+  "profileDeleteSuccessMessage": "سيتم حذف حسابك قريبًا. سنقوم بتسجيل خروجك.",
+  "profileGenericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+  "profileMissingHomeError": "تعذر العثور على منزلك الحالي. حاول مرة أخرى."
+}

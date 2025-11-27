@@ -657,7 +657,7 @@ class S {
   /// `Welcome to our Kinly home! Enter this invite code: {code}\nDownload the Kinly app: {link}`
   String hubShareInviteBody(Object code, Object link) {
     return Intl.message(
-      'Welcome to our Kinly home! Enter this invite code: $code\\nDownload the Kinly app: $link',
+      'Welcome to our Kinly home! Enter this invite code: $code\nDownload the Kinly app: $link',
       name: 'hubShareInviteBody',
       desc: '',
       args: [code, link],
@@ -2788,6 +2788,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'ar'),
       Locale.fromSubtags(languageCode: 'es'),
     ];
   }

@@ -23,7 +23,7 @@ class SectionContainer extends StatelessWidget {
     final spacing = Theme.of(context).extension<Spacing>();
     final effectivePadding =
         padding ??
-        EdgeInsets.fromLTRB(
+        EdgeInsetsDirectional.fromSTEB(
           spacing?.lg ?? 16,
           spacing?.lg ?? 16,
           spacing?.lg ?? 16,

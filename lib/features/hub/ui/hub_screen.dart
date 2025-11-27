@@ -231,7 +231,7 @@ class HubScreen extends StatelessWidget {
       ),
       builder: (context) {
         return Padding(
-          padding: EdgeInsets.fromLTRB(
+          padding: EdgeInsetsDirectional.fromSTEB(
             spacing.lg,
             spacing.lg,
             spacing.lg,

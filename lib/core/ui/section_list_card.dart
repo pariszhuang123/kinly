@@ -63,7 +63,7 @@ class SectionListCard extends StatelessWidget {
               ),
               if (badgeText != null)
                 Padding(
-                  padding: EdgeInsets.only(right: spacing?.xs ?? 4),
+                  padding: EdgeInsetsDirectional.only(end: spacing?.xs ?? 4),
                   child: Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: spacing?.xs ?? 4,

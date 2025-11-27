@@ -73,7 +73,7 @@ class TodayScreen extends StatelessWidget {
                             : maxWidth,
                   ),
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.fromLTRB(
+                    padding: EdgeInsetsDirectional.fromSTEB(
                       spacing.lg,
                       spacing.lg,
                       spacing.lg,

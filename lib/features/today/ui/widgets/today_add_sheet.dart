@@ -48,7 +48,7 @@ class TodayAddSheet extends StatelessWidget {
     return SafeArea(
       top: false, // keep the nice rounded top edge tight to the sheet
       child: Padding(
-        padding: EdgeInsets.fromLTRB(
+        padding: EdgeInsetsDirectional.fromSTEB(
           spacing.lg,
           spacing.md,
           spacing.lg,

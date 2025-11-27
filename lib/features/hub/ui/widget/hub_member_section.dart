@@ -78,7 +78,7 @@ class HubMembersSection extends StatelessWidget {
           SizedBox(height: spacing.sm),
           if (onCopyCode != null)
             Align(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: KinlyOutlinedButton.icon(
                 onPressed: onCopyCode!,
                 icon: Icons.copy,

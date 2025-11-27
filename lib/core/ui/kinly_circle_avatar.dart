@@ -76,7 +76,7 @@ class KinlyCircleAvatar extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Positioned.fill(child: avatar),
-          if (isOwner) Positioned(right: -2, bottom: -2, child: badge),
+          if (isOwner) PositionedDirectional(end: -2, bottom: -2, child: badge),
         ],
       ),
     );

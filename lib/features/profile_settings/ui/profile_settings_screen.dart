@@ -262,7 +262,7 @@ class ProfileSettingsScreen extends StatelessWidget {
             media.viewPadding.bottom + media.viewInsets.bottom;
         return SafeArea(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(
+            padding: EdgeInsetsDirectional.fromSTEB(
               spacing.lg,
               spacing.lg,
               spacing.lg,
@@ -474,9 +474,9 @@ class _ProfileHeader extends StatelessWidget {
                   isOwner: isOwner,
                 ),
                 if (isLoading)
-                  Positioned(
+                  PositionedDirectional(
                     bottom: 0,
-                    right: 0,
+                    end: 0,
                     child: Container(
                       width: 20,
                       height: 20,

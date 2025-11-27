@@ -331,10 +331,10 @@ class _DetailRow extends StatelessWidget {
             child:
                 isExpanded
                     ? Padding(
-                      padding: const EdgeInsets.only(
-                        left: 32,
+                      padding: const EdgeInsetsDirectional.only(
+                        start: 32,
                         top: 8,
-                        right: 12,
+                        end: 12,
                       ),
                       child: Text(
                         noteText ?? '',

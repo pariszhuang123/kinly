@@ -88,7 +88,7 @@ class TodayShareSection extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(bottom: spacing?.sm ?? 8),
             child: Align(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: Text(
                 s.todayShareError,
                 style: Theme.of(

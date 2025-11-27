@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Comparte Kinly para que compartir sea más ligero: ${link}";
 
   static String m4(code, link) =>
-      "Bienvenido a nuestro hogar Kinly. Introduce este código de invitación: ${code}\\nDescarga la app Kinly: ${link}";
+      "Bienvenido a nuestro hogar Kinly. Introduce este código de invitación: ${code}\nDescarga la app Kinly: ${link}";
 
   static String m5(code) => "Te has unido con el cÃ³digo: ${code}";
 

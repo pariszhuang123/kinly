@@ -573,7 +573,12 @@ class _OptionalDetailsExpansion extends StatelessWidget {
           s.flowChoreDetailMoreInfoTitle,
           style: theme.textTheme.titleMedium,
         ),
-        childrenPadding: EdgeInsets.fromLTRB(16, 0, 16, spacing?.md ?? 16),
+        childrenPadding: EdgeInsetsDirectional.fromSTEB(
+          16,
+          0,
+          16,
+          spacing?.md ?? 16,
+        ),
         children: [
           TextField(
             controller: notesController,
