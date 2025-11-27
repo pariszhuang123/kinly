@@ -32,7 +32,9 @@ void main() {
     when(
       () => todayBloc.stream,
     ).thenAnswer((_) => const Stream<TodayState>.empty());
-    when(() => todayBloc.state).thenReturn(const TodayState.loading());
+    when(() => todayBloc.state).thenReturn(
+      const TodayState.loading(harmonyPromptTick: 0),
+    );
   });
 
   Widget buildApp() {
@@ -47,7 +49,7 @@ void main() {
       supportedLocales: S.delegate.supportedLocales,
       home: BlocProvider<TodayBloc>.value(
         value: todayBloc,
-        child: const TodayScreen(),
+        child: const TodayScreen(homeId: 'home'),
       ),
     );
   }

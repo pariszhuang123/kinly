@@ -8,9 +8,11 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_sizes.dart';
 import '../../../core/theme/spacing.dart';
+import '../../../core/theme/kinly_sections.dart';
 import '../../../core/ui/home_bottom_nav.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../core/ui/kinly_selection_card.dart';
 import '../../../generated/l10n.dart';
 
 import '../bloc/hub_bloc.dart';
@@ -18,7 +20,8 @@ import 'widget/hub_member_section.dart';
 import 'widget/hub_qr_section.dart';
 
 class HubScreen extends StatelessWidget {
-  const HubScreen({super.key});
+  final String homeId;
+  const HubScreen({super.key, required this.homeId});
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,8 @@ class HubScreen extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final sizes = theme.extension<AppSizes>();
+    final sections = theme.extension<KinlySections>()!;
+    final s = S.of(context);
 
     return PopScope(
       // ❗ Prevent this route from being popped by back button / gesture
@@ -34,7 +39,7 @@ class HubScreen extends StatelessWidget {
         backgroundColor: colorScheme.surface,
         appBar: AppBar(
           backgroundColor: colorScheme.surface,
-          title: Text(S.of(context).navHub),
+          title: Text(s.navHub),
           // Just in case, make sure no back arrow is shown
           automaticallyImplyLeading: false,
         ),
@@ -77,6 +82,7 @@ class HubScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // 👥 Members section
                                 HubMembersSection(
                                   state: state,
                                   onInviteTap:
@@ -92,12 +98,28 @@ class HubScreen extends StatelessWidget {
                                           : null,
                                 ),
                                 SizedBox(height: spacing.xl),
+
+                                // 🔳 QR / app link section
                                 HubQrSection(
                                   state: state,
                                   onShareAppTap:
                                       () => _shareAppLink(context, state),
                                   onQrTap: () => _showQrSheet(context, state),
                                 ),
+                                SizedBox(height: spacing.xl),
+
+                                // 🧡 Gratitude Wall card
+                                KinlySelectionCard(
+                                  colors: sections.hub,
+                                  title: s.hubCardGratitudeWallTitle,
+                                  subtitle: s.hubCardGratitudeWallSubtitle,
+                                  icon: Icons.favorite_rounded,
+                                  onTap:
+                                      () =>
+                                          context.push(AppRoutes.gratitudeWall),
+                                ),
+
+                                // 👉 Add more Hub “vibe” cards here later if needed
                               ],
                             ),
                           ),

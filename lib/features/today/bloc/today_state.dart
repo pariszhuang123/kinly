@@ -10,6 +10,8 @@ class TodayState extends Equatable {
   final TodayUserProfile? profile;
   final String? message;
   final Object? error;
+  final int harmonyPromptTick;
+  final bool hasShownHarmonyPrompt;
 
   const TodayState._({
     required this.isLoading,
@@ -21,12 +23,16 @@ class TodayState extends Equatable {
     this.profile,
     this.message,
     this.error,
+    this.harmonyPromptTick = 0,
+    this.hasShownHarmonyPrompt = false,
   });
 
   const TodayState.loading({
     TodayUserProfile? profile,
     List<TodayShareOwed> shareOwed = const [],
     List<TodayShareDraft> shareDrafts = const [],
+    int harmonyPromptTick = 0,
+    bool hasShownHarmonyPrompt = false,
   }) : this._(
          isLoading: true,
          activeTasks: const [],
@@ -34,6 +40,8 @@ class TodayState extends Equatable {
          shareOwed: shareOwed,
          shareDrafts: shareDrafts,
          profile: profile,
+         harmonyPromptTick: harmonyPromptTick,
+         hasShownHarmonyPrompt: hasShownHarmonyPrompt,
        );
 
   const TodayState.loaded({
@@ -43,6 +51,8 @@ class TodayState extends Equatable {
     required List<TodayShareDraft> shareDrafts,
     TodayUserProfile? profile,
     String? shareErrorMessage,
+    int harmonyPromptTick = 0,
+    bool hasShownHarmonyPrompt = false,
   }) : this._(
          isLoading: false,
          activeTasks: activeTasks,
@@ -51,6 +61,8 @@ class TodayState extends Equatable {
          shareDrafts: shareDrafts,
          profile: profile,
          shareErrorMessage: shareErrorMessage,
+         harmonyPromptTick: harmonyPromptTick,
+         hasShownHarmonyPrompt: hasShownHarmonyPrompt,
        );
 
   const TodayState.failure({
@@ -60,6 +72,8 @@ class TodayState extends Equatable {
     List<TodayShareOwed> shareOwed = const [],
     List<TodayShareDraft> shareDrafts = const [],
     String? shareErrorMessage,
+    int harmonyPromptTick = 0,
+    bool hasShownHarmonyPrompt = false,
   }) : this._(
          isLoading: false,
          activeTasks: const [],
@@ -70,6 +84,8 @@ class TodayState extends Equatable {
          message: message,
          error: error,
          shareErrorMessage: shareErrorMessage,
+         harmonyPromptTick: harmonyPromptTick,
+         hasShownHarmonyPrompt: hasShownHarmonyPrompt,
        );
 
   bool get hasFlowContent => activeTasks.isNotEmpty || draftTasks.isNotEmpty;
@@ -86,5 +102,7 @@ class TodayState extends Equatable {
     profile,
     message,
     error,
+    harmonyPromptTick,
+    hasShownHarmonyPrompt,
   ];
 }

@@ -5,10 +5,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'enums/chore_error_code.dart';
 import 'enums/expense_error_code.dart';
 import 'enums/home_error_codes.dart';
+import 'enums/mood_error_code.dart';
 
 export 'enums/chore_error_code.dart';
 export 'enums/expense_error_code.dart';
 export 'enums/home_error_codes.dart';
+export 'enums/mood_error_code.dart';
 
 class HomeJoinException implements Exception {
   final JoinErrorCode code;
@@ -357,6 +359,61 @@ class SupabaseErrorMapper {
       }
     }
     return LeaveException(LeaveErrorCode.unknown, error.toString());
+  }
+
+  // ----- mood.submit -----
+  static MoodSubmitException mapMoodSubmit(Object error) {
+    if (error is AuthException) {
+      return MoodSubmitException(
+        MoodSubmitErrorCode.unauthorized,
+        error.message,
+      );
+    }
+    if (error is PostgrestException) {
+      final parsed = _parseErrorJson(error.message);
+      switch (parsed.code) {
+        case 'INVALID_HOME':
+          return MoodSubmitException(
+            MoodSubmitErrorCode.invalidHome,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_MOOD':
+          return MoodSubmitException(
+            MoodSubmitErrorCode.invalidMood,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'MOOD_ALREADY_SUBMITTED':
+          return MoodSubmitException(
+            MoodSubmitErrorCode.moodAlreadySubmitted,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'FORBIDDEN':
+          return MoodSubmitException(
+            MoodSubmitErrorCode.forbidden,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'UNAUTHORIZED':
+          return MoodSubmitException(
+            MoodSubmitErrorCode.unauthorized,
+            parsed.message,
+            details: parsed.details,
+          );
+        default:
+          return MoodSubmitException(
+            MoodSubmitErrorCode.unknown,
+            parsed.message,
+            details: parsed.details,
+          );
+      }
+    }
+    return MoodSubmitException(
+      MoodSubmitErrorCode.unknown,
+      error.toString(),
+    );
   }
 
   // Internal helper to parse JSON (code/message/details) from RPC errors

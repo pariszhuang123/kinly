@@ -16,6 +16,8 @@ import '../app_version/supabase_app_version_repository.dart';
 import '../network/connectivity_monitor.dart';
 import '../logging/logger.dart';
 import '../logging/debug_logger.dart';
+import '../../data/repositories/mood_repository.dart';
+import '../mood/supabase_mood_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -60,6 +62,11 @@ void setupDependencies() {
   if (!sl.isRegistered<ExpensesRepository>()) {
     sl.registerLazySingleton<ExpensesRepository>(
       () => SupabaseExpensesRepository(),
+    );
+  }
+  if (!sl.isRegistered<MoodRepository>()) {
+    sl.registerLazySingleton<MoodRepository>(
+      () => SupabaseMoodRepository(),
     );
   }
 }

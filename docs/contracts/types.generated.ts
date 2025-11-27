@@ -1258,6 +1258,13 @@ export type Database = {
         Args: { p_home_id: string }
         Returns: boolean
       }
+      gratitude_wall_status: {
+        Args: { p_home_id: string }
+        Returns: {
+          has_unread: boolean
+          last_read_at: string
+        }[]
+      }
       home_assignees_list: {
         Args: { p_home_id: string }
         Returns: {

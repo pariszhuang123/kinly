@@ -8,6 +8,7 @@ import '../../../data/repositories/chores_repository.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/profile_repository.dart';
+import '../../../data/repositories/mood_repository.dart';
 import '../domain/models.dart'; // TodayFlowTask etc.
 
 part 'today_event.dart';
@@ -18,6 +19,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final ProfileRepository _profileRepository;
   final ExpensesRepository _expensesRepository;
   final HomeRepository _homeRepository;
+  final MoodRepository _moodRepository;
   final String _homeId;
 
   TodayBloc({
@@ -25,11 +27,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required ProfileRepository profileRepository,
     required ExpensesRepository expensesRepository,
     required HomeRepository homeRepository,
+    required MoodRepository moodRepository,
     required String homeId,
   }) : _choresRepository = choresRepository,
        _profileRepository = profileRepository,
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
+       _moodRepository = moodRepository,
        _homeId = homeId,
        super(const TodayState.loading()) {
     on<TodayStarted>(_onStarted);
@@ -55,6 +59,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     bool isRefresh = false,
   }) async {
     TodayUserProfile? profile = state.profile;
+    final prevPromptTick = state.harmonyPromptTick;
+    final prevHasShownHarmony = state.hasShownHarmonyPrompt;
     try {
       if (!isRefresh) {
         emit(
@@ -62,9 +68,17 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             profile: profile,
             shareOwed: state.shareOwed,
             shareDrafts: state.shareDrafts,
+            harmonyPromptTick: prevPromptTick,
+            hasShownHarmonyPrompt: prevHasShownHarmony,
           ),
         );
       }
+
+      final hasSubmittedMood =
+          await _moodRepository.isSubmittedThisWeek(_homeId);
+      final shouldPrompt = !hasSubmittedMood && !prevHasShownHarmony;
+      final promptTick = shouldPrompt ? prevPromptTick + 1 : prevPromptTick;
+      final hasShownPromptNext = prevHasShownHarmony || !hasSubmittedMood;
 
       final profileFuture = _profileRepository.getCurrentProfile();
       final draftsFuture = _choresRepository.listTodayFlow(
@@ -119,6 +133,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shareDrafts: shareSnapshot.drafts,
           shareErrorMessage: shareSnapshot.errorMessage,
           profile: profile,
+          harmonyPromptTick: promptTick,
+          hasShownHarmonyPrompt: hasShownPromptNext,
           // later: you can add today's expenses, gratitude items, etc.
         ),
       );
@@ -132,6 +148,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shareOwed: state.shareOwed,
           shareDrafts: state.shareDrafts,
           shareErrorMessage: state.shareErrorMessage,
+          harmonyPromptTick: prevPromptTick,
+          hasShownHarmonyPrompt: prevHasShownHarmony,
         ),
       );
       // optional: log error/stackTrace via your logger/Sentry here

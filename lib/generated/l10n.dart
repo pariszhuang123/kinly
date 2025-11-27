@@ -764,6 +764,26 @@ class S {
     );
   }
 
+  /// `Gratitude Wall`
+  String get hubCardGratitudeWallTitle {
+    return Intl.message(
+      'Gratitude Wall',
+      name: 'hubCardGratitudeWallTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Post and read shout-outs, thank-yous, and moments of appreciation.`
+  String get hubCardGratitudeWallSubtitle {
+    return Intl.message(
+      'Post and read shout-outs, thank-yous, and moments of appreciation.',
+      name: 'hubCardGratitudeWallSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Couldn't load Hub. Please try again.`
   String get hubError {
     return Intl.message(
@@ -2776,6 +2796,246 @@ class S {
     return Intl.message(
       'We couldn\'t find your current home. Try again.',
       name: 'profileMissingHomeError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Weekly house harmony`
+  String get harmonyTitle {
+    return Intl.message(
+      'Weekly house harmony',
+      name: 'harmonyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How's the home feeling this week?`
+  String get harmonyQuestion {
+    return Intl.message(
+      'How\'s the home feeling this week?',
+      name: 'harmonyQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick the weather that best matches your vibe and leave an optional note.`
+  String get harmonySubtext {
+    return Intl.message(
+      'Pick the weather that best matches your vibe and leave an optional note.',
+      name: 'harmonySubtext',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sunny`
+  String get harmonyMoodSunny {
+    return Intl.message('Sunny', name: 'harmonyMoodSunny', desc: '', args: []);
+  }
+
+  /// `Partly sunny`
+  String get harmonyMoodPartiallySunny {
+    return Intl.message(
+      'Partly sunny',
+      name: 'harmonyMoodPartiallySunny',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cloudy`
+  String get harmonyMoodCloudy {
+    return Intl.message(
+      'Cloudy',
+      name: 'harmonyMoodCloudy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rainy`
+  String get harmonyMoodRainy {
+    return Intl.message('Rainy', name: 'harmonyMoodRainy', desc: '', args: []);
+  }
+
+  /// `Thunderstorm`
+  String get harmonyMoodThunderstorm {
+    return Intl.message(
+      'Thunderstorm',
+      name: 'harmonyMoodThunderstorm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a note (optional)`
+  String get harmonyCommentLabel {
+    return Intl.message(
+      'Add a note (optional)',
+      name: 'harmonyCommentLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What’s making the home feel this way?`
+  String get harmonyCommentHint {
+    return Intl.message(
+      'What’s making the home feel this way?',
+      name: 'harmonyCommentHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share this on the gratitude wall`
+  String get harmonyShareLabel {
+    return Intl.message(
+      'Share this on the gratitude wall',
+      name: 'harmonyShareLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Visible to your home when the mood is sunny or partly sunny.`
+  String get harmonyShareSubtitle {
+    return Intl.message(
+      'Visible to your home when the mood is sunny or partly sunny.',
+      name: 'harmonyShareSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit feedback`
+  String get harmonySubmitCta {
+    return Intl.message(
+      'Submit feedback',
+      name: 'harmonySubmitCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Thanks! Your feedback was saved.`
+  String get harmonySubmitSuccess {
+    return Intl.message(
+      'Thanks! Your feedback was saved.',
+      name: 'harmonySubmitSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You’ve already shared your mood for this week.`
+  String get harmonyErrorAlreadySubmitted {
+    return Intl.message(
+      'You’ve already shared your mood for this week.',
+      name: 'harmonyErrorAlreadySubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can’t submit feedback for this home.`
+  String get harmonyErrorForbidden {
+    return Intl.message(
+      'You can’t submit feedback for this home.',
+      name: 'harmonyErrorForbidden',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something went wrong. Please try again.`
+  String get harmonyErrorUnknown {
+    return Intl.message(
+      'Something went wrong. Please try again.',
+      name: 'harmonyErrorUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick a mood before submitting.`
+  String get harmonyErrorSelectMood {
+    return Intl.message(
+      'Pick a mood before submitting.',
+      name: 'harmonyErrorSelectMood',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share this week’s harmony`
+  String get harmonyEntryCta {
+    return Intl.message(
+      'Share this week’s harmony',
+      name: 'harmonyEntryCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn’t open harmony feedback. Try again.`
+  String get harmonyEntryError {
+    return Intl.message(
+      'Couldn’t open harmony feedback. Try again.',
+      name: 'harmonyEntryError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gratitude wall`
+  String get gratitudeWallTitle {
+    return Intl.message(
+      'Gratitude wall',
+      name: 'gratitudeWallTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{time} today`
+  String gratitudeWallTimestamp(Object time) {
+    return Intl.message(
+      '$time today',
+      name: 'gratitudeWallTimestamp',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `No gratitude posts yet`
+  String get gratitudeWallEmptyTitle {
+    return Intl.message(
+      'No gratitude posts yet',
+      name: 'gratitudeWallEmptyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share a sunny moment to start filling the wall.`
+  String get gratitudeWallEmptySubtitle {
+    return Intl.message(
+      'Share a sunny moment to start filling the wall.',
+      name: 'gratitudeWallEmptySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try again`
+  String get gratitudeWallRetry {
+    return Intl.message(
+      'Try again',
+      name: 'gratitudeWallRetry',
       desc: '',
       args: [],
     );

@@ -28,6 +28,9 @@ import '../../features/share/ui/share_create/share_create_provider.dart';
 import '../../features/share/ui/share_created_list/share_created_list_provider.dart';
 import '../../features/share/ui/share_edit_provider.dart';
 import '../../features/share/ui/share_edit_route_args.dart';
+import '../../features/harmony/ui/harmony_provider.dart';
+import '../../features/harmony/ui/gratitude_wall_provider.dart';
+import '../../data/repositories/mood_repository.dart';
 
 class AppRoutes {
   static const splash = '/';
@@ -48,6 +51,8 @@ class AppRoutes {
   static const shareCreatedList = '/share/created';
   static const profileSettings = '/settings/profile';
   static const profileIdentity = '/settings/profile/identity';
+  static const harmony = '/harmony';
+  static const gratitudeWall = '/gratitude-wall';
 
   static String flowChoreEditPath(String choreId) => '/flow/chore/$choreId';
   static String flowChoreDetailPath(String choreId) =>
@@ -165,6 +170,7 @@ GoRouter createRouter({
             profileRepository: sl<ProfileRepository>(),
             expensesRepository: sl<ExpensesRepository>(),
             homeRepository: sl<HomeRepository>(),
+            moodRepository: sl<MoodRepository>(),
           );
         },
       ),
@@ -190,6 +196,34 @@ GoRouter createRouter({
           return HubProvider(
             homeId: membership.homeId,
             homeRepository: sl<HomeRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.harmony,
+        name: 'harmony',
+        builder: (_, __) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Harmony requires an active membership.');
+          }
+          return HarmonyProvider(
+            homeId: membership.homeId,
+            moodRepository: sl<MoodRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.gratitudeWall,
+        name: 'gratitudeWall',
+        builder: (_, __) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Gratitude wall requires an active membership.');
+          }
+          return GratitudeWallProvider(
+            homeId: membership.homeId,
+            moodRepository: sl<MoodRepository>(),
           );
         },
       ),

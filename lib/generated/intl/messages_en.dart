@@ -25,6 +25,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(client, current) =>
       "Your version: ${client}\nLatest version: ${current}";
 
+  static String m11(time) => "${time} today";
+
   static String m2(partOfDay, name) => "Good ${partOfDay}, ${name}";
 
   static String m3(link) => "Share Kinly so sharing feels lighter: ${link}";
@@ -236,6 +238,17 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "force_update_version_details": m1,
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("friend"),
+    "gratitudeWallEmptySubtitle": MessageLookupByLibrary.simpleMessage(
+      "Share a sunny moment to start filling the wall.",
+    ),
+    "gratitudeWallEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "No gratitude posts yet",
+    ),
+    "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("Try again"),
+    "gratitudeWallTimestamp": m11,
+    "gratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
+      "Gratitude wall",
+    ),
     "greetingPartAfternoon": MessageLookupByLibrary.simpleMessage("afternoon"),
     "greetingPartEvening": MessageLookupByLibrary.simpleMessage("evening"),
     "greetingPartMorning": MessageLookupByLibrary.simpleMessage("morning"),
@@ -243,6 +256,64 @@ class MessageLookup extends MessageLookupByLibrary {
     "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("name"),
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "part of day (morning/afternoon/evening)",
+    ),
+    "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
+      "What’s making the home feel this way?",
+    ),
+    "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
+      "Add a note (optional)",
+    ),
+    "harmonyEntryCta": MessageLookupByLibrary.simpleMessage(
+      "Share this week’s harmony",
+    ),
+    "harmonyEntryError": MessageLookupByLibrary.simpleMessage(
+      "Couldn’t open harmony feedback. Try again.",
+    ),
+    "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
+      "You’ve already shared your mood for this week.",
+    ),
+    "harmonyErrorForbidden": MessageLookupByLibrary.simpleMessage(
+      "You can’t submit feedback for this home.",
+    ),
+    "harmonyErrorSelectMood": MessageLookupByLibrary.simpleMessage(
+      "Pick a mood before submitting.",
+    ),
+    "harmonyErrorUnknown": MessageLookupByLibrary.simpleMessage(
+      "Something went wrong. Please try again.",
+    ),
+    "harmonyMoodCloudy": MessageLookupByLibrary.simpleMessage("Cloudy"),
+    "harmonyMoodPartiallySunny": MessageLookupByLibrary.simpleMessage(
+      "Partly sunny",
+    ),
+    "harmonyMoodRainy": MessageLookupByLibrary.simpleMessage("Rainy"),
+    "harmonyMoodSunny": MessageLookupByLibrary.simpleMessage("Sunny"),
+    "harmonyMoodThunderstorm": MessageLookupByLibrary.simpleMessage(
+      "Thunderstorm",
+    ),
+    "harmonyQuestion": MessageLookupByLibrary.simpleMessage(
+      "How\'s the home feeling this week?",
+    ),
+    "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
+      "Share this on the gratitude wall",
+    ),
+    "harmonyShareSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Visible to your home when the mood is sunny or partly sunny.",
+    ),
+    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Submit feedback"),
+    "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
+      "Thanks! Your feedback was saved.",
+    ),
+    "harmonySubtext": MessageLookupByLibrary.simpleMessage(
+      "Pick the weather that best matches your vibe and leave an optional note.",
+    ),
+    "harmonyTitle": MessageLookupByLibrary.simpleMessage(
+      "Weekly house harmony",
+    ),
+    "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Post and read shout-outs, thank-yous, and moments of appreciation.",
+    ),
+    "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
+      "Gratitude Wall",
     ),
     "hubCodeCopied": MessageLookupByLibrary.simpleMessage("Invite code copied"),
     "hubCopyCode": MessageLookupByLibrary.simpleMessage("Copy invite code"),

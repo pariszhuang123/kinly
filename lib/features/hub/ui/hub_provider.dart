@@ -30,7 +30,7 @@ class HubProvider extends StatelessWidget {
             homeId: homeId,
             logger: logger,
           ),
-      child: const HubScreen(),
+      child: HubScreen(homeId: homeId),
     );
   }
 }

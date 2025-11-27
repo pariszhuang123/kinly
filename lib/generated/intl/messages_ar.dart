@@ -251,6 +251,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "جزء اليوم (صباح/ظهر/مساء)",
     ),
+    "harmonyErrorSelectMood": MessageLookupByLibrary.simpleMessage(
+      "اختر مزاجا قبل الارسال.",
+    ),
     "hubCodeCopied": MessageLookupByLibrary.simpleMessage("تم نسخ رمز الدعوة"),
     "hubCopyCode": MessageLookupByLibrary.simpleMessage("نسخ رمز الدعوة"),
     "hubError": MessageLookupByLibrary.simpleMessage(

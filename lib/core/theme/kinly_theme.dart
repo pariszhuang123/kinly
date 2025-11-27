@@ -141,6 +141,13 @@ ThemeData buildKinlyTheme(Brightness brightness) {
               icon: Color(0xFFFFB5A0),
               accent: Color(0xFF88C7B0),
             ),
+            hub: SectionColors(
+              // Warm, cozy “house vibe” palette for dark mode
+              background: Color(0xFF26201A),
+              card: Color(0xFF31261C),
+              icon: Color(0xFFF5C96A), // ties to honey / gratitude
+              accent: Color(0xFF88C7B0), // keep Kinly teal as accent
+            ),
             empty: SectionColors(
               background: Color(0xFF2A2E2D),
               card: Color(0xFF1D2120),
@@ -167,6 +174,13 @@ ThemeData buildKinlyTheme(Brightness brightness) {
               card: Color(0xFFFFF7F3),
               icon: Color(0xFF7F2B0E),
               accent: tealBrand,
+            ),
+            hub: SectionColors(
+              // Soft warm “gratitude / hub” palette for light mode
+              background: Color(0xFFFDF6EB),
+              card: Color(0xFFFFF9F1),
+              icon: Color(0xFFF6B73C), // honeyAccent
+              accent: Color(0xFF2F5B4B), // tealPrimary
             ),
             empty: SectionColors(
               background: Color(0xFFF4F6F5),

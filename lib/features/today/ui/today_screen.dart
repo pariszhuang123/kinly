@@ -27,9 +27,12 @@ import '../../../../data/repositories/expenses_repository.dart';
 import '../../share/ui/share_owed_detail_screen.dart';
 import '../../share/ui/share_edit_route_args.dart';
 import '../../share/ui/share_edit_outcome.dart';
+import '../../harmony/ui/harmony_provider.dart';
+import '../../../data/repositories/mood_repository.dart';
 
 class TodayScreen extends StatelessWidget {
-  const TodayScreen({super.key});
+  final String homeId;
+  const TodayScreen({super.key, required this.homeId});
 
   static const _shareLogTag = 'TodayShare';
 
@@ -53,13 +56,24 @@ class TodayScreen extends StatelessWidget {
     final now = DateTime.now();
     final partOfDay = _partOfDay(now);
 
-    return PopScope(
-      // ❗ Prevent leaving TodayScreen via system back / back gesture
-      canPop: false,
-      child: Scaffold(
-        backgroundColor: colorScheme.surface,
-        body: SafeArea(
-          child: LayoutBuilder(
+    return BlocListener<TodayBloc, TodayState>(
+      listenWhen:
+          (prev, curr) =>
+              prev.harmonyPromptTick != curr.harmonyPromptTick &&
+              curr.harmonyPromptTick > 0,
+      listener: (context, state) async {
+        await _openHarmonySheet(context);
+        if (context.mounted) {
+          context.read<TodayBloc>().add(const TodayRefreshed());
+        }
+      },
+      child: PopScope(
+        // Prevent leaving TodayScreen via system back / back gesture
+        canPop: false,
+        child: Scaffold(
+          backgroundColor: colorScheme.surface,
+          body: SafeArea(
+            child: LayoutBuilder(
             builder: (context, constraints) {
               final maxWidth = sizes?.maxContentWidth ?? 640.0;
 
@@ -182,6 +196,7 @@ class TodayScreen extends StatelessWidget {
           },
         ),
       ),
+      ),
     );
   }
 
@@ -286,6 +301,30 @@ class TodayScreen extends StatelessWidget {
     await context.push<bool>(
       AppRoutes.shareCreatedList,
       extra: true, // show drafts-only list
+    );
+  }
+
+  Future<void> _openHarmonySheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        final sheet = ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          child: HarmonyProvider(
+            homeId: homeId,
+            moodRepository: sl<MoodRepository>(),
+          ),
+        );
+        return FractionallySizedBox(
+          heightFactor: 0.92,
+          child: sheet,
+        );
+      },
     );
   }
 }

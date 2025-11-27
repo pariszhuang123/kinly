@@ -203,19 +203,18 @@ class _DraftList extends StatelessWidget {
     required this.onTap,
     required this.colors,
     this.onSeeAllTap,
-    this.maxVisible = 3,
   });
 
   final List<TodayShareDraft> drafts;
   final void Function(TodayShareDraft) onTap;
   final SectionColors colors;
   final VoidCallback? onSeeAllTap;
-  final int maxVisible;
 
   @override
   Widget build(BuildContext context) {
     final spacing = Theme.of(context).extension<Spacing>()!;
     final s = S.of(context);
+    const maxVisible = 3;
     final visibleDrafts = drafts.take(maxVisible).toList(growable: false);
     return Column(
       children: [
