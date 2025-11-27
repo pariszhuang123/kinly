@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/expenses/models.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../data/repositories/home_repository.dart';
@@ -55,9 +56,10 @@ class ShareEditProvider extends StatelessWidget {
                     child: Text(message, textAlign: TextAlign.center),
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
+                  KinlyFilledButton.text(
+                    fullWidth: true,
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(s.shareEditClose),
+                    label: s.shareEditClose,
                   ),
                 ],
               ),

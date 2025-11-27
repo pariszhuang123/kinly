@@ -9,6 +9,7 @@ import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
 import '../../../../core/ui/kinly_loader.dart';
+import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../bloc/join_home_bloc.dart';
 
 class JoinHomeScreen extends StatelessWidget {
@@ -104,21 +105,26 @@ class _JoinFormState extends State<_JoinForm> {
                       ),
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed:
-                      !isSubmitting && state.canSubmit
-                          ? () => context.read<JoinHomeBloc>().add(
-                            const JoinHomeSubmitted(),
-                          )
-                          : null,
-                  child:
-                      isSubmitting
-                          ? const SizedBox(
-                            height: 16,
-                            width: 16,
-                            child: KinlyLoader(size: 16),
-                          )
-                          : Text(s.join_submit),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    KinlyFilledButton.text(
+                      fullWidth: true,
+                      onPressed:
+                          !isSubmitting && state.canSubmit
+                              ? () => context.read<JoinHomeBloc>().add(
+                                const JoinHomeSubmitted(),
+                              )
+                              : null,
+                      label: s.join_submit,
+                    ),
+                    if (isSubmitting)
+                      const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: KinlyLoader(size: 16),
+                      ),
+                  ],
                 ),
               ],
             );

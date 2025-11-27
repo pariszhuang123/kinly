@@ -56,17 +56,33 @@ class TodayScreen extends StatelessWidget {
     final now = DateTime.now();
     final partOfDay = _partOfDay(now);
 
-    return BlocListener<TodayBloc, TodayState>(
-      listenWhen:
-          (prev, curr) =>
-              prev.harmonyPromptTick != curr.harmonyPromptTick &&
-              curr.harmonyPromptTick > 0,
-      listener: (context, state) async {
-        await _openHarmonySheet(context);
-        if (context.mounted) {
-          context.read<TodayBloc>().add(const TodayRefreshed());
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TodayBloc, TodayState>(
+          listenWhen:
+              (prev, curr) =>
+                  prev.harmonyPromptTick != curr.harmonyPromptTick &&
+                  curr.harmonyPromptTick > 0,
+          listener: (context, state) async {
+            await _openHarmonySheet(context);
+            if (context.mounted) {
+              context.read<TodayBloc>().add(const TodayRefreshed());
+            }
+          },
+        ),
+        BlocListener<TodayBloc, TodayState>(
+          listenWhen:
+              (prev, curr) =>
+                  prev.npsPromptTick != curr.npsPromptTick &&
+                  curr.npsPromptTick > 0,
+          listener: (context, state) async {
+            await context.push(AppRoutes.nps);
+            if (context.mounted) {
+              context.read<TodayBloc>().add(const TodayRefreshed());
+            }
+          },
+        ),
+      ],
       child: PopScope(
         // Prevent leaving TodayScreen via system back / back gesture
         canPop: false,
@@ -74,128 +90,128 @@ class TodayScreen extends StatelessWidget {
           backgroundColor: colorScheme.surface,
           body: SafeArea(
             child: LayoutBuilder(
-            builder: (context, constraints) {
-              final maxWidth = sizes?.maxContentWidth ?? 640.0;
+              builder: (context, constraints) {
+                final maxWidth = sizes?.maxContentWidth ?? 640.0;
 
-              return Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth:
-                        constraints.maxWidth < maxWidth
-                            ? constraints.maxWidth
-                            : maxWidth,
-                  ),
-                  child: SingleChildScrollView(
-                    padding: EdgeInsetsDirectional.fromSTEB(
-                      spacing.lg,
-                      spacing.lg,
-                      spacing.lg,
-                      spacing.xl * 2, // bottom spacing for FAB
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth:
+                          constraints.maxWidth < maxWidth
+                              ? constraints.maxWidth
+                              : maxWidth,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 🔹 Header
-                        TodayHeaderContainer(partOfDay: partOfDay),
-                        SizedBox(height: spacing.xl),
+                    child: SingleChildScrollView(
+                      padding: EdgeInsetsDirectional.fromSTEB(
+                        spacing.lg,
+                        spacing.lg,
+                        spacing.lg,
+                        spacing.xl * 2, // bottom spacing for FAB
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 🔹 Header
+                          TodayHeaderContainer(partOfDay: partOfDay),
+                          SizedBox(height: spacing.xl),
 
-                        // 🔹 Today content driven by TodayBloc
-                        BlocBuilder<TodayBloc, TodayState>(
-                          builder: (context, state) {
-                            if (state.isLoading) {
-                              return const Center(child: KinlyLoader());
-                            }
+                          // 🔹 Today content driven by TodayBloc
+                          BlocBuilder<TodayBloc, TodayState>(
+                            builder: (context, state) {
+                              if (state.isLoading) {
+                                return const Center(child: KinlyLoader());
+                              }
 
-                            final hasFlow = state.hasFlowContent;
-                            final hasShare = state.hasShareContent;
+                              final hasFlow = state.hasFlowContent;
+                              final hasShare = state.hasShareContent;
 
-                            // If no Flow and no Share → show empty state card
-                            if (!hasFlow && !hasShare) {
-                              return const TodayEmptyStateCard();
-                            }
+                              // If no Flow and no Share → show empty state card
+                              if (!hasFlow && !hasShare) {
+                                return const TodayEmptyStateCard();
+                              }
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (hasFlow) ...[
-                                  TodayFlowSectionContainer(
-                                    onTaskTap:
-                                        (task) =>
-                                            _handleFlowTaskTap(context, task),
-                                    onSeeAllTap:
-                                        (filter) =>
-                                            _openFlowList(context, filter),
-                                  ),
-                                  SizedBox(height: spacing.lg),
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (hasFlow) ...[
+                                    TodayFlowSectionContainer(
+                                      onTaskTap:
+                                          (task) =>
+                                              _handleFlowTaskTap(context, task),
+                                      onSeeAllTap:
+                                          (filter) =>
+                                              _openFlowList(context, filter),
+                                    ),
+                                    SizedBox(height: spacing.lg),
+                                  ],
+                                  if (hasShare)
+                                    TodayShareSectionContainer(
+                                      onOwedTap: (owed) {
+                                        logger.info(
+                                          'Tapped owed entry: ${owed.displayName}',
+                                          tag: _shareLogTag,
+                                        );
+                                        _openShareOwedDetail(context, owed);
+                                      },
+                                      onDraftTap: (draft) {
+                                        logger.info(
+                                          'Tapped draft share: ${draft.expenseId}',
+                                          tag: _shareLogTag,
+                                        );
+                                        _openShareDraftEdit(context, draft);
+                                      },
+                                      onSeeAllDraftsTap: () {
+                                        logger.info(
+                                          'Tapped see all share drafts',
+                                          tag: _shareLogTag,
+                                        );
+                                        _openShareCreatedList(context);
+                                      },
+                                    ),
                                 ],
-                                if (hasShare)
-                                  TodayShareSectionContainer(
-                                    onOwedTap: (owed) {
-                                      logger.info(
-                                        'Tapped owed entry: ${owed.displayName}',
-                                        tag: _shareLogTag,
-                                      );
-                                      _openShareOwedDetail(context, owed);
-                                    },
-                                    onDraftTap: (draft) {
-                                      logger.info(
-                                        'Tapped draft share: ${draft.expenseId}',
-                                        tag: _shareLogTag,
-                                      );
-                                      _openShareDraftEdit(context, draft);
-                                    },
-                                    onSeeAllDraftsTap: () {
-                                      logger.info(
-                                        'Tapped see all share drafts',
-                                        tag: _shareLogTag,
-                                      );
-                                      _openShareCreatedList(context);
-                                    },
-                                  ),
-                              ],
-                            );
-                          },
-                        ),
-                      ],
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                );
+              },
+            ),
+          ),
+
+          floatingActionButton: KinlyFab(
+            onPressed: () async {
+              await TodayAddSheet.show(
+                context,
+                sections,
+                onAddFlow: () => _openFlowChore(context),
+                onAddShare: () => _openShareCreate(context),
               );
+            },
+            heroTag: 'today_fab',
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
+          bottomNavigationBar: HomeBottomNav(
+            currentIndex: 0,
+            onTap: (index) {
+              switch (index) {
+                case 0:
+                  // Already on Today
+                  break;
+                case 1:
+                  context.go(AppRoutes.explore);
+                  break;
+                case 2:
+                  context.go(AppRoutes.hub);
+                  break;
+              }
             },
           ),
         ),
-
-        floatingActionButton: KinlyFab(
-          onPressed: () async {
-            await TodayAddSheet.show(
-              context,
-              sections,
-              onAddFlow: () => _openFlowChore(context),
-              onAddShare: () => _openShareCreate(context),
-            );
-          },
-          heroTag: 'today_fab',
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-
-        bottomNavigationBar: HomeBottomNav(
-          currentIndex: 0,
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                // Already on Today
-                break;
-              case 1:
-                context.go(AppRoutes.explore);
-                break;
-              case 2:
-                context.go(AppRoutes.hub);
-                break;
-            }
-          },
-        ),
-      ),
       ),
     );
   }
@@ -320,10 +336,7 @@ class TodayScreen extends StatelessWidget {
             moodRepository: sl<MoodRepository>(),
           ),
         );
-        return FractionallySizedBox(
-          heightFactor: 0.92,
-          child: sheet,
-        );
+        return FractionallySizedBox(heightFactor: 0.92, child: sheet);
       },
     );
   }

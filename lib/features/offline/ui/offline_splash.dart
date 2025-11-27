@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../generated/l10n.dart';
 import '../../splash/ui/widgets/kinly_logo.dart';
+import '../../../core/ui/buttons/kinly_filled_button.dart';
 
 class OfflineSplash extends StatelessWidget {
   const OfflineSplash({super.key, required this.onRetry});
@@ -49,11 +50,11 @@ class OfflineSplash extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
-                ElevatedButton.icon(
+                KinlyFilledButton.icon(
+                  fullWidth: true,
                   onPressed: onRetry,
-                  icon: const Icon(Icons.refresh),
-                  label: Text(strings.offline_retry),
-                  // Colors & textStyle come from ElevatedButtonTheme in kinly_theme.dart
+                  icon: Icons.refresh,
+                  label: strings.offline_retry,
                 ),
               ],
             ),

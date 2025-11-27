@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../../core/chores/models.dart';
 import '../../../../../core/supabase/storage_path_resolver.dart';
 import '../../../../../core/theme/spacing.dart';
@@ -139,7 +140,7 @@ class _FlowDetailError extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(onPressed: onRetry, child: Text(s.flowChoreRetry)),
+          KinlyFilledButton.text(onPressed: onRetry, label: s.flowChoreRetry),
         ],
       ),
     );
@@ -160,21 +161,33 @@ class _CompletionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+
+    // KinlyFilledButton requires a non-null onPressed, so we no-op when disabled/busy.
+    final effectiveOnPressed =
+        (enabled && !isBusy && onPressed != null) ? onPressed! : () {};
+
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: enabled ? onPressed : null,
-        child:
-            isBusy
-                ? SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: KinlyLoader(
-                    size: 18,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                )
-                : Text(s.flowChoreDetailCompleteButton),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          KinlyFilledButton.text(
+            onPressed: effectiveOnPressed,
+            label: s.flowChoreDetailCompleteButton,
+            fullWidth: true,
+          ),
+          if (isBusy)
+            IgnorePointer(
+              child: SizedBox(
+                width: 18,
+                height: 18,
+                child: KinlyLoader(
+                  size: 18,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

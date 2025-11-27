@@ -12,14 +12,13 @@ ThemeData buildKinlyTheme(Brightness brightness) {
   final isDark = brightness == Brightness.dark;
 
   // Brand palette
-  const tealBrand = Color(0xFF366D59); // Original Kinly teal (icons, accents)
-  const tealPrimary = Color(0xFF2F5B4B); // Deeper teal for AAA contrast
-  const sageSecondary = Color(0xFF8BAA91); // Sage (mainly backgrounds / fills)
-  const honeyAccent = Color(0xFFF6B73C); // Honey (mainly backgrounds / fills)
+  const tealBrand = Color(0xFF366D59);
+  const tealPrimary = Color(0xFF2F5B4B);
+  const sageSecondary = Color(0xFF8BAA91);
+  const honeyAccent = Color(0xFFF6B73C);
 
-  // AAA-safe text variants for sage/honey on light surfaces
-  const sageText = Color(0xFF3B5646); // ≈7.7:1 vs #FAFAF9
-  const honeyText = Color(0xFF704300); // ≈8.1:1 vs #FAFAF9
+  const sageText = Color(0xFF3B5646);
+  const honeyText = Color(0xFF704300);
 
   final offWhite = isDark ? const Color(0xFF101312) : const Color(0xFFFAFAF9);
 
@@ -65,7 +64,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     surfaceTint: tealPrimary,
   );
 
-  // Typography: Display = DM Sans, Body = Inter
+  // Typography
   final baseText =
       isDark ? Typography.whiteMountainView : Typography.blackMountainView;
   final display = GoogleFonts.dmSansTextTheme(baseText);
@@ -77,7 +76,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     titleLarge: display.titleLarge,
   );
 
-  /// Elevated buttons (legacy/non-M3 usage)
+  // Buttons
   final elevatedButtonTheme = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       minimumSize: const Size.fromHeight(48),
@@ -88,7 +87,6 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     ),
   );
 
-  /// FilledButton – primary CTA
   final filledButtonTheme = FilledButtonThemeData(
     style: FilledButton.styleFrom(
       minimumSize: const Size.fromHeight(44),
@@ -99,7 +97,6 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     ),
   );
 
-  /// OutlinedButton – flips in dark mode (no teal-on-teal glow)
   final outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       minimumSize: const Size.fromHeight(40),
@@ -118,11 +115,10 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     contentTextStyle: TextStyle(color: colorScheme.onInverseSurface),
   );
 
-  // Section palettes: light and dark
+  // Section palettes
   final sections =
       isDark
           ? const KinlySections(
-            // DARK MODE
             flow: SectionColors(
               background: Color(0xFF1F2623),
               card: Color(0xFF27302B),
@@ -142,11 +138,10 @@ ThemeData buildKinlyTheme(Brightness brightness) {
               accent: Color(0xFF88C7B0),
             ),
             hub: SectionColors(
-              // Warm, cozy “house vibe” palette for dark mode
               background: Color(0xFF26201A),
               card: Color(0xFF31261C),
-              icon: Color(0xFFF5C96A), // ties to honey / gratitude
-              accent: Color(0xFF88C7B0), // keep Kinly teal as accent
+              icon: Color(0xFFF5C96A),
+              accent: Color(0xFF88C7B0),
             ),
             empty: SectionColors(
               background: Color(0xFF2A2E2D),
@@ -156,7 +151,6 @@ ThemeData buildKinlyTheme(Brightness brightness) {
             ),
           )
           : const KinlySections(
-            // LIGHT MODE
             flow: SectionColors(
               background: Color(0xFFE2F0E6),
               card: Color(0xFFD6E8DD),
@@ -176,11 +170,10 @@ ThemeData buildKinlyTheme(Brightness brightness) {
               accent: tealBrand,
             ),
             hub: SectionColors(
-              // Soft warm “gratitude / hub” palette for light mode
               background: Color(0xFFFDF6EB),
               card: Color(0xFFFFF9F1),
-              icon: Color(0xFFF6B73C), // honeyAccent
-              accent: Color(0xFF2F5B4B), // tealPrimary
+              icon: Color(0xFFF6B73C),
+              accent: Color(0xFF2F5B4B),
             ),
             empty: SectionColors(
               background: Color(0xFFF4F6F5),
@@ -190,7 +183,16 @@ ThemeData buildKinlyTheme(Brightness brightness) {
             ),
           );
 
-  // Design tokens as ThemeExtensions
+  // NEW — Dynamic link colors
+  final linkColors =
+      isDark
+          ? KinlyLinkColors(
+            link: colorScheme.onSurface,
+            icon: colorScheme.onSurface, // high contrast icons
+          )
+          : KinlyLinkColors(link: tealPrimary, icon: tealPrimary);
+
+  // Design tokens
   const spacing = Spacing(xs: 4, sm: 8, md: 12, lg: 16, xl: 24);
   const corners = Corners(xs: 4, sm: 8, md: 12, lg: 20, xl: 28, pill: 999);
   const elevations = Elevations(
@@ -226,6 +228,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
       elevations,
       appSizes,
       sections,
+      linkColors, // <-- ADDED
       const _KinlyBrandTextColors(
         sageText: sageText,
         honeyText: honeyText,
@@ -235,9 +238,6 @@ ThemeData buildKinlyTheme(Brightness brightness) {
   );
 }
 
-/// Optional helper ThemeExtension if you want to access the
-/// AAA-safe brand text colors from widgets via:
-/// `Theme.of(context).extension<_KinlyBrandTextColors>()`
 class _KinlyBrandTextColors extends ThemeExtension<_KinlyBrandTextColors> {
   final Color sageText;
   final Color honeyText;
@@ -272,6 +272,28 @@ class _KinlyBrandTextColors extends ThemeExtension<_KinlyBrandTextColors> {
       sageText: Color.lerp(sageText, other.sageText, t) ?? sageText,
       honeyText: Color.lerp(honeyText, other.honeyText, t) ?? honeyText,
       tealBrand: Color.lerp(tealBrand, other.tealBrand, t) ?? tealBrand,
+    );
+  }
+}
+
+// --- NEW EXTENSION FOR LINK COLORS ---
+class KinlyLinkColors extends ThemeExtension<KinlyLinkColors> {
+  final Color link;
+  final Color icon;
+
+  const KinlyLinkColors({required this.link, required this.icon});
+
+  @override
+  KinlyLinkColors copyWith({Color? link, Color? icon}) {
+    return KinlyLinkColors(link: link ?? this.link, icon: icon ?? this.icon);
+  }
+
+  @override
+  KinlyLinkColors lerp(ThemeExtension<KinlyLinkColors>? other, double t) {
+    if (other is! KinlyLinkColors) return this;
+    return KinlyLinkColors(
+      link: Color.lerp(link, other.link, t) ?? link,
+      icon: Color.lerp(icon, other.icon, t) ?? icon,
     );
   }
 }

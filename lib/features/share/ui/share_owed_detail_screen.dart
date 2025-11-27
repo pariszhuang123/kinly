@@ -5,6 +5,7 @@ import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../generated/l10n.dart';
@@ -254,20 +255,17 @@ class _ShareOwedMarkPaidButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: accentColor,
-          foregroundColor: theme.colorScheme.onPrimary,
-        ),
-        onPressed: isEnabled ? onPressed : null,
-        child:
-            isSubmitting
-                ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: KinlyLoader(size: 20),
-                )
-                : Text(label),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          KinlyFilledButton.text(
+            fullWidth: true,
+            onPressed: isEnabled ? onPressed : null,
+            label: label,
+          ),
+          if (isSubmitting)
+            const SizedBox(height: 20, width: 20, child: KinlyLoader(size: 20)),
+        ],
       ),
     );
   }

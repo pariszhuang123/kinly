@@ -61,6 +61,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     TodayUserProfile? profile = state.profile;
     final prevPromptTick = state.harmonyPromptTick;
     final prevHasShownHarmony = state.hasShownHarmonyPrompt;
+    final prevNpsPromptTick = state.npsPromptTick;
+    final prevHasShownNps = state.hasShownNpsPrompt;
     try {
       if (!isRefresh) {
         emit(
@@ -70,15 +72,23 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             shareDrafts: state.shareDrafts,
             harmonyPromptTick: prevPromptTick,
             hasShownHarmonyPrompt: prevHasShownHarmony,
+            npsPromptTick: prevNpsPromptTick,
+            hasShownNpsPrompt: prevHasShownNps,
           ),
         );
       }
 
-      final hasSubmittedMood =
-          await _moodRepository.isSubmittedThisWeek(_homeId);
+      final hasSubmittedMood = await _moodRepository.isSubmittedThisWeek(
+        _homeId,
+      );
+      final npsRequired = await _isNpsRequiredSafely();
       final shouldPrompt = !hasSubmittedMood && !prevHasShownHarmony;
       final promptTick = shouldPrompt ? prevPromptTick + 1 : prevPromptTick;
       final hasShownPromptNext = prevHasShownHarmony || !hasSubmittedMood;
+      final shouldPromptNps = npsRequired && !prevHasShownNps;
+      final npsPromptTick =
+          shouldPromptNps ? prevNpsPromptTick + 1 : prevNpsPromptTick;
+      final hasShownNpsPromptNext = npsRequired;
 
       final profileFuture = _profileRepository.getCurrentProfile();
       final draftsFuture = _choresRepository.listTodayFlow(
@@ -135,6 +145,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           profile: profile,
           harmonyPromptTick: promptTick,
           hasShownHarmonyPrompt: hasShownPromptNext,
+          npsPromptTick: npsPromptTick,
+          hasShownNpsPrompt: hasShownNpsPromptNext,
           // later: you can add today's expenses, gratitude items, etc.
         ),
       );
@@ -150,6 +162,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shareErrorMessage: state.shareErrorMessage,
           harmonyPromptTick: prevPromptTick,
           hasShownHarmonyPrompt: prevHasShownHarmony,
+          npsPromptTick: prevNpsPromptTick,
+          hasShownNpsPrompt: prevHasShownNps,
         ),
       );
       // optional: log error/stackTrace via your logger/Sentry here
@@ -218,6 +232,14 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         drafts: const [],
         errorMessage: error.toString(),
       );
+    }
+  }
+
+  Future<bool> _isNpsRequiredSafely() async {
+    try {
+      return await _moodRepository.isNpsRequired(_homeId);
+    } catch (_) {
+      return false;
     }
   }
 }

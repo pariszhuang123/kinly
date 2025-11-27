@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../generated/l10n.dart';
+import '../../../../../core/theme/kinly_theme.dart'; // to access link colors extension
 import 'flow_chore_expectation_photo_viewer.dart';
 
 class FlowChoreExtrasSection extends StatelessWidget {
@@ -30,6 +31,9 @@ class FlowChoreExtrasSection extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
     final colorScheme = theme.colorScheme;
+    final linkColors =
+        theme.extension<KinlyLinkColors>() ??
+        const KinlyLinkColors(link: Colors.blue, icon: Colors.blue);
     final s = S.of(context);
 
     final hasExpectationPhoto = expectationPhotoUrl?.trim().isNotEmpty == true;
@@ -49,12 +53,17 @@ class FlowChoreExtrasSection extends StatelessWidget {
             style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: spacing?.md ?? 16),
-          _FlowDetailSection(title: notesLabel, body: notesBody),
+          _FlowDetailSection(
+            title: notesLabel,
+            body: notesBody,
+            linkColors: linkColors,
+          ),
           SizedBox(height: spacing?.md ?? 16),
           _FlowDetailSection(
             title: howToLabel,
             body: howToBody,
             onTap: onHowToTap,
+            linkColors: linkColors,
           ),
           if (hasExpectationPhoto) ...[
             SizedBox(height: spacing?.md ?? 16),
@@ -73,25 +82,32 @@ class _FlowDetailSection extends StatelessWidget {
   const _FlowDetailSection({
     required this.title,
     required this.body,
+    required this.linkColors,
     this.onTap,
   });
 
   final String title;
   final String body;
   final VoidCallback? onTap;
+  final KinlyLinkColors linkColors;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isLink = onTap != null;
+
+    final linkColor = isLink ? linkColors.link : null;
+
     final bodyText = Text(
       body,
       style: theme.textTheme.bodyLarge?.copyWith(
-        color: isLink ? colorScheme.primary : null,
+        color: linkColor,
         decoration: isLink ? TextDecoration.underline : null,
+        decorationColor: linkColor,
       ),
     );
+
     final bodyContent =
         isLink
             ? GestureDetector(
@@ -101,11 +117,12 @@ class _FlowDetailSection extends StatelessWidget {
                 children: [
                   Expanded(child: bodyText),
                   const SizedBox(width: 8),
-                  Icon(Icons.open_in_new, size: 16, color: colorScheme.primary),
+                  Icon(Icons.open_in_new, size: 16, color: linkColors.icon),
                 ],
               ),
             )
             : bodyText;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -156,11 +173,12 @@ class _ExpectationPhotoSection extends StatelessWidget {
           onTap:
               () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => FlowChoreExpectationPhotoViewerPage(
-                    photoUrl: photoUrl,
-                    heroTag: heroTag,
-                    title: title,
-                  ),
+                  builder:
+                      (_) => FlowChoreExpectationPhotoViewerPage(
+                        photoUrl: photoUrl,
+                        heroTag: heroTag,
+                        title: title,
+                      ),
                 ),
               ),
           child: Hero(

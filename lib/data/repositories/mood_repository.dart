@@ -26,4 +26,10 @@ abstract class MoodRepository {
 
   /// Fetch unread status for the gratitude wall.
   Future<GratitudeWallStatus> getWallStatus(String homeId);
+
+  /// Returns true if an NPS answer is currently required for the user/home.
+  Future<bool> isNpsRequired(String homeId);
+
+  /// Submit an NPS score (0-10) for the current user/home.
+  Future<void> submitNps({required String homeId, required int score});
 }

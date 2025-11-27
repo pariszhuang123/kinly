@@ -6,6 +6,7 @@ import '../../../core/profile/enums/profile_error_code.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/profile/models.dart';
 import '../../../generated/l10n.dart';
@@ -168,24 +169,29 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                     SizedBox(height: spacing.md),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed:
-                            state.canSubmit
-                                ? () => context.read<ProfileIdentityBloc>().add(
-                                  const ProfileIdentitySubmitted(),
-                                )
-                                : null,
-                        child:
-                            state.isSubmitting
-                                ? SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: KinlyLoader(
-                                    size: 20,
-                                    color: theme.colorScheme.onPrimary,
-                                  ),
-                                )
-                                : Text(s.profileIdentitySaveButton),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          KinlyFilledButton.text(
+                            fullWidth: true,
+                            onPressed:
+                                state.canSubmit
+                                    ? () => context
+                                        .read<ProfileIdentityBloc>()
+                                        .add(const ProfileIdentitySubmitted())
+                                    : null,
+                            label: s.profileIdentitySaveButton,
+                          ),
+                          if (state.isSubmitting)
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: KinlyLoader(
+                                size: 20,
+                                color: theme.colorScheme.onPrimary,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ],
@@ -209,9 +215,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
         break;
       case ProfileIdentityAction.failure:
         final message = _resolveActionMessage(state, s);
-        messenger.showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        messenger.showSnackBar(SnackBar(content: Text(message)));
         break;
       case ProfileIdentityAction.none:
         break;
@@ -358,7 +362,10 @@ class _ProfileIdentityError extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: spacing.md),
-          KinlyOutlinedButton.text(onPressed: onRetry, label: s.profileIdentityRetry),
+          KinlyOutlinedButton.text(
+            onPressed: onRetry,
+            label: s.profileIdentityRetry,
+          ),
         ],
       ),
     );

@@ -35,21 +35,9 @@ class HubMembersSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          s.hubMembersTitle,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        SizedBox(height: spacing.sm),
-        Text(
-          s.hubMembersSubtitle,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ),
-        SizedBox(height: spacing.md),
-        if (state.hasInvite && state.inviteCode.isNotEmpty) ...[
+        if (state.hasInvite &&
+            state.isOwner &&
+            state.inviteCode.isNotEmpty) ...[
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -75,17 +63,6 @@ class HubMembersSection extends StatelessWidget {
               ],
             ],
           ),
-          SizedBox(height: spacing.sm),
-          if (onCopyCode != null)
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: KinlyOutlinedButton.icon(
-                onPressed: onCopyCode!,
-                icon: Icons.copy,
-                label: s.hubCopyCode,
-                compact: true,
-              ),
-            ),
         ],
         if (state.hasInvite && state.inviteCode.isNotEmpty)
           SizedBox(height: spacing.md),
@@ -99,20 +76,24 @@ class HubMembersSection extends StatelessWidget {
         if (members.isNotEmpty)
           SizedBox(
             height: 110,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: members.length + 1,
-              separatorBuilder: (_, __) => SizedBox(width: spacing.md),
-              itemBuilder: (context, index) {
-                if (index == members.length) {
-                  return KinlyAddTileButton(
-                    label: s.hubInviteCta, // text is optional; you can set null
-                    onTap: onInviteTap,
-                  );
-                }
-                final member = members[index];
-                return _MemberTile(member: member, spacing: spacing);
-              },
+            child: Row(
+              children: [
+                // Scrollable avatars
+                Expanded(
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: members.length,
+                    separatorBuilder: (_, __) => SizedBox(width: spacing.md),
+                    itemBuilder: (context, index) {
+                      final member = members[index];
+                      return _MemberTile(member: member, spacing: spacing);
+                    },
+                  ),
+                ),
+                SizedBox(width: spacing.md),
+                // Fixed Add tile on the right
+                KinlyAddTileButton(onTap: onInviteTap),
+              ],
             ),
           )
         else

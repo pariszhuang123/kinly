@@ -654,10 +654,10 @@ class S {
     );
   }
 
-  /// `Welcome to our Kinly home! Enter this invite code: {code}\nDownload the Kinly app: {link}`
+  /// `Welcome to our Kinly home! Enter this invite code: {code}\n\nDownload the Kinly app: {link}`
   String hubShareInviteBody(Object code, Object link) {
     return Intl.message(
-      'Welcome to our Kinly home! Enter this invite code: $code\nDownload the Kinly app: $link',
+      'Welcome to our Kinly home! Enter this invite code: $code\n\nDownload the Kinly app: $link',
       name: 'hubShareInviteBody',
       desc: '',
       args: [code, link],
@@ -3036,6 +3036,116 @@ class S {
     return Intl.message(
       'Try again',
       name: 'gratitudeWallRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How likely are you to recommend Kinly to a friend or family member?`
+  String get npsTitle {
+    return Intl.message(
+      'How likely are you to recommend Kinly to a friend or family member?',
+      name: 'npsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Net Promoter Score helps us learn how we’re doing. Pick a number from 0 (not likely) to 10 (extremely likely).`
+  String get npsDescription {
+    return Intl.message(
+      'Net Promoter Score helps us learn how we’re doing. Pick a number from 0 (not likely) to 10 (extremely likely).',
+      name: 'npsDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `0 Not likely`
+  String get npsScaleLowLabel {
+    return Intl.message(
+      '0 Not likely',
+      name: 'npsScaleLowLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `10 Extremely likely`
+  String get npsScaleHighLabel {
+    return Intl.message(
+      '10 Extremely likely',
+      name: 'npsScaleHighLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You need to pick a score to continue.`
+  String get npsCannotSkip {
+    return Intl.message(
+      'You need to pick a score to continue.',
+      name: 'npsCannotSkip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This feedback isn’t needed right now.`
+  String get npsSubmitErrorNotRequired {
+    return Intl.message(
+      'This feedback isn’t needed right now.',
+      name: 'npsSubmitErrorNotRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please pick a score between 0 and 10.`
+  String get npsSubmitErrorInvalidScore {
+    return Intl.message(
+      'Please pick a score between 0 and 10.',
+      name: 'npsSubmitErrorInvalidScore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You’re not allowed to submit feedback right now.`
+  String get npsSubmitErrorForbidden {
+    return Intl.message(
+      'You’re not allowed to submit feedback right now.',
+      name: 'npsSubmitErrorForbidden',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn’t send your feedback. Please try again.`
+  String get npsSubmitErrorGeneric {
+    return Intl.message(
+      'Couldn’t send your feedback. Please try again.',
+      name: 'npsSubmitErrorGeneric',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn’t open the next step.`
+  String get npsLaunchError {
+    return Intl.message(
+      'Couldn’t open the next step.',
+      name: 'npsLaunchError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What can we improve?`
+  String get npsEmailSubject {
+    return Intl.message(
+      'What can we improve?',
+      name: 'npsEmailSubject',
       desc: '',
       args: [],
     );

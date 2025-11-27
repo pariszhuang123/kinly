@@ -6,11 +6,13 @@ import 'enums/chore_error_code.dart';
 import 'enums/expense_error_code.dart';
 import 'enums/home_error_codes.dart';
 import 'enums/mood_error_code.dart';
+import 'enums/nps_submit_error_code.dart';
 
 export 'enums/chore_error_code.dart';
 export 'enums/expense_error_code.dart';
 export 'enums/home_error_codes.dart';
 export 'enums/mood_error_code.dart';
+export 'enums/nps_submit_error_code.dart';
 
 class HomeJoinException implements Exception {
   final JoinErrorCode code;
@@ -410,10 +412,56 @@ class SupabaseErrorMapper {
           );
       }
     }
-    return MoodSubmitException(
-      MoodSubmitErrorCode.unknown,
-      error.toString(),
-    );
+    return MoodSubmitException(MoodSubmitErrorCode.unknown, error.toString());
+  }
+
+  // ----- nps.submit -----
+  static NpsSubmitException mapNpsSubmit(Object error) {
+    if (error is AuthException) {
+      return NpsSubmitException(NpsSubmitErrorCode.unauthorized, error.message);
+    }
+    if (error is PostgrestException) {
+      final parsed = _parseErrorJson(error.message);
+      switch (parsed.code) {
+        case 'INVALID_NPS_SCORE':
+          return NpsSubmitException(
+            NpsSubmitErrorCode.invalidScore,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'NPS_NOT_ELIGIBLE':
+          return NpsSubmitException(
+            NpsSubmitErrorCode.notEligible,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'NPS_NOT_REQUIRED':
+          return NpsSubmitException(
+            NpsSubmitErrorCode.notRequired,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'FORBIDDEN':
+          return NpsSubmitException(
+            NpsSubmitErrorCode.forbidden,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'UNAUTHORIZED':
+          return NpsSubmitException(
+            NpsSubmitErrorCode.unauthorized,
+            parsed.message,
+            details: parsed.details,
+          );
+        default:
+          return NpsSubmitException(
+            NpsSubmitErrorCode.unknown,
+            parsed.message,
+            details: parsed.details,
+          );
+      }
+    }
+    return NpsSubmitException(NpsSubmitErrorCode.unknown, error.toString());
   }
 
   // Internal helper to parse JSON (code/message/details) from RPC errors

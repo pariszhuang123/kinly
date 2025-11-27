@@ -5,6 +5,7 @@ import '../../../../../core/theme/kinly_sections.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../../core/ui/kinly_loader.dart';
+import '../../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../../generated/l10n.dart';
 import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
@@ -320,26 +321,20 @@ class _PrimaryActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style:
-            shareColors != null
-                ? ElevatedButton.styleFrom(
-                  backgroundColor: shareColors!.accent,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                )
-                : null,
-        onPressed: shouldDisable ? null : onPressed,
-        child:
-            isBusy
-                ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: KinlyLoader(size: 20),
-                )
-                : Text(label),
-      ),
+    final button = KinlyFilledButton.text(
+      fullWidth: true,
+      onPressed: shouldDisable ? null : onPressed,
+      label: label,
+    );
+
+    if (!isBusy) return button;
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Opacity(opacity: 0.6, child: button),
+        const SizedBox(height: 20, width: 20, child: KinlyLoader(size: 20)),
+      ],
     );
   }
 }

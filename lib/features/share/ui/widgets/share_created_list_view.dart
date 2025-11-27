@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
+import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
 
@@ -250,9 +251,10 @@ class _ShareCreatedListEmpty extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
+          KinlyFilledButton.text(
+            fullWidth: true,
             onPressed: onCreateTap,
-            child: Text(s.shareCreateSubmit),
+            label: s.shareCreateSubmit,
           ),
         ],
       ),
@@ -283,9 +285,10 @@ class _ShareCreatedListError extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
+          KinlyFilledButton.text(
+            fullWidth: true,
             onPressed: onRetry,
-            child: Text(s.shareCreatedListRetry),
+            label: s.shareCreatedListRetry,
           ),
         ],
       ),

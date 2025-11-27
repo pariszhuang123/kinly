@@ -52,7 +52,9 @@ class HubScreen extends StatelessWidget {
                       ? constraints.maxWidth
                       : maxWidth;
 
-              return Center(
+              return Align(
+                alignment:
+                    Alignment.topCenter, // ⬅️ top-aligned instead of centered
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: width),
                   child: Padding(

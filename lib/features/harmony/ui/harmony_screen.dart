@@ -54,7 +54,13 @@ class HarmonyScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.all(spacing.lg),
+                        // ✅ Directional padding for RTL/LTR
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                          spacing.lg,
+                          spacing.lg,
+                          spacing.lg,
+                          spacing.lg,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -81,7 +87,8 @@ class HarmonyScreen extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(
+                      // ✅ Directional bottom padding for button
+                      padding: EdgeInsetsDirectional.fromSTEB(
                         spacing.lg,
                         spacing.sm,
                         spacing.lg,
@@ -215,6 +222,7 @@ class _SubmitButton extends StatelessWidget {
         final hasMood = state.selectedMood != null;
         final canSubmit =
             hasMood && !state.isSubmitting && state.submitSuccessTick == 0;
+
         void handler() {
           if (!hasMood || state.submitSuccessTick > 0) {
             ScaffoldMessenger.of(context)
@@ -224,6 +232,7 @@ class _SubmitButton extends StatelessWidget {
           }
           context.read<HarmonyCubit>().submit();
         }
+
         return Stack(
           alignment: Alignment.center,
           children: [
@@ -236,7 +245,11 @@ class _SubmitButton extends StatelessWidget {
               ),
             ),
             if (state.isSubmitting)
-              const Positioned(right: 24, child: KinlyLoader(size: 20)),
+              // ✅ Directional positioning for RTL
+              const PositionedDirectional(
+                end: 24,
+                child: KinlyLoader(size: 20),
+              ),
           ],
         );
       },

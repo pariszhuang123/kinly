@@ -95,11 +95,11 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
-    final createButton = tester.widget<ElevatedButton>(
-      find.widgetWithText(ElevatedButton, 'Create a Home'),
+    final createButton = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Create a Home'),
     );
-    final joinButton = tester.widget<ElevatedButton>(
-      find.widgetWithText(ElevatedButton, 'Join a Home'),
+    final joinButton = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Join a Home'),
     );
     expect(createButton.onPressed, isNull);
     expect(joinButton.onPressed, isNull);
@@ -113,11 +113,11 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pump();
 
-    final createButton = tester.widget<ElevatedButton>(
-      find.widgetWithText(ElevatedButton, 'Create a Home'),
+    final createButton = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Create a Home'),
     );
-    final joinButton = tester.widget<ElevatedButton>(
-      find.widgetWithText(ElevatedButton, 'Join a Home'),
+    final joinButton = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Join a Home'),
     );
     expect(createButton.onPressed, isNotNull);
     expect(joinButton.onPressed, isNotNull);

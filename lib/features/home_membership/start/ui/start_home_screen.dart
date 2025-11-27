@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_router.dart';
-import '../../../../design_system/kinly_button.dart';
+import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
@@ -33,7 +33,6 @@ class StartHomeScreen extends StatelessWidget {
           actions: const [AuthSignOutButton()],
         ),
         body: SafeArea(
-          // 👈 key change
           child: BlocConsumer<StartHomeBloc, StartHomeState>(
             listener: (context, state) {
               if (state.status == StartHomeStatus.failure) {
@@ -61,6 +60,8 @@ class StartHomeScreen extends StatelessWidget {
               final canManageHome =
                   membershipStatus == AuthMembershipStatus.none;
 
+              final canPress = !isCreating && canManageHome;
+
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -85,28 +86,31 @@ class StartHomeScreen extends StatelessWidget {
                       style: theme.textTheme.bodySmall,
                     ),
                     const Spacer(),
-                    KinlyButton.primary(
+
+                    // Create Home button
+                    KinlyFilledButton.text(
+                      fullWidth: true,
+                      label:
+                          isCreating
+                              ? s.membership_status_checking
+                              : s.welcome_create,
                       onPressed:
-                          isCreating || !canManageHome
-                              ? null
-                              : () {
+                          canPress
+                              ? () {
                                 context.read<StartHomeBloc>().add(
                                   const StartHomeCreateRequested(),
                                 );
-                              },
-                      label:
-                          isCreating
-                              ? s
-                                  .membership_status_checking // or a dedicated "Creating home..."
-                              : s.welcome_create,
+                              }
+                              : null, // disable when not allowed
                     ),
                     const SizedBox(height: 12),
-                    KinlyButton.primary(
-                      onPressed:
-                          isCreating || !canManageHome
-                              ? null
-                              : () => context.go(AppRoutes.join),
+
+                    // Join Home button
+                    KinlyFilledButton.text(
+                      fullWidth: true,
                       label: s.welcome_join,
+                      onPressed:
+                          canPress ? () => context.go(AppRoutes.join) : null,
                     ),
                   ],
                 ),

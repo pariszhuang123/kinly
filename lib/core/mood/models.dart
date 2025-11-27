@@ -20,10 +20,7 @@ class MoodSubmitResult extends Equatable {
   final String entryId;
   final String? gratitudePostId;
 
-  const MoodSubmitResult({
-    required this.entryId,
-    this.gratitudePostId,
-  });
+  const MoodSubmitResult({required this.entryId, this.gratitudePostId});
 
   factory MoodSubmitResult.fromJson(Map<String, dynamic> json) {
     return MoodSubmitResult(
@@ -99,9 +96,10 @@ class GratitudeWallStatus extends Equatable {
   factory GratitudeWallStatus.fromJson(Map<String, dynamic> json) {
     return GratitudeWallStatus(
       hasUnread: (json['has_unread'] as bool?) ?? false,
-      lastReadAt: json['last_read_at'] == null
-          ? null
-          : DateTime.tryParse(json['last_read_at'] as String),
+      lastReadAt:
+          json['last_read_at'] == null
+              ? null
+              : DateTime.tryParse(json['last_read_at'] as String),
     );
   }
 

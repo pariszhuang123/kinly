@@ -13,6 +13,7 @@ import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../bloc/flow_chore_bloc.dart';
 import '../domain/flow_chore_form.dart';
 import '../domain/flow_chore_outcome.dart';
@@ -343,54 +344,13 @@ class _FlowChoreFormView extends StatelessWidget {
         SizedBox(height: spacing?.xl ?? 24),
         SizedBox(
           width: double.infinity,
-          child:
-              showDeleteCta
-                  ? ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.colorScheme.error,
-                      foregroundColor: theme.colorScheme.onError,
-                    ),
-                    onPressed:
-                        state.isDeleting || onDeleteRequested == null
-                            ? null
-                            : onDeleteRequested,
-                    child:
-                        state.isDeleting
-                            ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: KinlyLoader(size: 20),
-                            )
-                            : Text(s.flowChoreDeleteButton),
-                  )
-                  : ElevatedButton(
-                    style:
-                        flowColors != null
-                            ? ElevatedButton.styleFrom(
-                              backgroundColor: flowColors!.accent,
-                              foregroundColor:
-                                  Theme.of(context).colorScheme.onPrimary,
-                            )
-                            : null,
-                    onPressed:
-                        state.isSubmitting || !canSubmit
-                            ? null
-                            : () => context.read<FlowChoreBloc>().add(
-                              const FlowChoreSubmitted(),
-                            ),
-                    child:
-                        state.isSubmitting
-                            ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: KinlyLoader(size: 20),
-                            )
-                            : Text(
-                              state.isEditMode
-                                  ? s.flowChoreSubmitUpdate
-                                  : s.flowChoreSubmitCreate,
-                            ),
-                  ),
+          child: _buildCtaButton(
+            context: context,
+            state: state,
+            canSubmit: canSubmit,
+            showDeleteCta: showDeleteCta,
+            onDeleteRequested: onDeleteRequested,
+          ),
         ),
       ],
     );
@@ -413,6 +373,60 @@ class _FlowChoreFormView extends StatelessWidget {
     if (picked != null && context.mounted) {
       context.read<FlowChoreBloc>().add(FlowChoreStartDateChanged(picked));
     }
+  }
+
+  Widget _buildCtaButton({
+    required BuildContext context,
+    required FlowChoreState state,
+    required bool canSubmit,
+    required bool showDeleteCta,
+    required VoidCallback? onDeleteRequested,
+  }) {
+    final s = S.of(context);
+
+    if (showDeleteCta) {
+      Widget button = KinlyFilledButton.destructiveText(
+        fullWidth: true,
+        onPressed:
+            state.isDeleting || onDeleteRequested == null
+                ? null
+                : onDeleteRequested,
+        label: s.flowChoreDeleteButton,
+      );
+      if (state.isDeleting) {
+        button = Stack(
+          alignment: Alignment.center,
+          children: [
+            Opacity(opacity: 0.6, child: button),
+            const SizedBox(height: 20, width: 20, child: KinlyLoader(size: 20)),
+          ],
+        );
+      }
+      return button;
+    }
+
+    final submitLabel =
+        state.isEditMode ? s.flowChoreSubmitUpdate : s.flowChoreSubmitCreate;
+
+    Widget button = KinlyFilledButton.text(
+      fullWidth: true,
+      onPressed:
+          state.isSubmitting || !canSubmit
+              ? null
+              : () =>
+                  context.read<FlowChoreBloc>().add(const FlowChoreSubmitted()),
+      label: submitLabel,
+    );
+    if (state.isSubmitting) {
+      button = Stack(
+        alignment: Alignment.center,
+        children: [
+          Opacity(opacity: 0.6, child: button),
+          const SizedBox(height: 20, width: 20, child: KinlyLoader(size: 20)),
+        ],
+      );
+    }
+    return button;
   }
 
   String _recurrenceLabel(BuildContext context, ChoreRecurrence recurrence) {
@@ -528,7 +542,11 @@ class _FlowChoreError extends StatelessWidget {
         children: [
           Text(message, textAlign: TextAlign.center),
           const SizedBox(height: 16),
-          ElevatedButton(onPressed: onRetry, child: Text(s.flowChoreRetry)),
+          KinlyFilledButton.text(
+            fullWidth: true,
+            onPressed: onRetry,
+            label: s.flowChoreRetry,
+          ),
         ],
       ),
     );

@@ -435,6 +435,37 @@ class MessageLookup extends MessageLookupByLibrary {
     "navExplore": MessageLookupByLibrary.simpleMessage("Explorar"),
     "navHub": MessageLookupByLibrary.simpleMessage("Centro"),
     "navToday": MessageLookupByLibrary.simpleMessage("Hoy"),
+    "npsCannotSkip": MessageLookupByLibrary.simpleMessage(
+      "Debes elegir una puntuaci?n para continuar.",
+    ),
+    "npsDescription": MessageLookupByLibrary.simpleMessage(
+      "El Net Promoter Score nos ayuda a saber c?mo vamos. Elige un n?mero de 0 (nada probable) a 10 (muy probable).",
+    ),
+    "npsEmailSubject": MessageLookupByLibrary.simpleMessage(
+      "?Qu? podemos mejorar?",
+    ),
+    "npsLaunchError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos abrir el siguiente paso.",
+    ),
+    "npsScaleHighLabel": MessageLookupByLibrary.simpleMessage(
+      "10 Muy probable",
+    ),
+    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 Nada probable"),
+    "npsSubmitErrorForbidden": MessageLookupByLibrary.simpleMessage(
+      "No puedes enviar feedback en este momento.",
+    ),
+    "npsSubmitErrorGeneric": MessageLookupByLibrary.simpleMessage(
+      "No pudimos enviar tu feedback. Int?ntalo de nuevo.",
+    ),
+    "npsSubmitErrorInvalidScore": MessageLookupByLibrary.simpleMessage(
+      "Elige un n?mero entre 0 y 10.",
+    ),
+    "npsSubmitErrorNotRequired": MessageLookupByLibrary.simpleMessage(
+      "Ahora mismo no necesitamos este feedback.",
+    ),
+    "npsTitle": MessageLookupByLibrary.simpleMessage(
+      "?Qu? tan probable es que recomiendes Kinly a un amigo o familiar?",
+    ),
     "offline_body": MessageLookupByLibrary.simpleMessage(
       "Kinly necesita internet. Comprueba tu seÃ±al e intÃ©ntalo de nuevo.",
     ),

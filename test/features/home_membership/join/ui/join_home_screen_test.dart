@@ -10,6 +10,7 @@ import 'package:kinly/data/repositories/home_repository.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/home_membership/join/ui/join_home_screen.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
@@ -64,13 +65,15 @@ void main() {
 
     await tester.pumpWidget(buildApp(const JoinHomeScreen()));
 
-    var button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+    var button = tester.widget<KinlyFilledButton>(
+      find.byType(KinlyFilledButton),
+    );
     expect(button.onPressed, isNull);
 
     await tester.enterText(find.byType(TextField), 'ABC123');
     await tester.pump();
 
-    button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+    button = tester.widget<KinlyFilledButton>(find.byType(KinlyFilledButton));
     expect(button.onPressed, isNotNull);
   });
 }

@@ -31,6 +31,7 @@ import '../../features/share/ui/share_edit_route_args.dart';
 import '../../features/harmony/ui/harmony_provider.dart';
 import '../../features/harmony/ui/gratitude_wall_provider.dart';
 import '../../data/repositories/mood_repository.dart';
+import '../../features/nps/ui/nps_provider.dart';
 
 class AppRoutes {
   static const splash = '/';
@@ -53,6 +54,7 @@ class AppRoutes {
   static const profileIdentity = '/settings/profile/identity';
   static const harmony = '/harmony';
   static const gratitudeWall = '/gratitude-wall';
+  static const nps = '/nps';
 
   static String flowChoreEditPath(String choreId) => '/flow/chore/$choreId';
   static String flowChoreDetailPath(String choreId) =>
@@ -170,6 +172,20 @@ GoRouter createRouter({
             profileRepository: sl<ProfileRepository>(),
             expensesRepository: sl<ExpensesRepository>(),
             homeRepository: sl<HomeRepository>(),
+            moodRepository: sl<MoodRepository>(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.nps,
+        name: 'nps',
+        builder: (_, __) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('NPS requires an active membership.');
+          }
+          return NpsProvider(
+            homeId: membership.homeId,
             moodRepository: sl<MoodRepository>(),
           );
         },

@@ -100,7 +100,7 @@
   "hubInviteCta": "Invite",
   "hubInviteUnavailable": "Couldn't load invite. Please try again.",
   "hubShareInviteTitle": "Invite to my Kinly home",
-  "hubShareInviteBody": "Welcome to our Kinly home! Enter this invite code: {code}\nDownload the Kinly app: {link}",
+  "hubShareInviteBody": "Welcome to our Kinly home! Enter this invite code: {code}\n\nDownload the Kinly app: {link}",
   "@hubShareInviteBody": {
     "placeholders": {
       "code": {},
@@ -386,5 +386,16 @@
   "gratitudeWallTimestamp": "{time} today",
   "gratitudeWallEmptyTitle": "No gratitude posts yet",
   "gratitudeWallEmptySubtitle": "Share a sunny moment to start filling the wall.",
-  "gratitudeWallRetry": "Try again"
+  "gratitudeWallRetry": "Try again",
+  "npsTitle": "How likely are you to recommend Kinly to a friend or family member?",
+  "npsDescription": "Net Promoter Score helps us learn how we\u2019re doing. Pick a number from 0 (not likely) to 10 (extremely likely).",
+  "npsScaleLowLabel": "0 Not likely",
+  "npsScaleHighLabel": "10 Extremely likely",
+  "npsCannotSkip": "You need to pick a score to continue.",
+  "npsSubmitErrorNotRequired": "This feedback isn\u2019t needed right now.",
+  "npsSubmitErrorInvalidScore": "Please pick a score between 0 and 10.",
+  "npsSubmitErrorForbidden": "You\u2019re not allowed to submit feedback right now.",
+  "npsSubmitErrorGeneric": "Couldn\u2019t send your feedback. Please try again.",
+  "npsLaunchError": "Couldn\u2019t open the next step.",
+  "npsEmailSubject": "What can we improve?"
 }

@@ -21,7 +21,7 @@ class KinlyFilledButton extends StatelessWidget {
 
   /// Icon + label filled button.
   factory KinlyFilledButton.icon({
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     required String label,
     required IconData icon,
     bool compact = false,
@@ -42,7 +42,7 @@ class KinlyFilledButton extends StatelessWidget {
 
   /// Icon + label destructive filled button (error colors).
   factory KinlyFilledButton.destructiveIcon({
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     required String label,
     required IconData icon,
     bool compact = false,
@@ -62,7 +62,7 @@ class KinlyFilledButton extends StatelessWidget {
 
   /// Text-only filled button (no icon).
   factory KinlyFilledButton.text({
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     required String label,
     bool compact = false,
     bool fullWidth = false,
@@ -82,7 +82,7 @@ class KinlyFilledButton extends StatelessWidget {
 
   /// Text-only destructive filled button (error colors).
   factory KinlyFilledButton.destructiveText({
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     required String label,
     bool compact = false,
     bool fullWidth = false,
@@ -98,7 +98,7 @@ class KinlyFilledButton extends StatelessWidget {
     );
   }
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String label;
   final Widget? icon;
   final bool compact;

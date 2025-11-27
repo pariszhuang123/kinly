@@ -387,4 +387,16 @@
   "gratitudeWallEmptySubtitle": "Comparte un momento soleado para empezar a llenar el muro.",
   "gratitudeWallRetry": "Volver a intentar",
   "harmonyErrorSelectMood": "Elige un estado de \u00e1nimo antes de enviar."
+,
+  "npsTitle": "?Qu? tan probable es que recomiendes Kinly a un amigo o familiar?",
+  "npsDescription": "El Net Promoter Score nos ayuda a saber c?mo vamos. Elige un n?mero de 0 (nada probable) a 10 (muy probable).",
+  "npsScaleLowLabel": "0 Nada probable",
+  "npsScaleHighLabel": "10 Muy probable",
+  "npsCannotSkip": "Debes elegir una puntuaci?n para continuar.",
+  "npsSubmitErrorNotRequired": "Ahora mismo no necesitamos este feedback.",
+  "npsSubmitErrorInvalidScore": "Elige un n?mero entre 0 y 10.",
+  "npsSubmitErrorForbidden": "No puedes enviar feedback en este momento.",
+  "npsSubmitErrorGeneric": "No pudimos enviar tu feedback. Int?ntalo de nuevo.",
+  "npsLaunchError": "No pudimos abrir el siguiente paso.",
+  "npsEmailSubject": "?Qu? podemos mejorar?"
 }

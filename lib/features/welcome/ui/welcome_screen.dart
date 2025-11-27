@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/router/app_router.dart';
 import '../../../core/router/navigation_intents.dart';
-import '../../../design_system/kinly_button.dart';
+import '../../../core/theme/kinly_theme.dart'; // <- link colors extension
 import '../../../generated/l10n.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/widgets/auth_error_listener.dart';
@@ -42,6 +43,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final theme = Theme.of(context);
     final busy = context.select((AuthBloc bloc) => bloc.state.isLoading);
     final supportsApple = Platform.isIOS;
+    final linkColors = theme.extension<KinlyLinkColors>()!;
+
     return BlocListener<AuthBloc, AuthState>(
       listenWhen:
           (previous, current) =>
@@ -74,7 +77,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 children: [
                   const SizedBox(height: 24),
                   // Logo/title
-                  KinlyLogo(),
+                  const KinlyLogo(),
                   const SizedBox(height: 8),
                   Text(
                     s.login_tagline,
@@ -84,7 +87,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const Spacer(),
-                  // Consent checkbox
+
+                  // Consent checkbox + links
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -98,25 +102,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           alignment: WrapAlignment.start,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            Text(s.login_consent_prefix),
+                            Text(
+                              s.login_consent_prefix,
+                              style: theme.textTheme.bodyMedium,
+                            ),
                             InkWell(
                               onTap: () => _open(_termsUri),
                               child: Text(
                                 s.login_terms,
                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.primary,
+                                  color: linkColors.link,
                                   decoration: TextDecoration.underline,
+                                  decorationColor: linkColors.link,
                                 ),
                               ),
                             ),
-                            Text(s.login_consent_connector),
+                            Text(
+                              s.login_consent_connector,
+                              style: theme.textTheme.bodyMedium,
+                            ),
                             InkWell(
                               onTap: () => _open(_privacyUri),
                               child: Text(
                                 s.login_privacy,
                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.primary,
+                                  color: linkColors.link,
                                   decoration: TextDecoration.underline,
+                                  decorationColor: linkColors.link,
                                 ),
                               ),
                             ),
@@ -126,32 +138,61 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  // Google login button (enabled only when consented)
-                  KinlyButton.primary(
-                    onPressed:
-                        !_consented || busy
-                            ? null
-                            : () {
-                              context.read<AuthBloc>().add(
-                                const AuthSignInWithGoogleRequested(),
-                              );
-                            },
-                    label: s.login_with_google,
-                  ),
-                  if (supportsApple) ...[
-                    const SizedBox(height: 12),
-                    KinlyButton.primary(
-                      onPressed:
-                          !_consented || busy
-                              ? null
-                              : () {
+
+                  // Google login button (enabled only when consented & not busy)
+                  Builder(
+                    builder: (context) {
+                      final canPressGoogle = _consented && !busy;
+                      return SizedBox(
+                        width: double.infinity,
+                        child: Opacity(
+                          opacity: canPressGoogle ? 1.0 : 0.5,
+                          child: IgnorePointer(
+                            ignoring: !canPressGoogle,
+                            child: SignInButton(
+                              Buttons.google,
+                              text: s.login_with_google,
+                              onPressed: () {
+                                if (!canPressGoogle) return;
                                 context.read<AuthBloc>().add(
-                                  const AuthSignInWithAppleRequested(),
+                                  const AuthSignInWithGoogleRequested(),
                                 );
                               },
-                      label: s.login_with_apple,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  if (supportsApple) ...[
+                    const SizedBox(height: 12),
+                    Builder(
+                      builder: (context) {
+                        final canPressApple = _consented && !busy;
+                        return SizedBox(
+                          width: double.infinity,
+                          child: Opacity(
+                            opacity: canPressApple ? 1.0 : 0.5,
+                            child: IgnorePointer(
+                              ignoring: !canPressApple,
+                              child: SignInButton(
+                                Buttons.appleDark,
+                                text: s.login_with_apple,
+                                onPressed: () {
+                                  if (!canPressApple) return;
+                                  context.read<AuthBloc>().add(
+                                    const AuthSignInWithAppleRequested(),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
+
                   const SizedBox(height: 24),
                 ],
               ),

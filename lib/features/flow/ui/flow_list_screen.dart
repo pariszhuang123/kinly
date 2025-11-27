@@ -12,6 +12,7 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_fab.dart';
+import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
 import 'flow_list_filter.dart';
 import '../bloc/flow_list_bloc.dart';
@@ -317,9 +318,10 @@ class _FlowListEmpty extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
+          KinlyFilledButton.text(
+            fullWidth: true,
             onPressed: onAddTap,
-            child: Text(s.flowChoreSubmitCreate),
+            label: s.flowChoreSubmitCreate,
           ),
         ],
       ),
@@ -348,9 +350,10 @@ class _FlowListError extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
+          KinlyFilledButton.text(
+            fullWidth: true,
             onPressed: onRetry,
-            child: Text(S.of(context).flowChoreRetry),
+            label: S.of(context).flowChoreRetry,
           ),
         ],
       ),

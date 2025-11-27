@@ -94,7 +94,9 @@ class TodayFlowSection extends StatelessWidget {
                           _SeeAllButton(
                             colors: colors,
                             onTap: () => onSeeAllTap(tab.filter),
-                            label: S.of(context).todayFlowSeeAll(tab.tasks.length),
+                            label: S
+                                .of(context)
+                                .todayFlowSeeAll(tab.tasks.length),
                           ),
                       ],
                     );
@@ -152,7 +154,9 @@ class _TaskList extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final visibleTasks =
-        maxVisible != null ? tasks.take(maxVisible!).toList(growable: false) : tasks;
+        maxVisible != null
+            ? tasks.take(maxVisible!).toList(growable: false)
+            : tasks;
     return Column(
       children: [
         for (final task in visibleTasks) ...[

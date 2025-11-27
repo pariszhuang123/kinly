@@ -32,7 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m3(link) => "Share Kinly so sharing feels lighter: ${link}";
 
   static String m4(code, link) =>
-      "Welcome to our Kinly home! Enter this invite code: ${code}\nDownload the Kinly app: ${link}";
+      "Welcome to our Kinly home! Enter this invite code: ${code}\n\nDownload the Kinly app: ${link}";
 
   static String m5(code) => "Joined with code: ${code}";
 
@@ -403,6 +403,37 @@ class MessageLookup extends MessageLookupByLibrary {
     "navExplore": MessageLookupByLibrary.simpleMessage("Explore"),
     "navHub": MessageLookupByLibrary.simpleMessage("Hub"),
     "navToday": MessageLookupByLibrary.simpleMessage("Today"),
+    "npsCannotSkip": MessageLookupByLibrary.simpleMessage(
+      "You need to pick a score to continue.",
+    ),
+    "npsDescription": MessageLookupByLibrary.simpleMessage(
+      "Net Promoter Score helps us learn how we’re doing. Pick a number from 0 (not likely) to 10 (extremely likely).",
+    ),
+    "npsEmailSubject": MessageLookupByLibrary.simpleMessage(
+      "What can we improve?",
+    ),
+    "npsLaunchError": MessageLookupByLibrary.simpleMessage(
+      "Couldn’t open the next step.",
+    ),
+    "npsScaleHighLabel": MessageLookupByLibrary.simpleMessage(
+      "10 Extremely likely",
+    ),
+    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 Not likely"),
+    "npsSubmitErrorForbidden": MessageLookupByLibrary.simpleMessage(
+      "You’re not allowed to submit feedback right now.",
+    ),
+    "npsSubmitErrorGeneric": MessageLookupByLibrary.simpleMessage(
+      "Couldn’t send your feedback. Please try again.",
+    ),
+    "npsSubmitErrorInvalidScore": MessageLookupByLibrary.simpleMessage(
+      "Please pick a score between 0 and 10.",
+    ),
+    "npsSubmitErrorNotRequired": MessageLookupByLibrary.simpleMessage(
+      "This feedback isn’t needed right now.",
+    ),
+    "npsTitle": MessageLookupByLibrary.simpleMessage(
+      "How likely are you to recommend Kinly to a friend or family member?",
+    ),
     "offline_body": MessageLookupByLibrary.simpleMessage(
       "Kinly needs an internet connection. Check your signal and try again.",
     ),

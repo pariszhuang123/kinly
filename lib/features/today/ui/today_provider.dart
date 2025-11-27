@@ -31,14 +31,14 @@ class TodayProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<TodayBloc>(
       create:
-        (_) => TodayBloc(
-          choresRepository: choresRepository,
-          profileRepository: profileRepository,
-          expensesRepository: expensesRepository,
-          homeRepository: homeRepository,
-          moodRepository: moodRepository,
-          homeId: homeId,
-        ),
+          (_) => TodayBloc(
+            choresRepository: choresRepository,
+            profileRepository: profileRepository,
+            expensesRepository: expensesRepository,
+            homeRepository: homeRepository,
+            moodRepository: moodRepository,
+            homeId: homeId,
+          ),
       child: TodayScreen(homeId: homeId),
     );
   }

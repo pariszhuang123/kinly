@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/spacing.dart';
+import '../../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../../generated/l10n.dart';
 
 class ShareCreateError extends StatelessWidget {
@@ -29,7 +30,11 @@ class ShareCreateError extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: spacing.md),
-          ElevatedButton(onPressed: onRetry, child: Text(s.shareCreateRetry)),
+          KinlyFilledButton.text(
+            fullWidth: true,
+            onPressed: onRetry,
+            label: s.shareCreateRetry,
+          ),
         ],
       ),
     );

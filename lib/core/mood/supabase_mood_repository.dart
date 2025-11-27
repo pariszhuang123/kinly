@@ -77,9 +77,11 @@ class SupabaseMoodRepository implements MoodRepository {
     );
     if (res is List) {
       final posts = res
-          .map((raw) => GratitudeWallPost.fromJson(
-                (raw as Map).cast<String, dynamic>(),
-              ))
+          .map(
+            (raw) => GratitudeWallPost.fromJson(
+              (raw as Map).cast<String, dynamic>(),
+            ),
+          )
           .toList(growable: false);
       DateTime? newCursorCreated;
       String? newCursorId;
@@ -122,5 +124,27 @@ class SupabaseMoodRepository implements MoodRepository {
     }
     // fallback: no status info
     return const GratitudeWallStatus(hasUnread: false);
+  }
+
+  @override
+  Future<bool> isNpsRequired(String homeId) async {
+    final res = await _client.rpc(
+      'home_nps_get_status',
+      params: {'p_home_id': homeId},
+    );
+    if (res is bool) return res;
+    return false;
+  }
+
+  @override
+  Future<void> submitNps({required String homeId, required int score}) async {
+    try {
+      await _client.rpc(
+        'home_nps_submit',
+        params: {'p_home_id': homeId, 'p_score': score},
+      );
+    } catch (error) {
+      throw SupabaseErrorMapper.mapNpsSubmit(error);
+    }
   }
 }
