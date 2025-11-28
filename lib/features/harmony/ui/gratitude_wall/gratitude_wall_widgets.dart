@@ -251,10 +251,12 @@ class PoweredByTagline extends StatelessWidget {
 
     return Text.rich(
       TextSpan(
+        text: s.gratitudeWallPoweredBy,
         children: [
-          TextSpan(text: '${s.gratitudeWallPoweredBy} '),
+          const TextSpan(text: ' '),
           TextSpan(
-            text: 'Kinly',
+            // ideally localize this too, e.g. s.appName
+            text: s.app_title,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: colorScheme.onSurface,
