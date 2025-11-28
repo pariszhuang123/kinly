@@ -1086,6 +1086,36 @@ class S {
     );
   }
 
+  /// `Gratitude wall`
+  String get todayGratitudeSectionTitle {
+    return Intl.message(
+      'Gratitude wall',
+      name: 'todayGratitudeSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New gratitude posts are waiting for you.`
+  String get todayGratitudeUnreadBody {
+    return Intl.message(
+      'New gratitude posts are waiting for you.',
+      name: 'todayGratitudeUnreadBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View wall`
+  String get todayGratitudeOpenCta {
+    return Intl.message(
+      'View wall',
+      name: 'todayGratitudeOpenCta',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Pending payment`
   String get shareOwedDetailTitle {
     return Intl.message(

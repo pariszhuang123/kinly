@@ -236,16 +236,13 @@ class _SubmitButton extends StatelessWidget {
         return Stack(
           alignment: Alignment.center,
           children: [
-            Opacity(
-              opacity: canSubmit ? 1 : 0.5,
-              child: KinlyFilledButton.text(
-                label: s.harmonySubmitCta,
-                onPressed: handler,
-                fullWidth: true,
-              ),
+            KinlyFilledButton.text(
+              label: s.harmonySubmitCta,
+              onPressed: canSubmit ? handler : null,
+              fullWidth: true,
             ),
             if (state.isSubmitting)
-              // ✅ Directional positioning for RTL
+              // Directional positioning for RTL
               const PositionedDirectional(
                 end: 24,
                 child: KinlyLoader(size: 20),

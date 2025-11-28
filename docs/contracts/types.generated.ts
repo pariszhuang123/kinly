@@ -1247,7 +1247,9 @@ export type Database = {
           p_limit?: number
         }
         Returns: {
+          author_avatar_url: string
           author_user_id: string
+          author_username: string
           created_at: string
           message: string
           mood: Database["public"]["Enums"]["mood_scale"]

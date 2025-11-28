@@ -36,6 +36,8 @@ class MoodSubmitResult extends Equatable {
 class GratitudeWallPost extends Equatable {
   final String id;
   final String authorUserId;
+  final String? authorUsername;
+  final String? authorAvatarUrl;
   final MoodScale mood;
   final String? message;
   final DateTime createdAt;
@@ -43,6 +45,8 @@ class GratitudeWallPost extends Equatable {
   const GratitudeWallPost({
     required this.id,
     required this.authorUserId,
+    this.authorUsername,
+    this.authorAvatarUrl,
     required this.mood,
     required this.createdAt,
     this.message,
@@ -52,6 +56,8 @@ class GratitudeWallPost extends Equatable {
     return GratitudeWallPost(
       id: json['post_id'] as String,
       authorUserId: json['author_user_id'] as String,
+      authorUsername: json['author_username'] as String?,
+      authorAvatarUrl: json['author_avatar_url'] as String?,
       mood: MoodScale.fromWire(json['mood'] as String),
       message: json['message'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
@@ -59,7 +65,15 @@ class GratitudeWallPost extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, authorUserId, mood, message, createdAt];
+  List<Object?> get props => [
+        id,
+        authorUserId,
+        authorUsername,
+        authorAvatarUrl,
+        mood,
+        message,
+        createdAt,
+      ];
 }
 
 class GratitudeWallPage extends Equatable {
@@ -95,7 +109,7 @@ class GratitudeWallStatus extends Equatable {
 
   factory GratitudeWallStatus.fromJson(Map<String, dynamic> json) {
     return GratitudeWallStatus(
-      hasUnread: (json['has_unread'] as bool?) ?? false,
+      hasUnread: (json['has_unread'] as bool?) ?? true,
       lastReadAt:
           json['last_read_at'] == null
               ? null

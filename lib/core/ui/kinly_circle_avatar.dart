@@ -7,12 +7,14 @@ class KinlyCircleAvatar extends StatelessWidget {
   final String? avatarUrl;
   final double radius;
   final bool isOwner;
+  final String? fallbackInitial;
 
   const KinlyCircleAvatar({
     super.key,
     this.avatarUrl,
     this.radius = 20,
     this.isOwner = false,
+    this.fallbackInitial,
   });
 
   @override
@@ -25,13 +27,22 @@ class KinlyCircleAvatar extends StatelessWidget {
 
     final avatar = CircleAvatar(
       radius: radius,
-      backgroundColor: Colors.transparent,
+      backgroundColor:
+          avatarUrl == null ? colorScheme.primaryContainer : Colors.transparent,
+      foregroundColor: colorScheme.onPrimaryContainer,
       backgroundImage:
           avatarUrl != null && !showsSvgAvatar
               ? NetworkImage(avatarUrl!)
               : null,
       child: switch ((avatarUrl, showsSvgAvatar)) {
-        (null, _) => null,
+        (null, _) => fallbackInitial != null
+            ? Text(
+                fallbackInitial!.toUpperCase(),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: colorScheme.onPrimaryContainer,
+                ),
+              )
+            : null,
         (_, true) => ClipOval(
           child: SizedBox.expand(
             child: SvgPicture.network(

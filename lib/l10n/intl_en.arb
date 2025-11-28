@@ -169,6 +169,9 @@
     }
   },
   "todayShareDraftSubtitle": "Finish the split to publish this expense.",
+  "todayGratitudeSectionTitle": "Gratitude wall",
+  "todayGratitudeUnreadBody": "New gratitude posts are waiting for you.",
+  "todayGratitudeOpenCta": "View wall",
   "shareOwedDetailTitle": "Pending payment",
   "shareOwedDetailSubtitle": "Select the expense you just settled.",
   "shareOwedDetailEmpty": "You're all caught up with this person.",

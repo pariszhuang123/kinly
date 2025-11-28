@@ -7,6 +7,7 @@ class TodayState extends Equatable {
   final List<TodayShareOwed> shareOwed;
   final List<TodayShareDraft> shareDrafts;
   final String? shareErrorMessage;
+  final GratitudeWallStatus? gratitudeStatus;
   final TodayUserProfile? profile;
   final String? message;
   final Object? error;
@@ -22,6 +23,7 @@ class TodayState extends Equatable {
     required this.shareOwed,
     required this.shareDrafts,
     this.shareErrorMessage,
+    this.gratitudeStatus,
     this.profile,
     this.message,
     this.error,
@@ -39,12 +41,14 @@ class TodayState extends Equatable {
     bool hasShownHarmonyPrompt = false,
     int npsPromptTick = 0,
     bool hasShownNpsPrompt = false,
+    GratitudeWallStatus? gratitudeStatus,
   }) : this._(
          isLoading: true,
          activeTasks: const [],
          draftTasks: const [],
          shareOwed: shareOwed,
          shareDrafts: shareDrafts,
+         gratitudeStatus: gratitudeStatus,
          profile: profile,
          harmonyPromptTick: harmonyPromptTick,
          hasShownHarmonyPrompt: hasShownHarmonyPrompt,
@@ -63,6 +67,7 @@ class TodayState extends Equatable {
     bool hasShownHarmonyPrompt = false,
     int npsPromptTick = 0,
     bool hasShownNpsPrompt = false,
+    GratitudeWallStatus? gratitudeStatus,
   }) : this._(
          isLoading: false,
          activeTasks: activeTasks,
@@ -71,6 +76,7 @@ class TodayState extends Equatable {
          shareDrafts: shareDrafts,
          profile: profile,
          shareErrorMessage: shareErrorMessage,
+         gratitudeStatus: gratitudeStatus,
          harmonyPromptTick: harmonyPromptTick,
          hasShownHarmonyPrompt: hasShownHarmonyPrompt,
          npsPromptTick: npsPromptTick,
@@ -88,6 +94,7 @@ class TodayState extends Equatable {
     bool hasShownHarmonyPrompt = false,
     int npsPromptTick = 0,
     bool hasShownNpsPrompt = false,
+    GratitudeWallStatus? gratitudeStatus,
   }) : this._(
          isLoading: false,
          activeTasks: const [],
@@ -98,6 +105,7 @@ class TodayState extends Equatable {
          message: message,
          error: error,
          shareErrorMessage: shareErrorMessage,
+         gratitudeStatus: gratitudeStatus,
          harmonyPromptTick: harmonyPromptTick,
          hasShownHarmonyPrompt: hasShownHarmonyPrompt,
          npsPromptTick: npsPromptTick,
@@ -106,6 +114,7 @@ class TodayState extends Equatable {
 
   bool get hasFlowContent => activeTasks.isNotEmpty || draftTasks.isNotEmpty;
   bool get hasShareContent => shareOwed.isNotEmpty || shareDrafts.isNotEmpty;
+  bool get hasGratitudeUnread => gratitudeStatus?.hasUnread ?? false;
 
   @override
   List<Object?> get props => [
@@ -115,6 +124,7 @@ class TodayState extends Equatable {
     shareOwed,
     shareDrafts,
     shareErrorMessage,
+    gratitudeStatus,
     profile,
     message,
     error,

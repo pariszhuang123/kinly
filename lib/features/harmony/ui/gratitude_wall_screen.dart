@@ -5,6 +5,7 @@ import '../../../core/mood/enums/mood_scale.dart';
 import '../../../core/mood/models.dart';
 import '../../../core/theme/app_sizes.dart';
 import '../../../core/theme/spacing.dart';
+import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/gratitude_wall_cubit.dart';
@@ -101,9 +102,9 @@ class _WallRow extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
     final content = Expanded(
-        child: Container(
-          padding: EdgeInsets.all(spacing.md),
-          decoration: BoxDecoration(
+      child: Container(
+        padding: EdgeInsets.all(spacing.md),
+        decoration: BoxDecoration(
           color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(16),
         ),
@@ -111,6 +112,42 @@ class _WallRow extends StatelessWidget {
           crossAxisAlignment:
               alignLeft ? CrossAxisAlignment.start : CrossAxisAlignment.end,
           children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment:
+                  alignLeft ? MainAxisAlignment.start : MainAxisAlignment.end,
+              children: [
+                KinlyCircleAvatar(
+                  avatarUrl: post.authorAvatarUrl,
+                  radius: 18,
+                  fallbackInitial: _initial(
+                    post.authorUsername ?? s.friendDefaultName,
+                  ),
+                ),
+                SizedBox(width: spacing.sm),
+                Column(
+                  crossAxisAlignment:
+                      alignLeft ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      post.authorUsername ?? s.friendDefaultName,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      s.gratitudeWallTimestamp(
+                        TimeOfDay.fromDateTime(post.createdAt).format(context),
+                      ),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: spacing.sm),
             Text(
               _moodLabel(context, post.mood),
               style: theme.textTheme.labelLarge?.copyWith(
@@ -125,26 +162,8 @@ class _WallRow extends StatelessWidget {
                 style: theme.textTheme.bodyLarge,
               ),
             ],
-            SizedBox(height: spacing.sm),
-            Text(
-              s.gratitudeWallTimestamp(
-                TimeOfDay.fromDateTime(post.createdAt).format(context),
-              ),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
           ],
         ),
-      ),
-    );
-
-    final avatar = CircleAvatar(
-      radius: 24,
-      backgroundColor: theme.colorScheme.primaryContainer,
-      child: Text(
-        '🙂',
-        style: theme.textTheme.titleMedium,
       ),
     );
 
@@ -152,14 +171,10 @@ class _WallRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: alignLeft
           ? [
-              avatar,
-              SizedBox(width: spacing.md),
               content,
             ]
           : [
               content,
-              SizedBox(width: spacing.md),
-              avatar,
             ],
     );
   }
@@ -178,6 +193,12 @@ class _WallRow extends StatelessWidget {
       case MoodScale.thunderstorm:
         return s.harmonyMoodThunderstorm;
     }
+  }
+
+  String _initial(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return '?';
+    return trimmed.substring(0, 1);
   }
 }
 

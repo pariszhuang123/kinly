@@ -677,6 +677,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("نشطة"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("مسودات"),
+    "todayGratitudeOpenCta": MessageLookupByLibrary.simpleMessage("??? ??????"),
+    "todayGratitudeSectionTitle": MessageLookupByLibrary.simpleMessage(
+      "???? ????????",
+    ),
+    "todayGratitudeUnreadBody": MessageLookupByLibrary.simpleMessage(
+      "???? ??????? ?????? ????? ????????.",
+    ),
     "todayShareActiveSubtitle": m9,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("قريبًا"),
     "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(

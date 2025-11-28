@@ -808,6 +808,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
+    "todayGratitudeOpenCta": MessageLookupByLibrary.simpleMessage("Ver muro"),
+    "todayGratitudeSectionTitle": MessageLookupByLibrary.simpleMessage(
+      "Muro de gratitud",
+    ),
+    "todayGratitudeUnreadBody": MessageLookupByLibrary.simpleMessage(
+      "Hay nuevas publicaciones de gratitud esper?ndote.",
+    ),
     "todayShareActiveSubtitle": m9,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage(
       "prÃ³ximamente",

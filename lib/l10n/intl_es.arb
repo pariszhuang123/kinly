@@ -166,6 +166,9 @@
     }
   },
   "todayShareDraftSubtitle": "Completa la divisi\u00c3\u00b3n para publicar este gasto.",
+  "todayGratitudeSectionTitle": "Muro de gratitud",
+  "todayGratitudeUnreadBody": "Hay nuevas publicaciones de gratitud esper?ndote.",
+  "todayGratitudeOpenCta": "Ver muro",
   "shareOwedDetailTitle": "Pago pendiente",
   "shareOwedDetailSubtitle": "Selecciona el gasto que acabas de pagar.",
   "shareOwedDetailEmpty": "Est\u00c3\u00a1s al d\u00c3\u00ada con esta persona.",

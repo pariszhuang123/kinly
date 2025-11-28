@@ -9,6 +9,9 @@ import '../../../data/repositories/expenses_repository.dart';
 import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../../../data/repositories/mood_repository.dart';
+import '../../../core/mood/models.dart';
+import '../../../core/logging/logger.dart';
+import '../../../core/logging/debug_logger.dart';
 import '../domain/models.dart'; // TodayFlowTask etc.
 
 part 'today_event.dart';
@@ -20,7 +23,9 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final ExpensesRepository _expensesRepository;
   final HomeRepository _homeRepository;
   final MoodRepository _moodRepository;
+  final Logger _logger;
   final String _homeId;
+  static const _gratitudeLogTag = 'TodayGratitude';
 
   TodayBloc({
     required ChoresRepository choresRepository,
@@ -29,11 +34,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required HomeRepository homeRepository,
     required MoodRepository moodRepository,
     required String homeId,
+    Logger? logger,
   }) : _choresRepository = choresRepository,
        _profileRepository = profileRepository,
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
        _moodRepository = moodRepository,
+       _logger = logger ?? const DebugLogger(),
        _homeId = homeId,
        super(const TodayState.loading()) {
     on<TodayStarted>(_onStarted);
@@ -63,6 +70,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     final prevHasShownHarmony = state.hasShownHarmonyPrompt;
     final prevNpsPromptTick = state.npsPromptTick;
     final prevHasShownNps = state.hasShownNpsPrompt;
+    final prevGratitudeStatus = state.gratitudeStatus;
     try {
       if (!isRefresh) {
         emit(
@@ -74,6 +82,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             hasShownHarmonyPrompt: prevHasShownHarmony,
             npsPromptTick: prevNpsPromptTick,
             hasShownNpsPrompt: prevHasShownNps,
+            gratitudeStatus: prevGratitudeStatus,
           ),
         );
       }
@@ -103,6 +112,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         _homeId,
         excludeSelf: false,
       );
+      final wallStatusFuture = _moodRepository.getWallStatus(_homeId);
 
       final members = await membersFuture;
       String? ownerUserId;
@@ -127,6 +137,12 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         ownerUserId: ownerUserId,
         currentUserId: profile?.userId,
       );
+      final wallStatus = await _resolveGratitudeStatus(
+        wallStatusFuture,
+        fallback: prevGratitudeStatus,
+        currentUserId: profile?.userId,
+      );
+      _logGratitudeStatus(wallStatus, profile?.userId);
 
       final draftTasks = drafts
           .map((entry) => _mapEntryToTodayTask(entry, isNewTodayOverride: true))
@@ -142,6 +158,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shareOwed: shareSnapshot.owed,
           shareDrafts: shareSnapshot.drafts,
           shareErrorMessage: shareSnapshot.errorMessage,
+          gratitudeStatus: wallStatus,
           profile: profile,
           harmonyPromptTick: promptTick,
           hasShownHarmonyPrompt: hasShownPromptNext,
@@ -160,6 +177,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shareOwed: state.shareOwed,
           shareDrafts: state.shareDrafts,
           shareErrorMessage: state.shareErrorMessage,
+          gratitudeStatus: prevGratitudeStatus,
           harmonyPromptTick: prevPromptTick,
           hasShownHarmonyPrompt: prevHasShownHarmony,
           npsPromptTick: prevNpsPromptTick,
@@ -241,6 +259,34 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     } catch (_) {
       return false;
     }
+  }
+
+  Future<GratitudeWallStatus> _resolveGratitudeStatus(
+    Future<GratitudeWallStatus> future, {
+    GratitudeWallStatus? fallback,
+    String? currentUserId,
+  }) async {
+    try {
+      return await future;
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to load gratitude wall status; using fallback '
+        'hasUnread=${fallback?.hasUnread}',
+        tag: _gratitudeLogTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return fallback ?? const GratitudeWallStatus(hasUnread: false);
+    }
+  }
+
+  void _logGratitudeStatus(GratitudeWallStatus status, String? currentUserId) {
+    _logger.info(
+      'Gratitude status: hasUnread=${status.hasUnread} '
+      'lastReadAt=${status.lastReadAt?.toIso8601String() ?? 'null'} '
+      'userId=${currentUserId ?? 'unknown'} homeId=$_homeId',
+      tag: _gratitudeLogTag,
+    );
   }
 }
 

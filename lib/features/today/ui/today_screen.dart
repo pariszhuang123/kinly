@@ -17,6 +17,7 @@ import 'widgets/today_flow_section_container.dart';
 import 'widgets/today_share_section.dart';
 import 'widgets/today_add_sheet.dart';
 import 'widgets/today_empty_state_card.dart';
+import 'widgets/today_gratitude_section.dart';
 import '../../../../core/ui/home_bottom_nav.dart';
 import '../../flow/ui/flow_list_filter.dart';
 import '../../flow/domain/flow_chore_outcome.dart';
@@ -125,9 +126,10 @@ class TodayScreen extends StatelessWidget {
 
                               final hasFlow = state.hasFlowContent;
                               final hasShare = state.hasShareContent;
+                              final hasGratitude = state.hasGratitudeUnread;
 
-                              // If no Flow and no Share → show empty state card
-                              if (!hasFlow && !hasShare) {
+                              // If no Flow and no Share show empty state card
+                              if (!hasFlow && !hasShare && !hasGratitude) {
                                 return const TodayEmptyStateCard();
                               }
 
@@ -169,6 +171,12 @@ class TodayScreen extends StatelessWidget {
                                         _openShareCreatedList(context);
                                       },
                                     ),
+                                  if (hasGratitude) ...[
+                                    SizedBox(height: spacing.lg),
+                                    TodayGratitudeSection(
+                                      onTap: () => _openGratitudeWall(context),
+                                    ),
+                                  ],
                                 ],
                               );
                             },
@@ -318,6 +326,13 @@ class TodayScreen extends StatelessWidget {
       AppRoutes.shareCreatedList,
       extra: true, // show drafts-only list
     );
+  }
+
+  Future<void> _openGratitudeWall(BuildContext context) async {
+    await context.push(AppRoutes.gratitudeWall);
+    if (context.mounted) {
+      context.read<TodayBloc>().add(const TodayRefreshed());
+    }
   }
 
   Future<void> _openHarmonySheet(BuildContext context) {

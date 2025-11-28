@@ -3223,7 +3223,7 @@ $$;
 ALTER FUNCTION "public"."expenses_mark_share_paid"("p_expense_id" "uuid") OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."gratitude_wall_list"("p_home_id" "uuid", "p_limit" integer DEFAULT 20, "p_cursor_created_at" timestamp with time zone DEFAULT NULL::timestamp with time zone, "p_cursor_id" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("post_id" "uuid", "author_user_id" "uuid", "mood" "public"."mood_scale", "message" "text", "created_at" timestamp with time zone)
+CREATE OR REPLACE FUNCTION "public"."gratitude_wall_list"("p_home_id" "uuid", "p_limit" integer DEFAULT 20, "p_cursor_created_at" timestamp with time zone DEFAULT NULL::timestamp with time zone, "p_cursor_id" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("post_id" "uuid", "author_user_id" "uuid", "author_username" "public"."citext", "author_avatar_url" "text", "mood" "public"."mood_scale", "message" "text", "created_at" timestamp with time zone)
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -3235,12 +3235,19 @@ BEGIN
   PERFORM public._assert_home_active(p_home_id);
 
   RETURN QUERY
-  SELECT p.id,
-         p.author_user_id,
-         p.mood,
-         p.message,
-         p.created_at
-  FROM public.gratitude_wall_posts p
+  SELECT
+    p.id,
+    p.author_user_id,
+    pr.username,
+    a.storage_path AS author_avatar_url,
+    p.mood,
+    p.message,
+    p.created_at
+  FROM public.gratitude_wall_posts AS p
+  JOIN public.profiles AS pr
+    ON pr.id = p.author_user_id
+  LEFT JOIN public.avatars AS a
+    ON a.id = pr.avatar_id
   WHERE p.home_id = p_home_id
     AND (
       p_cursor_created_at IS NULL
@@ -3260,10 +3267,6 @@ $$;
 
 
 ALTER FUNCTION "public"."gratitude_wall_list"("p_home_id" "uuid", "p_limit" integer, "p_cursor_created_at" timestamp with time zone, "p_cursor_id" "uuid") OWNER TO "postgres";
-
-
-COMMENT ON FUNCTION "public"."gratitude_wall_list"("p_home_id" "uuid", "p_limit" integer, "p_cursor_created_at" timestamp with time zone, "p_cursor_id" "uuid") IS 'List gratitude wall posts for a home, ordered newest to oldest, with cursor-based pagination. Parameters: p_home_id (home ID), p_limit (max rows, default 20, capped at 100), p_cursor_created_at (created_at of last seen post for pagination), p_cursor_id (ID of last seen post). Returns: post_id, author_user_id, mood, message, created_at.';
-
 
 
 CREATE OR REPLACE FUNCTION "public"."gratitude_wall_mark_read"("p_home_id" "uuid") RETURNS boolean

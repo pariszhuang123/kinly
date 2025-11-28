@@ -116,13 +116,23 @@ class SupabaseMoodRepository implements MoodRepository {
       'gratitude_wall_status',
       params: {'p_home_id': homeId},
     );
+
+    // CASE 1: Supabase returns a list of rows (most common for RETURNS TABLE)
+    if (res is List && res.isNotEmpty) {
+      final row = (res.first as Map).cast<String, dynamic>();
+      return GratitudeWallStatus.fromJson(row);
+    }
+
+    // CASE 2: Supabase returns a single row as a map
     if (res is Map<String, dynamic>) {
       return GratitudeWallStatus.fromJson(res);
     }
     if (res is Map) {
       return GratitudeWallStatus.fromJson(res.cast<String, dynamic>());
     }
-    // fallback: no status info
+
+    // CASE 3: unexpected shape – be explicit (I’d probably default to true or log)
+    // but if you prefer safe: assume no unread
     return const GratitudeWallStatus(hasUnread: false);
   }
 

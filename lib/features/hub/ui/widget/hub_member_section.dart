@@ -23,6 +23,9 @@ class HubMembersSection extends StatelessWidget {
   final VoidCallback? onCopyCode;
   final VoidCallback? onRotateInvite;
 
+  // Shared avatar radius so members + add tile stay in sync
+  static const double _avatarRadius = 32.0;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -75,8 +78,10 @@ class HubMembersSection extends StatelessWidget {
           ),
         if (members.isNotEmpty)
           SizedBox(
-            height: 110,
+            height: 130, // slightly taller to fit larger avatars + labels
             child: Row(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start, // 👈 top-align everything
               children: [
                 // Scrollable avatars
                 Expanded(
@@ -86,13 +91,22 @@ class HubMembersSection extends StatelessWidget {
                     separatorBuilder: (_, __) => SizedBox(width: spacing.md),
                     itemBuilder: (context, index) {
                       final member = members[index];
-                      return _MemberTile(member: member, spacing: spacing);
+                      return _MemberTile(
+                        member: member,
+                        spacing: spacing,
+                        avatarRadius: _avatarRadius,
+                      );
                     },
                   ),
                 ),
                 SizedBox(width: spacing.md),
-                // Fixed Add tile on the right
-                KinlyAddTileButton(onTap: onInviteTap),
+                // Fixed "Invite" tile styled like a member tile
+                _AddMemberTile(
+                  spacing: spacing,
+                  avatarRadius: _avatarRadius,
+                  onTap: onInviteTap,
+                  label: s.hubInviteCta, // one-line i18n label
+                ),
               ],
             ),
           )
@@ -110,15 +124,19 @@ class HubMembersSection extends StatelessWidget {
 }
 
 class _MemberTile extends StatelessWidget {
-  const _MemberTile({required this.member, required this.spacing});
+  const _MemberTile({
+    required this.member,
+    required this.spacing,
+    required this.avatarRadius,
+  });
 
   final HomeMemberSummary member;
   final Spacing spacing;
+  final double avatarRadius;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final avatarRadius = 28.0;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -130,13 +148,59 @@ class _MemberTile extends StatelessWidget {
         ),
         SizedBox(height: spacing.sm),
         SizedBox(
-          width: avatarRadius * 2.4,
+          width: avatarRadius * 3.0, // a bit wider since we use 1 line
           child: Text(
             member.username,
             style: theme.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),
-            maxLines: 2,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AddMemberTile extends StatelessWidget {
+  const _AddMemberTile({
+    required this.spacing,
+    required this.avatarRadius,
+    required this.onTap,
+    required this.label,
+  });
+
+  final Spacing spacing;
+  final double avatarRadius;
+  final VoidCallback onTap;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Match avatar visual size
+        SizedBox(
+          height: avatarRadius * 2,
+          width: avatarRadius * 2,
+          child: KinlyAddTileButton(
+            onTap: onTap,
+          ), // inherits dark/light styling from theme
+        ),
+        SizedBox(height: spacing.sm),
+        SizedBox(
+          width: avatarRadius * 3.0,
+          child: Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
           ),
