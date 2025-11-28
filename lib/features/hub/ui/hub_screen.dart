@@ -99,7 +99,6 @@ class HubScreen extends StatelessWidget {
                                           ? () => _rotateInvite(context)
                                           : null,
                                 ),
-                                SizedBox(height: spacing.xl),
 
                                 // 🔳 QR / app link section
                                 HubQrSection(
@@ -115,7 +114,11 @@ class HubScreen extends StatelessWidget {
                                   colors: sections.hub,
                                   title: s.hubCardGratitudeWallTitle,
                                   subtitle: s.hubCardGratitudeWallSubtitle,
-                                  icon: Icons.favorite_rounded,
+                                  icon: Icon(
+                                    Icons.favorite_rounded,
+                                    color: sections.pulse.icon,
+                                    size: 28,
+                                  ),
                                   onTap:
                                       () =>
                                           context.push(AppRoutes.gratitudeWall),

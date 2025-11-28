@@ -2895,10 +2895,10 @@ BEGIN
   INTO v_result
   FROM (
     SELECT
-      e.created_by_user_id           AS payer_user_id,
-      COALESCE(p.full_name, p.email) AS payer_display,
-      a.storage_path                 AS payer_avatar_url,  -- payer MUST have avatar
-      SUM(s.amount_cents)            AS total_owed_cents,
+      e.created_by_user_id                          AS payer_user_id,
+      COALESCE(p.username, p.full_name, p.email)    AS payer_display,
+      a.storage_path                                AS payer_avatar_url,  -- payer MUST have avatar
+      SUM(s.amount_cents)                           AS total_owed_cents,
       jsonb_agg(
         jsonb_build_object(
           'expenseId',   e.id,
@@ -3295,6 +3295,57 @@ ALTER FUNCTION "public"."gratitude_wall_mark_read"("p_home_id" "uuid") OWNER TO 
 
 
 COMMENT ON FUNCTION "public"."gratitude_wall_mark_read"("p_home_id" "uuid") IS 'Mark the gratitude wall as read for the current user in the specified home. Inserts or updates the last_read_at timestamp in gratitude_wall_reads. Parameters: p_home_id (home ID). Returns: boolean (TRUE on success).';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."gratitude_wall_stats"("p_home_id" "uuid") RETURNS TABLE("total_posts" integer, "unread_count" integer, "last_read_at" timestamp with time zone)
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_last_read_at  timestamptz;
+  v_total_posts   int;
+  v_unread_count  int;
+BEGIN
+  -- Guard: must be authenticated & an active member of the home
+  PERFORM public._assert_authenticated();
+  PERFORM public._assert_home_member(p_home_id);
+  PERFORM public._assert_home_active(p_home_id);
+
+  -- Get the most recent last_read_at for this user + home
+  SELECT MAX(r.last_read_at)
+  INTO v_last_read_at
+  FROM public.gratitude_wall_reads AS r
+  WHERE r.home_id = p_home_id
+    AND r.user_id = auth.uid();
+
+  -- Count total + unread posts in a single scan
+  SELECT
+    COUNT(*)::int AS total_posts,
+    (COUNT(*) FILTER (
+       WHERE v_last_read_at IS NULL
+          OR p.created_at > v_last_read_at
+     ))::int AS unread_count
+  INTO
+    v_total_posts,
+    v_unread_count
+  FROM public.gratitude_wall_posts AS p
+  WHERE p.home_id   = p_home_id
+    AND p.is_active = TRUE;
+
+  total_posts  := COALESCE(v_total_posts, 0);
+  unread_count := COALESCE(v_unread_count, 0);
+  last_read_at := v_last_read_at;
+
+  RETURN NEXT;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."gratitude_wall_stats"("p_home_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."gratitude_wall_stats"("p_home_id" "uuid") IS 'Returns total, unread count, and last_read_at for the current user''s gratitude wall in the given home.';
 
 
 
@@ -7834,6 +7885,13 @@ GRANT ALL ON FUNCTION "public"."gratitude_wall_list"("p_home_id" "uuid", "p_limi
 REVOKE ALL ON FUNCTION "public"."gratitude_wall_mark_read"("p_home_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."gratitude_wall_mark_read"("p_home_id" "uuid") TO "service_role";
 GRANT ALL ON FUNCTION "public"."gratitude_wall_mark_read"("p_home_id" "uuid") TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."gratitude_wall_stats"("p_home_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."gratitude_wall_stats"("p_home_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."gratitude_wall_stats"("p_home_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."gratitude_wall_stats"("p_home_id" "uuid") TO "service_role";
 
 
 

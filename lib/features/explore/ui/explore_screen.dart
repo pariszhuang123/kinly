@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/kinly_sections.dart';
@@ -48,7 +49,11 @@ class ExploreScreen extends StatelessWidget {
                   colors: sections.flow,
                   title: s.quick_add_flow_title,
                   subtitle: s.exploreFlowSubtitle,
-                  icon: Icons.repeat_rounded,
+                  icon: Icon(
+                    Icons.repeat_rounded,
+                    color: sections.flow.icon,
+                    size: 28,
+                  ),
                   // ✅ Explore → Flow list as a sub-page
                   onTap: () => context.push(AppRoutes.flow),
                 ),
@@ -57,7 +62,15 @@ class ExploreScreen extends StatelessWidget {
                   colors: sections.share,
                   title: s.quick_add_share_title,
                   subtitle: s.exploreShareSubtitle,
-                  icon: Icons.payments_rounded,
+                  icon: SvgPicture.asset(
+                    'assets/icons/feature/Share.svg',
+                    width: 32,
+                    height: 32,
+                    colorFilter: ColorFilter.mode(
+                      theme.colorScheme.onPrimary,
+                      BlendMode.srcIn,
+                    ),
+                  ),
                   // ✅ Explore → Share created list as a sub-page
                   onTap: () => context.push(AppRoutes.shareCreatedList),
                 ),

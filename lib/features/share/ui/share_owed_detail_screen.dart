@@ -128,7 +128,6 @@ class _ShareOwedHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final s = S.of(context);
 
     return Row(
       children: [
@@ -143,18 +142,12 @@ class _ShareOwedHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(owed.displayName, style: theme.textTheme.titleLarge),
-              Text(
-                s.shareOwedDetailSubtitle,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
             ],
           ),
         ),
         Text(
           _formatCurrency(owed.totalOwedCents),
-          style: theme.textTheme.titleLarge?.copyWith(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -176,7 +169,7 @@ class _ShareOwedEmptyState extends StatelessWidget {
     return Center(
       child: Text(
         message,
-        style: theme.textTheme.bodyLarge,
+        style: theme.textTheme.bodyMedium,
         textAlign: TextAlign.center,
       ),
     );
@@ -309,12 +302,12 @@ class _DetailRow extends StatelessWidget {
               const SizedBox(width: 20),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(description, style: theme.textTheme.bodyLarge),
+              child: Text(description, style: theme.textTheme.bodyMedium),
             ),
             const SizedBox(width: 12),
             Text(
               amountLabel,
-              style: theme.textTheme.bodyLarge?.copyWith(
+              style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),

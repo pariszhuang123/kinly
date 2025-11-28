@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/profile/enums/profile_error_code.dart';
 import '../../../core/theme/spacing.dart';
@@ -11,6 +12,7 @@ import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/profile/models.dart';
 import '../../../generated/l10n.dart';
 import 'bloc/profile_identity_bloc.dart';
+import '../../../core/router/app_router.dart';
 
 class ProfileIdentityScreen extends StatefulWidget {
   const ProfileIdentityScreen({super.key});
@@ -209,9 +211,10 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
     final s = S.of(context);
     switch (state.action) {
       case ProfileIdentityAction.success:
-        if (state.updatedProfile != null) {
-          Navigator.of(context).pop(state.updatedProfile);
-        }
+        context.replaceNamed(
+          AppRoutes.profileSettings,
+          extra: state.updatedProfile,
+        );
         break;
       case ProfileIdentityAction.failure:
         final message = _resolveActionMessage(state, s);

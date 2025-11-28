@@ -22,7 +22,9 @@ class KinlySelectionCard extends StatelessWidget {
   final SectionColors colors;
   final String title;
   final String subtitle;
-  final IconData icon;
+
+  /// Now a Widget so we can pass Icon, SvgPicture, etc.
+  final Widget icon;
   final VoidCallback onTap;
 
   @override
@@ -48,10 +50,12 @@ class KinlySelectionCard extends StatelessWidget {
                 height: 56,
                 width: 56,
                 decoration: BoxDecoration(
-                  color: colors.icon.withValues(alpha: 0.15),
+                  color: colors.icon.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(icon, color: colors.icon, size: 28),
+                child: Center(
+                  child: icon, // <- use the widget directly
+                ),
               ),
               SizedBox(width: spacing.lg),
               Expanded(

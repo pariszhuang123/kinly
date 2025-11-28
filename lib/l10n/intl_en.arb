@@ -123,7 +123,7 @@
   "hubQrTitle": "Share the app",
   "hubQrSubtitle": "Scan to download Kinly",
   "hubCardGratitudeWallTitle": "Gratitude Wall",
-  "hubCardGratitudeWallSubtitle": "Post and read shout-outs, thank-yous, and moments of appreciation.",
+  "hubCardGratitudeWallSubtitle": "Read shout-outs, thank-yous, and moments of appreciation.",
   "hubError": "Couldn't load Hub. Please try again.",
   "hubRetry": "Retry",
   "todayEmptyCardTitle": "You're all caught up for today ✨",
@@ -390,6 +390,25 @@
   "gratitudeWallEmptyTitle": "No gratitude posts yet",
   "gratitudeWallEmptySubtitle": "Share a sunny moment to start filling the wall.",
   "gratitudeWallRetry": "Try again",
+  "gratitudeWallShareCta": "Share this wall",
+  "gratitudeWallShareTitle": "Gratitude wall",
+  "gratitudeWallShareMessage": "Sharing a glimpse of our Kinly gratitude wall. Download the app: {link}",
+  "@gratitudeWallShareMessage": {
+    "placeholders": {
+      "link": {}
+    }
+  },
+  "gratitudeWallShareError": "Couldn't share right now. Please try again.",
+  "gratitudeWallPoweredBy": "Powered by",
+  "gratitudeWallSubtitle": "Shared moments from your home.",
+  "gratitudeWallTitleCount": "Gratitude wall ({count})",
+  "@gratitudeWallTitleCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "npsTitle": "How likely are you to recommend Kinly to a friend or family member?",
   "npsDescription": "Net Promoter Score helps us learn how we\u2019re doing. Pick a number from 0 (not likely) to 10 (extremely likely).",
   "npsScaleLowLabel": "0 Not likely",

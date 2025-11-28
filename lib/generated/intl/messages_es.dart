@@ -25,7 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(client, current) =>
       "Tu versiÃ³n: ${client}\nÃšltima versiÃ³n: ${current}";
 
-  static String m11(time) => "${time} hoy";
+  static String m12(time) => "${time} hoy";
 
   static String m2(partOfDay, name) => "Buen ${partOfDay}, ${name}";
 
@@ -263,7 +263,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage(
       "Volver a intentar",
     ),
-    "gratitudeWallTimestamp": m11,
+    "gratitudeWallTimestamp": m12,
     "gratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
       "Muro de gratitud",
     ),

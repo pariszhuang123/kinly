@@ -1260,6 +1260,14 @@ export type Database = {
         Args: { p_home_id: string }
         Returns: boolean
       }
+      gratitude_wall_stats: {
+        Args: { p_home_id: string }
+        Returns: {
+          last_read_at: string
+          total_posts: number
+          unread_count: number
+        }[]
+      }
       gratitude_wall_status: {
         Args: { p_home_id: string }
         Returns: {

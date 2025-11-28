@@ -246,7 +246,7 @@ Projection for list views (Explore → Share, repository caches).
 - ### `expenses.getCurrentOwed`
   - Caller: member of `p_home_id`.
   - Args: `{ p_home_id }`.
-  - Behavior: returns JSON `[ { payerUserId, payerDisplay, payerAvatarUrl, totalOwedCents, items: [ { expenseId, description, amountCents } ] } ]` filtered to active expenses and unpaid splits where `debtor_user_id = auth.uid()`.
+- Behavior: returns JSON `[ { payerUserId, payerDisplay, payerAvatarUrl, totalOwedCents, items: [ { expenseId, description, amountCents } ] } ]` filtered to active expenses and unpaid splits where `debtor_user_id = auth.uid()`. `payerDisplay` is the payer's `username` (falling back to `full_name` then `email`).
 
 - ### `expenses.getCreatedByMe`
   - Caller: member of `p_home_id`.

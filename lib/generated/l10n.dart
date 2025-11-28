@@ -774,10 +774,10 @@ class S {
     );
   }
 
-  /// `Post and read shout-outs, thank-yous, and moments of appreciation.`
+  /// `Read shout-outs, thank-yous, and moments of appreciation.`
   String get hubCardGratitudeWallSubtitle {
     return Intl.message(
-      'Post and read shout-outs, thank-yous, and moments of appreciation.',
+      'Read shout-outs, thank-yous, and moments of appreciation.',
       name: 'hubCardGratitudeWallSubtitle',
       desc: '',
       args: [],
@@ -3068,6 +3068,76 @@ class S {
       name: 'gratitudeWallRetry',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Share this wall`
+  String get gratitudeWallShareCta {
+    return Intl.message(
+      'Share this wall',
+      name: 'gratitudeWallShareCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gratitude wall`
+  String get gratitudeWallShareTitle {
+    return Intl.message(
+      'Gratitude wall',
+      name: 'gratitudeWallShareTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sharing a glimpse of our Kinly gratitude wall. Download the app: {link}`
+  String gratitudeWallShareMessage(Object link) {
+    return Intl.message(
+      'Sharing a glimpse of our Kinly gratitude wall. Download the app: $link',
+      name: 'gratitudeWallShareMessage',
+      desc: '',
+      args: [link],
+    );
+  }
+
+  /// `Couldn't share right now. Please try again.`
+  String get gratitudeWallShareError {
+    return Intl.message(
+      'Couldn\'t share right now. Please try again.',
+      name: 'gratitudeWallShareError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Powered by`
+  String get gratitudeWallPoweredBy {
+    return Intl.message(
+      'Powered by',
+      name: 'gratitudeWallPoweredBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared moments from your home.`
+  String get gratitudeWallSubtitle {
+    return Intl.message(
+      'Shared moments from your home.',
+      name: 'gratitudeWallSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gratitude wall ({count})`
+  String gratitudeWallTitleCount(String count) {
+    return Intl.message(
+      'Gratitude wall ($count)',
+      name: 'gratitudeWallTitleCount',
+      desc: '',
+      args: [count],
     );
   }
 

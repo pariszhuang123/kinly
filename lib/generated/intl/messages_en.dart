@@ -25,7 +25,12 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(client, current) =>
       "Your version: ${client}\nLatest version: ${current}";
 
-  static String m11(time) => "${time} today";
+  static String m11(link) =>
+      "Sharing a glimpse of our Kinly gratitude wall. Download the app: ${link}";
+
+  static String m12(time) => "${time} today";
+
+  static String m13(count) => "Gratitude wall (${count})";
 
   static String m2(partOfDay, name) => "Good ${partOfDay}, ${name}";
 
@@ -244,11 +249,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "No gratitude posts yet",
     ),
+    "gratitudeWallPoweredBy": MessageLookupByLibrary.simpleMessage(
+      "Powered by",
+    ),
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("Try again"),
-    "gratitudeWallTimestamp": m11,
+    "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage(
+      "Share this wall",
+    ),
+    "gratitudeWallShareError": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t share right now. Please try again.",
+    ),
+    "gratitudeWallShareMessage": m11,
+    "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
+      "Gratitude wall",
+    ),
+    "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Shared moments from your home.",
+    ),
+    "gratitudeWallTimestamp": m12,
     "gratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
       "Gratitude wall",
     ),
+    "gratitudeWallTitleCount": m13,
     "greetingPartAfternoon": MessageLookupByLibrary.simpleMessage("afternoon"),
     "greetingPartEvening": MessageLookupByLibrary.simpleMessage("evening"),
     "greetingPartMorning": MessageLookupByLibrary.simpleMessage("morning"),
@@ -310,7 +332,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Weekly house harmony",
     ),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Post and read shout-outs, thank-yous, and moments of appreciation.",
+      "Read shout-outs, thank-yous, and moments of appreciation.",
     ),
     "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
       "Gratitude Wall",

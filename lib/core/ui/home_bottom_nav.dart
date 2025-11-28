@@ -33,10 +33,7 @@ class HomeBottomNav extends StatelessWidget {
           icon: const Icon(Icons.explore_rounded),
           label: t.navExplore,
         ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.favorite_rounded),
-          label: t.navHub,
-        ),
+        BottomNavigationBarItem(icon: const Icon(Icons.home), label: t.navHub),
       ],
     );
   }
