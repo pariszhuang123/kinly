@@ -103,6 +103,31 @@ class SupabaseMoodRepository implements MoodRepository {
   }
 
   @override
+  Future<GratitudeWallStats> getWallStats(String homeId) async {
+    final res = await _client.rpc(
+      'gratitude_wall_stats',
+      params: {'p_home_id': homeId},
+    );
+
+    if (res is List && res.isNotEmpty) {
+      final row = (res.first as Map).cast<String, dynamic>();
+      return GratitudeWallStats.fromJson(row);
+    }
+    if (res is Map<String, dynamic>) {
+      return GratitudeWallStats.fromJson(res);
+    }
+    if (res is Map) {
+      return GratitudeWallStats.fromJson(res.cast<String, dynamic>());
+    }
+
+    return const GratitudeWallStats(
+      totalPosts: 0,
+      unreadCount: 0,
+      lastReadAt: null,
+    );
+  }
+
+  @override
   Future<void> markWallRead(String homeId) async {
     await _client.rpc(
       'gratitude_wall_mark_read',

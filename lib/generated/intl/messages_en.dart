@@ -554,7 +554,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Checking your home members…",
     ),
     "profileLeaveHomeSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Stop sharing with this home. Owners must transfer ownership first.",
+      "Leaving this home means stepping out of your shared Kinly space.",
     ),
     "profileLeaveHomeTitle": MessageLookupByLibrary.simpleMessage("Leave home"),
     "profileLeaveOwnerNoEligibleMembers": MessageLookupByLibrary.simpleMessage(

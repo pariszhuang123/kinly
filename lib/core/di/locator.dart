@@ -22,8 +22,6 @@ import '../mood/supabase_mood_repository.dart';
 final sl = GetIt.instance;
 
 void setupDependencies() {
-  // TODO: register repositories and services here.
-  // sl.registerLazySingleton<AuthRepository>(() => SupabaseAuthRepository());
   if (!sl.isRegistered<Logger>()) {
     sl.registerLazySingleton<Logger>(() => const DebugLogger());
   }
@@ -65,8 +63,6 @@ void setupDependencies() {
     );
   }
   if (!sl.isRegistered<MoodRepository>()) {
-    sl.registerLazySingleton<MoodRepository>(
-      () => SupabaseMoodRepository(),
-    );
+    sl.registerLazySingleton<MoodRepository>(() => SupabaseMoodRepository());
   }
 }

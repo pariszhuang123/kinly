@@ -21,15 +21,22 @@ class GratitudeWallCubit extends Cubit<GratitudeWallState> {
     if (state.isLoading) return;
     emit(state.copyWith(isLoading: true, error: null));
     try {
-      final page = await _moodRepository.listWall(homeId: _homeId);
+      final wallFuture = _moodRepository.listWall(homeId: _homeId);
+      final statsFuture = _moodRepository.getWallStats(_homeId);
+
+      final page = await wallFuture;
+      final stats = await statsFuture;
+
+      final hasMore = page.posts.length < stats.totalPosts;
       emit(
         state.copyWith(
           isLoading: false,
           posts: page.posts,
           cursorCreatedAt: page.cursorCreatedAt,
           cursorId: page.cursorId,
-          hasMore: page.posts.isNotEmpty,
+          hasMore: hasMore,
           hasLoaded: true,
+          totalPosts: stats.totalPosts,
         ),
       );
       await _moodRepository.markWallRead(_homeId);
@@ -51,14 +58,17 @@ class GratitudeWallCubit extends Cubit<GratitudeWallState> {
         ...state.posts,
         ...page.posts,
       ];
+      final totalPosts = state.totalPosts ?? merged.length;
+      final hasMore = merged.length < totalPosts;
       emit(
         state.copyWith(
           isLoadingMore: false,
           posts: merged,
           cursorCreatedAt: page.cursorCreatedAt,
           cursorId: page.cursorId,
-          hasMore: page.posts.isNotEmpty,
+          hasMore: hasMore,
           hasLoaded: true,
+          totalPosts: totalPosts,
         ),
       );
     } catch (e) {

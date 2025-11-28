@@ -44,6 +44,13 @@ void main() {
           cursorId: any(named: 'cursorId'),
         ),
       ).thenAnswer((_) async => buildPage());
+      when(() => repo.getWallStats(any())).thenAnswer(
+        (_) async => const GratitudeWallStats(
+          totalPosts: 3,
+          unreadCount: 2,
+          lastReadAt: null,
+        ),
+      );
       when(() => repo.markWallRead(any())).thenAnswer((_) async {});
       return GratitudeWallCubit(homeId: 'home', moodRepository: repo);
     },
@@ -53,11 +60,13 @@ void main() {
       isA<GratitudeWallState>()
           .having((s) => s.isLoading, 'isLoading', false)
           .having((s) => s.posts.length, 'posts length', 1)
+          .having((s) => s.totalPosts, 'totalPosts', 3)
           .having((s) => s.hasLoaded, 'hasLoaded', true),
     ],
     verify: (_) {
       verify(() => repo.listWall(homeId: 'home', limit: any(named: 'limit')))
           .called(1);
+      verify(() => repo.getWallStats('home')).called(1);
       verify(() => repo.markWallRead('home')).called(1);
     },
   );

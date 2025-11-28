@@ -2521,10 +2521,10 @@ class S {
     );
   }
 
-  /// `Stop sharing with this home. Owners must transfer ownership first.`
+  /// `Leaving this home means stepping out of your shared Kinly space.`
   String get profileLeaveHomeSubtitle {
     return Intl.message(
-      'Stop sharing with this home. Owners must transfer ownership first.',
+      'Leaving this home means stepping out of your shared Kinly space.',
       name: 'profileLeaveHomeSubtitle',
       desc: '',
       args: [],

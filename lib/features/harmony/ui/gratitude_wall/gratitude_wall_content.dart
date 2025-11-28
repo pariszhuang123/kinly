@@ -82,11 +82,17 @@ class GratitudeWallContent extends StatelessWidget {
     Spacing spacing,
   ) {
     final theme = Theme.of(context);
+    final totalCount = state.totalPosts ?? state.posts.length;
+    final hasMoreThanLoaded =
+        state.totalPosts != null && state.posts.length < state.totalPosts!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GratitudeWallHeader(count: state.posts.length, hasMore: state.hasMore),
+        GratitudeWallHeader(
+          count: totalCount,
+          hasMore: hasMoreThanLoaded,
+        ),
         SizedBox(height: spacing.md),
         Expanded(
           child: NotificationListener<ScrollNotification>(

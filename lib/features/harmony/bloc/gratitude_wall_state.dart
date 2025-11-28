@@ -9,6 +9,7 @@ class GratitudeWallState extends Equatable {
   final String? error;
   final DateTime? cursorCreatedAt;
   final String? cursorId;
+  final int? totalPosts;
 
   const GratitudeWallState({
     required this.posts,
@@ -16,6 +17,7 @@ class GratitudeWallState extends Equatable {
     required this.isLoadingMore,
     required this.hasMore,
     required this.hasLoaded,
+    required this.totalPosts,
     this.error,
     this.cursorCreatedAt,
     this.cursorId,
@@ -27,6 +29,7 @@ class GratitudeWallState extends Equatable {
       isLoadingMore = false,
       hasMore = true,
       hasLoaded = false,
+      totalPosts = null,
       error = null,
       cursorCreatedAt = null,
       cursorId = null;
@@ -41,6 +44,7 @@ class GratitudeWallState extends Equatable {
     bool clearError = false,
     DateTime? cursorCreatedAt,
     String? cursorId,
+    int? totalPosts,
   }) {
     return GratitudeWallState(
       posts: posts ?? this.posts,
@@ -51,6 +55,7 @@ class GratitudeWallState extends Equatable {
       error: clearError ? null : (error ?? this.error),
       cursorCreatedAt: cursorCreatedAt ?? this.cursorCreatedAt,
       cursorId: cursorId ?? this.cursorId,
+      totalPosts: totalPosts ?? this.totalPosts,
     );
   }
 
@@ -64,5 +69,6 @@ class GratitudeWallState extends Equatable {
         error,
         cursorCreatedAt,
         cursorId,
+        totalPosts,
       ];
 }

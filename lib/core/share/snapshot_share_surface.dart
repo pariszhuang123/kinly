@@ -72,18 +72,18 @@ class _SnapshotShareSurfaceState extends State<SnapshotShareSurface> {
     return widget.builder(
       context,
       _isSharing,
-      () => _handleShare(context),
+      _handleShare, // no need to pass context
       capturedChild,
     );
   }
 
-  Future<void> _handleShare(BuildContext context) async {
+  Future<void> _handleShare() async {
     if (_isSharing) return;
 
     setState(() => _isSharing = true);
 
     final success = await SnapshotSharer.shareRepaintBoundary(
-      context: context,
+      context: context, // <-- State.context
       repaintKey: _repaintKey,
       fileNamePrefix: widget.fileNamePrefix,
       logTag: widget.logTag,
@@ -94,7 +94,7 @@ class _SnapshotShareSurfaceState extends State<SnapshotShareSurface> {
     if (!mounted) return;
 
     if (!success && widget.onShareError != null) {
-      widget.onShareError!(context);
+      widget.onShareError!(context); // now using State.context, OK
     }
 
     setState(() => _isSharing = false);

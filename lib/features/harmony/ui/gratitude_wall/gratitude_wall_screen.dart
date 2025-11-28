@@ -17,7 +17,6 @@ class GratitudeWallScreen extends StatelessWidget {
     return KinlyShareScaffold(
       fileNamePrefix: 'gratitude_wall',
       logTag: 'GratitudeWallShare',
-      appBarTitle: s.gratitudeWallTitle,
       subjectBuilder: (ctx) => s.gratitudeWallShareTitle,
       messageBuilder:
           (ctx, appLink) =>

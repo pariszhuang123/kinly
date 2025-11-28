@@ -67,7 +67,7 @@ class ExploreScreen extends StatelessWidget {
                     width: 32,
                     height: 32,
                     colorFilter: ColorFilter.mode(
-                      theme.colorScheme.onPrimary,
+                      sections.share.icon,
                       BlendMode.srcIn,
                     ),
                   ),

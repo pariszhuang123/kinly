@@ -217,7 +217,7 @@ class GratitudeWallHeader extends StatelessWidget {
     final s = S.of(context);
     final colorScheme = theme.colorScheme;
 
-    final countLabel = hasMore ? '${count}+' : '$count';
+    final countLabel = hasMore ? '$count+' : '$count';
     final title = s.gratitudeWallTitleCount(countLabel);
 
     return Column(

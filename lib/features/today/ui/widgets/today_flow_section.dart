@@ -24,20 +24,23 @@ class TodayFlowSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sections = Theme.of(context).extension<KinlySections>()!;
-    final spacing = Theme.of(context).extension<Spacing>();
+    final theme = Theme.of(context);
+    final sections = theme.extension<KinlySections>()!;
+    final spacing = theme.extension<Spacing>();
     final s = S.of(context);
     final colors = sections.flow;
     final tabs = _buildTabs(context);
 
     if (tabs.isEmpty) return const SizedBox.shrink();
 
+    // ===== SINGLE TAB CASE =====
     if (tabs.length == 1) {
       final tab = tabs.single;
       final showSeeAll = tab.tasks.length > 3;
       return SectionContainer(
         title: s.todayFlowSectionTitle,
         colors: colors,
+        leading: Icon(Icons.repeat_rounded, color: colors.icon, size: 28),
         child: Column(
           children: [
             _TaskList(
@@ -58,6 +61,7 @@ class TodayFlowSection extends StatelessWidget {
       );
     }
 
+    // ===== MULTI TAB CASE =====
     return DefaultTabController(
       length: tabs.length,
       child: Builder(
@@ -66,6 +70,7 @@ class TodayFlowSection extends StatelessWidget {
           return SectionContainer(
             title: s.todayFlowSectionTitle,
             colors: colors,
+            leading: Icon(Icons.repeat_rounded, color: colors.icon, size: 28),
             child: Column(
               children: [
                 TabBar(
@@ -157,6 +162,7 @@ class _TaskList extends StatelessWidget {
         maxVisible != null
             ? tasks.take(maxVisible!).toList(growable: false)
             : tasks;
+
     return Column(
       children: [
         for (final task in visibleTasks) ...[

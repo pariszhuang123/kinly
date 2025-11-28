@@ -120,3 +120,29 @@ class GratitudeWallStatus extends Equatable {
   @override
   List<Object?> get props => [hasUnread, lastReadAt];
 }
+
+class GratitudeWallStats extends Equatable {
+  final int totalPosts;
+  final int unreadCount;
+  final DateTime? lastReadAt;
+
+  const GratitudeWallStats({
+    required this.totalPosts,
+    required this.unreadCount,
+    this.lastReadAt,
+  });
+
+  factory GratitudeWallStats.fromJson(Map<String, dynamic> json) {
+    return GratitudeWallStats(
+      totalPosts: (json['total_posts'] as num?)?.toInt() ?? 0,
+      unreadCount: (json['unread_count'] as num?)?.toInt() ?? 0,
+      lastReadAt:
+          json['last_read_at'] == null
+              ? null
+              : DateTime.tryParse(json['last_read_at'] as String),
+    );
+  }
+
+  @override
+  List<Object?> get props => [totalPosts, unreadCount, lastReadAt];
+}

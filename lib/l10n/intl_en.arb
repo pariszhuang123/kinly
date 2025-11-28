@@ -334,7 +334,7 @@
   "profileIdentitySuccessMessage": "Profile updated.",
   "profileIdentityUsernamePreviewFallback": "your username",
   "profileLeaveHomeTitle": "Leave home",
-  "profileLeaveHomeSubtitle": "Stop sharing with this home. Owners must transfer ownership first.",
+  "profileLeaveHomeSubtitle": "Leaving this home means stepping out of your shared Kinly space.",
   "profileLeaveEligibilityLoading": "Checking your home members…",
   "profileLeaveEligibilityError": "We couldn't load your home members. Try again.",
   "profileLeaveOwnerSoloMessage": "You're the last member. Leaving will deactivate this home for everyone.",

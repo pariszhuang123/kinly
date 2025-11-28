@@ -21,6 +21,9 @@ abstract class MoodRepository {
     String? cursorId,
   });
 
+  /// Stats for gratitude wall (total + unread count).
+  Future<GratitudeWallStats> getWallStats(String homeId);
+
   /// Mark gratitude wall as read.
   Future<void> markWallRead(String homeId);
 

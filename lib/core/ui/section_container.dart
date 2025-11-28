@@ -6,7 +6,13 @@ class SectionContainer extends StatelessWidget {
   final String title;
   final SectionColors colors;
   final Widget child;
-  final Widget? trailing; // optional chip / badge / icon
+
+  /// New: optional leading icon (like KinlySelectionCard)
+  final Widget? leading;
+
+  /// Existing: optional trailing widget (badge, chip, etc.)
+  final Widget? trailing;
+
   final EdgeInsetsGeometry? padding;
 
   const SectionContainer({
@@ -14,20 +20,23 @@ class SectionContainer extends StatelessWidget {
     required this.title,
     required this.colors,
     required this.child,
+    this.leading,
     this.trailing,
     this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>();
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+
     final effectivePadding =
         padding ??
         EdgeInsetsDirectional.fromSTEB(
-          spacing?.lg ?? 16,
-          spacing?.lg ?? 16,
-          spacing?.lg ?? 16,
-          spacing?.md ?? 12,
+          spacing.lg,
+          spacing.lg,
+          spacing.lg,
+          spacing.md,
         );
 
     return Container(
@@ -39,23 +48,43 @@ class SectionContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title row (title + optional trailing)
+          // ===== HEADER ROW (leading icon + title + trailing) =====
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              if (leading != null)
+                Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    color: colors.icon.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: EdgeInsets.all(spacing.sm),
+                  child: Center(child: leading),
+                ),
+
+              if (leading != null) SizedBox(width: spacing.md),
+
+              // Title
               Expanded(
                 child: Text(
                   title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: colors.icon,
                   ),
                 ),
               ),
+
+              // Trailing widget
               if (trailing != null) trailing!,
             ],
           ),
-          SizedBox(height: spacing?.md ?? 12),
+
+          SizedBox(height: spacing.md),
+
+          // ===== CONTENT =====
           child,
         ],
       ),

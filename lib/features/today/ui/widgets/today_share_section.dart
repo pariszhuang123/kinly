@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
@@ -72,8 +73,9 @@ class TodayShareSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sections = Theme.of(context).extension<KinlySections>()!;
-    final spacing = Theme.of(context).extension<Spacing>();
+    final theme = Theme.of(context);
+    final sections = theme.extension<KinlySections>()!;
+    final spacing = theme.extension<Spacing>();
     final s = S.of(context);
     final colors = sections.share;
     final tabs = _buildTabs(s, colors);
@@ -91,9 +93,7 @@ class TodayShareSection extends StatelessWidget {
               alignment: AlignmentDirectional.centerStart,
               child: Text(
                 s.todayShareError,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: colors.icon),
+                style: theme.textTheme.bodySmall?.copyWith(color: colors.icon),
               ),
             ),
           ),
@@ -133,6 +133,12 @@ class TodayShareSection extends StatelessWidget {
     return SectionContainer(
       title: s.todayShareSectionTitle,
       colors: colors,
+      leading: SvgPicture.asset(
+        'assets/icons/feature/Share.svg',
+        width: 32,
+        height: 32,
+        colorFilter: ColorFilter.mode(colors.icon, BlendMode.srcIn),
+      ),
       child: content,
     );
   }
@@ -321,16 +327,25 @@ class _ShareEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sections = Theme.of(context).extension<KinlySections>()!;
+    final theme = Theme.of(context);
+    final sections = theme.extension<KinlySections>()!;
+    final colors = sections.share;
+
     return SectionContainer(
       title: S.of(context).todayShareSectionTitle,
-      colors: sections.share,
+      colors: colors,
+      leading: SvgPicture.asset(
+        'assets/icons/feature/Share.svg',
+        width: 32,
+        height: 32,
+        colorFilter: ColorFilter.mode(colors.icon, BlendMode.srcIn),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24),
         child: Center(
           child: Text(
             message,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: theme.textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
         ),
