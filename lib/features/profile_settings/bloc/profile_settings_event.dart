@@ -24,6 +24,15 @@ class ProfileSettingsTransferOwnerRequested extends ProfileSettingsEvent {
   List<Object?> get props => [newOwnerUserId];
 }
 
+class ProfileSettingsKickMemberRequested extends ProfileSettingsEvent {
+  const ProfileSettingsKickMemberRequested(this.userId);
+
+  final String userId;
+
+  @override
+  List<Object?> get props => [userId];
+}
+
 class ProfileSettingsDeleteRequested extends ProfileSettingsEvent {
   const ProfileSettingsDeleteRequested();
 }

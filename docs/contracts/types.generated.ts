@@ -1336,6 +1336,10 @@ export type Database = {
         Args: { p_home_id: string; p_user_id?: string }
         Returns: boolean
       }
+      members_kick: {
+        Args: { p_home_id: string; p_target_user_id: string }
+        Returns: Json
+      }
       members_list_active_by_home: {
         Args: { p_exclude_self?: boolean; p_home_id: string }
         Returns: {

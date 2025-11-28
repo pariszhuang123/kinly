@@ -363,6 +363,68 @@ class SupabaseErrorMapper {
     return LeaveException(LeaveErrorCode.unknown, error.toString());
   }
 
+  // ----- members.kick -----
+  static KickMemberException mapKick(Object error) {
+    if (error is AuthException) {
+      return KickMemberException(
+        KickMemberErrorCode.unauthorized,
+        error.message,
+      );
+    }
+    if (error is PostgrestException) {
+      final parsed = _parseErrorJson(error.message);
+      switch (parsed.code) {
+        case 'TARGET_NOT_MEMBER':
+          return KickMemberException(
+            KickMemberErrorCode.targetNotMember,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'CANNOT_KICK_OWNER':
+          return KickMemberException(
+            KickMemberErrorCode.cannotKickOwner,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'STATE_CHANGED_RETRY':
+          return KickMemberException(
+            KickMemberErrorCode.stateChangedRetry,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'HOME_INACTIVE':
+        case 'HOME_NOT_FOUND':
+          return KickMemberException(
+            KickMemberErrorCode.homeInactive,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'FORBIDDEN':
+          return KickMemberException(
+            KickMemberErrorCode.forbidden,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'UNAUTHORIZED':
+          return KickMemberException(
+            KickMemberErrorCode.unauthorized,
+            parsed.message,
+            details: parsed.details,
+          );
+        default:
+          return KickMemberException(
+            KickMemberErrorCode.unknown,
+            parsed.message,
+            details: parsed.details,
+          );
+      }
+    }
+    return KickMemberException(
+      KickMemberErrorCode.unknown,
+      error.toString(),
+    );
+  }
+
   // ----- mood.submit -----
   static MoodSubmitException mapMoodSubmit(Object error) {
     if (error is AuthException) {
@@ -753,6 +815,15 @@ class LeaveException implements Exception {
   LeaveException(this.code, this.message, {this.details});
   @override
   String toString() => 'LeaveException($code): $message';
+}
+
+class KickMemberException implements Exception {
+  final KickMemberErrorCode code;
+  final String message;
+  final Map<String, dynamic>? details;
+  KickMemberException(this.code, this.message, {this.details});
+  @override
+  String toString() => 'KickMemberException($code): $message';
 }
 
 class ChoreException implements Exception {

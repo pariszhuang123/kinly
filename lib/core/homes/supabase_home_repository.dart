@@ -179,6 +179,18 @@ class SupabaseHomeRepository implements HomeRepository {
   }
 
   @override
+  Future<void> kickMember(String homeId, String userId) async {
+    try {
+      await _client.rpc(
+        'members_kick',
+        params: {'p_home_id': homeId, 'p_target_user_id': userId},
+      );
+    } catch (e) {
+      throw SupabaseErrorMapper.mapKick(e);
+    }
+  }
+
+  @override
   Future<CurrentMembership?> getCurrentMembership() async {
     try {
       final res = await _client.rpc('membership_me_current');

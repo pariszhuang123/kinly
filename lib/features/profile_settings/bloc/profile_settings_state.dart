@@ -6,6 +6,8 @@ enum ProfileSettingsAction {
   leaveFailure,
   transferSuccess,
   transferFailure,
+  kickSuccess,
+  kickFailure,
   deleteSuccess,
   deleteFailure,
 }
@@ -45,6 +47,7 @@ class ProfileSettingsState extends Equatable {
     required this.leaveEligibilityError,
     required this.leaveInProgress,
     required this.transferInProgress,
+    required this.kickInProgress,
     required this.deleteInProgress,
     required this.action,
     required this.actionMessage,
@@ -60,6 +63,7 @@ class ProfileSettingsState extends Equatable {
       leaveEligibilityError: null,
       leaveInProgress: false,
       transferInProgress: false,
+      kickInProgress: false,
       deleteInProgress: false,
       action: ProfileSettingsAction.none,
       actionMessage: null,
@@ -74,6 +78,7 @@ class ProfileSettingsState extends Equatable {
   final String? leaveEligibilityError;
   final bool leaveInProgress;
   final bool transferInProgress;
+  final bool kickInProgress;
   final bool deleteInProgress;
   final ProfileSettingsAction action;
   final String? actionMessage;
@@ -87,6 +92,7 @@ class ProfileSettingsState extends Equatable {
     Object? leaveEligibilityError = _unset,
     bool? leaveInProgress,
     bool? transferInProgress,
+    bool? kickInProgress,
     bool? deleteInProgress,
     ProfileSettingsAction? action,
     Object? actionMessage = _unset,
@@ -104,6 +110,7 @@ class ProfileSettingsState extends Equatable {
               : leaveEligibilityError as String?,
       leaveInProgress: leaveInProgress ?? this.leaveInProgress,
       transferInProgress: transferInProgress ?? this.transferInProgress,
+      kickInProgress: kickInProgress ?? this.kickInProgress,
       deleteInProgress: deleteInProgress ?? this.deleteInProgress,
       action: action ?? this.action,
       actionMessage:
@@ -133,6 +140,7 @@ class ProfileSettingsState extends Equatable {
     leaveEligibilityError,
     leaveInProgress,
     transferInProgress,
+    kickInProgress,
     deleteInProgress,
     action,
     actionMessage,
@@ -159,6 +167,20 @@ class ProfileSettingsState extends Equatable {
         .toList(growable: false);
   }
 
+  List<HomeMemberSummary> get kickEligibleMembers {
+    final currentUserId = membership?.userId;
+    return activeMembers
+        .where(
+          (member) =>
+              member.userId != currentUserId &&
+              !member.isOwner,
+        )
+        .toList(growable: false);
+  }
+
   bool get isLeaveActionBusy =>
-      leaveInProgress || transferInProgress || leaveEligibilityLoading;
+      leaveInProgress ||
+      transferInProgress ||
+      kickInProgress ||
+      leaveEligibilityLoading;
 }

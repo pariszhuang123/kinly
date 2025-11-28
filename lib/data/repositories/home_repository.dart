@@ -31,6 +31,9 @@ abstract class HomeRepository {
   /// Leave the specified home; returns details about outcome.
   Future<LeaveResult> leave(String homeId);
 
+  /// Remove a member from the given home (owner-only).
+  Future<void> kickMember(String homeId, String userId);
+
   /// Lists active members for the given home.
   Future<List<HomeMemberSummary>> listActiveMembers(
     String homeId, {

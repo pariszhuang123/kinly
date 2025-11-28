@@ -26,6 +26,7 @@ class ProfileSettingsBloc
     on<ProfileSettingsStarted>(_onStarted);
     on<ProfileSettingsLeaveRequested>(_onLeaveRequested);
     on<ProfileSettingsTransferOwnerRequested>(_onTransferOwnerRequested);
+    on<ProfileSettingsKickMemberRequested>(_onKickMemberRequested);
     on<ProfileSettingsDeleteRequested>(_onDeleteRequested);
     on<ProfileSettingsActionCleared>(_onActionCleared);
     on<ProfileSettingsUserUpdated>(_onUserUpdated);
@@ -149,6 +150,43 @@ class ProfileSettingsBloc
         state.copyWith(
           transferInProgress: false,
           action: ProfileSettingsAction.transferFailure,
+          actionMessage: error.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onKickMemberRequested(
+    ProfileSettingsKickMemberRequested event,
+    Emitter<ProfileSettingsState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        kickInProgress: true,
+        action: ProfileSettingsAction.none,
+        actionMessage: null,
+      ),
+    );
+    try {
+      await _homeRepository.kickMember(_homeId, event.userId);
+      emit(
+        state.copyWith(
+          kickInProgress: false,
+          action: ProfileSettingsAction.kickSuccess,
+        ),
+      );
+      emit(
+        state.copyWith(
+          leaveEligibilityLoading: true,
+          leaveEligibilityError: null,
+        ),
+      );
+      await _loadLeaveEligibility(emit);
+    } catch (error) {
+      emit(
+        state.copyWith(
+          kickInProgress: false,
+          action: ProfileSettingsAction.kickFailure,
           actionMessage: error.toString(),
         ),
       );

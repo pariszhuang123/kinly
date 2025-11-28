@@ -41,33 +41,59 @@ class ProfileSettingsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: spacing.xl),
                 _ProfileSettingsCard(
-                  children: [
-                    _ProfileSettingsTile(
-                      title: S.of(context).profileLeaveHomeTitle,
-                      subtitle: S.of(context).profileLeaveHomeSubtitle,
-                      icon: Icons.exit_to_app_rounded,
-                      destructive: false,
-                      showProgress: state.isLeaveActionBusy,
-                      onTap:
-                          state.isLeaveActionBusy
-                              ? null
-                              : () => _handleLeaveTap(context),
-                    ),
-                    const Divider(height: 0),
-                    _ProfileSettingsTile(
-                      title: S.of(context).profileInfoHubTitle,
-                      subtitle: S.of(context).profileInfoHubSubtitle,
-                      icon: Icons.menu_book_outlined,
-                      onTap: () => _openInfoHub(context),
-                    ),
-                    const Divider(height: 0),
-                    _ProfileSettingsTile(
-                      title: S.of(context).profileContactUsTitle,
-                      subtitle: S.of(context).profileContactUsSubtitle,
-                      icon: Icons.support_agent_outlined,
-                      onTap: () => _contactSupport(context),
-                    ),
-                  ],
+                  children: () {
+                    final tiles = <Widget>[
+                      _ProfileSettingsTile(
+                        title: S.of(context).profileLeaveHomeTitle,
+                        subtitle: S.of(context).profileLeaveHomeSubtitle,
+                        icon: Icons.exit_to_app_rounded,
+                        destructive: false,
+                        showProgress: state.isLeaveActionBusy,
+                        onTap:
+                            state.isLeaveActionBusy
+                                ? null
+                                : () => _handleLeaveTap(context),
+                      ),
+                    ];
+
+                    final hasKickTargets =
+                        state.isOwner && state.kickEligibleMembers.isNotEmpty;
+
+                    if (hasKickTargets) {
+                      tiles.addAll([
+                        const Divider(height: 0),
+                        _ProfileSettingsTile(
+                          title: S.of(context).profileKickMemberTitle,
+                          subtitle: S.of(context).profileKickMemberSubtitle,
+                          icon: Icons.person_remove_alt_1_rounded,
+                          destructive: true,
+                          showProgress: state.kickInProgress,
+                          onTap:
+                              state.kickInProgress
+                                  ? null
+                                  : () => _handleKickTap(context),
+                        ),
+                      ]);
+                    }
+
+                    tiles.addAll([
+                      const Divider(height: 0),
+                      _ProfileSettingsTile(
+                        title: S.of(context).profileInfoHubTitle,
+                        subtitle: S.of(context).profileInfoHubSubtitle,
+                        icon: Icons.menu_book_outlined,
+                        onTap: () => _openInfoHub(context),
+                      ),
+                      const Divider(height: 0),
+                      _ProfileSettingsTile(
+                        title: S.of(context).profileContactUsTitle,
+                        subtitle: S.of(context).profileContactUsSubtitle,
+                        icon: Icons.support_agent_outlined,
+                        onTap: () => _contactSupport(context),
+                      ),
+                    ]);
+                    return tiles;
+                  }(),
                 ),
                 SizedBox(height: spacing.md),
                 _ProfileSettingsCard(
@@ -132,6 +158,12 @@ class ProfileSettingsScreen extends StatelessWidget {
         );
         break;
       case ProfileSettingsAction.transferFailure:
+        showError();
+        break;
+      case ProfileSettingsAction.kickSuccess:
+        _showKickSuccessDialog(context);
+        break;
+      case ProfileSettingsAction.kickFailure:
         showError();
         break;
       case ProfileSettingsAction.deleteSuccess:
@@ -244,6 +276,47 @@ class ProfileSettingsScreen extends StatelessWidget {
     );
   }
 
+  Future<void> _handleKickTap(BuildContext context) async {
+    final bloc = context.read<ProfileSettingsBloc>();
+    final state = bloc.state;
+    final s = S.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+
+    if (!state.isOwner) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(s.profileKickOwnerOnly)),
+      );
+      return;
+    }
+
+    if (state.leaveEligibilityLoading) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(s.profileLeaveEligibilityLoading)),
+      );
+      return;
+    }
+
+    if (state.leaveEligibilityError != null) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(s.profileLeaveEligibilityError)),
+      );
+      return;
+    }
+
+    final candidates = state.kickEligibleMembers;
+    if (candidates.isEmpty) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(s.profileKickNoMembers)),
+      );
+      return;
+    }
+
+    final selectedUserId = await _showKickMemberSheet(context, candidates);
+    if (selectedUserId != null && context.mounted) {
+      bloc.add(ProfileSettingsKickMemberRequested(selectedUserId));
+    }
+  }
+
   Future<String?> _showTransferOwnershipSheet(
     BuildContext context,
     List<HomeMemberSummary> candidates,
@@ -322,6 +395,128 @@ class ProfileSettingsScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Future<String?> _showKickMemberSheet(
+    BuildContext context,
+    List<HomeMemberSummary> members,
+  ) {
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final colorScheme = theme.colorScheme;
+    final s = S.of(context);
+
+    return showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final media = MediaQuery.of(sheetContext);
+        final bottomPadding =
+            media.viewPadding.bottom + media.viewInsets.bottom;
+        String? selectedUserId;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SafeArea(
+              child: Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(
+                  spacing.lg,
+                  spacing.lg,
+                  spacing.lg,
+                  spacing.lg + bottomPadding,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.3,
+                          ),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      SizedBox(height: spacing.md),
+                      Text(
+                        s.profileKickSheetTitle,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: spacing.sm),
+                      Text(
+                        s.profileKickSheetSubtitle,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: spacing.lg),
+                      Wrap(
+                        spacing: spacing.md,
+                        runSpacing: spacing.md,
+                        alignment: WrapAlignment.center,
+                        children:
+                            members
+                                .map(
+                                  (member) => _KickCandidateButton(
+                                    member: member,
+                                    isSelected: selectedUserId == member.userId,
+                                    onSelected:
+                                        () => setState(
+                                          () => selectedUserId = member.userId,
+                                        ),
+                                  ),
+                                )
+                                .toList(),
+                      ),
+                      SizedBox(height: spacing.xl),
+                      KinlyFilledButton.destructiveText(
+                        onPressed:
+                            selectedUserId == null
+                                ? null
+                                : () => Navigator.of(
+                                      sheetContext,
+                                    ).pop(selectedUserId),
+                        label: s.profileKickActionConfirm,
+                        fullWidth: true,
+                      ),
+                      SizedBox(height: spacing.sm),
+                      TextButton(
+                        onPressed: () => Navigator.of(sheetContext).pop(),
+                        child: Text(s.profileActionCancel),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showKickSuccessDialog(BuildContext context) {
+    final s = S.of(context);
+    showDialog<void>(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: Text(s.profileKickSuccessTitle),
+            content: Text(s.profileKickSuccessMessage),
+            actions: [
+              KinlyFilledButton.text(
+                onPressed: () => Navigator.of(context).pop(),
+                label: s.profileKickSuccessClose,
+              ),
+            ],
+          ),
     );
   }
 
@@ -620,6 +815,84 @@ class _TransferCandidateButton extends StatelessWidget {
           Text(
             displayName,
             style: theme.textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _KickCandidateButton extends StatelessWidget {
+  const _KickCandidateButton({
+    required this.member,
+    required this.isSelected,
+    required this.onSelected,
+  });
+
+  final HomeMemberSummary member;
+  final bool isSelected;
+  final VoidCallback onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final s = S.of(context);
+    final colorScheme = theme.colorScheme;
+    final displayName =
+        member.username.isNotEmpty ? member.username : s.friendDefaultName;
+
+    return SizedBox(
+      width: 110,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(48),
+              onTap: onSelected,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                padding: EdgeInsetsDirectional.fromSTEB(
+                  spacing.xs,
+                  spacing.xs,
+                  spacing.xs,
+                  spacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(48),
+                  border: Border.all(
+                    color:
+                        isSelected
+                            ? colorScheme.primary
+                            : colorScheme.outlineVariant.withValues(alpha: 0.4),
+                    width: isSelected ? 2 : 1,
+                  ),
+                  color: isSelected
+                      ? colorScheme.primary.withValues(alpha: 0.08)
+                      : Colors.transparent,
+                ),
+                child: KinlyCircleAvatar(
+                  avatarUrl: member.avatarUrl,
+                  radius: 34,
+                  isOwner: member.isOwner,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: spacing.xs),
+          Text(
+            displayName,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: isSelected
+                  ? colorScheme.onSurface
+                  : colorScheme.onSurface.withValues(alpha: 0.9),
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            ),
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,

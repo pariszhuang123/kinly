@@ -49,6 +49,9 @@ void main() {
         excludeSelf: any(named: 'excludeSelf'),
       ),
     ).thenAnswer((_) async => const <HomeMemberSummary>[]);
+    when(
+      () => homeRepository.kickMember(any(), any()),
+    ).thenAnswer((_) async => {});
   });
 
   group('ProfileSettingsBloc', () {
@@ -126,6 +129,69 @@ void main() {
           action: ProfileSettingsAction.leaveSuccess,
         );
         return [progress, success];
+      },
+    );
+
+    blocTest<ProfileSettingsBloc, ProfileSettingsState>(
+      'emits success after kicking a member',
+      build: () => buildBloc(),
+      act: (bloc) => bloc.add(
+        const ProfileSettingsKickMemberRequested('user-2'),
+      ),
+      expect: () {
+        final initial = ProfileSettingsState.initial();
+        final progress = initial.copyWith(
+          kickInProgress: true,
+          action: ProfileSettingsAction.none,
+          actionMessage: null,
+        );
+        final success = progress.copyWith(
+          kickInProgress: false,
+          action: ProfileSettingsAction.kickSuccess,
+        );
+        final reloading = success.copyWith(
+          leaveEligibilityLoading: true,
+          leaveEligibilityError: null,
+        );
+        final refreshed = reloading.copyWith(
+          leaveEligibilityLoading: false,
+          leaveEligibilityError: null,
+          membership: currentMembership,
+          activeMembers: const <HomeMemberSummary>[],
+        );
+        return [progress, success, reloading, refreshed];
+      },
+      verify: (_) {
+        verify(() => homeRepository.kickMember('home-1', 'user-2')).called(1);
+        verify(() => homeRepository.getCurrentMembership()).called(1);
+        verify(() => homeRepository.listActiveMembers('home-1')).called(1);
+      },
+    );
+
+    blocTest<ProfileSettingsBloc, ProfileSettingsState>(
+      'emits failure when kicking a member fails',
+      build: () {
+        when(
+          () => homeRepository.kickMember(any(), any()),
+        ).thenThrow(Exception('kick failed'));
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(
+        const ProfileSettingsKickMemberRequested('user-3'),
+      ),
+      expect: () {
+        final initial = ProfileSettingsState.initial();
+        final progress = initial.copyWith(
+          kickInProgress: true,
+          action: ProfileSettingsAction.none,
+          actionMessage: null,
+        );
+        final failure = progress.copyWith(
+          kickInProgress: false,
+          action: ProfileSettingsAction.kickFailure,
+          actionMessage: 'Exception: kick failed',
+        );
+        return [progress, failure];
       },
     );
 

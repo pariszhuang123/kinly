@@ -2591,6 +2591,106 @@ class S {
     );
   }
 
+  /// `Remove a member`
+  String get profileKickMemberTitle {
+    return Intl.message(
+      'Remove a member',
+      name: 'profileKickMemberTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose who should lose access to this home.`
+  String get profileKickMemberSubtitle {
+    return Intl.message(
+      'Choose who should lose access to this home.',
+      name: 'profileKickMemberSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove a member`
+  String get profileKickSheetTitle {
+    return Intl.message(
+      'Remove a member',
+      name: 'profileKickSheetTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select a member to remove. They'll lose access right away.`
+  String get profileKickSheetSubtitle {
+    return Intl.message(
+      'Select a member to remove. They\'ll lose access right away.',
+      name: 'profileKickSheetSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove member`
+  String get profileKickActionConfirm {
+    return Intl.message(
+      'Remove member',
+      name: 'profileKickActionConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No other members to remove right now.`
+  String get profileKickNoMembers {
+    return Intl.message(
+      'No other members to remove right now.',
+      name: 'profileKickNoMembers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only the home owner can remove members.`
+  String get profileKickOwnerOnly {
+    return Intl.message(
+      'Only the home owner can remove members.',
+      name: 'profileKickOwnerOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Member removed`
+  String get profileKickSuccessTitle {
+    return Intl.message(
+      'Member removed',
+      name: 'profileKickSuccessTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `They no longer have access to this home.`
+  String get profileKickSuccessMessage {
+    return Intl.message(
+      'They no longer have access to this home.',
+      name: 'profileKickSuccessMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back to settings`
+  String get profileKickSuccessClose {
+    return Intl.message(
+      'Back to settings',
+      name: 'profileKickSuccessClose',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Ownership transferred. Finishing your leave…`
   String get profileLeaveTransferSuccessMessage {
     return Intl.message(

@@ -45,3 +45,13 @@ enum LeaveErrorCode {
   unauthorized,
   unknown,
 }
+
+enum KickMemberErrorCode {
+  targetNotMember,
+  cannotKickOwner,
+  stateChangedRetry,
+  homeInactive,
+  forbidden,
+  unauthorized,
+  unknown,
+}

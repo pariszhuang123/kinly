@@ -583,6 +583,31 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileLeaveTransferSheetSubtitle": MessageLookupByLibrary.simpleMessage(
       "Selecciona quiÃ©n serÃ¡ la nueva persona propietaria antes de salir.",
     ),
+    "profileKickActionConfirm":
+        MessageLookupByLibrary.simpleMessage("Eliminar miembro"),
+    "profileKickMemberSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Elige quiÃ©n deberÃ­a perder acceso a este hogar.",
+    ),
+    "profileKickMemberTitle":
+        MessageLookupByLibrary.simpleMessage("Eliminar a un miembro"),
+    "profileKickNoMembers": MessageLookupByLibrary.simpleMessage(
+      "No hay otros miembros para eliminar ahora mismo.",
+    ),
+    "profileKickOwnerOnly": MessageLookupByLibrary.simpleMessage(
+      "Solo la persona propietaria del hogar puede eliminar miembros.",
+    ),
+    "profileKickSheetSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Selecciona a un miembro para eliminar. PerderÃ¡ el acceso de inmediato.",
+    ),
+    "profileKickSheetTitle":
+        MessageLookupByLibrary.simpleMessage("Eliminar a un miembro"),
+    "profileKickSuccessClose":
+        MessageLookupByLibrary.simpleMessage("Volver a ajustes"),
+    "profileKickSuccessMessage": MessageLookupByLibrary.simpleMessage(
+      "Ya no tiene acceso a este hogar.",
+    ),
+    "profileKickSuccessTitle":
+        MessageLookupByLibrary.simpleMessage("Miembro eliminado"),
     "profileLeaveTransferSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Transferir propiedad",
     ),

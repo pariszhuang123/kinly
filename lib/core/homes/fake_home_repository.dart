@@ -75,6 +75,11 @@ class FakeHomeRepository implements HomeRepository {
   }
 
   @override
+  Future<void> kickMember(String homeId, String userId) async {
+    await Future<void>.delayed(const Duration(milliseconds: 120));
+  }
+
+  @override
   Future<List<HomeMemberSummary>> listActiveMembers(
     String homeId, {
     bool excludeSelf = false,

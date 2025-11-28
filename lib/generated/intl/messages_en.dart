@@ -569,6 +569,31 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileLeaveTransferSheetSubtitle": MessageLookupByLibrary.simpleMessage(
       "Select who should become the new owner before you leave.",
     ),
+    "profileKickActionConfirm":
+        MessageLookupByLibrary.simpleMessage("Remove member"),
+    "profileKickMemberSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Choose who should lose access to this home.",
+    ),
+    "profileKickMemberTitle":
+        MessageLookupByLibrary.simpleMessage("Remove a member"),
+    "profileKickNoMembers": MessageLookupByLibrary.simpleMessage(
+      "No other members to remove right now.",
+    ),
+    "profileKickOwnerOnly": MessageLookupByLibrary.simpleMessage(
+      "Only the home owner can remove members.",
+    ),
+    "profileKickSheetSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Select a member to remove. They'll lose access right away.",
+    ),
+    "profileKickSheetTitle":
+        MessageLookupByLibrary.simpleMessage("Remove a member"),
+    "profileKickSuccessClose":
+        MessageLookupByLibrary.simpleMessage("Back to settings"),
+    "profileKickSuccessMessage": MessageLookupByLibrary.simpleMessage(
+      "They no longer have access to this home.",
+    ),
+    "profileKickSuccessTitle":
+        MessageLookupByLibrary.simpleMessage("Member removed"),
     "profileLeaveTransferSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Transfer ownership",
     ),
