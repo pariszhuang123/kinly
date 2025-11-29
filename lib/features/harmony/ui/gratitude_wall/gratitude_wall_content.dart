@@ -30,47 +30,39 @@ class GratitudeWallContent extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-        // 👇 Bigger “frame” padding to feel like an IG story
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: spacing.xl,
-            vertical: spacing.lg,
-          ),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: BlocBuilder<GratitudeWallCubit, GratitudeWallState>(
-                  builder: (context, state) {
-                    if (state.isLoading && !state.hasLoaded) {
-                      return const Center(child: KinlyLoader());
-                    }
+        // ❌ removed outer Padding so content can use more of the frame
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: BlocBuilder<GratitudeWallCubit, GratitudeWallState>(
+                builder: (context, state) {
+                  if (state.isLoading && !state.hasLoaded) {
+                    return const Center(child: KinlyLoader());
+                  }
 
-                    if (state.error != null && state.posts.isEmpty) {
-                      return GratitudeWallErrorState(
-                        message: state.error!,
-                        onRetry:
-                            () =>
-                                context
-                                    .read<GratitudeWallCubit>()
-                                    .loadInitial(),
-                      );
-                    }
+                  if (state.error != null && state.posts.isEmpty) {
+                    return GratitudeWallErrorState(
+                      message: state.error!,
+                      onRetry:
+                          () =>
+                              context.read<GratitudeWallCubit>().loadInitial(),
+                    );
+                  }
 
-                    if (state.posts.isEmpty) {
-                      return const GratitudeWallEmptyState();
-                    }
+                  if (state.posts.isEmpty) {
+                    return const GratitudeWallEmptyState();
+                  }
 
-                    return _buildLoadedList(context, state, spacing);
-                  },
-                ),
+                  return _buildLoadedList(context, state, spacing);
+                },
               ),
-              PositionedDirectional(
-                bottom: spacing.sm,
-                start: spacing.sm,
-                child: const PoweredByTagline(),
-              ),
-            ],
-          ),
+            ),
+            PositionedDirectional(
+              bottom: spacing.sm,
+              start: spacing.sm,
+              child: const PoweredByTagline(),
+            ),
+          ],
         ),
       ),
     );
@@ -89,10 +81,7 @@ class GratitudeWallContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GratitudeWallHeader(
-          count: totalCount,
-          hasMore: hasMoreThanLoaded,
-        ),
+        GratitudeWallHeader(count: totalCount, hasMore: hasMoreThanLoaded),
         SizedBox(height: spacing.md),
         Expanded(
           child: NotificationListener<ScrollNotification>(
@@ -106,8 +95,13 @@ class GratitudeWallContent extends StatelessWidget {
               return false;
             },
             child: ListView.separated(
-              // 👇 Extra bottom padding so last card isn’t hugging the edge
-              padding: EdgeInsetsDirectional.only(bottom: spacing.xl * 2.5),
+              // 👉 Light inner padding: keeps content off the screen edge,
+              // but doesn't shrink the whole snapshot like the old outer padding did.
+              padding: EdgeInsetsDirectional.only(
+                start: spacing.md,
+                end: spacing.md,
+                bottom: spacing.xl * 2.5,
+              ),
               itemCount: state.posts.length + 1 + (state.isLoadingMore ? 1 : 0),
               separatorBuilder: (_, __) => SizedBox(height: spacing.lg),
               itemBuilder: (context, index) {

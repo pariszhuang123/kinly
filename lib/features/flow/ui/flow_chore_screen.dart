@@ -14,6 +14,7 @@ import '../../../generated/l10n.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../core/ui/kinly_date_picker.dart'; // 👈 NEW
 import '../bloc/flow_chore_bloc.dart';
 import '../domain/flow_chore_form.dart';
 import '../domain/flow_chore_outcome.dart';
@@ -364,12 +365,14 @@ class _FlowChoreFormView extends StatelessWidget {
             ? DateTime(current.year, current.month, current.day)
             : earliestBase;
     final lastDate = DateTime(now.year + 1, now.month, now.day);
-    final picked = await showDatePicker(
-      context: context,
+
+    final picked = await showKinlyDatePicker(
+      context,
       initialDate: current,
       firstDate: firstDate,
       lastDate: lastDate,
     );
+
     if (picked != null && context.mounted) {
       context.read<FlowChoreBloc>().add(FlowChoreStartDateChanged(picked));
     }

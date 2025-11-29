@@ -113,6 +113,16 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - Backlog hierarchy: Epic → Feature → Story → Task.
 - Acceptance criteria: Given / When / Then + DoD checklist.
 - Unknowns: PR must contain Assumptions; mark Blocking if delivery halted.
+- Merge/trunk checklist (applies to trunk and PRs):
+  - `dart format` + `dart analyze`
+  - `flutter test` (add widget/RTL/golden tests when relevant)
+  - `dart run tool/check_i18n.dart`
+  - `dart run tool/check_directionality.dart`
+  - `dart run tool/check_enums.dart`
+  - Screenshots/GIFs for happy paths when UI changes
+  - No raw Material buttons/loaders; use Kinly primitives; strings via `S.of(context)`; keep padding/alignments directionality-safe
+  - If adding or changing a core UI primitive, update `docs/ui/core_ui_primitives.md` and get Planner + Docs review
+
 
 ## Guardrails (Prohibited)
 - No direct Supabase/HTTP in UI/BLoC.
@@ -133,6 +143,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
   - Outlined CTAs: `lib/core/ui/buttons/kinly_outlined_button.dart` (`text/icon`, `compact/fullWidth`)
   - FABs: `lib/core/ui/buttons/kinly_fab.dart` (inherits add-tile palette; supports hero/mini/tooltip)
   - Add tile: `lib/core/ui/buttons/kinly_add_tile_button.dart`
+- UI must use Kinly primitives under `lib/core/ui/**`; new or changed primitives require Planner + Docs review; update `docs/ui/core_ui_primitives.md`.
 
 ## Shared Enums
 - Domain-owned/shared enums live in `lib/core/<domain>/enums/` (e.g., `lib/core/homes/enums/leave_outcome.dart`).

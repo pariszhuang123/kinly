@@ -1,0 +1,84 @@
+import 'package:flutter/material.dart';
+import '../../theme/spacing.dart';
+import '../kinly_circle_avatar.dart';
+
+class KinlyProfileHeader extends StatelessWidget {
+  const KinlyProfileHeader({
+    super.key,
+    required this.displayName,
+    required this.subtitle,
+    this.avatarUrl,
+    this.isOwner = false,
+    this.isLoading = false,
+    this.onAvatarTap,
+  });
+
+  final String displayName;
+  final String subtitle;
+  final String? avatarUrl;
+  final bool isOwner;
+  final bool isLoading;
+  final VoidCallback? onAvatarTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final colorScheme = theme.colorScheme;
+
+    return Column(
+      children: [
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(56),
+            onTap: onAvatarTap,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                KinlyCircleAvatar(
+                  avatarUrl: avatarUrl,
+                  radius: 44,
+                  isOwner: isOwner,
+                ),
+                if (isLoading)
+                  PositionedDirectional(
+                    bottom: 0,
+                    end: 0,
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        shape: BoxShape.circle,
+                      ),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation(colorScheme.primary),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: spacing.sm),
+        Text(
+          displayName,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: spacing.xs),
+        Text(
+          subtitle,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+}

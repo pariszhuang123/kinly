@@ -12,7 +12,6 @@ import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/profile/models.dart';
 import '../../../generated/l10n.dart';
 import 'bloc/profile_identity_bloc.dart';
-import '../../../core/router/app_router.dart';
 
 class ProfileIdentityScreen extends StatefulWidget {
   const ProfileIdentityScreen({super.key});
@@ -211,10 +210,11 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
     final s = S.of(context);
     switch (state.action) {
       case ProfileIdentityAction.success:
-        context.replaceNamed(
-          AppRoutes.profileSettings,
-          extra: state.updatedProfile,
-        );
+        if (state.updatedProfile != null) {
+          context.pop(state.updatedProfile);
+        } else {
+          context.pop();
+        }
         break;
       case ProfileIdentityAction.failure:
         final message = _resolveActionMessage(state, s);
