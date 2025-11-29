@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/kinly_sections.dart';
+import '../theme/radius.dart';
 import '../theme/spacing.dart';
 
 /// Reusable selection card used in Explore/Hub etc.
@@ -31,18 +32,19 @@ class KinlySelectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
+    final corners = theme.extension<Corners>();
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(corners?.xlarge ?? 24),
         onTap: onTap,
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.all(spacing.lg),
           decoration: BoxDecoration(
             color: colors.card,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(corners?.xlarge ?? 24),
           ),
           child: Row(
             children: [
@@ -51,7 +53,7 @@ class KinlySelectionCard extends StatelessWidget {
                 width: 56,
                 decoration: BoxDecoration(
                   color: colors.icon.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(corners?.medium ?? 12),
                 ),
                 child: Center(
                   child: icon, // <- use the widget directly

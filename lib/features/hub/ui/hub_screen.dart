@@ -14,6 +14,7 @@ import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/kinly_selection_card.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/ui/snackbars/kinly_snackbar.dart';
 
 import '../bloc/hub_bloc.dart';
 import 'widget/hub_member_section.dart';
@@ -164,9 +165,7 @@ class HubScreen extends StatelessWidget {
     final s = S.of(context);
 
     if (!state.hasInvite) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.hubInviteUnavailable)));
+      KinlySnackBar.showError(context, s.hubInviteUnavailable);
       context.read<HubBloc>().add(const HubRefreshed());
       return;
     }
@@ -188,9 +187,7 @@ class HubScreen extends StatelessWidget {
     final s = S.of(context);
 
     if (state.appLink.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.hubInviteUnavailable)));
+      KinlySnackBar.showError(context, s.hubInviteUnavailable);
       return;
     }
 
@@ -204,9 +201,7 @@ class HubScreen extends StatelessWidget {
     final s = S.of(context);
 
     if (!state.hasInvite || state.inviteCode.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.hubInviteUnavailable)));
+      KinlySnackBar.showError(context, s.hubInviteUnavailable);
       return;
     }
 
@@ -224,15 +219,11 @@ class HubScreen extends StatelessWidget {
       context.read<HubBloc>().add(const HubInviteRotated());
       if (!context.mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.hubRotateSuccess)));
+      KinlySnackBar.showSuccess(context, s.hubRotateSuccess);
     } catch (_) {
       if (!context.mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.hubRotateError)));
+      KinlySnackBar.showError(context, s.hubRotateError);
     }
   }
 

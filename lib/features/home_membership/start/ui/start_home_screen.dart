@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_router.dart';
+import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
@@ -36,12 +38,9 @@ class StartHomeScreen extends StatelessWidget {
           child: BlocConsumer<StartHomeBloc, StartHomeState>(
             listener: (context, state) {
               if (state.status == StartHomeStatus.failure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      state.errorMessage ?? s.create_failed_generic,
-                    ),
-                  ),
+                KinlySnackBar.showError(
+                  context,
+                  state.errorMessage ?? s.create_failed_generic,
                 );
               }
 
@@ -61,9 +60,10 @@ class StartHomeScreen extends StatelessWidget {
                   membershipStatus == AuthMembershipStatus.none;
 
               final canPress = !isCreating && canManageHome;
+              final spacing = theme.extension<Spacing>();
 
               return Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(spacing?.lg ?? 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -73,13 +73,13 @@ class StartHomeScreen extends StatelessWidget {
                       style: theme.textTheme.headlineMedium,
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: spacing?.m ?? 12),
                     Text(
                       membershipMessage,
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium,
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: spacing?.s ?? 8),
                     Text(
                       s.create_subtitle,
                       textAlign: TextAlign.center,
@@ -103,7 +103,7 @@ class StartHomeScreen extends StatelessWidget {
                               }
                               : null, // disable when not allowed
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: spacing?.m ?? 12),
 
                     // Join Home button
                     KinlyFilledButton.text(

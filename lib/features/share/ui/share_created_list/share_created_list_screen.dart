@@ -78,10 +78,7 @@ class ShareCreatedListScreen extends StatelessWidget {
   Future<void> _openShareCreate(BuildContext context) async {
     final result = await context.push<bool>(AppRoutes.shareCreate);
     if (result == true && context.mounted) {
-      final s = S.of(context);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareCreateSuccess)));
+      ScaffoldMessenger.of(context);
       _refreshList(context);
     }
   }
@@ -97,17 +94,11 @@ class ShareCreatedListScreen extends StatelessWidget {
 
     if (!context.mounted || result == null) return;
 
-    final s = S.of(context);
-
     if (result == true || result == ShareEditOutcome.updated) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareEditSuccess)));
+      ScaffoldMessenger.of(context);
       _refreshList(context);
     } else if (result == ShareEditOutcome.deleted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareEditDeleteSuccess)));
+      ScaffoldMessenger.of(context);
       _refreshList(context);
     }
   }

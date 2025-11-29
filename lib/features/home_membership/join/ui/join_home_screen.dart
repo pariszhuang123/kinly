@@ -10,6 +10,9 @@ import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/inputs/kinly_text_field.dart';
+import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../bloc/join_home_bloc.dart';
 
 class JoinHomeScreen extends StatelessWidget {
@@ -73,38 +76,36 @@ class _JoinFormState extends State<_JoinForm> {
     return BlocListener<JoinHomeBloc, JoinHomeState>(
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
-        final messenger = ScaffoldMessenger.of(context);
         if (state.status == JoinHomeStatus.success) {
-          messenger
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text(s.join_success(state.code))));
+          KinlySnackBar.showSuccess(context, s.join_success(state.code));
           context.read<AuthBloc>().add(const AuthMembershipRefreshRequested());
           if (!mounted) return;
           context.go(AppRoutes.today);
         } else if (state.status == JoinHomeStatus.failure) {
           final errorText = _resolveErrorText(context, state);
-          messenger
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text(errorText)));
+          KinlySnackBar.showError(context, errorText);
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(
+          Theme.of(context).extension<Spacing>()?.lg ?? 16,
+        ),
         child: BlocBuilder<JoinHomeBloc, JoinHomeState>(
           builder: (context, state) {
             final isSubmitting = state.status == JoinHomeStatus.submitting;
+            final spacing = Theme.of(context).extension<Spacing>();
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextField(
+                KinlyTextField(
                   controller: _controller,
-                  decoration: InputDecoration(labelText: s.join_hint),
+                  labelText: s.join_hint,
                   onChanged:
                       (value) => context.read<JoinHomeBloc>().add(
                         JoinHomeCodeChanged(value),
                       ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: spacing?.lg ?? 16),
                 Stack(
                   alignment: Alignment.center,
                   children: [

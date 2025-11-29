@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/mood/enums/mood_scale.dart';
 import '../../../core/theme/spacing.dart';
+import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/kinly_toast.dart';
@@ -33,9 +34,7 @@ class HarmonyScreen extends StatelessWidget {
           Navigator.of(context, rootNavigator: true).pop(true);
         } else if (state.submitError != null) {
           final message = _mapError(context, state.submitError!);
-          ScaffoldMessenger.of(context)
-            ..clearSnackBars()
-            ..showSnackBar(SnackBar(content: Text(message)));
+          KinlySnackBar.showError(context, message);
         }
       },
       child: BlocBuilder<HarmonyCubit, HarmonyState>(
@@ -225,9 +224,10 @@ class _SubmitButton extends StatelessWidget {
 
         void handler() {
           if (!hasMood || state.submitSuccessTick > 0) {
-            ScaffoldMessenger.of(context)
-              ..clearSnackBars()
-              ..showSnackBar(SnackBar(content: Text(s.harmonyErrorSelectMood)));
+            KinlySnackBar.showError(
+              context,
+              s.harmonyErrorSelectMood,
+            );
             return;
           }
           context.read<HarmonyCubit>().submit();

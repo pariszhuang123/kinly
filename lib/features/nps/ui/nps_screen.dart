@@ -146,7 +146,6 @@ class NpsScreen extends StatelessWidget {
 
   Future<void> _handleSuccess(BuildContext context, int score) async {
     final s = S.of(context);
-    final messenger = ScaffoldMessenger.of(context);
     final uri = _destinationUri(context, score);
 
     if (uri != null) {

@@ -11,6 +11,7 @@ import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/kinly_loader.dart';
 import '../../../../../core/utils/url_validator.dart';
 import '../../../../../generated/l10n.dart';
+import '../../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../bloc/flow_chore_detail_bloc.dart';
 import 'flow_chore_core_info_section.dart';
 import 'flow_chore_extras_section.dart';
@@ -198,15 +199,12 @@ class _CompletionButton extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 Future<void> _launchHowToUrl(BuildContext context, String url) async {
-  final messenger = ScaffoldMessenger.of(context);
   final s = S.of(context);
   final uri = Uri.parse(url);
 
   final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
   if (!launched) {
-    messenger.showSnackBar(
-      SnackBar(content: Text(s.flowChoreHowToLaunchError)),
-    );
+    KinlySnackBar.showError(context, s.flowChoreHowToLaunchError);
   }
 }
 

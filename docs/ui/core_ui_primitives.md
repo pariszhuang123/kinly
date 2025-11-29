@@ -33,7 +33,21 @@ Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directio
 - `KinlyTextField` (tokenized text input)
 - `KinlyDropdownField` (tokenized dropdown)
 - `KinlyChoiceChip` (tokenized choice chip)
+- `KinlyFilterChip` (tokenized filter chip)
+- `KinlySegmentedControl` (tokenized segmented control)
+- `KinlyTabBar` (inline tab bar for active/draft toggles)
+- `KinlySearchField` (search variant with clear action)
 - `KinlyDatePicker` and other shared pickers.
+- `KinlySearchField` (search variant with clear action)
+
+## Feedback / Inline
+- `KinlyInfoBanner` (success/info/warning/error inline banner)
+
+## Lists & States
+- `KinlyListTile` (tokenized title/subtitle row)
+- `KinlyEmptyState` (icon/title/body + optional CTA)
+## Media
+- `KinlyPhotoCapture` (photo pick/preview tile)
 
 ## Layout & Spacing
 - `Spacing` extension usage; surface/section color guidance from `KinlySections`.

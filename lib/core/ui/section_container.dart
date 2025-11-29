@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../theme/kinly_sections.dart';
+import '../theme/radius.dart';
 import '../theme/spacing.dart';
 
 class SectionContainer extends StatelessWidget {
@@ -29,6 +31,7 @@ class SectionContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
+    final corners = theme.extension<Corners>();
 
     final effectivePadding =
         padding ??
@@ -43,7 +46,7 @@ class SectionContainer extends StatelessWidget {
       padding: effectivePadding,
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(corners?.xlarge ?? 24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

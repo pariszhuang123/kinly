@@ -3,22 +3,20 @@
 import 'dart:io';
 
 final _forbiddenPatterns = <String, RegExp>{
-  'Raw SnackBar': RegExp(r'[^A-Za-z]SnackBar\\('),
-  'Raw AlertDialog': RegExp(r'AlertDialog\\('),
+  'Raw SnackBar': RegExp(r'[^A-Za-z]SnackBar\('),
+  'Raw AlertDialog': RegExp(r'AlertDialog\('),
   'Raw showDialog': RegExp(r'showDialog<'),
   'Raw BottomSheet': RegExp(r'showModalBottomSheet'),
-  'Raw TextField': RegExp(r'[^A-Za-z]TextField\\('),
-  'Raw ElevatedButton': RegExp(r'ElevatedButton\\('),
-  'Hard-coded EdgeInsets.all (non-zero)': RegExp(r'EdgeInsets\\.all\\((?!0\\))'),
-  'Hard-coded EdgeInsets.symmetric (non-zero)': RegExp(r'EdgeInsets\\.symmetric\\((?!vertical: 0|horizontal: 0)'),
-  'Hard-coded Color hex': RegExp(r'Color\\(0x[0-9A-Fa-f]{6,8}\\)'),
+  'Raw TextField': RegExp(r'[^A-Za-z]TextField\('),
+  'Raw ElevatedButton': RegExp(r'ElevatedButton\('),
+  'Hard-coded EdgeInsets.all (non-zero)': RegExp(r'EdgeInsets\.all\((?!0\))'),
+  'Hard-coded EdgeInsets.symmetric (non-zero)': RegExp(
+    r'EdgeInsets\.symmetric\((?!vertical: 0|horizontal: 0)',
+  ),
+  'Hard-coded Color hex': RegExp(r'Color\(0x[0-9A-Fa-f]{6,8}\)'),
 };
 
-final _allowlistPaths = <String>[
-  'tool/',
-  'test/',
-  'lib/core/theme/',
-];
+final _allowlistPaths = <String>['tool/', 'test/', 'lib/core/theme/'];
 
 void main() {
   final repoRoot = Directory.current;
@@ -28,7 +26,10 @@ void main() {
       .listSync(recursive: true)
       .whereType<File>()
       .where((f) => f.path.endsWith('.dart'))) {
-    final relativePath = file.path.replaceFirst(repoRoot.path + Platform.pathSeparator, '');
+    final relativePath = file.path.replaceFirst(
+      repoRoot.path + Platform.pathSeparator,
+      '',
+    );
     if (_allowlistPaths.any(relativePath.startsWith)) continue;
 
     final content = file.readAsStringSync();

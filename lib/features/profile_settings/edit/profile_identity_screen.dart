@@ -11,6 +11,7 @@ import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/profile/models.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import 'bloc/profile_identity_bloc.dart';
 
 class ProfileIdentityScreen extends StatefulWidget {
@@ -206,7 +207,6 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
   }
 
   void _handleAction(BuildContext context, ProfileIdentityState state) {
-    final messenger = ScaffoldMessenger.of(context);
     final s = S.of(context);
     switch (state.action) {
       case ProfileIdentityAction.success:
@@ -218,7 +218,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
         break;
       case ProfileIdentityAction.failure:
         final message = _resolveActionMessage(state, s);
-        messenger.showSnackBar(SnackBar(content: Text(message)));
+        KinlySnackBar.showError(context, message);
         break;
       case ProfileIdentityAction.none:
         break;
