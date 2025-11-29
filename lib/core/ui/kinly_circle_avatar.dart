@@ -19,6 +19,7 @@ class KinlyCircleAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final resolvedRadius = _normalizeRadius(radius);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -26,7 +27,7 @@ class KinlyCircleAvatar extends StatelessWidget {
         avatarUrl != null && avatarUrl!.trim().toLowerCase().endsWith('.svg');
 
     final avatar = CircleAvatar(
-      radius: radius,
+      radius: resolvedRadius,
       backgroundColor:
           avatarUrl == null ? colorScheme.primaryContainer : Colors.transparent,
       foregroundColor: colorScheme.onPrimaryContainer,
@@ -51,7 +52,7 @@ class KinlyCircleAvatar extends StatelessWidget {
               placeholderBuilder:
                   (_) => Center(
                     child: KinlyLoader(
-                      size: radius,
+                      size: resolvedRadius,
                       color: colorScheme.primary,
                     ),
                   ),
@@ -62,7 +63,7 @@ class KinlyCircleAvatar extends StatelessWidget {
       },
     );
 
-    final badgeSize = radius * 0.95;
+    final badgeSize = resolvedRadius * 0.95;
     final isDark = theme.brightness == Brightness.dark;
     final badgeBackground = isDark ? Colors.white : Colors.black;
     final iconColor = isDark ? colorScheme.primary : colorScheme.onPrimary;
@@ -80,8 +81,8 @@ class KinlyCircleAvatar extends StatelessWidget {
     );
 
     return SizedBox(
-      width: radius * 2,
-      height: radius * 2,
+      width: resolvedRadius * 2,
+      height: resolvedRadius * 2,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
@@ -90,6 +91,17 @@ class KinlyCircleAvatar extends StatelessWidget {
           if (isOwner) PositionedDirectional(end: -2, bottom: -2, child: badge),
         ],
       ),
+    );
+  }
+
+  double _normalizeRadius(double value) {
+    // Enforce design token sizes (diameters 24, 40, 56 => radii 12, 20, 28)
+    const allowed = [12.0, 20.0, 28.0];
+    return allowed.reduce(
+      (closest, current) =>
+          (current - value).abs() < (closest - value).abs()
+              ? current
+              : closest,
     );
   }
 }

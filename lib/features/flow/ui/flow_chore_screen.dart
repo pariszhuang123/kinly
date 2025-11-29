@@ -8,13 +8,16 @@ import '../../../core/chores/models.dart';
 import '../../../core/supabase/storage_path_resolver.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
+import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
+import '../../../core/ui/dialogs/kinly_dialogs.dart';
+import '../../../core/ui/inputs/kinly_text_field.dart';
+import '../../../core/ui/kinly_circle_avatar.dart';
+import '../../../core/ui/kinly_date_picker.dart'; // ?? NEW
+import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
-import '../../../core/ui/kinly_circle_avatar.dart';
-import '../../../core/ui/kinly_loader.dart';
-import '../../../core/ui/buttons/kinly_filled_button.dart';
-import '../../../core/ui/kinly_date_picker.dart'; // 👈 NEW
 import '../bloc/flow_chore_bloc.dart';
 import '../domain/flow_chore_form.dart';
 import '../domain/flow_chore_outcome.dart';
@@ -62,21 +65,20 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         if (state.photoErrorTick > 0) {
           final s = S.of(context);
           final isPermission = state.photoErrorMessage == 'permission';
-          final snackText =
-              isPermission
-                  ? s.flowChorePhotoPermissionDenied
-                  : s.flowChorePhotoUploadError;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(snackText),
-              action:
-                  state.isCameraPermissionPermanentlyDenied
-                      ? SnackBarAction(
-                        label: s.flowChorePhotoPermissionOpenSettings,
-                        onPressed: openAppSettings,
-                      )
-                      : null,
-            ),
+          final snackText = isPermission
+              ? s.flowChorePhotoPermissionDenied
+              : s.flowChorePhotoUploadError;
+          KinlySnackBar.showError(
+            context,
+            snackText,
+            actionLabel:
+                state.isCameraPermissionPermanentlyDenied
+                    ? s.flowChorePhotoPermissionOpenSettings
+                    : null,
+            onAction:
+                state.isCameraPermissionPermanentlyDenied
+                    ? openAppSettings
+                    : null,
           );
           return;
         }
@@ -94,9 +96,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
 
         if (state.submissionErrorTick > 0) {
           final snackText = _mapSubmissionError(context, state);
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(snackText)));
+          KinlySnackBar.showError(context, snackText);
         }
       },
       builder: (context, state) {
@@ -160,27 +160,13 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
 
   Future<void> _confirmDelete(BuildContext context) async {
     final s = S.of(context);
-    final shouldDelete = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(s.flowChoreDeleteDialogTitle),
-          content: Text(s.flowChoreDeleteDialogMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(s.flowChoreDeleteCancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.error,
-              ),
-              child: Text(s.flowChoreDeleteConfirm),
-            ),
-          ],
-        );
-      },
+    final shouldDelete = await showKinlyConfirmDialog(
+      context,
+      title: s.flowChoreDeleteDialogTitle,
+      message: s.flowChoreDeleteDialogMessage,
+      confirmLabel: s.flowChoreDeleteConfirm,
+      cancelLabel: s.flowChoreDeleteCancel,
+      destructive: true,
     );
     if (!context.mounted) return;
     if (shouldDelete == true) {
@@ -262,16 +248,14 @@ class _FlowChoreFormView extends StatelessWidget {
 
     return ListView(
       children: [
-        TextField(
+        KinlyTextField(
           controller: titleController,
-          decoration: InputDecoration(
-            labelText: s.flowChoreNameLabel,
-            hintText: s.flowChoreNameHint,
-            errorText:
-                showValidation && !form.isTitleValid
-                    ? s.flowChoreValidationName
-                    : null,
-          ),
+          labelText: s.flowChoreNameLabel,
+          hintText: s.flowChoreNameHint,
+          errorText:
+              showValidation && !form.isTitleValid
+                  ? s.flowChoreValidationName
+                  : null,
           textInputAction: TextInputAction.next,
           onChanged:
               (value) => context.read<FlowChoreBloc>().add(
@@ -601,27 +585,23 @@ class _OptionalDetailsExpansion extends StatelessWidget {
           spacing?.md ?? 16,
         ),
         children: [
-          TextField(
+          KinlyTextField(
             controller: notesController,
             minLines: 3,
             maxLines: 4,
-            decoration: InputDecoration(
-              labelText: s.flowChoreNotesLabel,
-              hintText: s.flowChoreNotesHint,
-            ),
+            labelText: s.flowChoreNotesLabel,
+            hintText: s.flowChoreNotesHint,
             onChanged:
                 (value) => context.read<FlowChoreBloc>().add(
                   FlowChoreNotesChanged(value),
                 ),
           ),
           SizedBox(height: spacing?.lg ?? 16),
-          TextField(
+          KinlyTextField(
             controller: howToController,
-            decoration: InputDecoration(
-              labelText: s.flowChoreHowToLabel,
-              hintText: s.flowChoreHowToHint,
-              errorText: hasHowToError ? s.flowChoreValidationHowToUrl : null,
-            ),
+            labelText: s.flowChoreHowToLabel,
+            hintText: s.flowChoreHowToHint,
+            errorText: hasHowToError ? s.flowChoreValidationHowToUrl : null,
             keyboardType: TextInputType.url,
             onChanged:
                 (value) => context.read<FlowChoreBloc>().add(

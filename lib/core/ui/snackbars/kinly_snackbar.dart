@@ -6,7 +6,12 @@ import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
 
 class KinlySnackBar {
-  static void showSuccess(BuildContext context, String message) {
+  static void showSuccess(
+    BuildContext context,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
     _show(
       context,
       message,
@@ -14,10 +19,17 @@ class KinlySnackBar {
           Theme.of(context).colorScheme.primaryContainer,
       foreground: _colors(context)?.onSurface ??
           Theme.of(context).colorScheme.onPrimaryContainer,
+      actionLabel: actionLabel,
+      onAction: onAction,
     );
   }
 
-  static void showError(BuildContext context, String message) {
+  static void showError(
+    BuildContext context,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
     _show(
       context,
       message,
@@ -25,10 +37,17 @@ class KinlySnackBar {
           Theme.of(context).colorScheme.error,
       foreground: _colors(context)?.onError ??
           Theme.of(context).colorScheme.onError,
+      actionLabel: actionLabel,
+      onAction: onAction,
     );
   }
 
-  static void showInfo(BuildContext context, String message) {
+  static void showInfo(
+    BuildContext context,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
     _show(
       context,
       message,
@@ -36,10 +55,17 @@ class KinlySnackBar {
           Theme.of(context).colorScheme.inversePrimary,
       foreground: _colors(context)?.onSurface ??
           Theme.of(context).colorScheme.onInverseSurface,
+      actionLabel: actionLabel,
+      onAction: onAction,
     );
   }
 
-  static void showWarning(BuildContext context, String message) {
+  static void showWarning(
+    BuildContext context,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
     _show(
       context,
       message,
@@ -47,6 +73,8 @@ class KinlySnackBar {
           Theme.of(context).colorScheme.tertiaryContainer,
       foreground: _colors(context)?.onSurface ??
           Theme.of(context).colorScheme.onTertiaryContainer,
+      actionLabel: actionLabel,
+      onAction: onAction,
     );
   }
 
@@ -55,6 +83,8 @@ class KinlySnackBar {
     String message, {
     required Color background,
     required Color foreground,
+    String? actionLabel,
+    VoidCallback? onAction,
   }) {
     final theme = Theme.of(context);
     final messenger = ScaffoldMessenger.of(context);
@@ -82,6 +112,14 @@ class KinlySnackBar {
           borderRadius: BorderRadius.circular(corners?.medium ?? 12),
         ),
         duration: const Duration(milliseconds: 3000),
+        action:
+            actionLabel != null && onAction != null
+                ? SnackBarAction(
+                  label: actionLabel,
+                  onPressed: onAction,
+                  textColor: foreground,
+                )
+                : null,
       ),
     );
   }

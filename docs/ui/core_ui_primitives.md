@@ -3,6 +3,13 @@
 Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directionality, and i18n consistent.
 
 ## Principles
+- Design System tokens: spacing (xxs-xxxl), radius (xs-xl), elevation (level0-5), motion (easeStandard/Accelerate/Decelerate/Emotional + fast/medium/slow/snappy), color tokens, typography tokens.
+- Use Kinly primitives only: buttons, snackbars, dialogs, bottom sheets, inputs; no raw Material equivalents.
+- No hard-coded colors/paddings/text styles; use tokens via Theme extensions (Spacing, Corners, Elevations, Motion, KinlyColorTokens, KinlyTypography).
+- Directionality safe padding/alignment; use EdgeInsetsDirectional/AlignmentDirectional.
+- RTL/widget tests for new or changed screens when adding primitives.
+- Avatars: use KinlyCircleAvatar with token sizes (24/40/56 diameters).
+- Bottom sheets/dialogs must use KinlyBottomSheet / KinlyAlertDialog (token radius/elevation/motion).
 - Directionality-safe APIs only; run `dart run tool/check_directionality.dart`.
 - No hard-coded strings; use `S.of(context)`.
 - Respect theme tokens (`Spacing`, `KinlySections`), light/dark, and accessibility.

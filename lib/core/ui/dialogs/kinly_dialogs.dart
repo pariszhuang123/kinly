@@ -7,6 +7,7 @@ Future<bool?> showKinlyConfirmDialog(
   required String title,
   required String message,
   required String confirmLabel,
+  String? cancelLabel,
   bool destructive = false,
 }) {
   return showDialog<bool>(
@@ -17,6 +18,8 @@ Future<bool?> showKinlyConfirmDialog(
           message: message,
           primaryLabel: confirmLabel,
           destructive: destructive,
+          secondaryLabel: cancelLabel,
+          onSecondaryPressed: () => Navigator.of(context).pop(false),
           onPrimaryPressed: () => Navigator.of(context).pop(true),
         ),
   );

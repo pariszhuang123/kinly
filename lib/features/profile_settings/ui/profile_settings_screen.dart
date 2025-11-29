@@ -279,6 +279,7 @@ class ProfileSettingsScreen extends StatelessWidget {
       title: s.profileConfirmLeaveTitle,
       message: message,
       confirmLabel: s.profileActionConfirm,
+      cancelLabel: s.profileActionCancel,
     );
   }
 
@@ -441,6 +442,7 @@ class ProfileSettingsScreen extends StatelessWidget {
       title: s.profileConfirmDeleteTitle,
       message: s.profileConfirmDeleteMessage,
       confirmLabel: s.profileActionConfirm,
+      cancelLabel: s.profileActionCancel,
       destructive: true,
     );
     if (!context.mounted) return;
@@ -460,6 +462,7 @@ class ProfileSettingsScreen extends StatelessWidget {
       title: s.profileLogoutDialogTitle,
       message: s.profileLogoutDialogMessage,
       confirmLabel: s.profileLogoutTitle,
+      cancelLabel: s.profileActionCancel,
     );
     if (!context.mounted) return;
 

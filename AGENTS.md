@@ -114,6 +114,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - Acceptance criteria: Given / When / Then + DoD checklist.
 - Unknowns: PR must contain Assumptions; mark Blocking if delivery halted.
 - Merge/trunk checklist (applies to trunk and PRs):
+  - `dart run tool/check_design_system.dart` (see Design System section)
   - `dart format` + `dart analyze`
   - `flutter test` (add widget/RTL/golden tests when relevant)
   - `dart run tool/check_i18n.dart`
