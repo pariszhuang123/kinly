@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../generated/l10n.dart';
+import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../bloc/auth_bloc.dart';
 
 /// Listens for auth errors and surfaces them via [ScaffoldMessenger].
@@ -21,9 +22,7 @@ class AuthErrorListener extends StatelessWidget {
           return;
         }
         final resolvedMessage = _resolveMessage(context, message);
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(resolvedMessage)));
+        KinlySnackBar.showError(context, resolvedMessage);
         context.read<AuthBloc>().add(const AuthErrorCleared());
       },
       child: child,

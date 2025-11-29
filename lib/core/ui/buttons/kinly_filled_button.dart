@@ -153,20 +153,34 @@ class KinlyFilledButton extends StatelessWidget {
             ? (colors?.onInverseSurface ?? colorScheme.onInverseSurface)
             : (colors?.onPrimary ?? colorScheme.onPrimary);
 
+    final baseStyle = FilledButton.styleFrom(
+      backgroundColor: backgroundColor,
+      foregroundColor: foregroundColor,
+      textStyle: type?.labelMedium ?? theme.textTheme.labelLarge,
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontal,
+        vertical: vertical,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(corners?.medium ?? 12),
+      ),
+    );
+
+    final overlay = MaterialStateProperty.resolveWith<Color?>(
+      (states) {
+        if (states.contains(MaterialState.pressed)) {
+          return foregroundColor.withValues(alpha: 0.12);
+        }
+        if (states.contains(MaterialState.disabled)) {
+          return foregroundColor.withValues(alpha: 0.0);
+        }
+        return null;
+      },
+    );
+
     final button = FilledButton(
       onPressed: onPressed,
-      style: FilledButton.styleFrom(
-        backgroundColor: backgroundColor,
-        foregroundColor: foregroundColor,
-        textStyle: type?.labelMedium ?? theme.textTheme.labelLarge,
-        padding: EdgeInsets.symmetric(
-          horizontal: horizontal,
-          vertical: vertical,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(corners?.medium ?? 12),
-        ),
-      ),
+      style: baseStyle.copyWith(overlayColor: overlay),
       child: child,
     );
 

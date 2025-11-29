@@ -145,6 +145,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
   - FABs: `lib/core/ui/buttons/kinly_fab.dart` (inherits add-tile palette; supports hero/mini/tooltip)
   - Add tile: `lib/core/ui/buttons/kinly_add_tile_button.dart`
 - UI must use Kinly primitives under `lib/core/ui/**`; new or changed primitives require Planner + Docs review; update `docs/ui/core_ui_primitives.md`.
+- Design System: use theme extensions for spacing/radius/elevation/motion/color/typography; no hard-coded colors/paddings/text styles; no raw `SnackBar`/`AlertDialog`/`BottomSheet`—use `KinlySnackBar`/`KinlyAlertDialog`/`KinlyBottomSheet`; inputs via Kinly wrappers.
 
 ## Shared Enums
 - Domain-owned/shared enums live in `lib/core/<domain>/enums/` (e.g., `lib/core/homes/enums/leave_outcome.dart`).

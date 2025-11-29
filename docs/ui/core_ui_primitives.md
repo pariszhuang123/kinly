@@ -30,8 +30,10 @@ Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directio
 - Photo pickers/previews if shared.
 
 ## Inputs & Pickers
+- `KinlyTextField` (tokenized text input)
+- `KinlyDropdownField` (tokenized dropdown)
+- `KinlyChoiceChip` (tokenized choice chip)
 - `KinlyDatePicker` and other shared pickers.
-- Common text-field patterns if standardized (directional padding).
 
 ## Layout & Spacing
 - `Spacing` extension usage; surface/section color guidance from `KinlySections`.

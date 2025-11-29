@@ -11,9 +11,11 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/dialogs/kinly_dialogs.dart';
+import '../../../core/ui/inputs/kinly_choice_chip.dart';
+import '../../../core/ui/inputs/kinly_dropdown_field.dart';
 import '../../../core/ui/inputs/kinly_text_field.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
-import '../../../core/ui/kinly_date_picker.dart'; // ?? NEW
+import '../../../core/ui/kinly_date_picker.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
@@ -297,22 +299,21 @@ class _FlowChoreFormView extends StatelessWidget {
             ),
           ),
         SizedBox(height: spacing?.lg ?? 16),
-        DropdownButtonFormField<ChoreRecurrence>(
-          initialValue: form.recurrence,
-          items:
-              ChoreRecurrence.values
-                  .map(
-                    (value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(_recurrenceLabel(context, value)),
-                    ),
-                  )
-                  .toList(),
+        KinlyDropdownField<ChoreRecurrence>(
+          value: form.recurrence,
+          labelText: s.flowChoreRecurrenceLabel,
+          items: ChoreRecurrence.values
+              .map(
+                (value) => DropdownMenuItem(
+                  value: value,
+                  child: Text(_recurrenceLabel(context, value)),
+                ),
+              )
+              .toList(),
           onChanged:
               (value) => context.read<FlowChoreBloc>().add(
                 FlowChoreRecurrenceChanged(value!),
               ),
-          decoration: InputDecoration(labelText: s.flowChoreRecurrenceLabel),
         ),
         SizedBox(height: spacing?.lg ?? 16),
         _OptionalDetailsExpansion(
@@ -451,8 +452,8 @@ class _AssigneeChips extends StatelessWidget {
       spacing: spacing?.sm ?? 8,
       runSpacing: spacing?.sm ?? 8,
       children: [
-        ChoiceChip(
-          label: Text(s.flowChoreAssigneeUnassigned),
+        KinlyChoiceChip(
+          label: s.flowChoreAssigneeUnassigned,
           selected: selectedUserId == null,
           onSelected:
               (selected) =>

@@ -8,6 +8,7 @@ import '../../../core/config/app_config.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/nps_cubit.dart';
 
@@ -34,9 +35,9 @@ class NpsScreen extends StatelessWidget {
                 prev.submitError != curr.submitError &&
                 curr.submitError != null,
         listener: (context, state) {
-          final messenger = ScaffoldMessenger.of(context);
-          messenger.showSnackBar(
-            SnackBar(content: Text(_errorMessage(context, state.submitError!))),
+          KinlySnackBar.showError(
+            context,
+            _errorMessage(context, state.submitError!),
           );
         },
         child: PopScope(
@@ -154,7 +155,7 @@ class NpsScreen extends StatelessWidget {
         mode: LaunchMode.externalApplication,
       );
       if (!launched && context.mounted) {
-        messenger.showSnackBar(SnackBar(content: Text(s.npsLaunchError)));
+        KinlySnackBar.showError(context, s.npsLaunchError);
       }
     }
 

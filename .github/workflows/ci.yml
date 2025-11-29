@@ -55,6 +55,9 @@ jobs:
       - name: Check shared enums grouped
         run: dart run tool/check_enums.dart
 
+      - name: Check design system guardrails
+        run: dart run tool/check_design_system.dart
+
       - name: Check directionality-safe layout
         run: dart run tool/check_directionality.dart
 

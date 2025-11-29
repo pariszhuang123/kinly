@@ -107,26 +107,40 @@ class KinlyOutlinedButton extends StatelessWidget {
 
     // ✅ IMPORTANT: explicitly set a finite minimumSize,
     // so this button can live inside a Row without blowing up.
+    final baseStyle = OutlinedButton.styleFrom(
+      foregroundColor: foreground,
+      side: BorderSide(color: borderColor),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontal,
+        vertical: vertical,
+      ),
+      minimumSize: Size(
+        0, // allow intrinsic width, not Infinity
+        compact ? 36.0 : 44.0,
+      ),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(corners?.medium ?? 12),
+      ),
+      textStyle: type?.labelMedium ??
+          theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+    );
+
+    final overlay = MaterialStateProperty.resolveWith<Color?>(
+      (states) {
+        if (states.contains(MaterialState.pressed)) {
+          return foreground.withValues(alpha: 0.08);
+        }
+        if (states.contains(MaterialState.disabled)) {
+          return foreground.withValues(alpha: 0.0);
+        }
+        return null;
+      },
+    );
+
     final button = OutlinedButton(
       onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        foregroundColor: foreground,
-        side: BorderSide(color: borderColor),
-        padding: EdgeInsets.symmetric(
-          horizontal: horizontal,
-          vertical: vertical,
-        ),
-        minimumSize: Size(
-          0, // allow intrinsic width, not Infinity
-          compact ? 36.0 : 44.0,
-        ),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(corners?.medium ?? 12),
-        ),
-        textStyle: type?.labelMedium ??
-            theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
-      ),
+      style: baseStyle.copyWith(overlayColor: overlay),
       child: child,
     );
 
