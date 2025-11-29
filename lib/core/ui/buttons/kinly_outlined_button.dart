@@ -1,7 +1,10 @@
 // lib/core/ui/buttons/kinly_outlined_button.dart
 import 'package:flutter/material.dart';
 
+import '../../theme/color_tokens.dart';
+import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
+import '../../theme/typography_tokens.dart';
 
 /// Kinly-branded outlined button that adapts to light/dark mode.
 ///
@@ -64,12 +67,22 @@ class KinlyOutlinedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>();
+    final corners = theme.extension<Corners>();
+    final colors = theme.extension<KinlyColorTokens>();
+    final type = theme.extension<KinlyTypography>();
+
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-    final spacing = theme.extension<Spacing>();
 
-    final foreground = isDark ? colorScheme.onSurface : colorScheme.primary;
-    final borderColor = isDark ? colorScheme.outline : colorScheme.primary;
+    final foreground =
+        isDark
+            ? (colors?.onSurface ?? colorScheme.onSurface)
+            : (colors?.primary ?? colorScheme.primary);
+    final borderColor =
+        isDark
+            ? (colors?.outlineDark ?? colorScheme.outline)
+            : (colors?.primary ?? colorScheme.primary);
 
     final horizontal =
         spacing != null
@@ -105,13 +118,14 @@ class KinlyOutlinedButton extends StatelessWidget {
         ),
         minimumSize: Size(
           0, // allow intrinsic width, not Infinity
-          compact ? 32.0 : 40.0, // reasonable min height
+          compact ? 36.0 : 44.0,
         ),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        textStyle: theme.textTheme.bodySmall?.copyWith(
-          fontWeight: FontWeight.w600,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(corners?.medium ?? 12),
         ),
+        textStyle: type?.labelMedium ??
+            theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
       ),
       child: child,
     );

@@ -31,6 +31,12 @@ class Corners extends ThemeExtension<Corners> {
   /// Full pill (e.g. badges, big pill buttons)
   final double pill;
 
+  // Contract-aligned aliases
+  double get small => sm;
+  double get medium => md;
+  double get large => lg;
+  double get xlarge => xl;
+
   @override
   Corners copyWith({
     double? xs,

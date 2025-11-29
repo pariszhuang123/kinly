@@ -1,7 +1,10 @@
 // lib/core/ui/buttons/kinly_filled_button.dart
 import 'package:flutter/material.dart';
 
+import '../../theme/color_tokens.dart';
+import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
+import '../../theme/typography_tokens.dart';
 
 /// Kinly-branded filled button that adapts to light/dark mode.
 ///
@@ -111,6 +114,9 @@ class KinlyFilledButton extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
     final spacing = theme.extension<Spacing>();
+    final corners = theme.extension<Corners>();
+    final colors = theme.extension<KinlyColorTokens>();
+    final type = theme.extension<KinlyTypography>();
 
     final horizontal =
         spacing != null
@@ -136,27 +142,30 @@ class KinlyFilledButton extends StatelessWidget {
 
     final backgroundColor =
         destructive
-            ? colorScheme.error
+            ? (colors?.error ?? colorScheme.error)
             : isDark
-            ? colorScheme.inversePrimary
-            : colorScheme.primary;
+            ? (colors?.primary ?? colorScheme.inversePrimary)
+            : (colors?.primary ?? colorScheme.primary);
     final foregroundColor =
         destructive
-            ? colorScheme.onError
+            ? (colors?.onError ?? colorScheme.onError)
             : isDark
-            ? colorScheme.onInverseSurface
-            : colorScheme.onPrimary;
+            ? (colors?.onInverseSurface ?? colorScheme.onInverseSurface)
+            : (colors?.onPrimary ?? colorScheme.onPrimary);
 
     final button = FilledButton(
       onPressed: onPressed,
       style: FilledButton.styleFrom(
         backgroundColor: backgroundColor,
         foregroundColor: foregroundColor,
+        textStyle: type?.labelMedium ?? theme.textTheme.labelLarge,
         padding: EdgeInsets.symmetric(
           horizontal: horizontal,
           vertical: vertical,
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(corners?.medium ?? 12),
+        ),
       ),
       child: child,
     );

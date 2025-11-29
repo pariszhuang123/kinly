@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../theme/color_tokens.dart';
+import '../../theme/spacing.dart';
+import '../../theme/typography_tokens.dart';
 import '../kinly_loader.dart';
 
 class KinlySettingsTile extends StatelessWidget {
@@ -22,19 +26,35 @@ class KinlySettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>();
+    final colors = theme.extension<KinlyColorTokens>();
+    final type = theme.extension<KinlyTypography>();
     final colorScheme = theme.colorScheme;
-    final leadingColor = destructive ? colorScheme.error : colorScheme.primary;
+    final leadingColor =
+        destructive
+            ? (colors?.error ?? colorScheme.error)
+            : (colors?.primary ?? colorScheme.primary);
 
-    final titleStyle = theme.textTheme.titleMedium?.copyWith(
-      fontWeight: FontWeight.w600,
-      color: destructive ? colorScheme.error : colorScheme.onSurface,
-    );
+    final titleStyle =
+        (type?.titleMedium ?? theme.textTheme.titleMedium)?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: destructive
+              ? (colors?.error ?? colorScheme.error)
+              : colorScheme.onSurface,
+        );
 
-    final subtitleStyle = theme.textTheme.bodyMedium?.copyWith(
-      color: colorScheme.onSurfaceVariant,
-    );
+    final subtitleStyle =
+        (type?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        );
 
     return ListTile(
+      contentPadding: EdgeInsetsDirectional.fromSTEB(
+        spacing?.l ?? 16,
+        spacing?.s ?? 8,
+        spacing?.l ?? 16,
+        spacing?.s ?? 8,
+      ),
       leading: CircleAvatar(
         backgroundColor: leadingColor.withValues(alpha: 0.12),
         child: Icon(icon, color: leadingColor),
