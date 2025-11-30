@@ -13,6 +13,8 @@ class FlowChoreCoreInfoSection extends StatelessWidget {
     required this.startValue,
     required this.recurrenceLabel,
     required this.recurrenceValue,
+    this.showAssignee = true,
+    this.showStart = true,
   });
 
   final String choreName;
@@ -22,6 +24,8 @@ class FlowChoreCoreInfoSection extends StatelessWidget {
   final String startValue;
   final String recurrenceLabel;
   final String recurrenceValue;
+  final bool showAssignee;
+  final bool showStart;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +37,14 @@ class FlowChoreCoreInfoSection extends StatelessWidget {
       children: [
         Text(choreName, style: theme.textTheme.headlineSmall),
         SizedBox(height: spacing?.md ?? 16),
-        _FlowDetailRow(label: assigneeLabel, value: assigneeValue),
-        SizedBox(height: spacing?.md ?? 16),
-        _FlowDetailRow(label: startLabel, value: startValue),
-        SizedBox(height: spacing?.md ?? 16),
+        if (showAssignee) ...[
+          _FlowDetailRow(label: assigneeLabel, value: assigneeValue),
+          SizedBox(height: spacing?.md ?? 16),
+        ],
+        if (showStart) ...[
+          _FlowDetailRow(label: startLabel, value: startValue),
+          SizedBox(height: spacing?.md ?? 16),
+        ],
         _FlowDetailRow(label: recurrenceLabel, value: recurrenceValue),
       ],
     );

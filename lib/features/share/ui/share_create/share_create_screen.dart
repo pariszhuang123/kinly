@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
-import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/dialogs/kinly_dialogs.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';

@@ -11,6 +11,7 @@ import '../../../../core/ui/kinly_tab_bar.dart';
 import '../../../../core/ui/kinly_list_tile.dart';
 import '../../../../core/ui/kinly_empty_state.dart';
 import '../../../../core/ui/feedback/kinly_info_banner.dart';
+import '../../../../core/ui/enums/kinly_banner_type.dart';
 import '../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../core/ui/section_container.dart';
 import '../../../../generated/l10n.dart';
@@ -152,11 +153,7 @@ class _TodayShareSectionState extends State<TodayShareSection> {
           ),
           SizedBox(height: spacing?.md ?? 12),
         ],
-        _buildTabContent(
-          context,
-          colors: colors,
-          strings: s,
-        ),
+        _buildTabContent(context, colors: colors, strings: s),
       ],
     );
 
@@ -297,10 +294,7 @@ class _DraftList extends StatelessWidget {
 }
 
 class _ShareEmptyState extends StatelessWidget {
-  const _ShareEmptyState({
-    required this.message,
-    this.onSeeAllDraftsTap,
-  });
+  const _ShareEmptyState({required this.message, this.onSeeAllDraftsTap});
 
   final String message;
   final VoidCallback? onSeeAllDraftsTap;

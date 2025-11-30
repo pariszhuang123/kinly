@@ -10,6 +10,7 @@ import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/kinly_list_tile.dart';
 import '../../../../core/ui/kinly_empty_state.dart';
 import '../../../../core/ui/feedback/kinly_info_banner.dart';
+import '../../../../core/ui/enums/kinly_banner_type.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
 
@@ -153,17 +154,12 @@ class _ShareCreatedTile extends StatelessWidget {
         KinlyListTile(
           title: entry.description,
           subtitle:
-              entry.isActive
-                  ? progressLabel
-                  : s.shareCreatedListDraftSubtitle,
+              entry.isActive ? progressLabel : s.shareCreatedListDraftSubtitle,
           trailing: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if (badge != null) ...[
-                badge,
-                SizedBox(height: spacing?.xs ?? 6),
-              ],
+              if (badge != null) ...[badge, SizedBox(height: spacing?.xs ?? 6)],
               Text(
                 amountLabel,
                 style: theme.textTheme.titleSmall?.copyWith(
@@ -184,8 +180,7 @@ class _ShareCreatedTile extends StatelessWidget {
                     : entry.paidShares / entry.totalShares,
             minHeight: 8,
             backgroundColor:
-                shareColors?.card ??
-                theme.colorScheme.surfaceContainerHighest,
+                shareColors?.card ?? theme.colorScheme.surfaceContainerHighest,
             valueColor: AlwaysStoppedAnimation(
               shareColors?.accent ?? theme.colorScheme.primary,
             ),
@@ -194,7 +189,8 @@ class _ShareCreatedTile extends StatelessWidget {
           Text(
             amountProgress,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: shareColors?.icon.withValues(alpha: 0.7) ??
+              color:
+                  shareColors?.icon.withValues(alpha: 0.7) ??
                   theme.colorScheme.onSurfaceVariant,
             ),
           ),
@@ -244,10 +240,7 @@ class _ShareCreatedListError extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          KinlyInfoBanner(
-            message: message,
-            type: KinlyBannerType.error,
-          ),
+          KinlyInfoBanner(message: message, type: KinlyBannerType.error),
           SizedBox(height: spacing?.md ?? 16),
           KinlyFilledButton.text(
             fullWidth: true,

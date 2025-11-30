@@ -42,42 +42,41 @@ class KinlySegmentedControl<T> extends StatelessWidget {
         onChanged(value);
       },
       style: ButtonStyle(
-        textStyle: MaterialStateProperty.all(
+        textStyle: WidgetStateProperty.all(
           type?.labelMedium ?? theme.textTheme.labelMedium,
         ),
-        padding: MaterialStateProperty.all(
+        padding: WidgetStateProperty.all(
           EdgeInsets.symmetric(
             horizontal: spacing?.m ?? 12,
             vertical: spacing?.s ?? 8,
           ),
         ),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(corners?.large ?? 16),
           ),
         ),
-        backgroundColor: MaterialStateProperty.resolveWith(
+        backgroundColor: WidgetStateProperty.resolveWith(
           (states) {
-            if (states.contains(MaterialState.selected)) {
-              return colors?.primaryContainer ??
-                  colorScheme.primaryContainer;
+            if (states.contains(WidgetState.selected)) {
+              return colors?.primaryContainer ?? colorScheme.primaryContainer;
             }
-            return colors?.surfaceVariant ?? colorScheme.surfaceVariant;
+            return colors?.surfaceVariant ??
+                colorScheme.surfaceContainerHighest;
           },
         ),
-        foregroundColor: MaterialStateProperty.resolveWith(
+        foregroundColor: WidgetStateProperty.resolveWith(
           (states) {
-            if (states.contains(MaterialState.selected)) {
-              return colors?.onPrimaryContainer ??
-                  colorScheme.onPrimaryContainer;
+            if (states.contains(WidgetState.selected)) {
+              return colors?.onPrimaryContainer ?? colorScheme.onPrimaryContainer;
             }
             return colors?.onSurface ?? colorScheme.onSurface;
           },
         ),
-        side: MaterialStateProperty.resolveWith(
+        side: WidgetStateProperty.resolveWith(
           (states) {
             final color =
-                states.contains(MaterialState.selected)
+                states.contains(WidgetState.selected)
                     ? colors?.primary ?? colorScheme.primary
                     : colors?.outline ?? colorScheme.outline;
             return BorderSide(color: color);

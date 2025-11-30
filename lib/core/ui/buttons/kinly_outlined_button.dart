@@ -126,12 +126,12 @@ class KinlyOutlinedButton extends StatelessWidget {
           theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
     );
 
-    final overlay = MaterialStateProperty.resolveWith<Color?>(
+    final overlay = WidgetStateProperty.resolveWith<Color?>(
       (states) {
-        if (states.contains(MaterialState.pressed)) {
+        if (states.contains(WidgetState.pressed)) {
           return foreground.withValues(alpha: 0.08);
         }
-        if (states.contains(MaterialState.disabled)) {
+        if (states.contains(WidgetState.disabled)) {
           return foreground.withValues(alpha: 0.0);
         }
         return null;

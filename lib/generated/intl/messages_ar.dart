@@ -439,6 +439,32 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileInfoHubTitle": MessageLookupByLibrary.simpleMessage(
       "مركز المعلومات",
     ),
+    "profileKickActionConfirm": MessageLookupByLibrary.simpleMessage(
+      "إزالة العضو",
+    ),
+    "profileKickMemberSubtitle": MessageLookupByLibrary.simpleMessage(
+      "اختر من يجب أن يفقد الوصول إلى هذا المنزل.",
+    ),
+    "profileKickMemberTitle": MessageLookupByLibrary.simpleMessage("إزالة عضو"),
+    "profileKickNoMembers": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد أعضاء آخرون لإزالتهم حالياً.",
+    ),
+    "profileKickOwnerOnly": MessageLookupByLibrary.simpleMessage(
+      "يمكن لمالك المنزل فقط إزالة الأعضاء.",
+    ),
+    "profileKickSheetSubtitle": MessageLookupByLibrary.simpleMessage(
+      "اختر عضواً لإزالته. سيفقد الوصول فوراً.",
+    ),
+    "profileKickSheetTitle": MessageLookupByLibrary.simpleMessage("إزالة عضو"),
+    "profileKickSuccessClose": MessageLookupByLibrary.simpleMessage(
+      "العودة إلى الإعدادات",
+    ),
+    "profileKickSuccessMessage": MessageLookupByLibrary.simpleMessage(
+      "لم يعد لديه حق الوصول إلى هذا المنزل.",
+    ),
+    "profileKickSuccessTitle": MessageLookupByLibrary.simpleMessage(
+      "تمت إزالة العضو",
+    ),
     "profileLeaveEligibilityError": MessageLookupByLibrary.simpleMessage(
       "تعذر تحميل أعضاء المنزل. حاول مرة أخرى.",
     ),
@@ -463,19 +489,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileLeaveTransferSheetSubtitle": MessageLookupByLibrary.simpleMessage(
       "اختر من سيصبح المالك الجديد قبل مغادرتك.",
     ),
-
-
-    "profileKickActionConfirm":
-        MessageLookupByLibrary.simpleMessage("إزالة العضو"),
-    "profileKickMemberSubtitle": MessageLookupByLibrary.simpleMessage("اختر من يجب أن يفقد الوصول إلى هذا المنزل."),
-    "profileKickMemberTitle": MessageLookupByLibrary.simpleMessage("إزالة عضو"),
-    "profileKickNoMembers": MessageLookupByLibrary.simpleMessage("لا يوجد أعضاء آخرون لإزالتهم حالياً."),
-    "profileKickOwnerOnly": MessageLookupByLibrary.simpleMessage("يمكن لمالك المنزل فقط إزالة الأعضاء."),
-    "profileKickSheetSubtitle": MessageLookupByLibrary.simpleMessage("اختر عضواً لإزالته. سيفقد الوصول فوراً."),
-    "profileKickSheetTitle": MessageLookupByLibrary.simpleMessage("إزالة عضو"),
-    "profileKickSuccessClose": MessageLookupByLibrary.simpleMessage("العودة إلى الإعدادات"),
-    "profileKickSuccessMessage": MessageLookupByLibrary.simpleMessage("لم يعد لديه حق الوصول إلى هذا المنزل."),
-    "profileKickSuccessTitle": MessageLookupByLibrary.simpleMessage("تمت إزالة العضو"),
     "profileLeaveTransferSheetTitle": MessageLookupByLibrary.simpleMessage(
       "نقل الملكية",
     ),

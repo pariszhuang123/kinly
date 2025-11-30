@@ -45,7 +45,7 @@ class KinlyDropdownField<T> extends StatelessWidget {
         );
 
     return DropdownButtonFormField<T>(
-      value: value,
+      initialValue: value,
       items: items,
       onChanged: onChanged,
       decoration: InputDecoration(

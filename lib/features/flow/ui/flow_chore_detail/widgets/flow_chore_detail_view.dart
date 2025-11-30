@@ -82,6 +82,8 @@ class FlowChoreDetailView extends StatelessWidget {
                     startValue: formattedDate,
                     recurrenceLabel: s.flowChoreRecurrenceLabel,
                     recurrenceValue: recurrenceLabel,
+                    showAssignee: false,
+                    showStart: true,
                   ),
                   SizedBox(height: spacing?.lg ?? 24),
                   FlowChoreExtrasSection(
@@ -203,6 +205,7 @@ Future<void> _launchHowToUrl(BuildContext context, String url) async {
   final uri = Uri.parse(url);
 
   final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!context.mounted) return;
   if (!launched) {
     KinlySnackBar.showError(context, s.flowChoreHowToLaunchError);
   }

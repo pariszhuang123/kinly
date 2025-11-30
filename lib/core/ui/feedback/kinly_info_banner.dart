@@ -4,10 +4,8 @@ import '../../theme/color_tokens.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
+import '../enums/kinly_banner_type.dart';
 
-enum KinlyBannerType { success, info, warning, error }
-
-/// Inline info banner for success/info/warning/error states.
 class KinlyInfoBanner extends StatelessWidget {
   const KinlyInfoBanner({
     super.key,
@@ -34,20 +32,17 @@ class KinlyInfoBanner extends StatelessWidget {
     final bg = switch (type) {
       KinlyBannerType.success =>
         colors?.primaryContainer ?? colorScheme.primaryContainer,
-      KinlyBannerType.info =>
-        colors?.info ?? colorScheme.inversePrimary,
+      KinlyBannerType.info => colors?.info ?? colorScheme.inversePrimary,
       KinlyBannerType.warning =>
         colors?.warning ?? colorScheme.tertiaryContainer,
-      KinlyBannerType.error =>
-        colors?.error ?? colorScheme.errorContainer,
+      KinlyBannerType.error => colors?.error ?? colorScheme.errorContainer,
     };
     final fg = switch (type) {
       KinlyBannerType.success =>
         colors?.onPrimaryContainer ?? colorScheme.onPrimaryContainer,
       KinlyBannerType.info =>
         colors?.onInverseSurface ?? colorScheme.onInverseSurface,
-      KinlyBannerType.warning =>
-        colors?.onSurface ?? colorScheme.onSurface,
+      KinlyBannerType.warning => colors?.onSurface ?? colorScheme.onSurface,
       KinlyBannerType.error => colors?.onError ?? colorScheme.onError,
     };
 
@@ -62,10 +57,7 @@ class KinlyInfoBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          if (leading != null) ...[
-            leading!,
-            SizedBox(width: spacing?.s ?? 8),
-          ],
+          if (leading != null) ...[leading!, SizedBox(width: spacing?.s ?? 8)],
           Expanded(
             child: Text(
               message,

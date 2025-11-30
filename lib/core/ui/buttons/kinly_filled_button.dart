@@ -166,12 +166,12 @@ class KinlyFilledButton extends StatelessWidget {
       ),
     );
 
-    final overlay = MaterialStateProperty.resolveWith<Color?>(
+    final overlay = WidgetStateProperty.resolveWith<Color?>(
       (states) {
-        if (states.contains(MaterialState.pressed)) {
+        if (states.contains(WidgetState.pressed)) {
           return foregroundColor.withValues(alpha: 0.12);
         }
-        if (states.contains(MaterialState.disabled)) {
+        if (states.contains(WidgetState.disabled)) {
           return foregroundColor.withValues(alpha: 0.0);
         }
         return null;

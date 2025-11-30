@@ -36,7 +36,8 @@ class KinlyEmptyState extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(spacing?.xl ?? 24),
       decoration: BoxDecoration(
-        color: colors?.surfaceVariant ?? colorScheme.surfaceVariant,
+        color:
+            colors?.surfaceVariant ?? colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(corners?.large ?? 16),
       ),
       child: Column(

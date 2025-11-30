@@ -274,10 +274,10 @@ class S {
     );
   }
 
-  /// `Add a task to Flow`
+  /// `Add a Flow`
   String get quick_add_flow_subtitle {
     return Intl.message(
-      'Add a task to Flow',
+      'Add a Flow',
       name: 'quick_add_flow_subtitle',
       desc: '',
       args: [],
@@ -294,10 +294,10 @@ class S {
     );
   }
 
-  /// `Log a shared expense`
+  /// `Log a Share`
   String get quick_add_share_subtitle {
     return Intl.message(
-      'Log a shared expense',
+      'Log a Share',
       name: 'quick_add_share_subtitle',
       desc: '',
       args: [],
@@ -354,20 +354,20 @@ class S {
     );
   }
 
-  /// `Add task (Flow)`
+  /// `Add Flow`
   String get todayAddSheetFlow {
     return Intl.message(
-      'Add task (Flow)',
+      'Add Flow',
       name: 'todayAddSheetFlow',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add expense (Share)`
+  /// `Add Share`
   String get todayAddSheetShare {
     return Intl.message(
-      'Add expense (Share)',
+      'Add Share',
       name: 'todayAddSheetShare',
       desc: '',
       args: [],
@@ -984,10 +984,10 @@ class S {
     );
   }
 
-  /// `See all expenses`
+  /// `See all shares`
   String get todayShareSeeAll {
     return Intl.message(
-      'See all expenses',
+      'See all shares',
       name: 'todayShareSeeAll',
       desc: '',
       args: [],
@@ -1024,10 +1024,10 @@ class S {
     );
   }
 
-  /// `Nothing to see here yet. As you log expenses or start drafts, they'll appear in Share.`
+  /// `Nothing to see here yet.`
   String get todayShareEmptyState {
     return Intl.message(
-      'Nothing to see here yet. As you log expenses or start drafts, they\'ll appear in Share.',
+      'Nothing to see here yet.',
       name: 'todayShareEmptyState',
       desc: '',
       args: [],
@@ -1076,10 +1076,10 @@ class S {
     );
   }
 
-  /// `Finish the split to publish this expense.`
+  /// `Split based on the share.`
   String get todayShareDraftSubtitle {
     return Intl.message(
-      'Finish the split to publish this expense.',
+      'Split based on the share.',
       name: 'todayShareDraftSubtitle',
       desc: '',
       args: [],
@@ -1126,10 +1126,10 @@ class S {
     );
   }
 
-  /// `Select the expense you just settled.`
+  /// `Select the share you just settled.`
   String get shareOwedDetailSubtitle {
     return Intl.message(
-      'Select the expense you just settled.',
+      'Select the share you just settled.',
       name: 'shareOwedDetailSubtitle',
       desc: '',
       args: [],
@@ -1146,10 +1146,10 @@ class S {
     );
   }
 
-  /// `Select an expense to continue.`
+  /// `Select who to share with.`
   String get shareOwedDetailSelectionLabel {
     return Intl.message(
-      'Select an expense to continue.',
+      'Select who to share with.',
       name: 'shareOwedDetailSelectionLabel',
       desc: '',
       args: [],
@@ -1221,10 +1221,10 @@ class S {
     );
   }
 
-  /// `This share can’t be edited anymore because it's already locked.`
+  /// `This can't be edited anymore because you need to assigned the share.`
   String get shareEditNotAllowed {
     return Intl.message(
-      'This share can’t be edited anymore because it\'s already locked.',
+      'This can\'t be edited anymore because you need to assigned the share.',
       name: 'shareEditNotAllowed',
       desc: '',
       args: [],
@@ -1256,10 +1256,10 @@ class S {
     );
   }
 
-  /// `Delete this share?`
+  /// `Delete?`
   String get shareEditDeleteConfirmTitle {
     return Intl.message(
-      'Delete this share?',
+      'Delete?',
       name: 'shareEditDeleteConfirmTitle',
       desc: '',
       args: [],
@@ -1296,10 +1296,10 @@ class S {
     );
   }
 
-  /// `Couldn't delete this share. Try again.`
+  /// `Couldn't delete. Try again.`
   String get shareEditDeleteError {
     return Intl.message(
-      'Couldn\'t delete this share. Try again.',
+      'Couldn\'t delete. Try again.',
       name: 'shareEditDeleteError',
       desc: '',
       args: [],
@@ -1316,14 +1316,9 @@ class S {
     );
   }
 
-  /// `Create share`
+  /// `Create`
   String get shareCreateTitle {
-    return Intl.message(
-      'Create share',
-      name: 'shareCreateTitle',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Create', name: 'shareCreateTitle', desc: '', args: []);
   }
 
   /// `Description`
@@ -1406,10 +1401,10 @@ class S {
     );
   }
 
-  /// `You need at least two household members to split an expense.`
+  /// `You need at least two household members to share.`
   String get shareCreateParticipantsEmpty {
     return Intl.message(
-      'You need at least two household members to split an expense.',
+      'You need at least two household members to share.',
       name: 'shareCreateParticipantsEmpty',
       desc: '',
       args: [],
@@ -1486,10 +1481,10 @@ class S {
     );
   }
 
-  /// `Choose how you want to split this expense.`
+  /// `Choose how you want to share.`
   String get shareCreateValidationSplit {
     return Intl.message(
-      'Choose how you want to split this expense.',
+      'Choose how you want to share.',
       name: 'shareCreateValidationSplit',
       desc: '',
       args: [],
@@ -1526,10 +1521,10 @@ class S {
     );
   }
 
-  /// `Custom shares must add up to the amount above.`
+  /// `Custom split must add up to the amount above.`
   String get shareCreateValidationCustomSum {
     return Intl.message(
-      'Custom shares must add up to the amount above.',
+      'Custom split must add up to the amount above.',
       name: 'shareCreateValidationCustomSum',
       desc: '',
       args: [],
@@ -1566,20 +1561,20 @@ class S {
     );
   }
 
-  /// `Couldn't create share. Try again.`
+  /// `Couldn't create. Try again.`
   String get shareCreateErrorGeneric {
     return Intl.message(
-      'Couldn\'t create share. Try again.',
+      'Couldn\'t create. Try again.',
       name: 'shareCreateErrorGeneric',
       desc: '',
       args: [],
     );
   }
 
-  /// `You don't have permission to create this share right now.`
+  /// `You don't have permission to create this right now.`
   String get shareCreateErrorForbidden {
     return Intl.message(
-      'You don\'t have permission to create this share right now.',
+      'You don\'t have permission to create this right now.',
       name: 'shareCreateErrorForbidden',
       desc: '',
       args: [],
@@ -1596,50 +1591,50 @@ class S {
     );
   }
 
-  /// `Add Flow chore`
+  /// `Add Flow`
   String get flowChoreCreateTitle {
     return Intl.message(
-      'Add Flow chore',
+      'Add Flow',
       name: 'flowChoreCreateTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Edit Flow chore`
+  /// `Edit Flow`
   String get flowChoreEditTitle {
     return Intl.message(
-      'Edit Flow chore',
+      'Edit Flow',
       name: 'flowChoreEditTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Task name`
+  /// `Flow name`
   String get flowChoreNameLabel {
     return Intl.message(
-      'Task name',
+      'Flow name',
       name: 'flowChoreNameLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Give your task a short, clear title`
+  /// `Give your flow a short, clear title`
   String get flowChoreNameHint {
     return Intl.message(
-      'Give your task a short, clear title',
+      'Give your flow a short, clear title',
       name: 'flowChoreNameHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `Give the chore a name.`
+  /// `Give the flow a name.`
   String get flowChoreValidationName {
     return Intl.message(
-      'Give the chore a name.',
+      'Give the flow a name.',
       name: 'flowChoreValidationName',
       desc: '',
       args: [],
@@ -1666,20 +1661,20 @@ class S {
     );
   }
 
-  /// `Pick someone to assign this chore to.`
+  /// `Pick someone to assign this flow to.`
   String get flowChoreValidationAssignee {
     return Intl.message(
-      'Pick someone to assign this chore to.',
+      'Pick someone to assign this flow to.',
       name: 'flowChoreValidationAssignee',
       desc: '',
       args: [],
     );
   }
 
-  /// `Start date`
+  /// `Flow date`
   String get flowChoreStartLabel {
     return Intl.message(
-      'Start date',
+      'Flow date',
       name: 'flowChoreStartLabel',
       desc: '',
       args: [],
@@ -1696,10 +1691,10 @@ class S {
     );
   }
 
-  /// `Recurrence`
+  /// `Repeat frequency`
   String get flowChoreRecurrenceLabel {
     return Intl.message(
-      'Recurrence',
+      'Repeat frequency',
       name: 'flowChoreRecurrenceLabel',
       desc: '',
       args: [],
@@ -1906,40 +1901,40 @@ class S {
     );
   }
 
-  /// `Add chore`
+  /// `Add flow`
   String get flowChoreSubmitCreate {
     return Intl.message(
-      'Add chore',
+      'Add flow',
       name: 'flowChoreSubmitCreate',
       desc: '',
       args: [],
     );
   }
 
-  /// `Save chore`
+  /// `Save flow`
   String get flowChoreSubmitUpdate {
     return Intl.message(
-      'Save chore',
+      'Save flow',
       name: 'flowChoreSubmitUpdate',
       desc: '',
       args: [],
     );
   }
 
-  /// `Delete chore`
+  /// `Delete flow`
   String get flowChoreDeleteButton {
     return Intl.message(
-      'Delete chore',
+      'Delete flow',
       name: 'flowChoreDeleteButton',
       desc: '',
       args: [],
     );
   }
 
-  /// `Delete this chore?`
+  /// `Delete this flow?`
   String get flowChoreDeleteDialogTitle {
     return Intl.message(
-      'Delete this chore?',
+      'Delete this flow?',
       name: 'flowChoreDeleteDialogTitle',
       desc: '',
       args: [],
@@ -1976,10 +1971,10 @@ class S {
     );
   }
 
-  /// `We couldn't load this chore. Please try again.`
+  /// `We couldn't load this flow. Please try again.`
   String get flowChoreLoadError {
     return Intl.message(
-      'We couldn\'t load this chore. Please try again.',
+      'We couldn\'t load this flow. Please try again.',
       name: 'flowChoreLoadError',
       desc: '',
       args: [],
@@ -1991,10 +1986,10 @@ class S {
     return Intl.message('Retry', name: 'flowChoreRetry', desc: '', args: []);
   }
 
-  /// `You've hit the free limit for active chores. Upgrade to add more.`
+  /// `You've hit the free limit for active flows. Upgrade to add more.`
   String get flowChoreErrorPaywallActiveCap {
     return Intl.message(
-      'You\'ve hit the free limit for active chores. Upgrade to add more.',
+      'You\'ve hit the free limit for active flows. Upgrade to add more.',
       name: 'flowChoreErrorPaywallActiveCap',
       desc: '',
       args: [],
@@ -2021,10 +2016,10 @@ class S {
     );
   }
 
-  /// `You don't have permission to change this chore.`
+  /// `You don't have permission to change this flow.`
   String get flowChoreErrorForbidden {
     return Intl.message(
-      'You don\'t have permission to change this chore.',
+      'You don\'t have permission to change this flow.',
       name: 'flowChoreErrorForbidden',
       desc: '',
       args: [],
@@ -2051,30 +2046,30 @@ class S {
     );
   }
 
-  /// `This chore can't be updated right now.`
+  /// `This flow can't be updated right now.`
   String get flowChoreErrorInvalidState {
     return Intl.message(
-      'This chore can\'t be updated right now.',
+      'This flow can\'t be updated right now.',
       name: 'flowChoreErrorInvalidState',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn't save the chore. Please try again.`
+  /// `Couldn't save the flow. Please try again.`
   String get flowChoreErrorGeneric {
     return Intl.message(
-      'Couldn\'t save the chore. Please try again.',
+      'Couldn\'t save the flow. Please try again.',
       name: 'flowChoreErrorGeneric',
       desc: '',
       args: [],
     );
   }
 
-  /// `Chore details`
+  /// `Flow details`
   String get flowChoreDetailTitle {
     return Intl.message(
-      'Chore details',
+      'Flow details',
       name: 'flowChoreDetailTitle',
       desc: '',
       args: [],
@@ -2111,20 +2106,20 @@ class S {
     );
   }
 
-  /// `Complete task`
+  /// `Complete flow`
   String get flowChoreDetailCompleteButton {
     return Intl.message(
-      'Complete task',
+      'Complete flow',
       name: 'flowChoreDetailCompleteButton',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn't complete the chore. Please try again.`
+  /// `Couldn't complete the flow. Please try again.`
   String get flowChoreDetailCompletionError {
     return Intl.message(
-      'Couldn\'t complete the chore. Please try again.',
+      'Couldn\'t complete the flow. Please try again.',
       name: 'flowChoreDetailCompletionError',
       desc: '',
       args: [],
@@ -2191,10 +2186,10 @@ class S {
     );
   }
 
-  /// `We couldn't load Flow tasks. Pull to refresh.`
+  /// `We couldn't load Flow. Pull to refresh.`
   String get flowListError {
     return Intl.message(
-      'We couldn\'t load Flow tasks. Pull to refresh.',
+      'We couldn\'t load Flow. Pull to refresh.',
       name: 'flowListError',
       desc: '',
       args: [],
@@ -2221,10 +2216,10 @@ class S {
     );
   }
 
-  /// `Review every Flow task and keep chores moving`
+  /// `Review every Flow and keep flows moving`
   String get exploreFlowSubtitle {
     return Intl.message(
-      'Review every Flow task and keep chores moving',
+      'Review every Flow and keep flows moving',
       name: 'exploreFlowSubtitle',
       desc: '',
       args: [],
@@ -2241,10 +2236,10 @@ class S {
     );
   }
 
-  /// `Your shares`
+  /// `Your share`
   String get shareCreatedListTitle {
     return Intl.message(
-      'Your shares',
+      'Your share',
       name: 'shareCreatedListTitle',
       desc: '',
       args: [],
@@ -2271,10 +2266,10 @@ class S {
     );
   }
 
-  /// `We couldn't load your shares. Pull to refresh.`
+  /// `We couldn't load your share. Pull to refresh.`
   String get shareCreatedListError {
     return Intl.message(
-      'We couldn\'t load your shares. Pull to refresh.',
+      'We couldn\'t load your share. Pull to refresh.',
       name: 'shareCreatedListError',
       desc: '',
       args: [],
@@ -2881,10 +2876,10 @@ class S {
     );
   }
 
-  /// `Continue`
+  /// `Delete Account`
   String get profileActionConfirm {
     return Intl.message(
-      'Continue',
+      'Delete Account',
       name: 'profileActionConfirm',
       desc: '',
       args: [],

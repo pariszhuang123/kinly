@@ -32,7 +32,8 @@ class KinlyFilterChip extends StatelessWidget {
     final background =
         selected
             ? (colors?.primaryContainer ?? colorScheme.primaryContainer)
-            : (colors?.surfaceVariant ?? colorScheme.surfaceVariant);
+            : (colors?.surfaceVariant ??
+                colorScheme.surfaceContainerHighest);
     final borderColor =
         selected
             ? (colors?.primary ?? colorScheme.primary)

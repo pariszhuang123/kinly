@@ -40,36 +40,36 @@ class KinlyTabBar<T> extends StatelessWidget {
       selected: {selected},
       onSelectionChanged: (values) => onChanged(values.first),
       style: ButtonStyle(
-        textStyle: MaterialStateProperty.all(
+        textStyle: WidgetStateProperty.all(
           type?.labelMedium ?? theme.textTheme.labelMedium,
         ),
-        padding: MaterialStateProperty.all(
+        padding: WidgetStateProperty.all(
           EdgeInsets.symmetric(
             horizontal: spacing?.m ?? 12,
             vertical: spacing?.s ?? 8,
           ),
         ),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(corners?.large ?? 16),
           ),
         ),
-        backgroundColor: MaterialStateProperty.resolveWith((states) {
-          final isSelected = states.contains(MaterialState.selected);
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          final isSelected = states.contains(WidgetState.selected);
           if (isSelected) {
             return colors?.primaryContainer ?? colorScheme.primaryContainer;
           }
-          return colors?.surfaceVariant ?? colorScheme.surfaceVariant;
+          return colors?.surfaceVariant ?? colorScheme.surfaceContainerHighest;
         }),
-        foregroundColor: MaterialStateProperty.resolveWith((states) {
-          final isSelected = states.contains(MaterialState.selected);
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          final isSelected = states.contains(WidgetState.selected);
           if (isSelected) {
             return colors?.onPrimaryContainer ?? colorScheme.onPrimaryContainer;
           }
           return colors?.onSurface ?? colorScheme.onSurface;
         }),
-        side: MaterialStateProperty.resolveWith((states) {
-          final isSelected = states.contains(MaterialState.selected);
+        side: WidgetStateProperty.resolveWith((states) {
+          final isSelected = states.contains(WidgetState.selected);
           final color =
               isSelected
                   ? colors?.primary ?? colorScheme.primary
