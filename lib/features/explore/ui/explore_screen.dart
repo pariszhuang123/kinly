@@ -32,7 +32,7 @@ class ExploreScreen extends StatelessWidget {
         ),
         body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(spacing.lg),
+            padding: EdgeInsetsDirectional.all(spacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

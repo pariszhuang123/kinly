@@ -42,7 +42,7 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
       appBar: AppBar(title: Text(s.shareOwedDetailTitle)),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(spacing.lg),
+          padding: EdgeInsetsDirectional.all(spacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -344,7 +344,7 @@ class _DetailRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: onToggle,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 14),
           child: content,
         ),
       ),

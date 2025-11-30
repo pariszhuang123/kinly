@@ -63,7 +63,7 @@ class StartHomeScreen extends StatelessWidget {
               final spacing = theme.extension<Spacing>();
 
               return Padding(
-                padding: EdgeInsets.all(spacing?.lg ?? 16),
+                padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

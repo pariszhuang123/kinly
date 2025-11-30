@@ -16,7 +16,14 @@ final _forbiddenPatterns = <String, RegExp>{
   'Hard-coded Color hex': RegExp(r'Color\(0x[0-9A-Fa-f]{6,8}\)'),
 };
 
-final _allowlistPaths = <String>['tool/', 'test/', 'lib/core/theme/'];
+final _allowlistPaths = <String>[
+  'tool/',
+  'test/',
+  'lib/core/theme/',
+  'lib/core/ui/',
+  'lib/core/share/',
+  '.dart_tool/',
+];
 
 void main() {
   final repoRoot = Directory.current;
@@ -30,12 +37,13 @@ void main() {
       repoRoot.path + Platform.pathSeparator,
       '',
     );
-    if (_allowlistPaths.any(relativePath.startsWith)) continue;
+    final normalizedPath = relativePath.replaceAll('\\', '/');
+    if (_allowlistPaths.any(normalizedPath.startsWith)) continue;
 
     final content = file.readAsStringSync();
     _forbiddenPatterns.forEach((label, pattern) {
       if (pattern.hasMatch(content)) {
-        violations.add('$relativePath => $label');
+        violations.add('$normalizedPath => $label');
       }
     });
   }

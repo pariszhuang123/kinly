@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/router/navigation_intents.dart';
 import '../../../core/theme/kinly_theme.dart'; // <- link colors extension
+import '../../../core/theme/spacing.dart';
 import '../../../generated/l10n.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/widgets/auth_error_listener.dart';
@@ -41,6 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
     final busy = context.select((AuthBloc bloc) => bloc.state.isLoading);
     final supportsApple = Platform.isIOS;
     final linkColors = theme.extension<KinlyLinkColors>()!;
@@ -71,7 +73,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         child: Scaffold(
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: EdgeInsetsDirectional.all(spacing.xl),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

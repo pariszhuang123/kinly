@@ -123,7 +123,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
           ),
           body: SafeArea(
             child: Padding(
-              padding: EdgeInsets.all(spacing?.lg ?? 16),
+              padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
               child:
                   state.isLoading
                       ? const Center(child: KinlyLoader(size: 40))
@@ -493,11 +493,13 @@ class _AvatarChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final spacing = theme.extension<Spacing>();
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(2),
+        padding: EdgeInsetsDirectional.all(spacing?.xxs ?? 2),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(

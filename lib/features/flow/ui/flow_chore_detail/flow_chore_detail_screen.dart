@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../generated/l10n.dart';
+import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../bloc/flow_chore_detail_bloc.dart';
 import '../../domain/flow_chore_outcome.dart';
 import 'widgets/flow_chore_detail_view.dart';
@@ -39,9 +40,7 @@ class FlowChoreDetailScreen extends StatelessWidget {
                   state.completionErrorMessage ??
                   S.of(context).flowChoreDetailCompletionError;
 
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(message)));
+              KinlySnackBar.showError(context, message);
             }
           },
           builder: (context, state) {

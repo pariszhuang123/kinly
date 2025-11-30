@@ -6,6 +6,8 @@ import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/kinly_loader.dart';
+import '../../../../core/ui/dialogs/kinly_dialogs.dart';
+import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
 import '../../domain/share_create_form.dart';
@@ -102,16 +104,12 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
 
         if (state.submissionErrorTick > 0) {
           final snackText = _mapSubmissionError(context, state);
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(snackText)));
+          KinlySnackBar.showError(context, snackText);
         }
 
         if (state.deletionErrorTick > 0) {
           final message = state.deletionErrorMessage ?? s.shareEditDeleteError;
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(message)));
+          KinlySnackBar.showError(context, message);
         }
       },
       builder: (context, state) {
@@ -128,7 +126,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
           ),
           body: SafeArea(
             child: Padding(
-              padding: EdgeInsets.all(spacing.lg),
+              padding: EdgeInsetsDirectional.all(spacing.lg),
               child:
                   state.isLoading
                       ? const Center(child: KinlyLoader(size: 40))
@@ -187,24 +185,13 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
     final bloc = context.read<ShareCreateBloc>();
     final s = S.of(context);
 
-    final shouldDelete = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(s.shareEditDeleteConfirmTitle),
-          content: Text(s.shareEditDeleteConfirmMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(s.shareEditDeleteCancel),
-            ),
-            KinlyFilledButton.destructiveText(
-              onPressed: () => Navigator.of(context).pop(true),
-              label: s.shareEditDeleteConfirm,
-            ),
-          ],
-        );
-      },
+    final shouldDelete = await showKinlyConfirmDialog(
+      context,
+      title: s.shareEditDeleteConfirmTitle,
+      message: s.shareEditDeleteConfirmMessage,
+      confirmLabel: s.shareEditDeleteConfirm,
+      cancelLabel: s.shareEditDeleteCancel,
+      destructive: true,
     );
 
     if (shouldDelete == true && mounted) {

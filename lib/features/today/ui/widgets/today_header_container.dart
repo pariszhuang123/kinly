@@ -9,6 +9,7 @@ import '../../../auth/bloc/auth_bloc.dart';
 import '../../../profile_settings/ui/profile_settings_provider.dart';
 import '../../../../../core/router/app_router.dart';
 import '../../../../../generated/l10n.dart';
+import '../../../../../core/ui/snackbars/kinly_snackbar.dart';
 
 class TodayHeaderContainer extends StatelessWidget {
   final String partOfDay;
@@ -39,10 +40,7 @@ class TodayHeaderContainer extends StatelessWidget {
     final authBloc = context.read<AuthBloc>();
     final membership = authBloc.state.membership;
     if (membership == null) {
-      final messenger = ScaffoldMessenger.of(context);
-      messenger.showSnackBar(
-        SnackBar(content: Text(S.of(context).profileMissingHomeError)),
-      );
+      KinlySnackBar.showError(context, S.of(context).profileMissingHomeError);
       return;
     }
 

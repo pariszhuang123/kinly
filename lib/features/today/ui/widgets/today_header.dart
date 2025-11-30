@@ -59,7 +59,7 @@ class TodayHeader extends StatelessWidget {
             onTap: onAvatarTap,
             borderRadius: BorderRadius.circular(32),
             child: Padding(
-              padding: EdgeInsets.all(spacing.xs / 2),
+              padding: EdgeInsetsDirectional.all(spacing.xs / 2),
               child: KinlyCircleAvatar(
                 avatarUrl: profile?.avatarUrl,
                 radius: 30,

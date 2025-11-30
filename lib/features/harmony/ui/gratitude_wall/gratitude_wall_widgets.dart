@@ -29,7 +29,7 @@ class GratitudeWallRow extends StatelessWidget {
 
     final content = Expanded(
       child: Container(
-        padding: EdgeInsets.all(spacing.lg),
+        padding: EdgeInsetsDirectional.all(spacing.lg),
         decoration: BoxDecoration(
           color: Color.alphaBlend(
             accentBg,

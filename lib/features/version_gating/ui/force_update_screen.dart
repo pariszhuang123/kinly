@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
 import '../../splash/ui/widgets/kinly_logo.dart';
@@ -17,12 +18,13 @@ class ForceUpdateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final strings = S.of(context);
     final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
     final state = context.watch<AppVersionCubit>().state;
     return Scaffold(
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsetsDirectional.all(spacing.xl),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -45,7 +47,7 @@ class ForceUpdateScreen extends StatelessWidget {
                 if (state.notes?.isNotEmpty == true) ...[
                   const SizedBox(height: 24),
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsetsDirectional.all(spacing.lg),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(16),

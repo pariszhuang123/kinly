@@ -10,6 +10,8 @@ import '../../../../generated/l10n.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/buttons/kinly_fab.dart';
+import '../../../../core/ui/snackbars/kinly_snackbar.dart';
+import '../../../../core/ui/kinly_bottom_sheet.dart';
 import '../domain/models.dart';
 import '../bloc/today_bloc.dart';
 import 'widgets/today_header_container.dart';
@@ -269,9 +271,7 @@ class TodayScreen extends StatelessWidget {
     context.read<TodayBloc>().add(const TodayRefreshed());
     if (result == true) {
       final s = S.of(context);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareCreateSuccess)));
+      KinlySnackBar.showSuccess(context, s.shareCreateSuccess);
     }
   }
 
@@ -291,9 +291,7 @@ class TodayScreen extends StatelessWidget {
     );
     if (result == true && context.mounted) {
       final s = S.of(context);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareOwedDetailSuccess)));
+      KinlySnackBar.showSuccess(context, s.shareOwedDetailSuccess);
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
   }
@@ -309,14 +307,10 @@ class TodayScreen extends StatelessWidget {
     if (!context.mounted) return;
     final s = S.of(context);
     if (result == true || result == ShareEditOutcome.updated) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareEditSuccess)));
+      KinlySnackBar.showSuccess(context, s.shareEditSuccess);
       context.read<TodayBloc>().add(const TodayRefreshed());
     } else if (result == ShareEditOutcome.deleted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(s.shareEditDeleteSuccess)));
+      KinlySnackBar.showSuccess(context, s.shareEditDeleteSuccess);
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
   }
@@ -336,23 +330,23 @@ class TodayScreen extends StatelessWidget {
   }
 
   Future<void> _openHarmonySheet(BuildContext context) {
-    return showModalBottomSheet(
+    final s = S.of(context);
+    final media = MediaQuery.of(context);
+    return KinlyBottomSheet.show(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
       isDismissible: false,
       enableDrag: false,
-      backgroundColor: Colors.transparent,
-      builder: (_) {
-        final sheet = ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          child: HarmonyProvider(
-            homeId: homeId,
-            moodRepository: sl<MoodRepository>(),
-          ),
-        );
-        return FractionallySizedBox(heightFactor: 0.92, child: sheet);
-      },
+      title: s.harmonyTitle,
+      subtitle: s.harmonySubtext,
+      body: SizedBox(
+        height: media.size.height * 0.82,
+        child: HarmonyProvider(
+          homeId: homeId,
+          moodRepository: sl<MoodRepository>(),
+        ),
+      ),
     );
   }
 }

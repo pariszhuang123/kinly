@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/kinly_sections.dart';
+import '../../../../core/theme/radius.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../../core/ui/kinly_list_tile.dart';
+import '../../../../core/ui/kinly_empty_state.dart';
+import '../../../../core/ui/feedback/kinly_info_banner.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
 
@@ -75,15 +79,17 @@ class _ShareCreatedList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = Theme.of(context).extension<Spacing>();
+    final gap = spacing?.md ?? 12.0;
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: entries.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, __) => SizedBox(height: gap),
         itemBuilder: (context, index) {
           final entry = entries[index];
-          return _ShareCreatedCard(
+          return _ShareCreatedTile(
             entry: entry,
             shareColors: shareColors,
             onTap: () => onEntryTap(entry),
@@ -94,8 +100,8 @@ class _ShareCreatedList extends StatelessWidget {
   }
 }
 
-class _ShareCreatedCard extends StatelessWidget {
-  const _ShareCreatedCard({
+class _ShareCreatedTile extends StatelessWidget {
+  const _ShareCreatedTile({
     required this.entry,
     required this.shareColors,
     this.onTap,
@@ -141,79 +147,59 @@ class _ShareCreatedCard extends StatelessWidget {
       );
     }
 
-    return Material(
-      color: theme.colorScheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(20),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: EdgeInsets.all(spacing?.lg ?? 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        KinlyListTile(
+          title: entry.description,
+          subtitle:
+              entry.isActive
+                  ? progressLabel
+                  : s.shareCreatedListDraftSubtitle,
+          trailing: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      entry.description,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                  ),
-                  if (badge != null) badge,
-                ],
-              ),
-              SizedBox(height: spacing?.xs ?? 6),
+              if (badge != null) ...[
+                badge,
+                SizedBox(height: spacing?.xs ?? 6),
+              ],
               Text(
                 amountLabel,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: shareColors?.icon ?? theme.colorScheme.onSurface,
                 ),
               ),
-              SizedBox(height: spacing?.sm ?? 8),
-              if (entry.isActive) ...[
-                Text(
-                  progressLabel,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                SizedBox(height: spacing?.xs ?? 6),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: LinearProgressIndicator(
-                    value:
-                        entry.totalShares == 0
-                            ? 0
-                            : entry.paidShares / entry.totalShares,
-                    minHeight: 8,
-                    backgroundColor:
-                        shareColors?.card ??
-                        theme.colorScheme.surfaceContainerHighest,
-                    valueColor: AlwaysStoppedAnimation(
-                      shareColors?.accent ?? theme.colorScheme.primary,
-                    ),
-                  ),
-                ),
-                SizedBox(height: spacing?.xs ?? 6),
-                Text(
-                  amountProgress,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ] else ...[
-                Text(
-                  s.shareCreatedListDraftSubtitle,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
             ],
           ),
+          onTap: onTap,
         ),
-      ),
+        if (entry.isActive) ...[
+          SizedBox(height: spacing?.xs ?? 6),
+          LinearProgressIndicator(
+            value:
+                entry.totalShares == 0
+                    ? 0
+                    : entry.paidShares / entry.totalShares,
+            minHeight: 8,
+            backgroundColor:
+                shareColors?.card ??
+                theme.colorScheme.surfaceContainerHighest,
+            valueColor: AlwaysStoppedAnimation(
+              shareColors?.accent ?? theme.colorScheme.primary,
+            ),
+          ),
+          SizedBox(height: spacing?.xs ?? 6),
+          Text(
+            amountProgress,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: shareColors?.icon.withValues(alpha: 0.7) ??
+                  theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
@@ -231,33 +217,13 @@ class _ShareCreatedListEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final s = S.of(context);
 
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(title, style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text(
-              subtitle,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 16),
-          KinlyFilledButton.text(
-            fullWidth: true,
-            onPressed: onCreateTap,
-            label: s.shareCreateSubmit,
-          ),
-        ],
-      ),
+    return KinlyEmptyState(
+      title: title,
+      body: subtitle,
+      ctaLabel: s.shareCreateSubmit,
+      onCtaTap: onCreateTap,
     );
   }
 }
@@ -271,20 +237,18 @@ class _ShareCreatedListError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>();
     final s = S.of(context);
 
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            message,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.error,
-            ),
-            textAlign: TextAlign.center,
+          KinlyInfoBanner(
+            message: message,
+            type: KinlyBannerType.error,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: spacing?.md ?? 16),
           KinlyFilledButton.text(
             fullWidth: true,
             onPressed: onRetry,
@@ -309,11 +273,16 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = Theme.of(context).extension<Spacing>();
+    final corners = Theme.of(context).extension<Corners>();
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsetsDirectional.symmetric(
+        horizontal: spacing?.md ?? 12,
+        vertical: spacing?.xs ?? 6,
+      ),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(corners?.large ?? 16),
       ),
       child: Text(
         label,

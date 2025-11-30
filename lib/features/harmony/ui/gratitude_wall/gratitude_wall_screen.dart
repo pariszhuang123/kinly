@@ -39,7 +39,7 @@ class GratitudeWallScreen extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: width),
                 child: Padding(
-                  padding: EdgeInsets.all(spacing.lg),
+                  padding: EdgeInsetsDirectional.all(spacing.lg),
                   child: GratitudeWallContent(maxHeight: constraints.maxHeight),
                 ),
               ),

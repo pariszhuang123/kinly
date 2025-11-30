@@ -3,6 +3,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../generated/l10n.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/snackbars/kinly_snackbar.dart';
 
 class InfoHubWebViewScreen extends StatefulWidget {
   const InfoHubWebViewScreen({super.key});
@@ -34,11 +35,9 @@ class _InfoHubWebViewScreenState extends State<InfoHubWebViewScreen> {
               },
               onWebResourceError: (error) {
                 if (!mounted) return;
-                final messenger = ScaffoldMessenger.of(context);
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(S.of(context).profileInfoHubLoadError),
-                  ),
+                KinlySnackBar.showError(
+                  context,
+                  S.of(context).profileInfoHubLoadError,
                 );
               },
             ),

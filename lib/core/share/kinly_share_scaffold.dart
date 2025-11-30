@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'snapshot_share_surface.dart';
 import '../theme/spacing.dart';
 import '../../generated/l10n.dart';
+import '../ui/snackbars/kinly_snackbar.dart';
+import '../ui/buttons/kinly_fab.dart';
 
 /// A reusable Kinly-standard scaffold for any shareable screen.
 ///
@@ -62,9 +64,7 @@ class KinlyShareScaffold extends StatelessWidget {
       messageBuilder: messageBuilder,
       onShareError: (ctx) {
         final s = S.of(ctx);
-        ScaffoldMessenger.of(
-          ctx,
-        ).showSnackBar(SnackBar(content: Text(s.gratitudeWallShareError)));
+        KinlySnackBar.showError(ctx, s.gratitudeWallShareError);
       },
       // This builds only the captured content.
       capturedChildBuilder: childBuilder,
@@ -82,18 +82,18 @@ class KinlyShareScaffold extends StatelessWidget {
 
           body: SafeArea(
             child: Padding(
-              padding: EdgeInsets.all(spacing.lg),
+              padding: EdgeInsetsDirectional.all(spacing.lg),
               child: capturedChild,
             ),
           ),
 
           floatingActionButton: IgnorePointer(
             ignoring: isSharing,
-            child: FloatingActionButton.extended(
+            child: KinlyFab(
               heroTag: '${fileNamePrefix}_fab',
+              tooltip: s.gratitudeWallShareCta,
+              icon: Icons.ios_share_rounded,
               onPressed: onShare,
-              label: Text(s.gratitudeWallShareCta),
-              icon: const Icon(Icons.ios_share_rounded),
             ),
           ),
         );

@@ -9,6 +9,7 @@ import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
+import '../../../core/ui/inputs/kinly_text_field.dart';
 import '../../../core/profile/models.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
@@ -48,7 +49,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
       appBar: AppBar(title: Text(s.profileIdentityTitle)),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(spacing.lg),
+          padding: EdgeInsetsDirectional.all(spacing.lg),
           child: MultiBlocListener(
             listeners: [
               BlocListener<ProfileIdentityBloc, ProfileIdentityState>(
@@ -105,13 +106,11 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                               ),
                             ),
                             SizedBox(height: spacing.lg),
-                            TextField(
+                            KinlyTextField(
                               controller: _controller,
-                              decoration: InputDecoration(
-                                labelText: s.profileIdentityUsernameLabel,
-                                hintText: s.profileIdentityUsernameHint,
-                                errorText: _mapUsernameError(state, s),
-                              ),
+                              labelText: s.profileIdentityUsernameLabel,
+                              hintText: s.profileIdentityUsernameHint,
+                              errorText: _mapUsernameError(state, s),
                               autocorrect: false,
                               textInputAction: TextInputAction.done,
                               inputFormatters: [
@@ -318,6 +317,7 @@ class _AvatarOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
     final borderColor =
         isSelected
             ? theme.colorScheme.primary
@@ -330,7 +330,7 @@ class _AvatarOption extends StatelessWidget {
         child: Container(
           width: 72,
           height: 72,
-          padding: const EdgeInsets.all(6),
+          padding: EdgeInsetsDirectional.all(spacing.xs),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: borderColor, width: isSelected ? 2 : 1),

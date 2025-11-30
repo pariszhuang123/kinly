@@ -48,13 +48,15 @@ class ShareEditProvider extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(title: Text(s.shareEditTitle)),
             body: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text(message, textAlign: TextAlign.center),
-                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsetsDirectional.symmetric(
+                          horizontal: 24,
+                        ),
+                        child: Text(message, textAlign: TextAlign.center),
+                      ),
                   const SizedBox(height: 16),
                   KinlyFilledButton.text(
                     fullWidth: true,

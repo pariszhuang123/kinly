@@ -43,7 +43,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                     : s.friendDefaultName;
 
             return ListView(
-              padding: EdgeInsets.all(spacing.lg),
+              padding: EdgeInsetsDirectional.all(spacing.lg),
               children: [
                 KinlyProfileHeader(
                   displayName: displayName,
@@ -323,17 +323,17 @@ class ProfileSettingsScreen extends StatelessWidget {
   ) {
     final s = S.of(context);
 
-    return showModalBottomSheet<String>(
+    return KinlyBottomSheet.show<String>(
       context: context,
       isScrollControlled: true,
-      builder: (sheetContext) {
-        final theme = Theme.of(sheetContext);
-        final spacing = theme.extension<Spacing>()!;
+      title: s.profileLeaveTransferSheetTitle,
+      subtitle: s.profileLeaveTransferSheetSubtitle,
+      body: Builder(
+        builder: (sheetContext) {
+          final theme = Theme.of(sheetContext);
+          final spacing = theme.extension<Spacing>()!;
 
-        return KinlyBottomSheet(
-          title: s.profileLeaveTransferSheetTitle,
-          subtitle: s.profileLeaveTransferSheetSubtitle,
-          body: Wrap(
+          return Wrap(
             spacing: spacing.md,
             runSpacing: spacing.md,
             alignment: WrapAlignment.center,
@@ -351,9 +351,9 @@ class ProfileSettingsScreen extends StatelessWidget {
                     onTap: () => Navigator.of(sheetContext).pop(member.userId),
                   );
                 }).toList(),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -363,64 +363,69 @@ class ProfileSettingsScreen extends StatelessWidget {
   ) {
     final s = S.of(context);
 
-    return showModalBottomSheet<String>(
+    return KinlyBottomSheet.show<String>(
       context: context,
       isScrollControlled: true,
-      builder: (sheetContext) {
-        final theme = Theme.of(sheetContext);
-        final spacing = theme.extension<Spacing>()!;
+      title: s.profileKickSheetTitle,
+      subtitle: s.profileKickSheetSubtitle,
+      body: Builder(
+        builder: (sheetContext) {
+          final theme = Theme.of(sheetContext);
+          final spacing = theme.extension<Spacing>()!;
 
-        String? selectedUserId;
+          String? selectedUserId;
 
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return KinlyBottomSheet(
-              title: s.profileKickSheetTitle,
-              subtitle: s.profileKickSheetSubtitle,
-              body: Wrap(
-                spacing: spacing.md,
-                runSpacing: spacing.md,
-                alignment: WrapAlignment.center,
-                children:
-                    members.map((member) {
-                      final displayName =
-                          member.username.isNotEmpty
-                              ? member.username
-                              : s.friendDefaultName;
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Wrap(
+                    spacing: spacing.md,
+                    runSpacing: spacing.md,
+                    alignment: WrapAlignment.center,
+                    children:
+                        members.map((member) {
+                          final displayName =
+                              member.username.isNotEmpty
+                                  ? member.username
+                                  : s.friendDefaultName;
 
-                      return KinlyMemberAvatarChip(
-                        displayName: displayName,
-                        avatarUrl: member.avatarUrl,
-                        isOwner: member.isOwner,
-                        isSelected: selectedUserId == member.userId,
-                        onTap:
-                            () =>
-                                setState(() => selectedUserId = member.userId),
-                      );
-                    }).toList(),
-              ),
-              footer: [
-                KinlyFilledButton.destructiveText(
-                  onPressed:
-                      selectedUserId == null
-                          ? null
-                          : () =>
-                              Navigator.of(sheetContext).pop(selectedUserId),
-                  label: s.profileKickActionConfirm,
-                  fullWidth: true,
-                ),
-                SizedBox(height: spacing.sm),
-                KinlyOutlinedButton.text(
-                  fullWidth: true,
-                  compact: true,
-                  onPressed: () => Navigator.of(sheetContext).pop(),
-                  label: s.profileActionCancel,
-                ),
-              ],
-            );
-          },
-        );
-      },
+                          return KinlyMemberAvatarChip(
+                            displayName: displayName,
+                            avatarUrl: member.avatarUrl,
+                            isOwner: member.isOwner,
+                            isSelected: selectedUserId == member.userId,
+                            onTap:
+                                () => setState(
+                                  () => selectedUserId = member.userId,
+                                ),
+                          );
+                        }).toList(),
+                  ),
+                  SizedBox(height: spacing.xl),
+                  KinlyFilledButton.destructiveText(
+                    onPressed:
+                        selectedUserId == null
+                            ? null
+                            : () =>
+                                Navigator.of(sheetContext).pop(selectedUserId),
+                    label: s.profileKickActionConfirm,
+                    fullWidth: true,
+                  ),
+                  SizedBox(height: spacing.sm),
+                  KinlyOutlinedButton.text(
+                    fullWidth: true,
+                    compact: true,
+                    onPressed: () => Navigator.of(sheetContext).pop(),
+                    label: s.profileActionCancel,
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 

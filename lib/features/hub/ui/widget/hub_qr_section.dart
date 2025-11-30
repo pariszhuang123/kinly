@@ -34,7 +34,7 @@ class HubQrSection extends StatelessWidget {
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(20),
       ),
-      padding: EdgeInsets.all(spacing.md),
+      padding: EdgeInsetsDirectional.all(spacing.md),
       child: Row(
         children: [
           GestureDetector(
@@ -44,7 +44,7 @@ class HubQrSection extends StatelessWidget {
                 color: colorScheme.surface,
                 borderRadius: BorderRadius.circular(1),
               ),
-              padding: EdgeInsets.all(spacing.xs),
+              padding: EdgeInsetsDirectional.all(spacing.xs),
               child: HubQrCode(
                 data: appLink,
                 isDark: isDark,

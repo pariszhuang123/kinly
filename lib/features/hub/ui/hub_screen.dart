@@ -13,6 +13,7 @@ import '../../../core/ui/home_bottom_nav.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/kinly_selection_card.dart';
+import '../../../core/ui/kinly_bottom_sheet.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 
@@ -59,7 +60,7 @@ class HubScreen extends StatelessWidget {
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: width),
                   child: Padding(
-                    padding: EdgeInsets.all(spacing.lg),
+                    padding: EdgeInsetsDirectional.all(spacing.lg),
                     child: BlocBuilder<HubBloc, HubState>(
                       builder: (context, state) {
                         if (state.isLoading && !state.isRefreshing) {
@@ -208,9 +209,7 @@ class HubScreen extends StatelessWidget {
     await Clipboard.setData(ClipboardData(text: state.inviteCode));
     if (!context.mounted) return;
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(s.hubCodeCopied)));
+    KinlySnackBar.showSuccess(context, s.hubCodeCopied);
   }
 
   Future<void> _rotateInvite(BuildContext context) async {
@@ -240,57 +239,42 @@ class HubScreen extends StatelessWidget {
         state.appLink.isNotEmpty ? state.appLink : 'https://kinly.app';
     final isDark = theme.brightness == Brightness.dark;
 
-    showModalBottomSheet<void>(
+    KinlyBottomSheet.show<void>(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      title: s.hubQrTitle,
+      subtitle: s.hubQrSubtitle,
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: EdgeInsetsDirectional.all(spacing.lg),
+            child: HubQrCode(
+              data: appLink,
+              isDark: isDark,
+              backgroundColor: colorScheme.surfaceContainerHighest,
+            ),
+          ),
+          SizedBox(height: spacing.md),
+          Text(
+            s.hubQrSubtitle,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: spacing.lg),
+          KinlyFilledButton.icon(
+            onPressed: () => _shareAppLink(context, state),
+            icon: Icons.ios_share_rounded,
+            label: s.hubShareAppCta,
+            fullWidth: true,
+          ),
+        ],
       ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(
-            spacing.lg,
-            spacing.lg,
-            spacing.lg,
-            spacing.lg + MediaQuery.of(context).viewPadding.bottom,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(s.hubQrTitle, style: theme.textTheme.titleMedium),
-              SizedBox(height: spacing.md),
-              Container(
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                padding: EdgeInsets.all(spacing.lg),
-                child: HubQrCode(
-                  data: appLink,
-                  isDark: isDark,
-                  backgroundColor: colorScheme.surfaceContainerHighest,
-                ),
-              ),
-              SizedBox(height: spacing.md),
-              Text(
-                s.hubQrSubtitle,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: spacing.lg),
-              KinlyFilledButton.icon(
-                onPressed: () => _shareAppLink(context, state),
-                icon: Icons.ios_share_rounded,
-                label: s.hubShareAppCta,
-                fullWidth: true,
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

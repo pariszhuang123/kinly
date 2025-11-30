@@ -20,6 +20,33 @@ class KinlyBottomSheet extends StatelessWidget {
   final Widget body;
   final List<Widget> footer;
 
+  static Future<T?> show<T>({
+    required BuildContext context,
+    required String title,
+    String? subtitle,
+    required Widget body,
+    List<Widget> footer = const [],
+    bool isScrollControlled = true,
+    bool useRootNavigator = false,
+    bool isDismissible = true,
+    bool enableDrag = true,
+  }) {
+    return showModalBottomSheet<T>(
+      context: context,
+      isScrollControlled: isScrollControlled,
+      useRootNavigator: useRootNavigator,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      backgroundColor: Colors.transparent,
+      builder: (_) => KinlyBottomSheet(
+        title: title,
+        subtitle: subtitle,
+        body: body,
+        footer: footer,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

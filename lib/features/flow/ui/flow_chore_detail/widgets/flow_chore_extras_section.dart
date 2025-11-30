@@ -40,7 +40,7 @@ class FlowChoreExtrasSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(spacing?.md ?? 16),
+      padding: EdgeInsetsDirectional.all(spacing?.md ?? 16),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(12),
@@ -95,6 +95,7 @@ class _FlowDetailSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final spacing = theme.extension<Spacing>();
     final isLink = onTap != null;
 
     final linkColor = isLink ? linkColors.link : null;
@@ -125,7 +126,7 @@ class _FlowDetailSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsetsDirectional.all(spacing?.md ?? 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: colorScheme.surface,
@@ -139,7 +140,7 @@ class _FlowDetailSection extends StatelessWidget {
               color: colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: spacing?.xs ?? 4),
           bodyContent,
         ],
       ),

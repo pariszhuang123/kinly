@@ -87,7 +87,7 @@ class _JoinFormState extends State<_JoinForm> {
         }
       },
       child: Padding(
-        padding: EdgeInsets.all(
+        padding: EdgeInsetsDirectional.all(
           Theme.of(context).extension<Spacing>()?.lg ?? 16,
         ),
         child: BlocBuilder<JoinHomeBloc, JoinHomeState>(

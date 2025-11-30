@@ -6,6 +6,7 @@ import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../../core/ui/kinly_loader.dart';
 import '../../../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../../../core/ui/inputs/kinly_text_field.dart';
 import '../../../../../generated/l10n.dart';
 import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
@@ -145,16 +146,14 @@ class _DescriptionField extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
 
-    return TextField(
+    return KinlyTextField(
       controller: controller,
-      decoration: InputDecoration(
-        labelText: s.shareCreateDescriptionLabel,
-        hintText: s.shareCreateDescriptionHint,
-        errorText:
-            showValidation && !state.form.hasValidDescription
-                ? s.shareCreateValidationDescription
-                : null,
-      ),
+      labelText: s.shareCreateDescriptionLabel,
+      hintText: s.shareCreateDescriptionHint,
+      errorText:
+          showValidation && !state.form.hasValidDescription
+              ? s.shareCreateValidationDescription
+              : null,
       onChanged:
           (value) => context.read<ShareCreateBloc>().add(
             ShareCreateDescriptionChanged(value),
@@ -180,20 +179,18 @@ class _AmountField extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
 
-    return TextField(
+    return KinlyTextField(
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       enabled: !locked,
-      decoration: InputDecoration(
-        labelText: s.shareCreateAmountLabel,
-        hintText: s.shareCreateAmountHint,
-        errorText:
-            showValidation &&
-                    (state.form.amountCents == null ||
-                        state.form.amountCents! <= 0)
-                ? s.shareCreateValidationAmount
-                : null,
-      ),
+      labelText: s.shareCreateAmountLabel,
+      hintText: s.shareCreateAmountHint,
+      errorText:
+          showValidation &&
+                  (state.form.amountCents == null ||
+                      state.form.amountCents! <= 0)
+              ? s.shareCreateValidationAmount
+              : null,
       onChanged:
           (value) => context.read<ShareCreateBloc>().add(
             ShareCreateAmountChanged(value),
@@ -288,14 +285,12 @@ class _NotesField extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
 
-    return TextField(
+    return KinlyTextField(
       controller: controller,
       minLines: 3,
       maxLines: 4,
-      decoration: InputDecoration(
-        labelText: s.shareCreateNotesLabel,
-        hintText: s.shareCreateNotesHint,
-      ),
+      labelText: s.shareCreateNotesLabel,
+      hintText: s.shareCreateNotesHint,
       onChanged:
           (value) => context.read<ShareCreateBloc>().add(
             ShareCreateNotesChanged(value),
@@ -544,7 +539,7 @@ class _CustomSplitRow extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.only(bottom: spacing.sm),
-      padding: EdgeInsets.all(spacing.sm),
+      padding: EdgeInsetsDirectional.all(spacing.sm),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: theme.colorScheme.surfaceContainerHighest,
@@ -570,15 +565,13 @@ class _CustomSplitRow extends StatelessWidget {
           ),
           SizedBox(
             width: 110,
-            child: TextField(
+            child: KinlyTextField(
               controller: controller,
               enabled: enabled,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              decoration: InputDecoration(
-                labelText: s.shareCreateCustomAmountLabel,
-              ),
+              labelText: s.shareCreateCustomAmountLabel,
               onChanged: onAmountChanged,
             ),
           ),

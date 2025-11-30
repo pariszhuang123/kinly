@@ -45,7 +45,7 @@ class NpsScreen extends StatelessWidget {
           child: Scaffold(
             body: SafeArea(
               child: Padding(
-                padding: EdgeInsets.all(spacing.lg),
+                padding: EdgeInsetsDirectional.all(spacing.lg),
                 child: BlocBuilder<NpsCubit, NpsState>(
                   builder: (context, state) {
                     return Stack(

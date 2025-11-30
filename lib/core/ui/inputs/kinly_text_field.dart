@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../theme/color_tokens.dart';
 import '../../theme/radius.dart';
@@ -24,6 +25,8 @@ class KinlyTextField extends StatelessWidget {
     this.enabled = true,
     this.errorText,
     this.obscureText = false,
+    this.inputFormatters,
+    this.autocorrect = true,
   });
 
   final TextEditingController? controller;
@@ -40,6 +43,8 @@ class KinlyTextField extends StatelessWidget {
   final bool enabled;
   final String? errorText;
   final bool obscureText;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool autocorrect;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +69,8 @@ class KinlyTextField extends StatelessWidget {
       onChanged: onChanged,
       enabled: enabled,
       obscureText: obscureText,
+      inputFormatters: inputFormatters,
+      autocorrect: autocorrect,
       style: type?.bodyMedium ?? theme.textTheme.bodyMedium,
       decoration: InputDecoration(
         labelText: labelText,

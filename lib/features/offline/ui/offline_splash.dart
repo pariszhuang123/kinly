@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../generated/l10n.dart';
 import '../../splash/ui/widgets/kinly_logo.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../core/theme/spacing.dart';
 
 class OfflineSplash extends StatelessWidget {
   const OfflineSplash({super.key, required this.onRetry});
@@ -15,12 +16,23 @@ class OfflineSplash extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final spacing = theme.extension<Spacing>() ??
+        const Spacing(
+          xxs: 2,
+          xs: 4,
+          s: 8,
+          m: 12,
+          l: 16,
+          xl: 24,
+          xxl: 32,
+          xxxl: 40,
+        );
 
     return Scaffold(
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsetsDirectional.all(spacing.xl),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,

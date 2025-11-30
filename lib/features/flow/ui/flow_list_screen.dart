@@ -43,7 +43,7 @@ class FlowListScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(spacing?.lg ?? 16),
+          padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
           child: BlocBuilder<FlowListBloc, FlowListState>(
             builder: (context, state) {
               switch (state.status) {
@@ -192,7 +192,7 @@ class _FlowListTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: Padding(
-          padding: EdgeInsets.all(spacing?.lg ?? 16),
+          padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -262,10 +262,14 @@ class _AssigneeAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>();
 
     if (entry.assigneeUserId == null) {
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: EdgeInsetsDirectional.symmetric(
+          horizontal: spacing?.m ?? 12,
+          vertical: spacing?.s ?? 8,
+        ),
         decoration: BoxDecoration(
           color: (flowColors?.accent ?? theme.colorScheme.primary).withValues(
             alpha: 0.2,

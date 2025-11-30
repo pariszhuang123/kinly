@@ -66,7 +66,7 @@ class FlowChoreDetailView extends StatelessWidget {
     final recurrenceLabel = _recurrenceLabel(context, chore.recurrence);
 
     return Padding(
-      padding: EdgeInsets.all(spacing?.lg ?? 16),
+      padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
       child: Column(
         children: [
           Expanded(

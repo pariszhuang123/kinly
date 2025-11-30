@@ -8,6 +8,7 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_fab.dart';
+import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
 import '../share_edit_outcome.dart';
@@ -37,7 +38,7 @@ class ShareCreatedListScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(spacing?.lg ?? 16),
+          padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
           child: BlocBuilder<ShareCreatedListBloc, ShareCreatedListState>(
             builder: (context, state) {
               return ShareCreatedListView(
@@ -76,9 +77,10 @@ class ShareCreatedListScreen extends StatelessWidget {
   }
 
   Future<void> _openShareCreate(BuildContext context) async {
+    final s = S.of(context);
     final result = await context.push<bool>(AppRoutes.shareCreate);
     if (result == true && context.mounted) {
-      ScaffoldMessenger.of(context);
+      KinlySnackBar.showSuccess(context, s.shareCreateSuccess);
       _refreshList(context);
     }
   }
@@ -87,6 +89,7 @@ class ShareCreatedListScreen extends StatelessWidget {
     BuildContext context,
     ShareCreatedListEntry entry,
   ) async {
+    final s = S.of(context);
     final result = await context.push(
       AppRoutes.shareDraftEditPath(entry.expenseId),
       extra: const ShareEditRouteArgs(allowDelete: true),
@@ -95,10 +98,10 @@ class ShareCreatedListScreen extends StatelessWidget {
     if (!context.mounted || result == null) return;
 
     if (result == true || result == ShareEditOutcome.updated) {
-      ScaffoldMessenger.of(context);
+      KinlySnackBar.showSuccess(context, s.shareEditSuccess);
       _refreshList(context);
     } else if (result == ShareEditOutcome.deleted) {
-      ScaffoldMessenger.of(context);
+      KinlySnackBar.showSuccess(context, s.shareEditDeleteSuccess);
       _refreshList(context);
     }
   }

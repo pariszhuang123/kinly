@@ -7,10 +7,17 @@ import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/kinly_loader.dart';
+import '../../../../core/ui/kinly_tab_bar.dart';
+import '../../../../core/ui/kinly_list_tile.dart';
+import '../../../../core/ui/kinly_empty_state.dart';
+import '../../../../core/ui/feedback/kinly_info_banner.dart';
+import '../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../core/ui/section_container.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/today_bloc.dart';
 import '../../domain/models.dart';
+
+enum _ShareTabType { active, drafts }
 
 class TodayShareSectionContainer extends StatelessWidget {
   const TodayShareSectionContainer({
@@ -53,7 +60,7 @@ class TodayShareSectionContainer extends StatelessWidget {
   }
 }
 
-class TodayShareSection extends StatelessWidget {
+class TodayShareSection extends StatefulWidget {
   const TodayShareSection({
     super.key,
     required this.owed,
@@ -72,61 +79,84 @@ class TodayShareSection extends StatelessWidget {
   final String? errorMessage;
 
   @override
+  State<TodayShareSection> createState() => _TodayShareSectionState();
+}
+
+class _TodayShareSectionState extends State<TodayShareSection> {
+  late _ShareTabType _selectedTab;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTab = _defaultTab;
+  }
+
+  @override
+  void didUpdateWidget(covariant TodayShareSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final tabs = _availableTabs;
+    if (!tabs.contains(_selectedTab)) {
+      _selectedTab = _defaultTab;
+    }
+  }
+
+  _ShareTabType get _defaultTab {
+    if (widget.owed.isNotEmpty) return _ShareTabType.active;
+    return _ShareTabType.drafts;
+  }
+
+  List<_ShareTabType> get _availableTabs {
+    final tabs = <_ShareTabType>[];
+    if (widget.owed.isNotEmpty) tabs.add(_ShareTabType.active);
+    if (widget.drafts.isNotEmpty) tabs.add(_ShareTabType.drafts);
+    return tabs;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final sections = theme.extension<KinlySections>()!;
     final spacing = theme.extension<Spacing>();
     final s = S.of(context);
     final colors = sections.share;
-    final tabs = _buildTabs(s, colors);
+    final tabs = _availableTabs;
 
     if (tabs.isEmpty) {
-      return _ShareEmptyState(message: s.todayShareEmptyState);
+      return _ShareEmptyState(
+        message: s.todayShareEmptyState,
+        onSeeAllDraftsTap: widget.onSeeAllDraftsTap,
+      );
     }
 
     final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (errorMessage != null)
+        if (widget.errorMessage != null)
           Padding(
             padding: EdgeInsets.only(bottom: spacing?.sm ?? 8),
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(
-                s.todayShareError,
-                style: theme.textTheme.bodySmall?.copyWith(color: colors.icon),
-              ),
+            child: KinlyInfoBanner(
+              message: s.todayShareError,
+              type: KinlyBannerType.error,
             ),
           ),
-        if (tabs.length == 1)
-          tabs.single.builder(context)
-        else
-          DefaultTabController(
-            length: tabs.length,
-            child: Builder(
-              builder: (context) {
-                final controller = DefaultTabController.of(context);
-                return Column(
-                  children: [
-                    TabBar(
-                      controller: controller,
-                      tabs: tabs.map((tab) => Tab(text: tab.label)).toList(),
-                      labelColor: colors.icon,
-                      indicatorColor: colors.accent,
-                      unselectedLabelColor: colors.icon.withValues(alpha: 0.6),
-                    ),
-                    SizedBox(height: spacing?.sm ?? 8),
-                    AnimatedBuilder(
-                      animation: controller,
-                      builder: (context, _) {
-                        final tab = tabs[controller.index];
-                        return tab.builder(context);
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
+        if (tabs.length > 1) ...[
+          KinlyTabBar<_ShareTabType>(
+            tabs: {
+              if (widget.owed.isNotEmpty)
+                _ShareTabType.active: s.todayShareTabActive,
+              if (widget.drafts.isNotEmpty)
+                _ShareTabType.drafts: s.todayShareTabDrafts,
+            },
+            selected: _selectedTab,
+            onChanged: (tab) => setState(() => _selectedTab = tab),
           ),
+          SizedBox(height: spacing?.md ?? 12),
+        ],
+        _buildTabContent(
+          context,
+          colors: colors,
+          strings: s,
+        ),
       ],
     );
 
@@ -143,49 +173,53 @@ class TodayShareSection extends StatelessWidget {
     );
   }
 
-  List<_ShareTab> _buildTabs(S s, SectionColors colors) {
-    final tabs = <_ShareTab>[];
-    if (owed.isNotEmpty) {
-      tabs.add(
-        _ShareTab(
-          label: s.todayShareTabActive,
-          builder: (context) => _OwedList(owed: owed, onTap: onOwedTap),
-        ),
-      );
+  Widget _buildTabContent(
+    BuildContext context, {
+    required SectionColors colors,
+    required S strings,
+  }) {
+    switch (_selectedTab) {
+      case _ShareTabType.active:
+        return _OwedList(
+          owed: widget.owed,
+          onTap: widget.onOwedTap,
+          colors: colors,
+        );
+      case _ShareTabType.drafts:
+        return _DraftList(
+          drafts: widget.drafts,
+          onTap: widget.onDraftTap,
+          onSeeAllTap: widget.onSeeAllDraftsTap,
+          colors: colors,
+          strings: strings,
+        );
     }
-    if (drafts.isNotEmpty) {
-      tabs.add(
-        _ShareTab(
-          label: s.todayShareTabDrafts,
-          builder: (context) {
-            return _DraftList(
-              drafts: drafts,
-              onTap: onDraftTap,
-              onSeeAllTap: onSeeAllDraftsTap,
-              colors: colors,
-            );
-          },
-        ),
-      );
-    }
-    return tabs;
   }
 }
 
 class _OwedList extends StatelessWidget {
-  const _OwedList({required this.owed, required this.onTap});
+  const _OwedList({
+    required this.owed,
+    required this.onTap,
+    required this.colors,
+  });
 
   final List<TodayShareOwed> owed;
   final void Function(TodayShareOwed) onTap;
+  final SectionColors colors;
 
   @override
   Widget build(BuildContext context) {
     final spacing = Theme.of(context).extension<Spacing>()!;
     final s = S.of(context);
     return Column(
-      children: [
-        for (final entry in owed) ...[
-          _ShareCard(
+      children: List.generate(owed.length, (index) {
+        final entry = owed[index];
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: index == owed.length - 1 ? 0 : spacing.sm,
+          ),
+          child: KinlyListTile(
             leading: KinlyCircleAvatar(
               avatarUrl: entry.avatarUrl,
               radius: 20,
@@ -193,12 +227,17 @@ class _OwedList extends StatelessWidget {
             ),
             title: entry.displayName,
             subtitle: s.todayShareActiveSubtitle(entry.items.length),
-            amountLabel: _formatCurrency(entry.totalOwedCents),
+            trailing: Text(
+              _formatCurrency(entry.totalOwedCents),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: colors.icon,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             onTap: () => onTap(entry),
           ),
-          if (entry != owed.last) SizedBox(height: spacing.sm),
-        ],
-      ],
+        );
+      }),
     );
   }
 }
@@ -209,43 +248,46 @@ class _DraftList extends StatelessWidget {
     required this.onTap,
     required this.colors,
     this.onSeeAllTap,
+    this.strings,
   });
 
   final List<TodayShareDraft> drafts;
   final void Function(TodayShareDraft) onTap;
   final SectionColors colors;
   final VoidCallback? onSeeAllTap;
+  final S? strings;
 
   @override
   Widget build(BuildContext context) {
     final spacing = Theme.of(context).extension<Spacing>()!;
-    final s = S.of(context);
+    final s = strings ?? S.of(context);
     const maxVisible = 3;
     final visibleDrafts = drafts.take(maxVisible).toList(growable: false);
     return Column(
       children: [
-        for (final draft in visibleDrafts) ...[
-          _ShareCard(
-            title: draft.description,
-            amountLabel: _formatCurrency(draft.amountCents),
-            onTap: () => onTap(draft),
+        for (var i = 0; i < visibleDrafts.length; i++) ...[
+          KinlyListTile(
+            title: visibleDrafts[i].description,
+            trailing: Text(
+              _formatCurrency(visibleDrafts[i].amountCents),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: colors.icon,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            onTap: () => onTap(visibleDrafts[i]),
           ),
-          if (draft != visibleDrafts.last) SizedBox(height: spacing.sm),
+          if (i != visibleDrafts.length - 1) SizedBox(height: spacing.sm),
         ],
         if (onSeeAllTap != null && drafts.length > maxVisible)
           Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: EdgeInsets.only(top: spacing.sm),
             child: Align(
               alignment: Alignment.center,
-              child: TextButton(
-                onPressed: onSeeAllTap,
-                child: Text(
-                  s.todayFlowSeeAll(drafts.length),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colors.icon,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+              child: KinlyOutlinedButton.text(
+                compact: true,
+                onPressed: onSeeAllTap!,
+                label: s.todayFlowSeeAll(drafts.length),
               ),
             ),
           ),
@@ -254,82 +296,21 @@ class _DraftList extends StatelessWidget {
   }
 }
 
-class _ShareCard extends StatelessWidget {
-  const _ShareCard({
-    required this.title,
-    required this.amountLabel,
-    required this.onTap,
-    this.leading,
-    this.subtitle,
+class _ShareEmptyState extends StatelessWidget {
+  const _ShareEmptyState({
+    required this.message,
+    this.onSeeAllDraftsTap,
   });
 
-  final Widget? leading;
-  final String title;
-  final String? subtitle;
-  final String amountLabel;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Material(
-      borderRadius: BorderRadius.circular(16),
-      color: theme.colorScheme.surfaceContainerHighest,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: Row(
-            children: [
-              if (leading != null) ...[leading!, const SizedBox(width: 12)],
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    if (subtitle != null) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        subtitle!,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                amountLabel,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ShareEmptyState extends StatelessWidget {
-  const _ShareEmptyState({required this.message});
-
   final String message;
+  final VoidCallback? onSeeAllDraftsTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final sections = theme.extension<KinlySections>()!;
     final colors = sections.share;
+    final s = S.of(context);
 
     return SectionContainer(
       title: S.of(context).todayShareSectionTitle,
@@ -340,25 +321,19 @@ class _ShareEmptyState extends StatelessWidget {
         height: 32,
         colorFilter: ColorFilter.mode(colors.icon, BlendMode.srcIn),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        child: Center(
-          child: Text(
-            message,
-            style: theme.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
+      child: KinlyEmptyState(
+        title: message,
+        icon: SvgPicture.asset(
+          'assets/icons/feature/Share.svg',
+          width: 40,
+          height: 40,
+          colorFilter: ColorFilter.mode(colors.icon, BlendMode.srcIn),
         ),
+        ctaLabel: onSeeAllDraftsTap != null ? s.todayShareSeeAll : null,
+        onCtaTap: onSeeAllDraftsTap,
       ),
     );
   }
-}
-
-class _ShareTab {
-  const _ShareTab({required this.label, required this.builder});
-
-  final String label;
-  final WidgetBuilder builder;
 }
 
 String _formatCurrency(int amountCents) {

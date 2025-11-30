@@ -4,6 +4,8 @@ import '../../theme/spacing.dart';
 import '../../theme/kinly_sections.dart';
 import '../../../generated/l10n.dart';
 import 'kinly_fab.dart';
+import '../kinly_bottom_sheet.dart';
+import '../kinly_list_tile.dart';
 
 class KinlyQuickAddFab extends StatelessWidget {
   const KinlyQuickAddFab({
@@ -39,59 +41,41 @@ class KinlyQuickAddFab extends StatelessWidget {
     final flowColors = kinlySections.flow;
     final shareColors = kinlySections.share;
 
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(
-              spacing?.lg ?? 16,
-              spacing?.md ?? 12,
-              spacing?.lg ?? 16,
-              (spacing?.sm ?? 8) + MediaQuery.of(context).padding.bottom,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Header
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    s.quick_add_title, // e.g. "Quick Add"
-                    style: theme.textTheme.titleMedium,
-                  ),
-                ),
-                SizedBox(height: spacing?.md ?? 12),
-                const Divider(height: 1),
+    final bottomPadding =
+        (spacing?.sm ?? 8) + MediaQuery.of(context).padding.bottom;
 
-                _QuickAddTile(
-                  sectionColors: flowColors,
-                  leadingIcon: Icons.cleaning_services,
-                  title: s.quick_add_flow_title, // "Flow"
-                  subtitle: s.quick_add_flow_subtitle,
-                  onTap: () {
-                    Navigator.pop(context);
-                    onAddFlow();
-                  },
-                ),
-                _QuickAddTile(
-                  sectionColors: shareColors,
-                  leadingIcon: Icons.favorite,
-                  title: s.quick_add_share_title, // "Share"
-                  subtitle: s.quick_add_share_subtitle,
-                  onTap: () {
-                    Navigator.pop(context);
-                    onAddShare();
-                  },
-                ),
-              ],
+    KinlyBottomSheet.show(
+      context: context,
+      title: s.quick_add_title,
+      body: Padding(
+        padding: EdgeInsetsDirectional.only(bottom: bottomPadding),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _QuickAddTile(
+              sectionColors: flowColors,
+              leadingIcon: Icons.cleaning_services,
+              title: s.quick_add_flow_title, // "Flow"
+              subtitle: s.quick_add_flow_subtitle,
+              onTap: () {
+                Navigator.pop(context);
+                onAddFlow();
+              },
             ),
-          ),
-        );
-      },
+            SizedBox(height: spacing?.sm ?? 8),
+            _QuickAddTile(
+              sectionColors: shareColors,
+              leadingIcon: Icons.favorite,
+              title: s.quick_add_share_title, // "Share"
+              subtitle: s.quick_add_share_subtitle,
+              onTap: () {
+                Navigator.pop(context);
+                onAddShare();
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -116,18 +100,25 @@ class _QuickAddTile extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
 
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: 0,
-        vertical: spacing?.xs ?? 4,
-      ),
+    return KinlyListTile(
       leading: Icon(
         leadingIcon,
         color: sectionColors.accent, // use your section accent
       ),
-      title: Text(title, style: theme.textTheme.bodyLarge),
-      subtitle: Text(subtitle, style: theme.textTheme.bodyMedium),
+      title: title,
+      subtitle: subtitle,
+      trailing: Icon(
+        Icons.arrow_forward_ios_rounded,
+        size: 16,
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
       onTap: onTap,
+      contentPadding: EdgeInsetsDirectional.fromSTEB(
+        0,
+        spacing?.xs ?? 4,
+        spacing?.xs ?? 4,
+        spacing?.xs ?? 4,
+      ),
     );
   }
 }
