@@ -98,8 +98,8 @@ class GratitudeWallContent extends StatelessWidget {
               // 👉 Light inner padding: keeps content off the screen edge,
               // but doesn't shrink the whole snapshot like the old outer padding did.
               padding: EdgeInsetsDirectional.only(
-                start: spacing.md,
-                end: spacing.md,
+                start: spacing.sm,
+                end: spacing.sm,
                 bottom: spacing.xl * 2.5,
               ),
               itemCount: state.posts.length + 1 + (state.isLoadingMore ? 1 : 0),

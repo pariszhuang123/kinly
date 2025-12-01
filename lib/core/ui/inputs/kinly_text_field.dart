@@ -27,6 +27,7 @@ class KinlyTextField extends StatelessWidget {
     this.obscureText = false,
     this.inputFormatters,
     this.autocorrect = true,
+    this.scrollPadding,
   });
 
   final TextEditingController? controller;
@@ -45,6 +46,7 @@ class KinlyTextField extends StatelessWidget {
   final bool obscureText;
   final List<TextInputFormatter>? inputFormatters;
   final bool autocorrect;
+  final EdgeInsets? scrollPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +74,8 @@ class KinlyTextField extends StatelessWidget {
       inputFormatters: inputFormatters,
       autocorrect: autocorrect,
       style: type?.bodyMedium ?? theme.textTheme.bodyMedium,
+      scrollPadding: scrollPadding ??
+          const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,

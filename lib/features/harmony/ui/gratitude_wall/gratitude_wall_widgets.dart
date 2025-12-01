@@ -29,7 +29,7 @@ class GratitudeWallRow extends StatelessWidget {
 
     final content = Expanded(
       child: Container(
-        padding: EdgeInsetsDirectional.all(spacing.lg),
+        padding: EdgeInsetsDirectional.all(spacing.sm),
         decoration: BoxDecoration(
           color: Color.alphaBlend(
             accentBg,
@@ -62,7 +62,7 @@ class GratitudeWallRow extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsetsDirectional.only(start: spacing.md),
+              padding: EdgeInsetsDirectional.only(start: spacing.sm),
               child: Column(
                 crossAxisAlignment:
                     alignLeft

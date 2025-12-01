@@ -17,6 +17,7 @@ class ExploreScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>()!;
+    final shareColors = sections.share;
     final s = S.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -59,7 +60,7 @@ class ExploreScreen extends StatelessWidget {
                 SizedBox(height: spacing.md),
 
                 KinlySelectionCard(
-                  colors: sections.share,
+                  colors: shareColors.copyWith(card: shareColors.background),
                   title: s.quick_add_share_title,
                   subtitle: s.exploreShareSubtitle,
                   icon: SectionAssets.share.build(

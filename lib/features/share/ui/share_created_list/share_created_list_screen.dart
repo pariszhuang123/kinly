@@ -21,15 +21,15 @@ class ShareCreatedListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final sections = theme.extension<KinlySections>();
-    final shareColors = sections?.share;
+    final sections = theme.extension<KinlySections>()!;
+    final shareColors = sections.share;
     final spacing = theme.extension<Spacing>();
     final s = S.of(context);
 
     return Scaffold(
-      backgroundColor: shareColors?.background ?? theme.colorScheme.surface,
+      backgroundColor: shareColors.background,
       appBar: AppBar(
-        backgroundColor: shareColors?.background,
+        backgroundColor: shareColors.background,
         title: Text(s.shareCreatedListTitle),
       ),
       floatingActionButton: KinlyFab(
