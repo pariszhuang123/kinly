@@ -29,7 +29,7 @@ class FlowChoreExtrasSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>();
+    final spacing = theme.extension<Spacing>()!;
     final colorScheme = theme.colorScheme;
     final linkColors =
         theme.extension<KinlyLinkColors>() ??
@@ -40,7 +40,7 @@ class FlowChoreExtrasSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsetsDirectional.all(spacing?.md ?? 16),
+      padding: EdgeInsetsDirectional.all(spacing.md),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(12),
@@ -48,17 +48,18 @@ class FlowChoreExtrasSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: spacing.md),
           Text(
             s.flowChoreDetailMoreInfoTitle,
             style: theme.textTheme.titleMedium,
           ),
-          SizedBox(height: spacing?.md ?? 16),
+          SizedBox(height: spacing.md),
           _FlowDetailSection(
             title: notesLabel,
             body: notesBody,
             linkColors: linkColors,
           ),
-          SizedBox(height: spacing?.md ?? 16),
+          SizedBox(height: spacing.md),
           _FlowDetailSection(
             title: howToLabel,
             body: howToBody,
@@ -66,7 +67,7 @@ class FlowChoreExtrasSection extends StatelessWidget {
             linkColors: linkColors,
           ),
           if (hasExpectationPhoto) ...[
-            SizedBox(height: spacing?.md ?? 16),
+            SizedBox(height: spacing.md),
             _ExpectationPhotoSection(
               title: expectationPhotoLabel ?? s.flowChoreExpectationPhotoLabel,
               photoUrl: expectationPhotoUrl!,

@@ -19,7 +19,7 @@ class HarmonyPage extends StatelessWidget {
       // No AppBar → gives full control of header layout
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(spacing.lg),
+          padding: EdgeInsetsDirectional.all(spacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -30,23 +30,56 @@ class KinlySettingsTile extends StatelessWidget {
     final colors = theme.extension<KinlyColorTokens>();
     final type = theme.extension<KinlyTypography>();
     final colorScheme = theme.colorScheme;
-    final leadingColor =
-        destructive
-            ? (colors?.error ?? colorScheme.error)
-            : (colors?.primary ?? colorScheme.primary);
+    final isDark = theme.brightness == Brightness.dark;
 
+    final primary = colors?.primary ?? colorScheme.primary;
+    final error = colors?.error ?? colorScheme.error;
+
+    // ── Leading icon + avatar colors ────────────────────────────────────────
+    late final Color leadingColor;
+    late final Color avatarBackground;
+
+    if (destructive) {
+      // Destructive is always “error-ish” in both light & dark.
+      leadingColor = error;
+      avatarBackground = error.withValues(alpha: isDark ? 0.20 : 0.12);
+    } else {
+      if (isDark) {
+        // In dark mode, align with KinlyFilledButton:
+        // use onSurface as the main icon color so it’s always readable.
+        leadingColor = colorScheme.onSurface;
+        // Soft halo using onSurface at low alpha.
+        avatarBackground = colorScheme.onSurface.withValues(alpha: 0.16);
+      } else {
+        // Light mode: use primary, as before.
+        leadingColor = primary;
+        avatarBackground = primary.withValues(alpha: 0.12);
+      }
+    }
+
+    // ── Text styles ─────────────────────────────────────────────────────────
     final titleStyle =
         (type?.titleMedium ?? theme.textTheme.titleMedium)?.copyWith(
           fontWeight: FontWeight.w600,
-          color: destructive
-              ? (colors?.error ?? colorScheme.error)
-              : colorScheme.onSurface,
+          color: destructive ? error : colorScheme.onSurface,
         );
 
     final subtitleStyle =
         (type?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
           color: colorScheme.onSurfaceVariant,
         );
+
+    // ── Trailing chevron / loader ──────────────────────────────────────────
+    final trailingWidget = showProgress
+        ? SizedBox(
+            width: 20,
+            height: 20,
+            child: KinlyLoader(size: 18, color: leadingColor),
+          )
+        : Icon(
+            Icons.chevron_right,
+            color: colorScheme.onSurfaceVariant,
+          );
 
     return ListTile(
       contentPadding: EdgeInsetsDirectional.fromSTEB(
@@ -56,19 +89,12 @@ class KinlySettingsTile extends StatelessWidget {
         spacing?.s ?? 8,
       ),
       leading: CircleAvatar(
-        backgroundColor: leadingColor.withValues(alpha: 0.12),
+        backgroundColor: avatarBackground,
         child: Icon(icon, color: leadingColor),
       ),
       title: Text(title, style: titleStyle),
       subtitle: Text(subtitle, style: subtitleStyle),
-      trailing:
-          showProgress
-              ? SizedBox(
-                width: 20,
-                height: 20,
-                child: KinlyLoader(size: 18, color: leadingColor),
-              )
-              : const Icon(Icons.chevron_right),
+      trailing: trailingWidget,
       onTap: showProgress ? null : onTap,
     );
   }

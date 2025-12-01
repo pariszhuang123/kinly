@@ -135,7 +135,9 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   ) {
     emit(
       state.copyWith(
-        form: state.form.copyWith(splitMode: event.mode),
+        form: state.form.copyWith(
+          splitMode: event.mode, // ShareSplitMode? now
+        ),
         hasUserEdits: true,
       ),
     );

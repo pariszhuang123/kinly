@@ -32,7 +32,8 @@ class ShareCreateAmountChanged extends ShareCreateEvent {
 class ShareCreateSplitModeChanged extends ShareCreateEvent {
   const ShareCreateSplitModeChanged(this.mode);
 
-  final ShareSplitMode mode;
+  /// Nullable to allow "no split selected" in KinlyTabBar.
+  final ShareSplitMode? mode;
 
   @override
   List<Object?> get props => [mode];

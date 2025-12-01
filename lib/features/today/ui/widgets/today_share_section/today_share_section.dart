@@ -112,7 +112,15 @@ class _TodayShareSectionState extends State<TodayShareSection> {
                 TodaySectionTabType.drafts: s.todayShareTabDrafts,
             },
             selected: _selectedTab,
-            onChanged: (tab) => setState(() => _selectedTab = tab),
+            emptySelectionAllowed: false,
+            onChanged: (tab) {
+              // tab is TodaySectionTabType?; but with emptySelectionAllowed=false
+              // we can safely assert non-null:
+              if (tab == null) return; // extra safety
+              setState(() {
+                _selectedTab = tab;
+              });
+            },
           ),
           SizedBox(height: spacing?.md ?? 12),
         ],

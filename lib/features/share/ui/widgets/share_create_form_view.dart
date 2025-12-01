@@ -11,6 +11,7 @@ import '../../../../../generated/l10n.dart';
 import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
+import '../../../../../core/ui/kinly_tab_bar.dart';
 
 class ShareCreateFormView extends StatelessWidget {
   const ShareCreateFormView({
@@ -83,6 +84,7 @@ class ShareCreateFormView extends StatelessWidget {
 
     return ListView(
       children: [
+        SizedBox(height: spacing.lg),
         _DescriptionField(
           controller: descriptionController,
           state: state,
@@ -211,37 +213,32 @@ class _SplitModeSelector extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
 
+    final splitMode = state.form.splitMode; // ShareSplitMode?
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(s.shareCreateSplitLabel, style: theme.textTheme.titleMedium),
         SizedBox(height: spacing.sm),
-        SegmentedButton<ShareSplitMode>(
-          showSelectedIcon: false,
-          emptySelectionAllowed: true,
-          segments: [
-            ButtonSegment(
-              value: ShareSplitMode.equal,
-              label: Text(s.shareCreateSplitEqual),
+        Opacity(
+          opacity: locked ? 0.6 : 1.0,
+          child: IgnorePointer(
+            ignoring: locked,
+            child: KinlyTabBar<ShareSplitMode>(
+              tabs: {
+                ShareSplitMode.equal: s.shareCreateSplitEqual,
+                ShareSplitMode.custom: s.shareCreateSplitCustom,
+              },
+              selected: splitMode, // nullable
+              emptySelectionAllowed: true, // key line
+              onChanged: (mode) {
+                // mode is ShareSplitMode? (can be null)
+                context.read<ShareCreateBloc>().add(
+                  ShareCreateSplitModeChanged(mode),
+                );
+              },
             ),
-            ButtonSegment(
-              value: ShareSplitMode.custom,
-              label: Text(s.shareCreateSplitCustom),
-            ),
-          ],
-          selected:
-              state.form.splitMode != null
-                  ? {state.form.splitMode!}
-                  : <ShareSplitMode>{},
-          onSelectionChanged:
-              locked
-                  ? null
-                  : (selection) {
-                    if (selection.isEmpty) return;
-                    context.read<ShareCreateBloc>().add(
-                      ShareCreateSplitModeChanged(selection.first),
-                    );
-                  },
+          ),
         ),
       ],
     );

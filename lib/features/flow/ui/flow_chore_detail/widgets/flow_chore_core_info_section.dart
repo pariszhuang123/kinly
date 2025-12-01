@@ -30,20 +30,21 @@ class FlowChoreCoreInfoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>();
+    final spacing = theme.extension<Spacing>()!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(height: spacing.lg),
         Text(choreName, style: theme.textTheme.headlineSmall),
-        SizedBox(height: spacing?.md ?? 16),
+        SizedBox(height: spacing.md),
         if (showAssignee) ...[
           _FlowDetailRow(label: assigneeLabel, value: assigneeValue),
-          SizedBox(height: spacing?.md ?? 16),
+          SizedBox(height: spacing.md),
         ],
         if (showStart) ...[
           _FlowDetailRow(label: startLabel, value: startValue),
-          SizedBox(height: spacing?.md ?? 16),
+          SizedBox(height: spacing.md),
         ],
         _FlowDetailRow(label: recurrenceLabel, value: recurrenceValue),
       ],

@@ -96,26 +96,26 @@ class _TodayFlowSectionState extends State<TodayFlowSection> {
                 TodaySectionTabType.drafts: s.todayFlowTabDrafts,
             },
             selected: _selectedTab,
-            onChanged: (tab) => setState(() => _selectedTab = tab),
+            emptySelectionAllowed: false,
+            onChanged: (tab) {
+              // tab is TodaySectionTabType?; but with emptySelectionAllowed=false
+              // we can safely assert non-null:
+              if (tab == null) return; // extra safety
+              setState(() {
+                _selectedTab = tab;
+              });
+            },
           ),
           SizedBox(height: spacing?.md ?? 12),
         ],
-        _buildTabContent(
-          context,
-          colors: colors,
-          spacing: spacing,
-          strings: s,
-        ),
+        _buildTabContent(context, colors: colors, spacing: spacing, strings: s),
       ],
     );
 
     return SectionContainer(
       title: s.todayFlowSectionTitle,
       colors: colors,
-      leading: SectionAssets.flow.build(
-        color: colors.icon,
-        size: flowIconSize,
-      ),
+      leading: SectionAssets.flow.build(color: colors.icon, size: flowIconSize),
       child: content,
     );
   }

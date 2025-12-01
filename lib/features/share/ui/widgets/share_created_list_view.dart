@@ -129,37 +129,47 @@ class _ShareCreatedTile extends StatelessWidget {
       paidAmountLabel,
       amountLabel,
     );
-    final badgeColor = shareColors?.accent ?? theme.colorScheme.secondary;
-    final showPaidBadge = entry.isActive && entry.allPaid;
-    final showDraftBadge = entry.isDraft;
 
-    Widget? badge;
-    if (showPaidBadge) {
-      badge = _StatusBadge(
-        label: s.shareCreatedListPaidBadge,
-        color: badgeColor,
-        textColor: theme.colorScheme.onPrimary,
-      );
-    } else if (showDraftBadge) {
-      badge = _StatusBadge(
-        label: s.shareCreatedListDraftBadge,
-        color: badgeColor.withValues(alpha: 0.15),
-        textColor: badgeColor,
-      );
-    }
+    final badgeColor = shareColors?.accent ?? theme.colorScheme.secondary;
+    final isPaidOff = entry.isActive && entry.allPaid;
+    final isUnassigned = entry.isDraft;
+
+    final paidBadge = _StatusBadge(
+      label: s.shareCreatedListPaidBadge,
+      color: badgeColor,
+      textColor: theme.colorScheme.onPrimary,
+    );
+
+    final unassignedBadge = _StatusBadge(
+      label: s.shareCreatedListDraftBadge,
+      color: badgeColor.withValues(alpha: 0.15),
+      textColor: badgeColor,
+    );
+
+    final String? subtitle =
+        (isPaidOff || isUnassigned)
+            ? null
+            : (entry.isActive
+                ? progressLabel
+                : s.shareCreatedListDraftSubtitle);
+
+    final double progressValue =
+        entry.amountCents == 0
+            ? 0
+            : (entry.paidAmountCents / entry.amountCents)
+                .clamp(0.0, 1.0)
+                .toDouble();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         KinlyListTile(
           title: entry.description,
-          subtitle:
-              entry.isActive ? progressLabel : s.shareCreatedListDraftSubtitle,
+          subtitle: subtitle,
           trailing: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if (badge != null) ...[badge, SizedBox(height: spacing?.xs ?? 6)],
               Text(
                 amountLabel,
                 style: theme.textTheme.titleSmall?.copyWith(
@@ -171,13 +181,15 @@ class _ShareCreatedTile extends StatelessWidget {
           ),
           onTap: onTap,
         ),
-        if (entry.isActive) ...[
+        if (isPaidOff || isUnassigned) ...[
+          SizedBox(height: spacing?.xs ?? 6),
+          if (isPaidOff) paidBadge,
+          if (isUnassigned) unassignedBadge,
+        ],
+        if (entry.isActive && !entry.allPaid) ...[
           SizedBox(height: spacing?.xs ?? 6),
           LinearProgressIndicator(
-            value:
-                entry.totalShares == 0
-                    ? 0
-                    : entry.paidShares / entry.totalShares,
+            value: progressValue,
             minHeight: 8,
             backgroundColor:
                 shareColors?.card ?? theme.colorScheme.surfaceContainerHighest,
