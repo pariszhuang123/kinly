@@ -31,13 +31,31 @@ class KinlyToggle extends StatelessWidget {
 
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
+
+    // Align dark / light detection with KinlyFilledButton.
     final isDark = isDarkOverride ?? theme.brightness == Brightness.dark;
+
+    // ---- COLOR LOGIC (aligned with KinlyFilledButton) ----
+    // Light: primary / onPrimary
+    // Dark:  secondaryContainer / onInverseSurface
+    final Color activeColor;
+    final Color checkColor;
+
+    if (isDark) {
+      activeColor = colors.secondaryContainer;
+      checkColor = colors.onInverseSurface;
+    } else {
+      activeColor = colors.primary;
+      checkColor = colors.onPrimary;
+    }
 
     final titleStyle = theme.textTheme.bodyLarge?.copyWith(
       color: colors.onSurface,
     );
+
     final subtitleStyle = theme.textTheme.bodyMedium?.copyWith(
-      color: isDark ? colors.onSurfaceVariant : colors.onSurfaceVariant,
+      // Keep this onSurfaceVariant in both modes so it’s a softer, secondary label.
+      color: colors.onSurfaceVariant,
     );
 
     return CheckboxListTile(
@@ -47,7 +65,10 @@ class KinlyToggle extends StatelessWidget {
       subtitle: subtitle != null ? Text(subtitle!, style: subtitleStyle) : null,
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
-      activeColor: colors.primary,
+
+      // 🔽 Make it visually tighter so it doesn’t add a big vertical gap.
+      visualDensity: const VisualDensity(horizontal: -2, vertical: -3),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
   }
 }

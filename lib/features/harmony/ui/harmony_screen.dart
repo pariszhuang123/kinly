@@ -13,14 +13,26 @@ import '../../../core/ui/kinly_toggle.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/harmony_cubit.dart';
 
+/// Harmony sheet body to be used inside [KinlyBottomSheet].
+///
+/// Usage:
+/// ```dart
+/// KinlyBottomSheet.show(
+///   context: context,
+///   title: S.of(context).harmonyTitle,
+///   body: HarmonyScreen(homeId: homeId),
+///   footer: const [HarmonySubmitButton()],
+/// );
+/// ```
+///
+/// Assumes [HarmonyCubit] is already provided above in the tree.
 class HarmonyScreen extends StatelessWidget {
   final String homeId;
+
   const HarmonyScreen({super.key, required this.homeId});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
     return BlocListener<HarmonyCubit, HarmonyState>(
@@ -31,6 +43,7 @@ class HarmonyScreen extends StatelessWidget {
       listener: (context, state) {
         if (state.submitSuccessTick > 0) {
           KinlyToast.showSuccess(context, s.harmonySubmitSuccess);
+          // Close the bottom sheet and return true to caller.
           Navigator.of(context, rootNavigator: true).pop(true);
         } else if (state.submitError != null) {
           final message = _mapError(context, state.submitError!);
@@ -39,65 +52,22 @@ class HarmonyScreen extends StatelessWidget {
       },
       child: BlocBuilder<HarmonyCubit, HarmonyState>(
         builder: (context, state) {
+          final theme = Theme.of(context);
+          final spacing = theme.extension<Spacing>()!;
           final canPop = state.submitSuccessTick > 0;
+
           return PopScope(
             canPop: canPop,
-            child: Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading: false,
-                title: Text(s.harmonyTitle),
-              ),
-              resizeToAvoidBottomInset: true,
-              body: SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        // ✅ Directional padding for RTL/LTR
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                          spacing.lg,
-                          spacing.lg,
-                          spacing.lg,
-                          spacing.lg,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              s.harmonyQuestion,
-                              style: theme.textTheme.headlineSmall,
-                            ),
-                            SizedBox(height: spacing.md),
-                            Text(
-                              s.harmonySubtext,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                            SizedBox(height: spacing.lg),
-                            _MoodSelector(),
-                            SizedBox(height: spacing.lg),
-                            _CommentBox(),
-                            SizedBox(height: spacing.md),
-                            _GratitudeToggle(),
-                            SizedBox(height: spacing.lg),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      // ✅ Directional bottom padding for button
-                      padding: EdgeInsetsDirectional.fromSTEB(
-                        spacing.lg,
-                        spacing.sm,
-                        spacing.lg,
-                        spacing.lg,
-                      ),
-                      child: _SubmitButton(),
-                    ),
-                  ],
-                ),
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _MoodSelector(),
+                SizedBox(height: spacing.s),
+                _CommentBox(),
+                SizedBox(height: spacing.s),
+                _GratitudeToggle(),
+              ],
             ),
           );
         },
@@ -115,6 +85,50 @@ class HarmonyScreen extends StatelessWidget {
       default:
         return s.harmonyErrorUnknown;
     }
+  }
+}
+
+/// Separated submit button so it can be passed into KinlyBottomSheet.footer.
+///
+/// Must live under the same [HarmonyCubit] provider as [HarmonyScreen].
+class HarmonySubmitButton extends StatelessWidget {
+  const HarmonySubmitButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+
+    return BlocBuilder<HarmonyCubit, HarmonyState>(
+      builder: (context, state) {
+        final hasMood = state.selectedMood != null;
+        final canSubmit =
+            hasMood && !state.isSubmitting && state.submitSuccessTick == 0;
+
+        void handler() {
+          if (!hasMood || state.submitSuccessTick > 0) {
+            KinlySnackBar.showError(context, s.harmonyErrorSelectMood);
+            return;
+          }
+          context.read<HarmonyCubit>().submit();
+        }
+
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            KinlyFilledButton.text(
+              label: s.harmonySubmitCta,
+              onPressed: canSubmit ? handler : null,
+              fullWidth: true,
+            ),
+            if (state.isSubmitting)
+              const PositionedDirectional(
+                end: 24,
+                child: KinlyLoader(size: 20),
+              ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -157,8 +171,7 @@ class _MoodSelector extends StatelessWidget {
           options: options,
           selectedValue: state.selectedMood,
           onChanged: context.read<HarmonyCubit>().selectMood,
-          iconSize: 40,
-          optionWidth: 60,
+          scrollable: false, // 3:2 centered layout for 5 moods
           showLabel: false,
         );
       },
@@ -179,7 +192,6 @@ class _CommentBox extends StatelessWidget {
           maxLines: 4,
           maxLength: 500,
           onChanged: context.read<HarmonyCubit>().commentChanged,
-          // isDarkOverride: true/false if you ever want to force it
         );
       },
     );
@@ -206,48 +218,6 @@ class _GratitudeToggle extends StatelessWidget {
           subtitle: s.harmonyShareSubtitle,
           visible: canShare && hasComment,
           // isDarkOverride: true/false optional
-        );
-      },
-    );
-  }
-}
-
-class _SubmitButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    return BlocBuilder<HarmonyCubit, HarmonyState>(
-      builder: (context, state) {
-        final hasMood = state.selectedMood != null;
-        final canSubmit =
-            hasMood && !state.isSubmitting && state.submitSuccessTick == 0;
-
-        void handler() {
-          if (!hasMood || state.submitSuccessTick > 0) {
-            KinlySnackBar.showError(
-              context,
-              s.harmonyErrorSelectMood,
-            );
-            return;
-          }
-          context.read<HarmonyCubit>().submit();
-        }
-
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            KinlyFilledButton.text(
-              label: s.harmonySubmitCta,
-              onPressed: canSubmit ? handler : null,
-              fullWidth: true,
-            ),
-            if (state.isSubmitting)
-              // Directional positioning for RTL
-              const PositionedDirectional(
-                end: 24,
-                child: KinlyLoader(size: 20),
-              ),
-          ],
         );
       },
     );

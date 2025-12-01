@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../theme/spacing.dart';
 
-/// A generic Kinly-styled horizontal selector for any option type.
+/// A generic Kinly-styled selector for any option type.
 ///
 /// T = the value type (e.g. MoodScale, enum, String, int).
 class KinlyOptionSelectorRow<T> extends StatelessWidget {
@@ -28,12 +28,15 @@ class KinlyOptionSelectorRow<T> extends StatelessWidget {
   final ValueChanged<T> onChanged;
 
   /// Scroll horizontally if overflow.
+  ///
+  /// - true  => single-row, horizontal scroll
+  /// - false => multiple centered rows using a fixed pattern
   final bool scrollable;
 
-  /// Width of each card.
+  /// Default width of each card (used in scrollable mode).
   final double optionWidth;
 
-  /// Size of the icon (SVG or IconData).
+  /// Default icon size (used in scrollable mode).
   final double iconSize;
 
   /// Whether the label appears below the icon.
@@ -44,35 +47,172 @@ class KinlyOptionSelectorRow<T> extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
 
-    final row = Row(
-      children: [
-        for (final option in options)
-          Padding(
-            padding: EdgeInsetsDirectional.only(end: spacing.md),
-            child: _KinlyOptionCard<T>(
-              option: option,
-              isSelected: _isSelected(option),
-              onTap: () => onChanged(option.value),
-              width: optionWidth,
-              iconSize: iconSize,
-              showLabel: showLabel,
+    // Original one-row horizontal scroll behavior.
+    if (scrollable) {
+      final row = Row(
+        children: [
+          for (final option in options)
+            Padding(
+              padding: EdgeInsetsDirectional.only(end: spacing.md),
+              child: _KinlyOptionCard<T>(
+                option: option,
+                isSelected: _isSelected(option),
+                onTap: () => onChanged(option.value),
+                width: optionWidth,
+                iconSize: iconSize,
+                showLabel: showLabel,
+              ),
             ),
+        ],
+      );
+
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: row,
+      );
+    }
+
+    // Multi-row centered layout with responsive sizes.
+    final rows = _splitIntoRows(options);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var rowIndex = 0; rowIndex < rows.length; rowIndex++)
+          Padding(
+            padding: EdgeInsets.only(
+              // Much smaller vertical gaps than before
+              top: rowIndex == 0 ? spacing.s : spacing.m,
+              bottom: rowIndex == rows.length - 1 ? spacing.s : spacing.m,
+            ),
+            child: _buildRow(context, rows[rowIndex]),
           ),
       ],
     );
-
-    if (!scrollable) return row;
-
-    return SingleChildScrollView(scrollDirection: Axis.horizontal, child: row);
   }
 
   bool _isSelected(KinlySelectorOption<T> option) {
     if (selectedValue == null) return false;
     return option.value == selectedValue;
   }
+
+  Widget _buildRow(
+    BuildContext context,
+    List<KinlySelectorOption<T>> rowOptions,
+  ) {
+    final spacing = Theme.of(context).extension<Spacing>()!;
+    final rowCount = rowOptions.length;
+
+    // Responsive sizing based on row length.
+    final rowIconSize = _computeIconSize(rowCount);
+    final rowCardWidth = _computeCardWidth(rowCount);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (var i = 0; i < rowOptions.length; i++)
+          Padding(
+            padding: EdgeInsetsDirectional.only(
+              end: i == rowOptions.length - 1 ? 0 : spacing.md,
+            ),
+            child: _KinlyOptionCard<T>(
+              option: rowOptions[i],
+              isSelected: _isSelected(rowOptions[i]),
+              onTap: () => onChanged(rowOptions[i].value),
+              width: rowCardWidth,
+              iconSize: rowIconSize,
+              showLabel: showLabel,
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Fixed layout pattern:
+  /// - 5 → 3 + 2
+  /// - 6 → 3 + 3
+  /// - 7 → 4 + 3
+  /// - 8 → 4 + 4
+  /// - 9+ → groups of 4
+  List<List<KinlySelectorOption<T>>> _splitIntoRows(
+    List<KinlySelectorOption<T>> all,
+  ) {
+    final n = all.length;
+    final counts = _computeRowCounts(n);
+
+    final rows = <List<KinlySelectorOption<T>>>[];
+    var start = 0;
+
+    for (final count in counts) {
+      final end = (start + count).clamp(0, n);
+      if (start >= end) break;
+      rows.add(all.sublist(start, end));
+      start = end;
+    }
+
+    return rows;
+  }
+
+  List<int> _computeRowCounts(int n) {
+    switch (n) {
+      case 1:
+        return [1];
+      case 2:
+        return [2];
+      case 3:
+        return [3];
+      case 4:
+        return [4];
+      case 5:
+        return [3, 2];
+      case 6:
+        return [3, 3];
+      case 7:
+        return [4, 3];
+      case 8:
+        return [4, 4];
+      default:
+        // fallback layout: rows of 4
+        const perRow = 4;
+        final full = n ~/ perRow;
+        final leftover = n % perRow;
+
+        final result = List<int>.filled(full, perRow);
+        if (leftover > 0) result.add(leftover);
+        return result;
+    }
+  }
+
+  double _computeIconSize(int rowCount) {
+    switch (rowCount) {
+      case 1:
+      case 2:
+        return 50; // large
+      case 3:
+        return 44; // medium
+      case 4:
+        return 40; // small-medium
+      default:
+        return 40; // small
+    }
+  }
+
+  double _computeCardWidth(int rowCount) {
+    switch (rowCount) {
+      case 1:
+      case 2:
+        return 90;
+      case 3:
+        return 80;
+      case 4:
+        return 70;
+      default:
+        return 60;
+    }
+  }
 }
 
-/// Generic option model
+/// Generic option model.
 class KinlySelectorOption<T> {
   const KinlySelectorOption({
     required this.value,
@@ -110,11 +250,10 @@ class _KinlyOptionCard<T> extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final colors = theme.colorScheme;
+
     final isDark = theme.brightness == Brightness.dark;
 
-    // These tokens come from your Kinly theme (buildKinlyTheme).
-    final borderColor = isSelected ? colors.primary : colors.outlineVariant;
-
+    // Card background still changes on selection, but no thick border anymore.
     final bg =
         isSelected
             ? colors.primaryContainer
@@ -128,11 +267,12 @@ class _KinlyOptionCard<T> extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: width,
-        padding: EdgeInsets.all(spacing.sm),
+        padding: EdgeInsets.all(spacing.xs),
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: borderColor),
+          // Remove the heavy outer border – focus selection on the icon ring instead.
+          border: Border.all(color: Colors.transparent),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -152,23 +292,38 @@ class _KinlyOptionCard<T> extends StatelessWidget {
     );
   }
 
+  /// Builds the icon with a circular selection ring that cuts into the icon.
   Widget _buildIcon(BuildContext context, ColorScheme colors) {
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+
+    final ringColor = isSelected ? colors.primary : colors.outlineVariant;
+    final ringBackground = theme.colorScheme.surface;
+
+    // Inner visual (SVG or Icon).
+    Widget? inner;
     if (option.svgAsset != null) {
-      return SizedBox(
-        height: iconSize,
-        width: iconSize,
-        child: SvgPicture.asset(option.svgAsset!),
-      );
+      inner = SvgPicture.asset(option.svgAsset!, fit: BoxFit.cover);
+    } else if (option.iconData != null) {
+      inner = Icon(option.iconData, size: iconSize, color: colors.onSurface);
     }
 
-    if (option.iconData != null) {
-      return Icon(
-        option.iconData,
-        size: iconSize,
-        color: isSelected ? colors.onPrimaryContainer : colors.onSurface,
-      );
+    if (inner == null) {
+      return const SizedBox.shrink();
     }
 
-    return const SizedBox.shrink();
+    // Circular ring that clips the square icon – gives a tight color halo.
+    return Container(
+      padding: EdgeInsets.all(spacing.xxs), // thin halo
+      decoration: BoxDecoration(
+        color: ringBackground,
+        shape: BoxShape.circle,
+        border: Border.all(color: ringColor, width: 2),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(iconSize / 2),
+        child: SizedBox(width: iconSize, height: iconSize, child: inner),
+      ),
+    );
   }
 }

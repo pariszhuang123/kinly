@@ -7,7 +7,6 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/profile/models.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
-import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/kinly_bottom_sheet.dart';
 import '../../../core/ui/dialogs/kinly_dialogs.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';

@@ -10,7 +10,7 @@ import '../../theme/typography_tokens.dart';
 ///
 /// Uses:
 /// - Light: primary / onPrimary
-/// - Dark:  inversePrimary / onInverseSurface
+/// - Dark:  secondaryContainer / onInverseSurface (to match KinlyAddTileButton)
 class KinlyFilledButton extends StatelessWidget {
   const KinlyFilledButton._({
     required this.onPressed,
@@ -113,45 +113,52 @@ class KinlyFilledButton extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-    final spacing = theme.extension<Spacing>();
+    final spacing = theme.extension<Spacing>()!;
     final corners = theme.extension<Corners>();
     final colors = theme.extension<KinlyColorTokens>();
     final type = theme.extension<KinlyTypography>();
 
-    final horizontal =
-        spacing != null
-            ? (compact ? spacing.sm : spacing.lg)
-            : (compact ? 12.0 : 16.0);
-    final vertical =
-        spacing != null
-            ? (compact ? spacing.xs : spacing.sm)
-            : (compact ? 6.0 : 10.0);
+    final horizontal = compact ? spacing.sm : spacing.lg;
+    final vertical = compact ? spacing.xs : spacing.sm;
 
-    final child =
-        icon != null
-            ? Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                icon!,
-                SizedBox(width: spacing?.xs ?? 8.0),
-                Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
-              ],
-            )
-            : Text(label, overflow: TextOverflow.ellipsis);
+    final Widget child = icon != null
+        ? Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              icon!,
+              SizedBox(width: spacing.xs),
+              Flexible(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          )
+        : Text(
+            label,
+            overflow: TextOverflow.ellipsis,
+          );
 
-    final backgroundColor =
-        destructive
-            ? (colors?.error ?? colorScheme.error)
-            : isDark
-            ? (colors?.primary ?? colorScheme.inversePrimary)
-            : (colors?.primary ?? colorScheme.primary);
-    final foregroundColor =
-        destructive
-            ? (colors?.onError ?? colorScheme.onError)
-            : isDark
-            ? (colors?.onInverseSurface ?? colorScheme.onInverseSurface)
-            : (colors?.onPrimary ?? colorScheme.onPrimary);
+    // ---- COLOR LOGIC (aligned with KinlyAddTileButton in dark mode) ----
+    final Color backgroundColor;
+    final Color foregroundColor;
+
+    if (destructive) {
+      backgroundColor = colors?.error ?? colorScheme.error;
+      foregroundColor = colors?.onError ?? colorScheme.onError;
+    } else if (isDark) {
+      // Match KinlyAddTileButton behaviour in dark mode:
+      // - container: secondaryContainer
+      // - content:   onInverseSurface (good contrast on filled CTA)
+      backgroundColor = colorScheme.secondaryContainer;
+      foregroundColor = colorScheme.onInverseSurface;
+    } else {
+      // Light mode: keep as primary CTA
+      backgroundColor = colors?.primary ?? colorScheme.primary;
+      foregroundColor = colors?.onPrimary ?? colorScheme.onPrimary;
+    }
 
     final baseStyle = FilledButton.styleFrom(
       backgroundColor: backgroundColor,
@@ -180,12 +187,17 @@ class KinlyFilledButton extends StatelessWidget {
 
     final button = FilledButton(
       onPressed: onPressed,
-      style: baseStyle.copyWith(overlayColor: overlay),
+      style: baseStyle.copyWith(
+        overlayColor: overlay,
+      ),
       child: child,
     );
 
     if (!fullWidth) return button;
 
-    return SizedBox(width: double.infinity, child: button);
+    return SizedBox(
+      width: double.infinity,
+      child: button,
+    );
   }
 }

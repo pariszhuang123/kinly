@@ -38,12 +38,15 @@ class KinlyBottomSheet extends StatelessWidget {
       isDismissible: isDismissible,
       enableDrag: enableDrag,
       backgroundColor: Colors.transparent,
-      builder: (_) => KinlyBottomSheet(
-        title: title,
-        subtitle: subtitle,
-        body: body,
-        footer: footer,
-      ),
+      // ✅ Let Flutter handle system bars insets (status / gesture areas).
+      useSafeArea: true,
+      builder:
+          (_) => KinlyBottomSheet(
+            title: title,
+            subtitle: subtitle,
+            body: body,
+            footer: footer,
+          ),
     );
   }
 
@@ -56,85 +59,107 @@ class KinlyBottomSheet extends StatelessWidget {
     final corners = theme.extension<Corners>();
     final elevations = theme.extension<Elevations>();
     final motion = theme.extension<Motion>();
+
+    // Only respond to keyboard inset. System insets are handled by useSafeArea: true.
     final media = MediaQuery.of(context);
-    final bottomPadding = media.viewPadding.bottom + media.viewInsets.bottom;
+    final bottomInset = media.viewInsets.bottom;
     final radius = corners?.xlarge ?? 24.0;
 
-    return SafeArea(
-      child: AnimatedPadding(
-        padding: EdgeInsetsDirectional.fromSTEB(
-          spacing.lg,
-          spacing.lg,
-          spacing.lg,
-          spacing.lg + bottomPadding,
-        ),
-        duration: motion?.durationMedium ?? const Duration(milliseconds: 200),
-        curve: motion?.easeEmotional ?? Curves.easeOutCubic,
-        child: Material(
-          elevation: elevations?.level4 ?? 10,
-          color: colors?.surface ?? colorScheme.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(radius)),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return AnimatedPadding(
+          padding: EdgeInsetsDirectional.fromSTEB(
+            0,
+            spacing.lg, // some air from top when dragged up
+            0,
+            spacing.lg + bottomInset, // base spacing + keyboard height (if any)
           ),
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(
-              spacing.xl,
-              spacing.m,
-              spacing.xl,
-              spacing.m,
+          duration: motion?.durationMedium ?? const Duration(milliseconds: 200),
+          curve: motion?.easeEmotional ?? Curves.easeOutCubic,
+          child: Material(
+            elevation: elevations?.level4 ?? 10,
+            color: colors?.surface ?? colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(radius)),
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Drag handle
-                  Container(
-                    width: 36,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  SizedBox(height: spacing.md),
+            clipBehavior: Clip.antiAlias, // nicer corners on tall sheets
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(
+                spacing.xl,
+                spacing.m,
+                spacing.xl,
+                spacing.m,
+              ),
+              child: SafeArea(
+                top: false,
+                bottom: true,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: constraints.maxHeight),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: SingleChildScrollView(
+                          primary: false,
+                          // Keep header/body scrollable while footer stays pinned.
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Drag handle
+                              Container(
+                                width: 36,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.onSurfaceVariant
+                                      .withValues(alpha: 0.3),
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              SizedBox(height: spacing.md),
 
-                  // Title
-                  Text(
-                    title,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                              // Title
+                              Text(
+                                title,
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
 
-                  // Subtitle (optional)
-                  if (subtitle != null) ...[
-                    SizedBox(height: spacing.sm),
-                    Text(
-                      subtitle!,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
+                              // Subtitle (optional)
+                              if (subtitle != null) ...[
+                                SizedBox(height: spacing.sm),
+                                Text(
+                                  subtitle!,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+
+                              SizedBox(height: spacing.lg),
+
+                              // Main body (HarmonyScreen, etc.)
+                              body,
+                            ],
+                          ),
+                        ),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
 
-                  SizedBox(height: spacing.lg),
-
-                  // Main body
-                  body,
-
-                  // Footer actions (optional)
-                  if (footer.isNotEmpty) ...[
-                    SizedBox(height: spacing.xl),
-                    ...footer,
-                  ],
-                ],
+                      // Footer actions (buttons, etc.)
+                      if (footer.isNotEmpty) ...[
+                        SizedBox(height: spacing.xl),
+                        ...footer,
+                      ],
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

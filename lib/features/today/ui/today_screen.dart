@@ -12,6 +12,7 @@ import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/buttons/kinly_fab.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../core/ui/kinly_bottom_sheet.dart';
+import '../../../../core/ui/sheet/show_sheet.dart';
 import '../domain/models.dart';
 import '../bloc/today_bloc.dart';
 import 'widgets/today_header_container.dart';
@@ -31,6 +32,7 @@ import '../../share/ui/share_owed_detail_screen.dart';
 import '../../share/ui/share_edit_route_args.dart';
 import '../../share/ui/share_edit_outcome.dart';
 import '../../harmony/ui/harmony_provider.dart';
+import '../../harmony/ui/harmony_screen.dart';
 import '../../../data/repositories/mood_repository.dart';
 
 class TodayScreen extends StatelessWidget {
@@ -331,20 +333,19 @@ class TodayScreen extends StatelessWidget {
 
   Future<void> _openHarmonySheet(BuildContext context) {
     final s = S.of(context);
-    final media = MediaQuery.of(context);
-    return KinlyBottomSheet.show(
+
+    return showSheet(
       context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
       isDismissible: false,
       enableDrag: false,
-      title: s.harmonyTitle,
-      subtitle: s.harmonySubtext,
-      body: SizedBox(
-        height: media.size.height * 0.82,
-        child: HarmonyProvider(
-          homeId: homeId,
-          moodRepository: sl<MoodRepository>(),
+      child: HarmonyProvider(
+        homeId: homeId,
+        moodRepository: sl<MoodRepository>(),
+        child: KinlyBottomSheet(
+          title: s.harmonyQuestion,
+          subtitle: s.harmonySubtext,
+          body: HarmonyScreen(homeId: homeId),
+          footer: const [HarmonySubmitButton()],
         ),
       ),
     );
