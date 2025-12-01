@@ -12,19 +12,9 @@ import '../../../core/ui/kinly_comment_box.dart';
 import '../../../core/ui/kinly_toggle.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/harmony_cubit.dart';
+import 'package:go_router/go_router.dart';
 
-/// Harmony sheet body to be used inside [KinlyBottomSheet].
-///
-/// Usage:
-/// ```dart
-/// KinlyBottomSheet.show(
-///   context: context,
-///   title: S.of(context).harmonyTitle,
-///   body: HarmonyScreen(homeId: homeId),
-///   footer: const [HarmonySubmitButton()],
-/// );
-/// ```
-///
+/// Harmony content used by both the Harmony page and (legacy) bottom sheet.
 /// Assumes [HarmonyCubit] is already provided above in the tree.
 class HarmonyScreen extends StatelessWidget {
   final String homeId;
@@ -43,8 +33,8 @@ class HarmonyScreen extends StatelessWidget {
       listener: (context, state) {
         if (state.submitSuccessTick > 0) {
           KinlyToast.showSuccess(context, s.harmonySubmitSuccess);
-          // Close the bottom sheet and return true to caller.
-          Navigator.of(context, rootNavigator: true).pop(true);
+          // Close the Harmony page and return success to caller.
+          context.pop(true);
         } else if (state.submitError != null) {
           final message = _mapError(context, state.submitError!);
           KinlySnackBar.showError(context, message);
@@ -88,8 +78,7 @@ class HarmonyScreen extends StatelessWidget {
   }
 }
 
-/// Separated submit button so it can be passed into KinlyBottomSheet.footer.
-///
+/// Separated submit button so it can be placed in the footer (page or sheet).
 /// Must live under the same [HarmonyCubit] provider as [HarmonyScreen].
 class HarmonySubmitButton extends StatelessWidget {
   const HarmonySubmitButton({super.key});

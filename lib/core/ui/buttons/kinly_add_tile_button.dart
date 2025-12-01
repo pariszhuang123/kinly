@@ -5,7 +5,7 @@ import '../../theme/spacing.dart';
 class KinlyAddTileButton extends StatelessWidget {
   const KinlyAddTileButton({
     super.key,
-    this.label, // 👈 OPTIONAL
+    this.label,
     required this.onTap,
     this.icon = Icons.add,
     this.size = 56,
@@ -22,18 +22,16 @@ class KinlyAddTileButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final colorScheme = theme.colorScheme;
+    final colors = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
 
-    // Light/dark mode friendly colors
+    // --- MATCH KinlyTabBar + KinlyFilledButton ---
     final Color containerColor =
-        isDark ? colorScheme.secondaryContainer : colorScheme.primaryContainer;
+        isDark ? colors.primaryContainer : colors.primary;
 
-    final Color iconColor =
-        isDark ? colorScheme.onInverseSurface : colorScheme.onPrimaryContainer;
+    final Color iconColor = isDark ? colors.onSurface : colors.onPrimary;
 
-    final Color textColor =
-        isDark ? colorScheme.onSurface : colorScheme.primary;
+    final Color textColor = isDark ? colors.onSurface : colors.primary;
 
     return InkWell(
       onTap: onTap,
@@ -51,7 +49,6 @@ class KinlyAddTileButton extends StatelessWidget {
             child: Icon(icon, color: iconColor),
           ),
 
-          // ---- Only show text if label is provided ----
           if (label != null) ...[
             SizedBox(height: spacing.sm),
             SizedBox(

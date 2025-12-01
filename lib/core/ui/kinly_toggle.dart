@@ -37,13 +37,13 @@ class KinlyToggle extends StatelessWidget {
 
     // ---- COLOR LOGIC (aligned with KinlyFilledButton) ----
     // Light: primary / onPrimary
-    // Dark:  secondaryContainer / onInverseSurface
+    // Dark: secondaryContainer / onInverseSurface
     final Color activeColor;
     final Color checkColor;
 
     if (isDark) {
-      activeColor = colors.secondaryContainer;
-      checkColor = colors.onInverseSurface;
+      activeColor = colors.primaryContainer;
+      checkColor = colors.onSurface;
     } else {
       activeColor = colors.primary;
       checkColor = colors.onPrimary;
@@ -54,7 +54,7 @@ class KinlyToggle extends StatelessWidget {
     );
 
     final subtitleStyle = theme.textTheme.bodyMedium?.copyWith(
-      // Keep this onSurfaceVariant in both modes so it’s a softer, secondary label.
+      // Keep this onSurfaceVariant in both modes so it stays a softer label.
       color: colors.onSurfaceVariant,
     );
 
@@ -65,8 +65,10 @@ class KinlyToggle extends StatelessWidget {
       subtitle: subtitle != null ? Text(subtitle!, style: subtitleStyle) : null,
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
+      activeColor: activeColor,
+      checkColor: checkColor,
 
-      // 🔽 Make it visually tighter so it doesn’t add a big vertical gap.
+      // Make it visually tighter so it does not add a big vertical gap.
       visualDensity: const VisualDensity(horizontal: -2, vertical: -3),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );

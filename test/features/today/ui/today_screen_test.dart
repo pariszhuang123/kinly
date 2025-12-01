@@ -49,7 +49,7 @@ void main() {
       supportedLocales: S.delegate.supportedLocales,
       home: BlocProvider<TodayBloc>.value(
         value: todayBloc,
-        child: const TodayScreen(homeId: 'home'),
+        child: const TodayScreen(),
       ),
     );
   }

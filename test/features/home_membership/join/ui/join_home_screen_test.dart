@@ -11,6 +11,7 @@ import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/home_membership/join/ui/join_home_screen.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
+import 'package:kinly/core/theme/kinly_theme.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
@@ -47,6 +48,7 @@ void main() {
 
   Widget buildApp(Widget child) {
     return MaterialApp(
+      theme: buildKinlyTheme(Brightness.light),
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,

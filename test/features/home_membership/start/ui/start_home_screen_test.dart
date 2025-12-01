@@ -9,6 +9,7 @@ import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/home_membership/start/ui/start_home_screen.dart';
 import 'package:kinly/features/home_membership/start/bloc/start_home_bloc.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/core/theme/kinly_theme.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
@@ -46,6 +47,7 @@ void main() {
 
   Widget buildApp() {
     return MaterialApp(
+      theme: buildKinlyTheme(Brightness.light),
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,

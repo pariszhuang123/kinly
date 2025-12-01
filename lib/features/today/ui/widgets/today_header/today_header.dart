@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../generated/l10n.dart';
-import '../../../../../core/theme/spacing.dart';
-import '../../domain/models.dart';
-import '../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../../../generated/l10n.dart';
+import '../../../../../../core/theme/spacing.dart';
+import '../../../domain/models.dart';
+import '../../../../../core/ui/kinly_circle_avatar.dart';
 
 class TodayHeader extends StatelessWidget {
   final String partOfDay; // “morning”, “afternoon”, “evening”

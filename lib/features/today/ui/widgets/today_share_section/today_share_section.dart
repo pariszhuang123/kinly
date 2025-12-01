@@ -1,65 +1,20 @@
+// lib/features/today/ui/widgets/today_share_section.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../core/theme/kinly_sections.dart';
-import '../../../../core/theme/spacing.dart';
-import '../../../../core/ui/kinly_circle_avatar.dart';
-import '../../../../core/ui/kinly_loader.dart';
-import '../../../../core/ui/kinly_tab_bar.dart';
-import '../../../../core/ui/kinly_list_tile.dart';
-import '../../../../core/ui/kinly_empty_state.dart';
-import '../../../../core/ui/feedback/kinly_info_banner.dart';
-import '../../../../core/ui/enums/kinly_banner_type.dart';
-import '../../../../core/ui/buttons/kinly_outlined_button.dart';
-import '../../../../core/ui/section_container.dart';
-import '../../../../generated/l10n.dart';
-import '../../bloc/today_bloc.dart';
-import '../../domain/models.dart';
-
-enum _ShareTabType { active, drafts }
-
-class TodayShareSectionContainer extends StatelessWidget {
-  const TodayShareSectionContainer({
-    super.key,
-    required this.onOwedTap,
-    required this.onDraftTap,
-    required this.onSeeAllDraftsTap,
-  });
-
-  final void Function(TodayShareOwed) onOwedTap;
-  final void Function(TodayShareDraft) onDraftTap;
-  final VoidCallback onSeeAllDraftsTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<TodayBloc, TodayState>(
-      buildWhen:
-          (previous, current) =>
-              previous.shareOwed != current.shareOwed ||
-              previous.shareDrafts != current.shareDrafts ||
-              previous.shareErrorMessage != current.shareErrorMessage ||
-              previous.isLoading != current.isLoading,
-      builder: (context, state) {
-        if (state.isLoading && !state.hasShareContent) {
-          return const Center(child: KinlyLoader(size: 40));
-        }
-        if (!state.hasShareContent) {
-          return _ShareEmptyState(message: S.of(context).todayShareEmptyState);
-        }
-        return TodayShareSection(
-          owed: state.shareOwed,
-          drafts: state.shareDrafts,
-          errorMessage: state.shareErrorMessage,
-          onOwedTap: onOwedTap,
-          onDraftTap: onDraftTap,
-          onSeeAllDraftsTap: onSeeAllDraftsTap,
-        );
-      },
-    );
-  }
-}
+import '../../../../../core/theme/kinly_sections.dart';
+import '../../../../../core/theme/spacing.dart';
+import '../../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../../core/ui/kinly_list_tile.dart';
+import '../../../../../core/ui/kinly_tab_bar.dart';
+import '../../../../../core/ui/buttons/kinly_outlined_button.dart';
+import '../../../../../core/ui/feedback/kinly_info_banner.dart';
+import '../../../../../core/ui/enums/kinly_banner_type.dart';
+import '../../../../../core/ui/section_container.dart';
+import '../../../../../generated/l10n.dart';
+import '../../../domain/models.dart';
+import '../../../../../core/theme/section_assets.dart';
+import '../today_section_tabs.dart';
 
 class TodayShareSection extends StatefulWidget {
   const TodayShareSection({
@@ -84,33 +39,37 @@ class TodayShareSection extends StatefulWidget {
 }
 
 class _TodayShareSectionState extends State<TodayShareSection> {
-  late _ShareTabType _selectedTab;
+  late TodaySectionTabType _selectedTab;
 
   @override
   void initState() {
     super.initState();
-    _selectedTab = _defaultTab;
+    _selectedTab =
+        TodaySectionTabs.defaultTab(
+          hasActive: widget.owed.isNotEmpty,
+          hasDrafts: widget.drafts.isNotEmpty,
+        ) ??
+        TodaySectionTabType.active; // safe fallback
   }
 
   @override
   void didUpdateWidget(covariant TodayShareSection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final tabs = _availableTabs;
+
+    final tabs = TodaySectionTabs.available(
+      hasActive: widget.owed.isNotEmpty,
+      hasDrafts: widget.drafts.isNotEmpty,
+    );
+
     if (!tabs.contains(_selectedTab)) {
-      _selectedTab = _defaultTab;
+      final defaultTab = TodaySectionTabs.defaultTab(
+        hasActive: widget.owed.isNotEmpty,
+        hasDrafts: widget.drafts.isNotEmpty,
+      );
+      if (defaultTab != null) {
+        _selectedTab = defaultTab;
+      }
     }
-  }
-
-  _ShareTabType get _defaultTab {
-    if (widget.owed.isNotEmpty) return _ShareTabType.active;
-    return _ShareTabType.drafts;
-  }
-
-  List<_ShareTabType> get _availableTabs {
-    final tabs = <_ShareTabType>[];
-    if (widget.owed.isNotEmpty) tabs.add(_ShareTabType.active);
-    if (widget.drafts.isNotEmpty) tabs.add(_ShareTabType.drafts);
-    return tabs;
   }
 
   @override
@@ -120,14 +79,18 @@ class _TodayShareSectionState extends State<TodayShareSection> {
     final spacing = theme.extension<Spacing>();
     final s = S.of(context);
     final colors = sections.share;
-    final tabs = _availableTabs;
 
+    final tabs = TodaySectionTabs.available(
+      hasActive: widget.owed.isNotEmpty,
+      hasDrafts: widget.drafts.isNotEmpty,
+    );
+
+    // If there are no owed items and no drafts, don't render this section.
     if (tabs.isEmpty) {
-      return _ShareEmptyState(
-        message: s.todayShareEmptyState,
-        onSeeAllDraftsTap: widget.onSeeAllDraftsTap,
-      );
+      return const SizedBox.shrink();
     }
+
+    const shareIconSize = 32.0;
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,12 +104,12 @@ class _TodayShareSectionState extends State<TodayShareSection> {
             ),
           ),
         if (tabs.length > 1) ...[
-          KinlyTabBar<_ShareTabType>(
+          KinlyTabBar<TodaySectionTabType>(
             tabs: {
               if (widget.owed.isNotEmpty)
-                _ShareTabType.active: s.todayShareTabActive,
+                TodaySectionTabType.active: s.todayShareTabActive,
               if (widget.drafts.isNotEmpty)
-                _ShareTabType.drafts: s.todayShareTabDrafts,
+                TodaySectionTabType.drafts: s.todayShareTabDrafts,
             },
             selected: _selectedTab,
             onChanged: (tab) => setState(() => _selectedTab = tab),
@@ -160,11 +123,9 @@ class _TodayShareSectionState extends State<TodayShareSection> {
     return SectionContainer(
       title: s.todayShareSectionTitle,
       colors: colors,
-      leading: SvgPicture.asset(
-        'assets/icons/feature/Share.svg',
-        width: 32,
-        height: 32,
-        colorFilter: ColorFilter.mode(colors.icon, BlendMode.srcIn),
+      leading: SectionAssets.share.build(
+        color: colors.icon,
+        size: shareIconSize,
       ),
       child: content,
     );
@@ -176,13 +137,13 @@ class _TodayShareSectionState extends State<TodayShareSection> {
     required S strings,
   }) {
     switch (_selectedTab) {
-      case _ShareTabType.active:
+      case TodaySectionTabType.active:
         return _OwedList(
           owed: widget.owed,
           onTap: widget.onOwedTap,
           colors: colors,
         );
-      case _ShareTabType.drafts:
+      case TodaySectionTabType.drafts:
         return _DraftList(
           drafts: widget.drafts,
           onTap: widget.onDraftTap,
@@ -209,6 +170,7 @@ class _OwedList extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = Theme.of(context).extension<Spacing>()!;
     final s = S.of(context);
+
     return Column(
       children: List.generate(owed.length, (index) {
         final entry = owed[index];
@@ -260,6 +222,7 @@ class _DraftList extends StatelessWidget {
     final s = strings ?? S.of(context);
     const maxVisible = 3;
     final visibleDrafts = drafts.take(maxVisible).toList(growable: false);
+
     return Column(
       children: [
         for (var i = 0; i < visibleDrafts.length; i++) ...[
@@ -289,43 +252,6 @@ class _DraftList extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-class _ShareEmptyState extends StatelessWidget {
-  const _ShareEmptyState({required this.message, this.onSeeAllDraftsTap});
-
-  final String message;
-  final VoidCallback? onSeeAllDraftsTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final sections = theme.extension<KinlySections>()!;
-    final colors = sections.share;
-    final s = S.of(context);
-
-    return SectionContainer(
-      title: S.of(context).todayShareSectionTitle,
-      colors: colors,
-      leading: SvgPicture.asset(
-        'assets/icons/feature/Share.svg',
-        width: 32,
-        height: 32,
-        colorFilter: ColorFilter.mode(colors.icon, BlendMode.srcIn),
-      ),
-      child: KinlyEmptyState(
-        title: message,
-        icon: SvgPicture.asset(
-          'assets/icons/feature/Share.svg',
-          width: 40,
-          height: 40,
-          colorFilter: ColorFilter.mode(colors.icon, BlendMode.srcIn),
-        ),
-        ctaLabel: onSeeAllDraftsTap != null ? s.todayShareSeeAll : null,
-        onCtaTap: onSeeAllDraftsTap,
-      ),
     );
   }
 }

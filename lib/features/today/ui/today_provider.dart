@@ -39,7 +39,7 @@ class TodayProvider extends StatelessWidget {
             moodRepository: moodRepository,
             homeId: homeId,
           ),
-      child: TodayScreen(homeId: homeId),
+      child: const TodayScreen(),
     );
   }
 }

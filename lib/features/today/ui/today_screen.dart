@@ -11,13 +11,11 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/buttons/kinly_fab.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
-import '../../../../core/ui/kinly_bottom_sheet.dart';
-import '../../../../core/ui/sheet/show_sheet.dart';
 import '../domain/models.dart';
 import '../bloc/today_bloc.dart';
-import 'widgets/today_header_container.dart';
-import 'widgets/today_flow_section_container.dart';
-import 'widgets/today_share_section.dart';
+import 'widgets/today_header/today_header_container.dart';
+import 'widgets/today_flow_section/today_flow_section_container.dart';
+import 'widgets/today_share_section/today_share_section_container.dart';
 import 'widgets/today_add_sheet.dart';
 import 'widgets/today_empty_state_card.dart';
 import 'widgets/today_gratitude_section.dart';
@@ -31,13 +29,9 @@ import '../../../../data/repositories/expenses_repository.dart';
 import '../../share/ui/share_owed_detail_screen.dart';
 import '../../share/ui/share_edit_route_args.dart';
 import '../../share/ui/share_edit_outcome.dart';
-import '../../harmony/ui/harmony_provider.dart';
-import '../../harmony/ui/harmony_screen.dart';
-import '../../../data/repositories/mood_repository.dart';
 
 class TodayScreen extends StatelessWidget {
-  final String homeId;
-  const TodayScreen({super.key, required this.homeId});
+  const TodayScreen({super.key});
 
   static const _shareLogTag = 'TodayShare';
 
@@ -69,7 +63,7 @@ class TodayScreen extends StatelessWidget {
                   prev.harmonyPromptTick != curr.harmonyPromptTick &&
                   curr.harmonyPromptTick > 0,
           listener: (context, state) async {
-            await _openHarmonySheet(context);
+            await _openHarmonyPage(context);
             if (context.mounted) {
               context.read<TodayBloc>().add(const TodayRefreshed());
             }
@@ -331,23 +325,7 @@ class TodayScreen extends StatelessWidget {
     }
   }
 
-  Future<void> _openHarmonySheet(BuildContext context) {
-    final s = S.of(context);
-
-    return showSheet(
-      context: context,
-      isDismissible: false,
-      enableDrag: false,
-      child: HarmonyProvider(
-        homeId: homeId,
-        moodRepository: sl<MoodRepository>(),
-        child: KinlyBottomSheet(
-          title: s.harmonyQuestion,
-          subtitle: s.harmonySubtext,
-          body: HarmonyScreen(homeId: homeId),
-          footer: const [HarmonySubmitButton()],
-        ),
-      ),
-    );
+  Future<void> _openHarmonyPage(BuildContext context) async {
+    await context.push(AppRoutes.harmony);
   }
 }

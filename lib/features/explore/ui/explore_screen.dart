@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/kinly_sections.dart';
@@ -8,6 +7,7 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/home_bottom_nav.dart';
 import '../../../core/ui/kinly_selection_card.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/theme/section_assets.dart';
 
 class ExploreScreen extends StatelessWidget {
   const ExploreScreen({super.key});
@@ -49,29 +49,23 @@ class ExploreScreen extends StatelessWidget {
                   colors: sections.flow,
                   title: s.quick_add_flow_title,
                   subtitle: s.exploreFlowSubtitle,
-                  icon: Icon(
-                    Icons.repeat_rounded,
+                  icon: SectionAssets.flow.build(
                     color: sections.flow.icon,
-                    size: 28,
+                    size: 32,
                   ),
-                  // ✅ Explore → Flow list as a sub-page
                   onTap: () => context.push(AppRoutes.flow),
                 ),
+
                 SizedBox(height: spacing.md),
+
                 KinlySelectionCard(
                   colors: sections.share,
                   title: s.quick_add_share_title,
                   subtitle: s.exploreShareSubtitle,
-                  icon: SvgPicture.asset(
-                    'assets/icons/feature/Share.svg',
-                    width: 32,
-                    height: 32,
-                    colorFilter: ColorFilter.mode(
-                      sections.share.icon,
-                      BlendMode.srcIn,
-                    ),
+                  icon: SectionAssets.share.build(
+                    color: sections.share.icon,
+                    size: 32,
                   ),
-                  // ✅ Explore → Share created list as a sub-page
                   onTap: () => context.push(AppRoutes.shareCreatedList),
                 ),
               ],

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../bloc/today_bloc.dart';
-import '../../domain/models.dart';
+import '../../../bloc/today_bloc.dart';
+import '../../../domain/models.dart';
 import 'today_header.dart';
-import '../../../auth/bloc/auth_bloc.dart';
-import '../../../profile_settings/ui/profile_settings_provider.dart';
-import '../../../../../core/router/app_router.dart';
-import '../../../../../generated/l10n.dart';
-import '../../../../../core/ui/snackbars/kinly_snackbar.dart';
+import '../../../../auth/bloc/auth_bloc.dart';
+import '../../../../profile_settings/ui/profile_settings_provider.dart';
+import '../../../../../../core/router/app_router.dart';
+import '../../../../../../generated/l10n.dart';
+import '../../../../../../core/ui/snackbars/kinly_snackbar.dart';
 
 class TodayHeaderContainer extends StatelessWidget {
   final String partOfDay;

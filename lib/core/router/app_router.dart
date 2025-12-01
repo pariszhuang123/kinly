@@ -29,6 +29,7 @@ import '../../features/share/ui/share_created_list/share_created_list_provider.d
 import '../../features/share/ui/share_edit_provider.dart';
 import '../../features/share/ui/share_edit_route_args.dart';
 import '../../features/harmony/ui/harmony_provider.dart';
+import '../../features/harmony/ui/harmony_page.dart';
 import '../../features/harmony/ui/gratitude_wall/gratitude_wall_provider.dart';
 import '../../data/repositories/mood_repository.dart';
 import '../../features/nps/ui/nps_provider.dart';
@@ -226,6 +227,7 @@ GoRouter createRouter({
           return HarmonyProvider(
             homeId: membership.homeId,
             moodRepository: sl<MoodRepository>(),
+            child: HarmonyPage(homeId: membership.homeId),
           );
         },
       ),

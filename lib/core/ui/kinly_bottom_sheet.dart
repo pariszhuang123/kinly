@@ -39,7 +39,7 @@ class KinlyBottomSheet extends StatelessWidget {
       enableDrag: enableDrag,
       backgroundColor: Colors.transparent,
       // ✅ Let Flutter handle system bars insets (status / gesture areas).
-      useSafeArea: true,
+      useSafeArea: false,
       builder:
           (_) => KinlyBottomSheet(
             title: title,

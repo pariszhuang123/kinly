@@ -10,7 +10,7 @@ import '../../theme/typography_tokens.dart';
 ///
 /// Uses:
 /// - Light: primary / onPrimary
-/// - Dark:  secondaryContainer / onInverseSurface (to match KinlyAddTileButton)
+/// - Dark:  inverseSurface / onInverseSurface (to match KinlyAddTileButton / FAB / TabBar)
 class KinlyFilledButton extends StatelessWidget {
   const KinlyFilledButton._({
     required this.onPressed,
@@ -121,27 +121,20 @@ class KinlyFilledButton extends StatelessWidget {
     final horizontal = compact ? spacing.sm : spacing.lg;
     final vertical = compact ? spacing.xs : spacing.sm;
 
-    final Widget child = icon != null
-        ? Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              icon!,
-              SizedBox(width: spacing.xs),
-              Flexible(
-                child: Text(
-                  label,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          )
-        : Text(
-            label,
-            overflow: TextOverflow.ellipsis,
-          );
+    final Widget child =
+        icon != null
+            ? Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                icon!,
+                SizedBox(width: spacing.xs),
+                Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
+              ],
+            )
+            : Text(label, overflow: TextOverflow.ellipsis);
 
-    // ---- COLOR LOGIC (aligned with KinlyAddTileButton in dark mode) ----
+    // ---- COLOR LOGIC (aligned with KinlyAddTileButton / FAB / TabBar) ----
     final Color backgroundColor;
     final Color foregroundColor;
 
@@ -149,13 +142,11 @@ class KinlyFilledButton extends StatelessWidget {
       backgroundColor = colors?.error ?? colorScheme.error;
       foregroundColor = colors?.onError ?? colorScheme.onError;
     } else if (isDark) {
-      // Match KinlyAddTileButton behaviour in dark mode:
-      // - container: secondaryContainer
-      // - content:   onInverseSurface (good contrast on filled CTA)
-      backgroundColor = colorScheme.secondaryContainer;
-      foregroundColor = colorScheme.onInverseSurface;
+      // Dark mode CTA: match KinlyAddTileButton & KinlyFab
+      backgroundColor = colorScheme.primaryContainer;
+      foregroundColor = colorScheme.onSurface;
     } else {
-      // Light mode: keep as primary CTA
+      // Light mode CTA: classic primary
       backgroundColor = colors?.primary ?? colorScheme.primary;
       foregroundColor = colors?.onPrimary ?? colorScheme.onPrimary;
     }
@@ -164,40 +155,30 @@ class KinlyFilledButton extends StatelessWidget {
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
       textStyle: type?.labelMedium ?? theme.textTheme.labelLarge,
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontal,
-        vertical: vertical,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: horizontal, vertical: vertical),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(corners?.medium ?? 12),
       ),
     );
 
-    final overlay = WidgetStateProperty.resolveWith<Color?>(
-      (states) {
-        if (states.contains(WidgetState.pressed)) {
-          return foregroundColor.withValues(alpha: 0.12);
-        }
-        if (states.contains(WidgetState.disabled)) {
-          return foregroundColor.withValues(alpha: 0.0);
-        }
-        return null;
-      },
-    );
+    final overlay = WidgetStateProperty.resolveWith<Color?>((states) {
+      if (states.contains(WidgetState.pressed)) {
+        return foregroundColor.withValues(alpha: 0.12);
+      }
+      if (states.contains(WidgetState.disabled)) {
+        return foregroundColor.withValues(alpha: 0.0);
+      }
+      return null;
+    });
 
     final button = FilledButton(
       onPressed: onPressed,
-      style: baseStyle.copyWith(
-        overlayColor: overlay,
-      ),
+      style: baseStyle.copyWith(overlayColor: overlay),
       child: child,
     );
 
     if (!fullWidth) return button;
 
-    return SizedBox(
-      width: double.infinity,
-      child: button,
-    );
+    return SizedBox(width: double.infinity, child: button);
   }
 }

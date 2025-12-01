@@ -4,12 +4,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:kinly/features/offline/ui/offline_splash.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/core/theme/kinly_theme.dart';
 
 void main() {
   testWidgets('OfflineSplash renders copy and triggers retry', (tester) async {
     var retried = false;
     await tester.pumpWidget(
       MaterialApp(
+        theme: buildKinlyTheme(Brightness.light),
         localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,

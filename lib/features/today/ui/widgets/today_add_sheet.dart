@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/theme/kinly_sections.dart';
+import '../../../../../core/theme/section_assets.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/ui/kinly_bottom_sheet.dart';
 import '../../../../../core/ui/kinly_list_tile.dart';
@@ -44,12 +45,20 @@ class TodayAddSheet extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
+    final flowColors = sections.flow;
+    final shareColors = sections.share;
+
+    const iconSize = 28.0;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         KinlyListTile(
-          leading: Icon(Icons.checklist, color: sections.flow.icon),
+          leading: SectionAssets.flow.build(
+            color: flowColors.icon,
+            size: iconSize,
+          ),
           title: s.todayAddSheetFlow,
           onTap: () async {
             Navigator.of(context).pop();
@@ -58,9 +67,9 @@ class TodayAddSheet extends StatelessWidget {
         ),
         SizedBox(height: spacing.md),
         KinlyListTile(
-          leading: Icon(
-            Icons.account_balance_wallet,
-            color: sections.share.icon,
+          leading: SectionAssets.share.build(
+            color: shareColors.icon,
+            size: iconSize,
           ),
           title: s.todayAddSheetShare,
           onTap: () async {
