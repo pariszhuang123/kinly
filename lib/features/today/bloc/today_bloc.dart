@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,6 +14,7 @@ import '../../../data/repositories/mood_repository.dart';
 import '../../../core/mood/models.dart';
 import '../../../core/logging/logger.dart';
 import '../../../core/logging/debug_logger.dart';
+import '../../../core/profile/profile_update_notifier.dart';
 import '../domain/models.dart'; // TodayFlowTask etc.
 
 part 'today_event.dart';
@@ -23,9 +26,11 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final ExpensesRepository _expensesRepository;
   final HomeRepository _homeRepository;
   final MoodRepository _moodRepository;
+  final ProfileUpdateNotifier _profileUpdateNotifier;
   final Logger _logger;
   final String _homeId;
   static const _gratitudeLogTag = 'TodayGratitude';
+  late final StreamSubscription<UserProfile> _profileUpdateSub;
 
   TodayBloc({
     required ChoresRepository choresRepository,
@@ -34,17 +39,24 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required HomeRepository homeRepository,
     required MoodRepository moodRepository,
     required String homeId,
+    required ProfileUpdateNotifier profileUpdateNotifier,
     Logger? logger,
   }) : _choresRepository = choresRepository,
        _profileRepository = profileRepository,
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
        _moodRepository = moodRepository,
+       _profileUpdateNotifier = profileUpdateNotifier,
        _logger = logger ?? const DebugLogger(),
        _homeId = homeId,
        super(const TodayState.loading()) {
     on<TodayStarted>(_onStarted);
     on<TodayRefreshed>(_onRefreshed);
+    on<TodayProfileUpdated>(_onProfileUpdated);
+
+    _profileUpdateSub = _profileUpdateNotifier.stream.listen(
+      (profile) => add(TodayProfileUpdated(profile)),
+    );
 
     // kick off initial load
     add(const TodayStarted());
@@ -59,6 +71,20 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     Emitter<TodayState> emit,
   ) async {
     await _loadToday(emit, isRefresh: true);
+  }
+
+  Future<void> _onProfileUpdated(
+    TodayProfileUpdated event,
+    Emitter<TodayState> emit,
+  ) async {
+    final previous = state.profile;
+    final resolvedProfile = TodayUserProfile(
+      userId: event.profile.userId,
+      username: event.profile.username,
+      avatarUrl: event.profile.avatarUrl,
+      isOwner: previous?.isOwner ?? false,
+    );
+    emit(_stateWithProfile(state, resolvedProfile));
   }
 
   Future<void> _loadToday(
@@ -287,6 +313,60 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       'userId=${currentUserId ?? 'unknown'} homeId=$_homeId',
       tag: _gratitudeLogTag,
     );
+  }
+
+  TodayState _stateWithProfile(
+    TodayState current,
+    TodayUserProfile? profile,
+  ) {
+    if (current.isLoading) {
+      return TodayState.loading(
+        profile: profile,
+        shareOwed: current.shareOwed,
+        shareDrafts: current.shareDrafts,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        gratitudeStatus: current.gratitudeStatus,
+      );
+    }
+
+    if (current.message != null || current.error != null) {
+      return TodayState.failure(
+        profile: profile,
+        message: current.message,
+        error: current.error,
+        shareOwed: current.shareOwed,
+        shareDrafts: current.shareDrafts,
+        shareErrorMessage: current.shareErrorMessage,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        gratitudeStatus: current.gratitudeStatus,
+      );
+    }
+
+    return TodayState.loaded(
+      activeTasks: current.activeTasks,
+      draftTasks: current.draftTasks,
+      shareOwed: current.shareOwed,
+      shareDrafts: current.shareDrafts,
+      profile: profile,
+      shareErrorMessage: current.shareErrorMessage,
+      harmonyPromptTick: current.harmonyPromptTick,
+      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+      npsPromptTick: current.npsPromptTick,
+      hasShownNpsPrompt: current.hasShownNpsPrompt,
+      gratitudeStatus: current.gratitudeStatus,
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _profileUpdateSub.cancel();
+    return super.close();
   }
 }
 

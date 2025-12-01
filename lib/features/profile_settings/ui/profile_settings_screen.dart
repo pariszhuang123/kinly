@@ -16,6 +16,8 @@ import '../../../core/ui/settings/kinly_settings_tile.dart';
 import '../../../core/ui/members/kinly_member_avatar_chip.dart';
 import '../../../core/utils/kinly_support.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/profile/profile_update_notifier.dart';
+import '../../../core/di/locator.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../bloc/profile_settings_bloc.dart';
 import '../edit/profile_identity_provider.dart';
@@ -489,15 +491,17 @@ class ProfileSettingsScreen extends StatelessWidget {
     if (!context.mounted) return;
 
     if (result is UserProfile) {
-      final now = DateTime.now().millisecondsSinceEpoch;
-      final bustedAvatarUrl =
-          result.avatarUrl == null ? null : '${result.avatarUrl}?v=$now';
-
       final updated = ProfileSettingsUser(
         displayName: result.username,
-        avatarUrl: bustedAvatarUrl,
+        avatarUrl: result.avatarUrl,
         avatarStoragePath: result.avatarStoragePath,
       );
+
+      // Broadcast profile change so other features (e.g., Today) can refresh
+      // without relying on navigation rebuilds.
+      if (sl.isRegistered<ProfileUpdateNotifier>()) {
+        sl<ProfileUpdateNotifier>().notify(result);
+      }
 
       context.read<ProfileSettingsBloc>().add(
         ProfileSettingsUserUpdated(updated),

@@ -6,6 +6,7 @@ import '../../../data/repositories/expenses_repository.dart';
 import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../../../data/repositories/mood_repository.dart';
+import '../../../core/profile/profile_update_notifier.dart';
 import '../bloc/today_bloc.dart';
 import 'today_screen.dart';
 
@@ -16,6 +17,7 @@ class TodayProvider extends StatelessWidget {
   final ExpensesRepository expensesRepository;
   final HomeRepository homeRepository;
   final MoodRepository moodRepository;
+  final ProfileUpdateNotifier profileUpdateNotifier;
 
   const TodayProvider({
     super.key,
@@ -25,6 +27,7 @@ class TodayProvider extends StatelessWidget {
     required this.expensesRepository,
     required this.homeRepository,
     required this.moodRepository,
+    required this.profileUpdateNotifier,
   });
 
   @override
@@ -38,6 +41,7 @@ class TodayProvider extends StatelessWidget {
             homeRepository: homeRepository,
             moodRepository: moodRepository,
             homeId: homeId,
+            profileUpdateNotifier: profileUpdateNotifier,
           ),
       child: const TodayScreen(),
     );

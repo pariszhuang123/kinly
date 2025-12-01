@@ -14,3 +14,12 @@ class TodayStarted extends TodayEvent {
 class TodayRefreshed extends TodayEvent {
   const TodayRefreshed();
 }
+
+class TodayProfileUpdated extends TodayEvent {
+  const TodayProfileUpdated(this.profile);
+
+  final UserProfile profile;
+
+  @override
+  List<Object?> get props => [profile];
+}

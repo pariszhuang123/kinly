@@ -18,6 +18,7 @@ import '../logging/logger.dart';
 import '../logging/debug_logger.dart';
 import '../../data/repositories/mood_repository.dart';
 import '../mood/supabase_mood_repository.dart';
+import '../profile/profile_update_notifier.dart';
 
 final sl = GetIt.instance;
 
@@ -40,6 +41,11 @@ void setupDependencies() {
   if (!sl.isRegistered<ProfileRepository>()) {
     sl.registerLazySingleton<ProfileRepository>(
       () => SupabaseProfileRepository(),
+    );
+  }
+  if (!sl.isRegistered<ProfileUpdateNotifier>()) {
+    sl.registerLazySingleton<ProfileUpdateNotifier>(
+      () => ProfileUpdateNotifier(),
     );
   }
   if (!sl.isRegistered<AccountRepository>()) {

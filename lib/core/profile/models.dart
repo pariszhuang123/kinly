@@ -6,6 +6,7 @@ class UserProfile {
   final String? avatarId;
   final String? avatarStoragePath;
   final String? avatarUrl;
+  final String? avatarVersion;
 
   const UserProfile({
     required this.userId,
@@ -13,15 +14,21 @@ class UserProfile {
     this.avatarId,
     this.avatarStoragePath,
     this.avatarUrl,
+    this.avatarVersion,
   });
 
-  factory UserProfile.fromJson(Map<String, dynamic> json, {String? avatarUrl}) {
+  factory UserProfile.fromJson(
+    Map<String, dynamic> json, {
+    String? avatarUrl,
+    String? avatarVersion,
+  }) {
     return UserProfile(
       userId: json['user_id'] as String,
       username: json['username'] as String,
       avatarId: json['avatar_id'] as String?,
       avatarStoragePath: json['avatar_storage_path'] as String?,
       avatarUrl: avatarUrl,
+      avatarVersion: avatarVersion,
     );
   }
 
@@ -31,6 +38,7 @@ class UserProfile {
     String? avatarId,
     String? avatarStoragePath,
     String? avatarUrl,
+    String? avatarVersion,
   }) {
     return UserProfile(
       userId: userId ?? this.userId,
@@ -38,6 +46,7 @@ class UserProfile {
       avatarId: avatarId ?? this.avatarId,
       avatarStoragePath: avatarStoragePath ?? this.avatarStoragePath,
       avatarUrl: avatarUrl ?? this.avatarUrl,
+      avatarVersion: avatarVersion ?? this.avatarVersion,
     );
   }
 }

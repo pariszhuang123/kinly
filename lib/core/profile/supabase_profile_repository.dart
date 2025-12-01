@@ -2,6 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/repositories/profile_repository.dart';
 import '../supabase/storage_path_resolver.dart';
+import 'avatar_cache_buster.dart';
 import 'models.dart';
 import 'profile_error_mapper.dart';
 
@@ -21,9 +22,15 @@ class SupabaseProfileRepository implements ProfileRepository {
         (payload['avatar_storage_path'] as String?)?.trim().isEmpty ?? true
             ? null
             : payload['avatar_storage_path'] as String?;
+    final avatarVersion = storagePath;
+    final avatarUrl = cacheBustAvatarUrl(
+      storagePathToPublicUrl(_client, storagePath),
+      version: avatarVersion,
+    );
     return UserProfile.fromJson(
       payload,
-      avatarUrl: storagePathToPublicUrl(_client, storagePath),
+      avatarUrl: avatarUrl,
+      avatarVersion: avatarVersion,
     );
   }
 
@@ -61,7 +68,11 @@ class SupabaseProfileRepository implements ProfileRepository {
         throw StateError('Failed to update profile identity.');
       }
       final storagePath = payload['avatar_storage_path'] as String?;
-      final avatarUrl = storagePathToPublicUrl(_client, storagePath);
+      final avatarVersion = storagePath;
+      final avatarUrl = cacheBustAvatarUrl(
+        storagePathToPublicUrl(_client, storagePath),
+        version: avatarVersion,
+      );
       final authUserId =
           _client.auth.currentUser?.id ?? _client.auth.currentSession?.user.id;
       if (authUserId == null) {
@@ -73,6 +84,7 @@ class SupabaseProfileRepository implements ProfileRepository {
         avatarId: payload['avatar_id'] as String?,
         avatarStoragePath: storagePath,
         avatarUrl: avatarUrl,
+        avatarVersion: avatarVersion,
       );
     } catch (error) {
       if (error is ProfileIdentityException) rethrow;

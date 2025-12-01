@@ -20,6 +20,7 @@ import '../../features/profile_settings/edit/profile_identity_provider.dart';
 import '../../features/auth/bloc/auth_bloc.dart';
 import 'navigation_intents.dart';
 import '../di/locator.dart';
+import '../profile/profile_update_notifier.dart';
 
 import '../../features/splash/ui/splash_screen.dart';
 import '../../features/version_gating/bloc/app_version_cubit.dart';
@@ -174,6 +175,7 @@ GoRouter createRouter({
             expensesRepository: sl<ExpensesRepository>(),
             homeRepository: sl<HomeRepository>(),
             moodRepository: sl<MoodRepository>(),
+            profileUpdateNotifier: sl<ProfileUpdateNotifier>(),
           );
         },
       ),
