@@ -1,6 +1,7 @@
 import 'enums/chore_completion_status.dart';
 import 'enums/chore_recurrence.dart';
 import 'enums/chore_state.dart';
+import '../time/timezone.dart';
 
 export 'enums/chore_completion_status.dart';
 export 'enums/chore_recurrence.dart';
@@ -54,17 +55,17 @@ class Chore {
       createdByUserId: json['created_by_user_id'] as String,
       assigneeUserId: json['assignee_user_id'] as String?,
       name: json['name'] as String,
-      startDate: _parseDate(json['start_date'])!,
+      startDate: parseTimestampToLocal(json['start_date'])!,
       recurrence: ChoreRecurrenceWire.fromWire(json['recurrence'] as String?),
-      recurrenceCursor: _parseTimestamp(json['recurrence_cursor']),
-      nextOccurrence: _parseDate(json['next_occurrence']),
+      recurrenceCursor: parseTimestampToLocal(json['recurrence_cursor']),
+      nextOccurrence: parseTimestampToLocal(json['next_occurrence']),
       expectationPhotoPath: json['expectation_photo_path'] as String?,
       howToVideoUrl: json['how_to_video_url'] as String?,
       notes: json['notes'] as String?,
       state: ChoreStateWire.fromWire(json['state'] as String?),
-      completedAt: _parseTimestamp(json['completed_at']),
-      createdAt: _parseTimestamp(json['created_at'])!,
-      updatedAt: _parseTimestamp(json['updated_at'])!,
+      completedAt: parseTimestampToLocal(json['completed_at']),
+      createdAt: parseTimestampToLocal(json['created_at'])!,
+      updatedAt: parseTimestampToLocal(json['updated_at'])!,
     );
   }
 }
@@ -97,7 +98,7 @@ class ChoreListEntry {
       id: json['id'] as String,
       homeId: json['home_id'] as String,
       name: json['name'] as String,
-      startDate: _parseDate(json['start_date'])!,
+      startDate: parseTimestampToLocal(json['start_date'])!,
       assigneeUserId: json['assignee_user_id'] as String?,
       assigneeFullName: json['assignee_full_name'] as String?,
       assigneeAvatarStoragePath:
@@ -147,7 +148,7 @@ class TodayFlowEntry {
       id: json['id'] as String,
       homeId: json['home_id'] as String,
       name: json['name'] as String,
-      startDate: _parseDate(json['start_date'])!,
+      startDate: parseTimestampToLocal(json['start_date'])!,
       state: ChoreStateWire.fromWire(json['state'] as String?),
     );
   }
@@ -265,8 +266,8 @@ class ChoreCompletionResult {
       recurrence: (json['recurrence'] as String?)?.let(
         (value) => ChoreRecurrenceWire.fromWire(value),
       ),
-      previousNextOccurrence: _parseDate(json['previous_next_occurrence']),
-      newNextOccurrence: _parseDate(json['new_next_occurrence']),
+      previousNextOccurrence: parseDateToLocal(json['previous_next_occurrence']),
+      newNextOccurrence: parseDateToLocal(json['new_next_occurrence']),
       stepsAdvanced: (json['steps_advanced'] as num?)?.toInt(),
     );
   }
@@ -275,23 +276,6 @@ class ChoreCompletionResult {
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
-
-DateTime? _parseDate(Object? value) {
-  if (value == null) return null;
-  final raw = value as String;
-  if (raw.contains('T')) {
-    final dt = DateTime.parse(raw);
-    return dt.isUtc ? dt : dt.toUtc();
-  }
-  // Date-only string; normalize to midnight UTC.
-  return DateTime.parse('${raw}T00:00:00.000Z');
-}
-
-DateTime? _parseTimestamp(Object? value) {
-  if (value == null) return null;
-  final dt = DateTime.parse(value as String);
-  return dt.isUtc ? dt : dt.toUtc();
-}
 
 extension NullableLet<T> on T? {
   R? let<R>(R Function(T value) transform) {

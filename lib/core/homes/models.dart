@@ -1,4 +1,5 @@
 import 'enums/leave_outcome.dart';
+import '../time/timezone.dart';
 
 export 'enums/leave_outcome.dart';
 
@@ -60,7 +61,8 @@ class CurrentMembership {
       userId: json['user_id'] as String,
       homeId: json['home_id'] as String,
       role: json['role'] as String,
-      validFrom: DateTime.parse(json['valid_from'] as String),
+      validFrom: parseTimestampToLocal(json['valid_from']) ??
+          DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
     );
   }
 }
@@ -88,8 +90,8 @@ class HomeMemberSummary {
       username: json['username'] as String? ?? '',
       role: json['role'] as String? ?? 'member',
       validFrom:
-          _parseTimestamp(json['valid_from']) ??
-          DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+          parseTimestampToLocal(json['valid_from']) ??
+          DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
       avatarUrl: json['avatar_url'] as String?,
       canTransferTo: (json['can_transfer_to'] as bool?) ?? false,
     );
@@ -138,16 +140,10 @@ class HomeInvite {
       code: json['code'] as String? ?? '',
       createdBy: json['created_by'] as String? ?? '',
       createdAt:
-          _parseTimestamp(json['created_at']) ??
-          DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
-      updatedAt: _parseTimestamp(json['updated_at']),
-      revokedAt: _parseTimestamp(json['revoked_at']),
+          parseTimestampToLocal(json['created_at']) ??
+          DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
+      updatedAt: parseTimestampToLocal(json['updated_at']),
+      revokedAt: parseTimestampToLocal(json['revoked_at']),
     );
   }
-}
-
-DateTime? _parseTimestamp(Object? value) {
-  if (value == null) return null;
-  final dt = DateTime.parse(value as String);
-  return dt.isUtc ? dt : dt.toUtc();
 }

@@ -4,6 +4,7 @@ import '../../data/repositories/chores_repository.dart';
 import '../supabase/storage_path_resolver.dart';
 import '../supabase/supabase_error_mapper.dart';
 import '../utils/url_validator.dart';
+import '../time/timezone.dart';
 import 'models.dart';
 
 class SupabaseChoresRepository implements ChoresRepository {
@@ -36,7 +37,7 @@ class SupabaseChoresRepository implements ChoresRepository {
           'p_home_id': homeId,
           'p_name': name,
           if (assigneeUserId != null) 'p_assignee_user_id': assigneeUserId,
-          if (startDate != null) 'p_start_date': _toIsoDate(startDate),
+          if (startDate != null) 'p_start_date': toUtcIsoString(startDate),
           'p_recurrence': recurrence.wireValue,
           if (notes != null) 'p_notes': notes,
           'p_how_to_video_url': sanitizedHowTo,
@@ -74,7 +75,7 @@ class SupabaseChoresRepository implements ChoresRepository {
           'p_chore_id': choreId,
           'p_name': name,
           'p_assignee_user_id': assigneeUserId,
-          'p_start_date': _toIsoDate(startDate),
+          'p_start_date': toUtcIsoString(startDate),
           if (recurrence != null) 'p_recurrence': recurrence.wireValue,
           if (notes != null) 'p_notes': notes,
           'p_how_to_video_url': sanitizedHowTo,
@@ -289,25 +290,17 @@ class SupabaseChoresRepository implements ChoresRepository {
       return _extractChore(Map<String, dynamic>.from(rpcResult));
     }
 
-    throw const ChoreException(
-      ChoreErrorCode.unknown,
-      'Malformed chore payload from Supabase.',
-    );
-  }
+  throw const ChoreException(
+    ChoreErrorCode.unknown,
+    'Malformed chore payload from Supabase.',
+  );
+}
 
-  String _toIsoDate(DateTime date) {
-    // Use the calendar date as entered (no TZ conversion) to avoid off-by-one
-    // when users are ahead/behind UTC.
-    return '${date.year.toString().padLeft(4, '0')}-'
-        '${date.month.toString().padLeft(2, '0')}-'
-        '${date.day.toString().padLeft(2, '0')}';
+Map<String, dynamic>? _coerceMap(dynamic value) {
+  if (value is Map<String, dynamic>) return value;
+  if (value is Map) {
+    return value.cast<String, dynamic>();
   }
-
-  Map<String, dynamic>? _coerceMap(dynamic value) {
-    if (value is Map<String, dynamic>) return value;
-    if (value is Map) {
-      return value.cast<String, dynamic>();
-    }
     return null;
   }
 }

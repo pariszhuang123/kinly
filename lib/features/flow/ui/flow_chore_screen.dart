@@ -67,9 +67,10 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         if (state.photoErrorTick > 0) {
           final s = S.of(context);
           final isPermission = state.photoErrorMessage == 'permission';
-          final snackText = isPermission
-              ? s.flowChorePhotoPermissionDenied
-              : s.flowChorePhotoUploadError;
+          final snackText =
+              isPermission
+                  ? s.flowChorePhotoPermissionDenied
+                  : s.flowChorePhotoUploadError;
           KinlySnackBar.showError(
             context,
             snackText,
@@ -167,7 +168,6 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
       title: s.flowChoreDeleteDialogTitle,
       message: s.flowChoreDeleteDialogMessage,
       confirmLabel: s.flowChoreDeleteConfirm,
-      cancelLabel: s.flowChoreDeleteCancel,
       destructive: true,
     );
     if (!context.mounted) return;
@@ -302,14 +302,15 @@ class _FlowChoreFormView extends StatelessWidget {
         KinlyDropdownField<ChoreRecurrence>(
           value: form.recurrence,
           labelText: s.flowChoreRecurrenceLabel,
-          items: ChoreRecurrence.values
-              .map(
-                (value) => DropdownMenuItem(
-                  value: value,
-                  child: Text(_recurrenceLabel(context, value)),
-                ),
-              )
-              .toList(),
+          items:
+              ChoreRecurrence.values
+                  .map(
+                    (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(_recurrenceLabel(context, value)),
+                    ),
+                  )
+                  .toList(),
           onChanged:
               (value) => context.read<FlowChoreBloc>().add(
                 FlowChoreRecurrenceChanged(value!),

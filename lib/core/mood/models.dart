@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'enums/mood_scale.dart';
+import '../time/timezone.dart';
 
 class MoodStatus extends Equatable {
   final bool isSubmittedThisWeek;
@@ -60,7 +61,7 @@ class GratitudeWallPost extends Equatable {
       authorAvatarUrl: json['author_avatar_url'] as String?,
       mood: MoodScale.fromWire(json['mood'] as String),
       message: json['message'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
+      createdAt: parseTimestampToLocal(json['created_at'])!,
     );
   }
 
@@ -110,10 +111,7 @@ class GratitudeWallStatus extends Equatable {
   factory GratitudeWallStatus.fromJson(Map<String, dynamic> json) {
     return GratitudeWallStatus(
       hasUnread: (json['has_unread'] as bool?) ?? true,
-      lastReadAt:
-          json['last_read_at'] == null
-              ? null
-              : DateTime.tryParse(json['last_read_at'] as String),
+      lastReadAt: parseTimestampToLocal(json['last_read_at']),
     );
   }
 
@@ -136,10 +134,7 @@ class GratitudeWallStats extends Equatable {
     return GratitudeWallStats(
       totalPosts: (json['total_posts'] as num?)?.toInt() ?? 0,
       unreadCount: (json['unread_count'] as num?)?.toInt() ?? 0,
-      lastReadAt:
-          json['last_read_at'] == null
-              ? null
-              : DateTime.tryParse(json['last_read_at'] as String),
+      lastReadAt: parseTimestampToLocal(json['last_read_at']),
     );
   }
 

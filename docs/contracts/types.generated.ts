@@ -196,7 +196,6 @@ export type Database = {
           how_to_video_url: string | null
           id: string
           name: string
-          next_occurrence: string | null
           notes: string | null
           recurrence: Database["public"]["Enums"]["recurrence_interval"]
           recurrence_cursor: string | null
@@ -214,7 +213,6 @@ export type Database = {
           how_to_video_url?: string | null
           id?: string
           name: string
-          next_occurrence?: string | null
           notes?: string | null
           recurrence?: Database["public"]["Enums"]["recurrence_interval"]
           recurrence_cursor?: string | null
@@ -232,7 +230,6 @@ export type Database = {
           how_to_video_url?: string | null
           id?: string
           name?: string
-          next_occurrence?: string | null
           notes?: string | null
           recurrence?: Database["public"]["Enums"]["recurrence_interval"]
           recurrence_cursor?: string | null
@@ -959,7 +956,7 @@ export type Database = {
           assignee_user_id: string
           created_at: string
           created_by_user_id: string
-          current_due_date: string
+          current_due_at: string
           home_id: string
           id: string
           name: string
@@ -1070,7 +1067,6 @@ export type Database = {
           how_to_video_url: string | null
           id: string
           name: string
-          next_occurrence: string | null
           notes: string | null
           recurrence: Database["public"]["Enums"]["recurrence_interval"]
           recurrence_cursor: string | null
@@ -1126,7 +1122,6 @@ export type Database = {
           how_to_video_url: string | null
           id: string
           name: string
-          next_occurrence: string | null
           notes: string | null
           recurrence: Database["public"]["Enums"]["recurrence_interval"]
           recurrence_cursor: string | null

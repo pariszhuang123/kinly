@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/repositories/app_version_repository.dart';
+import '../time/timezone.dart';
 
 class SupabaseAppVersionRepository implements AppVersionRepository {
   SupabaseAppVersionRepository({SupabaseClient? client})
@@ -27,12 +28,8 @@ class SupabaseAppVersionRepository implements AppVersionRepository {
       hardBlocked: response['hardBlocked'] as bool? ?? false,
       updateRecommended: response['updateRecommended'] as bool? ?? false,
       notes: response['notes'] as String?,
-      releasedAt: _parseDate(response['releasedAt']),
+      releasedAt: parseTimestampToLocal(response['releasedAt']),
     );
   }
 
-  DateTime? _parseDate(dynamic value) {
-    if (value is String) return DateTime.tryParse(value);
-    return null;
-  }
 }

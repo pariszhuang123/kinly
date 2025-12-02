@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/repositories/mood_repository.dart';
+import '../time/timezone.dart';
 import 'enums/mood_scale.dart';
 import 'models.dart';
 import '../supabase/supabase_error_mapper.dart';
@@ -71,7 +72,7 @@ class SupabaseMoodRepository implements MoodRepository {
         'p_home_id': homeId,
         'p_limit': limit,
         if (cursorCreatedAt != null)
-          'p_cursor_created_at': cursorCreatedAt.toUtc().toIso8601String(),
+          'p_cursor_created_at': toUtcIsoString(cursorCreatedAt),
         if (cursorId != null) 'p_cursor_id': cursorId,
       },
     );

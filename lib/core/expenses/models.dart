@@ -1,6 +1,7 @@
 import 'enums/expense_share_status.dart';
 import 'enums/expense_split_type.dart';
 import 'enums/expense_status.dart';
+import '../time/timezone.dart';
 
 export 'enums/expense_share_status.dart';
 export 'enums/expense_split_type.dart';
@@ -42,8 +43,8 @@ class Expense {
       amountCents: (json['amount_cents'] as num).toInt(),
       description: json['description'] as String,
       notes: json['notes'] as String?,
-      createdAt: _parseTimestamp(json['created_at'])!,
-      updatedAt: _parseTimestamp(json['updated_at'])!,
+      createdAt: parseTimestampToLocal(json['created_at'])!,
+      updatedAt: parseTimestampToLocal(json['updated_at'])!,
     );
   }
 }
@@ -70,7 +71,7 @@ class ExpenseSplit {
       debtorUserId: json['debtor_user_id'] as String,
       amountCents: (json['amount_cents'] as num).toInt(),
       status: ExpenseShareStatusWire.fromWire(json['status'] as String?),
-      markedPaidAt: _parseTimestamp(json['marked_paid_at']),
+      markedPaidAt: parseTimestampToLocal(json['marked_paid_at']),
     );
   }
 }
@@ -215,14 +216,9 @@ class ExpenseCreatedSummary {
       paidShares: (json['paidShares'] as num?)?.toInt() ?? 0,
       paidAmountCents: (json['paidAmountCents'] as num?)?.toInt() ?? 0,
       allPaid: json['allPaid'] as bool? ?? false,
-      createdAt: _parseTimestamp(json['createdAt'])!,
-      fullyPaidAt: _parseTimestamp(json['fullyPaidAt']),
+      createdAt: parseTimestampToLocal(json['createdAt'])!,
+      fullyPaidAt: parseTimestampToLocal(json['fullyPaidAt']),
     );
   }
 }
 
-DateTime? _parseTimestamp(Object? value) {
-  if (value == null) return null;
-  final dt = DateTime.parse(value as String);
-  return dt.isUtc ? dt : dt.toUtc();
-}
