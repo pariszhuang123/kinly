@@ -1036,6 +1036,24 @@ $$;
 ALTER FUNCTION "public"."_home_usage_apply_delta"("p_home_id" "uuid", "p_deltas" "jsonb") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") RETURNS "void"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
+    AS $$
+begin
+  insert into public.share_events (user_id, home_id, feature, channel)
+  values (p_user_id, p_home_id, p_feature, p_channel);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") IS 'Internal helper for writing share attempts; callers must handle auth/membership.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."api_assert"("p_condition" boolean, "p_code" "text", "p_msg" "text", "p_sqlstate" "text" DEFAULT 'P0001'::"text", "p_details" "jsonb" DEFAULT NULL::"jsonb", "p_hint" "text" DEFAULT NULL::"text") RETURNS "void"
     LANGUAGE "plpgsql"
     SET "search_path" TO ''
@@ -1721,7 +1739,6 @@ SELECT jsonb_build_object(
   'start_date', c.start_date,
   'recurrence', c.recurrence,
   'recurrence_cursor', c.recurrence_cursor,
-  'next_occurrence', c.next_occurrence,
   'expectation_photo_path', c.expectation_photo_path,
   'how_to_video_url', c.how_to_video_url,
   'notes', c.notes,
@@ -4380,7 +4397,6 @@ BEGIN
 
   UPDATE public.memberships m
      SET valid_to   = now(),
-         is_valid   = FALSE,
          is_current = FALSE,
          updated_at = now()
    WHERE m.user_id    = p_target_user_id
@@ -4795,6 +4811,37 @@ $$;
 
 
 ALTER FUNCTION "public"."profile_me"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."share_log_event"("p_home_id" "uuid", "p_feature" "text", "p_channel" "text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_user_id uuid := auth.uid();
+begin
+  perform public._assert_authenticated();
+
+  if p_home_id is not null then
+    perform public._assert_home_member(p_home_id);
+    perform public._assert_home_active(p_home_id);
+  end if;
+
+  perform public._share_log_event_internal(
+    p_user_id      => v_user_id,
+    p_home_id      => p_home_id,
+    p_feature      => p_feature,
+    p_channel      => p_channel
+  );
+end;
+$$;
+
+
+ALTER FUNCTION "public"."share_log_event"("p_home_id" "uuid", "p_feature" "text", "p_channel" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."share_log_event"("p_home_id" "uuid", "p_feature" "text", "p_channel" "text") IS 'Records a share attempt for the current user with feature and channel.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state") RETURNS TABLE("id" "uuid", "home_id" "uuid", "name" "text", "start_date" timestamp with time zone, "state" "public"."chore_state")
@@ -5394,6 +5441,25 @@ COMMENT ON COLUMN "public"."reserved_usernames"."name" IS 'Reserved handle (CITE
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."share_events" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "home_id" "uuid",
+    "feature" "text" NOT NULL,
+    "channel" "text" NOT NULL,
+    CONSTRAINT "share_channel_valid" CHECK (("channel" = ANY (ARRAY['system_share'::"text", 'qr_code'::"text", 'copy_link'::"text", 'other'::"text"]))),
+    CONSTRAINT "share_feature_valid" CHECK (("feature" = ANY (ARRAY['invite_button'::"text", 'invite_housemate'::"text", 'gratitude_wall_house'::"text", 'gratitude_wall_personal'::"text", 'house_rules_detailed'::"text", 'house_rules_summary'::"text", 'preferences_detailed'::"text", 'preferences_summary'::"text", 'other'::"text"])))
+);
+
+
+ALTER TABLE "public"."share_events" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."share_events" IS 'Internal analytics for tracking share attempts (per user, home, feature, channel).';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."shared_preferences" (
     "user_id" "uuid" NOT NULL,
     "pref_key" "text" NOT NULL,
@@ -5613,6 +5679,11 @@ ALTER TABLE ONLY "public"."profiles"
 
 ALTER TABLE ONLY "public"."reserved_usernames"
     ADD CONSTRAINT "reserved_usernames_pkey" PRIMARY KEY ("name");
+
+
+
+ALTER TABLE ONLY "public"."share_events"
+    ADD CONSTRAINT "share_events_pkey" PRIMARY KEY ("id");
 
 
 
@@ -5902,6 +5973,16 @@ ALTER TABLE ONLY "public"."profiles"
 
 
 
+ALTER TABLE ONLY "public"."share_events"
+    ADD CONSTRAINT "share_events_home_id_fkey" FOREIGN KEY ("home_id") REFERENCES "public"."homes"("id");
+
+
+
+ALTER TABLE ONLY "public"."share_events"
+    ADD CONSTRAINT "share_events_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id");
+
+
+
 ALTER TABLE ONLY "public"."shared_preferences"
     ADD CONSTRAINT "shared_preferences_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
@@ -5987,6 +6068,9 @@ COMMENT ON POLICY "profiles_select_authenticated" ON "public"."profiles" IS 'All
 
 
 ALTER TABLE "public"."reserved_usernames" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."share_events" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."shared_preferences" ENABLE ROW LEVEL SECURITY;
@@ -6407,6 +6491,12 @@ GRANT ALL ON TABLE "public"."home_usage_counters" TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."_home_usage_apply_delta"("p_home_id" "uuid", "p_deltas" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."_home_usage_apply_delta"("p_home_id" "uuid", "p_deltas" "jsonb") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") TO "service_role";
 
 
 
@@ -8106,6 +8196,13 @@ GRANT ALL ON FUNCTION "public"."replace"("public"."citext", "public"."citext", "
 
 
 
+REVOKE ALL ON FUNCTION "public"."share_log_event"("p_home_id" "uuid", "p_feature" "text", "p_channel" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."share_log_event"("p_home_id" "uuid", "p_feature" "text", "p_channel" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."share_log_event"("p_home_id" "uuid", "p_feature" "text", "p_channel" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."share_log_event"("p_home_id" "uuid", "p_feature" "text", "p_channel" "text") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."split_part"("public"."citext", "public"."citext", integer) TO "postgres";
 GRANT ALL ON FUNCTION "public"."split_part"("public"."citext", "public"."citext", integer) TO "anon";
 GRANT ALL ON FUNCTION "public"."split_part"("public"."citext", "public"."citext", integer) TO "authenticated";
@@ -8307,6 +8404,11 @@ GRANT ALL ON TABLE "public"."profiles" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."reserved_usernames" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."share_events" TO "anon";
+GRANT ALL ON TABLE "public"."share_events" TO "service_role";
 
 
 

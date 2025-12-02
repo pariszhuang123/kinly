@@ -42,4 +42,11 @@ abstract class HomeRepository {
 
   /// Returns the caller's current membership, or null if none.
   Future<CurrentMembership?> getCurrentMembership();
+
+  /// Logs a share attempt for the given home/feature/channel.
+  Future<void> logShareEvent({
+    required String feature,
+    required String channel,
+    String? homeId,
+  });
 }

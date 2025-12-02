@@ -87,4 +87,13 @@ class FakeHomeRepository implements HomeRepository {
     await Future<void>.delayed(const Duration(milliseconds: 100));
     return const [];
   }
+
+  @override
+  Future<void> logShareEvent({
+    required String feature,
+    required String channel,
+    String? homeId,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+  }
 }

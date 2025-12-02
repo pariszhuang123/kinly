@@ -18,3 +18,16 @@ class HubRefreshed extends HubEvent {
 class HubInviteRotated extends HubEvent {
   const HubInviteRotated();
 }
+
+class HubShareLogged extends HubEvent {
+  const HubShareLogged({
+    required this.feature,
+    required this.channel,
+  });
+
+  final String feature;
+  final String channel;
+
+  @override
+  List<Object?> get props => [feature, channel];
+}

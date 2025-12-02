@@ -839,6 +839,48 @@ export type Database = {
         }
         Relationships: []
       }
+      share_events: {
+        Row: {
+          channel: string
+          created_at: string
+          feature: string
+          home_id: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          channel: string
+          created_at?: string
+          feature: string
+          home_id?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          feature?: string
+          home_id?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "share_events_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "share_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shared_preferences: {
         Row: {
           created_at: string
@@ -1013,6 +1055,15 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      _share_log_event_internal: {
+        Args: {
+          p_channel: string
+          p_feature: string
+          p_home_id: string
+          p_user_id: string
+        }
+        Returns: undefined
       }
       api_assert: {
         Args: {
@@ -1375,6 +1426,10 @@ export type Database = {
           user_id: string
           username: string
         }[]
+      }
+      share_log_event: {
+        Args: { p_channel: string; p_feature: string; p_home_id: string }
+        Returns: undefined
       }
       today_flow_list: {
         Args: {

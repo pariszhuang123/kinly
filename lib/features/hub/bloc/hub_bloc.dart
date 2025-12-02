@@ -24,6 +24,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
     on<HubStarted>(_onStarted);
     on<HubRefreshed>(_onRefreshed);
     on<HubInviteRotated>(_onRotateInvite);
+    on<HubShareLogged>(_onShareLogged);
 
     add(const HubStarted());
   }
@@ -60,6 +61,26 @@ class HubBloc extends Bloc<HubEvent, HubState> {
           isRefreshing: false,
           errorMessage: error.toString(),
         ),
+      );
+    }
+  }
+
+  Future<void> _onShareLogged(
+    HubShareLogged event,
+    Emitter<HubState> emit,
+  ) async {
+    try {
+      await _homeRepository.logShareEvent(
+        feature: event.feature,
+        channel: event.channel,
+        homeId: _homeId,
+      );
+    } catch (error, stack) {
+      _logger.warn(
+        'Failed to log share event',
+        error: error,
+        stackTrace: stack,
+        tag: 'Hub',
       );
     }
   }

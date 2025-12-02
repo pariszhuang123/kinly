@@ -23,9 +23,16 @@ class GratitudeWallRow extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
+    final materialLocalizations = MaterialLocalizations.of(context);
 
     final accentBg = accent.withValues(alpha: 0.08);
     final accentStripe = accent.withValues(alpha: 0.22);
+
+    final dateLabel =
+        materialLocalizations.formatMediumDate(post.createdAt.toLocal());
+    final timeLabel =
+        TimeOfDay.fromDateTime(post.createdAt.toLocal()).format(context);
+    final timestampLabel = s.gratitudeWallTimestamp('$dateLabel • $timeLabel');
 
     final content = Expanded(
       child: Container(
@@ -97,11 +104,7 @@ class GratitudeWallRow extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            s.gratitudeWallTimestamp(
-                              TimeOfDay.fromDateTime(
-                                post.createdAt,
-                              ).format(context),
-                            ),
+                            timestampLabel,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),

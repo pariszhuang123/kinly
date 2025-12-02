@@ -178,6 +178,13 @@ class HubScreen extends StatelessWidget {
     final raw = s.hubShareInviteBody(state.inviteCode, appLink);
     final message = raw.replaceAll(r'\n', '\n');
 
+    context.read<HubBloc>().add(
+      const HubShareLogged(
+        feature: 'invite_housemate',
+        channel: 'system_share',
+      ),
+    );
+
     await Share.share(message, subject: s.hubShareInviteTitle);
   }
 
@@ -195,6 +202,13 @@ class HubScreen extends StatelessWidget {
     final raw = s.hubShareAppBody(state.appLink);
     final message = raw.replaceAll(r'\n', '\n');
 
+    context.read<HubBloc>().add(
+      const HubShareLogged(
+        feature: 'invite_housemate',
+        channel: 'system_share',
+      ),
+    );
+
     await Share.share(message, subject: s.hubShareAppTitle);
   }
 
@@ -205,6 +219,10 @@ class HubScreen extends StatelessWidget {
       KinlySnackBar.showError(context, s.hubInviteUnavailable);
       return;
     }
+
+    context.read<HubBloc>().add(
+      const HubShareLogged(feature: 'invite_button', channel: 'system_share'),
+    );
 
     await Clipboard.setData(ClipboardData(text: state.inviteCode));
     if (!context.mounted) return;
@@ -238,6 +256,10 @@ class HubScreen extends StatelessWidget {
     final appLink =
         state.appLink.isNotEmpty ? state.appLink : 'https://kinly.app';
     final isDark = theme.brightness == Brightness.dark;
+
+    context.read<HubBloc>().add(
+      const HubShareLogged(feature: 'invite_button', channel: 'qr_code'),
+    );
 
     KinlyBottomSheet.show<void>(
       context: context,

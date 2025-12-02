@@ -217,4 +217,20 @@ class SupabaseHomeRepository implements HomeRepository {
       return null;
     }
   }
+
+  @override
+  Future<void> logShareEvent({
+    required String feature,
+    required String channel,
+    String? homeId,
+  }) async {
+    await _client.rpc(
+      'share_log_event',
+      params: {
+        'p_home_id': homeId,
+        'p_feature': feature,
+        'p_channel': channel,
+      },
+    );
+  }
 }
