@@ -73,6 +73,15 @@ class ShareEditProvider extends StatelessWidget {
         final splitMode = _splitModeFromExpense(expense.splitType);
         final selectedIds =
             detail.splits.map((split) => split.debtorUserId).toSet();
+        final allPaid =
+            detail.splits.isNotEmpty &&
+            detail.splits
+                .every((split) => split.status == ExpenseShareStatus.paid);
+        final paidByOther = detail.splits.any(
+          (split) =>
+              split.status == ExpenseShareStatus.paid &&
+              split.debtorUserId != expense.createdByUserId,
+        );
         final customInputs =
             splitMode == ShareSplitMode.custom
                 ? {
@@ -98,6 +107,8 @@ class ShareEditProvider extends StatelessWidget {
                 initialForm: initialForm,
                 editingExpenseId: expense.id,
                 amountLocked: detail.amountLocked,
+                allPaid: allPaid,
+                paidByOther: paidByOther,
               )..add(const ShareCreateParticipantsRequested()),
           child: ShareCreateScreen(allowDelete: allowDelete),
         );

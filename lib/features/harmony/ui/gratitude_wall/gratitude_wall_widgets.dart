@@ -28,11 +28,16 @@ class GratitudeWallRow extends StatelessWidget {
     final accentBg = accent.withValues(alpha: 0.08);
     final accentStripe = accent.withValues(alpha: 0.22);
 
-    final dateLabel =
-        materialLocalizations.formatMediumDate(post.createdAt.toLocal());
-    final timeLabel =
-        TimeOfDay.fromDateTime(post.createdAt.toLocal()).format(context);
-    final timestampLabel = s.gratitudeWallTimestamp('$dateLabel • $timeLabel');
+    final createdLocal = post.createdAt.toLocal();
+    final now = DateTime.now();
+    final isToday =
+        now.year == createdLocal.year &&
+        now.month == createdLocal.month &&
+        now.day == createdLocal.day;
+    final dateLabel = materialLocalizations.formatMediumDate(createdLocal);
+    final timeLabel = TimeOfDay.fromDateTime(createdLocal).format(context);
+    final timestampLabel =
+        isToday ? s.gratitudeWallTimestamp(timeLabel) : '$dateLabel • $timeLabel';
 
     final content = Expanded(
       child: Container(

@@ -47,6 +47,8 @@ class ShareCreateFormView extends StatelessWidget {
     final showValidation = state.showValidationErrors;
     final customSummary = state.evaluateCustomSplit();
     final locked = state.isAmountLocked;
+    final fullyPaid = state.allPaid;
+    final deleteBlocked = state.paidByOther || locked || fullyPaid;
 
     // ------------------------------------------------------------------
     // Primary button behaviour:
@@ -56,7 +58,9 @@ class ShareCreateFormView extends StatelessWidget {
     // ------------------------------------------------------------------
     final isEditing = state.isEditing;
     final isPristineEdit = isEditing && !state.hasUserEdits;
-    final canDelete = allowDelete && isPristineEdit;
+    final canDelete = allowDelete && isPristineEdit && !deleteBlocked;
+    final isDeleteAction = canDelete;
+    final hidePrimary = fullyPaid;
 
     final String primaryLabel;
     if (!isEditing) {
@@ -117,13 +121,15 @@ class ShareCreateFormView extends StatelessWidget {
         SizedBox(height: spacing.lg),
         _NotesField(controller: notesController),
         SizedBox(height: spacing.xl),
-        _PrimaryActionButton(
-          label: primaryLabel,
-          shareColors: shareColors,
-          isBusy: state.isSubmitting || state.isDeleting,
-          shouldDisable: shouldDisable,
-          onPressed: handlePrimaryPressed,
-        ),
+        if (!hidePrimary)
+          _PrimaryActionButton(
+            label: primaryLabel,
+            shareColors: shareColors,
+            isBusy: state.isSubmitting || state.isDeleting,
+            shouldDisable: shouldDisable,
+            destructive: isDeleteAction,
+            onPressed: handlePrimaryPressed,
+          ),
       ],
     );
   }
@@ -302,6 +308,7 @@ class _PrimaryActionButton extends StatelessWidget {
     required this.shareColors,
     required this.isBusy,
     required this.shouldDisable,
+    this.destructive = false,
     required this.onPressed,
   });
 
@@ -309,15 +316,23 @@ class _PrimaryActionButton extends StatelessWidget {
   final SectionColors? shareColors;
   final bool isBusy;
   final bool shouldDisable;
+  final bool destructive;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    final button = KinlyFilledButton.text(
-      fullWidth: true,
-      onPressed: shouldDisable ? null : onPressed,
-      label: label,
-    );
+    final button =
+        destructive
+            ? KinlyFilledButton.destructiveText(
+              fullWidth: true,
+              onPressed: shouldDisable ? null : onPressed,
+              label: label,
+            )
+            : KinlyFilledButton.text(
+              fullWidth: true,
+              onPressed: shouldDisable ? null : onPressed,
+              label: label,
+            );
 
     if (!isBusy) return button;
 
@@ -359,6 +374,7 @@ class _ParticipantsSection extends StatelessWidget {
     final theme = Theme.of(context);
     final s = S.of(context);
     final splitMode = state.form.splitMode;
+    final colorScheme = theme.colorScheme;
 
     if (splitMode == null) {
       return const SizedBox.shrink();
@@ -391,7 +407,8 @@ class _ParticipantsSection extends StatelessWidget {
               participant: participant,
               controller: controller,
               selected: isSelected,
-              enabled: !locked && isSelected,
+              canToggle: !locked,
+              canEditAmount: !locked && isSelected,
               onToggled:
                   locked
                       ? null
@@ -451,6 +468,8 @@ class _ParticipantsSection extends StatelessWidget {
                 return FilterChip(
                   label: Text(participant.displayName),
                   selected: isSelected,
+                  selectedColor: colorScheme.primaryContainer,
+                  checkmarkColor: colorScheme.onPrimaryContainer,
                   onSelected:
                       locked
                           ? null
@@ -465,8 +484,6 @@ class _ParticipantsSection extends StatelessWidget {
                     radius: 16,
                     isOwner: participant.isOwner,
                   ),
-                  selectedColor: shareColors?.accent.withValues(alpha: .18),
-                  checkmarkColor: shareColors?.icon,
                 );
               }).toList(),
         ),
@@ -516,7 +533,8 @@ class _CustomSplitRow extends StatelessWidget {
     required this.participant,
     required this.controller,
     required this.selected,
-    required this.enabled,
+    required this.canToggle,
+    required this.canEditAmount,
     required this.onToggled,
     required this.onAmountChanged,
   });
@@ -524,7 +542,8 @@ class _CustomSplitRow extends StatelessWidget {
   final ShareParticipant participant;
   final TextEditingController controller;
   final bool selected;
-  final bool enabled;
+  final bool canToggle;
+  final bool canEditAmount;
   final ValueChanged<bool>? onToggled;
   final ValueChanged<String>? onAmountChanged;
 
@@ -533,6 +552,7 @@ class _CustomSplitRow extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Container(
       margin: EdgeInsets.only(bottom: spacing.sm),
@@ -545,8 +565,10 @@ class _CustomSplitRow extends StatelessWidget {
         children: [
           Checkbox(
             value: selected,
+            activeColor: colorScheme.primaryContainer,
+            checkColor: colorScheme.onPrimaryContainer,
             onChanged:
-                enabled ? (value) => onToggled?.call(value ?? false) : null,
+                canToggle ? (value) => onToggled?.call(value ?? false) : null,
           ),
           KinlyCircleAvatar(
             avatarUrl: participant.avatarUrl,
@@ -564,7 +586,7 @@ class _CustomSplitRow extends StatelessWidget {
             width: 110,
             child: KinlyTextField(
               controller: controller,
-              enabled: enabled,
+              enabled: canEditAmount,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),

@@ -458,8 +458,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "offline_retry": MessageLookupByLibrary.simpleMessage("Try again"),
     "offline_title": MessageLookupByLibrary.simpleMessage("You\'re offline"),
     "profileActionCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
-    "profileActionConfirm": MessageLookupByLibrary.simpleMessage(
-      "Delete Account",
+    "profileActionConfirm": MessageLookupByLibrary.simpleMessage("Leave Home"),
+    "profileActionConfirmDelete": MessageLookupByLibrary.simpleMessage(
+      "Delete account",
     ),
     "profileConfirmDeleteMessage": MessageLookupByLibrary.simpleMessage(
       "This removes your account and signs you out. This cannot be undone.",
@@ -763,7 +764,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareEditSubmit": MessageLookupByLibrary.simpleMessage("Update"),
     "shareEditSuccess": MessageLookupByLibrary.simpleMessage("Share updated."),
-    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Finish draft"),
+    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Edit Share"),
     "shareOwedDetailEmpty": MessageLookupByLibrary.simpleMessage(
       "You\'re all caught up with this person.",
     ),

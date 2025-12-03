@@ -203,10 +203,7 @@ class HubScreen extends StatelessWidget {
     final message = raw.replaceAll(r'\n', '\n');
 
     context.read<HubBloc>().add(
-      const HubShareLogged(
-        feature: 'invite_housemate',
-        channel: 'system_share',
-      ),
+      const HubShareLogged(feature: 'invite_button', channel: 'system_share'),
     );
 
     await Share.share(message, subject: s.hubShareAppTitle);
@@ -279,21 +276,6 @@ class HubScreen extends StatelessWidget {
               isDark: isDark,
               backgroundColor: colorScheme.surfaceContainerHighest,
             ),
-          ),
-          SizedBox(height: spacing.md),
-          Text(
-            s.hubQrSubtitle,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: spacing.lg),
-          KinlyFilledButton.icon(
-            onPressed: () => _shareAppLink(context, state),
-            icon: Icons.ios_share_rounded,
-            label: s.hubShareAppCta,
-            fullWidth: true,
           ),
         ],
       ),

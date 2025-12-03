@@ -22,16 +22,20 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     ShareCreateForm? initialForm,
     String? editingExpenseId,
     bool amountLocked = false,
+    bool allPaid = false,
+    bool paidByOther = false,
   }) : _homeId = homeId,
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
        super(
          ShareCreateState.initial(
-           form: initialForm,
-           isEditing: editingExpenseId != null,
-           editingExpenseId: editingExpenseId,
-           isAmountLocked: amountLocked,
-         ),
+            form: initialForm,
+            isEditing: editingExpenseId != null,
+            editingExpenseId: editingExpenseId,
+            isAmountLocked: amountLocked,
+            allPaid: allPaid,
+            paidByOther: paidByOther,
+          ),
        ) {
     on<ShareCreateParticipantsRequested>(_onParticipantsRequested);
     on<ShareCreateDescriptionChanged>(_onDescriptionChanged);

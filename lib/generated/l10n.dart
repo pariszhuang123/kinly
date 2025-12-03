@@ -1186,10 +1186,10 @@ class S {
     );
   }
 
-  /// `Finish draft`
+  /// `Edit Share`
   String get shareEditTitle {
     return Intl.message(
-      'Finish draft',
+      'Edit Share',
       name: 'shareEditTitle',
       desc: '',
       args: [],
@@ -2876,10 +2876,20 @@ class S {
     );
   }
 
-  /// `Delete Account`
+  /// `Delete account`
+  String get profileActionConfirmDelete {
+    return Intl.message(
+      'Delete account',
+      name: 'profileActionConfirmDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave Home`
   String get profileActionConfirm {
     return Intl.message(
-      'Delete Account',
+      'Leave Home',
       name: 'profileActionConfirm',
       desc: '',
       args: [],

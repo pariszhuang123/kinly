@@ -280,6 +280,7 @@ class ProfileSettingsScreen extends StatelessWidget {
       title: s.profileConfirmLeaveTitle,
       message: message,
       confirmLabel: s.profileActionConfirm,
+      destructive: true,
     );
   }
 
@@ -440,7 +441,7 @@ class ProfileSettingsScreen extends StatelessWidget {
       context,
       title: s.profileConfirmDeleteTitle,
       message: s.profileConfirmDeleteMessage,
-      confirmLabel: s.profileActionConfirm,
+      confirmLabel: s.profileActionConfirmDelete,
       destructive: true,
     );
     if (!context.mounted) return;

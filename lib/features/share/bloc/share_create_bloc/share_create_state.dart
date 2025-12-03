@@ -19,6 +19,8 @@ class ShareCreateState extends Equatable {
     required this.isEditing,
     required this.editingExpenseId,
     required this.isAmountLocked,
+    required this.allPaid,
+    required this.paidByOther,
     required this.hasUserEdits,
   }) : participants = List.unmodifiable(participants);
 
@@ -27,6 +29,8 @@ class ShareCreateState extends Equatable {
     bool isEditing = false,
     String? editingExpenseId,
     bool isAmountLocked = false,
+    bool allPaid = false,
+    bool paidByOther = false,
   }) {
     return ShareCreateState(
       form: form ?? ShareCreateForm.initial(),
@@ -46,6 +50,8 @@ class ShareCreateState extends Equatable {
       isEditing: isEditing,
       editingExpenseId: editingExpenseId,
       isAmountLocked: isAmountLocked,
+      allPaid: allPaid,
+      paidByOther: paidByOther,
       hasUserEdits: false, // starts as "pristine"
     );
   }
@@ -67,6 +73,8 @@ class ShareCreateState extends Equatable {
   final bool isEditing;
   final String? editingExpenseId;
   final bool isAmountLocked;
+  final bool allPaid;
+  final bool paidByOther;
 
   /// Tracks whether the user has made *any* edits in this session.
   /// Used by the primary button to decide between Delete vs Update.
@@ -94,6 +102,8 @@ class ShareCreateState extends Equatable {
     bool? isEditing,
     String? editingExpenseId,
     bool? isAmountLocked,
+    bool? allPaid,
+    bool? paidByOther,
     bool? hasUserEdits,
   }) {
     return ShareCreateState(
@@ -125,6 +135,8 @@ class ShareCreateState extends Equatable {
       isEditing: isEditing ?? this.isEditing,
       editingExpenseId: editingExpenseId ?? this.editingExpenseId,
       isAmountLocked: isAmountLocked ?? this.isAmountLocked,
+      allPaid: allPaid ?? this.allPaid,
+      paidByOther: paidByOther ?? this.paidByOther,
       hasUserEdits: hasUserEdits ?? this.hasUserEdits,
     );
   }
@@ -188,6 +200,8 @@ class ShareCreateState extends Equatable {
     isEditing,
     editingExpenseId,
     isAmountLocked,
+    allPaid,
+    paidByOther,
     hasUserEdits,
   ];
 }

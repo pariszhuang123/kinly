@@ -171,7 +171,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       _logGratitudeStatus(wallStatus, profile?.userId);
 
       final draftTasks = drafts
-          .map((entry) => _mapEntryToTodayTask(entry, isNewTodayOverride: true))
+          .map(_mapEntryToTodayTask)
           .toList(growable: false);
       final activeTasks = active
           .map(_mapEntryToTodayTask)
@@ -234,15 +234,20 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   }
 
   TodayFlowTask _mapEntryToTodayTask(
-    TodayFlowEntry entry, {
-    bool? isNewTodayOverride,
-  }) {
+    TodayFlowEntry entry,
+  ) {
+    final isCreatedToday =
+        _isSameDay(entry.startDate.toLocal(), DateTime.now());
     return TodayFlowTask(
       id: entry.id,
       title: entry.name,
       state: entry.state,
-      isNewToday: isNewTodayOverride ?? entry.isDraft,
+      isNewToday: entry.isDraft && isCreatedToday,
     );
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   Future<_ShareSnapshot> _loadShareSnapshot({

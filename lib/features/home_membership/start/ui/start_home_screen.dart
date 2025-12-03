@@ -9,7 +9,6 @@ import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
-import '../../../auth/widgets/auth_sign_out_button.dart';
 import '../bloc/start_home_bloc.dart';
 
 class StartHomeScreen extends StatelessWidget {
@@ -32,7 +31,6 @@ class StartHomeScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(s.app_title, style: theme.textTheme.titleLarge),
-          actions: const [AuthSignOutButton()],
         ),
         body: SafeArea(
           child: BlocConsumer<StartHomeBloc, StartHomeState>(

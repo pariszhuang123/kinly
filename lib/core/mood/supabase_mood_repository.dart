@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/repositories/mood_repository.dart';
@@ -6,11 +8,20 @@ import 'enums/mood_scale.dart';
 import 'models.dart';
 import '../supabase/supabase_error_mapper.dart';
 
+typedef _RpcInvoker = FutureOr<dynamic> Function(
+  String fn, {
+  Map<String, dynamic>? params,
+});
+
 class SupabaseMoodRepository implements MoodRepository {
   final SupabaseClient _client;
+  final _RpcInvoker _rpc;
 
-  SupabaseMoodRepository({SupabaseClient? client})
-    : _client = client ?? Supabase.instance.client;
+  SupabaseMoodRepository({SupabaseClient? client, _RpcInvoker? rpc})
+    : _client = client ?? Supabase.instance.client,
+      _rpc = rpc ??
+          ((fn, {params}) =>
+              (client ?? Supabase.instance.client).rpc(fn, params: params));
 
   @override
   Future<bool> isSubmittedThisWeek(String homeId) async {
@@ -34,7 +45,7 @@ class SupabaseMoodRepository implements MoodRepository {
     bool addToWall = false,
   }) async {
     try {
-      final res = await _client.rpc(
+      final res = await _rpc(
         'mood_submit',
         params: {
           'p_home_id': homeId,
@@ -48,6 +59,16 @@ class SupabaseMoodRepository implements MoodRepository {
       }
       if (res is Map) {
         return MoodSubmitResult.fromJson(res.cast<String, dynamic>());
+      }
+      // Supabase RETURNS TABLE typically comes back as a list of rows; accept a 1-row list.
+      if (res is List && res.isNotEmpty) {
+        final first = res.first;
+        if (first is Map<String, dynamic>) {
+          return MoodSubmitResult.fromJson(first);
+        }
+        if (first is Map) {
+          return MoodSubmitResult.fromJson(first.cast<String, dynamic>());
+        }
       }
       throw const MoodSubmitException(
         MoodSubmitErrorCode.unknown,
