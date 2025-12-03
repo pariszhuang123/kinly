@@ -137,11 +137,14 @@ class ProfileSettingsScreen extends StatelessWidget {
                         subtitle: s.profileDeleteAccountSubtitle,
                         icon: Icons.delete_forever_outlined,
                         destructive: true,
-                        showProgress: state.deleteInProgress,
+                        showProgress:
+                            state.deleteInProgress || state.transferInProgress,
                         onTap:
-                            state.deleteInProgress
+                            state.deleteInProgress ||
+                                    state.transferInProgress ||
+                                    state.leaveEligibilityLoading
                                 ? null
-                                : () => _confirmDelete(context),
+                                : () => _handleDeleteTap(context),
                       ),
                     ]);
 
@@ -209,6 +212,63 @@ class ProfileSettingsScreen extends StatelessWidget {
         state.action == ProfileSettingsAction.deleteSuccess) {
       Navigator.of(context).pop();
     }
+  }
+
+  Future<void> _handleDeleteTap(BuildContext context) async {
+    final bloc = context.read<ProfileSettingsBloc>();
+    final state = bloc.state;
+    final s = S.of(context);
+
+    if (state.leaveEligibilityLoading) {
+      KinlySnackBar.showInfo(context, s.profileLeaveEligibilityLoading);
+      return;
+    }
+
+    if (state.leaveEligibilityError != null) {
+      KinlySnackBar.showError(context, s.profileLeaveEligibilityError);
+      return;
+    }
+
+    final confirmed = await showKinlyConfirmDialog(
+      context,
+      title: s.profileConfirmDeleteTitle,
+      message: s.profileConfirmDeleteMessage,
+      confirmLabel: s.profileActionConfirmDelete,
+      destructive: true,
+    );
+    if (!context.mounted || confirmed != true) return;
+
+    final isOwner = state.isOwner;
+    final hasOtherMembers = state.otherActiveMembers.isNotEmpty;
+
+    if (isOwner && hasOtherMembers) {
+      final candidates = state.transferCandidates;
+      if (candidates.isEmpty) {
+        KinlySnackBar.showError(
+          context,
+          s.profileLeaveOwnerNoEligibleMembers,
+        );
+        return;
+      }
+
+      final selectedUserId = await _showTransferOwnershipSheet(
+        context,
+        candidates,
+      );
+      if (!context.mounted) return;
+
+      if (selectedUserId != null) {
+        bloc.add(
+          ProfileSettingsTransferOwnerRequested(
+            selectedUserId,
+            followUp: TransferFollowUp.delete,
+          ),
+        );
+      }
+      return;
+    }
+
+    bloc.add(const ProfileSettingsDeleteRequested());
   }
 
   Future<void> _handleLeaveTap(BuildContext context) async {
@@ -435,22 +495,7 @@ class ProfileSettingsScreen extends StatelessWidget {
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
-    final s = S.of(context);
-
-    final confirmed = await showKinlyConfirmDialog(
-      context,
-      title: s.profileConfirmDeleteTitle,
-      message: s.profileConfirmDeleteMessage,
-      confirmLabel: s.profileActionConfirmDelete,
-      destructive: true,
-    );
-    if (!context.mounted) return;
-
-    if (confirmed == true) {
-      context.read<ProfileSettingsBloc>().add(
-        const ProfileSettingsDeleteRequested(),
-      );
-    }
+    await _handleDeleteTap(context);
   }
 
   Future<void> _confirmLogout(BuildContext context) async {

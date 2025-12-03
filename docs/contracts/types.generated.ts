@@ -1427,6 +1427,7 @@ export type Database = {
           username: string
         }[]
       }
+      profiles_request_deactivation: { Args: never; Returns: Json }
       share_log_event: {
         Args: { p_channel: string; p_feature: string; p_home_id: string }
         Returns: undefined

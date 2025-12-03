@@ -4413,12 +4413,12 @@ BEGIN
   FOR UPDATE;
 
   UPDATE public.memberships m
-     SET m.valid_to   = now(),
-         m.is_current = FALSE,
-         m.updated_at = now()
-   WHERE m.user_id    = p_target_user_id
-     AND m.home_id    = p_home_id
-     AND m.is_current = TRUE
+    SET valid_to   = now(),
+        is_current = FALSE,
+        updated_at = now()
+  WHERE m.user_id    = p_target_user_id
+    AND m.home_id    = p_home_id
+    AND m.is_current = TRUE
   RETURNING 1 INTO v_rows_updated;
 
   PERFORM public.api_assert(
@@ -4828,6 +4828,60 @@ $$;
 
 
 ALTER FUNCTION "public"."profile_me"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."profiles_request_deactivation"() RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user           uuid := auth.uid();
+  v_home_id        uuid;
+  v_deactivated_at timestamptz;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  -- Find the caller's current home (at most one is allowed today)
+  SELECT m.home_id
+    INTO v_home_id
+    FROM public.memberships m
+   WHERE m.user_id = v_user
+     AND m.is_current
+   LIMIT 1;
+
+  -- Leave the home first; bubbles OWNER_MUST_TRANSFER_FIRST if needed
+  IF v_home_id IS NOT NULL THEN
+    PERFORM public.homes_leave(v_home_id);
+  END IF;
+
+  -- Mark profile as deactivated (idempotent)
+  UPDATE public.profiles p
+     SET deactivated_at = COALESCE(p.deactivated_at, now()),
+         updated_at     = now()
+   WHERE p.id = v_user
+  RETURNING deactivated_at INTO v_deactivated_at;
+
+  IF v_deactivated_at IS NULL THEN
+    PERFORM public.api_error(
+      'PROFILE_NOT_FOUND',
+      'Profile not found for current user.',
+      'P0002',
+      jsonb_build_object('user_id', v_user)
+    );
+  END IF;
+
+  RETURN jsonb_build_object(
+    'ok', true,
+    'code', 'DEACTIVATION_REQUESTED',
+    'data', jsonb_build_object(
+      'deactivated_at', v_deactivated_at
+    )
+  );
+END;
+$$;
+
+
+ALTER FUNCTION "public"."profiles_request_deactivation"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."share_log_event"("p_home_id" "uuid", "p_feature" "text", "p_channel" "text") RETURNS "void"
@@ -8133,6 +8187,12 @@ REVOKE ALL ON FUNCTION "public"."profile_me"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."profile_me"() TO "anon";
 GRANT ALL ON FUNCTION "public"."profile_me"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."profile_me"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."profiles_request_deactivation"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."profiles_request_deactivation"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."profiles_request_deactivation"() TO "service_role";
 
 
 

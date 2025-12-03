@@ -144,7 +144,11 @@ class ProfileSettingsBloc
           action: ProfileSettingsAction.transferSuccess,
         ),
       );
-      add(const ProfileSettingsLeaveRequested());
+      if (event.followUp == TransferFollowUp.delete) {
+        add(const ProfileSettingsDeleteRequested());
+      } else {
+        add(const ProfileSettingsLeaveRequested());
+      }
     } catch (error) {
       emit(
         state.copyWith(

@@ -7,6 +7,11 @@ abstract class ProfileSettingsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+enum TransferFollowUp {
+  leave,
+  delete,
+}
+
 class ProfileSettingsStarted extends ProfileSettingsEvent {
   const ProfileSettingsStarted();
 }
@@ -16,12 +21,16 @@ class ProfileSettingsLeaveRequested extends ProfileSettingsEvent {
 }
 
 class ProfileSettingsTransferOwnerRequested extends ProfileSettingsEvent {
-  const ProfileSettingsTransferOwnerRequested(this.newOwnerUserId);
+  const ProfileSettingsTransferOwnerRequested(
+    this.newOwnerUserId, {
+    this.followUp = TransferFollowUp.leave,
+  });
 
   final String newOwnerUserId;
+  final TransferFollowUp followUp;
 
   @override
-  List<Object?> get props => [newOwnerUserId];
+  List<Object?> get props => [newOwnerUserId, followUp];
 }
 
 class ProfileSettingsKickMemberRequested extends ProfileSettingsEvent {

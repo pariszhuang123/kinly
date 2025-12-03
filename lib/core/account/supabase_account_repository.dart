@@ -10,8 +10,8 @@ class SupabaseAccountRepository implements AccountRepository {
 
   @override
   Future<void> deleteAccount() async {
-    // RPC is stubbed for now; once implemented it should perform the real
-    // deletion and surface typed errors.
-    await _client.rpc('profiles_delete_account');
+    // Deactivate the profile and leave homes server-side; bubbles ownership
+    // errors when the caller must transfer first.
+    await _client.rpc('profiles_request_deactivation');
   }
 }
