@@ -1,3 +1,5 @@
+SET search_path = pgtap, public, auth, extensions;
+
 -- pgTAP tests for notifications daily migration
 BEGIN;
 SELECT plan(13);
