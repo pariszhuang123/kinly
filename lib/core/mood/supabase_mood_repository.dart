@@ -8,18 +8,17 @@ import 'enums/mood_scale.dart';
 import 'models.dart';
 import '../supabase/supabase_error_mapper.dart';
 
-typedef _RpcInvoker = FutureOr<dynamic> Function(
-  String fn, {
-  Map<String, dynamic>? params,
-});
+typedef RpcInvoker =
+    FutureOr<dynamic> Function(String fn, {Map<String, dynamic>? params});
 
 class SupabaseMoodRepository implements MoodRepository {
   final SupabaseClient _client;
-  final _RpcInvoker _rpc;
+  final RpcInvoker _rpc;
 
-  SupabaseMoodRepository({SupabaseClient? client, _RpcInvoker? rpc})
+  SupabaseMoodRepository({SupabaseClient? client, RpcInvoker? rpc})
     : _client = client ?? Supabase.instance.client,
-      _rpc = rpc ??
+      _rpc =
+          rpc ??
           ((fn, {params}) =>
               (client ?? Supabase.instance.client).rpc(fn, params: params));
 

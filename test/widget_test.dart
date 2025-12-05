@@ -27,7 +27,7 @@ void main() {
     await sl.reset();
     PackageInfo.setMockInitialValues(
       appName: 'Kinly',
-      packageName: 'com.kinly.app',
+      packageName: 'com.makinglifeeasie.kinly.dev',
       version: '1.0.0',
       buildNumber: '1',
       buildSignature: 'test',

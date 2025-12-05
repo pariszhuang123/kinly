@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "447657171212",
+    "project_id": "kinly-dev",
+    "storage_bucket": "kinly-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447657171212:android:edd2db25d20c4db2199129",
+        "android_client_info": {
+          "package_name": "com.makinglifeeasie.kinly.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXujq_5DT6BF7v0XJWtCOr5n9xKx_-6e8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

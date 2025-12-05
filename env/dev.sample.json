@@ -4,5 +4,9 @@
   "SUPABASE_ANON_KEY": "dev-anon-key",
   "DEEPLINK_HOST": "dev.example.com",
   "WEB_CLIENT_ID": "optional-google-web-client-id",
-  "IOS_CLIENT_ID": "optional-google-ios-client-id"
+  "IOS_CLIENT_ID": "optional-google-ios-client-id",
+  "IOS_STORE_URL": "https://apps.apple.com/nz/app/coffee-pool/id6737482186",
+  "ANDROID_STORE_URL": "https://play.google.com/store/apps/details?id=com.canva.editor&hl=en_NZ",
+  "SUPABASE_SERVICE_ROLE_KEY": "supabase_service_role_key"
+
 }

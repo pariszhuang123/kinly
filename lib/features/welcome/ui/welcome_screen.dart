@@ -14,6 +14,7 @@ import '../../../generated/l10n.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/widgets/auth_error_listener.dart';
 import '../../splash/ui/widgets/kinly_logo.dart';
+import '../../../core/ui/toggles/kinly_checkbox.dart'; // <-- NEW IMPORT
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -94,47 +95,56 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Checkbox(
+                      KinlyCheckbox(
                         value: _consented,
-                        onChanged:
-                            (v) => setState(() => _consented = v ?? false),
+                        onChanged: (v) {
+                          setState(() => _consented = v);
+                        },
                       ),
+                      const SizedBox(width: 8),
+                      // Make the whole text block tappable to toggle consent
                       Expanded(
-                        child: Wrap(
-                          alignment: WrapAlignment.start,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            Text(
-                              s.login_consent_prefix,
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                            InkWell(
-                              onTap: () => _open(_termsUri),
-                              child: Text(
-                                s.login_terms,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: linkColors.link,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: linkColors.link,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() => _consented = !_consented);
+                          },
+                          borderRadius: BorderRadius.circular(4),
+                          child: Wrap(
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              Text(
+                                s.login_consent_prefix,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                              InkWell(
+                                onTap: () => _open(_termsUri),
+                                child: Text(
+                                  s.login_terms,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: linkColors.link,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: linkColors.link,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Text(
-                              s.login_consent_connector,
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                            InkWell(
-                              onTap: () => _open(_privacyUri),
-                              child: Text(
-                                s.login_privacy,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: linkColors.link,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: linkColors.link,
+                              Text(
+                                s.login_consent_connector,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                              InkWell(
+                                onTap: () => _open(_privacyUri),
+                                child: Text(
+                                  s.login_privacy,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: linkColors.link,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: linkColors.link,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],

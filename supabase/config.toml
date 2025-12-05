@@ -4,3 +4,6 @@ project_id = "kinly-local"
 port = 54322
 shadow_port = 54323
 major_version = 15
+
+[functions.notifications_daily]
+verify_jwt = false

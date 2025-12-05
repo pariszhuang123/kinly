@@ -1,3 +1,15 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.2.2") // or whatever you already use
+        classpath("com.google.gms:google-services:4.4.4")  // ✅ REQUIRED for Firebase Messaging
+    }
+}
+
+
 allprojects {
     repositories {
         google()

@@ -9,7 +9,7 @@ import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/kinly_toast.dart';
 import '../../../core/ui/buttons/kinly_option_selector_row.dart';
 import '../../../core/ui/kinly_comment_box.dart';
-import '../../../core/ui/kinly_toggle.dart';
+import '../../../core/ui/toggles/kinly_toggle.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/harmony_cubit.dart';
 import 'package:go_router/go_router.dart';

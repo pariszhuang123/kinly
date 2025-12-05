@@ -19,6 +19,9 @@ import '../logging/debug_logger.dart';
 import '../../data/repositories/mood_repository.dart';
 import '../mood/supabase_mood_repository.dart';
 import '../profile/profile_update_notifier.dart';
+import '../../data/repositories/notifications_repository.dart';
+import '../notifications/supabase_notifications_repository.dart';
+import '../notifications/notification_sync_state.dart';
 
 final sl = GetIt.instance;
 
@@ -70,5 +73,13 @@ void setupDependencies() {
   }
   if (!sl.isRegistered<MoodRepository>()) {
     sl.registerLazySingleton<MoodRepository>(() => SupabaseMoodRepository());
+  }
+  if (!sl.isRegistered<NotificationSyncState>()) {
+    sl.registerLazySingleton<NotificationSyncState>(() => NotificationSyncState());
+  }
+  if (!sl.isRegistered<NotificationsRepository>()) {
+    sl.registerLazySingleton<NotificationsRepository>(
+      () => SupabaseNotificationsRepository(syncState: sl<NotificationSyncState>()),
+    );
   }
 }

@@ -4414,7 +4414,6 @@ BEGIN
 
   UPDATE public.memberships m
     SET valid_to   = now(),
-        is_current = FALSE,
         updated_at = now()
   WHERE m.user_id    = p_target_user_id
     AND m.home_id    = p_home_id
@@ -4660,6 +4659,350 @@ ALTER FUNCTION "public"."mood_submit"("p_home_id" "uuid", "p_mood" "public"."moo
 
 COMMENT ON FUNCTION "public"."mood_submit"("p_home_id" "uuid", "p_mood" "public"."mood_scale", "p_comment" "text", "p_add_to_wall" boolean) IS 'Submit the current user''s weekly mood for a home. Enforces one entry per user per ISO week across all homes. Optionally creates a gratitude wall post when mood is positive (sunny/partially_sunny) and p_add_to_wall is true. Parameters: p_home_id (home ID), p_mood (mood_scale value), p_comment (optional text), p_add_to_wall (whether to post to gratitude wall). Returns: entry_id (mood entry ID), gratitude_post_id (ID of created gratitude wall post, or NULL).';
 
+
+
+CREATE OR REPLACE FUNCTION "public"."notifications_daily_candidates"("p_limit" integer DEFAULT 200, "p_offset" integer DEFAULT 0) RETURNS TABLE("user_id" "uuid", "locale" "text", "timezone" "text", "token_id" "uuid", "token" "text", "local_date" "date")
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  WITH eligible_users AS (
+    SELECT
+      np.user_id,
+      np.locale,
+      np.timezone,
+      (timezone(np.timezone, now()))::date AS local_date
+    FROM public.notification_preferences np
+    WHERE np.wants_daily = TRUE
+      AND np.os_permission = 'allowed'
+      AND np.preferred_hour = date_part('hour', timezone(np.timezone, now()))::int
+      AND (
+        np.last_sent_local_date IS NULL
+        OR np.last_sent_local_date < (timezone(np.timezone, now()))::date
+      )
+      AND public.today_has_content(
+        np.user_id,
+        np.timezone,
+        (timezone(np.timezone, now()))::date
+      ) = TRUE
+  ),
+  eligible_tokens AS (
+    SELECT
+      eu.user_id,
+      eu.locale,
+      eu.timezone,
+      dt.id   AS token_id,
+      dt.token,
+      eu.local_date
+    FROM eligible_users eu
+    JOIN public.device_tokens dt
+      ON dt.user_id = eu.user_id
+    WHERE dt.status = 'active'
+  )
+  SELECT
+    user_id,
+    locale,
+    timezone,
+    token_id,
+    token,
+    local_date
+  FROM eligible_tokens
+  ORDER BY user_id
+  LIMIT COALESCE(p_limit, 200)
+  OFFSET COALESCE(p_offset, 0);
+$$;
+
+
+ALTER FUNCTION "public"."notifications_daily_candidates"("p_limit" integer, "p_offset" integer) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."notifications_daily_candidates"("p_limit" integer, "p_offset" integer) IS 'Paged list of users + tokens eligible for the daily notification window.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."notifications_mark_send_success"("p_send_id" "uuid", "p_user_id" "uuid", "p_local_date" "date") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  UPDATE public.notification_sends
+  SET status    = 'sent',
+      sent_at   = now(),
+      updated_at = now()
+  WHERE id = p_send_id;
+
+  UPDATE public.notification_preferences
+  SET last_sent_local_date = p_local_date,
+      updated_at           = now()
+  WHERE user_id = p_user_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."notifications_mark_send_success"("p_send_id" "uuid", "p_user_id" "uuid", "p_local_date" "date") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."notifications_mark_token_status"("p_token_id" "uuid", "p_status" "text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  UPDATE public.device_tokens
+  SET status    = p_status,
+      updated_at = now()
+  WHERE id = p_token_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."notifications_mark_token_status"("p_token_id" "uuid", "p_status" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."notifications_reserve_send"("p_user_id" "uuid", "p_local_date" "date", "p_job_run_id" "text") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_id uuid;
+BEGIN
+  INSERT INTO public.notification_sends (
+    user_id,
+    local_date,
+    job_run_id,
+    status,
+    reserved_at
+  )
+  VALUES (
+    p_user_id,
+    p_local_date,
+    p_job_run_id,
+    'reserved',
+    now()
+  )
+  ON CONFLICT (user_id, local_date) DO NOTHING
+  RETURNING id INTO v_id;
+
+  RETURN v_id; -- NULL if conflict (already reserved/sent/failed)
+END;
+$$;
+
+
+ALTER FUNCTION "public"."notifications_reserve_send"("p_user_id" "uuid", "p_local_date" "date", "p_job_run_id" "text") OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."notification_preferences" (
+    "user_id" "uuid" NOT NULL,
+    "wants_daily" boolean DEFAULT false NOT NULL,
+    "preferred_hour" integer DEFAULT 9 NOT NULL,
+    "timezone" "text" NOT NULL,
+    "locale" "text" NOT NULL,
+    "os_permission" "text" DEFAULT 'unknown'::"text" NOT NULL,
+    "last_os_sync_at" timestamp with time zone,
+    "last_sent_local_date" "date",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."notification_preferences" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean DEFAULT NULL::boolean, "p_preferred_hour" integer DEFAULT NULL::integer) RETURNS "public"."notification_preferences"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user_id    uuid := auth.uid();
+  v_current    public.notification_preferences;
+  v_effective_wants_daily    boolean;
+  v_effective_preferred_hour integer;
+BEGIN
+  PERFORM public._assert_authenticated();
+  IF v_user_id IS NULL THEN
+    RAISE EXCEPTION 'NOT_AUTHENTICATED';
+  END IF;
+
+  -- Load current prefs if they exist
+  SELECT *
+  INTO v_current
+  FROM public.notification_preferences
+  WHERE user_id = v_user_id;
+
+  -- Decide wants_daily:
+  --   1) explicit p_wants_daily from app
+  --   2) existing DB value
+  --   3) default: true if OS permission is allowed, else false
+  v_effective_wants_daily :=
+    COALESCE(
+      p_wants_daily,
+      v_current.wants_daily,
+      (p_os_permission = 'allowed')
+    );
+
+  -- Decide preferred_hour:
+  v_effective_preferred_hour :=
+    COALESCE(
+      p_preferred_hour,
+      v_current.preferred_hour,
+      9
+    );
+
+  -- Upsert into notification_preferences
+  INSERT INTO public.notification_preferences (
+    user_id,
+    wants_daily,
+    preferred_hour,
+    timezone,
+    locale,
+    os_permission,
+    last_os_sync_at,
+    last_sent_local_date,
+    created_at,
+    updated_at
+  )
+  VALUES (
+    v_user_id,
+    v_effective_wants_daily,
+    v_effective_preferred_hour,
+    p_timezone,
+    p_locale,
+    p_os_permission,
+    now(),
+    COALESCE(v_current.last_sent_local_date, NULL),
+    COALESCE(v_current.created_at, now()),
+    now()
+  )
+  ON CONFLICT (user_id) DO UPDATE
+    SET wants_daily          = EXCLUDED.wants_daily,
+        preferred_hour       = EXCLUDED.preferred_hour,
+        timezone             = EXCLUDED.timezone,
+        locale               = EXCLUDED.locale,
+        os_permission        = EXCLUDED.os_permission,
+        last_os_sync_at      = EXCLUDED.last_os_sync_at,
+        updated_at           = EXCLUDED.updated_at
+  RETURNING * INTO v_current;
+
+  -- Upsert device token (if provided)
+  IF p_token IS NOT NULL THEN
+    INSERT INTO public.device_tokens (
+      user_id,
+      token,
+      provider,
+      platform,
+      status,
+      last_seen_at,
+      created_at,
+      updated_at
+    )
+    VALUES (
+      v_user_id,
+      p_token,
+      'fcm',
+      p_platform,
+      'active',
+      now(),
+      now(),
+      now()
+    )
+    ON CONFLICT (token) DO UPDATE
+      SET user_id      = EXCLUDED.user_id,
+          platform     = EXCLUDED.platform,
+          provider     = EXCLUDED.provider,
+          status       = 'active',
+          last_seen_at = now(),
+          updated_at   = now();
+  END IF;
+
+  RETURN v_current;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) RETURNS "public"."notification_preferences"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user_id uuid := auth.uid();
+  v_pref    public.notification_preferences;
+BEGIN
+  PERFORM public._assert_authenticated();
+  IF v_user_id IS NULL THEN
+    RAISE EXCEPTION 'NOT_AUTHENTICATED';
+  END IF;
+
+  INSERT INTO public.notification_preferences (
+    user_id,
+    wants_daily,
+    preferred_hour,
+    timezone,
+    locale,
+    os_permission,
+    last_os_sync_at,
+    last_sent_local_date,
+    created_at,
+    updated_at
+  )
+  SELECT
+    v_user_id,
+    p_wants_daily,
+    p_preferred_hour,
+    COALESCE(np.timezone, 'UTC'),
+    COALESCE(np.locale, 'en'),
+    COALESCE(np.os_permission, 'unknown'),
+    np.last_os_sync_at,
+    np.last_sent_local_date,
+    COALESCE(np.created_at, now()),
+    now()
+  FROM public.notification_preferences np
+  WHERE np.user_id = v_user_id
+  UNION ALL
+  SELECT
+    v_user_id,
+    p_wants_daily,
+    p_preferred_hour,
+    'UTC',
+    'en',
+    'unknown',
+    NULL,
+    NULL,
+    now(),
+    now()
+  WHERE NOT EXISTS (
+    SELECT 1 FROM public.notification_preferences WHERE user_id = v_user_id
+  )
+  ON CONFLICT (user_id) DO UPDATE
+    SET wants_daily    = EXCLUDED.wants_daily,
+        preferred_hour = EXCLUDED.preferred_hour,
+        updated_at     = EXCLUDED.updated_at
+  RETURNING * INTO v_pref;
+
+  RETURN v_pref;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."notifications_update_send_status"("p_send_id" "uuid", "p_status" "text", "p_error" "text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  UPDATE public.notification_sends
+  SET status    = p_status,
+      error     = p_error,
+      failed_at = CASE WHEN p_status = 'failed' THEN now() ELSE failed_at END,
+      updated_at = now()
+  WHERE id = p_send_id;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."notifications_update_send_status"("p_send_id" "uuid", "p_status" "text", "p_error" "text") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."profile_identity_update"("p_username" "public"."citext", "p_avatar_id" "uuid") RETURNS TABLE("username" "public"."citext", "avatar_id" "uuid", "avatar_storage_path" "text")
@@ -4939,6 +5282,81 @@ $$;
 ALTER FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."today_has_content"("p_user_id" "uuid", "p_timezone" "text", "p_local_date" "date") RETURNS boolean
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_home_id  uuid;
+  v_prev_sub text := current_setting('request.jwt.claim.sub', true);
+  v_has      boolean := FALSE;
+BEGIN
+  -- Use the user's current home membership (one active stint enforced by uq_memberships_user_one_current)
+  SELECT home_id
+  INTO v_home_id
+  FROM public.memberships
+  WHERE user_id = p_user_id
+    AND is_current = TRUE
+  LIMIT 1;
+
+  IF v_home_id IS NULL THEN
+    RETURN FALSE;
+  END IF;
+
+  -- Impersonate the user for existing RPCs that rely on auth.uid()
+  PERFORM set_config('request.jwt.claim.sub', p_user_id::text, true);
+
+  -- Flow/chores: active or draft, due now or overdue (per today_flow_list)
+  v_has := EXISTS (
+    SELECT 1 FROM public.today_flow_list(v_home_id, 'active')
+  ) OR EXISTS (
+    SELECT 1 FROM public.today_flow_list(v_home_id, 'draft')
+  );
+
+  IF v_has THEN
+    PERFORM set_config('request.jwt.claim.sub', COALESCE(v_prev_sub, ''), true);
+    RETURN TRUE;
+  END IF;
+
+  -- Expenses: owed to others or created by me
+  v_has := (
+    SELECT COALESCE(jsonb_array_length(public.expenses_get_current_owed(v_home_id)), 0)
+  ) > 0;
+
+  IF v_has THEN
+    PERFORM set_config('request.jwt.claim.sub', COALESCE(v_prev_sub, ''), true);
+    RETURN TRUE;
+  END IF;
+
+  v_has := (
+    SELECT COALESCE(jsonb_array_length(public.expenses_get_created_by_me(v_home_id)), 0)
+  ) > 0;
+
+  IF v_has THEN
+    PERFORM set_config('request.jwt.claim.sub', COALESCE(v_prev_sub, ''), true);
+    RETURN TRUE;
+  END IF;
+
+  -- Gratitude: unread posts
+  v_has := EXISTS (
+    SELECT 1 FROM public.gratitude_wall_status(v_home_id)
+    WHERE has_unread IS TRUE
+  );
+
+  -- Restore previous sub claim (best-effort)
+  PERFORM set_config('request.jwt.claim.sub', COALESCE(v_prev_sub, ''), true);
+  RETURN v_has;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."today_has_content"("p_user_id" "uuid", "p_timezone" "text", "p_local_date" "date") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."today_has_content"("p_user_id" "uuid", "p_timezone" "text", "p_local_date" "date") IS 'Returns true when any Today content exists for the user (Flow, expenses owed/created, gratitude unread).';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."user_subscriptions_home_entitlements_trigger"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -5127,6 +5545,22 @@ COMMENT ON COLUMN "public"."chore_events"."payload" IS 'Structured diff / metada
 
 COMMENT ON COLUMN "public"."chore_events"."occurred_at" IS 'Timestamp of event.';
 
+
+
+CREATE TABLE IF NOT EXISTS "public"."device_tokens" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "token" "text" NOT NULL,
+    "provider" "text" DEFAULT 'fcm'::"text" NOT NULL,
+    "platform" "text",
+    "status" "text" DEFAULT 'active'::"text" NOT NULL,
+    "last_seen_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."device_tokens" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."gratitude_wall_posts" (
@@ -5440,6 +5874,28 @@ COMMENT ON COLUMN "public"."memberships"."updated_at" IS 'Audit timestamp of the
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."notification_sends" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "local_date" "date" NOT NULL,
+    "job_run_id" "text",
+    "status" "text" NOT NULL,
+    "error" "text",
+    "reserved_at" timestamp with time zone,
+    "sent_at" timestamp with time zone,
+    "failed_at" timestamp with time zone,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."notification_sends" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."notification_sends"."status" IS 'Notification send state: reserved | sent | failed';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "id" "uuid" NOT NULL,
     "email" "text",
@@ -5654,6 +6110,11 @@ ALTER TABLE ONLY "public"."chores"
 
 
 
+ALTER TABLE ONLY "public"."device_tokens"
+    ADD CONSTRAINT "device_tokens_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."expenses"
     ADD CONSTRAINT "expenses_pkey" PRIMARY KEY ("id");
 
@@ -5718,6 +6179,16 @@ COMMENT ON CONSTRAINT "no_overlap_per_user_home" ON "public"."memberships" IS 'P
 
 
 
+ALTER TABLE ONLY "public"."notification_preferences"
+    ADD CONSTRAINT "notification_preferences_pkey" PRIMARY KEY ("user_id");
+
+
+
+ALTER TABLE ONLY "public"."notification_sends"
+    ADD CONSTRAINT "notification_sends_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."expense_splits"
     ADD CONSTRAINT "pk_expense_splits" PRIMARY KEY ("expense_id", "debtor_user_id");
 
@@ -5763,6 +6234,11 @@ ALTER TABLE ONLY "public"."app_version"
 
 
 
+ALTER TABLE ONLY "public"."device_tokens"
+    ADD CONSTRAINT "uq_device_tokens_token" UNIQUE ("token");
+
+
+
 ALTER TABLE ONLY "public"."home_mood_entries"
     ADD CONSTRAINT "uq_home_mood_entries_user_week" UNIQUE ("user_id", "iso_week_year", "iso_week");
 
@@ -5794,6 +6270,10 @@ CREATE INDEX "idx_chore_events_home" ON "public"."chore_events" USING "btree" ("
 
 
 CREATE INDEX "idx_chores_home_due_cursor" ON "public"."chores" USING "btree" ("home_id", "recurrence_cursor", "created_at" DESC);
+
+
+
+CREATE INDEX "idx_device_tokens_user_status" ON "public"."device_tokens" USING "btree" ("user_id", "status");
 
 
 
@@ -5858,6 +6338,10 @@ CREATE UNIQUE INDEX "uq_memberships_user_one_current" ON "public"."memberships" 
 
 
 COMMENT ON INDEX "public"."uq_memberships_user_one_current" IS 'Guarantees a user has at most one current membership stint across all homes.';
+
+
+
+CREATE UNIQUE INDEX "uq_notification_sends_user_date" ON "public"."notification_sends" USING "btree" ("user_id", "local_date");
 
 
 
@@ -5926,6 +6410,11 @@ ALTER TABLE ONLY "public"."chores"
 
 ALTER TABLE ONLY "public"."chores"
     ADD CONSTRAINT "chores_home_id_fkey" FOREIGN KEY ("home_id") REFERENCES "public"."homes"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."device_tokens"
+    ADD CONSTRAINT "device_tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
 
 
@@ -6034,6 +6523,16 @@ ALTER TABLE ONLY "public"."memberships"
 
 
 
+ALTER TABLE ONLY "public"."notification_preferences"
+    ADD CONSTRAINT "notification_preferences_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."notification_sends"
+    ADD CONSTRAINT "notification_sends_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_avatar_id_fkey" FOREIGN KEY ("avatar_id") REFERENCES "public"."avatars"("id");
 
@@ -6088,6 +6587,9 @@ ALTER TABLE "public"."chore_events" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."chores" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."device_tokens" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."expense_splits" ENABLE ROW LEVEL SECURITY;
 
 
@@ -6125,6 +6627,12 @@ ALTER TABLE "public"."invites" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."memberships" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."notification_preferences" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."notification_sends" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
@@ -8169,6 +8677,61 @@ GRANT ALL ON FUNCTION "public"."mood_submit"("p_home_id" "uuid", "p_mood" "publi
 
 
 
+REVOKE ALL ON FUNCTION "public"."notifications_daily_candidates"("p_limit" integer, "p_offset" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notifications_daily_candidates"("p_limit" integer, "p_offset" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."notifications_daily_candidates"("p_limit" integer, "p_offset" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."notifications_daily_candidates"("p_limit" integer, "p_offset" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."notifications_mark_send_success"("p_send_id" "uuid", "p_user_id" "uuid", "p_local_date" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notifications_mark_send_success"("p_send_id" "uuid", "p_user_id" "uuid", "p_local_date" "date") TO "anon";
+GRANT ALL ON FUNCTION "public"."notifications_mark_send_success"("p_send_id" "uuid", "p_user_id" "uuid", "p_local_date" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."notifications_mark_send_success"("p_send_id" "uuid", "p_user_id" "uuid", "p_local_date" "date") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."notifications_mark_token_status"("p_token_id" "uuid", "p_status" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notifications_mark_token_status"("p_token_id" "uuid", "p_status" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."notifications_mark_token_status"("p_token_id" "uuid", "p_status" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."notifications_mark_token_status"("p_token_id" "uuid", "p_status" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."notifications_reserve_send"("p_user_id" "uuid", "p_local_date" "date", "p_job_run_id" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notifications_reserve_send"("p_user_id" "uuid", "p_local_date" "date", "p_job_run_id" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."notifications_reserve_send"("p_user_id" "uuid", "p_local_date" "date", "p_job_run_id" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."notifications_reserve_send"("p_user_id" "uuid", "p_local_date" "date", "p_job_run_id" "text") TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."notification_preferences" TO "anon";
+GRANT ALL ON TABLE "public"."notification_preferences" TO "authenticated";
+GRANT ALL ON TABLE "public"."notification_preferences" TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."notifications_update_send_status"("p_send_id" "uuid", "p_status" "text", "p_error" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notifications_update_send_status"("p_send_id" "uuid", "p_status" "text", "p_error" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."notifications_update_send_status"("p_send_id" "uuid", "p_status" "text", "p_error" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."notifications_update_send_status"("p_send_id" "uuid", "p_status" "text", "p_error" "text") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."oid_dist"("oid", "oid") TO "postgres";
 GRANT ALL ON FUNCTION "public"."oid_dist"("oid", "oid") TO "anon";
 GRANT ALL ON FUNCTION "public"."oid_dist"("oid", "oid") TO "authenticated";
@@ -8363,6 +8926,12 @@ GRANT ALL ON FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "
 
 
 
+GRANT ALL ON FUNCTION "public"."today_has_content"("p_user_id" "uuid", "p_timezone" "text", "p_local_date" "date") TO "anon";
+GRANT ALL ON FUNCTION "public"."today_has_content"("p_user_id" "uuid", "p_timezone" "text", "p_local_date" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."today_has_content"("p_user_id" "uuid", "p_timezone" "text", "p_local_date" "date") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."translate"("public"."citext", "public"."citext", "text") TO "postgres";
 GRANT ALL ON FUNCTION "public"."translate"("public"."citext", "public"."citext", "text") TO "anon";
 GRANT ALL ON FUNCTION "public"."translate"("public"."citext", "public"."citext", "text") TO "authenticated";
@@ -8442,6 +9011,12 @@ GRANT ALL ON TABLE "public"."chore_events" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."device_tokens" TO "anon";
+GRANT ALL ON TABLE "public"."device_tokens" TO "authenticated";
+GRANT ALL ON TABLE "public"."device_tokens" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."gratitude_wall_posts" TO "service_role";
 
 
@@ -8471,6 +9046,12 @@ GRANT ALL ON TABLE "public"."homes" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."memberships" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."notification_sends" TO "anon";
+GRANT ALL ON TABLE "public"."notification_sends" TO "authenticated";
+GRANT ALL ON TABLE "public"."notification_sends" TO "service_role";
 
 
 

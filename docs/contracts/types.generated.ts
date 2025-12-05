@@ -261,6 +261,50 @@ export type Database = {
           },
         ]
       }
+      device_tokens: {
+        Row: {
+          created_at: string
+          id: string
+          last_seen_at: string
+          platform: string | null
+          provider: string
+          status: string
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_seen_at?: string
+          platform?: string | null
+          provider?: string
+          status?: string
+          token: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_seen_at?: string
+          platform?: string | null
+          provider?: string
+          status?: string
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_tokens_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expense_splits: {
         Row: {
           amount_cents: number
@@ -779,6 +823,103 @@ export type Database = {
           },
           {
             foreignKeyName: "memberships_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          last_os_sync_at: string | null
+          last_sent_local_date: string | null
+          locale: string
+          os_permission: string
+          preferred_hour: number
+          timezone: string
+          updated_at: string
+          user_id: string
+          wants_daily: boolean
+        }
+        Insert: {
+          created_at?: string
+          last_os_sync_at?: string | null
+          last_sent_local_date?: string | null
+          locale: string
+          os_permission?: string
+          preferred_hour?: number
+          timezone: string
+          updated_at?: string
+          user_id: string
+          wants_daily?: boolean
+        }
+        Update: {
+          created_at?: string
+          last_os_sync_at?: string | null
+          last_sent_local_date?: string | null
+          locale?: string
+          os_permission?: string
+          preferred_hour?: number
+          timezone?: string
+          updated_at?: string
+          user_id?: string
+          wants_daily?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_sends: {
+        Row: {
+          created_at: string
+          error: string | null
+          failed_at: string | null
+          id: string
+          job_run_id: string | null
+          local_date: string
+          reserved_at: string | null
+          sent_at: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          failed_at?: string | null
+          id?: string
+          job_run_id?: string | null
+          local_date: string
+          reserved_at?: string | null
+          sent_at?: string | null
+          status: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          failed_at?: string | null
+          id?: string
+          job_run_id?: string | null
+          local_date?: string
+          reserved_at?: string | null
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_sends_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -1411,6 +1552,83 @@ export type Database = {
           gratitude_post_id: string
         }[]
       }
+      notifications_daily_candidates: {
+        Args: { p_limit?: number; p_offset?: number }
+        Returns: {
+          local_date: string
+          locale: string
+          timezone: string
+          token: string
+          token_id: string
+          user_id: string
+        }[]
+      }
+      notifications_mark_send_success: {
+        Args: { p_local_date: string; p_send_id: string; p_user_id: string }
+        Returns: undefined
+      }
+      notifications_mark_token_status: {
+        Args: { p_status: string; p_token_id: string }
+        Returns: undefined
+      }
+      notifications_reserve_send: {
+        Args: { p_job_run_id: string; p_local_date: string; p_user_id: string }
+        Returns: string
+      }
+      notifications_sync_client_state: {
+        Args: {
+          p_locale: string
+          p_os_permission: string
+          p_platform: string
+          p_preferred_hour?: number
+          p_timezone: string
+          p_token: string
+          p_wants_daily?: boolean
+        }
+        Returns: {
+          created_at: string
+          last_os_sync_at: string | null
+          last_sent_local_date: string | null
+          locale: string
+          os_permission: string
+          preferred_hour: number
+          timezone: string
+          updated_at: string
+          user_id: string
+          wants_daily: boolean
+        }
+        SetofOptions: {
+          from: "*"
+          to: "notification_preferences"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      notifications_update_preferences: {
+        Args: { p_preferred_hour: number; p_wants_daily: boolean }
+        Returns: {
+          created_at: string
+          last_os_sync_at: string | null
+          last_sent_local_date: string | null
+          locale: string
+          os_permission: string
+          preferred_hour: number
+          timezone: string
+          updated_at: string
+          user_id: string
+          wants_daily: boolean
+        }
+        SetofOptions: {
+          from: "*"
+          to: "notification_preferences"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      notifications_update_send_status: {
+        Args: { p_error: string; p_send_id: string; p_status: string }
+        Returns: undefined
+      }
       profile_identity_update: {
         Args: { p_avatar_id: string; p_username: string }
         Returns: {
@@ -1444,6 +1662,10 @@ export type Database = {
           start_date: string
           state: Database["public"]["Enums"]["chore_state"]
         }[]
+      }
+      today_has_content: {
+        Args: { p_local_date: string; p_timezone: string; p_user_id: string }
+        Returns: boolean
       }
     }
     Enums: {

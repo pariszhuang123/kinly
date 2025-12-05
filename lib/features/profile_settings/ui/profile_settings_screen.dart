@@ -244,10 +244,7 @@ class ProfileSettingsScreen extends StatelessWidget {
     if (isOwner && hasOtherMembers) {
       final candidates = state.transferCandidates;
       if (candidates.isEmpty) {
-        KinlySnackBar.showError(
-          context,
-          s.profileLeaveOwnerNoEligibleMembers,
-        );
+        KinlySnackBar.showError(context, s.profileLeaveOwnerNoEligibleMembers);
         return;
       }
 
@@ -492,10 +489,6 @@ class ProfileSettingsScreen extends StatelessWidget {
       message: s.profileKickSuccessMessage,
       closeLabel: s.profileKickSuccessClose,
     );
-  }
-
-  Future<void> _confirmDelete(BuildContext context) async {
-    await _handleDeleteTap(context);
   }
 
   Future<void> _confirmLogout(BuildContext context) async {

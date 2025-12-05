@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'core/config/app_config.dart';
 import 'core/di/locator.dart';
@@ -17,6 +19,9 @@ import 'core/logging/debug_logger.dart';
 import 'data/repositories/app_version_repository.dart';
 import 'data/repositories/auth_repository.dart';
 import 'data/repositories/home_repository.dart';
+import 'data/repositories/notifications_repository.dart';
+import 'core/notifications/notification_token_bootstrap.dart';
+import 'core/notifications/notification_sync_state.dart';
 import 'features/auth/bloc/auth_bloc.dart';
 import 'features/offline/bloc/connectivity_cubit.dart';
 import 'features/offline/ui/connectivity_gate.dart';
@@ -24,8 +29,19 @@ import 'features/version_gating/bloc/app_version_cubit.dart';
 import 'generated/l10n.dart';
 import 'core/ui/kinly_loader.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
   setupDependencies();
   AppConfig.validate();
   await initSupabase();
@@ -46,6 +62,7 @@ class _MyAppState extends State<MyApp> {
   late final GoRouterRefreshStream _routerRefresh;
   late final RouterConfig<Object> _router;
   late final Logger _logger;
+  NotificationTokenBootstrap? _tokenBootstrap;
 
   static const _logTag = 'Bootstrap';
 
@@ -74,6 +91,7 @@ class _MyAppState extends State<MyApp> {
       refreshListenable: _routerRefresh,
     );
     unawaited(_startVersionCheck());
+    unawaited(_startNotificationTokenSync());
   }
 
   Logger _resolveLogger() {
@@ -123,6 +141,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+    unawaited(_tokenBootstrap?.dispose());
     _routerRefresh.dispose();
     _authBloc.close();
     _appVersionCubit.close();
@@ -156,6 +175,18 @@ class _MyAppState extends State<MyApp> {
         supportedLocales: S.delegate.supportedLocales,
       ),
     );
+  }
+
+  Future<void> _startNotificationTokenSync() async {
+    final notificationsRepo = sl<NotificationsRepository>();
+    final syncState = sl<NotificationSyncState>();
+
+    _tokenBootstrap = NotificationTokenBootstrap(
+      notificationsRepository: notificationsRepo,
+      syncProvider: () async => syncState.current,
+    );
+
+    await _tokenBootstrap?.start();
   }
 }
 
