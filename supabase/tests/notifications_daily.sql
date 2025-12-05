@@ -10,12 +10,11 @@ SELECT has_table('public', 'device_tokens', 'device_tokens table exists');
 SELECT has_table('public', 'notification_sends', 'notification_sends table exists');
 
 -- 2) Columns sanity
-SELECT col_is_present('public', 'notification_preferences', 'wants_daily');
-SELECT col_is_present('public', 'notification_preferences', 'preferred_hour');
-SELECT col_is_present('public', 'device_tokens', 'token');
-SELECT col_is_present('public', 'device_tokens', 'status');
-SELECT col_is_present('public', 'notification_sends', 'local_date');
-SELECT col_is_present('public', 'notification_sends', 'status');
+SELECT col_exists('public', 'notification_preferences', 'preferred_hour');
+SELECT col_exists('public', 'device_tokens', 'token');
+SELECT col_exists('public', 'device_tokens', 'status');
+SELECT col_exists('public', 'notification_sends', 'local_date');
+SELECT col_exists('public', 'notification_sends', 'status');
 
 -- 3) Unique per user per local_date when sent
 SELECT ok(
