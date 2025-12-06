@@ -2126,6 +2126,16 @@ class S {
     );
   }
 
+  /// `Thanks, your home feels lighter.`
+  String get dopamineFlowAffirmation {
+    return Intl.message(
+      'Thanks, your home feels lighter.',
+      name: 'dopamineFlowAffirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Couldn't complete the flow. Please try again.`
   String get flowChoreDetailCompletionError {
     return Intl.message(

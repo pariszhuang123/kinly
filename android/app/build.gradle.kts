@@ -5,6 +5,8 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // Generates firebase_options.xml from flavor-specific google-services.json files
+    id("com.google.gms.google-services")
 }
 
 // Optional: load signing keys if present

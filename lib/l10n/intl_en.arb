@@ -275,6 +275,7 @@
   "flowChoreDetailNoNotes": "No notes yet.",
   "flowChoreDetailNoHowTo": "No how-to link provided.",
   "flowChoreDetailCompleteButton": "Complete flow",
+  "dopamineFlowAffirmation": "Thanks, your home feels lighter.",
   "flowChoreDetailCompletionError": "Couldn't complete the flow. Please try again.",
   "flowChoreDetailMoreInfoTitle": "More details",
   "flowChoreExpectationPhotoLabel": "Expectation photo",

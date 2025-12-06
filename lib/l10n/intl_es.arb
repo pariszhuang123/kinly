@@ -275,6 +275,7 @@
   "flowChoreDetailNoNotes": "Sin notas.",
   "flowChoreDetailNoHowTo": "Sin enlace de instrucciones.",
   "flowChoreDetailCompleteButton": "Completar tarea",
+  "dopamineFlowAffirmation": "Gracias, tu hogar se siente más ligero.",
   "flowChoreDetailCompletionError": "No se pudo completar la tarea. Intenta de nuevo.",
   "flowChoreDetailMoreInfoTitle": "M\u00c3\u00a1s detalles",
   "flowChoreExpectationPhotoLabel": "Foto de referencia",

@@ -100,6 +100,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
       "Complete flow",
     ),
+    "dopamineFlowAffirmation": MessageLookupByLibrary.simpleMessage(
+      "Thanks, your home feels lighter.",
+    ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t complete the flow. Please try again.",
     ),

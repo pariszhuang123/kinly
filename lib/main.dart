@@ -62,6 +62,7 @@ class _MyAppState extends State<MyApp> {
   late final GoRouterRefreshStream _routerRefresh;
   late final RouterConfig<Object> _router;
   late final Logger _logger;
+  StreamSubscription<AuthState>? _authSub;
   NotificationTokenBootstrap? _tokenBootstrap;
 
   static const _logTag = 'Bootstrap';
@@ -90,8 +91,11 @@ class _MyAppState extends State<MyApp> {
       appVersionCubit: _appVersionCubit,
       refreshListenable: _routerRefresh,
     );
+    _authSub = _authBloc.stream.listen(
+      (state) => unawaited(_handleAuthState(state)),
+    );
+    unawaited(_handleAuthState(_authBloc.state));
     unawaited(_startVersionCheck());
-    unawaited(_startNotificationTokenSync());
   }
 
   Logger _resolveLogger() {
@@ -141,8 +145,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    unawaited(_tokenBootstrap?.dispose());
+    unawaited(_stopNotificationTokenSync());
     _routerRefresh.dispose();
+    final authSub = _authSub;
+    _authSub = null;
+    if (authSub != null) {
+      unawaited(authSub.cancel());
+    }
     _authBloc.close();
     _appVersionCubit.close();
     _connectivityCubit.close();
@@ -177,7 +186,25 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  Future<void> _handleAuthState(AuthState state) async {
+    if (!state.isAuthenticated) {
+      await _stopNotificationTokenSync();
+      return;
+    }
+    await _startNotificationTokenSync();
+  }
+
   Future<void> _startNotificationTokenSync() async {
+    if (_tokenBootstrap != null) return;
+    if (!sl.isRegistered<NotificationsRepository>() ||
+        !sl.isRegistered<NotificationSyncState>()) {
+      _logger.debug(
+        'Skipping notification token sync; dependencies not registered',
+        tag: _logTag,
+      );
+      return;
+    }
+
     final notificationsRepo = sl<NotificationsRepository>();
     final syncState = sl<NotificationSyncState>();
 
@@ -187,6 +214,11 @@ class _MyAppState extends State<MyApp> {
     );
 
     await _tokenBootstrap?.start();
+  }
+
+  Future<void> _stopNotificationTokenSync() async {
+    await _tokenBootstrap?.dispose();
+    _tokenBootstrap = null;
   }
 }
 

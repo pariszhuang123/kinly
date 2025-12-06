@@ -22,11 +22,13 @@ class FlowChoreDetailView extends StatelessWidget {
     required this.state,
     required this.onRetry,
     required this.onComplete,
+    required this.completeButtonKey,
   });
 
   final FlowChoreDetailState state;
   final VoidCallback onRetry;
   final VoidCallback? onComplete;
+  final GlobalKey completeButtonKey;
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +112,7 @@ class FlowChoreDetailView extends StatelessWidget {
             isBusy: state.isCompleting,
             enabled: state.canComplete,
             onPressed: onComplete,
+            buttonKey: completeButtonKey,
           ),
         ],
       ),
@@ -155,11 +158,13 @@ class _CompletionButton extends StatelessWidget {
     required this.onPressed,
     required this.enabled,
     required this.isBusy,
+    required this.buttonKey,
   });
 
   final VoidCallback? onPressed;
   final bool enabled;
   final bool isBusy;
+  final Key buttonKey;
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +180,7 @@ class _CompletionButton extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           KinlyFilledButton.text(
+            key: buttonKey,
             onPressed: effectiveOnPressed,
             label: s.flowChoreDetailCompleteButton,
             fullWidth: true,
