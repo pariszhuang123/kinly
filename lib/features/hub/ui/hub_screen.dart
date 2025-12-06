@@ -113,7 +113,7 @@ class HubScreen extends StatelessWidget {
 
                                 // 🧡 Gratitude Wall card
                                 KinlySelectionCard(
-                                  colors: sections.hub,
+                                  colors: sections.pulse,
                                   title: s.hubCardGratitudeWallTitle,
                                   subtitle: s.hubCardGratitudeWallSubtitle,
                                   icon: Icon(

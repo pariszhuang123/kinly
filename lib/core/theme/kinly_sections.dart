@@ -44,14 +44,12 @@ class KinlySections extends ThemeExtension<KinlySections> {
   final SectionColors flow;
   final SectionColors share;
   final SectionColors pulse;
-  final SectionColors hub;
   final SectionColors empty;
 
   const KinlySections({
     required this.flow,
     required this.share,
     required this.pulse,
-    required this.hub,
     required this.empty,
   });
 
@@ -60,14 +58,12 @@ class KinlySections extends ThemeExtension<KinlySections> {
     SectionColors? flow,
     SectionColors? share,
     SectionColors? pulse,
-    SectionColors? hub,
     SectionColors? empty,
   }) {
     return KinlySections(
       flow: flow ?? this.flow,
       share: share ?? this.share,
       pulse: pulse ?? this.pulse,
-      hub: hub ?? this.hub,
       empty: empty ?? this.empty,
     );
   }
@@ -79,7 +75,6 @@ class KinlySections extends ThemeExtension<KinlySections> {
       flow: SectionColors.lerp(flow, other.flow, t),
       share: SectionColors.lerp(share, other.share, t),
       pulse: SectionColors.lerp(pulse, other.pulse, t),
-      hub: SectionColors.lerp(hub, other.hub, t),
       empty: SectionColors.lerp(empty, other.empty, t),
     );
   }
