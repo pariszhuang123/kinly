@@ -137,13 +137,13 @@ ThemeData buildKinlyTheme(Brightness brightness) {
               background: Color(0xFF262018),
               card: Color(0xFF30271B),
               icon: Color(0xFFF5C96A),
-              accent: Color(0xFF88C7B0),
+              accent: tealBrand,
             ),
             pulse: SectionColors(
               background: Color(0xFF2A2022),
               card: Color(0xFF33252A),
-              icon: Color(0xFFFFB5A0),
-              accent: Color(0xFF88C7B0),
+              icon: Color(0xFFF6B73C),
+              accent: Color(0xFFF6B73C),
             ),
             empty: SectionColors(
               background: Color(0xFF2A2E2D),
@@ -168,8 +168,8 @@ ThemeData buildKinlyTheme(Brightness brightness) {
             pulse: SectionColors(
               background: Color(0xFFFCEFEA),
               card: Color(0xFFFFF7F3),
-              icon: Color(0xFF7F2B0E),
-              accent: tealBrand,
+              icon: Color(0xFF704300),
+              accent: Color(0xFFF6B73C),
             ),
             empty: SectionColors(
               background: Color(0xFFF4F6F5),
