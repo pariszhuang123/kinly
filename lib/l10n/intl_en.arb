@@ -219,6 +219,7 @@
   "shareCreateLoadError": "We couldn't load your household members.",
   "shareCreateRetry": "Try again",
   "shareCreateErrorGeneric": "Couldn't create. Try again.",
+  "shareCreateErrorPaywallActiveCap": "You’ve reached the free limit of 10 active or draft expenses. Close or cancel one to continue.",
   "shareCreateErrorForbidden": "You don't have permission to create this right now.",
   "shareCreateSuccess": "Share created.",
   "flowChoreCreateTitle": "Add Flow",

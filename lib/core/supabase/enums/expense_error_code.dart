@@ -15,6 +15,7 @@ enum ExpenseErrorCode {
   invalidState,
   splitRequired,
   lockedAfterPayment,
+  paywallActiveExpensesCap,
   editNotAllowed,
   forbidden,
   unauthorized,

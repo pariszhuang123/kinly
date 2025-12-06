@@ -677,6 +677,7 @@ export type Database = {
       home_usage_counters: {
         Row: {
           active_chores: number
+          active_expenses: number
           active_members: number
           chore_photos: number
           home_id: string
@@ -684,6 +685,7 @@ export type Database = {
         }
         Insert: {
           active_chores?: number
+          active_expenses?: number
           active_members?: number
           chore_photos?: number
           home_id: string
@@ -691,6 +693,7 @@ export type Database = {
         }
         Update: {
           active_chores?: number
+          active_expenses?: number
           active_members?: number
           chore_photos?: number
           home_id?: string
@@ -1185,6 +1188,7 @@ export type Database = {
         Args: { p_deltas: Json; p_home_id: string }
         Returns: {
           active_chores: number
+          active_expenses: number
           active_members: number
           chore_photos: number
           home_id: string
@@ -1674,7 +1678,11 @@ export type Database = {
       expense_share_status: "unpaid" | "paid"
       expense_split_type: "equal" | "custom"
       expense_status: "draft" | "active" | "cancelled"
-      home_usage_metric: "active_chores" | "chore_photos" | "active_members"
+      home_usage_metric:
+        | "active_chores"
+        | "chore_photos"
+        | "active_members"
+        | "active_expenses"
       mood_scale:
         | "sunny"
         | "partially_sunny"
@@ -1826,7 +1834,12 @@ export const Constants = {
       expense_share_status: ["unpaid", "paid"],
       expense_split_type: ["equal", "custom"],
       expense_status: ["draft", "active", "cancelled"],
-      home_usage_metric: ["active_chores", "chore_photos", "active_members"],
+      home_usage_metric: [
+        "active_chores",
+        "chore_photos",
+        "active_members",
+        "active_expenses",
+      ],
       mood_scale: [
         "sunny",
         "partially_sunny",

@@ -681,6 +681,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateErrorGeneric": MessageLookupByLibrary.simpleMessage(
       "No se pudo crear el gasto. Intenta otra vez.",
     ),
+    "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
+      "Alcanzaste el límite gratuito de 10 gastos activos o borradores. Cierra o cancela uno para seguir.",
+    ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar a los miembros del hogar.",
     ),

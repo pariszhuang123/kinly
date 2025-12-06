@@ -164,6 +164,8 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
         return s.shareCreateValidationAmount;
       case ExpenseErrorCode.invalidDescription:
         return s.shareCreateValidationDescription;
+      case ExpenseErrorCode.paywallActiveExpensesCap:
+        return s.shareCreateErrorPaywallActiveCap;
       case ExpenseErrorCode.splitMembersRequired:
       case ExpenseErrorCode.invalidSplit:
         return s.shareCreateValidationEqualParticipants;

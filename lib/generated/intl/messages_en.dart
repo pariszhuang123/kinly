@@ -662,6 +662,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateErrorGeneric": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t create. Try again.",
     ),
+    "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
+      "You’ve reached the free limit of 10 active or draft expenses. Close or cancel one to continue.",
+    ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load your household members.",
     ),

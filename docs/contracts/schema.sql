@@ -147,7 +147,8 @@ ALTER TYPE "public"."expense_status" OWNER TO "postgres";
 CREATE TYPE "public"."home_usage_metric" AS ENUM (
     'active_chores',
     'chore_photos',
-    'active_members'
+    'active_members',
+    'active_expenses'
 );
 
 
@@ -715,9 +716,9 @@ CREATE OR REPLACE FUNCTION "public"."_home_assert_quota"("p_home_id" "uuid", "p_
     SET "search_path" TO ''
     AS $$
 DECLARE
-  v_plan         text;
-  v_is_premium   boolean;
-  v_counters     public.home_usage_counters%ROWTYPE;
+  v_plan       text;
+  v_is_premium boolean;
+  v_counters   public.home_usage_counters%ROWTYPE;
 
   v_metric_key   text;
   v_metric_enum  public.home_usage_metric;
@@ -727,59 +728,38 @@ DECLARE
   v_new          integer;
   v_max          integer;
 BEGIN
-  --------------------------------------------------------------------
-  -- 1) Determine plan (defaults to 'free' if missing)
-  --------------------------------------------------------------------
   v_plan := public._home_effective_plan(p_home_id);
 
-  --------------------------------------------------------------------
-  -- 2) Premium homes skip all quota checks
-  --------------------------------------------------------------------
   v_is_premium := public._home_is_premium(p_home_id);
   IF v_is_premium THEN
     RETURN;
   END IF;
 
-  --------------------------------------------------------------------
-  -- 3) No deltas → nothing to check
-  --------------------------------------------------------------------
   IF p_deltas IS NULL OR jsonb_typeof(p_deltas) <> 'object' THEN
     RETURN;
   END IF;
 
-  --------------------------------------------------------------------
-  -- 4) Load counters row (may be NULL if not created yet)
-  --------------------------------------------------------------------
   SELECT *
   INTO v_counters
   FROM public.home_usage_counters
   WHERE home_id = p_home_id;
 
   IF NOT FOUND THEN
-    v_counters.active_chores  := 0;
-    v_counters.chore_photos   := 0;
-    v_counters.active_members := 0;
+    v_counters.active_chores    := 0;
+    v_counters.chore_photos     := 0;
+    v_counters.active_members   := 0;
+    v_counters.active_expenses  := 0;
   END IF;
 
-  --------------------------------------------------------------------
-  -- 5) For each key:value in p_deltas, perform plan checks
-  --------------------------------------------------------------------
   FOR v_metric_key, v_raw_value IN
-    SELECT key, value
-    FROM jsonb_each(p_deltas)
+    SELECT key, value FROM jsonb_each(p_deltas)
   LOOP
-    ------------------------------------------------------------------
-    -- 5a) Map JSON key → enum, ignore unknown metrics
-    ------------------------------------------------------------------
     BEGIN
       v_metric_enum := v_metric_key::public.home_usage_metric;
     EXCEPTION WHEN invalid_text_representation THEN
-      CONTINUE; -- unknown metric, ignore for quota
+      CONTINUE;
     END;
 
-    ------------------------------------------------------------------
-    -- 5b) Ensure numeric delta
-    ------------------------------------------------------------------
     IF jsonb_typeof(v_raw_value) <> 'number' THEN
       PERFORM public.api_error(
         'INVALID_QUOTA_DELTA',
@@ -790,47 +770,33 @@ BEGIN
     END IF;
 
     v_delta := (v_raw_value #>> '{}')::integer;
-
-    -- Ignore zero or negative deltas (quota only cares about increases)
     IF COALESCE(v_delta, 0) <= 0 THEN
       CONTINUE;
     END IF;
 
-    ------------------------------------------------------------------
-    -- 5c) Look up per-plan limit. Missing → unlimited
-    ------------------------------------------------------------------
     SELECT max_value
     INTO v_max
     FROM public.home_plan_limits
-    WHERE plan   = v_plan
+    WHERE plan = v_plan
       AND metric = v_metric_enum;
 
     IF v_max IS NULL THEN
-      CONTINUE;  -- unlimited for this metric on this plan
+      CONTINUE;
     END IF;
 
-    ------------------------------------------------------------------
-    -- 5d) Map metric → current counter
-    ------------------------------------------------------------------
     v_current := CASE v_metric_enum
-      WHEN 'active_chores'  THEN COALESCE(v_counters.active_chores, 0)
-      WHEN 'chore_photos'   THEN COALESCE(v_counters.chore_photos, 0)
-      WHEN 'active_members' THEN COALESCE(v_counters.active_members, 0)
+      WHEN 'active_chores'    THEN COALESCE(v_counters.active_chores, 0)
+      WHEN 'chore_photos'     THEN COALESCE(v_counters.chore_photos, 0)
+      WHEN 'active_members'   THEN COALESCE(v_counters.active_members, 0)
+      WHEN 'active_expenses'  THEN COALESCE(v_counters.active_expenses, 0)
     END;
 
     v_new := GREATEST(0, v_current + v_delta);
 
-    ------------------------------------------------------------------
-    -- 5e) Enforce limit
-    ------------------------------------------------------------------
     IF v_new > v_max THEN
       PERFORM public.api_error(
         'PAYWALL_LIMIT_' || upper(v_metric_key),
-        format(
-          'Free plan allows up to %s %s per home.',
-          v_max,
-          v_metric_key
-        ),
+        format('Free plan allows up to %s %s per home.', v_max, v_metric_key),
         'P0001',
         jsonb_build_object(
           'limit_type', v_metric_key,
@@ -842,7 +808,6 @@ BEGIN
       );
     END IF;
   END LOOP;
-
 END;
 $$;
 
@@ -945,7 +910,9 @@ CREATE TABLE IF NOT EXISTS "public"."home_usage_counters" (
     "chore_photos" integer DEFAULT 0 NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "active_members" integer DEFAULT 0 NOT NULL,
+    "active_expenses" integer DEFAULT 0 NOT NULL,
     CONSTRAINT "home_usage_counters_active_chores_check" CHECK (("active_chores" >= 0)),
+    CONSTRAINT "home_usage_counters_active_expenses_check" CHECK (("active_expenses" >= 0)),
     CONSTRAINT "home_usage_counters_active_members_check" CHECK (("active_members" >= 0)),
     CONSTRAINT "home_usage_counters_chore_photos_check" CHECK (("chore_photos" >= 0))
 );
@@ -970,26 +937,25 @@ COMMENT ON COLUMN "public"."home_usage_counters"."active_members" IS 'Number of 
 
 
 
+COMMENT ON COLUMN "public"."home_usage_counters"."active_expenses" IS 'Number of draft/active expenses that still count toward the plan quota (freed when cancelled or fully paid).';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."_home_usage_apply_delta"("p_home_id" "uuid", "p_deltas" "jsonb") RETURNS "public"."home_usage_counters"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
 DECLARE
-  v_row                 public.home_usage_counters;
-  v_active_chores_delta integer := 0;
-  v_chore_photos_delta  integer := 0;
-  v_active_members_delta integer := 0;
+  v_row                   public.home_usage_counters;
+  v_active_chores_delta   integer := 0;
+  v_chore_photos_delta    integer := 0;
+  v_active_members_delta  integer := 0;
+  v_active_expenses_delta integer := 0;
 BEGIN
-  --------------------------------------------------------------------
-  -- Ensure a row exists
-  --------------------------------------------------------------------
   INSERT INTO public.home_usage_counters (home_id)
   VALUES (p_home_id)
   ON CONFLICT (home_id) DO NOTHING;
 
-  --------------------------------------------------------------------
-  -- Extract numeric deltas robustly (ignore non-numeric)
-  --------------------------------------------------------------------
   IF p_deltas IS NOT NULL AND jsonb_typeof(p_deltas) = 'object' THEN
     IF jsonb_typeof(p_deltas->'active_chores') = 'number' THEN
       v_active_chores_delta := (p_deltas->>'active_chores')::integer;
@@ -1002,28 +968,18 @@ BEGIN
     IF jsonb_typeof(p_deltas->'active_members') = 'number' THEN
       v_active_members_delta := (p_deltas->>'active_members')::integer;
     END IF;
+
+    IF jsonb_typeof(p_deltas->'active_expenses') = 'number' THEN
+      v_active_expenses_delta := (p_deltas->>'active_expenses')::integer;
+    END IF;
   END IF;
 
-  --------------------------------------------------------------------
-  -- Apply each metric delta (extend as you add features)
-  --------------------------------------------------------------------
   UPDATE public.home_usage_counters h
   SET
-    active_chores = GREATEST(
-      0,
-      COALESCE(h.active_chores, 0) + v_active_chores_delta
-    ),
-    chore_photos = GREATEST(
-      0,
-      COALESCE(h.chore_photos, 0) + v_chore_photos_delta
-    ),
-    active_members = GREATEST(
-      0,
-      COALESCE(h.active_members, 0) + v_active_members_delta
-    ),
-    -- Add new quota metrics later, e.g.:
-    -- polls_created = GREATEST(0, COALESCE(h.polls_created, 0) + v_polls_created_delta),
-    -- ai_tasks_used = GREATEST(0, COALESCE(h.ai_tasks_used, 0) + v_ai_tasks_used_delta),
+    active_chores = GREATEST(0, COALESCE(h.active_chores, 0) + v_active_chores_delta),
+    chore_photos  = GREATEST(0, COALESCE(h.chore_photos, 0) + v_chore_photos_delta),
+    active_members = GREATEST(0, COALESCE(h.active_members, 0) + v_active_members_delta),
+    active_expenses = GREATEST(0, COALESCE(h.active_expenses, 0) + v_active_expenses_delta),
     updated_at = now()
   WHERE h.home_id = p_home_id
   RETURNING * INTO v_row;
@@ -2049,11 +2005,9 @@ DECLARE
   v_home_is_active boolean;
   v_has_paid       boolean := FALSE;
 BEGIN
-  -- Auth
   PERFORM public._assert_authenticated();
   v_user := auth.uid();
 
-  -- Input validation
   IF p_expense_id IS NULL THEN
     PERFORM public.api_error(
       'INVALID_EXPENSE',
@@ -2062,7 +2016,6 @@ BEGIN
     );
   END IF;
 
-  -- Load and lock the expense
   SELECT *
   INTO v_expense
   FROM public.expenses e
@@ -2078,7 +2031,6 @@ BEGIN
     );
   END IF;
 
-  -- Creator-only
   IF v_expense.created_by_user_id <> v_user THEN
     PERFORM public.api_error(
       'NOT_CREATOR',
@@ -2088,12 +2040,10 @@ BEGIN
     );
   END IF;
 
-  -- Idempotent: already cancelled? just return
   IF v_expense.status = 'cancelled' THEN
     RETURN v_expense;
   END IF;
 
-  -- Only draft/active can be cancelled (you can tighten this if you add more statuses later)
   IF v_expense.status NOT IN ('draft', 'active') THEN
     PERFORM public.api_error(
       'INVALID_STATE',
@@ -2102,7 +2052,6 @@ BEGIN
     );
   END IF;
 
-  -- Membership + home state
   PERFORM 1
   FROM public.memberships m
   WHERE m.home_id    = v_expense.home_id
@@ -2133,13 +2082,11 @@ BEGIN
     );
   END IF;
 
-  -- Lock splits rowset to avoid races with mark_share_paid
   PERFORM 1
   FROM public.expense_splits s
   WHERE s.expense_id = v_expense.id
   FOR UPDATE;
 
-  -- Check whether any share is already paid
   SELECT EXISTS (
     SELECT 1
     FROM public.expense_splits s
@@ -2158,12 +2105,16 @@ BEGIN
     );
   END IF;
 
-  -- Perform cancel: keep splits for audit, just change expense status
   UPDATE public.expenses
   SET status     = 'cancelled',
       updated_at = now()
   WHERE id = v_expense.id
   RETURNING * INTO v_expense;
+
+  PERFORM public._home_usage_apply_delta(
+    v_expense.home_id,
+    jsonb_build_object('active_expenses', -1)
+  );
 
   RETURN v_expense;
 END;
@@ -2191,11 +2142,9 @@ DECLARE
   v_desc_max   constant integer := 280;
   v_notes_max  constant integer := 2000;
 BEGIN
-  -- Must be logged in
   PERFORM public._assert_authenticated();
   v_user := auth.uid();
 
-  -- Basic required inputs
   IF v_home_id IS NULL THEN
     PERFORM public.api_error('INVALID_HOME', 'Home id is required.', '22023');
   END IF;
@@ -2230,7 +2179,6 @@ BEGIN
     );
   END IF;
 
-  -- Decide if this is DRAFT or ACTIVE
   IF p_split_mode IS NULL THEN
     v_new_status   := 'draft';
     v_target_split := NULL;
@@ -2241,7 +2189,6 @@ BEGIN
     v_has_splits   := TRUE;
   END IF;
 
-  -- Membership + home state
   PERFORM 1
   FROM public.memberships m
   WHERE m.home_id    = v_home_id
@@ -2268,7 +2215,11 @@ BEGIN
     PERFORM public.api_error('HOME_INACTIVE', 'This home is no longer active.', 'P0004');
   END IF;
 
-  -- Prepare splits if ACTIVE
+  PERFORM public._home_assert_quota(
+    v_home_id,
+    jsonb_build_object('active_expenses', 1)
+  );
+
   IF v_has_splits THEN
     PERFORM public._expenses_prepare_split_buffer(
       v_home_id,
@@ -2280,7 +2231,6 @@ BEGIN
     );
   END IF;
 
-  -- Persist NEW expense
   INSERT INTO public.expenses (
     home_id,
     created_by_user_id,
@@ -2301,7 +2251,6 @@ BEGIN
   )
   RETURNING * INTO v_result;
 
-  -- Persist splits if ACTIVE
   IF v_has_splits THEN
     INSERT INTO public.expense_splits (
       expense_id,
@@ -2321,6 +2270,11 @@ BEGIN
            CASE WHEN debtor_user_id = v_user THEN now() ELSE NULL END
     FROM pg_temp.expense_split_buffer;
   END IF;
+
+  PERFORM public._home_usage_apply_delta(
+    v_home_id,
+    jsonb_build_object('active_expenses', 1)
+  );
 
   RETURN v_result;
 END;
@@ -2991,8 +2945,8 @@ DECLARE
   v_expense        public.expenses%ROWTYPE;
   v_split          public.expense_splits%ROWTYPE;
   v_home_is_active boolean;
+  v_unpaid_count   integer;
 BEGIN
-  -- Authentication
   PERFORM public._assert_authenticated();
   v_user := auth.uid();
 
@@ -3000,7 +2954,6 @@ BEGIN
     PERFORM public.api_error('INVALID_EXPENSE', 'Expense id is required.', '22023');
   END IF;
 
-  -- Load and lock the expense
   SELECT *
   INTO v_expense
   FROM public.expenses e
@@ -3024,7 +2977,6 @@ BEGIN
     );
   END IF;
 
-  -- Membership + home state
   PERFORM 1
   FROM public.memberships m
   WHERE m.home_id    = v_expense.home_id
@@ -3055,7 +3007,6 @@ BEGIN
     );
   END IF;
 
-  -- Load and lock the caller's split
   SELECT *
   INTO v_split
   FROM public.expense_splits s
@@ -3072,18 +3023,29 @@ BEGIN
     );
   END IF;
 
-  -- Idempotent: if already paid, just return the row
   IF v_split.status = 'paid' THEN
     RETURN v_split;
   END IF;
 
-  -- Mark as paid
   UPDATE public.expense_splits
   SET status         = 'paid',
       marked_paid_at = now()
   WHERE expense_id     = v_expense.id
     AND debtor_user_id = v_user
   RETURNING * INTO v_split;
+
+  SELECT COUNT(*)
+  INTO v_unpaid_count
+  FROM public.expense_splits s
+  WHERE s.expense_id = v_expense.id
+    AND s.status     = 'unpaid';
+
+  IF v_unpaid_count = 0 THEN
+    PERFORM public._home_usage_apply_delta(
+      v_expense.home_id,
+      jsonb_build_object('active_expenses', -1)
+    );
+  END IF;
 
   RETURN v_split;
 END;

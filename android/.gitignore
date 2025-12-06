@@ -18,3 +18,5 @@ key.properties
 # Firebase configuration files (Android & iOS) – NEVER commit
 **/google-services.json
 **/GoogleService-Info.plist
+**/dev-google-services-base64*
+**/prod-google-services-base64*

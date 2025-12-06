@@ -65,7 +65,7 @@ SELECT ok(
     SELECT COUNT(*)
     FROM pg_indexes
     WHERE schemaname = 'public'
-      AND indexname = 'uq_notification_sends_user_date_sent'
+      AND indexname = 'uq_notification_sends_user_date'
   ) = 1,
   'unique index for sent per day exists'
 );

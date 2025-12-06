@@ -216,6 +216,7 @@
   "shareCreateLoadError": "No pudimos cargar a los miembros del hogar.",
   "shareCreateRetry": "Intentar de nuevo",
   "shareCreateErrorGeneric": "No se pudo crear el gasto. Intenta otra vez.",
+  "shareCreateErrorPaywallActiveCap": "Alcanzaste el límite gratuito de 10 gastos activos o borradores. Cierra o cancela uno para seguir.",
   "shareCreateErrorForbidden": "No tienes permiso para crear este gasto ahora.",
   "shareCreateSuccess": "Gasto creado.",
   "todayAddSheetTitle": "A\u00c3\u0192\u00c2\u00b1ade algo a tu hogar",

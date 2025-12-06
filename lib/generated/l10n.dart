@@ -1571,6 +1571,16 @@ class S {
     );
   }
 
+  /// `You’ve reached the free limit of 10 active or draft expenses. Close or cancel one to continue.`
+  String get shareCreateErrorPaywallActiveCap {
+    return Intl.message(
+      'You’ve reached the free limit of 10 active or draft expenses. Close or cancel one to continue.',
+      name: 'shareCreateErrorPaywallActiveCap',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `You don't have permission to create this right now.`
   String get shareCreateErrorForbidden {
     return Intl.message(

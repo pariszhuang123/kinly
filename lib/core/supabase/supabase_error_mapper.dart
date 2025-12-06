@@ -741,6 +741,12 @@ class SupabaseErrorMapper {
             parsed.message,
             details: parsed.details,
           );
+        case 'PAYWALL_LIMIT_ACTIVE_EXPENSES':
+          return ExpenseException(
+            ExpenseErrorCode.paywallActiveExpensesCap,
+            parsed.message,
+            details: parsed.details,
+          );
         case 'FORBIDDEN':
           return ExpenseException(
             ExpenseErrorCode.forbidden,

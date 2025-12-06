@@ -553,6 +553,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateErrorGeneric": MessageLookupByLibrary.simpleMessage(
       "تعذر إنشاء المصروف. حاول مرة أخرى.",
     ),
+    "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
+      "وصلت إلى الحد المجاني (10 مصروفات نشطة أو مسودات). أغلق أو ألغ أحدها للمتابعة.",
+    ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "تعذر تحميل أعضاء المنزل.",
     ),

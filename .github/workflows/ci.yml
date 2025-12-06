@@ -61,7 +61,6 @@ jobs:
       - name: Check directionality-safe layout
         run: dart run tool/check_directionality.dart
 
-  # 🧮 NEW: code size metrics with scc
   code_metrics:
     name: Codebase Metrics
     runs-on: ubuntu-latest
@@ -75,7 +74,6 @@ jobs:
           tar -xzf scc.tar.gz
           sudo mv scc /usr/local/bin/scc
 
-      # Human-readable summary in CI logs
       - name: Run scc (summary)
         run: |
           scc . \
@@ -84,7 +82,6 @@ jobs:
             --no-cocomo \
             --ci
 
-      # JSON output for machine parsing
       - name: Run scc (JSON output)
         run: |
           scc . \
@@ -94,7 +91,6 @@ jobs:
             --format json \
             --output code_metrics.json
 
-      # Parse code_metrics.json and print a small summary
       - name: Print metrics summary from JSON
         run: |
           python - << 'PY'
@@ -108,8 +104,6 @@ jobs:
 
           data = json.loads(path.read_text())
 
-          # scc JSON output is typically a list of language entries.
-          # But we'll be defensive and handle a dict-with-Languages as well.
           if isinstance(data, dict) and "Languages" in data:
             languages = data["Languages"]
           elif isinstance(data, list):
@@ -119,7 +113,6 @@ jobs:
             print("Raw:", data)
             raise SystemExit(0)
 
-          # Build a map by language name (case-safe)
           by_name = {}
           for lang in languages:
             name = lang.get("Name") or lang.get("name")
@@ -130,7 +123,6 @@ jobs:
             lang = by_name.get(lang_name)
             if not lang:
               return None
-            # scc uses capitalized keys; we also fall back to lowercase just in case.
             code = lang.get("Code", lang.get("code", 0))
             files = lang.get("Count", lang.get("nFiles", 0))
             return int(code), int(files)
@@ -145,7 +137,6 @@ jobs:
               code, files = stat
               print(f"{name}: {code} lines of code across {files} files")
 
-          # Try to show the total if present
           total = by_name.get("Total") or by_name.get("SUM")
           if total:
             t_code = total.get("Code", total.get("code", 0))
@@ -176,10 +167,8 @@ jobs:
           BASE=$(if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then echo "HEAD~1"; elif [ -n "${{ github.base_ref }}" ]; then echo "origin/${{ github.base_ref }}"; else echo "origin/main"; fi)
           echo "Comparing changes against $BASE"
 
-          # Show all changed files (for debugging)
           git diff --name-only "$BASE"...HEAD
 
-          # Consider migrations, functions, policies, *and tests* as DB-related
           MATCHED=$(git diff --name-only "$BASE"...HEAD | grep -E '^supabase/(migrations|functions|policies|tests)/' || true)
 
           echo "DB-related changes:"
@@ -196,7 +185,6 @@ jobs:
         with:
           version: latest
 
-      # Dart is needed because contracts_regen.sh calls `dart tool/...`
       - uses: subosito/flutter-action@v2
         if: steps.changes.outputs.do_db_check == 'true'
         with:
@@ -238,13 +226,11 @@ jobs:
             echo "::endgroup::"
           done
 
-      # 🔥 Unified: regenerate all contract snapshots using the same script as local
       - name: Regenerate contract snapshots (same as local)
         if: steps.changes.outputs.do_db_check == 'true'
         shell: bash
         run: |
           chmod +x tool/contracts_regen.sh
-          # DB is already freshly reset above, so plain run is fine.
           ./tool/contracts_regen.sh
 
       - name: Verify snapshots committed
@@ -281,13 +267,39 @@ jobs:
       SUPABASE_PROJECT_ID: ${{ secrets.DEV_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: supabase/setup-cli@v1
         with:
           version: latest
+
       - name: Link project
         run: supabase link --project-ref "$SUPABASE_PROJECT_ID"
+
+      - name: Set Supabase secrets (Dev – URL, service role, FCM)
+        shell: bash
+        run: |
+          FCM_SA_JSON=$(echo "${{ secrets.FCM_SERVICE_ACCOUNT}}" | base64 --decode)
+
+          supabase secrets set \
+            SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
+            SUPABASE_SERVICE_ROLE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            FCM_SERVICE_ACCOUNT="$FCM_SA_JSON" \
+            FCM_PROJECT_ID="${{ secrets.FCM_PROJECT_ID }}"
+
       - name: Push migrations to Dev
         run: supabase db push
+
+      - name: Deploy notifications_daily (Dev)
+        run: |
+          supabase functions deploy notifications_daily \
+            --project-ref "$SUPABASE_PROJECT_ID" \
+            --import-map supabase/functions/import_map.json
+
+      - name: Smoke test notifications_daily (Dev)
+        run: |
+          supabase functions invoke notifications_daily \
+            --project-ref "$SUPABASE_PROJECT_ID" \
+            --no-verify-jwt
 
   android_dev_build:
     name: Android Dev (APK)
@@ -304,20 +316,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 🔥 Free disk space on runner to avoid "No space left on device"
       - name: Free disk space
         run: |
           echo "Disk usage before cleanup:"
           df -h
-
-          # Remove heavy, unused toolchains on ubuntu-latest
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /opt/hostedtoolcache/CodeQL
-
-          # Clean any Docker artifacts if present
           docker system prune -af || true
-
           echo "Disk usage after cleanup:"
           df -h
 
@@ -345,7 +351,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Optional but keeps project build dir small
+      - name: Decode dev google-services.json
+        run: |
+          mkdir -p android/app/src/dev
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" \
+            | base64 --decode > android/app/src/dev/google-services.json
+
       - name: Flutter clean
         run: flutter clean
 
@@ -404,13 +415,39 @@ jobs:
       SUPABASE_PROJECT_ID: ${{ secrets.PROD_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: supabase/setup-cli@v1
         with:
           version: latest
+
       - name: Link project
         run: supabase link --project-ref "$SUPABASE_PROJECT_ID"
+
+      - name: Set Supabase secrets (Prod – URL, service role, FCM)
+        shell: bash
+        run: |
+          FCM_SA_JSON=$(echo "${{ secrets.FCM_SERVICE_ACCOUNT}}" | base64 --decode)
+
+          supabase secrets set \
+            SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
+            SUPABASE_SERVICE_ROLE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            FCM_SERVICE_ACCOUNT="$FCM_SA_JSON" \
+            FCM_PROJECT_ID="${{ secrets.FCM_PROJECT_ID }}"
+
       - name: Push migrations to Prod
         run: supabase db push
+
+      - name: Deploy notifications_daily (Prod)
+        run: |
+          supabase functions deploy notifications_daily \
+            --project-ref "$SUPABASE_PROJECT_ID" \
+            --import-map supabase/functions/import_map.json
+
+      - name: Smoke test notifications_daily (Prod)
+        run: |
+          supabase functions invoke notifications_daily \
+            --project-ref "$SUPABASE_PROJECT_ID" \
+            --no-verify-jwt
 
   android_prod_release:
     name: Android Prod (AAB + Play)
@@ -439,17 +476,14 @@ jobs:
             echo "DO_PLAY_UPLOAD=false" >> $GITHUB_ENV
           fi
 
-      # 🔥 Free disk space before big release build
       - name: Free disk space
         run: |
           echo "Disk usage before cleanup:"
           df -h
-
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /opt/hostedtoolcache/CodeQL
           docker system prune -af || true
-
           echo "Disk usage after cleanup:"
           df -h
 
@@ -477,12 +511,19 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Decode prod google-services.json
+        run: |
+          mkdir -p android/app/src/prod
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" \
+            | base64 --decode > android/app/src/prod/google-services.json
+
       - name: Flutter clean
         run: flutter clean
 
       - name: Compute build number
         id: versioning
-        run: echo "BUILD_NUMBER=$(git rev-list --count HEAD)" >> $GITHUB_ENV
+        run: echo "BUILD_NUMBER=$(git.rev-list --count HEAD)" >> $GITHUB_ENV
+        shell: bash
 
       - name: Create env/prod.json from secrets
         run: |
