@@ -45,6 +45,9 @@ Future<void> main(List<String> args) async {
       continue;
     }
 
+    // 🔧 Normalize any function "path" fields to use forward slashes
+    _normalizeFunctionPaths(json);
+
     final domain = (json['domain'] ?? '').toString();
     if (domain.isEmpty) {
       stderr.writeln('Missing domain in ${file.path}');
@@ -57,6 +60,7 @@ Future<void> main(List<String> args) async {
       () => {'versions': <String, Map<String, dynamic>>{}},
     );
     (latestForDomain['versions'] as Map<String, dynamic>)[version] = {
+      // Normalize docs path as well for cross-platform stability
       'docs': file.path.replaceAll('\\', '/'),
       'entities': json['entities'],
       'functions': json['functions'],
@@ -117,4 +121,21 @@ String? _extractContractsJson(String content) {
   final e = end.firstMatch(after);
   if (e == null) return null;
   return after.substring(0, e.start).trim();
+}
+
+/// Normalize any "functions.*.path" to use forward slashes.
+/// This keeps snapshots stable across Windows/macOS/Linux.
+void _normalizeFunctionPaths(Map<String, dynamic> json) {
+  final functions = json['functions'];
+  if (functions is Map) {
+    for (final entry in functions.entries) {
+      final value = entry.value;
+      if (value is Map) {
+        final path = value['path'];
+        if (path is String) {
+          value['path'] = path.replaceAll('\\', '/');
+        }
+      }
+    }
+  }
 }

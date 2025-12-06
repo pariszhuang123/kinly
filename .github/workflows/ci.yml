@@ -292,8 +292,7 @@ jobs:
       - name: Deploy notifications_daily (Dev)
         run: |
           supabase functions deploy notifications_daily \
-            --project-ref "$SUPABASE_PROJECT_ID" \
-            --import-map supabase/functions/import_map.json
+            --project-ref "$SUPABASE_PROJECT_ID" 
 
       - name: Smoke test notifications_daily (Dev)
         run: |
@@ -440,8 +439,7 @@ jobs:
       - name: Deploy notifications_daily (Prod)
         run: |
           supabase functions deploy notifications_daily \
-            --project-ref "$SUPABASE_PROJECT_ID" \
-            --import-map supabase/functions/import_map.json
+            --project-ref "$SUPABASE_PROJECT_ID" 
 
       - name: Smoke test notifications_daily (Prod)
         run: |
@@ -522,7 +520,7 @@ jobs:
 
       - name: Compute build number
         id: versioning
-        run: echo "BUILD_NUMBER=$(git.rev-list --count HEAD)" >> $GITHUB_ENV
+        run: echo "BUILD_NUMBER=$(git rev-list --count HEAD)" >> $GITHUB_ENV
         shell: bash
 
       - name: Create env/prod.json from secrets
