@@ -297,7 +297,6 @@ jobs:
       - name: Smoke test notifications_daily (Dev)
         run: |
           supabase functions invoke notifications_daily \
-            --project-ref "$SUPABASE_PROJECT_ID" \
             --no-verify-jwt
 
   android_dev_build:
@@ -444,7 +443,6 @@ jobs:
       - name: Smoke test notifications_daily (Prod)
         run: |
           supabase functions invoke notifications_daily \
-            --project-ref "$SUPABASE_PROJECT_ID" \
             --no-verify-jwt
 
   android_prod_release:
