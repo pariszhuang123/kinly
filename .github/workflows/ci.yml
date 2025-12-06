@@ -296,8 +296,7 @@ jobs:
 
       - name: Smoke test notifications_daily (Dev)
         run: |
-          supabase functions invoke notifications_daily \
-            --no-verify-jwt
+          supabase functions invoke notifications_daily
 
   android_dev_build:
     name: Android Dev (APK)
@@ -442,8 +441,7 @@ jobs:
 
       - name: Smoke test notifications_daily (Prod)
         run: |
-          supabase functions invoke notifications_daily \
-            --no-verify-jwt
+          supabase functions invoke notifications_daily
 
   android_prod_release:
     name: Android Prod (AAB + Play)
