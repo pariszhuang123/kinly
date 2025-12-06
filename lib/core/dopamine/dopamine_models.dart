@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
-
-enum DopamineMilestone { flow, share, pulse, reflection }
-
-enum DopamineStrength { low, medium, high }
+import 'enums/dopamine_milestone.dart';
+import 'enums/dopamine_strength.dart';
 
 @immutable
 class DopamineMoment {
