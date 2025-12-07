@@ -34,54 +34,62 @@ class KinlySelectionCard extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final corners = theme.extension<Corners>();
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(corners?.xlarge ?? 24),
-        onTap: onTap,
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(spacing.lg),
-          decoration: BoxDecoration(
-            color: colors.card,
-            borderRadius: BorderRadius.circular(corners?.xlarge ?? 24),
-          ),
-          child: Row(
-            children: [
-              Container(
-                height: 56,
-                width: 56,
-                decoration: BoxDecoration(
-                  color: colors.icon.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(corners?.medium ?? 12),
-                ),
-                child: Center(
-                  child: icon, // <- use the widget directly
-                ),
+    return Semantics(
+      button: true,
+      enabled: true,
+      label: '$title, $subtitle',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(corners?.xlarge ?? 24),
+          onTap: onTap,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(spacing.lg),
+              decoration: BoxDecoration(
+                color: colors.card,
+                borderRadius: BorderRadius.circular(corners?.xlarge ?? 24),
               ),
-              SizedBox(width: spacing.lg),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: colors.icon,
-                      ),
+              child: Row(
+                children: [
+                  Container(
+                    height: 56,
+                    width: 56,
+                    decoration: BoxDecoration(
+                      color: colors.icon.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(corners?.medium ?? 12),
                     ),
-                    SizedBox(height: spacing.xs),
-                    Text(
-                      subtitle,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
+                    child: Center(
+                      child: icon, // <- use the widget directly
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(width: spacing.lg),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: colors.icon,
+                          ),
+                        ),
+                        SizedBox(height: spacing.xs),
+                        Text(
+                          subtitle,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.chevron_right_rounded, color: colors.icon),
+                ],
               ),
-              Icon(Icons.chevron_right_rounded, color: colors.icon),
-            ],
+            ),
           ),
         ),
       ),

@@ -129,11 +129,11 @@ class KinlyOptionSelectorRow<T> extends StatelessWidget {
   }
 
   /// Fixed layout pattern:
-  /// - 5 → 3 + 2
-  /// - 6 → 3 + 3
-  /// - 7 → 4 + 3
-  /// - 8 → 4 + 4
-  /// - 9+ → groups of 4
+  /// - 5 -> 3 + 2
+  /// - 6 -> 3 + 3
+  /// - 7 -> 4 + 3
+  /// - 8 -> 4 + 4
+  /// - 9+ -> groups of 4
   List<List<KinlySelectorOption<T>>> _splitIntoRows(
     List<KinlySelectorOption<T>> all,
   ) {
@@ -219,12 +219,14 @@ class KinlySelectorOption<T> {
     required this.label,
     this.svgAsset,
     this.iconData,
+    this.semanticsLabel,
   });
 
   final T value;
   final String label;
   final String? svgAsset;
   final IconData? iconData;
+  final String? semanticsLabel;
 }
 
 class _KinlyOptionCard<T> extends StatelessWidget {
@@ -253,40 +255,45 @@ class _KinlyOptionCard<T> extends StatelessWidget {
 
     final isDark = theme.brightness == Brightness.dark;
 
-    // Card background still changes on selection, but no thick border anymore.
-    final bg =
-        isSelected
-            ? colors.primaryContainer
-            : (isDark
-                ? colors.surfaceContainerHigh
-                : colors.surfaceContainerHighest);
+    final bg = isSelected
+        ? colors.primaryContainer
+        : (isDark ? colors.surfaceContainerHigh : colors.surfaceContainerHighest);
 
     final textColor = isSelected ? colors.onPrimaryContainer : colors.onSurface;
+    final labelText = option.semanticsLabel ?? option.label;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: width,
-        padding: EdgeInsets.all(spacing.xs),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(16),
-          // Remove the heavy outer border – focus selection on the icon ring instead.
-          border: Border.all(color: Colors.transparent),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildIcon(context, colors),
-            if (showLabel) ...[
-              SizedBox(height: spacing.xs),
-              Text(
-                option.label,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
-              ),
-            ],
-          ],
+    return Semantics(
+      button: true,
+      enabled: true,
+      label: labelText,
+      child: GestureDetector(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+          child: Container(
+            width: width,
+            padding: EdgeInsets.all(spacing.xs),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.transparent),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildIcon(context, colors),
+                if (showLabel) ...[
+                  SizedBox(height: spacing.xs),
+                  Text(
+                    option.label,
+                    textAlign: TextAlign.center,
+                    style:
+                        theme.textTheme.bodyMedium?.copyWith(color: textColor),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -312,7 +319,7 @@ class _KinlyOptionCard<T> extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    // Circular ring that clips the square icon – gives a tight color halo.
+    // Circular ring that clips the square icon — gives a tight color halo.
     return Container(
       padding: EdgeInsets.all(spacing.xxs), // thin halo
       decoration: BoxDecoration(

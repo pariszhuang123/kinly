@@ -33,28 +33,34 @@ class KinlyActionCard extends StatelessWidget {
         colors?.surface ??
         colorScheme.surfaceContainerHigh;
 
-    final content = Container(
-      padding: padding ??
-          EdgeInsets.all(spacing?.l ?? 16),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(corners?.medium ?? 12),
+    final content = ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+      child: Container(
+        padding: padding ?? EdgeInsets.all(spacing?.l ?? 16),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(corners?.medium ?? 12),
+        ),
+        child: child,
       ),
-      child: child,
     );
 
     if (onTap == null) {
       return content;
     }
 
-    return Material(
-      color: Colors.transparent,
-      elevation: elevations?.level1 ?? 1,
-      borderRadius: BorderRadius.circular(corners?.medium ?? 12),
-      child: InkWell(
+    return Semantics(
+      button: true,
+      enabled: onTap != null,
+      child: Material(
+        color: Colors.transparent,
+        elevation: elevations?.level1 ?? 1,
         borderRadius: BorderRadius.circular(corners?.medium ?? 12),
-        onTap: onTap,
-        child: content,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(corners?.medium ?? 12),
+          onTap: onTap,
+          child: content,
+        ),
       ),
     );
   }

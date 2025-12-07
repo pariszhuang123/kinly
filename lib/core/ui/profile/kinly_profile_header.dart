@@ -28,37 +28,46 @@ class KinlyProfileHeader extends StatelessWidget {
 
     return Column(
       children: [
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(56),
-            onTap: onAvatarTap,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                KinlyCircleAvatar(
-                  avatarUrl: avatarUrl,
-                  radius: 44,
-                  isOwner: isOwner,
-                ),
-                if (isLoading)
-                  PositionedDirectional(
-                    bottom: 0,
-                    end: 0,
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        shape: BoxShape.circle,
-                      ),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(colorScheme.primary),
-                      ),
+        Semantics(
+          label: displayName,
+          button: onAvatarTap != null,
+          enabled: onAvatarTap != null,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(56),
+              onTap: onAvatarTap,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    KinlyCircleAvatar(
+                      avatarUrl: avatarUrl,
+                      radius: 44,
+                      isOwner: isOwner,
                     ),
-                  ),
-              ],
+                    if (isLoading)
+                      PositionedDirectional(
+                        bottom: 0,
+                        end: 0,
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: colorScheme.surface,
+                            shape: BoxShape.circle,
+                          ),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation(colorScheme.primary),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

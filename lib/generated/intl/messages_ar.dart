@@ -22,32 +22,32 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(env) => "جاري تشغيل كينلي (${env})";
 
-  static String m1(client, current) =>
+  static String m1(time) => "مجدول لـ ${time}";
+
+  static String m2(client, current) =>
       "نسختك: ${client}\nأحدث إصدار: ${current}";
 
-  static String m2(partOfDay, name) => "مرحبًا يا ${name}";
+  static String m3(partOfDay, name) => "مرحبًا يا ${name}";
 
-  static String m3(link) => "شارك كينلي ليصبح التعاون في المنزل أسهل: ${link}";
+  static String m4(link) => "شارك كينلي ليصبح التعاون في المنزل أسهل: ${link}";
 
-  static String m4(code, link) =>
+  static String m5(code, link) =>
       "مرحبًا بك في منزلنا على كينلي!\nاستخدم رمز الدعوة: ${code}\nحمّل تطبيق كينلي: ${link}";
 
-  static String m5(code) => "تم الانضمام باستخدام الرمز: ${code}";
+  static String m6(code) => "تم الانضمام باستخدام الرمز: ${code}";
 
-  static String m6(paidAmount, totalAmount) =>
+  static String m7(paidAmount, totalAmount) =>
       "${paidAmount} من ${totalAmount} تم تحصيلها";
 
-  static String m7(paid, total) => "${paid} من ${total} مدفوع";
+  static String m8(paid, total) => "${paid} من ${total} مدفوع";
 
-  static String m8(count) => "عرض الكل (${count})";
+  static String m9(count) => "عرض الكل (${count})";
 
-  static String m9(count) =>
+  static String m10(count) =>
       "${Intl.plural(count, one: '${count} دفعة معلّقة', other: '${count} دفعات معلّقة')}";
 
-  static String m10(homeId, role) =>
+  static String m11(homeId, role) =>
       "المنزل الحالي: ${homeId} • الدور: ${role}";
-
-  static String m11(time) => "مجدول لـ ${time}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -56,6 +56,30 @@ class MessageLookup extends MessageLookupByLibrary {
       "تعذر تحديث معلومات منزلك. يرجى المحاولة مرة أخرى.",
     ),
     "bootstrap_initializing": m0,
+    "connectionNotificationsPermissionBlocked":
+        MessageLookupByLibrary.simpleMessage(
+          "فعّل الإشعارات من إعدادات الهاتف لتحويلها إلى تشغيل.",
+        ),
+    "connectionNotificationsTimeLabel": MessageLookupByLibrary.simpleMessage(
+      "وقت التذكير",
+    ),
+    "connectionNotificationsTimeSubtitle": m1,
+    "connectionNotificationsToggleSubtitleOff":
+        MessageLookupByLibrary.simpleMessage("فعّل التذكيرات حول منزلك."),
+    "connectionNotificationsToggleSubtitleOn":
+        MessageLookupByLibrary.simpleMessage("استقبل تذكيراً مرة كل يوم."),
+    "connectionNotificationsToggleTitle": MessageLookupByLibrary.simpleMessage(
+      "إشعارات يومية",
+    ),
+    "connectionSettingsGenericError": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحديث هذه الإعدادات. حاول مجدداً.",
+    ),
+    "connectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "التحكم في التذكيرات اليومية ووقت الإشعار.",
+    ),
+    "connectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "إعدادات الاتصال",
+    ),
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
       "تعذر إنشاء المنزل. يرجى المحاولة مرة أخرى.",
     ),
@@ -246,12 +270,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "ما الجديد",
     ),
     "force_update_title": MessageLookupByLibrary.simpleMessage("التحديث مطلوب"),
-    "force_update_version_details": m1,
+    "force_update_version_details": m2,
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("صديق"),
     "greetingPartAfternoon": MessageLookupByLibrary.simpleMessage("مساء الخير"),
     "greetingPartEvening": MessageLookupByLibrary.simpleMessage("مساء الخير"),
     "greetingPartMorning": MessageLookupByLibrary.simpleMessage("صباح الخير"),
-    "greetingPartOfDay": m2,
+    "greetingPartOfDay": m3,
     "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("الاسم"),
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "جزء اليوم (صباح/ظهر/مساء)",
@@ -287,12 +311,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubRotateSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تجديد رمز الدعوة",
     ),
-    "hubShareAppBody": m3,
+    "hubShareAppBody": m4,
     "hubShareAppCta": MessageLookupByLibrary.simpleMessage("مشاركة كينلي"),
     "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
       "الحصول على تطبيق كينلي",
     ),
-    "hubShareInviteBody": m4,
+    "hubShareInviteBody": m5,
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "دعوة إلى منزلي في كينلي",
     ),
@@ -319,7 +343,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage("أدخل رمز الدعوة"),
     "join_submit": MessageLookupByLibrary.simpleMessage("انضمام"),
-    "join_success": m5,
+    "join_success": m6,
     "join_title": MessageLookupByLibrary.simpleMessage("الانضمام إلى المنزل"),
     "login_consent_connector": MessageLookupByLibrary.simpleMessage(" و "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
@@ -368,6 +392,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileConfirmLeaveTitle": MessageLookupByLibrary.simpleMessage(
       "مغادرة هذا المنزل؟",
     ),
+    "profileConnectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "إدارة الإشعارات والتذكيرات.",
+    ),
+    "profileConnectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "إعدادات الاتصال",
+    ),
     "profileContactEmailSubject": MessageLookupByLibrary.simpleMessage(
       "اتصل بنا",
     ),
@@ -378,41 +408,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "البريد الإلكتروني: support@makinglifeeasie.com",
     ),
     "profileContactUsTitle": MessageLookupByLibrary.simpleMessage("اتصل بنا"),
-
-    "profileConnectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "????? ????????? ??????????.",
-    ),
-    "profileConnectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "??????? ???????",
-    ),
-    "connectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "??????? ???????",
-    ),
-    "connectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "?????? ?? ????????? ??????? ???? ???????.",
-    ),
-    "connectionSettingsGenericError": MessageLookupByLibrary.simpleMessage(
-      "???? ????? ??? ?????????. ???? ??????.",
-    ),
-    "connectionNotificationsToggleTitle": MessageLookupByLibrary.simpleMessage(
-      "??????? ?????",
-    ),
-    "connectionNotificationsToggleSubtitleOn":
-        MessageLookupByLibrary.simpleMessage(
-          "?????? ??????? ??? ?? ???.",
-        ),
-    "connectionNotificationsToggleSubtitleOff":
-        MessageLookupByLibrary.simpleMessage(
-          "???? ????????? ??? ?????.",
-        ),
-    "connectionNotificationsPermissionBlocked":
-        MessageLookupByLibrary.simpleMessage(
-          "???? ????????? ?? ??????? ?????? ???????? ??? ?????.",
-        ),
-    "connectionNotificationsTimeLabel": MessageLookupByLibrary.simpleMessage(
-      "??? ???????",
-    ),
-    "connectionNotificationsTimeSubtitle": m11,
     "profileDeleteAccountSubtitle": MessageLookupByLibrary.simpleMessage(
       "إزالة حسابك في كينلي وبيانات ملفك الشخصي.",
     ),
@@ -651,8 +646,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "اختر طريقة التقسيم.",
     ),
-    "shareCreatedListActiveAmount": m6,
-    "shareCreatedListActiveSubtitle": m7,
+    "shareCreatedListActiveAmount": m7,
+    "shareCreatedListActiveSubtitle": m8,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "غير معيَّن",
     ),
@@ -746,7 +741,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("جديد اليوم"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m8,
+    "todayFlowSeeAll": m9,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "هذا ما يجري في منزلك اليوم.",
     ),
@@ -767,7 +762,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayInviteNotNow": MessageLookupByLibrary.simpleMessage("Not now"),
     "todayInviteShareCta": MessageLookupByLibrary.simpleMessage("Share invite"),
-    "todayShareActiveSubtitle": m9,
+    "todayShareActiveSubtitle": m10,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("قريبًا"),
     "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
       "أكمل تقسيم المبلغ لنشر هذا المصروف.",
@@ -791,7 +786,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayShareSeeAll": MessageLookupByLibrary.simpleMessage("عرض كل المصاريف"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("نشطة"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("مسودات"),
-    "today_home_details": m10,
+    "today_home_details": m11,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "لا يوجد منزل نشط حاليًا. أنشئ أو انضم إلى منزل لرؤية عرض اليوم.",
     ),

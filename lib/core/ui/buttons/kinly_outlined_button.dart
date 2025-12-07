@@ -19,6 +19,7 @@ class KinlyOutlinedButton extends StatelessWidget {
     this.icon,
     this.compact = false,
     this.fullWidth = false,
+    this.semanticsLabel,
     super.key,
   });
 
@@ -29,6 +30,7 @@ class KinlyOutlinedButton extends StatelessWidget {
     required IconData icon,
     bool compact = false,
     bool fullWidth = false,
+    String? semanticsLabel,
     Key? key,
   }) {
     return KinlyOutlinedButton._(
@@ -37,6 +39,7 @@ class KinlyOutlinedButton extends StatelessWidget {
       icon: Icon(icon, size: 16),
       compact: compact,
       fullWidth: fullWidth,
+      semanticsLabel: semanticsLabel,
       key: key,
     );
   }
@@ -47,6 +50,7 @@ class KinlyOutlinedButton extends StatelessWidget {
     required String label,
     bool compact = false,
     bool fullWidth = false,
+    String? semanticsLabel,
     Key? key,
   }) {
     return KinlyOutlinedButton._(
@@ -55,6 +59,7 @@ class KinlyOutlinedButton extends StatelessWidget {
       icon: null,
       compact: compact,
       fullWidth: fullWidth,
+      semanticsLabel: semanticsLabel,
       key: key,
     );
   }
@@ -64,9 +69,12 @@ class KinlyOutlinedButton extends StatelessWidget {
   final Widget? icon;
   final bool compact;
   final bool fullWidth;
+  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
+    assert((semanticsLabel ?? label).isNotEmpty, 'Semantic label must not be empty');
+
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final corners = theme.extension<Corners>();
@@ -120,10 +128,7 @@ class KinlyOutlinedButton extends StatelessWidget {
       foregroundColor: foreground,
       side: BorderSide(color: borderColor),
       padding: EdgeInsets.symmetric(horizontal: horizontal, vertical: vertical),
-      minimumSize: Size(
-        0, // allow intrinsic width
-        compact ? 36.0 : 44.0,
-      ),
+      minimumSize: const Size(48, 48),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(corners?.medium ?? 12),
@@ -148,8 +153,14 @@ class KinlyOutlinedButton extends StatelessWidget {
       child: child,
     );
 
-    if (!fullWidth) return button;
+    final Widget finalButton =
+        fullWidth ? SizedBox(width: double.infinity, child: button) : button;
 
-    return SizedBox(width: double.infinity, child: button);
+    return Semantics(
+      button: true,
+      enabled: true,
+      label: semanticsLabel ?? label,
+      child: finalButton,
+    );
   }
 }

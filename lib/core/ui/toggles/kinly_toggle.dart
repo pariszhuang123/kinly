@@ -14,6 +14,7 @@ class KinlyToggle extends StatelessWidget {
     this.subtitle,
     this.visible = true,
     this.isDarkOverride,
+    this.semanticsLabel,
   });
 
   final bool value;
@@ -24,6 +25,7 @@ class KinlyToggle extends StatelessWidget {
 
   /// Optional override for dark mode styling.
   final bool? isDarkOverride;
+  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -40,29 +42,41 @@ class KinlyToggle extends StatelessWidget {
       color: colors.onSurfaceVariant,
     );
 
-    return InkWell(
+    final toggleRow = InkWell(
       onTap: () => onChanged(!value),
       borderRadius: BorderRadius.circular(8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          KinlyCheckbox(
-            value: value,
-            onChanged: onChanged,
-            isDarkOverride: isDarkOverride,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: titleStyle),
-                if (subtitle != null) Text(subtitle!, style: subtitleStyle),
-              ],
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            KinlyCheckbox(
+              value: value,
+              onChanged: onChanged,
+              isDarkOverride: isDarkOverride,
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: titleStyle),
+                  if (subtitle != null) Text(subtitle!, style: subtitleStyle),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+
+    return Semantics(
+      container: true,
+      button: true,
+      enabled: true,
+      toggled: value,
+      label: semanticsLabel ?? title,
+      child: toggleRow,
     );
   }
 }

@@ -1146,10 +1146,10 @@ class S {
     );
   }
 
-  /// `Gratitude wall`
+  /// `Home Gratitude wall`
   String get todayGratitudeSectionTitle {
     return Intl.message(
-      'Gratitude wall',
+      'Home Gratitude wall',
       name: 'todayGratitudeSectionTitle',
       desc: '',
       args: [],
@@ -2927,7 +2927,7 @@ class S {
   }
 
   /// `Scheduled for {time}`
-  String connectionNotificationsTimeSubtitle(Object time) {
+  String connectionNotificationsTimeSubtitle(String time) {
     return Intl.message(
       'Scheduled for $time',
       name: 'connectionNotificationsTimeSubtitle',

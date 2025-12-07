@@ -22,45 +22,45 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(env) => "Iniciando Kinly (${env})";
 
-  static String m1(client, current) =>
+  static String m1(time) => "Programado para ${time}";
+
+  static String m2(client, current) =>
       "Tu versiÃ³n: ${client}\nÃšltima versiÃ³n: ${current}";
 
-  static String m11(appName) =>
+  static String m12(appName) =>
       "Hecho con ${appName} - Juntos se siente más ligero";
 
-  static String m12(link) =>
+  static String m13(link) =>
       "Compartimos un vistazo de nuestro muro de gratitud en Kinly. Descarga la app: ${link}";
 
-  static String m13(time) => "${time} hoy";
+  static String m14(time) => "${time} hoy";
 
-  static String m14(count) => "Muro de gratitud (${count})";
+  static String m15(count) => "Muro de gratitud (${count})";
 
-  static String m15(weeks) =>
+  static String m16(weeks) =>
       "${Intl.plural(weeks, zero: 'Esta semana', one: 'Hace 1 semana', other: 'Hace ${weeks} semanas')}";
 
-  static String m16(time) => "Programado para ${time}";
+  static String m3(partOfDay, name) => "Buen ${partOfDay}, ${name}";
 
-  static String m2(partOfDay, name) => "Buen ${partOfDay}, ${name}";
-
-  static String m3(link) =>
+  static String m4(link) =>
       "Comparte Kinly para que compartir sea mÃ¡s ligero: ${link}";
 
-  static String m4(code, link) =>
+  static String m5(code, link) =>
       "Bienvenido a nuestro hogar Kinly. Introduce este cÃ³digo de invitaciÃ³n: ${code}\nDescarga la app Kinly: ${link}";
 
-  static String m5(code) => "Te has unido con el cÃƒÂ³digo: ${code}";
+  static String m6(code) => "Te has unido con el cÃƒÂ³digo: ${code}";
 
-  static String m6(paidAmount, totalAmount) =>
+  static String m7(paidAmount, totalAmount) =>
       "${paidAmount} de ${totalAmount} recolectados";
 
-  static String m7(paid, total) => "${paid} de ${total} pagos completos";
+  static String m8(paid, total) => "${paid} de ${total} pagos completos";
 
-  static String m8(count) => "Ver todo (${count})";
+  static String m9(count) => "Ver todo (${count})";
 
-  static String m9(count) =>
+  static String m10(count) =>
       "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} pagos pendientes')}";
 
-  static String m10(homeId, role) =>
+  static String m11(homeId, role) =>
       "Hogar actual: ${homeId} Ã¢â‚¬Â¢ Rol: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -70,6 +70,34 @@ class MessageLookup extends MessageLookupByLibrary {
       "No pudimos actualizar tu membresÃ­a del hogar. IntÃ©ntalo de nuevo.",
     ),
     "bootstrap_initializing": m0,
+    "connectionNotificationsPermissionBlocked":
+        MessageLookupByLibrary.simpleMessage(
+          "Permite las notificaciones en los ajustes del telÃ©fono para activarlas.",
+        ),
+    "connectionNotificationsTimeLabel": MessageLookupByLibrary.simpleMessage(
+      "Hora del recordatorio",
+    ),
+    "connectionNotificationsTimeSubtitle": m1,
+    "connectionNotificationsToggleSubtitleOff":
+        MessageLookupByLibrary.simpleMessage(
+          "Activa los recordatorios sobre tu hogar.",
+        ),
+    "connectionNotificationsToggleSubtitleOn":
+        MessageLookupByLibrary.simpleMessage(
+          "Recibe un recordatorio cada dÃ­a.",
+        ),
+    "connectionNotificationsToggleTitle": MessageLookupByLibrary.simpleMessage(
+      "Notificaciones diarias",
+    ),
+    "connectionSettingsGenericError": MessageLookupByLibrary.simpleMessage(
+      "No se pudieron actualizar estas opciones. IntÃ©ntalo de nuevo.",
+    ),
+    "connectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Controla recordatorios diarios y horario de notificaciÃ³n.",
+    ),
+    "connectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "ConfiguraciÃ³n de conexiones",
+    ),
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
       "No se pudo crear el hogar. Intenta de nuevo.",
     ),
@@ -268,7 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "force_update_title": MessageLookupByLibrary.simpleMessage(
       "ActualizaciÃ³n requerida",
     ),
-    "force_update_version_details": m1,
+    "force_update_version_details": m2,
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("amigo"),
     "gratitudeWallEmptySubtitle": MessageLookupByLibrary.simpleMessage(
       "Comparte un momento soleado para empezar a llenar el muro.",
@@ -276,7 +304,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Aún no hay publicaciones",
     ),
-    "gratitudeWallFooter": m11,
+    "gratitudeWallFooter": m12,
     "gratitudeWallKinlySubtitle": MessageLookupByLibrary.simpleMessage(
       "Kinly ayuda a tu hogar a compartir pequeños momentos de gratitud juntos.",
     ),
@@ -292,23 +320,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallShareError": MessageLookupByLibrary.simpleMessage(
       "No pudimos compartir ahora. Inténtalo de nuevo.",
     ),
-    "gratitudeWallShareMessage": m12,
+    "gratitudeWallShareMessage": m13,
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
       "Muro de gratitud",
     ),
     "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "Momentos compartidos de tu hogar.",
     ),
-    "gratitudeWallTimestamp": m13,
+    "gratitudeWallTimestamp": m14,
     "gratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
       "Muro de gratitud",
     ),
-    "gratitudeWallTitleCount": m14,
-    "gratitudeWallWeeksAgo": m15,
+    "gratitudeWallTitleCount": m15,
+    "gratitudeWallWeeksAgo": m16,
     "greetingPartAfternoon": MessageLookupByLibrary.simpleMessage("tarde"),
     "greetingPartEvening": MessageLookupByLibrary.simpleMessage("noche"),
     "greetingPartMorning": MessageLookupByLibrary.simpleMessage("maÃ±ana"),
-    "greetingPartOfDay": m2,
+    "greetingPartOfDay": m3,
     "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("nombre"),
     "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
       "parte del dÃƒÂ­a (maÃƒÂ±ana/tarde/noche)",
@@ -405,12 +433,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubRotateSuccess": MessageLookupByLibrary.simpleMessage(
       "InvitaciÃ³n rotada",
     ),
-    "hubShareAppBody": m3,
+    "hubShareAppBody": m4,
     "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Compartir Kinly"),
     "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
       "Consigue la app Kinly",
     ),
-    "hubShareInviteBody": m4,
+    "hubShareInviteBody": m5,
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "Invita a mi hogar Kinly",
     ),
@@ -439,7 +467,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ingresa el cÃƒÂ³digo de invitaciÃƒÂ³n",
     ),
     "join_submit": MessageLookupByLibrary.simpleMessage("Unirse"),
-    "join_success": m5,
+    "join_success": m6,
     "join_title": MessageLookupByLibrary.simpleMessage("Unirse al hogar"),
     "login_consent_connector": MessageLookupByLibrary.simpleMessage(" y "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
@@ -523,6 +551,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileConfirmLeaveTitle": MessageLookupByLibrary.simpleMessage(
       "Â¿Salir de este hogar?",
     ),
+    "profileConnectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Administra notificaciones y recordatorios.",
+    ),
+    "profileConnectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "ConfiguraciÃ³n de conexiones",
+    ),
     "profileContactEmailSubject": MessageLookupByLibrary.simpleMessage(
       "ContÃ¡ctanos",
     ),
@@ -535,41 +569,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileContactUsTitle": MessageLookupByLibrary.simpleMessage(
       "ContÃ¡ctanos",
     ),
-
-    "profileConnectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Administra notificaciones y recordatorios.",
-    ),
-    "profileConnectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "ConfiguraciA?A3n de conexiones",
-    ),
-    "connectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "ConfiguraciA?A3n de conexiones",
-    ),
-    "connectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Controla recordatorios diarios y horario de notificaciA?A3n.",
-    ),
-    "connectionSettingsGenericError": MessageLookupByLibrary.simpleMessage(
-      "No se pudieron actualizar estas opciones. IntA?A3ntalo de nuevo.",
-    ),
-    "connectionNotificationsToggleTitle": MessageLookupByLibrary.simpleMessage(
-      "Notificaciones diarias",
-    ),
-    "connectionNotificationsToggleSubtitleOn":
-        MessageLookupByLibrary.simpleMessage(
-          "Recibe un recordatorio cada dA?A?a.",
-        ),
-    "connectionNotificationsToggleSubtitleOff":
-        MessageLookupByLibrary.simpleMessage(
-          "Activa los recordatorios sobre tu hogar.",
-        ),
-    "connectionNotificationsPermissionBlocked":
-        MessageLookupByLibrary.simpleMessage(
-          "Permite las notificaciones en los ajustes del telA?A?fono para activarlas.",
-        ),
-    "connectionNotificationsTimeLabel": MessageLookupByLibrary.simpleMessage(
-      "Hora del recordatorio",
-    ),
-    "connectionNotificationsTimeSubtitle": m16,
     "profileDeleteAccountSubtitle": MessageLookupByLibrary.simpleMessage(
       "Elimina tu cuenta de Kinly y los datos de perfil.",
     ),
@@ -813,8 +812,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Elige cA?mo quieres dividir este gasto.",
     ),
-    "shareCreatedListActiveAmount": m6,
-    "shareCreatedListActiveSubtitle": m7,
+    "shareCreatedListActiveAmount": m7,
+    "shareCreatedListActiveSubtitle": m8,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "Sin asignar",
     ),
@@ -914,7 +913,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m8,
+    "todayFlowSeeAll": m9,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Esto es lo que fluye en tu hogar hoy.",
     ),
@@ -937,7 +936,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
       "Compartir invitaciÃ³n",
     ),
-    "todayShareActiveSubtitle": m9,
+    "todayShareActiveSubtitle": m10,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage(
       "prÃ³ximamente",
     ),
@@ -965,7 +964,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
-    "today_home_details": m10,
+    "today_home_details": m11,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "Sin hogar activo todavÃƒÂ­a. Crea o ÃƒÂºnete para ver la vista de hoy.",
     ),
@@ -976,4 +975,3 @@ class MessageLookup extends MessageLookupByLibrary {
     "welcome_title": MessageLookupByLibrary.simpleMessage("Bienvenido a Kinly"),
   };
 }
-

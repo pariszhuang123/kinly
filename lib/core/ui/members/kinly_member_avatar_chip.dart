@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/spacing.dart';
 import '../kinly_circle_avatar.dart';
+import '../kinly_motion_aware.dart';
 
 class KinlyMemberAvatarChip extends StatelessWidget {
   const KinlyMemberAvatarChip({
@@ -20,6 +21,7 @@ class KinlyMemberAvatarChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final motionAware = KinlyMotionAware.of(context);
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final colorScheme = theme.colorScheme;
@@ -41,24 +43,34 @@ class KinlyMemberAvatarChip extends StatelessWidget {
         children: [
           Material(
             color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(48),
-              onTap: onTap,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                padding: EdgeInsets.all(spacing.xs),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(48),
-                  border: Border.all(
-                    color: borderColor,
-                    width: isSelected ? 2 : 1,
+            child: Semantics(
+              label: displayName,
+              button: true,
+              enabled: onTap != null,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(48),
+                onTap: onTap,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+                  child: AnimatedContainer(
+                    duration: motionAware.effectiveDuration(
+                      const Duration(milliseconds: 150),
+                    ),
+                    padding: EdgeInsets.all(spacing.xs),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(48),
+                      border: Border.all(
+                        color: borderColor,
+                        width: isSelected ? 2 : 1,
+                      ),
+                      color: bgColor,
+                    ),
+                    child: KinlyCircleAvatar(
+                      avatarUrl: avatarUrl,
+                      radius: 34,
+                      isOwner: isOwner,
+                    ),
                   ),
-                  color: bgColor,
-                ),
-                child: KinlyCircleAvatar(
-                  avatarUrl: avatarUrl,
-                  radius: 34,
-                  isOwner: isOwner,
                 ),
               ),
             ),

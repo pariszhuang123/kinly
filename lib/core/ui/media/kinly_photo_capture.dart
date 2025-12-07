@@ -103,9 +103,17 @@ class KinlyPhotoCapture extends StatelessWidget {
       children: [
         Text(label, style: type?.titleSmall ?? theme.textTheme.titleSmall),
         SizedBox(height: spacing?.xs ?? 8),
-        GestureDetector(
-          onTap: isUploading ? null : onTap,
-          child: AspectRatio(aspectRatio: aspectRatio, child: preview),
+        Semantics(
+          button: true,
+          enabled: !isUploading,
+          label: label,
+          child: GestureDetector(
+            onTap: isUploading ? null : onTap,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+              child: AspectRatio(aspectRatio: aspectRatio, child: preview),
+            ),
+          ),
         ),
       ],
     );

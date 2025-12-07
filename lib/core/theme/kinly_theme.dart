@@ -2,69 +2,18 @@
 import 'package:flutter/material.dart';
 
 import 'app_sizes.dart';
-import 'color_tokens.dart';
 import 'elevation.dart';
-import 'kinly_sections.dart';
+import 'kinly_palette.dart';
 import 'motion.dart';
 import 'radius.dart';
 import 'spacing.dart';
 import 'typography_tokens.dart';
+export 'kinly_palette.dart'
+    show KinlyPalette, KinlyColors, KinlyLinkColors, KinlyBrandTextColors;
 
 ThemeData buildKinlyTheme(Brightness brightness) {
-  final isDark = brightness == Brightness.dark;
-
-  // Brand palette
-  const tealBrand = Color(0xFF366D59);
-  const tealPrimary = Color(0xFF2F5B4B);
-  const sageSecondary = Color(0xFF8BAA91);
-  const honeyAccent = Color(0xFFF6B73C);
-
-  const sageText = Color(0xFF3B5646);
-  const honeyText = Color(0xFF704300);
-
-  final offWhite = isDark ? const Color(0xFF101312) : const Color(0xFFFAFAF9);
-
-  final colorScheme = ColorScheme(
-    brightness: brightness,
-    primary: tealPrimary,
-    onPrimary: isDark ? Colors.black : Colors.white,
-    primaryContainer: const Color(0xFF5C8876),
-    onPrimaryContainer: Colors.white,
-    secondary: sageSecondary,
-    onSecondary: const Color(0xFF0F1A16),
-    secondaryContainer: const Color(0xFFAEC6B4),
-    onSecondaryContainer: const Color(0xFF0F1A16),
-    tertiary: honeyAccent,
-    onTertiary: const Color(0xFF1F1400),
-    tertiaryContainer: const Color(0xFFFFE1A8),
-    onTertiaryContainer: const Color(0xFF1F1400),
-    error: isDark ? Colors.redAccent.shade200 : Colors.red.shade700,
-    onError: Colors.white,
-    errorContainer: Colors.red.shade100,
-    onErrorContainer: Colors.red.shade900,
-    surface: offWhite,
-    onSurface: isDark ? Colors.white : const Color(0xFF101312),
-    surfaceContainerHighest: isDark ? const Color(0xFF1B201E) : Colors.white,
-    surfaceContainerHigh:
-        isDark ? const Color(0xFF1D2220) : const Color(0xFFF2F2F1),
-    surfaceContainer:
-        isDark ? const Color(0xFF202624) : const Color(0xFFF5F5F4),
-    surfaceContainerLow:
-        isDark ? const Color(0xFF232927) : const Color(0xFFF7F7F6),
-    surfaceContainerLowest:
-        isDark ? const Color(0xFF151917) : const Color(0xFFFFFFFF),
-    surfaceDim: isDark ? const Color(0xFF121614) : const Color(0xFFEEEEED),
-    surfaceBright: isDark ? const Color(0xFF1A1F1D) : const Color(0xFFFFFFFF),
-    outline: isDark ? const Color(0xFF3E4945) : const Color(0xFFB7C7C0),
-    outlineVariant: isDark ? const Color(0xFF2E3733) : const Color(0xFFD9E3DE),
-    shadow: Colors.black.withValues(alpha: 0.3),
-    scrim: Colors.black.withValues(alpha: 0.5),
-    inverseSurface: isDark ? const Color(0xFFE7ECEA) : const Color(0xFF1A1F1D),
-    onInverseSurface:
-        isDark ? const Color(0xFF121614) : const Color(0xFFE7ECEA),
-    inversePrimary: const Color(0xFF88C7B0),
-    surfaceTint: tealPrimary,
-  );
+  final palette = KinlyPalette.build(brightness);
+  final colorScheme = palette.colorScheme;
 
   // Typography tokens (DM Sans + Inter to preserve Kinly feel)
   final typographyTokens = KinlyTypography.fromBrightness(brightness);
@@ -108,9 +57,12 @@ ThemeData buildKinlyTheme(Brightness brightness) {
   final outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       minimumSize: const Size.fromHeight(44),
-      foregroundColor: isDark ? colorScheme.onSurface : colorScheme.primary,
+      foregroundColor:
+          brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.primary,
       side: BorderSide(
-        color: isDark ? colorScheme.outline : colorScheme.primary,
+        color: brightness == Brightness.dark
+            ? colorScheme.outline
+            : colorScheme.primary,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: typographyTokens.labelMedium,
@@ -122,71 +74,6 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     backgroundColor: colorScheme.inverseSurface,
     contentTextStyle: TextStyle(color: colorScheme.onInverseSurface),
   );
-
-  // Section palettes
-  final sections =
-      isDark
-          ? const KinlySections(
-            flow: SectionColors(
-              background: Color(0xFF1F2623),
-              card: Color(0xFF27302B),
-              icon: Color(0xFFB8D9C7),
-              accent: Color(0xFFB8D9C7),
-            ),
-            share: SectionColors(
-              background: Color(0xFF262018),
-              card: Color(0xFF30271B),
-              icon: Color(0xFFF5C96A),
-              accent: tealBrand,
-            ),
-            pulse: SectionColors(
-              background: Color(0xFF2A2022),
-              card: Color(0xFF33252A),
-              icon: Color(0xFFF6B73C),
-              accent: Color(0xFFF6B73C),
-            ),
-            empty: SectionColors(
-              background: Color(0xFF2A2E2D),
-              card: Color(0xFF1D2120),
-              icon: Color(0xFFB8D9C7),
-              accent: Color(0xFF88C7B0),
-            ),
-          )
-          : const KinlySections(
-            flow: SectionColors(
-              background: Color(0xFFE2F0E6),
-              card: Color(0xFFD6E8DD),
-              icon: Color(0xFF26473A),
-              accent: Color(0xFF26473A),
-            ),
-            share: SectionColors(
-              background: Color(0xFFF9F4E8),
-              card: Colors.white,
-              icon: Color(0xFF704300),
-              accent: tealBrand,
-            ),
-            pulse: SectionColors(
-              background: Color(0xFFFCEFEA),
-              card: Color(0xFFFFF7F3),
-              icon: Color(0xFF704300),
-              accent: Color(0xFFF6B73C),
-            ),
-            empty: SectionColors(
-              background: Color(0xFFF4F6F5),
-              card: Color.fromARGB(255, 255, 255, 255),
-              icon: Color(0xFF6C7A75),
-              accent: Color(0xFFAAC7BD),
-            ),
-          );
-
-  // NEW — Dynamic link colors
-  final linkColors =
-      isDark
-          ? KinlyLinkColors(
-            link: colorScheme.onSurface,
-            icon: colorScheme.onSurface, // high contrast icons
-          )
-          : KinlyLinkColors(link: tealPrimary, icon: tealPrimary);
 
   // Design tokens
   const spacing = Spacing(
@@ -218,32 +105,6 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     easeDecelerate: const Cubic(0.0, 0.0, 0.2, 1),
     easeEmotional: const Cubic(0.25, 1, 0.5, 1),
   );
-  final colorTokens = KinlyColorTokens(
-    primary: colorScheme.primary,
-    onPrimary: colorScheme.onPrimary,
-    primaryContainer: colorScheme.primaryContainer,
-    onPrimaryContainer: colorScheme.onPrimaryContainer,
-    secondary: colorScheme.secondary,
-    onSecondary: colorScheme.onSecondary,
-    secondaryContainer: colorScheme.secondaryContainer,
-    onSecondaryContainer: colorScheme.onSecondaryContainer,
-    error: colorScheme.error,
-    onError: colorScheme.onError,
-    surface: colorScheme.surface,
-    surfaceDark: colorScheme.surfaceDim,
-    surfaceVariant: colorScheme.surfaceContainer,
-    surfaceVariantDark: colorScheme.surfaceContainerHighest,
-    onSurface: colorScheme.onSurface,
-    onSurfaceDark: colorScheme.onSurface,
-    outline: colorScheme.outline,
-    outlineDark: colorScheme.outlineVariant,
-    success: const Color(0xFF2D8A5F),
-    warning: const Color(0xFFF5C04A),
-    info: const Color(0xFF89C8AC),
-    disabled: const Color(0xFFD3D3D3),
-    inverseSurface: colorScheme.inverseSurface,
-    onInverseSurface: colorScheme.onInverseSurface,
-  );
   const appSizes = AppSizes(
     iconSm: 16,
     iconMd: 24,
@@ -269,76 +130,12 @@ ThemeData buildKinlyTheme(Brightness brightness) {
       corners,
       elevations,
       motion,
-      colorTokens,
+      palette.colorTokens,
       typographyTokens,
       appSizes,
-      sections,
-      linkColors, // <-- ADDED
-      const _KinlyBrandTextColors(
-        sageText: sageText,
-        honeyText: honeyText,
-        tealBrand: tealBrand,
-      ),
+      palette.sections,
+      palette.linkColors,
+      palette.brandTextColors,
     ],
   );
-}
-
-class _KinlyBrandTextColors extends ThemeExtension<_KinlyBrandTextColors> {
-  final Color sageText;
-  final Color honeyText;
-  final Color tealBrand;
-
-  const _KinlyBrandTextColors({
-    required this.sageText,
-    required this.honeyText,
-    required this.tealBrand,
-  });
-
-  @override
-  _KinlyBrandTextColors copyWith({
-    Color? sageText,
-    Color? honeyText,
-    Color? tealBrand,
-  }) {
-    return _KinlyBrandTextColors(
-      sageText: sageText ?? this.sageText,
-      honeyText: honeyText ?? this.honeyText,
-      tealBrand: tealBrand ?? this.tealBrand,
-    );
-  }
-
-  @override
-  _KinlyBrandTextColors lerp(
-    ThemeExtension<_KinlyBrandTextColors>? other,
-    double t,
-  ) {
-    if (other is! _KinlyBrandTextColors) return this;
-    return _KinlyBrandTextColors(
-      sageText: Color.lerp(sageText, other.sageText, t) ?? sageText,
-      honeyText: Color.lerp(honeyText, other.honeyText, t) ?? honeyText,
-      tealBrand: Color.lerp(tealBrand, other.tealBrand, t) ?? tealBrand,
-    );
-  }
-}
-
-// --- NEW EXTENSION FOR LINK COLORS ---
-class KinlyLinkColors extends ThemeExtension<KinlyLinkColors> {
-  final Color link;
-  final Color icon;
-
-  const KinlyLinkColors({required this.link, required this.icon});
-
-  @override
-  KinlyLinkColors copyWith({Color? link, Color? icon}) {
-    return KinlyLinkColors(link: link ?? this.link, icon: icon ?? this.icon);
-  }
-
-  @override
-  KinlyLinkColors lerp(ThemeExtension<KinlyLinkColors>? other, double t) {
-    if (other is! KinlyLinkColors) return this;
-    return KinlyLinkColors(
-      link: Color.lerp(link, other.link, t) ?? link,
-      icon: Color.lerp(icon, other.icon, t) ?? icon,
-    );
-  }
 }

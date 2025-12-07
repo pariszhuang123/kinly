@@ -5,6 +5,7 @@ import '../theme/elevation.dart';
 import '../theme/motion.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
+import 'kinly_motion_aware.dart';
 
 class KinlyBottomSheet extends StatelessWidget {
   const KinlyBottomSheet({
@@ -52,6 +53,7 @@ class KinlyBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final motionAware = KinlyMotionAware.of(context);
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final colorScheme = theme.colorScheme;
@@ -74,7 +76,9 @@ class KinlyBottomSheet extends StatelessWidget {
             0,
             spacing.lg + bottomInset, // base spacing + keyboard height (if any)
           ),
-          duration: motion?.durationMedium ?? const Duration(milliseconds: 200),
+          duration: motionAware.effectiveDuration(
+            motion?.durationMedium ?? const Duration(milliseconds: 200),
+          ),
           curve: motion?.easeEmotional ?? Curves.easeOutCubic,
           child: Material(
             elevation: elevations?.level4 ?? 10,

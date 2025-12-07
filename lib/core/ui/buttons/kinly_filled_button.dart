@@ -19,6 +19,7 @@ class KinlyFilledButton extends StatelessWidget {
     this.compact = false,
     this.fullWidth = false,
     this.destructive = false,
+    this.semanticsLabel,
     super.key,
   });
 
@@ -30,6 +31,7 @@ class KinlyFilledButton extends StatelessWidget {
     bool compact = false,
     bool fullWidth = false,
     bool destructive = false,
+    String? semanticsLabel,
     Key? key,
   }) {
     return KinlyFilledButton._(
@@ -39,6 +41,7 @@ class KinlyFilledButton extends StatelessWidget {
       compact: compact,
       fullWidth: fullWidth,
       destructive: destructive,
+      semanticsLabel: semanticsLabel,
       key: key,
     );
   }
@@ -50,6 +53,7 @@ class KinlyFilledButton extends StatelessWidget {
     required IconData icon,
     bool compact = false,
     bool fullWidth = false,
+    String? semanticsLabel,
     Key? key,
   }) {
     return KinlyFilledButton.icon(
@@ -59,6 +63,7 @@ class KinlyFilledButton extends StatelessWidget {
       compact: compact,
       fullWidth: fullWidth,
       destructive: true,
+      semanticsLabel: semanticsLabel,
       key: key,
     );
   }
@@ -70,6 +75,7 @@ class KinlyFilledButton extends StatelessWidget {
     bool compact = false,
     bool fullWidth = false,
     bool destructive = false,
+    String? semanticsLabel,
     Key? key,
   }) {
     return KinlyFilledButton._(
@@ -79,6 +85,7 @@ class KinlyFilledButton extends StatelessWidget {
       compact: compact,
       fullWidth: fullWidth,
       destructive: destructive,
+      semanticsLabel: semanticsLabel,
       key: key,
     );
   }
@@ -89,6 +96,7 @@ class KinlyFilledButton extends StatelessWidget {
     required String label,
     bool compact = false,
     bool fullWidth = false,
+    String? semanticsLabel,
     Key? key,
   }) {
     return KinlyFilledButton.text(
@@ -97,6 +105,7 @@ class KinlyFilledButton extends StatelessWidget {
       compact: compact,
       fullWidth: fullWidth,
       destructive: true,
+      semanticsLabel: semanticsLabel,
       key: key,
     );
   }
@@ -107,9 +116,12 @@ class KinlyFilledButton extends StatelessWidget {
   final bool compact;
   final bool fullWidth;
   final bool destructive;
+  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
+    assert((semanticsLabel ?? label).isNotEmpty, 'Semantic label must not be empty');
+
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
@@ -152,6 +164,7 @@ class KinlyFilledButton extends StatelessWidget {
     }
 
     final baseStyle = FilledButton.styleFrom(
+      minimumSize: const Size(48, 48),
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
       textStyle: type?.labelMedium ?? theme.textTheme.labelLarge,
@@ -177,8 +190,14 @@ class KinlyFilledButton extends StatelessWidget {
       child: child,
     );
 
-    if (!fullWidth) return button;
+    final Widget finalButton =
+        fullWidth ? SizedBox(width: double.infinity, child: button) : button;
 
-    return SizedBox(width: double.infinity, child: button);
+    return Semantics(
+      button: true,
+      enabled: onPressed != null,
+      label: semanticsLabel ?? label,
+      child: finalButton,
+    );
   }
 }

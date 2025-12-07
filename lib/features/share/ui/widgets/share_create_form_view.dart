@@ -8,6 +8,7 @@ import '../../../../../core/ui/kinly_loader.dart';
 import '../../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../../core/ui/inputs/kinly_text_field.dart';
 import '../../../../../generated/l10n.dart';
+import '../../../../../core/theme/color_tokens.dart';
 import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
@@ -601,9 +602,10 @@ class _CustomSplitRow extends StatelessWidget {
 }
 
 Color _validationColor(ThemeData theme) {
+  final tokens = theme.extension<KinlyColorTokens>();
   final scheme = theme.colorScheme;
   if (theme.brightness == Brightness.dark) {
-    return scheme.onErrorContainer;
+    return tokens?.onError ?? scheme.onErrorContainer;
   }
-  return scheme.error;
+  return tokens?.error ?? scheme.error;
 }
