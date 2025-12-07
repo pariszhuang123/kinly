@@ -2826,6 +2826,116 @@ class S {
     );
   }
 
+  /// `Connection settings`
+  String get profileConnectionSettingsTitle {
+    return Intl.message(
+      'Connection settings',
+      name: 'profileConnectionSettingsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage notifications and reminders.`
+  String get profileConnectionSettingsSubtitle {
+    return Intl.message(
+      'Manage notifications and reminders.',
+      name: 'profileConnectionSettingsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection settings`
+  String get connectionSettingsTitle {
+    return Intl.message(
+      'Connection settings',
+      name: 'connectionSettingsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control daily reminders and notification timing.`
+  String get connectionSettingsSubtitle {
+    return Intl.message(
+      'Control daily reminders and notification timing.',
+      name: 'connectionSettingsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't update connection settings. Try again.`
+  String get connectionSettingsGenericError {
+    return Intl.message(
+      'Couldn\'t update connection settings. Try again.',
+      name: 'connectionSettingsGenericError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Daily notifications`
+  String get connectionNotificationsToggleTitle {
+    return Intl.message(
+      'Daily notifications',
+      name: 'connectionNotificationsToggleTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get one reminder each day.`
+  String get connectionNotificationsToggleSubtitleOn {
+    return Intl.message(
+      'Get one reminder each day.',
+      name: 'connectionNotificationsToggleSubtitleOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on reminders about your home.`
+  String get connectionNotificationsToggleSubtitleOff {
+    return Intl.message(
+      'Turn on reminders about your home.',
+      name: 'connectionNotificationsToggleSubtitleOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow notifications in your phone settings to turn this on.`
+  String get connectionNotificationsPermissionBlocked {
+    return Intl.message(
+      'Allow notifications in your phone settings to turn this on.',
+      name: 'connectionNotificationsPermissionBlocked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reminder time`
+  String get connectionNotificationsTimeLabel {
+    return Intl.message(
+      'Reminder time',
+      name: 'connectionNotificationsTimeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scheduled for {time}`
+  String connectionNotificationsTimeSubtitle(Object time) {
+    return Intl.message(
+      'Scheduled for $time',
+      name: 'connectionNotificationsTimeSubtitle',
+      desc: '',
+      args: [time],
+    );
+  }
+
   /// `Contact us`
   String get profileContactEmailSubject {
     return Intl.message(

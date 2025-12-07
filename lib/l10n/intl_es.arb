@@ -365,6 +365,24 @@
   "profileInfoHubLoadError": "No pudimos cargar el Info Hub. Revisa tu conexi\u00c3\u00b3n.",
   "profileContactUsTitle": "Cont\u00c3\u00a1ctanos",
   "profileContactUsSubtitle": "Env\u00c3\u00ada un correo a support@makinglifeeasie.com",
+  "profileConnectionSettingsTitle": "Configuraci\u00c3\u00b3n de conexiones",
+  "profileConnectionSettingsSubtitle": "Administra notificaciones y recordatorios.",
+  "connectionSettingsTitle": "Configuraci\u00c3\u00b3n de conexiones",
+  "connectionSettingsSubtitle": "Controla recordatorios diarios y horario de notificaci\u00c3\u00b3n.",
+  "connectionSettingsGenericError": "No se pudieron actualizar estas opciones. Int\u00c3\u00a9ntalo de nuevo.",
+  "connectionNotificationsToggleTitle": "Notificaciones diarias",
+  "connectionNotificationsToggleSubtitleOn": "Recibe un recordatorio cada d\u00c3\u00ada.",
+  "connectionNotificationsToggleSubtitleOff": "Activa los recordatorios sobre tu hogar.",
+  "connectionNotificationsPermissionBlocked": "Permite las notificaciones en los ajustes del tel\u00c3\u00a9fono para activarlas.",
+  "connectionNotificationsTimeLabel": "Hora del recordatorio",
+  "connectionNotificationsTimeSubtitle": "Programado para {time}",
+  "@connectionNotificationsTimeSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "profileContactEmailSubject": "Cont\u00c3\u00a1ctanos",
   "profileContactLaunchError": "No pudimos abrir tu app de correo. Int\u00c3\u00a9ntalo de nuevo.",
   "profileLogoutTitle": "Cerrar sesi\u00c3\u00b3n",

@@ -1,0 +1,244 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/kinly_loader.dart';
+import '../../../../core/ui/settings/kinly_settings_card.dart';
+import '../../../../core/ui/snackbars/kinly_snackbar.dart';
+import '../../../../generated/l10n.dart';
+import '../bloc/connection_settings_bloc.dart';
+
+class ConnectionSettingsScreen extends StatefulWidget {
+  const ConnectionSettingsScreen({super.key});
+
+  @override
+  State<ConnectionSettingsScreen> createState() =>
+      _ConnectionSettingsScreenState();
+}
+
+class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _start());
+  }
+
+  Future<void> _start() async {
+    final ctx = context;
+    final locale = Localizations.localeOf(ctx).toLanguageTag();
+    final timezone = DateTime.now().timeZoneName;
+    final platform = Theme.of(ctx).platform.name;
+    String? deviceToken;
+    try {
+      deviceToken = await FirebaseMessaging.instance.getToken();
+    } catch (_) {
+      deviceToken = null;
+    }
+    if (!mounted || !ctx.mounted) return;
+    ctx.read<ConnectionSettingsBloc>().add(
+          ConnectionSettingsStarted(
+            locale: locale,
+            timezone: timezone,
+            platform: platform,
+            deviceToken: deviceToken,
+          ),
+        );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = Theme.of(context).extension<Spacing>()!;
+    final s = S.of(context);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(s.connectionSettingsTitle)),
+      body: BlocConsumer<ConnectionSettingsBloc, ConnectionSettingsState>(
+        listener: (context, state) async {
+          if (state.action == ConnectionSettingsAction.showError) {
+            KinlySnackBar.showError(
+              context,
+              state.actionMessage ?? s.connectionSettingsGenericError,
+            );
+            context.read<ConnectionSettingsBloc>().add(
+                  const ConnectionSettingsActionCleared(),
+                );
+            return;
+          }
+
+          if (state.action == ConnectionSettingsAction.openSystemSettings) {
+            final bloc = context.read<ConnectionSettingsBloc>();
+            KinlySnackBar.showInfo(
+              context,
+              s.connectionNotificationsPermissionBlocked,
+            );
+            await openAppSettings();
+            if (!mounted || !context.mounted) return;
+            bloc.add(const ConnectionSettingsPermissionRechecked());
+            bloc.add(const ConnectionSettingsActionCleared());
+          }
+
+          if (state.action == ConnectionSettingsAction.permissionBlocked) {
+            KinlySnackBar.showInfo(
+              context,
+              s.connectionNotificationsPermissionBlocked,
+            );
+            context.read<ConnectionSettingsBloc>().add(
+                  const ConnectionSettingsActionCleared(),
+                );
+          }
+        },
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(child: KinlyLoader());
+          }
+
+          final timeText = _formatHour(context, state.preferredHour);
+
+          return ListView(
+            padding: EdgeInsetsDirectional.fromSTEB(
+              spacing.lg,
+              spacing.lg,
+              spacing.lg,
+              spacing.lg,
+            ),
+            children: [
+              Text(
+                s.connectionSettingsSubtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              SizedBox(height: spacing.md),
+              KinlySettingsCard(
+                children: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(
+                      spacing.l,
+                      spacing.md,
+                      spacing.l,
+                      spacing.md,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                s.connectionNotificationsToggleTitle,
+                                style:
+                                    Theme.of(context).textTheme.titleMedium?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                              ),
+                              SizedBox(height: spacing.xs),
+                              Text(
+                                state.wantsDaily
+                                    ? s.connectionNotificationsToggleSubtitleOn
+                                    : s.connectionNotificationsToggleSubtitleOff,
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Switch.adaptive(
+                          value: state.wantsDaily,
+                          onChanged:
+                              state.isSavingToggle
+                                  ? null
+                                  : (enabled) {
+                                      context
+                                          .read<ConnectionSettingsBloc>()
+                                          .add(
+                                            ConnectionSettingsToggleRequested(
+                                              enabled: enabled,
+                                            ),
+                                          );
+                                    },
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (!state.canEditTime && state.osPermission == 'blocked') ...[
+                    Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(
+                        spacing.l,
+                        0,
+                        spacing.l,
+                        spacing.md,
+                      ),
+                      child: Text(
+                        s.connectionNotificationsPermissionBlocked,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color:
+                                  Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                      ),
+                    ),
+                  ],
+                  if (state.canEditTime) ...[
+                    const Divider(height: 0),
+                    ListTile(
+                      contentPadding: EdgeInsetsDirectional.fromSTEB(
+                        spacing.l,
+                        spacing.md,
+                        spacing.l,
+                        spacing.md,
+                      ),
+                      title: Text(s.connectionNotificationsTimeLabel),
+                      subtitle: Text(
+                        s.connectionNotificationsTimeSubtitle(timeText),
+                      ),
+                      trailing:
+                          state.isSavingTime
+                              ? SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: KinlyLoader(
+                                    size: 18,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                )
+                              : const Icon(Icons.chevron_right),
+                      onTap:
+                          state.isSavingTime
+                              ? null
+                              : () => _pickTime(context, state.preferredHour),
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _pickTime(BuildContext context, int currentHour) async {
+    final bloc = context.read<ConnectionSettingsBloc>();
+    final initialTime = TimeOfDay(hour: currentHour, minute: 0);
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+      initialEntryMode: TimePickerEntryMode.input,
+    );
+    if (!context.mounted || picked == null) return;
+    if (picked.hour == currentHour && picked.minute == 0) return;
+    bloc.add(ConnectionSettingsTimeChanged(hour: picked.hour));
+  }
+
+  String _formatHour(BuildContext context, int hour) {
+    final time = TimeOfDay(hour: hour, minute: 0);
+    final localizations = MaterialLocalizations.of(context);
+    final mediaQuery = MediaQuery.of(context);
+    return localizations.formatTimeOfDay(
+      time,
+      alwaysUse24HourFormat: mediaQuery.alwaysUse24HourFormat,
+    );
+  }
+}

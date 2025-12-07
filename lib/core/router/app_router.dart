@@ -31,6 +31,7 @@ import '../../features/share/ui/share_created_list/share_created_list_provider.d
 import '../../features/share/ui/share_edit_provider.dart';
 import '../../features/share/ui/share_edit_route_args.dart';
 import '../../features/harmony/ui/harmony_provider.dart';
+import '../../features/profile_settings/connection/ui/connection_settings_provider.dart';
 import '../../features/harmony/ui/harmony_page.dart';
 import '../../features/harmony/ui/gratitude_wall/gratitude_wall_provider.dart';
 import '../../data/repositories/mood_repository.dart';
@@ -55,6 +56,7 @@ class AppRoutes {
   static const shareCreatedList = '/share/created';
   static const profileSettings = '/settings/profile';
   static const profileIdentity = '/settings/profile/identity';
+  static const connectionSettings = '/settings/profile/connection';
   static const harmony = '/harmony';
   static const gratitudeWall = '/gratitude-wall';
   static const nps = '/nps';
@@ -381,6 +383,17 @@ GoRouter createRouter({
             initialDisplayName: args?.displayName,
             initialAvatarUrl: args?.avatarUrl,
           );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.connectionSettings,
+        name: 'connectionSettings',
+        builder: (_, __) {
+          final membership = authBloc.state.membership;
+          if (membership == null) {
+            throw StateError('Connection settings requires an active membership.');
+          }
+          return ConnectionSettingsProvider();
         },
       ),
       GoRoute(

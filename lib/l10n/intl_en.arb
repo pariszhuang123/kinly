@@ -365,6 +365,24 @@
   "profileInfoHubLoadError": "The Info Hub couldn't load. Check your connection.",
   "profileContactUsTitle": "Contact us",
   "profileContactUsSubtitle": "Email support@makinglifeeasie.com",
+  "profileConnectionSettingsTitle": "Connection settings",
+  "profileConnectionSettingsSubtitle": "Manage notifications and reminders.",
+  "connectionSettingsTitle": "Connection settings",
+  "connectionSettingsSubtitle": "Control daily reminders and notification timing.",
+  "connectionSettingsGenericError": "Couldn't update connection settings. Try again.",
+  "connectionNotificationsToggleTitle": "Daily notifications",
+  "connectionNotificationsToggleSubtitleOn": "Get one reminder each day.",
+  "connectionNotificationsToggleSubtitleOff": "Turn on reminders about your home.",
+  "connectionNotificationsPermissionBlocked": "Allow notifications in your phone settings to turn this on.",
+  "connectionNotificationsTimeLabel": "Reminder time",
+  "connectionNotificationsTimeSubtitle": "Scheduled for {time}",
+  "@connectionNotificationsTimeSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "profileContactEmailSubject": "Contact us",
   "profileContactLaunchError": "We couldn't open your email app. Try again.",
   "profileLogoutTitle": "Log out",

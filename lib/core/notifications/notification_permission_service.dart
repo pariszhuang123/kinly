@@ -30,7 +30,7 @@ class NotificationPermissionService {
     final osPermission = granted ? 'allowed' : 'blocked';
 
     await _notificationsRepository.syncPreferences(
-      wantsDaily: wantsDaily,
+      wantsDaily: granted ? wantsDaily : false,
       preferredHour: preferredHour,
       timezone: timezone,
       locale: locale,
@@ -38,6 +38,10 @@ class NotificationPermissionService {
       deviceToken: deviceToken,
       platform: platform,
     );
+
+    if (!granted) {
+      throw NotificationPermissionException(permanentlyDenied: false);
+    }
   }
 
   Future<bool> _ensureNotificationPermission() async {

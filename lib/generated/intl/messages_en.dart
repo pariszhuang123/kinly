@@ -37,6 +37,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(weeks) =>
       "${Intl.plural(weeks, zero: 'This week', one: '1 week ago', other: '${weeks} weeks ago')}";
 
+  static String m16(time) => "Scheduled for ${time}";
+
   static String m2(partOfDay, name) => "Good ${partOfDay}, ${name}";
 
   static String m3(link) => "Share Kinly so sharing feels lighter: ${link}";
@@ -497,6 +499,38 @@ class MessageLookup extends MessageLookupByLibrary {
       "Email support@makinglifeeasie.com",
     ),
     "profileContactUsTitle": MessageLookupByLibrary.simpleMessage("Contact us"),
+    "profileConnectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Manage notifications and reminders.",
+    ),
+    "profileConnectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "Connection settings",
+    ),
+    "connectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "Connection settings",
+    ),
+    "connectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Control daily reminders and notification timing.",
+    ),
+    "connectionSettingsGenericError": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t update connection settings. Try again.",
+    ),
+    "connectionNotificationsToggleTitle": MessageLookupByLibrary.simpleMessage(
+      "Daily notifications",
+    ),
+    "connectionNotificationsToggleSubtitleOn":
+        MessageLookupByLibrary.simpleMessage("Get one reminder each day."),
+    "connectionNotificationsToggleSubtitleOff":
+        MessageLookupByLibrary.simpleMessage(
+          "Turn on reminders about your home.",
+        ),
+    "connectionNotificationsPermissionBlocked":
+        MessageLookupByLibrary.simpleMessage(
+          "Allow notifications in your phone settings to turn this on.",
+        ),
+    "connectionNotificationsTimeLabel": MessageLookupByLibrary.simpleMessage(
+      "Reminder time",
+    ),
+    "connectionNotificationsTimeSubtitle": m16,
     "profileDeleteAccountSubtitle": MessageLookupByLibrary.simpleMessage(
       "Remove your Kinly account and profile data.",
     ),

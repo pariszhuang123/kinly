@@ -74,6 +74,13 @@ class ProfileSettingsScreen extends StatelessWidget {
                       // Shared support helper (with mounted check inside)
                       onTap: () => KinlySupport.contactSupport(context),
                     ),
+                    const Divider(height: 0),
+                    KinlySettingsTile(
+                      title: s.profileConnectionSettingsTitle,
+                      subtitle: s.profileConnectionSettingsSubtitle,
+                      icon: Icons.notifications_active_outlined,
+                      onTap: () => context.push(AppRoutes.connectionSettings),
+                    ),
                   ],
                 ),
                 SizedBox(height: spacing.md),

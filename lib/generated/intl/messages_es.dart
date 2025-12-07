@@ -38,6 +38,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(weeks) =>
       "${Intl.plural(weeks, zero: 'Esta semana', one: 'Hace 1 semana', other: 'Hace ${weeks} semanas')}";
 
+  static String m16(time) => "Programado para ${time}";
+
   static String m2(partOfDay, name) => "Buen ${partOfDay}, ${name}";
 
   static String m3(link) =>
@@ -533,6 +535,41 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileContactUsTitle": MessageLookupByLibrary.simpleMessage(
       "ContÃ¡ctanos",
     ),
+
+    "profileConnectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Administra notificaciones y recordatorios.",
+    ),
+    "profileConnectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "ConfiguraciA?A3n de conexiones",
+    ),
+    "connectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "ConfiguraciA?A3n de conexiones",
+    ),
+    "connectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Controla recordatorios diarios y horario de notificaciA?A3n.",
+    ),
+    "connectionSettingsGenericError": MessageLookupByLibrary.simpleMessage(
+      "No se pudieron actualizar estas opciones. IntA?A3ntalo de nuevo.",
+    ),
+    "connectionNotificationsToggleTitle": MessageLookupByLibrary.simpleMessage(
+      "Notificaciones diarias",
+    ),
+    "connectionNotificationsToggleSubtitleOn":
+        MessageLookupByLibrary.simpleMessage(
+          "Recibe un recordatorio cada dA?A?a.",
+        ),
+    "connectionNotificationsToggleSubtitleOff":
+        MessageLookupByLibrary.simpleMessage(
+          "Activa los recordatorios sobre tu hogar.",
+        ),
+    "connectionNotificationsPermissionBlocked":
+        MessageLookupByLibrary.simpleMessage(
+          "Permite las notificaciones en los ajustes del telA?A?fono para activarlas.",
+        ),
+    "connectionNotificationsTimeLabel": MessageLookupByLibrary.simpleMessage(
+      "Hora del recordatorio",
+    ),
+    "connectionNotificationsTimeSubtitle": m16,
     "profileDeleteAccountSubtitle": MessageLookupByLibrary.simpleMessage(
       "Elimina tu cuenta de Kinly y los datos de perfil.",
     ),
@@ -939,3 +976,4 @@ class MessageLookup extends MessageLookupByLibrary {
     "welcome_title": MessageLookupByLibrary.simpleMessage("Bienvenido a Kinly"),
   };
 }
+
