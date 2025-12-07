@@ -32,6 +32,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final Logger _logger;
   final String _homeId;
   static const _gratitudeLogTag = 'TodayGratitude';
+  static const _onboardingLogTag = 'TodayOnboarding';
   late final StreamSubscription<UserProfile> _profileUpdateSub;
 
   TodayBloc({
@@ -57,6 +58,9 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     on<TodayStarted>(_onStarted);
     on<TodayRefreshed>(_onRefreshed);
     on<TodayProfileUpdated>(_onProfileUpdated);
+    on<TodayFlatmateInviteDismissed>(_onFlatmateInviteDismissed);
+    on<TodayFlatmateInviteShareLogged>(_onFlatmateInviteShareLogged);
+    on<TodayInviteShareLogged>(_onInviteShareLogged);
 
     _profileUpdateSub = _profileUpdateNotifier.stream.listen(
       (profile) => add(TodayProfileUpdated(profile)),
@@ -416,6 +420,189 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
       shouldPromptInviteShare: current.shouldPromptInviteShare,
     );
+  }
+
+  TodayState _stateWithoutInvitePrompt(TodayState current) {
+    if (current.isLoading) {
+      return TodayState.loading(
+        profile: current.profile,
+        shareOwed: current.shareOwed,
+        shareDrafts: current.shareDrafts,
+        gratitudeStatus: current.gratitudeStatus,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+        activeChoreCount: current.activeChoreCount,
+        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: false,
+      );
+    }
+
+    if (current.message != null || current.error != null) {
+      return TodayState.failure(
+        profile: current.profile,
+        message: current.message,
+        error: current.error,
+        shareOwed: current.shareOwed,
+        shareDrafts: current.shareDrafts,
+        shareErrorMessage: current.shareErrorMessage,
+        gratitudeStatus: current.gratitudeStatus,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+        activeChoreCount: current.activeChoreCount,
+        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: false,
+      );
+    }
+
+    return TodayState.loaded(
+      activeTasks: current.activeTasks,
+      draftTasks: current.draftTasks,
+      shareOwed: current.shareOwed,
+      shareDrafts: current.shareDrafts,
+      profile: current.profile,
+      shareErrorMessage: current.shareErrorMessage,
+      gratitudeStatus: current.gratitudeStatus,
+      harmonyPromptTick: current.harmonyPromptTick,
+      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+      npsPromptTick: current.npsPromptTick,
+      hasShownNpsPrompt: current.hasShownNpsPrompt,
+      notificationPromptTick: current.notificationPromptTick,
+      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+      activeChoreCount: current.activeChoreCount,
+      shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+      shouldPromptInviteShare: false,
+    );
+  }
+
+  TodayState _stateWithoutFlatmatePrompt(TodayState current) {
+    if (current.isLoading) {
+      return TodayState.loading(
+        profile: current.profile,
+        shareOwed: current.shareOwed,
+        shareDrafts: current.shareDrafts,
+        gratitudeStatus: current.gratitudeStatus,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+        activeChoreCount: current.activeChoreCount,
+        shouldPromptFlatmateInviteShare: false,
+        shouldPromptInviteShare: current.shouldPromptInviteShare,
+      );
+    }
+
+    if (current.message != null || current.error != null) {
+      return TodayState.failure(
+        profile: current.profile,
+        message: current.message,
+        error: current.error,
+        shareOwed: current.shareOwed,
+        shareDrafts: current.shareDrafts,
+        shareErrorMessage: current.shareErrorMessage,
+        gratitudeStatus: current.gratitudeStatus,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+        activeChoreCount: current.activeChoreCount,
+        shouldPromptFlatmateInviteShare: false,
+        shouldPromptInviteShare: current.shouldPromptInviteShare,
+      );
+    }
+
+    return TodayState.loaded(
+      activeTasks: current.activeTasks,
+      draftTasks: current.draftTasks,
+      shareOwed: current.shareOwed,
+      shareDrafts: current.shareDrafts,
+      profile: current.profile,
+      shareErrorMessage: current.shareErrorMessage,
+      gratitudeStatus: current.gratitudeStatus,
+      harmonyPromptTick: current.harmonyPromptTick,
+      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+      npsPromptTick: current.npsPromptTick,
+      hasShownNpsPrompt: current.hasShownNpsPrompt,
+      notificationPromptTick: current.notificationPromptTick,
+      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+      activeChoreCount: current.activeChoreCount,
+      shouldPromptFlatmateInviteShare: false,
+      shouldPromptInviteShare: current.shouldPromptInviteShare,
+    );
+  }
+
+  Future<void> _onFlatmateInviteDismissed(
+    TodayFlatmateInviteDismissed event,
+    Emitter<TodayState> emit,
+  ) async {
+    try {
+      await _homeRepository.logShareEvent(
+        feature: 'invite_housemate',
+        channel: 'onboarding_dismiss',
+        homeId: _homeId,
+      );
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to log flatmate invite dismissal',
+        error: error,
+        stackTrace: stackTrace,
+        tag: _onboardingLogTag,
+      );
+    }
+    emit(_stateWithoutFlatmatePrompt(state));
+  }
+
+  Future<void> _onFlatmateInviteShareLogged(
+    TodayFlatmateInviteShareLogged event,
+    Emitter<TodayState> emit,
+  ) async {
+    try {
+      await _homeRepository.logShareEvent(
+        feature: 'invite_housemate',
+        channel: event.channel,
+        homeId: _homeId,
+      );
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to log flatmate invite share',
+        error: error,
+        stackTrace: stackTrace,
+        tag: _onboardingLogTag,
+      );
+    }
+    emit(_stateWithoutFlatmatePrompt(state));
+  }
+
+  Future<void> _onInviteShareLogged(
+    TodayInviteShareLogged event,
+    Emitter<TodayState> emit,
+  ) async {
+    try {
+      await _homeRepository.logShareEvent(
+        feature: 'invite_button',
+        channel: event.channel,
+        homeId: _homeId,
+      );
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to log generic invite share',
+        error: error,
+        stackTrace: stackTrace,
+        tag: _onboardingLogTag,
+      );
+    }
+    emit(_stateWithoutInvitePrompt(state));
   }
 
   @override

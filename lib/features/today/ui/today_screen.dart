@@ -13,6 +13,7 @@ import '../../../../core/ui/buttons/kinly_fab.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../core/notifications/notification_permission_service.dart';
 import '../../../../data/repositories/notifications_repository.dart';
+import '../../../../data/repositories/home_repository.dart';
 import '../domain/models.dart';
 import '../bloc/today_bloc.dart';
 import 'widgets/today_header/today_header_container.dart';
@@ -31,7 +32,11 @@ import '../../../../data/repositories/expenses_repository.dart';
 import '../../share/ui/share_owed_detail_screen.dart';
 import '../../share/ui/share_edit_route_args.dart';
 import '../../share/ui/share_edit_outcome.dart';
+import 'widgets/today_invite_prompt.dart';
+import '../../../core/config/app_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:share_plus/share_plus.dart';
+import '../../../core/homes/models.dart';
 
 class TodayScreen extends StatelessWidget {
   const TodayScreen({super.key, this.onNotificationPrompt});
@@ -53,6 +58,7 @@ class TodayScreen extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final sizes = theme.extension<AppSizes>();
     final sections = theme.extension<KinlySections>()!;
+    final s = S.of(context);
     final logger =
         sl.isRegistered<Logger>() ? sl<Logger>() : const DebugLogger();
 
@@ -142,9 +148,62 @@ class TodayScreen extends StatelessWidget {
                                 return const TodayEmptyStateCard();
                               }
 
+                              final shouldShowFlatmateInvite =
+                                  state.shouldPromptFlatmateInviteShare;
+                              final shouldShowGenericInvite =
+                                  !shouldShowFlatmateInvite &&
+                                  state.shouldPromptInviteShare;
+                              final showInvitePrompt =
+                                  shouldShowFlatmateInvite ||
+                                  shouldShowGenericInvite;
+
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  if (showInvitePrompt) ...[
+                                    TodayInvitePrompt(
+                                      title:
+                                          shouldShowFlatmateInvite
+                                              ? s.todayFlatmateInviteTitle
+                                              : s.todayInviteFriendsTitle,
+                                      subtitle:
+                                          shouldShowFlatmateInvite
+                                              ? s.todayFlatmateInviteSubtitle
+                                              : s.todayInviteFriendsSubtitle,
+                                      primaryLabel: s.todayInviteShareCta,
+                                      secondaryLabel:
+                                          shouldShowFlatmateInvite
+                                              ? s.todayInviteNotNow
+                                              : s.todayInviteNotNow,
+                                      onPrimary: () async {
+                                        final shared = await _shareInvite(
+                                          context,
+                                          isFlatmate: shouldShowFlatmateInvite,
+                                        );
+                                        if (!context.mounted || !shared) return;
+                                        if (shouldShowFlatmateInvite) {
+                                          context.read<TodayBloc>().add(
+                                            const TodayFlatmateInviteShareLogged(
+                                              channel: 'system_share',
+                                            ),
+                                          );
+                                        } else {
+                                          context.read<TodayBloc>().add(
+                                            const TodayInviteShareLogged(
+                                              channel: 'system_share',
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      onSecondary:
+                                          shouldShowFlatmateInvite
+                                              ? () => context.read<TodayBloc>().add(
+                                                const TodayFlatmateInviteDismissed(),
+                                              )
+                                              : null,
+                                    ),
+                                    SizedBox(height: spacing.lg),
+                                  ],
                                   if (hasFlow) ...[
                                     TodayFlowSectionContainer(
                                       onTaskTap:
@@ -340,13 +399,83 @@ class TodayScreen extends StatelessWidget {
     await context.push(AppRoutes.harmony);
   }
 
+  Future<bool> _shareInvite(
+    BuildContext context, {
+    required bool isFlatmate,
+  }) async {
+    final s = S.of(context);
+    final repo = sl<HomeRepository>();
+    final logger =
+        sl.isRegistered<Logger>() ? sl<Logger>() : const DebugLogger();
+
+    try {
+      final membership = await repo.getCurrentMembership();
+      if (!context.mounted) return false;
+      final homeId = membership?.homeId;
+      if (homeId == null) {
+        if (!context.mounted) return false;
+        KinlySnackBar.showError(context, s.hubInviteUnavailable);
+        return false;
+      }
+
+      // Try to fetch an existing invite; fall back to create if needed.
+      HomeInvite? invite;
+      try {
+        invite = await repo.getActiveInvite(homeId);
+      } catch (_) {
+        try {
+          invite = await repo.getOrCreateInvite(homeId);
+        } catch (_) {
+          invite = null;
+        }
+      }
+
+      if (invite == null) {
+        if (!context.mounted) return false;
+        KinlySnackBar.showError(context, s.hubInviteUnavailable);
+        return false;
+      }
+
+      final appLink = _buildInviteLink(invite);
+      final raw = s.hubShareInviteBody(invite.code, appLink);
+      final message = raw.replaceAll(r'\n', '\n');
+      await Share.share(message, subject: s.hubShareInviteTitle);
+      if (!context.mounted) return false;
+      return true;
+    } catch (error, stack) {
+      logger.warn(
+        'Failed to share invite from Today',
+        error: error,
+        stackTrace: stack,
+        tag: _shareLogTag,
+      );
+      if (!context.mounted) return false;
+      KinlySnackBar.showError(context, s.hubInviteUnavailable);
+      return false;
+    }
+  }
+
+  String _buildInviteLink(HomeInvite invite) {
+    final host =
+        AppConfig.inviteHost.isNotEmpty
+            ? AppConfig.inviteHost
+            : AppConfig.deeplinkHost;
+    final uri = Uri(
+      scheme: 'https',
+      host: host,
+      pathSegments: ['kinly', 'join', invite.code],
+    );
+    return uri.toString();
+  }
+
   Future<void> _maybePromptNotifications(BuildContext context) async {
     if (!context.mounted) return;
     onNotificationPrompt?.call();
     final repo = sl<NotificationsRepository>();
-    final permissionService = sl.isRegistered<NotificationPermissionService>()
-        ? sl<NotificationPermissionService>()
-        : NotificationPermissionService(notificationsRepository: repo);
+    final permissionService =
+        sl.isRegistered<NotificationPermissionService>()
+            ? sl<NotificationPermissionService>()
+            : NotificationPermissionService(notificationsRepository: repo);
     final locale = Localizations.localeOf(context).toLanguageTag();
     final timezone = DateTime.now().timeZoneName;
     final platformName = Theme.of(context).platform.name;

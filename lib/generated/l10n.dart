@@ -704,6 +704,66 @@ class S {
     );
   }
 
+  /// `Bring your flatmate`
+  String get todayFlatmateInviteTitle {
+    return Intl.message(
+      'Bring your flatmate',
+      name: 'todayFlatmateInviteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share your invite so you can split chores together.`
+  String get todayFlatmateInviteSubtitle {
+    return Intl.message(
+      'Share your invite so you can split chores together.',
+      name: 'todayFlatmateInviteSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invite friends to Kinly`
+  String get todayInviteFriendsTitle {
+    return Intl.message(
+      'Invite friends to Kinly',
+      name: 'todayInviteFriendsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share Kinly with a friend so they can bring more harmony to their home too.`
+  String get todayInviteFriendsSubtitle {
+    return Intl.message(
+      'Share Kinly with a friend so they can bring more harmony to their home too.',
+      name: 'todayInviteFriendsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share invite`
+  String get todayInviteShareCta {
+    return Intl.message(
+      'Share invite',
+      name: 'todayInviteShareCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not now`
+  String get todayInviteNotNow {
+    return Intl.message(
+      'Not now',
+      name: 'todayInviteNotNow',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Invite code copied`
   String get hubCodeCopied {
     return Intl.message(

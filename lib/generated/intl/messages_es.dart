@@ -66,6 +66,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "create_success": MessageLookupByLibrary.simpleMessage("Ã‚Â¡Hogar creado!"),
     "create_title": MessageLookupByLibrary.simpleMessage("Crear hogar"),
+    "dopamineFlowAffirmation": MessageLookupByLibrary.simpleMessage(
+      "Gracias, tu hogar se siente más ligero.",
+    ),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Revisa cada tarea de Flow y mantÃƒÂ©n las tareas en movimiento",
     ),
@@ -98,9 +101,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
       "Completar tarea",
-    ),
-    "dopamineFlowAffirmation": MessageLookupByLibrary.simpleMessage(
-      "Gracias, tu hogar se siente más ligero.",
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
       "No se pudo completar la tarea. Intenta de nuevo.",
@@ -836,6 +836,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayEmptyCardTitle": MessageLookupByLibrary.simpleMessage(
       "Hoy lo tienes todo al dÃƒÂ­a Ã¢Å“Â¨",
     ),
+    "todayFlatmateInviteSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Comparta su invitaciÃ³n para dividir las tareas juntos.",
+    ),
+    "todayFlatmateInviteTitle": MessageLookupByLibrary.simpleMessage(
+      "Invite a su compaÃ±ero de piso",
+    ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
     "todayFlowSeeAll": m8,
@@ -850,6 +856,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayGratitudeUnreadBody": MessageLookupByLibrary.simpleMessage(
       "Hay nuevas publicaciones de gratitud esper?ndote.",
+    ),
+    "todayInviteFriendsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Comparta su enlace del hogar para mantener a todos sincronizados.",
+    ),
+    "todayInviteFriendsTitle": MessageLookupByLibrary.simpleMessage(
+      "Invite a amigos a Kinly",
+    ),
+    "todayInviteNotNow": MessageLookupByLibrary.simpleMessage("Ahora no"),
+    "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
+      "Compartir invitaciÃ³n",
     ),
     "todayShareActiveSubtitle": m9,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage(

@@ -65,6 +65,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم إنشاء المنزل بنجاح!",
     ),
     "create_title": MessageLookupByLibrary.simpleMessage("إنشاء منزل"),
+    "dopamineFlowAffirmation": MessageLookupByLibrary.simpleMessage(
+      "شكرًا، منزلك أصبح أخف.",
+    ),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "راجع جميع مهام Flow وحافظ على سير الأعمال.",
     ),
@@ -95,9 +98,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
       "إكمال المهمة",
-    ),
-    "dopamineFlowAffirmation": MessageLookupByLibrary.simpleMessage(
-      "?????? ????? ???? ???.",
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
       "تعذر إكمال المهمة. حاول مرة أخرى.",
@@ -701,6 +701,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayEmptyCardTitle": MessageLookupByLibrary.simpleMessage(
       "لقد أنهيت كل مهام اليوم ✨",
     ),
+    "todayFlatmateInviteSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Share your invite so you can split chores together.",
+    ),
+    "todayFlatmateInviteTitle": MessageLookupByLibrary.simpleMessage(
+      "Invite your flatmate",
+    ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("جديد اليوم"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
     "todayFlowSeeAll": m8,
@@ -716,6 +722,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayGratitudeUnreadBody": MessageLookupByLibrary.simpleMessage(
       "???? ??????? ?????? ????? ????????.",
     ),
+    "todayInviteFriendsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Share your home link to keep everyone in sync.",
+    ),
+    "todayInviteFriendsTitle": MessageLookupByLibrary.simpleMessage(
+      "Invite friends to Kinly",
+    ),
+    "todayInviteNotNow": MessageLookupByLibrary.simpleMessage("Not now"),
+    "todayInviteShareCta": MessageLookupByLibrary.simpleMessage("Share invite"),
     "todayShareActiveSubtitle": m9,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("قريبًا"),
     "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(

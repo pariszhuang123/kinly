@@ -76,7 +76,7 @@ SELECT is(
 );
 
 -- 3) 1 active chore, no prefs -> prompt notifications
-PERFORM public._home_usage_increment(
+SELECT public._home_usage_increment(
   (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
   1,
   0
@@ -96,7 +96,7 @@ SELECT is(
 );
 
 -- 5) 2 active chores -> flatmate invite prompt when not shared
-PERFORM public._home_usage_increment(
+SELECT public._home_usage_increment(
   (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
   1,
   0
@@ -122,7 +122,7 @@ SELECT is(
 );
 
 -- 7) Increase to 5 chores -> generic invite prompt
-PERFORM public._home_usage_increment(
+SELECT public._home_usage_increment(
   (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
   3,
   0
