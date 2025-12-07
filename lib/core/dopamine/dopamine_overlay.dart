@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/kinly_sections.dart';
-import '../theme/spacing.dart';
 import 'dopamine_models.dart';
 import 'enums/dopamine_milestone.dart';
 
@@ -27,7 +26,7 @@ class DopamineOverlayHostState extends State<DopamineOverlayHost>
     with TickerProviderStateMixin {
   static const _cooldown = Duration(seconds: 3);
   static const _coalesceWindow = Duration(seconds: 1);
-  static const _visibleDuration = Duration(seconds: 2);
+  static const _visibleDuration = Duration(milliseconds: 600);
 
   OverlayEntry? _entry;
   AnimationController? _controller;
@@ -150,19 +149,7 @@ class _DopamineOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>();
-    final sections = theme.extension<KinlySections>();
-    final colors = _resolveSectionColors(sections, moment.milestone, theme);
-    final cardTop = max(
-      12.0,
-      min(anchorRect.top - 88, MediaQuery.sizeOf(context).height - 140),
-    );
-    final cardLeft = max(
-      12.0,
-      min(anchorRect.center.dx - 120, MediaQuery.sizeOf(context).width - 240),
-    );
-
+    final accent = _resolveAccent(context, moment.milestone);
     return IgnorePointer(
       child: AnimatedBuilder(
         animation: animation,
@@ -170,37 +157,50 @@ class _DopamineOverlay extends StatelessWidget {
           final curveValue = Curves.easeOut.transform(animation.value);
           final microOpacity = moment.reduceMotion ? 1.0 : curveValue;
           final microScale =
-              moment.reduceMotion ? 1.0 : 0.9 + (0.2 * curveValue);
-          final cardOpacity = curveValue;
-          final cardScale =
-              moment.reduceMotion ? 1.0 : 0.96 + (0.08 * curveValue);
+              moment.reduceMotion ? 1.0 : 0.92 + (0.18 * curveValue);
+          // Quick pulse: scale up then settle.
+          final pulsePhase =
+              curveValue < 0.5 ? curveValue * 2 : (1 - curveValue) * 2;
+          final pulseScale =
+              moment.reduceMotion ? 1.0 : 1.0 + (0.05 * pulsePhase);
+          final pulseOpacity =
+              moment.reduceMotion ? 0.0 : 0.35 * (1 - curveValue);
+          final iconData = _iconFor(moment.milestone);
 
           return Stack(
             children: [
+              // Button pulse (tight lift effect)
+              Positioned(
+                left: anchorRect.left,
+                top: anchorRect.top,
+                child: Transform.scale(
+                  scale: pulseScale,
+                  alignment: Alignment.center,
+                  child: Opacity(
+                    opacity: pulseOpacity,
+                    child: Container(
+                      width: anchorRect.width,
+                      height: anchorRect.height,
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               // Micro animation at anchor
               Positioned(
                 left: anchorRect.center.dx - 16,
-                top: anchorRect.top - 48,
+                top: anchorRect.center.dy - 16,
                 child: Transform.scale(
                   scale: microScale,
                   child: Opacity(
                     opacity: microOpacity,
-                    child: _MicroBurst(color: colors.accent),
-                  ),
-                ),
-              ),
-              // Affirmation card
-              Positioned(
-                left: cardLeft,
-                top: cardTop,
-                child: Transform.scale(
-                  scale: cardScale,
-                  child: Opacity(
-                    opacity: cardOpacity,
-                    child: _AffirmationCard(
-                      moment: moment,
-                      colors: colors,
-                      spacing: spacing,
+                    child: _MicroBurst(
+                      color: accent,
+                      icon: iconData,
+                      milestone: moment.milestone,
                     ),
                   ),
                 ),
@@ -212,153 +212,85 @@ class _DopamineOverlay extends StatelessWidget {
     );
   }
 
-  SectionColors _resolveSectionColors(
-    KinlySections? sections,
-    DopamineMilestone milestone,
-    ThemeData theme,
-  ) {
+  Color _resolveAccent(BuildContext context, DopamineMilestone milestone) {
+    final sections = Theme.of(context).extension<KinlySections>();
     switch (milestone) {
       case DopamineMilestone.flow:
-        return sections?.flow ??
-            SectionColors(
-              background: theme.colorScheme.surface,
-              card: theme.colorScheme.surfaceContainerHigh,
-              icon: theme.colorScheme.onSurface,
-              accent: theme.colorScheme.primary,
-            );
+        return sections?.flow.accent ?? Theme.of(context).colorScheme.primary;
       case DopamineMilestone.share:
-        return sections?.share ??
-            SectionColors(
-              background: theme.colorScheme.surface,
-              card: theme.colorScheme.surfaceContainerHigh,
-              icon: theme.colorScheme.onSurface,
-              accent: theme.colorScheme.primary,
-            );
+        return sections?.share.accent ?? Theme.of(context).colorScheme.primary;
       case DopamineMilestone.pulse:
-        return sections?.pulse ??
-            SectionColors(
-              background: theme.colorScheme.surface,
-              card: theme.colorScheme.surfaceContainerHigh,
-              icon: theme.colorScheme.onSurface,
-              accent: theme.colorScheme.tertiary,
-            );
+        return sections?.pulse.accent ?? Theme.of(context).colorScheme.tertiary;
       case DopamineMilestone.reflection:
-        return sections?.pulse ??
-            SectionColors(
-              background: theme.colorScheme.surface,
-              card: theme.colorScheme.surfaceContainerHigh,
-              icon: theme.colorScheme.onSurface,
-              accent: theme.colorScheme.tertiary,
-            );
+        return sections?.pulse.accent ?? Theme.of(context).colorScheme.tertiary;
     }
   }
 }
 
 class _MicroBurst extends StatelessWidget {
-  const _MicroBurst({required this.color});
+  const _MicroBurst({
+    required this.color,
+    required this.icon,
+    required this.milestone,
+  });
 
   final Color color;
+  final IconData icon;
+  final DopamineMilestone milestone;
 
   @override
   Widget build(BuildContext context) {
+    final isBloom = milestone == DopamineMilestone.reflection;
+    final isShare = milestone == DopamineMilestone.share;
+    final size = isBloom ? 40.0 : (isShare ? 36.0 : 32.0);
+    final blur = isBloom ? 18.0 : (isShare ? 14.0 : 12.0);
+    final spread = isBloom ? 8.0 : (isShare ? 6.0 : 4.0);
+    final innerOpacity = isBloom ? 0.55 : (isShare ? 0.78 : 0.75);
+    final iconSize = isBloom ? 0.0 : (isShare ? 20.0 : 18.0);
+
     return Container(
-      width: 32,
-      height: 32,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: RadialGradient(
-          colors: [color.withValues(alpha: 0.75), color.withValues(alpha: 0.0)],
-          stops: const [0.3, 1.0],
+          colors: [
+            color.withValues(alpha: innerOpacity),
+            color.withValues(alpha: 0.0),
+          ],
+          stops: const [0.2, 1.0],
         ),
         boxShadow: [
           BoxShadow(
             color: color.withValues(alpha: 0.25),
-            blurRadius: 12,
-            spreadRadius: 4,
+            blurRadius: blur,
+            spreadRadius: spread,
           ),
         ],
       ),
-      child: Center(
-        child: Icon(
-          Icons.auto_awesome,
-          size: 18,
-          color: color.withValues(alpha: 0.9),
-        ),
-      ),
+      child:
+          isBloom
+              ? null
+              : Center(
+                child: Icon(
+                  icon,
+                  size: iconSize,
+                  color: color.withValues(alpha: 0.9),
+                ),
+              ),
     );
   }
 }
 
-class _AffirmationCard extends StatelessWidget {
-  const _AffirmationCard({
-    required this.moment,
-    required this.colors,
-    required this.spacing,
-  });
-
-  final DopamineMoment moment;
-  final SectionColors colors;
-  final Spacing? spacing;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      width: 220,
-      padding: EdgeInsetsDirectional.fromSTEB(
-        spacing?.m ?? 12,
-        (spacing?.sm ?? 8) + 2,
-        spacing?.m ?? 12,
-        spacing?.sm ?? 8,
-      ),
-      decoration: BoxDecoration(
-        color: colors.card,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: colors.accent.withValues(alpha: 0.75)),
-        boxShadow: [
-          BoxShadow(
-            color: colors.accent.withValues(alpha: 0.16),
-            blurRadius: 16,
-            spreadRadius: 2,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 24,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: colors.accent,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: spacing?.xs ?? 6),
-          Text(
-            moment.affirmation,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: colors.icon,
-            ),
-          ),
-          if (moment.echo != null) ...[
-            SizedBox(height: spacing?.xxs ?? 4),
-            Text(
-              moment.echo!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colors.icon.withValues(alpha: 0.85),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
+IconData _iconFor(DopamineMilestone milestone) {
+  switch (milestone) {
+    case DopamineMilestone.flow:
+      return Icons.auto_awesome;
+    case DopamineMilestone.share:
+      return Icons.check_rounded;
+    case DopamineMilestone.pulse:
+      return Icons.favorite_rounded;
+    case DopamineMilestone.reflection:
+      return Icons.wb_iridescent_rounded;
   }
 }

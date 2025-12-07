@@ -3316,6 +3316,39 @@ class S {
     );
   }
 
+  /// `Kinly helps your home share small gratitude moments together.`
+  String get gratitudeWallKinlySubtitle {
+    return Intl.message(
+      'Kinly helps your home share small gratitude moments together.',
+      name: 'gratitudeWallKinlySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Made with {appName} - Together feels lighter`
+  String gratitudeWallFooter(Object appName) {
+    return Intl.message(
+      'Made with $appName - Together feels lighter',
+      name: 'gratitudeWallFooter',
+      desc: '',
+      args: [appName],
+    );
+  }
+
+  /// `{weeks,plural, =0{This week} one{1 week ago} other{{weeks} weeks ago}}`
+  String gratitudeWallWeeksAgo(num weeks) {
+    return Intl.plural(
+      weeks,
+      zero: 'This week',
+      one: '1 week ago',
+      other: '$weeks weeks ago',
+      name: 'gratitudeWallWeeksAgo',
+      desc: '',
+      args: [weeks],
+    );
+  }
+
   /// `Gratitude wall ({count})`
   String gratitudeWallTitleCount(String count) {
     return Intl.message(

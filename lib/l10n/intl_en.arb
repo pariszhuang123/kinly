@@ -420,6 +420,14 @@
   "gratitudeWallShareError": "Couldn't share right now. Please try again.",
   "gratitudeWallPoweredBy": "Powered by",
   "gratitudeWallSubtitle": "Shared moments from your home.",
+  "gratitudeWallKinlySubtitle": "Kinly helps your home share small gratitude moments together.",
+  "gratitudeWallFooter": "Made with {appName} - Together feels lighter",
+  "gratitudeWallWeeksAgo": "{weeks,plural, =0{This week} one{1 week ago} other{{weeks} weeks ago}}",
+  "@gratitudeWallFooter": {
+    "placeholders": {
+      "appName": {}
+    }
+  },
   "gratitudeWallTitleCount": "Gratitude wall ({count})",
   "@gratitudeWallTitleCount": {
     "placeholders": {

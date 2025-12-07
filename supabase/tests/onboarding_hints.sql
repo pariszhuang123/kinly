@@ -76,11 +76,10 @@ SELECT is(
 );
 
 -- 3) 1 active chore, no prefs -> prompt notifications
-SELECT public._home_usage_increment(
-  (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
-  1,
-  0
-);
+UPDATE public.home_usage_counters cuc
+SET active_chores = active_chores + 1
+WHERE cuc.home_id = (SELECT home_id FROM tmp_ids WHERE label = 'owner');
+
 SELECT is(
   ((public.today_onboarding_hints())->>'shouldPromptNotifications')::boolean,
   true,
@@ -96,11 +95,10 @@ SELECT is(
 );
 
 -- 5) 2 active chores -> flatmate invite prompt when not shared
-SELECT public._home_usage_increment(
-  (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
-  1,
-  0
-);
+UPDATE public.home_usage_counters cuc
+SET active_chores = active_chores + 1
+WHERE cuc.home_id = (SELECT home_id FROM tmp_ids WHERE label = 'owner');
+
 SELECT is(
   ((public.today_onboarding_hints())->>'shouldPromptFlatmateInviteShare')::boolean,
   true,
@@ -111,7 +109,7 @@ SELECT is(
 SELECT public.share_log_event(
   p_home_id := (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
   p_feature := 'invite_housemate',
-  p_channel := 'sms'
+  p_channel := 'copy_link'
 );
 
 -- 6) After flatmate share, next ladder prompt only when count high enough
@@ -122,11 +120,10 @@ SELECT is(
 );
 
 -- 7) Increase to 5 chores -> generic invite prompt
-SELECT public._home_usage_increment(
-  (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
-  3,
-  0
-);
+UPDATE public.home_usage_counters cuc
+SET active_chores = active_chores + 3
+WHERE cuc.home_id = (SELECT home_id FROM tmp_ids WHERE label = 'owner');
+
 SELECT is(
   ((public.today_onboarding_hints())->>'shouldPromptInviteShare')::boolean,
   true,
@@ -137,7 +134,7 @@ SELECT is(
 SELECT public.share_log_event(
   p_home_id := (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
   p_feature := 'invite_button',
-  p_channel := 'whatsapp'
+  p_channel := 'system_share'
 );
 
 -- 8) Once shared, generic invite prompt clears

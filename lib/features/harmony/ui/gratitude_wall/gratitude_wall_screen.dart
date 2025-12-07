@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/share/kinly_share_scaffold.dart';
-import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../generated/l10n.dart';
 import 'gratitude_wall_content.dart';
@@ -24,16 +23,11 @@ class GratitudeWallScreen extends StatelessWidget {
       // This builds the content that will be captured & shared.
       childBuilder: (ctx) {
         final theme = Theme.of(ctx);
-        final sizes = theme.extension<AppSizes>();
         final spacing = theme.extension<Spacing>()!;
 
         return LayoutBuilder(
           builder: (context, constraints) {
-            final maxWidth = sizes?.maxContentWidth ?? 640.0;
-            final width =
-                constraints.maxWidth < maxWidth
-                    ? constraints.maxWidth
-                    : maxWidth;
+            final width = constraints.maxWidth;
 
             return Center(
               child: ConstrainedBox(

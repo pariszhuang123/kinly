@@ -1,4 +1,4 @@
-// lib/features/gratitude_wall/ui/gratitude_wall_content.dart
+// lib/features/harmony/ui/gratitude_wall/gratitude_wall_content.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,7 +30,7 @@ class GratitudeWallContent extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-        // ❌ removed outer Padding so content can use more of the frame
+        // Removed outer padding so content can use more of the frame
         child: Stack(
           children: [
             Positioned.fill(
@@ -58,6 +58,26 @@ class GratitudeWallContent extends StatelessWidget {
               ),
             ),
             PositionedDirectional(
+              bottom: 0,
+              start: 0,
+              end: 0,
+              child: IgnorePointer(
+                child: Container(
+                  height: spacing.xl * 2,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        theme.colorScheme.surface,
+                        theme.colorScheme.surface.withValues(alpha: 0.0),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            PositionedDirectional(
               bottom: spacing.sm,
               start: spacing.sm,
               child: const PoweredByTagline(),
@@ -73,7 +93,6 @@ class GratitudeWallContent extends StatelessWidget {
     GratitudeWallState state,
     Spacing spacing,
   ) {
-    final theme = Theme.of(context);
     final totalCount = state.totalPosts ?? state.posts.length;
     final hasMoreThanLoaded =
         state.totalPosts != null && state.posts.length < state.totalPosts!;
@@ -82,7 +101,7 @@ class GratitudeWallContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GratitudeWallHeader(count: totalCount, hasMore: hasMoreThanLoaded),
-        SizedBox(height: spacing.md),
+        SizedBox(height: spacing.lg),
         Expanded(
           child: NotificationListener<ScrollNotification>(
             onNotification: (notification) {
@@ -94,38 +113,27 @@ class GratitudeWallContent extends StatelessWidget {
               }
               return false;
             },
-            child: ListView.separated(
-              // 👉 Light inner padding: keeps content off the screen edge,
-              // but doesn't shrink the whole snapshot like the old outer padding did.
-              padding: EdgeInsetsDirectional.only(
-                start: spacing.sm,
-                end: spacing.sm,
-                bottom: spacing.xl * 2.5,
-              ),
-              itemCount: state.posts.length + 1 + (state.isLoadingMore ? 1 : 0),
-              separatorBuilder: (_, __) => SizedBox(height: spacing.lg),
-              itemBuilder: (context, index) {
-                if (index < state.posts.length) {
-                  final post = state.posts[index];
-                  final alignLeft = index.isEven;
-                  final accent = accentColorFor(
-                    post.authorUsername ?? post.authorUserId,
-                    theme.colorScheme,
-                  );
-                  return GratitudeWallRow(
-                    post: post,
-                    alignLeft: alignLeft,
-                    accent: accent,
-                  );
-                }
-
-                final loadingIndex = state.posts.length;
-                if (state.isLoadingMore && index == loadingIndex) {
-                  return const Center(child: KinlyLoader());
-                }
-
-                return const SizedBox.shrink();
-              },
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsetsDirectional.only(start: 0, end: 0),
+                  sliver: SliverToBoxAdapter(
+                    child: GratitudeWallMasonryGrid(posts: state.posts),
+                  ),
+                ),
+                if (state.isLoadingMore)
+                  SliverPadding(
+                    padding: EdgeInsetsDirectional.only(
+                      top: spacing.lg,
+                      bottom: spacing.xl * 2.5,
+                    ),
+                    sliver: const SliverToBoxAdapter(
+                      child: Center(child: KinlyLoader()),
+                    ),
+                  )
+                else
+                  SliverToBoxAdapter(child: SizedBox(height: spacing.xl * 2.5)),
+              ],
             ),
           ),
         ),

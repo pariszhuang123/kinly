@@ -407,6 +407,33 @@
   "gratitudeWallEmptyTitle": "A\u00fan no hay publicaciones",
   "gratitudeWallEmptySubtitle": "Comparte un momento soleado para empezar a llenar el muro.",
   "gratitudeWallRetry": "Volver a intentar",
+  "gratitudeWallSubtitle": "Momentos compartidos de tu hogar.",
+  "gratitudeWallKinlySubtitle": "Kinly ayuda a tu hogar a compartir peque\u00f1os momentos de gratitud juntos.",
+  "gratitudeWallFooter": "Hecho con {appName} - Juntos se siente m\u00e1s ligero",
+  "gratitudeWallWeeksAgo": "{weeks,plural, =0{Esta semana} one{Hace 1 semana} other{Hace {weeks} semanas}}",
+  "@gratitudeWallFooter": {
+    "placeholders": {
+      "appName": {}
+    }
+  },
+  "gratitudeWallTitleCount": "Muro de gratitud ({count})",
+  "@gratitudeWallTitleCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "gratitudeWallShareCta": "Compartir este muro",
+  "gratitudeWallShareTitle": "Muro de gratitud",
+  "gratitudeWallShareMessage": "Compartimos un vistazo de nuestro muro de gratitud en Kinly. Descarga la app: {link}",
+  "@gratitudeWallShareMessage": {
+    "placeholders": {
+      "link": {}
+    }
+  },
+  "gratitudeWallShareError": "No pudimos compartir ahora. Int\u00e9ntalo de nuevo.",
+  "gratitudeWallPoweredBy": "Impulsado por",
   "harmonyErrorSelectMood": "Elige un estado de \u00e1nimo antes de enviar."
 ,
   "npsTitle": "?Qu? tan probable es que recomiendes Kinly a un amigo o familiar?",

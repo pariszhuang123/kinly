@@ -316,7 +316,11 @@ class TodayScreen extends StatelessWidget {
 
   void _openFlowList(BuildContext context, FlowListFilter filter) {
     final filterParam = filter.toQueryParam();
-    context.push('${AppRoutes.flow}?filter=$filterParam');
+    context.push('${AppRoutes.flow}?filter=$filterParam').then((_) {
+      if (context.mounted) {
+        context.read<TodayBloc>().add(const TodayRefreshed());
+      }
+    });
   }
 
   Future<void> _openFlowChore(BuildContext context, {String? choreId}) async {
@@ -386,6 +390,9 @@ class TodayScreen extends StatelessWidget {
       AppRoutes.shareCreatedList,
       extra: true, // show drafts-only list
     );
+    if (context.mounted) {
+      context.read<TodayBloc>().add(const TodayRefreshed());
+    }
   }
 
   Future<void> _openGratitudeWall(BuildContext context) async {

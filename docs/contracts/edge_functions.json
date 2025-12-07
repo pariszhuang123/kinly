@@ -1,7 +1,7 @@
 {
   "functions": {
     "notifications_daily": {
-      "path": "supabase/functions/notifications_daily"
+      "path": "supabase/functions\\notifications_daily"
     }
   }
 }

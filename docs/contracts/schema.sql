@@ -5349,11 +5349,9 @@ BEGIN
   FROM public.memberships AS m
   WHERE m.user_id   = v_user_id
     AND m.is_current = TRUE
-  -- If you have a created_at / joined_at, you can uncomment:
-  -- ORDER BY m.created_at DESC
   LIMIT 1;
 
-  -- No current home → nothing to show
+  -- No current home -> nothing to show
   IF v_home_id IS NULL THEN
     RETURN jsonb_build_object(
       'activeChoreCount', 0,
@@ -5377,7 +5375,6 @@ BEGIN
   FROM public.home_usage_counters AS huc
   WHERE huc.home_id = v_home_id;
 
-  -- If there is no row at all, default to 0 explicitly
   IF NOT FOUND THEN
     v_active_chores := 0;
   END IF;
@@ -5387,18 +5384,19 @@ BEGIN
   ------------------------------------------------------------------
 
   -- Has any notification preference row yet?
-  SELECT TRUE
-  INTO v_has_notif_pref
-  FROM public.notification_preferences AS np
-  WHERE np.user_id = v_user_id
-  LIMIT 1;
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.notification_preferences AS np
+    WHERE np.user_id = v_user_id
+  )
+  INTO v_has_notif_pref;
 
   -- Has user ever shared a housemate/flatmate invite?
   SELECT EXISTS (
     SELECT 1
     FROM public.share_events AS se
     WHERE se.user_id = v_user_id
-      AND se.feature = 'invite_housemate'  -- flatmate-specific feature
+      AND se.feature = 'invite_housemate'
       AND se.channel IS NOT NULL
   )
   INTO v_has_flatmate_invite_share;
@@ -5416,7 +5414,6 @@ BEGIN
   ------------------------------------------------------------------
   -- 5) One-at-a-time onboarding logic (priority ladder)
   ------------------------------------------------------------------
-  -- Each step only considered once previous steps are satisfied.
 
   -- Step 1: daily notifications
   IF v_active_chores >= 1
@@ -6068,7 +6065,7 @@ CREATE TABLE IF NOT EXISTS "public"."share_events" (
     "home_id" "uuid",
     "feature" "text" NOT NULL,
     "channel" "text" NOT NULL,
-    CONSTRAINT "share_channel_valid" CHECK (("channel" = ANY (ARRAY['system_share'::"text", 'qr_code'::"text", 'copy_link'::"text", 'other'::"text"]))),
+    CONSTRAINT "share_channel_valid" CHECK (("channel" = ANY (ARRAY['system_share'::"text", 'qr_code'::"text", 'copy_link'::"text", 'other'::"text", 'onboarding_dismiss'::"text"]))),
     CONSTRAINT "share_feature_valid" CHECK (("feature" = ANY (ARRAY['invite_button'::"text", 'invite_housemate'::"text", 'gratitude_wall_house'::"text", 'gratitude_wall_personal'::"text", 'house_rules_detailed'::"text", 'house_rules_summary'::"text", 'preferences_detailed'::"text", 'preferences_summary'::"text", 'other'::"text"])))
 );
 

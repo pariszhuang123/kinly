@@ -25,12 +25,17 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(client, current) =>
       "Your version: ${client}\nLatest version: ${current}";
 
-  static String m11(link) =>
+  static String m11(appName) => "Made with ${appName} - Together feels lighter";
+
+  static String m12(link) =>
       "Sharing a glimpse of our Kinly gratitude wall. Download the app: ${link}";
 
-  static String m12(time) => "${time} today";
+  static String m13(time) => "${time} today";
 
-  static String m13(count) => "Gratitude wall (${count})";
+  static String m14(count) => "Gratitude wall (${count})";
+
+  static String m15(weeks) =>
+      "${Intl.plural(weeks, zero: 'This week', one: '1 week ago', other: '${weeks} weeks ago')}";
 
   static String m2(partOfDay, name) => "Good ${partOfDay}, ${name}";
 
@@ -248,6 +253,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "No gratitude posts yet",
     ),
+    "gratitudeWallFooter": m11,
+    "gratitudeWallKinlySubtitle": MessageLookupByLibrary.simpleMessage(
+      "Kinly helps your home share small gratitude moments together.",
+    ),
     "gratitudeWallPoweredBy": MessageLookupByLibrary.simpleMessage(
       "Powered by",
     ),
@@ -258,18 +267,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallShareError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t share right now. Please try again.",
     ),
-    "gratitudeWallShareMessage": m11,
+    "gratitudeWallShareMessage": m12,
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
       "Gratitude wall",
     ),
     "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "Shared moments from your home.",
     ),
-    "gratitudeWallTimestamp": m12,
+    "gratitudeWallTimestamp": m13,
     "gratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
       "Gratitude wall",
     ),
-    "gratitudeWallTitleCount": m13,
+    "gratitudeWallTitleCount": m14,
+    "gratitudeWallWeeksAgo": m15,
     "greetingPartAfternoon": MessageLookupByLibrary.simpleMessage("afternoon"),
     "greetingPartEvening": MessageLookupByLibrary.simpleMessage("evening"),
     "greetingPartMorning": MessageLookupByLibrary.simpleMessage("morning"),
