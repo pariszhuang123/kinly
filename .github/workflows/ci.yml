@@ -84,6 +84,7 @@ jobs:
           lcov --remove coverage/lcov.info \
             'lib/generated/*' 'lib/**/*.g.dart' 'lib/**/*.freezed.dart' 'lib/l10n/*' \
             'test/**' 'build/**' \
+            --ignore-errors unused \
             -o coverage/filtered.info
 
           LINE_RATE=$(lcov --summary coverage/filtered.info | awk '/lines/ {print $2}' | tr -d '%')
