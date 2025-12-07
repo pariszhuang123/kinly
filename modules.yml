@@ -1,0 +1,479 @@
+version: 1
+meta:
+  description: Module ownership and kill-switch manifest (owner RPCs, orchestration, tables, flags).
+  defaults:
+    cross_module_fk_policy: nullable_set_null
+    import_boundary: "only via each module's public_api dart entrypoint"
+    orchestration_rule: "orchestration RPCs call owner RPCs only"
+
+# Field schema (per module):
+# - name: module id (slug)
+# - owner_role: Planner|UI|BLoC|DB|Release|Test|Docs
+# - status: foundational|feature|experimental
+# - killable: true|false
+# - kill_switch_flag: feature flag key or null if always on
+# - plan_gates: list of entitlements that must enable this module
+# - depends_on: modules that must be present/enabled
+# - allowed_imports_from: modules that may import this module (use "*" to allow all)
+# - public_api:
+#     dart: path to the ONLY file allowed for cross-module imports (to be created)
+# - data:
+#     tables_owned: canonical table names owned by this module
+#     cross_module_refs: optional references this module keeps to others (nullable/soft links only)
+# - rpcs:
+#     owner: canonical owner RPC names (mutations for owned tables)
+#     orchestration: orchestration RPCs this module owns (explicit cross-module flows)
+# - entrypoints:
+#     routes: app routes/screens exposed by this module
+#     deep_links: deep link patterns handled here
+#     navigation_tiles: tiles/menu IDs that surface this module
+# - test_matrix:
+#     feature_flag_off: ensure tests cover flag-off behavior
+#     plan_gate: ensure tests cover entitlement gating
+# - notes: optional freeform context
+
+modules:
+  - name: core
+    owner_role: Planner
+    status: foundational
+    killable: false
+    kill_switch_flag: null
+    plan_gates: []
+    depends_on: []
+    allowed_imports_from: ["*"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - homes
+        - members
+        - invites
+      cross_module_refs: []
+    rpcs:
+      owner:
+        - homes.create
+        - homes.join
+        - homes.transferOwner
+        - homes.leave
+        - invites.getOrCreate
+        - invites.revoke
+      orchestration: []
+    entrypoints:
+      routes:
+        - /welcome
+        - /join
+        - /today
+      deep_links:
+        - /join/:code
+      navigation_tiles:
+        - home_hub
+    test_matrix:
+      feature_flag_off: false
+      plan_gate: false
+    notes: Foundational identities/homes/invites; other modules depend on this.
+
+  - name: auth
+    owner_role: Planner
+    status: foundational
+    killable: false
+    kill_switch_flag: null
+    plan_gates: []
+    depends_on: [core]
+    allowed_imports_from: ["*"]
+    public_api:
+      dart: null
+    data:
+      tables_owned: []
+      cross_module_refs: []
+    rpcs:
+      owner:
+        - auth.signInWithProvider
+        - auth.signOut
+      orchestration: []
+    entrypoints:
+      routes:
+        - /welcome
+      deep_links: []
+      navigation_tiles: []
+    test_matrix:
+      feature_flag_off: false
+      plan_gate: false
+    notes: Supabase OAuth (Google/Apple); uses Core membership but owns no tables.
+
+  - name: home_membership
+    owner_role: Planner
+    status: feature
+    killable: false
+    kill_switch_flag: null
+    plan_gates: []
+    depends_on: [core, auth]
+    allowed_imports_from: ["core", "auth", "welcome", "hub", "today"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - home_membership_cache # placeholder for client cache if added
+      cross_module_refs:
+        - homes.id
+        - invites.code
+    rpcs:
+      owner:
+        - memberships.listActiveByHome
+        - memberships.listByHome
+      orchestration: []
+    entrypoints:
+      routes:
+        - /join
+        - /create-home
+      deep_links:
+        - /join/:code
+      navigation_tiles:
+        - join_home_cta
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: false
+    notes: Wraps Core home/member RPCs for UI/BLoC; killable via feature flag.
+
+  - name: welcome
+    owner_role: UI
+    status: feature
+    killable: true
+    kill_switch_flag: feature.welcome.enabled
+    plan_gates: []
+    depends_on: [auth, core]
+    allowed_imports_from: ["hub", "today"]
+    public_api:
+      dart: null
+    data:
+      tables_owned: []
+      cross_module_refs: []
+    rpcs:
+      owner: []
+      orchestration: []
+    entrypoints:
+      routes:
+        - /welcome
+      deep_links: []
+      navigation_tiles:
+        - welcome_cta
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: false
+    notes: Pure UI/BLoC to onboard and route to join/create.
+
+  - name: splash
+    owner_role: UI
+    status: foundational
+    killable: false
+    kill_switch_flag: null
+    plan_gates: []
+    depends_on: [auth, core, version_gating]
+    allowed_imports_from: ["*"]
+    public_api:
+      dart: null
+    data:
+      tables_owned: []
+      cross_module_refs: []
+    rpcs:
+      owner: []
+      orchestration: []
+    entrypoints:
+      routes:
+        - /splash
+      deep_links: []
+      navigation_tiles: []
+    test_matrix:
+      feature_flag_off: false
+      plan_gate: false
+    notes: Startup gate for auth/session/version; not killable.
+
+  - name: hub
+    owner_role: UI
+    status: feature
+    killable: true
+    kill_switch_flag: feature.hub.enabled
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["today", "profile_settings"]
+    public_api:
+      dart: null
+    data:
+      tables_owned: []
+      cross_module_refs: []
+    rpcs:
+      owner: []
+      orchestration: []
+    entrypoints:
+      routes:
+        - /hub
+      deep_links: []
+      navigation_tiles:
+        - hub_tab
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: false
+    notes: Container for modules’ tiles; hides tiles when dependent modules are off.
+
+  - name: today
+    owner_role: UI
+    status: feature
+    killable: true
+    kill_switch_flag: feature.today.enabled
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["hub"]
+    public_api:
+      dart: null
+    data:
+      tables_owned: []
+      cross_module_refs: []
+    rpcs:
+      owner: []
+      orchestration: []
+    entrypoints:
+      routes:
+        - /today
+      deep_links: []
+      navigation_tiles:
+        - today_tab
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: false
+    notes: Aggregates other modules; must tolerate modules being disabled.
+
+  - name: flow
+    owner_role: Planner
+    status: feature
+    killable: true
+    kill_switch_flag: feature.flow.enabled
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["hub", "today"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - chores
+        - chore_assignments
+        - chore_completions
+      cross_module_refs: []
+    rpcs:
+      owner:
+        - chores.create
+        - chores.update
+        - chores.complete
+      orchestration: []
+    entrypoints:
+      routes:
+        - /chores
+      deep_links: []
+      navigation_tiles:
+        - chores_tile
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: true
+    notes: Chores/Flow; killable with nullable links from other modules.
+
+  - name: share
+    owner_role: Planner
+    status: feature
+    killable: true
+    kill_switch_flag: feature.share.enabled
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["hub", "today"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - expenses
+        - expense_splits
+        - settlements
+      cross_module_refs: []
+    rpcs:
+      owner:
+        - expenses.create
+        - expenses.update
+        - expenses.settle
+      orchestration: []
+    entrypoints:
+      routes:
+        - /expenses
+      deep_links: []
+      navigation_tiles:
+        - expenses_tile
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: true
+    notes: Expenses/splits; orchestration only via owner RPCs.
+
+  - name: harmony
+    owner_role: Planner
+    status: feature
+    killable: true
+    kill_switch_flag: feature.harmony.enabled
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["hub", "today"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - moods
+        - gratitude_entries
+      cross_module_refs: []
+    rpcs:
+      owner:
+        - harmony.mood_create
+        - harmony.gratitude_create
+      orchestration: []
+    entrypoints:
+      routes:
+        - /harmony
+      deep_links: []
+      navigation_tiles:
+        - harmony_tile
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: true
+    notes: Mood/gratitude; allows optional links from expenses/flow orchestrations.
+
+  - name: nps
+    owner_role: Planner
+    status: feature
+    killable: true
+    kill_switch_flag: feature.nps.enabled
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["profile_settings"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - nps_surveys
+        - nps_responses
+      cross_module_refs: []
+    rpcs:
+      owner:
+        - nps.survey_issue
+        - nps.response_submit
+      orchestration: []
+    entrypoints:
+      routes:
+        - /nps
+      deep_links: []
+      navigation_tiles:
+        - nps_tile
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: true
+    notes: Collects feedback; killable with no hard dependencies.
+
+  - name: explore
+    owner_role: UI
+    status: experimental
+    killable: true
+    kill_switch_flag: feature.explore.enabled
+    plan_gates: []
+    depends_on: [core]
+    allowed_imports_from: ["hub"]
+    public_api:
+      dart: null
+    data:
+      tables_owned: []
+      cross_module_refs: []
+    rpcs:
+      owner: []
+      orchestration: []
+    entrypoints:
+      routes:
+        - /explore
+      deep_links: []
+      navigation_tiles:
+        - explore_tile
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: false
+    notes: Discovery/upsell surface; must be fully optional.
+
+  - name: profile_settings
+    owner_role: UI
+    status: feature
+    killable: true
+    kill_switch_flag: feature.profile_settings.enabled
+    plan_gates: []
+    depends_on: [auth, core]
+    allowed_imports_from: ["hub"]
+    public_api:
+      dart: null
+    data:
+      tables_owned: []
+      cross_module_refs: []
+    rpcs:
+      owner: []
+      orchestration: []
+    entrypoints:
+      routes:
+        - /profile
+      deep_links: []
+      navigation_tiles:
+        - profile_tile
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: false
+    notes: Profile and settings UI; no owned backend tables.
+
+  - name: offline
+    owner_role: Planner
+    status: experimental
+    killable: true
+    kill_switch_flag: feature.offline.enabled
+    plan_gates: []
+    depends_on: [core]
+    allowed_imports_from: ["*"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - offline_queue
+      cross_module_refs: []
+    rpcs:
+      owner:
+        - offline.queue_enqueue
+        - offline.queue_flush
+      orchestration: []
+    entrypoints:
+      routes: []
+      deep_links: []
+      navigation_tiles: []
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: false
+    notes: Future offline/sync helper; must be fully optional.
+
+  - name: version_gating
+    owner_role: Release
+    status: foundational
+    killable: false
+    kill_switch_flag: null
+    plan_gates: []
+    depends_on: [core]
+    allowed_imports_from: ["*"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - app_versions
+      cross_module_refs: []
+    rpcs:
+      owner:
+        - versions.require_minimum
+      orchestration: []
+    entrypoints:
+      routes: []
+      deep_links: []
+      navigation_tiles: []
+    test_matrix:
+      feature_flag_off: false
+      plan_gate: false
+    notes: Enforces minimum app versions to allow RPC versioning/deprecation.

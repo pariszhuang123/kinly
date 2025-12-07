@@ -17,10 +17,11 @@ This document defines roles, boundaries, workflows, guardrails, and the Definiti
 ## Boundaries & Ownership
 - UI → BLoC only.
 - BLoC → Repositories only.
-- Repositories → Supabase (RPC/PostgREST) + deep‑link adapter.
+- Repositories → Supabase (RPC/PostgREST) + deep-link adapter.
 - Schemas & migrations → Supabase/DB (review by Planner + Test).
-- Contracts/DTOs → Supabase/DB + Repositories co‑own (versioned).
+- Contracts/DTOs → Supabase/DB + Repositories co-own (versioned).
 - CI/infra → Release (Planner approves changes).
+- Accessibility → Design System + UI co-own implementation; Planner approves contract changes.
 
 ## MVP Scope (Home‑only)
 - Auth (Supabase OAuth: Google/Apple)
@@ -130,6 +131,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - No schema change without migration + RLS policies + reviews.
 - No hard-coded UI strings (use i18n). Run `dart run tool/check_i18n.dart`
   before submitting a PR; reviewers (Codex) will block if this check fails.
+- Accessibility baseline must be honored: use Kinly primitives with built-in semantics/min 48dp touch targets; respect reduced motion; run contrast/i18n/directionality checks. Changes to the accessibility contract require Planner approval and Design System review.
 - All UI must be directionality-safe. Use directional APIs
   (`EdgeInsetsDirectional`, `AlignmentDirectional`, `PositionedDirectional`,
   `TabBar` that mirrors), and add an RTL widget/golden test for new screens.

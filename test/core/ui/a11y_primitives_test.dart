@@ -19,15 +19,16 @@ Widget _wrap(Widget child, {double textScale = 2.0}) {
   return MaterialApp(
     theme: buildKinlyTheme(Brightness.light),
     home: MediaQuery(
-      data: MediaQueryData(textScaleFactor: textScale),
+      data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
       child: Scaffold(body: Center(child: child)),
     ),
   );
 }
 
 void main() {
-  testWidgets('KinlyFilledButton enforces 48dp min size and semantics',
-      (tester) async {
+  testWidgets('KinlyFilledButton enforces 48dp min size and semantics', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _wrap(
         KinlyFilledButton.text(
@@ -44,8 +45,9 @@ void main() {
     expect(find.bySemanticsLabel('Do action'), findsOneWidget);
   });
 
-  testWidgets('KinlyOutlinedButton enforces 48dp min size and semantics',
-      (tester) async {
+  testWidgets('KinlyOutlinedButton enforces 48dp min size and semantics', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _wrap(
         KinlyOutlinedButton.text(
@@ -62,15 +64,12 @@ void main() {
     expect(find.bySemanticsLabel('Outline button'), findsOneWidget);
   });
 
-  testWidgets('KinlyListTile enforces 48dp min size and semantics',
-      (tester) async {
+  testWidgets('KinlyListTile enforces 48dp min size and semantics', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _wrap(
-        KinlyListTile(
-          title: 'List item',
-          subtitle: 'Details',
-          onTap: () {},
-        ),
+        KinlyListTile(title: 'List item', subtitle: 'Details', onTap: () {}),
       ),
     );
 
@@ -80,8 +79,9 @@ void main() {
     expect(find.bySemanticsLabel('List item, Details'), findsOneWidget);
   });
 
-  testWidgets('KinlyToggle enforces 48dp min size and semantics',
-      (tester) async {
+  testWidgets('KinlyToggle enforces 48dp min size and semantics', (
+    tester,
+  ) async {
     var toggled = false;
     await tester.pumpWidget(
       _wrap(
@@ -106,8 +106,9 @@ void main() {
     );
   });
 
-  testWidgets('KinlyAddTileButton enforces 48dp min size and semantics',
-      (tester) async {
+  testWidgets('KinlyAddTileButton enforces 48dp min size and semantics', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _wrap(
         KinlyAddTileButton(
@@ -130,8 +131,9 @@ void main() {
     );
   });
 
-  testWidgets('KinlyOptionSelectorRow enforces semantics and size',
-      (tester) async {
+  testWidgets('KinlyOptionSelectorRow enforces semantics and size', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _wrap(
         KinlyOptionSelectorRow<String>(
@@ -157,8 +159,9 @@ void main() {
     );
   });
 
-  testWidgets('KinlyMemberAvatarChip enforces touch target and semantics',
-      (tester) async {
+  testWidgets('KinlyMemberAvatarChip enforces touch target and semantics', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _wrap(
         KinlyMemberAvatarChip(
@@ -181,8 +184,9 @@ void main() {
     );
   });
 
-  testWidgets('KinlySelectionCard enforces touch target and semantics',
-      (tester) async {
+  testWidgets('KinlySelectionCard enforces touch target and semantics', (
+    tester,
+  ) async {
     const colors = SectionColors(
       background: Colors.white,
       card: Colors.white,
@@ -212,8 +216,9 @@ void main() {
     );
   });
 
-  testWidgets('SectionListCard enforces touch target and semantics',
-      (tester) async {
+  testWidgets('SectionListCard enforces touch target and semantics', (
+    tester,
+  ) async {
     const colors = SectionColors(
       background: Colors.white,
       card: Colors.white,
@@ -243,8 +248,9 @@ void main() {
     );
   });
 
-  testWidgets('KinlyPhotoCapture enforces touch target and semantics',
-      (tester) async {
+  testWidgets('KinlyPhotoCapture enforces touch target and semantics', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _wrap(
         SizedBox(
@@ -271,8 +277,9 @@ void main() {
     );
   });
 
-  testWidgets('KinlyProfileHeader enforces touch target and semantics',
-      (tester) async {
+  testWidgets('KinlyProfileHeader enforces touch target and semantics', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _wrap(
         KinlyProfileHeader(

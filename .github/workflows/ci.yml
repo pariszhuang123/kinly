@@ -61,6 +61,9 @@ jobs:
       - name: Check directionality-safe layout
         run: dart run tool/check_directionality.dart
 
+      - name: Check module manifest guardrails
+        run: dart run tool/check_modules.dart
+
   code_metrics:
     name: Codebase Metrics
     runs-on: ubuntu-latest
@@ -149,6 +152,7 @@ jobs:
         with:
           name: code-metrics
           path: code_metrics.json
+          retention-days: 7
 
   contracts_drift:
     name: Contracts Drift (Local DB)
@@ -317,10 +321,22 @@ jobs:
         run: |
           echo "Disk usage before cleanup:"
           df -h
+
+          # Big SDKs and tools we don't need for Flutter Android build
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /opt/hostedtoolcache/CodeQL
+
+          # Android emulator, system images, and (optionally) NDK
+          sudo rm -rf /usr/local/lib/android/sdk/emulator
+          sudo rm -rf /usr/local/lib/android/sdk/system-images
+          sudo rm -rf /usr/local/lib/android/sdk/ndk || true
+
+          # Unused hosted toolcaches (if not used elsewhere)
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          # docker images/containers
           docker system prune -af || true
+
           echo "Disk usage after cleanup:"
           df -h
 
@@ -399,6 +415,7 @@ jobs:
         with:
           name: app-dev-debug.apk
           path: build/app/outputs/flutter-apk/app-dev-debug.apk
+          retention-days: 3
 
   supabase_prod:
     name: Supabase Migrations (Prod)
@@ -474,10 +491,20 @@ jobs:
         run: |
           echo "Disk usage before cleanup:"
           df -h
+
+          # Big SDKs and tools we don't need for Flutter Android build
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /opt/hostedtoolcache/CodeQL
+
+          # Android emulator, system images, and (optionally) NDK
+          sudo rm -rf /usr/local/lib/android/sdk/emulator
+          sudo rm -rf /usr/local/lib/android/sdk/system-images
+          sudo rm -rf /usr/local/lib/android/sdk/ndk || true
+
+          # docker images/containers
           docker system prune -af || true
+
           echo "Disk usage after cleanup:"
           df -h
 
@@ -556,8 +583,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-prod-release.aab
-          path: |
-            build/app/outputs/bundle/**/*.aab
+          # Narrow glob; adjust if your path differs
+          path: build/app/outputs/bundle/**/*.aab
+          retention-days: 7
+
+      - name: Cleanup build outputs
+        run: rm -rf build/app/outputs
 
       - uses: ruby/setup-ruby@v1
         if: env.DO_PLAY_UPLOAD == 'true'
