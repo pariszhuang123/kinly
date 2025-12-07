@@ -24,6 +24,8 @@ import '../notifications/supabase_notifications_repository.dart';
 import '../notifications/notification_sync_state.dart';
 import '../../data/repositories/onboarding_repository.dart';
 import '../onboarding/supabase_onboarding_repository.dart';
+import '../telemetry/telemetry.dart';
+import '../telemetry/logger_telemetry.dart';
 
 final sl = GetIt.instance;
 
@@ -88,5 +90,8 @@ void setupDependencies() {
     sl.registerLazySingleton<OnboardingRepository>(
       () => SupabaseOnboardingRepository(),
     );
+  }
+  if (!sl.isRegistered<Telemetry>()) {
+    sl.registerLazySingleton<Telemetry>(() => LoggerTelemetry(sl<Logger>()));
   }
 }

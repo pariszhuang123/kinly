@@ -5,14 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/kinly_sections.dart';
+import '../time/clock.dart';
+import '../telemetry/telemetry.dart';
 import 'dopamine_models.dart';
 import 'enums/dopamine_milestone.dart';
 
 /// Hosts dopamine overlays and enforces cooldown/queue rules.
 class DopamineOverlayHost extends StatefulWidget {
-  const DopamineOverlayHost({super.key, required this.child});
+  const DopamineOverlayHost({
+    super.key,
+    required this.child,
+    this.clock = const SystemClock(),
+    this.telemetry = const NullTelemetry(),
+  });
 
   final Widget child;
+  final Clock clock;
+  final Telemetry telemetry;
 
   static DopamineOverlayHostState? maybeOf(BuildContext context) {
     return context.findAncestorStateOfType<DopamineOverlayHostState>();
@@ -34,22 +43,23 @@ class DopamineOverlayHostState extends State<DopamineOverlayHost>
   DateTime? _lastShownAt;
 
   Future<void> show(DopamineMoment moment, {Rect? anchorRect}) async {
-    final now = DateTime.now();
+    final now = widget.clock.now();
+    final sinceLast = _lastShownAt == null ? null : now.difference(_lastShownAt!);
+    final withinCoalesceWindow =
+        sinceLast != null && sinceLast < _coalesceWindow && _entry != null;
 
-    // Cooldown: drop if shown too recently.
-    if (_lastShownAt != null && now.difference(_lastShownAt!) < _cooldown) {
-      return;
-    }
-
-    // Coalesce: replace any active entry with the latest moment.
-    if (_lastShownAt != null &&
-        now.difference(_lastShownAt!) < _coalesceWindow &&
-        _entry != null) {
+    if (withinCoalesceWindow) {
+      // Coalesce: replace active entry with latest moment.
+      _lastShownAt = now;
+      _removeActive();
+    } else {
+      // Cooldown: drop if shown too recently.
+      if (sinceLast != null && sinceLast < _cooldown) {
+        return;
+      }
+      _lastShownAt = now;
       _removeActive();
     }
-
-    _lastShownAt = now;
-    _removeActive();
 
     final overlay = Overlay.of(context, debugRequiredFor: widget);
 
@@ -76,6 +86,19 @@ class DopamineOverlayHostState extends State<DopamineOverlayHost>
             moment: moment.copyWith(reduceMotion: reduceMotion),
             anchorRect: resolvedAnchor,
           ),
+    );
+
+    widget.telemetry.track(
+      'dopamine_shown',
+      properties: {
+        'milestone': moment.milestone.name,
+        'strength': moment.strength.name,
+        'echo_present': (moment.echo?.isNotEmpty ?? false),
+        'reduce_motion': reduceMotion,
+        'haptic_used': !reduceMotion && moment.hapticEnabled,
+        'theme':
+            Theme.of(context).brightness == Brightness.dark ? 'dark' : 'light',
+      },
     );
 
     overlay.insert(_entry!);

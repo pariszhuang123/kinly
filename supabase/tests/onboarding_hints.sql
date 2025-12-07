@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(9);
+SELECT plan(10);
 
 CREATE TEMP TABLE tmp_ids (
   label   text PRIMARY KEY,
@@ -144,7 +144,19 @@ SELECT is(
   'Generic invite share suppresses future prompt'
 );
 
--- 9) Active chore count surface
+-- 9) onboarding_dismiss share channel accepted
+SELECT lives_ok(
+  $$
+    SELECT public.share_log_event(
+      p_home_id := (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
+      p_feature := 'invite_button',
+      p_channel := 'onboarding_dismiss'
+    );
+  $$,
+  'share_log_event accepts onboarding_dismiss channel'
+);
+
+-- 10) Active chore count surface
 SELECT is(
   ((public.today_onboarding_hints())->>'activeChoreCount')::int,
   5,

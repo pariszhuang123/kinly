@@ -7,12 +7,19 @@ import '../../../../core/dopamine/enums/dopamine_strength.dart';
 import '../../../../core/dopamine/dopamine_overlay.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../core/telemetry/telemetry.dart';
+import '../../../../core/di/locator.dart';
 import '../../bloc/flow_chore_detail_bloc.dart';
 import '../../domain/flow_chore_outcome.dart';
 import 'widgets/flow_chore_detail_view.dart';
 
 class FlowChoreDetailScreen extends StatefulWidget {
-  const FlowChoreDetailScreen({super.key});
+  const FlowChoreDetailScreen({
+    super.key,
+    this.telemetry,
+  });
+
+  final Telemetry? telemetry;
 
   @override
   State<FlowChoreDetailScreen> createState() => _FlowChoreDetailScreenState();
@@ -24,11 +31,14 @@ class _FlowChoreDetailScreenState extends State<FlowChoreDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final telemetry = widget.telemetry ?? sl<Telemetry>();
+
     return Scaffold(
       appBar: AppBar(title: Text(S.of(context).flowChoreDetailTitle)),
       body: SafeArea(
         child: DopamineOverlayHost(
           key: _dopamineHostKey,
+          telemetry: telemetry,
           child: BlocConsumer<FlowChoreDetailBloc, FlowChoreDetailState>(
             listenWhen:
                 (previous, current) =>

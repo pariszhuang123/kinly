@@ -13,6 +13,8 @@ import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/telemetry/telemetry.dart';
+import '../../../core/di/locator.dart';
 import '../../today/domain/models.dart';
 
 class ShareOwedDetailScreen extends StatefulWidget {
@@ -20,10 +22,12 @@ class ShareOwedDetailScreen extends StatefulWidget {
     super.key,
     required this.owed,
     required this.expensesRepository,
+    this.telemetry,
   });
 
   final TodayShareOwed owed;
   final ExpensesRepository expensesRepository;
+  final Telemetry? telemetry;
 
   @override
   State<ShareOwedDetailScreen> createState() => _ShareOwedDetailScreenState();
@@ -41,6 +45,7 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>()!;
     final s = S.of(context);
+    final telemetry = widget.telemetry ?? sl<Telemetry>();
 
     final hasItems = widget.owed.items.isNotEmpty;
 
@@ -49,6 +54,7 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
       body: SafeArea(
         child: DopamineOverlayHost(
           key: _dopamineHostKey,
+          telemetry: telemetry,
           child: Padding(
             padding: EdgeInsetsDirectional.all(spacing.lg),
             child: Column(

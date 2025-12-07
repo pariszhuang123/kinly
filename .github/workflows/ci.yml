@@ -24,6 +24,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Guard: require tests when code/migrations change
+        shell: bash
+        run: bash tool/check_test_guard.sh
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -63,6 +67,33 @@ jobs:
 
       - name: Check module manifest guardrails
         run: dart run tool/check_modules.dart
+
+      - name: Install lcov
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lcov
+
+      - name: Flutter tests with coverage
+        run: flutter test --coverage
+
+      - name: Enforce coverage floor (65%)
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Strip generated/irrelevant files from coverage
+          lcov --remove coverage/lcov.info \
+            'lib/generated/*' 'lib/**.g.dart' 'lib/**.freezed.dart' 'lib/l10n/*' \
+            'test/**' 'build/**' \
+            -o coverage/filtered.info
+
+          LINE_RATE=$(lcov --summary coverage/filtered.info | awk '/lines/ {print $2}' | tr -d '%')
+          FLOOR=65
+          echo "Coverage: ${LINE_RATE}% (floor ${FLOOR}%)"
+          # Compare integer parts to avoid locale/float issues
+          if [ "${LINE_RATE%.*}" -lt "$FLOOR" ]; then
+            echo "::error::Coverage ${LINE_RATE}% is below floor ${FLOOR}%"
+            exit 1
+          fi
 
   code_metrics:
     name: Codebase Metrics
