@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import '../theme/kinly_sections.dart';
 import '../theme/spacing.dart';
 import 'dopamine_models.dart';
+import 'enums/dopamine_milestone.dart';
 
 /// Hosts dopamine overlays and enforces cooldown/queue rules.
 class DopamineOverlayHost extends StatefulWidget {

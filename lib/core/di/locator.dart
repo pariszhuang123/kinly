@@ -22,6 +22,8 @@ import '../profile/profile_update_notifier.dart';
 import '../../data/repositories/notifications_repository.dart';
 import '../notifications/supabase_notifications_repository.dart';
 import '../notifications/notification_sync_state.dart';
+import '../../data/repositories/onboarding_repository.dart';
+import '../onboarding/supabase_onboarding_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -80,6 +82,11 @@ void setupDependencies() {
   if (!sl.isRegistered<NotificationsRepository>()) {
     sl.registerLazySingleton<NotificationsRepository>(
       () => SupabaseNotificationsRepository(syncState: sl<NotificationSyncState>()),
+    );
+  }
+  if (!sl.isRegistered<OnboardingRepository>()) {
+    sl.registerLazySingleton<OnboardingRepository>(
+      () => SupabaseOnboardingRepository(),
     );
   }
 }

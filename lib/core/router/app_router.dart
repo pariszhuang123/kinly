@@ -5,6 +5,7 @@ import '../../data/repositories/chores_repository.dart';
 import '../../data/repositories/expenses_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../data/repositories/home_repository.dart';
+import '../../data/repositories/onboarding_repository.dart';
 import '../../features/today/ui/today_provider.dart';
 import '../../features/flow/ui/flow_chore_detail/flow_chore_detail_provider.dart';
 import '../../features/flow/ui/flow_chore_provider.dart';
@@ -175,6 +176,7 @@ GoRouter createRouter({
             expensesRepository: sl<ExpensesRepository>(),
             homeRepository: sl<HomeRepository>(),
             moodRepository: sl<MoodRepository>(),
+            onboardingRepository: sl<OnboardingRepository>(),
             profileUpdateNotifier: sl<ProfileUpdateNotifier>(),
           );
         },

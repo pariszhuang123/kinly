@@ -11,6 +11,8 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/buttons/kinly_fab.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
+import '../../../../core/notifications/notification_permission_service.dart';
+import '../../../../data/repositories/notifications_repository.dart';
 import '../domain/models.dart';
 import '../bloc/today_bloc.dart';
 import 'widgets/today_header/today_header_container.dart';
@@ -29,11 +31,13 @@ import '../../../../data/repositories/expenses_repository.dart';
 import '../../share/ui/share_owed_detail_screen.dart';
 import '../../share/ui/share_edit_route_args.dart';
 import '../../share/ui/share_edit_outcome.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class TodayScreen extends StatelessWidget {
-  const TodayScreen({super.key});
+  const TodayScreen({super.key, this.onNotificationPrompt});
 
   static const _shareLogTag = 'TodayShare';
+  final VoidCallback? onNotificationPrompt;
 
   String _partOfDay(DateTime now) {
     final hour = now.hour;
@@ -57,6 +61,13 @@ class TodayScreen extends StatelessWidget {
 
     return MultiBlocListener(
       listeners: [
+        BlocListener<TodayBloc, TodayState>(
+          listenWhen:
+              (prev, curr) =>
+                  prev.notificationPromptTick != curr.notificationPromptTick &&
+                  curr.notificationPromptTick > 0,
+          listener: (context, state) => _maybePromptNotifications(context),
+        ),
         BlocListener<TodayBloc, TodayState>(
           listenWhen:
               (prev, curr) =>
@@ -327,5 +338,33 @@ class TodayScreen extends StatelessWidget {
 
   Future<void> _openHarmonyPage(BuildContext context) async {
     await context.push(AppRoutes.harmony);
+  }
+
+  Future<void> _maybePromptNotifications(BuildContext context) async {
+    if (!context.mounted) return;
+    onNotificationPrompt?.call();
+    final repo = sl<NotificationsRepository>();
+    final permissionService = sl.isRegistered<NotificationPermissionService>()
+        ? sl<NotificationPermissionService>()
+        : NotificationPermissionService(notificationsRepository: repo);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final timezone = DateTime.now().timeZoneName;
+    final platformName = Theme.of(context).platform.name;
+    try {
+      final deviceToken = await FirebaseMessaging.instance.getToken();
+      if (!context.mounted) return;
+      await permissionService.requestAndSync(
+        wantsDaily: true,
+        preferredHour: 9,
+        timezone: timezone,
+        locale: locale,
+        deviceToken: deviceToken,
+        platform: platformName,
+      );
+    } on NotificationPermissionException {
+      // User denied; swallow to avoid breaking the Today UX.
+    } catch (_) {
+      // Ignore other failures to keep Today resilient.
+    }
   }
 }

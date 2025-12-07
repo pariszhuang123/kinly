@@ -15,6 +15,11 @@ class TodayState extends Equatable {
   final bool hasShownHarmonyPrompt;
   final int npsPromptTick;
   final bool hasShownNpsPrompt;
+  final int notificationPromptTick;
+  final bool hasShownNotificationPrompt;
+  final int activeChoreCount;
+  final bool shouldPromptFlatmateInviteShare;
+  final bool shouldPromptInviteShare;
 
   const TodayState._({
     required this.isLoading,
@@ -31,6 +36,11 @@ class TodayState extends Equatable {
     this.hasShownHarmonyPrompt = false,
     this.npsPromptTick = 0,
     this.hasShownNpsPrompt = false,
+    this.notificationPromptTick = 0,
+    this.hasShownNotificationPrompt = false,
+    this.activeChoreCount = 0,
+    this.shouldPromptFlatmateInviteShare = false,
+    this.shouldPromptInviteShare = false,
   });
 
   const TodayState.loading({
@@ -42,6 +52,11 @@ class TodayState extends Equatable {
     int npsPromptTick = 0,
     bool hasShownNpsPrompt = false,
     GratitudeWallStatus? gratitudeStatus,
+    int notificationPromptTick = 0,
+    bool hasShownNotificationPrompt = false,
+    int activeChoreCount = 0,
+    bool shouldPromptFlatmateInviteShare = false,
+    bool shouldPromptInviteShare = false,
   }) : this._(
          isLoading: true,
          activeTasks: const [],
@@ -54,6 +69,11 @@ class TodayState extends Equatable {
          hasShownHarmonyPrompt: hasShownHarmonyPrompt,
          npsPromptTick: npsPromptTick,
          hasShownNpsPrompt: hasShownNpsPrompt,
+         notificationPromptTick: notificationPromptTick,
+         hasShownNotificationPrompt: hasShownNotificationPrompt,
+         activeChoreCount: activeChoreCount,
+         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+         shouldPromptInviteShare: shouldPromptInviteShare,
        );
 
   const TodayState.loaded({
@@ -68,6 +88,11 @@ class TodayState extends Equatable {
     int npsPromptTick = 0,
     bool hasShownNpsPrompt = false,
     GratitudeWallStatus? gratitudeStatus,
+    int notificationPromptTick = 0,
+    bool hasShownNotificationPrompt = false,
+    int activeChoreCount = 0,
+    bool shouldPromptFlatmateInviteShare = false,
+    bool shouldPromptInviteShare = false,
   }) : this._(
          isLoading: false,
          activeTasks: activeTasks,
@@ -81,6 +106,11 @@ class TodayState extends Equatable {
          hasShownHarmonyPrompt: hasShownHarmonyPrompt,
          npsPromptTick: npsPromptTick,
          hasShownNpsPrompt: hasShownNpsPrompt,
+         notificationPromptTick: notificationPromptTick,
+         hasShownNotificationPrompt: hasShownNotificationPrompt,
+         activeChoreCount: activeChoreCount,
+         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+         shouldPromptInviteShare: shouldPromptInviteShare,
        );
 
   const TodayState.failure({
@@ -95,6 +125,11 @@ class TodayState extends Equatable {
     int npsPromptTick = 0,
     bool hasShownNpsPrompt = false,
     GratitudeWallStatus? gratitudeStatus,
+    int notificationPromptTick = 0,
+    bool hasShownNotificationPrompt = false,
+    int activeChoreCount = 0,
+    bool shouldPromptFlatmateInviteShare = false,
+    bool shouldPromptInviteShare = false,
   }) : this._(
          isLoading: false,
          activeTasks: const [],
@@ -110,6 +145,11 @@ class TodayState extends Equatable {
          hasShownHarmonyPrompt: hasShownHarmonyPrompt,
          npsPromptTick: npsPromptTick,
          hasShownNpsPrompt: hasShownNpsPrompt,
+         notificationPromptTick: notificationPromptTick,
+         hasShownNotificationPrompt: hasShownNotificationPrompt,
+         activeChoreCount: activeChoreCount,
+         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+         shouldPromptInviteShare: shouldPromptInviteShare,
        );
 
   bool get hasFlowContent => activeTasks.isNotEmpty || draftTasks.isNotEmpty;
@@ -132,5 +172,10 @@ class TodayState extends Equatable {
     hasShownHarmonyPrompt,
     npsPromptTick,
     hasShownNpsPrompt,
+    notificationPromptTick,
+    hasShownNotificationPrompt,
+    activeChoreCount,
+    shouldPromptFlatmateInviteShare,
+    shouldPromptInviteShare,
   ];
 }

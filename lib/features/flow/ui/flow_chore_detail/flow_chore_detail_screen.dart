@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/dopamine/dopamine_models.dart';
+import '../../../../core/dopamine/enums/dopamine_milestone.dart';
+import '../../../../core/dopamine/enums/dopamine_strength.dart';
 import '../../../../core/dopamine/dopamine_overlay.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';

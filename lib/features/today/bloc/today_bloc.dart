@@ -11,6 +11,7 @@ import '../../../data/repositories/expenses_repository.dart';
 import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../../../data/repositories/mood_repository.dart';
+import '../../../data/repositories/onboarding_repository.dart';
 import '../../../core/mood/models.dart';
 import '../../../core/logging/logger.dart';
 import '../../../core/logging/debug_logger.dart';
@@ -26,6 +27,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final ExpensesRepository _expensesRepository;
   final HomeRepository _homeRepository;
   final MoodRepository _moodRepository;
+  final OnboardingRepository _onboardingRepository;
   final ProfileUpdateNotifier _profileUpdateNotifier;
   final Logger _logger;
   final String _homeId;
@@ -38,6 +40,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required ExpensesRepository expensesRepository,
     required HomeRepository homeRepository,
     required MoodRepository moodRepository,
+    required OnboardingRepository onboardingRepository,
     required String homeId,
     required ProfileUpdateNotifier profileUpdateNotifier,
     Logger? logger,
@@ -46,6 +49,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
        _moodRepository = moodRepository,
+       _onboardingRepository = onboardingRepository,
        _profileUpdateNotifier = profileUpdateNotifier,
        _logger = logger ?? const DebugLogger(),
        _homeId = homeId,
@@ -97,6 +101,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     final prevNpsPromptTick = state.npsPromptTick;
     final prevHasShownNps = state.hasShownNpsPrompt;
     final prevGratitudeStatus = state.gratitudeStatus;
+    final prevNotificationPromptTick = state.notificationPromptTick;
+    final prevHasShownNotification = state.hasShownNotificationPrompt;
+    var notificationPromptTick = prevNotificationPromptTick;
+    var hasShownNotificationPrompt = prevHasShownNotification;
+    var shouldPromptFlatmateInviteShare = state.shouldPromptFlatmateInviteShare;
+    var shouldPromptInviteShare = state.shouldPromptInviteShare;
+    var activeChoreCount = state.activeChoreCount;
     try {
       if (!isRefresh) {
         emit(
@@ -109,6 +120,11 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             npsPromptTick: prevNpsPromptTick,
             hasShownNpsPrompt: prevHasShownNps,
             gratitudeStatus: prevGratitudeStatus,
+            notificationPromptTick: prevNotificationPromptTick,
+            hasShownNotificationPrompt: prevHasShownNotification,
+            activeChoreCount: state.activeChoreCount,
+            shouldPromptFlatmateInviteShare: state.shouldPromptFlatmateInviteShare,
+            shouldPromptInviteShare: state.shouldPromptInviteShare,
           ),
         );
       }
@@ -124,6 +140,20 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       final npsPromptTick =
           shouldPromptNps ? prevNpsPromptTick + 1 : prevNpsPromptTick;
       final hasShownNpsPromptNext = npsRequired;
+      try {
+        final hints = await _onboardingRepository.getTodayHints();
+        activeChoreCount = hints.activeChoreCount;
+        hasShownNotificationPrompt =
+            prevHasShownNotification || hints.shouldPromptNotifications;
+        notificationPromptTick =
+            hints.shouldPromptNotifications && !prevHasShownNotification
+                ? prevNotificationPromptTick + 1
+                : prevNotificationPromptTick;
+        shouldPromptFlatmateInviteShare = hints.shouldPromptFlatmateInviteShare;
+        shouldPromptInviteShare = hints.shouldPromptInviteShare;
+      } catch (_) {
+        // Keep previous hints if the RPC fails; avoid blocking Today.
+      }
 
       final profileFuture = _profileRepository.getCurrentProfile();
       final draftsFuture = _choresRepository.listTodayFlow(
@@ -190,6 +220,11 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           hasShownHarmonyPrompt: hasShownPromptNext,
           npsPromptTick: npsPromptTick,
           hasShownNpsPrompt: hasShownNpsPromptNext,
+          notificationPromptTick: notificationPromptTick,
+          hasShownNotificationPrompt: hasShownNotificationPrompt,
+          activeChoreCount: activeChoreCount,
+          shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+          shouldPromptInviteShare: shouldPromptInviteShare,
           // later: you can add today's expenses, gratitude items, etc.
         ),
       );
@@ -334,6 +369,11 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         npsPromptTick: current.npsPromptTick,
         hasShownNpsPrompt: current.hasShownNpsPrompt,
         gratitudeStatus: current.gratitudeStatus,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+        activeChoreCount: current.activeChoreCount,
+        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: current.shouldPromptInviteShare,
       );
     }
 
@@ -350,6 +390,11 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         npsPromptTick: current.npsPromptTick,
         hasShownNpsPrompt: current.hasShownNpsPrompt,
         gratitudeStatus: current.gratitudeStatus,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+        activeChoreCount: current.activeChoreCount,
+        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: current.shouldPromptInviteShare,
       );
     }
 
@@ -365,6 +410,11 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       npsPromptTick: current.npsPromptTick,
       hasShownNpsPrompt: current.hasShownNpsPrompt,
       gratitudeStatus: current.gratitudeStatus,
+      notificationPromptTick: current.notificationPromptTick,
+      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+      activeChoreCount: current.activeChoreCount,
+      shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+      shouldPromptInviteShare: current.shouldPromptInviteShare,
     );
   }
 

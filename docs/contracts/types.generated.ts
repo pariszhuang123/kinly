@@ -1671,6 +1671,7 @@ export type Database = {
         Args: { p_local_date: string; p_timezone: string; p_user_id: string }
         Returns: boolean
       }
+      today_onboarding_hints: { Args: never; Returns: Json }
     }
     Enums: {
       chore_event_type: "create" | "activate" | "update" | "complete" | "cancel"
