@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Guard: require tests when code/migrations change
+      - name: "Guard: require tests when code/migrations change"
         shell: bash
         run: bash tool/check_test_guard.sh
 
