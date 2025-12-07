@@ -11,6 +11,7 @@ import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../core/ui/kinly_pill.dart';
+import '../../../../core/ui/enums/kinly_pill_size.dart';
 
 class GratitudeWallMasonryGrid extends StatelessWidget {
   const GratitudeWallMasonryGrid({super.key, required this.posts});

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
-
-enum KinlyPillSize { compact, regular }
+import 'enums/kinly_pill_size.dart';
 
 /// Lightweight pill/badge aligned to Kinly spacing + corner tokens.
 class KinlyPill extends StatelessWidget {

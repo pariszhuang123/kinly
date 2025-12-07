@@ -189,7 +189,7 @@ class ProfileSettingsScreen extends StatelessWidget {
         showError();
         break;
       case ProfileSettingsAction.kickSuccess:
-        _showKickSuccessDialog(context);
+        KinlySnackBar.showSuccess(context, s.profileKickSuccessMessage);
         break;
       case ProfileSettingsAction.kickFailure:
         showError();
@@ -478,16 +478,6 @@ class ProfileSettingsScreen extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  void _showKickSuccessDialog(BuildContext context) {
-    final s = S.of(context);
-    showKinlyInfoDialog(
-      context,
-      title: s.profileKickSuccessTitle,
-      message: s.profileKickSuccessMessage,
-      closeLabel: s.profileKickSuccessClose,
     );
   }
 
