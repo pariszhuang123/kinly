@@ -82,7 +82,7 @@ jobs:
           set -euo pipefail
           # Strip generated/irrelevant files from coverage
           lcov --remove coverage/lcov.info \
-            'lib/generated/*' 'lib/**.g.dart' 'lib/**.freezed.dart' 'lib/l10n/*' \
+            'lib/generated/*' 'lib/**/*.g.dart' 'lib/**/*.freezed.dart' 'lib/l10n/*' \
             'test/**' 'build/**' \
             -o coverage/filtered.info
 
