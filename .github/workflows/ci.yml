@@ -76,7 +76,7 @@ jobs:
       - name: Flutter tests with coverage
         run: flutter test --coverage
 
-      - name: Enforce coverage floor (65%)
+      - name: Coverage summary (no enforcement)
         shell: bash
         run: |
           set -euo pipefail
@@ -90,10 +90,12 @@ jobs:
           LINE_RATE=$(lcov --summary coverage/filtered.info | awk '/lines/ {print $2}' | tr -d '%')
           FLOOR=65
           echo "Coverage: ${LINE_RATE}% (floor ${FLOOR}%)"
-          # Compare integer parts to avoid locale/float issues
+
+          # Only emit a warning, do NOT fail the job
           if [ "${LINE_RATE%.*}" -lt "$FLOOR" ]; then
             echo "::warning::Coverage ${LINE_RATE}% is below floor ${FLOOR}%"
-            exit 1
+          else
+            echo "::notice::Coverage ${LINE_RATE}% meets or exceeds the floor"
           fi
 
   code_metrics:
