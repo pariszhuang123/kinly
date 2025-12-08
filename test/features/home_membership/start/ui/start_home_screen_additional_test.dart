@@ -12,7 +12,6 @@ import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/core/router/app_router.dart';
-import 'package:go_router/go_router.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
@@ -56,11 +55,17 @@ void main() {
   setUp(() {
     authBloc = _MockAuthBloc();
     startHomeBloc = _MockStartHomeBloc();
-    when(() => authBloc.stream).thenAnswer((_) => const Stream<AuthState>.empty());
-    when(() => authBloc.state).thenReturn(const AuthState(membershipStatus: AuthMembershipStatus.none));
+    when(
+      () => authBloc.stream,
+    ).thenAnswer((_) => const Stream<AuthState>.empty());
+    when(
+      () => authBloc.state,
+    ).thenReturn(const AuthState(membershipStatus: AuthMembershipStatus.none));
   });
 
-  testWidgets('when start home succeeds, membership refresh is requested', (tester) async {
+  testWidgets('when start home succeeds, membership refresh is requested', (
+    tester,
+  ) async {
     when(() => startHomeBloc.state).thenReturn(const StartHomeState());
     whenListen(
       startHomeBloc,
@@ -74,26 +79,33 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pump();
 
-    verify(() => authBloc.add(const AuthMembershipRefreshRequested())).called(1);
+    verify(
+      () => authBloc.add(const AuthMembershipRefreshRequested()),
+    ).called(1);
   });
 
   testWidgets('join button navigates to join route', (tester) async {
     when(() => startHomeBloc.state).thenReturn(const StartHomeState());
-    when(() => startHomeBloc.stream).thenAnswer((_) => const Stream<StartHomeState>.empty());
-    when(() => authBloc.state).thenReturn(const AuthState(membershipStatus: AuthMembershipStatus.none));
+    when(
+      () => startHomeBloc.stream,
+    ).thenAnswer((_) => const Stream<StartHomeState>.empty());
+    when(
+      () => authBloc.state,
+    ).thenReturn(const AuthState(membershipStatus: AuthMembershipStatus.none));
 
     final router = GoRouter(
       initialLocation: AppRoutes.start,
       routes: [
         GoRoute(
           path: AppRoutes.start,
-          builder: (_, __) => MultiBlocProvider(
-            providers: [
-              BlocProvider<AuthBloc>.value(value: authBloc),
-              BlocProvider<StartHomeBloc>.value(value: startHomeBloc),
-            ],
-            child: const StartHomeScreen(),
-          ),
+          builder:
+              (_, __) => MultiBlocProvider(
+                providers: [
+                  BlocProvider<AuthBloc>.value(value: authBloc),
+                  BlocProvider<StartHomeBloc>.value(value: startHomeBloc),
+                ],
+                child: const StartHomeScreen(),
+              ),
         ),
         GoRoute(
           path: AppRoutes.join,

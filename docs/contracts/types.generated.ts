@@ -930,6 +930,48 @@ export type Database = {
           },
         ]
       }
+      paywall_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          home_id: string | null
+          id: string
+          source: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          home_id?: string | null
+          id?: string
+          source?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          home_id?: string | null
+          id?: string
+          source?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paywall_events_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "paywall_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_id: string
@@ -982,6 +1024,71 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      revenuecat_webhook_events: {
+        Row: {
+          current_period_end_at: string | null
+          entitlement_id: string
+          environment: string | null
+          error: string | null
+          event_timestamp: string | null
+          home_id: string | null
+          id: string
+          last_purchase_at: string | null
+          latest_transaction_id: string | null
+          original_purchase_at: string | null
+          product_id: string
+          raw: Json | null
+          rc_app_user_id: string
+          received_at: string
+          status: Database["public"]["Enums"]["subscription_status"] | null
+          store: Database["public"]["Enums"]["subscription_store"] | null
+        }
+        Insert: {
+          current_period_end_at?: string | null
+          entitlement_id: string
+          environment?: string | null
+          error?: string | null
+          event_timestamp?: string | null
+          home_id?: string | null
+          id?: string
+          last_purchase_at?: string | null
+          latest_transaction_id?: string | null
+          original_purchase_at?: string | null
+          product_id: string
+          raw?: Json | null
+          rc_app_user_id: string
+          received_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"] | null
+          store?: Database["public"]["Enums"]["subscription_store"] | null
+        }
+        Update: {
+          current_period_end_at?: string | null
+          entitlement_id?: string
+          environment?: string | null
+          error?: string | null
+          event_timestamp?: string | null
+          home_id?: string | null
+          id?: string
+          last_purchase_at?: string | null
+          latest_transaction_id?: string | null
+          original_purchase_at?: string | null
+          product_id?: string
+          raw?: Json | null
+          rc_app_user_id?: string
+          received_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"] | null
+          store?: Database["public"]["Enums"]["subscription_store"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revenuecat_webhook_events_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       share_events: {
         Row: {
@@ -1631,6 +1738,30 @@ export type Database = {
       }
       notifications_update_send_status: {
         Args: { p_error: string; p_send_id: string; p_status: string }
+        Returns: undefined
+      }
+      paywall_log_event: {
+        Args: { p_event_type: string; p_home_id: string; p_source?: string }
+        Returns: undefined
+      }
+      paywall_record_subscription: {
+        Args: {
+          p_current_period_end_at: string
+          p_entitlement_id: string
+          p_environment?: string
+          p_error?: string
+          p_event_timestamp?: string
+          p_home_id: string
+          p_last_purchase_at: string
+          p_latest_transaction_id: string
+          p_original_purchase_at: string
+          p_product_id: string
+          p_raw_event?: Json
+          p_rc_app_user_id: string
+          p_status: Database["public"]["Enums"]["subscription_status"]
+          p_store: Database["public"]["Enums"]["subscription_store"]
+          p_user_id: string
+        }
         Returns: undefined
       }
       profile_identity_update: {

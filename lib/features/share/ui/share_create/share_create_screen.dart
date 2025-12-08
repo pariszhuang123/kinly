@@ -8,6 +8,7 @@ import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/dialogs/kinly_dialogs.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
+import '../../../paywall/ui/paywall_screen.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
 import '../../domain/share_create_form.dart';
 import '../share_edit_outcome.dart';
@@ -15,8 +16,13 @@ import '../widgets/share_create_form_view.dart';
 import '../widgets/share_create_error.dart';
 
 class ShareCreateScreen extends StatefulWidget {
-  const ShareCreateScreen({super.key, this.allowDelete = false});
+  const ShareCreateScreen({
+    super.key,
+    required this.homeId,
+    this.allowDelete = false,
+  });
 
+  final String homeId;
   final bool allowDelete;
 
   @override
@@ -102,6 +108,10 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
         }
 
         if (state.submissionErrorTick > 0) {
+          if (state.submissionErrorCode == ExpenseErrorCode.paywallActiveExpensesCap) {
+            _showPaywallAndMaybeRetry(context);
+            return;
+          }
           final snackText = _mapSubmissionError(context, state);
           KinlySnackBar.showError(context, snackText);
         }
@@ -197,6 +207,37 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
 
     if (shouldDelete == true && mounted) {
       bloc.add(const ShareCreateDeleted());
+    }
+  }
+
+  Future<void> _showPaywallAndMaybeRetry(BuildContext context) async {
+    final s = S.of(context);
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => KinlyPaywallScreen(
+          homeId: widget.homeId,
+          strings: PaywallStrings(
+            title: s.paywallTitle,
+            subtitle: s.paywallSubtitle,
+            bulletMembers: s.paywallBulletMembers,
+            bulletFlows: s.paywallBulletFlows,
+            bulletPhotos: s.paywallBulletPhotos,
+            bulletShares: s.paywallBulletShares,
+            primaryCta: s.paywallPrimaryCta,
+            secondaryCta: s.paywallSecondaryCta,
+            purchaseFailed: s.paywallPurchaseFailed,
+            purchaseSuccess: s.paywallPurchaseSuccess,
+            restoreCta: s.paywallRestoreCta,
+            errorTitle: s.paywallErrorTitle,
+            retryLabel: s.paywallRetryLabel,
+          ),
+          source: 'share_create',
+        ),
+      ),
+    );
+    if (!context.mounted) return;
+    if (result == true) {
+      context.read<ShareCreateBloc>().add(const ShareCreateSubmitted());
     }
   }
 }

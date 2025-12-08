@@ -229,6 +229,131 @@ class S {
     );
   }
 
+  /// `Bring more harmony to your home for less than 0.5% of your rent`
+  String get paywallTitle {
+    return Intl.message(
+      'Bring more harmony to your home for less than 0.5% of your rent',
+      name: 'paywallTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One simple monthly price per home. Everyone inside gets Premium.`
+  String get paywallSubtitle {
+    return Intl.message(
+      'One simple monthly price per home. Everyone inside gets Premium.',
+      name: 'paywallSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlimited home members`
+  String get paywallBulletMembers {
+    return Intl.message(
+      'Unlimited home members',
+      name: 'paywallBulletMembers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlimited active flows`
+  String get paywallBulletFlows {
+    return Intl.message(
+      'Unlimited active flows',
+      name: 'paywallBulletFlows',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlimited flow photos`
+  String get paywallBulletPhotos {
+    return Intl.message(
+      'Unlimited flow photos',
+      name: 'paywallBulletPhotos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlimited active shares`
+  String get paywallBulletShares {
+    return Intl.message(
+      'Unlimited active shares',
+      name: 'paywallBulletShares',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upgrade to Kinly Premium`
+  String get paywallPrimaryCta {
+    return Intl.message(
+      'Upgrade to Kinly Premium',
+      name: 'paywallPrimaryCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue with free home`
+  String get paywallSecondaryCta {
+    return Intl.message(
+      'Continue with free home',
+      name: 'paywallSecondaryCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Purchase not completed — you can try again anytime.`
+  String get paywallPurchaseFailed {
+    return Intl.message(
+      'Purchase not completed — you can try again anytime.',
+      name: 'paywallPurchaseFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You’re now on Kinly Premium.`
+  String get paywallPurchaseSuccess {
+    return Intl.message(
+      'You’re now on Kinly Premium.',
+      name: 'paywallPurchaseSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore purchases`
+  String get paywallRestoreCta {
+    return Intl.message(
+      'Restore purchases',
+      name: 'paywallRestoreCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to load paywall.`
+  String get paywallErrorTitle {
+    return Intl.message(
+      'Unable to load paywall.',
+      name: 'paywallErrorTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get paywallRetryLabel {
+    return Intl.message('Retry', name: 'paywallRetryLabel', desc: '', args: []);
+  }
+
   /// `Please sign in to join this home.`
   String get join_error_unauthorized {
     return Intl.message(

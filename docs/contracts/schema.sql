@@ -4967,6 +4967,151 @@ $$;
 ALTER FUNCTION "public"."notifications_update_send_status"("p_send_id" "uuid", "p_status" "text", "p_error" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."paywall_log_event"("p_home_id" "uuid", "p_event_type" "text", "p_source" "text" DEFAULT NULL::"text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user uuid := auth.uid();
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  IF p_event_type NOT IN ('impression', 'cta_click', 'dismiss', 'restore_attempt') THEN
+    PERFORM public.api_error(
+      'INVALID_EVENT',
+      'Unsupported paywall event type.',
+      '22023'
+    );
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM public.memberships m
+    WHERE m.user_id = v_user
+      AND m.home_id = p_home_id
+      AND m.is_current = TRUE
+  ) THEN
+    PERFORM public.api_error(
+      'HOME_NOT_MEMBER',
+      'You are not a current member of this home.',
+      '42501'
+    );
+  END IF;
+
+  INSERT INTO public.paywall_events (user_id, home_id, event_type, source)
+  VALUES (v_user, p_home_id, p_event_type, p_source);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."paywall_log_event"("p_home_id" "uuid", "p_event_type" "text", "p_source" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."paywall_log_event"("p_home_id" "uuid", "p_event_type" "text", "p_source" "text") IS 'Auth-only helper to log paywall funnel events for a home.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone DEFAULT "now"(), "p_environment" "text" DEFAULT NULL::"text", "p_raw_event" "jsonb" DEFAULT NULL::"jsonb", "p_error" "text" DEFAULT NULL::"text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_home_id uuid;
+BEGIN
+  -- Upsert the user subscription snapshot
+  INSERT INTO public.user_subscriptions AS us (
+    user_id,
+    home_id,
+    store,
+    rc_app_user_id,
+    rc_entitlement_id,
+    product_id,
+    status,
+    current_period_end_at,
+    original_purchase_at,
+    last_purchase_at,
+    latest_transaction_id,
+    last_synced_at,
+    created_at,
+    updated_at
+  ) VALUES (
+    p_user_id,
+    p_home_id,
+    p_store,
+    p_rc_app_user_id,
+    p_entitlement_id,
+    p_product_id,
+    p_status,
+    p_current_period_end_at,
+    p_original_purchase_at,
+    p_last_purchase_at,
+    p_latest_transaction_id,
+    now(),
+    now(),
+    now()
+  )
+  ON CONFLICT (user_id, rc_entitlement_id) DO UPDATE
+  SET
+    home_id               = COALESCE(EXCLUDED.home_id, us.home_id),
+    store                 = EXCLUDED.store,
+    rc_app_user_id        = EXCLUDED.rc_app_user_id,
+    product_id            = EXCLUDED.product_id,
+    status                = EXCLUDED.status,
+    current_period_end_at = EXCLUDED.current_period_end_at,
+    original_purchase_at  = EXCLUDED.original_purchase_at,
+    last_purchase_at      = EXCLUDED.last_purchase_at,
+    latest_transaction_id = EXCLUDED.latest_transaction_id,
+    last_synced_at        = now(),
+    updated_at            = now()
+  RETURNING home_id INTO v_home_id;
+
+  -- Persist audit record (fire and forget)
+  INSERT INTO public.revenuecat_webhook_events (
+    event_timestamp,
+    environment,
+    rc_app_user_id,
+    entitlement_id,
+    product_id,
+    store,
+    status,
+    current_period_end_at,
+    original_purchase_at,
+    last_purchase_at,
+    latest_transaction_id,
+    home_id,
+    raw,
+    error
+  ) VALUES (
+    p_event_timestamp,
+    p_environment,
+    p_rc_app_user_id,
+    p_entitlement_id,
+    p_product_id,
+    p_store,
+    p_status,
+    p_current_period_end_at,
+    p_original_purchase_at,
+    p_last_purchase_at,
+    p_latest_transaction_id,
+    COALESCE(p_home_id, v_home_id),
+    p_raw_event,
+    p_error
+  );
+
+  -- Refresh home entitlement if we know the home
+  IF COALESCE(p_home_id, v_home_id) IS NOT NULL THEN
+    PERFORM public.home_entitlements_refresh(COALESCE(p_home_id, v_home_id));
+  END IF;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") IS 'Service-role helper invoked by RevenueCat webhook to upsert user_subscriptions, refresh home_entitlements, and log the event.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."profile_identity_update"("p_username" "public"."citext", "p_avatar_id" "uuid") RETURNS TABLE("username" "public"."citext", "avatar_id" "uuid", "avatar_storage_path" "text")
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -5986,6 +6131,24 @@ COMMENT ON COLUMN "public"."notification_sends"."status" IS 'Notification send s
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."paywall_events" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid",
+    "home_id" "uuid",
+    "event_type" "text" NOT NULL,
+    "source" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "paywall_events_event_type_check" CHECK (("event_type" = ANY (ARRAY['impression'::"text", 'cta_click'::"text", 'dismiss'::"text", 'restore_attempt'::"text"])))
+);
+
+
+ALTER TABLE "public"."paywall_events" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."paywall_events" IS 'Funnel events for the paywall (impression, CTA click, dismiss, restore).';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "id" "uuid" NOT NULL,
     "email" "text",
@@ -6055,6 +6218,33 @@ COMMENT ON TABLE "public"."reserved_usernames" IS 'Case-insensitive blocklist of
 
 
 COMMENT ON COLUMN "public"."reserved_usernames"."name" IS 'Reserved handle (CITEXT). Comparisons and PK uniqueness are case-insensitive.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."revenuecat_webhook_events" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "received_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "event_timestamp" timestamp with time zone,
+    "environment" "text",
+    "rc_app_user_id" "text" NOT NULL,
+    "entitlement_id" "text" NOT NULL,
+    "product_id" "text" NOT NULL,
+    "store" "public"."subscription_store",
+    "status" "public"."subscription_status",
+    "current_period_end_at" timestamp with time zone,
+    "original_purchase_at" timestamp with time zone,
+    "last_purchase_at" timestamp with time zone,
+    "latest_transaction_id" "text",
+    "home_id" "uuid",
+    "raw" "jsonb",
+    "error" "text"
+);
+
+
+ALTER TABLE "public"."revenuecat_webhook_events" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."revenuecat_webhook_events" IS 'Audit log of RevenueCat webhook events used for debugging and analytics.';
 
 
 
@@ -6279,6 +6469,11 @@ ALTER TABLE ONLY "public"."notification_sends"
 
 
 
+ALTER TABLE ONLY "public"."paywall_events"
+    ADD CONSTRAINT "paywall_events_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."expense_splits"
     ADD CONSTRAINT "pk_expense_splits" PRIMARY KEY ("expense_id", "debtor_user_id");
 
@@ -6311,6 +6506,11 @@ ALTER TABLE ONLY "public"."profiles"
 
 ALTER TABLE ONLY "public"."reserved_usernames"
     ADD CONSTRAINT "reserved_usernames_pkey" PRIMARY KEY ("name");
+
+
+
+ALTER TABLE ONLY "public"."revenuecat_webhook_events"
+    ADD CONSTRAINT "revenuecat_webhook_events_pkey" PRIMARY KEY ("id");
 
 
 
@@ -6623,6 +6823,16 @@ ALTER TABLE ONLY "public"."notification_sends"
 
 
 
+ALTER TABLE ONLY "public"."paywall_events"
+    ADD CONSTRAINT "paywall_events_home_id_fkey" FOREIGN KEY ("home_id") REFERENCES "public"."homes"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."paywall_events"
+    ADD CONSTRAINT "paywall_events_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_avatar_id_fkey" FOREIGN KEY ("avatar_id") REFERENCES "public"."avatars"("id");
 
@@ -6630,6 +6840,11 @@ ALTER TABLE ONLY "public"."profiles"
 
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id");
+
+
+
+ALTER TABLE ONLY "public"."revenuecat_webhook_events"
+    ADD CONSTRAINT "revenuecat_webhook_events_home_id_fkey" FOREIGN KEY ("home_id") REFERENCES "public"."homes"("id") ON DELETE SET NULL;
 
 
 
@@ -6725,6 +6940,9 @@ ALTER TABLE "public"."notification_preferences" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."notification_sends" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."paywall_events" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
 
@@ -6737,6 +6955,9 @@ COMMENT ON POLICY "profiles_select_authenticated" ON "public"."profiles" IS 'All
 
 
 ALTER TABLE "public"."reserved_usernames" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."revenuecat_webhook_events" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."share_events" ENABLE ROW LEVEL SECURITY;
@@ -8829,6 +9050,20 @@ GRANT ALL ON FUNCTION "public"."oid_dist"("oid", "oid") TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."paywall_log_event"("p_home_id" "uuid", "p_event_type" "text", "p_source" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."paywall_log_event"("p_home_id" "uuid", "p_event_type" "text", "p_source" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."paywall_log_event"("p_home_id" "uuid", "p_event_type" "text", "p_source" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."paywall_log_event"("p_home_id" "uuid", "p_event_type" "text", "p_source" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."profile_identity_update"("p_username" "public"."citext", "p_avatar_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."profile_identity_update"("p_username" "public"."citext", "p_avatar_id" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."profile_identity_update"("p_username" "public"."citext", "p_avatar_id" "uuid") TO "authenticated";
@@ -9152,6 +9387,10 @@ GRANT ALL ON TABLE "public"."notification_sends" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."paywall_events" TO "service_role";
+
+
+
 GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."profiles" TO "anon";
 GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."profiles" TO "authenticated";
 GRANT ALL ON TABLE "public"."profiles" TO "service_role";
@@ -9159,6 +9398,10 @@ GRANT ALL ON TABLE "public"."profiles" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."reserved_usernames" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."revenuecat_webhook_events" TO "service_role";
 
 
 

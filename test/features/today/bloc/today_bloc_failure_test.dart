@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -15,7 +13,8 @@ import 'package:kinly/core/profile/profile_update_notifier.dart';
 import 'package:kinly/core/mood/models.dart';
 import 'package:kinly/core/expenses/models.dart';
 import 'package:kinly/core/chores/models.dart';
-import 'package:kinly/data/repositories/onboarding_repository.dart' as onboarding;
+import 'package:kinly/data/repositories/onboarding_repository.dart'
+    as onboarding;
 import 'package:kinly/core/homes/models.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}
@@ -52,11 +51,15 @@ void main() {
     onboardingRepository = _MockOnboardingRepository();
     profileUpdateNotifier = ProfileUpdateNotifier();
 
-    when(() => moodRepository.isSubmittedThisWeek(any())).thenAnswer((_) async => false);
-    when(() => moodRepository.isNpsRequired(any())).thenAnswer((_) async => false);
-    when(() => moodRepository.getWallStatus(any())).thenAnswer(
-      (_) async => const GratitudeWallStatus(hasUnread: false),
-    );
+    when(
+      () => moodRepository.isSubmittedThisWeek(any()),
+    ).thenAnswer((_) async => false);
+    when(
+      () => moodRepository.isNpsRequired(any()),
+    ).thenAnswer((_) async => false);
+    when(
+      () => moodRepository.getWallStatus(any()),
+    ).thenAnswer((_) async => const GratitudeWallStatus(hasUnread: false));
     when(() => onboardingRepository.getTodayHints()).thenAnswer(
       (_) async => const onboarding.OnboardingHints(
         activeChoreCount: 0,
@@ -71,15 +74,28 @@ void main() {
         state: any(named: 'state'),
       ),
     ).thenAnswer((_) async => const <TodayFlowEntry>[]);
-    when(() => homeRepository.listActiveMembers(any(), excludeSelf: any(named: 'excludeSelf')))
-        .thenAnswer((_) async => const <HomeMemberSummary>[]);
-    when(() => expensesRepository.listCurrentOwed(homeId: any(named: 'homeId')))
-        .thenAnswer((_) async => const <ExpenseOwedGroup>[]);
-    when(() => expensesRepository.listCreatedByMe(homeId: any(named: 'homeId')))
-        .thenAnswer((_) async => const <ExpenseCreatedSummary>[]);
-    when(() => profileRepository.getCurrentProfile()).thenAnswer((_) async => null);
-    when(() => homeRepository.logShareEvent(feature: any(named: 'feature'), channel: any(named: 'channel'), homeId: any(named: 'homeId')))
-        .thenAnswer((_) async {});
+    when(
+      () => homeRepository.listActiveMembers(
+        any(),
+        excludeSelf: any(named: 'excludeSelf'),
+      ),
+    ).thenAnswer((_) async => const <HomeMemberSummary>[]);
+    when(
+      () => expensesRepository.listCurrentOwed(homeId: any(named: 'homeId')),
+    ).thenAnswer((_) async => const <ExpenseOwedGroup>[]);
+    when(
+      () => expensesRepository.listCreatedByMe(homeId: any(named: 'homeId')),
+    ).thenAnswer((_) async => const <ExpenseCreatedSummary>[]);
+    when(
+      () => profileRepository.getCurrentProfile(),
+    ).thenAnswer((_) async => null);
+    when(
+      () => homeRepository.logShareEvent(
+        feature: any(named: 'feature'),
+        channel: any(named: 'channel'),
+        homeId: any(named: 'homeId'),
+      ),
+    ).thenAnswer((_) async {});
   });
 
   tearDown(() async {
@@ -111,10 +127,14 @@ void main() {
       return buildBloc();
     },
     wait: const Duration(milliseconds: 10),
-    expect: () => [
-      isA<TodayState>().having((s) => s.isLoading, 'loading', true),
-      isA<TodayState>()
-          .having((s) => s.message, 'message', contains("Could not load today's chores")),
-    ],
+    expect:
+        () => [
+          isA<TodayState>().having((s) => s.isLoading, 'loading', true),
+          isA<TodayState>().having(
+            (s) => s.message,
+            'message',
+            contains("Could not load today's chores"),
+          ),
+        ],
   );
 }

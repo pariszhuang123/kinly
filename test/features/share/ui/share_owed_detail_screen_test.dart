@@ -264,6 +264,7 @@ void main() {
           ],
         ),
         home: Navigator(
+          // ignore: deprecated_member_use
           onPopPage: (route, result) => false,
           pages: [
             MaterialPage(

@@ -110,7 +110,10 @@ class ShareEditProvider extends StatelessWidget {
                 allPaid: allPaid,
                 paidByOther: paidByOther,
               )..add(const ShareCreateParticipantsRequested()),
-          child: ShareCreateScreen(allowDelete: allowDelete),
+          child: ShareCreateScreen(
+            homeId: homeId,
+            allowDelete: allowDelete,
+          ),
         );
       },
     );

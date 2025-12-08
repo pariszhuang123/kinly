@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.48.0";
 
 type Candidate = {
@@ -35,7 +34,7 @@ const ERROR_REASON_MAX_LENGTH = 512;
 // Main entry
 // ---------------------------------------------------------------------------
 
-serve(async (_req: Request) => {
+Deno.serve(async (_req: Request) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 

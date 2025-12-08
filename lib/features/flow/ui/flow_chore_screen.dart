@@ -18,6 +18,7 @@ import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_date_picker.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
+import '../../paywall/ui/paywall_screen.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/flow_chore_bloc.dart';
@@ -25,7 +26,9 @@ import '../domain/flow_chore_form.dart';
 import '../domain/flow_chore_outcome.dart';
 
 class FlowChoreScreen extends StatefulWidget {
-  const FlowChoreScreen({super.key});
+  const FlowChoreScreen({super.key, required this.homeId});
+
+  final String homeId;
 
   @override
   State<FlowChoreScreen> createState() => _FlowChoreScreenState();
@@ -98,6 +101,11 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         }
 
         if (state.submissionErrorTick > 0) {
+          if (state.submissionErrorCode == ChoreErrorCode.paywallActiveCap ||
+              state.submissionErrorCode == ChoreErrorCode.paywallMediaCap) {
+            _showPaywallAndMaybeRetry(context);
+            return;
+          }
           final snackText = _mapSubmissionError(context, state);
           KinlySnackBar.showError(context, snackText);
         }
@@ -199,6 +207,37 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         return s.flowChoreErrorInvalidState;
       default:
         return state.submissionErrorMessage ?? s.flowChoreErrorGeneric;
+    }
+  }
+
+  Future<void> _showPaywallAndMaybeRetry(BuildContext context) async {
+    final s = S.of(context);
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => KinlyPaywallScreen(
+          homeId: widget.homeId,
+          strings: PaywallStrings(
+            title: s.paywallTitle,
+            subtitle: s.paywallSubtitle,
+            bulletMembers: s.paywallBulletMembers,
+            bulletFlows: s.paywallBulletFlows,
+            bulletPhotos: s.paywallBulletPhotos,
+            bulletShares: s.paywallBulletShares,
+            primaryCta: s.paywallPrimaryCta,
+            secondaryCta: s.paywallSecondaryCta,
+            purchaseFailed: s.paywallPurchaseFailed,
+            purchaseSuccess: s.paywallPurchaseSuccess,
+            restoreCta: s.paywallRestoreCta,
+            errorTitle: s.paywallErrorTitle,
+            retryLabel: s.paywallRetryLabel,
+          ),
+          source: 'flow_chore',
+        ),
+      ),
+    );
+    if (!context.mounted) return;
+    if (result == true) {
+      context.read<FlowChoreBloc>().add(const FlowChoreSubmitted());
     }
   }
 }
