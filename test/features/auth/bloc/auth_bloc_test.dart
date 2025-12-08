@@ -219,4 +219,28 @@ void main() {
       ).called(greaterThanOrEqualTo(2));
     },
   );
+
+  blocTest<AuthBloc, AuthState>(
+    'sets error when membership refresh fails',
+    build: () {
+      when(() => authRepository.current).thenReturn(const AuthSession(userId: 'user-2'));
+      when(() => homeRepository.getCurrentMembership()).thenThrow(Exception('boom'));
+      return buildBloc();
+    },
+    seed: () => const AuthState(
+      status: AuthStatus.authenticated,
+      userId: 'user-2',
+      membershipStatus: AuthMembershipStatus.active,
+    ),
+    act: (bloc) => bloc.add(const AuthMembershipRefreshRequested()),
+    expect: () => [
+      isA<AuthState>()
+          .having((s) => s.status, 'status', AuthStatus.authenticated)
+          .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.unknown),
+      isA<AuthState>()
+          .having((s) => s.errorMessage, 'errorMessage', AuthBloc.membershipLoadFailedKey)
+          .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.unknown),
+    ],
+    verify: (_) => verify(() => homeRepository.getCurrentMembership()).called(greaterThanOrEqualTo(1)),
+  );
 }

@@ -1,0 +1,120 @@
+import 'dart:async';
+
+import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
+import 'package:kinly/features/today/bloc/today_bloc.dart';
+import 'package:kinly/data/repositories/chores_repository.dart';
+import 'package:kinly/data/repositories/expenses_repository.dart';
+import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/data/repositories/profile_repository.dart';
+import 'package:kinly/data/repositories/mood_repository.dart';
+import 'package:kinly/data/repositories/onboarding_repository.dart';
+import 'package:kinly/core/profile/profile_update_notifier.dart';
+import 'package:kinly/core/mood/models.dart';
+import 'package:kinly/core/expenses/models.dart';
+import 'package:kinly/core/chores/models.dart';
+import 'package:kinly/data/repositories/onboarding_repository.dart' as onboarding;
+import 'package:kinly/core/homes/models.dart';
+
+class _MockChoresRepository extends Mock implements ChoresRepository {}
+
+class _MockProfileRepository extends Mock implements ProfileRepository {}
+
+class _MockExpensesRepository extends Mock implements ExpensesRepository {}
+
+class _MockHomeRepository extends Mock implements HomeRepository {}
+
+class _MockMoodRepository extends Mock implements MoodRepository {}
+
+class _MockOnboardingRepository extends Mock implements OnboardingRepository {}
+
+void main() {
+  setUpAll(() {
+    registerFallbackValue(ChoreState.active);
+  });
+
+  late _MockChoresRepository choresRepository;
+  late _MockProfileRepository profileRepository;
+  late _MockExpensesRepository expensesRepository;
+  late _MockHomeRepository homeRepository;
+  late _MockMoodRepository moodRepository;
+  late _MockOnboardingRepository onboardingRepository;
+  late ProfileUpdateNotifier profileUpdateNotifier;
+
+  setUp(() {
+    choresRepository = _MockChoresRepository();
+    profileRepository = _MockProfileRepository();
+    expensesRepository = _MockExpensesRepository();
+    homeRepository = _MockHomeRepository();
+    moodRepository = _MockMoodRepository();
+    onboardingRepository = _MockOnboardingRepository();
+    profileUpdateNotifier = ProfileUpdateNotifier();
+
+    when(() => moodRepository.isSubmittedThisWeek(any())).thenAnswer((_) async => false);
+    when(() => moodRepository.isNpsRequired(any())).thenAnswer((_) async => false);
+    when(() => moodRepository.getWallStatus(any())).thenAnswer(
+      (_) async => const GratitudeWallStatus(hasUnread: false),
+    );
+    when(() => onboardingRepository.getTodayHints()).thenAnswer(
+      (_) async => const onboarding.OnboardingHints(
+        activeChoreCount: 0,
+        shouldPromptNotifications: false,
+        shouldPromptFlatmateInviteShare: false,
+        shouldPromptInviteShare: false,
+      ),
+    );
+    when(
+      () => choresRepository.listTodayFlow(
+        homeId: any(named: 'homeId'),
+        state: any(named: 'state'),
+      ),
+    ).thenAnswer((_) async => const <TodayFlowEntry>[]);
+    when(() => homeRepository.listActiveMembers(any(), excludeSelf: any(named: 'excludeSelf')))
+        .thenAnswer((_) async => const <HomeMemberSummary>[]);
+    when(() => expensesRepository.listCurrentOwed(homeId: any(named: 'homeId')))
+        .thenAnswer((_) async => const <ExpenseOwedGroup>[]);
+    when(() => expensesRepository.listCreatedByMe(homeId: any(named: 'homeId')))
+        .thenAnswer((_) async => const <ExpenseCreatedSummary>[]);
+    when(() => profileRepository.getCurrentProfile()).thenAnswer((_) async => null);
+    when(() => homeRepository.logShareEvent(feature: any(named: 'feature'), channel: any(named: 'channel'), homeId: any(named: 'homeId')))
+        .thenAnswer((_) async {});
+  });
+
+  tearDown(() async {
+    await profileUpdateNotifier.dispose();
+  });
+
+  TodayBloc buildBloc() {
+    return TodayBloc(
+      choresRepository: choresRepository,
+      profileRepository: profileRepository,
+      expensesRepository: expensesRepository,
+      homeRepository: homeRepository,
+      moodRepository: moodRepository,
+      onboardingRepository: onboardingRepository,
+      homeId: 'home-1',
+      profileUpdateNotifier: profileUpdateNotifier,
+    );
+  }
+
+  blocTest<TodayBloc, TodayState>(
+    'emits failure when chores repository throws',
+    build: () {
+      when(
+        () => choresRepository.listTodayFlow(
+          homeId: any(named: 'homeId'),
+          state: any(named: 'state'),
+        ),
+      ).thenThrow(Exception('boom'));
+      return buildBloc();
+    },
+    wait: const Duration(milliseconds: 10),
+    expect: () => [
+      isA<TodayState>().having((s) => s.isLoading, 'loading', true),
+      isA<TodayState>()
+          .having((s) => s.message, 'message', contains("Could not load today's chores")),
+    ],
+  );
+}

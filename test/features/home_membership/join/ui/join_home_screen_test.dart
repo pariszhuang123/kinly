@@ -12,6 +12,9 @@ import 'package:kinly/features/home_membership/join/ui/join_home_screen.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/core/supabase/supabase_error_mapper.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kinly/core/router/app_router.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
@@ -77,5 +80,74 @@ void main() {
 
     button = tester.widget<KinlyFilledButton>(find.byType(KinlyFilledButton));
     expect(button.onPressed, isNotNull);
+  });
+
+  testWidgets('shows friendly error when code invalid', (tester) async {
+    when(() => homeRepository.join(any())).thenThrow(
+      HomeJoinException(JoinErrorCode.invalidCode, 'Invalid code'),
+    );
+    when(() => authBloc.state).thenReturn(const AuthState());
+
+    await tester.pumpWidget(buildApp(const JoinHomeScreen()));
+    await tester.pump();
+
+    await tester.enterText(find.byType(TextField), 'BADCODE');
+    await tester.pump();
+    await tester.tap(find.byType(KinlyFilledButton));
+    await tester.pump(); // submit -> submitting
+    await tester.pump(); // failure state processed
+
+    expect(find.text(S.current.join_error_invalid_code), findsOneWidget);
+    verify(() => homeRepository.join('BADCODE')).called(1);
+  });
+
+  testWidgets('success navigates to today and refreshes membership', (tester) async {
+    when(() => homeRepository.join(any())).thenAnswer((_) async {});
+    when(() => authBloc.state).thenReturn(const AuthState());
+
+    final router = GoRouter(
+      initialLocation: AppRoutes.join,
+      routes: [
+        GoRoute(
+          path: AppRoutes.join,
+          builder: (context, state) => const JoinHomeScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.today,
+          builder: (context, state) => const Scaffold(body: Text('today')),
+        ),
+        GoRoute(
+          path: AppRoutes.start,
+          builder: (context, state) => const Scaffold(body: Text('start')),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      BlocProvider<AuthBloc>.value(
+        value: authBloc,
+        child: MaterialApp.router(
+          theme: buildKinlyTheme(Brightness.light),
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          routerConfig: router,
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), 'OKCODE');
+    await tester.pump();
+    await tester.tap(find.byType(KinlyFilledButton));
+    await tester.pumpAndSettle();
+
+    expect(find.text('today'), findsOneWidget);
+    verify(() => homeRepository.join('OKCODE')).called(1);
+    verify(() => authBloc.add(const AuthMembershipRefreshRequested())).called(1);
   });
 }

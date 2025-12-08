@@ -101,4 +101,79 @@ void main() {
       verify(() => homeRepository.join('FULLHM')).called(1);
     },
   );
+
+  blocTest<JoinHomeBloc, JoinHomeState>(
+    'maps inactive invite error',
+    build: () {
+      when(() => homeRepository.join(any())).thenThrow(
+        HomeJoinException(
+          JoinErrorCode.inactiveInvite,
+          'Invite inactive',
+        ),
+      );
+      return buildBloc();
+    },
+    seed: () => const JoinHomeState(code: 'INACTIVE', status: JoinHomeStatus.editing),
+    act: (bloc) => bloc.add(const JoinHomeSubmitted()),
+    expect: () => const [
+      JoinHomeState(code: 'INACTIVE', status: JoinHomeStatus.submitting),
+      JoinHomeState(
+        code: 'INACTIVE',
+        status: JoinHomeStatus.failure,
+        errorMessage: 'Invite inactive',
+        errorType: JoinHomeErrorType.inactiveInvite,
+      ),
+    ],
+    verify: (_) => verify(() => homeRepository.join('INACTIVE')).called(1),
+  );
+
+  blocTest<JoinHomeBloc, JoinHomeState>(
+    'maps unauthorized error',
+    build: () {
+      when(() => homeRepository.join(any())).thenThrow(
+        HomeJoinException(
+          JoinErrorCode.unauthorized,
+          'Unauthorized',
+        ),
+      );
+      return buildBloc();
+    },
+    seed: () => const JoinHomeState(code: 'UNAUTH', status: JoinHomeStatus.editing),
+    act: (bloc) => bloc.add(const JoinHomeSubmitted()),
+    expect: () => const [
+      JoinHomeState(code: 'UNAUTH', status: JoinHomeStatus.submitting),
+      JoinHomeState(
+        code: 'UNAUTH',
+        status: JoinHomeStatus.failure,
+        errorMessage: 'Unauthorized',
+        errorType: JoinHomeErrorType.unauthorized,
+      ),
+    ],
+    verify: (_) => verify(() => homeRepository.join('UNAUTH')).called(1),
+  );
+
+  blocTest<JoinHomeBloc, JoinHomeState>(
+    'maps forbidden error',
+    build: () {
+      when(() => homeRepository.join(any())).thenThrow(
+        HomeJoinException(
+          JoinErrorCode.forbidden,
+          'Forbidden',
+        ),
+      );
+      return buildBloc();
+    },
+    seed: () => const JoinHomeState(code: 'FORBID', status: JoinHomeStatus.editing),
+    act: (bloc) => bloc.add(const JoinHomeSubmitted()),
+    expect: () => const [
+      JoinHomeState(code: 'FORBID', status: JoinHomeStatus.submitting),
+      JoinHomeState(
+        code: 'FORBID',
+        status: JoinHomeStatus.failure,
+        errorMessage: 'Forbidden',
+        errorType: JoinHomeErrorType.forbidden,
+      ),
+    ],
+    verify: (_) => verify(() => homeRepository.join('FORBID')).called(1),
+  );
 }
