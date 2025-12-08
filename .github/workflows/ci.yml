@@ -92,7 +92,7 @@ jobs:
           echo "Coverage: ${LINE_RATE}% (floor ${FLOOR}%)"
           # Compare integer parts to avoid locale/float issues
           if [ "${LINE_RATE%.*}" -lt "$FLOOR" ]; then
-            echo "::error::Coverage ${LINE_RATE}% is below floor ${FLOOR}%"
+            echo "::warning::Coverage ${LINE_RATE}% is below floor ${FLOOR}%"
             exit 1
           fi
 
