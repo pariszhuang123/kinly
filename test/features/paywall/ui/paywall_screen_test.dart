@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
+import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/paywall/paywall_models.dart';
 import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
@@ -16,6 +17,8 @@ class _MockPaywallRepository extends Mock implements PaywallRepository {}
 class _MockRevenueCatService extends Mock implements RevenueCatService {}
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
+
+class _MockLogger extends Mock implements Logger {}
 
 class _RevenueCatPackageFake extends Fake implements RevenueCatPackage {}
 
@@ -44,9 +47,17 @@ void main() {
     sl.registerLazySingleton<PaywallRepository>(() => _MockPaywallRepository());
     sl.registerLazySingleton<RevenueCatService>(() => _MockRevenueCatService());
     sl.registerLazySingleton<AuthRepository>(() => _MockAuthRepository());
+    sl.registerLazySingleton<Logger>(() => _MockLogger());
   });
 
   setUpAll(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    const purchasesChannel = MethodChannel('purchases_flutter');
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(purchasesChannel, (methodCall) async {
+      if (methodCall.method == 'getAppUserID') return 'rc-test-user';
+      return null;
+    });
     registerFallbackValue(PaywallEventType.impression);
     registerFallbackValue(_RevenueCatPackageFake());
   });
@@ -55,8 +66,19 @@ void main() {
     final repo = sl<PaywallRepository>() as _MockPaywallRepository;
     final rc = sl<RevenueCatService>() as _MockRevenueCatService;
     final auth = sl<AuthRepository>() as _MockAuthRepository;
+    final logger = sl<Logger>() as _MockLogger;
 
     when(() => auth.current).thenReturn(const AuthSession(userId: 'user-1'));
+    when(() => logger.debug(any(), tag: any(named: 'tag'))).thenReturn(null);
+    when(() => logger.info(any(), tag: any(named: 'tag'))).thenReturn(null);
+    when(
+      () => logger.warn(
+        any(),
+        tag: any(named: 'tag'),
+        error: any(named: 'error'),
+        stackTrace: any(named: 'stackTrace'),
+      ),
+    ).thenReturn(null);
     when(
       () => repo.logEvent(
         homeId: any(named: 'homeId'),
@@ -72,14 +94,6 @@ void main() {
     );
     when(() => rc.purchaseMonthly(any())).thenAnswer((_) async {});
     when(() => rc.isEntitlementActive(any())).thenAnswer((_) async => true);
-    when(
-      () => rc.setSubscriberAttributes(
-        appUserId: any(named: 'appUserId'),
-        homeId: any(named: 'homeId'),
-        locale: any(named: 'locale'),
-        email: any(named: 'email'),
-      ),
-    ).thenAnswer((_) async {});
     when(
       () => rc.setSubscriberAttributes(
         appUserId: any(named: 'appUserId'),

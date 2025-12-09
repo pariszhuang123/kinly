@@ -96,8 +96,18 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     emit(
       state.copyWith(actionStatus: PaywallActionStatus.purchasing, error: null),
     );
+    String? rcUserId;
     try {
-      final rcUserId = await Purchases.appUserID;
+      rcUserId = await Purchases.appUserID;
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to read RevenueCat appUserID before purchase',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+    try {
       _logger.info(
         'Purchase attempt: supabaseUser=$userId rcUserId=$rcUserId homeId=$_homeId placement=$_placementId pkg=${state.package?.identifier}',
         tag: _logTag,

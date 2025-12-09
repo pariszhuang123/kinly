@@ -1,4 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart' as flutter_test;
 import 'package:kinly/core/paywall/paywall_models.dart';
 import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
 import 'package:kinly/core/logging/logger.dart';
@@ -26,6 +28,14 @@ void main() {
   late _MockLogger logger;
   const homeId = 'home-1';
   setUpAll(() {
+    flutter_test.TestWidgetsFlutterBinding.ensureInitialized();
+    const purchasesChannel = MethodChannel('purchases_flutter');
+    flutter_test.TestDefaultBinaryMessengerBinding.instance
+        .defaultBinaryMessenger
+        .setMockMethodCallHandler(purchasesChannel, (methodCall) async {
+      if (methodCall.method == 'getAppUserID') return 'rc-test-user';
+      return null;
+    });
     registerFallbackValue(PaywallEventType.impression);
     registerFallbackValue(_RevenueCatPackageFake());
   });
