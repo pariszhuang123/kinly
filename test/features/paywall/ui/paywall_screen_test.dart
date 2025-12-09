@@ -38,20 +38,6 @@ void main() {
     final auth = sl<AuthRepository>() as _MockAuthRepository;
 
     when(() => auth.current).thenReturn(const AuthSession(userId: 'user-1'));
-    when(() => repo.getStatus(any())).thenAnswer(
-      (_) async => PaywallStatus(
-        plan: 'free',
-        expiresAt: null,
-        usage: PaywallUsage(
-          activeChores: 0,
-          chorePhotos: 0,
-          activeMembers: 1,
-          activeExpenses: 0,
-          updatedAt: DateTime.now(),
-        ),
-        limits: const [],
-      ),
-    );
     when(() => repo.logEvent(
           homeId: any(named: 'homeId'),
           eventType: any(named: 'eventType'),
@@ -83,6 +69,7 @@ void main() {
       bulletFlows: 'Unlimited flows',
       bulletPhotos: 'Unlimited photos',
       bulletShares: 'Unlimited shares',
+      unlimitedLabel: 'Unlimited everything',
       primaryCta: 'Upgrade',
       secondaryCta: 'Continue free',
       purchaseFailed: 'Purchase failed',

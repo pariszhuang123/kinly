@@ -41,6 +41,8 @@ class DefaultRevenueCatService implements RevenueCatService {
           (p) => p.identifier == pkg.identifier,
           orElse: () => offerings.current?.monthly ?? (throw Exception('Monthly package not available')),
         );
+    // purchasePackage is deprecated in newer SDKs; ignore to keep compatibility with current version.
+    // ignore: deprecated_member_use
     await Purchases.purchasePackage(package);
   }
 

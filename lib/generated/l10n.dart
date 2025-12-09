@@ -239,50 +239,50 @@ class S {
     );
   }
 
-  /// `One simple monthly price per home. Everyone inside gets Premium.`
+  /// `One simple monthly price per home. Everyone inside gets unlimited Premium.`
   String get paywallSubtitle {
     return Intl.message(
-      'One simple monthly price per home. Everyone inside gets Premium.',
+      'One simple monthly price per home. Everyone inside gets unlimited Premium.',
       name: 'paywallSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unlimited home members`
+  /// `Home members`
   String get paywallBulletMembers {
     return Intl.message(
-      'Unlimited home members',
+      'Home members',
       name: 'paywallBulletMembers',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unlimited active flows`
+  /// `Active flows`
   String get paywallBulletFlows {
     return Intl.message(
-      'Unlimited active flows',
+      'Active flows',
       name: 'paywallBulletFlows',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unlimited flow photos`
+  /// `Flow photos`
   String get paywallBulletPhotos {
     return Intl.message(
-      'Unlimited flow photos',
+      'Flow photos',
       name: 'paywallBulletPhotos',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unlimited active shares`
+  /// `Active shares`
   String get paywallBulletShares {
     return Intl.message(
-      'Unlimited active shares',
+      'Active shares',
       name: 'paywallBulletShares',
       desc: '',
       args: [],

@@ -35,15 +35,30 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     PaywallStarted event,
     Emitter<PaywallState> emit,
   ) async {
-    emit(state.copyWith(status: PaywallLoadStatus.loading));
+    emit(
+      state.copyWith(
+        status: PaywallLoadStatus.loading,
+        error: null,
+      ),
+    );
     try {
-      final status = await _paywallRepository.getStatus(_homeId);
-      final pkg = await _revenueCatService.fetchMonthlyPackage();
-      await _logEvent(PaywallEventType.impression, event.source);
+      RevenueCatPackage? pkg;
+      try {
+        pkg = await _revenueCatService.fetchMonthlyPackage();
+      } catch (_) {
+        pkg = null;
+      }
+
+      try {
+        await _logEvent(PaywallEventType.impression, event.source);
+      } catch (_) {
+        // Ignore telemetry errors to avoid blocking UI
+      }
+
       emit(
         state.copyWith(
           status: PaywallLoadStatus.ready,
-          paywallStatus: status,
+          paywallStatus: null,
           package: pkg,
         ),
       );
@@ -57,9 +72,16 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     Emitter<PaywallState> emit,
   ) async {
     if (state.isActionInFlight) return;
-    await _logEvent(PaywallEventType.ctaClick, event.source);
+    try {
+      await _logEvent(PaywallEventType.ctaClick, event.source);
+    } catch (_) {}
     final userId = _authRepository.current?.userId;
-    emit(state.copyWith(actionStatus: PaywallActionStatus.purchasing, error: null));
+    emit(
+      state.copyWith(
+        actionStatus: PaywallActionStatus.purchasing,
+        error: null,
+      ),
+    );
     try {
       if (userId != null) {
         await _revenueCatService.setSubscriberAttributes(
@@ -90,8 +112,15 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     Emitter<PaywallState> emit,
   ) async {
     if (state.isActionInFlight) return;
-    await _logEvent(PaywallEventType.restoreAttempt, event.source);
-    emit(state.copyWith(actionStatus: PaywallActionStatus.restoring, error: null));
+    try {
+      await _logEvent(PaywallEventType.restoreAttempt, event.source);
+    } catch (_) {}
+    emit(
+      state.copyWith(
+        actionStatus: PaywallActionStatus.restoring,
+        error: null,
+      ),
+    );
     try {
       await _revenueCatService.restorePurchases();
       emit(state.copyWith(actionStatus: PaywallActionStatus.success));
@@ -109,7 +138,9 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     PaywallDismissed event,
     Emitter<PaywallState> emit,
   ) async {
-    await _logEvent(PaywallEventType.dismiss, event.source);
+    try {
+      await _logEvent(PaywallEventType.dismiss, event.source);
+    } catch (_) {}
   }
 
   Future<void> _logEvent(PaywallEventType type, String? source) {

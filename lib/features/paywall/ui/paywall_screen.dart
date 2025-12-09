@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/locator.dart';
 import '../../../core/purchases/revenuecat_service.dart';
+import '../../../core/theme/kinly_sections.dart';
+import '../../../core/theme/section_assets.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/kinly_loader.dart';
@@ -17,6 +19,7 @@ class PaywallStrings {
   final String bulletFlows;
   final String bulletPhotos;
   final String bulletShares;
+  final String unlimitedLabel;
   final String primaryCta;
   final String secondaryCta;
   final String purchaseFailed;
@@ -32,6 +35,7 @@ class PaywallStrings {
     required this.bulletFlows,
     required this.bulletPhotos,
     required this.bulletShares,
+    required this.unlimitedLabel,
     required this.primaryCta,
     required this.secondaryCta,
     required this.purchaseFailed,
@@ -57,17 +61,20 @@ class KinlyPaywallScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => PaywallBloc(
-        paywallRepository: sl<PaywallRepository>(),
-        revenueCatService: sl<RevenueCatService>(),
-        authRepository: sl<AuthRepository>(),
-        homeId: homeId,
-      )..add(PaywallStarted(source: source)),
+      create:
+          (_) => PaywallBloc(
+            paywallRepository: sl<PaywallRepository>(),
+            revenueCatService: sl<RevenueCatService>(),
+            authRepository: sl<AuthRepository>(),
+            homeId: homeId,
+          )..add(PaywallStarted(source: source)),
       child: Scaffold(
         body: SafeArea(
           child: BlocConsumer<PaywallBloc, PaywallState>(
-            listenWhen: (prev, next) =>
-                prev.actionStatus != next.actionStatus || prev.error != next.error,
+            listenWhen:
+                (prev, next) =>
+                    prev.actionStatus != next.actionStatus ||
+                    prev.error != next.error,
             listener: (context, state) {
               if (state.actionStatus == PaywallActionStatus.success) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -75,9 +82,9 @@ class KinlyPaywallScreen extends StatelessWidget {
                 );
                 Navigator.of(context).pop(true);
               } else if (state.error != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(strings.purchaseFailed)),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(strings.purchaseFailed)));
               }
             },
             builder: (context, state) {
@@ -89,7 +96,9 @@ class KinlyPaywallScreen extends StatelessWidget {
                 return _ErrorView(
                   strings: strings,
                   onRetry: () {
-                    context.read<PaywallBloc>().add(PaywallStarted(source: source));
+                    context.read<PaywallBloc>().add(
+                      PaywallStarted(source: source),
+                    );
                   },
                 );
               }
@@ -101,7 +110,9 @@ class KinlyPaywallScreen extends StatelessWidget {
                   context.read<PaywallBloc>().add(const PaywallCtaPressed());
                 },
                 onRestore: () {
-                  context.read<PaywallBloc>().add(const PaywallRestorePressed());
+                  context.read<PaywallBloc>().add(
+                    const PaywallRestorePressed(),
+                  );
                 },
                 onDismiss: () {
                   context.read<PaywallBloc>().add(const PaywallDismissed());
@@ -134,8 +145,45 @@ class _PaywallBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
+    final sections = theme.extension<KinlySections>();
     final priceLine = priceString != null ? '$priceString / month' : '';
+    final surface = theme.colorScheme.surface;
+    final shareCard =
+        sections?.share.card ?? theme.colorScheme.primaryContainer;
+    final flowCard =
+        sections?.flow.card ?? theme.colorScheme.secondaryContainer;
+    final heroGradient = [
+      Color.alphaBlend(shareCard.withValues(alpha: 0.18), surface),
+      Color.alphaBlend(flowCard.withValues(alpha: 0.28), surface),
+    ];
+
+    final features = [
+      _FeatureDetail(
+        asset: const SectionAsset.icon(Icons.groups_rounded),
+        accent: sections?.share.accent ?? theme.colorScheme.primary,
+        tint: sections?.share.card ?? theme.colorScheme.primaryContainer,
+        label: strings.bulletMembers,
+      ),
+      _FeatureDetail(
+        asset: SectionAssets.flow,
+        accent: sections?.flow.accent ?? theme.colorScheme.secondary,
+        tint: sections?.flow.card ?? theme.colorScheme.secondaryContainer,
+        label: strings.bulletFlows,
+      ),
+      _FeatureDetail(
+        asset: const SectionAsset.icon(Icons.photo_library_outlined),
+        accent: sections?.flow.icon ?? theme.colorScheme.secondary,
+        tint: sections?.flow.card ?? theme.colorScheme.secondaryContainer,
+        label: strings.bulletPhotos,
+      ),
+      _FeatureDetail(
+        asset: SectionAssets.share,
+        accent: sections?.share.icon ?? theme.colorScheme.primary,
+        tint: sections?.share.card ?? theme.colorScheme.primaryContainer,
+        label: strings.bulletShares,
+      ),
+    ];
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -145,21 +193,36 @@ class _PaywallBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(strings.title, style: textTheme.headlineSmall),
-                const SizedBox(height: 8),
-                Text(strings.subtitle, style: textTheme.bodyMedium),
-                const SizedBox(height: 16),
-                if (priceLine.isNotEmpty)
-                  Text(
-                    priceLine,
-                    style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                _PaywallHero(
+                  title: strings.title,
+                  subtitle: strings.subtitle,
+                  priceLine: priceLine,
+                  unlimitedLabel: strings.unlimitedLabel,
+                  gradient: heroGradient,
+                  accent: sections?.share.accent ?? theme.colorScheme.primary,
+                ),
+                const SizedBox(height: 12),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: features.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 1,
                   ),
-                const SizedBox(height: 24),
-                _FeatureRow(label: strings.bulletMembers),
-                _FeatureRow(label: strings.bulletFlows),
-                _FeatureRow(label: strings.bulletPhotos),
-                _FeatureRow(label: strings.bulletShares),
-                const SizedBox(height: 24),
+                  itemBuilder: (context, index) {
+                    final f = features[index];
+                    return _FeatureCard(
+                      asset: f.asset,
+                      accent: f.accent,
+                      tint: f.tint,
+                      label: f.label,
+                    );
+                  },
+                ),
+                const SizedBox(height: 28),
                 KinlyFilledButton.text(
                   label: strings.primaryCta,
                   onPressed: onUpgrade,
@@ -185,25 +248,131 @@ class _PaywallBody extends StatelessWidget {
   }
 }
 
-class _FeatureRow extends StatelessWidget {
-  const _FeatureRow({required this.label});
+class _FeatureDetail {
+  final SectionAsset asset;
+  final Color accent;
+  final Color tint;
+  final String label;
+
+  _FeatureDetail({
+    required this.asset,
+    required this.accent,
+    required this.tint,
+    required this.label,
+  });
+}
+
+class _FeatureCard extends StatelessWidget {
+  const _FeatureCard({
+    required this.asset,
+    required this.accent,
+    required this.tint,
+    required this.label,
+  });
+  final SectionAsset asset;
+  final Color accent;
+  final Color tint;
   final String label;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(bottom: 12),
-      child: Row(
+    final colorScheme = Theme.of(context).colorScheme;
+    final surface = colorScheme.surface;
+    final cardColor = Color.alphaBlend(tint.withValues(alpha: 0.22), surface);
+    final iconBg = Color.alphaBlend(accent.withValues(alpha: 0.22), surface);
+    final iconColor =
+        colorScheme.brightness == Brightness.dark
+            ? Color.alphaBlend(
+              accent,
+              colorScheme.onSurface.withValues(alpha: 0.8),
+            )
+            : accent;
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.check_circle_outline, size: 20),
-          const SizedBox(width: 12),
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
+            child: Center(child: asset.build(color: iconColor, size: 20)),
+          ),
+          Text(
+            label,
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PaywallHero extends StatelessWidget {
+  const _PaywallHero({
+    required this.title,
+    required this.subtitle,
+    required this.priceLine,
+    required this.unlimitedLabel,
+    required this.gradient,
+    required this.accent,
+  });
+
+  final String title;
+  final String subtitle;
+  final String priceLine;
+  final String unlimitedLabel;
+  final List<Color> gradient;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(20, 22, 20, 20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradient,
+          begin: AlignmentDirectional.topStart,
+          end: AlignmentDirectional.bottomEnd,
+        ),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Expanded(
-            child: Text(
-              label,
-              style: textTheme.bodyLarge,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: textTheme.headlineSmall),
+                const SizedBox(height: 8),
+                Text(
+                  subtitle,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                if (priceLine.isNotEmpty)
+                  Text(
+                    priceLine,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+              ],
             ),
           ),
+          const SizedBox(width: 16),
         ],
       ),
     );

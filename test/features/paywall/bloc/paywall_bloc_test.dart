@@ -20,21 +20,6 @@ void main() {
   late _MockRevenueCatService revenueCatService;
   late _MockAuthRepository authRepository;
   const homeId = 'home-1';
-  final paywallStatus = PaywallStatus(
-    plan: 'free',
-    expiresAt: null,
-    usage: PaywallUsage(
-      activeChores: 0,
-      chorePhotos: 0,
-      activeMembers: 1,
-      activeExpenses: 0,
-      updatedAt: DateTime.now(),
-    ),
-    limits: const [
-      PaywallLimit(metric: 'active_chores', maxValue: 10),
-    ],
-  );
-
   setUpAll(() {
     registerFallbackValue(PaywallEventType.impression);
     registerFallbackValue(_RevenueCatPackageFake());
@@ -46,7 +31,6 @@ void main() {
     authRepository = _MockAuthRepository();
 
     when(() => authRepository.current).thenReturn(const AuthSession(userId: 'user-1'));
-    when(() => paywallRepository.getStatus(homeId)).thenAnswer((_) async => paywallStatus);
     when(() => paywallRepository.logEvent(
           homeId: any(named: 'homeId'),
           eventType: any(named: 'eventType'),
@@ -82,7 +66,6 @@ void main() {
       isA<PaywallState>().having((s) => s.status, 'loading', PaywallLoadStatus.loading),
       isA<PaywallState>()
           .having((s) => s.status, 'ready', PaywallLoadStatus.ready)
-          .having((s) => s.paywallStatus?.plan, 'plan', 'free')
           .having((s) => s.package?.priceString, 'priceString', '\$4.99'),
     ],
   );

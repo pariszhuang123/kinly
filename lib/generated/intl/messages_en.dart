@@ -498,17 +498,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "offline_retry": MessageLookupByLibrary.simpleMessage("Try again"),
     "offline_title": MessageLookupByLibrary.simpleMessage("You\'re offline"),
-    "paywallBulletFlows": MessageLookupByLibrary.simpleMessage(
-      "Unlimited active flows",
-    ),
+    "paywallBulletFlows": MessageLookupByLibrary.simpleMessage("Active flows"),
     "paywallBulletMembers": MessageLookupByLibrary.simpleMessage(
-      "Unlimited home members",
+      "Home members",
     ),
-    "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
-      "Unlimited flow photos",
-    ),
+    "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage("Flow photos"),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
-      "Unlimited active shares",
+      "Active shares",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "Unable to load paywall.",
@@ -530,7 +526,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Continue with free home",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "One simple monthly price per home. Everyone inside gets Premium.",
+      "One simple monthly price per home. Everyone inside gets unlimited Premium.",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
       "Bring more harmony to your home for less than 0.5% of your rent",

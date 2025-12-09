@@ -223,6 +223,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
             bulletFlows: s.paywallBulletFlows,
             bulletPhotos: s.paywallBulletPhotos,
             bulletShares: s.paywallBulletShares,
+            unlimitedLabel: s.paywallSubtitle,
             primaryCta: s.paywallPrimaryCta,
             secondaryCta: s.paywallSecondaryCta,
             purchaseFailed: s.paywallPurchaseFailed,

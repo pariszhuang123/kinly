@@ -10,21 +10,6 @@ class SupabasePaywallRepository implements PaywallRepository {
   final SupabaseClient _client;
 
   @override
-  Future<PaywallStatus> getStatus(String homeId) async {
-    final res = await _client.rpc(
-      'paywall_get_status',
-      params: {'p_home_id': homeId},
-    );
-    if (res is Map<String, dynamic>) {
-      return PaywallStatus.fromJson(res);
-    }
-    if (res is Map) {
-      return PaywallStatus.fromJson(res.cast<String, dynamic>());
-    }
-    throw Exception('Unexpected response from paywall_get_status');
-  }
-
-  @override
   Future<void> logEvent({
     required String homeId,
     required PaywallEventType eventType,
