@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
+import '../../../core/logging/logger.dart';
 import '../../../core/purchases/revenuecat_service.dart';
 import '../../../core/paywall/paywall_models.dart';
 import '../../../core/paywall/enums/paywall_event_type.dart';
@@ -14,18 +15,21 @@ part 'paywall_state.dart';
 
 class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
   static const _premiumEntitlementId = 'kinly_premium';
+  static const _logTag = 'PaywallBloc';
 
   PaywallBloc({
     required PaywallRepository paywallRepository,
     required RevenueCatService revenueCatService,
     required AuthRepository authRepository,
     required String homeId,
+    required Logger logger,
     String? placementId,
   }) : _paywallRepository = paywallRepository,
        _revenueCatService = revenueCatService,
        _authRepository = authRepository,
        _homeId = homeId,
        _placementId = placementId,
+       _logger = logger,
        super(const PaywallState.initial()) {
     on<PaywallStarted>(_onStarted);
     on<PaywallCtaPressed>(_onCta);
@@ -37,12 +41,20 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
   final RevenueCatService _revenueCatService;
   final AuthRepository _authRepository;
   final String _homeId;
+  final Logger _logger;
   final String? _placementId;
 
   Future<void> _onStarted(
     PaywallStarted event,
     Emitter<PaywallState> emit,
   ) async {
+    try {
+      final rcUserId = await Purchases.appUserID;
+      _logger.debug(
+        'Paywall start: homeId=$_homeId placement=$_placementId rcUserId=$rcUserId source=${event.source}',
+        tag: _logTag,
+      );
+    } catch (_) {}
     emit(state.copyWith(status: PaywallLoadStatus.loading, error: null));
     try {
       RevenueCatPackage? pkg;
@@ -85,6 +97,11 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
       state.copyWith(actionStatus: PaywallActionStatus.purchasing, error: null),
     );
     try {
+      final rcUserId = await Purchases.appUserID;
+      _logger.info(
+        'Purchase attempt: supabaseUser=$userId rcUserId=$rcUserId homeId=$_homeId placement=$_placementId pkg=${state.package?.identifier}',
+        tag: _logTag,
+      );
       if (userId != null) {
         await _revenueCatService.setSubscriberAttributes(
           appUserId: userId,
@@ -96,7 +113,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
       final pkg =
           state.package ??
           await _revenueCatService.fetchMonthlyPackage(
-            placementId: _placementId,
+          placementId: _placementId,
           );
       if (pkg == null) {
         throw Exception(
@@ -104,6 +121,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
         );
       }
       await _revenueCatService.purchaseMonthly(pkg);
+      await _logEntitlementsSnapshot(context: 'post-purchase');
       await _ensureEntitlementActive();
       emit(state.copyWith(actionStatus: PaywallActionStatus.success));
     } on PlatformException catch (e) {
@@ -135,6 +153,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     );
     try {
       await _revenueCatService.restorePurchases();
+      await _logEntitlementsSnapshot(context: 'post-restore');
       await _ensureEntitlementActive();
       emit(state.copyWith(actionStatus: PaywallActionStatus.success));
     } on PlatformException catch (e) {
@@ -168,6 +187,25 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
       eventType: type,
       source: source,
     );
+  }
+
+  Future<void> _logEntitlementsSnapshot({required String context}) async {
+    try {
+      final info = await _revenueCatService.getCustomerInfo();
+      final activeKeys = info.entitlements.active.keys.join(', ');
+      final premium = info.entitlements.all[_premiumEntitlementId];
+      _logger.info(
+        'Entitlements snapshot [$context]: active=[$activeKeys] premiumExpires=${premium?.expirationDate} verification=${premium?.verification}',
+        tag: _logTag,
+      );
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to log entitlements [$context]: $error',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   Future<void> _ensureEntitlementActive() async {

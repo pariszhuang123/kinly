@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:purchases_flutter/purchases_flutter.dart' as rc;
 
 import '../config/app_config.dart';
 import '../logging/logger.dart';
@@ -17,8 +17,10 @@ Future<void> initRevenueCat(Logger logger, {String? appUserId}) async {
     throw StateError('Missing RevenueCat API key for platform');
   }
 
-  await Purchases.configure(
-    PurchasesConfiguration(apiKey)..appUserID = appUserId,
+  await rc.Purchases.setLogLevel(rc.LogLevel.debug);
+  await rc.Purchases.configure(
+    rc.PurchasesConfiguration(apiKey)..appUserID = appUserId,
   );
-  logger.info('RevenueCat configured', tag: _logTag);
+  final rcUserId = await rc.Purchases.appUserID;
+  logger.info('RevenueCat configured rcUserId=$rcUserId', tag: _logTag);
 }

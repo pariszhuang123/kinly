@@ -241,6 +241,42 @@ modules:
       plan_gate: false
     notes: Aggregates other modules; must tolerate modules being disabled.
 
+  - name: paywall
+    owner_role: Planner
+    status: feature
+    killable: true
+    kill_switch_flag: feature.paywall.enabled
+    plan_gates: []
+    depends_on: [core, auth]
+    allowed_imports_from: ["flow", "share", "home_membership", "today", "hub"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - home_usage_counters
+        - home_entitlements
+        - home_plan_limits
+        - user_subscriptions
+        - paywall_events
+        - revenuecat_webhook_events
+      cross_module_refs:
+        - homes.id
+        - profiles.id
+    rpcs:
+      owner:
+        - paywall_get_status
+        - paywall_log_event
+        - paywall_record_subscription
+      orchestration: []
+    entrypoints:
+      routes: []
+      deep_links: []
+      navigation_tiles: []
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: false
+    notes: Paywall entitlements, quotas, RevenueCat sync, and funnel logging consumed by Flow/Share/Join gating.
+
   - name: flow
     owner_role: Planner
     status: feature

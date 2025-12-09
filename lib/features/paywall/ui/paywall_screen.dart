@@ -7,6 +7,7 @@ import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/section_assets.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
+import '../../../core/logging/logger.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../data/repositories/auth_repository.dart';
@@ -70,6 +71,7 @@ class KinlyPaywallScreen extends StatelessWidget {
             revenueCatService: sl<RevenueCatService>(),
             authRepository: sl<AuthRepository>(),
             homeId: homeId,
+            logger: sl<Logger>(),
             placementId: placementId,
           )..add(PaywallStarted(source: source)),
       child: Scaffold(

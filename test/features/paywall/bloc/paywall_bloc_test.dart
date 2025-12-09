@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:kinly/core/paywall/paywall_models.dart';
 import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
+import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
 import 'package:kinly/data/repositories/paywall_repository.dart';
@@ -14,12 +15,15 @@ class _MockRevenueCatService extends Mock implements RevenueCatService {}
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
+class _MockLogger extends Mock implements Logger {}
+
 class _RevenueCatPackageFake extends Fake implements RevenueCatPackage {}
 
 void main() {
   late _MockPaywallRepository paywallRepository;
   late _MockRevenueCatService revenueCatService;
   late _MockAuthRepository authRepository;
+  late _MockLogger logger;
   const homeId = 'home-1';
   setUpAll(() {
     registerFallbackValue(PaywallEventType.impression);
@@ -30,6 +34,7 @@ void main() {
     paywallRepository = _MockPaywallRepository();
     revenueCatService = _MockRevenueCatService();
     authRepository = _MockAuthRepository();
+    logger = _MockLogger();
 
     when(
       () => authRepository.current,
@@ -56,6 +61,7 @@ void main() {
       () => revenueCatService.purchaseMonthly(any()),
     ).thenAnswer((_) async {});
     when(() => revenueCatService.restorePurchases()).thenAnswer((_) async {});
+    when(() => revenueCatService.getCustomerInfo()).thenThrow(Exception('stub'));
     when(
       () => revenueCatService.setSubscriberAttributes(
         appUserId: any(named: 'appUserId'),
@@ -64,6 +70,16 @@ void main() {
         email: any(named: 'email'),
       ),
     ).thenAnswer((_) async {});
+    when(() => logger.debug(any(), tag: any(named: 'tag'))).thenReturn(null);
+    when(() => logger.info(any(), tag: any(named: 'tag'))).thenReturn(null);
+    when(
+      () => logger.warn(
+        any(),
+        tag: any(named: 'tag'),
+        error: any(named: 'error'),
+        stackTrace: any(named: 'stackTrace'),
+      ),
+    ).thenReturn(null);
   });
 
   PaywallBloc buildBloc() => PaywallBloc(
@@ -71,6 +87,7 @@ void main() {
     revenueCatService: revenueCatService,
     authRepository: authRepository,
     homeId: homeId,
+    logger: logger,
   );
 
   blocTest<PaywallBloc, PaywallState>(
