@@ -8,6 +8,7 @@ import '../../../core/theme/section_assets.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/paywall_repository.dart';
 import '../bloc/paywall_bloc.dart';
@@ -52,11 +53,13 @@ class KinlyPaywallScreen extends StatelessWidget {
     required this.homeId,
     required this.strings,
     this.source,
+    this.placementId,
   });
 
   final String homeId;
   final PaywallStrings strings;
   final String? source;
+  final String? placementId;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +70,7 @@ class KinlyPaywallScreen extends StatelessWidget {
             revenueCatService: sl<RevenueCatService>(),
             authRepository: sl<AuthRepository>(),
             homeId: homeId,
+            placementId: placementId,
           )..add(PaywallStarted(source: source)),
       child: Scaffold(
         body: SafeArea(
@@ -77,14 +81,10 @@ class KinlyPaywallScreen extends StatelessWidget {
                     prev.error != next.error,
             listener: (context, state) {
               if (state.actionStatus == PaywallActionStatus.success) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(strings.purchaseSuccess)),
-                );
+                KinlySnackBar.showSuccess(context, strings.purchaseSuccess);
                 Navigator.of(context).pop(true);
               } else if (state.error != null) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(strings.purchaseFailed)));
+                KinlySnackBar.showError(context, strings.purchaseFailed);
               }
             },
             builder: (context, state) {
@@ -206,7 +206,7 @@ class _PaywallBody extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: features.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
@@ -269,6 +269,7 @@ class _FeatureCard extends StatelessWidget {
     required this.tint,
     required this.label,
   });
+
   final SectionAsset asset;
   final Color accent;
   final Color tint;
@@ -381,6 +382,7 @@ class _PaywallHero extends StatelessWidget {
 
 class _ErrorView extends StatelessWidget {
   const _ErrorView({required this.onRetry, required this.strings});
+
   final VoidCallback onRetry;
   final PaywallStrings strings;
 

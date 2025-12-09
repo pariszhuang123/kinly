@@ -3,6 +3,10 @@ class AppConfig {
   static const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
   static const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
   static const deeplinkHost = String.fromEnvironment('DEEPLINK_HOST');
+  static const revenuecatIosKey =
+      String.fromEnvironment('REVENUECAT_IOS_KEY', defaultValue: '');
+  static const revenuecatAndroidKey =
+      String.fromEnvironment('REVENUECAT_ANDROID_KEY', defaultValue: '');
   // Placeholder for public invite host (e.g., makinglifeeasie.com); falls back
   // to deeplinkHost if empty.
   static const inviteHost = String.fromEnvironment('INVITE_HOST');
@@ -19,6 +23,8 @@ class AppConfig {
     if (deeplinkHost.isEmpty) missing.add('DEEPLINK_HOST');
     if (iosStoreUrl.isEmpty) missing.add('IOS_STORE_URL');
     if (androidStoreUrl.isEmpty) missing.add('ANDROID_STORE_URL');
+    if (revenuecatIosKey.isEmpty) missing.add('REVENUECAT_IOS_KEY');
+    if (revenuecatAndroidKey.isEmpty) missing.add('REVENUECAT_ANDROID_KEY');
     if (missing.isNotEmpty) {
       throw StateError('Missing dart-define(s): ${missing.join(', ')}');
     }

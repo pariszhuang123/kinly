@@ -12,11 +12,11 @@ plugins {
 // Optional: load signing keys if present
 val keystoreProps = Properties().apply {
     // Look for key.properties in the *app module* directory
-    val f = file("key.properties")
+    val f = rootProject.file("key.properties")
     if (f.exists()) f.inputStream().use { load(it) }
 }
 fun kp(name: String) = keystoreProps.getProperty(name)
-val hasKeystore = file("key.properties").exists()
+val hasKeystore = rootProject.file("key.properties").exists()
 
 android {
     namespace = "com.makinglifeeasie.kinly"

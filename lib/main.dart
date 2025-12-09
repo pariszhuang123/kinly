@@ -9,6 +9,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'core/config/app_config.dart';
 import 'core/di/locator.dart';
+import 'core/purchases/revenuecat_initializer.dart';
+import 'core/purchases/revenuecat_user_sync.dart';
 import 'core/router/app_router.dart';
 import 'core/router/go_router_refresh_stream.dart';
 import 'core/network/connectivity_monitor.dart';
@@ -45,6 +47,10 @@ Future<void> main() async {
   setupDependencies();
   AppConfig.validate();
   await initSupabase();
+  await initRevenueCat(
+    sl<Logger>(),
+    appUserId: sl<AuthRepository>().current?.userId,
+  );
   runApp(const MyApp());
 }
 
@@ -188,9 +194,11 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _handleAuthState(AuthState state) async {
     if (!state.isAuthenticated) {
+      await syncRevenueCatUser(_logger, userId: null);
       await _stopNotificationTokenSync();
       return;
     }
+    await syncRevenueCatUser(_logger, userId: state.userId);
     await _startNotificationTokenSync();
   }
 

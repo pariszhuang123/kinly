@@ -11,7 +11,7 @@ Scope: Paywall UI/flows, RevenueCat integration, Supabase sync, and telemetry fo
 ## RevenueCat Mapping
 - Offering: `main`
 - Package: `monthly`
-- Product IDs: `kinly_premium_monthly` (iOS + Android)
+- Product IDs: `com.makinglifeeasie.kinly.premium.monthly` (iOS + Android)
 - Entitlement: `kinly_premium`
 - `app_user_id`: Supabase auth user id (stable across homes)
 - Subscriber attributes (best-effort): `home_id`, `locale`, `email?`

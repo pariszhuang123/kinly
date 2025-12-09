@@ -8,9 +8,12 @@ class RevenueCatPackage {
 }
 
 abstract class RevenueCatService {
-  Future<RevenueCatPackage?> fetchMonthlyPackage();
+  Future<RevenueCatPackage?> fetchMonthlyPackage({String? placementId});
   Future<void> purchaseMonthly(RevenueCatPackage pkg);
   Future<void> restorePurchases();
+  Future<CustomerInfo> getCustomerInfo();
+  Future<Package?> fetchPackageByIdentifier(String identifier);
+  Future<bool> isEntitlementActive(String entitlementId);
   Future<void> setSubscriberAttributes({
     required String appUserId,
     String? homeId,
@@ -21,9 +24,14 @@ abstract class RevenueCatService {
 
 class DefaultRevenueCatService implements RevenueCatService {
   @override
-  Future<RevenueCatPackage?> fetchMonthlyPackage() async {
-    final offerings = await Purchases.getOfferings();
-    final monthly = offerings.current?.monthly;
+  Future<RevenueCatPackage?> fetchMonthlyPackage({String? placementId}) async {
+    Offering? offering;
+    if (placementId != null && placementId.isNotEmpty) {
+      offering = await Purchases.getCurrentOfferingForPlacement(placementId);
+    }
+    offering ??= (await Purchases.getOfferings()).current;
+
+    final monthly = offering?.monthly;
     if (monthly == null) return null;
     return RevenueCatPackage(
       identifier: monthly.identifier,
@@ -33,21 +41,33 @@ class DefaultRevenueCatService implements RevenueCatService {
 
   @override
   Future<void> purchaseMonthly(RevenueCatPackage pkg) async {
-    final offerings = await Purchases.getOfferings();
-    final package = offerings.all.values
-        .map((o) => o.monthly)
-        .whereType<Package>()
-        .firstWhere(
-          (p) => p.identifier == pkg.identifier,
-          orElse: () => offerings.current?.monthly ?? (throw Exception('Monthly package not available')),
-        );
-    // purchasePackage is deprecated in newer SDKs; ignore to keep compatibility with current version.
-    // ignore: deprecated_member_use
+    final package = await fetchPackageByIdentifier(pkg.identifier) ??
+        (throw Exception('Monthly package not available'));
     await Purchases.purchasePackage(package);
   }
 
   @override
   Future<void> restorePurchases() => Purchases.restorePurchases();
+
+  @override
+  Future<CustomerInfo> getCustomerInfo() => Purchases.getCustomerInfo();
+
+  @override
+  Future<Package?> fetchPackageByIdentifier(String identifier) async {
+    final offerings = await Purchases.getOfferings();
+    for (final offering in offerings.all.values) {
+      for (final package in offering.availablePackages) {
+        if (package.identifier == identifier) return package;
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<bool> isEntitlementActive(String entitlementId) async {
+    final info = await getCustomerInfo();
+    return info.entitlements.active.containsKey(entitlementId);
+  }
 
   @override
   Future<void> setSubscriberAttributes({

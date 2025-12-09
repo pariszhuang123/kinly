@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../../../core/purchases/revenuecat_service.dart';
 import '../../../core/paywall/paywall_models.dart';
@@ -11,15 +13,19 @@ part 'paywall_event.dart';
 part 'paywall_state.dart';
 
 class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
+  static const _premiumEntitlementId = 'kinly_premium';
+
   PaywallBloc({
     required PaywallRepository paywallRepository,
     required RevenueCatService revenueCatService,
     required AuthRepository authRepository,
     required String homeId,
+    String? placementId,
   }) : _paywallRepository = paywallRepository,
        _revenueCatService = revenueCatService,
        _authRepository = authRepository,
        _homeId = homeId,
+       _placementId = placementId,
        super(const PaywallState.initial()) {
     on<PaywallStarted>(_onStarted);
     on<PaywallCtaPressed>(_onCta);
@@ -31,6 +37,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
   final RevenueCatService _revenueCatService;
   final AuthRepository _authRepository;
   final String _homeId;
+  final String? _placementId;
 
   Future<void> _onStarted(
     PaywallStarted event,
@@ -40,7 +47,9 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     try {
       RevenueCatPackage? pkg;
       try {
-        pkg = await _revenueCatService.fetchMonthlyPackage();
+        pkg = await _revenueCatService.fetchMonthlyPackage(
+          placementId: _placementId,
+        );
       } catch (_) {
         pkg = null;
       }
@@ -85,14 +94,31 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
         );
       }
       final pkg =
-          state.package ?? await _revenueCatService.fetchMonthlyPackage();
+          state.package ??
+          await _revenueCatService.fetchMonthlyPackage(
+            placementId: _placementId,
+          );
       if (pkg == null) {
-        throw Exception('Missing monthly package');
+        throw Exception(
+          'Monthly package unavailable. Check RevenueCat offering configuration.',
+        );
       }
       await _revenueCatService.purchaseMonthly(pkg);
+      await _ensureEntitlementActive();
       emit(state.copyWith(actionStatus: PaywallActionStatus.success));
+    } on PlatformException catch (e) {
+      final code = PurchasesErrorHelper.getErrorCode(e);
+      final isCancelled = code == PurchasesErrorCode.purchaseCancelledError;
+      emit(
+        state.copyWith(
+          actionStatus: PaywallActionStatus.idle,
+          error: isCancelled ? null : '$e',
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(actionStatus: PaywallActionStatus.idle, error: '$e'));
+      emit(
+        state.copyWith(actionStatus: PaywallActionStatus.idle, error: '$e'),
+      );
     }
   }
 
@@ -109,9 +135,21 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     );
     try {
       await _revenueCatService.restorePurchases();
+      await _ensureEntitlementActive();
       emit(state.copyWith(actionStatus: PaywallActionStatus.success));
+    } on PlatformException catch (e) {
+      final code = PurchasesErrorHelper.getErrorCode(e);
+      final isCancelled = code == PurchasesErrorCode.purchaseCancelledError;
+      emit(
+        state.copyWith(
+          actionStatus: PaywallActionStatus.idle,
+          error: isCancelled ? null : '$e',
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(actionStatus: PaywallActionStatus.idle, error: '$e'));
+      emit(
+        state.copyWith(actionStatus: PaywallActionStatus.idle, error: '$e'),
+      );
     }
   }
 
@@ -130,5 +168,13 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
       eventType: type,
       source: source,
     );
+  }
+
+  Future<void> _ensureEntitlementActive() async {
+    final active =
+        await _revenueCatService.isEntitlementActive(_premiumEntitlementId);
+    if (!active) {
+      throw Exception('Premium entitlement inactive after purchase');
+    }
   }
 }

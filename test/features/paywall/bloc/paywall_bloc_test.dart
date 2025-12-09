@@ -41,9 +41,16 @@ void main() {
         source: any(named: 'source'),
       ),
     ).thenAnswer((_) async {});
-    when(() => revenueCatService.fetchMonthlyPackage()).thenAnswer(
+    when(
+      () => revenueCatService.fetchMonthlyPackage(
+        placementId: any(named: 'placementId'),
+      ),
+    ).thenAnswer(
       (_) async =>
           RevenueCatPackage(identifier: 'monthly', priceString: '\$4.99'),
+    );
+    when(() => revenueCatService.isEntitlementActive(any())).thenAnswer(
+      (_) async => true,
     );
     when(
       () => revenueCatService.purchaseMonthly(any()),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kinly/core/paywall/paywall_models.dart';
@@ -17,6 +18,23 @@ class _MockRevenueCatService extends Mock implements RevenueCatService {}
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
 class _RevenueCatPackageFake extends Fake implements RevenueCatPackage {}
+
+class _FakeSvgBundle extends CachingAssetBundle {
+  static const _emptySvg = '<svg viewBox="0 0 24 24"></svg>';
+
+  @override
+  Future<ByteData> load(String key) async {
+    return ByteData.view(Uint8List.fromList(_emptySvg.codeUnits).buffer);
+  }
+
+  @override
+  Future<String> loadString(String key, {bool cache = true}) async {
+    if (key.endsWith('Share.svg') || key.endsWith('Hub.svg')) {
+      return _emptySvg;
+    }
+    throw FlutterError('Asset $key not mocked in tests');
+  }
+}
 
 void main() {
   final sl = GetIt.instance;
@@ -46,11 +64,14 @@ void main() {
         source: any(named: 'source'),
       ),
     ).thenAnswer((_) async {});
-    when(() => rc.fetchMonthlyPackage()).thenAnswer(
+    when(
+      () => rc.fetchMonthlyPackage(placementId: any(named: 'placementId')),
+    ).thenAnswer(
       (_) async =>
           RevenueCatPackage(identifier: 'monthly', priceString: '\$4.99'),
     );
     when(() => rc.purchaseMonthly(any())).thenAnswer((_) async {});
+    when(() => rc.isEntitlementActive(any())).thenAnswer((_) async => true);
     when(
       () => rc.setSubscriberAttributes(
         appUserId: any(named: 'appUserId'),
@@ -86,9 +107,12 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildKinlyTheme(Brightness.light),
-        home: KinlyPaywallScreen(homeId: 'home-1', strings: strings),
+      DefaultAssetBundle(
+        bundle: _FakeSvgBundle(),
+        child: MaterialApp(
+          theme: buildKinlyTheme(Brightness.light),
+          home: KinlyPaywallScreen(homeId: 'home-1', strings: strings),
+        ),
       ),
     );
 
