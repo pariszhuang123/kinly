@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kinly/core/paywall/paywall_models.dart';
+import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
 import 'package:kinly/data/repositories/paywall_repository.dart';
@@ -38,13 +39,16 @@ void main() {
     final auth = sl<AuthRepository>() as _MockAuthRepository;
 
     when(() => auth.current).thenReturn(const AuthSession(userId: 'user-1'));
-    when(() => repo.logEvent(
-          homeId: any(named: 'homeId'),
-          eventType: any(named: 'eventType'),
-          source: any(named: 'source'),
-        )).thenAnswer((_) async {});
+    when(
+      () => repo.logEvent(
+        homeId: any(named: 'homeId'),
+        eventType: any(named: 'eventType'),
+        source: any(named: 'source'),
+      ),
+    ).thenAnswer((_) async {});
     when(() => rc.fetchMonthlyPackage()).thenAnswer(
-      (_) async => RevenueCatPackage(identifier: 'monthly', priceString: '\$4.99'),
+      (_) async =>
+          RevenueCatPackage(identifier: 'monthly', priceString: '\$4.99'),
     );
     when(() => rc.purchaseMonthly(any())).thenAnswer((_) async {});
     when(
@@ -55,12 +59,14 @@ void main() {
         email: any(named: 'email'),
       ),
     ).thenAnswer((_) async {});
-    when(() => rc.setSubscriberAttributes(
-          appUserId: any(named: 'appUserId'),
-          homeId: any(named: 'homeId'),
-          locale: any(named: 'locale'),
-          email: any(named: 'email'),
-        )).thenAnswer((_) async {});
+    when(
+      () => rc.setSubscriberAttributes(
+        appUserId: any(named: 'appUserId'),
+        homeId: any(named: 'homeId'),
+        locale: any(named: 'locale'),
+        email: any(named: 'email'),
+      ),
+    ).thenAnswer((_) async {});
 
     final strings = PaywallStrings(
       title: 'Harmony headline',
@@ -82,22 +88,25 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: buildKinlyTheme(Brightness.light),
-        home: KinlyPaywallScreen(
-          homeId: 'home-1',
-          strings: strings,
-        ),
+        home: KinlyPaywallScreen(homeId: 'home-1', strings: strings),
       ),
     );
 
     // initial loader then loaded content
     await tester.pump();
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Harmony headline'), findsOneWidget);
     expect(find.text('Upgrade'), findsOneWidget);
 
+    // Scroll to ensure CTA is within the viewport for tap
+    await tester.scrollUntilVisible(
+      find.text('Upgrade'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Upgrade'));
-    await tester.pump();
+    await tester.pumpAndSettle();
     verify(() => rc.purchaseMonthly(any())).called(1);
   });
 }

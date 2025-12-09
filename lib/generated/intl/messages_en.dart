@@ -526,7 +526,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Continue with free home",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "One simple monthly price per home. Everyone inside gets unlimited Premium.",
+      "One simple monthly price per home. Everyone inside gets unlimited access to the following features.",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
       "Bring more harmony to your home for less than 0.5% of your rent",

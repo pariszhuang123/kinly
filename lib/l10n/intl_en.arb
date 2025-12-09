@@ -35,7 +35,7 @@
   "join_error_already_in_other_home": "You're already in another home. Leave it before joining a new one.",
   "join_error_paywall_limit": "This home has reached its member limit. Ask the owner to upgrade or remove a member.",
   "paywallTitle": "Bring more harmony to your home for less than 0.5% of your rent",
-  "paywallSubtitle": "One simple monthly price per home. Everyone inside gets unlimited Premium.",
+  "paywallSubtitle": "One simple monthly price per home. Everyone inside gets unlimited access to the following features.",
   "paywallBulletMembers": "Home members",
   "paywallBulletFlows": "Active flows",
   "paywallBulletPhotos": "Flow photos",

@@ -1,9 +1,4 @@
-enum PaywallEventType {
-  impression,
-  ctaClick,
-  dismiss,
-  restoreAttempt,
-}
+import 'enums/paywall_event_type.dart';
 
 class PaywallLimit {
   final String metric;
@@ -59,7 +54,8 @@ class PaywallStatus {
   });
 
   bool get isPremium =>
-      plan == 'premium' && (expiresAt == null || expiresAt!.isAfter(DateTime.now()));
+      plan == 'premium' &&
+      (expiresAt == null || expiresAt!.isAfter(DateTime.now()));
 
   factory PaywallStatus.fromJson(Map<String, dynamic> json) {
     final limits = (json['limits'] as List<dynamic>? ?? [])
@@ -74,7 +70,8 @@ class PaywallStatus {
 
     return PaywallStatus(
       plan: json['plan'] as String,
-      expiresAt: expiresRaw == null ? null : DateTime.parse(expiresRaw as String),
+      expiresAt:
+          expiresRaw == null ? null : DateTime.parse(expiresRaw as String),
       usage: usage,
       limits: limits,
     );

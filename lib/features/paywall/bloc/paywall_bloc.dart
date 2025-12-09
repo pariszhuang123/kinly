@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../core/purchases/revenuecat_service.dart';
 import '../../../core/paywall/paywall_models.dart';
+import '../../../core/paywall/enums/paywall_event_type.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/paywall_repository.dart';
 
@@ -15,11 +16,11 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     required RevenueCatService revenueCatService,
     required AuthRepository authRepository,
     required String homeId,
-  })  : _paywallRepository = paywallRepository,
-        _revenueCatService = revenueCatService,
-        _authRepository = authRepository,
-        _homeId = homeId,
-        super(const PaywallState.initial()) {
+  }) : _paywallRepository = paywallRepository,
+       _revenueCatService = revenueCatService,
+       _authRepository = authRepository,
+       _homeId = homeId,
+       super(const PaywallState.initial()) {
     on<PaywallStarted>(_onStarted);
     on<PaywallCtaPressed>(_onCta);
     on<PaywallRestorePressed>(_onRestore);
@@ -35,12 +36,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     PaywallStarted event,
     Emitter<PaywallState> emit,
   ) async {
-    emit(
-      state.copyWith(
-        status: PaywallLoadStatus.loading,
-        error: null,
-      ),
-    );
+    emit(state.copyWith(status: PaywallLoadStatus.loading, error: null));
     try {
       RevenueCatPackage? pkg;
       try {
@@ -77,10 +73,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     } catch (_) {}
     final userId = _authRepository.current?.userId;
     emit(
-      state.copyWith(
-        actionStatus: PaywallActionStatus.purchasing,
-        error: null,
-      ),
+      state.copyWith(actionStatus: PaywallActionStatus.purchasing, error: null),
     );
     try {
       if (userId != null) {
@@ -91,19 +84,15 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
           email: event.email,
         );
       }
-      final pkg = state.package ?? await _revenueCatService.fetchMonthlyPackage();
+      final pkg =
+          state.package ?? await _revenueCatService.fetchMonthlyPackage();
       if (pkg == null) {
         throw Exception('Missing monthly package');
       }
       await _revenueCatService.purchaseMonthly(pkg);
       emit(state.copyWith(actionStatus: PaywallActionStatus.success));
     } catch (e) {
-      emit(
-        state.copyWith(
-          actionStatus: PaywallActionStatus.idle,
-          error: '$e',
-        ),
-      );
+      emit(state.copyWith(actionStatus: PaywallActionStatus.idle, error: '$e'));
     }
   }
 
@@ -116,21 +105,13 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
       await _logEvent(PaywallEventType.restoreAttempt, event.source);
     } catch (_) {}
     emit(
-      state.copyWith(
-        actionStatus: PaywallActionStatus.restoring,
-        error: null,
-      ),
+      state.copyWith(actionStatus: PaywallActionStatus.restoring, error: null),
     );
     try {
       await _revenueCatService.restorePurchases();
       emit(state.copyWith(actionStatus: PaywallActionStatus.success));
     } catch (e) {
-      emit(
-        state.copyWith(
-          actionStatus: PaywallActionStatus.idle,
-          error: '$e',
-        ),
-      );
+      emit(state.copyWith(actionStatus: PaywallActionStatus.idle, error: '$e'));
     }
   }
 

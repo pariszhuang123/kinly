@@ -239,10 +239,10 @@ class S {
     );
   }
 
-  /// `One simple monthly price per home. Everyone inside gets unlimited Premium.`
+  /// `One simple monthly price per home. Everyone inside gets unlimited access to the following features.`
   String get paywallSubtitle {
     return Intl.message(
-      'One simple monthly price per home. Everyone inside gets unlimited Premium.',
+      'One simple monthly price per home. Everyone inside gets unlimited access to the following features.',
       name: 'paywallSubtitle',
       desc: '',
       args: [],

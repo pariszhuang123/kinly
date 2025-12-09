@@ -16,7 +16,8 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import '../../../support/fake_telemetry.dart';
 
-class _MockFlowChoreDetailBloc extends MockBloc<FlowChoreDetailEvent, FlowChoreDetailState>
+class _MockFlowChoreDetailBloc
+    extends MockBloc<FlowChoreDetailEvent, FlowChoreDetailState>
     implements FlowChoreDetailBloc {}
 
 class _FakeFlowChoreDetailEvent extends Fake implements FlowChoreDetailEvent {}
@@ -47,7 +48,9 @@ void main() {
     stepsAdvanced: null,
   );
 
-  testWidgets('emits telemetry when completion success state observed', (tester) async {
+  testWidgets('emits telemetry when completion success state observed', (
+    tester,
+  ) async {
     final telemetry = FakeTelemetry();
     final bloc = _MockFlowChoreDetailBloc();
     final details = ChoreDetails(
@@ -70,10 +73,7 @@ void main() {
         updatedAt: DateTime.utc(2024, 1, 1),
       ),
       assignees: const [
-        ChoreAssigneeSummary(
-          userId: 'assignee',
-          fullName: 'Jordan',
-        ),
+        ChoreAssigneeSummary(userId: 'assignee', fullName: 'Jordan'),
       ],
     );
 
@@ -139,9 +139,7 @@ void main() {
         ),
         home: BlocProvider<FlowChoreDetailBloc>.value(
           value: bloc,
-          child: FlowChoreDetailScreen(
-            telemetry: telemetry,
-          ),
+          child: FlowChoreDetailScreen(telemetry: telemetry),
         ),
       ),
     );
@@ -155,119 +153,122 @@ void main() {
     expect(telemetry.events.single.properties['milestone'], 'flow');
   });
 
-  testWidgets('reduce motion path sets telemetry reduce_motion=true and no haptic', (tester) async {
-    final telemetry = FakeTelemetry();
-    final bloc = _MockFlowChoreDetailBloc();
-    final details = ChoreDetails(
-      chore: Chore(
-        id: 'chore-2',
-        homeId: 'home-1',
-        createdByUserId: 'owner',
-        assigneeUserId: 'assignee',
-        name: 'Vacuum',
-        startDate: DateTime.utc(2024, 1, 1),
-        recurrence: ChoreRecurrence.none,
-        recurrenceCursor: null,
-        nextOccurrence: null,
-        expectationPhotoPath: null,
-        howToVideoUrl: null,
-        notes: 'Hallway only',
-        state: ChoreState.active,
-        completedAt: null,
-        createdAt: DateTime.utc(2024, 1, 1),
-        updatedAt: DateTime.utc(2024, 1, 1),
-      ),
-      assignees: const [
-        ChoreAssigneeSummary(
-          userId: 'assignee',
-          fullName: 'Casey',
+  testWidgets(
+    'reduce motion path sets telemetry reduce_motion=true and no haptic',
+    (tester) async {
+      final telemetry = FakeTelemetry();
+      final bloc = _MockFlowChoreDetailBloc();
+      final details = ChoreDetails(
+        chore: Chore(
+          id: 'chore-2',
+          homeId: 'home-1',
+          createdByUserId: 'owner',
+          assigneeUserId: 'assignee',
+          name: 'Vacuum',
+          startDate: DateTime.utc(2024, 1, 1),
+          recurrence: ChoreRecurrence.none,
+          recurrenceCursor: null,
+          nextOccurrence: null,
+          expectationPhotoPath: null,
+          howToVideoUrl: null,
+          notes: 'Hallway only',
+          state: ChoreState.active,
+          completedAt: null,
+          createdAt: DateTime.utc(2024, 1, 1),
+          updatedAt: DateTime.utc(2024, 1, 1),
         ),
-      ],
-    );
+        assignees: const [
+          ChoreAssigneeSummary(userId: 'assignee', fullName: 'Casey'),
+        ],
+      );
 
-    final loadedState = const FlowChoreDetailState.initial().copyWith(
-      isLoading: false,
-      details: details,
-    );
-    final completedState = loadedState.copyWith(
-      isLoading: false,
-      completionResult: completionResult,
-    );
+      final loadedState = const FlowChoreDetailState.initial().copyWith(
+        isLoading: false,
+        details: details,
+      );
+      final completedState = loadedState.copyWith(
+        isLoading: false,
+        completionResult: completionResult,
+      );
 
-    when(() => bloc.state).thenReturn(loadedState);
-    whenListen(
-      bloc,
-      Stream<FlowChoreDetailState>.fromIterable([loadedState, completedState]),
-      initialState: loadedState,
-    );
+      when(() => bloc.state).thenReturn(loadedState);
+      whenListen(
+        bloc,
+        Stream<FlowChoreDetailState>.fromIterable([
+          loadedState,
+          completedState,
+        ]),
+        initialState: loadedState,
+      );
 
-    await tester.pumpWidget(
-      MaterialApp(
-        localizationsDelegates: const [S.delegate],
-        supportedLocales: S.delegate.supportedLocales,
-        theme: ThemeData.light().copyWith(
-          extensions: [
-            const Spacing(
-              xxs: 2,
-              xs: 4,
-              s: 8,
-              m: 12,
-              l: 16,
-              xl: 24,
-              xxl: 32,
-              xxxl: 40,
-            ),
-            KinlySections(
-              flow: SectionColors(
-                background: Colors.white,
-                card: Colors.white,
-                icon: Colors.blueGrey,
-                accent: Colors.teal,
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [S.delegate],
+          supportedLocales: S.delegate.supportedLocales,
+          theme: ThemeData.light().copyWith(
+            extensions: [
+              const Spacing(
+                xxs: 2,
+                xs: 4,
+                s: 8,
+                m: 12,
+                l: 16,
+                xl: 24,
+                xxl: 32,
+                xxxl: 40,
               ),
-              share: SectionColors(
-                background: Colors.white,
-                card: Colors.white,
-                icon: Colors.blueGrey,
-                accent: Colors.orange,
+              KinlySections(
+                flow: SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.blueGrey,
+                  accent: Colors.teal,
+                ),
+                share: SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.blueGrey,
+                  accent: Colors.orange,
+                ),
+                pulse: SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.red,
+                  accent: Colors.pink,
+                ),
+                empty: const SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.grey,
+                  accent: Colors.grey,
+                ),
               ),
-              pulse: SectionColors(
-                background: Colors.white,
-                card: Colors.white,
-                icon: Colors.red,
-                accent: Colors.pink,
-              ),
-              empty: const SectionColors(
-                background: Colors.white,
-                card: Colors.white,
-                icon: Colors.grey,
-                accent: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-        home: MediaQuery(
-          data: const MediaQueryData(disableAnimations: true),
-          child: BlocProvider<FlowChoreDetailBloc>.value(
-            value: bloc,
-            child: FlowChoreDetailScreen(
-              telemetry: telemetry,
+            ],
+          ),
+          home: MediaQuery(
+            data: const MediaQueryData(disableAnimations: true),
+            child: BlocProvider<FlowChoreDetailBloc>.value(
+              value: bloc,
+              child: FlowChoreDetailScreen(telemetry: telemetry),
             ),
           ),
         ),
-      ),
-    );
+      );
 
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 1000));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1000));
 
-    expect(telemetry.events.length, 1);
-    final event = telemetry.events.single;
-    expect(event.name, 'dopamine_shown');
-    expect(event.properties['reduce_motion'], true);
-    expect(event.properties['haptic_used'], false);
-  });
+      expect(telemetry.events.length, 1);
+      final event = telemetry.events.single;
+      expect(event.name, 'dopamine_shown');
+      expect(event.properties['reduce_motion'], true);
+      expect(event.properties['haptic_used'], false);
+    },
+  );
 
-  testWidgets('completion error shows snackbar and no telemetry', (tester) async {
+  testWidgets('completion error shows snackbar and no telemetry', (
+    tester,
+  ) async {
     final telemetry = FakeTelemetry();
     final bloc = _MockFlowChoreDetailBloc();
     final details = ChoreDetails(
@@ -351,9 +352,7 @@ void main() {
         ),
         home: BlocProvider<FlowChoreDetailBloc>.value(
           value: bloc,
-          child: FlowChoreDetailScreen(
-            telemetry: telemetry,
-          ),
+          child: FlowChoreDetailScreen(telemetry: telemetry),
         ),
       ),
     );
