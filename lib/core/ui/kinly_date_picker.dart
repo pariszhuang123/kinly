@@ -1,8 +1,8 @@
 // lib/core/ui/kinly_date_picker.dart
 import 'package:flutter/material.dart';
 
-Future<DateTime?> showKinlyDatePicker(
-  BuildContext context, {
+Future<DateTime?> showKinlyDatePicker({
+  required BuildContext context,
   required DateTime initialDate,
   required DateTime firstDate,
   required DateTime lastDate,
@@ -48,7 +48,9 @@ Future<DateTime?> showKinlyDatePicker(
             }),
           ),
           textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(foregroundColor: pickerPrimary),
+            style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.all(pickerPrimary),
+            ),
           ),
         ),
         child: child!,

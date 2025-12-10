@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'core/config/app_config.dart';
 import 'core/di/locator.dart';
@@ -61,7 +63,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late final AuthBloc _authBloc;
   late final AppVersionCubit _appVersionCubit;
   late final ConnectivityCubit _connectivityCubit;
@@ -76,6 +78,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _logger = _resolveLogger();
     final authRepo = sl<AuthRepository>();
     final homeRepo = sl<HomeRepository>();
@@ -151,6 +154,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     unawaited(_stopNotificationTokenSync());
     _routerRefresh.dispose();
     final authSub = _authSub;
@@ -162,6 +166,13 @@ class _MyAppState extends State<MyApp> {
     _appVersionCubit.close();
     _connectivityCubit.close();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_refreshNotificationPreferencesFromOs());
+    }
   }
 
   @override
@@ -199,6 +210,7 @@ class _MyAppState extends State<MyApp> {
       return;
     }
     await syncRevenueCatUser(_logger, userId: state.userId);
+    await _refreshNotificationPreferencesFromOs();
     await _startNotificationTokenSync();
   }
 
@@ -227,6 +239,77 @@ class _MyAppState extends State<MyApp> {
   Future<void> _stopNotificationTokenSync() async {
     await _tokenBootstrap?.dispose();
     _tokenBootstrap = null;
+  }
+
+  Future<void> _refreshNotificationPreferencesFromOs() async {
+    if (!_authBloc.state.isAuthenticated) return;
+    if (!sl.isRegistered<NotificationsRepository>() ||
+        !sl.isRegistered<NotificationSyncState>()) {
+      _logger.debug(
+        'Skipping notification prefs refresh; dependencies not registered',
+        tag: _logTag,
+      );
+      return;
+    }
+
+    final notificationsRepo = sl<NotificationsRepository>();
+    final syncState = sl<NotificationSyncState>();
+
+    final osPermission = await _readOsPermission();
+    final locale =
+        WidgetsBinding.instance.platformDispatcher.locale.toLanguageTag();
+    final timezone = DateTime.now().timeZoneName;
+    final platformName = defaultTargetPlatform.name;
+    String? deviceToken;
+    try {
+      deviceToken = await FirebaseMessaging.instance.getToken();
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to read FCM token during prefs refresh: $error',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+      deviceToken = null;
+    }
+
+    try {
+      final prefs = await notificationsRepo.fetchPreferences(
+        timezone: timezone,
+        locale: locale,
+        osPermission: osPermission,
+        deviceToken: deviceToken,
+        platform: platformName,
+      );
+
+      syncState.setPayload(
+        NotificationSyncPayload(
+          wantsDaily: prefs.wantsDaily,
+          preferredHour: prefs.preferredHour,
+          timezone: timezone,
+          locale: locale,
+          osPermission: prefs.osPermission.isNotEmpty
+              ? prefs.osPermission
+              : osPermission,
+          platform: platformName,
+        ),
+      );
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to refresh notification preferences from OS: $error',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<String> _readOsPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isGranted) return 'allowed';
+    if (status.isPermanentlyDenied) return 'blocked';
+    if (status.isDenied || status.isRestricted) return 'blocked';
+    return 'unknown';
   }
 }
 

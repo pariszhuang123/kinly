@@ -350,7 +350,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Thunderstorm",
     ),
     "harmonyQuestion": MessageLookupByLibrary.simpleMessage(
-      "How\'s the home feeling this week?",
+      "How\'s your home feeling this week?",
     ),
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
       "Share this on the gratitude wall",
@@ -743,7 +743,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Couldn\'t create. Try again.",
     ),
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "You’ve reached the free limit of 10 active or draft expenses. Close or cancel one to continue.",
+      "You’ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load your household members.",

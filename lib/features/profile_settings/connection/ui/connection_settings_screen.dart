@@ -7,6 +7,7 @@ import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/settings/kinly_settings_card.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
+import '../../../../core/ui/kinly_time_picker.dart';
 import '../../../../generated/l10n.dart';
 import '../bloc/connection_settings_bloc.dart';
 
@@ -222,7 +223,7 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
   Future<void> _pickTime(BuildContext context, int currentHour) async {
     final bloc = context.read<ConnectionSettingsBloc>();
     final initialTime = TimeOfDay(hour: currentHour, minute: 0);
-    final picked = await showTimePicker(
+    final picked = await showKinlyTimePicker(
       context: context,
       initialTime: initialTime,
       initialEntryMode: TimePickerEntryMode.input,

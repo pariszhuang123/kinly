@@ -53,7 +53,7 @@ class HarmonyScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _MoodSelector(),
-                SizedBox(height: spacing.s),
+                SizedBox(height: spacing.l),
                 _CommentBox(),
                 SizedBox(height: spacing.s),
                 _GratitudeToggle(),
@@ -204,7 +204,6 @@ class _GratitudeToggle extends StatelessWidget {
           onChanged:
               (value) => context.read<HarmonyCubit>().toggleAddToWall(value),
           title: s.harmonyShareLabel,
-          subtitle: s.harmonyShareSubtitle,
           visible: canShare && hasComment,
           // isDarkOverride: true/false optional
         );

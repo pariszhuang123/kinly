@@ -1756,10 +1756,10 @@ class S {
     );
   }
 
-  /// `You’ve reached the free limit of 10 active or draft expenses. Close or cancel one to continue.`
+  /// `You’ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.`
   String get shareCreateErrorPaywallActiveCap {
     return Intl.message(
-      'You’ve reached the free limit of 10 active or draft expenses. Close or cancel one to continue.',
+      'You’ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.',
       name: 'shareCreateErrorPaywallActiveCap',
       desc: '',
       args: [],
@@ -3261,10 +3261,10 @@ class S {
     );
   }
 
-  /// `How's the home feeling this week?`
+  /// `How's your home feeling this week?`
   String get harmonyQuestion {
     return Intl.message(
-      'How\'s the home feeling this week?',
+      'How\'s your home feeling this week?',
       name: 'harmonyQuestion',
       desc: '',
       args: [],
