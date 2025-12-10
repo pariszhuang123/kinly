@@ -115,7 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Discover what\'s next",
     ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "See every Share you\'ve created and track payments.",
+      "See every Share you\'ve created and track collections.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("Assign to"),
     "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(

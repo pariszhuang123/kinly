@@ -2431,10 +2431,10 @@ class S {
     );
   }
 
-  /// `See every Share you've created and track payments.`
+  /// `See every Share you've created and track collections.`
   String get exploreShareSubtitle {
     return Intl.message(
-      'See every Share you\'ve created and track payments.',
+      'See every Share you\'ve created and track collections.',
       name: 'exploreShareSubtitle',
       desc: '',
       args: [],
