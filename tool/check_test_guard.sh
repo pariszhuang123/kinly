@@ -31,7 +31,17 @@ if [[ -z "$CHANGED_FILES" ]]; then
   exit 0
 fi
 
-code_changed=$(echo "$CHANGED_FILES" | grep -E '^(lib/|supabase/migrations/)' || true)
+# Code/migrations that should generally require tests, EXCLUDING pure i18n/text changes.
+# We ignore:
+# - lib/l10n/intl_*.arb
+# - lib/generated/intl/messages_*.dart
+code_changed=$(
+  echo "$CHANGED_FILES" \
+    | grep -E '^(lib/|supabase/migrations/)' \
+    | grep -Ev '^(lib/l10n/intl_.*\.arb|lib/generated/intl/messages_.*\.dart)$' \
+    || true
+)
+
 tests_changed=$(echo "$CHANGED_FILES" | grep -E '^(test/|supabase/tests/)' || true)
 functions_changed=$(echo "$CHANGED_FILES" | grep -E '^supabase/functions/' || true)
 supabase_tests_changed=$(echo "$CHANGED_FILES" | grep -E '^supabase/tests/' || true)
