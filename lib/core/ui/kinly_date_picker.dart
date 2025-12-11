@@ -49,7 +49,7 @@ Future<DateTime?> showKinlyDatePicker({
           ),
           textButtonTheme: TextButtonThemeData(
             style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all(pickerPrimary),
+              foregroundColor: WidgetStateProperty.all(pickerPrimary),
             ),
           ),
         ),

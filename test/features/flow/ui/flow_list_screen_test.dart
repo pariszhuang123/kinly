@@ -24,7 +24,7 @@ void main() {
     bloc = _MockFlowListBloc();
   });
 
-  Widget _buildTestApp(Widget child) {
+  Widget buildTestApp(Widget child) {
     return MaterialApp(
       localizationsDelegates: const [
         S.delegate,
@@ -37,102 +37,97 @@ void main() {
     );
   }
 
-  testWidgets(
-    'filters active list to current user when scope is mine',
-    (tester) async {
-      final now = DateTime.now();
-      final mine = ChoreListEntry(
-        id: 'mine-1',
-        homeId: 'home-1',
-        name: 'My chore',
-        startDate: now.subtract(const Duration(days: 1)),
-        assigneeUserId: 'user-123',
-      );
-      final other = ChoreListEntry(
-        id: 'other-1',
-        homeId: 'home-1',
-        name: 'Other chore',
-        startDate: now.subtract(const Duration(days: 1)),
-        assigneeUserId: 'user-999',
-      );
-      final draft = ChoreListEntry(
-        id: 'draft-1',
-        homeId: 'home-1',
-        name: 'Draft chore',
-        startDate: now.subtract(const Duration(days: 1)),
-        assigneeUserId: null,
-      );
-      final state = FlowListState(
-        status: FlowListStatus.success,
-        items: [mine, other, draft],
-      );
+  testWidgets('filters active list to current user when scope is mine', (
+    tester,
+  ) async {
+    final now = DateTime.now();
+    final mine = ChoreListEntry(
+      id: 'mine-1',
+      homeId: 'home-1',
+      name: 'My chore',
+      startDate: now.subtract(const Duration(days: 1)),
+      assigneeUserId: 'user-123',
+    );
+    final other = ChoreListEntry(
+      id: 'other-1',
+      homeId: 'home-1',
+      name: 'Other chore',
+      startDate: now.subtract(const Duration(days: 1)),
+      assigneeUserId: 'user-999',
+    );
+    final draft = ChoreListEntry(
+      id: 'draft-1',
+      homeId: 'home-1',
+      name: 'Draft chore',
+      startDate: now.subtract(const Duration(days: 1)),
+      assigneeUserId: null,
+    );
+    final state = FlowListState(
+      status: FlowListStatus.success,
+      items: [mine, other, draft],
+    );
 
-      when(() => bloc.state).thenReturn(state);
-      whenListen(
-        bloc,
-        Stream<FlowListState>.fromIterable([state]),
-        initialState: state,
-      );
+    when(() => bloc.state).thenReturn(state);
+    whenListen(
+      bloc,
+      Stream<FlowListState>.fromIterable([state]),
+      initialState: state,
+    );
 
-      await tester.pumpWidget(
-        _buildTestApp(
-          BlocProvider<FlowListBloc>.value(
-            value: bloc,
-            child: const FlowListScreen(
-              filter: FlowListFilter.active,
-              currentUserId: 'user-123',
-              showOnlyCurrentUser: true,
-            ),
+    await tester.pumpWidget(
+      buildTestApp(
+        BlocProvider<FlowListBloc>.value(
+          value: bloc,
+          child: const FlowListScreen(
+            filter: FlowListFilter.active,
+            currentUserId: 'user-123',
+            showOnlyCurrentUser: true,
           ),
         ),
-      );
-      await tester.pumpAndSettle();
+      ),
+    );
+    await tester.pumpAndSettle();
 
-      expect(find.text('My chore'), findsOneWidget);
-      expect(find.text('Other chore'), findsNothing);
-      // Drafts are excluded from the active filter even before scoping.
-      expect(find.text('Draft chore'), findsNothing);
-    },
-  );
+    expect(find.text('My chore'), findsOneWidget);
+    expect(find.text('Other chore'), findsNothing);
+    // Drafts are excluded from the active filter even before scoping.
+    expect(find.text('Draft chore'), findsNothing);
+  });
 
-  testWidgets(
-    'shows drafts regardless of scope when viewing drafts filter',
-    (tester) async {
-      final now = DateTime.now();
-      final draft = ChoreListEntry(
-        id: 'draft-1',
-        homeId: 'home-1',
-        name: 'Draft chore',
-        startDate: now.subtract(const Duration(days: 1)),
-        assigneeUserId: null,
-      );
-      final state = FlowListState(
-        status: FlowListStatus.success,
-        items: [draft],
-      );
+  testWidgets('shows drafts regardless of scope when viewing drafts filter', (
+    tester,
+  ) async {
+    final now = DateTime.now();
+    final draft = ChoreListEntry(
+      id: 'draft-1',
+      homeId: 'home-1',
+      name: 'Draft chore',
+      startDate: now.subtract(const Duration(days: 1)),
+      assigneeUserId: null,
+    );
+    final state = FlowListState(status: FlowListStatus.success, items: [draft]);
 
-      when(() => bloc.state).thenReturn(state);
-      whenListen(
-        bloc,
-        Stream<FlowListState>.fromIterable([state]),
-        initialState: state,
-      );
+    when(() => bloc.state).thenReturn(state);
+    whenListen(
+      bloc,
+      Stream<FlowListState>.fromIterable([state]),
+      initialState: state,
+    );
 
-      await tester.pumpWidget(
-        _buildTestApp(
-          BlocProvider<FlowListBloc>.value(
-            value: bloc,
-            child: const FlowListScreen(
-              filter: FlowListFilter.drafts,
-              currentUserId: 'user-123',
-              showOnlyCurrentUser: true,
-            ),
+    await tester.pumpWidget(
+      buildTestApp(
+        BlocProvider<FlowListBloc>.value(
+          value: bloc,
+          child: const FlowListScreen(
+            filter: FlowListFilter.drafts,
+            currentUserId: 'user-123',
+            showOnlyCurrentUser: true,
           ),
         ),
-      );
-      await tester.pumpAndSettle();
+      ),
+    );
+    await tester.pumpAndSettle();
 
-      expect(find.text('Draft chore'), findsOneWidget);
-    },
-  );
+    expect(find.text('Draft chore'), findsOneWidget);
+  });
 }

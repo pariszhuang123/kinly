@@ -57,10 +57,10 @@ class SentryLogger extends Logger {
             withScope: (scope) {
               _configureScope(scope, tag);
               if (error != null) {
-                scope.setExtra('warning_error', error.toString());
+                scope.setContexts('warning_error', error.toString());
               }
               if (stackTrace != null) {
-                scope.setExtra('warning_stacktrace', stackTrace.toString());
+                scope.setContexts('warning_stacktrace', stackTrace.toString());
               }
             },
           ),

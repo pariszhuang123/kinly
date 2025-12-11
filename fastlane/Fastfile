@@ -5,15 +5,39 @@ default_platform(:android)
 platform :android do
   desc "Upload the prod AAB to Google Play closed testing (beta track by default)"
   lane :deploy_closed do
-    track          = ENV["PLAY_TRACK"] || "beta"       # Play Console closed testing
+    track          = ENV["PLAY_TRACK"] || "beta"
     release_status = ENV["PLAY_RELEASE_STATUS"] || "completed"
-    aab_path       = ENV["AAB_PATH"] || "build/app/outputs/bundle/prodRelease/app-prod-release.aab"
 
-    # Ensure the bundle exists before calling Play
-    UI.user_error!("AAB not found at #{aab_path}. Build it first (flutter build appbundle --flavor prod --release).") unless File.exist?(aab_path)
+    UI.message("Fastlane PWD: #{Dir.pwd}")
+
+    # 1) If AAB_PATH is explicitly provided, try that first
+    explicit_path = ENV["AAB_PATH"]
+    candidate_paths = []
+    candidate_paths << explicit_path if explicit_path && !explicit_path.empty?
+
+    # 2) Always also search under build/app/outputs/bundle for any .aab
+    globbed = Dir["build/app/outputs/bundle/**/*.aab"].sort
+    candidate_paths.concat(globbed)
+
+    UI.message("Candidate AAB paths (in order):")
+    candidate_paths.each { |p| UI.message("  - #{p}") }
+
+    # Resolve to the first path that actually exists
+    resolved_path = candidate_paths.find { |p| File.exist?(p) }
+
+    unless resolved_path
+      UI.message("No valid AAB found. Directory snapshot (truncated):")
+      sh("ls -R build/app/outputs || echo 'build/app/outputs missing'")
+      UI.user_error!(
+        "AAB not found. Expected at least one .aab under build/app/outputs/bundle.\n" \
+        "Make sure the bundle is built (flutter build appbundle --flavor prod --release)."
+      )
+    end
+
+    UI.success("Using AAB at: #{resolved_path}")
 
     upload_to_play_store(
-      aab: aab_path,
+      aab: resolved_path,
       track: track,
       release_status: release_status,
       # package_name & json_key_file are taken from Appfile

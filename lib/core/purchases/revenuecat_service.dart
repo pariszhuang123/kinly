@@ -41,9 +41,10 @@ class DefaultRevenueCatService implements RevenueCatService {
 
   @override
   Future<void> purchaseMonthly(RevenueCatPackage pkg) async {
-    final package = await fetchPackageByIdentifier(pkg.identifier) ??
+    final package =
+        await fetchPackageByIdentifier(pkg.identifier) ??
         (throw Exception('Monthly package not available'));
-    await Purchases.purchasePackage(package);
+    await Purchases.purchase(PurchaseParams.package(package));
   }
 
   @override

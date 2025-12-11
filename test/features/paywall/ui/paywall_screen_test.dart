@@ -99,22 +99,16 @@ void main() {
         excludeSelf: any(named: 'excludeSelf'),
       ),
     ).thenAnswer(
-      (_) async => [
-        HomeMemberSummary(
-          userId: 'user-1',
-          username: 'You',
-          role: 'owner',
+      (_) async => List.generate(
+        6,
+        (i) => HomeMemberSummary(
+          userId: 'user-${i + 1}',
+          username: 'Member ${i + 1}',
+          role: i == 0 ? 'owner' : 'member',
           validFrom: DateTime(2024, 1, 1),
           avatarUrl: null,
         ),
-        HomeMemberSummary(
-          userId: 'user-2',
-          username: 'Alex',
-          role: 'member',
-          validFrom: DateTime(2024, 1, 1),
-          avatarUrl: null,
-        ),
-      ],
+      ),
     );
     when(
       () => rc.fetchMonthlyPackage(placementId: any(named: 'placementId')),
@@ -141,6 +135,10 @@ void main() {
       bulletPhotos: 'Unlimited photos',
       bulletShares: 'Unlimited shares',
       unlimitedLabel: 'Unlimited everything',
+      priceCaption: 'Home-level plan',
+      emotionalBody: 'Emotional copy',
+      priceUnavailableLabel: 'Price unavailable',
+      priceFormatter: (p) => '$p per home',
       primaryCta: 'Upgrade',
       secondaryCta: 'Continue free',
       purchaseFailed: 'Purchase failed',
@@ -165,6 +163,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Harmony headline'), findsOneWidget);
+    expect(find.text('Emotional copy'), findsOneWidget);
+    expect(find.text('Unlimited flows'), findsOneWidget);
+    expect(find.text('+1'), findsOneWidget);
     expect(find.text('Upgrade'), findsOneWidget);
 
     await tester.tap(find.text('Upgrade'));

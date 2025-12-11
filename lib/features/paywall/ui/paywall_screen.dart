@@ -6,9 +6,10 @@ import '../../../core/homes/models.dart';
 import '../../../core/purchases/revenuecat_service.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/logging/logger.dart';
-import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/members/kinly_member_avatar_stack.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../data/repositories/auth_repository.dart';
@@ -213,43 +214,32 @@ class _PaywallBody extends StatelessWidget {
                               theme.colorScheme.primary,
                         ),
                         const SizedBox(height: 18),
-                        _EmotionalBlock(
-                          text: strings.emotionalBody ?? strings.unlimitedLabel,
-                          accent:
-                              sections?.flow.accent ??
-                              theme.colorScheme.secondary,
-                        ),
-                        const SizedBox(height: 18),
                       ],
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               KinlyFilledButton.text(
                 label: strings.primaryCta,
                 onPressed: onUpgrade,
                 fullWidth: true,
               ),
               const SizedBox(height: 12),
-              TextButton(
+              KinlyOutlinedButton.text(
+                label: strings.secondaryCta,
                 onPressed: onDismiss,
-                style: TextButton.styleFrom(
-                  foregroundColor: theme.colorScheme.onSurface.withValues(
-                    alpha: 0.9,
-                  ),
-                  padding: const EdgeInsetsDirectional.symmetric(
-                    horizontal: 12,
-                    vertical: 10,
-                  ),
-                  textStyle: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                child: Text(strings.secondaryCta),
+                compact: true,
+                fullWidth: true,
               ),
               const SizedBox(height: 12),
-              TextButton(onPressed: onRestore, child: Text(strings.restoreCta)),
+              TextButton(
+                onPressed: onRestore,
+                style: TextButton.styleFrom(
+                  foregroundColor: theme.colorScheme.onSurface,
+                ),
+                child: Text(strings.restoreCta),
+              ),
             ],
           ),
         );
@@ -270,6 +260,13 @@ class _BenefitChecklist extends StatelessWidget {
     final textTheme = theme.textTheme;
     final surface = theme.colorScheme.surface;
     final checkBg = Color.alphaBlend(accent.withValues(alpha: 0.14), surface);
+    final checkColor =
+        theme.brightness == Brightness.dark
+            ? Color.alphaBlend(
+              accent,
+              theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            )
+            : accent;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,7 +284,11 @@ class _BenefitChecklist extends StatelessWidget {
                       color: checkBg,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.check_rounded, color: accent, size: 18),
+                    child: Icon(
+                      Icons.check_rounded,
+                      color: checkColor,
+                      size: 18,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -303,109 +304,6 @@ class _BenefitChecklist extends StatelessWidget {
             ),
           )
           .toList(growable: false),
-    );
-  }
-}
-
-class _EmotionalBlock extends StatelessWidget {
-  const _EmotionalBlock({required this.text, required this.accent});
-
-  final String text;
-  final Color accent;
-
-  @override
-  Widget build(BuildContext context) {
-    if (text.trim().isEmpty) return const SizedBox.shrink();
-    final theme = Theme.of(context);
-    final surface = theme.colorScheme.surface;
-    final bg = Color.alphaBlend(accent.withValues(alpha: 0.08), surface);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 14),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text(
-        text,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
-
-class _HouseholdAvatarRow extends StatelessWidget {
-  const _HouseholdAvatarRow({required this.members, required this.accent});
-
-  final List<HomeMemberSummary> members;
-  final Color accent;
-
-  @override
-  Widget build(BuildContext context) {
-    if (members.isEmpty) return const SizedBox.shrink();
-    const radius = 20.0;
-    const step = radius * 1.3;
-    final visible = members.take(5).toList();
-    final overflow = members.length - visible.length;
-    final stackWidth = radius * 2 + step * (visible.length - 1);
-    final surface = Theme.of(context).colorScheme.surface;
-    final overflowBg = Color.alphaBlend(
-      accent.withValues(alpha: 0.12),
-      surface,
-    );
-
-    return Row(
-      children: [
-        SizedBox(
-          height: radius * 2,
-          width: stackWidth + (overflow > 0 ? step : 0),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              for (var i = 0; i < visible.length; i++)
-                PositionedDirectional(
-                  start: i * step,
-                  child: KinlyCircleAvatar(
-                    avatarUrl: visible[i].avatarUrl,
-                    isOwner: visible[i].isOwner,
-                    radius: radius,
-                    fallbackInitial:
-                        visible[i].username.isNotEmpty
-                            ? visible[i].username[0]
-                            : null,
-                  ),
-                ),
-              if (overflow > 0)
-                PositionedDirectional(
-                  start: visible.length * step,
-                  child: Container(
-                    width: radius * 2,
-                    height: radius * 2,
-                    decoration: BoxDecoration(
-                      color: overflowBg,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.05),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '+$overflow',
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
@@ -490,7 +388,12 @@ class _PaywallHero extends StatelessWidget {
           ],
           if (members.isNotEmpty) ...[
             const SizedBox(height: 14),
-            _HouseholdAvatarRow(members: members, accent: accent),
+            KinlyMemberAvatarStack(
+              members: members,
+              accent: accent,
+              maxVisible: 5,
+              radius: 20,
+            ),
           ],
           if (priceLine.isNotEmpty) ...[
             const SizedBox(height: 14),

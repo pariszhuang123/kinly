@@ -485,6 +485,9 @@ class TodayScreen extends StatelessWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final timezone = DateTime.now().timeZoneName;
     final platformName = Theme.of(context).platform.name;
+    final logger =
+        sl.isRegistered<Logger>() ? sl<Logger>() : const DebugLogger();
+    const notifTag = 'TodayNotifications';
     try {
       final deviceToken = await FirebaseMessaging.instance.getToken();
       if (!context.mounted) return;
@@ -496,7 +499,20 @@ class TodayScreen extends StatelessWidget {
         deviceToken: deviceToken,
         platform: platformName,
       );
-    } on NotificationPermissionException {
-    } catch (_) {}
+    } on NotificationPermissionException catch (error, stackTrace) {
+      logger.warn(
+        'Notification permission rejected or unavailable',
+        tag: notifTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    } catch (error, stackTrace) {
+      logger.warn(
+        'Failed to request notification permissions',
+        tag: notifTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 }

@@ -49,17 +49,17 @@ class KinlyScrollFade extends StatelessWidget {
 
     if (!fadeTop && fadeBottom) {
       stops = <double>[0.0, 1 - fadeFraction, 1.0];
-      colors = <Color>[maskColor, maskColor, maskColor.withOpacity(0)];
+      colors = <Color>[maskColor, maskColor, maskColor.withValues(alpha: 0)];
     } else if (fadeTop && !fadeBottom) {
       stops = <double>[0.0, fadeFraction, 1.0];
-      colors = <Color>[maskColor.withOpacity(0), maskColor, maskColor];
+      colors = <Color>[maskColor.withValues(alpha: 0), maskColor, maskColor];
     } else {
       stops = <double>[0.0, fadeFraction, 1 - fadeFraction, 1.0];
       colors = <Color>[
-        maskColor.withOpacity(0),
+        maskColor.withValues(alpha: 0),
         maskColor,
         maskColor,
-        maskColor.withOpacity(0),
+        maskColor.withValues(alpha: 0),
       ];
     }
 

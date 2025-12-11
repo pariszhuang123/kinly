@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_add_tile_button.dart';
 import '../../../../core/ui/buttons/kinly_outlined_button.dart';
-import '../../../../core/ui/members/kinly_member_avatar_row.dart';
+import '../../../../core/ui/members/kinly_member_avatar_stack.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/hub_bloc.dart';
 
@@ -77,30 +77,24 @@ class HubMembersSection extends StatelessWidget {
           ),
         if (members.isNotEmpty)
           SizedBox(
-            height: 130, // slightly taller to fit larger avatars + labels
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start, // top-align everything
-                children: [
-                  KinlyMemberAvatarRow(
-                    members: members,
-                    showNames: true,
-                    avatarRadius: _avatarRadius,
-                    spacing: spacing.md,
-                    runSpacing: spacing.sm,
-                  ),
-                  SizedBox(width: spacing.md),
-                  // Fixed "Invite" tile styled like a member tile
-                  _AddMemberTile(
-                    spacing: spacing,
-                    avatarRadius: _avatarRadius,
-                    onTap: onInviteTap,
-                    label: s.hubInviteCta, // one-line i18n label
-                  ),
-                ],
-              ),
+            height: _avatarRadius * 2 + spacing.lg + spacing.md,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                KinlyMemberAvatarStack(
+                  members: members,
+                  accent: colorScheme.primary,
+                  maxVisible: 5,
+                  radius: _avatarRadius,
+                ),
+                SizedBox(width: spacing.md),
+                _AddMemberTile(
+                  spacing: spacing,
+                  avatarRadius: _avatarRadius,
+                  onTap: onInviteTap,
+                  label: s.hubInviteCta, // one-line i18n label
+                ),
+              ],
             ),
           )
         else

@@ -34,11 +34,11 @@ Future<TimeOfDay?> showKinlyTimePicker({
             hourMinuteColor: pickerPrimary,
             dialHandColor: pickerPrimary,
             dialTextColor: theme.colorScheme.onSurface,
-            dialBackgroundColor: theme.colorScheme.surfaceVariant,
+            dialBackgroundColor: theme.colorScheme.surfaceContainerHighest,
           ),
           textButtonTheme: TextButtonThemeData(
             style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all(pickerPrimary),
+              foregroundColor: WidgetStateProperty.all(pickerPrimary),
             ),
           ),
         ),

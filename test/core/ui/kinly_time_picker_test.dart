@@ -8,7 +8,7 @@ void main() {
   const primary = Color(0xFF3366FF);
   const onPrimary = Color(0xFFFFFFFF);
 
-  Widget _buildApp(Widget child) {
+  Widget buildApp(Widget child) {
     return MaterialApp(
       theme: ThemeData(
         colorScheme: const ColorScheme.light(
@@ -24,17 +24,19 @@ void main() {
 
   testWidgets('showKinlyTimePicker applies Kinly colors', (tester) async {
     await tester.pumpWidget(
-      _buildApp(
+      buildApp(
         Builder(
-          builder: (context) => Scaffold(
-            body: ElevatedButton(
-              onPressed: () => showKinlyTimePicker(
-                context: context,
-                initialTime: const TimeOfDay(hour: 9, minute: 0),
+          builder:
+              (context) => Scaffold(
+                body: ElevatedButton(
+                  onPressed:
+                      () => showKinlyTimePicker(
+                        context: context,
+                        initialTime: const TimeOfDay(hour: 9, minute: 0),
+                      ),
+                  child: const Text('open-time'),
+                ),
               ),
-              child: const Text('open-time'),
-            ),
-          ),
         ),
       ),
     );
@@ -55,28 +57,27 @@ void main() {
     expect(theme.colorScheme.primary, primary);
     expect(theme.colorScheme.onPrimary, onPrimary);
     expect(theme.timePickerTheme.dialHandColor, primary);
-    expect(
-      theme.textButtonTheme.style?.foregroundColor?.resolve({}),
-      primary,
-    );
+    expect(theme.textButtonTheme.style?.foregroundColor?.resolve({}), primary);
   });
 
   testWidgets('showKinlyDatePicker applies Kinly colors', (tester) async {
     final now = DateTime.now();
     await tester.pumpWidget(
-      _buildApp(
+      buildApp(
         Builder(
-          builder: (context) => Scaffold(
-            body: ElevatedButton(
-              onPressed: () => showKinlyDatePicker(
-                context: context,
-                initialDate: now,
-                firstDate: now.subtract(const Duration(days: 1)),
-                lastDate: now.add(const Duration(days: 1)),
+          builder:
+              (context) => Scaffold(
+                body: ElevatedButton(
+                  onPressed:
+                      () => showKinlyDatePicker(
+                        context: context,
+                        initialDate: now,
+                        firstDate: now.subtract(const Duration(days: 1)),
+                        lastDate: now.add(const Duration(days: 1)),
+                      ),
+                  child: const Text('open-date'),
+                ),
               ),
-              child: const Text('open-date'),
-            ),
-          ),
         ),
       ),
     );
@@ -97,9 +98,6 @@ void main() {
     expect(theme.colorScheme.primary, primary);
     expect(theme.colorScheme.onPrimary, onPrimary);
     expect(theme.datePickerTheme.headerBackgroundColor, primary);
-    expect(
-      theme.textButtonTheme.style?.foregroundColor?.resolve({}),
-      primary,
-    );
+    expect(theme.textButtonTheme.style?.foregroundColor?.resolve({}), primary);
   });
 }
