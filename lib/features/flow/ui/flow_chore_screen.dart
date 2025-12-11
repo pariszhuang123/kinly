@@ -132,9 +132,8 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
           content = _FlowChoreError(
             message: s.flowChoreLoadError,
             onRetry:
-                () => context.read<FlowChoreBloc>().add(
-                  const FlowChoreStarted(),
-                ),
+                () =>
+                    context.read<FlowChoreBloc>().add(const FlowChoreStarted()),
           );
         } else {
           content = KinlyScrollFade(
@@ -219,26 +218,27 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
     final s = S.of(context);
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => KinlyPaywallScreen(
-          homeId: widget.homeId,
-          strings: PaywallStrings(
-            title: s.paywallTitle,
-            subtitle: s.paywallSubtitle,
-            bulletMembers: s.paywallBulletMembers,
-            bulletFlows: s.paywallBulletFlows,
-            bulletPhotos: s.paywallBulletPhotos,
-            bulletShares: s.paywallBulletShares,
-            unlimitedLabel: s.paywallSubtitle,
-            primaryCta: s.paywallPrimaryCta,
-            secondaryCta: s.paywallSecondaryCta,
-            purchaseFailed: s.paywallPurchaseFailed,
-            purchaseSuccess: s.paywallPurchaseSuccess,
-            restoreCta: s.paywallRestoreCta,
-            errorTitle: s.paywallErrorTitle,
-            retryLabel: s.paywallRetryLabel,
-          ),
-          source: 'flow_chore',
-        ),
+        builder:
+            (_) => KinlyPaywallScreen(
+              homeId: widget.homeId,
+              strings: PaywallStrings(
+                title: s.paywallTitle,
+                subtitle: s.paywallSubtitle,
+                bulletMembers: s.paywallBulletMembers,
+                bulletFlows: s.paywallBulletFlows,
+                bulletPhotos: s.paywallBulletPhotos,
+                bulletShares: s.paywallBulletShares,
+                unlimitedLabel: s.paywallSubtitle,
+                primaryCta: s.paywallPrimaryCta,
+                secondaryCta: s.paywallSecondaryCta,
+                purchaseFailed: s.paywallPurchaseFailed,
+                purchaseSuccess: s.paywallPurchaseSuccess,
+                restoreCta: s.paywallRestoreCta,
+                errorTitle: s.paywallErrorTitle,
+                retryLabel: s.paywallRetryLabel,
+              ),
+              source: 'flow_chore',
+            ),
       ),
     );
     if (!context.mounted) return;
@@ -295,6 +295,7 @@ class _FlowChoreFormView extends StatelessWidget {
 
     return ListView(
       children: [
+        SizedBox(height: spacing?.xl ?? 16),
         KinlyTextField(
           controller: titleController,
           labelText: s.flowChoreNameLabel,
@@ -634,6 +635,7 @@ class _OptionalDetailsExpansion extends StatelessWidget {
           spacing?.md ?? 16,
         ),
         children: [
+          SizedBox(height: spacing?.xl ?? 16),
           KinlyTextField(
             controller: notesController,
             minLines: 3,

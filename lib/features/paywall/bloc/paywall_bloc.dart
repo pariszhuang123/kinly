@@ -7,7 +7,9 @@ import '../../../core/logging/logger.dart';
 import '../../../core/purchases/revenuecat_service.dart';
 import '../../../core/paywall/paywall_models.dart';
 import '../../../core/paywall/enums/paywall_event_type.dart';
+import '../../../core/homes/models.dart';
 import '../../../data/repositories/auth_repository.dart';
+import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/paywall_repository.dart';
 
 part 'paywall_event.dart';
@@ -21,12 +23,14 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     required PaywallRepository paywallRepository,
     required RevenueCatService revenueCatService,
     required AuthRepository authRepository,
+    required HomeRepository homeRepository,
     required String homeId,
     required Logger logger,
     String? placementId,
   }) : _paywallRepository = paywallRepository,
        _revenueCatService = revenueCatService,
        _authRepository = authRepository,
+       _homeRepository = homeRepository,
        _homeId = homeId,
        _placementId = placementId,
        _logger = logger,
@@ -40,6 +44,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
   final PaywallRepository _paywallRepository;
   final RevenueCatService _revenueCatService;
   final AuthRepository _authRepository;
+  final HomeRepository _homeRepository;
   final String _homeId;
   final Logger _logger;
   final String? _placementId;
@@ -58,12 +63,24 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     emit(state.copyWith(status: PaywallLoadStatus.loading, error: null));
     try {
       RevenueCatPackage? pkg;
+      List<HomeMemberSummary> members = const [];
       try {
         pkg = await _revenueCatService.fetchMonthlyPackage(
           placementId: _placementId,
         );
       } catch (_) {
         pkg = null;
+      }
+
+      try {
+        members = await _homeRepository.listActiveMembers(_homeId);
+      } catch (error, stackTrace) {
+        _logger.warn(
+          'Failed to load active members for paywall',
+          tag: _logTag,
+          error: error,
+          stackTrace: stackTrace,
+        );
       }
 
       try {
@@ -77,6 +94,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
           status: PaywallLoadStatus.ready,
           paywallStatus: null,
           package: pkg,
+          activeMembers: members,
         ),
       );
     } catch (e) {

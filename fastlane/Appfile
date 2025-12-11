@@ -1,2 +1,11 @@
+# fastlane/Appfile
+
+# Path to the Google Play service account JSON
+# CI sets GOOGLE_PLAY_SERVICE_ACCOUNT_JSON=config/google_play_key.json
+# Locally you can either:
+#  - put the file in config/google_play_key.json, or
+#  - point this env var to an absolute path.
 json_key_file(ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"] || "config/google_play_key.json")
+
+# Your Android package name
 package_name("com.makinglifeeasie.kinly")

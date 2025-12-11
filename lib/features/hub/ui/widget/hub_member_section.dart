@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/homes/models.dart';
 import '../../../../core/theme/spacing.dart';
-import '../../../../core/ui/kinly_circle_avatar.dart';
-import '../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../core/ui/buttons/kinly_add_tile_button.dart';
+import '../../../../core/ui/buttons/kinly_outlined_button.dart';
+import '../../../../core/ui/members/kinly_member_avatar_row.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/hub_bloc.dart';
 
@@ -79,35 +79,29 @@ class HubMembersSection extends StatelessWidget {
         if (members.isNotEmpty)
           SizedBox(
             height: 130, // slightly taller to fit larger avatars + labels
-            child: Row(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // 👈 top-align everything
-              children: [
-                // Scrollable avatars
-                Expanded(
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: members.length,
-                    separatorBuilder: (_, __) => SizedBox(width: spacing.md),
-                    itemBuilder: (context, index) {
-                      final member = members[index];
-                      return _MemberTile(
-                        member: member,
-                        spacing: spacing,
-                        avatarRadius: _avatarRadius,
-                      );
-                    },
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // top-align everything
+                children: [
+                  KinlyMemberAvatarRow(
+                    members: members,
+                    showNames: true,
+                    avatarRadius: _avatarRadius,
+                    spacing: spacing.md,
+                    runSpacing: spacing.sm,
                   ),
-                ),
-                SizedBox(width: spacing.md),
-                // Fixed "Invite" tile styled like a member tile
-                _AddMemberTile(
-                  spacing: spacing,
-                  avatarRadius: _avatarRadius,
-                  onTap: onInviteTap,
-                  label: s.hubInviteCta, // one-line i18n label
-                ),
-              ],
+                  SizedBox(width: spacing.md),
+                  // Fixed "Invite" tile styled like a member tile
+                  _AddMemberTile(
+                    spacing: spacing,
+                    avatarRadius: _avatarRadius,
+                    onTap: onInviteTap,
+                    label: s.hubInviteCta, // one-line i18n label
+                  ),
+                ],
+              ),
             ),
           )
         else
@@ -118,47 +112,6 @@ class HubMembersSection extends StatelessWidget {
               onTap: onInviteTap,
             ),
           ),
-      ],
-    );
-  }
-}
-
-class _MemberTile extends StatelessWidget {
-  const _MemberTile({
-    required this.member,
-    required this.spacing,
-    required this.avatarRadius,
-  });
-
-  final HomeMemberSummary member;
-  final Spacing spacing;
-  final double avatarRadius;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        KinlyCircleAvatar(
-          avatarUrl: member.avatarUrl,
-          radius: avatarRadius,
-          isOwner: member.isOwner,
-        ),
-        SizedBox(height: spacing.sm),
-        SizedBox(
-          width: avatarRadius * 3.0, // a bit wider since we use 1 line
-          child: Text(
-            member.username,
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-        ),
       ],
     );
   }

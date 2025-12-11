@@ -223,8 +223,20 @@ void main() {
   blocTest<AuthBloc, AuthState>(
     'sets error when membership refresh fails',
     build: () {
+      var calls = 0;
+      when(() => homeRepository.getCurrentMembership()).thenAnswer((_) async {
+        if (calls == 0) {
+          calls++;
+          return CurrentMembership(
+            userId: 'user-2',
+            homeId: 'home-abc',
+            role: 'member',
+            validFrom: DateTime.utc(2025, 1, 1),
+          );
+        }
+        throw Exception('boom');
+      });
       when(() => authRepository.current).thenReturn(const AuthSession(userId: 'user-2'));
-      when(() => homeRepository.getCurrentMembership()).thenThrow(Exception('boom'));
       return buildBloc();
     },
     seed: () => const AuthState(
@@ -233,14 +245,58 @@ void main() {
       membershipStatus: AuthMembershipStatus.active,
     ),
     act: (bloc) => bloc.add(const AuthMembershipRefreshRequested()),
+    wait: const Duration(milliseconds: 900),
+    skip: 2,
     expect: () => [
       isA<AuthState>()
           .having((s) => s.status, 'status', AuthStatus.authenticated)
           .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.unknown),
       isA<AuthState>()
           .having((s) => s.errorMessage, 'errorMessage', AuthBloc.membershipLoadFailedKey)
-          .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.unknown),
+          .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.active),
     ],
-    verify: (_) => verify(() => homeRepository.getCurrentMembership()).called(greaterThanOrEqualTo(1)),
+    verify: (_) => verify(() => homeRepository.getCurrentMembership()).called(greaterThanOrEqualTo(2)),
+  );
+
+  blocTest<AuthBloc, AuthState>(
+    'retries membership fetch once before surfacing error',
+    build: () {
+      var calls = 0;
+      when(() => homeRepository.getCurrentMembership()).thenAnswer((_) async {
+        if (calls == 0) {
+          calls++;
+          return CurrentMembership(
+            userId: 'user-3',
+            homeId: 'home-init',
+            role: 'member',
+            validFrom: DateTime.utc(2025, 1, 1),
+          );
+        }
+        if (calls == 1) {
+          calls++;
+          throw Exception('first fail');
+        }
+        return CurrentMembership(
+          userId: 'user-3',
+          homeId: 'home-777',
+          role: 'member',
+          validFrom: DateTime.utc(2025, 1, 2),
+        );
+      });
+      when(() => authRepository.current).thenReturn(const AuthSession(userId: 'user-3'));
+      return buildBloc();
+    },
+    act: (bloc) => bloc.add(const AuthMembershipRefreshRequested()),
+    wait: const Duration(milliseconds: 900),
+    skip: 2,
+    expect: () => [
+      isA<AuthState>()
+          .having((s) => s.status, 'status', AuthStatus.authenticated)
+          .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.unknown),
+      isA<AuthState>()
+          .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.active)
+          .having((s) => s.membership?.homeId, 'membership.homeId', 'home-777'),
+    ],
+    verify: (_) => verify(() => homeRepository.getCurrentMembership()).called(3),
   );
 }

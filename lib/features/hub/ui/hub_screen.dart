@@ -85,6 +85,7 @@ class HubScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  SizedBox(height: spacing.xl),
                                   HubMembersSection(
                                     state: state,
                                     onInviteTap:
@@ -116,8 +117,9 @@ class HubScreen extends StatelessWidget {
                                       size: 28,
                                     ),
                                     onTap:
-                                        () =>
-                                            context.push(AppRoutes.gratitudeWall),
+                                        () => context.push(
+                                          AppRoutes.gratitudeWall,
+                                        ),
                                   ),
                                 ],
                               ),

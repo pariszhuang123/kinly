@@ -1,11 +1,13 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart' as flutter_test;
+import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/paywall/paywall_models.dart';
 import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
+import 'package:kinly/data/repositories/home_repository.dart';
 import 'package:kinly/data/repositories/paywall_repository.dart';
 import 'package:kinly/features/paywall/bloc/paywall_bloc.dart';
 import 'package:mocktail/mocktail.dart';
@@ -17,6 +19,8 @@ class _MockRevenueCatService extends Mock implements RevenueCatService {}
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
+class _MockHomeRepository extends Mock implements HomeRepository {}
+
 class _MockLogger extends Mock implements Logger {}
 
 class _RevenueCatPackageFake extends Fake implements RevenueCatPackage {}
@@ -25,6 +29,7 @@ void main() {
   late _MockPaywallRepository paywallRepository;
   late _MockRevenueCatService revenueCatService;
   late _MockAuthRepository authRepository;
+  late _MockHomeRepository homeRepository;
   late _MockLogger logger;
   const homeId = 'home-1';
   setUpAll(() {
@@ -44,6 +49,7 @@ void main() {
     paywallRepository = _MockPaywallRepository();
     revenueCatService = _MockRevenueCatService();
     authRepository = _MockAuthRepository();
+    homeRepository = _MockHomeRepository();
     logger = _MockLogger();
 
     when(
@@ -56,6 +62,20 @@ void main() {
         source: any(named: 'source'),
       ),
     ).thenAnswer((_) async {});
+    when(
+      () => homeRepository.listActiveMembers(
+        any(),
+        excludeSelf: any(named: 'excludeSelf'),
+      ),
+    ).thenAnswer((_) async => [
+          HomeMemberSummary(
+            userId: 'user-1',
+            username: 'You',
+            role: 'owner',
+            validFrom: DateTime(2024, 1, 1),
+            avatarUrl: null,
+          ),
+        ]);
     when(
       () => revenueCatService.fetchMonthlyPackage(
         placementId: any(named: 'placementId'),
@@ -96,6 +116,7 @@ void main() {
     paywallRepository: paywallRepository,
     revenueCatService: revenueCatService,
     authRepository: authRepository,
+    homeRepository: homeRepository,
     homeId: homeId,
     logger: logger,
   );

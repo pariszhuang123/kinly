@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/locator.dart';
+import '../../../core/homes/models.dart';
 import '../../../core/purchases/revenuecat_service.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/section_assets.dart';
@@ -9,9 +10,11 @@ import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/logging/logger.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/members/kinly_member_avatar_row.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../data/repositories/auth_repository.dart';
+import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/paywall_repository.dart';
 import '../bloc/paywall_bloc.dart';
 
@@ -71,6 +74,7 @@ class KinlyPaywallScreen extends StatelessWidget {
             paywallRepository: sl<PaywallRepository>(),
             revenueCatService: sl<RevenueCatService>(),
             authRepository: sl<AuthRepository>(),
+            homeRepository: sl<HomeRepository>(),
             homeId: homeId,
             logger: sl<Logger>(),
             placementId: placementId,
@@ -121,6 +125,7 @@ class KinlyPaywallScreen extends StatelessWidget {
                   context.read<PaywallBloc>().add(const PaywallDismissed());
                   Navigator.of(context).pop(false);
                 },
+                members: state.activeMembers,
               );
             },
           ),
@@ -137,6 +142,7 @@ class _PaywallBody extends StatelessWidget {
     required this.onUpgrade,
     required this.onRestore,
     required this.onDismiss,
+    required this.members,
   });
 
   final PaywallStrings strings;
@@ -144,6 +150,7 @@ class _PaywallBody extends StatelessWidget {
   final VoidCallback onUpgrade;
   final VoidCallback onRestore;
   final VoidCallback onDismiss;
+  final List<HomeMemberSummary> members;
 
   @override
   Widget build(BuildContext context) {
@@ -189,64 +196,67 @@ class _PaywallBody extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return KinlyScrollFade(
-          child: SingleChildScrollView(
-            padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 32),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight - 56),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _PaywallHero(
-                    title: strings.title,
-                    subtitle: strings.subtitle,
-                    priceLine: priceLine,
-                    unlimitedLabel: strings.unlimitedLabel,
-                    gradient: heroGradient,
-                    accent: sections?.share.accent ?? theme.colorScheme.primary,
-                  ),
-                  const SizedBox(height: 12),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: features.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 1,
-                        ),
-                    itemBuilder: (context, index) {
-                      final f = features[index];
-                      return _FeatureCard(
-                        asset: f.asset,
-                        accent: f.accent,
-                        tint: f.tint,
-                        label: f.label,
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 28),
-                  KinlyFilledButton.text(
-                    label: strings.primaryCta,
-                    onPressed: onUpgrade,
-                    fullWidth: true,
-                  ),
-                  const SizedBox(height: 12),
-                  KinlyOutlinedButton.text(
-                    label: strings.secondaryCta,
-                    onPressed: onDismiss,
-                    fullWidth: true,
-                  ),
-                  const SizedBox(height: 12),
-                  TextButton(
-                    onPressed: onRestore,
-                    child: Text(strings.restoreCta),
-                  ),
-                ],
+        return Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _PaywallHero(
+                title: strings.title,
+                subtitle: strings.subtitle,
+                priceLine: priceLine,
+                unlimitedLabel: strings.unlimitedLabel,
+                gradient: heroGradient,
+                accent: sections?.share.accent ?? theme.colorScheme.primary,
+                members: members,
               ),
-            ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: KinlyScrollFade(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: features.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 1,
+                          ),
+                      itemBuilder: (context, index) {
+                        final f = features[index];
+                        return _FeatureCard(
+                          asset: f.asset,
+                          accent: f.accent,
+                          tint: f.tint,
+                          label: f.label,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 28),
+              KinlyFilledButton.text(
+                label: strings.primaryCta,
+                onPressed: onUpgrade,
+                fullWidth: true,
+              ),
+              const SizedBox(height: 12),
+              KinlyOutlinedButton.text(
+                label: strings.secondaryCta,
+                onPressed: onDismiss,
+                fullWidth: true,
+              ),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: onRestore,
+                child: Text(strings.restoreCta),
+              ),
+            ],
           ),
         );
       },
@@ -329,6 +339,7 @@ class _PaywallHero extends StatelessWidget {
     required this.unlimitedLabel,
     required this.gradient,
     required this.accent,
+    required this.members,
   });
 
   final String title;
@@ -337,6 +348,7 @@ class _PaywallHero extends StatelessWidget {
   final String unlimitedLabel;
   final List<Color> gradient;
   final Color accent;
+  final List<HomeMemberSummary> members;
 
   @override
   Widget build(BuildContext context) {
@@ -368,6 +380,13 @@ class _PaywallHero extends StatelessWidget {
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
+                if (members.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  KinlyMemberAvatarRow(
+                    members: members,
+                    avatarRadius: 20,
+                  ),
+                ],
                 const SizedBox(height: 12),
                 if (priceLine.isNotEmpty)
                   Text(

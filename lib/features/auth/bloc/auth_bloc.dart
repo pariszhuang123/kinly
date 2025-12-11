@@ -35,6 +35,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
   final HomeRepository _homeRepository;
   late final StreamSubscription<AuthSession?> _sessionSub;
+  static const _retryDelay = Duration(milliseconds: 800);
+  static const _maxAttempts = 2;
 
   Future<void> _onSessionChanged(
     _AuthSessionChanged event,
@@ -116,9 +118,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _refreshMembership(Emitter<AuthState> emit) async {
+    final previousMembership = state.membership;
+    final fallbackStatus =
+        state.membershipStatus == AuthMembershipStatus.active ||
+                previousMembership != null
+            ? AuthMembershipStatus.active
+            : AuthMembershipStatus.unknown;
     emit(state.copyWith(membershipStatus: AuthMembershipStatus.unknown));
     try {
-      final membership = await _homeRepository.getCurrentMembership();
+      final membership = await _fetchMembershipWithRetry();
       emit(
         state.copyWith(
           membershipStatus:
@@ -126,17 +134,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                   ? AuthMembershipStatus.none
                   : AuthMembershipStatus.active,
           membership: membership,
+          errorMessage: null,
         ),
       );
     } catch (error) {
       emit(
         state.copyWith(
-          membershipStatus: AuthMembershipStatus.unknown,
-          membership: null,
+          membershipStatus: fallbackStatus,
+          membership: previousMembership,
           errorMessage: membershipLoadFailedKey,
         ),
       );
     }
+  }
+
+  Future<CurrentMembership?> _fetchMembershipWithRetry() async {
+    Object? lastError;
+    for (var attempt = 0; attempt < _maxAttempts; attempt++) {
+      try {
+        return await _homeRepository.getCurrentMembership();
+      } catch (error) {
+        lastError = error;
+        if (attempt == _maxAttempts - 1) break;
+        await Future<void>.delayed(_retryDelay);
+      }
+    }
+    throw lastError ?? Exception('Unknown membership fetch failure');
   }
 
   @override

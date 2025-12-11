@@ -9,6 +9,7 @@ class PaywallState extends Equatable {
   final PaywallStatus? paywallStatus;
   final RevenueCatPackage? package;
   final String? error;
+  final List<HomeMemberSummary> activeMembers;
 
   const PaywallState({
     required this.status,
@@ -16,6 +17,7 @@ class PaywallState extends Equatable {
     required this.paywallStatus,
     required this.package,
     required this.error,
+    required this.activeMembers,
   });
 
   const PaywallState.initial()
@@ -23,7 +25,8 @@ class PaywallState extends Equatable {
         actionStatus = PaywallActionStatus.idle,
         paywallStatus = null,
         package = null,
-        error = null;
+        error = null,
+        activeMembers = const [];
 
   bool get isActionInFlight =>
       actionStatus == PaywallActionStatus.purchasing ||
@@ -35,6 +38,7 @@ class PaywallState extends Equatable {
     PaywallStatus? paywallStatus,
     RevenueCatPackage? package,
     String? error,
+    List<HomeMemberSummary>? activeMembers,
   }) {
     return PaywallState(
       status: status ?? this.status,
@@ -42,6 +46,7 @@ class PaywallState extends Equatable {
       paywallStatus: paywallStatus ?? this.paywallStatus,
       package: package ?? this.package,
       error: error,
+      activeMembers: activeMembers ?? this.activeMembers,
     );
   }
 
@@ -52,5 +57,6 @@ class PaywallState extends Equatable {
         paywallStatus,
         package,
         error,
+        activeMembers,
       ];
 }

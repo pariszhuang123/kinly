@@ -578,8 +578,8 @@ jobs:
 
       - name: Compute build number
         id: versioning
-        run: echo "BUILD_NUMBER=$(git rev-list --count HEAD)" >> $GITHUB_ENV
         shell: bash
+        run: echo "BUILD_NUMBER=$(git rev-list --count HEAD)" >> $GITHUB_ENV
 
       - name: Create env/prod.json from secrets
         run: |
@@ -624,7 +624,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-prod-release.aab
-          # Narrow glob; adjust if your path differs
           path: build/app/outputs/bundle/**/*.aab
           retention-days: 7
 
@@ -647,6 +646,7 @@ jobs:
         if: env.DO_PLAY_UPLOAD == 'true'
         run: fastlane android deploy_closed
         env:
+          # Matches Appfile json_key_file default logic
           GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: config/google_play_key.json
           AAB_PATH: build/app/outputs/bundle/prodRelease/app-prod-release.aab
           PLAY_TRACK: beta
@@ -655,5 +655,3 @@ jobs:
       - name: Cleanup build outputs
         if: always()
         run: rm -rf build/app/outputs
-
-  # iOS builds are manual via Xcode; no CI job
