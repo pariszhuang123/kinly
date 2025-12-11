@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart' as flutter_test;
 import 'package:kinly/core/homes/models.dart';
-import 'package:kinly/core/paywall/paywall_models.dart';
 import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
@@ -35,12 +34,14 @@ void main() {
   setUpAll(() {
     flutter_test.TestWidgetsFlutterBinding.ensureInitialized();
     const purchasesChannel = MethodChannel('purchases_flutter');
-    flutter_test.TestDefaultBinaryMessengerBinding.instance
+    flutter_test
+        .TestDefaultBinaryMessengerBinding
+        .instance
         .defaultBinaryMessenger
         .setMockMethodCallHandler(purchasesChannel, (methodCall) async {
-      if (methodCall.method == 'getAppUserID') return 'rc-test-user';
-      return null;
-    });
+          if (methodCall.method == 'getAppUserID') return 'rc-test-user';
+          return null;
+        });
     registerFallbackValue(PaywallEventType.impression);
     registerFallbackValue(_RevenueCatPackageFake());
   });
@@ -67,15 +68,17 @@ void main() {
         any(),
         excludeSelf: any(named: 'excludeSelf'),
       ),
-    ).thenAnswer((_) async => [
-          HomeMemberSummary(
-            userId: 'user-1',
-            username: 'You',
-            role: 'owner',
-            validFrom: DateTime(2024, 1, 1),
-            avatarUrl: null,
-          ),
-        ]);
+    ).thenAnswer(
+      (_) async => [
+        HomeMemberSummary(
+          userId: 'user-1',
+          username: 'You',
+          role: 'owner',
+          validFrom: DateTime(2024, 1, 1),
+          avatarUrl: null,
+        ),
+      ],
+    );
     when(
       () => revenueCatService.fetchMonthlyPackage(
         placementId: any(named: 'placementId'),
@@ -84,14 +87,16 @@ void main() {
       (_) async =>
           RevenueCatPackage(identifier: 'monthly', priceString: '\$4.99'),
     );
-    when(() => revenueCatService.isEntitlementActive(any())).thenAnswer(
-      (_) async => true,
-    );
+    when(
+      () => revenueCatService.isEntitlementActive(any()),
+    ).thenAnswer((_) async => true);
     when(
       () => revenueCatService.purchaseMonthly(any()),
     ).thenAnswer((_) async {});
     when(() => revenueCatService.restorePurchases()).thenAnswer((_) async {});
-    when(() => revenueCatService.getCustomerInfo()).thenThrow(Exception('stub'));
+    when(
+      () => revenueCatService.getCustomerInfo(),
+    ).thenThrow(Exception('stub'));
     when(
       () => revenueCatService.setSubscriberAttributes(
         appUserId: any(named: 'appUserId'),

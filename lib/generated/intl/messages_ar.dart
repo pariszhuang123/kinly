@@ -48,17 +48,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m11(code) => "تم الانضمام باستخدام الرمز: ${code}";
 
-  static String m12(paidAmount, totalAmount) =>
+  static String m12(price) => "${price} ?????? ????? ???????.";
+
+  static String m13(paidAmount, totalAmount) =>
       "${paidAmount} من ${totalAmount} تم تحصيلها";
 
-  static String m13(paid, total) => "${paid} من ${total} مدفوعة";
+  static String m14(paid, total) => "${paid} من ${total} مدفوعة";
 
-  static String m14(count) => "عرض الكل (${count})";
+  static String m15(count) => "عرض الكل (${count})";
 
-  static String m15(count) =>
+  static String m16(count) =>
       "${Intl.plural(count, one: '${count} دفعة معلّقة', other: '${count} دفعات معلّقة')}";
 
-  static String m16(homeId, role) =>
+  static String m17(homeId, role) =>
       "المنزل الحالي: ${homeId} • الدور: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -502,17 +504,29 @@ class MessageLookup extends MessageLookupByLibrary {
     "offline_retry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
     "offline_title": MessageLookupByLibrary.simpleMessage("أنت دون اتصال"),
     "paywallBulletFlows": MessageLookupByLibrary.simpleMessage(
-      "الـFlows النشِطة",
+      "?????? ??? ??????",
     ),
     "paywallBulletMembers": MessageLookupByLibrary.simpleMessage(
-      "أعضاء المنزل",
+      "????? ??? ??? ???????",
     ),
-    "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage("صور الـFlow"),
+    "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
+      "??? ?????? ??? ??????",
+    ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
-      "الـShares النشِطة",
+      "????? ?????? ??? ??????",
+    ),
+    "paywallEmotional": MessageLookupByLibrary.simpleMessage(
+      "Premium ????? ???? ????? ??? ?? ??? ? ??? ?????? ??? ????? ??????? ??????.",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل شاشة الترقية.",
+    ),
+    "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
+      "????? ??? ????? ?????. ??? ????? ?????? ??? ??????? ?????.",
+    ),
+    "paywallPricePerMonth": m12,
+    "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
+      "????? ??? ???? ??????.",
     ),
     "paywallPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "الترقية إلى Kinly Premium",
@@ -531,10 +545,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "المتابعة بمنزل مجاني",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "سعر شهري بسيط لكل منزل. كل من في المنزل يحصل على وصول غير محدود إلى الميزات التالية.",
+      "??? ????? ????? ????? ???????. ?????? ???? ??? ?????.",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
-      "أضِف مزيدًا من الانسجام لمنزلك بأقل من 0.5٪ من قيمة الإيجار",
+      "???? ????? ???? ??????? ????.",
     ),
     "profileActionCancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage(
@@ -805,8 +819,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "اختر طريقة التقسيم.",
     ),
-    "shareCreatedListActiveAmount": m12,
-    "shareCreatedListActiveSubtitle": m13,
+    "shareCreatedListActiveAmount": m13,
+    "shareCreatedListActiveSubtitle": m14,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "غير معيَّن",
     ),
@@ -898,7 +912,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("جديد اليوم"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m14,
+    "todayFlowSeeAll": m15,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "إليك ما يجري في منزلك اليوم.",
     ),
@@ -921,7 +935,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
       "مشاركة الدعوة",
     ),
-    "todayShareActiveSubtitle": m15,
+    "todayShareActiveSubtitle": m16,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("قادم"),
     "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
       "قسّم المبلغ بناءً على الـShare.",
@@ -947,7 +961,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("نشِطة"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("مسوّدات"),
-    "today_home_details": m16,
+    "today_home_details": m17,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "لا يوجد منزل نشِط حتى الآن. أنشئ أو انضم إلى منزل لعرض صفحة اليوم.",
     ),

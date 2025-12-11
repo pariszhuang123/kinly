@@ -1,7 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'enums/paywall_event_type.dart';
-import '../../core/paywall/paywall_models.dart';
 import '../../data/repositories/paywall_repository.dart';
 
 class SupabasePaywallRepository implements PaywallRepository {

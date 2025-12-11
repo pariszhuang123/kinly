@@ -108,7 +108,8 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
         }
 
         if (state.submissionErrorTick > 0) {
-          if (state.submissionErrorCode == ExpenseErrorCode.paywallActiveExpensesCap) {
+          if (state.submissionErrorCode ==
+              ExpenseErrorCode.paywallActiveExpensesCap) {
             _showPaywallAndMaybeRetry(context);
             return;
           }
@@ -214,26 +215,31 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
     final s = S.of(context);
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => KinlyPaywallScreen(
-          homeId: widget.homeId,
-          strings: PaywallStrings(
-            title: s.paywallTitle,
-            subtitle: s.paywallSubtitle,
-            bulletMembers: s.paywallBulletMembers,
-            bulletFlows: s.paywallBulletFlows,
-            bulletPhotos: s.paywallBulletPhotos,
-            bulletShares: s.paywallBulletShares,
-            unlimitedLabel: s.paywallSubtitle,
-            primaryCta: s.paywallPrimaryCta,
-            secondaryCta: s.paywallSecondaryCta,
-            purchaseFailed: s.paywallPurchaseFailed,
-            purchaseSuccess: s.paywallPurchaseSuccess,
-            restoreCta: s.paywallRestoreCta,
-            errorTitle: s.paywallErrorTitle,
-            retryLabel: s.paywallRetryLabel,
-          ),
-          source: 'share_create',
-        ),
+        builder:
+            (_) => KinlyPaywallScreen(
+              homeId: widget.homeId,
+              strings: PaywallStrings(
+                title: s.paywallTitle,
+                subtitle: s.paywallSubtitle,
+                bulletMembers: s.paywallBulletMembers,
+                bulletFlows: s.paywallBulletFlows,
+                bulletPhotos: s.paywallBulletPhotos,
+                bulletShares: s.paywallBulletShares,
+                unlimitedLabel: s.paywallSubtitle,
+                priceCaption: s.paywallPriceCaption,
+                emotionalBody: s.paywallEmotional,
+                priceUnavailableLabel: s.paywallPriceUnavailable,
+                priceFormatter: (price) => s.paywallPricePerMonth(price),
+                primaryCta: s.paywallPrimaryCta,
+                secondaryCta: s.paywallSecondaryCta,
+                purchaseFailed: s.paywallPurchaseFailed,
+                purchaseSuccess: s.paywallPurchaseSuccess,
+                restoreCta: s.paywallRestoreCta,
+                errorTitle: s.paywallErrorTitle,
+                retryLabel: s.paywallRetryLabel,
+              ),
+              source: 'share_create',
+            ),
       ),
     );
     if (!context.mounted) return;

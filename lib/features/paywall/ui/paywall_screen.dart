@@ -5,12 +5,10 @@ import '../../../core/di/locator.dart';
 import '../../../core/homes/models.dart';
 import '../../../core/purchases/revenuecat_service.dart';
 import '../../../core/theme/kinly_sections.dart';
-import '../../../core/theme/section_assets.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
-import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/logging/logger.dart';
+import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
-import '../../../core/ui/members/kinly_member_avatar_row.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../data/repositories/auth_repository.dart';
@@ -26,6 +24,10 @@ class PaywallStrings {
   final String bulletPhotos;
   final String bulletShares;
   final String unlimitedLabel;
+  final String? priceCaption;
+  final String? emotionalBody;
+  final String? priceUnavailableLabel;
+  final String Function(String price)? priceFormatter;
   final String primaryCta;
   final String secondaryCta;
   final String purchaseFailed;
@@ -42,6 +44,10 @@ class PaywallStrings {
     required this.bulletPhotos,
     required this.bulletShares,
     required this.unlimitedLabel,
+    this.priceCaption,
+    this.emotionalBody,
+    this.priceUnavailableLabel,
+    this.priceFormatter,
     required this.primaryCta,
     required this.secondaryCta,
     required this.purchaseFailed,
@@ -156,7 +162,8 @@ class _PaywallBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final sections = theme.extension<KinlySections>();
-    final priceLine = priceString != null ? '$priceString / month' : '';
+    // Price is shown on the CTA only; keep hero copy price-free.
+    const priceLine = '';
     final surface = theme.colorScheme.surface;
     final shareCard =
         sections?.share.card ?? theme.colorScheme.primaryContainer;
@@ -168,30 +175,10 @@ class _PaywallBody extends StatelessWidget {
     ];
 
     final features = [
-      _FeatureDetail(
-        asset: const SectionAsset.icon(Icons.groups_rounded),
-        accent: sections?.share.accent ?? theme.colorScheme.primary,
-        tint: sections?.share.card ?? theme.colorScheme.primaryContainer,
-        label: strings.bulletMembers,
-      ),
-      _FeatureDetail(
-        asset: SectionAssets.flow,
-        accent: sections?.flow.accent ?? theme.colorScheme.secondary,
-        tint: sections?.flow.card ?? theme.colorScheme.secondaryContainer,
-        label: strings.bulletFlows,
-      ),
-      _FeatureDetail(
-        asset: const SectionAsset.icon(Icons.photo_library_outlined),
-        accent: sections?.flow.icon ?? theme.colorScheme.secondary,
-        tint: sections?.flow.card ?? theme.colorScheme.secondaryContainer,
-        label: strings.bulletPhotos,
-      ),
-      _FeatureDetail(
-        asset: SectionAssets.share,
-        accent: sections?.share.icon ?? theme.colorScheme.primary,
-        tint: sections?.share.card ?? theme.colorScheme.primaryContainer,
-        label: strings.bulletShares,
-      ),
+      strings.bulletMembers,
+      strings.bulletFlows,
+      strings.bulletPhotos,
+      strings.bulletShares,
     ];
 
     return LayoutBuilder(
@@ -205,57 +192,64 @@ class _PaywallBody extends StatelessWidget {
                 title: strings.title,
                 subtitle: strings.subtitle,
                 priceLine: priceLine,
+                priceCaption: strings.priceCaption ?? strings.unlimitedLabel,
                 unlimitedLabel: strings.unlimitedLabel,
                 gradient: heroGradient,
                 accent: sections?.share.accent ?? theme.colorScheme.primary,
                 members: members,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 20),
               Expanded(
                 child: KinlyScrollFade(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: features.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 1,
-                          ),
-                      itemBuilder: (context, index) {
-                        final f = features[index];
-                        return _FeatureCard(
-                          asset: f.asset,
-                          accent: f.accent,
-                          tint: f.tint,
-                          label: f.label,
-                        );
-                      },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _BenefitChecklist(
+                          features: features,
+                          accent:
+                              sections?.share.accent ??
+                              theme.colorScheme.primary,
+                        ),
+                        const SizedBox(height: 18),
+                        _EmotionalBlock(
+                          text: strings.emotionalBody ?? strings.unlimitedLabel,
+                          accent:
+                              sections?.flow.accent ??
+                              theme.colorScheme.secondary,
+                        ),
+                        const SizedBox(height: 18),
+                      ],
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 12),
               KinlyFilledButton.text(
                 label: strings.primaryCta,
                 onPressed: onUpgrade,
                 fullWidth: true,
               ),
               const SizedBox(height: 12),
-              KinlyOutlinedButton.text(
-                label: strings.secondaryCta,
+              TextButton(
                 onPressed: onDismiss,
-                fullWidth: true,
+                style: TextButton.styleFrom(
+                  foregroundColor: theme.colorScheme.onSurface.withValues(
+                    alpha: 0.9,
+                  ),
+                  padding: const EdgeInsetsDirectional.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  textStyle: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                child: Text(strings.secondaryCta),
               ),
               const SizedBox(height: 12),
-              TextButton(
-                onPressed: onRestore,
-                child: Text(strings.restoreCta),
-              ),
+              TextButton(onPressed: onRestore, child: Text(strings.restoreCta)),
             ],
           ),
         );
@@ -264,69 +258,154 @@ class _PaywallBody extends StatelessWidget {
   }
 }
 
-class _FeatureDetail {
-  final SectionAsset asset;
+class _BenefitChecklist extends StatelessWidget {
+  const _BenefitChecklist({required this.features, required this.accent});
+
+  final List<String> features;
   final Color accent;
-  final Color tint;
-  final String label;
-
-  _FeatureDetail({
-    required this.asset,
-    required this.accent,
-    required this.tint,
-    required this.label,
-  });
-}
-
-class _FeatureCard extends StatelessWidget {
-  const _FeatureCard({
-    required this.asset,
-    required this.accent,
-    required this.tint,
-    required this.label,
-  });
-
-  final SectionAsset asset;
-  final Color accent;
-  final Color tint;
-  final String label;
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-    final surface = colorScheme.surface;
-    final cardColor = Color.alphaBlend(tint.withValues(alpha: 0.22), surface);
-    final iconBg = Color.alphaBlend(accent.withValues(alpha: 0.22), surface);
-    final iconColor =
-        colorScheme.brightness == Brightness.dark
-            ? Color.alphaBlend(
-              accent,
-              colorScheme.onSurface.withValues(alpha: 0.8),
-            )
-            : accent;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final surface = theme.colorScheme.surface;
+    final checkBg = Color.alphaBlend(accent.withValues(alpha: 0.14), surface);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: features
+          .map(
+            (label) => Padding(
+              padding: const EdgeInsetsDirectional.only(bottom: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: checkBg,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.check_rounded, color: accent, size: 18),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+          .toList(growable: false),
+    );
+  }
+}
+
+class _EmotionalBlock extends StatelessWidget {
+  const _EmotionalBlock({required this.text, required this.accent});
+
+  final String text;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    if (text.trim().isEmpty) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    final surface = theme.colorScheme.surface;
+    final bg = Color.alphaBlend(accent.withValues(alpha: 0.08), surface);
     return Container(
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
+      width: double.infinity,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 14),
       decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(18),
+        color: bg,
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
-            child: Center(child: asset.build(color: iconColor, size: 20)),
-          ),
-          Text(
-            label,
-            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
-        ],
+      child: Text(
+        text,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
       ),
+    );
+  }
+}
+
+class _HouseholdAvatarRow extends StatelessWidget {
+  const _HouseholdAvatarRow({required this.members, required this.accent});
+
+  final List<HomeMemberSummary> members;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    if (members.isEmpty) return const SizedBox.shrink();
+    const radius = 20.0;
+    const step = radius * 1.3;
+    final visible = members.take(5).toList();
+    final overflow = members.length - visible.length;
+    final stackWidth = radius * 2 + step * (visible.length - 1);
+    final surface = Theme.of(context).colorScheme.surface;
+    final overflowBg = Color.alphaBlend(
+      accent.withValues(alpha: 0.12),
+      surface,
+    );
+
+    return Row(
+      children: [
+        SizedBox(
+          height: radius * 2,
+          width: stackWidth + (overflow > 0 ? step : 0),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              for (var i = 0; i < visible.length; i++)
+                PositionedDirectional(
+                  start: i * step,
+                  child: KinlyCircleAvatar(
+                    avatarUrl: visible[i].avatarUrl,
+                    isOwner: visible[i].isOwner,
+                    radius: radius,
+                    fallbackInitial:
+                        visible[i].username.isNotEmpty
+                            ? visible[i].username[0]
+                            : null,
+                  ),
+                ),
+              if (overflow > 0)
+                PositionedDirectional(
+                  start: visible.length * step,
+                  child: Container(
+                    width: radius * 2,
+                    height: radius * 2,
+                    decoration: BoxDecoration(
+                      color: overflowBg,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.05),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '+$overflow',
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -336,6 +415,7 @@ class _PaywallHero extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.priceLine,
+    required this.priceCaption,
     required this.unlimitedLabel,
     required this.gradient,
     required this.accent,
@@ -345,6 +425,7 @@ class _PaywallHero extends StatelessWidget {
   final String title;
   final String subtitle;
   final String priceLine;
+  final String? priceCaption;
   final String unlimitedLabel;
   final List<Color> gradient;
   final Color accent;
@@ -355,6 +436,14 @@ class _PaywallHero extends StatelessWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
+    final caption =
+        priceCaption?.trim().isNotEmpty == true
+            ? priceCaption!
+            : unlimitedLabel;
+    final priceChipColor = Color.alphaBlend(
+      accent.withValues(alpha: 0.16),
+      colorScheme.surface,
+    );
     return Container(
       padding: const EdgeInsetsDirectional.fromSTEB(20, 22, 20, 20),
       decoration: BoxDecoration(
@@ -364,41 +453,61 @@ class _PaywallHero extends StatelessWidget {
           end: AlignmentDirectional.bottomEnd,
         ),
         borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: accent.withValues(alpha: 0.24),
+            blurRadius: 28,
+            spreadRadius: 2,
+            offset: const Offset(0, 12),
+          ),
+        ],
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: textTheme.headlineSmall),
-                const SizedBox(height: 8),
-                Text(
-                  subtitle,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                if (members.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  KinlyMemberAvatarRow(
-                    members: members,
-                    avatarRadius: 20,
-                  ),
-                ],
-                const SizedBox(height: 12),
-                if (priceLine.isNotEmpty)
-                  Text(
-                    priceLine,
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-              ],
+          Text(
+            title,
+            style: textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(height: 8),
+          Text(
+            subtitle,
+            style: textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          if (caption.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Text(
+              caption,
+              style: textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+          if (members.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            _HouseholdAvatarRow(members: members, accent: accent),
+          ],
+          if (priceLine.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            Container(
+              padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
+              decoration: BoxDecoration(
+                color: priceChipColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                priceLine,
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

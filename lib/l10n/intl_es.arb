@@ -4,7 +4,9 @@
   "bootstrap_initializing": "Iniciando Kinly ({env})",
   "@bootstrap_initializing": {
     "placeholders": {
-      "env": { "type": "String" }
+      "env": {
+        "type": "String"
+      }
     }
   },
   "welcome_title": "Bienvenido a Kinly",
@@ -22,7 +24,9 @@
   "@join_success": {
     "description": "Mensaje mostrado cuando el usuario se une correctamente",
     "placeholders": {
-      "code": { "type": "String" }
+      "code": {
+        "type": "String"
+      }
     }
   },
   "join_failed_generic": "No se pudo unir. Inténtalo nuevamente.",
@@ -30,12 +34,12 @@
   "join_error_inactive_invite": "Esa invitación ya no está activa. Pide un nuevo código al propietario.",
   "join_error_already_in_other_home": "Ya perteneces a otro hogar. Debes salir antes de unirte a uno nuevo.",
   "join_error_paywall_limit": "Este hogar alcanzó su límite de miembros. Pide al propietario actualizar o remover a alguien.",
-  "paywallTitle": "Aporta más armonía a tu hogar por menos del 0.5% de tu alquiler",
-  "paywallSubtitle": "Un precio mensual simple por hogar. Todos dentro obtienen acceso ilimitado a las siguientes funciones.",
-  "paywallBulletMembers": "Miembros del hogar",
-  "paywallBulletFlows": "Flows activos",
-  "paywallBulletPhotos": "Fotos de Flow",
-  "paywallBulletShares": "Shares activos",
+  "paywallTitle": "Lleva m?s armon?a a tu hogar, juntos.",
+  "paywallSubtitle": "Un plan mensual simple para toda tu casa. Todos tienen acceso ilimitado.",
+  "paywallBulletMembers": "Miembros ilimitados del hogar",
+  "paywallBulletFlows": "Flows ilimitados",
+  "paywallBulletPhotos": "Fotos ilimitadas de flows",
+  "paywallBulletShares": "Gastos compartidos ilimitados",
   "paywallPrimaryCta": "Actualizar a Kinly Premium",
   "paywallSecondaryCta": "Continuar con hogar gratuito",
   "paywallPurchaseFailed": "La compra no se completó — puedes intentarlo de nuevo en cualquier momento.",
@@ -74,8 +78,12 @@
   "today_home_details": "Hogar actual: {homeId} • Rol: {role}",
   "@today_home_details": {
     "placeholders": {
-      "homeId": { "type": "String" },
-      "role": { "type": "String" }
+      "homeId": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
     }
   },
   "offline_title": "Estás sin conexión",
@@ -88,8 +96,12 @@
   "force_update_version_details": "Tu versión: {client}\nÚltima versión: {current}",
   "@force_update_version_details": {
     "placeholders": {
-      "client": { "type": "String" },
-      "current": { "type": "String" }
+      "client": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
     }
   },
   "navToday": "Hoy",
@@ -103,12 +115,17 @@
   "hubShareInviteTitle": "Invitar a mi hogar en Kinly",
   "hubShareInviteBody": "¡Bienvenido a nuestro hogar en Kinly! Usa este código de invitación: {code}\n\nDescarga la app: {link}",
   "@hubShareInviteBody": {
-    "placeholders": { "code": {}, "link": {} }
+    "placeholders": {
+      "code": {},
+      "link": {}
+    }
   },
   "hubShareAppTitle": "Obtén la app Kinly",
   "hubShareAppBody": "Comparte Kinly para que compartir sea más ligero: {link}",
   "@hubShareAppBody": {
-    "placeholders": { "link": {} }
+    "placeholders": {
+      "link": {}
+    }
   },
   "hubShareAppCta": "Compartir Kinly",
   "hubCopyCode": "Copiar código",
@@ -145,7 +162,11 @@
   "todayFlowTabDrafts": "Borradores",
   "todayFlowSeeAll": "Ver todo ({count})",
   "@todayFlowSeeAll": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "todayFlowBadgeNew": "nuevo hoy",
   "todayShareSectionTitle": "Share",
@@ -160,7 +181,11 @@
   "todayShareError": "No pudimos actualizar Share ahora.",
   "todayShareActiveSubtitle": "{count, plural, one {{count} pago pendiente} other {{count} pagos pendientes}}",
   "@todayShareActiveSubtitle": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "todayShareDraftSubtitle": "Divide según la contribución.",
   "todayGratitudeSectionTitle": "Muro de gratitud del hogar",
@@ -290,15 +315,23 @@
   "shareCreatedListActiveSubtitle": "{paid} de {total} pagados",
   "@shareCreatedListActiveSubtitle": {
     "placeholders": {
-      "paid": { "type": "int" },
-      "total": { "type": "int" }
+      "paid": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "shareCreatedListActiveAmount": "{paidAmount} de {totalAmount} recibidos",
   "@shareCreatedListActiveAmount": {
     "placeholders": {
-      "paidAmount": { "type": "String" },
-      "totalAmount": { "type": "String" }
+      "paidAmount": {
+        "type": "String"
+      },
+      "totalAmount": {
+        "type": "String"
+      }
     }
   },
   "shareCreatedListDraftSubtitle": "Asígnalo a cada persona antes de publicar.",
@@ -357,7 +390,11 @@
   "connectionNotificationsTimeLabel": "Hora del recordatorio",
   "connectionNotificationsTimeSubtitle": "Programado para las {time}",
   "@connectionNotificationsTimeSubtitle": {
-    "placeholders": { "time": { "type": "String" } }
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
   },
   "profileContactEmailSubject": "Contáctanos",
   "profileContactLaunchError": "No pudimos abrir tu app de correo.",
@@ -407,7 +444,9 @@
   "gratitudeWallShareTitle": "Muro de gratitud",
   "gratitudeWallShareMessage": "Compartiendo un vistazo de nuestro Muro de Gratitud. Descarga la app: {link}",
   "@gratitudeWallShareMessage": {
-    "placeholders": { "link": {} }
+    "placeholders": {
+      "link": {}
+    }
   },
   "gratitudeWallShareError": "No se pudo compartir. Inténtalo.",
   "gratitudeWallPoweredBy": "Impulsado por",
@@ -416,11 +455,17 @@
   "gratitudeWallFooter": "Hecho con {appName} - Juntos todo pesa menos",
   "gratitudeWallWeeksAgo": "{weeks,plural, =0{Esta semana} one{Hace 1 semana} other{Hace {weeks} semanas}}",
   "@gratitudeWallFooter": {
-    "placeholders": { "appName": {} }
+    "placeholders": {
+      "appName": {}
+    }
   },
   "gratitudeWallTitleCount": "Muro de gratitud ({count})",
   "@gratitudeWallTitleCount": {
-    "placeholders": { "count": { "type": "String" } }
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
   },
   "npsTitle": "¿Qué tan probable es que recomiendes Kinly a un amigo o familiar?",
   "npsDescription": "El Net Promoter Score nos ayuda a saber cómo vamos. Elige un número del 0 (nada probable) al 10 (muy probable).",
@@ -432,5 +477,9 @@
   "npsSubmitErrorForbidden": "No puedes enviar comentarios ahora.",
   "npsSubmitErrorGeneric": "No se pudo enviar tu comentario.",
   "npsLaunchError": "No se pudo abrir el siguiente paso.",
-  "npsEmailSubject": "¿Qué podemos mejorar?"
+  "npsEmailSubject": "¿Qué podemos mejorar?",
+  "paywallPriceCaption": "Una mejora para el hogar. Un plan compartido, sin niveles ocultos.",
+  "paywallEmotional": "Premium ayuda a que tu hogar se sienta m?s ligero cada d?a: sin bloqueos, sin l?mites y todos alineados.",
+  "paywallPricePerMonth": "{price} al mes para toda tu casa.",
+  "paywallPriceUnavailable": "Precio no disponible en este momento."
 }

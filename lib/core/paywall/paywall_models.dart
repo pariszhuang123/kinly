@@ -1,5 +1,3 @@
-import 'enums/paywall_event_type.dart';
-
 class PaywallLimit {
   final String metric;
   final int maxValue;

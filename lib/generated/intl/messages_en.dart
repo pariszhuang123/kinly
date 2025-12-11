@@ -48,17 +48,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m11(code) => "Joined with code: ${code}";
 
-  static String m12(paidAmount, totalAmount) =>
+  static String m12(price) => "${price} per month for your whole home.";
+
+  static String m13(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
 
-  static String m13(paid, total) => "${paid} of ${total} paid";
+  static String m14(paid, total) => "${paid} of ${total} paid";
 
-  static String m14(count) => "See all (${count})";
+  static String m15(count) => "See all (${count})";
 
-  static String m15(count) =>
+  static String m16(count) =>
       "${Intl.plural(count, one: '${count} payment pending', other: '${count} payments pending')}";
 
-  static String m16(homeId, role) => "Current home: ${homeId} • Role: ${role}";
+  static String m17(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -498,16 +500,30 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "offline_retry": MessageLookupByLibrary.simpleMessage("Try again"),
     "offline_title": MessageLookupByLibrary.simpleMessage("You\'re offline"),
-    "paywallBulletFlows": MessageLookupByLibrary.simpleMessage("Active flows"),
-    "paywallBulletMembers": MessageLookupByLibrary.simpleMessage(
-      "Home members",
+    "paywallBulletFlows": MessageLookupByLibrary.simpleMessage(
+      "Unlimited flows",
     ),
-    "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage("Flow photos"),
+    "paywallBulletMembers": MessageLookupByLibrary.simpleMessage(
+      "Unlimited home members",
+    ),
+    "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
+      "Unlimited flow photos",
+    ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
-      "Active shares",
+      "Unlimited shared expenses",
+    ),
+    "paywallEmotional": MessageLookupByLibrary.simpleMessage(
+      "Premium helps your home feel lighter every day — no blockers, no limits, and everyone stays aligned.",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "Unable to load paywall.",
+    ),
+    "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
+      "One home plan, no hidden tiers.",
+    ),
+    "paywallPricePerMonth": m12,
+    "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
+      "Pricing not available right now.",
     ),
     "paywallPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "Upgrade to Kinly Premium",
@@ -526,10 +542,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Continue with free home",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Everyone gets unlimited access to the following features.",
+      "Your home-level upgrade for less than 0.5% of your rent.",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
-      "Bring more harmony to your home for less than 0.5% of your rent",
+      "Bring more harmony to your home — together.",
     ),
     "profileActionCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage("Leave Home"),
@@ -798,8 +814,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Choose how you want to share.",
     ),
-    "shareCreatedListActiveAmount": m12,
-    "shareCreatedListActiveSubtitle": m13,
+    "shareCreatedListActiveAmount": m13,
+    "shareCreatedListActiveSubtitle": m14,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "Unassigned",
     ),
@@ -889,7 +905,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m14,
+    "todayFlowSeeAll": m15,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Here\'s what\'s flowing in your home today.",
     ),
@@ -910,7 +926,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayInviteNotNow": MessageLookupByLibrary.simpleMessage("Not now"),
     "todayInviteShareCta": MessageLookupByLibrary.simpleMessage("Share invite"),
-    "todayShareActiveSubtitle": m15,
+    "todayShareActiveSubtitle": m16,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("upcoming"),
     "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
       "Split based on the share.",
@@ -934,7 +950,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayShareSeeAll": MessageLookupByLibrary.simpleMessage("See all shares"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "today_home_details": m16,
+    "today_home_details": m17,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",
     ),

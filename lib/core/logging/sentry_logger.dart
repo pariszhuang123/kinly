@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import 'enums/log_level.dart';
 import 'logger.dart';
 
 /// Logger that forwards messages to a fallback sink and mirrors warnings/errors

@@ -49,17 +49,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m11(code) => "Te uniste con el código: ${code}";
 
-  static String m12(paidAmount, totalAmount) =>
+  static String m12(price) => "${price} al mes para toda tu casa.";
+
+  static String m13(paidAmount, totalAmount) =>
       "${paidAmount} de ${totalAmount} recibidos";
 
-  static String m13(paid, total) => "${paid} de ${total} pagados";
+  static String m14(paid, total) => "${paid} de ${total} pagados";
 
-  static String m14(count) => "Ver todo (${count})";
+  static String m15(count) => "Ver todo (${count})";
 
-  static String m15(count) =>
+  static String m16(count) =>
       "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} pagos pendientes')}";
 
-  static String m16(homeId, role) => "Hogar actual: ${homeId} • Rol: ${role}";
+  static String m17(homeId, role) => "Hogar actual: ${homeId} • Rol: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -521,18 +523,30 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "offline_retry": MessageLookupByLibrary.simpleMessage("Reintentar"),
     "offline_title": MessageLookupByLibrary.simpleMessage("Estás sin conexión"),
-    "paywallBulletFlows": MessageLookupByLibrary.simpleMessage("Flows activos"),
+    "paywallBulletFlows": MessageLookupByLibrary.simpleMessage(
+      "Flows ilimitados",
+    ),
     "paywallBulletMembers": MessageLookupByLibrary.simpleMessage(
-      "Miembros del hogar",
+      "Miembros ilimitados del hogar",
     ),
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
-      "Fotos de Flow",
+      "Fotos ilimitadas de flows",
     ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
-      "Shares activos",
+      "Gastos compartidos ilimitados",
+    ),
+    "paywallEmotional": MessageLookupByLibrary.simpleMessage(
+      "Premium ayuda a que tu hogar se sienta m?s ligero cada d?a: sin bloqueos, sin l?mites y todos alineados.",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "No se pudo cargar la pantalla de pago.",
+    ),
+    "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
+      "Una mejora para el hogar. Un plan compartido, sin niveles ocultos.",
+    ),
+    "paywallPricePerMonth": m12,
+    "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
+      "Precio no disponible en este momento.",
     ),
     "paywallPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "Actualizar a Kinly Premium",
@@ -551,10 +565,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Continuar con hogar gratuito",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Un precio mensual simple por hogar. Todos dentro obtienen acceso ilimitado a las siguientes funciones.",
+      "Un plan mensual simple para toda tu casa. Todos tienen acceso ilimitado.",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
-      "Aporta más armonía a tu hogar por menos del 0.5% de tu alquiler",
+      "Lleva m?s armon?a a tu hogar, juntos.",
     ),
     "profileActionCancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage(
@@ -828,8 +842,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Elige cómo quieres compartir.",
     ),
-    "shareCreatedListActiveAmount": m12,
-    "shareCreatedListActiveSubtitle": m13,
+    "shareCreatedListActiveAmount": m13,
+    "shareCreatedListActiveSubtitle": m14,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "Sin asignar",
     ),
@@ -919,7 +933,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m14,
+    "todayFlowSeeAll": m15,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Esto es lo que fluye en tu hogar hoy.",
     ),
@@ -942,7 +956,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
       "Compartir invitación",
     ),
-    "todayShareActiveSubtitle": m15,
+    "todayShareActiveSubtitle": m16,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("próximo"),
     "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
       "Divide según la contribución.",
@@ -968,7 +982,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Activos"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
-    "today_home_details": m16,
+    "today_home_details": m17,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "Sin hogar activo aún. Crea o únete a uno para ver la vista de hoy.",
     ),

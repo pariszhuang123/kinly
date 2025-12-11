@@ -229,60 +229,100 @@ class S {
     );
   }
 
-  /// `Bring more harmony to your home for less than 0.5% of your rent`
+  /// `Bring more harmony to your home — together.`
   String get paywallTitle {
     return Intl.message(
-      'Bring more harmony to your home for less than 0.5% of your rent',
+      'Bring more harmony to your home — together.',
       name: 'paywallTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Everyone gets unlimited access to the following features.`
+  /// `Your home-level upgrade for less than 0.5% of your rent.`
   String get paywallSubtitle {
     return Intl.message(
-      'Everyone gets unlimited access to the following features.',
+      'Your home-level upgrade for less than 0.5% of your rent.',
       name: 'paywallSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Home members`
+  /// `One home plan, no hidden tiers.`
+  String get paywallPriceCaption {
+    return Intl.message(
+      'One home plan, no hidden tiers.',
+      name: 'paywallPriceCaption',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Premium helps your home feel lighter every day — no blockers, no limits, and everyone stays aligned.`
+  String get paywallEmotional {
+    return Intl.message(
+      'Premium helps your home feel lighter every day — no blockers, no limits, and everyone stays aligned.',
+      name: 'paywallEmotional',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{price} per month for your whole home.`
+  String paywallPricePerMonth(Object price) {
+    return Intl.message(
+      '$price per month for your whole home.',
+      name: 'paywallPricePerMonth',
+      desc: '',
+      args: [price],
+    );
+  }
+
+  /// `Pricing not available right now.`
+  String get paywallPriceUnavailable {
+    return Intl.message(
+      'Pricing not available right now.',
+      name: 'paywallPriceUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlimited home members`
   String get paywallBulletMembers {
     return Intl.message(
-      'Home members',
+      'Unlimited home members',
       name: 'paywallBulletMembers',
       desc: '',
       args: [],
     );
   }
 
-  /// `Active flows`
+  /// `Unlimited flows`
   String get paywallBulletFlows {
     return Intl.message(
-      'Active flows',
+      'Unlimited flows',
       name: 'paywallBulletFlows',
       desc: '',
       args: [],
     );
   }
 
-  /// `Flow photos`
+  /// `Unlimited flow photos`
   String get paywallBulletPhotos {
     return Intl.message(
-      'Flow photos',
+      'Unlimited flow photos',
       name: 'paywallBulletPhotos',
       desc: '',
       args: [],
     );
   }
 
-  /// `Active shares`
+  /// `Unlimited shared expenses`
   String get paywallBulletShares {
     return Intl.message(
-      'Active shares',
+      'Unlimited shared expenses',
       name: 'paywallBulletShares',
       desc: '',
       args: [],

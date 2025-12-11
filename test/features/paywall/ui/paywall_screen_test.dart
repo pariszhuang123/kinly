@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/homes/models.dart';
-import 'package:kinly/core/paywall/paywall_models.dart';
 import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
@@ -62,9 +61,9 @@ void main() {
     const purchasesChannel = MethodChannel('purchases_flutter');
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(purchasesChannel, (methodCall) async {
-      if (methodCall.method == 'getAppUserID') return 'rc-test-user';
-      return null;
-    });
+          if (methodCall.method == 'getAppUserID') return 'rc-test-user';
+          return null;
+        });
     registerFallbackValue(PaywallEventType.impression);
     registerFallbackValue(_RevenueCatPackageFake());
   });
@@ -99,22 +98,24 @@ void main() {
         any(),
         excludeSelf: any(named: 'excludeSelf'),
       ),
-    ).thenAnswer((_) async => [
-          HomeMemberSummary(
-            userId: 'user-1',
-            username: 'You',
-            role: 'owner',
-            validFrom: DateTime(2024, 1, 1),
-            avatarUrl: null,
-          ),
-          HomeMemberSummary(
-            userId: 'user-2',
-            username: 'Alex',
-            role: 'member',
-            validFrom: DateTime(2024, 1, 1),
-            avatarUrl: null,
-          ),
-        ]);
+    ).thenAnswer(
+      (_) async => [
+        HomeMemberSummary(
+          userId: 'user-1',
+          username: 'You',
+          role: 'owner',
+          validFrom: DateTime(2024, 1, 1),
+          avatarUrl: null,
+        ),
+        HomeMemberSummary(
+          userId: 'user-2',
+          username: 'Alex',
+          role: 'member',
+          validFrom: DateTime(2024, 1, 1),
+          avatarUrl: null,
+        ),
+      ],
+    );
     when(
       () => rc.fetchMonthlyPackage(placementId: any(named: 'placementId')),
     ).thenAnswer(
