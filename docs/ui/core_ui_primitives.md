@@ -57,6 +57,7 @@ Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directio
 
 ## Layout & Spacing
 - `Spacing` extension usage; surface/section color guidance from `KinlySections`.
+- `KinlyScrollFade` (wraps any scrollable to apply top/bottom fade + removes overscroll glow; configurable fade fraction and edges).
 
 ## Adding or Changing a Primitive
 1) Propose to Planner + Docs (intent, consumers, theme tokens, tests).

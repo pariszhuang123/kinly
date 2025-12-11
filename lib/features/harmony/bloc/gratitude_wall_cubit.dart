@@ -1,7 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/logging/debug_logger.dart';
+import '../../../core/logging/logger.dart';
 import '../../../core/mood/models.dart';
+import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/mood_repository.dart';
 
 part 'gratitude_wall_state.dart';
@@ -10,12 +13,18 @@ class GratitudeWallCubit extends Cubit<GratitudeWallState> {
   GratitudeWallCubit({
     required String homeId,
     required MoodRepository moodRepository,
+    required HomeRepository homeRepository,
+    Logger? logger,
   }) : _homeId = homeId,
        _moodRepository = moodRepository,
+       _homeRepository = homeRepository,
+       _logger = logger ?? const DebugLogger(),
        super(const GratitudeWallState.initial());
 
   final String _homeId;
   final MoodRepository _moodRepository;
+  final HomeRepository _homeRepository;
+  final Logger _logger;
 
   Future<void> loadInitial() async {
     if (state.isLoading) return;
@@ -73,6 +82,23 @@ class GratitudeWallCubit extends Cubit<GratitudeWallState> {
       );
     } catch (e) {
       emit(state.copyWith(isLoadingMore: false, error: e.toString()));
+    }
+  }
+
+  Future<void> logShareEvent() async {
+    try {
+      await _homeRepository.logShareEvent(
+        feature: 'gratitude_wall_house',
+        channel: 'system_share',
+        homeId: _homeId,
+      );
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to log gratitude wall share',
+        error: error,
+        stackTrace: stackTrace,
+        tag: 'GratitudeWall',
+      );
     }
   }
 }

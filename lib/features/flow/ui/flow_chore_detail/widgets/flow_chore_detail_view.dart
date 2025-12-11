@@ -9,6 +9,7 @@ import '../../../../../core/chores/models.dart';
 import '../../../../../core/supabase/storage_path_resolver.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/kinly_loader.dart';
+import '../../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../../../core/utils/url_validator.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/ui/snackbars/kinly_snackbar.dart';
@@ -72,38 +73,40 @@ class FlowChoreDetailView extends StatelessWidget {
       child: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FlowChoreCoreInfoSection(
-                    choreName: chore.name,
-                    assigneeLabel: s.flowChoreAssigneeLabel,
-                    assigneeValue: assigneeName ?? s.flowChoreDetailUnassigned,
-                    startLabel: s.flowChoreStartLabel,
-                    startValue: formattedDate,
-                    recurrenceLabel: s.flowChoreRecurrenceLabel,
-                    recurrenceValue: recurrenceLabel,
-                    showAssignee: false,
-                    showStart: true,
-                  ),
-                  SizedBox(height: spacing?.lg ?? 24),
-                  FlowChoreExtrasSection(
-                    notesLabel: s.flowChoreNotesLabel,
-                    notesBody:
-                        chore.notes?.isNotEmpty == true
-                            ? chore.notes!
-                            : s.flowChoreDetailNoNotes,
-                    howToLabel: s.flowChoreHowToLabel,
-                    howToBody: howToBody,
-                    onHowToTap:
-                        normalizedHowToUrl != null
-                            ? () => _launchHowToUrl(context, normalizedHowToUrl)
-                            : null,
-                    expectationPhotoLabel: s.flowChoreExpectationPhotoLabel,
-                    expectationPhotoUrl: expectationPhotoUrl,
-                  ),
-                ],
+            child: KinlyScrollFade(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FlowChoreCoreInfoSection(
+                      choreName: chore.name,
+                      assigneeLabel: s.flowChoreAssigneeLabel,
+                      assigneeValue: assigneeName ?? s.flowChoreDetailUnassigned,
+                      startLabel: s.flowChoreStartLabel,
+                      startValue: formattedDate,
+                      recurrenceLabel: s.flowChoreRecurrenceLabel,
+                      recurrenceValue: recurrenceLabel,
+                      showAssignee: false,
+                      showStart: true,
+                    ),
+                    SizedBox(height: spacing?.lg ?? 24),
+                    FlowChoreExtrasSection(
+                      notesLabel: s.flowChoreNotesLabel,
+                      notesBody:
+                          chore.notes?.isNotEmpty == true
+                              ? chore.notes!
+                              : s.flowChoreDetailNoNotes,
+                      howToLabel: s.flowChoreHowToLabel,
+                      howToBody: howToBody,
+                      onHowToTap:
+                          normalizedHowToUrl != null
+                              ? () => _launchHowToUrl(context, normalizedHowToUrl)
+                              : null,
+                      expectationPhotoLabel: s.flowChoreExpectationPhotoLabel,
+                      expectationPhotoUrl: expectationPhotoUrl,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

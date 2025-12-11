@@ -1,9 +1,11 @@
 // lib/features/gratitude_wall/ui/gratitude_wall_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/share/kinly_share_scaffold.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../generated/l10n.dart';
+import '../../bloc/gratitude_wall_cubit.dart';
 import 'gratitude_wall_content.dart';
 
 class GratitudeWallScreen extends StatelessWidget {
@@ -41,6 +43,8 @@ class GratitudeWallScreen extends StatelessWidget {
           },
         );
       },
+      onSharePressed:
+          () => context.read<GratitudeWallCubit>().logShareEvent(),
     );
   }
 }

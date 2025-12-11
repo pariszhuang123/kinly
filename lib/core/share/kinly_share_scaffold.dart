@@ -32,6 +32,7 @@ class KinlyShareScaffold extends StatelessWidget {
     required this.childBuilder,
     this.appBarTitle,
     this.centerTitle = false,
+    this.onSharePressed,
   });
 
   /// PNG prefix: e.g. "gratitude_wall", "house_rules", "personal_prefs"
@@ -54,6 +55,9 @@ class KinlyShareScaffold extends StatelessWidget {
 
   /// Whether AppBar title is centered.
   final bool centerTitle;
+
+  /// Optional hook invoked when the share FAB is pressed, before sharing.
+  final Future<void> Function()? onSharePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +97,16 @@ class KinlyShareScaffold extends StatelessWidget {
               heroTag: '${fileNamePrefix}_fab',
               tooltip: s.gratitudeWallShareCta,
               icon: Icons.ios_share_rounded,
-              onPressed: onShare,
+              onPressed: () async {
+                if (onSharePressed != null) {
+                  try {
+                    await onSharePressed!();
+                  } catch (_) {
+                    // Swallow logging errors to avoid blocking share.
+                  }
+                }
+                await onShare();
+              },
             ),
           ),
         );

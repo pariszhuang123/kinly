@@ -6,14 +6,25 @@ import 'package:kinly/features/harmony/bloc/gratitude_wall_cubit.dart';
 import 'package:kinly/core/mood/enums/mood_scale.dart';
 import 'package:kinly/core/mood/models.dart';
 import 'package:kinly/data/repositories/mood_repository.dart';
+import 'package:kinly/data/repositories/home_repository.dart';
 
 class _MockMoodRepository extends Mock implements MoodRepository {}
+class _MockHomeRepository extends Mock implements HomeRepository {}
 
 void main() {
   late _MockMoodRepository repo;
+  late _MockHomeRepository homeRepo;
 
   setUp(() {
     repo = _MockMoodRepository();
+    homeRepo = _MockHomeRepository();
+    when(
+      () => homeRepo.logShareEvent(
+        feature: any(named: 'feature'),
+        channel: any(named: 'channel'),
+        homeId: any(named: 'homeId'),
+      ),
+    ).thenAnswer((_) async {});
   });
 
   GratitudeWallPage buildPage() {
@@ -52,7 +63,11 @@ void main() {
         ),
       );
       when(() => repo.markWallRead(any())).thenAnswer((_) async {});
-      return GratitudeWallCubit(homeId: 'home', moodRepository: repo);
+      return GratitudeWallCubit(
+        homeId: 'home',
+        moodRepository: repo,
+        homeRepository: homeRepo,
+      );
     },
     act: (cubit) => cubit.loadInitial(),
     expect: () => [

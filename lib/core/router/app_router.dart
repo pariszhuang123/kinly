@@ -248,6 +248,7 @@ GoRouter createRouter({
           return GratitudeWallProvider(
             homeId: membership.homeId,
             moodRepository: sl<MoodRepository>(),
+            homeRepository: sl<HomeRepository>(),
           );
         },
       ),

@@ -519,13 +519,8 @@ jobs:
       - name: Resolve Play upload flag
         shell: bash
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.play_upload }}" = "true" ]; then
-            echo "DO_PLAY_UPLOAD=true" >> $GITHUB_ENV
-          elif [ "${{ vars.DO_PLAY_UPLOAD }}" = "true" ]; then
-            echo "DO_PLAY_UPLOAD=true" >> $GITHUB_ENV
-          else
-            echo "DO_PLAY_UPLOAD=false" >> $GITHUB_ENV
-          fi
+          # Always upload to Play for main builds
+          echo "DO_PLAY_UPLOAD=true" >> $GITHUB_ENV
 
       - name: Free disk space
         run: |

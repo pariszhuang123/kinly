@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
+import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../bloc/gratitude_wall_cubit.dart';
 import 'gratitude_wall_widgets.dart';
 
@@ -113,27 +114,32 @@ class GratitudeWallContent extends StatelessWidget {
               }
               return false;
             },
-            child: CustomScrollView(
-              slivers: [
-                SliverPadding(
-                  padding: EdgeInsetsDirectional.only(start: 0, end: 0),
-                  sliver: SliverToBoxAdapter(
-                    child: GratitudeWallMasonryGrid(posts: state.posts),
-                  ),
-                ),
-                if (state.isLoadingMore)
+            child: KinlyScrollFade(
+              fadeFraction: 0.08,
+              child: CustomScrollView(
+                slivers: [
                   SliverPadding(
-                    padding: EdgeInsetsDirectional.only(
-                      top: spacing.lg,
-                      bottom: spacing.xl * 2.5,
+                    padding: EdgeInsetsDirectional.only(start: 0, end: 0),
+                    sliver: SliverToBoxAdapter(
+                      child: GratitudeWallMasonryGrid(posts: state.posts),
                     ),
-                    sliver: const SliverToBoxAdapter(
-                      child: Center(child: KinlyLoader()),
+                  ),
+                  if (state.isLoadingMore)
+                    SliverPadding(
+                      padding: EdgeInsetsDirectional.only(
+                        top: spacing.lg,
+                        bottom: spacing.xl * 2.5,
+                      ),
+                      sliver: const SliverToBoxAdapter(
+                        child: Center(child: KinlyLoader()),
+                      ),
+                    )
+                  else
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: spacing.xl * 2.5),
                     ),
-                  )
-                else
-                  SliverToBoxAdapter(child: SizedBox(height: spacing.xl * 2.5)),
-              ],
+                ],
+              ),
             ),
           ),
         ),

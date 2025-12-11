@@ -9,6 +9,7 @@ import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/logging/logger.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/paywall_repository.dart';
@@ -188,60 +189,63 @@ class _PaywallBody extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return SingleChildScrollView(
-          padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 32),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight - 56),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _PaywallHero(
-                  title: strings.title,
-                  subtitle: strings.subtitle,
-                  priceLine: priceLine,
-                  unlimitedLabel: strings.unlimitedLabel,
-                  gradient: heroGradient,
-                  accent: sections?.share.accent ?? theme.colorScheme.primary,
-                ),
-                const SizedBox(height: 12),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: features.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 1,
+        return KinlyScrollFade(
+          child: SingleChildScrollView(
+            padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 32),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight - 56),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _PaywallHero(
+                    title: strings.title,
+                    subtitle: strings.subtitle,
+                    priceLine: priceLine,
+                    unlimitedLabel: strings.unlimitedLabel,
+                    gradient: heroGradient,
+                    accent: sections?.share.accent ?? theme.colorScheme.primary,
                   ),
-                  itemBuilder: (context, index) {
-                    final f = features[index];
-                    return _FeatureCard(
-                      asset: f.asset,
-                      accent: f.accent,
-                      tint: f.tint,
-                      label: f.label,
-                    );
-                  },
-                ),
-                const SizedBox(height: 28),
-                KinlyFilledButton.text(
-                  label: strings.primaryCta,
-                  onPressed: onUpgrade,
-                  fullWidth: true,
-                ),
-                const SizedBox(height: 12),
-                KinlyOutlinedButton.text(
-                  label: strings.secondaryCta,
-                  onPressed: onDismiss,
-                  fullWidth: true,
-                ),
-                const SizedBox(height: 12),
-                TextButton(
-                  onPressed: onRestore,
-                  child: Text(strings.restoreCta),
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: features.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 1,
+                        ),
+                    itemBuilder: (context, index) {
+                      final f = features[index];
+                      return _FeatureCard(
+                        asset: f.asset,
+                        accent: f.accent,
+                        tint: f.tint,
+                        label: f.label,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 28),
+                  KinlyFilledButton.text(
+                    label: strings.primaryCta,
+                    onPressed: onUpgrade,
+                    fullWidth: true,
+                  ),
+                  const SizedBox(height: 12),
+                  KinlyOutlinedButton.text(
+                    label: strings.secondaryCta,
+                    onPressed: onDismiss,
+                    fullWidth: true,
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: onRestore,
+                    child: Text(strings.restoreCta),
+                  ),
+                ],
+              ),
             ),
           ),
         );

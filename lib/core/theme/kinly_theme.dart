@@ -120,6 +120,13 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     useMaterial3: true,
     visualDensity: VisualDensity.standard,
     textTheme: textTheme,
+    appBarTheme: AppBarTheme(
+      backgroundColor: colorScheme.surface,
+      foregroundColor: colorScheme.onSurface,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
+    ),
     scaffoldBackgroundColor: colorScheme.surface,
     elevatedButtonTheme: elevatedButtonTheme,
     filledButtonTheme: filledButtonTheme,

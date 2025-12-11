@@ -10,6 +10,7 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../generated/l10n.dart';
@@ -65,7 +66,9 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
                 Expanded(
                   child:
                       hasItems
-                          ? _ShareOwedItemsList(items: widget.owed.items)
+                          ? KinlyScrollFade(
+                            child: _ShareOwedItemsList(items: widget.owed.items),
+                          )
                           : _ShareOwedEmptyState(
                             message: s.shareOwedDetailEmpty,
                           ),

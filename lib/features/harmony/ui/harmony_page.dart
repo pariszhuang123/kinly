@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/spacing.dart';
+import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../generated/l10n.dart';
 import 'harmony_screen.dart';
 
@@ -45,9 +46,11 @@ class HarmonyPage extends StatelessWidget {
               /// Body (Scrollable)
               /// -------------------------------------------
               Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(bottom: spacing.lg),
-                  child: HarmonyScreen(homeId: homeId),
+                child: KinlyScrollFade(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: spacing.lg),
+                    child: HarmonyScreen(homeId: homeId),
+                  ),
                 ),
               ),
 
