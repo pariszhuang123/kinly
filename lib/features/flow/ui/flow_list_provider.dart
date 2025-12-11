@@ -12,13 +12,17 @@ class FlowListProvider extends StatelessWidget {
   final ChoresRepository choresRepository;
   final HomeRepository homeRepository;
   final FlowListFilter filter;
+  final String currentUserId;
+  final bool showOnlyCurrentUser;
 
   const FlowListProvider({
     super.key,
     required this.homeId,
     required this.choresRepository,
     required this.homeRepository,
+    required this.currentUserId,
     this.filter = FlowListFilter.all,
+    this.showOnlyCurrentUser = false,
   });
 
   @override
@@ -30,7 +34,11 @@ class FlowListProvider extends StatelessWidget {
             choresRepository: choresRepository,
             homeRepository: homeRepository,
           )..add(const FlowListRequested()),
-      child: FlowListScreen(filter: filter),
+      child: FlowListScreen(
+        filter: filter,
+        currentUserId: currentUserId,
+        showOnlyCurrentUser: showOnlyCurrentUser,
+      ),
     );
   }
 }

@@ -628,9 +628,6 @@ jobs:
           path: build/app/outputs/bundle/**/*.aab
           retention-days: 7
 
-      - name: Cleanup build outputs
-        run: rm -rf build/app/outputs
-
       - uses: ruby/setup-ruby@v1
         if: env.DO_PLAY_UPLOAD == 'true'
         with:
@@ -651,6 +648,12 @@ jobs:
         run: fastlane android deploy_closed
         env:
           GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: config/google_play_key.json
+          AAB_PATH: build/app/outputs/bundle/prodRelease/app-prod-release.aab
+          PLAY_TRACK: beta
           FASTLANE_SKIP_CONFIRMATIONS: true
+
+      - name: Cleanup build outputs
+        if: always()
+        run: rm -rf build/app/outputs
 
   # iOS builds are manual via Xcode; no CI job

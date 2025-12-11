@@ -19,6 +19,7 @@ import '../../../core/ui/kinly_date_picker.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../paywall/ui/paywall_screen.dart';
+import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/flow_chore_bloc.dart';
@@ -124,6 +125,38 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
           state.form.expectationPhotoPath,
         );
 
+        Widget content;
+        if (state.isLoading) {
+          content = const Center(child: KinlyLoader(size: 40));
+        } else if (state.loadErrorMessage != null) {
+          content = _FlowChoreError(
+            message: s.flowChoreLoadError,
+            onRetry:
+                () => context.read<FlowChoreBloc>().add(
+                  const FlowChoreStarted(),
+                ),
+          );
+        } else {
+          content = KinlyScrollFade(
+            child: _FlowChoreFormView(
+              titleController: _titleController,
+              notesController: _notesController,
+              howToController: _howToController,
+              state: state,
+              spacing: spacing,
+              flowColors: flowColors,
+              isUploadingPhoto: state.isUploadingPhoto,
+              expectationPhotoUrl: expectationPhotoUrl,
+              onPhotoCapture:
+                  () => context.read<FlowChoreBloc>().add(
+                    const FlowChorePhotoCaptureRequested(),
+                  ),
+              onDeleteRequested:
+                  state.isEditMode ? () => _confirmDelete(context) : null,
+            ),
+          );
+        }
+
         return Scaffold(
           appBar: AppBar(
             title: Text(
@@ -133,35 +166,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
           body: SafeArea(
             child: Padding(
               padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
-              child:
-                  state.isLoading
-                      ? const Center(child: KinlyLoader(size: 40))
-                      : state.loadErrorMessage != null
-                      ? _FlowChoreError(
-                        message: s.flowChoreLoadError,
-                        onRetry:
-                            () => context.read<FlowChoreBloc>().add(
-                              const FlowChoreStarted(),
-                            ),
-                      )
-                      : _FlowChoreFormView(
-                        titleController: _titleController,
-                        notesController: _notesController,
-                        howToController: _howToController,
-                        state: state,
-                        spacing: spacing,
-                        flowColors: flowColors,
-                        isUploadingPhoto: state.isUploadingPhoto,
-                        expectationPhotoUrl: expectationPhotoUrl,
-                        onPhotoCapture:
-                            () => context.read<FlowChoreBloc>().add(
-                              const FlowChorePhotoCaptureRequested(),
-                            ),
-                        onDeleteRequested:
-                            state.isEditMode
-                                ? () => _confirmDelete(context)
-                                : null,
-                      ),
+              child: content,
             ),
           ),
         );

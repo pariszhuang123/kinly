@@ -604,8 +604,6 @@ class _CustomSplitRow extends StatelessWidget {
 Color _validationColor(ThemeData theme) {
   final tokens = theme.extension<KinlyColorTokens>();
   final scheme = theme.colorScheme;
-  if (theme.brightness == Brightness.dark) {
-    return tokens?.onError ?? scheme.onErrorContainer;
-  }
+  // Use the same high-contrast error color in both themes to keep helper text visible.
   return tokens?.error ?? scheme.error;
 }

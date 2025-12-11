@@ -13,15 +13,23 @@ import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_fab.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../generated/l10n.dart';
 import 'flow_list_filter.dart';
 import '../bloc/flow_list_bloc.dart';
 import '../domain/flow_chore_outcome.dart';
 
 class FlowListScreen extends StatelessWidget {
-  const FlowListScreen({super.key, this.filter = FlowListFilter.all});
+  const FlowListScreen({
+    super.key,
+    this.filter = FlowListFilter.all,
+    this.currentUserId,
+    this.showOnlyCurrentUser = false,
+  });
 
   final FlowListFilter filter;
+  final String? currentUserId;
+  final bool showOnlyCurrentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -105,11 +113,24 @@ class FlowListScreen extends StatelessWidget {
   }
 
   List<ChoreListEntry> _filteredItems(List<ChoreListEntry> items) {
+    final scopedItems =
+        showOnlyCurrentUser &&
+                currentUserId != null &&
+                filter == FlowListFilter.active
+            ? items
+                .where((entry) => entry.assigneeUserId == currentUserId)
+                .toList(growable: false)
+            : items;
+
     switch (filter) {
       case FlowListFilter.active:
-        return items.where((entry) => entry.assigneeUserId != null).toList();
+        return scopedItems
+            .where((entry) => entry.assigneeUserId != null)
+            .toList(growable: false);
       case FlowListFilter.drafts:
-        return items.where((entry) => entry.assigneeUserId == null).toList();
+        return items
+            .where((entry) => entry.assigneeUserId == null)
+            .toList(growable: false);
       case FlowListFilter.all:
         return items;
     }
@@ -135,21 +156,23 @@ class _FlowList extends StatelessWidget {
     final sections = theme.extension<KinlySections>();
     final flowColors = sections?.flow;
 
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
-        itemBuilder: (context, index) {
-          final entry = items[index];
-          return _FlowListTile(
-            entry: entry,
-            flowColors: flowColors,
-            ownerUserId: ownerUserId,
-            onTap: () => onItemTap(entry),
-          );
-        },
+    return KinlyScrollFade(
+      child: RefreshIndicator(
+        onRefresh: onRefresh,
+        child: ListView.separated(
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: items.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final entry = items[index];
+            return _FlowListTile(
+              entry: entry,
+              flowColors: flowColors,
+              ownerUserId: ownerUserId,
+              onTap: () => onItemTap(entry),
+            );
+          },
+        ),
       ),
     );
   }

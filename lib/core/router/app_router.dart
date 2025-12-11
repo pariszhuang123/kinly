@@ -263,11 +263,15 @@ GoRouter createRouter({
           final filter = FlowListFilter.fromQueryParam(
             state.uri.queryParameters['filter'],
           );
+          final scope = state.uri.queryParameters['scope'];
+          final showOnlyMine = scope == 'mine';
           return FlowListProvider(
             homeId: membership.homeId,
             choresRepository: sl<ChoresRepository>(),
             homeRepository: sl<HomeRepository>(),
             filter: filter,
+            currentUserId: membership.userId,
+            showOnlyCurrentUser: showOnlyMine,
           );
         },
       ),
@@ -392,7 +396,9 @@ GoRouter createRouter({
         builder: (_, __) {
           final membership = authBloc.state.membership;
           if (membership == null) {
-            throw StateError('Connection settings requires an active membership.');
+            throw StateError(
+              'Connection settings requires an active membership.',
+            );
           }
           return ConnectionSettingsProvider();
         },

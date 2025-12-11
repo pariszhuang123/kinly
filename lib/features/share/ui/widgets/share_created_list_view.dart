@@ -11,6 +11,7 @@ import '../../../../core/ui/kinly_list_tile.dart';
 import '../../../../core/ui/kinly_empty_state.dart';
 import '../../../../core/ui/feedback/kinly_info_banner.dart';
 import '../../../../core/ui/enums/kinly_banner_type.dart';
+import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
 
@@ -82,20 +83,22 @@ class _ShareCreatedList extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = Theme.of(context).extension<Spacing>();
     final gap = spacing?.md ?? 12.0;
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: entries.length,
-        separatorBuilder: (_, __) => SizedBox(height: gap),
-        itemBuilder: (context, index) {
-          final entry = entries[index];
-          return _ShareCreatedTile(
-            entry: entry,
-            shareColors: shareColors,
-            onTap: () => onEntryTap(entry),
-          );
-        },
+    return KinlyScrollFade(
+      child: RefreshIndicator(
+        onRefresh: onRefresh,
+        child: ListView.separated(
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: entries.length,
+          separatorBuilder: (_, __) => SizedBox(height: gap),
+          itemBuilder: (context, index) {
+            final entry = entries[index];
+            return _ShareCreatedTile(
+              entry: entry,
+              shareColors: shareColors,
+              onTap: () => onEntryTap(entry),
+            );
+          },
+        ),
       ),
     );
   }

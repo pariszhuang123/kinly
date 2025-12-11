@@ -175,7 +175,8 @@ class TodayScreen extends StatelessWidget {
                                         onPrimary: () async {
                                           final shared = await _shareInvite(
                                             context,
-                                            isFlatmate: shouldShowFlatmateInvite,
+                                            isFlatmate:
+                                                shouldShowFlatmateInvite,
                                           );
                                           if (!context.mounted || !shared) {
                                             return;
@@ -194,19 +195,24 @@ class TodayScreen extends StatelessWidget {
                                             );
                                           }
                                         },
-                                        onSecondary: shouldShowFlatmateInvite
-                                            ? () => context.read<TodayBloc>().add(
-                                                  const TodayFlatmateInviteDismissed(),
-                                                )
-                                            : null,
+                                        onSecondary:
+                                            shouldShowFlatmateInvite
+                                                ? () => context
+                                                    .read<TodayBloc>()
+                                                    .add(
+                                                      const TodayFlatmateInviteDismissed(),
+                                                    )
+                                                : null,
                                       ),
                                       SizedBox(height: spacing.lg),
                                     ],
                                     if (hasFlow) ...[
                                       TodayFlowSectionContainer(
                                         onTaskTap:
-                                            (task) =>
-                                                _handleFlowTaskTap(context, task),
+                                            (task) => _handleFlowTaskTap(
+                                              context,
+                                              task,
+                                            ),
                                         onSeeAllTap:
                                             (filter) =>
                                                 _openFlowList(context, filter),
@@ -240,7 +246,8 @@ class TodayScreen extends StatelessWidget {
                                     if (hasGratitude) ...[
                                       SizedBox(height: spacing.lg),
                                       TodayGratitudeSection(
-                                        onTap: () => _openGratitudeWall(context),
+                                        onTap:
+                                            () => _openGratitudeWall(context),
                                       ),
                                     ],
                                   ],
@@ -312,7 +319,7 @@ class TodayScreen extends StatelessWidget {
 
   void _openFlowList(BuildContext context, FlowListFilter filter) {
     final filterParam = filter.toQueryParam();
-    context.push('${AppRoutes.flow}?filter=$filterParam').then((_) {
+    context.push('${AppRoutes.flow}?filter=$filterParam&scope=mine').then((_) {
       if (context.mounted) {
         context.read<TodayBloc>().add(const TodayRefreshed());
       }
@@ -348,10 +355,11 @@ class TodayScreen extends StatelessWidget {
     final repository = sl<ExpensesRepository>();
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => ShareOwedDetailScreen(
-          owed: owed,
-          expensesRepository: repository,
-        ),
+        builder:
+            (_) => ShareOwedDetailScreen(
+              owed: owed,
+              expensesRepository: repository,
+            ),
       ),
     );
     if (result == true && context.mounted) {
@@ -381,10 +389,7 @@ class TodayScreen extends StatelessWidget {
   }
 
   Future<void> _openShareCreatedList(BuildContext context) async {
-    await context.push<bool>(
-      AppRoutes.shareCreatedList,
-      extra: true,
-    );
+    await context.push<bool>(AppRoutes.shareCreatedList, extra: true);
     if (context.mounted) {
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
