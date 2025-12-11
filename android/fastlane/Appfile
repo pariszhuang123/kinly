@@ -1,0 +1,2 @@
+json_key_file(ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"] || "config/google_play_key.json")
+package_name("com.makinglifeeasie.kinly")

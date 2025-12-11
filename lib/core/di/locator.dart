@@ -14,8 +14,10 @@ import '../homes/supabase_home_repository.dart';
 import '../profile/supabase_profile_repository.dart';
 import '../app_version/supabase_app_version_repository.dart';
 import '../network/connectivity_monitor.dart';
+import '../config/app_config.dart';
 import '../logging/logger.dart';
 import '../logging/debug_logger.dart';
+import '../logging/sentry_logger.dart';
 import '../../data/repositories/mood_repository.dart';
 import '../mood/supabase_mood_repository.dart';
 import '../profile/profile_update_notifier.dart';
@@ -34,7 +36,13 @@ final sl = GetIt.instance;
 
 void setupDependencies() {
   if (!sl.isRegistered<Logger>()) {
-    sl.registerLazySingleton<Logger>(() => const DebugLogger());
+    const debugLogger = DebugLogger();
+    sl.registerLazySingleton<Logger>(
+      () =>
+          AppConfig.sentryDsn.isNotEmpty
+              ? SentryLogger(fallback: debugLogger)
+              : debugLogger,
+    );
   }
   if (!sl.isRegistered<AuthRepository>()) {
     sl.registerLazySingleton<AuthRepository>(() => SupabaseAuthRepository());
@@ -82,11 +90,15 @@ void setupDependencies() {
     sl.registerLazySingleton<MoodRepository>(() => SupabaseMoodRepository());
   }
   if (!sl.isRegistered<NotificationSyncState>()) {
-    sl.registerLazySingleton<NotificationSyncState>(() => NotificationSyncState());
+    sl.registerLazySingleton<NotificationSyncState>(
+      () => NotificationSyncState(),
+    );
   }
   if (!sl.isRegistered<NotificationsRepository>()) {
     sl.registerLazySingleton<NotificationsRepository>(
-      () => SupabaseNotificationsRepository(syncState: sl<NotificationSyncState>()),
+      () => SupabaseNotificationsRepository(
+        syncState: sl<NotificationSyncState>(),
+      ),
     );
   }
   if (!sl.isRegistered<OnboardingRepository>()) {
@@ -98,9 +110,13 @@ void setupDependencies() {
     sl.registerLazySingleton<Telemetry>(() => LoggerTelemetry(sl<Logger>()));
   }
   if (!sl.isRegistered<PaywallRepository>()) {
-    sl.registerLazySingleton<PaywallRepository>(() => SupabasePaywallRepository());
+    sl.registerLazySingleton<PaywallRepository>(
+      () => SupabasePaywallRepository(),
+    );
   }
   if (!sl.isRegistered<RevenueCatService>()) {
-    sl.registerLazySingleton<RevenueCatService>(() => DefaultRevenueCatService());
+    sl.registerLazySingleton<RevenueCatService>(
+      () => DefaultRevenueCatService(),
+    );
   }
 }

@@ -505,6 +505,12 @@ jobs:
       SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       WEB_CLIENT_ID: ${{ secrets.WEB_CLIENT_ID }}
       IOS_CLIENT_ID: ${{ secrets.IOS_CLIENT_ID }}
+      IOS_STORE_URL: ${{ secrets.IOS_STORE_URL }}
+      ANDROID_STORE_URL: ${{ secrets.ANDROID_STORE_URL }}
+      REVENUECAT_IOS_KEY: ${{ secrets.REVENUECAT_IOS_KEY }}
+      REVENUECAT_ANDROID_KEY: ${{ secrets.REVENUECAT_ANDROID_KEY }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      INVITE_HOST: ${{ secrets.INVITE_HOST }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -590,7 +596,13 @@ jobs:
             "SUPABASE_ANON_KEY": "${{ env.SUPABASE_ANON_KEY }}",
             "DEEPLINK_HOST": "example.com",
             "WEB_CLIENT_ID": "${{ env.WEB_CLIENT_ID }}",
-            "IOS_CLIENT_ID": "${{ env.IOS_CLIENT_ID }}"
+            "IOS_CLIENT_ID": "${{ env.IOS_CLIENT_ID }}",
+            "IOS_STORE_URL": "${{ env.IOS_STORE_URL }}",
+            "ANDROID_STORE_URL": "${{ env.ANDROID_STORE_URL }}",
+            "REVENUECAT_IOS_KEY": "${{ env.REVENUECAT_IOS_KEY }}",
+            "REVENUECAT_ANDROID_KEY": "${{ env.REVENUECAT_ANDROID_KEY }}",
+            "SENTRY_DSN": "${{ env.SENTRY_DSN }}",
+            "INVITE_HOST": "${{ env.INVITE_HOST }}"
           }
           JSON
 
@@ -639,9 +651,9 @@ jobs:
           mkdir -p config
           echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" | base64 --decode > config/google_play_key.json
 
-      - name: Upload to Play (internal)
+      - name: Upload to Play (closed track)
         if: env.DO_PLAY_UPLOAD == 'true'
-        run: fastlane android deploy_internal
+        run: fastlane android deploy_closed
         env:
           GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: config/google_play_key.json
           FASTLANE_SKIP_CONFIRMATIONS: true

@@ -3,10 +3,14 @@ class AppConfig {
   static const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
   static const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
   static const deeplinkHost = String.fromEnvironment('DEEPLINK_HOST');
-  static const revenuecatIosKey =
-      String.fromEnvironment('REVENUECAT_IOS_KEY', defaultValue: '');
-  static const revenuecatAndroidKey =
-      String.fromEnvironment('REVENUECAT_ANDROID_KEY', defaultValue: '');
+  static const revenuecatIosKey = String.fromEnvironment(
+    'REVENUECAT_IOS_KEY',
+    defaultValue: '',
+  );
+  static const revenuecatAndroidKey = String.fromEnvironment(
+    'REVENUECAT_ANDROID_KEY',
+    defaultValue: '',
+  );
   // Placeholder for public invite host (e.g., makinglifeeasie.com); falls back
   // to deeplinkHost if empty.
   static const inviteHost = String.fromEnvironment('INVITE_HOST');
@@ -15,6 +19,10 @@ class AppConfig {
   static const iosClientId = String.fromEnvironment('IOS_CLIENT_ID');
   static const iosStoreUrl = String.fromEnvironment('IOS_STORE_URL');
   static const androidStoreUrl = String.fromEnvironment('ANDROID_STORE_URL');
+  static const sentryDsn = String.fromEnvironment(
+    'SENTRY_DSN',
+    defaultValue: '',
+  );
 
   static void validate() {
     final missing = <String>[];

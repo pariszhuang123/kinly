@@ -8,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'core/config/app_config.dart';
 import 'core/di/locator.dart';
@@ -39,6 +40,32 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  if (AppConfig.sentryDsn.isEmpty) {
+    await _bootstrapApp();
+    return;
+  }
+
+  try {
+    await SentryFlutter.init((options) {
+      options.dsn = AppConfig.sentryDsn;
+      options.environment = AppConfig.env;
+      options.tracesSampleRate = kReleaseMode ? 1.0 : 0.0;
+      options.enableAutoPerformanceTracing = kReleaseMode;
+      options.sendDefaultPii = false;
+    }, appRunner: () => _bootstrapApp());
+  } catch (error, stackTrace) {
+    const DebugLogger().warn(
+      'Failed to initialize Sentry: $error',
+      tag: 'Bootstrap',
+      error: error,
+      stackTrace: stackTrace,
+    );
+    await _bootstrapApp();
+  }
+}
+
+Future<void> _bootstrapApp() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
@@ -288,9 +315,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           preferredHour: prefs.preferredHour,
           timezone: timezone,
           locale: locale,
-          osPermission: prefs.osPermission.isNotEmpty
-              ? prefs.osPermission
-              : osPermission,
+          osPermission:
+              prefs.osPermission.isNotEmpty ? prefs.osPermission : osPermission,
           platform: platformName,
         ),
       );
