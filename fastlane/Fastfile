@@ -6,7 +6,7 @@ default_platform(:android)
 platform :android do
   desc "Upload the prod AAB to Google Play closed testing (beta track by default)"
   lane :deploy_closed do
-    track          = ENV["PLAY_TRACK"] || "beta"
+    track          = ENV["PLAY_TRACK"] || "internal"
     release_status = ENV["PLAY_RELEASE_STATUS"] || "completed"
 
     # ---------------------------------------------------------
