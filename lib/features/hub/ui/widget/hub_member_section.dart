@@ -78,23 +78,24 @@ class HubMembersSection extends StatelessWidget {
         if (members.isNotEmpty)
           SizedBox(
             height: _avatarRadius * 2 + spacing.lg + spacing.md,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                KinlyMemberAvatarStack(
-                  members: members,
-                  accent: colorScheme.primary,
-                  maxVisible: 5,
-                  radius: _avatarRadius,
-                ),
-                SizedBox(width: spacing.md),
-                _AddMemberTile(
-                  spacing: spacing,
-                  avatarRadius: _avatarRadius,
-                  onTap: onInviteTap,
-                  label: s.hubInviteCta, // one-line i18n label
-                ),
-              ],
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(start: spacing.s),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _AddMemberTile(
+                    avatarRadius: _avatarRadius,
+                    onTap: onInviteTap,
+                  ),
+                  SizedBox(width: spacing.md),
+                  KinlyMemberAvatarStack(
+                    members: members,
+                    accent: colorScheme.primary,
+                    maxVisible: 5,
+                    radius: _avatarRadius,
+                  ),
+                ],
+              ),
             ),
           )
         else
@@ -111,45 +112,22 @@ class HubMembersSection extends StatelessWidget {
 }
 
 class _AddMemberTile extends StatelessWidget {
-  const _AddMemberTile({
-    required this.spacing,
-    required this.avatarRadius,
-    required this.onTap,
-    required this.label,
-  });
+  const _AddMemberTile({required this.avatarRadius, required this.onTap});
 
-  final Spacing spacing;
   final double avatarRadius;
   final VoidCallback onTap;
-  final String label;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Match avatar visual size
         SizedBox(
           height: avatarRadius * 2,
           width: avatarRadius * 2,
           child: KinlyAddTileButton(
             onTap: onTap,
           ), // inherits dark/light styling from theme
-        ),
-        SizedBox(height: spacing.sm),
-        SizedBox(
-          width: avatarRadius * 3.0,
-          child: Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
         ),
       ],
     );

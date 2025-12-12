@@ -163,7 +163,6 @@ class _PaywallBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final sections = theme.extension<KinlySections>();
-    final textTheme = theme.textTheme;
     const priceLine = '';
     final surface = theme.colorScheme.surface;
     final shareCard =

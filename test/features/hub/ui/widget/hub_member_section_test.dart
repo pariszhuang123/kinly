@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/core/ui/buttons/kinly_add_tile_button.dart';
 import 'package:kinly/features/hub/bloc/hub_bloc.dart';
 import 'package:kinly/features/hub/ui/widget/hub_member_section.dart';
 import 'package:kinly/generated/l10n.dart';
@@ -90,6 +91,6 @@ void main() {
 
     expect(find.text('JOIN123'), findsOneWidget);
     expect(find.text('+1'), findsOneWidget);
-    expect(find.text(S.current.hubInviteCta), findsOneWidget);
+    expect(find.byType(KinlyAddTileButton), findsOneWidget);
   });
 }

@@ -3,9 +3,11 @@
   "app_title": "Kinly",
   "bootstrap_initializing": "Starting Kinly ({env})",
   "@bootstrap_initializing": {
+    "surface": "subtitle",
     "placeholders": {
       "env": {
-        "type": "String"
+        "type": "String",
+        "example": "prod"
       }
     }
   },
@@ -23,22 +25,33 @@
   "join_success": "Joined with code: {code}",
   "@join_success": {
     "description": "Snackbar message displayed when the user joins successfully",
+    "surface": "success_message",
     "placeholders": {
       "code": {
-        "type": "String"
+        "type": "String",
+        "example": "ABCD123"
       }
     }
   },
-  "join_failed_generic": "Join failed. Please try again.",
+  "join_failed_generic": "We couldn't join this home. Please try again.",
   "join_error_invalid_code": "That invite code doesn't look right.",
   "join_error_inactive_invite": "That invite is no longer active. Ask the owner for a new code.",
   "join_error_already_in_other_home": "You're already in another home. Leave it before joining a new one.",
   "join_error_paywall_limit": "This home has reached its member limit. Ask the owner to upgrade or remove a member.",
-  "paywallTitle": "Bring more harmony to your home — together.",
+  "paywallTitle": "Bring more harmony to your home",
   "paywallSubtitle": "Your home-level upgrade for less than 0.5% of your rent.",
   "paywallPriceCaption": "One home plan, no hidden tiers.",
-  "paywallEmotional": "Premium helps your home feel lighter every day — no blockers, no limits, and everyone stays aligned.",
+  "paywallEmotional": "Premium keeps your home feeling lighter each day. No blockers, no limits, everyone stays aligned.",
   "paywallPricePerMonth": "{price} per month for your whole home.",
+  "@paywallPricePerMonth": {
+    "surface": "paywall_subtitle",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "$7.99"
+      }
+    }
+  },
   "paywallPriceUnavailable": "Pricing not available right now.",
   "paywallBulletMembers": "Unlimited home members",
   "paywallBulletFlows": "Unlimited flows",
@@ -46,8 +59,8 @@
   "paywallBulletShares": "Unlimited shared expenses",
   "paywallPrimaryCta": "Upgrade to Kinly Premium",
   "paywallSecondaryCta": "Continue with free home",
-  "paywallPurchaseFailed": "Purchase not completed — you can try again anytime.",
-  "paywallPurchaseSuccess": "You’re now on Kinly Premium.",
+  "paywallPurchaseFailed": "Purchase not completed - you can try again anytime.",
+  "paywallPurchaseSuccess": "You're now on Kinly Premium.",
   "paywallRestoreCta": "Restore purchases",
   "paywallErrorTitle": "Unable to load paywall.",
   "paywallRetryLabel": "Retry",
@@ -74,19 +87,22 @@
   "login_terms": "Service Terms",
   "login_privacy": "Privacy Policy",
   "logout": "Sign out",
-  "membership_status_checking": "Checking membership status…",
+  "membership_status_checking": "Checking membership statusâ€¦",
   "membership_status_none": "You haven't joined a home yet.",
   "membership_status_active": "You're already part of a home.",
   "authMembershipLoadFailed": "We couldn't refresh your home membership. Please try again.",
   "today_no_membership": "No active home yet. Create or join to see today's view.",
   "today_home_details": "Current home: {homeId} • Role: {role}",
   "@today_home_details": {
+    "surface": "subtitle",
     "placeholders": {
       "homeId": {
-        "type": "String"
+        "type": "String",
+        "example": "Home-1234"
       },
       "role": {
-        "type": "String"
+        "type": "String",
+        "example": "owner"
       }
     }
   },
@@ -101,10 +117,12 @@
   "@force_update_version_details": {
     "placeholders": {
       "client": {
-        "type": "String"
+        "type": "String",
+        "example": "1.2.0"
       },
       "current": {
-        "type": "String"
+        "type": "String",
+        "example": "1.3.5"
       }
     }
   },
@@ -119,16 +137,27 @@
   "hubShareInviteTitle": "Invite to my Kinly home",
   "hubShareInviteBody": "Welcome to our Kinly home! Enter this invite code: {code}\n\nDownload the Kinly app: {link}",
   "@hubShareInviteBody": {
+    "surface": "subtitle",
     "placeholders": {
-      "code": {},
-      "link": {}
+      "code": {
+        "type": "String",
+        "example": "ABCD123"
+      },
+      "link": {
+        "type": "String",
+        "example": "https://kinly.app/download"
+      }
     }
   },
   "hubShareAppTitle": "Get the Kinly app",
   "hubShareAppBody": "Share Kinly so sharing feels lighter: {link}",
   "@hubShareAppBody": {
+    "surface": "subtitle",
     "placeholders": {
-      "link": {}
+      "link": {
+        "type": "String",
+        "example": "https://kinly.app/download"
+      }
     }
   },
   "hubShareAppCta": "Share Kinly",
@@ -146,17 +175,28 @@
   "hubQrTitle": "Share the app",
   "hubQrSubtitle": "Scan to download Kinly",
   "hubCardGratitudeWallTitle": "Gratitude Wall",
-  "hubCardGratitudeWallSubtitle": "Read shout-outs, thank-yous, and moments of appreciation.",
+  "hubCardGratitudeWallSubtitle": "Read quick thank-yous and small moments of appreciation.",
   "hubError": "Couldn't load Hub. Please try again.",
   "hubRetry": "Retry",
-  "todayEmptyCardTitle": "You're all caught up for today ✨",
+  "todayEmptyCardTitle": "All caught up today",
   "todayEmptyCardBadge": "Take a breather",
-  "todayEmptyBody": "Enjoy the calm — Kinly will let you know when something needs your attention.",
+  "todayEmptyBody": "Enjoy the calm - Kinly will let you know when something needs your attention.",
   "friendDefaultName": "friend",
   "unknownInitial": "?",
   "greetingPartOfDay": "Good {partOfDay}, {name}",
-  "greetingPartOfDay_partOfDay": "part of day (morning/afternoon/evening)",
-  "greetingPartOfDay_name": "name",
+  "@greetingPartOfDay": {
+    "surface": "title",
+    "placeholders": {
+      "partOfDay": {
+        "type": "String",
+        "example": "morning"
+      },
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
   "greetingPartMorning": "morning",
   "greetingPartAfternoon": "afternoon",
   "greetingPartEvening": "evening",
@@ -164,11 +204,13 @@
   "todayFlowSectionTitle": "Flow",
   "todayFlowTabActive": "Active",
   "todayFlowTabDrafts": "Drafts",
-  "todayFlowSeeAll": "See all ({count})",
+  "todayFlowSeeAll": "See all {count, plural, one {(#)} other {(#)}}",
   "@todayFlowSeeAll": {
+    "surface": "subtitle",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "example": 3
       }
     }
   },
@@ -187,9 +229,11 @@
   "@todayShareActiveSubtitle": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "example": 2
       }
-    }
+    },
+    "surface": "subtitle"
   },
   "todayShareDraftSubtitle": "Split based on the share.",
   "todayGratitudeSectionTitle": "Home Gratitude wall",
@@ -206,7 +250,7 @@
   "shareEditSubmit": "Update",
   "shareEditSuccess": "Share updated.",
   "shareEditLoadError": "We couldn't load that draft.",
-  "shareEditNotAllowed": "This can't be edited anymore because you need to assigned the share.",
+  "shareEditNotAllowed": "This is locked until you assign the share to someone.",
   "shareEditSplitsLocked": "Splits are locked because someone already paid. You can still update the description and notes.",
   "shareEditClose": "Close",
   "shareEditDeleteButton": "Delete",
@@ -228,7 +272,7 @@
   "shareCreateParticipantsEmpty": "You need at least two household members to share.",
   "shareCreateNotesLabel": "Notes",
   "shareCreateNotesHint": "Optional context everyone can see",
-  "shareCreateCustomHelper": "Enter what each person owes. The total must match the amount above.",
+  "shareCreateCustomHelper": "Enter each person's part. Make sure the total matches the amount above.",
   "shareCreateCustomAmountLabel": "Amount",
   "shareCreateSubmit": "Create",
   "shareCreateValidationDescription": "Enter a description.",
@@ -237,12 +281,12 @@
   "shareCreateValidationEqualParticipants": "Select at least two people to split the amount.",
   "shareCreateValidationCustomParticipants": "Custom split needs at least two people.",
   "shareCreateValidationCustomAmounts": "Enter a valid amount for each selected person.",
-  "shareCreateValidationCustomSum": "Custom split must add up to the amount above.",
-  "shareCreateValidationCustomSinglePayer": "One person can't cover the entire amount when using a custom split.",
+  "shareCreateValidationCustomSum": "Make sure the custom split adds up to the amount above.",
+  "shareCreateValidationCustomSinglePayer": "Share the amount between at least two people when using a custom split.",
   "shareCreateLoadError": "We couldn't load your household members.",
   "shareCreateRetry": "Try again",
   "shareCreateErrorGeneric": "Couldn't create. Try again.",
-  "shareCreateErrorPaywallActiveCap": "You’ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.",
+  "shareCreateErrorPaywallActiveCap": "You've reached the free limit of 10 active or draft shares. Close or cancel one to continue.",
   "shareCreateErrorForbidden": "You don't have permission to create this right now.",
   "shareCreateSuccess": "Share created.",
   "flowChoreCreateTitle": "Add Flow",
@@ -287,11 +331,11 @@
   "flowChoreRetry": "Retry",
   "flowChoreErrorPaywallActiveCap": "You've hit the free limit for active flows. Upgrade to add more.",
   "flowChoreErrorPaywallMediaCap": "You've hit the free limit for expectation photos. Remove one or upgrade.",
-  "flowChoreErrorAssigneeNotMember": "That member can't be assigned right now.",
+  "flowChoreErrorAssigneeNotMember": "That member isn't assignable right now.",
   "flowChoreErrorForbidden": "You don't have permission to change this flow.",
   "flowChoreErrorInvalidPhoto": "That photo path isn't valid for this home.",
   "flowChoreErrorInvalidStart": "Pick a valid start date.",
-  "flowChoreErrorInvalidState": "This flow can't be updated right now.",
+  "flowChoreErrorInvalidState": "This flow isn't updateable right now.",
   "flowChoreErrorGeneric": "Couldn't save the flow. Please try again.",
   "flowChoreDetailTitle": "Flow details",
   "flowChoreDetailUnassigned": "Unassigned",
@@ -305,7 +349,7 @@
   "flowListEmptyTitle": "Nothing in Flow yet",
   "flowListEmptySubtitle": "Add your first routine so everyone knows what to do.",
   "flowListDraftLabel": "Draft",
-  "flowListOverdueLabel": "Overdue",
+  "flowListOverdueLabel": "Past due",
   "flowListError": "We couldn't load Flow. Pull to refresh.",
   "exploreIntroTitle": "Discover what's next",
   "exploreIntroSubtitle": "Explore more ways to keep your home feeling lighter.",
@@ -320,21 +364,26 @@
   "@shareCreatedListActiveSubtitle": {
     "placeholders": {
       "paid": {
-        "type": "int"
+        "type": "int",
+        "example": 2
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "example": 4
       }
-    }
+    },
+    "surface": "subtitle"
   },
   "shareCreatedListActiveAmount": "{paidAmount} of {totalAmount} collected",
   "@shareCreatedListActiveAmount": {
     "placeholders": {
       "paidAmount": {
-        "type": "String"
+        "type": "String",
+        "example": "$20.00"
       },
       "totalAmount": {
-        "type": "String"
+        "type": "String",
+        "example": "$40.00"
       }
     }
   },
@@ -349,7 +398,7 @@
   "profileIdentityUsernameHint": "letters, numbers, . or _",
   "profileIdentityUsernameEmptyError": "Enter a username to continue.",
   "profileIdentityUsernameFormatError": "Use 3-30 lowercase letters or numbers. You can include dots or underscores in the middle.",
-  "profileIdentityUsernameTakenError": "That username is already taken. Try a different one.",
+  "profileIdentityUsernameTakenError": "That username is taken. Try a different one.",
   "profileIdentityAvatarSectionTitle": "Pick an avatar",
   "profileIdentityAvatarSectionDescription": "Each avatar is unique inside your home.",
   "profileIdentityAvatarEmpty": "No avatars are available right now. Try again soon.",
@@ -360,14 +409,14 @@
   "profileIdentityUsernamePreviewFallback": "your username",
   "profileLeaveHomeTitle": "Leave home",
   "profileLeaveHomeSubtitle": "Leaving this home means stepping out of your shared Kinly space.",
-  "profileLeaveEligibilityLoading": "Checking your home members…",
+  "profileLeaveEligibilityLoading": "Checking your home members...",
   "profileLeaveEligibilityError": "We couldn't load your home members. Try again.",
   "profileLeaveOwnerSoloMessage": "You're the last member. Leaving will deactivate this home for everyone.",
   "profileLeaveOwnerNoEligibleMembers": "No one else can take ownership right now. Try again later.",
   "profileLeaveTransferSheetTitle": "Transfer ownership",
-  "profileLeaveTransferSheetSubtitle": "Select who should become the new owner before you leave.",
+  "profileLeaveTransferSheetSubtitle": "Select who will become the new owner before you leave.",
   "profileKickMemberTitle": "Remove a member",
-  "profileKickMemberSubtitle": "Choose who should lose access to this home.",
+  "profileKickMemberSubtitle": "Choose who will lose access to this home.",
   "profileKickSheetTitle": "Remove a member",
   "profileKickSheetSubtitle": "Select a member to remove. They'll lose access right away.",
   "profileKickActionConfirm": "Remove member",
@@ -376,7 +425,7 @@
   "profileKickSuccessTitle": "Member removed",
   "profileKickSuccessMessage": "They no longer have access to this home.",
   "profileKickSuccessClose": "Back to settings",
-  "profileLeaveTransferSuccessMessage": "Ownership transferred. Finishing your leave…",
+  "profileLeaveTransferSuccessMessage": "Ownership transferred. Finishing your leave...",
   "profileInfoHubTitle": "Info Hub",
   "profileInfoHubSubtitle": "Open the Kinly Notion hub in-app.",
   "profileInfoHubLoadError": "The Info Hub couldn't load. Check your connection.",
@@ -390,15 +439,17 @@
   "connectionNotificationsToggleTitle": "Daily notifications",
   "connectionNotificationsToggleSubtitleOn": "Get one reminder each day.",
   "connectionNotificationsToggleSubtitleOff": "Turn on reminders about your home.",
-  "connectionNotificationsPermissionBlocked": "Allow notifications in your phone settings to turn this on.",
+  "connectionNotificationsPermissionBlocked": "Turn on notifications in your phone settings to use this.",
   "connectionNotificationsTimeLabel": "Reminder time",
   "connectionNotificationsTimeSubtitle": "Scheduled for {time}",
   "@connectionNotificationsTimeSubtitle": {
     "placeholders": {
       "time": {
-        "type": "String"
+        "type": "String",
+        "example": "8:00 AM"
       }
-    }
+    },
+    "surface": "subtitle"
   },
   "profileContactEmailSubject": "Contact us",
   "profileContactLaunchError": "We couldn't open your email app. Try again.",
@@ -409,9 +460,9 @@
   "profileDeleteAccountTitle": "Delete account",
   "profileDeleteAccountSubtitle": "Remove your Kinly account and profile data.",
   "profileConfirmLeaveTitle": "Leave this home?",
-  "profileConfirmLeaveMessage": "You'll lose access to Flow, shared history, and invites.",
+  "profileConfirmLeaveMessage": "You'll lose access to Flow, history, and invites.",
   "profileConfirmDeleteTitle": "Delete your account?",
-  "profileConfirmDeleteMessage": "This removes your account and signs you out. This cannot be undone.",
+  "profileConfirmDeleteMessage": "This removes your account and signs you out. You won't be able to undo this.",
   "profileActionCancel": "Cancel",
   "profileActionConfirmDelete": "Delete account",
   "profileActionConfirm": "Leave Home",
@@ -428,19 +479,28 @@
   "harmonyMoodRainy": "Rainy",
   "harmonyMoodThunderstorm": "Thunderstorm",
   "harmonyCommentLabel": "Add a note (optional)",
-  "harmonyCommentHint": "What’s making the home feel this way?",
+  "harmonyCommentHint": "What's making the home feel this way?",
   "harmonyShareLabel": "Share this on the gratitude wall",
   "harmonyShareSubtitle": "Visible to your home when the mood is sunny or partly sunny.",
   "harmonySubmitCta": "Submit feedback",
   "harmonySubmitSuccess": "Thanks! Your feedback was saved.",
-  "harmonyErrorAlreadySubmitted": "You’ve already shared your mood for this week.",
-  "harmonyErrorForbidden": "You can’t submit feedback for this home.",
+  "harmonyErrorAlreadySubmitted": "You've already shared your mood for this week.",
+  "harmonyErrorForbidden": "You can't submit feedback for this home.",
   "harmonyErrorUnknown": "Something went wrong. Please try again.",
   "harmonyErrorSelectMood": "Pick a mood before submitting.",
-  "harmonyEntryCta": "Share this week’s harmony",
-  "harmonyEntryError": "Couldn’t open harmony feedback. Try again.",
+  "harmonyEntryCta": "Share this week's mood",
+  "harmonyEntryError": "Couldn't open harmony feedback. Try again.",
   "gratitudeWallTitle": "Gratitude wall",
   "gratitudeWallTimestamp": "{time} today",
+  "@gratitudeWallTimestamp": {
+    "surface": "subtitle",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "2:45 PM"
+      }
+    }
+  },
   "gratitudeWallEmptyTitle": "No gratitude posts yet",
   "gratitudeWallEmptySubtitle": "Share a sunny moment to start filling the wall.",
   "gratitudeWallRetry": "Try again",
@@ -449,37 +509,672 @@
   "gratitudeWallShareMessage": "Sharing a glimpse of our Kinly gratitude wall. Download the app: {link}",
   "@gratitudeWallShareMessage": {
     "placeholders": {
-      "link": {}
+      "link": {
+        "type": "String",
+        "example": "https://kinly.app/download"
+      }
     }
   },
   "gratitudeWallShareError": "Couldn't share right now. Please try again.",
   "gratitudeWallPoweredBy": "Powered by",
   "gratitudeWallSubtitle": "Shared moments from your home.",
-  "gratitudeWallKinlySubtitle": "Kinly helps your home share small gratitude moments together.",
+  "gratitudeWallKinlySubtitle": "Kinly helps your home share small moments of gratitude.",
   "gratitudeWallFooter": "Made with {appName} - Together feels lighter",
-  "gratitudeWallWeeksAgo": "{weeks,plural, =0{This week} one{1 week ago} other{{weeks} weeks ago}}",
-  "@gratitudeWallFooter": {
+  "gratitudeWallWeeksAgo": "{weeks, plural, =0{This week} one{# week ago} other{# weeks ago}}",
+  "@gratitudeWallWeeksAgo": {
+    "surface": "subtitle",
     "placeholders": {
-      "appName": {}
-    }
-  },
-  "gratitudeWallTitleCount": "Gratitude wall ({count})",
-  "@gratitudeWallTitleCount": {
-    "placeholders": {
-      "count": {
-        "type": "String"
+      "weeks": {
+        "type": "int",
+        "example": 3
       }
     }
   },
-  "npsTitle": "How likely are you to recommend Kinly to a friend or family member?",
-  "npsDescription": "Net Promoter Score helps us learn how we\u2019re doing. Pick a number from 0 (not likely) to 10 (extremely likely).",
+  "@gratitudeWallFooter": {
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "Kinly"
+      }
+    }
+  },
+  "gratitudeWallTitleCount": "Gratitude wall {count, plural, one {(#)} other {(#)}}",
+  "@gratitudeWallTitleCount": {
+    "surface": "title",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": 4
+      }
+    }
+  },
+  "npsTitle": "How likely are you to recommend Kinly to a friend?",
+  "npsDescription": "Net Promoter Score helps us learn how we're doing. Pick a number from 0 (not likely) to 10 (extremely likely).",
   "npsScaleLowLabel": "0 Not likely",
   "npsScaleHighLabel": "10 Extremely likely",
   "npsCannotSkip": "You need to pick a score to continue.",
-  "npsSubmitErrorNotRequired": "This feedback isn\u2019t needed right now.",
+  "npsSubmitErrorNotRequired": "This feedback isn't needed right now.",
   "npsSubmitErrorInvalidScore": "Please pick a score between 0 and 10.",
-  "npsSubmitErrorForbidden": "You\u2019re not allowed to submit feedback right now.",
-  "npsSubmitErrorGeneric": "Couldn\u2019t send your feedback. Please try again.",
-  "npsLaunchError": "Couldn\u2019t open the next step.",
-  "npsEmailSubject": "What can we improve?"
+  "npsSubmitErrorForbidden": "You're not allowed to submit feedback right now.",
+  "npsSubmitErrorGeneric": "Couldn't send your feedback. Please try again.",
+  "npsLaunchError": "Couldn't open the next step.",
+  "npsEmailSubject": "What can we improve?",
+  "@app_title": {
+    "surface": "title"
+  },
+  "@welcome_title": {
+    "surface": "title"
+  },
+  "@create_title": {
+    "surface": "title"
+  },
+  "@create_subtitle": {
+    "surface": "subtitle"
+  },
+  "@create_submit": {
+    "surface": "button"
+  },
+  "@create_success": {
+    "surface": "success_message"
+  },
+  "@join_title": {
+    "surface": "title"
+  },
+  "@join_submit": {
+    "surface": "button"
+  },
+  "@paywallTitle": {
+    "surface": "title_hero"
+  },
+  "@paywallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@paywallPrimaryCta": {
+    "surface": "button"
+  },
+  "@paywallSecondaryCta": {
+    "surface": "button"
+  },
+  "@paywallPurchaseSuccess": {
+    "surface": "success_message"
+  },
+  "@paywallRestoreCta": {
+    "surface": "button"
+  },
+  "@paywallErrorTitle": {
+    "surface": "title"
+  },
+  "@today_title": {
+    "surface": "title"
+  },
+  "@quick_add_title": {
+    "surface": "title"
+  },
+  "@quick_add_flow_title": {
+    "surface": "title"
+  },
+  "@quick_add_flow_subtitle": {
+    "surface": "subtitle"
+  },
+  "@quick_add_share_title": {
+    "surface": "title"
+  },
+  "@quick_add_share_subtitle": {
+    "surface": "subtitle"
+  },
+  "@quick_add_poll_title": {
+    "surface": "title"
+  },
+  "@quick_add_poll_subtitle": {
+    "surface": "subtitle"
+  },
+  "@quick_add_fair_share_title": {
+    "surface": "title"
+  },
+  "@quick_add_fair_share_subtitle": {
+    "surface": "subtitle"
+  },
+  "@todayAddSheetTitle": {
+    "surface": "title"
+  },
+  "@offline_title": {
+    "surface": "title"
+  },
+  "@offline_body": {
+    "surface": "subtitle"
+  },
+  "@offline_retry": {
+    "surface": "button"
+  },
+  "@force_update_title": {
+    "surface": "title"
+  },
+  "@force_update_body": {
+    "surface": "subtitle"
+  },
+  "@force_update_button": {
+    "surface": "button"
+  },
+  "@hubMembersTitle": {
+    "surface": "title"
+  },
+  "@hubMembersSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubMembersEmpty": {
+    "surface": "empty_body"
+  },
+  "@hubInviteCta": {
+    "surface": "button"
+  },
+  "@hubShareInviteTitle": {
+    "surface": "title"
+  },
+  "@hubShareAppTitle": {
+    "surface": "title"
+  },
+  "@hubShareAppCta": {
+    "surface": "button"
+  },
+  "@todayFlatmateInviteTitle": {
+    "surface": "title"
+  },
+  "@todayFlatmateInviteSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayInviteFriendsTitle": {
+    "surface": "title"
+  },
+  "@todayInviteFriendsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayInviteShareCta": {
+    "surface": "button"
+  },
+  "@hubRotateSuccess": {
+    "surface": "success_message"
+  },
+  "@hubRotateError": {
+    "surface": "error"
+  },
+  "@hubQrTitle": {
+    "surface": "title"
+  },
+  "@hubQrSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubCardGratitudeWallTitle": {
+    "surface": "title"
+  },
+  "@hubCardGratitudeWallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubError": {
+    "surface": "error"
+  },
+  "@hubRetry": {
+    "surface": "button"
+  },
+  "@todayEmptyCardTitle": {
+    "surface": "title"
+  },
+  "@todayEmptyBody": {
+    "surface": "subtitle"
+  },
+  "@todayFlowSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayFlowSectionTitle": {
+    "surface": "title"
+  },
+  "@todayShareSectionTitle": {
+    "surface": "title"
+  },
+  "@todayShareError": {
+    "surface": "error"
+  },
+  "@todayShareDraftSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayGratitudeSectionTitle": {
+    "surface": "title"
+  },
+  "@todayGratitudeUnreadBody": {
+    "surface": "subtitle"
+  },
+  "@todayGratitudeOpenCta": {
+    "surface": "button"
+  },
+  "@shareOwedDetailTitle": {
+    "surface": "title"
+  },
+  "@shareOwedDetailSubtitle": {
+    "surface": "subtitle"
+  },
+  "@shareOwedDetailEmpty": {
+    "surface": "empty_body"
+  },
+  "@shareOwedDetailSuccess": {
+    "surface": "success_message"
+  },
+  "@shareOwedDetailError": {
+    "surface": "error"
+  },
+  "@shareEditTitle": {
+    "surface": "title"
+  },
+  "@shareEditSubmit": {
+    "surface": "button"
+  },
+  "@shareEditSuccess": {
+    "surface": "success_message"
+  },
+  "@shareEditLoadError": {
+    "surface": "error"
+  },
+  "@shareEditClose": {
+    "surface": "button"
+  },
+  "@shareEditDeleteButton": {
+    "surface": "button"
+  },
+  "@shareEditDeleteConfirmTitle": {
+    "surface": "title"
+  },
+  "@shareEditDeleteCancel": {
+    "surface": "button"
+  },
+  "@shareEditDeleteError": {
+    "surface": "error"
+  },
+  "@shareEditDeleteSuccess": {
+    "surface": "success_message"
+  },
+  "@shareCreateTitle": {
+    "surface": "title"
+  },
+  "@shareCreateParticipantsEmpty": {
+    "surface": "empty_body"
+  },
+  "@shareCreateSubmit": {
+    "surface": "button"
+  },
+  "@shareCreateLoadError": {
+    "surface": "error"
+  },
+  "@shareCreateRetry": {
+    "surface": "button"
+  },
+  "@shareCreateErrorGeneric": {
+    "surface": "error"
+  },
+  "@shareCreateErrorPaywallActiveCap": {
+    "surface": "error"
+  },
+  "@shareCreateErrorForbidden": {
+    "surface": "error"
+  },
+  "@shareCreateSuccess": {
+    "surface": "success_message"
+  },
+  "@flowChoreCreateTitle": {
+    "surface": "title"
+  },
+  "@flowChoreEditTitle": {
+    "surface": "title"
+  },
+  "@flowChoreHowToLaunchError": {
+    "surface": "error"
+  },
+  "@flowChorePhotoUploadError": {
+    "surface": "error"
+  },
+  "@flowChorePhotoLoadError": {
+    "surface": "error"
+  },
+  "@flowChoreDeleteButton": {
+    "surface": "button"
+  },
+  "@flowChoreDeleteDialogTitle": {
+    "surface": "dialog_title"
+  },
+  "@flowChoreDeleteDialogMessage": {
+    "surface": "dialog_body"
+  },
+  "@flowChoreDeleteCancel": {
+    "surface": "button"
+  },
+  "@flowChoreLoadError": {
+    "surface": "error"
+  },
+  "@flowChoreRetry": {
+    "surface": "button"
+  },
+  "@flowChoreErrorPaywallActiveCap": {
+    "surface": "error"
+  },
+  "@flowChoreErrorPaywallMediaCap": {
+    "surface": "error"
+  },
+  "@flowChoreErrorAssigneeNotMember": {
+    "surface": "error"
+  },
+  "@flowChoreErrorForbidden": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidPhoto": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidStart": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidState": {
+    "surface": "error"
+  },
+  "@flowChoreErrorGeneric": {
+    "surface": "error"
+  },
+  "@flowChoreDetailTitle": {
+    "surface": "title"
+  },
+  "@flowChoreDetailCompleteButton": {
+    "surface": "button"
+  },
+  "@flowChoreDetailCompletionError": {
+    "surface": "error"
+  },
+  "@flowChoreDetailMoreInfoTitle": {
+    "surface": "title"
+  },
+  "@flowListEmptyTitle": {
+    "surface": "title"
+  },
+  "@flowListEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@flowListError": {
+    "surface": "error"
+  },
+  "@exploreIntroTitle": {
+    "surface": "title"
+  },
+  "@exploreIntroSubtitle": {
+    "surface": "subtitle"
+  },
+  "@exploreFlowSubtitle": {
+    "surface": "subtitle"
+  },
+  "@exploreShareSubtitle": {
+    "surface": "subtitle"
+  },
+  "@shareCreatedListTitle": {
+    "surface": "title"
+  },
+  "@shareCreatedListEmptyTitle": {
+    "surface": "title"
+  },
+  "@shareCreatedListEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@shareCreatedListError": {
+    "surface": "error"
+  },
+  "@shareCreatedListRetry": {
+    "surface": "button"
+  },
+  "@shareCreatedListDraftSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileSettingsTitle": {
+    "surface": "title"
+  },
+  "@profileSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileIdentityTitle": {
+    "surface": "title"
+  },
+  "@profileIdentitySubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileIdentityUsernameEmptyError": {
+    "surface": "error"
+  },
+  "@profileIdentityUsernameFormatError": {
+    "surface": "error"
+  },
+  "@profileIdentityUsernameTakenError": {
+    "surface": "error"
+  },
+  "@profileIdentityAvatarSectionTitle": {
+    "surface": "title"
+  },
+  "@profileIdentityAvatarEmpty": {
+    "surface": "empty_body"
+  },
+  "@profileIdentityLoadError": {
+    "surface": "error"
+  },
+  "@profileIdentityRetry": {
+    "surface": "button"
+  },
+  "@profileIdentitySaveButton": {
+    "surface": "button"
+  },
+  "@profileIdentitySuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileLeaveHomeTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveHomeSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileLeaveEligibilityError": {
+    "surface": "error"
+  },
+  "@profileLeaveTransferSheetTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveTransferSheetSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickMemberTitle": {
+    "surface": "title"
+  },
+  "@profileKickMemberSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickSheetTitle": {
+    "surface": "title"
+  },
+  "@profileKickSheetSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickSuccessTitle": {
+    "surface": "title"
+  },
+  "@profileKickSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileKickSuccessClose": {
+    "surface": "button"
+  },
+  "@profileLeaveTransferSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileInfoHubTitle": {
+    "surface": "title"
+  },
+  "@profileInfoHubSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileInfoHubLoadError": {
+    "surface": "error"
+  },
+  "@profileContactUsTitle": {
+    "surface": "title"
+  },
+  "@profileContactUsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileConnectionSettingsTitle": {
+    "surface": "title"
+  },
+  "@profileConnectionSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@connectionSettingsTitle": {
+    "surface": "title"
+  },
+  "@connectionSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@connectionSettingsGenericError": {
+    "surface": "error"
+  },
+  "@connectionNotificationsToggleTitle": {
+    "surface": "title"
+  },
+  "@connectionNotificationsToggleSubtitleOn": {
+    "surface": "notification_title"
+  },
+  "@connectionNotificationsToggleSubtitleOff": {
+    "surface": "notification_title"
+  },
+  "@profileContactLaunchError": {
+    "surface": "error"
+  },
+  "@profileLogoutTitle": {
+    "surface": "title"
+  },
+  "@profileLogoutSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileLogoutDialogTitle": {
+    "surface": "dialog_title"
+  },
+  "@profileLogoutDialogMessage": {
+    "surface": "dialog_body"
+  },
+  "@profileDeleteAccountTitle": {
+    "surface": "title"
+  },
+  "@profileDeleteAccountSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileConfirmLeaveTitle": {
+    "surface": "title"
+  },
+  "@profileConfirmDeleteTitle": {
+    "surface": "title"
+  },
+  "@profileActionCancel": {
+    "surface": "button"
+  },
+  "@profileLeaveSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileDeleteSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileGenericError": {
+    "surface": "error"
+  },
+  "@profileMissingHomeError": {
+    "surface": "error"
+  },
+  "@harmonyTitle": {
+    "surface": "title"
+  },
+  "@harmonyShareSubtitle": {
+    "surface": "subtitle"
+  },
+  "@harmonySubmitCta": {
+    "surface": "button"
+  },
+  "@harmonySubmitSuccess": {
+    "surface": "success_message"
+  },
+  "@harmonyErrorAlreadySubmitted": {
+    "surface": "error"
+  },
+  "@harmonyErrorForbidden": {
+    "surface": "error"
+  },
+  "@harmonyErrorUnknown": {
+    "surface": "error"
+  },
+  "@harmonyErrorSelectMood": {
+    "surface": "error"
+  },
+  "@harmonyEntryCta": {
+    "surface": "button"
+  },
+  "@harmonyEntryError": {
+    "surface": "error"
+  },
+  "@gratitudeWallTitle": {
+    "surface": "title"
+  },
+  "@gratitudeWallEmptyTitle": {
+    "surface": "title"
+  },
+  "@gratitudeWallEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@gratitudeWallRetry": {
+    "surface": "button"
+  },
+  "@gratitudeWallShareCta": {
+    "surface": "button"
+  },
+  "@gratitudeWallShareTitle": {
+    "surface": "title"
+  },
+  "@gratitudeWallShareError": {
+    "surface": "error"
+  },
+  "@gratitudeWallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@gratitudeWallKinlySubtitle": {
+    "surface": "subtitle"
+  },
+  "@npsTitle": {
+    "surface": "subtitle"
+  },
+  "@npsSubmitErrorNotRequired": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorInvalidScore": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorForbidden": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorGeneric": {
+    "surface": "error"
+  },
+  "@npsLaunchError": {
+    "surface": "error"
+  },
+  "@join_error_invalid_code": {
+    "surface": "error"
+  },
+  "@join_error_inactive_invite": {
+    "surface": "error"
+  },
+  "@join_error_already_in_other_home": {
+    "surface": "error"
+  },
+  "@join_error_paywall_limit": {
+    "surface": "error"
+  },
+  "@join_error_unauthorized": {
+    "surface": "error"
+  },
+  "@join_error_forbidden": {
+    "surface": "error"
+  }
 }
