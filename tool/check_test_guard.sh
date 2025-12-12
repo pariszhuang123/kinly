@@ -38,7 +38,7 @@ fi
 code_changed=$(
   echo "$CHANGED_FILES" \
     | grep -E '^(lib/|supabase/migrations/)' \
-    | grep -Ev '^(lib/l10n/intl_.*\.arb|lib/generated/intl/messages_.*\.dart)$' \
+    | grep -Ev '^(lib/l10n/intl_.*\.arb|lib/generated/)' \
     || true
 )
 
