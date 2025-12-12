@@ -19,6 +19,8 @@ class FlowChoreState extends Equatable {
   final String? photoErrorMessage;
   final int photoErrorTick;
   final bool isCameraPermissionPermanentlyDenied;
+  final String? currentUserId;
+  final ChoreState? choreState;
 
   const FlowChoreState({
     required this.form,
@@ -39,6 +41,8 @@ class FlowChoreState extends Equatable {
     required this.photoErrorMessage,
     required this.photoErrorTick,
     required this.isCameraPermissionPermanentlyDenied,
+    required this.currentUserId,
+    required this.choreState,
   });
 
   factory FlowChoreState.initial({
@@ -64,6 +68,8 @@ class FlowChoreState extends Equatable {
       photoErrorMessage: null,
       photoErrorTick: 0,
       isCameraPermissionPermanentlyDenied: false,
+      currentUserId: null,
+      choreState: isEditMode ? null : ChoreState.draft,
     );
   }
 
@@ -90,6 +96,8 @@ class FlowChoreState extends Equatable {
     bool clearPhotoError = false,
     int? photoErrorTick,
     bool? isCameraPermissionPermanentlyDenied,
+    String? currentUserId,
+    ChoreState? choreState,
   }) {
     return FlowChoreState(
       form: form ?? this.form,
@@ -122,12 +130,25 @@ class FlowChoreState extends Equatable {
       isCameraPermissionPermanentlyDenied:
           isCameraPermissionPermanentlyDenied ??
           this.isCameraPermissionPermanentlyDenied,
+      currentUserId: currentUserId ?? this.currentUserId,
+      choreState: choreState ?? this.choreState,
     );
   }
 
   bool get hasChanges => !form.isEqualTo(referenceForm);
   bool get requiresAssignee => isEditMode;
   bool get isStartDateValid => form.isStartDateInRange(DateTime.now());
+  bool get isAssignedToCurrentUser =>
+      form.assigneeUserId != null &&
+      currentUserId != null &&
+      form.assigneeUserId == currentUserId;
+  bool get canEditOrDelete {
+    if (!isEditMode) return true;
+    if (choreState == ChoreState.active && !isAssignedToCurrentUser) {
+      return false;
+    }
+    return true;
+  }
 
   @override
   List<Object?> get props => [
@@ -149,5 +170,7 @@ class FlowChoreState extends Equatable {
     photoErrorMessage,
     photoErrorTick,
     isCameraPermissionPermanentlyDenied,
+    currentUserId,
+    choreState,
   ];
 }

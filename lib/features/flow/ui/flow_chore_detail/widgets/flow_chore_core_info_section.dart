@@ -15,6 +15,7 @@ class FlowChoreCoreInfoSection extends StatelessWidget {
     required this.recurrenceValue,
     this.showAssignee = true,
     this.showStart = true,
+    this.showRecurrence = true,
   });
 
   final String choreName;
@@ -26,6 +27,7 @@ class FlowChoreCoreInfoSection extends StatelessWidget {
   final String recurrenceValue;
   final bool showAssignee;
   final bool showStart;
+  final bool showRecurrence;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,8 @@ class FlowChoreCoreInfoSection extends StatelessWidget {
           _FlowDetailRow(label: startLabel, value: startValue),
           SizedBox(height: spacing.md),
         ],
-        _FlowDetailRow(label: recurrenceLabel, value: recurrenceValue),
+        if (showRecurrence)
+          _FlowDetailRow(label: recurrenceLabel, value: recurrenceValue),
       ],
     );
   }

@@ -8,26 +8,35 @@ platform :android do
     track          = ENV["PLAY_TRACK"] || "beta"
     release_status = ENV["PLAY_RELEASE_STATUS"] || "completed"
 
-    UI.message("Fastlane PWD: #{Dir.pwd}")
+    # fastlane/ is inside the repo, so repo root is one level up
+    repo_root = File.expand_path("..", __dir__)
+    Dir.chdir(repo_root)
 
-    # 1) If AAB_PATH is explicitly provided, try that first
-    explicit_path = ENV["AAB_PATH"]
+    UI.message("Fastlane __dir__: #{__dir__}")
+    UI.message("Repo root: #{repo_root}")
+    UI.message("Fastlane PWD (after chdir): #{Dir.pwd}")
+
+    # 1) If AAB_PATH is explicitly provided, try that first (support relative or absolute)
+    explicit_path = ENV["AAB_PATH"].to_s.strip
     candidate_paths = []
-    candidate_paths << explicit_path if explicit_path && !explicit_path.empty?
 
-    # 2) Always also search under build/app/outputs/bundle for any .aab
-    globbed = Dir["build/app/outputs/bundle/**/*.aab"].sort
+    if !explicit_path.empty?
+      # If user passed a relative path, resolve it relative to repo root
+      candidate_paths << (Pathname.new(explicit_path).absolute? ? explicit_path : File.join(repo_root, explicit_path))
+    end
+
+    # 2) Search under build/app/outputs/bundle for any .aab (from repo root)
+    globbed = Dir[File.join(repo_root, "build/app/outputs/bundle/**/*.aab")].sort
     candidate_paths.concat(globbed)
 
     UI.message("Candidate AAB paths (in order):")
     candidate_paths.each { |p| UI.message("  - #{p}") }
 
-    # Resolve to the first path that actually exists
     resolved_path = candidate_paths.find { |p| File.exist?(p) }
 
     unless resolved_path
       UI.message("No valid AAB found. Directory snapshot (truncated):")
-      sh("ls -R build/app/outputs || echo 'build/app/outputs missing'")
+      sh("ls -R #{File.join(repo_root, "build/app/outputs")} || echo 'build/app/outputs missing'")
       UI.user_error!(
         "AAB not found. Expected at least one .aab under build/app/outputs/bundle.\n" \
         "Make sure the bundle is built (flutter build appbundle --flavor prod --release)."
@@ -40,7 +49,6 @@ platform :android do
       aab: resolved_path,
       track: track,
       release_status: release_status,
-      # package_name & json_key_file are taken from Appfile
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,

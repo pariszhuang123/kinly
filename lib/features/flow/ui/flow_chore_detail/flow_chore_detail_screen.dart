@@ -9,6 +9,7 @@ import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../core/telemetry/telemetry.dart';
 import '../../../../core/di/locator.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../bloc/flow_chore_detail_bloc.dart';
 import '../../domain/flow_chore_outcome.dart';
 import 'widgets/flow_chore_detail_view.dart';
@@ -96,6 +97,8 @@ class _FlowChoreDetailScreenState extends State<FlowChoreDetailScreen> {
                         )
                         : null,
                 completeButtonKey: _completeButtonKey,
+                currentUserId:
+                    Supabase.instance.client.auth.currentUser?.id,
               );
             },
           ),

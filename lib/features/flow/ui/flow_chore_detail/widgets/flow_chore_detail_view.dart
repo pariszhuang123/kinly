@@ -24,12 +24,14 @@ class FlowChoreDetailView extends StatelessWidget {
     required this.onRetry,
     required this.onComplete,
     required this.completeButtonKey,
+    this.currentUserId,
   });
 
   final FlowChoreDetailState state;
   final VoidCallback onRetry;
   final VoidCallback? onComplete;
   final GlobalKey completeButtonKey;
+  final String? currentUserId;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,12 @@ class FlowChoreDetailView extends StatelessWidget {
       Supabase.instance.client,
       chore.expectationPhotoPath,
     );
+    final userId = currentUserId ?? Supabase.instance.client.auth.currentUser?.id;
+    final isAssignedToCurrentUser =
+        chore.assigneeUserId != null &&
+        userId != null &&
+        chore.assigneeUserId == userId;
+    final hideSchedule = isAssignedToCurrentUser && chore.state == ChoreState.active;
 
     final assigneeName = _resolveAssignee(context, details);
     final formattedDate = DateFormat.yMMMMd().format(chore.startDate);
@@ -87,7 +95,8 @@ class FlowChoreDetailView extends StatelessWidget {
                       recurrenceLabel: s.flowChoreRecurrenceLabel,
                       recurrenceValue: recurrenceLabel,
                       showAssignee: false,
-                      showStart: true,
+                      showStart: !hideSchedule,
+                      showRecurrence: !hideSchedule,
                     ),
                     SizedBox(height: spacing?.lg ?? 24),
                     FlowChoreExtrasSection(

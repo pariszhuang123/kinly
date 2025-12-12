@@ -57,6 +57,8 @@ void main() {
     choresRepository = _MockChoresRepository();
     homeRepository = _MockHomeRepository();
     expectationPhotoService = _MockExpectationPhotoService();
+    when(() => homeRepository.getCurrentMembership())
+        .thenAnswer((_) async => null);
     when(
       () => homeRepository.listActiveMembers(
         any(),

@@ -151,7 +151,9 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
                     const FlowChorePhotoCaptureRequested(),
                   ),
               onDeleteRequested:
-                  state.isEditMode ? () => _confirmDelete(context) : null,
+                  state.isEditMode && state.canEditOrDelete
+                      ? () => _confirmDelete(context)
+                      : null,
             ),
           );
         }
@@ -295,7 +297,9 @@ class _FlowChoreFormView extends StatelessWidget {
     final expandOptional = hasOptionalContent || hasHowToError;
     final dateLabel = DateFormat.yMMMMd().format(form.startDate);
     final canSubmit = !state.isSubmitting;
-    final showDeleteCta = state.isEditMode && !state.hasChanges;
+    final canEditOrDelete = state.canEditOrDelete;
+    final showDeleteCta =
+        state.isEditMode && !state.hasChanges && canEditOrDelete;
 
     return ListView(
       children: [
@@ -379,16 +383,17 @@ class _FlowChoreFormView extends StatelessWidget {
           initiallyExpanded: expandOptional,
         ),
         SizedBox(height: spacing?.xl ?? 24),
-        SizedBox(
-          width: double.infinity,
-          child: _buildCtaButton(
-            context: context,
-            state: state,
-            canSubmit: canSubmit,
-            showDeleteCta: showDeleteCta,
-            onDeleteRequested: onDeleteRequested,
+        if (canEditOrDelete)
+          SizedBox(
+            width: double.infinity,
+            child: _buildCtaButton(
+              context: context,
+              state: state,
+              canSubmit: canSubmit,
+              showDeleteCta: showDeleteCta,
+              onDeleteRequested: onDeleteRequested,
+            ),
           ),
-        ),
       ],
     );
   }

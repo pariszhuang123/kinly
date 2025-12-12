@@ -7,6 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_detail_bloc.dart';
 import 'package:kinly/features/flow/ui/flow_chore_detail/flow_chore_detail_screen.dart';
+import 'package:kinly/features/flow/ui/flow_chore_detail/widgets/flow_chore_detail_view.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
@@ -360,4 +361,188 @@ void main() {
     await tester.pump();
     expect(telemetry.events, isEmpty);
   });
+
+  testWidgets(
+    'hides start date and recurrence when active chore is assigned to current user',
+    (tester) async {
+      final details = ChoreDetails(
+        chore: Chore(
+          id: 'chore-3',
+          homeId: 'home-1',
+          createdByUserId: 'owner',
+          assigneeUserId: 'user-123',
+          name: 'Dust shelves',
+          startDate: DateTime.utc(2024, 2, 1),
+          recurrence: ChoreRecurrence.weekly,
+          recurrenceCursor: null,
+          nextOccurrence: null,
+          expectationPhotoPath: null,
+          howToVideoUrl: null,
+          notes: '',
+          state: ChoreState.active,
+          completedAt: null,
+          createdAt: DateTime.utc(2024, 1, 1),
+          updatedAt: DateTime.utc(2024, 1, 1),
+        ),
+        assignees: const [],
+      );
+      final state = const FlowChoreDetailState.initial().copyWith(
+        isLoading: false,
+        details: details,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [S.delegate],
+          supportedLocales: S.delegate.supportedLocales,
+          theme: ThemeData.light().copyWith(
+            extensions: [
+              const Spacing(
+                xxs: 2,
+                xs: 4,
+                s: 8,
+                m: 12,
+                l: 16,
+                xl: 24,
+                xxl: 32,
+                xxxl: 40,
+              ),
+              KinlySections(
+                flow: SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.blueGrey,
+                  accent: Colors.teal,
+                ),
+                share: SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.blueGrey,
+                  accent: Colors.orange,
+                ),
+                pulse: SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.red,
+                  accent: Colors.pink,
+                ),
+                empty: const SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.grey,
+                  accent: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+          home: Scaffold(
+            body: FlowChoreDetailView(
+              state: state,
+              onRetry: () {},
+              onComplete: null,
+              completeButtonKey: GlobalKey(),
+              currentUserId: 'user-123',
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.text(S.current.flowChoreStartLabel), findsNothing);
+      expect(find.text(S.current.flowChoreRecurrenceLabel), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'shows start date and recurrence when chore is not assigned to current user',
+    (tester) async {
+      final details = ChoreDetails(
+        chore: Chore(
+          id: 'chore-4',
+          homeId: 'home-1',
+          createdByUserId: 'owner',
+          assigneeUserId: 'other-user',
+          name: 'Clean fridge',
+          startDate: DateTime.utc(2024, 2, 1),
+          recurrence: ChoreRecurrence.weekly,
+          recurrenceCursor: null,
+          nextOccurrence: null,
+          expectationPhotoPath: null,
+          howToVideoUrl: null,
+          notes: '',
+          state: ChoreState.active,
+          completedAt: null,
+          createdAt: DateTime.utc(2024, 1, 1),
+          updatedAt: DateTime.utc(2024, 1, 1),
+        ),
+        assignees: const [],
+      );
+      final state = const FlowChoreDetailState.initial().copyWith(
+        isLoading: false,
+        details: details,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: const [S.delegate],
+          supportedLocales: S.delegate.supportedLocales,
+          theme: ThemeData.light().copyWith(
+            extensions: [
+              const Spacing(
+                xxs: 2,
+                xs: 4,
+                s: 8,
+                m: 12,
+                l: 16,
+                xl: 24,
+                xxl: 32,
+                xxxl: 40,
+              ),
+              KinlySections(
+                flow: SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.blueGrey,
+                  accent: Colors.teal,
+                ),
+                share: SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.blueGrey,
+                  accent: Colors.orange,
+                ),
+                pulse: SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.red,
+                  accent: Colors.pink,
+                ),
+                empty: const SectionColors(
+                  background: Colors.white,
+                  card: Colors.white,
+                  icon: Colors.grey,
+                  accent: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+          home: Scaffold(
+            body: FlowChoreDetailView(
+              state: state,
+              onRetry: () {},
+              onComplete: null,
+              completeButtonKey: GlobalKey(),
+              currentUserId: 'user-123',
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.text(S.current.flowChoreStartLabel), findsOneWidget);
+      expect(find.text(S.current.flowChoreRecurrenceLabel), findsOneWidget);
+    },
+  );
 }
