@@ -46,6 +46,7 @@ dependencies:
   get_it: ^7.7.0
   google_fonts: ^6.2.1
   shared_preferences: ^2.5.3
+  confetti: ^0.7.0
   flutter_svg: ^2.2.2
   google_sign_in: ^6.2.1
   url_launcher: ^6.3.0
@@ -138,4 +139,3 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/icons/logo/kinly_app_icon.png"
   remove_alpha_ios: true
-

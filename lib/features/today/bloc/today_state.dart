@@ -155,6 +155,9 @@ class TodayState extends Equatable {
   bool get hasFlowContent => activeTasks.isNotEmpty || draftTasks.isNotEmpty;
   bool get hasShareContent => shareOwed.isNotEmpty || shareDrafts.isNotEmpty;
   bool get hasGratitudeUnread => gratitudeStatus?.hasUnread ?? false;
+  bool get hasAnyTodayContent =>
+      hasFlowContent || hasShareContent || hasGratitudeUnread;
+  bool get isCaughtUp => !hasAnyTodayContent;
 
   @override
   List<Object?> get props => [

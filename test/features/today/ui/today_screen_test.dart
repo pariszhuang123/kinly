@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -32,9 +35,9 @@ void main() {
     when(
       () => todayBloc.stream,
     ).thenAnswer((_) => const Stream<TodayState>.empty());
-    when(() => todayBloc.state).thenReturn(
-      const TodayState.loading(harmonyPromptTick: 0),
-    );
+    when(
+      () => todayBloc.state,
+    ).thenReturn(const TodayState.loading(harmonyPromptTick: 0));
   });
 
   Widget buildApp() {
@@ -99,5 +102,65 @@ void main() {
     await tester.pump();
 
     expect(find.byType(TodayEmptyStateCard), findsOneWidget);
+  });
+
+  testWidgets('plays confetti when transitioning from tasks to caught up', (
+    tester,
+  ) async {
+    final streamController = StreamController<TodayState>.broadcast();
+    addTearDown(streamController.close);
+    when(() => todayBloc.stream).thenAnswer((_) => streamController.stream);
+    when(() => todayBloc.state).thenReturn(const TodayState.loading());
+
+    await tester.pumpWidget(buildApp());
+    await tester.pump();
+
+    streamController.add(
+      TodayState.loaded(
+        activeTasks: const [
+          TodayFlowTask(id: '1', title: 'Task', state: ChoreState.active),
+        ],
+        draftTasks: const [],
+        shareOwed: const [],
+        shareDrafts: const [],
+      ),
+    );
+    await tester.pump();
+
+    streamController.add(
+      const TodayState.loaded(
+        activeTasks: [],
+        draftTasks: [],
+        shareOwed: [],
+        shareDrafts: [],
+      ),
+    );
+    await tester.pump();
+
+    final confetti = tester.widget<ConfettiWidget>(find.byType(ConfettiWidget));
+    expect(confetti.confettiController.state, ConfettiControllerState.playing);
+  });
+
+  testWidgets('does not play confetti when already caught up', (tester) async {
+    final streamController = StreamController<TodayState>.broadcast();
+    addTearDown(streamController.close);
+    when(() => todayBloc.stream).thenAnswer((_) => streamController.stream);
+    when(() => todayBloc.state).thenReturn(const TodayState.loading());
+
+    await tester.pumpWidget(buildApp());
+    await tester.pump();
+
+    streamController.add(
+      const TodayState.loaded(
+        activeTasks: [],
+        draftTasks: [],
+        shareOwed: [],
+        shareDrafts: [],
+      ),
+    );
+    await tester.pump();
+
+    final confetti = tester.widget<ConfettiWidget>(find.byType(ConfettiWidget));
+    expect(confetti.confettiController.state, ConfettiControllerState.stopped);
   });
 }

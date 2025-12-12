@@ -136,7 +136,6 @@ void main() {
       bulletShares: 'Unlimited shares',
       unlimitedLabel: 'Unlimited everything',
       priceCaption: 'Home-level plan',
-      emotionalBody: 'Emotional copy',
       priceUnavailableLabel: 'Price unavailable',
       priceFormatter: (p) => '$p per home',
       primaryCta: 'Upgrade',
@@ -163,7 +162,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Harmony headline'), findsOneWidget);
-    expect(find.text('Emotional copy'), findsOneWidget);
     expect(find.text('Unlimited flows'), findsOneWidget);
     expect(find.text('+1'), findsOneWidget);
     expect(find.text('Upgrade'), findsOneWidget);

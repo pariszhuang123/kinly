@@ -163,7 +163,7 @@ class _PaywallBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final sections = theme.extension<KinlySections>();
-    // Price is shown on the CTA only; keep hero copy price-free.
+    final textTheme = theme.textTheme;
     const priceLine = '';
     final surface = theme.colorScheme.surface;
     final shareCard =
@@ -189,6 +189,19 @@ class _PaywallBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    tooltip: strings.secondaryCta,
+                    icon: Icon(
+                      Icons.close_rounded,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    onPressed: onDismiss,
+                  ),
+                ],
+              ),
               _PaywallHero(
                 title: strings.title,
                 subtitle: strings.subtitle,
@@ -213,7 +226,6 @@ class _PaywallBody extends StatelessWidget {
                               sections?.share.accent ??
                               theme.colorScheme.primary,
                         ),
-                        const SizedBox(height: 18),
                       ],
                     ),
                   ),
@@ -227,18 +239,10 @@ class _PaywallBody extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               KinlyOutlinedButton.text(
-                label: strings.secondaryCta,
-                onPressed: onDismiss,
+                label: strings.restoreCta,
+                onPressed: onRestore,
                 compact: true,
                 fullWidth: true,
-              ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: onRestore,
-                style: TextButton.styleFrom(
-                  foregroundColor: theme.colorScheme.onSurface,
-                ),
-                child: Text(strings.restoreCta),
               ),
             ],
           ),
@@ -259,14 +263,13 @@ class _BenefitChecklist extends StatelessWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final surface = theme.colorScheme.surface;
-    final checkBg = Color.alphaBlend(accent.withValues(alpha: 0.14), surface);
-    final checkColor =
-        theme.brightness == Brightness.dark
-            ? Color.alphaBlend(
-              accent,
-              theme.colorScheme.onSurface.withValues(alpha: 0.6),
-            )
-            : accent;
+    final checkBg = Color.alphaBlend(
+      accent.withValues(
+        alpha: theme.brightness == Brightness.dark ? 0.28 : 0.18,
+      ),
+      surface,
+    );
+    final checkColor = theme.colorScheme.onSurface;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
