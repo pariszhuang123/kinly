@@ -121,6 +121,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
   - `dart run tool/check_i18n.dart`
   - `dart run tool/check_directionality.dart`
   - `dart run tool/check_enums.dart`
+  - `dart run tool/check_copy_contract.dart` (see `docs/contracts/copy_taste_v1_1.md`)
   - Screenshots/GIFs for happy paths when UI changes
   - No raw Material buttons/loaders; use Kinly primitives; strings via `S.of(context)`; keep padding/alignments directionality-safe
   - If adding or changing a core UI primitive, update `docs/ui/core_ui_primitives.md` and get Planner + Docs review
@@ -131,6 +132,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - No schema change without migration + RLS policies + reviews.
 - No hard-coded UI strings (use i18n). Run `dart run tool/check_i18n.dart`
   before submitting a PR; reviewers (Codex) will block if this check fails.
+- Copy: follow `docs/contracts/copy_taste_v1_1.md` for voice, surfaces, and metadata; CI enforces objective rules via `dart run tool/check_copy_contract.dart`.
 - Accessibility baseline must be honored: use Kinly primitives with built-in semantics/min 48dp touch targets; respect reduced motion; run contrast/i18n/directionality checks. Changes to the accessibility contract require Planner approval and Design System review.
 - All UI must be directionality-safe. Use directional APIs
   (`EdgeInsetsDirectional`, `AlignmentDirectional`, `PositionedDirectional`,

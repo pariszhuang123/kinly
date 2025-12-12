@@ -329,10 +329,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "greetingPartEvening": MessageLookupByLibrary.simpleMessage("as noches"),
     "greetingPartMorning": MessageLookupByLibrary.simpleMessage("os días"),
     "greetingPartOfDay": m8,
-    "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("nombre"),
-    "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
-      "parte del día (mañana/tarde/noche)",
-    ),
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
       "¿Qué hace que el hogar se sienta así?",
     ),

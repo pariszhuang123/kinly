@@ -34,10 +34,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(time) => "${time} today";
 
-  static String m6(count) => "Gratitude wall (${count})";
+  static String m6(count) =>
+      "Gratitude wall ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
   static String m7(weeks) =>
-      "${Intl.plural(weeks, zero: 'This week', one: '1 week ago', other: '${weeks} weeks ago')}";
+      "${Intl.plural(weeks, zero: 'This week', one: '# week ago', other: '# weeks ago')}";
 
   static String m8(partOfDay, name) => "Good ${partOfDay}, ${name}";
 
@@ -55,7 +56,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m14(paid, total) => "${paid} of ${total} paid";
 
-  static String m15(count) => "See all (${count})";
+  static String m15(count) =>
+      "See all ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
   static String m16(count) =>
       "${Intl.plural(count, one: '${count} payment pending', other: '${count} payments pending')}";
@@ -71,7 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bootstrap_initializing": m0,
     "connectionNotificationsPermissionBlocked":
         MessageLookupByLibrary.simpleMessage(
-          "Allow notifications in your phone settings to turn this on.",
+          "Turn on notifications in your phone settings to use this.",
         ),
     "connectionNotificationsTimeLabel": MessageLookupByLibrary.simpleMessage(
       "Reminder time",
@@ -158,7 +160,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Edit Flow"),
     "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
-      "That member can\'t be assigned right now.",
+      "That member isn\'t assignable right now.",
     ),
     "flowChoreErrorForbidden": MessageLookupByLibrary.simpleMessage(
       "You don\'t have permission to change this flow.",
@@ -173,7 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Pick a valid start date.",
     ),
     "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
-      "This flow can\'t be updated right now.",
+      "This flow isn\'t updateable right now.",
     ),
     "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
       "You\'ve hit the free limit for active flows. Upgrade to add more.",
@@ -264,7 +266,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowListError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load Flow. Pull to refresh.",
     ),
-    "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage("Overdue"),
+    "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage("Past due"),
     "force_update_body": MessageLookupByLibrary.simpleMessage(
       "This version of Kinly is no longer supported. Please install the newest release to continue.",
     ),
@@ -285,7 +287,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "gratitudeWallFooter": m3,
     "gratitudeWallKinlySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Kinly helps your home share small gratitude moments together.",
+      "Kinly helps your home share small moments of gratitude.",
     ),
     "gratitudeWallPoweredBy": MessageLookupByLibrary.simpleMessage(
       "Powered by",
@@ -314,27 +316,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "greetingPartEvening": MessageLookupByLibrary.simpleMessage("evening"),
     "greetingPartMorning": MessageLookupByLibrary.simpleMessage("morning"),
     "greetingPartOfDay": m8,
-    "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("name"),
-    "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
-      "part of day (morning/afternoon/evening)",
-    ),
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
-      "What’s making the home feel this way?",
+      "What\'s making the home feel this way?",
     ),
     "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
       "Add a note (optional)",
     ),
     "harmonyEntryCta": MessageLookupByLibrary.simpleMessage(
-      "Share this week’s harmony",
+      "Share this week\'s mood",
     ),
     "harmonyEntryError": MessageLookupByLibrary.simpleMessage(
-      "Couldn’t open harmony feedback. Try again.",
+      "Couldn\'t open harmony feedback. Try again.",
     ),
     "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
-      "You’ve already shared your mood for this week.",
+      "You\'ve already shared your mood for this week.",
     ),
     "harmonyErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "You can’t submit feedback for this home.",
+      "You are unable to submit feedback for this home.",
     ),
     "harmonyErrorSelectMood": MessageLookupByLibrary.simpleMessage(
       "Pick a mood before submitting.",
@@ -371,7 +369,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Weekly house harmony",
     ),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Read shout-outs, thank-yous, and moments of appreciation.",
+      "Read quick thank-yous and small moments of appreciation.",
     ),
     "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
       "Gratitude Wall",
@@ -430,7 +428,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please sign in to join this home.",
     ),
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
-      "Join failed. Please try again.",
+      "We couldn\'t join this home. Please try again.",
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage("Enter invite code"),
     "join_submit": MessageLookupByLibrary.simpleMessage("Join"),
@@ -456,7 +454,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "You\'re already part of a home.",
     ),
     "membership_status_checking": MessageLookupByLibrary.simpleMessage(
-      "Checking membership status…",
+      "Checking membership statusâ€¦",
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "You haven\'t joined a home yet.",
@@ -468,32 +466,32 @@ class MessageLookup extends MessageLookupByLibrary {
       "You need to pick a score to continue.",
     ),
     "npsDescription": MessageLookupByLibrary.simpleMessage(
-      "Net Promoter Score helps us learn how we’re doing. Pick a number from 0 (not likely) to 10 (extremely likely).",
+      "Net Promoter Score helps us learn how we\'re doing. Pick a number from 0 (not likely) to 10 (extremely likely).",
     ),
     "npsEmailSubject": MessageLookupByLibrary.simpleMessage(
       "What can we improve?",
     ),
     "npsLaunchError": MessageLookupByLibrary.simpleMessage(
-      "Couldn’t open the next step.",
+      "Couldn\'t open the next step.",
     ),
     "npsScaleHighLabel": MessageLookupByLibrary.simpleMessage(
       "10 Extremely likely",
     ),
     "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 Not likely"),
     "npsSubmitErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "You’re not allowed to submit feedback right now.",
+      "You\'re not allowed to submit feedback right now.",
     ),
     "npsSubmitErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Couldn’t send your feedback. Please try again.",
+      "Couldn\'t send your feedback. Please try again.",
     ),
     "npsSubmitErrorInvalidScore": MessageLookupByLibrary.simpleMessage(
       "Please pick a score between 0 and 10.",
     ),
     "npsSubmitErrorNotRequired": MessageLookupByLibrary.simpleMessage(
-      "This feedback isn’t needed right now.",
+      "This feedback isn\'t needed right now.",
     ),
     "npsTitle": MessageLookupByLibrary.simpleMessage(
-      "How likely are you to recommend Kinly to a friend or family member?",
+      "How likely are you to recommend Kinly to a friend?",
     ),
     "offline_body": MessageLookupByLibrary.simpleMessage(
       "Kinly needs an internet connection. Check your signal and try again.",
@@ -513,7 +511,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Unlimited shared expenses",
     ),
     "paywallEmotional": MessageLookupByLibrary.simpleMessage(
-      "Premium helps your home feel lighter every day — no blockers, no limits, and everyone stays aligned.",
+      "Premium keeps your home feeling lighter each day. No blockers, no limits, everyone stays aligned.",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "Unable to load paywall.",
@@ -529,10 +527,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Upgrade to Kinly Premium",
     ),
     "paywallPurchaseFailed": MessageLookupByLibrary.simpleMessage(
-      "Purchase not completed — you can try again anytime.",
+      "Purchase not completed - you can try again anytime.",
     ),
     "paywallPurchaseSuccess": MessageLookupByLibrary.simpleMessage(
-      "You’re now on Kinly Premium.",
+      "You\'re now on Kinly Premium.",
     ),
     "paywallRestoreCta": MessageLookupByLibrary.simpleMessage(
       "Restore purchases",
@@ -545,7 +543,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Your home-level upgrade for less than 0.5% of your rent.",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
-      "Bring more harmony to your home — together.",
+      "Bring more harmony to your home",
     ),
     "profileActionCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage("Leave Home"),
@@ -553,13 +551,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Delete account",
     ),
     "profileConfirmDeleteMessage": MessageLookupByLibrary.simpleMessage(
-      "This removes your account and signs you out. This cannot be undone.",
+      "This removes your account and signs you out. You won\'t be able to undo this.",
     ),
     "profileConfirmDeleteTitle": MessageLookupByLibrary.simpleMessage(
       "Delete your account?",
     ),
     "profileConfirmLeaveMessage": MessageLookupByLibrary.simpleMessage(
-      "You\'ll lose access to Flow, shared history, and invites.",
+      "You\'ll lose access to Flow, history, and invites.",
     ),
     "profileConfirmLeaveTitle": MessageLookupByLibrary.simpleMessage(
       "Leave this home?",
@@ -633,7 +631,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileIdentityUsernamePreviewFallback":
         MessageLookupByLibrary.simpleMessage("your username"),
     "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
-      "That username is already taken. Try a different one.",
+      "That username is taken. Try a different one.",
     ),
     "profileInfoHubLoadError": MessageLookupByLibrary.simpleMessage(
       "The Info Hub couldn\'t load. Check your connection.",
@@ -646,7 +644,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Remove member",
     ),
     "profileKickMemberSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Choose who should lose access to this home.",
+      "Choose who will lose access to this home.",
     ),
     "profileKickMemberTitle": MessageLookupByLibrary.simpleMessage(
       "Remove a member",
@@ -676,7 +674,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "We couldn\'t load your home members. Try again.",
     ),
     "profileLeaveEligibilityLoading": MessageLookupByLibrary.simpleMessage(
-      "Checking your home members…",
+      "Checking your home members...",
     ),
     "profileLeaveHomeSubtitle": MessageLookupByLibrary.simpleMessage(
       "Leaving this home means stepping out of your shared Kinly space.",
@@ -692,13 +690,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "You left your home.",
     ),
     "profileLeaveTransferSheetSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Select who should become the new owner before you leave.",
+      "Select who will become the new owner before you leave.",
     ),
     "profileLeaveTransferSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Transfer ownership",
     ),
     "profileLeaveTransferSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "Ownership transferred. Finishing your leave…",
+      "Ownership transferred. Finishing your leave...",
     ),
     "profileLogoutDialogMessage": MessageLookupByLibrary.simpleMessage(
       "You\'ll need to sign in again to access your home.",
@@ -744,7 +742,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Amount",
     ),
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
-      "Enter what each person owes. The total must match the amount above.",
+      "Enter each person\'s part. Make sure the total matches the amount above.",
     ),
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
       "e.g. Grocery run",
@@ -759,7 +757,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Couldn\'t create. Try again.",
     ),
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "You’ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.",
+      "You\'ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load your household members.",
@@ -797,12 +795,11 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Custom split needs at least two people.",
         ),
-    "shareCreateValidationCustomSinglePayer":
-        MessageLookupByLibrary.simpleMessage(
-          "One person can\'t cover the entire amount when using a custom split.",
-        ),
+    "shareCreateValidationCustomSinglePayer": MessageLookupByLibrary.simpleMessage(
+      "Share the amount between at least two people when using a custom split.",
+    ),
     "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
-      "Custom split must add up to the amount above.",
+      "Make sure the custom split adds up to the amount above.",
     ),
     "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
       "Enter a description.",
@@ -856,7 +853,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "We couldn\'t load that draft.",
     ),
     "shareEditNotAllowed": MessageLookupByLibrary.simpleMessage(
-      "This can\'t be edited anymore because you need to assigned the share.",
+      "This is locked until you assign the share to someone.",
     ),
     "shareEditSplitsLocked": MessageLookupByLibrary.simpleMessage(
       "Splits are locked because someone already paid. You can still update the description and notes.",
@@ -889,13 +886,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Add to your home",
     ),
     "todayEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "Enjoy the calm — Kinly will let you know when something needs your attention.",
+      "Enjoy the calm - Kinly will let you know when something needs your attention.",
     ),
     "todayEmptyCardBadge": MessageLookupByLibrary.simpleMessage(
       "Take a breather",
     ),
     "todayEmptyCardTitle": MessageLookupByLibrary.simpleMessage(
-      "You\'re all caught up for today ✨",
+      "All caught up today",
     ),
     "todayFlatmateInviteSubtitle": MessageLookupByLibrary.simpleMessage(
       "Share your invite so you can split chores together.",

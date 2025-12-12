@@ -210,7 +210,7 @@
     "placeholders": {
       "count": {
         "type": "int",
-        "example": 3
+        "example": "3"
       }
     }
   },
@@ -230,7 +230,7 @@
     "placeholders": {
       "count": {
         "type": "int",
-        "example": 2
+        "example": "2"
       }
     },
     "surface": "subtitle"
@@ -365,11 +365,11 @@
     "placeholders": {
       "paid": {
         "type": "int",
-        "example": 2
+        "example": "2"
       },
       "total": {
         "type": "int",
-        "example": 4
+        "example": "4"
       }
     },
     "surface": "subtitle"
@@ -485,7 +485,7 @@
   "harmonySubmitCta": "Submit feedback",
   "harmonySubmitSuccess": "Thanks! Your feedback was saved.",
   "harmonyErrorAlreadySubmitted": "You've already shared your mood for this week.",
-  "harmonyErrorForbidden": "You can't submit feedback for this home.",
+  "harmonyErrorForbidden": "You are unable to submit feedback for this home.",
   "harmonyErrorUnknown": "Something went wrong. Please try again.",
   "harmonyErrorSelectMood": "Pick a mood before submitting.",
   "harmonyEntryCta": "Share this week's mood",
@@ -526,7 +526,7 @@
     "placeholders": {
       "weeks": {
         "type": "int",
-        "example": 3
+        "example": "3"
       }
     }
   },
@@ -544,7 +544,7 @@
     "placeholders": {
       "count": {
         "type": "int",
-        "example": 4
+        "example": "4"
       }
     }
   },

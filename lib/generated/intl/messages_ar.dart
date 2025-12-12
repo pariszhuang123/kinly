@@ -317,10 +317,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "greetingPartEvening": MessageLookupByLibrary.simpleMessage("مساء الخير"),
     "greetingPartMorning": MessageLookupByLibrary.simpleMessage("صباح الخير"),
     "greetingPartOfDay": m8,
-    "greetingPartOfDay_name": MessageLookupByLibrary.simpleMessage("الاسم"),
-    "greetingPartOfDay_partOfDay": MessageLookupByLibrary.simpleMessage(
-      "جزء اليوم (صباح/ظهر/مساء) — مدمج في النص",
-    ),
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
       "ما الذي يجعل المنزل يشعر بهذه الطريقة؟",
     ),

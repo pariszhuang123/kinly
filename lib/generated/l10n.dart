@@ -179,10 +179,10 @@ class S {
     );
   }
 
-  /// `Join failed. Please try again.`
+  /// `We couldn't join this home. Please try again.`
   String get join_failed_generic {
     return Intl.message(
-      'Join failed. Please try again.',
+      'We couldn\'t join this home. Please try again.',
       name: 'join_failed_generic',
       desc: '',
       args: [],
@@ -229,10 +229,10 @@ class S {
     );
   }
 
-  /// `Bring more harmony to your home — together.`
+  /// `Bring more harmony to your home`
   String get paywallTitle {
     return Intl.message(
-      'Bring more harmony to your home — together.',
+      'Bring more harmony to your home',
       name: 'paywallTitle',
       desc: '',
       args: [],
@@ -259,10 +259,10 @@ class S {
     );
   }
 
-  /// `Premium helps your home feel lighter every day — no blockers, no limits, and everyone stays aligned.`
+  /// `Premium keeps your home feeling lighter each day. No blockers, no limits, everyone stays aligned.`
   String get paywallEmotional {
     return Intl.message(
-      'Premium helps your home feel lighter every day — no blockers, no limits, and everyone stays aligned.',
+      'Premium keeps your home feeling lighter each day. No blockers, no limits, everyone stays aligned.',
       name: 'paywallEmotional',
       desc: '',
       args: [],
@@ -270,7 +270,7 @@ class S {
   }
 
   /// `{price} per month for your whole home.`
-  String paywallPricePerMonth(Object price) {
+  String paywallPricePerMonth(String price) {
     return Intl.message(
       '$price per month for your whole home.',
       name: 'paywallPricePerMonth',
@@ -349,20 +349,20 @@ class S {
     );
   }
 
-  /// `Purchase not completed — you can try again anytime.`
+  /// `Purchase not completed - you can try again anytime.`
   String get paywallPurchaseFailed {
     return Intl.message(
-      'Purchase not completed — you can try again anytime.',
+      'Purchase not completed - you can try again anytime.',
       name: 'paywallPurchaseFailed',
       desc: '',
       args: [],
     );
   }
 
-  /// `You’re now on Kinly Premium.`
+  /// `You're now on Kinly Premium.`
   String get paywallPurchaseSuccess {
     return Intl.message(
-      'You’re now on Kinly Premium.',
+      'You\'re now on Kinly Premium.',
       name: 'paywallPurchaseSuccess',
       desc: '',
       args: [],
@@ -614,10 +614,10 @@ class S {
     return Intl.message('Sign out', name: 'logout', desc: '', args: []);
   }
 
-  /// `Checking membership status…`
+  /// `Checking membership statusâ€¦`
   String get membership_status_checking {
     return Intl.message(
-      'Checking membership status…',
+      'Checking membership statusâ€¦',
       name: 'membership_status_checking',
       desc: '',
       args: [],
@@ -820,7 +820,7 @@ class S {
   }
 
   /// `Welcome to our Kinly home! Enter this invite code: {code}\n\nDownload the Kinly app: {link}`
-  String hubShareInviteBody(Object code, Object link) {
+  String hubShareInviteBody(String code, String link) {
     return Intl.message(
       'Welcome to our Kinly home! Enter this invite code: $code\n\nDownload the Kinly app: $link',
       name: 'hubShareInviteBody',
@@ -840,7 +840,7 @@ class S {
   }
 
   /// `Share Kinly so sharing feels lighter: {link}`
-  String hubShareAppBody(Object link) {
+  String hubShareAppBody(String link) {
     return Intl.message(
       'Share Kinly so sharing feels lighter: $link',
       name: 'hubShareAppBody',
@@ -999,10 +999,10 @@ class S {
     );
   }
 
-  /// `Read shout-outs, thank-yous, and moments of appreciation.`
+  /// `Read quick thank-yous and small moments of appreciation.`
   String get hubCardGratitudeWallSubtitle {
     return Intl.message(
-      'Read shout-outs, thank-yous, and moments of appreciation.',
+      'Read quick thank-yous and small moments of appreciation.',
       name: 'hubCardGratitudeWallSubtitle',
       desc: '',
       args: [],
@@ -1024,10 +1024,10 @@ class S {
     return Intl.message('Retry', name: 'hubRetry', desc: '', args: []);
   }
 
-  /// `You're all caught up for today ✨`
+  /// `All caught up today`
   String get todayEmptyCardTitle {
     return Intl.message(
-      'You\'re all caught up for today ✨',
+      'All caught up today',
       name: 'todayEmptyCardTitle',
       desc: '',
       args: [],
@@ -1044,10 +1044,10 @@ class S {
     );
   }
 
-  /// `Enjoy the calm — Kinly will let you know when something needs your attention.`
+  /// `Enjoy the calm - Kinly will let you know when something needs your attention.`
   String get todayEmptyBody {
     return Intl.message(
-      'Enjoy the calm — Kinly will let you know when something needs your attention.',
+      'Enjoy the calm - Kinly will let you know when something needs your attention.',
       name: 'todayEmptyBody',
       desc: '',
       args: [],
@@ -1070,32 +1070,12 @@ class S {
   }
 
   /// `Good {partOfDay}, {name}`
-  String greetingPartOfDay(Object partOfDay, Object name) {
+  String greetingPartOfDay(String partOfDay, String name) {
     return Intl.message(
       'Good $partOfDay, $name',
       name: 'greetingPartOfDay',
       desc: '',
       args: [partOfDay, name],
-    );
-  }
-
-  /// `part of day (morning/afternoon/evening)`
-  String get greetingPartOfDay_partOfDay {
-    return Intl.message(
-      'part of day (morning/afternoon/evening)',
-      name: 'greetingPartOfDay_partOfDay',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `name`
-  String get greetingPartOfDay_name {
-    return Intl.message(
-      'name',
-      name: 'greetingPartOfDay_name',
-      desc: '',
-      args: [],
     );
   }
 
@@ -1169,10 +1149,10 @@ class S {
     );
   }
 
-  /// `See all ({count})`
+  /// `See all {count, plural, one {(#)} other {(#)}}`
   String todayFlowSeeAll(int count) {
     return Intl.message(
-      'See all ($count)',
+      'See all ${Intl.plural(count, one: '(#)', other: '(#)')}',
       name: 'todayFlowSeeAll',
       desc: '',
       args: [count],
@@ -1446,10 +1426,10 @@ class S {
     );
   }
 
-  /// `This can't be edited anymore because you need to assigned the share.`
+  /// `This is locked until you assign the share to someone.`
   String get shareEditNotAllowed {
     return Intl.message(
-      'This can\'t be edited anymore because you need to assigned the share.',
+      'This is locked until you assign the share to someone.',
       name: 'shareEditNotAllowed',
       desc: '',
       args: [],
@@ -1656,10 +1636,10 @@ class S {
     );
   }
 
-  /// `Enter what each person owes. The total must match the amount above.`
+  /// `Enter each person's part. Make sure the total matches the amount above.`
   String get shareCreateCustomHelper {
     return Intl.message(
-      'Enter what each person owes. The total must match the amount above.',
+      'Enter each person\'s part. Make sure the total matches the amount above.',
       name: 'shareCreateCustomHelper',
       desc: '',
       args: [],
@@ -1746,20 +1726,20 @@ class S {
     );
   }
 
-  /// `Custom split must add up to the amount above.`
+  /// `Make sure the custom split adds up to the amount above.`
   String get shareCreateValidationCustomSum {
     return Intl.message(
-      'Custom split must add up to the amount above.',
+      'Make sure the custom split adds up to the amount above.',
       name: 'shareCreateValidationCustomSum',
       desc: '',
       args: [],
     );
   }
 
-  /// `One person can't cover the entire amount when using a custom split.`
+  /// `Share the amount between at least two people when using a custom split.`
   String get shareCreateValidationCustomSinglePayer {
     return Intl.message(
-      'One person can\'t cover the entire amount when using a custom split.',
+      'Share the amount between at least two people when using a custom split.',
       name: 'shareCreateValidationCustomSinglePayer',
       desc: '',
       args: [],
@@ -1796,10 +1776,10 @@ class S {
     );
   }
 
-  /// `You’ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.`
+  /// `You've reached the free limit of 10 active or draft shares. Close or cancel one to continue.`
   String get shareCreateErrorPaywallActiveCap {
     return Intl.message(
-      'You’ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.',
+      'You\'ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.',
       name: 'shareCreateErrorPaywallActiveCap',
       desc: '',
       args: [],
@@ -2241,10 +2221,10 @@ class S {
     );
   }
 
-  /// `That member can't be assigned right now.`
+  /// `That member isn't assignable right now.`
   String get flowChoreErrorAssigneeNotMember {
     return Intl.message(
-      'That member can\'t be assigned right now.',
+      'That member isn\'t assignable right now.',
       name: 'flowChoreErrorAssigneeNotMember',
       desc: '',
       args: [],
@@ -2281,10 +2261,10 @@ class S {
     );
   }
 
-  /// `This flow can't be updated right now.`
+  /// `This flow isn't updateable right now.`
   String get flowChoreErrorInvalidState {
     return Intl.message(
-      'This flow can\'t be updated right now.',
+      'This flow isn\'t updateable right now.',
       name: 'flowChoreErrorInvalidState',
       desc: '',
       args: [],
@@ -2421,10 +2401,10 @@ class S {
     );
   }
 
-  /// `Overdue`
+  /// `Past due`
   String get flowListOverdueLabel {
     return Intl.message(
-      'Overdue',
+      'Past due',
       name: 'flowListOverdueLabel',
       desc: '',
       args: [],
@@ -2661,10 +2641,10 @@ class S {
     );
   }
 
-  /// `That username is already taken. Try a different one.`
+  /// `That username is taken. Try a different one.`
   String get profileIdentityUsernameTakenError {
     return Intl.message(
-      'That username is already taken. Try a different one.',
+      'That username is taken. Try a different one.',
       name: 'profileIdentityUsernameTakenError',
       desc: '',
       args: [],
@@ -2771,10 +2751,10 @@ class S {
     );
   }
 
-  /// `Checking your home members…`
+  /// `Checking your home members...`
   String get profileLeaveEligibilityLoading {
     return Intl.message(
-      'Checking your home members…',
+      'Checking your home members...',
       name: 'profileLeaveEligibilityLoading',
       desc: '',
       args: [],
@@ -2821,10 +2801,10 @@ class S {
     );
   }
 
-  /// `Select who should become the new owner before you leave.`
+  /// `Select who will become the new owner before you leave.`
   String get profileLeaveTransferSheetSubtitle {
     return Intl.message(
-      'Select who should become the new owner before you leave.',
+      'Select who will become the new owner before you leave.',
       name: 'profileLeaveTransferSheetSubtitle',
       desc: '',
       args: [],
@@ -2841,10 +2821,10 @@ class S {
     );
   }
 
-  /// `Choose who should lose access to this home.`
+  /// `Choose who will lose access to this home.`
   String get profileKickMemberSubtitle {
     return Intl.message(
-      'Choose who should lose access to this home.',
+      'Choose who will lose access to this home.',
       name: 'profileKickMemberSubtitle',
       desc: '',
       args: [],
@@ -2931,10 +2911,10 @@ class S {
     );
   }
 
-  /// `Ownership transferred. Finishing your leave…`
+  /// `Ownership transferred. Finishing your leave...`
   String get profileLeaveTransferSuccessMessage {
     return Intl.message(
-      'Ownership transferred. Finishing your leave…',
+      'Ownership transferred. Finishing your leave...',
       name: 'profileLeaveTransferSuccessMessage',
       desc: '',
       args: [],
@@ -3071,10 +3051,10 @@ class S {
     );
   }
 
-  /// `Allow notifications in your phone settings to turn this on.`
+  /// `Turn on notifications in your phone settings to use this.`
   String get connectionNotificationsPermissionBlocked {
     return Intl.message(
-      'Allow notifications in your phone settings to turn this on.',
+      'Turn on notifications in your phone settings to use this.',
       name: 'connectionNotificationsPermissionBlocked',
       desc: '',
       args: [],
@@ -3191,10 +3171,10 @@ class S {
     );
   }
 
-  /// `You'll lose access to Flow, shared history, and invites.`
+  /// `You'll lose access to Flow, history, and invites.`
   String get profileConfirmLeaveMessage {
     return Intl.message(
-      'You\'ll lose access to Flow, shared history, and invites.',
+      'You\'ll lose access to Flow, history, and invites.',
       name: 'profileConfirmLeaveMessage',
       desc: '',
       args: [],
@@ -3211,10 +3191,10 @@ class S {
     );
   }
 
-  /// `This removes your account and signs you out. This cannot be undone.`
+  /// `This removes your account and signs you out. You won't be able to undo this.`
   String get profileConfirmDeleteMessage {
     return Intl.message(
-      'This removes your account and signs you out. This cannot be undone.',
+      'This removes your account and signs you out. You won\'t be able to undo this.',
       name: 'profileConfirmDeleteMessage',
       desc: '',
       args: [],
@@ -3371,10 +3351,10 @@ class S {
     );
   }
 
-  /// `What’s making the home feel this way?`
+  /// `What's making the home feel this way?`
   String get harmonyCommentHint {
     return Intl.message(
-      'What’s making the home feel this way?',
+      'What\'s making the home feel this way?',
       name: 'harmonyCommentHint',
       desc: '',
       args: [],
@@ -3421,20 +3401,20 @@ class S {
     );
   }
 
-  /// `You’ve already shared your mood for this week.`
+  /// `You've already shared your mood for this week.`
   String get harmonyErrorAlreadySubmitted {
     return Intl.message(
-      'You’ve already shared your mood for this week.',
+      'You\'ve already shared your mood for this week.',
       name: 'harmonyErrorAlreadySubmitted',
       desc: '',
       args: [],
     );
   }
 
-  /// `You can’t submit feedback for this home.`
+  /// `You are unable to submit feedback for this home.`
   String get harmonyErrorForbidden {
     return Intl.message(
-      'You can’t submit feedback for this home.',
+      'You are unable to submit feedback for this home.',
       name: 'harmonyErrorForbidden',
       desc: '',
       args: [],
@@ -3461,20 +3441,20 @@ class S {
     );
   }
 
-  /// `Share this week’s harmony`
+  /// `Share this week's mood`
   String get harmonyEntryCta {
     return Intl.message(
-      'Share this week’s harmony',
+      'Share this week\'s mood',
       name: 'harmonyEntryCta',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn’t open harmony feedback. Try again.`
+  /// `Couldn't open harmony feedback. Try again.`
   String get harmonyEntryError {
     return Intl.message(
-      'Couldn’t open harmony feedback. Try again.',
+      'Couldn\'t open harmony feedback. Try again.',
       name: 'harmonyEntryError',
       desc: '',
       args: [],
@@ -3492,7 +3472,7 @@ class S {
   }
 
   /// `{time} today`
-  String gratitudeWallTimestamp(Object time) {
+  String gratitudeWallTimestamp(String time) {
     return Intl.message(
       '$time today',
       name: 'gratitudeWallTimestamp',
@@ -3552,7 +3532,7 @@ class S {
   }
 
   /// `Sharing a glimpse of our Kinly gratitude wall. Download the app: {link}`
-  String gratitudeWallShareMessage(Object link) {
+  String gratitudeWallShareMessage(String link) {
     return Intl.message(
       'Sharing a glimpse of our Kinly gratitude wall. Download the app: $link',
       name: 'gratitudeWallShareMessage',
@@ -3591,10 +3571,10 @@ class S {
     );
   }
 
-  /// `Kinly helps your home share small gratitude moments together.`
+  /// `Kinly helps your home share small moments of gratitude.`
   String get gratitudeWallKinlySubtitle {
     return Intl.message(
-      'Kinly helps your home share small gratitude moments together.',
+      'Kinly helps your home share small moments of gratitude.',
       name: 'gratitudeWallKinlySubtitle',
       desc: '',
       args: [],
@@ -3602,7 +3582,7 @@ class S {
   }
 
   /// `Made with {appName} - Together feels lighter`
-  String gratitudeWallFooter(Object appName) {
+  String gratitudeWallFooter(String appName) {
     return Intl.message(
       'Made with $appName - Together feels lighter',
       name: 'gratitudeWallFooter',
@@ -3611,43 +3591,43 @@ class S {
     );
   }
 
-  /// `{weeks,plural, =0{This week} one{1 week ago} other{{weeks} weeks ago}}`
-  String gratitudeWallWeeksAgo(num weeks) {
+  /// `{weeks, plural, =0{This week} one{# week ago} other{# weeks ago}}`
+  String gratitudeWallWeeksAgo(int weeks) {
     return Intl.plural(
       weeks,
       zero: 'This week',
-      one: '1 week ago',
-      other: '$weeks weeks ago',
+      one: '# week ago',
+      other: '# weeks ago',
       name: 'gratitudeWallWeeksAgo',
       desc: '',
       args: [weeks],
     );
   }
 
-  /// `Gratitude wall ({count})`
-  String gratitudeWallTitleCount(String count) {
+  /// `Gratitude wall {count, plural, one {(#)} other {(#)}}`
+  String gratitudeWallTitleCount(int count) {
     return Intl.message(
-      'Gratitude wall ($count)',
+      'Gratitude wall ${Intl.plural(count, one: '(#)', other: '(#)')}',
       name: 'gratitudeWallTitleCount',
       desc: '',
       args: [count],
     );
   }
 
-  /// `How likely are you to recommend Kinly to a friend or family member?`
+  /// `How likely are you to recommend Kinly to a friend?`
   String get npsTitle {
     return Intl.message(
-      'How likely are you to recommend Kinly to a friend or family member?',
+      'How likely are you to recommend Kinly to a friend?',
       name: 'npsTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Net Promoter Score helps us learn how we’re doing. Pick a number from 0 (not likely) to 10 (extremely likely).`
+  /// `Net Promoter Score helps us learn how we're doing. Pick a number from 0 (not likely) to 10 (extremely likely).`
   String get npsDescription {
     return Intl.message(
-      'Net Promoter Score helps us learn how we’re doing. Pick a number from 0 (not likely) to 10 (extremely likely).',
+      'Net Promoter Score helps us learn how we\'re doing. Pick a number from 0 (not likely) to 10 (extremely likely).',
       name: 'npsDescription',
       desc: '',
       args: [],
@@ -3684,10 +3664,10 @@ class S {
     );
   }
 
-  /// `This feedback isn’t needed right now.`
+  /// `This feedback isn't needed right now.`
   String get npsSubmitErrorNotRequired {
     return Intl.message(
-      'This feedback isn’t needed right now.',
+      'This feedback isn\'t needed right now.',
       name: 'npsSubmitErrorNotRequired',
       desc: '',
       args: [],
@@ -3704,30 +3684,30 @@ class S {
     );
   }
 
-  /// `You’re not allowed to submit feedback right now.`
+  /// `You're not allowed to submit feedback right now.`
   String get npsSubmitErrorForbidden {
     return Intl.message(
-      'You’re not allowed to submit feedback right now.',
+      'You\'re not allowed to submit feedback right now.',
       name: 'npsSubmitErrorForbidden',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn’t send your feedback. Please try again.`
+  /// `Couldn't send your feedback. Please try again.`
   String get npsSubmitErrorGeneric {
     return Intl.message(
-      'Couldn’t send your feedback. Please try again.',
+      'Couldn\'t send your feedback. Please try again.',
       name: 'npsSubmitErrorGeneric',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn’t open the next step.`
+  /// `Couldn't open the next step.`
   String get npsLaunchError {
     return Intl.message(
-      'Couldn’t open the next step.',
+      'Couldn\'t open the next step.',
       name: 'npsLaunchError',
       desc: '',
       args: [],
