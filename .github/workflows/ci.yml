@@ -645,23 +645,11 @@ jobs:
           mkdir -p config
           echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" | base64 --decode > config/google_play_key.json
 
-      - name: Inspect AAB outputs
-        run: |
-          echo "PWD:"
-          pwd
-          echo
-          echo "Listing build/app/outputs:"
-          ls -R build/app/outputs || echo "No build/app/outputs directory"
-
-          echo
-          echo "Listing android/app/build/outputs:"
-          ls -R android/app/build/outputs || echo "No android/app/build/outputs directory"
-          
       - name: Upload to Play (closed track)
         if: env.DO_PLAY_UPLOAD == 'true'
         run: fastlane android deploy_closed
         env:
-          GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: config/google_play_key.json
+          GOOGLE_PLAY_SERVICE_ACCOUNT_JSON_PATH: ${{ github.workspace }}/config/google_play_key.json
           PLAY_TRACK: beta
           FASTLANE_SKIP_CONFIRMATIONS: true
 

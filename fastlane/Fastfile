@@ -1,4 +1,5 @@
 # fastlane/Fastfile
+require "pathname"
 
 default_platform(:android)
 
@@ -8,48 +9,75 @@ platform :android do
     track          = ENV["PLAY_TRACK"] || "beta"
     release_status = ENV["PLAY_RELEASE_STATUS"] || "completed"
 
-    # fastlane/ is inside the repo, so repo root is one level up
-    repo_root = File.expand_path("..", __dir__)
-    Dir.chdir(repo_root)
+    # ---------------------------------------------------------
+    # Compute repo_root robustly (avoid __dir__ == "." issues)
+    # ---------------------------------------------------------
+    fastfile_path = File.expand_path(__FILE__)           # .../kinly/fastlane/Fastfile
+    fastlane_dir  = File.dirname(fastfile_path)          # .../kinly/fastlane
+    repo_root     = File.expand_path("..", fastlane_dir) # .../kinly
 
-    UI.message("Fastlane __dir__: #{__dir__}")
-    UI.message("Repo root: #{repo_root}")
-    UI.message("Fastlane PWD (after chdir): #{Dir.pwd}")
+    UI.message("Fastfile path: #{fastfile_path}")
+    UI.message("Repo root (absolute): #{repo_root}")
+    UI.message("Fastlane initial PWD: #{Dir.pwd}")
 
-    # 1) If AAB_PATH is explicitly provided, try that first (support relative or absolute)
+    # ---------------------------------------------------------
+    # Resolve AAB path (absolute)
+    # ---------------------------------------------------------
     explicit_path = ENV["AAB_PATH"].to_s.strip
     candidate_paths = []
 
     if !explicit_path.empty?
-      # If user passed a relative path, resolve it relative to repo root
-      candidate_paths << (Pathname.new(explicit_path).absolute? ? explicit_path : File.join(repo_root, explicit_path))
+      candidate_paths << (
+        Pathname.new(explicit_path).absolute? ? explicit_path : File.expand_path(explicit_path, repo_root)
+      )
     end
 
-    # 2) Search under build/app/outputs/bundle for any .aab (from repo root)
-    globbed = Dir[File.join(repo_root, "build/app/outputs/bundle/**/*.aab")].sort
-    candidate_paths.concat(globbed)
+    # Always search under build/app/outputs/bundle for any .aab
+    candidate_paths.concat(Dir[File.join(repo_root, "build/app/outputs/bundle/**/*.aab")].sort)
 
     UI.message("Candidate AAB paths (in order):")
     candidate_paths.each { |p| UI.message("  - #{p}") }
 
-    resolved_path = candidate_paths.find { |p| File.exist?(p) }
+    resolved_aab = candidate_paths.find { |p| File.exist?(p) }
 
-    unless resolved_path
-      UI.message("No valid AAB found. Directory snapshot (truncated):")
-      sh("ls -R #{File.join(repo_root, "build/app/outputs")} || echo 'build/app/outputs missing'")
+    unless resolved_aab
+      UI.message("No valid AAB found. Directory snapshot:")
+      sh("ls -la #{File.join(repo_root, "build/app/outputs")} || echo 'build/app/outputs missing'")
+      sh("ls -la #{File.join(repo_root, "build/app/outputs/bundle")} || echo 'bundle missing'")
       UI.user_error!(
         "AAB not found. Expected at least one .aab under build/app/outputs/bundle.\n" \
         "Make sure the bundle is built (flutter build appbundle --flavor prod --release)."
       )
     end
 
-    UI.success("Using AAB at: #{resolved_path}")
+    UI.success("Using AAB at: #{resolved_aab}")
 
+    # ---------------------------------------------------------
+    # Resolve Google Play service account JSON FILE PATH
+    # ---------------------------------------------------------
+    # Preferred: GOOGLE_PLAY_SERVICE_ACCOUNT_JSON_PATH (path to file)
+    # Fallback:  repo_root/config/google_play_key.json
+    json_key_path = ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_JSON_PATH"].to_s.strip
+    json_key_path = File.join(repo_root, "config/google_play_key.json") if json_key_path.empty?
+
+    # Ensure absolute
+    json_key_path = File.expand_path(json_key_path, repo_root) unless Pathname.new(json_key_path).absolute?
+
+    # Safe debug only (NO CONTENTS)
+    UI.message("Google Play json_key_path: #{json_key_path}")
+    UI.message("json exists? #{File.exist?(json_key_path)}")
+    UI.message("json size(bytes): #{File.exist?(json_key_path) ? File.size(json_key_path) : 'n/a'}")
+
+    UI.user_error!("Could not find service account json file at path '#{json_key_path}'") unless File.exist?(json_key_path)
+
+    # ---------------------------------------------------------
+    # Upload
+    # ---------------------------------------------------------
     upload_to_play_store(
-      aab: resolved_path,
+      aab: resolved_aab,
       track: track,
       release_status: release_status,
-      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"] || File.join(repo_root, "config/google_play_key.json"),
+      json_key: json_key_path,
       package_name: "com.makinglifeeasie.kinly",
       skip_upload_metadata: true,
       skip_upload_images: true,
