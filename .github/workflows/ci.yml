@@ -339,6 +339,15 @@ jobs:
         run: |
           supabase functions invoke notifications_daily
 
+      - name: Deploy revenuecat_webhook (Dev)
+        run: |
+          supabase functions deploy revenuecat_webhook \
+            --project-ref "$SUPABASE_PROJECT_ID" 
+
+      - name: Smoke test revenuecat_webhook (Dev)
+        run: |
+          supabase functions invoke revenuecat_webhook
+          
   android_dev_build:
     name: Android Dev (APK)
     needs: [lint_test, supabase_dev]
@@ -497,6 +506,15 @@ jobs:
         run: |
           supabase functions invoke notifications_daily
 
+      - name: Deploy revenuecat_webhook (Prod)
+        run: |
+          supabase functions deploy revenuecat_webhook \
+            --project-ref "$SUPABASE_PROJECT_ID" 
+
+      - name: Smoke test revenuecat_webhook (Prod)
+        run: |
+          supabase functions invoke revenuecat_webhook
+          
   android_prod_release:
     name: Android Prod (AAB + Play)
     needs: [supabase_prod]
