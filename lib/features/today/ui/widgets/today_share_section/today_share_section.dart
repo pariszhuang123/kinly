@@ -255,7 +255,10 @@ class _DraftList extends StatelessWidget {
               child: KinlyOutlinedButton.text(
                 compact: true,
                 onPressed: onSeeAllTap!,
-                label: s.todayFlowSeeAll(drafts.length),
+                label: _replaceCountPlaceholder(
+                  s.todayFlowSeeAll(drafts.length),
+                  drafts.length.toString(),
+                ),
               ),
             ),
           ),
@@ -267,4 +270,11 @@ class _DraftList extends StatelessWidget {
 String _formatCurrency(int amountCents) {
   final formatter = NumberFormat.simpleCurrency(decimalDigits: 2);
   return formatter.format(amountCents / 100.0);
+}
+
+String _replaceCountPlaceholder(String text, String replacement) {
+  final pattern = RegExp(r'#|\\d+', unicode: true);
+  return pattern.hasMatch(text)
+      ? text.replaceFirst(pattern, replacement)
+      : '$text ($replacement)';
 }

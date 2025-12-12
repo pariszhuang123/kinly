@@ -59,6 +59,11 @@ class GratitudeWallCard extends StatelessWidget {
     final now = DateTime.now();
     final weeksAgo = math.max(0, now.difference(createdLocal).inDays ~/ 7);
     final weeksLabel = s.gratitudeWallWeeksAgo(weeksAgo);
+    final normalizedWeeksLabel = _replaceCountPlaceholder(
+      weeksLabel,
+      weeksAgo.toString(),
+      appendIfNoMatch: false,
+    );
 
     final cardFill = Color.alphaBlend(
       palette.card.withValues(alpha: 0.6),
@@ -110,7 +115,7 @@ class GratitudeWallCard extends StatelessWidget {
               SizedBox(width: spacing.sm),
               Flexible(
                 child: KinlyPill(
-                  label: weeksLabel,
+                  label: normalizedWeeksLabel,
                   size: KinlyPillSize.compact,
                   backgroundColor: badgeFill,
                   borderColor: palette.accent.withValues(alpha: 0.35),
@@ -233,7 +238,8 @@ class GratitudeWallHeader extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
 
     final countLabel = hasMore ? '$count+' : '$count';
-    final title = s.gratitudeWallTitleCount(countLabel);
+    final baseTitle = s.gratitudeWallTitleCount(count);
+    final title = _replaceCountPlaceholder(baseTitle, countLabel);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,4 +312,20 @@ double _estimateHeight(
       (textTheme.bodyLarge?.fontSize ?? 16);
   final estimatedLines = (messageLength / 26).ceil().clamp(1, 10).toDouble();
   return spacing.xl * 2.5 + estimatedLines * lineHeight;
+}
+
+String _replaceCountPlaceholder(
+  String text,
+  String replacement, {
+  bool appendIfNoMatch = true,
+}) {
+  final pattern = RegExp(r'#|\\d+', unicode: true);
+  if (pattern.hasMatch(text)) {
+    return text.replaceFirst(pattern, replacement);
+  }
+  if (appendIfNoMatch) {
+    return '$text ($replacement)';
+  }
+  // No placeholder and we don't want to append anything.
+  return text;
 }

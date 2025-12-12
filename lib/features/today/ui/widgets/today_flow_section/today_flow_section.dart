@@ -188,7 +188,10 @@ class _FlowTaskListWithSeeAll extends StatelessWidget {
           _SeeAllButton(
             colors: colors,
             onTap: () => onSeeAllTap(filter),
-            label: strings.todayFlowSeeAll(tasks.length),
+            label: _replaceCountPlaceholder(
+              strings.todayFlowSeeAll(tasks.length),
+              tasks.length.toString(),
+            ),
           ),
       ],
     );
@@ -264,4 +267,11 @@ class _SeeAllButton extends StatelessWidget {
       ),
     );
   }
+}
+
+String _replaceCountPlaceholder(String text, String replacement) {
+  final pattern = RegExp(r'#|\\d+', unicode: true);
+  return pattern.hasMatch(text)
+      ? text.replaceFirst(pattern, replacement)
+      : '$text ($replacement)';
 }
