@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
-import '../../../generated/l10n.dart';
 import 'harmony_screen.dart';
 
 class HarmonyPage extends StatelessWidget {
@@ -12,9 +11,7 @@ class HarmonyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>()!;
-    final s = S.of(context);
+    final spacing = Theme.of(context).extension<Spacing>()!;
 
     return Scaffold(
       // No AppBar → gives full control of header layout
@@ -24,24 +21,6 @@ class HarmonyPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// -------------------------------------------
-              /// Custom Header (Title + Subtitle)
-              /// -------------------------------------------
-              Text(
-                s.harmonyQuestion,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: spacing.s),
-              Text(
-                s.harmonySubtext,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-              SizedBox(height: spacing.xl),
-
               /// -------------------------------------------
               /// Body (Scrollable)
               /// -------------------------------------------
@@ -57,6 +36,7 @@ class HarmonyPage extends StatelessWidget {
               /// -------------------------------------------
               /// Footer
               /// -------------------------------------------
+              SizedBox(height: spacing.lg),
               const HarmonySubmitButton(),
             ],
           ),

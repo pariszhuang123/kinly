@@ -39,7 +39,6 @@
   "paywallTitle": "مزيد من الانسجام لمنزلك",
   "paywallSubtitle": "ترقية على مستوى المنزل بأقل من 0.5% من الإيجار.",
   "paywallPriceCaption": "خطة واحدة للمنزل، بدون مستويات مخفية.",
-  "paywallEmotional": "Premium يجعل منزلك أخف كل يوم. بدون عوائق، بدون حدود، والجميع على نفس الصفحة.",
   "paywallPricePerMonth": "{price} شهريًا لمنزلك بالكامل.",
   "@paywallPricePerMonth": {
     "surface": "paywall_subtitle",

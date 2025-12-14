@@ -18,8 +18,13 @@ import 'package:go_router/go_router.dart';
 /// Assumes [HarmonyCubit] is already provided above in the tree.
 class HarmonyScreen extends StatelessWidget {
   final String homeId;
+  final bool showHeader;
 
-  const HarmonyScreen({super.key, required this.homeId});
+  const HarmonyScreen({
+    super.key,
+    required this.homeId,
+    this.showHeader = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +57,14 @@ class HarmonyScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (showHeader) ...[
+                  _HarmonyHeader(spacing: spacing),
+                  SizedBox(height: spacing.l),
+                ],
                 _MoodSelector(),
                 SizedBox(height: spacing.l),
                 _CommentBox(),
-                SizedBox(height: spacing.s),
+                SizedBox(height: spacing.m),
                 _GratitudeToggle(),
               ],
             ),
@@ -117,6 +126,44 @@ class HarmonySubmitButton extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _HarmonyHeader extends StatelessWidget {
+  const _HarmonyHeader({required this.spacing});
+
+  final Spacing spacing;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final s = S.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          s.harmonyTitle,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        SizedBox(height: spacing.xs),
+        Text(
+          s.harmonyQuestion,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: spacing.xs),
+        Text(
+          s.harmonySubtext,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -204,6 +251,7 @@ class _GratitudeToggle extends StatelessWidget {
           onChanged:
               (value) => context.read<HarmonyCubit>().toggleAddToWall(value),
           title: s.harmonyShareLabel,
+          subtitle: s.harmonyShareSubtitle,
           visible: canShare && hasComment,
           // isDarkOverride: true/false optional
         );

@@ -209,10 +209,10 @@ class S {
     );
   }
 
-  /// `You're already in another home. Leave it before joining a new one.`
+  /// `Leave your current home to join a new one`
   String get join_error_already_in_other_home {
     return Intl.message(
-      'You\'re already in another home. Leave it before joining a new one.',
+      'Leave your current home to join a new one',
       name: 'join_error_already_in_other_home',
       desc: '',
       args: [],
@@ -254,16 +254,6 @@ class S {
     return Intl.message(
       'One home plan, no hidden tiers.',
       name: 'paywallPriceCaption',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Premium keeps your home feeling lighter each day. No blockers, no limits, everyone stays aligned.`
-  String get paywallEmotional {
-    return Intl.message(
-      'Premium keeps your home feeling lighter each day. No blockers, no limits, everyone stays aligned.',
-      name: 'paywallEmotional',
       desc: '',
       args: [],
     );
@@ -339,10 +329,10 @@ class S {
     );
   }
 
-  /// `Continue with free home`
+  /// `Stay on free plan`
   String get paywallSecondaryCta {
     return Intl.message(
-      'Continue with free home',
+      'Stay on free plan',
       name: 'paywallSecondaryCta',
       desc: '',
       args: [],
@@ -439,10 +429,10 @@ class S {
     );
   }
 
-  /// `Add a Flow`
+  /// `Create a flow`
   String get quick_add_flow_subtitle {
     return Intl.message(
-      'Add a Flow',
+      'Create a flow',
       name: 'quick_add_flow_subtitle',
       desc: '',
       args: [],
@@ -459,10 +449,10 @@ class S {
     );
   }
 
-  /// `Log a Share`
+  /// `Add a Share`
   String get quick_add_share_subtitle {
     return Intl.message(
-      'Log a Share',
+      'Add a Share',
       name: 'quick_add_share_subtitle',
       desc: '',
       args: [],
@@ -499,10 +489,10 @@ class S {
     );
   }
 
-  /// `Record a fairness entry`
+  /// `Note a fairness entry`
   String get quick_add_fair_share_subtitle {
     return Intl.message(
-      'Record a fairness entry',
+      'Note a fairness entry',
       name: 'quick_add_fair_share_subtitle',
       desc: '',
       args: [],
@@ -614,10 +604,10 @@ class S {
     return Intl.message('Sign out', name: 'logout', desc: '', args: []);
   }
 
-  /// `Checking membership statusâ€¦`
+  /// `Checking membership status...`
   String get membership_status_checking {
     return Intl.message(
-      'Checking membership statusâ€¦',
+      'Checking membership status...',
       name: 'membership_status_checking',
       desc: '',
       args: [],
@@ -634,10 +624,10 @@ class S {
     );
   }
 
-  /// `You're already part of a home.`
+  /// `You’re already connected to a home.`
   String get membership_status_active {
     return Intl.message(
-      'You\'re already part of a home.',
+      'You’re already connected to a home.',
       name: 'membership_status_active',
       desc: '',
       args: [],
@@ -699,10 +689,10 @@ class S {
     return Intl.message('Try again', name: 'offline_retry', desc: '', args: []);
   }
 
-  /// `Update required`
+  /// `Update needed`
   String get force_update_title {
     return Intl.message(
-      'Update required',
+      'Update needed',
       name: 'force_update_title',
       desc: '',
       args: [],
@@ -869,20 +859,20 @@ class S {
     );
   }
 
-  /// `Bring your flatmate`
+  /// `Bring your home into Kinly`
   String get todayFlatmateInviteTitle {
     return Intl.message(
-      'Bring your flatmate',
+      'Bring your home into Kinly',
       name: 'todayFlatmateInviteTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Share your invite so you can split chores together.`
+  /// `Invite them so you can stay aligned and share the load.`
   String get todayFlatmateInviteSubtitle {
     return Intl.message(
-      'Share your invite so you can split chores together.',
+      'Invite them so you can stay aligned and share the load.',
       name: 'todayFlatmateInviteSubtitle',
       desc: '',
       args: [],
@@ -1269,12 +1259,12 @@ class S {
     );
   }
 
-  /// `{count, plural, one {{count} payment pending} other {{count} payments pending}}`
+  /// `{count, plural, one {{count} payment pending} other {{count} to settle}}`
   String todayShareActiveSubtitle(int count) {
     return Intl.plural(
       count,
       one: '$count payment pending',
-      other: '$count payments pending',
+      other: '$count to settle',
       name: 'todayShareActiveSubtitle',
       desc: '',
       args: [count],
@@ -1321,10 +1311,10 @@ class S {
     );
   }
 
-  /// `Pending payment`
+  /// `Awaiting settle`
   String get shareOwedDetailTitle {
     return Intl.message(
-      'Pending payment',
+      'Awaiting settle',
       name: 'shareOwedDetailTitle',
       desc: '',
       args: [],
@@ -1361,20 +1351,20 @@ class S {
     );
   }
 
-  /// `Mark as paid`
+  /// `Mark as settled`
   String get shareOwedDetailPaid {
     return Intl.message(
-      'Mark as paid',
+      'Mark as settled',
       name: 'shareOwedDetailPaid',
       desc: '',
       args: [],
     );
   }
 
-  /// `Payment recorded.`
+  /// `Settled.`
   String get shareOwedDetailSuccess {
     return Intl.message(
-      'Payment recorded.',
+      'Settled.',
       name: 'shareOwedDetailSuccess',
       desc: '',
       args: [],
@@ -1426,10 +1416,10 @@ class S {
     );
   }
 
-  /// `This is locked until you assign the share to someone.`
+  /// `This stays locked until someone takes this share.`
   String get shareEditNotAllowed {
     return Intl.message(
-      'This is locked until you assign the share to someone.',
+      'This stays locked until someone takes this share.',
       name: 'shareEditNotAllowed',
       desc: '',
       args: [],
@@ -1566,30 +1556,30 @@ class S {
     );
   }
 
-  /// `Split type`
+  /// `How do we want to split this?`
   String get shareCreateSplitLabel {
     return Intl.message(
-      'Split type',
+      'How do we want to split this?',
       name: 'shareCreateSplitLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Split automatically`
+  /// `Split evenly`
   String get shareCreateSplitEqual {
     return Intl.message(
-      'Split automatically',
+      'Split evenly',
       name: 'shareCreateSplitEqual',
       desc: '',
       args: [],
     );
   }
 
-  /// `Custom split`
+  /// `Choose amounts`
   String get shareCreateSplitCustom {
     return Intl.message(
-      'Custom split',
+      'Choose amounts',
       name: 'shareCreateSplitCustom',
       desc: '',
       args: [],
@@ -1616,10 +1606,10 @@ class S {
     );
   }
 
-  /// `Notes`
+  /// `Context`
   String get shareCreateNotesLabel {
     return Intl.message(
-      'Notes',
+      'Context',
       name: 'shareCreateNotesLabel',
       desc: '',
       args: [],
@@ -1776,10 +1766,10 @@ class S {
     );
   }
 
-  /// `You've reached the free limit of 10 active or draft shares. Close or cancel one to continue.`
+  /// `You're at the free limit of active shares. Upgrade for more space.`
   String get shareCreateErrorPaywallActiveCap {
     return Intl.message(
-      'You\'ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.',
+      'You\'re at the free limit of active shares. Upgrade for more space.',
       name: 'shareCreateErrorPaywallActiveCap',
       desc: '',
       args: [],
@@ -1826,20 +1816,20 @@ class S {
     );
   }
 
-  /// `Flow name`
+  /// `What are we agreeing on?`
   String get flowChoreNameLabel {
     return Intl.message(
-      'Flow name',
+      'What are we agreeing on?',
       name: 'flowChoreNameLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Give your flow a short, clear title`
+  /// `Eg. Bin night, clean the fridge, water plants`
   String get flowChoreNameHint {
     return Intl.message(
-      'Give your flow a short, clear title',
+      'Eg. Bin night, clean the fridge, water plants',
       name: 'flowChoreNameHint',
       desc: '',
       args: [],
@@ -1856,40 +1846,40 @@ class S {
     );
   }
 
-  /// `Assign to`
+  /// `Who’s taking this on?`
   String get flowChoreAssigneeLabel {
     return Intl.message(
-      'Assign to',
+      'Who’s taking this on?',
       name: 'flowChoreAssigneeLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unassigned`
+  /// `Open to anyone`
   String get flowChoreAssigneeUnassigned {
     return Intl.message(
-      'Unassigned',
+      'Open to anyone',
       name: 'flowChoreAssigneeUnassigned',
       desc: '',
       args: [],
     );
   }
 
-  /// `Pick someone to assign this flow to.`
+  /// `Choose someone, or leave it open for anyone.`
   String get flowChoreValidationAssignee {
     return Intl.message(
-      'Pick someone to assign this flow to.',
+      'Choose someone, or leave it open for anyone.',
       name: 'flowChoreValidationAssignee',
       desc: '',
       args: [],
     );
   }
 
-  /// `Flow date`
+  /// `When does this come up? `
   String get flowChoreStartLabel {
     return Intl.message(
-      'Flow date',
+      'When does this come up? ',
       name: 'flowChoreStartLabel',
       desc: '',
       args: [],
@@ -1906,10 +1896,10 @@ class S {
     );
   }
 
-  /// `Repeat frequency`
+  /// `How often does this come up?`
   String get flowChoreRecurrenceLabel {
     return Intl.message(
-      'Repeat frequency',
+      'How often does this come up?',
       name: 'flowChoreRecurrenceLabel',
       desc: '',
       args: [],
@@ -1986,40 +1976,40 @@ class S {
     );
   }
 
-  /// `Notes`
+  /// `Why this matters`
   String get flowChoreNotesLabel {
     return Intl.message(
-      'Notes',
+      'Why this matters',
       name: 'flowChoreNotesLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add optional context or reminders`
+  /// `Anything that helps others understand the flow`
   String get flowChoreNotesHint {
     return Intl.message(
-      'Add optional context or reminders',
+      'Anything that helps others understand the flow',
       name: 'flowChoreNotesHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `How-to link`
+  /// `Guide link`
   String get flowChoreHowToLabel {
     return Intl.message(
-      'How-to link',
+      'Guide link',
       name: 'flowChoreHowToLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Paste a video or document link (optional)`
+  /// `Add a link to help someone to follow`
   String get flowChoreHowToHint {
     return Intl.message(
-      'Paste a video or document link (optional)',
+      'Add a link to help someone to follow',
       name: 'flowChoreHowToHint',
       desc: '',
       args: [],
@@ -2046,10 +2036,10 @@ class S {
     );
   }
 
-  /// `Expectation photo`
+  /// `What 'great' looks like`
   String get flowChorePhotoLabel {
     return Intl.message(
-      'Expectation photo',
+      'What \'great\' looks like',
       name: 'flowChorePhotoLabel',
       desc: '',
       args: [],
@@ -2066,20 +2056,20 @@ class S {
     );
   }
 
-  /// `Add a photo to show what great looks like`
+  /// `A photo can help everyone stay aligned`
   String get flowChorePhotoPlaceholder {
     return Intl.message(
-      'Add a photo to show what great looks like',
+      'A photo can help everyone stay aligned',
       name: 'flowChorePhotoPlaceholder',
       desc: '',
       args: [],
     );
   }
 
-  /// `Camera permission is required to take a photo.`
+  /// `Allow camera access to take a photo.`
   String get flowChorePhotoPermissionDenied {
     return Intl.message(
-      'Camera permission is required to take a photo.',
+      'Allow camera access to take a photo.',
       name: 'flowChorePhotoPermissionDenied',
       desc: '',
       args: [],
@@ -2116,20 +2106,20 @@ class S {
     );
   }
 
-  /// `Add flow`
+  /// `Create flow`
   String get flowChoreSubmitCreate {
     return Intl.message(
-      'Add flow',
+      'Create flow',
       name: 'flowChoreSubmitCreate',
       desc: '',
       args: [],
     );
   }
 
-  /// `Save flow`
+  /// `Save changes`
   String get flowChoreSubmitUpdate {
     return Intl.message(
-      'Save flow',
+      'Save changes',
       name: 'flowChoreSubmitUpdate',
       desc: '',
       args: [],
@@ -2201,30 +2191,30 @@ class S {
     return Intl.message('Retry', name: 'flowChoreRetry', desc: '', args: []);
   }
 
-  /// `You've hit the free limit for active flows. Upgrade to add more.`
+  /// `You're at the free limit for active flows. Upgrade for more space.`
   String get flowChoreErrorPaywallActiveCap {
     return Intl.message(
-      'You\'ve hit the free limit for active flows. Upgrade to add more.',
+      'You\'re at the free limit for active flows. Upgrade for more space.',
       name: 'flowChoreErrorPaywallActiveCap',
       desc: '',
       args: [],
     );
   }
 
-  /// `You've hit the free limit for expectation photos. Remove one or upgrade.`
+  /// `You're at the free limit for expectation photos. Upgrade for more space.`
   String get flowChoreErrorPaywallMediaCap {
     return Intl.message(
-      'You\'ve hit the free limit for expectation photos. Remove one or upgrade.',
+      'You\'re at the free limit for expectation photos. Upgrade for more space.',
       name: 'flowChoreErrorPaywallMediaCap',
       desc: '',
       args: [],
     );
   }
 
-  /// `That member isn't assignable right now.`
+  /// `That member isn't part of this home right now.`
   String get flowChoreErrorAssigneeNotMember {
     return Intl.message(
-      'That member isn\'t assignable right now.',
+      'That member isn\'t part of this home right now.',
       name: 'flowChoreErrorAssigneeNotMember',
       desc: '',
       args: [],
@@ -2301,30 +2291,30 @@ class S {
     );
   }
 
-  /// `No notes yet.`
+  /// `No context provided.`
   String get flowChoreDetailNoNotes {
     return Intl.message(
-      'No notes yet.',
+      'No context provided.',
       name: 'flowChoreDetailNoNotes',
       desc: '',
       args: [],
     );
   }
 
-  /// `No how-to link provided.`
+  /// `No guide links provided.`
   String get flowChoreDetailNoHowTo {
     return Intl.message(
-      'No how-to link provided.',
+      'No guide links provided.',
       name: 'flowChoreDetailNoHowTo',
       desc: '',
       args: [],
     );
   }
 
-  /// `Complete flow`
+  /// `Mark complete`
   String get flowChoreDetailCompleteButton {
     return Intl.message(
-      'Complete flow',
+      'Mark complete',
       name: 'flowChoreDetailCompleteButton',
       desc: '',
       args: [],
@@ -2351,10 +2341,10 @@ class S {
     );
   }
 
-  /// `More details`
+  /// `Helpful context`
   String get flowChoreDetailMoreInfoTitle {
     return Intl.message(
-      'More details',
+      'Helpful context',
       name: 'flowChoreDetailMoreInfoTitle',
       desc: '',
       args: [],
@@ -2381,10 +2371,10 @@ class S {
     );
   }
 
-  /// `Add your first routine so everyone knows what to do.`
+  /// `Create your first flow so everyone feels clear and aligned.`
   String get flowListEmptySubtitle {
     return Intl.message(
-      'Add your first routine so everyone knows what to do.',
+      'Create your first flow so everyone feels clear and aligned.',
       name: 'flowListEmptySubtitle',
       desc: '',
       args: [],
@@ -2401,10 +2391,10 @@ class S {
     );
   }
 
-  /// `Past due`
+  /// `Past date`
   String get flowListOverdueLabel {
     return Intl.message(
-      'Past due',
+      'Past date',
       name: 'flowListOverdueLabel',
       desc: '',
       args: [],
@@ -2531,10 +2521,10 @@ class S {
     );
   }
 
-  /// `Split it to assign each person before publishing.`
+  /// `Split it so everyone knows their part before publishing.`
   String get shareCreatedListDraftSubtitle {
     return Intl.message(
-      'Split it to assign each person before publishing.',
+      'Split it so everyone knows their part before publishing.',
       name: 'shareCreatedListDraftSubtitle',
       desc: '',
       args: [],
@@ -3101,10 +3091,10 @@ class S {
     );
   }
 
-  /// `Log out`
+  /// `Sign out`
   String get profileLogoutTitle {
     return Intl.message(
-      'Log out',
+      'Sign out',
       name: 'profileLogoutTitle',
       desc: '',
       args: [],
@@ -3381,10 +3371,10 @@ class S {
     );
   }
 
-  /// `Submit feedback`
+  /// `Send feedback`
   String get harmonySubmitCta {
     return Intl.message(
-      'Submit feedback',
+      'Send feedback',
       name: 'harmonySubmitCta',
       desc: '',
       args: [],

@@ -79,8 +79,10 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
               .where((id) => availableIds.contains(id))
               .toSet();
 
-      // Default to all if nothing selected but participants exist
-      if (nextSelection.isEmpty && availableIds.isNotEmpty) {
+      // For equal split (or unset), default to all to reflect shared expenses.
+      if (nextSelection.isEmpty &&
+          availableIds.isNotEmpty &&
+          state.form.splitMode != ShareSplitMode.custom) {
         nextSelection = LinkedHashSet<String>.from(availableIds);
       }
 
@@ -137,11 +139,24 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     ShareCreateSplitModeChanged event,
     Emitter<ShareCreateState> emit,
   ) {
+    var nextForm = state.form.copyWith(
+      splitMode: event.mode, // ShareSplitMode? now
+    );
+
+    final isSwitchingToEqual = event.mode == ShareSplitMode.equal;
+    final hasNoSelection = nextForm.selectedParticipantIds.isEmpty;
+    if (isSwitchingToEqual && hasNoSelection && state.participants.isNotEmpty) {
+      nextForm = nextForm.copyWith(
+        selectedParticipantIds:
+            LinkedHashSet<String>.from(
+              state.participants.map((p) => p.userId),
+            ),
+      );
+    }
+
     emit(
       state.copyWith(
-        form: state.form.copyWith(
-          splitMode: event.mode, // ShareSplitMode? now
-        ),
+        form: nextForm,
         hasUserEdits: true,
       ),
     );
@@ -200,11 +215,13 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
       isValid = false;
     }
 
+    final selectedEqualIds = state.equalSelectionIds;
+
     if (!amountLocked && isValid && splitMode == ShareSplitMode.equal) {
-      if (form.selectedParticipantIds.length < 2) {
+      if (selectedEqualIds.length < 2) {
         isValid = false;
       } else {
-        memberIds = form.selectedParticipantIds.toList(growable: false);
+        memberIds = selectedEqualIds.toList(growable: false);
         splitType = ExpenseSplitType.equal;
       }
     } else if (!amountLocked && isValid && splitMode == ShareSplitMode.custom) {

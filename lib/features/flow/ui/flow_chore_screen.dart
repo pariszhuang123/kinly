@@ -11,17 +11,17 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/dialogs/kinly_dialogs.dart';
-import '../../../core/ui/inputs/kinly_choice_chip.dart';
 import '../../../core/ui/inputs/kinly_dropdown_field.dart';
 import '../../../core/ui/inputs/kinly_text_field.dart';
-import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_date_picker.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/members/kinly_selectable_member_avatar_row.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../paywall/ui/paywall_screen.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/homes/models.dart';
 import '../bloc/flow_chore_bloc.dart';
 import '../domain/flow_chore_form.dart';
 import '../domain/flow_chore_outcome.dart';
@@ -232,7 +232,6 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
                 bulletShares: s.paywallBulletShares,
                 unlimitedLabel: s.paywallSubtitle,
                 priceCaption: s.paywallPriceCaption,
-                emotionalBody: s.paywallEmotional,
                 priceUnavailableLabel: s.paywallPriceUnavailable,
                 priceFormatter: (price) => s.paywallPricePerMonth(price),
                 primaryCta: s.paywallPrimaryCta,
@@ -321,7 +320,7 @@ class _FlowChoreFormView extends StatelessWidget {
         SizedBox(height: spacing?.lg ?? 16),
         Text(s.flowChoreAssigneeLabel, style: theme.textTheme.titleMedium),
         SizedBox(height: spacing?.sm ?? 8),
-        _AssigneeChips(
+        _AssigneeSelector(
           assignees: state.assignees,
           selectedUserId: form.assigneeUserId,
         ),
@@ -394,6 +393,7 @@ class _FlowChoreFormView extends StatelessWidget {
               onDeleteRequested: onDeleteRequested,
             ),
           ),
+        SizedBox(height: spacing?.xl ?? 24),
       ],
     );
   }
@@ -494,81 +494,47 @@ class _FlowChoreFormView extends StatelessWidget {
   }
 }
 
-class _AssigneeChips extends StatelessWidget {
-  const _AssigneeChips({required this.assignees, required this.selectedUserId});
+class _AssigneeSelector extends StatelessWidget {
+  const _AssigneeSelector({
+    required this.assignees,
+    required this.selectedUserId,
+  });
 
   final List<ChoreAssigneeSummary> assignees;
   final String? selectedUserId;
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
-    final spacing = Theme.of(context).extension<Spacing>();
-    return Wrap(
-      spacing: spacing?.sm ?? 8,
-      runSpacing: spacing?.sm ?? 8,
-      children: [
-        KinlyChoiceChip(
-          label: s.flowChoreAssigneeUnassigned,
-          selected: selectedUserId == null,
-          onSelected:
-              (selected) =>
-                  selected
-                      ? context.read<FlowChoreBloc>().add(
-                        const FlowChoreAssigneeChanged(null),
-                      )
-                      : null,
-        ),
-        for (final member in assignees)
-          _AvatarChoice(
-            avatarUrl: member.avatarStoragePath,
-            isOwner: member.isOwner,
-            selected: member.userId == selectedUserId,
-            onTap:
-                () => context.read<FlowChoreBloc>().add(
-                  FlowChoreAssigneeChanged(member.userId),
-                ),
+    if (assignees.isEmpty) return const SizedBox.shrink();
+
+    final members = assignees
+        .map(
+          (assignee) => HomeMemberSummary(
+            userId: assignee.userId,
+            username: assignee.fullName ?? '',
+            role: assignee.isOwner ? 'owner' : 'member',
+            validFrom: DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
+            avatarUrl: assignee.avatarStoragePath,
           ),
-      ],
-    );
-  }
-}
+        )
+        .toList(growable: false);
 
-class _AvatarChoice extends StatelessWidget {
-  const _AvatarChoice({
-    required this.avatarUrl,
-    required this.isOwner,
-    required this.selected,
-    required this.onTap,
-  });
+    final selectedIds =
+        selectedUserId != null ? {selectedUserId!} : const <String>{};
 
-  final String? avatarUrl;
-  final bool isOwner;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final spacing = theme.extension<Spacing>();
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsetsDirectional.all(spacing?.xxs ?? 2),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: selected ? colorScheme.primary : Colors.transparent,
-            width: 2,
-          ),
-        ),
-        child: KinlyCircleAvatar(
-          avatarUrl: avatarUrl,
-          radius: 22,
-          isOwner: isOwner,
-        ),
-      ),
+    return KinlySelectableMemberAvatarRow(
+      members: members,
+      selectedMemberIds: selectedIds,
+      avatarRadius: 22,
+      onToggle:
+          (memberId) {
+            // Keep at least one assignee once selected; tapping the current
+            // selection does nothing, tapping another switches selection.
+            if (selectedUserId == memberId) return;
+            context.read<FlowChoreBloc>().add(
+              FlowChoreAssigneeChanged(memberId),
+            );
+          },
     );
   }
 }

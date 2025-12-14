@@ -73,7 +73,8 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
-    expect(find.text("You haven't joined a home yet."), findsOneWidget);
+    final s = S.of(tester.element(find.byType(StartHomeScreen)));
+    expect(find.text(s.membership_status_none), findsOneWidget);
   });
 
   testWidgets('shows message when membership status is active', (tester) async {
@@ -84,7 +85,8 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
-    expect(find.text("You're already part of a home."), findsOneWidget);
+    final s = S.of(tester.element(find.byType(StartHomeScreen)));
+    expect(find.text(s.membership_status_active), findsOneWidget);
   });
 
   testWidgets('disables create/join buttons when membership not none', (
@@ -97,11 +99,12 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
+    final s = S.of(tester.element(find.byType(StartHomeScreen)));
     final createButton = tester.widget<FilledButton>(
-      find.widgetWithText(FilledButton, 'Create a Home'),
+      find.widgetWithText(FilledButton, s.welcome_create),
     );
     final joinButton = tester.widget<FilledButton>(
-      find.widgetWithText(FilledButton, 'Join a Home'),
+      find.widgetWithText(FilledButton, s.welcome_join),
     );
     expect(createButton.onPressed, isNull);
     expect(joinButton.onPressed, isNull);
@@ -115,11 +118,12 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pump();
 
+    final s = S.of(tester.element(find.byType(StartHomeScreen)));
     final createButton = tester.widget<FilledButton>(
-      find.widgetWithText(FilledButton, 'Create a Home'),
+      find.widgetWithText(FilledButton, s.welcome_create),
     );
     final joinButton = tester.widget<FilledButton>(
-      find.widgetWithText(FilledButton, 'Join a Home'),
+      find.widgetWithText(FilledButton, s.welcome_join),
     );
     expect(createButton.onPressed, isNotNull);
     expect(joinButton.onPressed, isNotNull);

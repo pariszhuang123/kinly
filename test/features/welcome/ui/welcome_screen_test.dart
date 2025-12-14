@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/welcome/ui/welcome_screen.dart';
@@ -40,11 +41,14 @@ void main() {
     await authStateController.close();
   });
 
-  Widget buildRouterApp(GoRouter router) {
+  Widget buildRouterApp(
+    GoRouter router, {
+    Brightness brightness = Brightness.light,
+  }) {
     return BlocProvider<AuthBloc>.value(
       value: authBloc,
       child: MaterialApp.router(
-        theme: buildKinlyTheme(Brightness.light),
+        theme: buildKinlyTheme(brightness),
         localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -81,6 +85,48 @@ void main() {
 
     await tester.tap(googleButton);
     verify(() => authBloc.add(const AuthSignInWithGoogleRequested())).called(1);
+  });
+
+  testWidgets('uses light Google style in light theme', (tester) async {
+    when(() => authBloc.state).thenReturn(const AuthState());
+    final router = GoRouter(
+      initialLocation: AppRoutes.welcome,
+      routes: [
+        GoRoute(
+          path: AppRoutes.welcome,
+          builder: (_, __) => const WelcomeScreen(),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(buildRouterApp(router));
+    await tester.pump();
+
+    final googleButton = tester.widget<SignInButton>(
+      find.byType(SignInButton),
+    );
+    expect(googleButton.button, Buttons.google);
+  });
+
+  testWidgets('uses dark Google style in dark theme', (tester) async {
+    when(() => authBloc.state).thenReturn(const AuthState());
+    final router = GoRouter(
+      initialLocation: AppRoutes.welcome,
+      routes: [
+        GoRoute(
+          path: AppRoutes.welcome,
+          builder: (_, __) => const WelcomeScreen(),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(buildRouterApp(router, brightness: Brightness.dark));
+    await tester.pump();
+
+    final googleButton = tester.widget<SignInButton>(
+      find.byType(SignInButton),
+    );
+    expect(googleButton.button, Buttons.googleDark);
   });
 
   testWidgets('navigates to start when authenticated without membership', (tester) async {

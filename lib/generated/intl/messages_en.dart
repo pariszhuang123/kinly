@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "See all ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
   static String m16(count) =>
-      "${Intl.plural(count, one: '${count} payment pending', other: '${count} payments pending')}";
+      "${Intl.plural(count, one: '${count} payment pending', other: '${count} to settle')}";
 
   static String m17(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
@@ -121,9 +121,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
       "See every Share you\'ve created and track collections.",
     ),
-    "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("Assign to"),
+    "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
+      "Who’s taking this on?",
+    ),
     "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
-      "Unassigned",
+      "Open to anyone",
     ),
     "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("Add Flow"),
     "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage(
@@ -138,19 +140,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "Delete this flow?",
     ),
     "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
-      "Complete flow",
+      "Mark complete",
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t complete the flow. Please try again.",
     ),
     "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
-      "More details",
+      "Helpful context",
     ),
     "flowChoreDetailNoHowTo": MessageLookupByLibrary.simpleMessage(
-      "No how-to link provided.",
+      "No guide links provided.",
     ),
     "flowChoreDetailNoNotes": MessageLookupByLibrary.simpleMessage(
-      "No notes yet.",
+      "No context provided.",
     ),
     "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
       "Flow details",
@@ -160,7 +162,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Edit Flow"),
     "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
-      "That member isn\'t assignable right now.",
+      "That member isn\'t part of this home right now.",
     ),
     "flowChoreErrorForbidden": MessageLookupByLibrary.simpleMessage(
       "You don\'t have permission to change this flow.",
@@ -178,18 +180,18 @@ class MessageLookup extends MessageLookupByLibrary {
       "This flow isn\'t updateable right now.",
     ),
     "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "You\'ve hit the free limit for active flows. Upgrade to add more.",
+      "You\'re at the free limit for active flows. Upgrade for more space.",
     ),
     "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
-      "You\'ve hit the free limit for expectation photos. Remove one or upgrade.",
+      "You\'re at the free limit for expectation photos. Upgrade for more space.",
     ),
     "flowChoreExpectationPhotoLabel": MessageLookupByLibrary.simpleMessage(
       "Expectation photo",
     ),
     "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
-      "Paste a video or document link (optional)",
+      "Add a link to help someone to follow",
     ),
-    "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage("How-to link"),
+    "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage("Guide link"),
     "flowChoreHowToLaunchError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t open that link. Try again.",
     ),
@@ -197,29 +199,33 @@ class MessageLookup extends MessageLookupByLibrary {
       "We couldn\'t load this flow. Please try again.",
     ),
     "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
-      "Give your flow a short, clear title",
+      "Eg. Bin night, clean the fridge, water plants",
     ),
-    "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage("Flow name"),
+    "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage(
+      "What are we agreeing on?",
+    ),
     "flowChoreNotesHint": MessageLookupByLibrary.simpleMessage(
-      "Add optional context or reminders",
+      "Anything that helps others understand the flow",
     ),
-    "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage("Notes"),
+    "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage(
+      "Why this matters",
+    ),
     "flowChorePhotoHint": MessageLookupByLibrary.simpleMessage(
       "storage/households/... (optional)",
     ),
     "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "Expectation photo",
+      "What \'great\' looks like",
     ),
     "flowChorePhotoLoadError": MessageLookupByLibrary.simpleMessage(
       "Could not load photo",
     ),
     "flowChorePhotoPermissionDenied": MessageLookupByLibrary.simpleMessage(
-      "Camera permission is required to take a photo.",
+      "Allow camera access to take a photo.",
     ),
     "flowChorePhotoPermissionOpenSettings":
         MessageLookupByLibrary.simpleMessage("Open settings"),
     "flowChorePhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
-      "Add a photo to show what great looks like",
+      "A photo can help everyone stay aligned",
     ),
     "flowChorePhotoUploadError": MessageLookupByLibrary.simpleMessage(
       "Could not upload the photo. Try again.",
@@ -233,7 +239,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Every 2 weeks",
     ),
     "flowChoreRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
-      "Repeat frequency",
+      "How often does this come up?",
     ),
     "flowChoreRecurrenceMonthly": MessageLookupByLibrary.simpleMessage(
       "Monthly",
@@ -241,11 +247,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage("One time"),
     "flowChoreRecurrenceWeekly": MessageLookupByLibrary.simpleMessage("Weekly"),
     "flowChoreRetry": MessageLookupByLibrary.simpleMessage("Retry"),
-    "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage("Flow date"),
-    "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage("Add flow"),
-    "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage("Save flow"),
+    "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage(
+      "When does this come up? ",
+    ),
+    "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage(
+      "Create flow",
+    ),
+    "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage(
+      "Save changes",
+    ),
     "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
-      "Pick someone to assign this flow to.",
+      "Choose someone, or leave it open for anyone.",
     ),
     "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
       "Pick a date up to a year from today.",
@@ -258,7 +270,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("Draft"),
     "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Add your first routine so everyone knows what to do.",
+      "Create your first flow so everyone feels clear and aligned.",
     ),
     "flowListEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Nothing in Flow yet",
@@ -266,7 +278,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowListError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load Flow. Pull to refresh.",
     ),
-    "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage("Past due"),
+    "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage("Past date"),
     "force_update_body": MessageLookupByLibrary.simpleMessage(
       "This version of Kinly is no longer supported. Please install the newest release to continue.",
     ),
@@ -274,9 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "force_update_notes_label": MessageLookupByLibrary.simpleMessage(
       "What\'s new",
     ),
-    "force_update_title": MessageLookupByLibrary.simpleMessage(
-      "Update required",
-    ),
+    "force_update_title": MessageLookupByLibrary.simpleMessage("Update needed"),
     "force_update_version_details": m2,
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("friend"),
     "gratitudeWallEmptySubtitle": MessageLookupByLibrary.simpleMessage(
@@ -358,7 +368,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonyShareSubtitle": MessageLookupByLibrary.simpleMessage(
       "Visible to your home when the mood is sunny or partly sunny.",
     ),
-    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Submit feedback"),
+    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Send feedback"),
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
       "Thanks! Your feedback was saved.",
     ),
@@ -410,7 +420,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Invite to my Kinly home",
     ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
-      "You\'re already in another home. Leave it before joining a new one.",
+      "Leave your current home to join a new one",
     ),
     "join_error_forbidden": MessageLookupByLibrary.simpleMessage(
       "You don\'t have permission to join this home.",
@@ -451,10 +461,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "logout": MessageLookupByLibrary.simpleMessage("Sign out"),
     "membership_status_active": MessageLookupByLibrary.simpleMessage(
-      "You\'re already part of a home.",
+      "You’re already connected to a home.",
     ),
     "membership_status_checking": MessageLookupByLibrary.simpleMessage(
-      "Checking membership statusâ€¦",
+      "Checking membership status...",
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "You haven\'t joined a home yet.",
@@ -510,9 +520,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "Unlimited shared expenses",
     ),
-    "paywallEmotional": MessageLookupByLibrary.simpleMessage(
-      "Premium keeps your home feeling lighter each day. No blockers, no limits, everyone stays aligned.",
-    ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "Unable to load paywall.",
     ),
@@ -537,7 +544,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "paywallRetryLabel": MessageLookupByLibrary.simpleMessage("Retry"),
     "paywallSecondaryCta": MessageLookupByLibrary.simpleMessage(
-      "Continue with free home",
+      "Stay on free plan",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
       "Your home-level upgrade for less than 0.5% of your rent.",
@@ -707,7 +714,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileLogoutSubtitle": MessageLookupByLibrary.simpleMessage(
       "Sign out of Kinly on this device.",
     ),
-    "profileLogoutTitle": MessageLookupByLibrary.simpleMessage("Log out"),
+    "profileLogoutTitle": MessageLookupByLibrary.simpleMessage("Sign out"),
     "profileMissingHomeError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t find your current home. Try again.",
     ),
@@ -718,13 +725,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Profile & home",
     ),
     "quick_add_fair_share_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Record a fairness entry",
+      "Note a fairness entry",
     ),
     "quick_add_fair_share_title": MessageLookupByLibrary.simpleMessage(
       "Fair Share",
     ),
     "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Add a Flow",
+      "Create a flow",
     ),
     "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Flow"),
     "quick_add_poll_subtitle": MessageLookupByLibrary.simpleMessage(
@@ -732,7 +739,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "quick_add_poll_title": MessageLookupByLibrary.simpleMessage("Poll"),
     "quick_add_share_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Log a Share",
+      "Add a Share",
     ),
     "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Share"),
     "quick_add_title": MessageLookupByLibrary.simpleMessage("Quick Add"),
@@ -757,7 +764,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Couldn\'t create. Try again.",
     ),
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "You\'ve reached the free limit of 10 active or draft shares. Close or cancel one to continue.",
+      "You\'re at the free limit of active shares. Upgrade for more space.",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load your household members.",
@@ -765,7 +772,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateNotesHint": MessageLookupByLibrary.simpleMessage(
       "Optional context everyone can see",
     ),
-    "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("Notes"),
+    "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("Context"),
     "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
       "You need at least two household members to share.",
     ),
@@ -774,12 +781,14 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateRetry": MessageLookupByLibrary.simpleMessage("Try again"),
     "shareCreateSplitCustom": MessageLookupByLibrary.simpleMessage(
-      "Custom split",
+      "Choose amounts",
     ),
     "shareCreateSplitEqual": MessageLookupByLibrary.simpleMessage(
-      "Split automatically",
+      "Split evenly",
     ),
-    "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage("Split type"),
+    "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage(
+      "How do we want to split this?",
+    ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Create"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage(
       "Share created.",
@@ -817,7 +826,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Unassigned",
     ),
     "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Split it to assign each person before publishing.",
+      "Split it so everyone knows their part before publishing.",
     ),
     "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
       "Create a Share to see it listed here.",
@@ -853,7 +862,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "We couldn\'t load that draft.",
     ),
     "shareEditNotAllowed": MessageLookupByLibrary.simpleMessage(
-      "This is locked until you assign the share to someone.",
+      "This stays locked until someone takes this share.",
     ),
     "shareEditSplitsLocked": MessageLookupByLibrary.simpleMessage(
       "Splits are locked because someone already paid. You can still update the description and notes.",
@@ -867,18 +876,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareOwedDetailError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t mark that share paid. Try again.",
     ),
-    "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage("Mark as paid"),
+    "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage(
+      "Mark as settled",
+    ),
     "shareOwedDetailSelectionLabel": MessageLookupByLibrary.simpleMessage(
       "Select who to share with.",
     ),
     "shareOwedDetailSubtitle": MessageLookupByLibrary.simpleMessage(
       "Select the share you just settled.",
     ),
-    "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage(
-      "Payment recorded.",
-    ),
+    "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage("Settled."),
     "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage(
-      "Pending payment",
+      "Awaiting settle",
     ),
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Flow"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Share"),
@@ -895,10 +904,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "All caught up today",
     ),
     "todayFlatmateInviteSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Share your invite so you can split chores together.",
+      "Invite them so you can stay aligned and share the load.",
     ),
     "todayFlatmateInviteTitle": MessageLookupByLibrary.simpleMessage(
-      "Bring your flatmate",
+      "Bring your home into Kinly",
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),

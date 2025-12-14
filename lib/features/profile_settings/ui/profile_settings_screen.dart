@@ -7,6 +7,7 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/profile/models.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/ui/kinly_bottom_sheet.dart';
 import '../../../core/ui/dialogs/kinly_dialogs.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
@@ -43,122 +44,126 @@ class ProfileSettingsScreen extends StatelessWidget {
                     ? state.user!.displayName
                     : s.friendDefaultName;
 
-            return ListView(
-              padding: EdgeInsetsDirectional.all(spacing.lg),
-              children: [
-                KinlyProfileHeader(
-                  displayName: displayName,
-                  subtitle: s.profileSettingsSubtitle,
-                  avatarUrl: state.user?.avatarUrl,
-                  isOwner: state.isOwner,
-                  isLoading: state.isLoadingUser,
-                  onAvatarTap:
-                      () => _openProfileIdentity(context, user: state.user),
-                ),
-                SizedBox(height: spacing.xl),
+            return KinlyScrollFade(
+              child: ListView(
+                padding: EdgeInsetsDirectional.all(spacing.lg),
+                children: [
+                  KinlyProfileHeader(
+                    displayName: displayName,
+                    subtitle: s.profileSettingsSubtitle,
+                    avatarUrl: state.user?.avatarUrl,
+                    isOwner: state.isOwner,
+                    isLoading: state.isLoadingUser,
+                    onAvatarTap:
+                        () => _openProfileIdentity(context, user: state.user),
+                  ),
+                  SizedBox(height: spacing.xl),
 
-                // ── General section: Info Hub + Contact ────────────────────
-                KinlySettingsCard(
-                  children: [
-                    KinlySettingsTile(
-                      title: s.profileInfoHubTitle,
-                      subtitle: s.profileInfoHubSubtitle,
-                      icon: Icons.menu_book_outlined,
-                      onTap: () => _openInfoHub(context),
-                    ),
-                    const Divider(height: 0),
-                    KinlySettingsTile(
-                      title: s.profileContactUsTitle,
-                      subtitle: s.profileContactUsSubtitle,
-                      icon: Icons.support_agent_outlined,
-                      // Shared support helper (with mounted check inside)
-                      onTap: () => KinlySupport.contactSupport(context),
-                    ),
-                    const Divider(height: 0),
-                    KinlySettingsTile(
-                      title: s.profileConnectionSettingsTitle,
-                      subtitle: s.profileConnectionSettingsSubtitle,
-                      icon: Icons.notifications_active_outlined,
-                      onTap: () => context.push(AppRoutes.connectionSettings),
-                    ),
-                  ],
-                ),
-                SizedBox(height: spacing.md),
-
-                // ── Account section: Logout ────────────────────────────────
-                KinlySettingsCard(
-                  children: [
-                    KinlySettingsTile(
-                      title: s.profileLogoutTitle,
-                      subtitle: s.profileLogoutSubtitle,
-                      icon: Icons.logout,
-                      onTap: () => _confirmLogout(context),
-                    ),
-                  ],
-                ),
-                SizedBox(height: spacing.md),
-
-                // ── Danger zone: Leave / Kick / Delete account ────────────
-                KinlySettingsCard(
-                  children: () {
-                    final tiles = <Widget>[
-                      // Leave Home (always shown)
+                  // ── General section: Info Hub + Contact ────────────────────
+                  KinlySettingsCard(
+                    children: [
                       KinlySettingsTile(
-                        title: s.profileLeaveHomeTitle,
-                        subtitle: s.profileLeaveHomeSubtitle,
-                        icon: Icons.exit_to_app_rounded,
-                        destructive: true,
-                        showProgress: state.isLeaveActionBusy,
-                        onTap:
-                            state.isLeaveActionBusy
-                                ? null
-                                : () => _handleLeaveTap(context),
+                        title: s.profileInfoHubTitle,
+                        subtitle: s.profileInfoHubSubtitle,
+                        icon: Icons.menu_book_outlined,
+                        onTap: () => _openInfoHub(context),
                       ),
-                    ];
+                      const Divider(height: 0),
+                      KinlySettingsTile(
+                        title: s.profileContactUsTitle,
+                        subtitle: s.profileContactUsSubtitle,
+                        icon: Icons.support_agent_outlined,
+                        // Shared support helper (with mounted check inside)
+                        onTap: () => KinlySupport.contactSupport(context),
+                      ),
+                      const Divider(height: 0),
+                      KinlySettingsTile(
+                        title: s.profileConnectionSettingsTitle,
+                        subtitle: s.profileConnectionSettingsSubtitle,
+                        icon: Icons.notifications_active_outlined,
+                        onTap: () => context.push(AppRoutes.connectionSettings),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: spacing.md),
 
-                    final hasKickTargets =
-                        state.isOwner && state.kickEligibleMembers.isNotEmpty;
+                  // ── Account section: Logout ────────────────────────────────
+                  KinlySettingsCard(
+                    children: [
+                      KinlySettingsTile(
+                        title: s.profileLogoutTitle,
+                        subtitle: s.profileLogoutSubtitle,
+                        icon: Icons.logout,
+                        onTap: () => _confirmLogout(context),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: spacing.md),
 
-                    if (hasKickTargets) {
+                  // ── Danger zone: Leave / Kick / Delete account ────────────
+                  KinlySettingsCard(
+                    children: () {
+                      final tiles = <Widget>[
+                        // Leave Home (always shown)
+                        KinlySettingsTile(
+                          title: s.profileLeaveHomeTitle,
+                          subtitle: s.profileLeaveHomeSubtitle,
+                          icon: Icons.exit_to_app_rounded,
+                          destructive: true,
+                          showProgress: state.isLeaveActionBusy,
+                          onTap:
+                              state.isLeaveActionBusy
+                                  ? null
+                                  : () => _handleLeaveTap(context),
+                        ),
+                      ];
+
+                      final hasKickTargets =
+                          state.isOwner && state.kickEligibleMembers.isNotEmpty;
+
+                      if (hasKickTargets) {
+                        tiles.addAll([
+                          const Divider(height: 0),
+                          KinlySettingsTile(
+                            title: s.profileKickMemberTitle,
+                            subtitle: s.profileKickMemberSubtitle,
+                            icon: Icons.person_remove_alt_1_rounded,
+                            destructive: true,
+                            showProgress: state.kickInProgress,
+                            onTap:
+                                state.kickInProgress
+                                    ? null
+                                    : () => _handleKickTap(context),
+                          ),
+                        ]);
+                      }
+
+                      // Delete account at the bottom of the danger card
                       tiles.addAll([
                         const Divider(height: 0),
                         KinlySettingsTile(
-                          title: s.profileKickMemberTitle,
-                          subtitle: s.profileKickMemberSubtitle,
-                          icon: Icons.person_remove_alt_1_rounded,
+                          title: s.profileDeleteAccountTitle,
+                          subtitle: s.profileDeleteAccountSubtitle,
+                          icon: Icons.delete_forever_outlined,
                           destructive: true,
-                          showProgress: state.kickInProgress,
+                          showProgress:
+                              state.deleteInProgress ||
+                              state.transferInProgress,
                           onTap:
-                              state.kickInProgress
+                              state.deleteInProgress ||
+                                      state.transferInProgress ||
+                                      state.leaveEligibilityLoading
                                   ? null
-                                  : () => _handleKickTap(context),
+                                  : () => _handleDeleteTap(context),
                         ),
                       ]);
-                    }
 
-                    // Delete account at the bottom of the danger card
-                    tiles.addAll([
-                      const Divider(height: 0),
-                      KinlySettingsTile(
-                        title: s.profileDeleteAccountTitle,
-                        subtitle: s.profileDeleteAccountSubtitle,
-                        icon: Icons.delete_forever_outlined,
-                        destructive: true,
-                        showProgress:
-                            state.deleteInProgress || state.transferInProgress,
-                        onTap:
-                            state.deleteInProgress ||
-                                    state.transferInProgress ||
-                                    state.leaveEligibilityLoading
-                                ? null
-                                : () => _handleDeleteTap(context),
-                      ),
-                    ]);
-
-                    return tiles;
-                  }(),
-                ),
-              ],
+                      return tiles;
+                    }(),
+                  ),
+                  SizedBox(height: spacing.xl),
+                ],
+              ),
             );
           },
         ),

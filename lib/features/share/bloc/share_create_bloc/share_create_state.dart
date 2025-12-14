@@ -141,7 +141,14 @@ class ShareCreateState extends Equatable {
     );
   }
 
-  bool get hasEqualSelection => form.selectedParticipantIds.length >= 2;
+  Set<String> get equalSelectionIds {
+    if (form.selectedParticipantIds.isEmpty) {
+      return participants.map((participant) => participant.userId).toSet();
+    }
+    return form.selectedParticipantIds;
+  }
+
+  bool get hasEqualSelection => equalSelectionIds.length >= 2;
 
   /// Builds a summary of the custom split state for validation + RPC input.
   ShareCustomSplitSummary evaluateCustomSplit() {

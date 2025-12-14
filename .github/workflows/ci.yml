@@ -68,6 +68,9 @@ jobs:
       - name: Check copy contract
         run: dart run tool/check_copy_contract.dart
 
+      - name: Check shared understanding copy
+        run: dart run tool/check_shared_understanding_copy.dart
+
       - name: Check module manifest guardrails
         run: dart run tool/check_modules.dart
 

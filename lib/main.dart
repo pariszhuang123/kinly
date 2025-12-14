@@ -50,8 +50,7 @@ Future<void> main() async {
     await SentryFlutter.init((options) {
       options.dsn = AppConfig.sentryDsn;
       options.environment = AppConfig.env;
-      options.tracesSampleRate = kReleaseMode ? 1.0 : 0.0;
-      options.enableAutoPerformanceTracing = kReleaseMode;
+      options.tracesSampleRate = kReleaseMode ? 0.1 : 0.0;
       options.sendDefaultPii = false;
     }, appRunner: () => _bootstrapApp());
   } catch (error, stackTrace) {

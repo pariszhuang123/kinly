@@ -227,7 +227,6 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
                 bulletShares: s.paywallBulletShares,
                 unlimitedLabel: s.paywallSubtitle,
                 priceCaption: s.paywallPriceCaption,
-                emotionalBody: s.paywallEmotional,
                 priceUnavailableLabel: s.paywallPriceUnavailable,
                 priceFormatter: (price) => s.paywallPricePerMonth(price),
                 primaryCta: s.paywallPrimaryCta,

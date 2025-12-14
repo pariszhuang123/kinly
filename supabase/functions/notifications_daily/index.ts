@@ -326,8 +326,7 @@ async function sendPush(token: string, body: string): Promise<SendResult> {
   if (!response.ok) {
     const text = await response.text();
     // Only treat as permanent if the body clearly indicates a dead token.
-    const permanent =
-      text.includes("UNREGISTERED") || text.includes("NOT_FOUND");
+    const permanent = isPermanentTokenError(text);
     return {
       ok: false,
       permanent,
@@ -342,12 +341,41 @@ async function sendPush(token: string, body: string): Promise<SendResult> {
 
   if (json.error) {
     const message = json.error.message ?? "unknown_fcm_error";
-    const permanent =
-      message.includes("UNREGISTERED") || message.includes("NOT_FOUND");
+    const permanent = isPermanentTokenError(message);
     return { ok: false, permanent, reason: message };
   }
 
   return { ok: true };
+}
+
+function isPermanentTokenError(text: string): boolean {
+  if (!text) return false;
+
+  const upper = text.toUpperCase();
+  if (upper.includes("UNREGISTERED") || upper.includes("NOT_FOUND")) {
+    return true;
+  }
+
+  try {
+    const parsed = JSON.parse(text) as {
+      error?: {
+        status?: string;
+        details?: Array<{ errorCode?: string; error_code?: string }>;
+      };
+    };
+    const status = parsed.error?.status?.toUpperCase();
+    if (status && (status.includes("UNREGISTERED") || status.includes("NOT_FOUND"))) {
+      return true;
+    }
+    const details = parsed.error?.details ?? [];
+    return details.some((d) => {
+      const code =
+        (d.errorCode ?? d.error_code ?? "").toString().toUpperCase();
+      return code.includes("UNREGISTERED") || code.includes("NOT_FOUND");
+    });
+  } catch (_) {
+    return false;
+  }
 }
 
 // ---------------------------------------------------------------------------

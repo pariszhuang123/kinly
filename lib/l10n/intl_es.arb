@@ -41,7 +41,6 @@
   "paywallTitle": "Trae más armonía a tu hogar",
   "paywallSubtitle": "Actualiza tu hogar por menos del 0,5% de tu renta.",
   "paywallPriceCaption": "Un solo plan para el hogar, sin niveles ocultos.",
-  "paywallEmotional": "Premium hace que tu hogar se sienta más ligero cada día. Sin bloqueos, sin límites: todos alineados.",
   "paywallPricePerMonth": "{price} al mes para todo tu hogar.",
   "@paywallPricePerMonth": {
     "surface": "paywall_subtitle",

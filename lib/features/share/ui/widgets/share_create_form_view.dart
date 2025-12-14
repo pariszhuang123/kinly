@@ -7,8 +7,10 @@ import '../../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../../core/ui/kinly_loader.dart';
 import '../../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../../core/ui/inputs/kinly_text_field.dart';
+import '../../../../../core/ui/members/kinly_selectable_member_avatar_row.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/theme/color_tokens.dart';
+import '../../../../../core/homes/models.dart';
 import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
@@ -105,8 +107,6 @@ class ShareCreateFormView extends StatelessWidget {
         SizedBox(height: spacing.lg),
         _SplitModeSelector(state: state, locked: locked),
         SizedBox(height: spacing.lg),
-        _ParticipantsLabel(),
-        SizedBox(height: spacing.sm),
         if (state.participants.isEmpty)
           _EmptyParticipantsText()
         else
@@ -252,19 +252,6 @@ class _SplitModeSelector extends StatelessWidget {
   }
 }
 
-class _ParticipantsLabel extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    final theme = Theme.of(context);
-
-    return Text(
-      s.shareCreateParticipantsLabel,
-      style: theme.textTheme.titleMedium,
-    );
-  }
-}
-
 class _EmptyParticipantsText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -375,7 +362,6 @@ class _ParticipantsSection extends StatelessWidget {
     final theme = Theme.of(context);
     final s = S.of(context);
     final splitMode = state.form.splitMode;
-    final colorScheme = theme.colorScheme;
 
     if (splitMode == null) {
       return const SizedBox.shrink();
@@ -458,35 +444,34 @@ class _ParticipantsSection extends StatelessWidget {
               ),
             ),
           ),
-        Wrap(
-          spacing: spacing.sm,
-          runSpacing: spacing.sm,
-          children:
-              state.participants.map((participant) {
-                final isSelected = state.form.selectedParticipantIds.contains(
-                  participant.userId,
-                );
-                return FilterChip(
-                  label: Text(participant.displayName),
-                  selected: isSelected,
-                  selectedColor: colorScheme.primaryContainer,
-                  checkmarkColor: colorScheme.onPrimaryContainer,
-                  onSelected:
-                      locked
-                          ? null
-                          : (selected) => context.read<ShareCreateBloc>().add(
-                            ShareCreateParticipantToggled(
-                              participant.userId,
-                              selected,
-                            ),
-                          ),
-                  avatar: KinlyCircleAvatar(
-                    avatarUrl: participant.avatarUrl,
-                    radius: 16,
-                    isOwner: participant.isOwner,
+        IgnorePointer(
+          ignoring: locked,
+          child: Opacity(
+            opacity: locked ? 0.6 : 1.0,
+            child: KinlySelectableMemberAvatarRow(
+              members:
+                  state.participants
+                      .map(
+                        (participant) => HomeMemberSummary(
+                          userId: participant.userId,
+                          username: participant.displayName,
+                          role: participant.isOwner ? 'owner' : 'member',
+                          validFrom:
+                              DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
+                          avatarUrl: participant.avatarUrl,
+                        ),
+                      )
+                      .toList(growable: false),
+              selectedMemberIds: state.form.selectedParticipantIds,
+              onToggle:
+                  (memberId) => context.read<ShareCreateBloc>().add(
+                    ShareCreateParticipantToggled(
+                      memberId,
+                      !state.form.selectedParticipantIds.contains(memberId),
+                    ),
                   ),
-                );
-              }).toList(),
+            ),
+          ),
         ),
         if (!locked &&
             showValidation &&

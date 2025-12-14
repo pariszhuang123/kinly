@@ -47,6 +47,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final busy = context.select((AuthBloc bloc) => bloc.state.isLoading);
     final supportsApple = Platform.isIOS;
     final linkColors = theme.extension<KinlyLinkColors>()!;
+    final isDarkMode = theme.brightness == Brightness.dark;
+    final googleButtonStyle =
+        isDarkMode ? Buttons.googleDark : Buttons.google;
+    final appleButtonStyle = isDarkMode ? Buttons.appleDark : Buttons.apple;
 
     return BlocListener<AuthBloc, AuthState>(
       listenWhen:
@@ -162,7 +166,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           child: IgnorePointer(
                             ignoring: !canPressGoogle,
                             child: SignInButton(
-                              Buttons.google,
+                              googleButtonStyle,
                               text: s.login_with_google,
                               onPressed: () {
                                 if (!canPressGoogle) return;
@@ -189,7 +193,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             child: IgnorePointer(
                               ignoring: !canPressApple,
                               child: SignInButton(
-                                Buttons.appleDark,
+                                appleButtonStyle,
                                 text: s.login_with_apple,
                                 onPressed: () {
                                   if (!canPressApple) return;
