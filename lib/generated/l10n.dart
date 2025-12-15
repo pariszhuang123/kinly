@@ -3331,41 +3331,31 @@ class S {
     );
   }
 
-  /// `Add a note (optional)`
+  /// `Anything you’d like to share?`
   String get harmonyCommentLabel {
     return Intl.message(
-      'Add a note (optional)',
+      'Anything you’d like to share?',
       name: 'harmonyCommentLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `What's making the home feel this way?`
+  /// `What’s been contributing to this feeling at home?`
   String get harmonyCommentHint {
     return Intl.message(
-      'What\'s making the home feel this way?',
+      'What’s been contributing to this feeling at home?',
       name: 'harmonyCommentHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `Share this on the gratitude wall`
+  /// `Share this with the home`
   String get harmonyShareLabel {
     return Intl.message(
-      'Share this on the gratitude wall',
+      'Share this with the home',
       name: 'harmonyShareLabel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Visible to your home when the mood is sunny or partly sunny.`
-  String get harmonyShareSubtitle {
-    return Intl.message(
-      'Visible to your home when the mood is sunny or partly sunny.',
-      name: 'harmonyShareSubtitle',
       desc: '',
       args: [],
     );

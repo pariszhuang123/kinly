@@ -34,79 +34,81 @@ const ERROR_REASON_MAX_LENGTH = 512;
 // Main entry
 // ---------------------------------------------------------------------------
 
-Deno.serve(async (_req: Request) => {
-  const supabaseUrl = Deno.env.get("SUPABASE_URL");
-  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+if (import.meta.main) {
+  Deno.serve(async (_req: Request) => {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-  if (!supabaseUrl || !supabaseKey) {
-    return new Response(
-      JSON.stringify({ error: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY" }),
-      { status: 500, headers: { "Content-Type": "application/json" } },
-    );
-  }
-
-  const supabase: SupabaseClient = createClient(supabaseUrl, supabaseKey, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
-
-  const jobRunId = crypto.randomUUID();
-  let offset = 0;
-  let totalSent = 0;
-  let totalFailed = 0;
-  let totalExpired = 0;
-  const startedAt = Date.now();
-
-  try {
-    while (true) {
-      const batch = await fetchCandidates(supabase, PAGE_SIZE, offset);
-      if (batch.length === 0) break;
-
-      const { sent, failed, expired } = await processBatch(
-        supabase,
-        batch,
-        jobRunId,
+    if (!supabaseUrl || !supabaseKey) {
+      return new Response(
+        JSON.stringify({ error: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY" }),
+        { status: 500, headers: { "Content-Type": "application/json" } },
       );
-
-      totalSent += sent;
-      totalFailed += failed;
-      totalExpired += expired;
-
-      offset += batch.length;
     }
 
-    const durationMs = Date.now() - startedAt;
-    return new Response(
-      JSON.stringify({
-        jobRunId,
-        sent: totalSent,
-        failed: totalFailed,
-        tokensExpired: totalExpired,
-        durationMs,
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } },
-    );
-  } catch (error) {
-    console.error("notifications-daily job error", { jobRunId, error });
-    const durationMs = Date.now() - startedAt;
-    return new Response(
-      JSON.stringify({
-        jobRunId,
-        sent: totalSent,
-        failed: totalFailed,
-        tokensExpired: totalExpired,
-        durationMs,
-        error: (error as Error).message ?? "unknown_error",
-      }),
-      { status: 500, headers: { "Content-Type": "application/json" } },
-    );
-  }
-});
+    const supabase: SupabaseClient = createClient(supabaseUrl, supabaseKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    const jobRunId = crypto.randomUUID();
+    let offset = 0;
+    let totalSent = 0;
+    let totalFailed = 0;
+    let totalExpired = 0;
+    const startedAt = Date.now();
+
+    try {
+      while (true) {
+        const batch = await fetchCandidates(supabase, PAGE_SIZE, offset);
+        if (batch.length === 0) break;
+
+        const { sent, failed, expired } = await processBatch(
+          supabase,
+          batch,
+          jobRunId,
+        );
+
+        totalSent += sent;
+        totalFailed += failed;
+        totalExpired += expired;
+
+        offset += batch.length;
+      }
+
+      const durationMs = Date.now() - startedAt;
+      return new Response(
+        JSON.stringify({
+          jobRunId,
+          sent: totalSent,
+          failed: totalFailed,
+          tokensExpired: totalExpired,
+          durationMs,
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    } catch (error) {
+      console.error("notifications-daily job error", { jobRunId, error });
+      const durationMs = Date.now() - startedAt;
+      return new Response(
+        JSON.stringify({
+          jobRunId,
+          sent: totalSent,
+          failed: totalFailed,
+          tokensExpired: totalExpired,
+          durationMs,
+          error: (error as Error).message ?? "unknown_error",
+        }),
+        { status: 500, headers: { "Content-Type": "application/json" } },
+      );
+    }
+  });
+}
 
 // ---------------------------------------------------------------------------
 // Helpers: candidates + messages
 // ---------------------------------------------------------------------------
 
-function buildMessage(locale: string | null | undefined): string {
+export function buildMessage(locale: string | null | undefined): string {
   const normalized = (locale ?? "").toLowerCase();
   if (TEMPLATES[normalized]) return TEMPLATES[normalized];
   const language = normalized.split("-")[0];
@@ -348,7 +350,7 @@ async function sendPush(token: string, body: string): Promise<SendResult> {
   return { ok: true };
 }
 
-function isPermanentTokenError(text: string): boolean {
+export function isPermanentTokenError(text: string): boolean {
   if (!text) return false;
 
   const upper = text.toUpperCase();
@@ -530,7 +532,7 @@ function base64UrlEncode(data: Uint8Array): string {
 
 const segmenter = new Intl.Segmenter("en", { granularity: "grapheme" });
 
-function truncateReason(reason: string, maxLength: number): string {
+export function truncateReason(reason: string, maxLength: number): string {
   const segments = [...segmenter.segment(reason)];
   if (segments.length <= maxLength) return reason;
   return segments.slice(0, maxLength).map((s) => s.segment).join("") + "…";

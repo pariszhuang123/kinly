@@ -327,10 +327,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "greetingPartMorning": MessageLookupByLibrary.simpleMessage("morning"),
     "greetingPartOfDay": m8,
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
-      "What\'s making the home feel this way?",
+      "What’s been contributing to this feeling at home?",
     ),
     "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
-      "Add a note (optional)",
+      "Anything you’d like to share?",
     ),
     "harmonyEntryCta": MessageLookupByLibrary.simpleMessage(
       "Share this week\'s mood",
@@ -363,10 +363,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "How\'s your home feeling this week?",
     ),
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
-      "Share this on the gratitude wall",
-    ),
-    "harmonyShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Visible to your home when the mood is sunny or partly sunny.",
+      "Share this with the home",
     ),
     "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Send feedback"),
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(

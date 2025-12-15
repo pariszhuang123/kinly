@@ -47,6 +47,17 @@ void main() {
         reason: 'User choice respected while eligible');
   });
 
+  test('reselecting same mood keeps state unchanged', () {
+    final cubit = HarmonyCubit(homeId: 'home', moodRepository: repo);
+    cubit.selectMood(MoodScale.sunny);
+    cubit.commentChanged('Great vibe');
+    final initial = cubit.state;
+
+    cubit.selectMood(MoodScale.sunny);
+
+    expect(cubit.state, same(initial));
+  });
+
   blocTest<HarmonyCubit, HarmonyState>(
     'submit posts to wall only when comment + positive mood',
     build: () {

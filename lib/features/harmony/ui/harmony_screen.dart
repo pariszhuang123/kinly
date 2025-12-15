@@ -7,9 +7,9 @@ import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/kinly_toast.dart';
-import '../../../core/ui/buttons/kinly_option_selector_row.dart';
 import '../../../core/ui/kinly_comment_box.dart';
 import '../../../core/ui/toggles/kinly_toggle.dart';
+import '../../../core/ui/harmony/kinly_weather_selector_row.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/harmony_cubit.dart';
 import 'package:go_router/go_router.dart';
@@ -143,24 +143,11 @@ class _HarmonyHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          s.harmonyTitle,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        SizedBox(height: spacing.xs),
+        SizedBox(height: spacing.xl),
         Text(
           s.harmonyQuestion,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: spacing.xs),
-        Text(
-          s.harmonySubtext,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
       ],
@@ -173,28 +160,28 @@ class _MoodSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
 
-    final options = <KinlySelectorOption<MoodScale>>[
-      KinlySelectorOption(
+    final options = <KinlyWeatherSelectorOption<MoodScale>>[
+      KinlyWeatherSelectorOption(
         value: MoodScale.sunny,
         label: s.harmonyMoodSunny,
         svgAsset: 'assets/icons/weather/Sunny.svg',
       ),
-      KinlySelectorOption(
+      KinlyWeatherSelectorOption(
         value: MoodScale.partiallySunny,
         label: s.harmonyMoodPartiallySunny,
         svgAsset: 'assets/icons/weather/Partially Sunny.svg',
       ),
-      KinlySelectorOption(
+      KinlyWeatherSelectorOption(
         value: MoodScale.cloudy,
         label: s.harmonyMoodCloudy,
         svgAsset: 'assets/icons/weather/Cloudy.svg',
       ),
-      KinlySelectorOption(
+      KinlyWeatherSelectorOption(
         value: MoodScale.rainy,
         label: s.harmonyMoodRainy,
         svgAsset: 'assets/icons/weather/Raining.svg',
       ),
-      KinlySelectorOption(
+      KinlyWeatherSelectorOption(
         value: MoodScale.thunderstorm,
         label: s.harmonyMoodThunderstorm,
         svgAsset: 'assets/icons/weather/Thunderstorm.svg',
@@ -203,12 +190,11 @@ class _MoodSelector extends StatelessWidget {
 
     return BlocBuilder<HarmonyCubit, HarmonyState>(
       builder: (context, state) {
-        return KinlyOptionSelectorRow<MoodScale>(
+        return KinlyWeatherSelectorRow<MoodScale>(
           options: options,
           selectedValue: state.selectedMood,
-          onChanged: context.read<HarmonyCubit>().selectMood,
-          scrollable: false, // 3:2 centered layout for 5 moods
-          showLabel: false,
+          onChanged: (mood) => context.read<HarmonyCubit>().selectMood(mood),
+          showLabels: false,
         );
       },
     );
@@ -251,7 +237,6 @@ class _GratitudeToggle extends StatelessWidget {
           onChanged:
               (value) => context.read<HarmonyCubit>().toggleAddToWall(value),
           title: s.harmonyShareLabel,
-          subtitle: s.harmonyShareSubtitle,
           visible: canShare && hasComment,
           // isDarkOverride: true/false optional
         );

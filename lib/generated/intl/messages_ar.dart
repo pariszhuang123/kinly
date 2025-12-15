@@ -347,9 +347,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
       "شارك هذا على جدار الامتنان",
     ),
-    "harmonyShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "مرئي لمنزلك عندما تكون الحالة مشمسة أو مشمسة جزئيًا.",
-    ),
     "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("إرسال الملاحظات"),
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
       "شكرًا! تم حفظ ملاحظاتك.",

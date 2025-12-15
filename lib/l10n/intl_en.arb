@@ -477,10 +477,9 @@
   "harmonyMoodCloudy": "Cloudy",
   "harmonyMoodRainy": "Rainy",
   "harmonyMoodThunderstorm": "Thunderstorm",
-  "harmonyCommentLabel": "Add a note (optional)",
-  "harmonyCommentHint": "What's making the home feel this way?",
-  "harmonyShareLabel": "Share this on the gratitude wall",
-  "harmonyShareSubtitle": "Visible to your home when the mood is sunny or partly sunny.",
+  "harmonyCommentLabel": "Anything you’d like to share?",
+  "harmonyCommentHint": "What’s been contributing to this feeling at home?",
+  "harmonyShareLabel": "Share this with the home",
   "harmonySubmitCta": "Send feedback",
   "harmonySubmitSuccess": "Thanks! Your feedback was saved.",
   "harmonyErrorAlreadySubmitted": "You've already shared your mood for this week.",
@@ -1085,9 +1084,6 @@
   },
   "@harmonyTitle": {
     "surface": "title"
-  },
-  "@harmonyShareSubtitle": {
-    "surface": "subtitle"
   },
   "@harmonySubmitCta": {
     "surface": "button"

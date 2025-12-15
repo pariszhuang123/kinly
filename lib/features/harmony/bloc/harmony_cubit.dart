@@ -20,6 +20,8 @@ class HarmonyCubit extends Cubit<HarmonyState> {
   final MoodRepository _moodRepository;
 
   void selectMood(MoodScale mood) {
+    if (state.selectedMood == mood) return;
+
     final wasEligible =
         _canShare(state.selectedMood) && _hasComment(state.comment);
     final isEligible = _canShare(mood) && _hasComment(state.comment);

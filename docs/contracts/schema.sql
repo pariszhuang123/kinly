@@ -4800,6 +4800,12 @@ BEGIN
       (p_os_permission = 'allowed')
     );
 
+  -- If OS permission is blocked/unknown, force wants_daily to false so the
+  -- client toggle stays consistent with system settings.
+  IF p_os_permission IS DISTINCT FROM 'allowed' THEN
+    v_effective_wants_daily := FALSE;
+  END IF;
+
   -- Decide preferred_hour:
   v_effective_preferred_hour :=
     COALESCE(

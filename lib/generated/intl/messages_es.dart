@@ -373,9 +373,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
       "Compartir esto en el muro de gratitud",
     ),
-    "harmonyShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Visible para tu hogar cuando el ánimo es soleado o parcialmente soleado.",
-    ),
     "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Enviar feedback"),
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
       "¡Gracias! Tu feedback se guardó.",
