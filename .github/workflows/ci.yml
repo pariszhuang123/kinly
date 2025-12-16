@@ -28,6 +28,20 @@ jobs:
         shell: bash
         run: bash tool/check_test_guard.sh
 
+      # ---------------------------
+      # ✅ DENO (Edge Functions)
+      # ---------------------------
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Deno tests (Supabase Edge Functions)
+        run: deno test -A supabase/functions
+
+      # ---------------------------
+      # FLUTTER
+      # ---------------------------
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -97,7 +111,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # Strip generated/irrelevant files from coverage
           lcov --remove coverage/lcov.info \
             'lib/generated/*' 'lib/**/*.g.dart' 'lib/**/*.freezed.dart' 'lib/l10n/*' \
             'test/**' 'build/**' \
