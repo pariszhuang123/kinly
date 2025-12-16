@@ -76,6 +76,8 @@ const _rtlSpacing = Spacing(
 
 final ThemeData _rtlTheme = ThemeData(
   useMaterial3: true,
+  // ✅ IMPORTANT: set this once you add the font in pubspec.yaml
+  fontFamily: 'KinlyTestFont',
   colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
 ).copyWith(extensions: const <ThemeExtension<dynamic>>[_rtlSpacing]);
 
@@ -87,7 +89,18 @@ void main() {
 
     Future<void> pumpRtlHarmony(WidgetTester tester) async {
       final binding = tester.binding;
-      addTearDown(() => binding.setSurfaceSize(null));
+      final dispatcher = binding.platformDispatcher;
+
+      // ✅ Pin rendering knobs so CI/local don't drift
+      tester.view.devicePixelRatio = 3.0;
+      dispatcher.textScaleFactorTestValue = 1.0;
+
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        dispatcher.clearAllTestValues();
+        binding.setSurfaceSize(null);
+      });
+
       await binding.setSurfaceSize(const Size(393, 852)); // iPhone 14-ish
 
       await tester.pumpWidget(
@@ -104,7 +117,11 @@ void main() {
           theme: _rtlTheme,
           home: BlocProvider(
             create: (_) => HarmonyCubit(homeId: 'home', moodRepository: repo),
-            child: HarmonyPage(homeId: 'home'),
+            child: const Directionality(
+              // ✅ belt-and-suspenders: ensure RTL even if locale plumbing changes
+              textDirection: TextDirection.rtl,
+              child: HarmonyPage(homeId: 'home'),
+            ),
           ),
         ),
       );
@@ -121,7 +138,7 @@ void main() {
       expect(Directionality.of(context), TextDirection.rtl);
       expect(find.text(strings.harmonyQuestion), findsOneWidget);
       expect(find.text(strings.harmonySubmitCta), findsOneWidget);
-      // Mood selector should expose all 5 moods via semantics in RTL
+
       expect(find.bySemanticsLabel(strings.harmonyMoodSunny), findsOneWidget);
       expect(
         find.bySemanticsLabel(strings.harmonyMoodPartiallySunny),

@@ -108,6 +108,11 @@ flutter:
     - assets/icons/weather/
     - assets/icons/feature/
 
+  fonts:
+    - family: KinlyTestFont
+      fonts:
+        - asset: assets/fonts/NotoSansArabic-Regular.ttf
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
