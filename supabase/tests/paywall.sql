@@ -53,9 +53,9 @@ INSERT INTO public.homes (id, owner_user_id)
 VALUES ('00000000-0000-4000-8000-000000000601', '00000000-0000-4000-8000-000000000501')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO public.memberships (user_id, home_id, role, is_current, valid_from)
-VALUES ('00000000-0000-4000-8000-000000000501', '00000000-0000-4000-8000-000000000601', 'owner', TRUE, now())
-ON CONFLICT (user_id, home_id) DO NOTHING;
+INSERT INTO public.memberships (user_id, home_id, role, valid_from)
+VALUES ('00000000-0000-4000-8000-000000000501', '00000000-0000-4000-8000-000000000601', 'owner', now())
+ON CONFLICT DO NOTHING;
 
 INSERT INTO public.home_entitlements (home_id, plan, expires_at)
 VALUES ('00000000-0000-4000-8000-000000000601', 'free', NULL)

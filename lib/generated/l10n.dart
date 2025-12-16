@@ -1179,10 +1179,10 @@ class S {
     );
   }
 
-  /// `See all shares`
+  /// `See all bills`
   String get todayShareSeeAll {
     return Intl.message(
-      'See all shares',
+      'See all bills',
       name: 'todayShareSeeAll',
       desc: '',
       args: [],
@@ -1271,10 +1271,10 @@ class S {
     );
   }
 
-  /// `Split based on the share.`
+  /// `Split based on the bill share.`
   String get todayShareDraftSubtitle {
     return Intl.message(
-      'Split based on the share.',
+      'Split based on the bill share.',
       name: 'todayShareDraftSubtitle',
       desc: '',
       args: [],
@@ -1321,10 +1321,10 @@ class S {
     );
   }
 
-  /// `Select the share you just settled.`
+  /// `Select the bill you just settled.`
   String get shareOwedDetailSubtitle {
     return Intl.message(
-      'Select the share you just settled.',
+      'Select the bill you just settled.',
       name: 'shareOwedDetailSubtitle',
       desc: '',
       args: [],
@@ -1766,10 +1766,10 @@ class S {
     );
   }
 
-  /// `You're at the free limit of active shares. Upgrade for more space.`
+  /// `You're at the free limit of active bills. Upgrade for more space.`
   String get shareCreateErrorPaywallActiveCap {
     return Intl.message(
-      'You\'re at the free limit of active shares. Upgrade for more space.',
+      'You\'re at the free limit of active bills. Upgrade for more space.',
       name: 'shareCreateErrorPaywallActiveCap',
       desc: '',
       args: [],
@@ -2441,50 +2441,50 @@ class S {
     );
   }
 
-  /// `See every Share you've created and track collections.`
+  /// `See every Bill you've created and track collections.`
   String get exploreShareSubtitle {
     return Intl.message(
-      'See every Share you\'ve created and track collections.',
+      'See every Bill you\'ve created and track collections.',
       name: 'exploreShareSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Your share`
+  /// `Your bills`
   String get shareCreatedListTitle {
     return Intl.message(
-      'Your share',
+      'Your bills',
       name: 'shareCreatedListTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `No shares yet`
+  /// `No bills yet`
   String get shareCreatedListEmptyTitle {
     return Intl.message(
-      'No shares yet',
+      'No bills yet',
       name: 'shareCreatedListEmptyTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Create a Share to see it listed here.`
+  /// `Create a Bill to see it listed here.`
   String get shareCreatedListEmptySubtitle {
     return Intl.message(
-      'Create a Share to see it listed here.',
+      'Create a Bill to see it listed here.',
       name: 'shareCreatedListEmptySubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't load your share. Pull to refresh.`
+  /// `We couldn't load your bills. Pull to refresh.`
   String get shareCreatedListError {
     return Intl.message(
-      'We couldn\'t load your share. Pull to refresh.',
+      'We couldn\'t load your bills. Pull to refresh.',
       name: 'shareCreatedListError',
       desc: '',
       args: [],

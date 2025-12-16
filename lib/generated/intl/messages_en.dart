@@ -119,7 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Discover what\'s next",
     ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "See every Share you\'ve created and track collections.",
+      "See every Bill you\'ve created and track collections.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
       "Who’s taking this on?",
@@ -761,7 +761,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Couldn\'t create. Try again.",
     ),
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "You\'re at the free limit of active shares. Upgrade for more space.",
+      "You\'re at the free limit of active bills. Upgrade for more space.",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load your household members.",
@@ -826,19 +826,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "Split it so everyone knows their part before publishing.",
     ),
     "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Create a Share to see it listed here.",
+      "Create a Bill to see it listed here.",
     ),
     "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No shares yet",
+      "No bills yet",
     ),
     "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load your share. Pull to refresh.",
+      "We couldn\'t load your bills. Pull to refresh.",
     ),
     "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage(
       "Paid off",
     ),
     "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage("Try again"),
-    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage("Your share"),
+    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage("Your bills"),
     "shareEditClose": MessageLookupByLibrary.simpleMessage("Close"),
     "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("Delete"),
     "shareEditDeleteCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -880,7 +880,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Select who to share with.",
     ),
     "shareOwedDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Select the share you just settled.",
+      "Select the bill you just settled.",
     ),
     "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage("Settled."),
     "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage(
@@ -932,7 +932,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayShareActiveSubtitle": m16,
     "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("upcoming"),
     "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Split based on the share.",
+      "Split based on the bill share.",
     ),
     "todayShareEmptyState": MessageLookupByLibrary.simpleMessage(
       "Nothing to see here yet.",
@@ -950,7 +950,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Rent reminder coming up",
     ),
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Share"),
-    "todayShareSeeAll": MessageLookupByLibrary.simpleMessage("See all shares"),
+    "todayShareSeeAll": MessageLookupByLibrary.simpleMessage("See all bills"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
     "today_home_details": m17,
