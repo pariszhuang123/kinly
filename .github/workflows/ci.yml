@@ -82,6 +82,17 @@ jobs:
       - name: Flutter tests with coverage
         run: flutter test --coverage
 
+      - name: Upload Flutter test failures
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-test-failures
+          path: |
+            test/**/failures
+            failures
+          if-no-files-found: ignore
+          retention-days: 3
+
       - name: Coverage summary (no enforcement)
         shell: bash
         run: |
