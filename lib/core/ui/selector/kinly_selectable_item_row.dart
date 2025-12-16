@@ -40,6 +40,7 @@ class KinlySelectableItemRow<T> extends StatelessWidget {
     this.spacing,
     this.runSpacing,
     this.allowDeselect = true,
+    this.alignment = WrapAlignment.start,
   });
 
   final List<KinlySelectableItem<T>> items;
@@ -50,6 +51,7 @@ class KinlySelectableItemRow<T> extends StatelessWidget {
   final double? spacing;
   final double? runSpacing;
   final bool allowDeselect;
+  final WrapAlignment alignment;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class KinlySelectableItemRow<T> extends StatelessWidget {
     return Wrap(
       spacing: gap,
       runSpacing: wrapRunSpacing,
-      alignment: WrapAlignment.start,
+      alignment: alignment,
       children:
           items
               .map(

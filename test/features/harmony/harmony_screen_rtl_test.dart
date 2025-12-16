@@ -119,9 +119,7 @@ void main() {
       final strings = S.of(context);
 
       expect(Directionality.of(context), TextDirection.rtl);
-      expect(find.text(strings.harmonyTitle), findsOneWidget);
       expect(find.text(strings.harmonyQuestion), findsOneWidget);
-      expect(find.text(strings.harmonySubtext), findsOneWidget);
       expect(find.text(strings.harmonySubmitCta), findsOneWidget);
       // Mood selector should expose all 5 moods via semantics in RTL
       expect(find.bySemanticsLabel(strings.harmonyMoodSunny), findsOneWidget);

@@ -29,6 +29,7 @@ class KinlyWeatherSelectorRow<T> extends StatelessWidget {
     this.spacing,
     this.runSpacing,
     this.iconSize = 44,
+    this.alignment = WrapAlignment.center,
   });
 
   final List<KinlyWeatherSelectorOption<T>> options;
@@ -38,6 +39,7 @@ class KinlyWeatherSelectorRow<T> extends StatelessWidget {
   final double? spacing;
   final double? runSpacing;
   final double iconSize;
+  final WrapAlignment alignment;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +76,7 @@ class KinlyWeatherSelectorRow<T> extends StatelessWidget {
       spacing: spacing,
       runSpacing: runSpacing,
       allowDeselect: false,
+      alignment: alignment,
     );
   }
 }
