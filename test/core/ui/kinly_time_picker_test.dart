@@ -3,21 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:kinly/core/ui/kinly_date_picker.dart';
 import 'package:kinly/core/ui/kinly_time_picker.dart';
+import 'package:kinly/core/theme/kinly_palette.dart';
 
 void main() {
-  const primary = Color(0xFF3366FF);
-  const onPrimary = Color(0xFFFFFFFF);
+  final controls = KinlyPalette.build(Brightness.light).controlColors;
 
   Widget buildApp(Widget child) {
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: const ColorScheme.light(
-          primary: primary,
-          onPrimary: onPrimary,
-          inversePrimary: Color(0xFF009688),
-          onInverseSurface: Color(0xFF111111),
-        ),
-      ),
+      theme: ThemeData.light(),
       home: child,
     );
   }
@@ -54,10 +47,10 @@ void main() {
     );
     final theme = themeWidget.data;
 
-    expect(theme.colorScheme.primary, primary);
-    expect(theme.colorScheme.onPrimary, onPrimary);
-    expect(theme.timePickerTheme.dialHandColor, primary);
-    expect(theme.textButtonTheme.style?.foregroundColor?.resolve({}), primary);
+    expect(theme.timePickerTheme.dialHandColor, controls.pickerPrimary);
+    expect(theme.timePickerTheme.hourMinuteColor, controls.pickerPrimary);
+    expect(theme.timePickerTheme.hourMinuteTextColor, controls.pickerOnPrimary);
+    expect(theme.textButtonTheme.style?.foregroundColor?.resolve({}), controls.pickerPrimary);
   });
 
   testWidgets('showKinlyDatePicker applies Kinly colors', (tester) async {
@@ -95,9 +88,8 @@ void main() {
     );
     final theme = themeWidget.data;
 
-    expect(theme.colorScheme.primary, primary);
-    expect(theme.colorScheme.onPrimary, onPrimary);
-    expect(theme.datePickerTheme.headerBackgroundColor, primary);
-    expect(theme.textButtonTheme.style?.foregroundColor?.resolve({}), primary);
+    expect(theme.datePickerTheme.headerBackgroundColor, controls.pickerPrimary);
+    expect(theme.datePickerTheme.headerForegroundColor, controls.pickerOnPrimary);
+    expect(theme.textButtonTheme.style?.foregroundColor?.resolve({}), controls.pickerPrimary);
   });
 }

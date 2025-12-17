@@ -30,8 +30,10 @@ class KinlyPalette {
   static KinlySections sections(Brightness brightness) =>
       _DerivedEngine.fromBrightness(brightness).sections;
 
-  static KinlyLinkColors linkColors(Brightness brightness, ColorScheme scheme) =>
-      _DerivedEngine.fromBrightness(brightness).linkColors;
+  static KinlyLinkColors linkColors(
+    Brightness brightness,
+    ColorScheme scheme,
+  ) => _DerivedEngine.fromBrightness(brightness).linkColors;
 
   static KinlyBrandTextColors brandTextColors() =>
       _DerivedEngine.fromBrightness(Brightness.light).brandTextColors;
@@ -138,7 +140,10 @@ class KinlyPalette {
 
     // Badges
     final badgeBg = colorScheme.primary.withValues(alpha: 0.14);
-    final badgeFg = _pickOnColor(background: badgeBg, preferred: colorScheme.onPrimary);
+    final badgeFg = _pickOnColor(
+      background: badgeBg,
+      preferred: colorScheme.onPrimary,
+    );
     final errorBadgeBg = colorScheme.error.withValues(alpha: 0.18);
     final errorBadgeFg = _pickOnColor(
       background: errorBadgeBg,
@@ -307,7 +312,9 @@ class _DerivedEngine {
     final isDark = brightness == Brightness.dark;
 
     final surfaceBase =
-        isDark ? KinlyFoundationColors.surfaceDark : KinlyFoundationColors.surfaceLight;
+        isDark
+            ? KinlyFoundationColors.surfaceDark
+            : KinlyFoundationColors.surfaceLight;
     Color lift(double amount) => _mix(surfaceBase, _white, amount);
     Color shade(double amount) => _mix(surfaceBase, _black, amount);
 
@@ -328,9 +335,14 @@ class _DerivedEngine {
 
     // Brand roles
     final primary =
-        isDark ? _mix(KinlyFoundationColors.brandPrimary, _white, 0.08) : KinlyFoundationColors.brandPrimary;
-    final primaryContainer =
-        _mix(primary, isDark ? surfaceBase : _white, isDark ? 0.28 : 0.18);
+        isDark
+            ? _mix(KinlyFoundationColors.brandPrimary, _white, 0.35)
+            : _mix(KinlyFoundationColors.brandPrimary, _black, 0.10);
+    final primaryContainer = _mix(
+      primary,
+      isDark ? surfaceBase : _white,
+      isDark ? 0.28 : 0.18,
+    );
     final onPrimary = _pickOnColor(background: primary, preferred: _white);
     final onPrimaryContainer = _pickOnColor(
       background: primaryContainer,
@@ -338,9 +350,14 @@ class _DerivedEngine {
     );
 
     final secondary =
-        isDark ? _mix(KinlyFoundationColors.brandSecondary, _white, 0.06) : KinlyFoundationColors.brandSecondary;
-    final secondaryContainer =
-        _mix(secondary, isDark ? surfaceBase : _white, isDark ? 0.26 : 0.18);
+        isDark
+            ? _mix(KinlyFoundationColors.brandSecondary, _white, 0.06)
+            : KinlyFoundationColors.brandSecondary;
+    final secondaryContainer = _mix(
+      secondary,
+      isDark ? surfaceBase : _white,
+      isDark ? 0.26 : 0.18,
+    );
     final onSecondary = _pickOnColor(background: secondary, preferred: _white);
     final onSecondaryContainer = _pickOnColor(
       background: secondaryContainer,
@@ -348,9 +365,14 @@ class _DerivedEngine {
     );
 
     final tertiary =
-        isDark ? _mix(KinlyFoundationColors.brandAccent, _white, 0.02) : KinlyFoundationColors.brandAccent;
-    final tertiaryContainer =
-        _mix(tertiary, isDark ? surfaceBase : _white, isDark ? 0.24 : 0.16);
+        isDark
+            ? _mix(KinlyFoundationColors.brandAccent, _white, 0.02)
+            : KinlyFoundationColors.brandAccent;
+    final tertiaryContainer = _mix(
+      tertiary,
+      isDark ? surfaceBase : _white,
+      isDark ? 0.24 : 0.16,
+    );
     final onTertiary = _pickOnColor(background: tertiary, preferred: _white);
     final onTertiaryContainer = _pickOnColor(
       background: tertiaryContainer,
@@ -358,9 +380,15 @@ class _DerivedEngine {
     );
 
     // Error semantics
-    final error = isDark ? _mix(KinlyFoundationColors.error, _white, 0.08) : KinlyFoundationColors.error;
-    final errorContainer =
-        _mix(surfaceBase, KinlyFoundationColors.error, isDark ? 0.28 : 0.16);
+    final error =
+        isDark
+            ? _mix(KinlyFoundationColors.error, _white, 0.28)
+            : _mix(KinlyFoundationColors.error, _black, 0.16);
+    final errorContainer = _mix(
+      surfaceBase,
+      KinlyFoundationColors.error,
+      isDark ? 0.28 : 0.16,
+    );
     final onError = _pickOnColor(background: error, preferred: _white);
     final onErrorContainer = _pickOnColor(
       background: errorContainer,
@@ -368,14 +396,17 @@ class _DerivedEngine {
     );
 
     // Outline
-    final outline = isDark
-        ? _mix(KinlyFoundationColors.outline, surfaceBase, 0.65)
-        : KinlyFoundationColors.outline;
+    final outline =
+        isDark
+            ? _mix(KinlyFoundationColors.outline, surfaceBase, 0.65)
+            : KinlyFoundationColors.outline;
     final outlineVariant = _mix(outline, surfaceBase, 0.35);
 
     final inversePrimary = _mix(primary, _white, 0.55);
-    final onInverseSurface =
-        _pickOnColor(background: inverseSurface, preferred: KinlyFoundationColors.ink);
+    final onInverseSurface = _pickOnColor(
+      background: inverseSurface,
+      preferred: KinlyFoundationColors.ink,
+    );
 
     // Sections
     final sections = _buildSections(
@@ -388,9 +419,10 @@ class _DerivedEngine {
     );
 
     // Link colors
-    final linkColors = isDark
-        ? KinlyLinkColors(link: onSurface, icon: onSurface)
-        : KinlyLinkColors(link: primary, icon: primary);
+    final linkColors =
+        isDark
+            ? KinlyLinkColors(link: onSurface, icon: onSurface)
+            : KinlyLinkColors(link: primary, icon: primary);
 
     // Brand text
     final brandTextColors = KinlyBrandTextColors(
@@ -400,12 +432,21 @@ class _DerivedEngine {
     );
 
     // Support tokens (derived)
-    final success =
-        _mix(KinlyFoundationColors.brandSecondary, _black, isDark ? 0.0 : 0.12);
-    final warning =
-        _mix(KinlyFoundationColors.brandAccent, _black, isDark ? 0.0 : 0.12);
-    final info =
-        _mix(KinlyFoundationColors.brandPrimary, _white, isDark ? 0.12 : 0.06);
+    final success = _mix(
+      KinlyFoundationColors.brandSecondary,
+      _black,
+      isDark ? 0.0 : 0.12,
+    );
+    final warning = _mix(
+      KinlyFoundationColors.brandAccent,
+      _black,
+      isDark ? 0.0 : 0.12,
+    );
+    final info = _mix(
+      KinlyFoundationColors.brandPrimary,
+      _white,
+      isDark ? 0.12 : 0.06,
+    );
     final disabled = _mix(surfaceBase, outline, 0.5);
 
     final scheme = ColorScheme(
@@ -536,5 +577,7 @@ Color _pickOnColor({
   }
   final whiteContrast = _contrastRatio(Colors.white, background);
   final inkContrast = _contrastRatio(KinlyFoundationColors.ink, background);
-  return whiteContrast >= inkContrast ? Colors.white : KinlyFoundationColors.ink;
+  return whiteContrast >= inkContrast
+      ? Colors.white
+      : KinlyFoundationColors.ink;
 }
