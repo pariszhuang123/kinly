@@ -31,7 +31,7 @@ class KinlyCommentBox extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final controls =
         theme.extension<KinlyControlColors>() ??
-        KinlyPalette.controls(theme.brightness, theme.colorScheme);
+        KinlyPalette.build(theme.brightness).controlColors;
     final fillColor = controls.commentBoxBg;
     final borderColor = controls.commentBoxBorder;
 

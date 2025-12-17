@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../theme/spacing.dart';
 import '../../theme/kinly_sections.dart';
+import '../../theme/color_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../../generated/l10n.dart';
 import 'kinly_fab.dart';
 import '../kinly_bottom_sheet.dart';
@@ -32,6 +34,10 @@ class KinlyQuickAddFab extends StatelessWidget {
   void _showQuickAddSheet(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
+    final iconTint = colors.onSurface.withValues(alpha: 0.7);
     final s = S.of(context);
 
     // Get the KinlySections instance from the theme
@@ -61,6 +67,7 @@ class KinlyQuickAddFab extends StatelessWidget {
                 Navigator.pop(context);
                 onAddFlow();
               },
+              trailingColor: iconTint,
             ),
             SizedBox(height: spacing?.sm ?? 8),
             _QuickAddTile(
@@ -72,6 +79,7 @@ class KinlyQuickAddFab extends StatelessWidget {
                 Navigator.pop(context);
                 onAddShare();
               },
+              trailingColor: iconTint,
             ),
           ],
         ),
@@ -87,6 +95,7 @@ class _QuickAddTile extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
+    required this.trailingColor,
   });
 
   final SectionColors sectionColors;
@@ -94,6 +103,7 @@ class _QuickAddTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final Color trailingColor;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +120,7 @@ class _QuickAddTile extends StatelessWidget {
       trailing: Icon(
         Icons.arrow_forward_ios_rounded,
         size: 16,
-        color: theme.colorScheme.onSurfaceVariant,
+        color: trailingColor,
       ),
       onTap: onTap,
       contentPadding: EdgeInsetsDirectional.fromSTEB(

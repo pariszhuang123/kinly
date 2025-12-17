@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/color_tokens.dart';
 import '../../theme/control_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -13,14 +13,15 @@ class KinlySnackBar {
     String? actionLabel,
     VoidCallback? onAction,
   }) {
-    final colors = _colors(context);
-    final scheme = Theme.of(context).colorScheme;
+    final palette = KinlyPalette.build(Theme.of(context).brightness);
+    final colors = palette.colorTokens;
+    final controls = palette.controlColors;
 
     _show(
       context,
       message,
-      background: colors?.success ?? scheme.primaryContainer,
-      foreground: colors?.onSurface ?? scheme.onPrimaryContainer,
+      background: colors.success,
+      foreground: controls.textFg,
       actionLabel: actionLabel,
       onAction: onAction,
     );
@@ -32,14 +33,15 @@ class KinlySnackBar {
     String? actionLabel,
     VoidCallback? onAction,
   }) {
-    final colors = _colors(context);
-    final scheme = Theme.of(context).colorScheme;
+    final palette = KinlyPalette.build(Theme.of(context).brightness);
+    final colors = palette.colorTokens;
+    final controls = palette.controlColors;
 
     _show(
       context,
       message,
-      background: colors?.error ?? scheme.error,
-      foreground: colors?.onError ?? scheme.onError,
+      background: colors.error,
+      foreground: controls.textFg,
       actionLabel: actionLabel,
       onAction: onAction,
     );
@@ -51,14 +53,15 @@ class KinlySnackBar {
     String? actionLabel,
     VoidCallback? onAction,
   }) {
-    final colors = _colors(context);
-    final scheme = Theme.of(context).colorScheme;
+    final palette = KinlyPalette.build(Theme.of(context).brightness);
+    final colors = palette.colorTokens;
+    final controls = palette.controlColors;
 
     _show(
       context,
       message,
-      background: colors?.info ?? scheme.inversePrimary,
-      foreground: colors?.onSurface ?? scheme.onInverseSurface,
+      background: colors.info,
+      foreground: controls.textFg,
       actionLabel: actionLabel,
       onAction: onAction,
     );
@@ -70,14 +73,15 @@ class KinlySnackBar {
     String? actionLabel,
     VoidCallback? onAction,
   }) {
-    final colors = _colors(context);
-    final scheme = Theme.of(context).colorScheme;
+    final palette = KinlyPalette.build(Theme.of(context).brightness);
+    final colors = palette.colorTokens;
+    final controls = palette.controlColors;
 
     _show(
       context,
       message,
-      background: colors?.warning ?? scheme.tertiaryContainer,
-      foreground: colors?.onSurface ?? scheme.onTertiaryContainer,
+      background: colors.warning,
+      foreground: controls.textFg,
       actionLabel: actionLabel,
       onAction: onAction,
     );
@@ -96,6 +100,9 @@ class KinlySnackBar {
     final spacing = theme.extension<Spacing>();
     final corners = theme.extension<Corners>();
     final type = theme.extension<KinlyTypography>();
+    final controls =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.build(theme.brightness).controlColors;
 
     messenger.hideCurrentSnackBar();
 
@@ -122,13 +129,10 @@ class KinlySnackBar {
                 ? SnackBarAction(
                   label: actionLabel,
                   onPressed: onAction,
-                  textColor: foreground,
+                  textColor: controls.textFg,
                 )
                 : null,
       ),
     );
   }
-
-  static KinlyColorTokens? _colors(BuildContext context) =>
-      Theme.of(context).extension<KinlyColorTokens>();
 }

@@ -18,11 +18,11 @@ class KinlyExpandBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controls = theme.extension<KinlyControlColors>() ??
-        KinlyPalette.controls(theme.brightness, theme.colorScheme);
-    final iconColor = controls?.expandBadgeIcon ?? colors.icon;
-    final background =
-        controls?.expandBadgeBg ?? colors.accent.withValues(alpha: 0.12);
+    final controls =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.build(theme.brightness).controlColors;
+    final iconColor = controls.expandBadgeIcon;
+    final background = controls.expandBadgeBg;
 
     return DecoratedBox(
       decoration: BoxDecoration(

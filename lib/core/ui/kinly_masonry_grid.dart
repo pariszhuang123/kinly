@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../theme/kinly_sections.dart';
+import '../theme/kinly_palette.dart';
 import '../theme/spacing.dart';
 
 /// Reusable, centered two-column masonry grid that balances item heights.
@@ -124,31 +125,16 @@ class KinlySectionPalette {
 
   factory KinlySectionPalette.fromTheme(ThemeData theme) {
     final sections = theme.extension<KinlySections>();
-    final colorScheme = theme.colorScheme;
     final colors = <SectionColors>[
       if (sections != null) ...[sections.flow, sections.share, sections.pulse],
     ];
     if (colors.isNotEmpty) return KinlySectionPalette(colors);
 
+    final derivedSections = KinlyPalette.build(theme.brightness).sections;
     return KinlySectionPalette([
-      SectionColors(
-        background: colorScheme.surface,
-        card: colorScheme.primaryContainer,
-        icon: colorScheme.onPrimaryContainer,
-        accent: colorScheme.primary,
-      ),
-      SectionColors(
-        background: colorScheme.surface,
-        card: colorScheme.secondaryContainer,
-        icon: colorScheme.onSecondaryContainer,
-        accent: colorScheme.secondary,
-      ),
-      SectionColors(
-        background: colorScheme.surface,
-        card: colorScheme.tertiaryContainer,
-        icon: colorScheme.onTertiaryContainer,
-        accent: colorScheme.tertiary,
-      ),
+      derivedSections.flow,
+      derivedSections.share,
+      derivedSections.pulse,
     ]);
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/color_tokens.dart';
+import '../theme/kinly_palette.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
 import '../theme/typography_tokens.dart';
@@ -35,9 +36,9 @@ class KinlyListTile extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
     final colors = theme.extension<KinlyColorTokens>();
+    final derived = colors ?? KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
     final corners = theme.extension<Corners>();
-    final colorScheme = theme.colorScheme;
 
     final padding =
         contentPadding ??
@@ -56,7 +57,7 @@ class KinlyListTile extends StatelessWidget {
         title: Text(
           title,
           style: (type?.titleSmall ?? theme.textTheme.titleSmall)?.copyWith(
-            color: colorScheme.onSurface,
+            color: derived.onSurface,
           ),
         ),
         subtitle:
@@ -65,14 +66,14 @@ class KinlyListTile extends StatelessWidget {
                 : Text(
                   subtitle!,
                   style: (type?.bodyMedium ?? theme.textTheme.bodyMedium)
-                      ?.copyWith(color: colorScheme.onSurfaceVariant),
+                      ?.copyWith(color: derived.onSurface.withValues(alpha: 0.7)),
                 ),
         trailing: trailing,
         onTap: onTap,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(corners?.medium ?? 12),
         ),
-        tileColor: colors?.surfaceVariant ?? colorScheme.surfaceContainerHighest,
+        tileColor: derived.surfaceVariant,
       ),
     );
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/color_tokens.dart';
 import '../theme/elevation.dart';
+import '../theme/kinly_palette.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
 
@@ -26,12 +27,10 @@ class KinlyActionCard extends StatelessWidget {
     final spacing = theme.extension<Spacing>();
     final corners = theme.extension<Corners>();
     final elevations = theme.extension<Elevations>();
-    final colors = theme.extension<KinlyColorTokens>();
-    final colorScheme = theme.colorScheme;
+    final colors = theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
 
-    final cardColor = background ??
-        colors?.surface ??
-        colorScheme.surfaceContainerHigh;
+    final cardColor = background ?? colors.surfaceVariant;
 
     final content = ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 48, minWidth: 48),

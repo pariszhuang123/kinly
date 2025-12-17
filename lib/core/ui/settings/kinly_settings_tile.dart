@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/control_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/color_tokens.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
 import '../kinly_loader.dart';
@@ -30,9 +31,11 @@ class KinlySettingsTile extends StatelessWidget {
     final spacing = theme.extension<Spacing>();
     final controls =
         theme.extension<KinlyControlColors>() ??
-        KinlyPalette.controls(theme.brightness, theme.colorScheme);
+        KinlyPalette.build(theme.brightness).controlColors;
     final type = theme.extension<KinlyTypography>();
-    final colorScheme = theme.colorScheme;
+    final tokens =
+        theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final primary = controls.filledBg;
     final error = controls.filledDestructiveBg;
 
@@ -40,22 +43,22 @@ class KinlySettingsTile extends StatelessWidget {
     late final Color avatarBackground;
 
     if (destructive) {
-      leadingColor = controls.settingsTileBadgeFg;
-      avatarBackground = controls.settingsTileBadgeBg;
+      leadingColor = controls.badgeFg;
+      avatarBackground = controls.badgeBg;
     } else {
-      leadingColor = colorScheme.onSurface;
+      leadingColor = tokens.onSurface;
       avatarBackground = primary.withValues(alpha: 0.12);
     }
 
     final titleStyle =
         (type?.titleMedium ?? theme.textTheme.titleMedium)?.copyWith(
           fontWeight: FontWeight.w600,
-          color: destructive ? error : colorScheme.onSurface,
+          color: destructive ? error : tokens.onSurface,
         );
 
     final subtitleStyle =
         (type?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
-          color: colorScheme.onSurfaceVariant,
+          color: tokens.onSurface.withValues(alpha: 0.7),
         );
 
     final trailingWidget = showProgress
@@ -66,7 +69,7 @@ class KinlySettingsTile extends StatelessWidget {
           )
         : Icon(
             Icons.chevron_right,
-            color: colorScheme.onSurfaceVariant,
+            color: tokens.onSurface.withValues(alpha: 0.7),
           );
 
     return ListTile(

@@ -29,6 +29,7 @@ This checklist turns `modules.yml` into enforceable boundaries and kill-switch s
 ## UI/Accessibility/I18n (existing guardrails to keep)
 - `dart format`, `dart analyze`, `flutter test`.
 - `dart run tool/check_i18n.dart`, `dart run tool/check_directionality.dart`, `dart run tool/check_enums.dart`, `dart run tool/check_design_system.dart`.
+- `bash tool/check_colors.sh` (aggregated color guard + unused color token check).
 - No raw Material/FAB/progress; only Kinly primitives. Loaders via `kinly_loader.dart`; strings via `S.of(context)`.
 
 ## Telemetry & logging

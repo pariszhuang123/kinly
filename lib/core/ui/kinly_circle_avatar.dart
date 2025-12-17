@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/kinly_palette.dart';
 import '../theme/control_tokens.dart';
+import '../theme/color_tokens.dart';
 import 'kinly_loader.dart';
 
 class KinlyCircleAvatar extends StatelessWidget {
@@ -23,10 +24,12 @@ class KinlyCircleAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final resolvedRadius = _normalizeRadius(radius);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final tokens =
+        theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final controls =
         theme.extension<KinlyControlColors>() ??
-        KinlyPalette.controls(theme.brightness, colorScheme);
+        KinlyPalette.build(theme.brightness).controlColors;
 
     final showsSvgAvatar =
         avatarUrl != null && avatarUrl!.trim().toLowerCase().endsWith('.svg');
@@ -34,8 +37,8 @@ class KinlyCircleAvatar extends StatelessWidget {
     final avatar = CircleAvatar(
       radius: resolvedRadius,
       backgroundColor:
-          avatarUrl == null ? colorScheme.primaryContainer : Colors.transparent,
-      foregroundColor: colorScheme.onPrimaryContainer,
+          avatarUrl == null ? tokens.primaryContainer : Colors.transparent,
+      foregroundColor: tokens.onPrimaryContainer,
       backgroundImage:
           avatarUrl != null && !showsSvgAvatar
               ? NetworkImage(avatarUrl!)
@@ -45,7 +48,7 @@ class KinlyCircleAvatar extends StatelessWidget {
             ? Text(
                 fallbackInitial!.toUpperCase(),
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: colorScheme.onPrimaryContainer,
+                  color: tokens.onPrimaryContainer,
                 ),
               )
             : null,
@@ -58,7 +61,7 @@ class KinlyCircleAvatar extends StatelessWidget {
                   (_) => Center(
                     child: KinlyLoader(
                       size: resolvedRadius,
-                      color: colorScheme.primary,
+                      color: tokens.primary,
                     ),
                   ),
             ),

@@ -98,11 +98,8 @@ jobs:
       - name: Check shared understanding copy
         run: dart run tool/check_shared_understanding_copy.dart
 
-      - name: Check no Brightness usage in UI/primitives
-        run: dart run tool/check_no_brightness_in_ui.dart
-
-      - name: Check unused color tokens
-        run: dart run tool/check_unused_color_tokens.dart
+      - name: Run color guard + token checks
+        run: bash tool/check_colors.sh
 
       - name: Check module manifest guardrails
         run: dart run tool/check_modules.dart

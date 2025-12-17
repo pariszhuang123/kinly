@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../theme/control_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/spacing.dart';
 
 class KinlySelectableItem<T> {
@@ -64,19 +65,18 @@ class KinlySelectableItemRow<T> extends StatelessWidget {
       spacing: gap,
       runSpacing: wrapRunSpacing,
       alignment: alignment,
-      children:
-          items
-              .map(
-                (item) => _SelectableItem<T>(
-                  item: item,
-                  isSelected: selectedValues.contains(item.value),
-                  showLabel: showLabels,
-                  visualSize: itemVisualSize,
-                  allowDeselect: allowDeselect,
-                  onTap: () => onToggle(item.value),
-                ),
-              )
-              .toList(growable: false),
+      children: items
+          .map(
+            (item) => _SelectableItem<T>(
+              item: item,
+              isSelected: selectedValues.contains(item.value),
+              showLabel: showLabels,
+              visualSize: itemVisualSize,
+              allowDeselect: allowDeselect,
+              onTap: () => onToggle(item.value),
+            ),
+          )
+          .toList(growable: false),
     );
   }
 }
@@ -101,19 +101,18 @@ class _SelectableItem<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controls = theme.extension<KinlyControlColors>();
+    final controls =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.build(theme.brightness).controlColors;
     final spacingTokens = theme.extension<Spacing>();
     final diameter = visualSize;
     const minTapTarget = 48.0;
     final extraPadding = math.max(0.0, (minTapTarget - diameter) / 2);
     final tapPadding = math.max(spacingTokens?.xxs ?? 4.0, extraPadding);
-    final basePrimary =
-        controls?.selectableItemBorderSelected ?? theme.colorScheme.primary;
-    final baseContainer =
-        controls?.selectableItemBgSelected ??
-        theme.colorScheme.primaryContainer;
+    final basePrimary = controls.selectableItemBorderSelected;
+    final baseContainer = controls.selectableItemBgSelected;
     final haloColor = baseContainer.withValues(alpha: 0.38);
-    final ringColor = basePrimary.withValues(alpha: 0.42);
+    final ringColor = basePrimary.withValues(alpha: 1.00);
     final ringThickness = isSelected ? 2.0 : 0.0;
     final haloPadding =
         isSelected ? math.max(spacingTokens?.xs ?? 4.0, 4.0) : 0.0;

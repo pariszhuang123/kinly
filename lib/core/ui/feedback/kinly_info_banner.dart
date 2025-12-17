@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -25,25 +26,22 @@ class KinlyInfoBanner extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
     final corners = theme.extension<Corners>();
-    final colors = theme.extension<KinlyColorTokens>();
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final typeScale = theme.extension<KinlyTypography>();
-    final colorScheme = theme.colorScheme;
 
     final bg = switch (type) {
-      KinlyBannerType.success =>
-        colors?.primaryContainer ?? colorScheme.primaryContainer,
-      KinlyBannerType.info => colors?.info ?? colorScheme.inversePrimary,
-      KinlyBannerType.warning =>
-        colors?.warning ?? colorScheme.tertiaryContainer,
-      KinlyBannerType.error => colors?.error ?? colorScheme.errorContainer,
+      KinlyBannerType.success => colors.primaryContainer,
+      KinlyBannerType.info => colors.info,
+      KinlyBannerType.warning => colors.warning,
+      KinlyBannerType.error => colors.error.withValues(alpha: 0.12),
     };
     final fg = switch (type) {
-      KinlyBannerType.success =>
-        colors?.onPrimaryContainer ?? colorScheme.onPrimaryContainer,
-      KinlyBannerType.info =>
-        colors?.onInverseSurface ?? colorScheme.onInverseSurface,
-      KinlyBannerType.warning => colors?.onSurface ?? colorScheme.onSurface,
-      KinlyBannerType.error => colors?.onError ?? colorScheme.onError,
+      KinlyBannerType.success => colors.onPrimaryContainer,
+      KinlyBannerType.info => colors.onSurface,
+      KinlyBannerType.warning => colors.onSurface,
+      KinlyBannerType.error => colors.onError,
     };
 
     return Container(

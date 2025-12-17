@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../theme/color_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -51,15 +52,16 @@ class KinlyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<KinlyColorTokens>();
+    final colors = theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final corners = theme.extension<Corners>();
     final spacing = theme.extension<Spacing>();
     final type = theme.extension<KinlyTypography>();
 
     final borderRadius = BorderRadius.circular(corners?.md ?? 12);
-    final outlineColor = colors?.outline ?? theme.colorScheme.outline;
-    final errorColor = colors?.error ?? theme.colorScheme.error;
-    final focusedColor = colors?.primary ?? theme.colorScheme.primary;
+    final outlineColor = colors.outline;
+    final errorColor = colors.error;
+    final focusedColor = colors.primary;
 
     return TextField(
       controller: controller,
@@ -83,9 +85,7 @@ class KinlyTextField extends StatelessWidget {
         suffixIcon: suffixIcon,
         errorText: errorText,
         filled: true,
-        fillColor:
-            colors?.surfaceVariant ??
-            theme.colorScheme.surfaceContainerHighest,
+        fillColor: colors.surfaceVariant,
         contentPadding: EdgeInsetsDirectional.fromSTEB(
           spacing?.l ?? 16,
           spacing?.m ?? 12,

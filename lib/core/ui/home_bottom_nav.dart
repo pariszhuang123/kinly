@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../generated/l10n.dart';
+import '../theme/kinly_palette.dart';
+import '../theme/color_tokens.dart';
 
 class HomeBottomNav extends StatelessWidget {
   final int currentIndex;
@@ -15,15 +17,17 @@ class HomeBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final t = S.of(context);
 
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      selectedItemColor: colorScheme.onSurface.withValues(alpha: 1.0),
-      unselectedItemColor: colorScheme.onSurface.withValues(alpha: 0.6),
-      backgroundColor: colorScheme.surfaceContainerHigh,
+      selectedItemColor: colors.onSurface.withValues(alpha: 1.0),
+      unselectedItemColor: colors.onSurface.withValues(alpha: 0.6),
+      backgroundColor: colors.surfaceVariant,
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.calendar_today_rounded),

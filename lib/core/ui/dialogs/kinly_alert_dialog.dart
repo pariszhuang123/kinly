@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/elevation.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
@@ -69,9 +70,9 @@ class KinlyAlertDialog extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final corners = theme.extension<Corners>();
     final elevations = theme.extension<Elevations>();
-    final colors = theme.extension<KinlyColorTokens>();
+    final colors = theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
-    final colorScheme = theme.colorScheme;
 
     final titleStyle =
         type?.titleMedium ??
@@ -80,7 +81,7 @@ class KinlyAlertDialog extends StatelessWidget {
     final messageStyle =
         type?.bodyMedium ??
         theme.textTheme.bodyMedium?.copyWith(
-          color: colorScheme.onSurfaceVariant,
+          color: colors.onSurface.withValues(alpha: 0.7),
         );
 
     final primaryButton =
@@ -110,7 +111,7 @@ class KinlyAlertDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(corners?.large ?? 16),
       ),
-      backgroundColor: colors?.surface ?? colorScheme.surface,
+      backgroundColor: colors.surface,
       title: Text(title, style: titleStyle),
       content: Padding(
         padding: EdgeInsets.only(top: spacing.xs),

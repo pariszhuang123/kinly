@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -23,15 +24,15 @@ class KinlySearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<KinlyColorTokens>();
+    final colors = theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final corners = theme.extension<Corners>();
     final spacing = theme.extension<Spacing>();
     final type = theme.extension<KinlyTypography>();
-    final colorScheme = theme.colorScheme;
 
     final borderRadius = BorderRadius.circular(corners?.medium ?? 12);
-    final outlineColor = colors?.outline ?? colorScheme.outline;
-    final focusedColor = colors?.primary ?? colorScheme.primary;
+    final outlineColor = colors.outline;
+    final focusedColor = colors.primary;
 
     return TextField(
       controller: controller,
@@ -39,8 +40,7 @@ class KinlySearchField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
-        fillColor:
-            colors?.surfaceVariant ?? colorScheme.surfaceContainerHighest,
+        fillColor: colors.surfaceVariant,
         contentPadding: EdgeInsetsDirectional.fromSTEB(
           spacing?.l ?? 16,
           spacing?.s ?? 8,

@@ -1,6 +1,5 @@
 // lib/core/ui/kinly_date_picker.dart
 import 'package:flutter/material.dart';
-import '../theme/control_tokens.dart';
 import '../theme/kinly_palette.dart';
 
 Future<DateTime?> showKinlyDatePicker({
@@ -9,13 +8,6 @@ Future<DateTime?> showKinlyDatePicker({
   required DateTime firstDate,
   required DateTime lastDate,
 }) {
-  final theme = Theme.of(context);
-  final controls =
-      theme.extension<KinlyControlColors>() ??
-      KinlyPalette.controls(theme.brightness, theme.colorScheme);
-  final pickerPrimary = controls.pickerPrimary;
-  final pickerOnPrimary = controls.pickerOnPrimary;
-
   return showDatePicker(
     context: context,
     initialDate: initialDate,
@@ -23,32 +15,30 @@ Future<DateTime?> showKinlyDatePicker({
     lastDate: lastDate,
     builder: (context, child) {
       final theme = Theme.of(context);
-
+      final palette = KinlyPalette.build(theme.brightness);
+      final tokens = palette.colorTokens;
+      final controls = palette.controlColors;
       return Theme(
         data: theme.copyWith(
-          colorScheme: theme.colorScheme.copyWith(
-            primary: pickerPrimary,
-            onPrimary: pickerOnPrimary,
-          ),
           datePickerTheme: theme.datePickerTheme.copyWith(
-            headerBackgroundColor: pickerPrimary,
-            headerForegroundColor: pickerOnPrimary,
+            headerBackgroundColor: controls.pickerPrimary,
+            headerForegroundColor: controls.pickerOnPrimary,
             dayForegroundColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.selected)) {
-                return pickerOnPrimary;
+                return controls.pickerOnPrimary;
               }
-              return theme.colorScheme.onSurface;
+              return tokens.onSurface;
             }),
             dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.selected)) {
-                return pickerPrimary;
+                return controls.pickerPrimary;
               }
               return Colors.transparent;
             }),
           ),
           textButtonTheme: TextButtonThemeData(
             style: ButtonStyle(
-              foregroundColor: WidgetStateProperty.all(pickerPrimary),
+              foregroundColor: WidgetStateProperty.all(controls.pickerPrimary),
             ),
           ),
         ),

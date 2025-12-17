@@ -53,7 +53,7 @@ class _KinlyLoaderState extends State<KinlyLoader>
     final theme = Theme.of(context);
     final controls =
         theme.extension<KinlyControlColors>() ??
-        KinlyPalette.controls(theme.brightness, theme.colorScheme);
+        KinlyPalette.build(theme.brightness).controlColors;
     final resolvedColor = widget.color ?? controls.loaderColor;
 
     final logo = SvgPicture.asset(

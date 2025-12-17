@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -27,16 +28,16 @@ class KinlyDropdownField<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<KinlyColorTokens>();
+    final colors = theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final corners = theme.extension<Corners>();
     final spacing = theme.extension<Spacing>();
     final type = theme.extension<KinlyTypography>();
-    final colorScheme = theme.colorScheme;
 
     final borderRadius = BorderRadius.circular(corners?.medium ?? 12);
-    final outlineColor = colors?.outline ?? colorScheme.outline;
-    final focusedColor = colors?.primary ?? colorScheme.primary;
-    final errorColor = colors?.error ?? colorScheme.error;
+    final outlineColor = colors.outline;
+    final focusedColor = colors.primary;
+    final errorColor = colors.error;
 
     InputBorder outline(Color color, [double width = 1]) =>
         OutlineInputBorder(
@@ -53,9 +54,7 @@ class KinlyDropdownField<T> extends StatelessWidget {
         hintText: hintText,
         errorText: errorText,
         filled: true,
-        fillColor:
-            colors?.surfaceVariant ??
-            theme.colorScheme.surfaceContainerHighest,
+        fillColor: colors.surfaceVariant,
         contentPadding: EdgeInsetsDirectional.fromSTEB(
           spacing?.l ?? 16,
           spacing?.m ?? 12,
@@ -73,9 +72,9 @@ class KinlyDropdownField<T> extends StatelessWidget {
             theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
       ),
       style: type?.bodyMedium ?? theme.textTheme.bodyMedium,
-      iconEnabledColor: colors?.onSurface ?? colorScheme.onSurface,
-      iconDisabledColor: colors?.disabled ?? colorScheme.outlineVariant,
-      dropdownColor: colors?.surface ?? colorScheme.surface,
+      iconEnabledColor: colors.onSurface,
+      iconDisabledColor: colors.disabled,
+      dropdownColor: colors.surface,
     );
   }
 }

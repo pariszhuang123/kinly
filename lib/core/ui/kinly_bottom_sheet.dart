@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/color_tokens.dart';
 import '../theme/elevation.dart';
+import '../theme/kinly_palette.dart';
 import '../theme/motion.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
@@ -56,8 +57,8 @@ class KinlyBottomSheet extends StatelessWidget {
     final motionAware = KinlyMotionAware.of(context);
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final colorScheme = theme.colorScheme;
-    final colors = theme.extension<KinlyColorTokens>();
+    final colors = theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final corners = theme.extension<Corners>();
     final elevations = theme.extension<Elevations>();
     final motion = theme.extension<Motion>();
@@ -82,7 +83,7 @@ class KinlyBottomSheet extends StatelessWidget {
           curve: motion?.easeEmotional ?? Curves.easeOutCubic,
           child: Material(
             elevation: elevations?.level4 ?? 10,
-            color: colors?.surface ?? colorScheme.surface,
+            color: colors.surface,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(radius)),
             ),
@@ -114,8 +115,7 @@ class KinlyBottomSheet extends StatelessWidget {
                                 width: 36,
                                 height: 4,
                                 decoration: BoxDecoration(
-                                  color: colorScheme.onSurfaceVariant
-                                      .withValues(alpha: 0.3),
+                                  color: colors.onSurface.withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                               ),
@@ -136,7 +136,7 @@ class KinlyBottomSheet extends StatelessWidget {
                                 Text(
                                   subtitle!,
                                   style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
+                                    color: colors.onSurface.withValues(alpha: 0.7),
                                   ),
                                   textAlign: TextAlign.center,
                                 ),

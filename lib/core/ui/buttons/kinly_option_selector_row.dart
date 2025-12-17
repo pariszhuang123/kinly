@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../theme/control_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/spacing.dart';
 
 /// A generic Kinly-styled selector for any option type.
@@ -252,15 +253,15 @@ class _KinlyOptionCard<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final controls = theme.extension<KinlyControlColors>();
+    final controls =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.build(theme.brightness).controlColors;
 
-    final bg = isSelected
-        ? controls?.selectableItemBgSelected ?? theme.colorScheme.primaryContainer
-        : controls?.optionRowBg ?? theme.colorScheme.surfaceContainer;
+    final bg =
+        isSelected ? controls.selectableItemBgSelected : controls.optionRowBg;
 
-    final textColor = isSelected
-        ? controls?.selectableItemFgSelected ?? theme.colorScheme.onPrimaryContainer
-        : controls?.optionRowFg ?? theme.colorScheme.onSurface;
+    final textColor =
+        isSelected ? controls.selectableItemFgSelected : controls.optionRowFg;
     final labelText = option.semanticsLabel ?? option.label;
 
     return Semantics(
@@ -274,11 +275,15 @@ class _KinlyOptionCard<T> extends StatelessWidget {
           child: Container(
             width: width,
             padding: EdgeInsets.all(spacing.xs),
-            decoration: BoxDecoration(
-              color: bg,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.transparent),
-            ),
+              decoration: BoxDecoration(
+                color: bg,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isSelected
+                      ? controls.selectableItemBorderSelected
+                      : controls.optionRowBorder,
+                ),
+              ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -301,16 +306,14 @@ class _KinlyOptionCard<T> extends StatelessWidget {
   }
 
   /// Builds the icon with a circular selection ring that cuts into the icon.
-  Widget _buildIcon(BuildContext context, KinlyControlColors? controls) {
+  Widget _buildIcon(BuildContext context, KinlyControlColors controls) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
 
     final ringColor = isSelected
-        ? (controls?.selectableItemBorderSelected ??
-            theme.colorScheme.primaryContainer)
-        : (controls?.selectableItemBorder ?? theme.colorScheme.outline);
-    final ringBackground =
-        controls?.selectableItemBg ?? theme.colorScheme.surface;
+        ? controls.selectableItemBorderSelected
+        : controls.selectableItemBorder;
+    final ringBackground = controls.selectableItemBg;
 
     // Inner visual (SVG or Icon).
     Widget? inner;
@@ -320,10 +323,8 @@ class _KinlyOptionCard<T> extends StatelessWidget {
       inner = Icon(
         option.iconData,
         size: iconSize,
-        color: isSelected
-            ? (controls?.selectableItemFgSelected ??
-                theme.colorScheme.onPrimaryContainer)
-            : (controls?.selectableItemFg ?? theme.colorScheme.onSurface),
+        color:
+            isSelected ? controls.selectableItemFgSelected : controls.selectableItemFg,
       );
     }
 

@@ -1,177 +1,64 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import 'color_tokens.dart';
 import 'control_tokens.dart';
+import 'foundation/kinly_foundation_colors.dart';
 import 'kinly_sections.dart';
 
-/// Central palette + builders for Kinly theme pieces.
+/// Central palette + derived color engine for Kinly.
 ///
-/// All color values live here so contrast can be enforced in one place.
+/// All derivations happen here. Widgets never branch on brightness and never
+/// reference foundation colors directly.
 class KinlyPalette {
-  // Brand/base colors
-  static const Color tealBrand = Color(0xFF366D59);
-  static const Color tealPrimary = Color(0xFF2F5B4B);
-  static const Color tealPrimaryContainer = Color(0xFF5C8876);
-
-  static const Color sageSecondary = Color(0xFF8BAA91);
-  static const Color sageSecondaryContainer = Color(0xFFAEC6B4);
-
-  static const Color honeyAccent = Color(0xFFF6B73C);
-  static const Color honeyAccentContainer = Color(0xFFFFE1A8);
-
-  static const Color sageText = Color(0xFF3B5646);
-  static const Color honeyText = Color(0xFF704300);
-
-  static const Color offWhiteLight = Color(0xFFFAFAF9);
-  static const Color offWhiteDark = Color(0xFF101312);
-
-  // Error ramp (const to allow token construction)
-  static const Color errorDark = Color(0xFFFF5252); // redAccent.shade200
-  static const Color error = Color(0xFFE53935); // slightly lighter for contrast
-  static const Color errorContainer = Color(0xFFFFCDD2); // red.shade100
-  static const Color onErrorContainer = Color(0xFFB71C1C); // red.shade900
-
-  static ColorScheme colorScheme(Brightness brightness) {
-    final isDark = brightness == Brightness.dark;
-    final offWhite = isDark ? offWhiteDark : offWhiteLight;
-
-    return ColorScheme(
-      brightness: brightness,
-      primary: tealPrimary,
-      onPrimary: Colors.white,
-      primaryContainer: tealPrimaryContainer,
-      onPrimaryContainer: Colors.black,
-      secondary: sageSecondary,
-      onSecondary: const Color(0xFF0F1A16),
-      secondaryContainer: sageSecondaryContainer,
-      onSecondaryContainer: const Color(0xFF0F1A16),
-      tertiary: honeyAccent,
-      onTertiary: const Color(0xFF1F1400),
-      tertiaryContainer: honeyAccentContainer,
-      onTertiaryContainer: const Color(0xFF1F1400),
-      error: isDark ? errorDark : error,
-      onError: Colors.black,
-      errorContainer: errorContainer,
-      onErrorContainer: onErrorContainer,
-      surface: offWhite,
-      onSurface: isDark ? Colors.white : const Color(0xFF101312),
-      surfaceContainerHighest: isDark ? const Color(0xFF1B201E) : Colors.white,
-      surfaceContainerHigh:
-          isDark ? const Color(0xFF1D2220) : const Color(0xFFF2F2F1),
-      surfaceContainer:
-          isDark ? const Color(0xFF202624) : const Color(0xFFF5F5F4),
-      surfaceContainerLow:
-          isDark ? const Color(0xFF232927) : const Color(0xFFF7F7F6),
-      surfaceContainerLowest:
-          isDark ? const Color(0xFF151917) : const Color(0xFFFFFFFF),
-      surfaceDim: isDark ? const Color(0xFF121614) : const Color(0xFFEEEEED),
-      surfaceBright: isDark ? const Color(0xFF1A1F1D) : const Color(0xFFFFFFFF),
-      outline: isDark ? const Color(0xFF3E4945) : const Color(0xFFB7C7C0),
-      outlineVariant:
-          isDark ? const Color(0xFF2E3733) : const Color(0xFFD9E3DE),
-      shadow: Colors.black.withValues(alpha: 0.3),
-      scrim: Colors.black.withValues(alpha: 0.5),
-      inverseSurface:
-          isDark ? const Color(0xFFE7ECEA) : const Color(0xFF1A1F1D),
-      onInverseSurface:
-          isDark ? const Color(0xFF121614) : const Color(0xFFE7ECEA),
-      inversePrimary: const Color(0xFF88C7B0),
-      surfaceTint: tealPrimary,
+  static KinlyColors build(Brightness brightness) {
+    final derived = _DerivedEngine.fromBrightness(brightness);
+    return KinlyColors(
+      colorScheme: derived.scheme,
+      colorTokens: _tokens(derived),
+      controlColors: controls(brightness, derived.scheme),
+      sections: derived.sections,
+      linkColors: derived.linkColors,
+      brandTextColors: derived.brandTextColors,
     );
   }
 
-  static KinlySections sections(Brightness brightness) {
-    final isDark = brightness == Brightness.dark;
-    return isDark
-        ? const KinlySections(
-          flow: SectionColors(
-            background: Color(0xFF1F2623),
-            card: Color(0xFF27302B),
-            icon: Color(0xFFB8D9C7),
-            accent: Color(0xFFB8D9C7),
-          ),
-          share: SectionColors(
-            background: Color(0xFF262018),
-            card: Color(0xFF30271B),
-            icon: Color(0xFFF5C96A),
-            accent: tealBrand,
-          ),
-          pulse: SectionColors(
-            background: Color(0xFF2A2022),
-            card: Color(0xFF33252A),
-            icon: Color(0xFFF6B73C),
-            accent: Color(0xFFF6B73C),
-          ),
-          empty: SectionColors(
-            background: Color(0xFF2A2E2D),
-            card: Color(0xFF1D2120),
-            icon: Color(0xFFE4F2EA),
-            accent: Color(0xFF88C7B0),
-          ),
-        )
-        : const KinlySections(
-          flow: SectionColors(
-            background: Color(0xFFE2F0E6),
-            card: Color(0xFFD6E8DD),
-            icon: Color(0xFF26473A),
-            accent: Color(0xFF26473A),
-          ),
-          share: SectionColors(
-            background: Color(0xFFF9F4E8),
-            card: Colors.white,
-            icon: honeyText,
-            accent: tealBrand,
-          ),
-          pulse: SectionColors(
-            background: Color(0xFFFCEFEA),
-            card: Color(0xFFFFF7F3),
-            icon: honeyText,
-            accent: Color(0xFFF6B73C),
-          ),
-          empty: SectionColors(
-            background: Color(0xFFF4F6F5),
-            card: Colors.white,
-            icon: Color(0xFF32413B),
-            accent: Color(0xFFAAC7BD),
-          ),
-        );
-  }
+  static ColorScheme colorScheme(Brightness brightness) =>
+      _DerivedEngine.fromBrightness(brightness).scheme;
 
-  static KinlyLinkColors linkColors(Brightness brightness, ColorScheme scheme) {
-    final isDark = brightness == Brightness.dark;
-    return isDark
-        ? KinlyLinkColors(link: scheme.onSurface, icon: scheme.onSurface)
-        : KinlyLinkColors(link: tealPrimary, icon: tealPrimary);
-  }
+  static KinlySections sections(Brightness brightness) =>
+      _DerivedEngine.fromBrightness(brightness).sections;
 
-  static KinlyBrandTextColors brandTextColors() => const KinlyBrandTextColors(
-    sageText: sageText,
-    honeyText: honeyText,
-    tealBrand: tealBrand,
-  );
+  static KinlyLinkColors linkColors(Brightness brightness, ColorScheme scheme) =>
+      _DerivedEngine.fromBrightness(brightness).linkColors;
 
-  static KinlyColorTokens tokens(ColorScheme colorScheme) {
+  static KinlyBrandTextColors brandTextColors() =>
+      _DerivedEngine.fromBrightness(Brightness.light).brandTextColors;
+
+  static KinlyColorTokens _tokens(_DerivedColors derived) {
+    final scheme = derived.scheme;
     return KinlyColorTokens(
-      primary: colorScheme.primary,
-      onPrimary: colorScheme.onPrimary,
-      primaryContainer: colorScheme.primaryContainer,
-      onPrimaryContainer: colorScheme.onPrimaryContainer,
-      secondary: colorScheme.secondary,
-      onSecondary: colorScheme.onSecondary,
-      secondaryContainer: colorScheme.secondaryContainer,
-      onSecondaryContainer: colorScheme.onSecondaryContainer,
-      error: colorScheme.error,
-      onError: colorScheme.onError,
-      surface: colorScheme.surface,
-      surfaceVariant: colorScheme.surfaceContainer,
-      onSurface: colorScheme.onSurface,
-      outline: colorScheme.outline,
-      success: const Color(0xFF2D8A5F),
-      warning: const Color(0xFFF5C04A),
-      info: const Color(0xFF89C8AC),
-      disabled: const Color(0xFFD3D3D3),
-      inverseSurface: colorScheme.inverseSurface,
-      onInverseSurface: colorScheme.onInverseSurface,
+      primary: scheme.primary,
+      onPrimary: scheme.onPrimary,
+      primaryContainer: scheme.primaryContainer,
+      onPrimaryContainer: scheme.onPrimaryContainer,
+      secondary: scheme.secondary,
+      onSecondary: scheme.onSecondary,
+      secondaryContainer: scheme.secondaryContainer,
+      onSecondaryContainer: scheme.onSecondaryContainer,
+      error: scheme.error,
+      onError: scheme.onError,
+      surface: scheme.surface,
+      surfaceVariant: scheme.surfaceContainer,
+      onSurface: scheme.onSurface,
+      outline: scheme.outline,
+      success: derived.success,
+      warning: derived.warning,
+      info: derived.info,
+      disabled: derived.disabled,
+      inverseSurface: scheme.inverseSurface,
+      onInverseSurface: scheme.onInverseSurface,
     );
   }
 
@@ -181,22 +68,38 @@ class KinlyPalette {
   ) {
     final isDark = brightness == Brightness.dark;
 
-    // Mirror current primitive choices:
-    // Filled: light -> primary/onPrimary, dark -> primaryContainer/onSurface
-    final filledBg =
-        isDark ? colorScheme.primaryContainer : colorScheme.primary;
-    final filledFg =
-        isDark ? colorScheme.onSurface : colorScheme.onPrimary;
+    // Disabled baseline derived from surface/outline blend
+    final disabledBase = _mix(colorScheme.surface, colorScheme.outline, 0.5);
+    final disabledFg = _pickOnColor(
+      background: disabledBase,
+      preferred: colorScheme.onSurface,
+    );
+
+    // Filled: primary/onPrimary; disabled from disabled baseline
+    final filledBg = colorScheme.primary;
+    final filledFg = colorScheme.onPrimary;
+    final filledDisabledBg = disabledBase;
+    final filledDisabledFg = disabledFg;
 
     // Destructive: use error/onError in both modes
     final filledDestructiveBg = colorScheme.error;
     final filledDestructiveFg = colorScheme.onError;
+    final filledDestructiveDisabledBg = disabledBase;
+    final filledDestructiveDisabledFg = disabledFg;
 
-    // Outlined: light -> primary, dark -> onSurface/primaryContainer
-    final outlinedFg =
-        isDark ? colorScheme.onSurface : colorScheme.primary;
+    // Outlined: border from outline, fg from primary (contrast-safe)
+    final outlinedFg = _pickOnColor(
+      background: colorScheme.surface,
+      preferred: colorScheme.primary,
+    );
     final outlinedBorder =
-        isDark ? colorScheme.primaryContainer : colorScheme.primary;
+        isDark ? colorScheme.outlineVariant : colorScheme.outline;
+    final outlinedDisabledBorder = disabledBase;
+    final outlinedDisabledFg = disabledFg;
+
+    // Text / ghost
+    final textFg = outlinedFg;
+    final textDisabledFg = disabledFg;
 
     // FAB + add tile: mirror filled choices
     final fabBg = filledBg;
@@ -205,16 +108,22 @@ class KinlyPalette {
     final addTileFg = filledFg;
 
     // Option row background/fg mirror surface containers
-    final optionRowBg = isDark
-        ? colorScheme.surfaceContainerHighest
-        : colorScheme.surfaceContainer;
+    final optionRowBg =
+        isDark
+            ? colorScheme.surfaceContainerHighest
+            : colorScheme.surfaceContainer;
     final optionRowFg = colorScheme.onSurface;
+    final optionRowSelectedBg = colorScheme.primaryContainer;
+    final optionRowSelectedFg = colorScheme.onPrimaryContainer;
+    final optionRowBorder = colorScheme.outlineVariant;
 
-    // Checkbox: match existing onSurface/outline/primaryContainer usage
-    final checkboxChecked = filledBg;
+    // Checkbox / selection: checked uses primary container; unchecked surface + outline
+    final checkboxChecked = colorScheme.primaryContainer;
     final checkboxUnchecked = colorScheme.surface;
-    final checkboxBorder =
-        isDark ? colorScheme.outlineVariant : colorScheme.outline;
+    final checkboxBorder = colorScheme.outline;
+    final selectionDisabledBg = disabledBase;
+    final selectionDisabledBorder = disabledBase;
+    final selectionDisabledFg = disabledFg;
 
     // Selectable item row: use surface containers and onSurface, with selected state
     final selectableItemBg = optionRowBg;
@@ -224,9 +133,17 @@ class KinlyPalette {
     final selectableItemBorderSelected = colorScheme.primaryContainer;
     final selectableItemFgSelected = colorScheme.onPrimaryContainer;
 
-    // Loader: match KinlyLoader (uses onSurface/primary)
-    final loaderColor =
-        isDark ? colorScheme.onSurface : colorScheme.primary;
+    // Loader: use onSurface in dark, primary in light
+    final loaderColor = isDark ? colorScheme.onSurface : colorScheme.primary;
+
+    // Badges
+    final badgeBg = colorScheme.primary.withValues(alpha: 0.14);
+    final badgeFg = _pickOnColor(background: badgeBg, preferred: colorScheme.onPrimary);
+    final errorBadgeBg = colorScheme.error.withValues(alpha: 0.18);
+    final errorBadgeFg = _pickOnColor(
+      background: errorBadgeBg,
+      preferred: colorScheme.onError,
+    );
 
     // Expand badge: use section accent alpha handled by caller; icon uses onSurface in dark
     final expandBadgeBg = colorScheme.primary.withValues(alpha: 0.12);
@@ -239,14 +156,10 @@ class KinlyPalette {
     final commentBoxBorder =
         isDark ? colorScheme.outlineVariant : colorScheme.outline;
 
-    // Settings tile badge: reuse error/onError with slight transparency handled by caller
-    final settingsTileBadgeBg = colorScheme.error.withValues(alpha: 0.18);
-    final settingsTileBadgeFg = colorScheme.onError;
-
     // Date/time pickers: mirror filled choices (inverse primary in dark)
-    final pickerPrimary = isDark ? colorScheme.inversePrimary : colorScheme.primary;
+    final pickerPrimary = isDark ? colorScheme.secondary : colorScheme.primary;
     final pickerOnPrimary =
-        isDark ? colorScheme.onInverseSurface : colorScheme.onPrimary;
+        isDark ? colorScheme.onSecondary : colorScheme.onPrimary;
 
     // Avatar badge
     final avatarBadgeBg =
@@ -256,10 +169,18 @@ class KinlyPalette {
     return KinlyControlColors(
       filledBg: filledBg,
       filledFg: filledFg,
+      filledDisabledBg: filledDisabledBg,
+      filledDisabledFg: filledDisabledFg,
       filledDestructiveBg: filledDestructiveBg,
       filledDestructiveFg: filledDestructiveFg,
+      filledDestructiveDisabledBg: filledDestructiveDisabledBg,
+      filledDestructiveDisabledFg: filledDestructiveDisabledFg,
       outlinedBorder: outlinedBorder,
       outlinedFg: outlinedFg,
+      outlinedDisabledBorder: outlinedDisabledBorder,
+      outlinedDisabledFg: outlinedDisabledFg,
+      textFg: textFg,
+      textDisabledFg: textDisabledFg,
       fabBg: fabBg,
       fabFg: fabFg,
       addTileBg: addTileBg,
@@ -267,8 +188,14 @@ class KinlyPalette {
       checkboxChecked: checkboxChecked,
       checkboxUnchecked: checkboxUnchecked,
       checkboxBorder: checkboxBorder,
+      selectionDisabledBg: selectionDisabledBg,
+      selectionDisabledBorder: selectionDisabledBorder,
+      selectionDisabledFg: selectionDisabledFg,
       optionRowBg: optionRowBg,
       optionRowFg: optionRowFg,
+      optionRowSelectedBg: optionRowSelectedBg,
+      optionRowSelectedFg: optionRowSelectedFg,
+      optionRowBorder: optionRowBorder,
       selectableItemBg: selectableItemBg,
       selectableItemBorder: selectableItemBorder,
       selectableItemFg: selectableItemFg,
@@ -276,28 +203,18 @@ class KinlyPalette {
       selectableItemBorderSelected: selectableItemBorderSelected,
       selectableItemFgSelected: selectableItemFgSelected,
       loaderColor: loaderColor,
+      badgeBg: badgeBg,
+      badgeFg: badgeFg,
+      errorBadgeBg: errorBadgeBg,
+      errorBadgeFg: errorBadgeFg,
       expandBadgeBg: expandBadgeBg,
       expandBadgeIcon: expandBadgeIcon,
       commentBoxBg: commentBoxBg,
       commentBoxBorder: commentBoxBorder,
-      settingsTileBadgeBg: settingsTileBadgeBg,
-      settingsTileBadgeFg: settingsTileBadgeFg,
       pickerPrimary: pickerPrimary,
       pickerOnPrimary: pickerOnPrimary,
       avatarBadgeBg: avatarBadgeBg,
       avatarBadgeFg: avatarBadgeFg,
-    );
-  }
-
-  static KinlyColors build(Brightness brightness) {
-    final scheme = colorScheme(brightness);
-    return KinlyColors(
-      colorScheme: scheme,
-      colorTokens: tokens(scheme),
-      controlColors: controls(brightness, scheme),
-      sections: sections(brightness),
-      linkColors: linkColors(brightness, scheme),
-      brandTextColors: brandTextColors(),
     );
   }
 }
@@ -380,4 +297,244 @@ class KinlyBrandTextColors extends ThemeExtension<KinlyBrandTextColors> {
       tealBrand: Color.lerp(tealBrand, other.tealBrand, t) ?? tealBrand,
     );
   }
+}
+
+class _DerivedEngine {
+  static const _white = Colors.white;
+  static const _black = Colors.black;
+
+  static _DerivedColors fromBrightness(Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+
+    final surfaceBase =
+        isDark ? KinlyFoundationColors.surfaceDark : KinlyFoundationColors.surfaceLight;
+    Color lift(double amount) => _mix(surfaceBase, _white, amount);
+    Color shade(double amount) => _mix(surfaceBase, _black, amount);
+
+    // Surfaces
+    final surface = surfaceBase;
+    final surfaceContainerLowest = isDark ? lift(0.05) : lift(0.02);
+    final surfaceContainerLow = isDark ? lift(0.08) : lift(0.04);
+    final surfaceContainer = isDark ? lift(0.12) : lift(0.06);
+    final surfaceContainerHigh = isDark ? lift(0.16) : lift(0.08);
+    final surfaceContainerHighest = isDark ? lift(0.22) : lift(0.12);
+    final surfaceBright = isDark ? lift(0.20) : lift(0.10);
+    final surfaceDim = isDark ? shade(0.06) : shade(0.08);
+    final inverseSurface = isDark ? lift(0.92) : shade(0.82);
+    final onSurface = _pickOnColor(
+      background: surface,
+      preferred: isDark ? _white : KinlyFoundationColors.ink,
+    );
+
+    // Brand roles
+    final primary =
+        isDark ? _mix(KinlyFoundationColors.brandPrimary, _white, 0.08) : KinlyFoundationColors.brandPrimary;
+    final primaryContainer =
+        _mix(primary, isDark ? surfaceBase : _white, isDark ? 0.28 : 0.18);
+    final onPrimary = _pickOnColor(background: primary, preferred: _white);
+    final onPrimaryContainer = _pickOnColor(
+      background: primaryContainer,
+      preferred: KinlyFoundationColors.ink,
+    );
+
+    final secondary =
+        isDark ? _mix(KinlyFoundationColors.brandSecondary, _white, 0.06) : KinlyFoundationColors.brandSecondary;
+    final secondaryContainer =
+        _mix(secondary, isDark ? surfaceBase : _white, isDark ? 0.26 : 0.18);
+    final onSecondary = _pickOnColor(background: secondary, preferred: _white);
+    final onSecondaryContainer = _pickOnColor(
+      background: secondaryContainer,
+      preferred: KinlyFoundationColors.ink,
+    );
+
+    final tertiary =
+        isDark ? _mix(KinlyFoundationColors.brandAccent, _white, 0.02) : KinlyFoundationColors.brandAccent;
+    final tertiaryContainer =
+        _mix(tertiary, isDark ? surfaceBase : _white, isDark ? 0.24 : 0.16);
+    final onTertiary = _pickOnColor(background: tertiary, preferred: _white);
+    final onTertiaryContainer = _pickOnColor(
+      background: tertiaryContainer,
+      preferred: KinlyFoundationColors.ink,
+    );
+
+    // Error semantics
+    final error = isDark ? _mix(KinlyFoundationColors.error, _white, 0.08) : KinlyFoundationColors.error;
+    final errorContainer =
+        _mix(surfaceBase, KinlyFoundationColors.error, isDark ? 0.28 : 0.16);
+    final onError = _pickOnColor(background: error, preferred: _white);
+    final onErrorContainer = _pickOnColor(
+      background: errorContainer,
+      preferred: KinlyFoundationColors.ink,
+    );
+
+    // Outline
+    final outline = isDark
+        ? _mix(KinlyFoundationColors.outline, surfaceBase, 0.65)
+        : KinlyFoundationColors.outline;
+    final outlineVariant = _mix(outline, surfaceBase, 0.35);
+
+    final inversePrimary = _mix(primary, _white, 0.55);
+    final onInverseSurface =
+        _pickOnColor(background: inverseSurface, preferred: KinlyFoundationColors.ink);
+
+    // Sections
+    final sections = _buildSections(
+      isDark: isDark,
+      surface: surface,
+      primary: primary,
+      secondary: secondary,
+      accent: KinlyFoundationColors.brandAccent,
+      outline: outline,
+    );
+
+    // Link colors
+    final linkColors = isDark
+        ? KinlyLinkColors(link: onSurface, icon: onSurface)
+        : KinlyLinkColors(link: primary, icon: primary);
+
+    // Brand text
+    final brandTextColors = KinlyBrandTextColors(
+      sageText: _mix(KinlyFoundationColors.brandSecondary, _black, 0.4),
+      honeyText: _mix(KinlyFoundationColors.brandAccent, _black, 0.55),
+      tealBrand: KinlyFoundationColors.brandPrimary,
+    );
+
+    // Support tokens (derived)
+    final success =
+        _mix(KinlyFoundationColors.brandSecondary, _black, isDark ? 0.0 : 0.12);
+    final warning =
+        _mix(KinlyFoundationColors.brandAccent, _black, isDark ? 0.0 : 0.12);
+    final info =
+        _mix(KinlyFoundationColors.brandPrimary, _white, isDark ? 0.12 : 0.06);
+    final disabled = _mix(surfaceBase, outline, 0.5);
+
+    final scheme = ColorScheme(
+      brightness: brightness,
+      primary: primary,
+      onPrimary: onPrimary,
+      primaryContainer: primaryContainer,
+      onPrimaryContainer: onPrimaryContainer,
+      secondary: secondary,
+      onSecondary: onSecondary,
+      secondaryContainer: secondaryContainer,
+      onSecondaryContainer: onSecondaryContainer,
+      tertiary: tertiary,
+      onTertiary: onTertiary,
+      tertiaryContainer: tertiaryContainer,
+      onTertiaryContainer: onTertiaryContainer,
+      error: error,
+      onError: onError,
+      errorContainer: errorContainer,
+      onErrorContainer: onErrorContainer,
+      surface: surface,
+      onSurface: onSurface,
+      surfaceContainerHighest: surfaceContainerHighest,
+      surfaceContainerHigh: surfaceContainerHigh,
+      surfaceContainer: surfaceContainer,
+      surfaceContainerLow: surfaceContainerLow,
+      surfaceContainerLowest: surfaceContainerLowest,
+      surfaceDim: surfaceDim,
+      surfaceBright: surfaceBright,
+      outline: outline,
+      outlineVariant: outlineVariant,
+      shadow: _black.withValues(alpha: 0.3),
+      scrim: _black.withValues(alpha: 0.5),
+      inverseSurface: inverseSurface,
+      onInverseSurface: onInverseSurface,
+      inversePrimary: inversePrimary,
+      surfaceTint: primary,
+    );
+
+    return _DerivedColors(
+      scheme: scheme,
+      sections: sections,
+      linkColors: linkColors,
+      brandTextColors: brandTextColors,
+      success: success,
+      warning: warning,
+      info: info,
+      disabled: disabled,
+    );
+  }
+
+  static KinlySections _buildSections({
+    required bool isDark,
+    required Color surface,
+    required Color primary,
+    required Color secondary,
+    required Color accent,
+    required Color outline,
+  }) {
+    Color sectionBackground(Color accentColor) =>
+        _mix(surface, accentColor, isDark ? 0.18 : 0.08);
+    Color sectionCard(Color accentColor) =>
+        _mix(surface, accentColor, isDark ? 0.24 : 0.12);
+    SectionColors buildSection(Color accentColor) {
+      final card = sectionCard(accentColor);
+      return SectionColors(
+        background: sectionBackground(accentColor),
+        card: card,
+        icon: _pickOnColor(
+          background: card,
+          preferred: accentColor,
+          threshold: 3.0,
+        ),
+        accent: accentColor,
+      );
+    }
+
+    final emptyAccent = _mix(outline, surface, 0.4);
+
+    return KinlySections(
+      flow: buildSection(primary),
+      share: buildSection(accent),
+      pulse: buildSection(secondary),
+      empty: buildSection(emptyAccent),
+    );
+  }
+}
+
+class _DerivedColors {
+  _DerivedColors({
+    required this.scheme,
+    required this.sections,
+    required this.linkColors,
+    required this.brandTextColors,
+    required this.success,
+    required this.warning,
+    required this.info,
+    required this.disabled,
+  });
+
+  final ColorScheme scheme;
+  final KinlySections sections;
+  final KinlyLinkColors linkColors;
+  final KinlyBrandTextColors brandTextColors;
+  final Color success;
+  final Color warning;
+  final Color info;
+  final Color disabled;
+}
+
+Color _mix(Color a, Color b, double t) => Color.lerp(a, b, t) ?? a;
+
+double _contrastRatio(Color foreground, Color background) {
+  final l1 = foreground.computeLuminance();
+  final l2 = background.computeLuminance();
+  final light = math.max(l1, l2);
+  final dark = math.min(l1, l2);
+  return (light + 0.05) / (dark + 0.05);
+}
+
+Color _pickOnColor({
+  required Color background,
+  required Color preferred,
+  double threshold = 4.5,
+}) {
+  if (_contrastRatio(preferred, background) >= threshold) {
+    return preferred;
+  }
+  final whiteContrast = _contrastRatio(Colors.white, background);
+  final inkContrast = _contrastRatio(KinlyFoundationColors.ink, background);
+  return whiteContrast >= inkContrast ? Colors.white : KinlyFoundationColors.ink;
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/spacing.dart';
+import '../../theme/color_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../kinly_circle_avatar.dart';
 
 class KinlyProfileHeader extends StatelessWidget {
@@ -24,7 +26,9 @@ class KinlyProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final colorScheme = theme.colorScheme;
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
 
     return Column(
       children: [
@@ -55,13 +59,13 @@ class KinlyProfileHeader extends StatelessWidget {
                           width: 20,
                           height: 20,
                           decoration: BoxDecoration(
-                            color: colorScheme.surface,
+                            color: colors.surface,
                             shape: BoxShape.circle,
                           ),
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor:
-                                AlwaysStoppedAnimation(colorScheme.primary),
+                                AlwaysStoppedAnimation(colors.primary),
                           ),
                         ),
                       ),
@@ -83,7 +87,7 @@ class KinlyProfileHeader extends StatelessWidget {
         Text(
           subtitle,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurface.withValues(alpha: 0.7),
+            color: colors.onSurface.withValues(alpha: 0.7),
           ),
           textAlign: TextAlign.center,
         ),

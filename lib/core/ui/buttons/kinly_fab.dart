@@ -32,7 +32,7 @@ class KinlyFab extends StatelessWidget {
     final theme = Theme.of(context);
     final controls =
         theme.extension<KinlyControlColors>() ??
-        KinlyPalette.controls(theme.brightness, theme.colorScheme);
+        KinlyPalette.build(theme.brightness).controlColors;
 
     // Align with KinlyAddTileButton & KinlyTabBar
     final Color bg = backgroundColor ?? controls.fabBg;

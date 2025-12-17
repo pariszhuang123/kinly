@@ -1,7 +1,6 @@
 // lib/core/ui/buttons/kinly_outlined_button.dart
 import 'package:flutter/material.dart';
 
-import '../../theme/color_tokens.dart';
 import '../../theme/control_tokens.dart';
 import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
@@ -27,7 +26,7 @@ class KinlyOutlinedButton extends StatelessWidget {
 
   /// Icon + label outlined button.
   factory KinlyOutlinedButton.icon({
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     required String label,
     required IconData icon,
     bool compact = false,
@@ -48,7 +47,7 @@ class KinlyOutlinedButton extends StatelessWidget {
 
   /// Text-only outlined button.
   factory KinlyOutlinedButton.text({
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
     required String label,
     bool compact = false,
     bool fullWidth = false,
@@ -66,7 +65,7 @@ class KinlyOutlinedButton extends StatelessWidget {
     );
   }
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String label;
   final Widget? icon;
   final bool compact;
@@ -75,47 +74,40 @@ class KinlyOutlinedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert((semanticsLabel ?? label).isNotEmpty, 'Semantic label must not be empty');
+    assert(
+      (semanticsLabel ?? label).isNotEmpty,
+      'Semantic label must not be empty',
+    );
 
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final corners = theme.extension<Corners>();
-    final colors = theme.extension<KinlyColorTokens>();
     final type = theme.extension<KinlyTypography>();
     final controls =
         theme.extension<KinlyControlColors>() ??
-        KinlyPalette.controls(theme.brightness, theme.colorScheme);
+        KinlyPalette.build(theme.brightness).controlColors;
+    final disabled = onPressed == null;
 
     // ---- COLOR LOGIC (aligned with KinlyFilledButton) ----
-    // Light:
-    //   text/border = primary
-    // Dark:
-    //   text       = onSurface        (same as filled foreground)
-    //   border     = primaryContainer (same as filled background)
-    final Color foreground = controls.outlinedFg;
-    final Color borderColor = controls.outlinedBorder;
+    final Color foreground =
+        disabled ? controls.outlinedDisabledFg : controls.outlinedFg;
+    final Color borderColor =
+        disabled ? controls.outlinedDisabledBorder : controls.outlinedBorder;
 
     final double horizontal = compact ? spacing.sm : spacing.md;
     final double vertical = compact ? spacing.xs : spacing.sm;
 
-    final Widget child = icon != null
-        ? Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              icon!,
-              SizedBox(width: spacing.xs),
-              Flexible(
-                child: Text(
-                  label,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          )
-        : Text(
-            label,
-            overflow: TextOverflow.ellipsis,
-          );
+    final Widget child =
+        icon != null
+            ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                icon!,
+                SizedBox(width: spacing.xs),
+                Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
+              ],
+            )
+            : Text(label, overflow: TextOverflow.ellipsis);
 
     // Explicit finite minSize so it behaves nicely in Rows.
     final baseStyle = OutlinedButton.styleFrom(
@@ -127,16 +119,14 @@ class KinlyOutlinedButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(corners?.medium ?? 12),
       ),
-      textStyle: type?.labelMedium ??
+      textStyle:
+          type?.labelMedium ??
           theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
     );
 
     final overlay = WidgetStateProperty.resolveWith<Color?>((states) {
       if (states.contains(WidgetState.pressed)) {
         return foreground.withValues(alpha: 0.08);
-      }
-      if (states.contains(WidgetState.disabled)) {
-        return foreground.withValues(alpha: 0.0);
       }
       return null;
     });
@@ -152,7 +142,7 @@ class KinlyOutlinedButton extends StatelessWidget {
 
     return Semantics(
       button: true,
-      enabled: true,
+      enabled: onPressed != null,
       label: semanticsLabel ?? label,
       child: finalButton,
     );

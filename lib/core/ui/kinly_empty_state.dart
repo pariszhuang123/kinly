@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/color_tokens.dart';
+import '../theme/kinly_palette.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
 import '../theme/typography_tokens.dart';
@@ -28,16 +29,15 @@ class KinlyEmptyState extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
     final colors = theme.extension<KinlyColorTokens>();
+    final derived = colors ?? KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
     final corners = theme.extension<Corners>();
-    final colorScheme = theme.colorScheme;
 
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(spacing?.xl ?? 24),
       decoration: BoxDecoration(
-        color:
-            colors?.surfaceVariant ?? colorScheme.surfaceContainerHighest,
+        color: derived.surfaceVariant,
         borderRadius: BorderRadius.circular(corners?.large ?? 16),
       ),
       child: Column(
@@ -58,7 +58,7 @@ class KinlyEmptyState extends StatelessWidget {
               body!,
               style: type?.bodyMedium ??
                   theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+                    color: derived.onSurface.withValues(alpha: 0.7),
                   ),
               textAlign: TextAlign.center,
             ),

@@ -7,21 +7,18 @@ import 'package:kinly/core/ui/buttons/kinly_outlined_button.dart';
 import 'package:kinly/core/ui/buttons/kinly_fab.dart';
 
 void main() {
-  Widget _wrap(Widget child, {Brightness brightness = Brightness.light}) {
+  Widget wrap(Widget child, {Brightness brightness = Brightness.light}) {
     return MaterialApp(
       theme: buildKinlyTheme(brightness),
       home: Scaffold(body: Center(child: child)),
     );
   }
 
-  testWidgets('filled button uses control colors in light mode', (tester) async {
+  testWidgets('filled button uses control colors in light mode', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      _wrap(
-        KinlyFilledButton.text(
-          onPressed: () {},
-          label: 'Filled',
-        ),
-      ),
+      wrap(KinlyFilledButton.text(onPressed: () {}, label: 'Filled')),
     );
 
     final filled = tester.widget<FilledButton>(find.byType(FilledButton));
@@ -34,13 +31,12 @@ void main() {
     expect(fg, theme.extension<KinlyControlColors>()!.filledFg);
   });
 
-  testWidgets('outlined button uses control colors in dark mode', (tester) async {
+  testWidgets('outlined button uses control colors in dark mode', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      _wrap(
-        KinlyOutlinedButton.text(
-          onPressed: () {},
-          label: 'Outlined',
-        ),
+      wrap(
+        KinlyOutlinedButton.text(onPressed: () {}, label: 'Outlined'),
         brightness: Brightness.dark,
       ),
     );
@@ -57,14 +53,7 @@ void main() {
   });
 
   testWidgets('fab uses control colors', (tester) async {
-    await tester.pumpWidget(
-      _wrap(
-        KinlyFab(
-          onPressed: () {},
-          icon: Icons.add,
-        ),
-      ),
-    );
+    await tester.pumpWidget(wrap(KinlyFab(onPressed: () {}, icon: Icons.add)));
 
     final fab = tester.widget<FloatingActionButton>(
       find.byType(FloatingActionButton),

@@ -26,9 +26,8 @@ class KinlyAddTileButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final controls =
-        theme.extension<KinlyControlColors>() ??
-        KinlyPalette.controls(theme.brightness, theme.colorScheme);
+    final controls = theme.extension<KinlyControlColors>() ??
+        KinlyPalette.build(theme.brightness).controlColors;
 
     // --- MATCH KinlyTabBar + KinlyFilledButton ---
     final Color containerColor = controls.addTileBg;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../theme/kinly_sections.dart';
+import '../theme/kinly_palette.dart';
+import '../theme/color_tokens.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
 
@@ -33,6 +35,9 @@ class KinlySelectionCard extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final corners = theme.extension<Corners>();
+    final tokens =
+        theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
 
     return Semantics(
       button: true,
@@ -80,7 +85,7 @@ class KinlySelectionCard extends StatelessWidget {
                         Text(
                           subtitle,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
+                            color: tokens.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
                       ],

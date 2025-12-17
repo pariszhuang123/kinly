@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -25,23 +26,22 @@ class KinlyChoiceChip extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
     final corners = theme.extension<Corners>();
-    final colors = theme.extension<KinlyColorTokens>();
+    final colors = theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
-    final colorScheme = theme.colorScheme;
 
     final background =
         selected
-            ? (colors?.primaryContainer ?? colorScheme.primaryContainer)
-            : (colors?.surfaceVariant ??
-                colorScheme.surfaceContainerHighest);
+            ? colors.primaryContainer
+            : colors.surfaceVariant;
     final borderColor =
         selected
-            ? (colors?.primary ?? colorScheme.primary)
-            : (colors?.outline ?? colorScheme.outline);
+            ? colors.primary
+            : colors.outline;
     final labelColor =
         selected
-            ? (colors?.onPrimaryContainer ?? colorScheme.onPrimaryContainer)
-            : (colors?.onSurface ?? colorScheme.onSurface);
+            ? colors.onPrimaryContainer
+            : colors.onSurface;
 
     return ChoiceChip(
       label: Row(
@@ -63,8 +63,7 @@ class KinlyChoiceChip extends StatelessWidget {
       onSelected: onSelected,
       backgroundColor: background,
       selectedColor: background,
-      disabledColor: (colors?.disabled ?? colorScheme.outlineVariant)
-          .withValues(alpha: 0.4),
+      disabledColor: colors.disabled.withValues(alpha: 0.4),
       labelPadding: EdgeInsets.symmetric(
         horizontal: spacing?.s ?? 8,
         vertical: spacing?.xxs ?? 2,

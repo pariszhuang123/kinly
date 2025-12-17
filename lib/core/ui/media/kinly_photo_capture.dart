@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -28,17 +29,17 @@ class KinlyPhotoCapture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>();
     final corners = theme.extension<Corners>();
-    final colors = theme.extension<KinlyColorTokens>();
+    final colors = theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
 
     final hasPhoto = photoUrl?.trim().isNotEmpty == true;
 
     final preview = Container(
       decoration: BoxDecoration(
-        color: colors?.surfaceVariant ?? colorScheme.surfaceContainerHighest,
+        color: colors.surfaceVariant,
         borderRadius: BorderRadius.circular(corners?.medium ?? 12),
       ),
       child: Stack(
@@ -59,7 +60,7 @@ class KinlyPhotoCapture extends StatelessWidget {
                                 placeholderText,
                                 style: (type?.bodyMedium ??
                                         theme.textTheme.bodyMedium)
-                                    ?.copyWith(color: colorScheme.error),
+                                    ?.copyWith(color: colors.error),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -72,14 +73,14 @@ class KinlyPhotoCapture extends StatelessWidget {
                           Icon(
                             Icons.photo_camera_outlined,
                             size: 32,
-                            color: colorScheme.onSurfaceVariant,
+                            color: colors.onSurface.withValues(alpha: 0.7),
                           ),
                           SizedBox(height: spacing?.xs ?? 8),
                           Text(
                             placeholderText,
                             style: (type?.bodyMedium ??
                                     theme.textTheme.bodyMedium)
-                                ?.copyWith(color: colorScheme.onSurfaceVariant),
+                                ?.copyWith(color: colors.onSurface.withValues(alpha: 0.7)),
                             textAlign: TextAlign.center,
                           ),
                         ],

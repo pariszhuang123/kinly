@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/color_tokens.dart';
+import '../theme/kinly_palette.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
 import '../theme/typography_tokens.dart';
@@ -23,9 +24,9 @@ class KinlySegmentedControl<T> extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
     final corners = theme.extension<Corners>();
-    final colors = theme.extension<KinlyColorTokens>();
+    final colors = theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
-    final colorScheme = theme.colorScheme;
 
     return SegmentedButton<T>(
       segments: segments.entries
@@ -59,26 +60,25 @@ class KinlySegmentedControl<T> extends StatelessWidget {
         backgroundColor: WidgetStateProperty.resolveWith(
           (states) {
             if (states.contains(WidgetState.selected)) {
-              return colors?.primaryContainer ?? colorScheme.primaryContainer;
+              return colors.primaryContainer;
             }
-            return colors?.surfaceVariant ??
-                colorScheme.surfaceContainerHighest;
+            return colors.surfaceVariant;
           },
         ),
         foregroundColor: WidgetStateProperty.resolveWith(
           (states) {
             if (states.contains(WidgetState.selected)) {
-              return colors?.onPrimaryContainer ?? colorScheme.onPrimaryContainer;
+              return colors.onPrimaryContainer;
             }
-            return colors?.onSurface ?? colorScheme.onSurface;
+            return colors.onSurface;
           },
         ),
         side: WidgetStateProperty.resolveWith(
           (states) {
             final color =
                 states.contains(WidgetState.selected)
-                    ? colors?.primary ?? colorScheme.primary
-                    : colors?.outline ?? colorScheme.outline;
+                    ? colors.primary
+                    : colors.outline;
             return BorderSide(color: color);
           },
         ),

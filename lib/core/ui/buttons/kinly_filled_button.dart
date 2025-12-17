@@ -1,7 +1,6 @@
 // lib/core/ui/buttons/kinly_filled_button.dart
 import 'package:flutter/material.dart';
 
-import '../../theme/color_tokens.dart';
 import '../../theme/control_tokens.dart';
 import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
@@ -129,9 +128,9 @@ class KinlyFilledButton extends StatelessWidget {
     final corners = theme.extension<Corners>();
     final tokens =
         theme.extension<KinlyControlColors>() ??
-        KinlyPalette.controls(theme.brightness, theme.colorScheme);
-    final colors = theme.extension<KinlyColorTokens>();
+        KinlyPalette.build(theme.brightness).controlColors;
     final type = theme.extension<KinlyTypography>();
+    final disabled = onPressed == null;
 
     final horizontal = compact ? spacing.sm : spacing.lg;
     final vertical = compact ? spacing.xs : spacing.sm;
@@ -151,9 +150,17 @@ class KinlyFilledButton extends StatelessWidget {
 
     // ---- COLOR LOGIC (aligned with KinlyAddTileButton / FAB / TabBar) ----
     final Color backgroundColor =
-        destructive ? (colors?.error ?? tokens.filledDestructiveBg) : tokens.filledBg;
+        destructive
+            ? (disabled
+                ? tokens.filledDestructiveDisabledBg
+                : tokens.filledDestructiveBg)
+            : (disabled ? tokens.filledDisabledBg : tokens.filledBg);
     final Color foregroundColor =
-        destructive ? (colors?.onError ?? tokens.filledDestructiveFg) : tokens.filledFg;
+        destructive
+            ? (disabled
+                ? tokens.filledDestructiveDisabledFg
+                : tokens.filledDestructiveFg)
+            : (disabled ? tokens.filledDisabledFg : tokens.filledFg);
 
     final baseStyle = FilledButton.styleFrom(
       minimumSize: const Size(48, 48),
@@ -169,9 +176,6 @@ class KinlyFilledButton extends StatelessWidget {
     final overlay = WidgetStateProperty.resolveWith<Color?>((states) {
       if (states.contains(WidgetState.pressed)) {
         return foregroundColor.withValues(alpha: 0.12);
-      }
-      if (states.contains(WidgetState.disabled)) {
-        return foregroundColor.withValues(alpha: 0.0);
       }
       return null;
     });

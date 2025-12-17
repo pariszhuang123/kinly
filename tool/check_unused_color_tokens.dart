@@ -18,19 +18,34 @@ void main() async {
   }
 
   final unused = <String>[];
+  final libDir = Directory('lib');
+
+  bool fileUsesToken(File file, String token) {
+    final text = file.readAsStringSync();
+    return RegExp(r'\b' + RegExp.escape(token) + r'\b').hasMatch(text);
+  }
+
+  bool tokenUsed(String token) {
+    final queue = <Directory>[libDir];
+    while (queue.isNotEmpty) {
+      final dir = queue.removeLast();
+      for (final entity in dir.listSync()) {
+        if (entity is Directory) {
+          queue.add(entity);
+          continue;
+        }
+        if (entity is! File || !entity.path.endsWith('.dart')) continue;
+        if (entity.path.replaceAll('\\', '/').endsWith('lib/core/theme/color_tokens.dart')) {
+          continue;
+        }
+        if (fileUsesToken(entity, token)) return true;
+      }
+    }
+    return false;
+  }
+
   for (final name in tokens) {
-    final result = await Process.run(
-      'rg',
-      [
-        '--no-heading',
-        '--word-regexp',
-        name,
-        'lib',
-        '--glob',
-        '!lib/core/theme/color_tokens.dart',
-      ],
-    );
-    if (result.exitCode == 1 || (result.stdout as String).trim().isEmpty) {
+    if (!tokenUsed(name)) {
       unused.add(name);
     }
   }
