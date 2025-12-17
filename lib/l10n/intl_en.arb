@@ -287,7 +287,7 @@
   "shareCreateErrorGeneric": "Couldn't create. Try again.",
   "shareCreateErrorPaywallActiveCap": "You're at the free limit of active bills. Upgrade for more space.",
   "shareCreateErrorForbidden": "You don't have permission to create this right now.",
-  "shareCreateSuccess": "Share created.",
+  "shareCreateSuccess": "Bill created.",
   "flowChoreCreateTitle": "Add Flow",
   "flowChoreEditTitle": "Edit Flow",
   "flowChoreNameLabel": "What are we agreeing on?",

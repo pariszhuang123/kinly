@@ -14,6 +14,7 @@ import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../../core/telemetry/telemetry.dart';
 import '../../../core/di/locator.dart';
 import '../../today/domain/models.dart';
@@ -46,7 +47,9 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>()!;
     final s = S.of(context);
-    final telemetry = widget.telemetry ?? sl<Telemetry>();
+    final telemetry =
+        widget.telemetry ??
+        (sl.isRegistered<Telemetry>() ? sl<Telemetry>() : const NullTelemetry());
 
     final hasItems = widget.owed.items.isNotEmpty;
 
@@ -67,7 +70,9 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
                   child:
                       hasItems
                           ? KinlyScrollFade(
-                            child: _ShareOwedItemsList(items: widget.owed.items),
+                            child: _ShareOwedItemsList(
+                              items: widget.owed.items,
+                            ),
                           )
                           : _ShareOwedEmptyState(
                             message: s.shareOwedDetailEmpty,
@@ -261,6 +266,7 @@ class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
   @override
   Widget build(BuildContext context) {
     final spacing = Theme.of(context).extension<Spacing>()!;
+    final sectionColors = Theme.of(context).extension<KinlySections>()!.share;
 
     return ListView.separated(
       itemCount: widget.items.length,
@@ -276,6 +282,7 @@ class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
           hasNotes: hasNotes,
           isExpanded: isExpanded,
           onToggle: hasNotes ? () => _toggle(item.expenseId) : null,
+          colors: sectionColors,
         );
       },
     );
@@ -327,6 +334,7 @@ class _DetailRow extends StatelessWidget {
     required this.amountLabel,
     required this.hasNotes,
     required this.isExpanded,
+    required this.colors,
     this.notes,
     this.onToggle,
   });
@@ -336,6 +344,7 @@ class _DetailRow extends StatelessWidget {
   final String? notes;
   final bool hasNotes;
   final bool isExpanded;
+  final SectionColors colors;
   final VoidCallback? onToggle;
 
   @override
@@ -350,15 +359,9 @@ class _DetailRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (hasNotes)
-              Icon(
-                isExpanded
-                    ? Icons.expand_less_rounded
-                    : Icons.expand_more_rounded,
-                size: 20,
-                color: theme.colorScheme.primary,
-              )
+              KinlyExpandBadge(isExpanded: isExpanded, colors: colors)
             else
-              const SizedBox(width: 20),
+              const SizedBox(width: 32),
             const SizedBox(width: 12),
             Expanded(
               child: Text(description, style: theme.textTheme.bodyMedium),

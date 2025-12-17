@@ -14,6 +14,7 @@ import '../../../core/ui/dialogs/kinly_dialogs.dart';
 import '../../../core/ui/inputs/kinly_dropdown_field.dart';
 import '../../../core/ui/inputs/kinly_text_field.dart';
 import '../../../core/ui/kinly_date_picker.dart';
+import '../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/members/kinly_selectable_member_avatar_row.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
@@ -379,6 +380,7 @@ class _FlowChoreFormView extends StatelessWidget {
           isUploadingPhoto: isUploadingPhoto,
           photoUrl: expectationPhotoUrl,
           onPhotoCapture: onPhotoCapture,
+          flowColors: flowColors,
           initiallyExpanded: expandOptional,
         ),
         SizedBox(height: spacing?.xl ?? 24),
@@ -565,7 +567,7 @@ class _FlowChoreError extends StatelessWidget {
   }
 }
 
-class _OptionalDetailsExpansion extends StatelessWidget {
+class _OptionalDetailsExpansion extends StatefulWidget {
   const _OptionalDetailsExpansion({
     required this.spacing,
     required this.s,
@@ -575,6 +577,7 @@ class _OptionalDetailsExpansion extends StatelessWidget {
     required this.isUploadingPhoto,
     required this.photoUrl,
     required this.onPhotoCapture,
+    required this.flowColors,
     this.initiallyExpanded = false,
   });
 
@@ -586,61 +589,101 @@ class _OptionalDetailsExpansion extends StatelessWidget {
   final bool isUploadingPhoto;
   final String? photoUrl;
   final VoidCallback onPhotoCapture;
+  final SectionColors? flowColors;
   final bool initiallyExpanded;
+
+  @override
+  State<_OptionalDetailsExpansion> createState() =>
+      _OptionalDetailsExpansionState();
+}
+
+class _OptionalDetailsExpansionState extends State<_OptionalDetailsExpansion> {
+  late bool _isExpanded;
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded = widget.initiallyExpanded || widget.hasHowToError;
+  }
+
+  @override
+  void didUpdateWidget(covariant _OptionalDetailsExpansion oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.hasHowToError && !_isExpanded) {
+      _isExpanded = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final colors =
+        widget.flowColors ??
+        SectionColors(
+          background: colorScheme.surfaceContainerHigh,
+          card: colorScheme.surfaceContainerHigh,
+          icon: colorScheme.onSurfaceVariant,
+          accent: colorScheme.primary,
+        );
+
     return Container(
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHigh,
+        color: colors.card,
         borderRadius: BorderRadius.circular(12),
       ),
       child: ExpansionTile(
-        initiallyExpanded: initiallyExpanded || hasHowToError,
+        initiallyExpanded: _isExpanded,
+        onExpansionChanged: (expanded) => setState(() {
+          _isExpanded = expanded;
+        }),
+        trailing: KinlyExpandBadge(
+          isExpanded: _isExpanded,
+          colors: colors,
+        ),
         title: Text(
-          s.flowChoreDetailMoreInfoTitle,
+          widget.s.flowChoreDetailMoreInfoTitle,
           style: theme.textTheme.titleMedium,
         ),
         childrenPadding: EdgeInsetsDirectional.fromSTEB(
           16,
           0,
           16,
-          spacing?.md ?? 16,
+          widget.spacing?.md ?? 16,
         ),
         children: [
-          SizedBox(height: spacing?.xl ?? 16),
+          SizedBox(height: widget.spacing?.xl ?? 16),
           KinlyTextField(
-            controller: notesController,
+            controller: widget.notesController,
             minLines: 3,
             maxLines: 4,
-            labelText: s.flowChoreNotesLabel,
-            hintText: s.flowChoreNotesHint,
+            labelText: widget.s.flowChoreNotesLabel,
+            hintText: widget.s.flowChoreNotesHint,
             onChanged:
                 (value) => context.read<FlowChoreBloc>().add(
                   FlowChoreNotesChanged(value),
                 ),
           ),
-          SizedBox(height: spacing?.lg ?? 16),
+          SizedBox(height: widget.spacing?.lg ?? 16),
           KinlyTextField(
-            controller: howToController,
-            labelText: s.flowChoreHowToLabel,
-            hintText: s.flowChoreHowToHint,
-            errorText: hasHowToError ? s.flowChoreValidationHowToUrl : null,
+            controller: widget.howToController,
+            labelText: widget.s.flowChoreHowToLabel,
+            hintText: widget.s.flowChoreHowToHint,
+            errorText:
+                widget.hasHowToError ? widget.s.flowChoreValidationHowToUrl : null,
             keyboardType: TextInputType.url,
             onChanged:
                 (value) => context.read<FlowChoreBloc>().add(
                   FlowChoreHowToChanged(value),
                 ),
           ),
-          SizedBox(height: spacing?.lg ?? 16),
+          SizedBox(height: widget.spacing?.lg ?? 16),
           _ExpectationPhotoPicker(
-            spacing: spacing,
-            s: s,
-            isUploading: isUploadingPhoto,
-            photoUrl: photoUrl,
-            onCapture: onPhotoCapture,
+            spacing: widget.spacing,
+            s: widget.s,
+            isUploading: widget.isUploadingPhoto,
+            photoUrl: widget.photoUrl,
+            onCapture: widget.onPhotoCapture,
           ),
         ],
       ),

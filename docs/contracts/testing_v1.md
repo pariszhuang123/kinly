@@ -16,7 +16,8 @@ Scope: Kinly MVP (Flow, Share, Pulse/Gratitude, Home, Auth, Paywall). Applies to
 
 ## Surfaces Under Test
 - Flutter app: `lib/**` with tests in `test/**` (unit, bloc, widget, golden).
-- Supabase backend: `supabase/functions/**`, `supabase/migrations/**`, with tests in `supabase/tests/**` (pgTap/SQL-style).
+- Supabase Edge Functions: `supabase/functions/**` with Deno tests co-located per function folder (at least one `*.test.ts`, e.g., `index.test.ts`).
+- Supabase backend: `supabase/migrations/**` with tests in `supabase/tests/**` (pgTap/SQL-style).
 - Contracts/types (soft v1): generated schemas in `tool/` or `contracts/` as available.
 
 ## Minimum Expectations Per Change
@@ -25,7 +26,7 @@ Scope: Kinly MVP (Flow, Share, Pulse/Gratitude, Home, Auth, Paywall). Applies to
   - Widget tests for interaction/navigation changes.  
   - Golden tests only when visual structure must stay stable.
 - Supabase migrations/RPCs (`supabase/migrations/**`): For new/edited RPCs, tables, constraints, views, or limit checks, add a pgTap test in `supabase/tests/**` that exercises the RPC or constraint (success + unauthorized + boundary where meaningful).
-- Supabase functions (`supabase/functions/**`): Keep core logic in SQL when possible; otherwise add a smoke test via pgTap or the minimal harness you have.
+- Supabase functions (`supabase/functions/**`): Each function folder must contain at least one Deno test (`*.test.ts`, e.g., `index.test.ts`) covering the function entry point. Keep core logic in SQL when possible; otherwise add a smoke test via pgTap or the minimal harness you have.
 
 ## Dopamine Moments (Flow/Share/Pulse/Reflection)
 - Gate: show only after confirmed success from bloc (no optimistic render).  
@@ -48,10 +49,12 @@ Scope: Kinly MVP (Flow, Share, Pulse/Gratitude, Home, Auth, Paywall). Applies to
 ## CI Expectations for Trunk
 - If `lib/**` or `supabase/migrations/**` change and neither `test/**` nor `supabase/tests/**` change, fail with a hint to add/justify tests.  
 - If the commit message contains `fix`, `bug`, or `regression`, require a test diff or an explicit justification.  
+- Each Supabase Edge Function folder must ship at least one `*.test.ts`; CI guard fails if missing and `deno test` runs for all functions.  
 - Optional: warn when migrations touching RPCs/limits have no pgTap references.
 
 ## Acceptance Criteria (v1)
 - At least one test changed or a clear justification is recorded for why tests were not needed (e.g., copy-only change).  
+- Each Supabase Edge Function folder contains a Deno test (`*.test.ts`).  
 - New/updated RPCs are exercised in pgTap.  
 - New/updated blocs have a meaningful test unless trivial; bug fixes include a regression test.  
 - Dopamine: telemetry asserted, cooldown/queue tested, reduce-motion path covered.  

@@ -12,6 +12,7 @@ import 'package:kinly/core/dopamine/dopamine_overlay.dart';
 import 'package:kinly/core/dopamine/dopamine_models.dart';
 import 'package:kinly/core/dopamine/enums/dopamine_milestone.dart';
 import 'package:kinly/core/dopamine/enums/dopamine_strength.dart';
+import 'package:kinly/core/theme/kinly_theme.dart';
 
 import '../../../support/fake_telemetry.dart';
 
@@ -312,5 +313,49 @@ void main() {
 
     expect(telemetry.events.length, 2); // two show calls emit two telemetry events
     expect(telemetry.events.last.name, 'dopamine_shown');
+  });
+
+  testWidgets('notes toggle uses onSurface color in dark theme for contrast', (
+    tester,
+  ) async {
+    final owed = TodayShareOwed(
+      payerUserId: 'user-1',
+      displayName: 'Alex',
+      totalOwedCents: 1500,
+      items: const [
+        TodayShareOwedItem(
+          expenseId: 'exp-1',
+          description: 'Snacks',
+          amountCents: 1500,
+          notes: 'Remember to reimburse',
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: buildKinlyTheme(Brightness.dark),
+        localizationsDelegates: const [S.delegate],
+        supportedLocales: S.delegate.supportedLocales,
+        home: MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: ShareOwedDetailScreen(
+            owed: owed,
+            expensesRepository: _MockExpensesRepository(),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final iconFinder = find.byIcon(Icons.expand_more_rounded);
+    expect(iconFinder, findsOneWidget);
+
+    final icon = tester.widget<Icon>(iconFinder);
+    final context = tester.element(find.byType(ShareOwedDetailScreen));
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+
+    expect(icon.color, onSurface);
   });
 }

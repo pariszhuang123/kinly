@@ -232,7 +232,6 @@ class HubScreen extends StatelessWidget {
 
     final appLink =
         state.appLink.isNotEmpty ? state.appLink : 'https://kinly.app';
-    final isDark = theme.brightness == Brightness.dark;
 
     context.read<HubBloc>().add(
       const HubShareLogged(feature: 'invite_button', channel: 'qr_code'),
@@ -253,7 +252,6 @@ class HubScreen extends StatelessWidget {
             padding: EdgeInsetsDirectional.all(spacing.lg),
             child: HubQrCode(
               data: appLink,
-              isDark: isDark,
               backgroundColor: colorScheme.surfaceContainerHighest,
             ),
           ),

@@ -7,6 +7,7 @@ import '../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../core/ui/members/kinly_member_avatar_stack.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/hub_bloc.dart';
+import '../../../../core/theme/kinly_sections.dart';
 
 class HubMembersSection extends StatelessWidget {
   const HubMembersSection({
@@ -30,7 +31,8 @@ class HubMembersSection extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
-    final isDark = theme.brightness == Brightness.dark;
+    final sections = theme.extension<KinlySections>()!;
+    final inviteColor = sections.share.icon;
     final s = S.of(context);
     final members = state.members;
 
@@ -48,7 +50,7 @@ class HubMembersSection extends StatelessWidget {
                   state.inviteCode,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: isDark ? colorScheme.onSurface : colorScheme.primary,
+                    color: inviteColor,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

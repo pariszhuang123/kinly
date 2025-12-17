@@ -26,7 +26,6 @@ class HubQrSection extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final appLink =
         state.appLink.isNotEmpty ? state.appLink : 'https://kinly.app';
-    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       width: double.infinity,
@@ -47,7 +46,6 @@ class HubQrSection extends StatelessWidget {
               padding: EdgeInsetsDirectional.all(spacing.xs),
               child: HubQrCode(
                 data: appLink,
-                isDark: isDark,
                 backgroundColor: colorScheme.surface,
                 size: 70,
               ),
@@ -78,18 +76,21 @@ class HubQrCode extends StatelessWidget {
   const HubQrCode({
     super.key,
     required this.data,
-    required this.isDark,
     required this.backgroundColor,
+    this.isDarkOverride,
     this.size = 250,
   });
 
   final String data;
-  final bool isDark;
   final Color backgroundColor;
+  final bool? isDarkOverride;
   final double size;
 
   @override
   Widget build(BuildContext context) {
+    final isDark =
+        isDarkOverride ?? Theme.of(context).brightness == Brightness.dark;
+
     return QrImageView(
       data: data,
       version: QrVersions.auto,

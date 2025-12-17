@@ -61,7 +61,7 @@ class _TodayScreenState extends State<TodayScreen>
   void initState() {
     super.initState();
     _confettiController = ConfettiController(
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 3),
     );
   }
 
@@ -316,11 +316,11 @@ class _TodayScreenState extends State<TodayScreen>
                       confettiController: _confettiController,
                       blastDirectionality: BlastDirectionality.explosive,
                       shouldLoop: false,
-                      emissionFrequency: 0.03,
-                      maxBlastForce: 8,
-                      minBlastForce: 4,
-                      numberOfParticles: 12,
-                      gravity: 0.2,
+                      emissionFrequency: 0.01,
+                      maxBlastForce: 4,
+                      minBlastForce: 2,
+                      numberOfParticles: 6,
+                      gravity: 0.12,
                       colors: [
                         sections.flow.accent,
                         sections.share.accent,

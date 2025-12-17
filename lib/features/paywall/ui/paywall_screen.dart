@@ -262,12 +262,7 @@ class _BenefitChecklist extends StatelessWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final surface = theme.colorScheme.surface;
-    final checkBg = Color.alphaBlend(
-      accent.withValues(
-        alpha: theme.brightness == Brightness.dark ? 0.28 : 0.18,
-      ),
-      surface,
-    );
+    final checkBg = Color.alphaBlend(accent.withValues(alpha: 0.22), surface);
     final checkColor = theme.colorScheme.onSurface;
 
     return Column(
