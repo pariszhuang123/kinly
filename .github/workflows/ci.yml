@@ -34,7 +34,20 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          deno-version-file: .denoversion
+
+      - name: "Guard: enforce pinned Deno version"
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED=$(tr -d ' \t\r\n' < .denoversion)
+          ACTUAL=$(deno --version | head -n 1 | awk '{print $2}')
+          echo "Expected Deno: ${EXPECTED}"
+          echo "Actual Deno:   ${ACTUAL}"
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Installed Deno ${ACTUAL} does not match pinned version ${EXPECTED}"
+            exit 1
+          fi
 
       - name: Deno tests (Supabase Edge Functions)
         run: deno test -A supabase/functions
@@ -84,6 +97,9 @@ jobs:
 
       - name: Check shared understanding copy
         run: dart run tool/check_shared_understanding_copy.dart
+
+      - name: Check no Brightness usage in UI/primitives
+        run: dart run tool/check_no_brightness_in_ui.dart
 
       - name: Check module manifest guardrails
         run: dart run tool/check_modules.dart

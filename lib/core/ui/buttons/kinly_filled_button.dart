@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
+import '../../theme/control_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -123,10 +125,11 @@ class KinlyFilledButton extends StatelessWidget {
     assert((semanticsLabel ?? label).isNotEmpty, 'Semantic label must not be empty');
 
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
     final spacing = theme.extension<Spacing>()!;
     final corners = theme.extension<Corners>();
+    final tokens =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.controls(theme.brightness, theme.colorScheme);
     final colors = theme.extension<KinlyColorTokens>();
     final type = theme.extension<KinlyTypography>();
 
@@ -147,21 +150,10 @@ class KinlyFilledButton extends StatelessWidget {
             : Text(label, overflow: TextOverflow.ellipsis);
 
     // ---- COLOR LOGIC (aligned with KinlyAddTileButton / FAB / TabBar) ----
-    final Color backgroundColor;
-    final Color foregroundColor;
-
-    if (destructive) {
-      backgroundColor = colors?.error ?? colorScheme.error;
-      foregroundColor = colors?.onError ?? colorScheme.onError;
-    } else if (isDark) {
-      // Dark mode CTA: match KinlyAddTileButton & KinlyFab
-      backgroundColor = colorScheme.primaryContainer;
-      foregroundColor = colorScheme.onSurface;
-    } else {
-      // Light mode CTA: classic primary
-      backgroundColor = colors?.primary ?? colorScheme.primary;
-      foregroundColor = colors?.onPrimary ?? colorScheme.onPrimary;
-    }
+    final Color backgroundColor =
+        destructive ? (colors?.error ?? tokens.filledDestructiveBg) : tokens.filledBg;
+    final Color foregroundColor =
+        destructive ? (colors?.onError ?? tokens.filledDestructiveFg) : tokens.filledFg;
 
     final baseStyle = FilledButton.styleFrom(
       minimumSize: const Size(48, 48),

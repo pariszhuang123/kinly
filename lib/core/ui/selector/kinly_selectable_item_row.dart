@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../theme/color_tokens.dart';
+import '../../theme/control_tokens.dart';
 import '../../theme/spacing.dart';
 
 class KinlySelectableItem<T> {
@@ -101,25 +101,19 @@ class _SelectableItem<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final colorTokens = theme.extension<KinlyColorTokens>();
+    final controls = theme.extension<KinlyControlColors>();
     final spacingTokens = theme.extension<Spacing>();
     final diameter = visualSize;
     const minTapTarget = 48.0;
     final extraPadding = math.max(0.0, (minTapTarget - diameter) / 2);
     final tapPadding = math.max(spacingTokens?.xxs ?? 4.0, extraPadding);
-    final isDark = theme.brightness == Brightness.dark;
-    final basePrimary = colorTokens?.primary ?? colorScheme.primary;
+    final basePrimary =
+        controls?.selectableItemBorderSelected ?? theme.colorScheme.primary;
     final baseContainer =
-        colorTokens?.primaryContainer ?? colorScheme.primaryContainer;
-    final haloColor =
-        isDark
-            ? baseContainer.withValues(alpha: 0.38)
-            : basePrimary.withValues(alpha: 0.26);
-    final ringColor =
-        isDark
-            ? baseContainer.withValues(alpha: 0.78)
-            : basePrimary.withValues(alpha: 0.42);
+        controls?.selectableItemBgSelected ??
+        theme.colorScheme.primaryContainer;
+    final haloColor = baseContainer.withValues(alpha: 0.38);
+    final ringColor = basePrimary.withValues(alpha: 0.42);
     final ringThickness = isSelected ? 2.0 : 0.0;
     final haloPadding =
         isSelected ? math.max(spacingTokens?.xs ?? 4.0, 4.0) : 0.0;

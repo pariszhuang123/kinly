@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../theme/control_tokens.dart';
 import '../../theme/kinly_sections.dart';
+import '../../theme/kinly_palette.dart';
 
 /// Kinly-themed expand/collapse badge used for rows with optional details.
 class KinlyExpandBadge extends StatelessWidget {
@@ -8,20 +10,19 @@ class KinlyExpandBadge extends StatelessWidget {
     super.key,
     required this.isExpanded,
     required this.colors,
-    this.isDarkOverride,
   });
 
   final bool isExpanded;
   final SectionColors colors;
-  final bool? isDarkOverride;
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        isDarkOverride ?? Theme.of(context).brightness == Brightness.dark;
-    final iconColor =
-        isDark ? Theme.of(context).colorScheme.onSurface : colors.icon;
-    final background = colors.accent.withValues(alpha: isDark ? 0.16 : 0.12);
+    final theme = Theme.of(context);
+    final controls = theme.extension<KinlyControlColors>() ??
+        KinlyPalette.controls(theme.brightness, theme.colorScheme);
+    final iconColor = controls?.expandBadgeIcon ?? colors.icon;
+    final background =
+        controls?.expandBadgeBg ?? colors.accent.withValues(alpha: 0.12);
 
     return DecoratedBox(
       decoration: BoxDecoration(

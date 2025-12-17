@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../theme/control_tokens.dart';
+import '../theme/kinly_palette.dart';
 
 /// Kinly-themed time picker that aligns with KinlyFilledButton colors.
 Future<TimeOfDay?> showKinlyTimePicker({
@@ -6,15 +8,12 @@ Future<TimeOfDay?> showKinlyTimePicker({
   required TimeOfDay initialTime,
   TimePickerEntryMode initialEntryMode = TimePickerEntryMode.dial,
 }) {
-  final baseTheme = Theme.of(context);
-  final colorScheme = baseTheme.colorScheme;
-  final isDark = baseTheme.brightness == Brightness.dark;
-
-  // Match KinlyFilledButton logic.
-  final pickerPrimary =
-      isDark ? colorScheme.inversePrimary : colorScheme.primary;
-  final pickerOnPrimary =
-      isDark ? colorScheme.onInverseSurface : colorScheme.onPrimary;
+  final theme = Theme.of(context);
+  final controls =
+      theme.extension<KinlyControlColors>() ??
+      KinlyPalette.controls(theme.brightness, theme.colorScheme);
+  final pickerPrimary = controls.pickerPrimary;
+  final pickerOnPrimary = controls.pickerOnPrimary;
 
   return showTimePicker(
     context: context,

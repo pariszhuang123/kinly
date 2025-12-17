@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../theme/control_tokens.dart';
+import '../theme/kinly_palette.dart';
 import '../theme/spacing.dart';
 
 /// Reusable Kinly-styled multiline comment box.
 ///
 /// - Adapts to light/dark using ThemeData by default.
-/// - Optional [isDarkOverride] lets you force a variant if needed
-///   (e.g. dark card on light background).
 class KinlyCommentBox extends StatelessWidget {
   const KinlyCommentBox({
     super.key,
@@ -16,7 +16,6 @@ class KinlyCommentBox extends StatelessWidget {
     this.maxLength = 500,
     required this.onChanged,
     this.enabled = true,
-    this.isDarkOverride,
   });
 
   final String label;
@@ -26,19 +25,15 @@ class KinlyCommentBox extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final bool enabled;
 
-  /// If provided, overrides ThemeData.brightness.
-  /// If null, brightness comes from Theme.of(context).
-  final bool? isDarkOverride;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final colors = theme.colorScheme;
-    final isDark = isDarkOverride ?? theme.brightness == Brightness.dark;
-
-    final fillColor =
-        isDark ? colors.surfaceContainerHigh : colors.surfaceContainerLowest;
+    final controls =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.controls(theme.brightness, theme.colorScheme);
+    final fillColor = controls.commentBoxBg;
+    final borderColor = controls.commentBoxBorder;
 
     return TextField(
       maxLines: maxLines,
@@ -57,10 +52,14 @@ class KinlyCommentBox extends StatelessWidget {
           spacing.md,
           spacing.md,
         ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border:
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: borderColor),
+            ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: colors.primary),
+          borderSide: BorderSide(color: borderColor),
         ),
       ),
     );

@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
+import '../../theme/control_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -80,9 +82,9 @@ class KinlyOutlinedButton extends StatelessWidget {
     final corners = theme.extension<Corners>();
     final colors = theme.extension<KinlyColorTokens>();
     final type = theme.extension<KinlyTypography>();
-
-    final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
+    final controls =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.controls(theme.brightness, theme.colorScheme);
 
     // ---- COLOR LOGIC (aligned with KinlyFilledButton) ----
     // Light:
@@ -90,16 +92,8 @@ class KinlyOutlinedButton extends StatelessWidget {
     // Dark:
     //   text       = onSurface        (same as filled foreground)
     //   border     = primaryContainer (same as filled background)
-    late final Color foreground;
-    late final Color borderColor;
-
-    if (isDark) {
-      foreground = colorScheme.onSurface;
-      borderColor = colorScheme.primaryContainer;
-    } else {
-      foreground = colors?.primary ?? colorScheme.primary;
-      borderColor = foreground;
-    }
+    final Color foreground = controls.outlinedFg;
+    final Color borderColor = controls.outlinedBorder;
 
     final double horizontal = compact ? spacing.sm : spacing.md;
     final double vertical = compact ? spacing.xs : spacing.sm;

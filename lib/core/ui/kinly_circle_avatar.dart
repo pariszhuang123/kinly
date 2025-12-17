@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../theme/kinly_palette.dart';
+import '../theme/control_tokens.dart';
 import 'kinly_loader.dart';
 
 class KinlyCircleAvatar extends StatelessWidget {
@@ -22,6 +24,9 @@ class KinlyCircleAvatar extends StatelessWidget {
     final resolvedRadius = _normalizeRadius(radius);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final controls =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.controls(theme.brightness, colorScheme);
 
     final showsSvgAvatar =
         avatarUrl != null && avatarUrl!.trim().toLowerCase().endsWith('.svg');
@@ -64,9 +69,8 @@ class KinlyCircleAvatar extends StatelessWidget {
     );
 
     final badgeSize = resolvedRadius * 0.95;
-    final isDark = theme.brightness == Brightness.dark;
-    final badgeBackground = isDark ? Colors.white : Colors.black;
-    final iconColor = isDark ? colorScheme.primary : colorScheme.onPrimary;
+    final badgeBackground = controls.avatarBadgeBg;
+    final iconColor = controls.avatarBadgeFg;
     final badge = Container(
       width: badgeSize,
       height: badgeSize,

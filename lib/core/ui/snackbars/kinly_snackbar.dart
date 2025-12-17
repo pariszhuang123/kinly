@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
+import '../../theme/control_tokens.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -11,9 +12,7 @@ class KinlySnackBar {
     String message, {
     String? actionLabel,
     VoidCallback? onAction,
-    bool? isDarkOverride,
   }) {
-    final isDark = _isDark(context, isDarkOverride);
     final colors = _colors(context);
     final scheme = Theme.of(context).colorScheme;
 
@@ -21,12 +20,7 @@ class KinlySnackBar {
       context,
       message,
       background: colors?.success ?? scheme.primaryContainer,
-      foreground: _foregroundColor(
-        colors: colors,
-        scheme: scheme,
-        isDark: isDark,
-        fallback: scheme.onPrimaryContainer,
-      ),
+      foreground: colors?.onSurface ?? scheme.onPrimaryContainer,
       actionLabel: actionLabel,
       onAction: onAction,
     );
@@ -37,9 +31,7 @@ class KinlySnackBar {
     String message, {
     String? actionLabel,
     VoidCallback? onAction,
-    bool? isDarkOverride,
   }) {
-    final isDark = _isDark(context, isDarkOverride);
     final colors = _colors(context);
     final scheme = Theme.of(context).colorScheme;
 
@@ -47,12 +39,7 @@ class KinlySnackBar {
       context,
       message,
       background: colors?.error ?? scheme.error,
-      foreground: _foregroundColor(
-        colors: colors,
-        scheme: scheme,
-        isDark: isDark,
-        fallback: scheme.onError,
-      ),
+      foreground: colors?.onError ?? scheme.onError,
       actionLabel: actionLabel,
       onAction: onAction,
     );
@@ -63,9 +50,7 @@ class KinlySnackBar {
     String message, {
     String? actionLabel,
     VoidCallback? onAction,
-    bool? isDarkOverride,
   }) {
-    final isDark = _isDark(context, isDarkOverride);
     final colors = _colors(context);
     final scheme = Theme.of(context).colorScheme;
 
@@ -73,12 +58,7 @@ class KinlySnackBar {
       context,
       message,
       background: colors?.info ?? scheme.inversePrimary,
-      foreground: _foregroundColor(
-        colors: colors,
-        scheme: scheme,
-        isDark: isDark,
-        fallback: scheme.onInverseSurface,
-      ),
+      foreground: colors?.onSurface ?? scheme.onInverseSurface,
       actionLabel: actionLabel,
       onAction: onAction,
     );
@@ -89,9 +69,7 @@ class KinlySnackBar {
     String message, {
     String? actionLabel,
     VoidCallback? onAction,
-    bool? isDarkOverride,
   }) {
-    final isDark = _isDark(context, isDarkOverride);
     final colors = _colors(context);
     final scheme = Theme.of(context).colorScheme;
 
@@ -99,12 +77,7 @@ class KinlySnackBar {
       context,
       message,
       background: colors?.warning ?? scheme.tertiaryContainer,
-      foreground: _foregroundColor(
-        colors: colors,
-        scheme: scheme,
-        isDark: isDark,
-        fallback: scheme.onTertiaryContainer,
-      ),
+      foreground: colors?.onSurface ?? scheme.onTertiaryContainer,
       actionLabel: actionLabel,
       onAction: onAction,
     );
@@ -158,19 +131,4 @@ class KinlySnackBar {
 
   static KinlyColorTokens? _colors(BuildContext context) =>
       Theme.of(context).extension<KinlyColorTokens>();
-
-  static bool _isDark(BuildContext context, bool? override) =>
-      override ?? Theme.of(context).brightness == Brightness.dark;
-
-  static Color _foregroundColor({
-    required KinlyColorTokens? colors,
-    required ColorScheme scheme,
-    required bool isDark,
-    required Color fallback,
-  }) {
-    if (colors != null) {
-      return isDark ? colors.onSurfaceDark : colors.onSurface;
-    }
-    return fallback;
-  }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/control_tokens.dart';
+import '../../theme/kinly_palette.dart';
 
 /// Kinly-branded FAB that adapts to light/dark mode.
 ///
@@ -28,15 +30,13 @@ class KinlyFab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
+    final controls =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.controls(theme.brightness, theme.colorScheme);
 
     // Align with KinlyAddTileButton & KinlyTabBar
-    final Color bg =
-        backgroundColor ?? (isDark ? colors.primaryContainer : colors.primary);
-
-    final Color fg =
-        foregroundColor ?? (isDark ? colors.onSurface : colors.onPrimary);
+    final Color bg = backgroundColor ?? controls.fabBg;
+    final Color fg = foregroundColor ?? controls.fabFg;
 
     return FloatingActionButton(
       heroTag: heroTag,

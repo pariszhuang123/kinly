@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../theme/control_tokens.dart';
+import '../../theme/kinly_palette.dart';
 import '../../theme/spacing.dart';
 
 class KinlyAddTileButton extends StatelessWidget {
@@ -24,16 +26,14 @@ class KinlyAddTileButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final colors = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
+    final controls =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.controls(theme.brightness, theme.colorScheme);
 
     // --- MATCH KinlyTabBar + KinlyFilledButton ---
-    final Color containerColor =
-        isDark ? colors.primaryContainer : colors.primary;
-
-    final Color iconColor = isDark ? colors.onSurface : colors.onPrimary;
-
-    final Color textColor = isDark ? colors.onSurface : colors.primary;
+    final Color containerColor = controls.addTileBg;
+    final Color iconColor = controls.addTileFg;
+    final Color textColor = controls.addTileFg;
 
     final displayedLabel = label ?? semanticsLabel ?? 'Add';
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../theme/control_tokens.dart';
+import '../theme/kinly_palette.dart';
 import 'kinly_motion_aware.dart';
 
 /// Animated Kinly loader that uses the house logo and adapts to light/dark theme.
@@ -49,12 +51,10 @@ class _KinlyLoaderState extends State<KinlyLoader>
   Widget build(BuildContext context) {
     final motionAware = KinlyMotionAware.of(context);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final resolvedColor =
-        widget.color ??
-        (theme.brightness == Brightness.dark
-            ? colorScheme.onSurfaceVariant
-            : colorScheme.primary);
+    final controls =
+        theme.extension<KinlyControlColors>() ??
+        KinlyPalette.controls(theme.brightness, theme.colorScheme);
+    final resolvedColor = widget.color ?? controls.loaderColor;
 
     final logo = SvgPicture.asset(
       _assetPath,

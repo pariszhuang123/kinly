@@ -138,6 +138,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
       elevations,
       motion,
       palette.colorTokens,
+      palette.controlColors,
       typographyTokens,
       appSizes,
       palette.sections,

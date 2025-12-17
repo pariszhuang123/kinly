@@ -1,5 +1,7 @@
 // lib/core/ui/kinly_date_picker.dart
 import 'package:flutter/material.dart';
+import '../theme/control_tokens.dart';
+import '../theme/kinly_palette.dart';
 
 Future<DateTime?> showKinlyDatePicker({
   required BuildContext context,
@@ -7,15 +9,12 @@ Future<DateTime?> showKinlyDatePicker({
   required DateTime firstDate,
   required DateTime lastDate,
 }) {
-  final baseTheme = Theme.of(context);
-  final colorScheme = baseTheme.colorScheme;
-  final isDark = baseTheme.brightness == Brightness.dark;
-
-  // Match KinlyFilledButton logic
-  final pickerPrimary =
-      isDark ? colorScheme.inversePrimary : colorScheme.primary;
-  final pickerOnPrimary =
-      isDark ? colorScheme.onInverseSurface : colorScheme.onPrimary;
+  final theme = Theme.of(context);
+  final controls =
+      theme.extension<KinlyControlColors>() ??
+      KinlyPalette.controls(theme.brightness, theme.colorScheme);
+  final pickerPrimary = controls.pickerPrimary;
+  final pickerOnPrimary = controls.pickerOnPrimary;
 
   return showDatePicker(
     context: context,

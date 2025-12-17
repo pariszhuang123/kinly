@@ -13,7 +13,6 @@ class KinlyToggle extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.visible = true,
-    this.isDarkOverride,
     this.semanticsLabel,
   });
 
@@ -23,8 +22,6 @@ class KinlyToggle extends StatelessWidget {
   final String? subtitle;
   final bool visible;
 
-  /// Optional override for dark mode styling.
-  final bool? isDarkOverride;
   final String? semanticsLabel;
 
   @override
@@ -53,7 +50,6 @@ class KinlyToggle extends StatelessWidget {
             KinlyCheckbox(
               value: value,
               onChanged: onChanged,
-              isDarkOverride: isDarkOverride,
             ),
             const SizedBox(width: 8),
             Expanded(

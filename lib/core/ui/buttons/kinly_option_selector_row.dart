@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../theme/control_tokens.dart';
 import '../../theme/spacing.dart';
 
 /// A generic Kinly-styled selector for any option type.
@@ -251,15 +252,15 @@ class _KinlyOptionCard<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final colors = theme.colorScheme;
-
-    final isDark = theme.brightness == Brightness.dark;
+    final controls = theme.extension<KinlyControlColors>();
 
     final bg = isSelected
-        ? colors.primaryContainer
-        : (isDark ? colors.surfaceContainerHigh : colors.surfaceContainerHighest);
+        ? controls?.selectableItemBgSelected ?? theme.colorScheme.primaryContainer
+        : controls?.optionRowBg ?? theme.colorScheme.surfaceContainer;
 
-    final textColor = isSelected ? colors.onPrimaryContainer : colors.onSurface;
+    final textColor = isSelected
+        ? controls?.selectableItemFgSelected ?? theme.colorScheme.onPrimaryContainer
+        : controls?.optionRowFg ?? theme.colorScheme.onSurface;
     final labelText = option.semanticsLabel ?? option.label;
 
     return Semantics(
@@ -281,7 +282,7 @@ class _KinlyOptionCard<T> extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildIcon(context, colors),
+                _buildIcon(context, controls),
                 if (showLabel) ...[
                   SizedBox(height: spacing.xs),
                   Text(
@@ -300,19 +301,30 @@ class _KinlyOptionCard<T> extends StatelessWidget {
   }
 
   /// Builds the icon with a circular selection ring that cuts into the icon.
-  Widget _buildIcon(BuildContext context, ColorScheme colors) {
+  Widget _buildIcon(BuildContext context, KinlyControlColors? controls) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
 
-    final ringColor = isSelected ? colors.primary : colors.outlineVariant;
-    final ringBackground = theme.colorScheme.surface;
+    final ringColor = isSelected
+        ? (controls?.selectableItemBorderSelected ??
+            theme.colorScheme.primaryContainer)
+        : (controls?.selectableItemBorder ?? theme.colorScheme.outline);
+    final ringBackground =
+        controls?.selectableItemBg ?? theme.colorScheme.surface;
 
     // Inner visual (SVG or Icon).
     Widget? inner;
     if (option.svgAsset != null) {
       inner = SvgPicture.asset(option.svgAsset!, fit: BoxFit.cover);
     } else if (option.iconData != null) {
-      inner = Icon(option.iconData, size: iconSize, color: colors.onSurface);
+      inner = Icon(
+        option.iconData,
+        size: iconSize,
+        color: isSelected
+            ? (controls?.selectableItemFgSelected ??
+                theme.colorScheme.onPrimaryContainer)
+            : (controls?.selectableItemFg ?? theme.colorScheme.onSurface),
+      );
     }
 
     if (inner == null) {
