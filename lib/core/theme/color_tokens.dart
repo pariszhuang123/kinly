@@ -15,13 +15,9 @@ class KinlyColorTokens extends ThemeExtension<KinlyColorTokens> {
     required this.error,
     required this.onError,
     required this.surface,
-    required this.surfaceDark,
     required this.surfaceVariant,
-    required this.surfaceVariantDark,
     required this.onSurface,
-    required this.onSurfaceDark,
     required this.outline,
-    required this.outlineDark,
     required this.success,
     required this.warning,
     required this.info,
@@ -41,13 +37,9 @@ class KinlyColorTokens extends ThemeExtension<KinlyColorTokens> {
   final Color error;
   final Color onError;
   final Color surface;
-  final Color surfaceDark;
   final Color surfaceVariant;
-  final Color surfaceVariantDark;
   final Color onSurface;
-  final Color onSurfaceDark;
   final Color outline;
-  final Color outlineDark;
   final Color success;
   final Color warning;
   final Color info;
@@ -68,13 +60,9 @@ class KinlyColorTokens extends ThemeExtension<KinlyColorTokens> {
     Color? error,
     Color? onError,
     Color? surface,
-    Color? surfaceDark,
     Color? surfaceVariant,
-    Color? surfaceVariantDark,
     Color? onSurface,
-    Color? onSurfaceDark,
     Color? outline,
-    Color? outlineDark,
     Color? success,
     Color? warning,
     Color? info,
@@ -94,13 +82,9 @@ class KinlyColorTokens extends ThemeExtension<KinlyColorTokens> {
       error: error ?? this.error,
       onError: onError ?? this.onError,
       surface: surface ?? this.surface,
-      surfaceDark: surfaceDark ?? this.surfaceDark,
       surfaceVariant: surfaceVariant ?? this.surfaceVariant,
-      surfaceVariantDark: surfaceVariantDark ?? this.surfaceVariantDark,
       onSurface: onSurface ?? this.onSurface,
-      onSurfaceDark: onSurfaceDark ?? this.onSurfaceDark,
       outline: outline ?? this.outline,
-      outlineDark: outlineDark ?? this.outlineDark,
       success: success ?? this.success,
       warning: warning ?? this.warning,
       info: info ?? this.info,
@@ -131,14 +115,9 @@ class KinlyColorTokens extends ThemeExtension<KinlyColorTokens> {
       error: lerpColor(error, other.error),
       onError: lerpColor(onError, other.onError),
       surface: lerpColor(surface, other.surface),
-      surfaceDark: lerpColor(surfaceDark, other.surfaceDark),
       surfaceVariant: lerpColor(surfaceVariant, other.surfaceVariant),
-      surfaceVariantDark:
-          lerpColor(surfaceVariantDark, other.surfaceVariantDark),
       onSurface: lerpColor(onSurface, other.onSurface),
-      onSurfaceDark: lerpColor(onSurfaceDark, other.onSurfaceDark),
       outline: lerpColor(outline, other.outline),
-      outlineDark: lerpColor(outlineDark, other.outlineDark),
       success: lerpColor(success, other.success),
       warning: lerpColor(warning, other.warning),
       info: lerpColor(info, other.info),
