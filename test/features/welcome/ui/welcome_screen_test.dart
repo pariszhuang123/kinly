@@ -108,7 +108,7 @@ void main() {
     expect(googleButton.button, Buttons.google);
   });
 
-  testWidgets('uses dark Google style in dark theme', (tester) async {
+  testWidgets('uses light Google style in dark theme', (tester) async {
     when(() => authBloc.state).thenReturn(const AuthState());
     final router = GoRouter(
       initialLocation: AppRoutes.welcome,
@@ -126,7 +126,7 @@ void main() {
     final googleButton = tester.widget<SignInButton>(
       find.byType(SignInButton),
     );
-    expect(googleButton.button, Buttons.googleDark);
+    expect(googleButton.button, Buttons.google);
   });
 
   testWidgets('navigates to start when authenticated without membership', (tester) async {
