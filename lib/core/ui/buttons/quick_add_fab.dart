@@ -113,7 +113,7 @@ class _QuickAddTile extends StatelessWidget {
     return KinlyListTile(
       leading: Icon(
         leadingIcon,
-        color: sectionColors.accent, // use your section accent
+        color: sectionColors.icon,
       ),
       title: title,
       subtitle: subtitle,

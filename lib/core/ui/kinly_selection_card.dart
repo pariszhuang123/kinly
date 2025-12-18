@@ -78,7 +78,7 @@ class KinlySelectionCard extends StatelessWidget {
                         Text(
                           title,
                           style: theme.textTheme.titleMedium?.copyWith(
-                            color: colors.icon,
+                            color: tokens.onSurface,
                           ),
                         ),
                         SizedBox(height: spacing.xs),
@@ -91,7 +91,10 @@ class KinlySelectionCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Icon(Icons.chevron_right_rounded, color: colors.icon),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: tokens.onSurface.withValues(alpha: 0.7),
+                  ),
                 ],
               ),
             ),

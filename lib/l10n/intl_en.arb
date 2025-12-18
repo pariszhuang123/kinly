@@ -69,15 +69,15 @@
   "quick_add_title": "Quick Add",
   "quick_add_flow_title": "Flow",
   "quick_add_flow_subtitle": "Create a flow",
-  "quick_add_share_title": "Share",
-  "quick_add_share_subtitle": "Add a Share",
+  "quick_add_share_title": "Bill",
+  "quick_add_share_subtitle": "Add a bill",
   "quick_add_poll_title": "Poll",
   "quick_add_poll_subtitle": "Create a quick home poll",
   "quick_add_fair_share_title": "Fair Share",
   "quick_add_fair_share_subtitle": "Note a fairness entry",
   "todayAddSheetTitle": "Add to your home",
   "todayAddSheetFlow": "Add Flow",
-  "todayAddSheetShare": "Add Share",
+  "todayAddSheetShare": "Add Bill",
   "login_tagline": "Together feels lighter",
   "login_with_google": "Continue with Google",
   "login_with_apple": "Continue with Apple",
@@ -350,7 +350,6 @@
   "flowListDraftLabel": "Draft",
   "flowListOverdueLabel": "Past date",
   "flowListError": "We couldn't load Flow. Pull to refresh.",
-  "exploreIntroTitle": "Discover what's next",
   "exploreIntroSubtitle": "Explore more ways to keep your home feeling lighter.",
   "exploreFlowSubtitle": "Review every Flow and keep flows moving",
   "exploreShareSubtitle": "See every Bill you've created and track collections.",
@@ -892,9 +891,6 @@
   },
   "@flowListError": {
     "surface": "error"
-  },
-  "@exploreIntroTitle": {
-    "surface": "title"
   },
   "@exploreIntroSubtitle": {
     "surface": "subtitle"

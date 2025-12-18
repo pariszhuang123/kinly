@@ -140,15 +140,17 @@ class KinlyPalette {
 
     // Badges
     final badgeBg = colorScheme.primary.withValues(alpha: 0.14);
-    final badgeFg = _pickOnColor(
-      background: badgeBg,
-      preferred: colorScheme.onPrimary,
-    );
+
+    // NOTE: `badgeBg` is semi-transparent and will be composited over whatever
+    // surface it's placed on. Because our contrast helper doesn't account for
+    // alpha compositing, picking an "on" color here can flip unexpectedly
+    // between light/dark modes (e.g. black in dark mode, white in light mode).
+    //
+    // For badges, we want a stable, brand-consistent foreground: the same hue
+    // as the badge tint.
+    final badgeFg = colorScheme.primary;
     final errorBadgeBg = colorScheme.error.withValues(alpha: 0.18);
-    final errorBadgeFg = _pickOnColor(
-      background: errorBadgeBg,
-      preferred: colorScheme.onError,
-    );
+    final errorBadgeFg = colorScheme.error;
 
     // Expand badge: use section accent alpha handled by caller; icon uses onSurface in dark
     final expandBadgeBg = colorScheme.primary.withValues(alpha: 0.12);
@@ -352,7 +354,7 @@ class _DerivedEngine {
     final secondary =
         isDark
             ? _mix(KinlyFoundationColors.brandSecondary, _white, 0.06)
-            : KinlyFoundationColors.brandSecondary;
+            : _mix(KinlyFoundationColors.brandSecondary, _black, 0.10);
     final secondaryContainer = _mix(
       secondary,
       isDark ? surfaceBase : _white,
@@ -367,7 +369,7 @@ class _DerivedEngine {
     final tertiary =
         isDark
             ? _mix(KinlyFoundationColors.brandAccent, _white, 0.02)
-            : KinlyFoundationColors.brandAccent;
+            : _mix(KinlyFoundationColors.brandAccent, _black, 0.1);
     final tertiaryContainer = _mix(
       tertiary,
       isDark ? surfaceBase : _white,
@@ -428,7 +430,7 @@ class _DerivedEngine {
     final brandTextColors = KinlyBrandTextColors(
       sageText: _mix(KinlyFoundationColors.brandSecondary, _black, 0.4),
       honeyText: _mix(KinlyFoundationColors.brandAccent, _black, 0.55),
-      tealBrand: KinlyFoundationColors.brandPrimary,
+      tealBrand: _mix(KinlyFoundationColors.brandPrimary, _black, 0.4),
     );
 
     // Support tokens (derived)

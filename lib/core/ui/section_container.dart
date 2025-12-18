@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../theme/kinly_sections.dart';
+import '../theme/color_tokens.dart';
+import '../theme/kinly_palette.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
 
@@ -32,6 +34,9 @@ class SectionContainer extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final corners = theme.extension<Corners>();
+    final tokens =
+        theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
 
     final effectivePadding =
         padding ??
@@ -60,7 +65,7 @@ class SectionContainer extends StatelessWidget {
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
-                    color: colors.icon.withValues(alpha: 0.2),
+                    color: colors.accent.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: EdgeInsets.all(spacing.sm),
@@ -74,8 +79,7 @@ class SectionContainer extends StatelessWidget {
                 child: Text(
                   title,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: colors.icon,
+                    color: tokens.onSurface,
                   ),
                 ),
               ),

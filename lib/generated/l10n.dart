@@ -439,20 +439,20 @@ class S {
     );
   }
 
-  /// `Share`
+  /// `Bill`
   String get quick_add_share_title {
     return Intl.message(
-      'Share',
+      'Bill',
       name: 'quick_add_share_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add a Share`
+  /// `Add a bill`
   String get quick_add_share_subtitle {
     return Intl.message(
-      'Add a Share',
+      'Add a bill',
       name: 'quick_add_share_subtitle',
       desc: '',
       args: [],
@@ -519,10 +519,10 @@ class S {
     );
   }
 
-  /// `Add Share`
+  /// `Add Bill`
   String get todayAddSheetShare {
     return Intl.message(
-      'Add Share',
+      'Add Bill',
       name: 'todayAddSheetShare',
       desc: '',
       args: [],
@@ -1786,10 +1786,10 @@ class S {
     );
   }
 
-  /// `Share created.`
+  /// `Bill created.`
   String get shareCreateSuccess {
     return Intl.message(
-      'Share created.',
+      'Bill created.',
       name: 'shareCreateSuccess',
       desc: '',
       args: [],
@@ -2406,16 +2406,6 @@ class S {
     return Intl.message(
       'We couldn\'t load Flow. Pull to refresh.',
       name: 'flowListError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Discover what's next`
-  String get exploreIntroTitle {
-    return Intl.message(
-      'Discover what\'s next',
-      name: 'exploreIntroTitle',
       desc: '',
       args: [],
     );

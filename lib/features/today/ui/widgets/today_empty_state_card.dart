@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../generated/l10n.dart';
-import '../../../../core/theme/spacing.dart';
 import '../../../../core/theme/kinly_sections.dart';
-import '../../../../core/ui/section_list_card.dart';
+import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/badges/kinly_badge.dart';
+import '../../../../core/ui/kinly_list_tile.dart';
+import '../../../../generated/l10n.dart';
 
 class TodayEmptyStateCard extends StatelessWidget {
   const TodayEmptyStateCard({super.key});
@@ -13,25 +14,27 @@ class TodayEmptyStateCard extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>()!;
+    final s = S.of(context);
 
-    // Use Flow section colors (or create a neutral “today” section later)
+    // Use Flow section colors (or create a neutral “Today” section later)
     final colors = sections.flow;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionListCard(
-          colors: colors,
-          icon: Icons.self_improvement_rounded,
-          title: S.of(context).todayEmptyCardTitle,
-          badgeText: S.of(context).todayEmptyCardBadge,
-          onTap: () {
-            // Optional: open Hub, reflection, or just do nothing.
-          },
+        KinlyListTile(
+          leading: Icon(Icons.self_improvement_rounded, color: colors.accent),
+          title: s.todayEmptyCardTitle,
+          semanticsLabel: '${s.todayEmptyCardTitle}, ${s.todayEmptyCardBadge}',
+          trailing: KinlyBadge(
+            label: s.todayEmptyCardBadge,
+            accentColor: colors.accent,
+          ),
+          onTap: () {},
         ),
         SizedBox(height: spacing.sm),
         Text(
-          S.of(context).todayEmptyBody,
+          s.todayEmptyBody,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),

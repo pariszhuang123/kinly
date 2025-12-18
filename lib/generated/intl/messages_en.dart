@@ -115,9 +115,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
       "Explore more ways to keep your home feeling lighter.",
     ),
-    "exploreIntroTitle": MessageLookupByLibrary.simpleMessage(
-      "Discover what\'s next",
-    ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
       "See every Bill you\'ve created and track collections.",
     ),
@@ -736,9 +733,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "quick_add_poll_title": MessageLookupByLibrary.simpleMessage("Poll"),
     "quick_add_share_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Add a Share",
+      "Add a bill",
     ),
-    "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Share"),
+    "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Bill"),
     "quick_add_title": MessageLookupByLibrary.simpleMessage("Quick Add"),
     "shareCreateAmountHint": MessageLookupByLibrary.simpleMessage("0.00"),
     "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("Amount"),
@@ -787,9 +784,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "How do we want to split this?",
     ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Create"),
-    "shareCreateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Share created.",
-    ),
+    "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Bill created."),
     "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Create"),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
       "Enter a valid amount greater than zero.",
@@ -887,7 +882,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Awaiting settle",
     ),
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Flow"),
-    "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Share"),
+    "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Bill"),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Add to your home",
     ),

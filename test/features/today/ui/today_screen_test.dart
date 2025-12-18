@@ -13,6 +13,7 @@ import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/features/today/bloc/today_bloc.dart';
 import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/features/today/ui/today_screen.dart';
+import 'package:kinly/features/today/ui/widgets/today_header/today_header.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/features/today/ui/widgets/today_empty_state_card.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
@@ -162,5 +163,64 @@ void main() {
 
     final confetti = tester.widget<ConfettiWidget>(find.byType(ConfettiWidget));
     expect(confetti.confettiController.state, ConfettiControllerState.stopped);
+  });
+
+  testWidgets('keeps header fixed while cards scroll', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(375, 600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    when(() => todayBloc.state).thenReturn(
+      TodayState.loaded(
+        activeTasks: const [
+          TodayFlowTask(
+            id: '1',
+            title: 'Take out trash',
+            state: ChoreState.active,
+          ),
+        ],
+        draftTasks: const [],
+        shareOwed: List.generate(
+          25,
+          (i) => TodayShareOwed(
+            payerUserId: 'payer_$i',
+            displayName: 'Payer $i',
+            totalOwedCents: 1234,
+            items: const [
+              TodayShareOwedItem(
+                expenseId: 'e1',
+                description: 'Test expense',
+                amountCents: 1234,
+              ),
+            ],
+          ),
+        ),
+        shareDrafts: const [],
+        profile: const TodayUserProfile(userId: 'u1', username: 'Alex'),
+      ),
+    );
+
+    await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
+
+    final headerFinder = find.byType(TodayHeader);
+    expect(headerFinder, findsOneWidget);
+
+    final listItemFinder = find.text('Payer 0');
+    expect(listItemFinder, findsOneWidget);
+
+    final headerTopBefore = tester.getTopLeft(headerFinder).dy;
+    final listItemTopBefore = tester.getTopLeft(listItemFinder).dy;
+
+    await tester.drag(
+      find.byType(SingleChildScrollView),
+      const Offset(0, -400),
+    );
+    await tester.pumpAndSettle();
+
+    final headerTopAfter = tester.getTopLeft(headerFinder).dy;
+    final listItemTopAfter = tester.getTopLeft(listItemFinder).dy;
+
+    expect(headerTopAfter, closeTo(headerTopBefore, 0.5));
+    expect(listItemTopAfter, lessThan(listItemTopBefore - 20));
   });
 }

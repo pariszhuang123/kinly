@@ -115,9 +115,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
       "استكشف طرقًا أكثر لجعل منزلك أخف.",
     ),
-    "exploreIntroTitle": MessageLookupByLibrary.simpleMessage(
-      "اكتشف ما التالي",
-    ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
       "شاهد كل Share أنشأتها وتابع التحصيل.",
     ),

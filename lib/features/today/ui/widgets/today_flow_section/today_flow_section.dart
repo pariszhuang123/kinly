@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/kinly_sections.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/section_container.dart';
-import '../../../../../core/ui/section_list_card.dart';
+import '../../../../../core/ui/kinly_list_tile.dart';
 import '../../../../../core/ui/kinly_tab_bar.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../domain/models.dart';
 import '../../../../flow/ui/flow_list_filter.dart';
 import '../../../../../core/theme/section_assets.dart';
 import '../today_section_tabs.dart';
+import '../../../../../core/ui/badges/kinly_badge.dart';
 
 class TodayFlowSection extends StatefulWidget {
   const TodayFlowSection({
@@ -115,7 +116,10 @@ class _TodayFlowSectionState extends State<TodayFlowSection> {
     return SectionContainer(
       title: s.todayFlowSectionTitle,
       colors: colors,
-      leading: SectionAssets.flow.build(color: colors.icon, size: flowIconSize),
+      leading: SectionAssets.flow.build(
+        color: colors.icon,
+        size: flowIconSize,
+      ),
       child: content,
     );
   }
@@ -224,10 +228,26 @@ class _TaskList extends StatelessWidget {
     return Column(
       children: [
         for (final task in visibleTasks) ...[
-          SectionListCard(
-            colors: colors,
+          KinlyListTile(
             title: task.title,
-            badgeText: task.isNewToday ? s.todayFlowBadgeNew : null,
+            semanticsLabel:
+                task.isNewToday ? '${task.title}, ${s.todayFlowBadgeNew}' : null,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (task.isNewToday)
+                  KinlyBadge(
+                    label: s.todayFlowBadgeNew,
+                    accentColor: colors.accent,
+                  ),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(
+                    alpha: 0.7,
+                  ),
+                ),
+              ],
+            ),
             onTap: () => onTaskTap(task),
           ),
           if (task != visibleTasks.last) SizedBox(height: spacing?.sm ?? 8),
@@ -259,7 +279,7 @@ class _SeeAllButton extends StatelessWidget {
           child: Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colors.icon,
+              color: Theme.of(context).colorScheme.primary,
               fontWeight: FontWeight.w500,
             ),
           ),

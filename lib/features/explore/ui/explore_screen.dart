@@ -40,11 +40,7 @@ class ExploreScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      s.exploreIntroTitle,
-                      style: theme.textTheme.headlineSmall,
-                    ),
-                    SizedBox(height: spacing.sm),
+                    SizedBox(height: spacing.lg),
                     Text(
                       s.exploreIntroSubtitle,
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -66,7 +62,9 @@ class ExploreScreen extends StatelessWidget {
                     SizedBox(height: spacing.md),
 
                     KinlySelectionCard(
-                      colors: shareColors.copyWith(card: shareColors.background),
+                      colors: shareColors.copyWith(
+                        card: shareColors.background,
+                      ),
                       title: s.quick_add_share_title,
                       subtitle: s.exploreShareSubtitle,
                       icon: SectionAssets.share.build(
@@ -75,6 +73,7 @@ class ExploreScreen extends StatelessWidget {
                       ),
                       onTap: () => context.push(AppRoutes.shareCreatedList),
                     ),
+                    SizedBox(height: spacing.lg),
                   ],
                 ),
               ),

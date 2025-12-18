@@ -51,6 +51,7 @@ Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directio
 
 ## Lists & States
 - `KinlyListTile` (tokenized title/subtitle row)
+- `KinlyBadge` (small inline label; use `accentColor` for section badges and `destructive` for danger badges)
 - `KinlyEmptyState` (icon/title/body + optional CTA)
 ## Media
 - `KinlyPhotoCapture` (photo pick/preview tile)

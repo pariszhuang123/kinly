@@ -43,8 +43,8 @@ class KinlySettingsTile extends StatelessWidget {
     late final Color avatarBackground;
 
     if (destructive) {
-      leadingColor = controls.badgeFg;
-      avatarBackground = controls.badgeBg;
+      leadingColor = controls.errorBadgeFg;
+      avatarBackground = controls.errorBadgeBg;
     } else {
       leadingColor = tokens.onSurface;
       avatarBackground = primary.withValues(alpha: 0.12);

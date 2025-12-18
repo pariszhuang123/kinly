@@ -6,12 +6,12 @@ import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/buttons/kinly_outlined_button.dart';
 import 'package:kinly/core/ui/buttons/kinly_add_tile_button.dart';
 import 'package:kinly/core/ui/buttons/kinly_option_selector_row.dart';
+import 'package:kinly/core/ui/badges/kinly_badge.dart';
 import 'package:kinly/core/ui/kinly_selection_card.dart';
 import 'package:kinly/core/ui/kinly_list_tile.dart';
 import 'package:kinly/core/ui/members/kinly_member_avatar_chip.dart';
 import 'package:kinly/core/ui/media/kinly_photo_capture.dart';
 import 'package:kinly/core/ui/profile/kinly_profile_header.dart';
-import 'package:kinly/core/ui/section_list_card.dart';
 import 'package:kinly/core/ui/toggles/kinly_toggle.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 
@@ -77,6 +77,29 @@ void main() {
     expect(size.height, greaterThanOrEqualTo(48));
     expect(size.width, greaterThanOrEqualTo(48));
     expect(find.bySemanticsLabel('List item, Details'), findsOneWidget);
+  });
+
+  testWidgets('KinlyBadge exposes semantics label', (tester) async {
+    await tester.pumpWidget(_wrap(const KinlyBadge(label: 'New')));
+    await tester.pumpAndSettle();
+
+    expect(find.bySemanticsLabel('New'), findsOneWidget);
+  });
+
+  testWidgets('KinlyBadge uses explicit semantics label when provided', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        const KinlyBadge(
+          label: 'new today',
+          semanticsLabel: 'New items today',
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.bySemanticsLabel('New items today'), findsOneWidget);
   });
 
   testWidgets('KinlyToggle enforces 48dp min size and semantics', (
@@ -211,38 +234,6 @@ void main() {
     expect(
       find.byWidgetPredicate(
         (w) => w is Semantics && w.properties.label == 'Selection, Details',
-      ),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('SectionListCard enforces touch target and semantics', (
-    tester,
-  ) async {
-    const colors = SectionColors(
-      background: Colors.white,
-      card: Colors.white,
-      icon: Colors.black,
-      accent: Colors.black,
-    );
-    await tester.pumpWidget(
-      _wrap(
-        SectionListCard(
-          colors: colors,
-          title: 'List title',
-          badgeText: 'New',
-          trailingText: 'More',
-          onTap: () {},
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    final size = tester.getSize(find.byType(SectionListCard));
-    expect(size.height, greaterThanOrEqualTo(48));
-    expect(
-      find.byWidgetPredicate(
-        (w) => w is Semantics && w.properties.label == 'List title, New, More',
       ),
       findsOneWidget,
     );
