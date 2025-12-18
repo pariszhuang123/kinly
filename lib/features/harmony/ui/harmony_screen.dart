@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/mood/enums/mood_scale.dart';
+import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/kinly_loader.dart';
-import '../../../core/ui/kinly_toast.dart';
 import '../../../core/ui/kinly_comment_box.dart';
 import '../../../core/ui/toggles/kinly_toggle.dart';
 import '../../../core/ui/harmony/kinly_weather_selector_row.dart';
@@ -36,13 +36,19 @@ class HarmonyScreen extends StatelessWidget {
               previous.submitSuccessTick != current.submitSuccessTick ||
               previous.submitError != current.submitError,
       listener: (context, state) {
+        final accent =
+            Theme.of(context).extension<KinlySections>()?.pulse.accent;
         if (state.submitSuccessTick > 0) {
-          KinlyToast.showSuccess(context, s.harmonySubmitSuccess);
+          KinlySnackBar.showSuccess(
+            context,
+            s.harmonySubmitSuccess,
+            accentColor: accent,
+          );
           // Close the Harmony page and return success to caller.
           context.pop(true);
         } else if (state.submitError != null) {
           final message = _mapError(context, state.submitError!);
-          KinlySnackBar.showError(context, message);
+          KinlySnackBar.showError(context, message, accentColor: accent);
         }
       },
       child: BlocBuilder<HarmonyCubit, HarmonyState>(
@@ -104,7 +110,13 @@ class HarmonySubmitButton extends StatelessWidget {
 
         void handler() {
           if (!hasMood || state.submitSuccessTick > 0) {
-            KinlySnackBar.showError(context, s.harmonyErrorSelectMood);
+            final accent =
+                Theme.of(context).extension<KinlySections>()?.pulse.accent;
+            KinlySnackBar.showError(
+              context,
+              s.harmonyErrorSelectMood,
+              accentColor: accent,
+            );
             return;
           }
           context.read<HarmonyCubit>().submit();

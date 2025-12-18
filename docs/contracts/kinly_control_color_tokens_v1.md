@@ -28,7 +28,7 @@
   - Text/Ghost = `scheme.primary` / disabled = `derived.disabled`.
   - Selection = checked → `scheme.primaryContainer/onPrimaryContainer`; unchecked → `scheme.surface/outline`; disabled → `derived.disabled`.
   - Option rows = `scheme.surfaceContainer` / selected → `scheme.primaryContainer/onPrimaryContainer`; border = `scheme.outlineVariant`.
-  - Badges = base on `scheme.primary` (error on `scheme.error`) with low alpha fill; fg uses contrast helper.
+  - Badges = base on `scheme.primary` (error on `scheme.error`) with low alpha fill; fg uses the tint hue (not a contrast-picked on-color) to avoid alpha-compositing surprises across surfaces.
   - Loader = `scheme.onSurface` (dark) / `scheme.primary` (light).
 
 ### 5) State Handling
@@ -40,6 +40,7 @@
 ### 7) Implementation Rules
 - Tokens live centrally in `KinlyControlColors` and are injected via Theme extensions.
 - Widgets must be migrated to token access only.
+- Badge UI must use `KinlyBadge` (default maps to `badgeBg`/`badgeFg`, destructive maps to `errorBadgeBg`/`errorBadgeFg`).
 - No new hex values; all derivations use engine outputs.
 
 ### 8) Testing Requirements

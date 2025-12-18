@@ -80,7 +80,12 @@ class ShareCreatedListScreen extends StatelessWidget {
     final s = S.of(context);
     final result = await context.push<bool>(AppRoutes.shareCreate);
     if (result == true && context.mounted) {
-      KinlySnackBar.showSuccess(context, s.shareCreateSuccess);
+      final accent = Theme.of(context).extension<KinlySections>()?.share.accent;
+      KinlySnackBar.showSuccess(
+        context,
+        s.shareCreateSuccess,
+        accentColor: accent,
+      );
       _refreshList(context);
     }
   }
@@ -97,11 +102,20 @@ class ShareCreatedListScreen extends StatelessWidget {
 
     if (!context.mounted || result == null) return;
 
+    final accent = Theme.of(context).extension<KinlySections>()?.share.accent;
     if (result == true || result == ShareEditOutcome.updated) {
-      KinlySnackBar.showSuccess(context, s.shareEditSuccess);
+      KinlySnackBar.showSuccess(
+        context,
+        s.shareEditSuccess,
+        accentColor: accent,
+      );
       _refreshList(context);
     } else if (result == ShareEditOutcome.deleted) {
-      KinlySnackBar.showSuccess(context, s.shareEditDeleteSuccess);
+      KinlySnackBar.showSuccess(
+        context,
+        s.shareEditDeleteSuccess,
+        accentColor: accent,
+      );
       _refreshList(context);
     }
   }

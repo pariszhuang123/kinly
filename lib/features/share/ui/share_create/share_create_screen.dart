@@ -114,12 +114,16 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
             return;
           }
           final snackText = _mapSubmissionError(context, state);
-          KinlySnackBar.showError(context, snackText);
+          final accent =
+              Theme.of(context).extension<KinlySections>()?.share.accent;
+          KinlySnackBar.showError(context, snackText, accentColor: accent);
         }
 
         if (state.deletionErrorTick > 0) {
           final message = state.deletionErrorMessage ?? s.shareEditDeleteError;
-          KinlySnackBar.showError(context, message);
+          final accent =
+              Theme.of(context).extension<KinlySections>()?.share.accent;
+          KinlySnackBar.showError(context, message, accentColor: accent);
         }
       },
       builder: (context, state) {
@@ -202,7 +206,6 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
       title: s.shareEditDeleteConfirmTitle,
       message: s.shareEditDeleteConfirmMessage,
       confirmLabel: s.shareEditDeleteConfirm,
-      cancelLabel: s.shareEditDeleteCancel,
       destructive: true,
     );
 

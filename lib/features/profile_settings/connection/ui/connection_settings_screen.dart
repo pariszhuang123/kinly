@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/settings/kinly_settings_card.dart';
@@ -39,13 +40,13 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
     }
     if (!mounted || !ctx.mounted) return;
     ctx.read<ConnectionSettingsBloc>().add(
-          ConnectionSettingsStarted(
-            locale: locale,
-            timezone: timezone,
-            platform: platform,
-            deviceToken: deviceToken,
-          ),
-        );
+      ConnectionSettingsStarted(
+        locale: locale,
+        timezone: timezone,
+        platform: platform,
+        deviceToken: deviceToken,
+      ),
+    );
   }
 
   @override
@@ -57,14 +58,17 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
       appBar: AppBar(title: Text(s.connectionSettingsTitle)),
       body: BlocConsumer<ConnectionSettingsBloc, ConnectionSettingsState>(
         listener: (context, state) async {
+          final accent =
+              Theme.of(context).extension<KinlySections>()?.pulse.accent;
           if (state.action == ConnectionSettingsAction.showError) {
             KinlySnackBar.showError(
               context,
               state.actionMessage ?? s.connectionSettingsGenericError,
+              accentColor: accent,
             );
             context.read<ConnectionSettingsBloc>().add(
-                  const ConnectionSettingsActionCleared(),
-                );
+              const ConnectionSettingsActionCleared(),
+            );
             return;
           }
 
@@ -73,6 +77,7 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
             KinlySnackBar.showInfo(
               context,
               s.connectionNotificationsPermissionBlocked,
+              accentColor: accent,
             );
             await openAppSettings();
             if (!mounted || !context.mounted) return;
@@ -84,10 +89,11 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
             KinlySnackBar.showInfo(
               context,
               s.connectionNotificationsPermissionBlocked,
+              accentColor: accent,
             );
             context.read<ConnectionSettingsBloc>().add(
-                  const ConnectionSettingsActionCleared(),
-                );
+              const ConnectionSettingsActionCleared(),
+            );
           }
         },
         builder: (context, state) {
@@ -127,21 +133,22 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                             children: [
                               Text(
                                 s.connectionNotificationsToggleTitle,
-                                style:
-                                    Theme.of(context).textTheme.titleMedium?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600),
                               ),
                               SizedBox(height: spacing.xs),
                               Text(
                                 state.wantsDaily
                                     ? s.connectionNotificationsToggleSubtitleOn
                                     : s.connectionNotificationsToggleSubtitleOff,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                    ),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                ),
                               ),
                             ],
                           ),
@@ -152,19 +159,18 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                               state.isSavingToggle
                                   ? null
                                   : (enabled) {
-                                      context
-                                          .read<ConnectionSettingsBloc>()
-                                          .add(
-                                            ConnectionSettingsToggleRequested(
-                                              enabled: enabled,
-                                            ),
-                                          );
-                                    },
+                                    context.read<ConnectionSettingsBloc>().add(
+                                      ConnectionSettingsToggleRequested(
+                                        enabled: enabled,
+                                      ),
+                                    );
+                                  },
                         ),
                       ],
                     ),
                   ),
-                  if (!state.canEditTime && state.osPermission == 'blocked') ...[
+                  if (!state.canEditTime &&
+                      state.osPermission == 'blocked') ...[
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(
                         spacing.l,
@@ -175,9 +181,8 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                       child: Text(
                         s.connectionNotificationsPermissionBlocked,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color:
-                                  Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   ],
@@ -197,13 +202,13 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                       trailing:
                           state.isSavingTime
                               ? SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: KinlyLoader(
-                                    size: 18,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                )
+                                width: 20,
+                                height: 20,
+                                child: KinlyLoader(
+                                  size: 18,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              )
                               : const Icon(Icons.chevron_right),
                       onTap:
                           state.isSavingTime

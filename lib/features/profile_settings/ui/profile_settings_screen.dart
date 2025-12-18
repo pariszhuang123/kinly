@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/homes/models.dart';
+import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/profile/models.dart';
@@ -175,17 +176,23 @@ class ProfileSettingsScreen extends StatelessWidget {
     final s = S.of(context);
     final bloc = context.read<ProfileSettingsBloc>();
     final authBloc = context.read<AuthBloc>();
+    final accent = _profileAccent(context);
 
     void showError() {
       KinlySnackBar.showError(
         context,
         state.actionMessage ?? s.profileGenericError,
+        accentColor: accent,
       );
     }
 
     switch (state.action) {
       case ProfileSettingsAction.leaveSuccess:
-        KinlySnackBar.showSuccess(context, s.profileLeaveSuccessMessage);
+        KinlySnackBar.showSuccess(
+          context,
+          s.profileLeaveSuccessMessage,
+          accentColor: accent,
+        );
         authBloc.add(const AuthMembershipRefreshRequested());
         break;
       case ProfileSettingsAction.leaveFailure:
@@ -195,19 +202,28 @@ class ProfileSettingsScreen extends StatelessWidget {
         KinlySnackBar.showSuccess(
           context,
           s.profileLeaveTransferSuccessMessage,
+          accentColor: accent,
         );
         break;
       case ProfileSettingsAction.transferFailure:
         showError();
         break;
       case ProfileSettingsAction.kickSuccess:
-        KinlySnackBar.showSuccess(context, s.profileKickSuccessMessage);
+        KinlySnackBar.showSuccess(
+          context,
+          s.profileKickSuccessMessage,
+          accentColor: accent,
+        );
         break;
       case ProfileSettingsAction.kickFailure:
         showError();
         break;
       case ProfileSettingsAction.deleteSuccess:
-        KinlySnackBar.showSuccess(context, s.profileDeleteSuccessMessage);
+        KinlySnackBar.showSuccess(
+          context,
+          s.profileDeleteSuccessMessage,
+          accentColor: accent,
+        );
         authBloc.add(const AuthSignOutRequested());
         break;
       case ProfileSettingsAction.deleteFailure:
@@ -230,14 +246,23 @@ class ProfileSettingsScreen extends StatelessWidget {
     final bloc = context.read<ProfileSettingsBloc>();
     final state = bloc.state;
     final s = S.of(context);
+    final accent = _profileAccent(context);
 
     if (state.leaveEligibilityLoading) {
-      KinlySnackBar.showInfo(context, s.profileLeaveEligibilityLoading);
+      KinlySnackBar.showInfo(
+        context,
+        s.profileLeaveEligibilityLoading,
+        accentColor: accent,
+      );
       return;
     }
 
     if (state.leaveEligibilityError != null) {
-      KinlySnackBar.showError(context, s.profileLeaveEligibilityError);
+      KinlySnackBar.showError(
+        context,
+        s.profileLeaveEligibilityError,
+        accentColor: accent,
+      );
       return;
     }
 
@@ -256,7 +281,11 @@ class ProfileSettingsScreen extends StatelessWidget {
     if (isOwner && hasOtherMembers) {
       final candidates = state.transferCandidates;
       if (candidates.isEmpty) {
-        KinlySnackBar.showError(context, s.profileLeaveOwnerNoEligibleMembers);
+        KinlySnackBar.showError(
+          context,
+          s.profileLeaveOwnerNoEligibleMembers,
+          accentColor: accent,
+        );
         return;
       }
 
@@ -284,20 +313,33 @@ class ProfileSettingsScreen extends StatelessWidget {
     final bloc = context.read<ProfileSettingsBloc>();
     final state = bloc.state;
     final s = S.of(context);
+    final accent = _profileAccent(context);
 
     if (state.leaveEligibilityLoading) {
-      KinlySnackBar.showInfo(context, s.profileLeaveEligibilityLoading);
+      KinlySnackBar.showInfo(
+        context,
+        s.profileLeaveEligibilityLoading,
+        accentColor: accent,
+      );
       return;
     }
 
     if (state.leaveEligibilityError != null) {
-      KinlySnackBar.showError(context, s.profileLeaveEligibilityError);
+      KinlySnackBar.showError(
+        context,
+        s.profileLeaveEligibilityError,
+        accentColor: accent,
+      );
       return;
     }
 
     final membership = state.membership;
     if (membership == null) {
-      KinlySnackBar.showError(context, s.profileMissingHomeError);
+      KinlySnackBar.showError(
+        context,
+        s.profileMissingHomeError,
+        accentColor: accent,
+      );
       return;
     }
 
@@ -324,7 +366,11 @@ class ProfileSettingsScreen extends StatelessWidget {
 
     final candidates = state.transferCandidates;
     if (candidates.isEmpty) {
-      KinlySnackBar.showError(context, s.profileLeaveOwnerNoEligibleMembers);
+      KinlySnackBar.showError(
+        context,
+        s.profileLeaveOwnerNoEligibleMembers,
+        accentColor: accent,
+      );
       return;
     }
 
@@ -357,25 +403,42 @@ class ProfileSettingsScreen extends StatelessWidget {
     final bloc = context.read<ProfileSettingsBloc>();
     final state = bloc.state;
     final s = S.of(context);
+    final accent = _profileAccent(context);
 
     if (!state.isOwner) {
-      KinlySnackBar.showError(context, s.profileKickOwnerOnly);
+      KinlySnackBar.showError(
+        context,
+        s.profileKickOwnerOnly,
+        accentColor: accent,
+      );
       return;
     }
 
     if (state.leaveEligibilityLoading) {
-      KinlySnackBar.showInfo(context, s.profileLeaveEligibilityLoading);
+      KinlySnackBar.showInfo(
+        context,
+        s.profileLeaveEligibilityLoading,
+        accentColor: accent,
+      );
       return;
     }
 
     if (state.leaveEligibilityError != null) {
-      KinlySnackBar.showError(context, s.profileLeaveEligibilityError);
+      KinlySnackBar.showError(
+        context,
+        s.profileLeaveEligibilityError,
+        accentColor: accent,
+      );
       return;
     }
 
     final candidates = state.kickEligibleMembers;
     if (candidates.isEmpty) {
-      KinlySnackBar.showInfo(context, s.profileKickNoMembers);
+      KinlySnackBar.showInfo(
+        context,
+        s.profileKickNoMembers,
+        accentColor: accent,
+      );
       return;
     }
 
@@ -517,7 +580,11 @@ class ProfileSettingsScreen extends StatelessWidget {
     final authBloc = context.read<AuthBloc>();
     final membership = authBloc.state.membership;
     if (membership == null) {
-      KinlySnackBar.showError(context, S.of(context).profileMissingHomeError);
+      KinlySnackBar.showError(
+        context,
+        S.of(context).profileMissingHomeError,
+        accentColor: _profileAccent(context),
+      );
       return;
     }
 
@@ -551,6 +618,7 @@ class ProfileSettingsScreen extends StatelessWidget {
       KinlySnackBar.showSuccess(
         context,
         S.of(context).profileIdentitySuccessMessage,
+        accentColor: _profileAccent(context),
       );
     }
   }
@@ -560,4 +628,10 @@ class ProfileSettingsScreen extends StatelessWidget {
       context,
     ).push(MaterialPageRoute(builder: (_) => const InfoHubWebViewScreen()));
   }
+}
+
+Color? _profileAccent(BuildContext context) {
+  // No dedicated "profile" section yet; treat profile + feedback as "individual"
+  // and use the Pulse section accent (avoids changing the design-system contract).
+  return Theme.of(context).extension<KinlySections>()?.pulse.accent;
 }

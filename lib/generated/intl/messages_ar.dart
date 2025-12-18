@@ -106,9 +106,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "create_success": MessageLookupByLibrary.simpleMessage("تم إنشاء المنزل!"),
     "create_title": MessageLookupByLibrary.simpleMessage("إنشاء منزل"),
-    "dopamineFlowAffirmation": MessageLookupByLibrary.simpleMessage(
-      "شكرًا! أصبح منزلك أخف.",
-    ),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "راجع كل Flow وحافظ على استمرارها",
     ),
@@ -121,6 +118,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("إسناد إلى"),
     "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
       "غير مُسند",
+    ),
+    "flowChoreCreateSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء الـFlow.",
     ),
     "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("إضافة Flow"),
     "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage("حذف Flow"),
@@ -137,6 +137,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
       "تعذّر إكمال الـ Flow. حاول مرة أخرى.",
+    ),
+    "flowChoreDetailCompletionSuccess": MessageLookupByLibrary.simpleMessage(
+      "اكتمل الـFlow.",
     ),
     "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
       "مزيد من التفاصيل",
@@ -239,6 +242,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage("إضافة Flow"),
     "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage("حفظ Flow"),
+    "flowChoreUpdateSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم تحديث الـFlow.",
+    ),
     "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
       "اختر شخصًا لإسناد هذا الـ Flow إليه.",
     ),

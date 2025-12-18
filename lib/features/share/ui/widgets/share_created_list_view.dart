@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/kinly_sections.dart';
-import '../../../../core/theme/radius.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
+import '../../../../core/ui/badges/kinly_badge.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/kinly_list_tile.dart';
 import '../../../../core/ui/kinly_empty_state.dart';
@@ -83,11 +83,13 @@ class _ShareCreatedList extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = Theme.of(context).extension<Spacing>();
     final gap = spacing?.md ?? 12.0;
+    final bottomSpacer = spacing?.lg ?? 16.0;
     return KinlyScrollFade(
       child: RefreshIndicator(
         onRefresh: onRefresh,
         child: ListView.separated(
           physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsetsDirectional.only(bottom: bottomSpacer),
           itemCount: entries.length,
           separatorBuilder: (_, __) => SizedBox(height: gap),
           itemBuilder: (context, index) {
@@ -137,16 +139,11 @@ class _ShareCreatedTile extends StatelessWidget {
     final isPaidOff = entry.isActive && entry.allPaid;
     final isUnassigned = entry.isDraft;
 
-    final paidBadge = _StatusBadge(
+    final paidBadge = KinlyBadge(
       label: s.shareCreatedListPaidBadge,
-      color: badgeColor,
-      textColor: theme.colorScheme.onPrimary,
-    );
-
-    final unassignedBadge = _StatusBadge(
-      label: s.shareCreatedListDraftBadge,
-      color: badgeColor.withValues(alpha: 0.15),
-      textColor: badgeColor,
+      compact: false,
+      backgroundColor: badgeColor,
+      foregroundColor: theme.colorScheme.onPrimary,
     );
 
     final String? subtitle =
@@ -187,7 +184,8 @@ class _ShareCreatedTile extends StatelessWidget {
         if (isPaidOff || isUnassigned) ...[
           SizedBox(height: spacing?.xs ?? 6),
           if (isPaidOff) paidBadge,
-          if (isUnassigned) unassignedBadge,
+          if (isUnassigned)
+            KinlyBadge(label: s.shareCreatedListDraftBadge, compact: false),
         ],
         if (entry.isActive && !entry.allPaid) ...[
           SizedBox(height: spacing?.xs ?? 6),
@@ -263,41 +261,6 @@ class _ShareCreatedListError extends StatelessWidget {
             label: s.shareCreatedListRetry,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({
-    required this.label,
-    required this.color,
-    required this.textColor,
-  });
-
-  final String label;
-  final Color color;
-  final Color textColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>();
-    final corners = Theme.of(context).extension<Corners>();
-    return Container(
-      padding: EdgeInsetsDirectional.symmetric(
-        horizontal: spacing?.md ?? 12,
-        vertical: spacing?.xs ?? 6,
-      ),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(corners?.large ?? 16),
-      ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: textColor,
-          fontWeight: FontWeight.w600,
-        ),
       ),
     );
   }

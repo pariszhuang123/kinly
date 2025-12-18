@@ -28,15 +28,8 @@ Scope: Kinly MVP (Flow, Share, Pulse/Gratitude, Home, Auth, Paywall). Applies to
 - Supabase migrations/RPCs (`supabase/migrations/**`): For new/edited RPCs, tables, constraints, views, or limit checks, add a pgTap test in `supabase/tests/**` that exercises the RPC or constraint (success + unauthorized + boundary where meaningful).
 - Supabase functions (`supabase/functions/**`): Each function folder must contain at least one Deno test (`*.test.ts`, e.g., `index.test.ts`) covering the function entry point. Keep core logic in SQL when possible; otherwise add a smoke test via pgTap or the minimal harness you have.
 
-## Dopamine Moments (Flow/Share/Pulse/Reflection)
-- Gate: show only after confirmed success from bloc (no optimistic render).  
-- Queue/cooldown: one at a time; drop older if another fires within 1s; global cooldown 3–5s; optional per-day cap.  
-- Reduce motion: use fade-only path (180–220ms), cap scale at 1.02, no haptics.  
-- Telemetry: emit `dopamine_shown` once per success with milestone, strength, echo_present, reduce_motion, haptic_used, theme.  
-- Tests: bloc/UI tests assert success-only trigger, queue/cooldown/drop rules, reduce-motion path, and telemetry emission (capture telemetry sink and assert name+props once). At least one widget/golden per milestone covering light/dark, RTL, and reduce-motion end state (use fixed clock and deterministic durations).
-
 ## Deterministic Time and Animation
-- Use a clock abstraction (or `package:clock`) injected into blocs/services handling cooldowns, dopamine triggers, and telemetry timestamps. Tests use a fake/fixed clock. Avoid direct `DateTime.now()` in logic.  
+- Use a clock abstraction (or `package:clock`) for any logic that depends on time (cooldowns, rate limits, timestamps). Tests use a fake/fixed clock. Avoid direct `DateTime.now()` in logic.  
 - For animations/goldens, fix ticker/frame timing and clamp durations to test constants; prefer reduce-motion mode for goldens to avoid flakes.
 
 ## Golden Matrix (lean, deterministic)
@@ -57,7 +50,6 @@ Scope: Kinly MVP (Flow, Share, Pulse/Gratitude, Home, Auth, Paywall). Applies to
 - Each Supabase Edge Function folder contains a Deno test (`*.test.ts`).  
 - New/updated RPCs are exercised in pgTap.  
 - New/updated blocs have a meaningful test unless trivial; bug fixes include a regression test.  
-- Dopamine: telemetry asserted, cooldown/queue tested, reduce-motion path covered.  
 - RLS is via security-definer RPCs; auth/limit checks must still be covered by pgTap.
 
 ## Future v2 (not required yet)

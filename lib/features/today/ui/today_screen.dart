@@ -192,8 +192,7 @@ class _TodayScreenState extends State<TodayScreen>
                                       }
 
                                       final shouldShowFlatmateInvite =
-                                          state
-                                              .shouldPromptFlatmateInviteShare;
+                                          state.shouldPromptFlatmateInviteShare;
                                       final shouldShowGenericInvite =
                                           !shouldShowFlatmateInvite &&
                                           state.shouldPromptInviteShare;
@@ -222,12 +221,11 @@ class _TodayScreenState extends State<TodayScreen>
                                                       ? s.todayInviteNotNow
                                                       : s.todayInviteNotNow,
                                               onPrimary: () async {
-                                                final shared =
-                                                    await _shareInvite(
-                                                      context,
-                                                      isFlatmate:
-                                                          shouldShowFlatmateInvite,
-                                                    );
+                                                final shared = await _shareInvite(
+                                                  context,
+                                                  isFlatmate:
+                                                      shouldShowFlatmateInvite,
+                                                );
                                                 if (!context.mounted ||
                                                     !shared) {
                                                   return;
@@ -421,6 +419,16 @@ class _TodayScreenState extends State<TodayScreen>
     final result = await context.push(AppRoutes.flowChoreDetailPath(choreId));
     if (result is FlowChoreOutcome) {
       if (!context.mounted) return;
+      if (result.isCompleted) {
+        final s = S.of(context);
+        final accent =
+            Theme.of(context).extension<KinlySections>()?.flow.accent;
+        KinlySnackBar.showSuccess(
+          context,
+          s.flowChoreDetailCompletionSuccess,
+          accentColor: accent,
+        );
+      }
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
   }
@@ -442,6 +450,21 @@ class _TodayScreenState extends State<TodayScreen>
     final result = await context.push(path);
     if (result is FlowChoreOutcome) {
       if (!context.mounted) return;
+      final s = S.of(context);
+      final accent = Theme.of(context).extension<KinlySections>()?.flow.accent;
+      if (result.isUpdate) {
+        KinlySnackBar.showSuccess(
+          context,
+          s.flowChoreUpdateSuccess,
+          accentColor: accent,
+        );
+      } else if (!result.isDeleted && !result.isCompleted) {
+        KinlySnackBar.showSuccess(
+          context,
+          s.flowChoreCreateSuccess,
+          accentColor: accent,
+        );
+      }
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
   }
@@ -452,7 +475,12 @@ class _TodayScreenState extends State<TodayScreen>
     context.read<TodayBloc>().add(const TodayRefreshed());
     if (result == true) {
       final s = S.of(context);
-      KinlySnackBar.showSuccess(context, s.shareCreateSuccess);
+      final accent = Theme.of(context).extension<KinlySections>()?.share.accent;
+      KinlySnackBar.showSuccess(
+        context,
+        s.shareCreateSuccess,
+        accentColor: accent,
+      );
     }
   }
 
@@ -472,7 +500,12 @@ class _TodayScreenState extends State<TodayScreen>
     );
     if (result == true && context.mounted) {
       final s = S.of(context);
-      KinlySnackBar.showSuccess(context, s.shareOwedDetailSuccess);
+      final accent = Theme.of(context).extension<KinlySections>()?.share.accent;
+      KinlySnackBar.showSuccess(
+        context,
+        s.shareOwedDetailSuccess,
+        accentColor: accent,
+      );
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
   }
@@ -487,11 +520,20 @@ class _TodayScreenState extends State<TodayScreen>
     );
     if (!context.mounted) return;
     final s = S.of(context);
+    final accent = Theme.of(context).extension<KinlySections>()?.share.accent;
     if (result == true || result == ShareEditOutcome.updated) {
-      KinlySnackBar.showSuccess(context, s.shareEditSuccess);
+      KinlySnackBar.showSuccess(
+        context,
+        s.shareEditSuccess,
+        accentColor: accent,
+      );
       context.read<TodayBloc>().add(const TodayRefreshed());
     } else if (result == ShareEditOutcome.deleted) {
-      KinlySnackBar.showSuccess(context, s.shareEditDeleteSuccess);
+      KinlySnackBar.showSuccess(
+        context,
+        s.shareEditDeleteSuccess,
+        accentColor: accent,
+      );
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
   }

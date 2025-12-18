@@ -214,7 +214,7 @@
     }
   },
   "todayFlowBadgeNew": "new today",
-  "todayShareSectionTitle": "Share",
+  "todayShareSectionTitle": "Bill",
   "todayShareBadgeUpcoming": "upcoming",
   "todayShareSeeAll": "See all bills",
   "todayShareSampleGroceries": "Shared groceries from yesterday",
@@ -341,7 +341,9 @@
   "flowChoreDetailNoNotes": "No context provided.",
   "flowChoreDetailNoHowTo": "No guide links provided.",
   "flowChoreDetailCompleteButton": "Mark complete",
-  "dopamineFlowAffirmation": "Thanks, your home feels lighter.",
+  "flowChoreCreateSuccess": "Flow created.",
+  "flowChoreUpdateSuccess": "Flow updated.",
+  "flowChoreDetailCompletionSuccess": "Flow completed.",
   "flowChoreDetailCompletionError": "Couldn't complete the flow. Please try again.",
   "flowChoreDetailMoreInfoTitle": "Helpful context",
   "flowChoreExpectationPhotoLabel": "Expectation photo",
@@ -876,6 +878,15 @@
   },
   "@flowChoreDetailCompleteButton": {
     "surface": "button"
+  },
+  "@flowChoreCreateSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreUpdateSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreDetailCompletionSuccess": {
+    "surface": "snackbar"
   },
   "@flowChoreDetailCompletionError": {
     "surface": "error"

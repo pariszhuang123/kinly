@@ -108,9 +108,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "create_success": MessageLookupByLibrary.simpleMessage("¡Hogar creado!"),
     "create_title": MessageLookupByLibrary.simpleMessage("Crear hogar"),
-    "dopamineFlowAffirmation": MessageLookupByLibrary.simpleMessage(
-      "Gracias, tu hogar se siente más ligero.",
-    ),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Revisa cada Flow y mantén los flows en movimiento",
     ),
@@ -123,6 +120,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("Asignar a"),
     "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
       "Sin asignar",
+    ),
+    "flowChoreCreateSuccess": MessageLookupByLibrary.simpleMessage(
+      "Flow creado.",
     ),
     "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("Añadir Flow"),
     "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage(
@@ -141,6 +141,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
       "No pudimos completar el flow. Inténtalo de nuevo.",
+    ),
+    "flowChoreDetailCompletionSuccess": MessageLookupByLibrary.simpleMessage(
+      "Flow completado.",
     ),
     "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
       "Más detalles",
@@ -254,6 +257,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage(
       "Guardar flow",
+    ),
+    "flowChoreUpdateSuccess": MessageLookupByLibrary.simpleMessage(
+      "Flow actualizado.",
     ),
     "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
       "Elige a alguien para asignar este flow.",

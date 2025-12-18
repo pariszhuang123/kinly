@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../core/dopamine/dopamine_models.dart';
-import '../../../core/dopamine/dopamine_overlay.dart';
-import '../../../core/dopamine/enums/dopamine_milestone.dart';
-import '../../../core/dopamine/enums/dopamine_strength.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
@@ -15,8 +11,6 @@ import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/selector/kinly_expand_badge.dart';
-import '../../../core/telemetry/telemetry.dart';
-import '../../../core/di/locator.dart';
 import '../../today/domain/models.dart';
 
 class ShareOwedDetailScreen extends StatefulWidget {
@@ -24,12 +18,10 @@ class ShareOwedDetailScreen extends StatefulWidget {
     super.key,
     required this.owed,
     required this.expensesRepository,
-    this.telemetry,
   });
 
   final TodayShareOwed owed;
   final ExpensesRepository expensesRepository;
-  final Telemetry? telemetry;
 
   @override
   State<ShareOwedDetailScreen> createState() => _ShareOwedDetailScreenState();
@@ -38,67 +30,50 @@ class ShareOwedDetailScreen extends StatefulWidget {
 class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
   bool _isSubmitting = false;
   String? _errorMessage;
-  final _dopamineHostKey = GlobalKey<DopamineOverlayHostState>();
-  final _paidButtonKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final sections = theme.extension<KinlySections>()!;
     final s = S.of(context);
-    final telemetry =
-        widget.telemetry ??
-        (sl.isRegistered<Telemetry>() ? sl<Telemetry>() : const NullTelemetry());
 
     final hasItems = widget.owed.items.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(title: Text(s.shareOwedDetailTitle)),
       body: SafeArea(
-        child: DopamineOverlayHost(
-          key: _dopamineHostKey,
-          telemetry: telemetry,
-          child: Padding(
-            padding: EdgeInsetsDirectional.all(spacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _ShareOwedHeader(owed: widget.owed),
-                SizedBox(height: spacing.lg),
-                Expanded(
-                  child:
-                      hasItems
-                          ? KinlyScrollFade(
-                            child: _ShareOwedItemsList(
-                              items: widget.owed.items,
-                            ),
-                          )
-                          : _ShareOwedEmptyState(
-                            message: s.shareOwedDetailEmpty,
-                          ),
-                ),
-                if (_errorMessage != null) ...[
-                  SizedBox(height: spacing.sm),
-                  Text(
-                    _errorMessage!,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.error,
-                    ),
+        child: Padding(
+          padding: EdgeInsetsDirectional.all(spacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _ShareOwedHeader(owed: widget.owed),
+              SizedBox(height: spacing.lg),
+              Expanded(
+                child:
+                    hasItems
+                        ? KinlyScrollFade(
+                          child: _ShareOwedItemsList(items: widget.owed.items),
+                        )
+                        : _ShareOwedEmptyState(message: s.shareOwedDetailEmpty),
+              ),
+              if (_errorMessage != null) ...[
+                SizedBox(height: spacing.sm),
+                Text(
+                  _errorMessage!,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.error,
                   ),
-                ],
-                SizedBox(height: spacing.lg),
-                _ShareOwedMarkPaidButton(
-                  buttonKey: _paidButtonKey,
-                  isSubmitting: _isSubmitting,
-                  isEnabled: !_isSubmitting && hasItems,
-                  // You can later change this string to something like "Pay all"
-                  label: s.shareOwedDetailPaid,
-                  accentColor: sections.share.accent,
-                  onPressed: (!_isSubmitting && hasItems) ? _markAllPaid : null,
                 ),
               ],
-            ),
+              SizedBox(height: spacing.lg),
+              _ShareOwedMarkPaidButton(
+                isSubmitting: _isSubmitting,
+                isEnabled: !_isSubmitting && hasItems,
+                label: s.shareOwedDetailPaid,
+                onPressed: (!_isSubmitting && hasItems) ? _markAllPaid : null,
+              ),
+            ],
           ),
         ),
       ),
@@ -127,8 +102,6 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
       }
 
       if (!mounted) return;
-      await _showDopamine();
-      if (!mounted) return;
       Navigator.of(context).pop(true);
     } on ExpenseException catch (error) {
       if (!mounted) return;
@@ -143,39 +116,6 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
         _errorMessage = strings.shareOwedDetailError;
       });
     }
-  }
-
-  Future<void> _showDopamine() async {
-    final host = _dopamineHostKey.currentState;
-    if (host == null) return;
-
-    final reduceMotion =
-        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
-    final renderBox =
-        _paidButtonKey.currentContext?.findRenderObject() as RenderBox?;
-    final position = renderBox?.localToGlobal(Offset.zero);
-    final anchor =
-        (renderBox != null && position != null)
-            ? Rect.fromLTWH(
-              position.dx,
-              position.dy,
-              renderBox.size.width,
-              renderBox.size.height,
-            )
-            : null;
-
-    host.show(
-      DopamineMoment(
-        milestone: DopamineMilestone.share,
-        strength: DopamineStrength.medium,
-        reduceMotion: reduceMotion,
-        hapticEnabled: true,
-        affirmation: '', // visual-only dopamine for share
-      ),
-      anchorRect: anchor,
-    );
-
-    await Future<void>.delayed(const Duration(milliseconds: 720));
   }
 }
 
@@ -292,19 +232,15 @@ class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
 /// Footer button + loading state for marking all as paid
 class _ShareOwedMarkPaidButton extends StatelessWidget {
   const _ShareOwedMarkPaidButton({
-    required this.buttonKey,
     required this.isSubmitting,
     required this.isEnabled,
     required this.label,
-    required this.accentColor,
     required this.onPressed,
   });
 
-  final GlobalKey buttonKey;
   final bool isSubmitting;
   final bool isEnabled;
   final String label;
-  final Color accentColor;
   final VoidCallback? onPressed;
 
   @override
@@ -315,7 +251,6 @@ class _ShareOwedMarkPaidButton extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           KinlyFilledButton.text(
-            key: buttonKey,
             fullWidth: true,
             onPressed: isEnabled ? onPressed : null,
             label: label,

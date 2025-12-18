@@ -29,7 +29,7 @@ Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directio
 
 ## Feedback / Loading
 - `KinlyLoader` (sizes/patterns).
-- Snackbar/toast patterns if standardized.
+- `KinlySnackBar` (standard success/error/info/warning snackbars; use instead of raw `SnackBar`; supports optional `accentColor` for section flavor while keeping semantic backgrounds).
 
 ## Avatars & Media
 - `KinlyCircleAvatar` (owner badge, fallback handling).
@@ -51,7 +51,7 @@ Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directio
 
 ## Lists & States
 - `KinlyListTile` (tokenized title/subtitle row)
-- `KinlyBadge` (small inline label; use `accentColor` for section badges and `destructive` for danger badges)
+- `KinlyBadge` (single primitive for status badges; uses `Corners.pill` for shape; default uses control tokens, use `accentColor` for section flavor, `destructive` for error/danger, or `backgroundColor`+`foregroundColor` for rare custom variants; `compact` controls padding; `maxLines` supports longer labels)
 - `KinlyEmptyState` (icon/title/body + optional CTA)
 ## Media
 - `KinlyPhotoCapture` (photo pick/preview tile)

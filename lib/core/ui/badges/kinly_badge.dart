@@ -14,6 +14,11 @@ class KinlyBadge extends StatelessWidget {
     this.accentColor,
     this.destructive = false,
     this.compact = true,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.borderColor,
+    this.textStyle,
+    this.maxLines = 1,
   });
 
   final String label;
@@ -30,6 +35,20 @@ class KinlyBadge extends StatelessWidget {
   /// Compact badges are used inline in list rows.
   final bool compact;
 
+  /// Optional override for custom badge styling. If you set one of
+  /// [backgroundColor]/[foregroundColor], you must set both.
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+
+  /// Optional border for custom variants.
+  final Color? borderColor;
+
+  /// Optional text style override (color will be overridden by badge fg).
+  final TextStyle? textStyle;
+
+  /// Allow multi-line labels when needed (defaults to 1).
+  final int maxLines;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -42,23 +61,37 @@ class KinlyBadge extends StatelessWidget {
 
     final effectiveLabel = label.trim();
     assert(effectiveLabel.isNotEmpty, 'Badge label must not be empty');
+    assert(
+      (backgroundColor == null && foregroundColor == null) ||
+          (backgroundColor != null && foregroundColor != null),
+      'If you set backgroundColor or foregroundColor, you must set both.',
+    );
+    assert(maxLines > 0, 'maxLines must be > 0');
 
     late final Color foreground;
     late final Color background;
 
-    if (destructive) {
-      foreground = controls.errorBadgeFg;
-      background = controls.errorBadgeBg;
-    } else if (accentColor != null) {
-      foreground = accentColor!;
-      background = accentColor!.withValues(alpha: 0.10);
+    if (backgroundColor != null && foregroundColor != null) {
+      foreground = foregroundColor!;
+      background = backgroundColor!;
     } else {
-      foreground = controls.badgeFg;
-      background = controls.badgeBg;
+      if (destructive) {
+        foreground = controls.errorBadgeFg;
+        background = controls.errorBadgeBg;
+      } else if (accentColor != null) {
+        foreground = accentColor!;
+        background = accentColor!.withValues(alpha: 0.10);
+      } else {
+        foreground = controls.badgeFg;
+        background = controls.badgeBg;
+      }
     }
 
     final horizontal = compact ? (spacing?.xs ?? 4) : (spacing?.sm ?? 8);
     final vertical = compact ? 4.0 : (spacing?.xs ?? 4);
+    final border =
+        borderColor != null ? Border.all(color: borderColor!) : null;
+    final radius = corners?.pill ?? 999.0;
 
     return Semantics(
       container: true,
@@ -67,7 +100,8 @@ class KinlyBadge extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: background,
-            borderRadius: BorderRadius.circular(corners?.xs ?? 10),
+            borderRadius: BorderRadius.circular(radius),
+            border: border,
           ),
           child: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(
@@ -78,11 +112,17 @@ class KinlyBadge extends StatelessWidget {
             ),
             child: Text(
               effectiveLabel,
-              style: (type?.labelSmall ?? theme.textTheme.labelSmall)?.copyWith(
-                color: foreground,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.2,
-              ),
+              maxLines: maxLines,
+              overflow: TextOverflow.ellipsis,
+              style:
+                  (textStyle ?? (type?.labelSmall ?? theme.textTheme.labelSmall))
+                      ?.copyWith(
+                        color: foreground,
+                        fontWeight:
+                            (textStyle?.fontWeight) ?? FontWeight.w700,
+                        letterSpacing:
+                            (textStyle?.letterSpacing) ?? 0.2,
+                      ),
             ),
           ),
         ),

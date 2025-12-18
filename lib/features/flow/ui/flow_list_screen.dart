@@ -11,9 +11,11 @@ import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/badges/kinly_badge.dart';
 import '../../../core/ui/buttons/kinly_fab.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
+import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../generated/l10n.dart';
 import 'flow_list_filter.dart';
 import '../bloc/flow_list_bloc.dart';
@@ -108,6 +110,21 @@ class FlowListScreen extends StatelessWidget {
             : AppRoutes.flowChoreEditPath(choreId);
     final result = await context.push(path);
     if (result is FlowChoreOutcome && context.mounted) {
+      final s = S.of(context);
+      final accent = Theme.of(context).extension<KinlySections>()?.flow.accent;
+      if (result.isUpdate) {
+        KinlySnackBar.showSuccess(
+          context,
+          s.flowChoreUpdateSuccess,
+          accentColor: accent,
+        );
+      } else if (!result.isDeleted && !result.isCompleted) {
+        KinlySnackBar.showSuccess(
+          context,
+          s.flowChoreCreateSuccess,
+          accentColor: accent,
+        );
+      }
       context.read<FlowListBloc>().add(const FlowListRefreshed());
     }
   }
@@ -155,14 +172,18 @@ class _FlowList extends StatelessWidget {
     final theme = Theme.of(context);
     final sections = theme.extension<KinlySections>();
     final flowColors = sections?.flow;
+    final spacing = theme.extension<Spacing>();
+    final gap = spacing?.md ?? 12.0;
+    final bottomSpacer = spacing?.lg ?? 16.0;
 
     return KinlyScrollFade(
       child: RefreshIndicator(
         onRefresh: onRefresh,
         child: ListView.separated(
           physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsetsDirectional.only(bottom: bottomSpacer),
           itemCount: items.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          separatorBuilder: (_, __) => SizedBox(height: gap),
           itemBuilder: (context, index) {
             final entry = items[index];
             return _FlowListTile(
@@ -252,13 +273,7 @@ class _FlowListTile extends StatelessWidget {
                   ),
                   if (isOverdue) ...[
                     SizedBox(width: spacing?.xs ?? 6),
-                    Text(
-                      s.flowListOverdueLabel,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.error,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    KinlyBadge(label: s.flowListOverdueLabel, destructive: true),
                   ],
                 ],
               ),
@@ -284,29 +299,9 @@ class _AssigneeAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>();
 
     if (entry.assigneeUserId == null) {
-      return Container(
-        padding: EdgeInsetsDirectional.symmetric(
-          horizontal: spacing?.m ?? 12,
-          vertical: spacing?.s ?? 8,
-        ),
-        decoration: BoxDecoration(
-          color: (flowColors?.accent ?? theme.colorScheme.primary).withValues(
-            alpha: 0.2,
-          ),
-          borderRadius: BorderRadius.circular(999),
-        ),
-        child: Text(
-          s.flowListDraftLabel,
-          style: theme.textTheme.labelMedium?.copyWith(
-            color: flowColors?.accent ?? theme.colorScheme.primary,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      );
+      return KinlyBadge(label: s.flowListDraftLabel, compact: false);
     }
 
     return KinlyCircleAvatar(

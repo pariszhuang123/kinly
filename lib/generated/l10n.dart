@@ -2321,11 +2321,31 @@ class S {
     );
   }
 
-  /// `Thanks, your home feels lighter.`
-  String get dopamineFlowAffirmation {
+  /// `Flow created.`
+  String get flowChoreCreateSuccess {
     return Intl.message(
-      'Thanks, your home feels lighter.',
-      name: 'dopamineFlowAffirmation',
+      'Flow created.',
+      name: 'flowChoreCreateSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Flow updated.`
+  String get flowChoreUpdateSuccess {
+    return Intl.message(
+      'Flow updated.',
+      name: 'flowChoreUpdateSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Flow completed.`
+  String get flowChoreDetailCompletionSuccess {
+    return Intl.message(
+      'Flow completed.',
+      name: 'flowChoreDetailCompletionSuccess',
       desc: '',
       args: [],
     );

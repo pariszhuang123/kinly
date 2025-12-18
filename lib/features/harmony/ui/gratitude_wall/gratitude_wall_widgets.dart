@@ -9,9 +9,8 @@ import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/kinly_masonry_grid.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/badges/kinly_badge.dart';
 import '../../../../generated/l10n.dart';
-import '../../../../core/ui/kinly_pill.dart';
-import '../../../../core/ui/enums/kinly_pill_size.dart';
 
 class GratitudeWallMasonryGrid extends StatelessWidget {
   const GratitudeWallMasonryGrid({super.key, required this.posts});
@@ -114,15 +113,15 @@ class GratitudeWallCard extends StatelessWidget {
               ),
               SizedBox(width: spacing.sm),
               Flexible(
-                child: KinlyPill(
+                child: KinlyBadge(
                   label: normalizedWeeksLabel,
-                  size: KinlyPillSize.compact,
                   backgroundColor: badgeFill,
+                  foregroundColor: colorScheme.onSurfaceVariant,
                   borderColor: palette.accent.withValues(alpha: 0.35),
-                  textColor: colorScheme.onSurfaceVariant,
                   textStyle: theme.textTheme.labelSmall?.copyWith(
                     letterSpacing: 0.1,
                   ),
+                  maxLines: 2,
                 ),
               ),
             ],

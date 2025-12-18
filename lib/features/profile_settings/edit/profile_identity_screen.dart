@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/profile/enums/profile_error_code.dart';
+import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
@@ -217,7 +218,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
         break;
       case ProfileIdentityAction.failure:
         final message = _resolveActionMessage(state, s);
-        KinlySnackBar.showError(context, message);
+        final accent =
+            Theme.of(context).extension<KinlySections>()?.pulse.accent;
+        KinlySnackBar.showError(context, message, accentColor: accent);
         break;
       case ProfileIdentityAction.none:
         break;

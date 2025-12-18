@@ -76,9 +76,12 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
               isPermission
                   ? s.flowChorePhotoPermissionDenied
                   : s.flowChorePhotoUploadError;
+          final accent =
+              Theme.of(context).extension<KinlySections>()?.flow.accent;
           KinlySnackBar.showError(
             context,
             snackText,
+            accentColor: accent,
             actionLabel:
                 state.isCameraPermissionPermanentlyDenied
                     ? s.flowChorePhotoPermissionOpenSettings
@@ -109,7 +112,9 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
             return;
           }
           final snackText = _mapSubmissionError(context, state);
-          KinlySnackBar.showError(context, snackText);
+          final accent =
+              Theme.of(context).extension<KinlySections>()?.flow.accent;
+          KinlySnackBar.showError(context, snackText, accentColor: accent);
         }
       },
       builder: (context, state) {
@@ -528,15 +533,12 @@ class _AssigneeSelector extends StatelessWidget {
       members: members,
       selectedMemberIds: selectedIds,
       avatarRadius: 22,
-      onToggle:
-          (memberId) {
-            // Keep at least one assignee once selected; tapping the current
-            // selection does nothing, tapping another switches selection.
-            if (selectedUserId == memberId) return;
-            context.read<FlowChoreBloc>().add(
-              FlowChoreAssigneeChanged(memberId),
-            );
-          },
+      onToggle: (memberId) {
+        // Keep at least one assignee once selected; tapping the current
+        // selection does nothing, tapping another switches selection.
+        if (selectedUserId == memberId) return;
+        context.read<FlowChoreBloc>().add(FlowChoreAssigneeChanged(memberId));
+      },
     );
   }
 }
@@ -634,13 +636,11 @@ class _OptionalDetailsExpansionState extends State<_OptionalDetailsExpansion> {
       ),
       child: ExpansionTile(
         initiallyExpanded: _isExpanded,
-        onExpansionChanged: (expanded) => setState(() {
-          _isExpanded = expanded;
-        }),
-        trailing: KinlyExpandBadge(
-          isExpanded: _isExpanded,
-          colors: colors,
-        ),
+        onExpansionChanged:
+            (expanded) => setState(() {
+              _isExpanded = expanded;
+            }),
+        trailing: KinlyExpandBadge(isExpanded: _isExpanded, colors: colors),
         title: Text(
           widget.s.flowChoreDetailMoreInfoTitle,
           style: theme.textTheme.titleMedium,
@@ -670,7 +670,9 @@ class _OptionalDetailsExpansionState extends State<_OptionalDetailsExpansion> {
             labelText: widget.s.flowChoreHowToLabel,
             hintText: widget.s.flowChoreHowToHint,
             errorText:
-                widget.hasHowToError ? widget.s.flowChoreValidationHowToUrl : null,
+                widget.hasHowToError
+                    ? widget.s.flowChoreValidationHowToUrl
+                    : null,
             keyboardType: TextInputType.url,
             onChanged:
                 (value) => context.read<FlowChoreBloc>().add(
