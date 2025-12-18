@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.48.0";
+import { createClient, type SupabaseClient } from "supabase-js";
 
 type RcPayload = Record<string, unknown>;
 
