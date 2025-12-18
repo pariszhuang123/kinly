@@ -163,6 +163,17 @@ class _PaywallBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final sections = theme.extension<KinlySections>();
+    final formattedPrice =
+        priceString == null
+            ? null
+            : strings.priceFormatter?.call(priceString!) ?? priceString;
+    final primaryLabel =
+        formattedPrice != null && formattedPrice.trim().isNotEmpty
+            ? '${strings.primaryCta} ($formattedPrice)'
+            : strings.priceUnavailableLabel != null &&
+                strings.priceUnavailableLabel!.trim().isNotEmpty
+            ? '${strings.primaryCta} (${strings.priceUnavailableLabel})'
+            : strings.primaryCta;
     const priceLine = '';
     final surface = theme.colorScheme.surface;
     final shareCard =
@@ -232,7 +243,7 @@ class _PaywallBody extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               KinlyFilledButton.text(
-                label: strings.primaryCta,
+                label: primaryLabel,
                 onPressed: onUpgrade,
                 fullWidth: true,
               ),

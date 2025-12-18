@@ -215,4 +215,38 @@ void main() {
           ),
         ],
   );
+
+  blocTest<PaywallBloc, PaywallState>(
+    'purchase failure emits error',
+    build: buildBloc,
+    act: (bloc) async {
+      bloc.add(const PaywallStarted());
+      await Future<void>.delayed(Duration.zero);
+      when(
+        () => revenueCatService.purchaseMonthly(any()),
+      ).thenThrow(Exception('fail'));
+      bloc.add(const PaywallCtaPressed());
+    },
+    expect:
+        () => [
+          isA<PaywallState>().having(
+            (s) => s.status,
+            'loading',
+            PaywallLoadStatus.loading,
+          ),
+          isA<PaywallState>().having(
+            (s) => s.status,
+            'ready',
+            PaywallLoadStatus.ready,
+          ),
+          isA<PaywallState>().having(
+            (s) => s.actionStatus,
+            'purchasing',
+            PaywallActionStatus.purchasing,
+          ),
+          isA<PaywallState>()
+              .having((s) => s.actionStatus, 'idle', PaywallActionStatus.idle)
+              .having((s) => s.error, 'error', flutter_test.isNotNull),
+        ],
+  );
 }

@@ -48,8 +48,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final supportsApple = Platform.isIOS;
     final linkColors = theme.extension<KinlyLinkColors>()!;
     final isDarkMode = theme.brightness == Brightness.dark;
-    final googleButtonStyle =
-        isDarkMode ? Buttons.googleDark : Buttons.google;
+    final googleButtonStyle = isDarkMode ? Buttons.google : Buttons.google;
     final appleButtonStyle = isDarkMode ? Buttons.appleDark : Buttons.apple;
 
     return BlocListener<AuthBloc, AuthState>(

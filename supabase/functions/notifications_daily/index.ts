@@ -1,4 +1,7 @@
-import { createClient, type SupabaseClient } from "supabase-js";
+import {
+  createClient,
+  type SupabaseClient,
+} from "npm:@supabase/supabase-js@2.48.0";
 
 type Candidate = {
   user_id: string;

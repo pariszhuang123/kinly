@@ -71,6 +71,28 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
       } catch (_) {
         pkg = null;
       }
+      if (pkg == null) {
+        try {
+          final offerings = await Purchases.getOfferings();
+          final currentId = offerings.current?.identifier;
+          final available =
+              offerings.current?.availablePackages
+                  .map((p) => p.identifier)
+                  .join(', ') ??
+              '';
+          _logger.warn(
+            'RevenueCat monthly package unavailable (currentOffering=$currentId availablePackages=[$available])',
+            tag: _logTag,
+          );
+        } catch (error, stackTrace) {
+          _logger.warn(
+            'Failed to inspect RevenueCat offerings after missing monthly package',
+            tag: _logTag,
+            error: error,
+            stackTrace: stackTrace,
+          );
+        }
+      }
 
       try {
         members = await _homeRepository.listActiveMembers(_homeId);
@@ -155,6 +177,11 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     } on PlatformException catch (e) {
       final code = PurchasesErrorHelper.getErrorCode(e);
       final isCancelled = code == PurchasesErrorCode.purchaseCancelledError;
+      _logger.warn(
+        'Purchase failed: code=$code message=${e.message} details=${e.details}',
+        tag: _logTag,
+        error: e,
+      );
       emit(
         state.copyWith(
           actionStatus: PaywallActionStatus.idle,
@@ -187,6 +214,11 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     } on PlatformException catch (e) {
       final code = PurchasesErrorHelper.getErrorCode(e);
       final isCancelled = code == PurchasesErrorCode.purchaseCancelledError;
+      _logger.warn(
+        'Restore failed: code=$code message=${e.message} details=${e.details}',
+        tag: _logTag,
+        error: e,
+      );
       emit(
         state.copyWith(
           actionStatus: PaywallActionStatus.idle,
