@@ -56,7 +56,15 @@ jobs:
           fi
 
       - name: Deno tests (Supabase Edge Functions)
-        run: deno test -A --config supabase/deno.json --lock=deno.lock --frozen supabase/functions
+        shell: bash
+        run: |
+          set -euo pipefail
+          deno test -A --config supabase/deno.json --lock=deno.lock --frozen supabase/functions || {
+            echo "::error::Deno lockfile is out of date. Run locally:"
+            echo "deno test -A --config supabase/deno.json --lock=deno.lock --frozen=false supabase/functions"
+            echo "Then commit deno.lock."
+            exit 1
+          }
 
       # ---------------------------
       # FLUTTER
