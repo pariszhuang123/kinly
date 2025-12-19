@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/ui/members/kinly_member_avatar_stack.dart';
 
 void main() {
   Widget wrap(Widget child) {
-    return MaterialApp(home: Scaffold(body: Center(child: child)));
+    return MaterialApp(
+      theme: ThemeData.light().copyWith(
+        extensions: const <ThemeExtension<dynamic>>[KinlyOpacity.defaults],
+      ),
+      home: Scaffold(body: Center(child: child)),
+    );
   }
 
   List<HomeMemberSummary> buildMembers(int count) {

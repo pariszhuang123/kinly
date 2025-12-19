@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/kinly_sections.dart';
+import '../../../../core/theme/opacity.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/badges/kinly_badge.dart';
@@ -121,6 +122,7 @@ class _ShareCreatedTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
+    final opacities = theme.extension<KinlyOpacity>()!;
     final s = S.of(context);
     final formatter = NumberFormat.simpleCurrency(decimalDigits: 2);
 
@@ -203,7 +205,7 @@ class _ShareCreatedTile extends StatelessWidget {
             amountProgress,
             style: theme.textTheme.bodySmall?.copyWith(
               color:
-                  shareColors?.icon.withValues(alpha: 0.7) ??
+                  shareColors?.icon.withValues(alpha: opacities.alphaFaint) ??
                   theme.colorScheme.onSurfaceVariant,
             ),
           ),

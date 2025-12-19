@@ -15,8 +15,10 @@ final _themeExtensionPatterns = [
   RegExp(r'extension<KinlyTypography>\(\)\s*\?'),
 ];
 
-// Matches withValues(alpha: 0.12) etc.
-final _rawAlphaPattern = RegExp(r'withValues\s*\(\s*alpha:\s*\d+(\.\d+)?');
+// Matches withValues(alpha: 0.12) etc. Ignore explicit 0 or 1 (transparent/opaque).
+final _rawAlphaPattern = RegExp(
+  r'withValues\s*\(\s*alpha:\s*(?!0(\.0+)?\b)(?!1(\.0+)?\b)\d+(\.\d+)?',
+);
 
 void main(List<String> args) {
   final root = Directory.current;
@@ -34,6 +36,7 @@ void main(List<String> args) {
   final errors = <String>[];
 
   for (final file in dartFiles) {
+    if (file.path.endsWith('tool/check_theme_tokens.dart')) continue;
     final content = file.readAsLinesSync();
     for (var i = 0; i < content.length; i++) {
       final line = content[i];

@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:kinly/core/theme/spacing.dart';
+import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/features/flow/ui/flow_chore_detail/widgets/flow_chore_extras_section.dart';
 import 'package:kinly/generated/l10n.dart';
 
@@ -30,6 +31,7 @@ void main() {
             xxl: 32,
             xxxl: 40,
           ),
+          KinlyOpacity.defaults,
         ],
       ),
       home: Scaffold(body: child),

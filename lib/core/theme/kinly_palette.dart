@@ -6,6 +6,7 @@ import 'color_tokens.dart';
 import 'control_tokens.dart';
 import 'foundation/kinly_foundation_colors.dart';
 import 'kinly_sections.dart';
+import 'opacity.dart';
 
 /// Central palette + derived color engine for Kinly.
 ///
@@ -14,10 +15,11 @@ import 'kinly_sections.dart';
 class KinlyPalette {
   static KinlyColors build(Brightness brightness) {
     final derived = _DerivedEngine.fromBrightness(brightness);
+    const opacities = KinlyOpacity.defaults;
     return KinlyColors(
       colorScheme: derived.scheme,
       colorTokens: _tokens(derived),
-      controlColors: controls(brightness, derived.scheme),
+      controlColors: controls(brightness, derived.scheme, opacities),
       sections: derived.sections,
       linkColors: derived.linkColors,
       brandTextColors: derived.brandTextColors,
@@ -67,6 +69,7 @@ class KinlyPalette {
   static KinlyControlColors controls(
     Brightness brightness,
     ColorScheme colorScheme,
+    KinlyOpacity opacities,
   ) {
     final isDark = brightness == Brightness.dark;
 
@@ -139,7 +142,7 @@ class KinlyPalette {
     final loaderColor = isDark ? colorScheme.onSurface : colorScheme.primary;
 
     // Badges
-    final badgeBg = colorScheme.primary.withValues(alpha: 0.14);
+    final badgeBg = colorScheme.primary.withValues(alpha: opacities.alphaMD);
 
     // NOTE: `badgeBg` is semi-transparent and will be composited over whatever
     // surface it's placed on. Because our contrast helper doesn't account for
@@ -149,11 +152,11 @@ class KinlyPalette {
     // For badges, we want a stable, brand-consistent foreground: the same hue
     // as the badge tint.
     final badgeFg = colorScheme.primary;
-    final errorBadgeBg = colorScheme.error.withValues(alpha: 0.18);
+    final errorBadgeBg = colorScheme.error.withValues(alpha: opacities.alphaMD);
     final errorBadgeFg = colorScheme.error;
 
     // Expand badge: use section accent alpha handled by caller; icon uses onSurface in dark
-    final expandBadgeBg = colorScheme.primary.withValues(alpha: 0.12);
+    final expandBadgeBg = colorScheme.primary.withValues(alpha: opacities.alphaSM);
     final expandBadgeIcon =
         isDark ? colorScheme.onSurface : colorScheme.primary;
 
@@ -312,6 +315,7 @@ class _DerivedEngine {
 
   static _DerivedColors fromBrightness(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
+    const opacities = KinlyOpacity.defaults;
 
     final surfaceBase =
         isDark
@@ -418,6 +422,7 @@ class _DerivedEngine {
       secondary: secondary,
       accent: KinlyFoundationColors.brandAccent,
       outline: outline,
+      opacities: opacities,
     );
 
     // Link colors
@@ -480,8 +485,9 @@ class _DerivedEngine {
       surfaceBright: surfaceBright,
       outline: outline,
       outlineVariant: outlineVariant,
-      shadow: _black.withValues(alpha: 0.3),
-      scrim: _black.withValues(alpha: 0.5),
+      shadow:
+          (isDark ? _white : _black).withValues(alpha: opacities.alphaShadow),
+      scrim: _black.withValues(alpha: opacities.alphaScrim),
       inverseSurface: inverseSurface,
       onInverseSurface: onInverseSurface,
       inversePrimary: inversePrimary,
@@ -507,11 +513,20 @@ class _DerivedEngine {
     required Color secondary,
     required Color accent,
     required Color outline,
+    required KinlyOpacity opacities,
   }) {
     Color sectionBackground(Color accentColor) =>
-        _mix(surface, accentColor, isDark ? 0.18 : 0.08);
+        _mix(
+          surface,
+          accentColor,
+          isDark ? opacities.alphaMD : opacities.alphaXS,
+        );
     Color sectionCard(Color accentColor) =>
-        _mix(surface, accentColor, isDark ? 0.24 : 0.12);
+        _mix(
+          surface,
+          accentColor,
+          isDark ? opacities.alphaXL : opacities.alphaSM,
+        );
     SectionColors buildSection(Color accentColor) {
       final card = sectionCard(accentColor);
       return SectionColors(

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/spacing.dart';
-import '../../theme/kinly_sections.dart';
 import '../../theme/color_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/kinly_sections.dart';
+import '../../theme/opacity.dart';
 import '../../../generated/l10n.dart';
 import 'kinly_fab.dart';
 import '../kinly_bottom_sheet.dart';
@@ -37,7 +38,8 @@ class KinlyQuickAddFab extends StatelessWidget {
     final colors =
         theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
-    final iconTint = colors.onSurface.withValues(alpha: 0.7);
+    final opacities = Theme.of(context).extension<KinlyOpacity>()!;
+    final iconTint = colors.onSurface.withValues(alpha: opacities.alphaFaint);
     final s = S.of(context);
 
     // Get the KinlySections instance from the theme

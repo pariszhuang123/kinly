@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../generated/l10n.dart';
 import '../theme/kinly_palette.dart';
 import '../theme/color_tokens.dart';
+import '../theme/opacity.dart';
 
 class HomeBottomNav extends StatelessWidget {
   final int currentIndex;
@@ -20,13 +21,15 @@ class HomeBottomNav extends StatelessWidget {
     final colors =
         theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
+    final opacities = theme.extension<KinlyOpacity>()!;
     final t = S.of(context);
 
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      selectedItemColor: colors.onSurface.withValues(alpha: 1.0),
-      unselectedItemColor: colors.onSurface.withValues(alpha: 0.6),
+      selectedItemColor: colors.onSurface,
+      unselectedItemColor:
+          colors.onSurface.withValues(alpha: opacities.alphaDim),
       backgroundColor: colors.surfaceVariant,
       items: [
         BottomNavigationBarItem(

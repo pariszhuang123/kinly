@@ -9,6 +9,7 @@ import 'package:kinly/features/flow/ui/flow_list_filter.dart';
 import 'package:kinly/features/flow/ui/flow_list_screen.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/core/theme/opacity.dart';
 
 class _MockFlowListBloc extends MockBloc<FlowListEvent, FlowListState>
     implements FlowListBloc {}
@@ -33,6 +34,9 @@ void main() {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
+      theme: ThemeData.light().copyWith(
+        extensions: const <ThemeExtension<dynamic>>[KinlyOpacity.defaults],
+      ),
       home: child,
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'kinly_checkbox.dart';
 import '../../theme/kinly_palette.dart';
 import '../../theme/color_tokens.dart';
+import '../../theme/opacity.dart';
 
 /// Kinly-styled toggle row: checkbox + title + optional subtitle.
 /// Design-system "molecule" built on top of KinlyCheckbox.
@@ -34,13 +35,14 @@ class KinlyToggle extends StatelessWidget {
     final tokens =
         theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     final titleStyle = theme.textTheme.bodyLarge?.copyWith(
       color: tokens.onSurface,
     );
 
     final subtitleStyle = theme.textTheme.bodyMedium?.copyWith(
-      color: tokens.onSurface.withValues(alpha: 0.72),
+      color: tokens.onSurface.withValues(alpha: opacities.alphaFaintStrong),
     );
 
     final toggleRow = InkWell(

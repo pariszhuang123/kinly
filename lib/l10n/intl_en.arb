@@ -41,7 +41,7 @@
   "paywallTitle": "Bring more harmony to your home",
   "paywallSubtitle": "Your home-level upgrade for less than 0.5% of your rent.",
   "paywallPriceCaption": "One home plan, no hidden tiers.",
-  "paywallPricePerMonth": "{price} per month for your whole home.",
+  "paywallPricePerMonth": "{price} per month.",
   "@paywallPricePerMonth": {
     "surface": "paywall_subtitle",
     "placeholders": {

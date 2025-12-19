@@ -4,6 +4,7 @@ import '../theme/color_tokens.dart';
 import '../theme/elevation.dart';
 import '../theme/kinly_palette.dart';
 import '../theme/motion.dart';
+import '../theme/opacity.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
 import 'kinly_motion_aware.dart';
@@ -62,6 +63,7 @@ class KinlyBottomSheet extends StatelessWidget {
     final corners = theme.extension<Corners>();
     final elevations = theme.extension<Elevations>();
     final motion = theme.extension<Motion>();
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     // Only respond to keyboard inset. System insets are handled by useSafeArea: true.
     final media = MediaQuery.of(context);
@@ -115,7 +117,9 @@ class KinlyBottomSheet extends StatelessWidget {
                                 width: 36,
                                 height: 4,
                                 decoration: BoxDecoration(
-                                  color: colors.onSurface.withValues(alpha: 0.3),
+                                  color: colors.onSurface.withValues(
+                                    alpha: opacities.alphaHalo,
+                                  ),
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                               ),
@@ -136,7 +140,9 @@ class KinlyBottomSheet extends StatelessWidget {
                                 Text(
                                   subtitle!,
                                   style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: colors.onSurface.withValues(alpha: 0.7),
+                                    color: colors.onSurface.withValues(
+                                      alpha: opacities.alphaFaint,
+                                    ),
                                   ),
                                   textAlign: TextAlign.center,
                                 ),

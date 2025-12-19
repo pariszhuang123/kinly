@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/kinly_sections.dart';
 import '../theme/kinly_palette.dart';
+import '../theme/opacity.dart';
 import '../theme/color_tokens.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
@@ -34,10 +35,11 @@ class KinlySelectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final corners = theme.extension<Corners>();
+    final corners = theme.extension<Corners>()!;
     final tokens =
         theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     return Semantics(
       button: true,
@@ -46,25 +48,25 @@ class KinlySelectionCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(corners?.xlarge ?? 24),
+          borderRadius: BorderRadius.circular(corners.xlarge),
           onTap: onTap,
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(spacing.lg),
-              decoration: BoxDecoration(
-                color: colors.card,
-                borderRadius: BorderRadius.circular(corners?.xlarge ?? 24),
-              ),
-              child: Row(
-                children: [
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(spacing.lg),
+            decoration: BoxDecoration(
+              color: colors.card,
+              borderRadius: BorderRadius.circular(corners.xlarge),
+            ),
+            child: Row(
+              children: [
                   Container(
                     height: 56,
                     width: 56,
                     decoration: BoxDecoration(
-                      color: colors.icon.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(corners?.medium ?? 12),
+                      color: colors.icon.withValues(alpha: opacities.alphaHalo),
+                      borderRadius: BorderRadius.circular(corners.medium),
                     ),
                     child: Center(
                       child: icon, // <- use the widget directly
@@ -85,7 +87,9 @@ class KinlySelectionCard extends StatelessWidget {
                         Text(
                           subtitle,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: tokens.onSurface.withValues(alpha: 0.7),
+                            color: tokens.onSurface.withValues(
+                              alpha: opacities.alphaFaint,
+                            ),
                           ),
                         ),
                       ],
@@ -93,7 +97,7 @@ class KinlySelectionCard extends StatelessWidget {
                   ),
                   Icon(
                     Icons.chevron_right_rounded,
-                    color: tokens.onSurface.withValues(alpha: 0.7),
+                    color: tokens.onSurface.withValues(alpha: opacities.alphaFaint),
                   ),
                 ],
               ),

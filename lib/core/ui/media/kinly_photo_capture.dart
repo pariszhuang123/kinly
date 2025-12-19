@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -34,6 +35,7 @@ class KinlyPhotoCapture extends StatelessWidget {
     final colors = theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     final hasPhoto = photoUrl?.trim().isNotEmpty == true;
 
@@ -73,14 +75,20 @@ class KinlyPhotoCapture extends StatelessWidget {
                           Icon(
                             Icons.photo_camera_outlined,
                             size: 32,
-                            color: colors.onSurface.withValues(alpha: 0.7),
+                            color: colors.onSurface.withValues(
+                              alpha: opacities.alphaFaint,
+                            ),
                           ),
                           SizedBox(height: spacing?.xs ?? 8),
                           Text(
                             placeholderText,
                             style: (type?.bodyMedium ??
                                     theme.textTheme.bodyMedium)
-                                ?.copyWith(color: colors.onSurface.withValues(alpha: 0.7)),
+                                ?.copyWith(
+                                  color: colors.onSurface.withValues(
+                                    alpha: opacities.alphaFaint,
+                                  ),
+                                ),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -90,7 +98,7 @@ class KinlyPhotoCapture extends StatelessWidget {
           if (isUploading)
             Container(
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.35),
+                color: Colors.black.withValues(alpha: opacities.alphaHalo),
                 borderRadius: BorderRadius.circular(corners?.medium ?? 12),
               ),
               child: const Center(child: KinlyLoader(size: 32)),

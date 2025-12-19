@@ -12,6 +12,7 @@ import 'package:kinly/features/flow/ui/flow_chore_detail/widgets/flow_chore_deta
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
+import 'package:kinly/core/theme/opacity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -162,6 +163,7 @@ void main() {
                 accent: Colors.grey,
               ),
             ),
+            KinlyOpacity.defaults,
           ],
         ),
         home: _RouteHost(
@@ -271,6 +273,7 @@ void main() {
                 accent: Colors.grey,
               ),
             ),
+            KinlyOpacity.defaults,
           ],
         ),
         home: BlocProvider<FlowChoreDetailBloc>.value(
@@ -358,6 +361,7 @@ void main() {
                   accent: Colors.grey,
                 ),
               ),
+              KinlyOpacity.defaults,
             ],
           ),
           home: Scaffold(
@@ -450,6 +454,7 @@ void main() {
                   accent: Colors.grey,
                 ),
               ),
+              KinlyOpacity.defaults,
             ],
           ),
           home: Scaffold(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -29,6 +30,7 @@ class KinlyFilterChip extends StatelessWidget {
     final colors = theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     final background =
         selected
@@ -64,7 +66,7 @@ class KinlyFilterChip extends StatelessWidget {
       backgroundColor: background,
       selectedColor: background,
       checkmarkColor: labelColor,
-      disabledColor: colors.disabled.withValues(alpha: 0.4),
+      disabledColor: colors.disabled.withValues(alpha: opacities.alphaMuted),
       labelPadding: EdgeInsets.symmetric(
         horizontal: spacing?.s ?? 8,
         vertical: spacing?.xxs ?? 2,

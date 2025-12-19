@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/color_tokens.dart';
 import '../theme/kinly_palette.dart';
+import '../theme/opacity.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
 import '../theme/typography_tokens.dart';
@@ -39,6 +40,7 @@ class KinlyListTile extends StatelessWidget {
     final derived = colors ?? KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
     final corners = theme.extension<Corners>();
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     final padding =
         contentPadding ??
@@ -66,7 +68,11 @@ class KinlyListTile extends StatelessWidget {
                 : Text(
                   subtitle!,
                   style: (type?.bodyMedium ?? theme.textTheme.bodyMedium)
-                      ?.copyWith(color: derived.onSurface.withValues(alpha: 0.7)),
+                      ?.copyWith(
+                        color: derived.onSurface.withValues(
+                          alpha: opacities.alphaFaint,
+                        ),
+                      ),
                 ),
         trailing: trailing,
         onTap: onTap,

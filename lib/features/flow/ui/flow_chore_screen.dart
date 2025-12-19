@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/chores/models.dart';
 import '../../../core/supabase/storage_path_resolver.dart';
 import '../../../core/theme/kinly_sections.dart';
+import '../../../core/theme/opacity.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
@@ -764,7 +765,12 @@ class _ExpectationPhotoPicker extends StatelessWidget {
           if (isUploading)
             Container(
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.35),
+                color: Colors.black.withValues(
+                  alpha:
+                      Theme.of(context)
+                          .extension<KinlyOpacity>()!
+                          .alphaHalo,
+                ),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Center(child: KinlyLoader(size: 32)),

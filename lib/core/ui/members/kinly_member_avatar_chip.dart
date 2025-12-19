@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../theme/spacing.dart';
 import '../../theme/color_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../kinly_circle_avatar.dart';
 import '../kinly_motion_aware.dart';
 
@@ -29,15 +30,16 @@ class KinlyMemberAvatarChip extends StatelessWidget {
     final colors =
         theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     final borderColor =
         isSelected
             ? colors.primary
-            : colors.outline.withValues(alpha: 0.4);
+            : colors.outline.withValues(alpha: opacities.alphaMuted);
 
     final bgColor =
         isSelected
-            ? colors.primary.withValues(alpha: 0.08)
+            ? colors.primary.withValues(alpha: opacities.alphaXS)
             : Colors.transparent;
 
     return SizedBox(
@@ -86,7 +88,7 @@ class KinlyMemberAvatarChip extends StatelessWidget {
               color:
                   isSelected
                       ? colors.onSurface
-                      : colors.onSurface.withValues(alpha: 0.9),
+                      : colors.onSurface.withValues(alpha: opacities.alphaOpaque),
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             ),
             textAlign: TextAlign.center,

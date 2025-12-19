@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
-import '../../theme/kinly_palette.dart';
 import '../../theme/elevation.dart';
+import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -70,9 +71,11 @@ class KinlyAlertDialog extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final corners = theme.extension<Corners>();
     final elevations = theme.extension<Elevations>();
-    final colors = theme.extension<KinlyColorTokens>() ??
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     final titleStyle =
         type?.titleMedium ??
@@ -81,7 +84,7 @@ class KinlyAlertDialog extends StatelessWidget {
     final messageStyle =
         type?.bodyMedium ??
         theme.textTheme.bodyMedium?.copyWith(
-          color: colors.onSurface.withValues(alpha: 0.7),
+          color: colors.onSurface.withValues(alpha: opacities.alphaFaint),
         );
 
     final primaryButton =

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/control_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -58,6 +59,7 @@ class KinlyBadge extends StatelessWidget {
     final controls =
         theme.extension<KinlyControlColors>() ??
         KinlyPalette.build(theme.brightness).controlColors;
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     final effectiveLabel = label.trim();
     assert(effectiveLabel.isNotEmpty, 'Badge label must not be empty');
@@ -80,7 +82,7 @@ class KinlyBadge extends StatelessWidget {
         background = controls.errorBadgeBg;
       } else if (accentColor != null) {
         foreground = accentColor!;
-        background = accentColor!.withValues(alpha: 0.10);
+        background = accentColor!.withValues(alpha: opacities.alphaXS);
       } else {
         foreground = controls.badgeFg;
         background = controls.badgeBg;

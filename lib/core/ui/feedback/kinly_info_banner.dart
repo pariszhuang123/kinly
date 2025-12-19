@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -30,12 +31,13 @@ class KinlyInfoBanner extends StatelessWidget {
         theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final typeScale = theme.extension<KinlyTypography>();
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     final bg = switch (type) {
       KinlyBannerType.success => colors.primaryContainer,
       KinlyBannerType.info => colors.info,
       KinlyBannerType.warning => colors.warning,
-      KinlyBannerType.error => colors.error.withValues(alpha: 0.12),
+      KinlyBannerType.error => colors.error.withValues(alpha: opacities.alphaSM),
     };
     final fg = switch (type) {
       KinlyBannerType.success => colors.onPrimaryContainer,

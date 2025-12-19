@@ -259,10 +259,10 @@ class S {
     );
   }
 
-  /// `{price} per month for your whole home.`
+  /// `{price} per month.`
   String paywallPricePerMonth(String price) {
     return Intl.message(
-      '$price per month for your whole home.',
+      '$price per month.',
       name: 'paywallPricePerMonth',
       desc: '',
       args: [price],
@@ -1159,10 +1159,10 @@ class S {
     );
   }
 
-  /// `Share`
+  /// `Bill`
   String get todayShareSectionTitle {
     return Intl.message(
-      'Share',
+      'Bill',
       name: 'todayShareSectionTitle',
       desc: '',
       args: [],

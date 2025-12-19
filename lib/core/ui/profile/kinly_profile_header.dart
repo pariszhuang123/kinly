@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../theme/spacing.dart';
 import '../../theme/color_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../kinly_circle_avatar.dart';
 
 class KinlyProfileHeader extends StatelessWidget {
@@ -29,6 +30,7 @@ class KinlyProfileHeader extends StatelessWidget {
     final colors =
         theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     return Column(
       children: [
@@ -87,7 +89,7 @@ class KinlyProfileHeader extends StatelessWidget {
         Text(
           subtitle,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: colors.onSurface.withValues(alpha: 0.7),
+            color: colors.onSurface.withValues(alpha: opacities.alphaFaint),
           ),
           textAlign: TextAlign.center,
         ),

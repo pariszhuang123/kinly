@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/control_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../../theme/spacing.dart';
 
 class KinlySelectableItem<T> {
@@ -111,8 +112,9 @@ class _SelectableItem<T> extends StatelessWidget {
     final tapPadding = math.max(spacingTokens?.xxs ?? 4.0, extraPadding);
     final basePrimary = controls.selectableItemBorderSelected;
     final baseContainer = controls.selectableItemBgSelected;
-    final haloColor = baseContainer.withValues(alpha: 0.38);
-    final ringColor = basePrimary.withValues(alpha: 1.00);
+    final opacities = theme.extension<KinlyOpacity>()!;
+    final haloColor = baseContainer.withValues(alpha: opacities.alphaHalo);
+    final ringColor = basePrimary;
     final ringThickness = isSelected ? 2.0 : 0.0;
     final haloPadding =
         isSelected ? math.max(spacingTokens?.xs ?? 4.0, 4.0) : 0.0;

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/profile/enums/profile_error_code.dart';
 import '../../../core/theme/kinly_sections.dart';
+import '../../../core/theme/opacity.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
@@ -44,6 +45,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
+    final opacities = theme.extension<KinlyOpacity>()!;
     final s = S.of(context);
 
     return Scaffold(
@@ -102,7 +104,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                               s.profileIdentitySubtitle,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.7,
+                                  alpha: opacities.alphaFaint,
                                 ),
                               ),
                             ),
@@ -138,7 +140,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                               s.profileIdentityAvatarSectionDescription,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.7,
+                                  alpha: opacities.alphaFaint,
                                 ),
                               ),
                             ),
@@ -321,10 +323,11 @@ class _AvatarOption extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
+    final opacities = theme.extension<KinlyOpacity>()!;
     final borderColor =
         isSelected
             ? theme.colorScheme.primary
-            : theme.colorScheme.outline.withValues(alpha: 0.5);
+            : theme.colorScheme.outline.withValues(alpha: opacities.alphaScrim);
     return Material(
       color: Colors.transparent,
       child: InkWell(

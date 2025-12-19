@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kinly/core/theme/elevation.dart';
 import 'package:kinly/core/theme/radius.dart';
 import 'package:kinly/core/theme/spacing.dart';
+import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/ui/dialogs/kinly_alert_dialog.dart';
 
 void main() {
@@ -42,7 +43,12 @@ void main() {
         ],
         home: Theme(
           data: ThemeData(
-            extensions: const [spacing, corners, elevations],
+            extensions: const [
+              spacing,
+              corners,
+              elevations,
+              KinlyOpacity.defaults,
+            ],
           ),
           child: Scaffold(
             body: KinlyAlertDialog.confirm(

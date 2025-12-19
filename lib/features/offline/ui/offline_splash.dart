@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/color_tokens.dart';
 import '../../../core/theme/spacing.dart';
+import '../../../core/theme/opacity.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
 import '../../splash/ui/widgets/kinly_logo.dart';
@@ -17,17 +18,8 @@ class OfflineSplash extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final colorTokens = theme.extension<KinlyColorTokens>();
-    final spacing = theme.extension<Spacing>() ??
-        const Spacing(
-          xxs: 2,
-          xs: 4,
-          s: 8,
-          m: 12,
-          l: 16,
-          xl: 24,
-          xxl: 32,
-          xxxl: 40,
-        );
+    final opacities = theme.extension<KinlyOpacity>()!;
+    final spacing = theme.extension<Spacing>()!;
 
     return Scaffold(
       body: SafeArea(
@@ -55,7 +47,7 @@ class OfflineSplash extends StatelessWidget {
                   style: theme.textTheme.bodyLarge?.copyWith(
                     // Slightly softer body text; still uses the Kinly onSurface color
                     color: (colorTokens?.onSurface ?? colors.onSurface)
-                        .withValues(alpha: 0.78),
+                        .withValues(alpha: opacities.alphaFaintStrong),
                   ),
                   textAlign: TextAlign.center,
                 ),

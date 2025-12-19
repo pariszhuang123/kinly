@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kinly/core/mood/enums/mood_scale.dart';
 import 'package:kinly/core/mood/models.dart';
 import 'package:kinly/core/theme/spacing.dart';
+import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/data/repositories/mood_repository.dart';
 import 'package:kinly/features/harmony/bloc/harmony_cubit.dart';
 import 'package:kinly/features/harmony/ui/harmony_page.dart';
@@ -77,7 +78,12 @@ const _rtlSpacing = Spacing(
 final ThemeData _rtlTheme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-).copyWith(extensions: const <ThemeExtension<dynamic>>[_rtlSpacing]);
+).copyWith(
+  extensions: const <ThemeExtension<dynamic>>[
+    _rtlSpacing,
+    KinlyOpacity.defaults,
+  ],
+);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

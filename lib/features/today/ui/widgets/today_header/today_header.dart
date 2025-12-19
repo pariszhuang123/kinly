@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../generated/l10n.dart';
 import '../../../../../../core/theme/spacing.dart';
+import '../../../../../../core/theme/opacity.dart';
 import '../../../domain/models.dart';
 import '../../../../../core/ui/kinly_circle_avatar.dart';
 
@@ -22,6 +23,7 @@ class TodayHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
+    final opacities = theme.extension<KinlyOpacity>()!;
     final displayName = profile?.username ?? S.of(context).friendDefaultName;
 
     // Localize “Good morning / afternoon / evening”
@@ -46,7 +48,9 @@ class TodayHeader extends StatelessWidget {
               Text(
                 S.of(context).todayFlowSubtitle, // NEW localized subtitle
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withValues(alpha: 0.7),
+                  color: colorScheme.onSurface.withValues(
+                    alpha: opacities.alphaFaint,
+                  ),
                 ),
               ),
             ],

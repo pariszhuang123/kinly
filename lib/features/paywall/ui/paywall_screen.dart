@@ -81,11 +81,6 @@ class KinlyPaywallScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void handleDismiss(BuildContext context) {
-      context.read<PaywallBloc>().add(const PaywallDismissed());
-      Navigator.of(context).pop(false);
-    }
-
     return BlocProvider(
       create:
           (_) => PaywallBloc(
@@ -97,67 +92,86 @@ class KinlyPaywallScreen extends StatelessWidget {
             logger: sl<Logger>(),
             placementId: placementId,
           )..add(PaywallStarted(source: source)),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(strings.title),
-          automaticallyImplyLeading: false,
-          actions: [
-            IconButton(
-              tooltip: strings.secondaryCta,
-              icon: const Icon(Icons.close_rounded),
-              onPressed: () {
-                handleDismiss(context);
-              },
+      child: Builder(
+        builder: (context) {
+          final theme = Theme.of(context);
+          final typography = theme.extension<KinlyTypography>()!;
+
+          void handleDismiss() {
+            context.read<PaywallBloc>().add(const PaywallDismissed());
+            Navigator.of(context).pop(false);
+          }
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                strings.title,
+                style: typography.titleSmall.copyWith(
+                  color: theme.colorScheme.onSurface,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              automaticallyImplyLeading: false,
+              actions: [
+                IconButton(
+                  tooltip: strings.secondaryCta,
+                  icon: const Icon(Icons.close_rounded),
+                  onPressed: handleDismiss,
+                ),
+              ],
             ),
-          ],
-        ),
-        body: SafeArea(
-          child: BlocConsumer<PaywallBloc, PaywallState>(
-            listenWhen:
-                (prev, next) =>
-                    prev.actionStatus != next.actionStatus ||
-                    prev.error != next.error,
-            listener: (context, state) {
-              if (state.actionStatus == PaywallActionStatus.success) {
-                KinlySnackBar.showSuccess(context, strings.purchaseSuccess);
-                Navigator.of(context).pop(true);
-              } else if (state.error != null) {
-                KinlySnackBar.showError(context, strings.purchaseFailed);
-              }
-            },
-            builder: (context, state) {
-              if (state.status == PaywallLoadStatus.loading ||
-                  state.status == PaywallLoadStatus.initial) {
-                return const Center(child: KinlyLoader());
-              }
-              if (state.status == PaywallLoadStatus.error) {
-                return _ErrorView(
-                  strings: strings,
-                  onRetry: () {
-                    context.read<PaywallBloc>().add(
-                      PaywallStarted(source: source),
-                    );
-                  },
-                );
-              }
-              final pkg = state.package;
-              return _PaywallBody(
-                strings: strings,
-                priceString: pkg?.priceString,
-                onUpgrade: () {
-                  context.read<PaywallBloc>().add(const PaywallCtaPressed());
+            body: SafeArea(
+              child: BlocConsumer<PaywallBloc, PaywallState>(
+                listenWhen:
+                    (prev, next) =>
+                        prev.actionStatus != next.actionStatus ||
+                        prev.error != next.error,
+                listener: (context, state) {
+                  if (state.actionStatus == PaywallActionStatus.success) {
+                    KinlySnackBar.showSuccess(context, strings.purchaseSuccess);
+                    Navigator.of(context).pop(true);
+                  } else if (state.error != null) {
+                    KinlySnackBar.showError(context, strings.purchaseFailed);
+                  }
                 },
-                onRestore: () {
-                  context.read<PaywallBloc>().add(
-                    const PaywallRestorePressed(),
+                builder: (context, state) {
+                  if (state.status == PaywallLoadStatus.loading ||
+                      state.status == PaywallLoadStatus.initial) {
+                    return const Center(child: KinlyLoader());
+                  }
+                  if (state.status == PaywallLoadStatus.error) {
+                    return _ErrorView(
+                      strings: strings,
+                      onRetry: () {
+                        context.read<PaywallBloc>().add(
+                          PaywallStarted(source: source),
+                        );
+                      },
+                    );
+                  }
+                  final pkg = state.package;
+                  return _PaywallBody(
+                    strings: strings,
+                    priceString: pkg?.priceString,
+                    onUpgrade: () {
+                      context.read<PaywallBloc>().add(
+                        const PaywallCtaPressed(),
+                      );
+                    },
+                    onRestore: () {
+                      context.read<PaywallBloc>().add(
+                        const PaywallRestorePressed(),
+                      );
+                    },
+                    onDismiss: handleDismiss,
+                    members: state.activeMembers,
                   );
                 },
-                onDismiss: () => handleDismiss(context),
-                members: state.activeMembers,
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -206,14 +220,8 @@ class _PaywallBody extends StatelessWidget {
     final flowCard =
         sections?.flow.card ?? theme.colorScheme.secondaryContainer;
     final heroGradient = [
-      Color.alphaBlend(
-        shareCard.withValues(alpha: opacities.alphaMD),
-        surface,
-      ),
-      Color.alphaBlend(
-        flowCard.withValues(alpha: opacities.alphaXXL),
-        surface,
-      ),
+      Color.alphaBlend(shareCard.withValues(alpha: opacities.alphaMD), surface),
+      Color.alphaBlend(flowCard.withValues(alpha: opacities.alphaXXL), surface),
     ];
 
     final features = [
@@ -241,7 +249,6 @@ class _PaywallBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _PaywallHero(
-                  title: strings.title,
                   subtitle: strings.subtitle,
                   priceLine: priceLine,
                   priceCaption: strings.priceCaption ?? strings.unlimitedLabel,
@@ -280,7 +287,7 @@ class _PaywallBody extends StatelessWidget {
                                     theme.colorScheme.primary,
                                 bulletSize: spacing.xxl,
                                 iconSize: appSizes?.iconMd ?? spacing.xl,
-                                titleStyle: typography.titleMedium,
+                                titleStyle: typography.titleSmall,
                               ),
                             ],
                           ),
@@ -381,7 +388,6 @@ class _BenefitChecklist extends StatelessWidget {
 
 class _PaywallHero extends StatelessWidget {
   const _PaywallHero({
-    required this.title,
     required this.subtitle,
     required this.priceLine,
     required this.priceCaption,
@@ -391,7 +397,6 @@ class _PaywallHero extends StatelessWidget {
     required this.members,
   });
 
-  final String title;
   final String subtitle;
   final String priceLine;
   final String? priceCaption;
@@ -442,8 +447,6 @@ class _PaywallHero extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: typography.headlineLarge),
-          SizedBox(height: spacing.s),
           Text(
             subtitle,
             style: typography.bodyLarge.copyWith(
@@ -460,7 +463,7 @@ class _PaywallHero extends StatelessWidget {
               members: members,
               accent: accent,
               maxVisible: 5,
-              radius: spacing.xl - spacing.s,
+              radius: spacing.xl,
             ),
           ],
           if (priceLine.isNotEmpty) ...[

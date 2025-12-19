@@ -49,7 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m11(code) => "Joined with code: ${code}";
 
-  static String m12(price) => "${price} per month for your whole home.";
+  static String m12(price) => "${price} per month.";
 
   static String m13(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
@@ -950,7 +950,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayShareSampleRent": MessageLookupByLibrary.simpleMessage(
       "Rent reminder coming up",
     ),
-    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Share"),
+    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Bill"),
     "todayShareSeeAll": MessageLookupByLibrary.simpleMessage("See all bills"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),

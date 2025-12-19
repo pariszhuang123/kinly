@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/opacity.dart';
 
 /// Wraps any scrollable child with Kinly-standard top/bottom fade and
 /// suppresses the default overscroll glow so headers/backgrounds stay stable.
@@ -46,20 +47,29 @@ class KinlyScrollFade extends StatelessWidget {
     // Build gradient only for the enabled edges to avoid tinting the app bar.
     late final List<double> stops;
     late final List<Color> colors;
+    final opacities = Theme.of(context).extension<KinlyOpacity>()!;
 
     if (!fadeTop && fadeBottom) {
       stops = <double>[0.0, 1 - fadeFraction, 1.0];
-      colors = <Color>[maskColor, maskColor, maskColor.withValues(alpha: 0)];
+      colors = <Color>[
+        maskColor,
+        maskColor,
+        maskColor.withValues(alpha: opacities.alphaXXS),
+      ];
     } else if (fadeTop && !fadeBottom) {
       stops = <double>[0.0, fadeFraction, 1.0];
-      colors = <Color>[maskColor.withValues(alpha: 0), maskColor, maskColor];
+      colors = <Color>[
+        maskColor.withValues(alpha: opacities.alphaXXS),
+        maskColor,
+        maskColor,
+      ];
     } else {
       stops = <double>[0.0, fadeFraction, 1 - fadeFraction, 1.0];
       colors = <Color>[
-        maskColor.withValues(alpha: 0),
+        maskColor.withValues(alpha: opacities.alphaXXS),
         maskColor,
         maskColor,
-        maskColor.withValues(alpha: 0),
+        maskColor.withValues(alpha: opacities.alphaXXS),
       ];
     }
 

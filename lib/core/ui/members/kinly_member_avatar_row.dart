@@ -27,9 +27,9 @@ class KinlyMemberAvatarRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final spacingTokens = theme.extension<Spacing>();
-    final gap = spacing ?? spacingTokens?.m ?? 12.0;
-    final wrapRunSpacing = runSpacing ?? spacingTokens?.s ?? 8.0;
+    final spacingTokens = theme.extension<Spacing>()!;
+    final gap = spacing ?? spacingTokens.m;
+    final wrapRunSpacing = runSpacing ?? spacingTokens.s;
 
     return Wrap(
       spacing: gap,
@@ -79,7 +79,7 @@ class _AvatarWithLabel extends StatelessWidget {
           fallbackInitial:
               member.username.isNotEmpty ? member.username[0] : null,
         ),
-        SizedBox(height: (theme.extension<Spacing>()?.s ?? 8.0)),
+        SizedBox(height: theme.extension<Spacing>()!.s),
         SizedBox(
           width: avatarRadius * 2.8,
           child: Text(

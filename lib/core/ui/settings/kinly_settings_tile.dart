@@ -4,6 +4,7 @@ import '../../theme/control_tokens.dart';
 import '../../theme/kinly_palette.dart';
 import '../../theme/color_tokens.dart';
 import '../../theme/spacing.dart';
+import '../../theme/opacity.dart';
 import '../../theme/typography_tokens.dart';
 import '../kinly_loader.dart';
 
@@ -28,10 +29,11 @@ class KinlySettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>();
+    final spacing = theme.extension<Spacing>()!;
     final controls =
         theme.extension<KinlyControlColors>() ??
         KinlyPalette.build(theme.brightness).controlColors;
+    final opacities = theme.extension<KinlyOpacity>()!;
     final type = theme.extension<KinlyTypography>();
     final tokens =
         theme.extension<KinlyColorTokens>() ??
@@ -47,7 +49,7 @@ class KinlySettingsTile extends StatelessWidget {
       avatarBackground = controls.errorBadgeBg;
     } else {
       leadingColor = tokens.onSurface;
-      avatarBackground = primary.withValues(alpha: 0.12);
+      avatarBackground = primary.withValues(alpha: opacities.alphaSM);
     }
 
     final titleStyle =
@@ -58,7 +60,7 @@ class KinlySettingsTile extends StatelessWidget {
 
     final subtitleStyle =
         (type?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
-          color: tokens.onSurface.withValues(alpha: 0.7),
+          color: tokens.onSurface.withValues(alpha: opacities.alphaFaint),
         );
 
     final trailingWidget = showProgress
@@ -69,15 +71,15 @@ class KinlySettingsTile extends StatelessWidget {
           )
         : Icon(
             Icons.chevron_right,
-            color: tokens.onSurface.withValues(alpha: 0.7),
+            color: tokens.onSurface.withValues(alpha: opacities.alphaFaint),
           );
 
     return ListTile(
       contentPadding: EdgeInsetsDirectional.fromSTEB(
-        spacing?.l ?? 16,
-        spacing?.s ?? 8,
-        spacing?.l ?? 16,
-        spacing?.s ?? 8,
+        spacing.l,
+        spacing.s,
+        spacing.l,
+        spacing.s,
       ),
       leading: CircleAvatar(
         backgroundColor: avatarBackground,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/spacing.dart';
+import '../../../../core/theme/opacity.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../bloc/gratitude_wall_cubit.dart';
@@ -17,6 +18,7 @@ class GratitudeWallContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     return SizedBox(
       height: maxHeight,
@@ -71,7 +73,9 @@ class GratitudeWallContent extends StatelessWidget {
                       end: Alignment.topCenter,
                       colors: [
                         theme.colorScheme.surface,
-                        theme.colorScheme.surface.withValues(alpha: 0.0),
+                        theme.colorScheme.surface.withValues(
+                          alpha: opacities.alphaXXS,
+                        ),
                       ],
                     ),
                   ),

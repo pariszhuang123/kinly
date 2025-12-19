@@ -6,6 +6,7 @@ import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/core/theme/color_tokens.dart';
 import 'package:kinly/core/theme/kinly_palette.dart';
 import 'package:kinly/core/theme/spacing.dart';
+import 'package:kinly/core/theme/opacity.dart';
 
 void main() {
   double contrastRatio(Color a, Color b) {
@@ -99,6 +100,7 @@ void main() {
                         xxl: 32,
                         xxxl: 40,
                       ),
+                      KinlyOpacity.defaults,
                     ],
                   ),
               home: Builder(

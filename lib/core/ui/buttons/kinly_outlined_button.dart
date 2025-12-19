@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/control_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../../theme/radius.dart';
 import '../../theme/spacing.dart';
 import '../../theme/typography_tokens.dart';
@@ -126,7 +127,8 @@ class KinlyOutlinedButton extends StatelessWidget {
 
     final overlay = WidgetStateProperty.resolveWith<Color?>((states) {
       if (states.contains(WidgetState.pressed)) {
-        return foreground.withValues(alpha: 0.08);
+        final opacities = Theme.of(context).extension<KinlyOpacity>()!;
+        return foreground.withValues(alpha: opacities.alphaXS);
       }
       return null;
     });

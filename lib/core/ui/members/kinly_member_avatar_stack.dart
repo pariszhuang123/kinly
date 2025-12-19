@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../homes/models.dart';
 import '../../theme/color_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../kinly_circle_avatar.dart';
 
 /// Compact stacked avatar row with soft overlap and +N overflow badge.
@@ -33,9 +34,10 @@ class KinlyMemberAvatarStack extends StatelessWidget {
     final tokens =
         Theme.of(context).extension<KinlyColorTokens>() ??
         KinlyPalette.build(Theme.of(context).brightness).colorTokens;
+    final opacities = Theme.of(context).extension<KinlyOpacity>()!;
     final surface = tokens.surface;
     final overflowBg = Color.alphaBlend(
-      (accent ?? tokens.primary).withValues(alpha: 0.12),
+      (accent ?? tokens.primary).withValues(alpha: opacities.alphaSM),
       surface,
     );
 
@@ -68,11 +70,11 @@ class KinlyMemberAvatarStack extends StatelessWidget {
                   color: overflowBg,
                   shape: BoxShape.circle,
                   border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).extension<KinlyColorTokens>()?.onSurface.withValues(alpha: 0.05) ??
-                      tokens.onSurface.withValues(alpha: 0.05),
-                ),
+                    color:
+                        Theme.of(context).extension<KinlyColorTokens>()?.onSurface
+                                .withValues(alpha: opacities.alphaXXS) ??
+                        tokens.onSurface.withValues(alpha: opacities.alphaXXS),
+                  ),
                 ),
                 child: Center(
                   child: Text(

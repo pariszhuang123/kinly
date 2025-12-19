@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/color_tokens.dart';
 import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
 import '../../theme/radius.dart';
 
 class KinlySettingsCard extends StatelessWidget {
@@ -14,14 +15,15 @@ class KinlySettingsCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
-    final corners = theme.extension<Corners>();
+    final opacities = theme.extension<KinlyOpacity>()!;
+    final corners = theme.extension<Corners>()!;
 
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(corners?.large ?? 16),
+        borderRadius: BorderRadius.circular(corners.large),
       ),
-      color: colors.surfaceVariant.withValues(alpha: 0.9),
+      color: colors.surfaceVariant.withValues(alpha: opacities.alphaOpaque),
       child: Column(mainAxisSize: MainAxisSize.min, children: children),
     );
   }

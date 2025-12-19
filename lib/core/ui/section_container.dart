@@ -5,6 +5,7 @@ import '../theme/color_tokens.dart';
 import '../theme/kinly_palette.dart';
 import '../theme/radius.dart';
 import '../theme/spacing.dart';
+import '../theme/opacity.dart';
 
 class SectionContainer extends StatelessWidget {
   final String title;
@@ -33,10 +34,11 @@ class SectionContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final corners = theme.extension<Corners>();
+    final corners = theme.extension<Corners>()!;
     final tokens =
         theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
+    final opacities = theme.extension<KinlyOpacity>()!;
 
     final effectivePadding =
         padding ??
@@ -51,7 +53,7 @@ class SectionContainer extends StatelessWidget {
       padding: effectivePadding,
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(corners?.xlarge ?? 24),
+        borderRadius: BorderRadius.circular(corners.xlarge),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +67,7 @@ class SectionContainer extends StatelessWidget {
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
-                    color: colors.accent.withValues(alpha: 0.2),
+                    color: colors.accent.withValues(alpha: opacities.alphaLG),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: EdgeInsets.all(spacing.sm),

@@ -8,6 +8,7 @@ import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
+import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 
 class _MockExpensesRepository extends Mock implements ExpensesRepository {}
@@ -111,6 +112,7 @@ void main() {
                 accent: Colors.grey,
               ),
             ),
+            KinlyOpacity.defaults,
           ],
         ),
         home: _RouteHost(
@@ -203,6 +205,7 @@ void main() {
                 accent: Colors.grey,
               ),
             ),
+            KinlyOpacity.defaults,
           ],
         ),
         home: MediaQuery(
