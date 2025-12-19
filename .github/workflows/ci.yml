@@ -592,6 +592,9 @@ jobs:
       REVENUECAT_IOS_KEY: ${{ secrets.REVENUECAT_IOS_KEY }}
       REVENUECAT_ANDROID_KEY: ${{ secrets.REVENUECAT_ANDROID_KEY }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
       INVITE_HOST: ${{ secrets.INVITE_HOST }}
     steps:
       - uses: actions/checkout@v4
@@ -701,6 +704,13 @@ jobs:
             -t lib/main.dart \
             --dart-define-from-file=env/prod.json \
             --build-number=$BUILD_NUMBER
+
+      - name: Upload Sentry Android native symbols (prod)
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        run: dart run sentry_dart_plugin
 
       - name: Upload prod AAB artifact (no Play upload)
         uses: actions/upload-artifact@v4

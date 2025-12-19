@@ -84,6 +84,14 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   firebase_messaging_platform_interface: ^4.5.15
   yaml: ^3.1.2
+  sentry_dart_plugin: ^3.0.0
+
+sentry:
+  upload_debug_symbols: true
+  upload_source_maps: false
+  upload_sources: false
+  ignore_missing: true
+  log_level: error
 
 flutter_intl:
   enabled: true

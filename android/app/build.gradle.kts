@@ -78,6 +78,10 @@ android {
         release {
             // Use release keystore when available; otherwise fall back to debug signing
             signingConfig = if (hasKeystore) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
+            ndk {
+                // Generate full native debug symbols so Sentry can symbolicate crashes
+                debugSymbolLevel = "FULL"
+            }
         }
     }
 
