@@ -164,9 +164,9 @@ void main() {
     expect(find.text('Harmony headline'), findsOneWidget);
     expect(find.text('Unlimited flows'), findsOneWidget);
     expect(find.text('+1'), findsOneWidget);
-    expect(find.text('Upgrade (\$4.99 per home)'), findsOneWidget);
+    expect(find.text('\$4.99 per home'), findsOneWidget);
 
-    await tester.tap(find.text('Upgrade (\$4.99 per home)'));
+    await tester.tap(find.text('\$4.99 per home'));
     await tester.pumpAndSettle();
     verify(() => rc.purchaseMonthly(any())).called(1);
   });

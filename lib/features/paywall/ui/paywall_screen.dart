@@ -8,10 +8,16 @@ import '../../../core/theme/kinly_sections.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/logging/logger.dart';
+import '../../../core/ui/kinly_action_card.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/members/kinly_member_avatar_stack.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
+import '../../../core/theme/spacing.dart';
+import '../../../core/theme/opacity.dart';
+import '../../../core/theme/app_sizes.dart';
+import '../../../core/theme/radius.dart';
+import '../../../core/theme/typography_tokens.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/paywall_repository.dart';
@@ -75,6 +81,11 @@ class KinlyPaywallScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void handleDismiss(BuildContext context) {
+      context.read<PaywallBloc>().add(const PaywallDismissed());
+      Navigator.of(context).pop(false);
+    }
+
     return BlocProvider(
       create:
           (_) => PaywallBloc(
@@ -87,6 +98,19 @@ class KinlyPaywallScreen extends StatelessWidget {
             placementId: placementId,
           )..add(PaywallStarted(source: source)),
       child: Scaffold(
+        appBar: AppBar(
+          title: Text(strings.title),
+          automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              tooltip: strings.secondaryCta,
+              icon: const Icon(Icons.close_rounded),
+              onPressed: () {
+                handleDismiss(context);
+              },
+            ),
+          ],
+        ),
         body: SafeArea(
           child: BlocConsumer<PaywallBloc, PaywallState>(
             listenWhen:
@@ -128,10 +152,7 @@ class KinlyPaywallScreen extends StatelessWidget {
                     const PaywallRestorePressed(),
                   );
                 },
-                onDismiss: () {
-                  context.read<PaywallBloc>().add(const PaywallDismissed());
-                  Navigator.of(context).pop(false);
-                },
+                onDismiss: () => handleDismiss(context),
                 members: state.activeMembers,
               );
             },
@@ -163,6 +184,10 @@ class _PaywallBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final sections = theme.extension<KinlySections>();
+    final spacing = theme.extension<Spacing>()!;
+    final opacities = theme.extension<KinlyOpacity>()!;
+    final appSizes = theme.extension<AppSizes>();
+    final typography = theme.extension<KinlyTypography>()!;
     final formattedPrice =
         priceString == null
             ? null
@@ -170,7 +195,7 @@ class _PaywallBody extends StatelessWidget {
     final unavailableLabel = strings.priceUnavailableLabel?.trim();
     final primaryLabel =
         formattedPrice != null && formattedPrice.trim().isNotEmpty
-            ? '${strings.primaryCta} ($formattedPrice)'
+            ? formattedPrice
             : unavailableLabel != null && unavailableLabel.isNotEmpty
             ? unavailableLabel
             : strings.primaryCta;
@@ -181,8 +206,14 @@ class _PaywallBody extends StatelessWidget {
     final flowCard =
         sections?.flow.card ?? theme.colorScheme.secondaryContainer;
     final heroGradient = [
-      Color.alphaBlend(shareCard.withValues(alpha: 0.18), surface),
-      Color.alphaBlend(flowCard.withValues(alpha: 0.28), surface),
+      Color.alphaBlend(
+        shareCard.withValues(alpha: opacities.alphaMD),
+        surface,
+      ),
+      Color.alphaBlend(
+        flowCard.withValues(alpha: opacities.alphaXXL),
+        surface,
+      ),
     ];
 
     final features = [
@@ -194,67 +225,85 @@ class _PaywallBody extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    tooltip: strings.secondaryCta,
-                    icon: Icon(
-                      Icons.close_rounded,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                    onPressed: onDismiss,
-                  ),
-                ],
-              ),
-              _PaywallHero(
-                title: strings.title,
-                subtitle: strings.subtitle,
-                priceLine: priceLine,
-                priceCaption: strings.priceCaption ?? strings.unlimitedLabel,
-                unlimitedLabel: strings.unlimitedLabel,
-                gradient: heroGradient,
-                accent: sections?.share.accent ?? theme.colorScheme.primary,
-                members: members,
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: KinlyScrollFade(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _BenefitChecklist(
-                          features: features,
-                          accent:
-                              sections?.share.accent ??
-                              theme.colorScheme.primary,
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop) onDismiss();
+          },
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(
+              spacing.xl,
+              spacing.xl,
+              spacing.xl,
+              spacing.xxl,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _PaywallHero(
+                  title: strings.title,
+                  subtitle: strings.subtitle,
+                  priceLine: priceLine,
+                  priceCaption: strings.priceCaption ?? strings.unlimitedLabel,
+                  unlimitedLabel: strings.unlimitedLabel,
+                  gradient: heroGradient,
+                  accent: sections?.share.accent ?? theme.colorScheme.primary,
+                  members: members,
+                ),
+                SizedBox(height: spacing.xl),
+                Expanded(
+                  child: KinlyActionCard(
+                    padding: EdgeInsets.zero,
+                    background:
+                        sections?.share.card ??
+                        theme.colorScheme.surfaceContainerHighest.withValues(
+                          alpha: opacities.alphaOpaque,
                         ),
-                      ],
+                    child: Scrollbar(
+                      thumbVisibility: false,
+                      child: KinlyScrollFade(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                            spacing.xl,
+                            spacing.xl,
+                            spacing.xl,
+                            spacing.m,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _BenefitChecklist(
+                                features: features,
+                                accent:
+                                    sections?.share.accent ??
+                                    theme.colorScheme.primary,
+                                bulletSize: spacing.xxl,
+                                iconSize: appSizes?.iconMd ?? spacing.xl,
+                                titleStyle: typography.titleMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              KinlyFilledButton.text(
-                label: primaryLabel,
-                onPressed: onUpgrade,
-                fullWidth: true,
-              ),
-              const SizedBox(height: 12),
-              KinlyOutlinedButton.text(
-                label: strings.restoreCta,
-                onPressed: onRestore,
-                compact: true,
-                fullWidth: true,
-              ),
-            ],
+                SizedBox(height: spacing.l),
+                KinlyFilledButton.text(
+                  label: primaryLabel,
+                  onPressed: onUpgrade,
+                  fullWidth: true,
+                ),
+                SizedBox(height: spacing.m),
+                KinlyOutlinedButton.text(
+                  label: strings.restoreCta,
+                  onPressed: onRestore,
+                  compact: true,
+                  fullWidth: true,
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -263,31 +312,47 @@ class _PaywallBody extends StatelessWidget {
 }
 
 class _BenefitChecklist extends StatelessWidget {
-  const _BenefitChecklist({required this.features, required this.accent});
+  const _BenefitChecklist({
+    required this.features,
+    required this.accent,
+    this.bulletSize,
+    this.iconSize,
+    this.titleStyle,
+  });
 
   final List<String> features;
   final Color accent;
+  final double? bulletSize;
+  final double? iconSize;
+  final TextStyle? titleStyle;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final surface = theme.colorScheme.surface;
-    final checkBg = Color.alphaBlend(accent.withValues(alpha: 0.22), surface);
+    final opacities = theme.extension<KinlyOpacity>()!;
+    final spacing = theme.extension<Spacing>()!;
+    final checkBg = Color.alphaBlend(
+      accent.withValues(alpha: opacities.alphaXL),
+      surface,
+    );
     final checkColor = theme.colorScheme.onSurface;
+    final size = bulletSize ?? spacing.xxl;
+    final iconDimension = iconSize ?? spacing.xl;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: features
           .map(
             (label) => Padding(
-              padding: const EdgeInsetsDirectional.only(bottom: 12),
+              padding: EdgeInsetsDirectional.only(bottom: spacing.m),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 28,
-                    height: 28,
+                    width: size,
+                    height: size,
                     decoration: BoxDecoration(
                       color: checkBg,
                       shape: BoxShape.circle,
@@ -295,16 +360,14 @@ class _BenefitChecklist extends StatelessWidget {
                     child: Icon(
                       Icons.check_rounded,
                       color: checkColor,
-                      size: 18,
+                      size: iconDimension,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: spacing.m),
                   Expanded(
                     child: Text(
                       label,
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: titleStyle ?? textTheme.titleMedium,
                     ),
                   ),
                 ],
@@ -340,83 +403,80 @@ class _PaywallHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
+    final spacing = theme.extension<Spacing>()!;
+    final corners = theme.extension<Corners>()!;
+    final opacities = theme.extension<KinlyOpacity>()!;
+    final typography = theme.extension<KinlyTypography>()!;
     final caption =
         priceCaption?.trim().isNotEmpty == true
             ? priceCaption!
             : unlimitedLabel;
     final priceChipColor = Color.alphaBlend(
-      accent.withValues(alpha: 0.16),
+      accent.withValues(alpha: opacities.alphaMD),
       colorScheme.surface,
     );
     return Container(
-      padding: const EdgeInsetsDirectional.fromSTEB(20, 22, 20, 20),
+      padding: EdgeInsetsDirectional.fromSTEB(
+        spacing.xl - spacing.s,
+        spacing.xl - spacing.xs,
+        spacing.xl - spacing.s,
+        spacing.xl - spacing.s,
+      ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: gradient,
           begin: AlignmentDirectional.topStart,
           end: AlignmentDirectional.bottomEnd,
         ),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(corners.xl),
         boxShadow: [
           BoxShadow(
-            color: accent.withValues(alpha: 0.24),
-            blurRadius: 28,
-            spreadRadius: 2,
-            offset: const Offset(0, 12),
+            color: accent.withValues(alpha: opacities.alphaXL),
+            blurRadius: spacing.xxl,
+            spreadRadius: spacing.xs,
+            offset: Offset(0, spacing.m),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 8),
+          Text(title, style: typography.headlineLarge),
+          SizedBox(height: spacing.s),
           Text(
             subtitle,
-            style: textTheme.bodyLarge?.copyWith(
+            style: typography.bodyLarge.copyWith(
               color: colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
             ),
           ),
           if (caption.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Text(
-              caption,
-              style: textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            SizedBox(height: spacing.m),
+            Text(caption, style: typography.bodyMedium),
           ],
           if (members.isNotEmpty) ...[
-            const SizedBox(height: 14),
+            SizedBox(height: spacing.l),
             KinlyMemberAvatarStack(
               members: members,
               accent: accent,
               maxVisible: 5,
-              radius: 20,
+              radius: spacing.xl - spacing.s,
             ),
           ],
           if (priceLine.isNotEmpty) ...[
-            const SizedBox(height: 14),
+            SizedBox(height: spacing.l),
             Container(
-              padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
+              padding: EdgeInsetsDirectional.fromSTEB(
+                spacing.m,
+                spacing.s,
+                spacing.m,
+                spacing.s,
+              ),
               decoration: BoxDecoration(
                 color: priceChipColor,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(corners.md),
               ),
-              child: Text(
-                priceLine,
-                style: textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
+              child: Text(priceLine, style: typography.titleMedium),
             ),
           ],
         ],

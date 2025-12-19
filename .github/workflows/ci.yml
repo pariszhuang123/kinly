@@ -115,6 +115,9 @@ jobs:
       - name: Run color guard + token checks
         run: bash tool/check_colors.sh
 
+      - name: Check theme token usage (no raw alphas / null-aware required tokens)
+        run: dart run tool/check_theme_tokens.dart
+
       - name: Check module manifest guardrails
         run: dart run tool/check_modules.dart
 

@@ -59,6 +59,7 @@ Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directio
 ## Layout & Spacing
 - `Spacing` extension usage; surface/section color guidance from `KinlySections`.
 - `KinlyScrollFade` (wraps any scrollable to apply top/bottom fade + removes overscroll glow; configurable fade fraction and edges).
+- Opacity tokens: use `KinlyOpacity` (alphaXXS/XS/SM/MD/LG/XL/XXL/Halo/Muted/Scrim/Dim/Faint/FaintStrong/Opaque/OpaqueHigh/Shadow) instead of raw `withValues(alpha: ...)`. Match intent: overlays/gradients → XL/XXL, badges/tints → MD/LG, halos → Halo, scrims → Scrim, dim states → Dim/Faint/FaintStrong, near-opaque surfaces → Opaque/OpaqueHigh, shadows → Shadow. Do not use null-aware on required theme extensions (Spacing, Corners, KinlyOpacity, KinlyTypography).
 
 ## Adding or Changing a Primitive
 1) Propose to Planner + Docs (intent, consumers, theme tokens, tests).

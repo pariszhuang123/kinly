@@ -124,8 +124,9 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
   - `dart run tool/check_copy_contract.dart` (see `docs/contracts/copy_taste_v1_1.md`)
   - `dart run tool/check_shared_understanding_copy.dart` (see `docs/contracts/shared_understanding_copy_v1.md`)
   - Screenshots/GIFs for happy paths when UI changes
-  - No raw Material buttons/loaders; use Kinly primitives; strings via `S.of(context)`; keep padding/alignments directionality-safe
-  - If adding or changing a core UI primitive, update `docs/ui/core_ui_primitives.md` and get Planner + Docs review
+- No raw Material buttons/loaders; use Kinly primitives; strings via `S.of(context)`; keep padding/alignments directionality-safe
+- If adding or changing a core UI primitive, update `docs/ui/core_ui_primitives.md` and get Planner + Docs review
+- Theme tokens: do not use raw alphas or null-aware on required theme extensions. Use `KinlyOpacity`, `Spacing`, `Corners`, `KinlyTypography`, and color/tokens via theme extensions; use the closest token rather than literals.
 
 
 ## Guardrails (Prohibited)

@@ -5,6 +5,7 @@ import 'app_sizes.dart';
 import 'elevation.dart';
 import 'kinly_palette.dart';
 import 'motion.dart';
+import 'opacity.dart';
 import 'radius.dart';
 import 'spacing.dart';
 import 'typography_tokens.dart';
@@ -95,6 +96,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     level4: 10,
     level5: 16,
   );
+  const opacities = KinlyOpacity.defaults;
   final motion = Motion(
     durationFast: const Duration(milliseconds: 120),
     durationMedium: const Duration(milliseconds: 200),
@@ -136,6 +138,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
       spacing,
       corners,
       elevations,
+      opacities,
       motion,
       palette.colorTokens,
       palette.controlColors,
