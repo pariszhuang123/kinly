@@ -167,12 +167,12 @@ class _PaywallBody extends StatelessWidget {
         priceString == null
             ? null
             : strings.priceFormatter?.call(priceString!) ?? priceString;
+    final unavailableLabel = strings.priceUnavailableLabel?.trim();
     final primaryLabel =
         formattedPrice != null && formattedPrice.trim().isNotEmpty
             ? '${strings.primaryCta} ($formattedPrice)'
-            : strings.priceUnavailableLabel != null &&
-                strings.priceUnavailableLabel!.trim().isNotEmpty
-            ? '${strings.primaryCta} (${strings.priceUnavailableLabel})'
+            : unavailableLabel != null && unavailableLabel.isNotEmpty
+            ? unavailableLabel
             : strings.primaryCta;
     const priceLine = '';
     final surface = theme.colorScheme.surface;

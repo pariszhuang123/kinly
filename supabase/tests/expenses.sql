@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(49);
+SELECT plan(51);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -174,8 +174,8 @@ DELETE FROM tmp_expenses WHERE label = 'constraint_host';
 WITH created AS (
   SELECT public.expenses_create(
     (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-    5050,
     '  Draft Lunch  ',
+    NULL,
     '  messy note  ',
     NULL,
     NULL,
@@ -195,6 +195,12 @@ SELECT is(
   (SELECT description FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
   'Draft Lunch',
   'expenses_create trims description input'
+);
+
+SELECT is(
+  (SELECT amount_cents FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
+  NULL,
+  'expenses_create allows null amount for drafts'
 );
 
 SELECT is(
@@ -219,8 +225,8 @@ SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 SELECT pg_temp.expect_api_error(
   $$ SELECT public.expenses_create(
         (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-        3000,
         'Blocked expense',
+        3000,
         NULL,
         NULL,
         NULL,
@@ -243,8 +249,8 @@ SELECT pg_temp.expect_api_error(
   format($sql$
     SELECT public.expenses_create(
       '%s',
-      101,
       'Solo equal',
+      101,
       NULL,
       'equal',
       ARRAY['%s'::uuid],
@@ -262,8 +268,8 @@ SELECT pg_temp.expect_api_error(
   format($sql$
     SELECT public.expenses_create(
       '%s',
-      101,
       'Solo custom',
+      101,
       NULL,
       'custom',
       NULL,
@@ -280,8 +286,8 @@ SELECT pg_temp.expect_api_error(
 WITH created AS (
   SELECT public.expenses_create(
     (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-    101,
     'Groceries',
+    101,
     NULL,
     'equal',
     ARRAY[
@@ -340,7 +346,7 @@ SELECT ok(
   'Creator split row records marked_paid_at'
 );
 
--- Editing draft without split mode fails
+-- Editing draft without split mode fails (must activate)
 SELECT pg_temp.expect_api_error(
   format($sql$
     SELECT public.expenses_edit(
@@ -356,10 +362,32 @@ SELECT pg_temp.expect_api_error(
     (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')
   ),
   'SPLIT_REQUIRED',
-  'Draft edits must choose a split mode'
+  'Draft edits must choose a split to activate'
 );
 
 -- Promote draft to active
+SELECT pg_temp.expect_api_error(
+  format($sql$
+    SELECT public.expenses_edit(
+      '%s',
+      NULL,
+      'Needs amount to activate',
+      'bring drinks',
+      'equal',
+      ARRAY[
+        (SELECT user_id FROM tmp_users WHERE label = 'member_one'),
+        (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
+        (SELECT user_id FROM tmp_users WHERE label = 'creator')
+      ],
+      NULL
+    );
+  $sql$,
+    (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')
+  ),
+  'INVALID_AMOUNT',
+  'Promoting to active requires an amount'
+);
+
 SELECT public.expenses_edit(
   (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one'),
   5050,
@@ -579,8 +607,8 @@ SELECT ok(
 WITH created AS (
   SELECT public.expenses_create(
     (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-    200,
     'Snacks',
+    200,
     NULL,
     'equal',
     ARRAY[

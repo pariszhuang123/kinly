@@ -187,6 +187,8 @@ class _AmountField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final requiresAmount =
+        state.isEditing ? !state.isAmountLocked : state.form.splitMode != null;
 
     return KinlyTextField(
       controller: controller,
@@ -196,6 +198,7 @@ class _AmountField extends StatelessWidget {
       hintText: s.shareCreateAmountHint,
       errorText:
           showValidation &&
+                  requiresAmount &&
                   (state.form.amountCents == null ||
                       state.form.amountCents! <= 0)
               ? s.shareCreateValidationAmount

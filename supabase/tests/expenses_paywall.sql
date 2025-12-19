@@ -93,8 +93,8 @@ BEGIN
   FOR i IN 1..10 LOOP
     PERFORM public.expenses_create(
       (SELECT home_id FROM tmp_home),
-      1000,
       format('Draft %s', i),
+      1000,
       NULL,
       NULL,
       NULL,
@@ -115,8 +115,8 @@ SELECT is(
 SELECT pg_temp.expect_api_error(
   $$ SELECT public.expenses_create(
         (SELECT home_id FROM tmp_home),
-        1000,
         'Draft 11',
+        1000,
         NULL,
         NULL,
         NULL,
@@ -136,8 +136,8 @@ SELECT 'premium_one', (expense).id
 FROM (
   SELECT public.expenses_create(
     (SELECT home_id FROM tmp_home),
-    1200,
     'Premium allowed',
+    1200,
     NULL,
     NULL,
     NULL,
@@ -164,8 +164,8 @@ SELECT is(
 WITH created AS (
   SELECT public.expenses_create(
     (SELECT home_id FROM tmp_home),
-    1500,
     'Paydown',
+    1500,
     NULL,
     'equal',
     ARRAY[

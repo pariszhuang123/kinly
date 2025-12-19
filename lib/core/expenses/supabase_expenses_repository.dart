@@ -13,7 +13,7 @@ class SupabaseExpensesRepository implements ExpensesRepository {
   @override
   Future<Expense> create({
     required String homeId,
-    required int amountCents,
+    int? amountCents,
     required String description,
     String? notes,
     ExpenseSplitType? splitType,
@@ -25,8 +25,8 @@ class SupabaseExpensesRepository implements ExpensesRepository {
         'expenses_create',
         params: {
           'p_home_id': homeId,
-          'p_amount_cents': amountCents,
           'p_description': description,
+          if (amountCents != null) 'p_amount_cents': amountCents,
           if (notes != null) 'p_notes': notes,
           if (splitType != null) 'p_split_mode': splitType.wireValue,
           if (memberIds != null && memberIds.isNotEmpty)

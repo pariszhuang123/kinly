@@ -68,22 +68,25 @@ SELECT is(
 -- Switch to owner context for the rest
 SELECT set_config('request.jwt.claim.sub', '00000000-0000-4000-8000-000000000702', true);
 
--- 2) Zero active chores -> no prompts
+-- 2) Zero user-authored chores -> no prompts
 SELECT is(
   ((public.today_onboarding_hints())->>'shouldPromptNotifications')::boolean,
   false,
-  'Zero active chores does not prompt notifications'
+  'Zero user-authored chores does not prompt notifications'
 );
 
--- 3) 1 active chore, no prefs -> prompt notifications
-UPDATE public.home_usage_counters cuc
-SET active_chores = active_chores + 1
-WHERE cuc.home_id = (SELECT home_id FROM tmp_ids WHERE label = 'owner');
+-- 3) 1 user-authored chore, no prefs -> prompt notifications
+SELECT public.chores_create(
+  p_home_id := (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
+  p_name := 'Chore 1',
+  p_assignee_user_id := (SELECT user_id FROM tmp_ids WHERE label = 'owner'),
+  p_start_date := current_date
+);
 
 SELECT is(
   ((public.today_onboarding_hints())->>'shouldPromptNotifications')::boolean,
   true,
-  'Active chores >=1 without prefs prompts notifications'
+  'User-authored chores >=1 without prefs prompts notifications'
 );
 
 -- 4) With prefs, notifications prompt suppressed
@@ -94,15 +97,18 @@ SELECT is(
   'Existing prefs suppress notification prompt'
 );
 
--- 5) 2 active chores -> flatmate invite prompt when not shared
-UPDATE public.home_usage_counters cuc
-SET active_chores = active_chores + 1
-WHERE cuc.home_id = (SELECT home_id FROM tmp_ids WHERE label = 'owner');
+-- 5) 2 user-authored chores -> flatmate invite prompt when not shared
+SELECT public.chores_create(
+  p_home_id := (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
+  p_name := 'Chore 2',
+  p_assignee_user_id := (SELECT user_id FROM tmp_ids WHERE label = 'owner'),
+  p_start_date := current_date
+);
 
 SELECT is(
   ((public.today_onboarding_hints())->>'shouldPromptFlatmateInviteShare')::boolean,
   true,
-  'Active chores >=2 with no share triggers flatmate invite prompt'
+  'User-authored chores >=2 with no share triggers flatmate invite prompt'
 );
 
 -- Log flatmate invite share
@@ -119,15 +125,30 @@ SELECT is(
   'Flatmate invite already shared disables that prompt'
 );
 
--- 7) Increase to 5 chores -> generic invite prompt
-UPDATE public.home_usage_counters cuc
-SET active_chores = active_chores + 3
-WHERE cuc.home_id = (SELECT home_id FROM tmp_ids WHERE label = 'owner');
+-- 7) Increase to 5 user-authored chores -> generic invite prompt
+SELECT public.chores_create(
+  p_home_id := (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
+  p_name := 'Chore 3',
+  p_assignee_user_id := (SELECT user_id FROM tmp_ids WHERE label = 'owner'),
+  p_start_date := current_date
+);
+SELECT public.chores_create(
+  p_home_id := (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
+  p_name := 'Chore 4',
+  p_assignee_user_id := (SELECT user_id FROM tmp_ids WHERE label = 'owner'),
+  p_start_date := current_date
+);
+SELECT public.chores_create(
+  p_home_id := (SELECT home_id FROM tmp_ids WHERE label = 'owner'),
+  p_name := 'Chore 5',
+  p_assignee_user_id := (SELECT user_id FROM tmp_ids WHERE label = 'owner'),
+  p_start_date := current_date
+);
 
 SELECT is(
   ((public.today_onboarding_hints())->>'shouldPromptInviteShare')::boolean,
   true,
-  'Active chores >=5 prompts generic invite when earlier steps satisfied'
+  'User-authored chores >=5 prompts generic invite when earlier steps satisfied'
 );
 
 -- Log generic invite share to suppress prompt
@@ -158,9 +179,9 @@ SELECT lives_ok(
 
 -- 10) Active chore count surface
 SELECT is(
-  ((public.today_onboarding_hints())->>'activeChoreCount')::int,
+  ((public.today_onboarding_hints())->>'userAuthoredChoreCountLifetime')::int,
   5,
-  'Active chore count reflects cached counters'
+  'Lifetime authored chore count reflects user-authored chores'
 );
 
 SELECT finish();

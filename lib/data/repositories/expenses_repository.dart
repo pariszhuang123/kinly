@@ -8,7 +8,7 @@ abstract class ExpensesRepository {
   /// using a custom split strategy. The backend enforces all validation rules.
   Future<Expense> create({
     required String homeId,
-    required int amountCents,
+    int? amountCents,
     required String description,
     String? notes,
     ExpenseSplitType? splitType,

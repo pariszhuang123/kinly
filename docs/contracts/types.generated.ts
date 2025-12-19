@@ -346,7 +346,7 @@ export type Database = {
       }
       expenses: {
         Row: {
-          amount_cents: number
+          amount_cents: number | null
           created_at: string
           created_by_user_id: string
           description: string
@@ -358,7 +358,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          amount_cents: number
+          amount_cents?: number | null
           created_at?: string
           created_by_user_id: string
           description: string
@@ -370,7 +370,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          amount_cents?: number
+          amount_cents?: number | null
           created_at?: string
           created_by_user_id?: string
           description?: string
@@ -1442,7 +1442,7 @@ export type Database = {
       expenses_cancel: {
         Args: { p_expense_id: string }
         Returns: {
-          amount_cents: number
+          amount_cents: number | null
           created_at: string
           created_by_user_id: string
           description: string
@@ -1462,7 +1462,7 @@ export type Database = {
       }
       expenses_create: {
         Args: {
-          p_amount_cents: number
+          p_amount_cents?: number
           p_description: string
           p_home_id: string
           p_member_ids?: string[]
@@ -1471,7 +1471,7 @@ export type Database = {
           p_splits?: Json
         }
         Returns: {
-          amount_cents: number
+          amount_cents: number | null
           created_at: string
           created_by_user_id: string
           description: string
@@ -1500,7 +1500,7 @@ export type Database = {
           p_splits?: Json
         }
         Returns: {
-          amount_cents: number
+          amount_cents: number | null
           created_at: string
           created_by_user_id: string
           description: string

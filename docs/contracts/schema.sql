@@ -1948,11 +1948,12 @@ CREATE TABLE IF NOT EXISTS "public"."expenses" (
     "created_by_user_id" "uuid" NOT NULL,
     "status" "public"."expense_status" DEFAULT 'draft'::"public"."expense_status" NOT NULL,
     "split_type" "public"."expense_split_type",
-    "amount_cents" bigint NOT NULL,
+    "amount_cents" bigint,
     "description" "text" NOT NULL,
     "notes" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "chk_expenses_active_amount_required" CHECK ((("status" <> 'active'::"public"."expense_status") OR ("amount_cents" > 0))),
     CONSTRAINT "chk_expenses_active_split_required" CHECK ((("status" <> 'active'::"public"."expense_status") OR ("split_type" IS NOT NULL))),
     CONSTRAINT "chk_expenses_amount_positive" CHECK (("amount_cents" > 0)),
     CONSTRAINT "chk_expenses_description_length" CHECK (("char_length"("btrim"("description")) <= 280)),
@@ -1983,7 +1984,7 @@ COMMENT ON COLUMN "public"."expenses"."split_type" IS 'equal|custom|null (no spl
 
 
 
-COMMENT ON COLUMN "public"."expenses"."amount_cents" IS 'Total amount in integer cents.';
+COMMENT ON COLUMN "public"."expenses"."amount_cents" IS 'Total amount in integer cents; null allowed for draft expenses.';
 
 
 
@@ -2124,7 +2125,7 @@ $$;
 ALTER FUNCTION "public"."expenses_cancel"("p_expense_id" "uuid") OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text" DEFAULT NULL::"text", "p_split_mode" "public"."expense_split_type" DEFAULT NULL::"public"."expense_split_type", "p_member_ids" "uuid"[] DEFAULT NULL::"uuid"[], "p_splits" "jsonb" DEFAULT NULL::"jsonb") RETURNS "public"."expenses"
+CREATE OR REPLACE FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint DEFAULT NULL::bigint, "p_notes" "text" DEFAULT NULL::"text", "p_split_mode" "public"."expense_split_type" DEFAULT NULL::"public"."expense_split_type", "p_member_ids" "uuid"[] DEFAULT NULL::"uuid"[], "p_splits" "jsonb" DEFAULT NULL::"jsonb") RETURNS "public"."expenses"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -2147,16 +2148,6 @@ BEGIN
 
   IF v_home_id IS NULL THEN
     PERFORM public.api_error('INVALID_HOME', 'Home id is required.', '22023');
-  END IF;
-
-  IF p_amount_cents IS NULL
-     OR p_amount_cents <= 0
-     OR p_amount_cents > v_amount_cap THEN
-    PERFORM public.api_error(
-      'INVALID_AMOUNT',
-      format('Amount must be between 1 and %s cents.', v_amount_cap),
-      '22023'
-    );
   END IF;
 
   IF btrim(COALESCE(p_description, '')) = '' THEN
@@ -2183,10 +2174,30 @@ BEGIN
     v_new_status   := 'draft';
     v_target_split := NULL;
     v_has_splits   := FALSE;
+
+    IF p_amount_cents IS NOT NULL THEN
+      IF p_amount_cents <= 0 OR p_amount_cents > v_amount_cap THEN
+        PERFORM public.api_error(
+          'INVALID_AMOUNT',
+          format('Amount must be between 1 and %s cents.', v_amount_cap),
+          '22023'
+        );
+      END IF;
+    END IF;
   ELSE
     v_new_status   := 'active';
     v_target_split := p_split_mode;
     v_has_splits   := TRUE;
+
+    IF p_amount_cents IS NULL
+       OR p_amount_cents <= 0
+       OR p_amount_cents > v_amount_cap THEN
+      PERFORM public.api_error(
+        'INVALID_AMOUNT',
+        format('Amount must be between 1 and %s cents.', v_amount_cap),
+        '22023'
+      );
+    END IF;
   END IF;
 
   PERFORM 1
@@ -2281,7 +2292,7 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") OWNER TO "postgres";
+ALTER FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint, "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."expenses_edit"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text" DEFAULT NULL::"text", "p_split_mode" "public"."expense_split_type" DEFAULT NULL::"public"."expense_split_type", "p_member_ids" "uuid"[] DEFAULT NULL::"uuid"[], "p_splits" "jsonb" DEFAULT NULL::"jsonb") RETURNS "public"."expenses"
@@ -4777,22 +4788,19 @@ DECLARE
   v_current    public.notification_preferences;
   v_effective_wants_daily    boolean;
   v_effective_preferred_hour integer;
+  v_should_upsert boolean;
 BEGIN
   PERFORM public._assert_authenticated();
   IF v_user_id IS NULL THEN
     RAISE EXCEPTION 'NOT_AUTHENTICATED';
   END IF;
 
-  -- Load current prefs if they exist
+  -- Load existing row if any
   SELECT *
   INTO v_current
   FROM public.notification_preferences
   WHERE user_id = v_user_id;
 
-  -- Decide wants_daily:
-  --   1) explicit p_wants_daily from app
-  --   2) existing DB value
-  --   3) default: true if OS permission is allowed, else false
   v_effective_wants_daily :=
     COALESCE(
       p_wants_daily,
@@ -4800,7 +4808,11 @@ BEGIN
       (p_os_permission = 'allowed')
     );
 
-  -- Decide preferred_hour:
+  -- Force off when OS is blocked/unknown so UI toggle matches system
+  IF p_os_permission IS DISTINCT FROM 'allowed' THEN
+    v_effective_wants_daily := FALSE;
+  END IF;
+
   v_effective_preferred_hour :=
     COALESCE(
       p_preferred_hour,
@@ -4808,7 +4820,31 @@ BEGIN
       9
     );
 
-  -- Upsert into notification_preferences
+  -- Only upsert when we have something explicit or an existing row
+  v_should_upsert :=
+       v_current.user_id IS NOT NULL
+    OR p_wants_daily IS NOT NULL
+    OR p_preferred_hour IS NOT NULL
+    OR p_token IS NOT NULL
+    OR p_os_permission = 'allowed';
+
+  IF NOT v_should_upsert THEN
+    -- Return a synthetic row without creating DB state
+    RETURN (
+      v_user_id,
+      v_effective_wants_daily,
+      v_effective_preferred_hour,
+      COALESCE(p_timezone, 'UTC'),
+      COALESCE(p_locale, 'en'),
+      p_os_permission,
+      now(),
+      v_current.last_sent_local_date,
+      COALESCE(v_current.created_at, now()),
+      now()
+    )::public.notification_preferences;
+  END IF;
+
+  -- Upsert prefs
   INSERT INTO public.notification_preferences (
     user_id,
     wants_daily,
@@ -4834,36 +4870,24 @@ BEGIN
     now()
   )
   ON CONFLICT (user_id) DO UPDATE
-    SET wants_daily          = EXCLUDED.wants_daily,
-        preferred_hour       = EXCLUDED.preferred_hour,
-        timezone             = EXCLUDED.timezone,
-        locale               = EXCLUDED.locale,
-        os_permission        = EXCLUDED.os_permission,
-        last_os_sync_at      = EXCLUDED.last_os_sync_at,
-        updated_at           = EXCLUDED.updated_at
+    SET wants_daily     = EXCLUDED.wants_daily,
+        preferred_hour  = EXCLUDED.preferred_hour,
+        timezone        = EXCLUDED.timezone,
+        locale          = EXCLUDED.locale,
+        os_permission   = EXCLUDED.os_permission,
+        last_os_sync_at = EXCLUDED.last_os_sync_at,
+        updated_at      = EXCLUDED.updated_at
   RETURNING * INTO v_current;
 
-  -- Upsert device token (if provided)
+  -- Upsert device token if provided
   IF p_token IS NOT NULL THEN
     INSERT INTO public.device_tokens (
-      user_id,
-      token,
-      provider,
-      platform,
-      status,
-      last_seen_at,
-      created_at,
-      updated_at
+      user_id, token, provider, platform, status,
+      last_seen_at, created_at, updated_at
     )
     VALUES (
-      v_user_id,
-      p_token,
-      'fcm',
-      p_platform,
-      'active',
-      now(),
-      now(),
-      now()
+      v_user_id, p_token, 'fcm', p_platform, 'active',
+      now(), now(), now()
     )
     ON CONFLICT (token) DO UPDATE
       SET user_id      = EXCLUDED.user_id,
@@ -5471,7 +5495,8 @@ CREATE OR REPLACE FUNCTION "public"."today_onboarding_hints"() RETURNS "jsonb"
 DECLARE
   v_user_id uuid := auth.uid();
   v_home_id uuid;
-  v_active_chores int := 0;
+
+  v_lifetime_authored_chore_count int := 0;
 
   v_has_notif_pref boolean := FALSE;
   v_has_flatmate_invite_share boolean := FALSE;
@@ -5481,13 +5506,10 @@ DECLARE
   v_prompt_flatmate_invite_share boolean := FALSE;
   v_prompt_invite_share boolean := FALSE;
 BEGIN
-  ------------------------------------------------------------------
-  -- 0) Require authenticated user up front
-  ------------------------------------------------------------------
   PERFORM public._assert_authenticated();
 
   ------------------------------------------------------------------
-  -- 1) Resolve current home
+  -- Resolve current home (if any)
   ------------------------------------------------------------------
   SELECT m.home_id
   INTO v_home_id
@@ -5496,10 +5518,9 @@ BEGIN
     AND m.is_current = TRUE
   LIMIT 1;
 
-  -- No current home -> nothing to show
   IF v_home_id IS NULL THEN
     RETURN jsonb_build_object(
-      'activeChoreCount', 0,
+      'userAuthoredChoreCountLifetime', 0,
       'shouldPromptNotifications', FALSE,
       'shouldPromptFlatmateInviteShare', FALSE,
       'shouldPromptInviteShare', FALSE
@@ -5507,36 +5528,24 @@ BEGIN
   END IF;
 
   ------------------------------------------------------------------
-  -- 2) Guards: membership + home active
+  -- Guards: membership + active home
   ------------------------------------------------------------------
   PERFORM public._assert_home_member(v_home_id);
   PERFORM public._assert_home_active(v_home_id);
 
   ------------------------------------------------------------------
-  -- 3) Active chores
   ------------------------------------------------------------------
-  SELECT COALESCE(huc.active_chores, 0)
-  INTO v_active_chores
-  FROM public.home_usage_counters AS huc
-  WHERE huc.home_id = v_home_id;
+  SELECT COUNT(*)
+  INTO v_lifetime_authored_chore_count
+  FROM public.chores AS c
+  WHERE c.created_by_user_id = v_user_id;
 
-  IF NOT FOUND THEN
-    v_active_chores := 0;
-  END IF;
-
-  ------------------------------------------------------------------
-  -- 4) Hints pre-conditions
-  ------------------------------------------------------------------
-
-  -- Has any notification preference row yet?
   SELECT EXISTS (
-    SELECT 1
-    FROM public.notification_preferences AS np
+    SELECT 1 FROM public.notification_preferences AS np
     WHERE np.user_id = v_user_id
   )
   INTO v_has_notif_pref;
 
-  -- Has user ever shared a housemate/flatmate invite?
   SELECT EXISTS (
     SELECT 1
     FROM public.share_events AS se
@@ -5546,7 +5555,6 @@ BEGIN
   )
   INTO v_has_flatmate_invite_share;
 
-  -- Has user ever shared a generic invite?
   SELECT EXISTS (
     SELECT 1
     FROM public.share_events AS se
@@ -5557,30 +5565,26 @@ BEGIN
   INTO v_has_invite_share;
 
   ------------------------------------------------------------------
-  -- 5) One-at-a-time onboarding logic (priority ladder)
+  -- Ladder (user-authored chore gates)
   ------------------------------------------------------------------
-
-  -- Step 1: daily notifications
-  IF v_active_chores >= 1
-     AND NOT v_has_notif_pref THEN
+  -- Step 1: notifications only after the user has authored at least 1 chore
+  IF NOT v_has_notif_pref
+     AND v_lifetime_authored_chore_count >= 1 THEN
     v_prompt_notifications := TRUE;
 
-  -- Step 2: flatmate/housemate invite share
-  ELSIF v_active_chores >= 2
+  -- Step 2: flatmate invite after 2+ user-authored chores
+  ELSIF v_lifetime_authored_chore_count >= 2
         AND NOT v_has_flatmate_invite_share THEN
     v_prompt_flatmate_invite_share := TRUE;
 
-  -- Step 3: generic invite share
-  ELSIF v_active_chores >= 5
+  -- Step 3: generic invite after 5+ user-authored chores
+  ELSIF v_lifetime_authored_chore_count >= 5
         AND NOT v_has_invite_share THEN
     v_prompt_invite_share := TRUE;
   END IF;
 
-  ------------------------------------------------------------------
-  -- 6) Response
-  ------------------------------------------------------------------
   RETURN jsonb_build_object(
-    'activeChoreCount', v_active_chores,
+    'userAuthoredChoreCountLifetime', v_lifetime_authored_chore_count,
     'shouldPromptNotifications', v_prompt_notifications,
     'shouldPromptFlatmateInviteShare', v_prompt_flatmate_invite_share,
     'shouldPromptInviteShare', v_prompt_invite_share
@@ -7605,9 +7609,9 @@ GRANT ALL ON FUNCTION "public"."expenses_cancel"("p_expense_id" "uuid") TO "auth
 
 
 
-REVOKE ALL ON FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") TO "service_role";
-GRANT ALL ON FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") TO "authenticated";
+REVOKE ALL ON FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint, "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint, "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") TO "service_role";
+GRANT ALL ON FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint, "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") TO "authenticated";
 
 
 

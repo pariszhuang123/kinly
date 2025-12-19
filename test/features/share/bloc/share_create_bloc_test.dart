@@ -163,7 +163,7 @@ void main() {
     seed: () {
       final form = ShareCreateForm.initial().copyWith(
         description: 'Draft expense',
-        amountInput: '12.00',
+        amountInput: '',
         selectedParticipantIds: {'member_a', 'member_self'},
       );
       draftSeed = seededState(form: form);
@@ -173,7 +173,7 @@ void main() {
       when(
         () => expensesRepository.create(
           homeId: any(named: 'homeId'),
-          amountCents: any(named: 'amountCents'),
+          amountCents: any<int?>(named: 'amountCents'),
           description: any(named: 'description'),
           notes: any(named: 'notes'),
           splitType: any(named: 'splitType'),
@@ -214,7 +214,7 @@ void main() {
       verify(
         () => expensesRepository.create(
           homeId: 'home-1',
-          amountCents: 1200,
+          amountCents: null,
           description: 'Draft expense',
           notes: null,
           splitType: null,
@@ -249,7 +249,7 @@ void main() {
       when(
         () => expensesRepository.create(
           homeId: any(named: 'homeId'),
-          amountCents: any(named: 'amountCents'),
+          amountCents: any<int?>(named: 'amountCents'),
           description: any(named: 'description'),
           notes: any(named: 'notes'),
           splitType: any(named: 'splitType'),
@@ -322,7 +322,7 @@ void main() {
       verifyNever(
         () => expensesRepository.create(
           homeId: any(named: 'homeId'),
-          amountCents: any(named: 'amountCents'),
+          amountCents: any<int?>(named: 'amountCents'),
           description: any(named: 'description'),
           notes: any(named: 'notes'),
           splitType: any(named: 'splitType'),
@@ -345,7 +345,7 @@ void main() {
       when(
         () => expensesRepository.create(
           homeId: any(named: 'homeId'),
-          amountCents: any(named: 'amountCents'),
+          amountCents: any<int?>(named: 'amountCents'),
           description: any(named: 'description'),
           notes: any(named: 'notes'),
           splitType: any(named: 'splitType'),

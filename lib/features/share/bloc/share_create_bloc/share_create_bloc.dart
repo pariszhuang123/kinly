@@ -198,11 +198,14 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     final amountCents = form.amountCents;
     final descriptionValid = form.hasValidDescription;
     final amountValid = amountCents != null && amountCents > 0;
-    var isValid = descriptionValid && amountValid;
     final splitMode = form.splitMode;
     final isEditing = state.isEditing;
     final editingExpenseId = state.editingExpenseId;
     final amountLocked = state.isAmountLocked;
+    final requiresAmount =
+        isEditing ? !amountLocked : splitMode != null;
+
+    var isValid = descriptionValid && (!requiresAmount || amountValid);
 
     List<String>? memberIds;
     List<ExpenseCustomSplitInput>? customSplits;
@@ -275,7 +278,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
               )
               : await _expensesRepository.create(
                 homeId: _homeId,
-                amountCents: amountCents!,
+                amountCents: amountCents,
                 description: form.description.trim(),
                 notes: normalizedNotes,
                 splitType: splitType,
