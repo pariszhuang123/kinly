@@ -557,20 +557,9 @@ class ProfileSettingsScreen extends StatelessWidget {
   }
 
   Future<void> _confirmLogout(BuildContext context) async {
-    final s = S.of(context);
-
-    final confirmed = await showKinlyConfirmDialog(
-      context,
-      title: s.profileLogoutDialogTitle,
-      message: s.profileLogoutDialogMessage,
-      confirmLabel: s.profileLogoutTitle,
-    );
+    context.read<AuthBloc>().add(const AuthSignOutRequested());
     if (!context.mounted) return;
-
-    if (confirmed == true) {
-      context.read<AuthBloc>().add(const AuthSignOutRequested());
-      Navigator.of(context).pop();
-    }
+    Navigator.of(context).pop();
   }
 
   Future<void> _openProfileIdentity(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../../data/repositories/notifications_repository.dart';
+import '../logging/logger.dart';
 
 /// Snapshot of the values needed to sync a device token.
 class NotificationSyncPayload {
@@ -30,22 +31,71 @@ class NotificationTokenBootstrap {
   NotificationTokenBootstrap({
     required NotificationsRepository notificationsRepository,
     required NotificationSyncProvider syncProvider,
+    required Logger logger,
   })  : _notificationsRepository = notificationsRepository,
-        _syncProvider = syncProvider;
+        _syncProvider = syncProvider,
+        _logger = logger;
 
   final NotificationsRepository _notificationsRepository;
   final NotificationSyncProvider _syncProvider;
+  final Logger _logger;
 
   StreamSubscription<String>? _tokenSub;
 
   Future<void> start() async {
     // Register for token refreshes (rotation happens periodically).
-    _tokenSub = FirebaseMessaging.instance.onTokenRefresh.listen(_syncToken);
+    _tokenSub = FirebaseMessaging.instance.onTokenRefresh.listen(
+      (token) => _syncTokenSafe(token, source: 'refresh'),
+    );
 
     // Try to push the current token once at startup if available.
-    final initialToken = await FirebaseMessaging.instance.getToken();
-    if (initialToken != null && initialToken.isNotEmpty) {
-      await _syncToken(initialToken);
+    await _getAndSyncToken(source: 'initial');
+  }
+
+  Future<void> _getAndSyncToken({required String source}) async {
+    try {
+      final initialToken = await FirebaseMessaging.instance.getToken();
+      if (initialToken == null || initialToken.isEmpty) return;
+      await _syncTokenSafe(initialToken, source: source);
+    } catch (error, stackTrace) {
+      final message = error.toString();
+      if (_isTooManyRegistrations(message)) {
+        // Reset and retry once to avoid crashing on saturated token quota.
+        try {
+          await FirebaseMessaging.instance.deleteToken();
+          final fresh = await FirebaseMessaging.instance.getToken();
+          if (fresh != null && fresh.isNotEmpty) {
+            await _syncTokenSafe(fresh, source: '$source-retry');
+          }
+        } catch (retryError, retryStack) {
+          _logger.warn(
+            'FCM token retry after TOO_MANY_REGISTRATIONS failed: $retryError',
+            tag: 'Notifications',
+            error: retryError,
+            stackTrace: retryStack,
+          );
+        }
+        return;
+      }
+      _logger.warn(
+        'FCM getToken failed ($source): $error',
+        tag: 'Notifications',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<void> _syncTokenSafe(String token, {required String source}) async {
+    try {
+      await _syncToken(token);
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'FCM token sync failed ($source): $error',
+        tag: 'Notifications',
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -67,4 +117,7 @@ class NotificationTokenBootstrap {
   Future<void> dispose() async {
     await _tokenSub?.cancel();
   }
+
+  bool _isTooManyRegistrations(String message) =>
+      message.contains('TOO_MANY_REGISTRATIONS');
 }

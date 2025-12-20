@@ -65,7 +65,7 @@ class KinlyBottomSheet extends StatelessWidget {
     final motion = theme.extension<Motion>();
     final opacities = theme.extension<KinlyOpacity>()!;
 
-    // Only respond to keyboard inset. System insets are handled by useSafeArea: true.
+    // Only respond to keyboard inset. System insets are handled by the SafeArea below.
     final media = MediaQuery.of(context);
     final bottomInset = media.viewInsets.bottom;
     final radius = corners?.xlarge ?? 24.0;
@@ -77,7 +77,7 @@ class KinlyBottomSheet extends StatelessWidget {
             0,
             spacing.lg, // some air from top when dragged up
             0,
-            spacing.lg + bottomInset, // base spacing + keyboard height (if any)
+            bottomInset, // keep sheet flush to nav while still reacting to keyboard
           ),
           duration: motionAware.effectiveDuration(
             motion?.durationMedium ?? const Duration(milliseconds: 200),

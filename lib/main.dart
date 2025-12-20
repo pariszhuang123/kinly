@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -9,6 +10,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import 'core/config/app_config.dart';
 import 'core/di/locator.dart';
@@ -40,6 +43,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid) {
+    // Use hybrid composition to avoid virtual-display crashes on Android 10/11 WebView
+    WebViewPlatform.instance = AndroidWebViewPlatform();
+  }
 
   if (AppConfig.sentryDsn.isEmpty) {
     await _bootstrapApp();
@@ -260,6 +267,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _tokenBootstrap = NotificationTokenBootstrap(
       notificationsRepository: notificationsRepo,
       syncProvider: () async => syncState.current,
+      logger: _logger,
     );
 
     await _tokenBootstrap?.start();
