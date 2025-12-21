@@ -1025,60 +1025,123 @@ export type Database = {
         }
         Relationships: []
       }
+      revenuecat_event_processing: {
+        Row: {
+          attempts: number
+          created_at: string
+          environment: string
+          idempotency_key: string
+          last_error: string | null
+          status: Database["public"]["Enums"]["revenuecat_processing_status"]
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          environment: string
+          idempotency_key: string
+          last_error?: string | null
+          status?: Database["public"]["Enums"]["revenuecat_processing_status"]
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          environment?: string
+          idempotency_key?: string
+          last_error?: string | null
+          status?: Database["public"]["Enums"]["revenuecat_processing_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       revenuecat_webhook_events: {
         Row: {
+          created_at: string
           current_period_end_at: string | null
-          entitlement_id: string
+          entitlement_id: string | null
+          entitlement_ids: string[] | null
           environment: string | null
           error: string | null
           event_timestamp: string | null
+          fatal_error: string | null
+          fatal_error_code: string | null
           home_id: string | null
           id: string
+          idempotency_key: string | null
           last_purchase_at: string | null
           latest_transaction_id: string | null
           original_purchase_at: string | null
-          product_id: string
+          original_transaction_id: string | null
+          product_id: string | null
           raw: Json | null
           rc_app_user_id: string
+          rc_event_id: string | null
           received_at: string
+          rpc_error: string | null
+          rpc_error_code: string | null
+          rpc_retryable: boolean | null
           status: Database["public"]["Enums"]["subscription_status"] | null
           store: Database["public"]["Enums"]["subscription_store"] | null
+          warnings: string[] | null
         }
         Insert: {
+          created_at?: string
           current_period_end_at?: string | null
-          entitlement_id: string
+          entitlement_id?: string | null
+          entitlement_ids?: string[] | null
           environment?: string | null
           error?: string | null
           event_timestamp?: string | null
+          fatal_error?: string | null
+          fatal_error_code?: string | null
           home_id?: string | null
           id?: string
+          idempotency_key?: string | null
           last_purchase_at?: string | null
           latest_transaction_id?: string | null
           original_purchase_at?: string | null
-          product_id: string
+          original_transaction_id?: string | null
+          product_id?: string | null
           raw?: Json | null
           rc_app_user_id: string
+          rc_event_id?: string | null
           received_at?: string
+          rpc_error?: string | null
+          rpc_error_code?: string | null
+          rpc_retryable?: boolean | null
           status?: Database["public"]["Enums"]["subscription_status"] | null
           store?: Database["public"]["Enums"]["subscription_store"] | null
+          warnings?: string[] | null
         }
         Update: {
+          created_at?: string
           current_period_end_at?: string | null
-          entitlement_id?: string
+          entitlement_id?: string | null
+          entitlement_ids?: string[] | null
           environment?: string | null
           error?: string | null
           event_timestamp?: string | null
+          fatal_error?: string | null
+          fatal_error_code?: string | null
           home_id?: string | null
           id?: string
+          idempotency_key?: string | null
           last_purchase_at?: string | null
           latest_transaction_id?: string | null
           original_purchase_at?: string | null
-          product_id?: string
+          original_transaction_id?: string | null
+          product_id?: string | null
           raw?: Json | null
           rc_app_user_id?: string
+          rc_event_id?: string | null
           received_at?: string
+          rpc_error?: string | null
+          rpc_error_code?: string | null
+          rpc_retryable?: boolean | null
           status?: Database["public"]["Enums"]["subscription_status"] | null
           store?: Database["public"]["Enums"]["subscription_store"] | null
+          warnings?: string[] | null
         }
         Relationships: [
           {
@@ -1748,21 +1811,25 @@ export type Database = {
         Args: {
           p_current_period_end_at: string
           p_entitlement_id: string
+          p_entitlement_ids?: string[]
           p_environment?: string
-          p_error?: string
           p_event_timestamp?: string
           p_home_id: string
+          p_idempotency_key: string
           p_last_purchase_at: string
           p_latest_transaction_id: string
           p_original_purchase_at: string
+          p_original_transaction_id?: string
           p_product_id: string
           p_raw_event?: Json
           p_rc_app_user_id: string
+          p_rc_event_id?: string
           p_status: Database["public"]["Enums"]["subscription_status"]
           p_store: Database["public"]["Enums"]["subscription_store"]
           p_user_id: string
+          p_warnings?: string[]
         }
-        Returns: undefined
+        Returns: boolean
       }
       profile_identity_update: {
         Args: { p_avatar_id: string; p_username: string }
@@ -1829,6 +1896,7 @@ export type Database = {
         | "monthly"
         | "every_2_months"
         | "annual"
+      revenuecat_processing_status: "processing" | "succeeded" | "failed"
       subscription_status: "active" | "cancelled" | "expired" | "inactive"
       subscription_store: "app_store" | "play_store" | "stripe" | "promotional"
     }
@@ -1988,6 +2056,7 @@ export const Constants = {
         "every_2_months",
         "annual",
       ],
+      revenuecat_processing_status: ["processing", "succeeded", "failed"],
       subscription_status: ["active", "cancelled", "expired", "inactive"],
       subscription_store: ["app_store", "play_store", "stripe", "promotional"],
     },

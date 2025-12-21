@@ -42,7 +42,8 @@ Scope: Paywall UI/flows, RevenueCat integration, Supabase sync, and telemetry fo
 ## Data Model (existing + new)
 - Reuse: `home_plan_limits` (free caps), `home_usage_counters` (cached active_chores/chore_photos/active_expenses/active_members), `home_entitlements`, `user_subscriptions` (keep `home_id` nullable).
 - New table: `revenuecat_webhook_events`
-  - Columns: id uuid PK default gen_random_uuid(), received_at timestamptz default now(), event_timestamp timestamptz, environment text, rc_app_user_id text, entitlement_id text, product_id text, store subscription_store, status subscription_status, current_period_end_at timestamptz, original_purchase_at timestamptz, last_purchase_at timestamptz, latest_transaction_id text, home_id uuid NULL, raw jsonb, error text NULL.
+  - Columns: id uuid PK default gen_random_uuid(), received_at timestamptz default now(), event_timestamp timestamptz, environment text, rc_event_id text, rc_app_user_id text, entitlement_id text, entitlement_ids text[] NULL, product_id text, store subscription_store, status subscription_status, current_period_end_at timestamptz, original_purchase_at timestamptz, last_purchase_at timestamptz, latest_transaction_id text, original_transaction_id text, home_id uuid NULL, raw jsonb, error text NULL, error_code text NULL.
+  - Indexes: UNIQUE (environment, rc_event_id) where rc_event_id is not null; non-unique on latest_transaction_id and original_transaction_id where not null.
   - Access: service role only (REVOKE anon/authenticated).
 - New table: `paywall_events`
   - Columns: id uuid PK default gen_random_uuid(), user_id uuid references profiles, home_id uuid references homes, event_type text check (event_type in ('impression','cta_click','dismiss','restore_attempt')), source text (e.g., 'chore_cap','expense_cap','photo_cap'), created_at timestamptz default now().
@@ -51,17 +52,19 @@ Scope: Paywall UI/flows, RevenueCat integration, Supabase sync, and telemetry fo
 ## Backend Functions (Supabase)
 - Reuse: `_home_attach_subscription_to_home`, `_home_detach_subscription_to_home`, `home_entitlements_refresh` (keeps plan/expires_at in sync, max expiry wins).
 - New SEC-DEFINER `paywall_record_subscription(...)` (service role only):
-  - Inputs: user_id, home_id NULLABLE, store, rc_app_user_id, entitlement_id, product_id, status, current_period_end_at, original_purchase_at, last_purchase_at, latest_transaction_id.
-  - Behavior: upsert `user_subscriptions` on (user_id, rc_entitlement_id); update status/expiry/product/transaction ids/app_user_id/home_id/last_synced_at/updated_at; call `home_entitlements_refresh(home_id)` when provided; insert audit row into `revenuecat_webhook_events`.
+  - Inputs: user_id, home_id NULLABLE, store, rc_app_user_id, entitlement_id, entitlement_ids[], product_id, status, current_period_end_at, original_purchase_at, last_purchase_at, latest_transaction_id, rc_event_id, original_transaction_id, event_timestamp, environment, raw, error, error_code.
+  - Behavior: upsert `user_subscriptions` on (user_id, rc_entitlement_id); update status/expiry/product/transaction ids/app_user_id/home_id/last_synced_at/updated_at; call `home_entitlements_refresh(home_id)` when provided; insert audit row into `revenuecat_webhook_events` with idempotency on (environment, rc_event_id).
 - New auth-required `paywall_get_status(home_id uuid)`:
   - Returns: `{ plan, expires_at, usage: {...from home_usage_counters...}, limits: array of {metric, max_value} for the current plan (free/premium) }`.
   - Consumers: Flutter repos to decide paywall vs proceed.
 
 ## Edge Function (Deno) `revenuecat_webhook`
 - Auth: shared secret header (RC webhook secret). Reject if missing/invalid.
-- Parse RC event payload; extract `app_user_id`, entitlement/product/store/status, expiration/original/last purchase dates, transaction id, environment (sandbox/prod), subscriber attributes (`home_id` optional).
-- Call `paywall_record_subscription` with service key. Always log payload to `revenuecat_webhook_events` with error field when failing to persist.
-- Respond 200 on success; 4xx/5xx on validation/storage failures.
+- Parse RC event payload (event-first). Subscriber attributes are read from `event.subscriber_attributes`. User resolution order: `event.subscriber_attributes.user_id.value` → `event.app_user_id` if UUID → first UUID in `event.aliases`. Home resolution: `event.subscriber_attributes.home_id.value` (nullable).
+- Entitlement resolution: `event.entitlement_ids[0]` primary; fallbacks: payload.entitlement_ids[0], event.entitlement_id, payload.entitlement_id. Store full array in audit.
+- Idempotency: insert audit first keyed on (environment, rc_event_id); if unique violation, return 200 `{ ok: true, deduped: true }` and skip RPC. `latest_transaction_id` kept for correlation only.
+- Error handling: always log audit. If user/entitlement/product missing, return 200 `{ ok: true, ignored: true, error: <code> }`, no RPC. Missing home_id or latest_transaction_id are non-fatal warnings (still call RPC, log `error_code`).
+- Call `paywall_record_subscription` with service key when actionable. RPC failures log audit with `error_code = rpc_failure` and return 200.
 
 ## Client Responsibilities (Flutter)
 - Repository: `getPaywallStatus(homeId)` → `paywall_get_status`; `purchasePremium(homeId)` → RevenueCat flow; log paywall events (impression/CTA/dismiss/restore).

@@ -185,6 +185,16 @@ CREATE TYPE "public"."recurrence_interval" AS ENUM (
 ALTER TYPE "public"."recurrence_interval" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."revenuecat_processing_status" AS ENUM (
+    'processing',
+    'succeeded',
+    'failed'
+);
+
+
+ALTER TYPE "public"."revenuecat_processing_status" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."subscription_status" AS ENUM (
     'active',
     'cancelled',
@@ -5034,14 +5044,49 @@ COMMENT ON FUNCTION "public"."paywall_log_event"("p_home_id" "uuid", "p_event_ty
 
 
 
-CREATE OR REPLACE FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone DEFAULT "now"(), "p_environment" "text" DEFAULT NULL::"text", "p_raw_event" "jsonb" DEFAULT NULL::"jsonb", "p_error" "text" DEFAULT NULL::"text") RETURNS "void"
+CREATE OR REPLACE FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "text", "p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_entitlement_ids" "text"[] DEFAULT NULL::"text"[], "p_event_timestamp" timestamp with time zone DEFAULT "now"(), "p_environment" "text" DEFAULT 'unknown'::"text", "p_rc_event_id" "text" DEFAULT NULL::"text", "p_original_transaction_id" "text" DEFAULT NULL::"text", "p_raw_event" "jsonb" DEFAULT NULL::"jsonb", "p_warnings" "text"[] DEFAULT NULL::"text"[]) RETURNS boolean
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
 DECLARE
+  v_status public.revenuecat_processing_status;
   v_home_id uuid;
 BEGIN
-  -- Upsert the user subscription snapshot
+  -- Prevent concurrent double-runs for the same idempotency key
+  PERFORM pg_advisory_xact_lock(hashtext(p_environment || ':' || p_idempotency_key));
+
+  -- Basic validation (defense in depth; webhook already validated)
+  IF p_idempotency_key IS NULL OR length(trim(p_idempotency_key)) = 0 THEN
+    RAISE EXCEPTION 'Missing p_idempotency_key';
+  END IF;
+
+  IF p_user_id IS NULL THEN
+    RAISE EXCEPTION 'Missing p_user_id';
+  END IF;
+
+  -- home_id may be null (floating sub); allow nullable to align with edge behavior
+
+  -- Acquire processing record (or reuse)
+  INSERT INTO public.revenuecat_event_processing AS ep (environment, idempotency_key, status, attempts, updated_at)
+  VALUES (p_environment, p_idempotency_key, 'processing'::public.revenuecat_processing_status, 1, now())
+  ON CONFLICT (environment, idempotency_key)
+  DO UPDATE SET
+    attempts   = ep.attempts + 1,
+    status     = CASE
+                  WHEN ep.status = 'succeeded' THEN 'succeeded'::public.revenuecat_processing_status
+                  ELSE 'processing'::public.revenuecat_processing_status
+                 END,
+    updated_at = now()
+  RETURNING status INTO v_status;
+
+  -- If already succeeded, return immediately (idempotent)
+  IF v_status = 'succeeded'::public.revenuecat_processing_status THEN
+    RETURN true; -- deduped
+  END IF;
+
+  ------------------------------------------------------------------
+  -- Upsert subscription snapshot
+  ------------------------------------------------------------------
   INSERT INTO public.user_subscriptions AS us (
     user_id,
     home_id,
@@ -5075,7 +5120,7 @@ BEGIN
   )
   ON CONFLICT (user_id, rc_entitlement_id) DO UPDATE
   SET
-    home_id               = COALESCE(EXCLUDED.home_id, us.home_id),
+    home_id               = EXCLUDED.home_id,
     store                 = EXCLUDED.store,
     rc_app_user_id        = EXCLUDED.rc_app_user_id,
     product_id            = EXCLUDED.product_id,
@@ -5088,51 +5133,82 @@ BEGIN
     updated_at            = now()
   RETURNING home_id INTO v_home_id;
 
-  -- Persist audit record (fire and forget)
-  INSERT INTO public.revenuecat_webhook_events (
-    event_timestamp,
-    environment,
-    rc_app_user_id,
-    entitlement_id,
-    product_id,
-    store,
-    status,
-    current_period_end_at,
-    original_purchase_at,
-    last_purchase_at,
-    latest_transaction_id,
-    home_id,
-    raw,
-    error
-  ) VALUES (
-    p_event_timestamp,
-    p_environment,
-    p_rc_app_user_id,
-    p_entitlement_id,
-    p_product_id,
-    p_store,
-    p_status,
-    p_current_period_end_at,
-    p_original_purchase_at,
-    p_last_purchase_at,
-    p_latest_transaction_id,
-    COALESCE(p_home_id, v_home_id),
-    p_raw_event,
-    p_error
-  );
+  ------------------------------------------------------------------
+  -- Optional: log inside RPC too (safe upsert)
+  ------------------------------------------------------------------
+INSERT INTO public.revenuecat_webhook_events (
+  created_at,
+  event_timestamp,
+  environment,
+  idempotency_key,
+  rc_event_id,
+  original_transaction_id,
+  latest_transaction_id,
+  rc_app_user_id,
+  home_id,
+  entitlement_id,
+  entitlement_ids,
+  product_id,
+  store,
+  status,
+  current_period_end_at,
+  original_purchase_at,
+  last_purchase_at,
+  warnings,
+  raw
+) VALUES (
+  now(),
+  p_event_timestamp,
+  p_environment,
+  p_idempotency_key,
+  p_rc_event_id,
+  p_original_transaction_id,
+  p_latest_transaction_id,
+  p_rc_app_user_id,
+  COALESCE(p_home_id, v_home_id),
+  p_entitlement_id,
+  p_entitlement_ids,
+  p_product_id,
+  p_store,
+  p_status,
+  p_current_period_end_at,
+  p_original_purchase_at,
+  p_last_purchase_at,
+  p_warnings,
+  p_raw_event
+)
+ON CONFLICT (environment, idempotency_key)
+WHERE idempotency_key IS NOT NULL
+DO NOTHING;
 
-  -- Refresh home entitlement if we know the home
-  IF COALESCE(p_home_id, v_home_id) IS NOT NULL THEN
-    PERFORM public.home_entitlements_refresh(COALESCE(p_home_id, v_home_id));
-  END IF;
+  ------------------------------------------------------------------
+  -- Refresh home entitlements
+  ------------------------------------------------------------------
+  PERFORM public.home_entitlements_refresh(COALESCE(p_home_id, v_home_id));
+
+  -- Mark succeeded
+  UPDATE public.revenuecat_event_processing
+  SET status = 'succeeded'::public.revenuecat_processing_status, last_error = NULL, updated_at = now()
+  WHERE environment = p_environment AND idempotency_key = p_idempotency_key;
+
+  RETURN false; -- processed now
+
+EXCEPTION
+  WHEN OTHERS THEN
+    -- Mark failed (so retries can reattempt)
+  UPDATE public.revenuecat_event_processing
+  SET status = 'failed'::public.revenuecat_processing_status, last_error = SQLERRM, updated_at = now()
+  WHERE environment = p_environment AND idempotency_key = p_idempotency_key;
+
+    RAISE;
 END;
 $$;
 
 
-ALTER FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") OWNER TO "postgres";
+ALTER FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "text", "p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_entitlement_ids" "text"[], "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_rc_event_id" "text", "p_original_transaction_id" "text", "p_raw_event" "jsonb", "p_warnings" "text"[]) OWNER TO "postgres";
 
 
-COMMENT ON FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") IS 'Service-role helper invoked by RevenueCat webhook to upsert user_subscriptions, refresh home_entitlements, and log the event.';
+COMMENT ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "text", "p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_entitlement_ids" "text"[], "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_rc_event_id" "text", "p_original_transaction_id" "text", "p_raw_event" "jsonb", "p_warnings" "text"[]) IS 'Idempotent service-role helper invoked by RevenueCat webhook. Safe for retries via revenuecat_event_processing. Returns deduped boolean.';
 
 
 
@@ -6225,14 +6301,28 @@ COMMENT ON COLUMN "public"."reserved_usernames"."name" IS 'Reserved handle (CITE
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."revenuecat_event_processing" (
+    "environment" "text" NOT NULL,
+    "idempotency_key" "text" NOT NULL,
+    "status" "public"."revenuecat_processing_status" DEFAULT 'processing'::"public"."revenuecat_processing_status" NOT NULL,
+    "attempts" integer DEFAULT 0 NOT NULL,
+    "last_error" "text",
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."revenuecat_event_processing" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."revenuecat_webhook_events" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "received_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "event_timestamp" timestamp with time zone,
     "environment" "text",
     "rc_app_user_id" "text" NOT NULL,
-    "entitlement_id" "text" NOT NULL,
-    "product_id" "text" NOT NULL,
+    "entitlement_id" "text",
+    "product_id" "text",
     "store" "public"."subscription_store",
     "status" "public"."subscription_status",
     "current_period_end_at" timestamp with time zone,
@@ -6241,7 +6331,18 @@ CREATE TABLE IF NOT EXISTS "public"."revenuecat_webhook_events" (
     "latest_transaction_id" "text",
     "home_id" "uuid",
     "raw" "jsonb",
-    "error" "text"
+    "error" "text",
+    "idempotency_key" "text",
+    "rc_event_id" "text",
+    "original_transaction_id" "text",
+    "entitlement_ids" "text"[],
+    "warnings" "text"[],
+    "fatal_error_code" "text",
+    "fatal_error" "text",
+    "rpc_error_code" "text",
+    "rpc_error" "text",
+    "rpc_retryable" boolean,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
 
@@ -6513,6 +6614,11 @@ ALTER TABLE ONLY "public"."reserved_usernames"
 
 
 
+ALTER TABLE ONLY "public"."revenuecat_event_processing"
+    ADD CONSTRAINT "revenuecat_event_processing_pkey" PRIMARY KEY ("environment", "idempotency_key");
+
+
+
 ALTER TABLE ONLY "public"."revenuecat_webhook_events"
     ADD CONSTRAINT "revenuecat_webhook_events_pkey" PRIMARY KEY ("id");
 
@@ -6608,6 +6714,22 @@ CREATE INDEX "idx_invites_code_active" ON "public"."invites" USING "btree" ("cod
 
 
 COMMENT ON INDEX "public"."idx_invites_code_active" IS 'Optimizes lookups for active (non-revoked) invite codes.';
+
+
+
+CREATE UNIQUE INDEX "revenuecat_webhook_events_env_idem_unique" ON "public"."revenuecat_webhook_events" USING "btree" ("environment", "idempotency_key") WHERE ("idempotency_key" IS NOT NULL);
+
+
+
+CREATE INDEX "revenuecat_webhook_events_latest_txn_idx" ON "public"."revenuecat_webhook_events" USING "btree" ("latest_transaction_id") WHERE ("latest_transaction_id" IS NOT NULL);
+
+
+
+CREATE INDEX "revenuecat_webhook_events_orig_txn_idx" ON "public"."revenuecat_webhook_events" USING "btree" ("original_transaction_id") WHERE ("original_transaction_id" IS NOT NULL);
+
+
+
+CREATE INDEX "revenuecat_webhook_events_rc_event_idx" ON "public"."revenuecat_webhook_events" USING "btree" ("environment", "rc_event_id") WHERE ("rc_event_id" IS NOT NULL);
 
 
 
@@ -9061,10 +9183,10 @@ GRANT ALL ON FUNCTION "public"."paywall_log_event"("p_home_id" "uuid", "p_event_
 
 
 
-REVOKE ALL ON FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_raw_event" "jsonb", "p_error" "text") TO "service_role";
+REVOKE ALL ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "text", "p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_entitlement_ids" "text"[], "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_rc_event_id" "text", "p_original_transaction_id" "text", "p_raw_event" "jsonb", "p_warnings" "text"[]) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "text", "p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_entitlement_ids" "text"[], "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_rc_event_id" "text", "p_original_transaction_id" "text", "p_raw_event" "jsonb", "p_warnings" "text"[]) TO "anon";
+GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "text", "p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_entitlement_ids" "text"[], "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_rc_event_id" "text", "p_original_transaction_id" "text", "p_raw_event" "jsonb", "p_warnings" "text"[]) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "text", "p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_entitlement_ids" "text"[], "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_rc_event_id" "text", "p_original_transaction_id" "text", "p_raw_event" "jsonb", "p_warnings" "text"[]) TO "service_role";
 
 
 
@@ -9402,6 +9524,12 @@ GRANT ALL ON TABLE "public"."profiles" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."reserved_usernames" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."revenuecat_event_processing" TO "anon";
+GRANT ALL ON TABLE "public"."revenuecat_event_processing" TO "authenticated";
+GRANT ALL ON TABLE "public"."revenuecat_event_processing" TO "service_role";
 
 
 
