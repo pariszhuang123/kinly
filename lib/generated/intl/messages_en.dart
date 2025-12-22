@@ -887,9 +887,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Select the bill you just settled.",
     ),
     "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage("Settled."),
-    "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage(
-      "Awaiting settle",
-    ),
+    "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage("To settle"),
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Flow"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Bill"),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(

@@ -9,6 +9,11 @@ final _forbiddenPatterns = <String, RegExp>{
   'Raw BottomSheet': RegExp(r'showModalBottomSheet'),
   'Raw TextField': RegExp(r'[^A-Za-z]TextField\('),
   'Raw ElevatedButton': RegExp(r'ElevatedButton\('),
+  'Raw OutlinedButton': RegExp(r'OutlinedButton\('),
+  'Raw TextButton': RegExp(r'TextButton\('),
+  'Raw FloatingActionButton': RegExp(r'FloatingActionButton\('),
+  'Raw ListTile': RegExp(r'[^A-Za-z]ListTile\('),
+  'Raw CircularProgressIndicator': RegExp(r'CircularProgressIndicator\('),
   'Hard-coded EdgeInsets.all (non-zero)': RegExp(r'EdgeInsets\.all\((?!0\))'),
   'Hard-coded EdgeInsets.symmetric (non-zero)': RegExp(
     r'EdgeInsets\.symmetric\((?!vertical: 0|horizontal: 0)',

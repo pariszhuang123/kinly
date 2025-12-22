@@ -10,8 +10,7 @@ import 'package:kinly/generated/l10n.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('renders To pay and Paid to me tabs and shows paid entry',
-      (tester) async {
+  testWidgets('renders share tabs and shows paid entry', (tester) async {
     final owed = TodayShareOwed(
       payerUserId: 'payer-1',
       displayName: 'Alex',
@@ -58,11 +57,13 @@ void main() {
       ),
     );
 
-    expect(find.text('To pay'), findsOneWidget);
-    expect(find.text('Paid to me'), findsOneWidget);
+    final l10n = S.of(tester.element(find.byType(TodayShareSection)));
+
+    expect(find.text(l10n.todayShareTabActive), findsOneWidget);
+    expect(find.text(l10n.todayShareTabPaidToMe), findsOneWidget);
 
     // Switch to Paid to me tab
-    await tester.tap(find.text('Paid to me'));
+    await tester.tap(find.text(l10n.todayShareTabPaidToMe));
     await tester.pumpAndSettle();
 
     expect(find.text('Jamie'), findsOneWidget);

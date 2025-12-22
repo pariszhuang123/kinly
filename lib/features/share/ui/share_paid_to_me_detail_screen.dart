@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/theme/color_tokens.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
+import '../../../core/theme/typography_tokens.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/kinly_list_tile.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../generated/l10n.dart';
@@ -112,9 +115,23 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
                                 (_, __) => SizedBox(height: spacing.sm),
                             itemBuilder: (context, index) {
                               final item = _items[index];
-                              return ListTile(
-                                title: Text(item.description),
-                                trailing: Text(item.formattedAmount),
+                              final typography = Theme.of(
+                                context,
+                              ).extension<KinlyTypography>();
+                              final colors = Theme.of(
+                                context,
+                              ).extension<KinlyColorTokens>();
+
+                              return KinlyListTile(
+                                title: item.description,
+                                trailing: Text(
+                                  item.formattedAmount,
+                                  style: (typography?.titleSmall ??
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.titleSmall)
+                                      ?.copyWith(color: colors?.onSurface),
+                                ),
                               );
                             },
                           ),

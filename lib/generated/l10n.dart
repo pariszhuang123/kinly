@@ -1344,10 +1344,10 @@ class S {
     );
   }
 
-  /// `Awaiting settle`
+  /// `To settle`
   String get shareOwedDetailTitle {
     return Intl.message(
-      'Awaiting settle',
+      'To settle',
       name: 'shareOwedDetailTitle',
       desc: '',
       args: [],
