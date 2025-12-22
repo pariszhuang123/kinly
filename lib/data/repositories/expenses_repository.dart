@@ -132,6 +132,8 @@ class ExpensePaidToMeDebtor {
   ExpensePaidToMeDebtor({
     required this.debtorUserId,
     required this.debtorUsername,
+    this.debtorAvatarUrl,
+    this.isOwner = false,
     required this.totalPaidCents,
     required this.unseenCount,
     required this.latestPaidAt,
@@ -139,6 +141,8 @@ class ExpensePaidToMeDebtor {
 
   final String debtorUserId;
   final String debtorUsername;
+  final String? debtorAvatarUrl;
+  final bool isOwner;
   final int totalPaidCents;
   final int unseenCount;
   final DateTime? latestPaidAt;
@@ -147,6 +151,8 @@ class ExpensePaidToMeDebtor {
     return ExpensePaidToMeDebtor(
       debtorUserId: json['debtorUserId'] as String,
       debtorUsername: json['debtorUsername'] as String? ?? '',
+      debtorAvatarUrl: json['debtorAvatarUrl'] as String?,
+      isOwner: json['isOwner'] as bool? ?? false,
       totalPaidCents: (json['totalPaidCents'] as num?)?.toInt() ?? 0,
       unseenCount: (json['unseenCount'] as num?)?.toInt() ?? 0,
       latestPaidAt: parseTimestampToLocal(json['latestPaidAt']),
@@ -160,6 +166,9 @@ class ExpensePaidToMeItem {
     required this.description,
     required this.amountCents,
     required this.markedPaidAt,
+    this.debtorUsername,
+    this.debtorAvatarUrl,
+    this.isOwner = false,
     this.notes,
   });
 
@@ -167,6 +176,9 @@ class ExpensePaidToMeItem {
   final String description;
   final int amountCents;
   final DateTime? markedPaidAt;
+  final String? debtorUsername;
+  final String? debtorAvatarUrl;
+  final bool isOwner;
   final String? notes;
 
   factory ExpensePaidToMeItem.fromJson(Map<String, dynamic> json) {
@@ -175,6 +187,9 @@ class ExpensePaidToMeItem {
       description: (json['description'] as String?) ?? '',
       amountCents: (json['amountCents'] as num).toInt(),
       markedPaidAt: parseTimestampToLocal(json['markedPaidAt']),
+      debtorUsername: json['debtorUsername'] as String?,
+      debtorAvatarUrl: json['debtorAvatarUrl'] as String?,
+      isOwner: json['isOwner'] as bool? ?? false,
       notes: json['notes'] as String?,
     );
   }

@@ -255,8 +255,9 @@ class _PaidToMeList extends StatelessWidget {
           ),
           child: KinlyListTile(
             leading: KinlyCircleAvatar(
-              avatarUrl: null,
+              avatarUrl: entry.debtorAvatarUrl,
               radius: 20,
+              isOwner: entry.isOwner,
             ),
             title: entry.debtorUsername,
             subtitle: subtitle,

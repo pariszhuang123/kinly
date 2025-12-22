@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(7);
+SELECT plan(10);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -45,15 +45,41 @@ SELECT
 FROM tmp_users
 ON CONFLICT (id) DO NOTHING;
 
+-- Upsert profiles with avatars for deterministic avatar responses
+INSERT INTO public.profiles (id, email, username, avatar_id)
+VALUES
+  ((SELECT user_id FROM tmp_users WHERE label = 'creator'),
+   (SELECT email FROM tmp_users WHERE label = 'creator'),
+   'creatorpaid',
+   '00000000-0000-4000-8000-000000000777'),
+  ((SELECT user_id FROM tmp_users WHERE label = 'debtor'),
+   (SELECT email FROM tmp_users WHERE label = 'debtor'),
+   'debtorpaid',
+   '00000000-0000-4000-8000-000000000778')
+ON CONFLICT (id) DO UPDATE
+SET avatar_id = EXCLUDED.avatar_id,
+    username = EXCLUDED.username,
+    email = EXCLUDED.email;
+
 -- Creator creates home + invite
 SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'creator'), true);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+SELECT public.profile_identity_update(
+  'creatorpaid',
+  '00000000-0000-4000-8000-000000000777'
+);
 
 WITH res AS (
   SELECT public.homes_create_with_invite() AS payload
 )
 INSERT INTO tmp_homes (label, home_id)
 SELECT 'primary', (payload->'home'->>'id')::uuid FROM res;
+
+-- Ensure owner column is set for deterministic isOwner checks
+UPDATE public.homes
+SET owner_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')
+WHERE id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  AND owner_user_id IS NULL;
 
 -- Debtor joins
 SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'debtor'), true);
@@ -63,9 +89,19 @@ SELECT public.homes_join(
   (SELECT code
    FROM public.invites
    WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
-     AND revoked_at IS NULL
-   LIMIT 1)
+  AND revoked_at IS NULL
+  LIMIT 1)
 );
+
+-- After join, set debtor avatar deterministically using the contract function
+SELECT public.profile_identity_update(
+  'debtorpaid',
+  '00000000-0000-4000-8000-000000000778'
+);
+
+-- Switch back to creator for expense creation
+SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'creator'), true);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 -- Creator creates expense with self + debtor; creator split auto-paid
 -- Expense A
@@ -151,7 +187,7 @@ WITH list AS (
 SELECT is(
   (SELECT jsonb_array_length(body) FROM list),
   1,
-  'Paid-to-me list has one debtor'
+  'Paid-to-me list has one debtor with unseen items'
 );
 
 WITH list AS (
@@ -163,6 +199,27 @@ SELECT is(
   (SELECT (body->0->>'totalPaidCents')::int FROM list),
   3300,
   'Paid-to-me total aggregates multiple paid items and excludes creator auto-paid split'
+);
+
+WITH list AS (
+  SELECT public.expenses_get_current_paid_to_me_debtors(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  ) AS body
+)
+SELECT is(
+  (SELECT body->0->>'debtorAvatarUrl' FROM list),
+  'avatars/paid-to-me-2.png',
+  'Paid-to-me list includes debtor avatar path'
+);
+WITH list AS (
+  SELECT public.expenses_get_current_paid_to_me_debtors(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  ) AS body
+)
+SELECT is(
+  (SELECT (body->0->>'isOwner')::boolean FROM list),
+  FALSE,
+  'Paid-to-me list marks debtor owner flag correctly'
 );
 
 -- Detail excludes creator split
@@ -178,7 +235,22 @@ SELECT is(
   'Debtor detail includes both debtor-paid items only'
 );
 
+WITH details AS (
+  SELECT public.expenses_get_current_paid_to_me_by_debtor_details(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+    (SELECT user_id FROM tmp_users WHERE label = 'debtor')
+  ) AS body
+)
+SELECT is(
+  (SELECT body->0->>'debtorAvatarUrl' FROM details),
+  'avatars/paid-to-me-2.png',
+  'Debtor detail includes avatar path for debtor'
+);
+
 -- Mark viewed clears unseen
+SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'creator'), true);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
 WITH viewed AS (
   SELECT public.expenses_mark_paid_received_viewed_for_debtor(
     (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
@@ -191,15 +263,31 @@ SELECT is(
   'Mark paid received returns count of updated rows'
 );
 
+-- Debug unseen splits count after marking viewed
+SELECT diag(
+  (
+    SELECT jsonb_build_object(
+      'unseenSplits',
+      COUNT(*) FILTER (WHERE s.recipient_viewed_at IS NULL)
+    )
+    FROM public.expense_splits s
+    JOIN public.expenses e
+      ON e.id = s.expense_id
+    WHERE e.home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+      AND e.created_by_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')
+      AND s.debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'debtor')
+  )::text
+);
+
 WITH list AS (
   SELECT public.expenses_get_current_paid_to_me_debtors(
     (SELECT home_id FROM tmp_homes WHERE label = 'primary')
   ) AS body
 )
 SELECT is(
-  (SELECT (body->0->>'unseenCount')::int FROM list),
+  (SELECT jsonb_array_length(body) FROM list),
   0,
-  'Unseen count cleared after marking viewed'
+  'Paid-to-me list hides entries once all unseen are viewed'
 );
 
 -- Calling mark_share_paid again is deduped

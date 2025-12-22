@@ -11,6 +11,7 @@ Tracks versioned contract changes and related ADRs.
   - 2025-11-21: Capture Supabase requirements: tables, grants, and RPCs (`expenses.create`, `expenses.edit`, `expenses.markSharePaid`, `expenses.cancel`, `expenses.getCurrentOwed`, `expenses.getCreatedByMe`). Tables remain RPC-only with RLS disabled + GRANT revokes per ADR-0003 (`docs/adr/ADR-0003-expenses-rpc-only-access.md`).
   - 2025-11-22: Allow creators to participate in equal/custom splits (creator rows are persisted but auto-marked `paid`, at least one non-creator debtor is required, and each active expense must involve two unique members).
   - 2025-12-22: Add “Who paid me” recipient view state (`expense_splits.recipient_viewed_at`) and RPCs for Today + drilldown (`expenses.getCurrentPaidToMeDebtors`, `expenses.getCurrentPaidToMeByDebtorDetails`, `expenses.markPaidReceivedViewedForDebtor`). Existing paid splits remain unseen (no backfill) to surface badges during testing; creator auto-paid splits are excluded from paid-to-me responses.
+  - 2025-12-23: Paid-to-me RPCs now return debtor avatar + owner flag (`homes.owner_user_id` match) in both list and drilldown payloads.
 - Notes: Home members can author expenses; drafts stay private; Today/Explore surfaces consume the summary RPCs.
 
 ## v2 — Homes Memberships/Invites Alignment

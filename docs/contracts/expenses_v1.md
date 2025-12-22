@@ -270,9 +270,9 @@ Projection for list views (Explore → Share, repository caches).
 - Scope: active expenses only; payer is always `expenses.created_by_user_id`; debtors mark their own split as paid; no partial payments or bank verification.
 - Data model: `expense_splits.recipientViewedAt` (`timestamptz|null`) tracks whether the creator has seen a paid split; transitions to `NULL` when a split becomes paid; only the creator sets it via a dedicated RPC. Existing paid splits stay unseen (no backfill) so badges surface during testing.
 - Summary/list RPC (JSON):
-  - `expenses.getCurrentPaidToMeDebtors(p_home_id)` → `[ { debtorUserId, debtorUsername, totalPaidCents, unseenCount, latestPaidAt } ]` ordered by most recent payment. Creator auto-paid splits are excluded (`debtor_user_id != created_by_user_id`). UI slices to top 3 + overflow for Today.
+  - `expenses.getCurrentPaidToMeDebtors(p_home_id)` → `[ { debtorUserId, debtorUsername, debtorAvatarUrl, isOwner, totalPaidCents, unseenCount, latestPaidAt } ]` ordered by most recent payment. `debtorAvatarUrl` is nullable (placeholder in UI) and `isOwner` is derived by comparing `homes.owner_user_id` to `debtorUserId`. Creator auto-paid splits are excluded (`debtor_user_id != created_by_user_id`). UI slices to top 3 + overflow for Today.
 - Drilldown RPC (JSON):
-  - `expenses.getCurrentPaidToMeByDebtorDetails(p_home_id, p_debtor_user_id)` → `[ { expenseId, description, notes, amountCents, markedPaidAt } ]` ordered by newest payment. Creator auto-paid splits are excluded.
+  - `expenses.getCurrentPaidToMeByDebtorDetails(p_home_id, p_debtor_user_id)` → `[ { expenseId, description, notes, amountCents, markedPaidAt, debtorUsername, debtorAvatarUrl, isOwner } ]` ordered by newest payment. Creator auto-paid splits are excluded.
 - View-state RPC:
   - `expenses.markPaidReceivedViewedForDebtor(p_home_id, p_debtor_user_id)` → integer count of paid splits that were marked viewed (sets `recipientViewedAt=now()` for unseen items). Called when opening debtor detail.
 - UX contract: Today tile is hidden when `totalPaidCents == 0`; tile shows up to three debtor avatars with overflow `+N` and aggregates `totalPaidCents`. Debtor detail marks only that debtor’s unseen items as viewed.

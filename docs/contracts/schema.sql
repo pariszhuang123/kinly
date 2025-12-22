@@ -2800,25 +2800,47 @@ BEGIN
   SELECT COALESCE(
            jsonb_agg(
              jsonb_build_object(
-               'expenseId',    e.id,
-               'description',  e.description,
-               'notes',        e.notes,
-               'amountCents',  s.amount_cents,
-               'markedPaidAt', s.marked_paid_at
+               'expenseId',       expense_id,
+               'description',     description,
+               'notes',           notes,
+               'amountCents',     amount_cents,
+               'markedPaidAt',    marked_paid_at,
+               'debtorUsername',  debtor_username,
+               'debtorAvatarUrl', debtor_avatar_url,
+               'isOwner',         debtor_is_owner
              )
-             ORDER BY s.marked_paid_at DESC, e.id
+             ORDER BY marked_paid_at DESC, expense_id
            ),
            '[]'::jsonb
          )
   INTO v_result
-  FROM public.expense_splits s
-  JOIN public.expenses e
-    ON e.id = s.expense_id
-  WHERE e.home_id            = p_home_id
-    AND e.created_by_user_id = v_user
-    AND s.debtor_user_id     = p_debtor_user_id
-    AND s.status             = 'paid'
-    AND s.marked_paid_at     IS NOT NULL;
+  FROM (
+    SELECT
+      e.id                                      AS expense_id,
+      e.description                             AS description,
+      e.notes                                   AS notes,
+      s.amount_cents                            AS amount_cents,
+      s.marked_paid_at                          AS marked_paid_at,
+      p.username                                AS debtor_username,
+      a.storage_path                            AS debtor_avatar_url,
+      (h.owner_user_id = s.debtor_user_id)      AS debtor_is_owner
+    FROM public.expense_splits s
+    JOIN public.expenses e
+      ON e.id = s.expense_id
+    JOIN public.homes h
+      ON h.id = e.home_id
+    JOIN public.profiles p
+      ON p.id = s.debtor_user_id
+    LEFT JOIN public.avatars a
+      ON a.id = p.avatar_id
+    WHERE e.home_id            = p_home_id
+      AND e.created_by_user_id = v_user
+      AND s.debtor_user_id     = p_debtor_user_id
+      AND s.status             = 'paid'
+      AND s.marked_paid_at     IS NOT NULL
+      AND s.recipient_viewed_at IS NULL
+      AND s.debtor_user_id    <> e.created_by_user_id
+  ) details;
 
   RETURN v_result;
 END;
@@ -2846,7 +2868,9 @@ BEGIN
            jsonb_agg(
              jsonb_build_object(
                'debtorUserId',   debtor_user_id,
-               'debtorUsername', debtor_username,
+                'debtorUsername', debtor_username,
+               'debtorAvatarUrl', debtor_avatar_url,
+               'isOwner',        debtor_is_owner,
                'totalPaidCents', total_paid_cents,
                'unseenCount',    unseen_count,
                'latestPaidAt',   latest_paid_at
@@ -2862,6 +2886,8 @@ BEGIN
     SELECT
       s.debtor_user_id                                      AS debtor_user_id,
       p.username                                            AS debtor_username,
+      a.storage_path                                        AS debtor_avatar_url,
+      (h.owner_user_id = s.debtor_user_id)                  AS debtor_is_owner,
       SUM(s.amount_cents)                                   AS total_paid_cents,
       COUNT(*) FILTER (WHERE s.recipient_viewed_at IS NULL) AS unseen_count,
       MAX(s.marked_paid_at)                                 AS latest_paid_at
@@ -2870,13 +2896,19 @@ BEGIN
       ON e.id = s.expense_id
     JOIN public.profiles p
       ON p.id = s.debtor_user_id
+    LEFT JOIN public.avatars a
+      ON a.id = p.avatar_id
+    JOIN public.homes h
+      ON h.id = e.home_id
     WHERE e.home_id            = p_home_id
       AND e.created_by_user_id = v_user
       AND s.status             = 'paid'
       AND s.marked_paid_at     IS NOT NULL
+      AND s.recipient_viewed_at IS NULL
       AND s.debtor_user_id    <> e.created_by_user_id
-    GROUP BY s.debtor_user_id, p.username
-  ) debtors;
+    GROUP BY s.debtor_user_id, p.username, a.storage_path, h.owner_user_id
+  ) debtors
+  WHERE unseen_count > 0;
 
   RETURN v_result;
 END;
@@ -6503,9 +6535,8 @@ ALTER TABLE "public"."revenuecat_event_processing" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."revenuecat_webhook_events" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "received_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "event_timestamp" timestamp with time zone,
-    "environment" "text",
+    "environment" "text" DEFAULT 'unknown'::"text" NOT NULL,
     "rc_app_user_id" "text" NOT NULL,
     "entitlement_id" "text",
     "product_id" "text",

@@ -154,6 +154,8 @@ class TodaySharePaidToMe extends Equatable {
   const TodaySharePaidToMe({
     required this.debtorUserId,
     required this.debtorUsername,
+    this.debtorAvatarUrl,
+    this.isOwner = false,
     required this.totalPaidCents,
     required this.unseenCount,
     this.latestPaidAt,
@@ -161,6 +163,8 @@ class TodaySharePaidToMe extends Equatable {
 
   final String debtorUserId;
   final String debtorUsername;
+  final String? debtorAvatarUrl;
+  final bool isOwner;
   final int totalPaidCents;
   final int unseenCount;
   final DateTime? latestPaidAt;
@@ -169,6 +173,8 @@ class TodaySharePaidToMe extends Equatable {
     return TodaySharePaidToMe(
       debtorUserId: model.debtorUserId,
       debtorUsername: model.debtorUsername,
+      debtorAvatarUrl: model.debtorAvatarUrl,
+      isOwner: model.isOwner,
       totalPaidCents: model.totalPaidCents,
       unseenCount: model.unseenCount,
       latestPaidAt: model.latestPaidAt,
@@ -184,6 +190,8 @@ class TodaySharePaidToMe extends Equatable {
   List<Object?> get props => [
     debtorUserId,
     debtorUsername,
+    debtorAvatarUrl,
+    isOwner,
     totalPaidCents,
     unseenCount,
     latestPaidAt,

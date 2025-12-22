@@ -1064,7 +1064,7 @@ export type Database = {
           current_period_end_at: string | null
           entitlement_id: string | null
           entitlement_ids: string[] | null
-          environment: string | null
+          environment: string
           error: string | null
           event_timestamp: string | null
           fatal_error: string | null
@@ -1080,7 +1080,6 @@ export type Database = {
           raw: Json | null
           rc_app_user_id: string
           rc_event_id: string | null
-          received_at: string
           rpc_error: string | null
           rpc_error_code: string | null
           rpc_retryable: boolean | null
@@ -1093,7 +1092,7 @@ export type Database = {
           current_period_end_at?: string | null
           entitlement_id?: string | null
           entitlement_ids?: string[] | null
-          environment?: string | null
+          environment?: string
           error?: string | null
           event_timestamp?: string | null
           fatal_error?: string | null
@@ -1109,7 +1108,6 @@ export type Database = {
           raw?: Json | null
           rc_app_user_id: string
           rc_event_id?: string | null
-          received_at?: string
           rpc_error?: string | null
           rpc_error_code?: string | null
           rpc_retryable?: boolean | null
@@ -1122,7 +1120,7 @@ export type Database = {
           current_period_end_at?: string | null
           entitlement_id?: string | null
           entitlement_ids?: string[] | null
-          environment?: string | null
+          environment?: string
           error?: string | null
           event_timestamp?: string | null
           fatal_error?: string | null
@@ -1138,7 +1136,6 @@ export type Database = {
           raw?: Json | null
           rc_app_user_id?: string
           rc_event_id?: string | null
-          received_at?: string
           rpc_error?: string | null
           rpc_error_code?: string | null
           rpc_retryable?: boolean | null

@@ -103,35 +103,21 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
                             : KinlyScrollFade(
                                 child: ListView.separated(
                                   itemCount: _items.length,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: spacing.sm,
+                                  ),
                                   separatorBuilder: (_, __) =>
                                       SizedBox(height: spacing.sm),
                                   itemBuilder: (context, index) {
                                     final item = _items[index];
                                     return ListTile(
                                       title: Text(item.description),
-                                      subtitle: item.markedPaidAt != null
-                                          ? Text(
-                                              s.todaySharePaidSubtitle,
-                                            )
-                                          : null,
                                       trailing: Text(item.formattedAmount),
                                     );
                                   },
                                 ),
                               ),
               ),
-              if (colors != null) ...[
-                SizedBox(height: spacing.md),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    s.todaySharePaidSubtitle,
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: colors.accent,
-                        ),
-                  ),
-                ),
-              ],
             ],
           ),
         ),
@@ -153,7 +139,8 @@ class _Header extends StatelessWidget {
     return Row(
       children: [
         KinlyCircleAvatar(
-          avatarUrl: null,
+          avatarUrl: entry.debtorAvatarUrl,
+          isOwner: entry.isOwner,
           radius: 28,
         ),
         SizedBox(width: spacing.md),

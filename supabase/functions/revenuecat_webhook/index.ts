@@ -1,4 +1,4 @@
-// supabase/functions/revenue_webhook/index.ts
+// supabase/functions/revenuecat_webhook/index.ts
 import { createClient } from "npm:@supabase/supabase-js@2.48.0";
 import {
   computeIdempotencyKey,
@@ -16,17 +16,29 @@ type Env = {
   RC_WEBHOOK_SECRET?: string; // raw secret token (NOT including "Bearer ")
 };
 
-type SbError = { message?: string; code?: string; details?: string; hint?: string } | null;
+type SbError =
+  | { message?: string; code?: string; details?: string; hint?: string }
+  | null;
 
 type SupabaseRpcResult<T> = { error: SbError; data?: T };
-type SupabaseTableWriteResult = { error: SbError; data?: Array<Record<string, unknown>> };
+type SupabaseTableWriteResult = {
+  error: SbError;
+  data?: Array<Record<string, unknown>>;
+};
 
 export type SupabaseLike = {
-  rpc: <T = unknown>(fn: string, args: Record<string, unknown>) => Promise<SupabaseRpcResult<T>>;
+  rpc: <T = unknown>(
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<SupabaseRpcResult<T>>;
   from: (table: string) => {
     upsert: (
       row: Record<string, unknown>,
-      options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+      options?: {
+        onConflict?: string;
+        ignoreDuplicates?: boolean;
+        returning?: "minimal" | "representation";
+      },
     ) => Promise<SupabaseTableWriteResult>;
   };
 };
@@ -37,7 +49,9 @@ const createSupabaseDefault = (url: string, key: string): SupabaseLike =>
   }) as unknown as SupabaseLike;
 
 /** Accept ONLY "Authorization: Bearer <token>" */
-export const extractBearerTokenStrict = (authHeader: string | null): string | null => {
+export const extractBearerTokenStrict = (
+  authHeader: string | null,
+): string | null => {
   const header = (authHeader ?? "").trim();
   const lower = header.toLowerCase();
   if (!lower.startsWith("bearer ")) return null;
@@ -83,7 +97,10 @@ const isTransientDbError = (err: SbError): boolean => {
 /**
  * Read request body as JSON with a hard byte limit to avoid abuse/accidental huge payloads.
  */
-const readJsonWithLimit = async (req: Request, maxBytes = 256_000): Promise<unknown> => {
+const readJsonWithLimit = async (
+  req: Request,
+  maxBytes = 256_000,
+): Promise<unknown> => {
   const contentLength = req.headers.get("content-length");
   if (contentLength) {
     const n = Number(contentLength);
@@ -126,24 +143,38 @@ export const handleRevenueCatWebhook = async (
   createSupabase: (url: string, key: string) => SupabaseLike = createSupabaseDefault,
 ): Promise<Response> => {
   if (req.method.toUpperCase() !== "POST") {
-    return json({ ok: false, error_code: "method_not_allowed", message: "POST required" }, 405);
+    return json(
+      { ok: false, error_code: "method_not_allowed", message: "POST required" },
+      405,
+    );
   }
 
   const supabaseUrl = env.SUPABASE_URL;
   const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY;
-  const webhookSecret = env.RC_WEBHOOK_SECRET;
+
+  // ✅ Trim secrets (prevents newline/whitespace mismatch from CI)
+  const webhookSecret = (env.RC_WEBHOOK_SECRET ?? "").trim();
 
   if (!supabaseUrl || !supabaseKey) {
     return json(
-      { ok: false, error_code: "missing_env", message: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY" },
+      {
+        ok: false,
+        error_code: "missing_env",
+        message: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+      },
       500,
     );
   }
   if (!webhookSecret) {
-    return json({ ok: false, error_code: "missing_env", message: "Missing RC_WEBHOOK_SECRET" }, 500);
+    return json(
+      { ok: false, error_code: "missing_env", message: "Missing RC_WEBHOOK_SECRET" },
+      500,
+    );
   }
 
-  const token = extractBearerTokenStrict(req.headers.get("authorization"));
+  // ✅ RevenueCat uses Authorization: Bearer <secret>
+  const token = (extractBearerTokenStrict(req.headers.get("authorization")) ?? "").trim();
+
   if (!token || !timingSafeEqual(token, webhookSecret)) {
     return json({ ok: false, error_code: "unauthorized", message: "Unauthorized" }, 401);
   }
@@ -156,13 +187,20 @@ export const handleRevenueCatWebhook = async (
     const code = msg === "payload_too_large" ? "payload_too_large" : "invalid_json";
     const status = msg === "payload_too_large" ? 413 : 400;
     return json(
-      { ok: false, error_code: code, message: code === "payload_too_large" ? "Payload too large" : "Invalid JSON body" },
+      {
+        ok: false,
+        error_code: code,
+        message: code === "payload_too_large" ? "Payload too large" : "Invalid JSON body",
+      },
       status,
     );
   }
 
   if (!isPlainObject(payloadUnknown)) {
-    return json({ ok: false, error_code: "invalid_body", message: "Expected JSON object" }, 400);
+    return json(
+      { ok: false, error_code: "invalid_body", message: "Expected JSON object" },
+      400,
+    );
   }
 
   const payload = payloadUnknown as RcPayload;
@@ -177,6 +215,7 @@ export const handleRevenueCatWebhook = async (
   if (parsed.store === "unknown") warnings.push(`unknown_store:${parsed.storeRaw ?? "unknown"}`);
 
   const fatal = (() => {
+    // SAFETY: Used for processing and tying entitlement to a Supabase user + home
     if (!parsed.rcUserId) {
       return { code: "missing_user_uuid", message: "Missing or invalid subscriber_attributes.user_id" };
     }
@@ -187,9 +226,12 @@ export const handleRevenueCatWebhook = async (
     return null;
   })();
 
-  const environment = parsed.environment;
-  const idempotencyKey = await computeIdempotencyKey(parsed);
+  // ✅ Normalize environment to avoid NULL uniqueness issues in DB
+  const environment = (parsed.environment ?? "unknown").toLowerCase().trim() || "unknown";
+  const idempotencyKey = await computeIdempotencyKey({ ...parsed, environment });
 
+  // ✅ IMPORTANT: This table is RevenueCat-centric: do NOT store Supabase user_id here.
+  // It can still store home_id for analytics/debug.
   const auditRow: Record<string, unknown> = {
     environment,
     idempotency_key: idempotencyKey,
@@ -197,16 +239,17 @@ export const handleRevenueCatWebhook = async (
     original_transaction_id: parsed.originalTransactionId,
     latest_transaction_id: parsed.latestTransactionId,
     event_timestamp: parsed.eventTimestamp,
+
+    // Keep nullable (DB should allow NULL)
     rc_app_user_id: parsed.rcAppUserId ?? null,
 
-    user_id: parsed.rcUserId,
     home_id: parsed.homeId,
 
     entitlement_id: parsed.primaryEntitlementId ?? null,
     entitlement_ids: parsed.entitlementIds.length > 0 ? parsed.entitlementIds : null,
     product_id: parsed.productId ?? null,
 
-    // If store is unknown, keep null in audit row to avoid enum cast failures
+    // If store is unknown, keep null to avoid enum cast failures
     store: parsed.store === "unknown" ? null : parsed.store,
 
     status: parsed.status,
@@ -220,6 +263,7 @@ export const handleRevenueCatWebhook = async (
     raw: payload,
   };
 
+  // ✅ Always write audit (even on fatal validation)
   const auditWrite = await supabase
     .from("revenuecat_webhook_events")
     .upsert(auditRow, {
@@ -228,7 +272,7 @@ export const handleRevenueCatWebhook = async (
     });
 
   if (auditWrite.error) {
-    // ✅ IMPORTANT CHANGE: ALWAYS 500 (never silently accept)
+    // Always 500 (never silently accept) — this indicates schema drift or DB outage
     return json(
       {
         ok: false,
@@ -241,14 +285,20 @@ export const handleRevenueCatWebhook = async (
     );
   }
 
+  // ✅ Missing home_id should FAIL (you want this)
   if (fatal) {
-    return json({ ok: false, retryable: false, error_code: fatal.code, message: fatal.message, warnings }, 400);
+    return json(
+      { ok: false, retryable: false, error_code: fatal.code, message: fatal.message, warnings },
+      400,
+    );
   }
 
   const rpcArgs: Record<string, unknown> = {
     p_idempotency_key: idempotencyKey,
-    p_user_id: parsed.rcUserId,
+
+    // REQUIRED for processing
     p_home_id: parsed.homeId,
+
     p_store: parsed.store, // guaranteed not unknown by fatal validation
     p_rc_app_user_id: parsed.rcAppUserId,
     p_entitlement_id: parsed.primaryEntitlementId,
@@ -259,6 +309,8 @@ export const handleRevenueCatWebhook = async (
     p_original_purchase_at: parsed.originalPurchaseAt,
     p_last_purchase_at: parsed.lastPurchaseAt,
     p_latest_transaction_id: parsed.latestTransactionId,
+
+    // optional diagnostics/audit
     p_event_timestamp: parsed.eventTimestamp,
     p_environment: environment,
     p_rc_event_id: parsed.rcEventId,
@@ -267,22 +319,24 @@ export const handleRevenueCatWebhook = async (
     p_warnings: warnings.length ? warnings : null,
   };
 
-  const { data: deduped, error: rpcError } = await supabase.rpc<boolean>("paywall_record_subscription", rpcArgs);
+  const { data: deduped, error: rpcError } = await supabase.rpc<boolean>(
+    "paywall_record_subscription",
+    rpcArgs,
+  );
 
   if (rpcError) {
     const retryable = isTransientDbError(rpcError);
 
-    await supabase
-      .from("revenuecat_webhook_events")
-      .upsert(
-        {
-          ...auditRow,
-          rpc_error_code: "rpc_failure",
-          rpc_error: rpcError.message ?? "rpc_failure",
-          rpc_retryable: retryable,
-        },
-        { onConflict: "environment,idempotency_key", returning: "minimal" },
-      );
+    // Best-effort: update audit row with rpc failure diagnostics
+    await supabase.from("revenuecat_webhook_events").upsert(
+      {
+        ...auditRow,
+        rpc_error_code: "rpc_failure",
+        rpc_error: rpcError.message ?? "rpc_failure",
+        rpc_retryable: retryable,
+      },
+      { onConflict: "environment,idempotency_key", returning: "minimal" },
+    );
 
     return json(
       { ok: false, retryable, error_code: "rpc_failure", message: rpcError.message ?? "rpc_failure", warnings },
@@ -295,11 +349,16 @@ export const handleRevenueCatWebhook = async (
 
 if (import.meta.main) {
   Deno.serve(async (req: Request) => {
-    const env: Env = {
-      SUPABASE_URL: Deno.env.get("SUPABASE_URL") ?? undefined,
-      SUPABASE_SERVICE_ROLE_KEY: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? undefined,
-      RC_WEBHOOK_SECRET: Deno.env.get("RC_WEBHOOK_SECRET") ?? undefined,
-    };
-    return await handleRevenueCatWebhook(req, env);
+    try {
+      const env: Env = {
+        SUPABASE_URL: Deno.env.get("SUPABASE_URL") ?? undefined,
+        SUPABASE_SERVICE_ROLE_KEY: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? undefined,
+        RC_WEBHOOK_SECRET: Deno.env.get("RC_WEBHOOK_SECRET") ?? undefined,
+      };
+      return await handleRevenueCatWebhook(req, env);
+    } catch (e) {
+      console.error("fatal_unhandled", e);
+      return json({ ok: false, error_code: "fatal_unhandled", message: String(e) }, 500);
+    }
   });
 }
