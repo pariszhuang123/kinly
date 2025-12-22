@@ -6,6 +6,7 @@ import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/section_container.dart';
 import '../../../../../core/ui/kinly_list_tile.dart';
 import '../../../../../core/ui/kinly_tab_bar.dart';
+import '../../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../domain/models.dart';
 import '../../../../flow/ui/flow_list_filter.dart';
@@ -280,15 +281,10 @@ class _SeeAllButton extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8),
       child: Align(
         alignment: Alignment.center,
-        child: TextButton(
+        child: KinlyOutlinedButton.text(
+          compact: true,
           onPressed: onTap,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          label: label,
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
+import '../../../../core/ui/kinly_list_tile.dart';
 import '../../../../core/ui/settings/kinly_settings_card.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../core/ui/kinly_time_picker.dart';
@@ -188,16 +189,16 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                   ],
                   if (state.canEditTime) ...[
                     const Divider(height: 0),
-                    ListTile(
+                    KinlyListTile(
                       contentPadding: EdgeInsetsDirectional.fromSTEB(
                         spacing.l,
                         spacing.md,
                         spacing.l,
                         spacing.md,
                       ),
-                      title: Text(s.connectionNotificationsTimeLabel),
-                      subtitle: Text(
-                        s.connectionNotificationsTimeSubtitle(timeText),
+                      title: s.connectionNotificationsTimeLabel,
+                      subtitle: s.connectionNotificationsTimeSubtitle(
+                        timeText,
                       ),
                       trailing:
                           state.isSavingTime
