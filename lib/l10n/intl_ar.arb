@@ -748,6 +748,16 @@
   "@join_error_unauthorized": { "surface": "error" },
   "@join_error_forbidden": { "surface": "error" },
   "todayShareTabPaidToMe": "Paid to me",
-    "todaySharePaidSubtitle": "Paid to you",,
-    "todaySharePaidUnseen": "{count, plural, one {{count} new payment to you} other {{count} new payments to you}}"
+  "todaySharePaidSubtitle": "Paid to you",
+  "todaySharePaidUnseen": "{count, plural, one {{count} new payment to you} other {{count} new payments to you}}",
+  "@todaySharePaidUnseen": {
+    "description": "Subtitle for paid-to-me entries with unseen items (placeholder locale).",
+    "surface": "subtitle",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  }
 }

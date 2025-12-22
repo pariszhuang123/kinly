@@ -226,6 +226,16 @@
   "todayShareTabPaidToMe": "Paid to me",
   "todaySharePaidSubtitle": "Paid to you",
   "todaySharePaidUnseen": "{count, plural, one {{count} new payment to you} other {{count} new payments to you}}",
+  "@todaySharePaidUnseen": {
+    "description": "Subtitle shown for paid-to-me entries when there are unseen items.",
+    "surface": "subtitle",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
   "todayShareError": "We couldn't refresh Share right now.",
   "todayShareActiveSubtitle": "{count, plural, one {{count} payment pending} other {{count} to settle}}",
   "@todayShareActiveSubtitle": {
