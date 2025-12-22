@@ -104,7 +104,10 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
                         : KinlyScrollFade(
                           child: ListView.separated(
                             itemCount: _items.length,
-                            padding: EdgeInsets.symmetric(vertical: spacing.sm),
+                            padding: EdgeInsetsDirectional.only(
+                              top: spacing.sm,
+                              bottom: spacing.sm,
+                            ),
                             separatorBuilder:
                                 (_, __) => SizedBox(height: spacing.sm),
                             itemBuilder: (context, index) {
