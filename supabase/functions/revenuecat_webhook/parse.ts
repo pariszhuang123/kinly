@@ -23,6 +23,7 @@ export type ParsedWebhook = {
 
   store: Store;
   storeRaw: string | null;
+  isTestStore: boolean;
 
   status: SubscriptionStatus;
 
@@ -54,7 +55,9 @@ const KNOWN_EVENT_TYPES = new Set([
   "EXPIRATION",
 ]);
 
-export const statusFromEvent = (eventType?: string): { status: SubscriptionStatus; unknown: boolean; normalized: string } => {
+export const statusFromEvent = (
+  eventType?: string,
+): { status: SubscriptionStatus; unknown: boolean; normalized: string } => {
   const normalized = (eventType ?? "").toUpperCase().trim();
   const unknown = normalized.length > 0 && !KNOWN_EVENT_TYPES.has(normalized);
 
@@ -69,25 +72,43 @@ export const statusFromEvent = (eventType?: string): { status: SubscriptionStatu
       return { status: "cancelled", unknown: false, normalized };
 
     case "BILLING_ISSUE":
-      // safer for paywall gating than "cancelled"
       return { status: "inactive", unknown: false, normalized };
 
     case "EXPIRATION":
       return { status: "expired", unknown: false, normalized };
 
     default:
-      // Unknown/empty types become inactive for gating safety
-      return { status: "inactive", unknown: unknown || normalized.length === 0, normalized };
+      return {
+        status: "inactive",
+        unknown: unknown || normalized.length === 0,
+        normalized,
+      };
   }
 };
 
-export const storeFromPayload = (value?: string | null): Store => {
-  const normalized = (value ?? "").toLowerCase();
-  if (normalized.includes("app_store") || normalized === "apple") return "app_store";
-  if (normalized.includes("play_store") || normalized === "google") return "play_store";
-  if (normalized.includes("stripe")) return "stripe";
-  if (normalized.includes("promotional")) return "promotional";
-  return "unknown";
+export const storeFromPayload = (
+  value?: string | null,
+): { store: Store; isTestStore: boolean; normalizedRaw: string } => {
+  const raw = (value ?? "").trim();
+  const normalized = raw.toLowerCase();
+
+  // ✅ Treat RevenueCat sandbox transport as a real store mapping (do NOT add enum value)
+  if (normalized === "test_store") return { store: "play_store", isTestStore: true, normalizedRaw: normalized };
+
+  if (normalized.includes("app_store") || normalized === "apple") {
+    return { store: "app_store", isTestStore: false, normalizedRaw: normalized };
+  }
+  if (normalized.includes("play_store") || normalized === "google") {
+    return { store: "play_store", isTestStore: false, normalizedRaw: normalized };
+  }
+  if (normalized.includes("stripe")) {
+    return { store: "stripe", isTestStore: false, normalizedRaw: normalized };
+  }
+  if (normalized.includes("promotional")) {
+    return { store: "promotional", isTestStore: false, normalizedRaw: normalized };
+  }
+
+  return { store: "unknown", isTestStore: false, normalizedRaw: normalized };
 };
 
 export const parseDate = (value: unknown): string | null => {
@@ -139,7 +160,10 @@ const uniquePreserveOrder = (values: string[]): string[] => {
   return out;
 };
 
-const normalizeEntitlementIds = (payload: RcPayload, event: Record<string, unknown> | undefined) => {
+const normalizeEntitlementIds = (
+  payload: RcPayload,
+  event: Record<string, unknown> | undefined,
+) => {
   const candidateLists: Array<string[]> = [];
 
   const eventEntitlementIds = asStringArray(event?.entitlement_ids as unknown);
@@ -169,7 +193,10 @@ const extractSubscriberAttrValue = (
   return raw;
 };
 
-const extractHomeId = (payload: RcPayload, event: Record<string, unknown> | undefined): string | null => {
+const extractHomeId = (
+  payload: RcPayload,
+  event: Record<string, unknown> | undefined,
+): string | null => {
   const subscriberAttributes = (event?.subscriber_attributes ??
     payload?.subscriber_attributes) as Record<string, unknown> | undefined;
 
@@ -218,6 +245,8 @@ export const parseWebhookPayload = (payload: RcPayload): ParsedWebhook => {
     (payload?.store as string | undefined) ??
     (payload?.platform as string | undefined) ??
     null;
+
+  const storeParsed = storeFromPayload(storeRaw);
 
   const environmentRaw =
     (event?.environment as string | undefined) ??
@@ -275,8 +304,9 @@ export const parseWebhookPayload = (payload: RcPayload): ParsedWebhook => {
 
     productId,
 
-    store: storeFromPayload(storeRaw),
+    store: storeParsed.store,
     storeRaw,
+    isTestStore: storeParsed.isTestStore,
 
     status,
 

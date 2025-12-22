@@ -4,8 +4,6 @@ import {
   computeIdempotencyKey,
   parseWebhookPayload,
   type RcPayload,
-  type Store,
-  type SubscriptionStatus,
 } from "./parse.ts";
 
 const JSON_HEADERS = { "Content-Type": "application/json" };
@@ -26,17 +24,9 @@ type SupabaseTableWriteResult = { error: SbError; data?: Array<Record<string, un
 export type SupabaseLike = {
   rpc: <T = unknown>(fn: string, args: Record<string, unknown>) => Promise<SupabaseRpcResult<T>>;
   from: (table: string) => {
-    insert: (
-      row: Record<string, unknown>,
-      options?: { returning?: "minimal" | "representation" },
-    ) => Promise<SupabaseTableWriteResult>;
     upsert: (
       row: Record<string, unknown>,
-      options?: {
-        onConflict?: string;
-        ignoreDuplicates?: boolean;
-        returning?: "minimal" | "representation";
-      },
+      options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
     ) => Promise<SupabaseTableWriteResult>;
   };
 };
@@ -75,18 +65,16 @@ const isTransientDbError = (err: SbError): boolean => {
   const code = (err?.code ?? "").trim();
   const msg = (err?.message ?? "").toLowerCase();
 
-  // Best signal: SQLSTATE
   if (code === "40001") return true; // serialization_failure
   if (code === "40P01") return true; // deadlock_detected
   if (code === "57014") return true; // query_canceled / statement_timeout
 
-  // Fallback to message heuristics ONLY when code missing
   if (!code) {
     if (msg.includes("timeout")) return true;
     if (msg.includes("connection")) return true;
     if (msg.includes("network")) return true;
     if (msg.includes("could not connect")) return true;
-    if (msg.includes("too many")) return true; // rate limit-ish
+    if (msg.includes("too many")) return true;
   }
 
   return false;
@@ -94,7 +82,6 @@ const isTransientDbError = (err: SbError): boolean => {
 
 /**
  * Read request body as JSON with a hard byte limit to avoid abuse/accidental huge payloads.
- * - RevenueCat payloads are normally small; 256KB is generous.
  */
 const readJsonWithLimit = async (req: Request, maxBytes = 256_000): Promise<unknown> => {
   const contentLength = req.headers.get("content-length");
@@ -138,7 +125,6 @@ export const handleRevenueCatWebhook = async (
   env: Env,
   createSupabase: (url: string, key: string) => SupabaseLike = createSupabaseDefault,
 ): Promise<Response> => {
-  // Require POST
   if (req.method.toUpperCase() !== "POST") {
     return json({ ok: false, error_code: "method_not_allowed", message: "POST required" }, 405);
   }
@@ -157,13 +143,11 @@ export const handleRevenueCatWebhook = async (
     return json({ ok: false, error_code: "missing_env", message: "Missing RC_WEBHOOK_SECRET" }, 500);
   }
 
-  // Authorization: Bearer <secret>
   const token = extractBearerTokenStrict(req.headers.get("authorization"));
   if (!token || !timingSafeEqual(token, webhookSecret)) {
     return json({ ok: false, error_code: "unauthorized", message: "Unauthorized" }, 401);
   }
 
-  // Parse JSON defensively (size-limited)
   let payloadUnknown: unknown;
   try {
     payloadUnknown = await readJsonWithLimit(req);
@@ -171,7 +155,10 @@ export const handleRevenueCatWebhook = async (
     const msg = (e as Error)?.message ?? "invalid_json";
     const code = msg === "payload_too_large" ? "payload_too_large" : "invalid_json";
     const status = msg === "payload_too_large" ? 413 : 400;
-    return json({ ok: false, error_code: code, message: code === "payload_too_large" ? "Payload too large" : "Invalid JSON body" }, status);
+    return json(
+      { ok: false, error_code: code, message: code === "payload_too_large" ? "Payload too large" : "Invalid JSON body" },
+      status,
+    );
   }
 
   if (!isPlainObject(payloadUnknown)) {
@@ -179,7 +166,6 @@ export const handleRevenueCatWebhook = async (
   }
 
   const payload = payloadUnknown as RcPayload;
-
   const parsed = parseWebhookPayload(payload);
   const supabase = createSupabase(supabaseUrl, supabaseKey);
 
@@ -187,40 +173,32 @@ export const handleRevenueCatWebhook = async (
   if (parsed.missingLatestTransactionId) warnings.push("missing_latest_transaction_id");
   if (!parsed.rcEventId) warnings.push("missing_rc_event_id");
   if (parsed.unknownEventType) warnings.push(`unknown_event_type:${parsed.eventTypeRaw}`);
+  if (parsed.isTestStore) warnings.push("store_raw:test_store");
   if (parsed.store === "unknown") warnings.push(`unknown_store:${parsed.storeRaw ?? "unknown"}`);
 
-  // Fatal validation (safety)
   const fatal = (() => {
-    // SAFETY: Only accept subscriber_attributes.user_id as the true Supabase user
-    if (!parsed.rcUserId) return { code: "missing_user_uuid", message: "Missing or invalid subscriber_attributes.user_id" };
-
-    // As agreed: home_id is fatal
+    if (!parsed.rcUserId) {
+      return { code: "missing_user_uuid", message: "Missing or invalid subscriber_attributes.user_id" };
+    }
     if (!parsed.homeId) return { code: "missing_home_id", message: "Missing home_id" };
-
     if (!parsed.primaryEntitlementId) return { code: "missing_entitlement", message: "Missing entitlement_id" };
     if (!parsed.productId) return { code: "missing_product", message: "Missing product_id" };
-
-    // NEW: unknown store is fatal (avoid enum mismatch and unsafe assumptions)
     if (parsed.store === "unknown") return { code: "unknown_store", message: "Unknown store; refusing to process" };
-
     return null;
   })();
 
   const environment = parsed.environment;
   const idempotencyKey = await computeIdempotencyKey(parsed);
 
-  // Always attempt audit write first (best-effort).
-  // IMPORTANT: audit table must allow NULLs for fields that can be missing/fatal.
   const auditRow: Record<string, unknown> = {
     environment,
     idempotency_key: idempotencyKey,
     rc_event_id: parsed.rcEventId,
     original_transaction_id: parsed.originalTransactionId,
     latest_transaction_id: parsed.latestTransactionId,
-    event_timestamp: parsed.eventTimestamp, // let PG cast if column is timestamptz
+    event_timestamp: parsed.eventTimestamp,
     rc_app_user_id: parsed.rcAppUserId ?? null,
 
-    // UUID fields: keep null if missing/invalid
     user_id: parsed.rcUserId,
     home_id: parsed.homeId,
 
@@ -228,7 +206,7 @@ export const handleRevenueCatWebhook = async (
     entitlement_ids: parsed.entitlementIds.length > 0 ? parsed.entitlementIds : null,
     product_id: parsed.productId ?? null,
 
-    // enum store: ONLY write if known, else null to avoid enum mismatch
+    // If store is unknown, keep null in audit row to avoid enum cast failures
     store: parsed.store === "unknown" ? null : parsed.store,
 
     status: parsed.status,
@@ -250,34 +228,28 @@ export const handleRevenueCatWebhook = async (
     });
 
   if (auditWrite.error) {
-    // If we can't even log, prefer retries ONLY if it's transient.
-    const retryable = isTransientDbError(auditWrite.error);
+    // ✅ IMPORTANT CHANGE: ALWAYS 500 (never silently accept)
     return json(
       {
         ok: false,
-        retryable,
+        retryable: true,
         error_code: "audit_write_failed",
         message: "Failed to log webhook event",
         details: auditWrite.error.message,
       },
-      retryable ? 500 : 200,
+      500,
     );
   }
 
-  // If fatal validation, return 400 (no retry; permanent data issue)
   if (fatal) {
     return json({ ok: false, retryable: false, error_code: fatal.code, message: fatal.message, warnings }, 400);
   }
 
-  // Call idempotent RPC (real source of truth for retry safety)
   const rpcArgs: Record<string, unknown> = {
     p_idempotency_key: idempotencyKey,
     p_user_id: parsed.rcUserId,
     p_home_id: parsed.homeId,
-
-    // store is guaranteed known by fatal validation above
-    p_store: parsed.store,
-
+    p_store: parsed.store, // guaranteed not unknown by fatal validation
     p_rc_app_user_id: parsed.rcAppUserId,
     p_entitlement_id: parsed.primaryEntitlementId,
     p_entitlement_ids: parsed.entitlementIds,
@@ -300,7 +272,6 @@ export const handleRevenueCatWebhook = async (
   if (rpcError) {
     const retryable = isTransientDbError(rpcError);
 
-    // Update audit row (best-effort)
     await supabase
       .from("revenuecat_webhook_events")
       .upsert(

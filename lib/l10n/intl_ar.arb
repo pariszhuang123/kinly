@@ -206,7 +206,7 @@
   "todayShareSampleRent": "تذكير الإيجار قريبًا",
   "todayShareSampleInternet": "فاتورة الإنترنت هذا الأسبوع",
   "todayShareEmptyState": "لا يوجد شيء هنا بعد.",
-  "todayShareTabActive": "نشط",
+    "todayShareTabActive": "To pay",
   "todayShareTabDrafts": "مسودات",
   "todayShareError": "تعذّر تحديث Share الآن.",
 
@@ -746,5 +746,8 @@
   "@join_error_already_in_other_home": { "surface": "error" },
   "@join_error_paywall_limit": { "surface": "error" },
   "@join_error_unauthorized": { "surface": "error" },
-  "@join_error_forbidden": { "surface": "error" }
+  "@join_error_forbidden": { "surface": "error" },
+  "todayShareTabPaidToMe": "Paid to me",
+    "todaySharePaidSubtitle": "Paid to you",,
+    "todaySharePaidUnseen": "{count, plural, one {{count} new payment to you} other {{count} new payments to you}}"
 }

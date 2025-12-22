@@ -31,6 +31,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final ProfileUpdateNotifier _profileUpdateNotifier;
   final Logger _logger;
   final String _homeId;
+  String get homeId => _homeId;
   static const _gratitudeLogTag = 'TodayGratitude';
   static const _onboardingLogTag = 'TodayOnboarding';
   late final StreamSubscription<UserProfile> _profileUpdateSub;
@@ -118,6 +119,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           TodayState.loading(
             profile: profile,
             shareOwed: state.shareOwed,
+            sharePaidToMe: state.sharePaidToMe,
             shareDrafts: state.shareDrafts,
             harmonyPromptTick: prevPromptTick,
             hasShownHarmonyPrompt: prevHasShownHarmony,
@@ -216,6 +218,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           activeTasks: activeTasks,
           draftTasks: draftTasks,
           shareOwed: shareSnapshot.owed,
+          sharePaidToMe: shareSnapshot.paidToMe,
           shareDrafts: shareSnapshot.drafts,
           shareErrorMessage: shareSnapshot.errorMessage,
           gratitudeStatus: wallStatus,
@@ -240,6 +243,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           error: error,
           profile: profile,
           shareOwed: state.shareOwed,
+          sharePaidToMe: state.sharePaidToMe,
           shareDrafts: state.shareDrafts,
           shareErrorMessage: state.shareErrorMessage,
           gratitudeStatus: prevGratitudeStatus,
@@ -298,6 +302,9 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       final created = await _expensesRepository.listCreatedByMe(
         homeId: _homeId,
       );
+      final paidToMe = await _expensesRepository.listPaidToMeDebtors(
+        homeId: _homeId,
+      );
       final owedView = owed
           .map(
             (entry) =>
@@ -313,11 +320,19 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           )
           .map(TodayShareDraft.fromSummary)
           .toList(growable: false);
-      return _ShareSnapshot(owed: owedView, drafts: drafts);
+      final paidToMeView = paidToMe
+          .map(TodaySharePaidToMe.fromModel)
+          .toList(growable: false);
+      return _ShareSnapshot(
+        owed: owedView,
+        paidToMe: paidToMeView,
+        drafts: drafts,
+      );
     } catch (error) {
       return _ShareSnapshot(
-        owed: const [],
-        drafts: const [],
+        owed: const <TodayShareOwed>[],
+        paidToMe: const <TodaySharePaidToMe>[],
+        drafts: const <TodayShareDraft>[],
         errorMessage: error.toString(),
       );
     }
@@ -367,6 +382,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       return TodayState.loading(
         profile: profile,
         shareOwed: current.shareOwed,
+        sharePaidToMe: current.sharePaidToMe,
         shareDrafts: current.shareDrafts,
         harmonyPromptTick: current.harmonyPromptTick,
         hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
@@ -387,6 +403,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         message: current.message,
         error: current.error,
         shareOwed: current.shareOwed,
+        sharePaidToMe: current.sharePaidToMe,
         shareDrafts: current.shareDrafts,
         shareErrorMessage: current.shareErrorMessage,
         harmonyPromptTick: current.harmonyPromptTick,
@@ -406,6 +423,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       activeTasks: current.activeTasks,
       draftTasks: current.draftTasks,
       shareOwed: current.shareOwed,
+      sharePaidToMe: current.sharePaidToMe,
       shareDrafts: current.shareDrafts,
       profile: profile,
       shareErrorMessage: current.shareErrorMessage,
@@ -427,6 +445,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       return TodayState.loading(
         profile: current.profile,
         shareOwed: current.shareOwed,
+        sharePaidToMe: current.sharePaidToMe,
         shareDrafts: current.shareDrafts,
         gratitudeStatus: current.gratitudeStatus,
         harmonyPromptTick: current.harmonyPromptTick,
@@ -447,6 +466,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         message: current.message,
         error: current.error,
         shareOwed: current.shareOwed,
+        sharePaidToMe: current.sharePaidToMe,
         shareDrafts: current.shareDrafts,
         shareErrorMessage: current.shareErrorMessage,
         gratitudeStatus: current.gratitudeStatus,
@@ -466,6 +486,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       activeTasks: current.activeTasks,
       draftTasks: current.draftTasks,
       shareOwed: current.shareOwed,
+      sharePaidToMe: current.sharePaidToMe,
       shareDrafts: current.shareDrafts,
       profile: current.profile,
       shareErrorMessage: current.shareErrorMessage,
@@ -507,6 +528,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         message: current.message,
         error: current.error,
         shareOwed: current.shareOwed,
+        sharePaidToMe: current.sharePaidToMe,
         shareDrafts: current.shareDrafts,
         shareErrorMessage: current.shareErrorMessage,
         gratitudeStatus: current.gratitudeStatus,
@@ -526,6 +548,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       activeTasks: current.activeTasks,
       draftTasks: current.draftTasks,
       shareOwed: current.shareOwed,
+      sharePaidToMe: current.sharePaidToMe,
       shareDrafts: current.shareDrafts,
       profile: current.profile,
       shareErrorMessage: current.shareErrorMessage,
@@ -615,11 +638,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
 class _ShareSnapshot {
   const _ShareSnapshot({
     required this.owed,
+    required this.paidToMe,
     required this.drafts,
     this.errorMessage,
   });
 
   final List<TodayShareOwed> owed;
+  final List<TodaySharePaidToMe> paidToMe;
   final List<TodayShareDraft> drafts;
   final String? errorMessage;
 }

@@ -5,6 +5,7 @@ class TodayState extends Equatable {
   final List<TodayFlowTask> activeTasks;
   final List<TodayFlowTask> draftTasks;
   final List<TodayShareOwed> shareOwed;
+  final List<TodaySharePaidToMe> sharePaidToMe;
   final List<TodayShareDraft> shareDrafts;
   final String? shareErrorMessage;
   final GratitudeWallStatus? gratitudeStatus;
@@ -26,6 +27,7 @@ class TodayState extends Equatable {
     required this.activeTasks,
     required this.draftTasks,
     required this.shareOwed,
+    required this.sharePaidToMe,
     required this.shareDrafts,
     this.shareErrorMessage,
     this.gratitudeStatus,
@@ -46,6 +48,7 @@ class TodayState extends Equatable {
   const TodayState.loading({
     TodayUserProfile? profile,
     List<TodayShareOwed> shareOwed = const [],
+    List<TodaySharePaidToMe> sharePaidToMe = const [],
     List<TodayShareDraft> shareDrafts = const [],
     int harmonyPromptTick = 0,
     bool hasShownHarmonyPrompt = false,
@@ -62,6 +65,7 @@ class TodayState extends Equatable {
          activeTasks: const [],
          draftTasks: const [],
          shareOwed: shareOwed,
+         sharePaidToMe: sharePaidToMe,
          shareDrafts: shareDrafts,
          gratitudeStatus: gratitudeStatus,
          profile: profile,
@@ -80,6 +84,7 @@ class TodayState extends Equatable {
     required List<TodayFlowTask> activeTasks,
     required List<TodayFlowTask> draftTasks,
     required List<TodayShareOwed> shareOwed,
+    required List<TodaySharePaidToMe> sharePaidToMe,
     required List<TodayShareDraft> shareDrafts,
     TodayUserProfile? profile,
     String? shareErrorMessage,
@@ -98,6 +103,7 @@ class TodayState extends Equatable {
          activeTasks: activeTasks,
          draftTasks: draftTasks,
          shareOwed: shareOwed,
+         sharePaidToMe: sharePaidToMe,
          shareDrafts: shareDrafts,
          profile: profile,
          shareErrorMessage: shareErrorMessage,
@@ -118,6 +124,7 @@ class TodayState extends Equatable {
     String? message,
     Object? error,
     List<TodayShareOwed> shareOwed = const [],
+    List<TodaySharePaidToMe> sharePaidToMe = const [],
     List<TodayShareDraft> shareDrafts = const [],
     String? shareErrorMessage,
     int harmonyPromptTick = 0,
@@ -135,6 +142,7 @@ class TodayState extends Equatable {
          activeTasks: const [],
          draftTasks: const [],
          shareOwed: shareOwed,
+         sharePaidToMe: sharePaidToMe,
          shareDrafts: shareDrafts,
          profile: profile,
          message: message,
@@ -153,7 +161,8 @@ class TodayState extends Equatable {
        );
 
   bool get hasFlowContent => activeTasks.isNotEmpty || draftTasks.isNotEmpty;
-  bool get hasShareContent => shareOwed.isNotEmpty || shareDrafts.isNotEmpty;
+  bool get hasShareContent =>
+      shareOwed.isNotEmpty || sharePaidToMe.isNotEmpty || shareDrafts.isNotEmpty;
   bool get hasGratitudeUnread => gratitudeStatus?.hasUnread ?? false;
   bool get hasAnyTodayContent =>
       hasFlowContent || hasShareContent || hasGratitudeUnread;
@@ -165,6 +174,7 @@ class TodayState extends Equatable {
     activeTasks,
     draftTasks,
     shareOwed,
+    sharePaidToMe,
     shareDrafts,
     shareErrorMessage,
     gratitudeStatus,

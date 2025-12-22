@@ -16,21 +16,17 @@ const env = {
   RC_WEBHOOK_SECRET: "secret",
 };
 
-const createMockSupabase = (
-  overrides: Partial<SupabaseLike> = {},
-): SupabaseLike => {
-  return {
-    rpc: (_fn, _args) => Promise.resolve({ error: null }),
-    from: (_table: string) => ({
-      insert: (_row: Record<string, unknown>) => Promise.resolve({ error: null, data: [] }),
-      upsert: (_row: Record<string, unknown>) => Promise.resolve({ error: null }),
-      select: (_columns: string, _opts?: Record<string, unknown>) => ({
-        eq: (_col: string, _val: unknown) => Promise.resolve({ error: null, count: 0 }),
-      }),
-    }),
-    ...overrides,
-  };
-};
+const createMockSupabase = (overrides: Partial<SupabaseLike> = {}): SupabaseLike => ({
+  rpc: <T = unknown>(_fn: string, _args: Record<string, unknown>) =>
+    Promise.resolve({ error: null } as { error: null; data?: T }),
+  from: (_table: string) => ({
+    upsert: (
+      _row: Record<string, unknown>,
+      _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+    ) => Promise.resolve({ error: null, data: [] }),
+  }),
+  ...overrides,
+});
 
 Deno.test("statusFromEvent maps RevenueCat events", () => {
   expect(statusFromEvent("INITIAL_PURCHASE").status === "active", "initial purchase should be active");
@@ -40,10 +36,14 @@ Deno.test("statusFromEvent maps RevenueCat events", () => {
 });
 
 Deno.test("storeFromPayload normalizes store", () => {
-  expect(storeFromPayload("app_store") === "app_store", "app_store stays app_store");
-  expect(storeFromPayload("google") === "play_store", "google -> play_store");
-  expect(storeFromPayload("stripe") === "stripe", "stripe stays stripe");
-  expect(storeFromPayload("something") === "unknown", "fallback -> unknown");
+  expect(storeFromPayload("app_store").store === "app_store", "app_store stays app_store");
+  expect(storeFromPayload("google").store === "play_store", "google -> play_store");
+  expect(storeFromPayload("stripe").store === "stripe", "stripe stays stripe");
+  expect(storeFromPayload("something").store === "unknown", "fallback -> unknown");
+
+  const testStore = storeFromPayload("test_store");
+  expect(testStore.store === "play_store", "test_store treated as play_store");
+  expect(testStore.isTestStore === true, "test_store flagged as test");
 });
 
 Deno.test("parseDate accepts ms / seconds / iso", () => {
@@ -116,23 +116,22 @@ Deno.test("handleRevenueCatWebhook rejects unauthorized", async () => {
     req,
     env,
     (_url, _key) => ({
-      rpc: async (_fn, _args) => {
+      rpc: <T = unknown>(_fn: string, _args: Record<string, unknown>) => {
         calls.push("rpc");
-        return { error: null };
+        return Promise.resolve({ error: null } as { error: null; data?: T });
       },
       from: (_table) => ({
-        insert: async (_row) => {
-          calls.push("insert");
-          return { error: null, data: [] };
-        },
-        upsert: async (_row) => {
+        upsert: (
+          _row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => {
           calls.push("upsert");
-          return { error: null };
+          return Promise.resolve({ error: null });
         },
         select: (_columns: string) => ({
-          eq: async () => {
+          eq: (_col: string, _val: unknown) => {
             calls.push("select");
-            return { error: null, count: 0 };
+            return Promise.resolve({ error: null, count: 0 });
           },
         }),
       }),
@@ -164,14 +163,13 @@ Deno.test("missing user uuid returns fatal 400", async () => {
     (_url, _key) =>
       createMockSupabase({
         from: (_table) => ({
-          insert: (row) => Promise.resolve({ error: null, data: [row] }),
-          upsert: (row) => {
+          upsert: (
+            row: Record<string, unknown>,
+            _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+          ) => {
             upserts.push({ row });
             return Promise.resolve({ error: null });
           },
-          select: (_columns: string) => ({
-            eq: () => Promise.resolve({ error: null, count: 0 }),
-          }),
         }),
       }),
   );
@@ -208,18 +206,21 @@ Deno.test("missing entitlement/product returns fatal 400", async () => {
     req,
     env,
     (_url, _key) => ({
-      rpc: (_fn, args) => {
+      rpc: <T = unknown>(_fn: string, args: Record<string, unknown>) => {
         rpcs.push(args);
-        return Promise.resolve({ error: null });
+        return Promise.resolve({ error: null } as { error: null; data?: T });
       },
       from: (_table) => ({
-        insert: (row) => Promise.resolve({ error: null, data: [row] }),
-        upsert: (row) => {
+        insert: (row: Record<string, unknown>) => Promise.resolve({ error: null, data: [row] }),
+        upsert: (
+          row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => {
           upserts.push(row);
           return Promise.resolve({ error: null });
         },
         select: (_columns: string) => ({
-          eq: () => Promise.resolve({ error: null, count: 0 }),
+          eq: (_col: string, _val: unknown) => Promise.resolve({ error: null, count: 0 }),
         }),
       }),
     }),
@@ -233,9 +234,7 @@ Deno.test("missing entitlement/product returns fatal 400", async () => {
 });
 
 Deno.test("dedupes by rc_event_id and skips rpc on duplicate", async () => {
-  let firstInsert = true;
   const rpcs: Array<Record<string, unknown>> = [];
-  const upserts: Array<Record<string, unknown>> = [];
   let rpcCallCount = 0;
 
   const payload = {
@@ -261,18 +260,17 @@ Deno.test("dedupes by rc_event_id and skips rpc on duplicate", async () => {
 
   const supabaseFactory = (_url: string, _key: string) =>
     createMockSupabase({
-      rpc: (_fn, args) => {
+      rpc: <T = unknown>(_fn: string, args: Record<string, unknown>) => {
         rpcCallCount += 1;
         const deduped = rpcCallCount > 1 ? true : false;
         rpcs.push(args);
-        return Promise.resolve({ error: null, data: deduped as unknown } as any);
+        return Promise.resolve({ error: null, data: deduped as unknown as T });
       },
       from: (_table) => ({
-        insert: (_row) => Promise.resolve({ error: null, data: [] }),
-        upsert: (_row) => Promise.resolve({ error: null }),
-        select: (_columns: string) => ({
-          eq: () => Promise.resolve({ error: null, count: 0 }),
-        }),
+        upsert: (
+          _row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => Promise.resolve({ error: null }),
       }),
     });
 
@@ -306,8 +304,6 @@ Deno.test("calls paywall_record_subscription on valid payload", async () => {
   };
 
   const rpcs: Array<{ fn: string; args: Record<string, unknown> }> = [];
-  const inserts: Array<Record<string, unknown>> = [];
-
   const req = new Request("http://localhost", {
     method: "POST",
     headers: { "content-type": "application/json", authorization: "Bearer secret" },
@@ -318,19 +314,15 @@ Deno.test("calls paywall_record_subscription on valid payload", async () => {
     req,
     env,
     (_url, _key) => ({
-      rpc: (fn, args) => {
+      rpc: <T = unknown>(fn: string, args: Record<string, unknown>) => {
         rpcs.push({ fn, args });
-        return Promise.resolve({ error: null });
+        return Promise.resolve({ error: null } as { error: null; data?: T });
       },
       from: (_table) => ({
-        insert: (row) => {
-          inserts.push(row);
-          return Promise.resolve({ error: null, data: [] });
-        },
-        upsert: (_row) => Promise.resolve({ error: null }),
-        select: (_columns: string) => ({
-          eq: () => Promise.resolve({ error: null, count: 0 }),
-        }),
+        upsert: (
+          _row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => Promise.resolve({ error: null }),
       }),
     }),
   );
@@ -374,18 +366,21 @@ Deno.test("logs missing_latest_transaction_id but still calls rpc", async () => 
     req,
     env,
     (_url, _key) => ({
-      rpc: (_fn, args) => {
+      rpc: <T = unknown>(_fn: string, args: Record<string, unknown>) => {
         rpcs.push(args);
-        return Promise.resolve({ error: null });
+        return Promise.resolve({ error: null } as { error: null; data?: T });
       },
       from: (_table) => ({
-        insert: (_row) => Promise.resolve({ error: null, data: [] }),
-        upsert: (row) => {
+        insert: (_row: Record<string, unknown>) => Promise.resolve({ error: null, data: [] }),
+        upsert: (
+          row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => {
           upserts.push(row);
           return Promise.resolve({ error: null });
         },
         select: (_columns: string) => ({
-          eq: () => Promise.resolve({ error: null, count: 0 }),
+          eq: (_col: string, _val: unknown) => Promise.resolve({ error: null, count: 0 }),
         }),
       }),
     }),

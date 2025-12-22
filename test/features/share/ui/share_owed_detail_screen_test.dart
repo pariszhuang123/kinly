@@ -10,6 +10,7 @@ import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/core/expenses/enums/expense_share_status.dart';
 
 class _MockExpensesRepository extends Mock implements ExpensesRepository {}
 
@@ -50,7 +51,19 @@ void main() {
 
   testWidgets('marks paid pops true and calls repository', (tester) async {
     final repo = _MockExpensesRepository();
-    when(() => repo.markSharePaid(any())).thenAnswer((_) async {});
+    when(() => repo.markSharePaid(any())).thenAnswer(
+      (_) async => ExpenseMarkSharePaidResult(
+        deduped: false,
+        split: ExpensePaidSplit(
+          expenseId: 'exp-1',
+          debtorUserId: 'user-1',
+          status: ExpenseShareStatus.paid,
+          amountCents: 0,
+          markedPaidAt: DateTime.now(),
+          recipientViewedAt: null,
+        ),
+      ),
+    );
 
     final owed = TodayShareOwed(
       payerUserId: 'user-1',

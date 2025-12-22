@@ -1,4 +1,4 @@
-// DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
+﻿// DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
 // This is a library that provides messages for a ar locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
@@ -65,6 +65,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m17(homeId, role) =>
       "المنزل الحالي: ${homeId} • الدور: ${role}";
+
+  static String m18(count) =>
+      "${Intl.plural(count, one: '${count} new payment', other: '${count} new payments')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -937,8 +940,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayShareSeeAll": MessageLookupByLibrary.simpleMessage(
       "عرض كل المشاركات",
     ),
-    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("نشط"),
-    "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("مسودات"),
+    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To pay"),
+    "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("??????"),
     "today_home_details": m17,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "لا يوجد منزل نشط بعد. أنشئ منزلًا أو انضم إلى واحد لرؤية صفحة اليوم.",
@@ -948,5 +951,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "welcome_create": MessageLookupByLibrary.simpleMessage("إنشاء منزل"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("الانضمام إلى منزل"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("مرحبًا بك في Kinly"),
+    "todayShareTabPaidToMe":
+        MessageLookupByLibrary.simpleMessage("Paid to me"),
+    "todaySharePaidSubtitle":
+        MessageLookupByLibrary.simpleMessage("Paid to you"),
+    "todaySharePaidUnseen": m18,
   };
 }
+
+
+
+
+

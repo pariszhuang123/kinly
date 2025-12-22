@@ -577,21 +577,21 @@ SELECT is(
 WITH payload AS (
   SELECT public.expenses_mark_share_paid(
     (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-  ) AS split
+  ) AS body
 )
 SELECT is(
-  (SELECT (split).debtor_user_id FROM payload),
-  (SELECT user_id FROM tmp_users WHERE label = 'creator'),
+  (SELECT (body->'split'->>'debtorUserId') FROM payload),
+  (SELECT user_id::text FROM tmp_users WHERE label = 'creator'),
   'Creator mark_share_paid returns their own split row'
 );
 
 WITH payload AS (
   SELECT public.expenses_mark_share_paid(
     (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-  ) AS split
+  ) AS body
 )
 SELECT is(
-  (SELECT (split).status::text FROM payload),
+  (SELECT (body->'split'->>'status') FROM payload),
   'paid',
   'Creator mark_share_paid keeps status=paid'
 );

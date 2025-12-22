@@ -24,6 +24,7 @@ ALTER TABLE "public"."paywall_events" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "profiles_select_authenticated" ON "public"."profiles" FOR SELECT USING (("id" = ( SELECT "auth"."uid"() AS "uid")));
 ALTER TABLE "public"."reserved_usernames" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."revenuecat_event_processing" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."revenuecat_webhook_events" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."share_events" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."shared_preferences" ENABLE ROW LEVEL SECURITY;

@@ -11,11 +11,13 @@ class TodayShareSectionContainer extends StatelessWidget {
   const TodayShareSectionContainer({
     super.key,
     required this.onOwedTap,
+    required this.onPaidToMeTap,
     required this.onDraftTap,
     required this.onSeeAllDraftsTap,
   });
 
   final void Function(TodayShareOwed) onOwedTap;
+  final void Function(TodaySharePaidToMe) onPaidToMeTap;
   final void Function(TodayShareDraft) onDraftTap;
   final VoidCallback onSeeAllDraftsTap;
 
@@ -25,6 +27,7 @@ class TodayShareSectionContainer extends StatelessWidget {
       buildWhen:
           (previous, current) =>
               previous.shareOwed != current.shareOwed ||
+              previous.sharePaidToMe != current.sharePaidToMe ||
               previous.shareDrafts != current.shareDrafts ||
               previous.shareErrorMessage != current.shareErrorMessage ||
               previous.isLoading != current.isLoading,
@@ -37,9 +40,11 @@ class TodayShareSectionContainer extends StatelessWidget {
         // Normal state → delegate to presentational widget
         return TodayShareSection(
           owed: state.shareOwed,
+          paidToMe: state.sharePaidToMe,
           drafts: state.shareDrafts,
           errorMessage: state.shareErrorMessage,
           onOwedTap: onOwedTap,
+          onPaidToMeTap: onPaidToMeTap,
           onDraftTap: onDraftTap,
           onSeeAllDraftsTap: onSeeAllDraftsTap,
         );

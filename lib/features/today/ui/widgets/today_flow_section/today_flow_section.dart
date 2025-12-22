@@ -40,6 +40,7 @@ class _TodayFlowSectionState extends State<TodayFlowSection> {
     _selectedTab =
         TodaySectionTabs.defaultTab(
           hasActive: widget.activeTasks.isNotEmpty,
+          hasReceived: false,
           hasDrafts: widget.draftTasks.isNotEmpty,
         ) ??
         TodaySectionTabType.active; // fallback, won't render if both empty
@@ -51,12 +52,14 @@ class _TodayFlowSectionState extends State<TodayFlowSection> {
 
     final tabs = TodaySectionTabs.available(
       hasActive: widget.activeTasks.isNotEmpty,
+      hasReceived: false,
       hasDrafts: widget.draftTasks.isNotEmpty,
     );
 
     if (!tabs.contains(_selectedTab)) {
       final defaultTab = TodaySectionTabs.defaultTab(
         hasActive: widget.activeTasks.isNotEmpty,
+        hasReceived: false,
         hasDrafts: widget.draftTasks.isNotEmpty,
       );
       if (defaultTab != null) {
@@ -75,6 +78,7 @@ class _TodayFlowSectionState extends State<TodayFlowSection> {
 
     final tabs = TodaySectionTabs.available(
       hasActive: widget.activeTasks.isNotEmpty,
+      hasReceived: false,
       hasDrafts: widget.draftTasks.isNotEmpty,
     );
 
@@ -141,6 +145,8 @@ class _TodayFlowSectionState extends State<TodayFlowSection> {
           filter: FlowListFilter.active,
           strings: strings,
         );
+      case TodaySectionTabType.received:
+        return const SizedBox.shrink();
       case TodaySectionTabType.drafts:
         return _FlowTaskListWithSeeAll(
           tasks: widget.draftTasks,

@@ -79,6 +79,7 @@ void main() {
         ],
         draftTasks: const [],
         shareOwed: const [],
+        sharePaidToMe: const [],
         shareDrafts: const [],
       ),
     );
@@ -95,6 +96,7 @@ void main() {
         activeTasks: [],
         draftTasks: [],
         shareOwed: [],
+        sharePaidToMe: [],
         shareDrafts: [],
       ),
     );
@@ -123,6 +125,7 @@ void main() {
         ],
         draftTasks: const [],
         shareOwed: const [],
+        sharePaidToMe: const [],
         shareDrafts: const [],
       ),
     );
@@ -133,6 +136,7 @@ void main() {
         activeTasks: [],
         draftTasks: [],
         shareOwed: [],
+        sharePaidToMe: [],
         shareDrafts: [],
       ),
     );
@@ -156,6 +160,7 @@ void main() {
         activeTasks: [],
         draftTasks: [],
         shareOwed: [],
+        sharePaidToMe: [],
         shareDrafts: [],
       ),
     );
@@ -194,6 +199,7 @@ void main() {
             ],
           ),
         ),
+        sharePaidToMe: const [],
         shareDrafts: const [],
         profile: const TodayUserProfile(userId: 'u1', username: 'Alex'),
       ),

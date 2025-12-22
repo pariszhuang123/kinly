@@ -64,6 +64,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m17(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
+  static String m18(count) =>
+      "${Intl.plural(count, one: '${count} new payment to you', other: '${count} new payments to you')}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
@@ -952,8 +955,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Bill"),
     "todayShareSeeAll": MessageLookupByLibrary.simpleMessage("See all bills"),
-    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Active"),
+    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To pay"),
+    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("Paid to me"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
+    "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage("Paid to you"),
+    "todaySharePaidUnseen": m18,
     "today_home_details": m17,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",

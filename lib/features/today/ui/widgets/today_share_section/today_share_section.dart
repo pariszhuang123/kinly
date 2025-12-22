@@ -20,16 +20,20 @@ class TodayShareSection extends StatefulWidget {
   const TodayShareSection({
     super.key,
     required this.owed,
+    required this.paidToMe,
     required this.drafts,
     required this.onOwedTap,
+    required this.onPaidToMeTap,
     required this.onDraftTap,
     required this.onSeeAllDraftsTap,
     this.errorMessage,
   });
 
   final List<TodayShareOwed> owed;
+  final List<TodaySharePaidToMe> paidToMe;
   final List<TodayShareDraft> drafts;
   final void Function(TodayShareOwed) onOwedTap;
+  final void Function(TodaySharePaidToMe) onPaidToMeTap;
   final void Function(TodayShareDraft) onDraftTap;
   final VoidCallback onSeeAllDraftsTap;
   final String? errorMessage;
@@ -47,6 +51,7 @@ class _TodayShareSectionState extends State<TodayShareSection> {
     _selectedTab =
         TodaySectionTabs.defaultTab(
           hasActive: widget.owed.isNotEmpty,
+          hasReceived: widget.paidToMe.isNotEmpty,
           hasDrafts: widget.drafts.isNotEmpty,
         ) ??
         TodaySectionTabType.active; // safe fallback
@@ -58,12 +63,14 @@ class _TodayShareSectionState extends State<TodayShareSection> {
 
     final tabs = TodaySectionTabs.available(
       hasActive: widget.owed.isNotEmpty,
+      hasReceived: widget.paidToMe.isNotEmpty,
       hasDrafts: widget.drafts.isNotEmpty,
     );
 
     if (!tabs.contains(_selectedTab)) {
       final defaultTab = TodaySectionTabs.defaultTab(
         hasActive: widget.owed.isNotEmpty,
+        hasReceived: widget.paidToMe.isNotEmpty,
         hasDrafts: widget.drafts.isNotEmpty,
       );
       if (defaultTab != null) {
@@ -82,6 +89,7 @@ class _TodayShareSectionState extends State<TodayShareSection> {
 
     final tabs = TodaySectionTabs.available(
       hasActive: widget.owed.isNotEmpty,
+      hasReceived: widget.paidToMe.isNotEmpty,
       hasDrafts: widget.drafts.isNotEmpty,
     );
 
@@ -108,6 +116,8 @@ class _TodayShareSectionState extends State<TodayShareSection> {
             tabs: {
               if (widget.owed.isNotEmpty)
                 TodaySectionTabType.active: s.todayShareTabActive,
+              if (widget.paidToMe.isNotEmpty)
+                TodaySectionTabType.received: s.todayShareTabPaidToMe,
               if (widget.drafts.isNotEmpty)
                 TodaySectionTabType.drafts: s.todayShareTabDrafts,
             },
@@ -150,6 +160,13 @@ class _TodayShareSectionState extends State<TodayShareSection> {
           owed: widget.owed,
           onTap: widget.onOwedTap,
           colors: colors,
+        );
+      case TodaySectionTabType.received:
+        return _PaidToMeList(
+          entries: widget.paidToMe,
+          onTap: widget.onPaidToMeTap,
+          colors: colors,
+          strings: strings,
         );
       case TodaySectionTabType.drafts:
         return _DraftList(
@@ -196,6 +213,55 @@ class _OwedList extends StatelessWidget {
             subtitle: s.todayShareActiveSubtitle(entry.items.length),
             trailing: Text(
               _formatCurrency(entry.totalOwedCents),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: colors.icon,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            onTap: () => onTap(entry),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _PaidToMeList extends StatelessWidget {
+  const _PaidToMeList({
+    required this.entries,
+    required this.onTap,
+    required this.colors,
+    required this.strings,
+  });
+
+  final List<TodaySharePaidToMe> entries;
+  final void Function(TodaySharePaidToMe) onTap;
+  final SectionColors colors;
+  final S strings;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = Theme.of(context).extension<Spacing>()!;
+
+    return Column(
+      children: List.generate(entries.length, (index) {
+        final entry = entries[index];
+        final subtitle = entry.hasUnseen
+            ? strings.todaySharePaidUnseen(entry.unseenCount)
+            : strings.todaySharePaidSubtitle;
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: index == entries.length - 1 ? 0 : spacing.sm,
+          ),
+          child: KinlyListTile(
+            leading: KinlyCircleAvatar(
+              avatarUrl: null,
+              radius: 20,
+            ),
+            title: entry.debtorUsername,
+            subtitle: subtitle,
+            trailing: Text(
+              _formatCurrency(entry.totalPaidCents),
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: colors.icon,
                 fontWeight: FontWeight.w700,

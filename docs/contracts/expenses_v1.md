@@ -34,6 +34,7 @@ Scope: Defines the household shared expenses lifecycle for the Home-only MVP so 
 - `amountCents` (`bigint`) — per-person share in cents (> 0).
 - `status` (`ExpenseShareStatus`) — `unpaid | paid`.
 - `markedPaidAt` (`timestamptz|null`) — when the debtor marked their share paid.
+- `recipientViewedAt` (`timestamptz|null`) — when the creator viewed a paid split; `NULL` means unseen.
 - Composite PK: `(expenseId, debtorUserId)`.
 
 ### ExpenseSummaryDto
@@ -263,3 +264,15 @@ Projection for list views (Explore → Share, repository caches).
 3. **Debtor-only payments**: empowers each member to acknowledge payment without letting creators “check off” unpaid shares.
 4. **Derived metrics**: summary RPCs expose `totalShares/paidShares/paidAmountCents/allPaid` so UI can express "2 of 3 paid" without additional client math, and those counters include the creator's auto-paid share for clearer progress messaging.
 5. **RPC-only access**: With RLS disabled and grants revoked, expenses tables stay invisible to clients unless they call the approved SECURITY DEFINER RPCs.
+
+## Who paid me (Today + drilldown) v1.1 — Draft
+- Goal: when a debtor marks their split paid, the creator can see “Who paid me” in Today (avatars + totals), open a debtor list, drill into that debtor’s paid items, and mark those items as viewed.
+- Scope: active expenses only; payer is always `expenses.created_by_user_id`; debtors mark their own split as paid; no partial payments or bank verification.
+- Data model: `expense_splits.recipientViewedAt` (`timestamptz|null`) tracks whether the creator has seen a paid split; transitions to `NULL` when a split becomes paid; only the creator sets it via a dedicated RPC. Existing paid splits stay unseen (no backfill) so badges surface during testing.
+- Summary/list RPC (JSON):
+  - `expenses.getCurrentPaidToMeDebtors(p_home_id)` → `[ { debtorUserId, debtorUsername, totalPaidCents, unseenCount, latestPaidAt } ]` ordered by most recent payment. Creator auto-paid splits are excluded (`debtor_user_id != created_by_user_id`). UI slices to top 3 + overflow for Today.
+- Drilldown RPC (JSON):
+  - `expenses.getCurrentPaidToMeByDebtorDetails(p_home_id, p_debtor_user_id)` → `[ { expenseId, description, notes, amountCents, markedPaidAt } ]` ordered by newest payment. Creator auto-paid splits are excluded.
+- View-state RPC:
+  - `expenses.markPaidReceivedViewedForDebtor(p_home_id, p_debtor_user_id)` → integer count of paid splits that were marked viewed (sets `recipientViewedAt=now()` for unseen items). Called when opening debtor detail.
+- UX contract: Today tile is hidden when `totalPaidCents == 0`; tile shows up to three debtor avatars with overflow `+N` and aggregates `totalPaidCents`. Debtor detail marks only that debtor’s unseen items as viewed.

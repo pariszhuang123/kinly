@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/chores/models.dart';
 import '../../../core/expenses/models.dart';
+import '../../../data/repositories/expenses_repository.dart';
 
 /// A minimal representation of a task shown on the Today page.
 class TodayFlowTask extends Equatable {
@@ -145,6 +147,46 @@ class TodayShareDraft extends Equatable {
     amountCents,
     createdAt,
     createdByUserId,
+  ];
+}
+
+class TodaySharePaidToMe extends Equatable {
+  const TodaySharePaidToMe({
+    required this.debtorUserId,
+    required this.debtorUsername,
+    required this.totalPaidCents,
+    required this.unseenCount,
+    this.latestPaidAt,
+  });
+
+  final String debtorUserId;
+  final String debtorUsername;
+  final int totalPaidCents;
+  final int unseenCount;
+  final DateTime? latestPaidAt;
+
+  factory TodaySharePaidToMe.fromModel(ExpensePaidToMeDebtor model) {
+    return TodaySharePaidToMe(
+      debtorUserId: model.debtorUserId,
+      debtorUsername: model.debtorUsername,
+      totalPaidCents: model.totalPaidCents,
+      unseenCount: model.unseenCount,
+      latestPaidAt: model.latestPaidAt,
+    );
+  }
+
+  double get totalPaid => totalPaidCents / 100.0;
+  bool get hasUnseen => unseenCount > 0;
+  String get totalPaidFormatted =>
+      NumberFormat.simpleCurrency(decimalDigits: 2).format(totalPaidCents / 100.0);
+
+  @override
+  List<Object?> get props => [
+    debtorUserId,
+    debtorUsername,
+    totalPaidCents,
+    unseenCount,
+    latestPaidAt,
   ];
 }
 

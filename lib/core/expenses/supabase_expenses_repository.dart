@@ -149,12 +149,84 @@ class SupabaseExpensesRepository implements ExpensesRepository {
   }
 
   @override
-  Future<void> markSharePaid(String expenseId) async {
+  Future<ExpenseMarkSharePaidResult> markSharePaid(String expenseId) async {
     try {
-      await _client.rpc(
+      final response = await _client.rpc(
         'expenses_mark_share_paid',
         params: {'p_expense_id': expenseId},
       );
+
+      final payload = _coerceMap(response);
+      if (payload != null) {
+        return ExpenseMarkSharePaidResult.fromJson(payload);
+      }
+
+      throw const ExpenseException(
+        ExpenseErrorCode.unknown,
+        'Malformed markSharePaid payload from Supabase.',
+      );
+    } catch (error) {
+      throw SupabaseErrorMapper.mapExpense(error);
+    }
+  }
+
+  @override
+  Future<List<ExpensePaidToMeDebtor>> listPaidToMeDebtors({
+    required String homeId,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'expenses_get_current_paid_to_me_debtors',
+        params: {'p_home_id': homeId},
+      );
+      final list = _coerceList(response);
+      if (list == null) return const [];
+      return list
+          .map((entry) => ExpensePaidToMeDebtor.fromJson(entry))
+          .toList(growable: false);
+    } catch (error) {
+      throw SupabaseErrorMapper.mapExpense(error);
+    }
+  }
+
+  @override
+  Future<List<ExpensePaidToMeItem>> listPaidToMeByDebtor({
+    required String homeId,
+    required String debtorUserId,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'expenses_get_current_paid_to_me_by_debtor_details',
+        params: {
+          'p_home_id': homeId,
+          'p_debtor_user_id': debtorUserId,
+        },
+      );
+      final list = _coerceList(response);
+      if (list == null) return const [];
+      return list
+          .map((entry) => ExpensePaidToMeItem.fromJson(entry))
+          .toList(growable: false);
+    } catch (error) {
+      throw SupabaseErrorMapper.mapExpense(error);
+    }
+  }
+
+  @override
+  Future<int> markPaidReceivedViewedForDebtor({
+    required String homeId,
+    required String debtorUserId,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'expenses_mark_paid_received_viewed_for_debtor',
+        params: {
+          'p_home_id': homeId,
+          'p_debtor_user_id': debtorUserId,
+        },
+      );
+      final payload = _coerceMap(response);
+      return (payload?['updated'] as num?)?.toInt() ?? 0;
     } catch (error) {
       throw SupabaseErrorMapper.mapExpense(error);
     }

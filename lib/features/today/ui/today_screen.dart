@@ -39,6 +39,7 @@ import 'widgets/today_share_section/today_share_section_container.dart';
 import '../../share/ui/share_edit_outcome.dart';
 import '../../share/ui/share_edit_route_args.dart';
 import '../../share/ui/share_owed_detail_screen.dart';
+import '../../share/ui/share_paid_to_me_detail_screen.dart';
 
 const _shareLogTag = 'TodayShare';
 
@@ -280,6 +281,16 @@ class _TodayScreenState extends State<TodayScreen>
                                                 _openShareOwedDetail(
                                                   context,
                                                   owed,
+                                                );
+                                              },
+                                              onPaidToMeTap: (entry) {
+                                                logger.info(
+                                                  'Tapped paid-to-me entry: ${entry.debtorUsername}',
+                                                  tag: _shareLogTag,
+                                                );
+                                                _openSharePaidToMeDetail(
+                                                  context,
+                                                  entry,
                                                 );
                                               },
                                               onDraftTap: (draft) {
@@ -534,6 +545,27 @@ class _TodayScreenState extends State<TodayScreen>
         s.shareEditDeleteSuccess,
         accentColor: accent,
       );
+      context.read<TodayBloc>().add(const TodayRefreshed());
+    }
+  }
+
+  Future<void> _openSharePaidToMeDetail(
+    BuildContext context,
+    TodaySharePaidToMe entry,
+  ) async {
+    final repository = sl<ExpensesRepository>();
+    final bloc = context.read<TodayBloc>();
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder:
+            (_) => SharePaidToMeDetailScreen(
+              entry: entry,
+              homeId: bloc.homeId,
+              expensesRepository: repository,
+            ),
+      ),
+    );
+    if (context.mounted) {
       context.read<TodayBloc>().add(const TodayRefreshed());
     }
   }

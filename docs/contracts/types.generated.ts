@@ -311,6 +311,7 @@ export type Database = {
           debtor_user_id: string
           expense_id: string
           marked_paid_at: string | null
+          recipient_viewed_at: string | null
           status: Database["public"]["Enums"]["expense_share_status"]
         }
         Insert: {
@@ -318,6 +319,7 @@ export type Database = {
           debtor_user_id: string
           expense_id: string
           marked_paid_at?: string | null
+          recipient_viewed_at?: string | null
           status?: Database["public"]["Enums"]["expense_share_status"]
         }
         Update: {
@@ -325,6 +327,7 @@ export type Database = {
           debtor_user_id?: string
           expense_id?: string
           marked_paid_at?: string | null
+          recipient_viewed_at?: string | null
           status?: Database["public"]["Enums"]["expense_share_status"]
         }
         Relationships: [
@@ -1068,7 +1071,7 @@ export type Database = {
           fatal_error_code: string | null
           home_id: string | null
           id: string
-          idempotency_key: string | null
+          idempotency_key: string
           last_purchase_at: string | null
           latest_transaction_id: string | null
           original_purchase_at: string | null
@@ -1097,7 +1100,7 @@ export type Database = {
           fatal_error_code?: string | null
           home_id?: string | null
           id?: string
-          idempotency_key?: string | null
+          idempotency_key: string
           last_purchase_at?: string | null
           latest_transaction_id?: string | null
           original_purchase_at?: string | null
@@ -1126,7 +1129,7 @@ export type Database = {
           fatal_error_code?: string | null
           home_id?: string | null
           id?: string
-          idempotency_key?: string | null
+          idempotency_key?: string
           last_purchase_at?: string | null
           latest_transaction_id?: string | null
           original_purchase_at?: string | null
@@ -1583,22 +1586,22 @@ export type Database = {
       }
       expenses_get_created_by_me: { Args: { p_home_id: string }; Returns: Json }
       expenses_get_current_owed: { Args: { p_home_id: string }; Returns: Json }
+      expenses_get_current_paid_to_me_by_debtor_details: {
+        Args: { p_debtor_user_id: string; p_home_id: string }
+        Returns: Json
+      }
+      expenses_get_current_paid_to_me_debtors: {
+        Args: { p_home_id: string }
+        Returns: Json
+      }
       expenses_get_for_edit: { Args: { p_expense_id: string }; Returns: Json }
+      expenses_mark_paid_received_viewed_for_debtor: {
+        Args: { p_debtor_user_id: string; p_home_id: string }
+        Returns: Json
+      }
       expenses_mark_share_paid: {
         Args: { p_expense_id: string }
-        Returns: {
-          amount_cents: number
-          debtor_user_id: string
-          expense_id: string
-          marked_paid_at: string | null
-          status: Database["public"]["Enums"]["expense_share_status"]
-        }
-        SetofOptions: {
-          from: "*"
-          to: "expense_splits"
-          isOneToOne: true
-          isSetofReturn: false
-        }
+        Returns: Json
       }
       gratitude_wall_list: {
         Args: {

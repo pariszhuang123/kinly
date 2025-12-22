@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:firebase_messaging_platform_interface/firebase_messaging_platform_interface.dart';
@@ -104,6 +104,7 @@ void main() {
       ],
       draftTasks: const [],
       shareOwed: const [],
+      sharePaidToMe: const [],
       shareDrafts: const [],
       notificationPromptTick: notificationTick,
       hasShownNotificationPrompt: notificationTick > 0,
@@ -163,3 +164,4 @@ void main() {
     },
   );
 }
+

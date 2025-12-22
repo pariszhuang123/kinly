@@ -1229,11 +1229,21 @@ class S {
     );
   }
 
-  /// `Active`
+  /// `To pay`
   String get todayShareTabActive {
     return Intl.message(
-      'Active',
+      'To pay',
       name: 'todayShareTabActive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paid to me`
+  String get todayShareTabPaidToMe {
+    return Intl.message(
+      'Paid to me',
+      name: 'todayShareTabPaidToMe',
       desc: '',
       args: [],
     );
@@ -1246,6 +1256,26 @@ class S {
       name: 'todayShareTabDrafts',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Paid to you`
+  String get todaySharePaidSubtitle {
+    return Intl.message(
+      'Paid to you',
+      name: 'todaySharePaidSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, one {{count} new payment to you} other {{count} new payments to you}}`
+  String todaySharePaidUnseen(Object count) {
+    return Intl.message(
+      '{count, plural, one {{count} new payment to you} other {{count} new payments to you}}',
+      name: 'todaySharePaidUnseen',
+      desc: '',
+      args: [count],
     );
   }
 

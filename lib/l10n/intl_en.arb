@@ -221,8 +221,11 @@
   "todayShareSampleRent": "Rent reminder coming up",
   "todayShareSampleInternet": "Internet bill this week",
   "todayShareEmptyState": "Nothing to see here yet.",
-  "todayShareTabActive": "Active",
+  "todayShareTabActive": "To pay",
   "todayShareTabDrafts": "Drafts",
+  "todayShareTabPaidToMe": "Paid to me",
+  "todaySharePaidSubtitle": "Paid to you",
+  "todaySharePaidUnseen": "{count, plural, one {{count} new payment to you} other {{count} new payments to you}}",
   "todayShareError": "We couldn't refresh Share right now.",
   "todayShareActiveSubtitle": "{count, plural, one {{count} payment pending} other {{count} to settle}}",
   "@todayShareActiveSubtitle": {

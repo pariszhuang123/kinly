@@ -6,7 +6,7 @@ import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/kinly_bottom_sheet.dart';
 
 void main() {
-  final binding = TestWidgetsFlutterBinding.ensureInitialized();
+  TestWidgetsFlutterBinding.ensureInitialized();
   const openLabel = 'Open sheet';
   const bodyText = 'Sheet body';
 
@@ -14,7 +14,8 @@ void main() {
     WidgetTester tester, {
     double keyboardInset = 0,
   }) async {
-    final mediaQueryData = MediaQueryData.fromWindow(binding.window).copyWith(
+    final view = tester.view;
+    final mediaQueryData = MediaQueryData.fromView(view).copyWith(
       viewInsets: EdgeInsets.only(bottom: keyboardInset),
     );
 
@@ -66,8 +67,8 @@ void main() {
       matching: find.byType(Material),
     ).first;
     final rect = tester.getRect(sheetMaterialFinder);
-    final screenHeight =
-        binding.window.physicalSize.height / binding.window.devicePixelRatio;
+    final view = tester.view;
+    final screenHeight = view.physicalSize.height / view.devicePixelRatio;
 
     expect(rect.bottom, closeTo(screenHeight, 0.01));
   });
@@ -84,8 +85,8 @@ void main() {
       matching: find.byType(Material),
     ).first;
     final rect = tester.getRect(sheetMaterialFinder);
-    final screenHeight =
-        binding.window.physicalSize.height / binding.window.devicePixelRatio;
+    final view = tester.view;
+    final screenHeight = view.physicalSize.height / view.devicePixelRatio;
 
     expect(rect.bottom, closeTo(screenHeight - keyboardInset, 0.01));
   });
