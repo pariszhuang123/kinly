@@ -6,8 +6,6 @@ import 'package:kinly/data/repositories/expenses_repository.dart';
 import 'package:kinly/features/share/ui/share_paid_to_me_detail_screen.dart';
 import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/generated/l10n.dart';
-import 'package:kinly/core/theme/spacing.dart';
-import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 
 class _MockExpensesRepository extends Mock implements ExpensesRepository {}
@@ -73,10 +71,8 @@ void main() {
       ),
     ).called(1);
     verify(
-      () => repo.listPaidToMeByDebtor(
-        homeId: 'home-1',
-        debtorUserId: 'debtor-1',
-      ),
+      () =>
+          repo.listPaidToMeByDebtor(homeId: 'home-1', debtorUserId: 'debtor-1'),
     ).called(1);
   });
 }

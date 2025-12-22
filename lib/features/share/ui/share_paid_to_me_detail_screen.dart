@@ -72,7 +72,6 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final spacing = Theme.of(context).extension<Spacing>()!;
-    final colors = Theme.of(context).extension<KinlySections>()?.share;
 
     return Scaffold(
       appBar: AppBar(title: Text(s.todayShareTabPaidToMe)),
@@ -85,38 +84,38 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
               _Header(entry: widget.entry),
               SizedBox(height: spacing.lg),
               Expanded(
-                child: _isLoading
-                    ? const Center(child: KinlyLoader())
-                    : _error != null
+                child:
+                    _isLoading
+                        ? const Center(child: KinlyLoader())
+                        : _error != null
                         ? Center(
-                            child: Text(
-                              _error!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(color: Theme.of(context).colorScheme.error),
-                              textAlign: TextAlign.center,
+                          child: Text(
+                            _error!,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.error,
                             ),
-                          )
+                            textAlign: TextAlign.center,
+                          ),
+                        )
                         : _items.isEmpty
-                            ? Center(child: Text(s.shareOwedDetailEmpty))
-                            : KinlyScrollFade(
-                                child: ListView.separated(
-                                  itemCount: _items.length,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: spacing.sm,
-                                  ),
-                                  separatorBuilder: (_, __) =>
-                                      SizedBox(height: spacing.sm),
-                                  itemBuilder: (context, index) {
-                                    final item = _items[index];
-                                    return ListTile(
-                                      title: Text(item.description),
-                                      trailing: Text(item.formattedAmount),
-                                    );
-                                  },
-                                ),
-                              ),
+                        ? Center(child: Text(s.shareOwedDetailEmpty))
+                        : KinlyScrollFade(
+                          child: ListView.separated(
+                            itemCount: _items.length,
+                            padding: EdgeInsets.symmetric(vertical: spacing.sm),
+                            separatorBuilder:
+                                (_, __) => SizedBox(height: spacing.sm),
+                            itemBuilder: (context, index) {
+                              final item = _items[index];
+                              return ListTile(
+                                title: Text(item.description),
+                                trailing: Text(item.formattedAmount),
+                              );
+                            },
+                          ),
+                        ),
               ),
             ],
           ),
@@ -149,9 +148,9 @@ class _Header extends StatelessWidget {
           children: [
             Text(
               entry.debtorUsername,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: colors?.icon,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: colors?.icon),
             ),
             Text(
               entry.hasUnseen
@@ -165,9 +164,9 @@ class _Header extends StatelessWidget {
         Text(
           entry.totalPaidFormatted,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: colors?.icon,
-                fontWeight: FontWeight.w700,
-              ),
+            color: colors?.icon,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ],
     );
@@ -200,7 +199,8 @@ class TodaySharePaidItem {
   }
 
   String get formattedAmount {
-    return NumberFormat.simpleCurrency(decimalDigits: 2)
-        .format(amountCents / 100.0);
+    return NumberFormat.simpleCurrency(
+      decimalDigits: 2,
+    ).format(amountCents / 100.0);
   }
 }
