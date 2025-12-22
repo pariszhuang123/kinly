@@ -62,10 +62,10 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m16(count) =>
       "${Intl.plural(count, one: '${count} payment pending', other: '${count} to settle')}";
 
-  static String m17(homeId, role) => "Current home: ${homeId} • Role: ${role}";
-
-  static String m18(count) =>
+  static String m17(count) =>
       "${Intl.plural(count, one: '${count} new payment to you', other: '${count} new payments to you')}";
+
+  static String m18(homeId, role) => "Current home: ${homeId} • Role: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -944,6 +944,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t refresh Share right now.",
     ),
+    "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Settled Amount",
+    ),
+    "todaySharePaidUnseen": m17,
     "todayShareSampleGroceries": MessageLookupByLibrary.simpleMessage(
       "Shared groceries from yesterday",
     ),
@@ -955,12 +959,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Bill"),
     "todayShareSeeAll": MessageLookupByLibrary.simpleMessage("See all bills"),
-    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To pay"),
-    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("Paid to me"),
+    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To settle"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage("Paid to you"),
-    "todaySharePaidUnseen": m18,
-    "today_home_details": m17,
+    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("Settled"),
+    "today_home_details": m18,
     "today_no_membership": MessageLookupByLibrary.simpleMessage(
       "No active home yet. Create or join to see today\'s view.",
     ),

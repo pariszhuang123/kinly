@@ -1229,21 +1229,11 @@ class S {
     );
   }
 
-  /// `To pay`
+  /// `To settle`
   String get todayShareTabActive {
     return Intl.message(
-      'To pay',
+      'To settle',
       name: 'todayShareTabActive',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Paid to me`
-  String get todayShareTabPaidToMe {
-    return Intl.message(
-      'Paid to me',
-      name: 'todayShareTabPaidToMe',
       desc: '',
       args: [],
     );
@@ -1259,10 +1249,20 @@ class S {
     );
   }
 
-  /// `Paid to you`
+  /// `Settled`
+  String get todayShareTabPaidToMe {
+    return Intl.message(
+      'Settled',
+      name: 'todayShareTabPaidToMe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settled Amount`
   String get todaySharePaidSubtitle {
     return Intl.message(
-      'Paid to you',
+      'Settled Amount',
       name: 'todaySharePaidSubtitle',
       desc: '',
       args: [],
@@ -1270,11 +1270,14 @@ class S {
   }
 
   /// `{count, plural, one {{count} new payment to you} other {{count} new payments to you}}`
-  String todaySharePaidUnseen(Object count) {
-    return Intl.message(
-      '{count, plural, one {{count} new payment to you} other {{count} new payments to you}}',
+  String todaySharePaidUnseen(int count) {
+    return Intl.plural(
+      count,
+      one: '$count new payment to you',
+      other: '$count new payments to you',
       name: 'todaySharePaidUnseen',
-      desc: '',
+      desc:
+          'Subtitle shown for paid-to-me entries when there are unseen items.',
       args: [count],
     );
   }

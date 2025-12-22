@@ -221,10 +221,10 @@
   "todayShareSampleRent": "Rent reminder coming up",
   "todayShareSampleInternet": "Internet bill this week",
   "todayShareEmptyState": "Nothing to see here yet.",
-  "todayShareTabActive": "To pay",
+  "todayShareTabActive": "To settle",
   "todayShareTabDrafts": "Drafts",
-  "todayShareTabPaidToMe": "Paid to me",
-  "todaySharePaidSubtitle": "Paid to you",
+  "todayShareTabPaidToMe": "Settled",
+  "todaySharePaidSubtitle": "Settled Amount",
   "todaySharePaidUnseen": "{count, plural, one {{count} new payment to you} other {{count} new payments to you}}",
   "@todaySharePaidUnseen": {
     "description": "Subtitle shown for paid-to-me entries when there are unseen items.",
