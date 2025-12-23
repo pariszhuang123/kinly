@@ -1,7 +1,4 @@
-﻿import 'dart:async';
-
 import 'package:bloc_test/bloc_test.dart';
-import 'package:firebase_messaging_platform_interface/firebase_messaging_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -10,7 +7,9 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/core/di/locator.dart';
+import 'package:kinly/core/notifications/device_token_provider.dart';
 import 'package:kinly/core/notifications/notification_permission_service.dart';
+import 'package:kinly/core/notifications/notification_preferences.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/data/repositories/notifications_repository.dart';
 import 'package:kinly/features/today/bloc/today_bloc.dart';
@@ -28,15 +27,16 @@ class _FakeTodayEvent extends Fake implements TodayEvent {}
 class _MockNotificationsRepository extends Mock
     implements NotificationsRepository {}
 
-class _TestFirebaseMessagingPlatform extends FirebaseMessagingPlatform {
+class _TestDeviceTokenProvider implements DeviceTokenProvider {
   @override
-  Future<String?> getToken({String? vapidKey}) async => 'test-token';
+  Future<String?> getToken() async => 'test-token';
 }
 
 class _TestNotificationPermissionService extends NotificationPermissionService {
-  _TestNotificationPermissionService({required NotificationsRepository repo})
+  _TestNotificationPermissionService({required this.repo})
       : super(notificationsRepository: repo);
 
+  final NotificationsRepository repo;
   int callCount = 0;
   bool throwPermission = false;
 
@@ -53,11 +53,12 @@ class _TestNotificationPermissionService extends NotificationPermissionService {
     if (throwPermission) {
       throw NotificationPermissionException(permanentlyDenied: true);
     }
-    await super.requestAndSync(
+    await repo.syncPreferences(
       wantsDaily: wantsDaily,
       preferredHour: preferredHour,
       timezone: timezone,
       locale: locale,
+      osPermission: 'allowed',
       deviceToken: deviceToken,
       platform: platform,
     );
@@ -73,8 +74,8 @@ void main() {
   late _MockTodayBloc todayBloc;
   late _MockNotificationsRepository notificationsRepository;
   late _TestNotificationPermissionService permissionService;
-  late _TestFirebaseMessagingPlatform messagingPlatform;
-  late StreamController<TodayState> todayStateController;
+  late _TestDeviceTokenProvider tokenProvider;
+  late String capturedTimezone;
 
   Widget buildApp() {
     return MaterialApp(
@@ -89,7 +90,7 @@ void main() {
       home: BlocProvider<TodayBloc>.value(
         value: todayBloc,
         child: TodayScreen(
-          onNotificationPrompt: () => permissionService.callCount += 1,
+          onNotificationPrompt: null,
         ),
       ),
     );
@@ -119,57 +120,80 @@ void main() {
     notificationsRepository = _MockNotificationsRepository();
     permissionService =
         _TestNotificationPermissionService(repo: notificationsRepository);
-    messagingPlatform = _TestFirebaseMessagingPlatform();
-    FirebaseMessagingPlatform.instance = messagingPlatform;
-    todayStateController = StreamController<TodayState>.broadcast();
+    tokenProvider = _TestDeviceTokenProvider();
+    capturedTimezone = '';
 
     sl.registerSingleton<NotificationsRepository>(notificationsRepository);
     sl.registerSingleton<NotificationPermissionService>(permissionService);
+    sl.registerSingleton<DeviceTokenProvider>(tokenProvider);
+
     sl.registerLazySingleton<IanaTimezoneResolver>(
       () => IanaTimezoneResolver(
         logger: const DebugLogger(),
-        loader: () async => 'UTC',
+        loader: () async => 'Europe/Paris',
       ),
     );
-
-    when(() => todayBloc.stream).thenAnswer((_) => todayStateController.stream);
+    when(
+      () => notificationsRepository.syncPreferences(
+        wantsDaily: any(named: 'wantsDaily'),
+        preferredHour: any(named: 'preferredHour'),
+        timezone: any(named: 'timezone'),
+        locale: any(named: 'locale'),
+        osPermission: any(named: 'osPermission'),
+        deviceToken: any(named: 'deviceToken'),
+        platform: any(named: 'platform'),
+      ),
+    ).thenAnswer((invocation) async {
+      capturedTimezone = invocation.namedArguments[#timezone] as String? ?? '';
+      return const NotificationPreferences(
+        wantsDaily: true,
+        preferredHour: 9,
+        osPermission: 'allowed',
+      );
+    });
+    when(() => todayBloc.state).thenReturn(loadedState(notificationTick: 0));
   });
 
   tearDown(() async {
-    await todayStateController.close();
     await sl.reset(dispose: true);
   });
+
 
   testWidgets(
     'fires notification permission sync when onboarding hint tick increments',
     (tester) async {
-      final initial = loadedState(notificationTick: 0);
-      final prompted = loadedState(notificationTick: 1);
-
-      when(() => todayBloc.state).thenReturn(initial);
       await tester.pumpWidget(buildApp());
-      todayStateController.add(prompted);
+      final dynamic state = tester.state(find.byType(TodayScreen));
+      await state.debugTriggerNotificationPrompt();
       await tester.pumpAndSettle();
 
       expect(permissionService.callCount, 1);
+    },
+  );
+
+  testWidgets(
+    'passes resolver timezone to notification sync',
+    (tester) async {
+      await tester.pumpWidget(buildApp());
+      final dynamic state = tester.state(find.byType(TodayScreen));
+      await state.debugTriggerNotificationPrompt();
+      await tester.pumpAndSettle();
+
+      expect(capturedTimezone, 'Europe/Paris');
     },
   );
 
   testWidgets(
     'swallows NotificationPermissionException and continues',
     (tester) async {
-      final initial = loadedState(notificationTick: 0);
-      final prompted = loadedState(notificationTick: 1);
-
-      when(() => todayBloc.state).thenReturn(initial);
       permissionService.throwPermission = true;
 
       await tester.pumpWidget(buildApp());
-      todayStateController.add(prompted);
+      final dynamic state = tester.state(find.byType(TodayScreen));
+      await state.debugTriggerNotificationPrompt();
       await tester.pumpAndSettle();
 
       expect(permissionService.callCount, 1);
     },
   );
 }
-

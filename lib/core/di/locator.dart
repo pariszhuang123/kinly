@@ -24,6 +24,7 @@ import '../profile/profile_update_notifier.dart';
 import '../../data/repositories/notifications_repository.dart';
 import '../notifications/supabase_notifications_repository.dart';
 import '../notifications/notification_sync_state.dart';
+import '../notifications/device_token_provider.dart';
 import '../../data/repositories/onboarding_repository.dart';
 import '../onboarding/supabase_onboarding_repository.dart';
 import '../../data/repositories/paywall_repository.dart';
@@ -96,6 +97,11 @@ void setupDependencies() {
   if (!sl.isRegistered<NotificationSyncState>()) {
     sl.registerLazySingleton<NotificationSyncState>(
       () => NotificationSyncState(),
+    );
+  }
+  if (!sl.isRegistered<DeviceTokenProvider>()) {
+    sl.registerLazySingleton<DeviceTokenProvider>(
+      () => const FirebaseDeviceTokenProvider(),
     );
   }
   if (!sl.isRegistered<NotificationsRepository>()) {

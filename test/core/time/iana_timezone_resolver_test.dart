@@ -111,5 +111,25 @@ void main() {
         isTrue,
       );
     });
+
+    test('trims whitespace before validation', () async {
+      final logger = _FakeLogger();
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => '  Pacific/Auckland  ',
+      );
+
+      final timezone = await resolver.resolve();
+
+      expect(timezone, 'Pacific/Auckland');
+      expect(
+        logger.entries.any(
+          (entry) =>
+              entry.level == LogLevel.debug &&
+              entry.message.contains('resolvedTimezoneIana=Pacific/Auckland'),
+        ),
+        isTrue,
+      );
+    });
   });
 }

@@ -11,7 +11,8 @@ class IanaTimezoneResolver {
     required Logger logger,
     TimezoneLoader? loader,
   })  : _logger = logger,
-        _loadTimezone = loader ?? FlutterTimezone.getLocalTimezone;
+        _loadTimezone = loader ??
+            (() async => (await FlutterTimezone.getLocalTimezone()) as String);
 
   static const _logTag = 'Timezone';
   static final _ianaRegex =

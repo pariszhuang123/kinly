@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:confetti/confetti.dart';
 
 import '../../../../core/di/locator.dart';
 import '../../../../core/logging/debug_logger.dart';
 import '../../../../core/logging/logger.dart';
+import '../../../../core/notifications/device_token_provider.dart';
 import '../../../../core/notifications/notification_permission_service.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_sizes.dart';
@@ -657,6 +657,10 @@ class _TodayScreenState extends State<TodayScreen>
     return uri.toString();
   }
 
+  @visibleForTesting
+  Future<void> debugTriggerNotificationPrompt() =>
+      _maybePromptNotifications(context);
+
   Future<void> _maybePromptNotifications(BuildContext context) async {
     if (!context.mounted) return;
     widget.onNotificationPrompt?.call();
@@ -665,6 +669,10 @@ class _TodayScreenState extends State<TodayScreen>
         sl.isRegistered<NotificationPermissionService>()
             ? sl<NotificationPermissionService>()
             : NotificationPermissionService(notificationsRepository: repo);
+    final tokenProvider =
+        sl.isRegistered<DeviceTokenProvider>()
+            ? sl<DeviceTokenProvider>()
+            : const FirebaseDeviceTokenProvider();
     final locale = Localizations.localeOf(context).toLanguageTag();
     final platformName = Theme.of(context).platform.name;
     final timezone = await sl<IanaTimezoneResolver>().resolve();
@@ -672,7 +680,7 @@ class _TodayScreenState extends State<TodayScreen>
         sl.isRegistered<Logger>() ? sl<Logger>() : const DebugLogger();
     const notifTag = 'TodayNotifications';
     try {
-      final deviceToken = await FirebaseMessaging.instance.getToken();
+      final deviceToken = await tokenProvider.getToken();
       if (!context.mounted) return;
       await permissionService.requestAndSync(
         wantsDaily: true,
