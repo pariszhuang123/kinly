@@ -36,6 +36,7 @@ import 'features/offline/ui/connectivity_gate.dart';
 import 'features/version_gating/bloc/app_version_cubit.dart';
 import 'generated/l10n.dart';
 import 'core/ui/kinly_loader.dart';
+import 'core/time/iana_timezone_resolver.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -106,6 +107,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late final GoRouterRefreshStream _routerRefresh;
   late final RouterConfig<Object> _router;
   late final Logger _logger;
+  late final IanaTimezoneResolver _timezoneResolver;
   StreamSubscription<AuthState>? _authSub;
   NotificationTokenBootstrap? _tokenBootstrap;
 
@@ -116,6 +118,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _logger = _resolveLogger();
+    _timezoneResolver = sl<IanaTimezoneResolver>();
     final authRepo = sl<AuthRepository>();
     final homeRepo = sl<HomeRepository>();
     final connectivityMonitor = sl<ConnectivityMonitor>();
@@ -295,7 +298,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final osPermission = await _readOsPermission();
     final locale =
         WidgetsBinding.instance.platformDispatcher.locale.toLanguageTag();
-    final timezone = DateTime.now().timeZoneName;
+    final timezone = await _timezoneResolver.resolve();
     final platformName = defaultTargetPlatform.name;
     String? deviceToken;
     try {

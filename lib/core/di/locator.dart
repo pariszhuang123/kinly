@@ -29,6 +29,7 @@ import '../onboarding/supabase_onboarding_repository.dart';
 import '../../data/repositories/paywall_repository.dart';
 import '../paywall/supabase_paywall_repository.dart';
 import '../purchases/revenuecat_service.dart';
+import '../time/iana_timezone_resolver.dart';
 
 final sl = GetIt.instance;
 
@@ -37,9 +38,14 @@ void setupDependencies() {
     const debugLogger = DebugLogger();
     sl.registerLazySingleton<Logger>(
       () =>
-          AppConfig.sentryDsn.isNotEmpty
-              ? SentryLogger(fallback: debugLogger)
-              : debugLogger,
+        AppConfig.sentryDsn.isNotEmpty
+            ? SentryLogger(fallback: debugLogger)
+            : debugLogger,
+    );
+  }
+  if (!sl.isRegistered<IanaTimezoneResolver>()) {
+    sl.registerLazySingleton<IanaTimezoneResolver>(
+      () => IanaTimezoneResolver(logger: sl<Logger>()),
     );
   }
   if (!sl.isRegistered<AuthRepository>()) {

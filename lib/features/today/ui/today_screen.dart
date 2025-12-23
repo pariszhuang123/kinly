@@ -14,6 +14,7 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
+import '../../../../core/time/iana_timezone_resolver.dart';
 import '../../../../core/ui/buttons/kinly_fab.dart';
 import '../../../../core/ui/home_bottom_nav.dart';
 import '../../../../core/ui/kinly_loader.dart';
@@ -665,8 +666,8 @@ class _TodayScreenState extends State<TodayScreen>
             ? sl<NotificationPermissionService>()
             : NotificationPermissionService(notificationsRepository: repo);
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final timezone = DateTime.now().timeZoneName;
     final platformName = Theme.of(context).platform.name;
+    final timezone = await sl<IanaTimezoneResolver>().resolve();
     final logger =
         sl.isRegistered<Logger>() ? sl<Logger>() : const DebugLogger();
     const notifTag = 'TodayNotifications';

@@ -17,6 +17,8 @@ import 'package:kinly/features/today/bloc/today_bloc.dart';
 import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/features/today/ui/today_screen.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/core/time/iana_timezone_resolver.dart';
+import 'package:kinly/core/logging/debug_logger.dart';
 
 class _MockTodayBloc extends MockBloc<TodayEvent, TodayState>
     implements TodayBloc {}
@@ -123,6 +125,12 @@ void main() {
 
     sl.registerSingleton<NotificationsRepository>(notificationsRepository);
     sl.registerSingleton<NotificationPermissionService>(permissionService);
+    sl.registerLazySingleton<IanaTimezoneResolver>(
+      () => IanaTimezoneResolver(
+        logger: const DebugLogger(),
+        loader: () async => 'UTC',
+      ),
+    );
 
     when(() => todayBloc.stream).thenAnswer((_) => todayStateController.stream);
   });

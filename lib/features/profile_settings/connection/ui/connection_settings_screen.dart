@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../core/di/locator.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
@@ -11,6 +12,7 @@ import '../../../../core/ui/settings/kinly_settings_card.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../core/ui/kinly_time_picker.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../core/time/iana_timezone_resolver.dart';
 import '../bloc/connection_settings_bloc.dart';
 
 class ConnectionSettingsScreen extends StatefulWidget {
@@ -31,8 +33,8 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
   Future<void> _start() async {
     final ctx = context;
     final locale = Localizations.localeOf(ctx).toLanguageTag();
-    final timezone = DateTime.now().timeZoneName;
     final platform = Theme.of(ctx).platform.name;
+    final timezone = await sl<IanaTimezoneResolver>().resolve();
     String? deviceToken;
     try {
       deviceToken = await FirebaseMessaging.instance.getToken();
