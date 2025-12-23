@@ -393,3 +393,283 @@ Deno.test("logs missing_latest_transaction_id but still calls rpc", async () => 
   const warnings = (upserts[0] as { warnings?: string[] } | undefined)?.warnings ?? [];
   expect(warnings.includes("missing_latest_transaction_id"), "missing txn logged");
 });
+
+Deno.test("rejects non-POST without touching Supabase", async () => {
+  const calls: string[] = [];
+  const res = await handleRevenueCatWebhook(
+    new Request("http://localhost", { method: "GET" }),
+    env,
+    (_url, _key) => ({
+      rpc: <T = unknown>(_fn: string, _args: Record<string, unknown>) => {
+        calls.push("rpc");
+        return Promise.resolve({ error: null } as { error: null; data?: T });
+      },
+      from: (_table) => ({
+        upsert: (
+          _row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => {
+          calls.push("upsert");
+          return Promise.resolve({ error: null });
+        },
+      }),
+    }),
+  );
+
+  expect(res.status === 405, "GET should be rejected");
+  expect(calls.length === 0, "no supabase calls on method guard");
+});
+
+Deno.test("payload over limit returns 413 and skips Supabase", async () => {
+  const bigBody = JSON.stringify({ big: "a".repeat(300_000) });
+  const calls: string[] = [];
+
+  const res = await handleRevenueCatWebhook(
+    new Request("http://localhost", {
+      method: "POST",
+      headers: {
+        authorization: "Bearer secret",
+        "content-type": "application/json",
+        "content-length": String(bigBody.length),
+      },
+      body: bigBody,
+    }),
+    env,
+    (_url, _key) => ({
+      rpc: <T = unknown>(_fn: string, _args: Record<string, unknown>) => {
+        calls.push("rpc");
+        return Promise.resolve({ error: null } as { error: null; data?: T });
+      },
+      from: (_table) => ({
+        upsert: (
+          _row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => {
+          calls.push("upsert");
+          return Promise.resolve({ error: null });
+        },
+      }),
+    }),
+  );
+
+  expect(res.status === 413, "over-limit payload should be rejected");
+  expect(calls.length === 0, "no supabase calls when payload too large");
+});
+
+Deno.test("non-object body returns 400 invalid_body and skips Supabase", async () => {
+  const calls: string[] = [];
+  const res = await handleRevenueCatWebhook(
+    new Request("http://localhost", {
+      method: "POST",
+      headers: { authorization: "Bearer secret", "content-type": "application/json" },
+      body: JSON.stringify(["not", "an", "object"]),
+    }),
+    env,
+    (_url, _key) => ({
+      rpc: <T = unknown>(_fn: string, _args: Record<string, unknown>) => {
+        calls.push("rpc");
+        return Promise.resolve({ error: null } as { error: null; data?: T });
+      },
+      from: (_table) => ({
+        upsert: (
+          _row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => {
+          calls.push("upsert");
+          return Promise.resolve({ error: null });
+        },
+      }),
+    }),
+  );
+
+  expect(res.status === 400, "non-object body should return 400");
+  const body = await res.json();
+  expect(body.error_code === "invalid_body", "invalid_body surfaced");
+  expect(calls.length === 0, "no supabase calls for invalid body");
+});
+
+Deno.test("audit write failure returns 500 retryable and skips rpc", async () => {
+  const upserts: Array<Record<string, unknown>> = [];
+  const rpcs: string[] = [];
+
+  const res = await handleRevenueCatWebhook(
+    new Request("http://localhost", {
+      method: "POST",
+      headers: { authorization: "Bearer secret", "content-type": "application/json" },
+      body: JSON.stringify({
+        event: {
+          id: "evt-audit-fail",
+          entitlement_ids: ["ent_a"],
+          product_id: "prod_a",
+          store: "google",
+          subscriber_attributes: {
+            user_id: { value: "00000000-0000-4000-8000-000000000111" },
+            home_id: { value: "00000000-0000-4000-8000-000000000222" },
+          },
+        },
+      }),
+    }),
+    env,
+    (_url, _key) => ({
+      rpc: <T = unknown>(_fn: string, _args: Record<string, unknown>) => {
+        rpcs.push("rpc");
+        return Promise.resolve({ error: null } as { error: null; data?: T });
+      },
+      from: (_table) => ({
+        upsert: (
+          row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => {
+          upserts.push(row);
+          return Promise.resolve({ error: { message: "audit fail" } });
+        },
+      }),
+    }),
+  );
+
+  expect(res.status === 500, "audit failure should return 500");
+  const body = await res.json();
+  expect(body.retryable === true, "audit failure marked retryable");
+  expect(rpcs.length === 0, "rpc not called when audit fails");
+  expect(upserts.length === 1, "one audit attempt");
+});
+
+Deno.test("transient rpc failure marks retryable and updates audit", async () => {
+  const auditUpserts: Array<Record<string, unknown>> = [];
+  const rpcArgs: Array<Record<string, unknown>> = [];
+
+  const res = await handleRevenueCatWebhook(
+    new Request("http://localhost", {
+      method: "POST",
+      headers: { authorization: "Bearer secret", "content-type": "application/json" },
+      body: JSON.stringify({
+        event: {
+          id: "evt-rpc-fail",
+          entitlement_ids: ["ent_a"],
+          product_id: "prod_a",
+          store: "google",
+          subscriber_attributes: {
+            user_id: { value: "00000000-0000-4000-8000-000000000333" },
+            home_id: { value: "00000000-0000-4000-8000-000000000444" },
+          },
+        },
+      }),
+    }),
+    env,
+    (_url, _key) => ({
+      rpc: <T = unknown>(_fn: string, args: Record<string, unknown>) => {
+        rpcArgs.push(args);
+        return Promise.resolve({ error: { message: "deadlock", code: "40001" } });
+      },
+      from: (_table) => ({
+        upsert: (
+          row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => {
+          auditUpserts.push(row);
+          return Promise.resolve({ error: null });
+        },
+      }),
+    }),
+  );
+
+  expect(res.status === 500, "transient rpc failure should return 500");
+  const body = await res.json();
+  expect(body.retryable === true, "retryable flagged true");
+  expect(rpcArgs.length === 1, "rpc called once");
+  expect(auditUpserts.length === 2, "audit written and then updated with rpc error");
+  expect(auditUpserts[1].rpc_error_code === "rpc_failure", "rpc error recorded on audit");
+});
+
+Deno.test("unknown store returns fatal 400 and skips rpc", async () => {
+  const upserts: Array<Record<string, unknown>> = [];
+  const rpcCalls: string[] = [];
+
+  const res = await handleRevenueCatWebhook(
+    new Request("http://localhost", {
+      method: "POST",
+      headers: { authorization: "Bearer secret", "content-type": "application/json" },
+      body: JSON.stringify({
+        event: {
+          id: "evt-unknown-store",
+          entitlement_ids: ["ent_a"],
+          product_id: "prod_a",
+          store: "mystery_store",
+          subscriber_attributes: {
+            user_id: { value: "00000000-0000-4000-8000-000000000555" },
+            home_id: { value: "00000000-0000-4000-8000-000000000666" },
+          },
+        },
+      }),
+    }),
+    env,
+    (_url, _key) => ({
+      rpc: <T = unknown>(_fn: string, _args: Record<string, unknown>) => {
+        rpcCalls.push("rpc");
+        return Promise.resolve({ error: null } as { error: null; data?: T });
+      },
+      from: (_table) => ({
+        upsert: (
+          row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => {
+          upserts.push(row);
+          return Promise.resolve({ error: null });
+        },
+      }),
+    }),
+  );
+
+  expect(res.status === 400, "unknown store should return 400");
+  const body = await res.json();
+  expect(body.error_code === "unknown_store", "unknown_store surfaced");
+  expect(upserts.length === 1, "audit still written");
+  expect((upserts[0] as { fatal_error_code?: string }).fatal_error_code === "unknown_store", "fatal stored");
+  expect(rpcCalls.length === 0, "no rpc when fatal validation fails");
+});
+
+Deno.test("missing home_id is fatal 400 and does not call rpc", async () => {
+  const upserts: Array<Record<string, unknown>> = [];
+  const rpcCalls: string[] = [];
+
+  const res = await handleRevenueCatWebhook(
+    new Request("http://localhost", {
+      method: "POST",
+      headers: { authorization: "Bearer secret", "content-type": "application/json" },
+      body: JSON.stringify({
+        event: {
+          id: "evt-home-missing",
+          entitlement_ids: ["ent_a"],
+          product_id: "prod_a",
+          store: "google",
+          subscriber_attributes: {
+            user_id: { value: "00000000-0000-4000-8000-000000000777" },
+          },
+        },
+      }),
+    }),
+    env,
+    (_url, _key) => ({
+      rpc: <T = unknown>(_fn: string, _args: Record<string, unknown>) => {
+        rpcCalls.push("rpc");
+        return Promise.resolve({ error: null } as { error: null; data?: T });
+      },
+      from: (_table) => ({
+        upsert: (
+          row: Record<string, unknown>,
+          _options?: { onConflict?: string; ignoreDuplicates?: boolean; returning?: "minimal" | "representation" },
+        ) => {
+          upserts.push(row);
+          return Promise.resolve({ error: null });
+        },
+      }),
+    }),
+  );
+
+  expect(res.status === 400, "missing home returns 400");
+  const body = await res.json();
+  expect(body.error_code === "missing_home_id", "error code missing_home_id");
+  expect(upserts.length === 1, "audit stored once");
+  expect((upserts[0] as { fatal_error_code?: string }).fatal_error_code === "missing_home_id", "fatal stored");
+  expect(rpcCalls.length === 0, "rpc not called");
+});

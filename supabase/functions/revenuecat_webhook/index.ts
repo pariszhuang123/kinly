@@ -296,10 +296,10 @@ export const handleRevenueCatWebhook = async (
   const rpcArgs: Record<string, unknown> = {
     p_idempotency_key: idempotencyKey,
 
-    // REQUIRED for processing
+    // REQUIRED
+    p_user_id: parsed.rcUserId,   // ✅ ADD THIS
     p_home_id: parsed.homeId,
-
-    p_store: parsed.store, // guaranteed not unknown by fatal validation
+    p_store: parsed.store,
     p_rc_app_user_id: parsed.rcAppUserId,
     p_entitlement_id: parsed.primaryEntitlementId,
     p_entitlement_ids: parsed.entitlementIds,

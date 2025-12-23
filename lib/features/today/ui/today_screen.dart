@@ -679,9 +679,20 @@ class _TodayScreenState extends State<TodayScreen>
     final logger =
         sl.isRegistered<Logger>() ? sl<Logger>() : const DebugLogger();
     const notifTag = 'TodayNotifications';
+    logger.debug('Using timezone=$timezone for notifications sync', tag: notifTag);
+    String? deviceToken;
     try {
-      final deviceToken = await tokenProvider.getToken();
-      if (!context.mounted) return;
+      deviceToken = await tokenProvider.getToken();
+    } catch (error, stackTrace) {
+      logger.warn(
+        'Failed to read device token; continuing without it',
+        tag: notifTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+    if (!context.mounted) return;
+    try {
       await permissionService.requestAndSync(
         wantsDaily: true,
         preferredHour: 9,

@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 
 class _FakeLogger implements Logger {
   final List<({LogLevel level, String message, String? tag, Object? error})>
-      entries = [];
+  entries = [];
 
   @override
   void debug(String message, {String? tag}) =>
@@ -130,6 +130,32 @@ void main() {
         ),
         isTrue,
       );
+    });
+
+    test('uses identifier from TimezoneInfo-like payload', () async {
+      final logger = _FakeLogger();
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => 'America/Los_Angeles',
+      );
+
+      final timezone = await resolver.resolve();
+
+      expect(timezone, 'America/Los_Angeles');
+    });
+
+    test('respects debug override when set', () async {
+      final logger = _FakeLogger();
+      IanaTimezoneResolver.debugOverride = 'Europe/Paris';
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => 'ShouldNotBeUsed',
+      );
+
+      final timezone = await resolver.resolve();
+
+      expect(timezone, 'Europe/Paris');
+      IanaTimezoneResolver.debugOverride = null;
     });
   });
 }
