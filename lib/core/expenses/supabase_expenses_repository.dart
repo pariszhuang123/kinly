@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/repositories/expenses_repository.dart';
 import '../supabase/supabase_error_mapper.dart';
 import 'models.dart';
+import '../time/timezone.dart';
 
 class SupabaseExpensesRepository implements ExpensesRepository {
   SupabaseExpensesRepository({SupabaseClient? client})
@@ -19,6 +20,8 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
+    required ExpenseRecurrenceInterval recurrence,
+    required DateTime startDate,
   }) async {
     try {
       final response = await _client.rpc(
@@ -33,6 +36,8 @@ class SupabaseExpensesRepository implements ExpensesRepository {
             'p_member_ids': memberIds,
           if (customSplits != null && customSplits.isNotEmpty)
             'p_splits': customSplits.map((split) => split.toJson()).toList(),
+          'p_recurrence': recurrence.wireValue,
+          'p_start_date': toUtcIsoString(startDate),
         },
       );
 
@@ -59,6 +64,8 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
+    required ExpenseRecurrenceInterval recurrence,
+    required DateTime startDate,
   }) async {
     try {
       final response = await _client.rpc(
@@ -73,6 +80,8 @@ class SupabaseExpensesRepository implements ExpensesRepository {
             'p_member_ids': memberIds,
           if (customSplits != null && customSplits.isNotEmpty)
             'p_splits': customSplits.map((split) => split.toJson()).toList(),
+          'p_recurrence': recurrence.wireValue,
+          'p_start_date': toUtcIsoString(startDate),
         },
       );
 

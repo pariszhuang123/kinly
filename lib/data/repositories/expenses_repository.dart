@@ -15,6 +15,8 @@ abstract class ExpensesRepository {
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
+    required ExpenseRecurrenceInterval recurrence,
+    required DateTime startDate,
   });
 
   /// Updates an existing expense, promoting drafts to active when a split is provided.
@@ -26,6 +28,8 @@ abstract class ExpensesRepository {
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
+    required ExpenseRecurrenceInterval recurrence,
+    required DateTime startDate,
   });
 
   /// Lists unpaid shares for the current member grouped by expense creator.

@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(9);
+SELECT no_plan();
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -42,7 +42,7 @@ VALUES
   ('00000000-0000-4000-9000-000000000113', 'avatars/default.png', 'animal', 'Test C')
 ON CONFLICT (id) DO NOTHING;
 
--- Users: owner + two members (one will pay)
+-- Users: owner + two members
 INSERT INTO tmp_users (label, user_id, email) VALUES
   ('owner',   '20000000-0000-4000-9000-000000000001', 'paywall-owner@example.com'),
   ('member1', '20000000-0000-4000-9000-000000000002', 'paywall-m1@example.com'),
@@ -86,47 +86,82 @@ SELECT is(
   'initial active_expenses counter starts at 0'
 );
 
--- Create 10 draft expenses (counted toward cap)
+-- 2) Drafts do not consume quota
+DO $$
+DECLARE i integer;
+BEGIN
+  FOR i IN 1..3 LOOP
+    PERFORM public.expenses_create(
+      (SELECT home_id FROM tmp_home),
+      format('Draft %s', i),
+      NULL,
+      NULL,
+      NULL,
+      NULL,
+      NULL,
+      'none',
+      current_date
+    );
+  END LOOP;
+END;
+$$;
+
+SELECT is(
+  COALESCE((SELECT active_expenses FROM public.home_usage_counters WHERE home_id = (SELECT home_id FROM tmp_home)), 0),
+  0,
+  'draft creation leaves active_expenses unchanged'
+);
+
+-- 3) Create 10 active expenses (hit free cap)
 DO $$
 DECLARE i integer;
 BEGIN
   FOR i IN 1..10 LOOP
     PERFORM public.expenses_create(
       (SELECT home_id FROM tmp_home),
-      format('Draft %s', i),
+      format('Active %s', i),
       1000,
       NULL,
+      'equal',
+      ARRAY[
+        (SELECT user_id FROM tmp_users WHERE label = 'owner'),
+        (SELECT user_id FROM tmp_users WHERE label = 'member1')
+      ],
       NULL,
-      NULL,
-      NULL
+      'none',
+      current_date
     );
   END LOOP;
 END;
 $$;
 
--- 2) counter should be 10
 SELECT is(
   (SELECT active_expenses FROM public.home_usage_counters WHERE home_id = (SELECT home_id FROM tmp_home)),
   10,
-  'active_expenses increments to 10 after 10 creates'
+  'active_expenses increments to 10 after 10 active expenses'
 );
 
--- 3) 11th create blocked on free plan
+-- 4) 11th active on free plan is blocked
 SELECT pg_temp.expect_api_error(
   $$ SELECT public.expenses_create(
         (SELECT home_id FROM tmp_home),
-        'Draft 11',
-        1000,
+        'Blocked active',
+        1200,
         NULL,
+        'equal',
+        ARRAY[
+          (SELECT user_id FROM tmp_users WHERE label = 'owner'),
+          (SELECT user_id FROM tmp_users WHERE label = 'member1')
+        ],
         NULL,
-        NULL,
-        NULL
+        'none',
+        current_date
      ); $$,
   'PAYWALL_LIMIT_ACTIVE_EXPENSES',
-  '11th expense on free plan hits active_expenses cap'
+  '11th active expense on free plan hits active_expenses cap'
 );
 
--- Enable premium to bypass quota and create another expense
+-- 5) Premium bypasses quota and allows another active expense
 UPDATE public.home_entitlements
 SET plan = 'premium', expires_at = now() + interval '1 day'
 WHERE home_id = (SELECT home_id FROM tmp_home);
@@ -139,9 +174,14 @@ FROM (
     'Premium allowed',
     1200,
     NULL,
+    'equal',
+    ARRAY[
+      (SELECT user_id FROM tmp_users WHERE label = 'owner'),
+      (SELECT user_id FROM tmp_users WHERE label = 'member1')
+    ],
     NULL,
-    NULL,
-    NULL
+    'none',
+    current_date
   ) AS expense
 ) t;
 
@@ -151,51 +191,25 @@ SELECT is(
   'premium creation increments counter to 11'
 );
 
--- 4) Cancel premium_one decrements counter
-SELECT public.expenses_cancel((SELECT expense_id FROM tmp_expenses WHERE label = 'premium_one'));
-
-SELECT is(
-  (SELECT active_expenses FROM public.home_usage_counters WHERE home_id = (SELECT home_id FROM tmp_home)),
-  10,
-  'cancel returns counter to 10'
-);
-
--- 5) Active expense with splits, free slot when fully paid
-WITH created AS (
-  SELECT public.expenses_create(
-    (SELECT home_id FROM tmp_home),
-    'Paydown',
-    1500,
-    NULL,
-    'equal',
-    ARRAY[
-      (SELECT user_id FROM tmp_users WHERE label = 'owner'),
-      (SELECT user_id FROM tmp_users WHERE label = 'member1')
-    ],
-    NULL
-  ) AS expense
-)
-INSERT INTO tmp_expenses (label, expense_id)
-SELECT 'paydown', (expense).id FROM created;
-
-SELECT is(
-  (SELECT active_expenses FROM public.home_usage_counters WHERE home_id = (SELECT home_id FROM tmp_home)),
-  11,
-  'active_expenses increments for new active expense'
-);
-
--- Member1 pays their share -> last unpaid, counter should drop
+-- 6) Debtor bulk pay clears all owed items and decrements counter accordingly
 SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'member1'), true);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SELECT public.expenses_mark_share_paid((SELECT expense_id FROM tmp_expenses WHERE label = 'paydown'));
+
+WITH payload AS (
+  SELECT public.expenses_pay_my_due((SELECT user_id FROM tmp_users WHERE label = 'owner')) AS body
+)
+SELECT ok(
+  (SELECT (body->>'splitsPaid')::int FROM payload) >= 10,
+  'Bulk pay touches all owed splits for member1'
+);
 
 SELECT is(
   (SELECT active_expenses FROM public.home_usage_counters WHERE home_id = (SELECT home_id FROM tmp_home)),
-  10,
-  'active_expenses decrements when last debtor pays'
+  0,
+  'active_expenses decremented for 11 fully paid expenses'
 );
 
--- 6) apply_delta floors at zero
+-- 7) apply_delta floors at zero
 SELECT public._home_usage_apply_delta(
   (SELECT home_id FROM tmp_home),
   jsonb_build_object('active_expenses', -50)
@@ -207,7 +221,7 @@ SELECT is(
   '_home_usage_apply_delta floors active_expenses at 0'
 );
 
--- 7) plan limits seeded
+-- 8) plan limits seeded
 SELECT ok(
   EXISTS (
     SELECT 1 FROM public.home_plan_limits

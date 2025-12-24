@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(10);
+SELECT no_plan();
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -125,7 +125,9 @@ WITH created AS (
         'user_id', (SELECT user_id FROM tmp_users WHERE label = 'debtor'),
         'amount_cents', 2400
       )
-    )
+    ),
+    'none',
+    current_date
   ) AS expense
 )
 INSERT INTO tmp_expenses (label, expense_id)
@@ -149,30 +151,38 @@ WITH created AS (
         'user_id', (SELECT user_id FROM tmp_users WHERE label = 'debtor'),
         'amount_cents', 900
       )
-    )
+    ),
+    'none',
+    current_date
   ) AS expense
 )
 INSERT INTO tmp_expenses (label, expense_id)
 SELECT 'snacks', (expense).id FROM created;
 
--- Debtor marks paid (JSON response)
+-- Debtor pays all owed to creator (bulk)
 SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'debtor'), true);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 WITH payload AS (
-  SELECT public.expenses_mark_share_paid(
-    (SELECT expense_id FROM tmp_expenses WHERE label = 'dinner')
+  SELECT public.expenses_pay_my_due(
+    (SELECT user_id FROM tmp_users WHERE label = 'creator')
   ) AS body
 )
 SELECT is(
-  (SELECT (body->>'deduped')::boolean FROM payload),
-  FALSE,
-  'First mark_share_paid is not deduped'
+  (SELECT (body->>'splitsPaid')::int FROM payload),
+  2,
+  'Bulk pay marks both owed splits as paid'
 );
 
--- Debtor marks second expense paid
-SELECT public.expenses_mark_share_paid(
-  (SELECT expense_id FROM tmp_expenses WHERE label = 'snacks')
+WITH payload AS (
+  SELECT public.expenses_pay_my_due(
+    (SELECT user_id FROM tmp_users WHERE label = 'creator')
+  ) AS body
+)
+SELECT is(
+  (SELECT (body->>'expensesNewlyFullyPaid')::int FROM payload),
+  0,
+  'Second bulk pay call is idempotent for fully paid expenses'
 );
 
 -- Creator sees only debtor share (creator auto-paid split filtered out)
@@ -290,19 +300,19 @@ SELECT is(
   'Paid-to-me list hides entries once all unseen are viewed'
 );
 
--- Calling mark_share_paid again is deduped
+-- Calling bulk pay again stays idempotent
 SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'debtor'), true);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
 WITH payload AS (
-  SELECT public.expenses_mark_share_paid(
-    (SELECT expense_id FROM tmp_expenses WHERE label = 'dinner')
+  SELECT public.expenses_pay_my_due(
+    (SELECT user_id FROM tmp_users WHERE label = 'creator')
   ) AS body
 )
 SELECT is(
-  (SELECT (body->>'deduped')::boolean FROM payload),
-  TRUE,
-  'Second mark_share_paid is deduped'
+  (SELECT (body->>'splitsPaid')::int FROM payload),
+  0,
+  'Repeat bulk pay no-ops once everything is paid'
 );
 
 SELECT * FROM finish();

@@ -48,6 +48,24 @@ class ShareCreateNotesChanged extends ShareCreateEvent {
   List<Object?> get props => [value];
 }
 
+class ShareCreateStartDateChanged extends ShareCreateEvent {
+  const ShareCreateStartDateChanged(this.date);
+
+  final DateTime date;
+
+  @override
+  List<Object?> get props => [date];
+}
+
+class ShareCreateRecurrenceChanged extends ShareCreateEvent {
+  const ShareCreateRecurrenceChanged(this.recurrence);
+
+  final ExpenseRecurrenceInterval recurrence;
+
+  @override
+  List<Object?> get props => [recurrence];
+}
+
 class ShareCreateParticipantToggled extends ShareCreateEvent {
   const ShareCreateParticipantToggled(this.userId, this.isSelected);
 

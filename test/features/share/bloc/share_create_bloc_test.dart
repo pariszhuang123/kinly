@@ -104,6 +104,7 @@ void main() {
     registerFallbackValue(ExpenseSplitType.equal);
     registerFallbackValue(<String>[]);
     registerFallbackValue(<ExpenseCustomSplitInput>[]);
+    registerFallbackValue(ExpenseRecurrenceInterval.none);
   });
 
   setUp(() {
@@ -179,6 +180,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          recurrence: any(named: 'recurrence'),
+          startDate: any(named: 'startDate'),
         ),
       ).thenAnswer(
         (_) async => Expense(
@@ -192,6 +195,10 @@ void main() {
           notes: null,
           createdAt: DateTime.now().toUtc(),
           updatedAt: DateTime.now().toUtc(),
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime(2024, 1, 1),
+          planId: null,
+          fullyPaidAt: null,
         ),
       );
     },
@@ -220,6 +227,8 @@ void main() {
           splitType: null,
           memberIds: null,
           customSplits: null,
+          recurrence: ExpenseRecurrenceInterval.none,
+          startDate: any(named: 'startDate'),
         ),
       ).called(1);
     },
@@ -255,6 +264,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          recurrence: any(named: 'recurrence'),
+          startDate: any(named: 'startDate'),
         ),
       ).thenAnswer(
         (_) async => Expense(
@@ -268,6 +279,10 @@ void main() {
           notes: null,
           createdAt: DateTime.now().toUtc(),
           updatedAt: DateTime.now().toUtc(),
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime(2024, 1, 1),
+          planId: null,
+          fullyPaidAt: null,
         ),
       );
     },
@@ -296,6 +311,8 @@ void main() {
           splitType: ExpenseSplitType.equal,
           memberIds: ['member_a', 'member_b', 'member_self'],
           customSplits: null,
+          recurrence: ExpenseRecurrenceInterval.none,
+          startDate: any(named: 'startDate'),
         ),
       ).called(1);
     },
@@ -328,6 +345,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          recurrence: any(named: 'recurrence'),
+          startDate: any(named: 'startDate'),
         ),
       );
     },
@@ -351,6 +370,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          recurrence: any(named: 'recurrence'),
+          startDate: any(named: 'startDate'),
         ),
       ).thenThrow(
         const ExpenseException(ExpenseErrorCode.invalidAmount, 'invalid'),
@@ -422,6 +443,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          recurrence: any(named: 'recurrence'),
+          startDate: any(named: 'startDate'),
         ),
       ).thenAnswer(
         (_) async => Expense(
@@ -435,6 +458,10 @@ void main() {
           notes: null,
           createdAt: DateTime.now().toUtc(),
           updatedAt: DateTime.now().toUtc(),
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime(2024, 1, 1),
+          planId: null,
+          fullyPaidAt: null,
         ),
       );
     },
@@ -463,6 +490,8 @@ void main() {
           splitType: ExpenseSplitType.equal,
           memberIds: ['member_a', 'member_b'],
           customSplits: null,
+          recurrence: ExpenseRecurrenceInterval.none,
+          startDate: any(named: 'startDate'),
         ),
       ).called(1);
     },
@@ -498,6 +527,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          recurrence: any(named: 'recurrence'),
+          startDate: any(named: 'startDate'),
         ),
       ).thenAnswer(
         (_) async => Expense(
@@ -511,6 +542,10 @@ void main() {
           notes: 'note',
           createdAt: DateTime.now().toUtc(),
           updatedAt: DateTime.now().toUtc(),
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime(2024, 1, 1),
+          planId: null,
+          fullyPaidAt: null,
         ),
       );
     },
@@ -539,6 +574,8 @@ void main() {
           splitType: null,
           memberIds: null,
           customSplits: null,
+          recurrence: ExpenseRecurrenceInterval.none,
+          startDate: any(named: 'startDate'),
         ),
       ).called(1);
     },

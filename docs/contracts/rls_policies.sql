@@ -5,6 +5,8 @@ CREATE POLICY "avatars_select_authenticated" ON "public"."avatars" FOR SELECT US
 ALTER TABLE "public"."chore_events" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."chores" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."device_tokens" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."expense_plan_debtors" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."expense_plans" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."expense_splits" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."expenses" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."gratitude_wall_posts" ENABLE ROW LEVEL SECURITY;

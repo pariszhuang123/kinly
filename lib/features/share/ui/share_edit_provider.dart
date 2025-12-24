@@ -97,7 +97,10 @@ class ShareEditProvider extends StatelessWidget {
           splitMode: splitMode,
           selectedParticipantIds: selectedIds,
           customAmountInputs: customInputs,
+          startDate: expense.startDate,
+          recurrence: expense.recurrenceInterval,
         );
+        final canEdit = detail.canEdit;
         return BlocProvider(
           create:
               (_) => ShareCreateBloc(
@@ -109,10 +112,12 @@ class ShareEditProvider extends StatelessWidget {
                 amountLocked: detail.amountLocked,
                 allPaid: allPaid,
                 paidByOther: paidByOther,
+                canEdit: canEdit,
+                editDisabledReason: detail.editDisabledReason,
               )..add(const ShareCreateParticipantsRequested()),
           child: ShareCreateScreen(
             homeId: homeId,
-            allowDelete: allowDelete,
+            allowDelete: allowDelete && canEdit,
           ),
         );
       },

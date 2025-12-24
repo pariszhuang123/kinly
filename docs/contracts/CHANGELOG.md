@@ -9,9 +9,10 @@ Tracks versioned contract changes and related ADRs.
   - Define `Expense`, `ExpenseSplit`, and `ExpenseSummaryDto` entities plus enums.
   - Document lifecycle (draft → active → cancelled), debtor-only payments, derived summary fields, and access patterns.
   - 2025-11-21: Capture Supabase requirements: tables, grants, and RPCs (`expenses.create`, `expenses.edit`, `expenses.markSharePaid`, `expenses.cancel`, `expenses.getCurrentOwed`, `expenses.getCreatedByMe`). Tables remain RPC-only with RLS disabled + GRANT revokes per ADR-0003 (`docs/adr/ADR-0003-expenses-rpc-only-access.md`).
-  - 2025-11-22: Allow creators to participate in equal/custom splits (creator rows are persisted but auto-marked `paid`, at least one non-creator debtor is required, and each active expense must involve two unique members).
+  - 2025-11-22: Allow creators to participate in equal/custom splits (creator rows persisted but auto-marked `paid`; at least one non-creator debtor required; each active expense involves two unique members).
   - 2025-12-22: Add “Who paid me” recipient view state (`expense_splits.recipient_viewed_at`) and RPCs for Today + drilldown (`expenses.getCurrentPaidToMeDebtors`, `expenses.getCurrentPaidToMeByDebtorDetails`, `expenses.markPaidReceivedViewedForDebtor`). Existing paid splits remain unseen (no backfill) to surface badges during testing; creator auto-paid splits are excluded from paid-to-me responses.
-  - 2025-12-23: Paid-to-me RPCs now return debtor avatar + owner flag (`homes.owner_user_id` match) in both list and drilldown payloads.
+  - 2025-12-23: Paid-to-me RPCs return debtor avatar + owner flag (`homes.owner_user_id` match) in both list and drilldown payloads.
+  - 2025-12-27: Fold recurring activation into `expenses.create`/`expenses.edit`, add `expense_plans` + `expense_plan_debtors`, introduce `expense_status=converted` and `expense_plan_status`, add `expenses.payMyDue` bulk payment, make active expenses immutable, store `fully_paid_at` for idempotent quota decrements, and update `docs/contracts/share_recurring_v1.md`.
 - Notes: Home members can author expenses; drafts stay private; Today/Explore surfaces consume the summary RPCs.
 
 ## v2 — Homes Memberships/Invites Alignment
@@ -22,7 +23,7 @@ Tracks versioned contract changes and related ADRs.
   - Enforce: one current membership per user across homes; one current owner per home; no overlap per (user, home).
   - Invites: `code` is `CITEXT` with Crockford Base32 (6 chars) and added `usedCount`; removed `updatedAt`.
   - RLS: enabled on `homes`, `memberships`, and `invites`; anon/auth revoked on tables.
-- Notes: Contracts now reflect migration `20251111225015_home_membership_invites_table.sql`. Repositories should pin to v2.
+- Notes: Contracts reflect migration `20251111225015_home_membership_invites_table.sql`. Repositories should pin to v2.
 
 ## v1 — Home MVP
 - Date: 2025-11-03

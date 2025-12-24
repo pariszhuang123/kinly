@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/theme/kinly_sections.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../../core/ui/kinly_loader.dart';
 import '../../../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../../../core/ui/buttons/kinly_outlined_button.dart';
+import '../../../../../core/ui/inputs/kinly_dropdown_field.dart';
 import '../../../../../core/ui/inputs/kinly_text_field.dart';
+import '../../../../../core/ui/kinly_date_picker.dart';
+import '../../../../../core/ui/kinly_tab_bar.dart';
 import '../../../../../core/ui/members/kinly_selectable_member_avatar_row.dart';
+import '../../../../../core/ui/feedback/kinly_info_banner.dart';
+import '../../../../../core/ui/enums/kinly_banner_type.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/theme/color_tokens.dart';
 import '../../../../../core/homes/models.dart';
+import '../../../../../core/expenses/enums/expense_recurrence_interval.dart';
 import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
-import '../../../../../core/ui/kinly_tab_bar.dart';
 
 class ShareCreateFormView extends StatelessWidget {
   const ShareCreateFormView({
@@ -42,6 +49,20 @@ class ShareCreateFormView extends StatelessWidget {
   /// Callback to trigger delete (shows confirm dialog + dispatches event).
   final VoidCallback? onDeleteRequested;
 
+  String _mapEditDisabledReason(BuildContext context, String code) {
+    final s = S.of(context);
+    switch (code) {
+      case 'CONVERTED_TO_PLAN':
+        return s.shareEditDisabledConverted;
+      case 'RECURRING_CYCLE_IMMUTABLE':
+        return s.shareEditDisabledRecurringCycle;
+      case 'ACTIVE_IMMUTABLE':
+        return s.shareEditDisabledActive;
+      default:
+        return s.shareEditDisabledGeneric;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -49,9 +70,14 @@ class ShareCreateFormView extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final showValidation = state.showValidationErrors;
     final customSummary = state.evaluateCustomSplit();
-    final locked = state.isAmountLocked;
+    final editingDisabled = state.isEditing && !state.canEdit;
+    final locked = state.isAmountLocked || editingDisabled;
     final fullyPaid = state.allPaid;
     final deleteBlocked = state.paidByOther || locked || fullyPaid;
+    final recurrenceNeedsSplit =
+        showValidation &&
+        state.form.recurrence != ExpenseRecurrenceInterval.none &&
+        state.form.splitMode == null;
 
     // ------------------------------------------------------------------
     // Primary button behaviour:
@@ -61,9 +87,10 @@ class ShareCreateFormView extends StatelessWidget {
     // ------------------------------------------------------------------
     final isEditing = state.isEditing;
     final isPristineEdit = isEditing && !state.hasUserEdits;
-    final canDelete = allowDelete && isPristineEdit && !deleteBlocked;
+    final canDelete =
+        allowDelete && isPristineEdit && !deleteBlocked && !editingDisabled;
     final isDeleteAction = canDelete;
-    final hidePrimary = fullyPaid;
+    final hidePrimary = fullyPaid || editingDisabled;
 
     final String primaryLabel;
     if (!isEditing) {
@@ -77,6 +104,7 @@ class ShareCreateFormView extends StatelessWidget {
     final bool shouldDisable =
         state.isSubmitting ||
         state.isDeleting ||
+        editingDisabled ||
         // Only require splitMode when doing create/update.
         (!canDelete && isEditing && state.form.splitMode == null);
 
@@ -92,6 +120,15 @@ class ShareCreateFormView extends StatelessWidget {
     return ListView(
       children: [
         SizedBox(height: spacing.lg),
+        if (editingDisabled && state.editDisabledReason != null)
+          Padding(
+            padding: EdgeInsets.only(bottom: spacing.md),
+            child: KinlyInfoBanner(
+              message:
+                  _mapEditDisabledReason(context, state.editDisabledReason!),
+              type: KinlyBannerType.warning,
+            ),
+          ),
         _DescriptionField(
           controller: descriptionController,
           state: state,
@@ -103,6 +140,17 @@ class ShareCreateFormView extends StatelessWidget {
           state: state,
           showValidation: showValidation,
           locked: locked,
+        ),
+        SizedBox(height: spacing.lg),
+        _StartDateField(
+          state: state,
+          locked: locked,
+        ),
+        SizedBox(height: spacing.lg),
+        _RecurrenceField(
+          state: state,
+          locked: locked,
+          recurrenceNeedsSplit: recurrenceNeedsSplit,
         ),
         SizedBox(height: spacing.lg),
         _SplitModeSelector(state: state, locked: locked),
@@ -252,6 +300,139 @@ class _SplitModeSelector extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class _StartDateField extends StatelessWidget {
+  const _StartDateField({required this.state, required this.locked});
+
+  final ShareCreateState state;
+  final bool locked;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final dateLabel = DateFormat.yMMMMd().format(state.form.startDate);
+    final now = DateTime.now();
+    final firstDate = now.subtract(const Duration(days: 90));
+    final lastDate = now.add(const Duration(days: 365));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(s.shareCreateStartLabel, style: theme.textTheme.titleMedium),
+        SizedBox(height: spacing.xs),
+        KinlyOutlinedButton.text(
+          onPressed:
+              locked
+                  ? null
+                  : () async {
+                      final picked = await showKinlyDatePicker(
+                        context: context,
+                        initialDate: state.form.startDate,
+                        firstDate: DateTime(
+                          firstDate.year,
+                          firstDate.month,
+                          firstDate.day,
+                        ),
+                        lastDate: DateTime(
+                          lastDate.year,
+                          lastDate.month,
+                          lastDate.day,
+                        ),
+                      );
+                      if (picked != null && context.mounted) {
+                        context
+                            .read<ShareCreateBloc>()
+                            .add(ShareCreateStartDateChanged(picked));
+                      }
+                    },
+          label: dateLabel,
+        ),
+      ],
+    );
+  }
+}
+
+class _RecurrenceField extends StatelessWidget {
+  const _RecurrenceField({
+    required this.state,
+    required this.locked,
+    required this.recurrenceNeedsSplit,
+  });
+
+  final ShareCreateState state;
+  final bool locked;
+  final bool recurrenceNeedsSplit;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(s.shareCreateRecurrenceLabel, style: theme.textTheme.titleMedium),
+        SizedBox(height: spacing.xs),
+        Opacity(
+          opacity: locked ? 0.6 : 1.0,
+          child: IgnorePointer(
+            ignoring: locked,
+            child: KinlyDropdownField<ExpenseRecurrenceInterval>(
+              value: state.form.recurrence,
+              items:
+                  ExpenseRecurrenceInterval.values
+                      .map(
+                        (value) => DropdownMenuItem(
+                          value: value,
+                          child: Text(_recurrenceLabel(context, value)),
+                        ),
+                      )
+                      .toList(),
+              onChanged:
+                  (value) => context.read<ShareCreateBloc>().add(
+                    ShareCreateRecurrenceChanged(value!),
+                  ),
+            ),
+          ),
+        ),
+        if (recurrenceNeedsSplit)
+          Padding(
+            padding: EdgeInsets.only(top: spacing.xs),
+            child: Text(
+              s.shareCreateValidationRecurrenceSplit,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  String _recurrenceLabel(
+    BuildContext context,
+    ExpenseRecurrenceInterval recurrence,
+  ) {
+    final s = S.of(context);
+    switch (recurrence) {
+      case ExpenseRecurrenceInterval.none:
+        return s.shareCreateRecurrenceNone;
+      case ExpenseRecurrenceInterval.weekly:
+        return s.shareCreateRecurrenceWeekly;
+      case ExpenseRecurrenceInterval.every2Weeks:
+        return s.shareCreateRecurrenceEvery2Weeks;
+      case ExpenseRecurrenceInterval.monthly:
+        return s.shareCreateRecurrenceMonthly;
+      case ExpenseRecurrenceInterval.every2Months:
+        return s.shareCreateRecurrenceEvery2Months;
+      case ExpenseRecurrenceInterval.annual:
+        return s.shareCreateRecurrenceAnnual;
+    }
   }
 }
 

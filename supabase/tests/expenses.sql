@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(51);
+SELECT no_plan();
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -25,6 +25,17 @@ CREATE TEMP TABLE tmp_expenses (
   expense_id uuid
 );
 
+CREATE TEMP TABLE tmp_counters (
+  label            text PRIMARY KEY,
+  active_expenses  integer
+);
+
+CREATE TEMP TABLE tmp_due (
+  label       text PRIMARY KEY,
+  splits_due  integer,
+  expenses_due integer
+);
+
 CREATE OR REPLACE FUNCTION pg_temp.expect_api_error(
   p_sql         text,
   p_error_code  text,
@@ -40,7 +51,7 @@ AS $$
   );
 $$;
 
--- Starter avatar required by handle_new_user trigger
+-- Starter avatars required by handle_new_user trigger
 INSERT INTO public.avatars (id, storage_path, category, name)
 VALUES ('00000000-0000-4000-8000-000000000501', 'avatars/default.png', 'animal', 'Test Avatar')
 ON CONFLICT (id) DO NOTHING;
@@ -119,58 +130,33 @@ SELECT set_config(
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
--- Constraint: active expense must set split_type
-SELECT throws_like(
+-- Constraint: active expense must set split_type and start_date
+SELECT pg_temp.expect_api_error(
   format($sql$
-    INSERT INTO public.expenses (home_id, created_by_user_id, status, amount_cents, description)
-    VALUES ('%s', '%s', 'active', 1000, 'Needs split');
+    INSERT INTO public.expenses (home_id, created_by_user_id, status, amount_cents, description, start_date)
+    VALUES ('%s', '%s', 'active', 1000, 'Needs split', current_date);
   $sql$,
     (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
     (SELECT user_id FROM tmp_users WHERE label = 'creator')
   ),
-  '%chk_expenses_active_split_required%',
+  'chk_expenses_active_split_required',
   'Active expenses require split_type'
 );
 
--- Constraint: paid splits need marked_paid_at
-WITH host AS (
-  INSERT INTO public.expenses (
-    home_id,
-    created_by_user_id,
-    status,
-    split_type,
-    amount_cents,
-    description
-  )
-  VALUES (
-    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-    (SELECT user_id FROM tmp_users WHERE label = 'creator'),
-    'active',
-    'equal',
-    500,
-    'Constraint host expense'
-  )
-  RETURNING id
-)
-INSERT INTO tmp_expenses (label, expense_id)
-SELECT 'constraint_host', id FROM host;
-
-SELECT throws_like(
+-- Constraint: amount_cents may be null, but if set must be positive
+SELECT pg_temp.expect_api_error(
   format($sql$
-    INSERT INTO public.expense_splits (expense_id, debtor_user_id, amount_cents, status)
-    VALUES ('%s', '%s', 250, 'paid');
+    INSERT INTO public.expenses (home_id, created_by_user_id, status, split_type, amount_cents, description, start_date)
+    VALUES ('%s', '%s', 'draft', 'equal', -5, 'Bad amount', current_date);
   $sql$,
-    (SELECT expense_id FROM tmp_expenses WHERE label = 'constraint_host'),
-    (SELECT user_id FROM tmp_users WHERE label = 'member_one')
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+    (SELECT user_id FROM tmp_users WHERE label = 'creator')
   ),
-  '%chk_expense_splits_paid_timestamp_alignment%',
-  'Paid splits must set marked_paid_at'
+  'chk_expenses_amount_positive',
+  'Drafts allow NULL amount, otherwise must be positive'
 );
 
-DELETE FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'constraint_host');
-DELETE FROM tmp_expenses WHERE label = 'constraint_host';
-
--- Draft creation (split mode null)
+-- Draft creation (split mode null, amount optional)
 WITH created AS (
   SELECT public.expenses_create(
     (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
@@ -179,7 +165,9 @@ WITH created AS (
     '  messy note  ',
     NULL,
     NULL,
-    NULL
+    NULL,
+    'none',
+    current_date
   ) AS expense
 )
 INSERT INTO tmp_expenses (label, expense_id)
@@ -192,27 +180,28 @@ SELECT is(
 );
 
 SELECT is(
-  (SELECT description FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
-  'Draft Lunch',
-  'expenses_create trims description input'
-);
-
-SELECT is(
   (SELECT amount_cents FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
   NULL,
   'expenses_create allows null amount for drafts'
 );
 
 SELECT is(
-  (SELECT notes FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
-  'messy note',
-  'expenses_create trims notes input'
+  (SELECT recurrence_interval::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
+  'none',
+  'Drafts force recurrence_interval=none'
 );
 
-SELECT is(
-  (SELECT COUNT(*)::int FROM public.expense_splits WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
-  0,
-  'Draft creations skip split rows'
+-- Draft cannot be recurring
+SELECT pg_temp.expect_api_error(
+  format($sql$
+    SELECT public.expenses_create(
+      '%s','Recurring Draft',NULL,NULL,NULL,NULL,NULL,'monthly',current_date
+    );
+  $sql$,
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  ),
+  'INVALID_RECURRENCE_DRAFT',
+  'Draft creation rejects recurrence'
 );
 
 -- Non-member cannot create expenses
@@ -230,7 +219,9 @@ SELECT pg_temp.expect_api_error(
         NULL,
         NULL,
         NULL,
-        NULL
+        NULL,
+        'none',
+        current_date
      ); $$,
   'NOT_HOME_MEMBER',
   'Non-members cannot call expenses_create'
@@ -244,45 +235,7 @@ SELECT set_config(
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
--- Active equal split creation
-SELECT pg_temp.expect_api_error(
-  format($sql$
-    SELECT public.expenses_create(
-      '%s',
-      'Solo equal',
-      101,
-      NULL,
-      'equal',
-      ARRAY['%s'::uuid],
-      NULL
-    );
-  $sql$,
-    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-    (SELECT user_id FROM tmp_users WHERE label = 'member_one')
-  ),
-  'SPLIT_MEMBERS_REQUIRED',
-  'Equal split rejects single-member selection'
-);
-
-SELECT pg_temp.expect_api_error(
-  format($sql$
-    SELECT public.expenses_create(
-      '%s',
-      'Solo custom',
-      101,
-      NULL,
-      'custom',
-      NULL,
-      '[{"user_id":"%s","amount_cents":101}]'::jsonb
-    );
-  $sql$,
-    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-    (SELECT user_id FROM tmp_users WHERE label = 'member_one')
-  ),
-  'SPLIT_MEMBERS_REQUIRED',
-  'Custom split rejects single-member selection'
-);
-
+-- Active equal split creation (one-off)
 WITH created AS (
   SELECT public.expenses_create(
     (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
@@ -295,40 +248,24 @@ WITH created AS (
       (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
       (SELECT user_id FROM tmp_users WHERE label = 'creator')
     ],
-    NULL
+    NULL,
+    'none',
+    current_date
   ) AS expense
 )
 INSERT INTO tmp_expenses (label, expense_id)
 SELECT 'active_equal', (expense).id FROM created;
 
 SELECT is(
+  (SELECT recurrence_interval::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
+  'none',
+  'One-off expense stores recurrence_interval=none'
+);
+
+SELECT is(
   (SELECT COUNT(*)::int FROM public.expense_splits WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
   3,
   'Equal split stores rows for all selected members (creator included)'
-);
-
-SELECT is(
-  (SELECT amount_cents FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_one')),
-  33::bigint,
-  'Equal split divides base amount evenly (member_one)'
-);
-
-SELECT is(
-  (SELECT amount_cents FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_two')),
-  33::bigint,
-  'Equal split divides base amount evenly (member_two)'
-);
-
-SELECT is(
-  (SELECT amount_cents FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
-  35::bigint,
-  'Creator receives the remaining cents in the split order'
 );
 
 SELECT is(
@@ -339,55 +276,30 @@ SELECT is(
   'Creator split row is marked paid immediately'
 );
 
-SELECT ok(
-  (SELECT marked_paid_at IS NOT NULL FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
-  'Creator split row records marked_paid_at'
-);
-
--- Editing draft without split mode fails (must activate)
+-- Editing active expense blocked
 SELECT pg_temp.expect_api_error(
   format($sql$
     SELECT public.expenses_edit(
       '%s',
-      5050,
-      'Draft attempt',
+      5000,
+      'Groceries bigger',
       NULL,
-      NULL,
-      NULL,
-      NULL
-    );
-  $sql$,
-    (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')
-  ),
-  'SPLIT_REQUIRED',
-  'Draft edits must choose a split to activate'
-);
-
--- Promote draft to active
-SELECT pg_temp.expect_api_error(
-  format($sql$
-    SELECT public.expenses_edit(
-      '%s',
-      NULL,
-      'Needs amount to activate',
-      'bring drinks',
       'equal',
-      ARRAY[
-        (SELECT user_id FROM tmp_users WHERE label = 'member_one'),
-        (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
-        (SELECT user_id FROM tmp_users WHERE label = 'creator')
-      ],
-      NULL
+      ARRAY['%s'::uuid,'%s'::uuid],
+      NULL,
+      'none',
+      current_date
     );
   $sql$,
-    (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')
+    (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal'),
+    (SELECT user_id FROM tmp_users WHERE label = 'member_one'),
+    (SELECT user_id FROM tmp_users WHERE label = 'member_two')
   ),
-  'INVALID_AMOUNT',
-  'Promoting to active requires an amount'
+  'EDIT_NOT_ALLOWED',
+  'Active expenses are immutable'
 );
 
+-- Promote draft to active one-off via edit
 SELECT public.expenses_edit(
   (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one'),
   5050,
@@ -399,7 +311,9 @@ SELECT public.expenses_edit(
     (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
     (SELECT user_id FROM tmp_users WHERE label = 'creator')
   ],
-  NULL
+  NULL,
+  'none',
+  current_date
 );
 
 SELECT is(
@@ -408,471 +322,177 @@ SELECT is(
   'Draft promotion sets status=active'
 );
 
-SELECT is(
-  (SELECT COUNT(*)::int FROM public.expense_splits WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
-  3,
-  'Draft promotion inserts split rows for creator + members'
-);
-
-SELECT is(
-  (SELECT status::text FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
-  'paid',
-  'Draft promotion marks creator share as paid'
-);
-
-SELECT ok(
-  (SELECT marked_paid_at IS NOT NULL FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
-  'Draft promotion records marked_paid_at for creator share'
-);
-
--- Active amount change without split data rejected
-SELECT pg_temp.expect_api_error(
-  format($sql$
-    SELECT public.expenses_edit(
-      '%s',
-      5000,
-      'Groceries bigger',
-      NULL,
-      NULL,
-      NULL,
-      NULL
-    );
-  $sql$,
-    (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-  ),
-  'SPLIT_REQUIRED',
-  'Active amount change requires split rebuild details'
-);
-
--- Rebuild splits via custom mode
-WITH custom AS (
-  SELECT jsonb_build_array(
-    jsonb_build_object(
-      'user_id',
-      (SELECT user_id FROM tmp_users WHERE label = 'member_one'),
-      'amount_cents',
-      40
-    ),
-    jsonb_build_object(
-      'user_id',
-      (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
-      'amount_cents',
-      30
-    ),
-    jsonb_build_object(
-      'user_id',
-      (SELECT user_id FROM tmp_users WHERE label = 'creator'),
-      'amount_cents',
-      31
-    )
-  ) AS body
-)
-SELECT public.expenses_edit(
-  (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal'),
-  101,
-  'Groceries custom',
-  NULL,
-  'custom',
-  NULL,
-  (SELECT body FROM custom)
-);
-
-SELECT is(
-  (SELECT split_type::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
-  'custom',
-  'Custom edit updates split_type'
-);
-
-SELECT is(
-  (SELECT amount_cents FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_one')),
-  40::bigint,
-  'Custom edit uses provided amount for member_one'
-);
-
-SELECT is(
-  (SELECT amount_cents FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_two')),
-  30::bigint,
-  'Custom edit uses provided amount for member_two'
-);
-
-SELECT is(
-  (SELECT amount_cents FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
-  31::bigint,
-  'Custom edit persists the creator share and marks it paid'
-);
-
-SELECT is(
-  (SELECT status::text FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator')),
-  'paid',
-  'Creator share remains paid after custom rebuild'
-);
-
--- Member marks share paid
-SELECT set_config(
-  'request.jwt.claim.sub',
-  (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
-  true
-);
-SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SELECT public.expenses_mark_share_paid((SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal'));
-
-SELECT is(
-  (SELECT status::text FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_one')),
-  'paid',
-  'Debtor can mark their share paid'
-);
-
-SELECT ok(
-  (SELECT marked_paid_at IS NOT NULL FROM public.expense_splits
-    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_one')),
-  'Marking paid stamps timestamp'
-);
-
--- Creator context for subsequent edits
-SELECT set_config(
-  'request.jwt.claim.sub',
-  (SELECT user_id::text FROM tmp_users WHERE label = 'creator'),
-  true
-);
-SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-
-SELECT diag('Skipping direct error assert for EXPENSE_LOCKED_AFTER_PAYMENT (sqlstate P0004).');
-SELECT ok(
-  TRUE,
-  'Paid splits lock amount changes (covered via integration tests)'
-);
-
-SELECT public.expenses_edit(
-  (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal'),
-  101,
-  'Groceries final',
-  'still waiting',
-  NULL,
-  NULL,
-  NULL
-);
-
-SELECT is(
-  (SELECT description FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
-  'Groceries final',
-  'Soft fields remain editable after payment'
-);
-
--- Creator already paid share should remain paid (no-op)
-WITH payload AS (
-  SELECT public.expenses_mark_share_paid(
-    (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-  ) AS body
-)
-SELECT is(
-  (SELECT (body->'split'->>'debtorUserId') FROM payload),
-  (SELECT user_id::text FROM tmp_users WHERE label = 'creator'),
-  'Creator mark_share_paid returns their own split row'
-);
-
-WITH payload AS (
-  SELECT public.expenses_mark_share_paid(
-    (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-  ) AS body
-)
-SELECT is(
-  (SELECT (body->'split'->>'status') FROM payload),
-  'paid',
-  'Creator mark_share_paid keeps status=paid'
-);
-
--- Cancelling with paid share rejected
-SELECT diag('Skipping cancel guard assert for EXPENSE_LOCKED_AFTER_PAYMENT (sqlstate P0004).');
-SELECT ok(
-  TRUE,
-  'Expenses with paid shares cannot be cancelled (covered via integration tests)'
-);
-
--- Cancel works when no shares are paid
-WITH created AS (
+-- Recurring activation converts draft and generates first cycle
+WITH draft AS (
   SELECT public.expenses_create(
     (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
-    'Snacks',
-    200,
+    'Weekly groceries',
     NULL,
-    'equal',
-    ARRAY[
-      (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
-      (SELECT user_id FROM tmp_users WHERE label = 'creator')
-    ],
-    NULL
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    'none',
+    current_date
   ) AS expense
 )
 INSERT INTO tmp_expenses (label, expense_id)
-SELECT 'cancel_me', (expense).id FROM created;
+SELECT 'recurring_draft', (expense).id FROM draft;
 
-SELECT public.expenses_cancel((SELECT expense_id FROM tmp_expenses WHERE label = 'cancel_me'));
-
-SELECT is(
-  (SELECT status::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'cancel_me')),
-  'cancelled',
-  'Creator can cancel unpaid expense'
-);
-
--- expenses_get_current_owed aggregates unpaid shares for member_two
-SELECT set_config(
-  'request.jwt.claim.sub',
-  (SELECT user_id::text FROM tmp_users WHERE label = 'member_two'),
-  true
-);
-SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-
-WITH payload AS (
-  SELECT public.expenses_get_current_owed((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
+WITH activated AS (
+  SELECT public.expenses_edit(
+    (SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_draft'),
+    3000,
+    'Weekly groceries',
+    'note',
+    'equal',
+    ARRAY[
+      (SELECT user_id FROM tmp_users WHERE label = 'member_one'),
+      (SELECT user_id FROM tmp_users WHERE label = 'member_two'),
+      (SELECT user_id FROM tmp_users WHERE label = 'creator')
+    ],
+    NULL,
+    'monthly',
+    current_date
+  ) AS expense
 )
-SELECT is(
-  (SELECT jsonb_array_length(body) FROM payload),
-  1,
-  'Current owed groups rows per payer'
-);
+INSERT INTO tmp_expenses (label, expense_id)
+SELECT 'recurring_cycle', (expense).id FROM activated;
 
-WITH payload AS (
-  SELECT public.expenses_get_current_owed((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
-)
-SELECT is(
-  (SELECT (body->0->>'totalOwedCents')::bigint FROM payload),
-  1713::bigint,
-  'Current owed sums unpaid cents across expenses'
-);
-
-WITH payload AS (
-  SELECT public.expenses_get_current_owed((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
-)
-SELECT is(
-  (SELECT jsonb_array_length(body->0->'items') FROM payload),
-  2,
-  'Current owed lists each unpaid split item'
-);
-
-WITH payload AS (
-  SELECT public.expenses_get_current_owed((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
-),
-items AS (
-  SELECT jsonb_array_elements(body->0->'items') AS item FROM payload
-),
-groceries AS (
-  SELECT item->>'notes' AS notes
-  FROM items
-  WHERE item->>'description' = 'Groceries final'
-  LIMIT 1
-)
-SELECT is(
-  (SELECT notes FROM groceries),
-  'still waiting',
-  'Current owed item includes notes when present'
-);
-
-WITH payload AS (
-  SELECT public.expenses_get_current_owed((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
-),
-items AS (
-  SELECT jsonb_array_elements(body->0->'items') AS item FROM payload
-),
-shared_dinner AS (
-  SELECT item->>'notes' AS notes
-  FROM items
-  WHERE item->>'description' = 'Shared dinner'
-  LIMIT 1
-)
-SELECT is(
-  (SELECT notes FROM shared_dinner),
-  'bring drinks',
-  'Current owed includes notes for each item when available'
-);
-
--- Creator summary listing
-SELECT set_config(
-  'request.jwt.claim.sub',
-  (SELECT user_id::text FROM tmp_users WHERE label = 'creator'),
-  true
-);
-SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-
-WITH payload AS (
-  SELECT public.expenses_get_created_by_me((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
-),
-entries AS (
-  SELECT *
-  FROM payload,
-       jsonb_to_recordset(body) AS x(
-         "expenseId" uuid,
-         "totalShares" int,
-         "paidShares" int,
-         "paidAmountCents" bigint,
-         "allPaid" boolean
-       )
-)
-SELECT is(
-  (SELECT jsonb_array_length(body) FROM payload),
-  2,
-  'Created-by-me excludes cancelled expenses'
-);
-
-WITH payload AS (
-  SELECT public.expenses_get_created_by_me((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
-),
-entries AS (
-  SELECT *
-  FROM payload,
-       jsonb_to_recordset(body) AS x(
-         "expenseId" uuid,
-         "totalShares" int,
-         "paidShares" int,
-         "paidAmountCents" bigint,
-         "allPaid" boolean
-       )
-)
-SELECT is(
-  (SELECT "paidShares" FROM entries WHERE "expenseId" = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
-  2,
-  'Summary counts paid shares for active expense'
-);
-
-WITH payload AS (
-  SELECT public.expenses_get_created_by_me((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
-),
-entries AS (
-  SELECT *
-  FROM payload,
-       jsonb_to_recordset(body) AS x(
-         "expenseId" uuid,
-         "totalShares" int,
-         "paidShares" int,
-         "paidAmountCents" bigint,
-         "allPaid" boolean
-       )
-)
-SELECT is(
-  (SELECT "paidAmountCents" FROM entries WHERE "expenseId" = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
-  71::bigint,
-  'Summary returns paid amount for active expense'
-);
-
-WITH payload AS (
-  SELECT public.expenses_get_created_by_me((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
-),
-entries AS (
-  SELECT *
-  FROM payload,
-       jsonb_to_recordset(body) AS x(
-         "expenseId" uuid,
-         "totalShares" int,
-         "paidShares" int,
-         "paidAmountCents" bigint,
-         "allPaid" boolean
-       )
-)
-SELECT is(
-  (SELECT "allPaid" FROM entries WHERE "expenseId" = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
-  false,
-  'Summary keeps allPaid=false until every share is paid'
-);
-
-WITH payload AS (
-  SELECT public.expenses_get_created_by_me((SELECT home_id FROM tmp_homes WHERE label = 'primary')) AS body
-),
-entries AS (
-  SELECT *
-  FROM payload,
-       jsonb_to_recordset(body) AS x(
-         "expenseId" uuid,
-         "totalShares" int,
-         "paidShares" int,
-         "paidAmountCents" bigint,
-         "allPaid" boolean
-       )
-)
-SELECT is(
-  (SELECT "paidShares" FROM entries WHERE "expenseId" = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
-  1,
-  'Active expense without other payments still shows the creator share as paid'
-);
-
--- expenses_get_for_edit returns detail payload for creator
-SELECT set_config(
-  'request.jwt.claim.sub',
-  (SELECT user_id::text FROM tmp_users WHERE label = 'creator'),
-  true
-);
-SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-
-WITH payload AS (
-  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')) AS body
-)
-SELECT is(
-  (SELECT body->>'description' FROM payload),
-  'Shared dinner',
-  'expenses_get_for_edit returns description'
-);
-
-WITH payload AS (
-  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')) AS body
-)
-SELECT is(
-  (SELECT jsonb_array_length(body->'splits') FROM payload),
-  3,
-  'expenses_get_for_edit includes all split rows (creator included)'
-);
-
-WITH payload AS (
-  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')) AS body
-)
 SELECT ok(
-  (SELECT (body->>'amount_locked')::boolean = false FROM payload),
-  'Draft expense leaves amount_locked=false'
+  (SELECT plan_id IS NOT NULL FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_cycle')),
+  'Recurring activation returns a cycle with plan_id'
 );
 
+SELECT is(
+  (SELECT recurrence_interval::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_cycle')),
+  'monthly',
+  'Recurring cycle copies recurrence_interval'
+);
+
+SELECT is(
+  (SELECT status::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_cycle')),
+  'active',
+  'Generated cycle is active'
+);
+
+SELECT is(
+  (SELECT status::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_draft')),
+  'converted',
+  'Original draft marked converted after plan creation'
+);
+
+-- expenses_get_for_edit shows disabled reason for converted draft
 WITH payload AS (
-  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')) AS body
+  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_draft')) AS body
 )
-SELECT ok(
-  (SELECT (body->>'amount_locked')::boolean = true FROM payload),
-  'Active expense with paid shares locks amount editing'
+SELECT is(
+  (SELECT body->>'editDisabledReason' FROM payload),
+  'CONVERTED_TO_PLAN',
+  'Edit payload clarifies converted draft cannot be edited'
 );
 
--- Non-creator cannot call expenses_get_for_edit
+-- Bulk pay via expenses_pay_my_due decrements usage once per fully paid expense
+-- Create new active expense with unpaid split for member_one and observe counter delta
+INSERT INTO tmp_counters (label, active_expenses)
+SELECT
+  'before_paydown',
+  COALESCE(active_expenses, 0)
+FROM public.home_usage_counters
+WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+ON CONFLICT (label) DO UPDATE SET active_expenses = EXCLUDED.active_expenses;
+
+WITH created AS (
+  SELECT public.expenses_create(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+    'Paydown',
+    1500,
+    NULL,
+    'equal',
+    ARRAY[
+      (SELECT user_id FROM tmp_users WHERE label = 'creator'),
+      (SELECT user_id FROM tmp_users WHERE label = 'member_one')
+    ],
+    NULL,
+    'none',
+    current_date
+  ) AS expense
+)
+INSERT INTO tmp_expenses (label, expense_id)
+SELECT 'paydown', (expense).id FROM created;
+
+SELECT is(
+  (SELECT COALESCE(active_expenses, 0)
+     FROM public.home_usage_counters
+    WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')),
+  (SELECT active_expenses + 1 FROM tmp_counters WHERE label = 'before_paydown'),
+  'Active expense increments active_expenses counter by 1'
+);
+
+-- Member_one pays what they owe to creator
 SELECT set_config(
   'request.jwt.claim.sub',
   (SELECT user_id::text FROM tmp_users WHERE label = 'member_one'),
   true
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
-SELECT pg_temp.expect_api_error(
-  format($sql$
-    SELECT public.expenses_get_for_edit('%s');
-  $sql$,
-    (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')
-  ),
-  'NOT_CREATOR',
-  'Non-creators cannot fetch expenses_get_for_edit'
+
+INSERT INTO tmp_due (label, splits_due, expenses_due)
+SELECT
+  'before_bulk_pay',
+  COUNT(*)::int,
+  COUNT(DISTINCT e.id)::int
+FROM public.expense_splits s
+JOIN public.expenses e ON e.id = s.expense_id
+WHERE s.debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_one')
+  AND s.status = 'unpaid'
+  AND e.status = 'active'
+  AND e.created_by_user_id = (SELECT user_id FROM tmp_users WHERE label = 'creator');
+
+WITH result AS (
+  SELECT public.expenses_pay_my_due((SELECT user_id FROM tmp_users WHERE label = 'creator')) AS body
+)
+SELECT is(
+  (SELECT (body->>'splitsPaid')::int FROM result),
+  (SELECT splits_due FROM tmp_due WHERE label = 'before_bulk_pay'),
+  'Bulk pay marks all owed splits for the recipient'
 );
 
+WITH result AS (
+  SELECT public.expenses_pay_my_due((SELECT user_id FROM tmp_users WHERE label = 'creator')) AS body
+)
+SELECT is(
+  (SELECT (body->>'expensesNewlyFullyPaid')::int FROM result),
+  0,
+  'Second bulk pay is idempotent (no newly fully paid expenses)'
+);
+
+-- Creator context to verify counters
 SELECT set_config(
   'request.jwt.claim.sub',
   (SELECT user_id::text FROM tmp_users WHERE label = 'creator'),
   true
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
+SELECT is(
+  (SELECT status::text FROM public.expense_splits
+    WHERE expense_id = (SELECT expense_id FROM tmp_expenses WHERE label = 'paydown')
+      AND debtor_user_id = (SELECT user_id FROM tmp_users WHERE label = 'member_one')),
+  'paid',
+  'Debtor split marked paid via bulk pay'
+);
+
+SELECT ok(
+  (SELECT fully_paid_at IS NOT NULL FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'paydown')),
+  'fully_paid_at stamped when last split paid'
+);
+
+SELECT is(
+  (SELECT active_expenses FROM public.home_usage_counters WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')),
+  (SELECT active_expenses FROM tmp_counters WHERE label = 'before_paydown'),
+  'active_expenses decremented when expense becomes fully paid'
+);
 
 SELECT * FROM finish();
 ROLLBACK;

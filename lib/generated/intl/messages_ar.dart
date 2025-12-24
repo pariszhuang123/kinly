@@ -749,6 +749,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
       "لقد وصلت إلى الحد المجاني وهو 10 مشاركات نشطة أو مسودات. أغلق واحدة أو ألغِها للمتابعة.",
     ),
+    "shareCreateErrorRecurrenceDraft": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن تكرار المسودات حتى تضيف تقسيمًا.",
+    ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل أعضاء المنزل.",
     ),
@@ -762,6 +765,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateParticipantsLabel": MessageLookupByLibrary.simpleMessage(
       "من يشارك؟",
     ),
+    "shareCreateRecurrenceAnnual": MessageLookupByLibrary.simpleMessage("سنوي"),
+    "shareCreateRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
+      "كل شهرين",
+    ),
+    "shareCreateRecurrenceEvery2Weeks": MessageLookupByLibrary.simpleMessage(
+      "كل أسبوعين",
+    ),
+    "shareCreateRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
+      "التكرار",
+    ),
+    "shareCreateRecurrenceMonthly": MessageLookupByLibrary.simpleMessage(
+      "شهري",
+    ),
+    "shareCreateRecurrenceNone": MessageLookupByLibrary.simpleMessage(
+      "مرة واحدة",
+    ),
+    "shareCreateRecurrenceWeekly": MessageLookupByLibrary.simpleMessage(
+      "أسبوعي",
+    ),
     "shareCreateRetry": MessageLookupByLibrary.simpleMessage("حاول مرة أخرى"),
     "shareCreateSplitCustom": MessageLookupByLibrary.simpleMessage(
       "تقسيم مخصص",
@@ -771,6 +793,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage(
       "نوع التقسيم",
+    ),
+    "shareCreateStartLabel": MessageLookupByLibrary.simpleMessage(
+      "متى ينطبق هذا؟",
     ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("إنشاء"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage(
@@ -801,8 +826,21 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "اختر شخصين على الأقل لتقسيم المبلغ.",
         ),
+    "shareCreateValidationRecurrence": MessageLookupByLibrary.simpleMessage(
+      "اختر عدد مرات التكرار.",
+    ),
+    "shareCreateValidationRecurrenceSplit":
+        MessageLookupByLibrary.simpleMessage(
+          "اختر طريقة التقسيم قبل ضبط التكرار.",
+        ),
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "اختر طريقة المشاركة.",
+    ),
+    "shareCreateValidationStartDate": MessageLookupByLibrary.simpleMessage(
+      "اختر تاريخ البدء.",
+    ),
+    "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
+      "اختر تاريخًا ضمن النطاق المسموح.",
     ),
     "shareCreatedListActiveAmount": m13,
     "shareCreatedListActiveSubtitle": m14,
@@ -843,6 +881,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
       "تم حذف Share.",
+    ),
+    "shareEditDisabledActive": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن تعديل النفقات النشطة.",
+    ),
+    "shareEditDisabledConverted": MessageLookupByLibrary.simpleMessage(
+      "تم تحويل هذه النفقة إلى خطة ولا يمكن تعديلها.",
+    ),
+    "shareEditDisabledGeneric": MessageLookupByLibrary.simpleMessage(
+      "لا يمكنك تعديل هذه النفقة الآن.",
+    ),
+    "shareEditDisabledRecurringCycle": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن تعديل الدورات المتكررة هنا.",
     ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل هذه المسودة.",

@@ -24,6 +24,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     bool amountLocked = false,
     bool allPaid = false,
     bool paidByOther = false,
+    bool canEdit = true,
+    String? editDisabledReason,
   }) : _homeId = homeId,
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
@@ -35,6 +37,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
             isAmountLocked: amountLocked,
             allPaid: allPaid,
             paidByOther: paidByOther,
+            canEdit: canEdit,
+            editDisabledReason: editDisabledReason,
           ),
        ) {
     on<ShareCreateParticipantsRequested>(_onParticipantsRequested);
@@ -44,6 +48,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     on<ShareCreateNotesChanged>(_onNotesChanged);
     on<ShareCreateParticipantToggled>(_onParticipantToggled);
     on<ShareCreateCustomAmountChanged>(_onCustomAmountChanged);
+    on<ShareCreateStartDateChanged>(_onStartDateChanged);
+    on<ShareCreateRecurrenceChanged>(_onRecurrenceChanged);
     on<ShareCreateSubmitted>(_onSubmitted);
     on<ShareCreateDeleted>(_onDeleted);
   }
@@ -141,6 +147,10 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   ) {
     var nextForm = state.form.copyWith(
       splitMode: event.mode, // ShareSplitMode? now
+      recurrence:
+          event.mode == null
+              ? ExpenseRecurrenceInterval.none
+              : state.form.recurrence,
     );
 
     final isSwitchingToEqual = event.mode == ShareSplitMode.equal;
@@ -190,22 +200,55 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     emit(state.copyWith(form: updated, hasUserEdits: true));
   }
 
+  void _onStartDateChanged(
+    ShareCreateStartDateChanged event,
+    Emitter<ShareCreateState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        form: state.form.copyWith(startDate: event.date),
+        hasUserEdits: true,
+      ),
+    );
+  }
+
+  void _onRecurrenceChanged(
+    ShareCreateRecurrenceChanged event,
+    Emitter<ShareCreateState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        form: state.form.copyWith(recurrence: event.recurrence),
+        hasUserEdits: true,
+      ),
+    );
+  }
+
   Future<void> _onSubmitted(
     ShareCreateSubmitted event,
     Emitter<ShareCreateState> emit,
   ) async {
+    if (state.isEditing && !state.canEdit) {
+      return;
+    }
+
     final form = state.form;
     final amountCents = form.amountCents;
     final descriptionValid = form.hasValidDescription;
     final amountValid = amountCents != null && amountCents > 0;
     final splitMode = form.splitMode;
+    final recurrence = form.recurrence;
+    final startDate = form.startDate;
     final isEditing = state.isEditing;
     final editingExpenseId = state.editingExpenseId;
     final amountLocked = state.isAmountLocked;
     final requiresAmount =
         isEditing ? !amountLocked : splitMode != null;
 
-    var isValid = descriptionValid && (!requiresAmount || amountValid);
+    var isValid =
+        descriptionValid &&
+        (!requiresAmount || amountValid) &&
+        (splitMode != null || recurrence == ExpenseRecurrenceInterval.none);
 
     List<String>? memberIds;
     List<ExpenseCustomSplitInput>? customSplits;
@@ -275,6 +318,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
                 splitType: splitType,
                 memberIds: memberIds,
                 customSplits: customSplits,
+                recurrence: recurrence,
+                startDate: startDate,
               )
               : await _expensesRepository.create(
                 homeId: _homeId,
@@ -284,6 +329,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
                 splitType: splitType,
                 memberIds: memberIds,
                 customSplits: customSplits,
+                recurrence: recurrence,
+                startDate: startDate,
               );
 
       emit(

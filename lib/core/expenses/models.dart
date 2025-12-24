@@ -1,3 +1,4 @@
+import 'enums/expense_recurrence_interval.dart';
 import 'enums/expense_share_status.dart';
 import 'enums/expense_split_type.dart';
 import 'enums/expense_status.dart';
@@ -6,6 +7,7 @@ import '../time/timezone.dart';
 export 'enums/expense_share_status.dart';
 export 'enums/expense_split_type.dart';
 export 'enums/expense_status.dart';
+export 'enums/expense_recurrence_interval.dart';
 
 /// Top-level expense record returned by Supabase RPCs.
 class Expense {
@@ -20,6 +22,10 @@ class Expense {
     required this.notes,
     required this.createdAt,
     required this.updatedAt,
+    required this.recurrenceInterval,
+    required this.startDate,
+    this.planId,
+    this.fullyPaidAt,
   });
 
   final String id;
@@ -32,8 +38,18 @@ class Expense {
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? planId;
+  final ExpenseRecurrenceInterval recurrenceInterval;
+  final DateTime startDate;
+  final DateTime? fullyPaidAt;
 
   factory Expense.fromJson(Map<String, dynamic> json) {
+    final recurrenceWire =
+        json['recurrenceInterval'] ?? json['recurrence_interval'];
+    final startDateRaw = json['startDate'] ?? json['start_date'];
+    final planId = json['planId'] ?? json['plan_id'];
+    final fullyPaidRaw = json['fullyPaidAt'] ?? json['fully_paid_at'];
+
     return Expense(
       id: json['id'] as String,
       homeId: json['home_id'] as String,
@@ -45,8 +61,19 @@ class Expense {
       notes: json['notes'] as String?,
       createdAt: parseTimestampToLocal(json['created_at'])!,
       updatedAt: parseTimestampToLocal(json['updated_at'])!,
+      planId: planId as String?,
+      recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
+        recurrenceWire as String?,
+      ),
+      startDate:
+          parseDateToLocal(startDateRaw) ??
+          parseTimestampToLocal(startDateRaw) ??
+          parseTimestampToLocal(json['created_at'])!,
+      fullyPaidAt: parseTimestampToLocal(fullyPaidRaw),
     );
   }
+
+  bool get isRecurring => recurrenceInterval != ExpenseRecurrenceInterval.none;
 }
 
 /// Details for each debtor share.
@@ -82,11 +109,15 @@ class ExpenseForEdit {
     required this.expense,
     required this.splits,
     required this.amountLocked,
+    required this.canEdit,
+    required this.editDisabledReason,
   });
 
   final Expense expense;
   final List<ExpenseSplit> splits;
   final bool amountLocked;
+  final bool canEdit;
+  final String? editDisabledReason;
 
   factory ExpenseForEdit.fromJson(Map<String, dynamic> json) {
     final rawSplits = json['splits'];
@@ -104,6 +135,8 @@ class ExpenseForEdit {
       expense: Expense.fromJson(json),
       splits: splits,
       amountLocked: json['amount_locked'] as bool? ?? false,
+      canEdit: json['canEdit'] as bool? ?? true,
+      editDisabledReason: json['editDisabledReason'] as String?,
     );
   }
 }
@@ -183,6 +216,9 @@ class ExpenseCreatedSummary {
     required this.paidAmountCents,
     required this.allPaid,
     required this.createdAt,
+    required this.recurrenceInterval,
+    required this.startDate,
+    this.planId,
     this.splitType,
     this.fullyPaidAt,
   });
@@ -200,10 +236,18 @@ class ExpenseCreatedSummary {
   final bool allPaid;
   final DateTime createdAt;
   final DateTime? fullyPaidAt;
+  final String? planId;
+  final ExpenseRecurrenceInterval recurrenceInterval;
+  final DateTime startDate;
 
   bool get isDraft => status == ExpenseStatus.draft;
 
   factory ExpenseCreatedSummary.fromJson(Map<String, dynamic> json) {
+    final recurrenceWire =
+        json['recurrenceInterval'] ?? json['recurrence_interval'];
+    final startDateRaw = json['startDate'] ?? json['start_date'];
+    final planId = json['planId'] ?? json['plan_id'];
+
     return ExpenseCreatedSummary(
       expenseId: json['expenseId'] as String,
       homeId: json['homeId'] as String,
@@ -218,6 +262,14 @@ class ExpenseCreatedSummary {
       allPaid: json['allPaid'] as bool? ?? false,
       createdAt: parseTimestampToLocal(json['createdAt'])!,
       fullyPaidAt: parseTimestampToLocal(json['fullyPaidAt']),
+      planId: planId as String?,
+      recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
+        recurrenceWire as String?,
+      ),
+      startDate:
+          parseDateToLocal(startDateRaw) ??
+          parseTimestampToLocal(startDateRaw) ??
+          parseTimestampToLocal(json['createdAt'])!,
     );
   }
 }

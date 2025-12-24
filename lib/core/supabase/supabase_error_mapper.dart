@@ -669,6 +669,30 @@ class SupabaseErrorMapper {
             parsed.message,
             details: parsed.details,
           );
+        case 'INVALID_RECURRENCE':
+          return ExpenseException(
+            ExpenseErrorCode.invalidRecurrence,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_RECURRENCE_DRAFT':
+          return ExpenseException(
+            ExpenseErrorCode.invalidRecurrenceDraft,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_START_DATE':
+          return ExpenseException(
+            ExpenseErrorCode.invalidStartDate,
+            parsed.message,
+            details: parsed.details,
+          );
+        case 'INVALID_START_DATE_RANGE':
+          return ExpenseException(
+            ExpenseErrorCode.invalidStartDateRange,
+            parsed.message,
+            details: parsed.details,
+          );
         case 'NOT_HOME_MEMBER':
           return ExpenseException(
             ExpenseErrorCode.notHomeMember,

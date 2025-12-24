@@ -769,6 +769,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
       "You\'re at the free limit of active bills. Upgrade for more space.",
     ),
+    "shareCreateErrorRecurrenceDraft": MessageLookupByLibrary.simpleMessage(
+      "Drafts can’t repeat until you add a split.",
+    ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load your household members.",
     ),
@@ -782,6 +785,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateParticipantsLabel": MessageLookupByLibrary.simpleMessage(
       "Who\'s sharing?",
     ),
+    "shareCreateRecurrenceAnnual": MessageLookupByLibrary.simpleMessage(
+      "Annual",
+    ),
+    "shareCreateRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
+      "Every 2 months",
+    ),
+    "shareCreateRecurrenceEvery2Weeks": MessageLookupByLibrary.simpleMessage(
+      "Every 2 weeks",
+    ),
+    "shareCreateRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
+      "Repeat",
+    ),
+    "shareCreateRecurrenceMonthly": MessageLookupByLibrary.simpleMessage(
+      "Monthly",
+    ),
+    "shareCreateRecurrenceNone": MessageLookupByLibrary.simpleMessage(
+      "One-time",
+    ),
+    "shareCreateRecurrenceWeekly": MessageLookupByLibrary.simpleMessage(
+      "Weekly",
+    ),
     "shareCreateRetry": MessageLookupByLibrary.simpleMessage("Try again"),
     "shareCreateSplitCustom": MessageLookupByLibrary.simpleMessage(
       "Choose amounts",
@@ -791,6 +815,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage(
       "How do we want to split this?",
+    ),
+    "shareCreateStartLabel": MessageLookupByLibrary.simpleMessage(
+      "When should this apply?",
     ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Create"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Bill created."),
@@ -818,8 +845,21 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Select at least two people to split the amount.",
         ),
+    "shareCreateValidationRecurrence": MessageLookupByLibrary.simpleMessage(
+      "Choose how often this repeats.",
+    ),
+    "shareCreateValidationRecurrenceSplit":
+        MessageLookupByLibrary.simpleMessage(
+          "Pick how to split before setting a repeat.",
+        ),
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Choose how you want to share.",
+    ),
+    "shareCreateValidationStartDate": MessageLookupByLibrary.simpleMessage(
+      "Choose a start date.",
+    ),
+    "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
+      "Choose a date within the allowed range.",
     ),
     "shareCreatedListActiveAmount": m13,
     "shareCreatedListActiveSubtitle": m14,
@@ -858,6 +898,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
       "Share deleted.",
+    ),
+    "shareEditDisabledActive": MessageLookupByLibrary.simpleMessage(
+      "Active bills can\'t be edited.",
+    ),
+    "shareEditDisabledConverted": MessageLookupByLibrary.simpleMessage(
+      "This bill was converted to a plan and can\'t be edited.",
+    ),
+    "shareEditDisabledGeneric": MessageLookupByLibrary.simpleMessage(
+      "You can\'t edit this bill right now.",
+    ),
+    "shareEditDisabledRecurringCycle": MessageLookupByLibrary.simpleMessage(
+      "Recurring cycles can\'t be edited here.",
     ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load that draft.",

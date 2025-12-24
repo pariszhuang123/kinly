@@ -1544,6 +1544,46 @@ class S {
     );
   }
 
+  /// `This bill was converted to a plan and can't be edited.`
+  String get shareEditDisabledConverted {
+    return Intl.message(
+      'This bill was converted to a plan and can\'t be edited.',
+      name: 'shareEditDisabledConverted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recurring cycles can't be edited here.`
+  String get shareEditDisabledRecurringCycle {
+    return Intl.message(
+      'Recurring cycles can\'t be edited here.',
+      name: 'shareEditDisabledRecurringCycle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active bills can't be edited.`
+  String get shareEditDisabledActive {
+    return Intl.message(
+      'Active bills can\'t be edited.',
+      name: 'shareEditDisabledActive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can't edit this bill right now.`
+  String get shareEditDisabledGeneric {
+    return Intl.message(
+      'You can\'t edit this bill right now.',
+      name: 'shareEditDisabledGeneric',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Create`
   String get shareCreateTitle {
     return Intl.message('Create', name: 'shareCreateTitle', desc: '', args: []);
@@ -1679,6 +1719,86 @@ class S {
     );
   }
 
+  /// `When should this apply?`
+  String get shareCreateStartLabel {
+    return Intl.message(
+      'When should this apply?',
+      name: 'shareCreateStartLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Repeat`
+  String get shareCreateRecurrenceLabel {
+    return Intl.message(
+      'Repeat',
+      name: 'shareCreateRecurrenceLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One-time`
+  String get shareCreateRecurrenceNone {
+    return Intl.message(
+      'One-time',
+      name: 'shareCreateRecurrenceNone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Weekly`
+  String get shareCreateRecurrenceWeekly {
+    return Intl.message(
+      'Weekly',
+      name: 'shareCreateRecurrenceWeekly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Every 2 weeks`
+  String get shareCreateRecurrenceEvery2Weeks {
+    return Intl.message(
+      'Every 2 weeks',
+      name: 'shareCreateRecurrenceEvery2Weeks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly`
+  String get shareCreateRecurrenceMonthly {
+    return Intl.message(
+      'Monthly',
+      name: 'shareCreateRecurrenceMonthly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Every 2 months`
+  String get shareCreateRecurrenceEvery2Months {
+    return Intl.message(
+      'Every 2 months',
+      name: 'shareCreateRecurrenceEvery2Months',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Annual`
+  String get shareCreateRecurrenceAnnual {
+    return Intl.message(
+      'Annual',
+      name: 'shareCreateRecurrenceAnnual',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Create`
   String get shareCreateSubmit {
     return Intl.message(
@@ -1764,6 +1884,56 @@ class S {
     return Intl.message(
       'Share the amount between at least two people when using a custom split.',
       name: 'shareCreateValidationCustomSinglePayer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose how often this repeats.`
+  String get shareCreateValidationRecurrence {
+    return Intl.message(
+      'Choose how often this repeats.',
+      name: 'shareCreateValidationRecurrence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick how to split before setting a repeat.`
+  String get shareCreateValidationRecurrenceSplit {
+    return Intl.message(
+      'Pick how to split before setting a repeat.',
+      name: 'shareCreateValidationRecurrenceSplit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a start date.`
+  String get shareCreateValidationStartDate {
+    return Intl.message(
+      'Choose a start date.',
+      name: 'shareCreateValidationStartDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a date within the allowed range.`
+  String get shareCreateValidationStartDateRange {
+    return Intl.message(
+      'Choose a date within the allowed range.',
+      name: 'shareCreateValidationStartDateRange',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Drafts can’t repeat until you add a split.`
+  String get shareCreateErrorRecurrenceDraft {
+    return Intl.message(
+      'Drafts can’t repeat until you add a split.',
+      name: 'shareCreateErrorRecurrenceDraft',
       desc: '',
       args: [],
     );

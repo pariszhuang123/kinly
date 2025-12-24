@@ -22,6 +22,8 @@ class ShareCreateState extends Equatable {
     required this.allPaid,
     required this.paidByOther,
     required this.hasUserEdits,
+    required this.canEdit,
+    required this.editDisabledReason,
   }) : participants = List.unmodifiable(participants);
 
   factory ShareCreateState.initial({
@@ -31,6 +33,8 @@ class ShareCreateState extends Equatable {
     bool isAmountLocked = false,
     bool allPaid = false,
     bool paidByOther = false,
+    bool canEdit = true,
+    String? editDisabledReason,
   }) {
     return ShareCreateState(
       form: form ?? ShareCreateForm.initial(),
@@ -53,6 +57,8 @@ class ShareCreateState extends Equatable {
       allPaid: allPaid,
       paidByOther: paidByOther,
       hasUserEdits: false, // starts as "pristine"
+      canEdit: canEdit,
+      editDisabledReason: editDisabledReason,
     );
   }
 
@@ -75,6 +81,8 @@ class ShareCreateState extends Equatable {
   final bool isAmountLocked;
   final bool allPaid;
   final bool paidByOther;
+  final bool canEdit;
+  final String? editDisabledReason;
 
   /// Tracks whether the user has made *any* edits in this session.
   /// Used by the primary button to decide between Delete vs Update.
@@ -105,6 +113,8 @@ class ShareCreateState extends Equatable {
     bool? allPaid,
     bool? paidByOther,
     bool? hasUserEdits,
+    bool? canEdit,
+    String? editDisabledReason,
   }) {
     return ShareCreateState(
       form: form ?? this.form,
@@ -138,6 +148,8 @@ class ShareCreateState extends Equatable {
       allPaid: allPaid ?? this.allPaid,
       paidByOther: paidByOther ?? this.paidByOther,
       hasUserEdits: hasUserEdits ?? this.hasUserEdits,
+      canEdit: canEdit ?? this.canEdit,
+      editDisabledReason: editDisabledReason ?? this.editDisabledReason,
     );
   }
 
@@ -210,6 +222,8 @@ class ShareCreateState extends Equatable {
     allPaid,
     paidByOther,
     hasUserEdits,
+    canEdit,
+    editDisabledReason,
   ];
 }
 

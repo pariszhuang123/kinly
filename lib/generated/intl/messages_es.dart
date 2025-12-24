@@ -797,6 +797,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
       "Has alcanzado el límite gratuito de 10 shares activos o en borrador. Cierra o cancela uno para continuar.",
     ),
+    "shareCreateErrorRecurrenceDraft": MessageLookupByLibrary.simpleMessage(
+      "Los borradores no pueden repetirse hasta que agregues una división.",
+    ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar los miembros de tu hogar.",
     ),
@@ -810,6 +813,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateParticipantsLabel": MessageLookupByLibrary.simpleMessage(
       "¿Quién comparte?",
     ),
+    "shareCreateRecurrenceAnnual": MessageLookupByLibrary.simpleMessage(
+      "Anual",
+    ),
+    "shareCreateRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
+      "Cada 2 meses",
+    ),
+    "shareCreateRecurrenceEvery2Weeks": MessageLookupByLibrary.simpleMessage(
+      "Cada 2 semanas",
+    ),
+    "shareCreateRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
+      "Repetir",
+    ),
+    "shareCreateRecurrenceMonthly": MessageLookupByLibrary.simpleMessage(
+      "Mensual",
+    ),
+    "shareCreateRecurrenceNone": MessageLookupByLibrary.simpleMessage(
+      "Una vez",
+    ),
+    "shareCreateRecurrenceWeekly": MessageLookupByLibrary.simpleMessage(
+      "Semanal",
+    ),
     "shareCreateRetry": MessageLookupByLibrary.simpleMessage(
       "Intentar de nuevo",
     ),
@@ -821,6 +845,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage(
       "Tipo de reparto",
+    ),
+    "shareCreateStartLabel": MessageLookupByLibrary.simpleMessage(
+      "¿Cuándo aplica?",
     ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Crear"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Share creado."),
@@ -848,8 +875,21 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Selecciona al menos dos personas para dividir el importe.",
         ),
+    "shareCreateValidationRecurrence": MessageLookupByLibrary.simpleMessage(
+      "Elige con qué frecuencia se repite.",
+    ),
+    "shareCreateValidationRecurrenceSplit":
+        MessageLookupByLibrary.simpleMessage(
+          "Elige cómo dividir antes de configurar una repetición.",
+        ),
     "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
       "Elige cómo quieres compartir.",
+    ),
+    "shareCreateValidationStartDate": MessageLookupByLibrary.simpleMessage(
+      "Elige una fecha de inicio.",
+    ),
+    "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
+      "Elige una fecha dentro del rango permitido.",
     ),
     "shareCreatedListActiveAmount": m13,
     "shareCreatedListActiveSubtitle": m14,
@@ -890,6 +930,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
       "Share eliminado.",
+    ),
+    "shareEditDisabledActive": MessageLookupByLibrary.simpleMessage(
+      "Los gastos activos no se pueden editar.",
+    ),
+    "shareEditDisabledConverted": MessageLookupByLibrary.simpleMessage(
+      "Este gasto se convirtió en un plan y no se puede editar.",
+    ),
+    "shareEditDisabledGeneric": MessageLookupByLibrary.simpleMessage(
+      "No puedes editar este gasto ahora mismo.",
+    ),
+    "shareEditDisabledRecurringCycle": MessageLookupByLibrary.simpleMessage(
+      "Los ciclos recurrentes no se editan aquí.",
     ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar ese borrador.",

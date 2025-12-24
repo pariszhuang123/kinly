@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import 'share_split_mode.dart';
+import '../../../core/expenses/enums/expense_recurrence_interval.dart';
 
 class ShareCreateForm extends Equatable {
   ShareCreateForm({
@@ -12,6 +13,8 @@ class ShareCreateForm extends Equatable {
     required this.splitMode,
     required Set<String> selectedParticipantIds,
     required Map<String, String> customAmountInputs,
+    required this.recurrence,
+    required this.startDate,
   }) : selectedParticipantIds = Set.unmodifiable(
          selectedParticipantIds is LinkedHashSet<String>
              ? selectedParticipantIds
@@ -29,6 +32,8 @@ class ShareCreateForm extends Equatable {
       splitMode: null,
       selectedParticipantIds: const <String>{},
       customAmountInputs: const <String, String>{},
+      recurrence: ExpenseRecurrenceInterval.none,
+      startDate: _normalizeDate(DateTime.now()),
     );
   }
 
@@ -38,6 +43,8 @@ class ShareCreateForm extends Equatable {
   final ShareSplitMode? splitMode;
   final Set<String> selectedParticipantIds;
   final Map<String, String> customAmountInputs;
+  final ExpenseRecurrenceInterval recurrence;
+  final DateTime startDate;
 
   ShareCreateForm copyWith({
     String? description,
@@ -47,6 +54,8 @@ class ShareCreateForm extends Equatable {
     bool clearSplitMode = false,
     Set<String>? selectedParticipantIds,
     Map<String, String>? customAmountInputs,
+    ExpenseRecurrenceInterval? recurrence,
+    DateTime? startDate,
   }) {
     return ShareCreateForm(
       description: description ?? this.description,
@@ -58,6 +67,8 @@ class ShareCreateForm extends Equatable {
               ? LinkedHashSet<String>.from(selectedParticipantIds)
               : this.selectedParticipantIds,
       customAmountInputs: customAmountInputs ?? this.customAmountInputs,
+      recurrence: recurrence ?? this.recurrence,
+      startDate: startDate != null ? _normalizeDate(startDate) : this.startDate,
     );
   }
 
@@ -107,6 +118,8 @@ class ShareCreateForm extends Equatable {
     );
   }
 
+  bool get isRecurring => recurrence != ExpenseRecurrenceInterval.none;
+
   String customAmountFor(String userId) => customAmountInputs[userId] ?? '';
 
   @override
@@ -122,6 +135,11 @@ class ShareCreateForm extends Equatable {
       splitMode,
       selection,
       customEntries,
+      recurrence,
+      startDate,
     ];
   }
+
+  static DateTime _normalizeDate(DateTime value) =>
+      DateTime(value.year, value.month, value.day);
 }

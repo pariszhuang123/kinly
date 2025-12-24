@@ -286,28 +286,58 @@
           "id": "uuid",
           "homeId": "uuid",
           "createdByUserId": "uuid",
+          "planId": "uuid|null",
+          "recurrenceInterval": "RecurrenceInterval",
+          "startDate": "date",
           "status": "ExpenseStatus",
           "splitType": "ExpenseSplitType|null",
-          "amountCents": "bigint",
+          "amountCents": "bigint|null",
+          "fullyPaidAt": "timestamptz|null",
           "description": "text",
           "notes": "text|null",
           "createdAt": "timestamptz",
           "updatedAt": "timestamptz"
+        },
+        "ExpensePlan": {
+          "id": "uuid",
+          "homeId": "uuid",
+          "createdByUserId": "uuid",
+          "splitType": "ExpenseSplitType",
+          "amountCents": "bigint",
+          "description": "text",
+          "notes": "text|null",
+          "recurrenceInterval": "RecurrenceInterval",
+          "startDate": "date",
+          "nextCycleDate": "date",
+          "status": "ExpensePlanStatus",
+          "terminatedAt": "timestamptz|null",
+          "createdAt": "timestamptz",
+          "updatedAt": "timestamptz"
+        },
+        "ExpensePlanDebtor": {
+          "planId": "uuid",
+          "debtorUserId": "uuid",
+          "shareAmountCents": "bigint"
         },
         "ExpenseSplit": {
           "expenseId": "uuid",
           "debtorUserId": "uuid",
           "amountCents": "bigint",
           "status": "ExpenseShareStatus",
-          "markedPaidAt": "timestamptz|null"
+          "markedPaidAt": "timestamptz|null",
+          "recipientViewedAt": "timestamptz|null"
         },
         "ExpenseSummaryDto": {
           "id": "uuid",
           "homeId": "uuid",
           "createdByUserId": "uuid",
+          "planId": "uuid|null",
+          "recurrenceInterval": "RecurrenceInterval",
+          "startDate": "date",
           "status": "ExpenseStatus",
           "splitType": "ExpenseSplitType|null",
-          "amountCents": "bigint",
+          "amountCents": "bigint|null",
+          "fullyPaidAt": "timestamptz|null",
           "description": "text",
           "createdAt": "timestamptz",
           "totalShares": "int",
@@ -323,14 +353,20 @@
           "impl": "public.expenses_create",
           "args": {
             "p_home_id": "uuid",
-            "p_amount_cents": "bigint",
             "p_description": "text",
+            "p_amount_cents": "bigint|null",
             "p_notes": "text|null",
             "p_split_mode": "ExpenseSplitType|null",
             "p_member_ids": "uuid[]|null",
-            "p_splits": "jsonb|null"
+            "p_splits": "jsonb|null",
+            "p_recurrence": "RecurrenceInterval",
+            "p_start_date": "date"
           },
-          "returns": "Expense"
+          "returns": "Expense",
+          "notes": [
+            "p_split_mode NULL => draft (recurrence must be none; amount optional)",
+            "p_split_mode set => activation; recurrence none creates one-off active; recurrence != none creates plan + first cycle and marks draft converted"
+          ]
         },
         "expenses.edit": {
           "type": "rpc",
@@ -343,18 +379,41 @@
             "p_notes": "text|null",
             "p_split_mode": "ExpenseSplitType|null",
             "p_member_ids": "uuid[]|null",
-            "p_splits": "jsonb|null"
+            "p_splits": "jsonb|null",
+            "p_recurrence": "RecurrenceInterval",
+            "p_start_date": "date"
           },
-          "returns": "Expense"
+          "returns": "Expense",
+          "notes": [
+            "Only allowed for drafts; always activates",
+            "Recurrence != none creates plan, marks draft converted, and generates first cycle",
+            "Existing active expenses are immutable"
+          ]
         },
-        "expenses.markSharePaid": {
+        "expenses.payMyDue": {
           "type": "rpc",
           "caller": "member",
-          "impl": "public.expenses_mark_share_paid",
+          "impl": "public.expenses_pay_my_due",
           "args": {
-            "p_expense_id": "uuid"
+            "p_recipient_user_id": "uuid"
           },
-          "returns": "ExpenseSplit"
+          "returns": "jsonb",
+          "notes": [
+            "Bulk marks caller’s unpaid splits owed to the recipient as paid",
+            "Stamps marked_paid_at, stamps fully_paid_at once per expense, decrements usage per fully paid expense"
+          ]
+        },
+        "expensePlans.terminate": {
+          "type": "rpc",
+          "caller": "member (plan creator only)",
+          "impl": "public.expense_plans_terminate",
+          "args": {
+            "p_plan_id": "uuid"
+          },
+          "returns": "ExpensePlan",
+          "notes": [
+            "Stops future cycles; existing expenses remain payable"
+          ]
         },
         "expenses.cancel": {
           "type": "rpc",
@@ -382,12 +441,32 @@
             "p_home_id": "uuid"
           },
           "returns": "jsonb"
+        },
+        "expenses.getForEdit": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.expenses_get_for_edit",
+          "args": {
+            "p_expense_id": "uuid"
+          },
+          "returns": "jsonb",
+          "notes": [
+            "Creator-only; returns splits, planId, recurrenceInterval, startDate, canEdit flag, and editDisabledReason (ACTIVE_IMMUTABLE, RECURRING_CYCLE_IMMUTABLE, CONVERTED_TO_PLAN)"
+          ]
         }
       },
       "rls": [
         {
           "table": "public.expenses",
-          "rule": "RLS disabled; anon/auth/ service roles have no grants. All read/write access flows through SECURITY DEFINER RPCs."
+          "rule": "RLS disabled; anon/auth/service roles have no grants. All read/write access flows through SECURITY DEFINER RPCs."
+        },
+        {
+          "table": "public.expense_plans",
+          "rule": "RLS disabled; anon/auth/service roles have no grants. Only RPCs can mutate."
+        },
+        {
+          "table": "public.expense_plan_debtors",
+          "rule": "RLS disabled; anon/auth/service roles have no grants. Only RPCs can mutate."
         },
         {
           "table": "public.expense_splits",

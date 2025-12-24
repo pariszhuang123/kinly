@@ -305,6 +305,105 @@ export type Database = {
           },
         ]
       }
+      expense_plan_debtors: {
+        Row: {
+          debtor_user_id: string
+          plan_id: string
+          share_amount_cents: number
+        }
+        Insert: {
+          debtor_user_id: string
+          plan_id: string
+          share_amount_cents: number
+        }
+        Update: {
+          debtor_user_id?: string
+          plan_id?: string
+          share_amount_cents?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expense_plan_debtors_debtor_user_id_fkey"
+            columns: ["debtor_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expense_plan_debtors_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "expense_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expense_plans: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          created_by_user_id: string
+          description: string
+          home_id: string
+          id: string
+          next_cycle_date: string
+          notes: string | null
+          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+          split_type: Database["public"]["Enums"]["expense_split_type"]
+          start_date: string
+          status: Database["public"]["Enums"]["expense_plan_status"]
+          terminated_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          created_by_user_id: string
+          description: string
+          home_id: string
+          id?: string
+          next_cycle_date: string
+          notes?: string | null
+          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+          split_type: Database["public"]["Enums"]["expense_split_type"]
+          start_date: string
+          status?: Database["public"]["Enums"]["expense_plan_status"]
+          terminated_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          created_by_user_id?: string
+          description?: string
+          home_id?: string
+          id?: string
+          next_cycle_date?: string
+          notes?: string | null
+          recurrence_interval?: Database["public"]["Enums"]["recurrence_interval"]
+          split_type?: Database["public"]["Enums"]["expense_split_type"]
+          start_date?: string
+          status?: Database["public"]["Enums"]["expense_plan_status"]
+          terminated_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expense_plans_created_by_user_id_fkey"
+            columns: ["created_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expense_plans_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expense_splits: {
         Row: {
           amount_cents: number
@@ -353,10 +452,14 @@ export type Database = {
           created_at: string
           created_by_user_id: string
           description: string
+          fully_paid_at: string | null
           home_id: string
           id: string
           notes: string | null
+          plan_id: string | null
+          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
           split_type: Database["public"]["Enums"]["expense_split_type"] | null
+          start_date: string
           status: Database["public"]["Enums"]["expense_status"]
           updated_at: string
         }
@@ -365,10 +468,14 @@ export type Database = {
           created_at?: string
           created_by_user_id: string
           description: string
+          fully_paid_at?: string | null
           home_id: string
           id?: string
           notes?: string | null
+          plan_id?: string | null
+          recurrence_interval?: Database["public"]["Enums"]["recurrence_interval"]
           split_type?: Database["public"]["Enums"]["expense_split_type"] | null
+          start_date: string
           status?: Database["public"]["Enums"]["expense_status"]
           updated_at?: string
         }
@@ -377,10 +484,14 @@ export type Database = {
           created_at?: string
           created_by_user_id?: string
           description?: string
+          fully_paid_at?: string | null
           home_id?: string
           id?: string
           notes?: string | null
+          plan_id?: string | null
+          recurrence_interval?: Database["public"]["Enums"]["recurrence_interval"]
           split_type?: Database["public"]["Enums"]["expense_split_type"] | null
+          start_date?: string
           status?: Database["public"]["Enums"]["expense_status"]
           updated_at?: string
         }
@@ -397,6 +508,13 @@ export type Database = {
             columns: ["home_id"]
             isOneToOne: false
             referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_expenses_plan_id_restrict"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "expense_plans"
             referencedColumns: ["id"]
           },
         ]
@@ -1324,6 +1442,42 @@ export type Database = {
         Args: { p_home_id: string; p_user_id: string }
         Returns: string
       }
+      _expense_plan_generate_cycle: {
+        Args: { p_cycle_date: string; p_plan_id: string }
+        Returns: {
+          amount_cents: number | null
+          created_at: string
+          created_by_user_id: string
+          description: string
+          fully_paid_at: string | null
+          home_id: string
+          id: string
+          notes: string | null
+          plan_id: string | null
+          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+          split_type: Database["public"]["Enums"]["expense_split_type"] | null
+          start_date: string
+          status: Database["public"]["Enums"]["expense_status"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "expenses"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      _expense_plan_next_cycle_date: {
+        Args: {
+          p_from: string
+          p_interval: Database["public"]["Enums"]["recurrence_interval"]
+        }
+        Returns: string
+      }
+      _expense_plans_terminate_for_member_change: {
+        Args: { p_affected_user_id: string; p_home_id: string }
+        Returns: undefined
+      }
       _expenses_prepare_split_buffer: {
         Args: {
           p_amount_cents: number
@@ -1502,6 +1656,32 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      expense_plans_generate_due_cycles: { Args: never; Returns: undefined }
+      expense_plans_terminate: {
+        Args: { p_plan_id: string }
+        Returns: {
+          amount_cents: number
+          created_at: string
+          created_by_user_id: string
+          description: string
+          home_id: string
+          id: string
+          next_cycle_date: string
+          notes: string | null
+          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+          split_type: Database["public"]["Enums"]["expense_split_type"]
+          start_date: string
+          status: Database["public"]["Enums"]["expense_plan_status"]
+          terminated_at: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "expense_plans"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       expenses_cancel: {
         Args: { p_expense_id: string }
         Returns: {
@@ -1509,10 +1689,14 @@ export type Database = {
           created_at: string
           created_by_user_id: string
           description: string
+          fully_paid_at: string | null
           home_id: string
           id: string
           notes: string | null
+          plan_id: string | null
+          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
           split_type: Database["public"]["Enums"]["expense_split_type"] | null
+          start_date: string
           status: Database["public"]["Enums"]["expense_status"]
           updated_at: string
         }
@@ -1523,64 +1707,152 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      expenses_create: {
-        Args: {
-          p_amount_cents?: number
-          p_description: string
-          p_home_id: string
-          p_member_ids?: string[]
-          p_notes?: string
-          p_split_mode?: Database["public"]["Enums"]["expense_split_type"]
-          p_splits?: Json
-        }
-        Returns: {
-          amount_cents: number | null
-          created_at: string
-          created_by_user_id: string
-          description: string
-          home_id: string
-          id: string
-          notes: string | null
-          split_type: Database["public"]["Enums"]["expense_split_type"] | null
-          status: Database["public"]["Enums"]["expense_status"]
-          updated_at: string
-        }
-        SetofOptions: {
-          from: "*"
-          to: "expenses"
-          isOneToOne: true
-          isSetofReturn: false
-        }
-      }
-      expenses_edit: {
-        Args: {
-          p_amount_cents: number
-          p_description: string
-          p_expense_id: string
-          p_member_ids?: string[]
-          p_notes?: string
-          p_split_mode?: Database["public"]["Enums"]["expense_split_type"]
-          p_splits?: Json
-        }
-        Returns: {
-          amount_cents: number | null
-          created_at: string
-          created_by_user_id: string
-          description: string
-          home_id: string
-          id: string
-          notes: string | null
-          split_type: Database["public"]["Enums"]["expense_split_type"] | null
-          status: Database["public"]["Enums"]["expense_status"]
-          updated_at: string
-        }
-        SetofOptions: {
-          from: "*"
-          to: "expenses"
-          isOneToOne: true
-          isSetofReturn: false
-        }
-      }
+      expenses_create:
+        | {
+            Args: {
+              p_amount_cents?: number
+              p_description: string
+              p_home_id: string
+              p_member_ids?: string[]
+              p_notes?: string
+              p_split_mode?: Database["public"]["Enums"]["expense_split_type"]
+              p_splits?: Json
+            }
+            Returns: {
+              amount_cents: number | null
+              created_at: string
+              created_by_user_id: string
+              description: string
+              fully_paid_at: string | null
+              home_id: string
+              id: string
+              notes: string | null
+              plan_id: string | null
+              recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+              split_type:
+                | Database["public"]["Enums"]["expense_split_type"]
+                | null
+              start_date: string
+              status: Database["public"]["Enums"]["expense_status"]
+              updated_at: string
+            }
+            SetofOptions: {
+              from: "*"
+              to: "expenses"
+              isOneToOne: true
+              isSetofReturn: false
+            }
+          }
+        | {
+            Args: {
+              p_amount_cents?: number
+              p_description: string
+              p_home_id: string
+              p_member_ids?: string[]
+              p_notes?: string
+              p_recurrence?: Database["public"]["Enums"]["recurrence_interval"]
+              p_split_mode?: Database["public"]["Enums"]["expense_split_type"]
+              p_splits?: Json
+              p_start_date?: string
+            }
+            Returns: {
+              amount_cents: number | null
+              created_at: string
+              created_by_user_id: string
+              description: string
+              fully_paid_at: string | null
+              home_id: string
+              id: string
+              notes: string | null
+              plan_id: string | null
+              recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+              split_type:
+                | Database["public"]["Enums"]["expense_split_type"]
+                | null
+              start_date: string
+              status: Database["public"]["Enums"]["expense_status"]
+              updated_at: string
+            }
+            SetofOptions: {
+              from: "*"
+              to: "expenses"
+              isOneToOne: true
+              isSetofReturn: false
+            }
+          }
+      expenses_edit:
+        | {
+            Args: {
+              p_amount_cents: number
+              p_description: string
+              p_expense_id: string
+              p_member_ids?: string[]
+              p_notes?: string
+              p_split_mode?: Database["public"]["Enums"]["expense_split_type"]
+              p_splits?: Json
+            }
+            Returns: {
+              amount_cents: number | null
+              created_at: string
+              created_by_user_id: string
+              description: string
+              fully_paid_at: string | null
+              home_id: string
+              id: string
+              notes: string | null
+              plan_id: string | null
+              recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+              split_type:
+                | Database["public"]["Enums"]["expense_split_type"]
+                | null
+              start_date: string
+              status: Database["public"]["Enums"]["expense_status"]
+              updated_at: string
+            }
+            SetofOptions: {
+              from: "*"
+              to: "expenses"
+              isOneToOne: true
+              isSetofReturn: false
+            }
+          }
+        | {
+            Args: {
+              p_amount_cents: number
+              p_description: string
+              p_expense_id: string
+              p_member_ids?: string[]
+              p_notes?: string
+              p_recurrence?: Database["public"]["Enums"]["recurrence_interval"]
+              p_split_mode?: Database["public"]["Enums"]["expense_split_type"]
+              p_splits?: Json
+              p_start_date?: string
+            }
+            Returns: {
+              amount_cents: number | null
+              created_at: string
+              created_by_user_id: string
+              description: string
+              fully_paid_at: string | null
+              home_id: string
+              id: string
+              notes: string | null
+              plan_id: string | null
+              recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+              split_type:
+                | Database["public"]["Enums"]["expense_split_type"]
+                | null
+              start_date: string
+              status: Database["public"]["Enums"]["expense_status"]
+              updated_at: string
+            }
+            SetofOptions: {
+              from: "*"
+              to: "expenses"
+              isOneToOne: true
+              isSetofReturn: false
+            }
+          }
       expenses_get_created_by_me: { Args: { p_home_id: string }; Returns: Json }
       expenses_get_current_owed: { Args: { p_home_id: string }; Returns: Json }
       expenses_get_current_paid_to_me_by_debtor_details: {
@@ -1596,8 +1868,8 @@ export type Database = {
         Args: { p_debtor_user_id: string; p_home_id: string }
         Returns: Json
       }
-      expenses_mark_share_paid: {
-        Args: { p_expense_id: string }
+      expenses_pay_my_due: {
+        Args: { p_recipient_user_id: string }
         Returns: Json
       }
       gratitude_wall_list: {
@@ -1874,9 +2146,10 @@ export type Database = {
     Enums: {
       chore_event_type: "create" | "activate" | "update" | "complete" | "cancel"
       chore_state: "draft" | "active" | "completed" | "cancelled"
+      expense_plan_status: "active" | "terminated"
       expense_share_status: "unpaid" | "paid"
       expense_split_type: "equal" | "custom"
-      expense_status: "draft" | "active" | "cancelled"
+      expense_status: "draft" | "active" | "cancelled" | "converted"
       home_usage_metric:
         | "active_chores"
         | "chore_photos"
@@ -2031,9 +2304,10 @@ export const Constants = {
     Enums: {
       chore_event_type: ["create", "activate", "update", "complete", "cancel"],
       chore_state: ["draft", "active", "completed", "cancelled"],
+      expense_plan_status: ["active", "terminated"],
       expense_share_status: ["unpaid", "paid"],
       expense_split_type: ["equal", "custom"],
-      expense_status: ["draft", "active", "cancelled"],
+      expense_status: ["draft", "active", "cancelled", "converted"],
       home_usage_metric: [
         "active_chores",
         "chore_photos",

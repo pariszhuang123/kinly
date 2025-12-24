@@ -1,18 +1,16 @@
 # Expenses Contracts v1
 
-Status: Draft (in-flight alignment)
+Status: Draft (updated for recurring plans + bulk pay)
 
-Scope: Defines the household shared expenses lifecycle for the Home-only MVP so UI, BLoC, repositories, and Supabase schema share one contract.
+Scope: Defines the household shared expenses lifecycle (one-off and recurring cycles) for the Home-only MVP so UI, BLoC, repositories, and Supabase schema share one contract. Recurring intent is captured as expense plans; every plan cycle is an immutable `expenses` row.
 
-## Domain overview
-- Any active home member can author expenses. The author (payer) is the only person who can edit or cancel that expense.
-- Expenses start as a **draft** (quick capture) and become **active** once the creator defines how the cost is split. Drafts are visible only to the creator; active expenses are visible to the entire home.
-- The split can be `equal` (integer division in cents across selected members; remainder flows to the last entry) or `custom` (explicit cents per debtor). Drafts keep `splitType = NULL`.
-- Splits live in `expense_splits`. Each row is “debtor X owes Y cents to the creator for this expense.” Payment tracking is per split; there is no top-level “paid” flag. When the creator allocates a share to themselves it is stored as a split row marked `paid` immediately so edit flows can round-trip their portion without affecting “who still owes” calculations.
-- Each debtor can mark their own share as paid (idempotent; no partial payments). Once any share is paid, the amount and split structure become immutable.
-- The Today surface shows only "what I owe" grouped by payer. Explore + Share lists expenses authored by the caller with derived progress like "2 of 3 shares paid," and those counters include the creator's auto-paid share so "1 of 3" appears as soon as the payer covers their portion.
-- Fully paid is a derived view: `allPaid = (totalShares > 0 AND paidShares = totalShares)`. UI can hide settled expenses using this flag without mutating status.
-- Lifecycle illustration: `docs/diagrams/expenses/expense_lifecycle.md`.
+## Domain Overview
+- Any active home member can author expenses. Drafts are creator-only; active rows are immutable snapshots.
+- Drafts: quick capture with optional `amountCents` and `startDate`. Drafts cannot be recurring (`recurrenceInterval` must stay `none`).
+- Activation: supplying amount + splits via `expenses.create` or `expenses.edit` promotes to `status=active`. If `recurrenceInterval != none`, the draft is marked `status=converted`, a plan is created, and the first cycle expense is generated immediately.
+- Splits live in `expense_splits`. Each row is “debtor X owes Y cents to the creator for this expense.” The creator’s own share (if included) is auto-marked `paid`.
+- Payments are bulk: `expenses.payMyDue(p_recipient_user_id)` marks all unpaid splits the caller owes to a given payer. `expenses.fully_paid_at` stamps once when an expense is fully paid (idempotent usage decrement).
+- Derived surfaces: Today shows “what I owe” grouped by payer; Explore/Share list creator-authored expenses with progress (paidShares includes the creator’s auto-paid split).
 
 ## Entities
 
@@ -20,49 +18,86 @@ Scope: Defines the household shared expenses lifecycle for the Home-only MVP so 
 - `id` (`uuid`) — primary key.
 - `homeId` (`uuid`) — FK `homes.id`.
 - `createdByUserId` (`uuid`) — FK `profiles.id`; payer/author.
-- `status` (`ExpenseStatus`) — `draft | active | cancelled`.
+- `planId` (`uuid|null`) — FK `expense_plans.id`; `NULL` for one-off; set for recurring cycles.
+- `recurrenceInterval` (`recurrence_interval`) — `none | weekly | every_2_weeks | monthly | every_2_months | annual`; `none` for one-off.
+- `startDate` (`date`) — cycle start/effective date (date only, never tz-shifted).
+- `status` (`ExpenseStatus`) — `draft | active | cancelled | converted`.
 - `splitType` (`ExpenseSplitType|null`) — `equal | custom | null` (draft).
-- `amountCents` (`bigint`) — total amount in integer cents (> 0).
+- `amountCents` (`bigint|null`) — `NULL` allowed only for drafts; otherwise > 0.
+- `fullyPaidAt` (`timestamptz|null`) — stamped once when the last split becomes paid (idempotent usage guard).
 - `description` (`text`) — required, trimmed length 1–280.
-- `notes` (`text|null`) — optional.
-- `createdAt` (`timestamptz`) — creation timestamp (also used as expense date in v1).
-- `updatedAt` (`timestamptz`) — last modification timestamp.
+- `notes` (`text|null`) — optional, <= 2000 chars.
+- `createdAt` / `updatedAt` (`timestamptz`).
+
+### ExpensePlan
+- `id` (`uuid`) — primary key.
+- `homeId` (`uuid`) — FK `homes.id`.
+- `createdByUserId` (`uuid`) — payer/author; also payer for generated cycles.
+- `splitType` (`ExpenseSplitType`) — `equal | custom`.
+- `amountCents` (`bigint`) — immutable once active.
+- `description` (`text`)
+- `notes` (`text|null`)
+- `recurrenceInterval` (`recurrence_interval`) — non-`none`.
+- `startDate` (`date`) — first cycle anchor.
+- `nextCycleDate` (`date`) — cron cursor.
+- `status` (`ExpensePlanStatus`) — `active | terminated`.
+- `terminatedAt` (`timestamptz|null`)
+- `createdAt` / `updatedAt`
+
+### ExpensePlanDebtor
+Template rows used to generate splits for each cycle.
+- `planId` (`uuid`) — FK `expense_plans.id`.
+- `debtorUserId` (`uuid`) — FK `profiles.id`.
+- `shareAmountCents` (`bigint`) — immutable once active; sum must equal `amountCents` for custom splits.
 
 ### ExpenseSplit
 - `expenseId` (`uuid`) — FK `expenses.id`.
 - `debtorUserId` (`uuid`) — FK `profiles.id`; must be a current member of the same home at split time.
 - `amountCents` (`bigint`) — per-person share in cents (> 0).
 - `status` (`ExpenseShareStatus`) — `unpaid | paid`.
-- `markedPaidAt` (`timestamptz|null`) — when the debtor marked their share paid.
+- `markedPaidAt` (`timestamptz|null`) — when the debtor’s split became paid (bulk path stamps now).
 - `recipientViewedAt` (`timestamptz|null`) — when the creator viewed a paid split; `NULL` means unseen.
 - Composite PK: `(expenseId, debtorUserId)`.
 
 ### ExpenseSummaryDto
-Projection for list views (Explore → Share, repository caches).
+Projection for list views (Explore + Share, repository caches).
 - `id: uuid`
 - `homeId: uuid`
 - `createdByUserId: uuid`
 - `status: ExpenseStatus`
+- `planId: uuid|null`
+- `recurrenceInterval: recurrence_interval`
+- `startDate: date`
 - `splitType: ExpenseSplitType|null`
-- `amountCents: bigint`
+- `amountCents: bigint|null`
+- `fullyPaidAt: timestamptz|null`
 - `description: text`
 - `createdAt: timestamptz`
 - `totalShares: int`
-- `paidShares: int` (counts the creator's auto-paid split plus any other member shares that have been marked paid)
-- `paidAmountCents: bigint` (sum of all paid splits, including the creator's auto-paid amount when present)
+- `paidShares: int` (counts the creator’s auto-paid split plus any paid member splits)
+- `paidAmountCents: bigint` (sum of all paid splits, including the creator’s auto-paid amount)
 - `allPaid: boolean` — `totalShares > 0 AND paidShares = totalShares`.
 
 ## Enums
 
+### RecurrenceInterval
+`none | weekly | every_2_weeks | monthly | every_2_months | annual`
+
 ### ExpenseStatus
-`draft | active | cancelled`
-- `draft` — quick capture; creator-only.
-- `active` — visible to the home; split defined.
+`draft | active | cancelled | converted`
+- `draft` — quick capture; creator-only; amount optional.
+- `active` — immutable payable obligation (one-off or cycle).
 - `cancelled` — creator invalidated the expense; splits remain for audit but are hidden from Today.
+- `converted` — original draft shell was converted into an expense plan; financial impact lives in generated cycle expenses.
+
+### ExpensePlanStatus
+`active | terminated`
+- `active` — plan continues generating cycles via cron.
+- `terminated` — no new cycles; existing expenses stay payable.
 
 ### ExpenseSplitType
 `equal | custom`
-- `equal` — equal division across selected members (remainder to the last entry).
+- `equal` — integer division across selected members (remainder to the last entry).
 - `custom` — explicit cents per debtor; sum must equal `amountCents`.
 
 ### ExpenseShareStatus
@@ -81,28 +116,58 @@ Projection for list views (Explore → Share, repository caches).
       "id": "uuid",
       "homeId": "uuid",
       "createdByUserId": "uuid",
+      "planId": "uuid|null",
+      "recurrenceInterval": "RecurrenceInterval",
+      "startDate": "date",
       "status": "ExpenseStatus",
       "splitType": "ExpenseSplitType|null",
-      "amountCents": "bigint",
+      "amountCents": "bigint|null",
+      "fullyPaidAt": "timestamptz|null",
       "description": "text",
       "notes": "text|null",
       "createdAt": "timestamptz",
       "updatedAt": "timestamptz"
+    },
+    "ExpensePlan": {
+      "id": "uuid",
+      "homeId": "uuid",
+      "createdByUserId": "uuid",
+      "splitType": "ExpenseSplitType",
+      "amountCents": "bigint",
+      "description": "text",
+      "notes": "text|null",
+      "recurrenceInterval": "RecurrenceInterval",
+      "startDate": "date",
+      "nextCycleDate": "date",
+      "status": "ExpensePlanStatus",
+      "terminatedAt": "timestamptz|null",
+      "createdAt": "timestamptz",
+      "updatedAt": "timestamptz"
+    },
+    "ExpensePlanDebtor": {
+      "planId": "uuid",
+      "debtorUserId": "uuid",
+      "shareAmountCents": "bigint"
     },
     "ExpenseSplit": {
       "expenseId": "uuid",
       "debtorUserId": "uuid",
       "amountCents": "bigint",
       "status": "ExpenseShareStatus",
-      "markedPaidAt": "timestamptz|null"
+      "markedPaidAt": "timestamptz|null",
+      "recipientViewedAt": "timestamptz|null"
     },
     "ExpenseSummaryDto": {
       "id": "uuid",
       "homeId": "uuid",
       "createdByUserId": "uuid",
+      "planId": "uuid|null",
+      "recurrenceInterval": "RecurrenceInterval",
+      "startDate": "date",
       "status": "ExpenseStatus",
       "splitType": "ExpenseSplitType|null",
-      "amountCents": "bigint",
+      "amountCents": "bigint|null",
+      "fullyPaidAt": "timestamptz|null",
       "description": "text",
       "createdAt": "timestamptz",
       "totalShares": "int",
@@ -112,10 +177,23 @@ Projection for list views (Explore → Share, repository caches).
     }
   },
   "enums": {
+    "RecurrenceInterval": [
+      "none",
+      "weekly",
+      "every_2_weeks",
+      "monthly",
+      "every_2_months",
+      "annual"
+    ],
     "ExpenseStatus": [
       "draft",
       "active",
-      "cancelled"
+      "cancelled",
+      "converted"
+    ],
+    "ExpensePlanStatus": [
+      "active",
+      "terminated"
     ],
     "ExpenseSplitType": [
       "equal",
@@ -133,14 +211,20 @@ Projection for list views (Explore → Share, repository caches).
       "impl": "public.expenses_create",
       "args": {
         "p_home_id": "uuid",
-        "p_amount_cents": "bigint",
         "p_description": "text",
+        "p_amount_cents": "bigint|null",
         "p_notes": "text|null",
         "p_split_mode": "ExpenseSplitType|null",
         "p_member_ids": "uuid[]|null",
-        "p_splits": "jsonb|null"
+        "p_splits": "jsonb|null",
+        "p_recurrence": "RecurrenceInterval",
+        "p_start_date": "date"
       },
-      "returns": "Expense"
+      "returns": "Expense",
+      "notes": [
+        "p_split_mode NULL => draft (recurrence must be none; amount optional)",
+        "p_split_mode set => activation; recurrence none creates one-off active; recurrence != none creates plan + first cycle and marks draft converted"
+      ]
     },
     "expenses.edit": {
       "type": "rpc",
@@ -153,18 +237,41 @@ Projection for list views (Explore → Share, repository caches).
         "p_notes": "text|null",
         "p_split_mode": "ExpenseSplitType|null",
         "p_member_ids": "uuid[]|null",
-        "p_splits": "jsonb|null"
+        "p_splits": "jsonb|null",
+        "p_recurrence": "RecurrenceInterval",
+        "p_start_date": "date"
       },
-      "returns": "Expense"
+      "returns": "Expense",
+      "notes": [
+        "Only allowed for drafts; always activates",
+        "Recurrence != none creates plan, marks draft converted, and generates first cycle",
+        "Existing active expenses are immutable"
+      ]
     },
-    "expenses.markSharePaid": {
+    "expenses.payMyDue": {
       "type": "rpc",
       "caller": "member",
-      "impl": "public.expenses_mark_share_paid",
+      "impl": "public.expenses_pay_my_due",
       "args": {
-        "p_expense_id": "uuid"
+        "p_recipient_user_id": "uuid"
       },
-      "returns": "ExpenseSplit"
+      "returns": "jsonb",
+      "notes": [
+        "Bulk marks caller’s unpaid splits owed to the recipient as paid",
+        "Stamps marked_paid_at, stamps fully_paid_at once per expense, decrements usage per fully paid expense"
+      ]
+    },
+    "expensePlans.terminate": {
+      "type": "rpc",
+      "caller": "member (plan creator only)",
+      "impl": "public.expense_plans_terminate",
+      "args": {
+        "p_plan_id": "uuid"
+      },
+      "returns": "ExpensePlan",
+      "notes": [
+        "Stops future cycles; existing expenses remain payable"
+      ]
     },
     "expenses.cancel": {
       "type": "rpc",
@@ -192,12 +299,32 @@ Projection for list views (Explore → Share, repository caches).
         "p_home_id": "uuid"
       },
       "returns": "jsonb"
+    },
+    "expenses.getForEdit": {
+      "type": "rpc",
+      "caller": "member",
+      "impl": "public.expenses_get_for_edit",
+      "args": {
+        "p_expense_id": "uuid"
+      },
+      "returns": "jsonb",
+      "notes": [
+        "Creator-only; returns splits, planId, recurrenceInterval, startDate, canEdit flag, and editDisabledReason (ACTIVE_IMMUTABLE, RECURRING_CYCLE_IMMUTABLE, CONVERTED_TO_PLAN)"
+      ]
     }
   },
   "rls": [
     {
       "table": "public.expenses",
-      "rule": "RLS disabled; anon/auth/ service roles have no grants. All read/write access flows through SECURITY DEFINER RPCs."
+      "rule": "RLS disabled; anon/auth/service roles have no grants. All read/write access flows through SECURITY DEFINER RPCs."
+    },
+    {
+      "table": "public.expense_plans",
+      "rule": "RLS disabled; anon/auth/service roles have no grants. Only RPCs can mutate."
+    },
+    {
+      "table": "public.expense_plan_debtors",
+      "rule": "RLS disabled; anon/auth/service roles have no grants. Only RPCs can mutate."
     },
     {
       "table": "public.expense_splits",
@@ -207,63 +334,12 @@ Projection for list views (Explore → Share, repository caches).
 }
 ```
 
-## Validation and business rules
-- **Home membership**: all calls assert the caller is a current member of `homeId`. Creating or editing requires the home to be `is_active = true`.
-- **Creator-only edits**: only `createdByUserId` can update or cancel an expense. Drafts remain private to the creator.
-- **Draft vs. active**: `p_split_mode IS NULL` creates or keeps a draft. Passing `equal/custom` promotes the record to `status='active'` and `splitType=p_split_mode`. Once active, it never reverts to draft.
-- **Amounts**: `amountCents` must be positive and ≤ 9,000,000,000,000 (safety cap). Description must be 1–280 chars after trim; notes ≤ 2,000 chars.
-- **Equal split**: `p_member_ids` must include at least two unique active members, and at least one of them must be someone other than the creator. The creator may be included to record their portion; when present their split row is persisted with `status='paid'` so only other members appear in owed summaries. Server performs integer division in cents; remainder flows to the last entry in the provided order.
-- **Custom split**: `p_splits` is a non-empty JSON array of `{ "user_id": uuid, "amount_cents": bigint }`. All debtors must be active members of the home. Entries for the creator are allowed (to represent the creator's share) and are stored with `status='paid'` during insert. Sum of `amount_cents` must equal `amountCents`, at least one non-creator debtor must be present, and the array must represent at least two unique members.
-- **Editing drafts**: `expenses.edit` requires `p_split_mode` when the existing status is `draft` so edits promote to `active`.
-- **Editing active expenses**: If any split is `status='paid'`, only `description` and `notes` can change; amount/split structure updates raise `EXPENSE_LOCKED_AFTER_PAYMENT`. When no split is paid, the creator can rebuild the split (equal/custom) as long as validations pass. Changing the amount on an active expense without providing split details raises `SPLIT_REQUIRED`.
-- **Mark paid**: only the debtor for a split can mark it paid, and only when `status='active'`. Action is idempotent.
-- **Cancel**: only creators can cancel, and only when no splits have been paid. Cancelling drafts or actives sets `status='cancelled'` and keeps splits for audit.
-- **Summary RPCs**: `expenses.getCurrentOwed` returns owed items for `auth.uid()` grouped by payer; `expenses.getCreatedByMe` lists the caller's authored expenses with derived totals, and `paidShares/paidAmountCents` count the creator's auto-paid split so the progress bar reflects their own contribution.
-
-## RPC endpoints
-
-- ### `expenses.create`
-  - Caller: authenticated member of `p_home_id`.
-  - Args: see JSON block above.
-  - Behavior: inserts a new expense tied to the caller. `p_split_mode=NULL` writes a draft with no splits; `equal/custom` writes `status='active'` plus split rows (validated via `_expenses_prepare_split_buffer`).
-  - Errors: `INVALID_HOME`, `INVALID_AMOUNT`, `INVALID_DESCRIPTION`, `INVALID_NOTES`, `NOT_HOME_MEMBER`, `HOME_INACTIVE`, `INVALID_SPLIT`, `SPLIT_MEMBERS_REQUIRED`, `INVALID_DEBTOR`, `SPLIT_SUM_MISMATCH`.
-
-- ### `expenses.edit`
-  - Caller: creator of the expense.
-  - Args: `{ p_expense_id, p_amount_cents, p_description, p_notes, p_split_mode?, p_member_ids?, p_splits? }`.
-  - Behavior: loads and locks the expense. Drafts must provide `p_split_mode` and become active. Active rows with no paid splits can rebuild amount/split; once any split is paid, only description/notes change.
-  - Errors: `NOT_FOUND`, `NOT_CREATOR`, `INVALID_STATE`, `SPLIT_REQUIRED`, `EXPENSE_LOCKED_AFTER_PAYMENT`, plus validation errors listed under `expenses.create`.
-
-- ### `expenses.markSharePaid`
-  - Caller: debtor of the split (must be an active member of the expense home).
-  - Args: `{ p_expense_id }`.
-  - Behavior: ensures parent expense is active, finds the caller’s split, and sets `status='paid', markedPaidAt=now()` if not already paid. Returns the split row (idempotent).
-
-- ### `expenses.cancel`
-  - Caller: creator of the expense.
-  - Args: `{ p_expense_id }`.
-  - Behavior: validates caller, enforces the “no paid splits” guard, and sets `status='cancelled', updatedAt=now()`. Splits remain for audit but are ignored by Today.
-
-- ### `expenses.getCurrentOwed`
-  - Caller: member of `p_home_id`.
-  - Args: `{ p_home_id }`.
-- Behavior: returns JSON `[ { payerUserId, payerDisplay, payerAvatarUrl, totalOwedCents, items: [ { expenseId, description, amountCents } ] } ]` filtered to active expenses and unpaid splits where `debtor_user_id = auth.uid()`. `payerDisplay` is the payer's `username` (falling back to `full_name` then `email`).
-
-- ### `expenses.getCreatedByMe`
-  - Caller: member of `p_home_id`.
-  - Args: `{ p_home_id }`.
-  - Behavior: returns JSON array of ExpenseSummaryDto projections for expenses created by the caller in the home. Includes `totalShares`, `paidShares`, `paidAmountCents`, `allPaid`, and `fullyPaidAt` for UI grouping; does **not** include debtor identities.
-
-## RLS and access
-- `expenses`: RLS disabled. Tables are locked to clients via `REVOKE ALL ON public.expenses FROM anon, authenticated`. All reads/writes occur inside SECURITY DEFINER RPCs that re-check membership, ownership, and lifecycle rules.
-- `expense_splits`: mirrored posture—RLS disabled and grants revoked. RPCs own inserts/updates/deletes and enforce the “debtor-only payment” rule.
-
-## Decisions
-1. **Split RPCs**: `expenses.create` and `expenses.edit` replace the single `expenses.save` entry point so migrations can evolve create-time vs. edit-time guards independently.
-2. **Per-split locking**: payments lock the amount/split to avoid reconciliation confusion. Creators can still tweak descriptions/notes post-payment.
-3. **Debtor-only payments**: empowers each member to acknowledge payment without letting creators “check off” unpaid shares.
-4. **Derived metrics**: summary RPCs expose `totalShares/paidShares/paidAmountCents/allPaid` so UI can express "2 of 3 paid" without additional client math, and those counters include the creator's auto-paid share for clearer progress messaging.
-5. **RPC-only access**: With RLS disabled and grants revoked, expenses tables stay invisible to clients unless they call the approved SECURITY DEFINER RPCs.
+## Behavioral Notes
+- Payer is always `created_by_user_id`; `main_payer_user_id` is removed.
+- Drafts are quota-free. Paywall increments/decrements `active_expenses` only when an active expense (one-off or generated cycle) is created or when an expense becomes fully paid (counter decremented once using `fully_paid_at`).
+- Activation requires ≥2 distinct debtors (at least one debtor other than the creator), positive split sums that match `amountCents`, and startDate within [joinDate, joinDate+∞] but not earlier than 90 days back.
+- Active expenses are immutable; editing drafts is the only path to activation.
+- Recurring cycles are generated by cron daily at 03:00 UTC using `next_cycle_date`; cron ignores paywall checks but still stamps counters for new active expenses.
 
 ## Who paid me (Today + drilldown) v1.1 — Draft
 - Goal: when a debtor marks their split paid, the creator can see “Who paid me” in Today (avatars + totals), open a debtor list, drill into that debtor’s paid items, and mark those items as viewed.
