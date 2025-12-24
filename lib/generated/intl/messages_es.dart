@@ -978,6 +978,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage(
       "Pago pendiente",
     ),
+    "sharePaidDetailAcknowledge": MessageLookupByLibrary.simpleMessage(
+      "Reconocer pagos",
+    ),
+    "sharePaidDetailAcknowledgeError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos reconocer estos pagos.",
+    ),
+    "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
+      "Marcando...",
+    ),
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Añadir Flow"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Añadir Share"),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(

@@ -8,6 +8,7 @@ import '../../../core/theme/typography_tokens.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/kinly_list_tile.dart';
+import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../generated/l10n.dart';
@@ -32,7 +33,9 @@ class SharePaidToMeDetailScreen extends StatefulWidget {
 
 class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
   bool _isLoading = true;
+  bool _isAcknowledging = false;
   String? _error;
+  String? _acknowledgeError;
   List<TodaySharePaidItem> _items = const [];
 
   @override
@@ -45,12 +48,9 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
     setState(() {
       _isLoading = true;
       _error = null;
+      _acknowledgeError = null;
     });
     try {
-      await widget.expensesRepository.markPaidReceivedViewedForDebtor(
-        homeId: widget.homeId,
-        debtorUserId: widget.entry.debtorUserId,
-      );
       final items = await widget.expensesRepository.listPaidToMeByDebtor(
         homeId: widget.homeId,
         debtorUserId: widget.entry.debtorUserId,
@@ -71,74 +71,163 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
     }
   }
 
+  Future<void> _acknowledgePayments() async {
+    final strings = S.of(context);
+    setState(() {
+      _isAcknowledging = true;
+      _acknowledgeError = null;
+    });
+
+    try {
+      await widget.expensesRepository.markPaidReceivedViewedForDebtor(
+        homeId: widget.homeId,
+        debtorUserId: widget.entry.debtorUserId,
+      );
+      if (!mounted) return;
+      Navigator.of(context).pop(true);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _isAcknowledging = false;
+        _acknowledgeError = strings.sharePaidDetailAcknowledgeError;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     final spacing = Theme.of(context).extension<Spacing>()!;
+    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+
+    // Ensure last tile can scroll above the bottomNavigationBar.
+    final bottomScrollPad = spacing.lg + spacing.xl + spacing.lg;
 
     return Scaffold(
       appBar: AppBar(title: Text(s.todayShareTabPaidToMe)),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsetsDirectional.all(spacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _Header(entry: widget.entry),
-              SizedBox(height: spacing.lg),
-              Expanded(
-                child:
-                    _isLoading
-                        ? const Center(child: KinlyLoader())
-                        : _error != null
-                        ? Center(
-                          child: Text(
-                            _error!,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        )
-                        : _items.isEmpty
-                        ? Center(child: Text(s.shareOwedDetailEmpty))
-                        : KinlyScrollFade(
-                          child: ListView.separated(
-                            itemCount: _items.length,
-                            padding: EdgeInsetsDirectional.only(
-                              top: spacing.sm,
-                              bottom: spacing.sm,
-                            ),
-                            separatorBuilder:
-                                (_, __) => SizedBox(height: spacing.sm),
-                            itemBuilder: (context, index) {
-                              final item = _items[index];
-                              final typography = Theme.of(
-                                context,
-                              ).extension<KinlyTypography>();
-                              final colors = Theme.of(
-                                context,
-                              ).extension<KinlyColorTokens>();
 
-                              return KinlyListTile(
-                                title: item.description,
-                                trailing: Text(
-                                  item.formattedAmount,
-                                  style: (typography?.titleSmall ??
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.titleSmall)
-                                      ?.copyWith(color: colors?.onSurface),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+      // ✅ Bottom controls are NOT part of the scroll.
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          color: backgroundColor,
+          padding: EdgeInsetsDirectional.fromSTEB(
+            spacing.lg,
+            spacing.sm,
+            spacing.lg,
+            spacing.lg,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_acknowledgeError != null) ...[
+                Text(
+                  _acknowledgeError!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                SizedBox(height: spacing.sm),
+              ],
+              KinlyFilledButton.text(
+                onPressed:
+                    _isLoading ||
+                            _isAcknowledging ||
+                            _items.isEmpty ||
+                            _error != null
+                        ? null
+                        : _acknowledgePayments,
+                label:
+                    _isAcknowledging
+                        ? s.sharePaidDetailAcknowledging
+                        : s.sharePaidDetailAcknowledge,
+                fullWidth: true,
               ),
             ],
           ),
+        ),
+      ),
+
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Material(
+              color: backgroundColor,
+              child: _Header(entry: widget.entry),
+            ),
+
+            SizedBox(height: spacing.lg),
+
+            // ✅ Only this area scrolls.
+            Expanded(
+              child: ClipRect(
+                child: KinlyScrollFade(
+                  fadeTop: true,
+                  maskColor: backgroundColor,
+                  child: CustomScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    slivers: [
+                      if (_isLoading)
+                        const SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(child: KinlyLoader()),
+                        )
+                      else if (_error != null)
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(
+                            child: Text(
+                              _error!,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        )
+                      else if (_items.isEmpty)
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(child: Text(s.shareOwedDetailEmpty)),
+                        )
+                      else
+                        SliverList.separated(
+                          itemCount: _items.length,
+                          separatorBuilder:
+                              (_, __) => SizedBox(height: spacing.sm),
+                          itemBuilder: (context, index) {
+                            final item = _items[index];
+                            final typography =
+                                Theme.of(context).extension<KinlyTypography>();
+                            final colors =
+                                Theme.of(context).extension<KinlyColorTokens>();
+
+                            return KinlyListTile(
+                              title: item.description,
+                              trailing: Text(
+                                item.formattedAmount,
+                                style: (typography?.titleSmall ??
+                                        Theme.of(context).textTheme.titleSmall)
+                                    ?.copyWith(color: colors?.onSurface),
+                              ),
+                            );
+                          },
+                        ),
+
+                      // ✅ Spacer so the last item never sits under the bottom bar.
+                      SliverToBoxAdapter(
+                        child: SizedBox(height: bottomScrollPad),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

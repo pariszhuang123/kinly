@@ -16,12 +16,6 @@ void main() {
   testWidgets('loads detail, marks viewed, and renders items', (tester) async {
     final repo = _MockExpensesRepository();
     when(
-      () => repo.markPaidReceivedViewedForDebtor(
-        homeId: any(named: 'homeId'),
-        debtorUserId: any(named: 'debtorUserId'),
-      ),
-    ).thenAnswer((_) async => 1);
-    when(
       () => repo.listPaidToMeByDebtor(
         homeId: any(named: 'homeId'),
         debtorUserId: any(named: 'debtorUserId'),
@@ -64,15 +58,33 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Lunch'), findsOneWidget);
+    verifyNever(
+      () => repo.markPaidReceivedViewedForDebtor(
+        homeId: 'home-1',
+        debtorUserId: 'debtor-1',
+      ),
+    );
+    verify(
+      () =>
+          repo.listPaidToMeByDebtor(homeId: 'home-1', debtorUserId: 'debtor-1'),
+    ).called(1);
+
+    when(
+      () => repo.markPaidReceivedViewedForDebtor(
+        homeId: any(named: 'homeId'),
+        debtorUserId: any(named: 'debtorUserId'),
+      ),
+    ).thenAnswer((_) async => 1);
+
+    await tester.tap(find.text('Acknowledge payments'));
+    await tester.pump();
+    await tester.pumpAndSettle();
+
     verify(
       () => repo.markPaidReceivedViewedForDebtor(
         homeId: 'home-1',
         debtorUserId: 'debtor-1',
       ),
-    ).called(1);
-    verify(
-      () =>
-          repo.listPaidToMeByDebtor(homeId: 'home-1', debtorUserId: 'debtor-1'),
     ).called(1);
   });
 }

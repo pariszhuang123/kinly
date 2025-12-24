@@ -940,6 +940,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage("Settled."),
     "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage("To settle"),
+    "sharePaidDetailAcknowledge": MessageLookupByLibrary.simpleMessage(
+      "Acknowledge payments",
+    ),
+    "sharePaidDetailAcknowledgeError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t acknowledge these payments.",
+    ),
+    "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
+      "Acknowledging...",
+    ),
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Flow"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Bill"),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(

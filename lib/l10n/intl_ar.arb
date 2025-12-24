@@ -229,6 +229,10 @@
   "shareOwedDetailSuccess": "تم تسجيل الدفع.",
   "shareOwedDetailError": "تعذّر وضع علامة مدفوع. حاول مرة أخرى.",
 
+  "sharePaidDetailAcknowledge": "Acknowledge payments",
+  "sharePaidDetailAcknowledging": "Acknowledging...",
+  "sharePaidDetailAcknowledgeError": "We couldn't acknowledge these payments.",
+
   "shareEditTitle": "تعديل Share",
   "shareEditSubmit": "تحديث",
   "shareEditSuccess": "تم تحديث Share.",

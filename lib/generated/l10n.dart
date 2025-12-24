@@ -1414,6 +1414,36 @@ class S {
     );
   }
 
+  /// `Acknowledge payments`
+  String get sharePaidDetailAcknowledge {
+    return Intl.message(
+      'Acknowledge payments',
+      name: 'sharePaidDetailAcknowledge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Acknowledging...`
+  String get sharePaidDetailAcknowledging {
+    return Intl.message(
+      'Acknowledging...',
+      name: 'sharePaidDetailAcknowledging',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't acknowledge these payments.`
+  String get sharePaidDetailAcknowledgeError {
+    return Intl.message(
+      'We couldn\'t acknowledge these payments.',
+      name: 'sharePaidDetailAcknowledgeError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Edit Share`
   String get shareEditTitle {
     return Intl.message(

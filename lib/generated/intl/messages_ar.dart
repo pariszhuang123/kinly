@@ -923,6 +923,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم تسجيل الدفع.",
     ),
     "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage("دفعة معلّقة"),
+    "sharePaidDetailAcknowledge": MessageLookupByLibrary.simpleMessage(
+      "Acknowledge payments",
+    ),
+    "sharePaidDetailAcknowledgeError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t acknowledge these payments.",
+    ),
+    "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
+      "Acknowledging...",
+    ),
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("إضافة Flow"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("إضافة Share"),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage("أضف إلى منزلك"),
