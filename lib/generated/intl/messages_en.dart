@@ -817,7 +817,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "How do we want to split this?",
     ),
     "shareCreateStartLabel": MessageLookupByLibrary.simpleMessage(
-      "When should this apply?",
+      "When does this apply?",
     ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Create"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Bill created."),
@@ -900,16 +900,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "Share deleted.",
     ),
     "shareEditDisabledActive": MessageLookupByLibrary.simpleMessage(
-      "Active bills can\'t be edited.",
+      "Active bills are locked from edits.",
     ),
     "shareEditDisabledConverted": MessageLookupByLibrary.simpleMessage(
-      "This bill was converted to a plan and can\'t be edited.",
+      "This bill is now a plan, and editing is off.",
     ),
     "shareEditDisabledGeneric": MessageLookupByLibrary.simpleMessage(
-      "You can\'t edit this bill right now.",
+      "Editing this bill is unavailable right now.",
     ),
     "shareEditDisabledRecurringCycle": MessageLookupByLibrary.simpleMessage(
-      "Recurring cycles can\'t be edited here.",
+      "Recurring cycles are locked from edits here.",
     ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load that draft.",

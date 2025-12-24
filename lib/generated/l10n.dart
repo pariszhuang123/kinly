@@ -1544,40 +1544,40 @@ class S {
     );
   }
 
-  /// `This bill was converted to a plan and can't be edited.`
+  /// `This bill is now a plan, and editing is off.`
   String get shareEditDisabledConverted {
     return Intl.message(
-      'This bill was converted to a plan and can\'t be edited.',
+      'This bill is now a plan, and editing is off.',
       name: 'shareEditDisabledConverted',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recurring cycles can't be edited here.`
+  /// `Recurring cycles are locked from edits here.`
   String get shareEditDisabledRecurringCycle {
     return Intl.message(
-      'Recurring cycles can\'t be edited here.',
+      'Recurring cycles are locked from edits here.',
       name: 'shareEditDisabledRecurringCycle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Active bills can't be edited.`
+  /// `Active bills are locked from edits.`
   String get shareEditDisabledActive {
     return Intl.message(
-      'Active bills can\'t be edited.',
+      'Active bills are locked from edits.',
       name: 'shareEditDisabledActive',
       desc: '',
       args: [],
     );
   }
 
-  /// `You can't edit this bill right now.`
+  /// `Editing this bill is unavailable right now.`
   String get shareEditDisabledGeneric {
     return Intl.message(
-      'You can\'t edit this bill right now.',
+      'Editing this bill is unavailable right now.',
       name: 'shareEditDisabledGeneric',
       desc: '',
       args: [],
@@ -1719,10 +1719,10 @@ class S {
     );
   }
 
-  /// `When should this apply?`
+  /// `When does this apply?`
   String get shareCreateStartLabel {
     return Intl.message(
-      'When should this apply?',
+      'When does this apply?',
       name: 'shareCreateStartLabel',
       desc: '',
       args: [],
