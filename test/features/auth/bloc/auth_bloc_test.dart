@@ -118,6 +118,36 @@ void main() {
   );
 
   blocTest<AuthBloc, AuthState>(
+    'clears loading after successful Google sign-in',
+    build: () {
+      when(() => authRepository.signInWithGoogle()).thenAnswer((_) async {});
+      return buildBloc();
+    },
+    act: (bloc) => bloc.add(const AuthSignInWithGoogleRequested()),
+    expect:
+        () => [
+          const AuthState(
+            status: AuthStatus.unauthenticated,
+            membershipStatus: AuthMembershipStatus.none,
+          ),
+          const AuthState(
+            status: AuthStatus.unauthenticated,
+            membershipStatus: AuthMembershipStatus.none,
+            isLoading: true,
+          ),
+          predicate<AuthState>(
+            (state) =>
+                state.isLoading == false &&
+                state.errorMessage == null &&
+                state.membershipStatus == AuthMembershipStatus.none,
+          ),
+        ],
+    verify: (_) {
+      verify(() => authRepository.signInWithGoogle()).called(1);
+    },
+  );
+
+  blocTest<AuthBloc, AuthState>(
     'surfaces errors when Apple sign-in fails',
     build: () {
       when(() => authRepository.signInWithApple()).thenThrow(Exception('boom'));
@@ -236,26 +266,45 @@ void main() {
         }
         throw Exception('boom');
       });
-      when(() => authRepository.current).thenReturn(const AuthSession(userId: 'user-2'));
+      when(
+        () => authRepository.current,
+      ).thenReturn(const AuthSession(userId: 'user-2'));
       return buildBloc();
     },
-    seed: () => const AuthState(
-      status: AuthStatus.authenticated,
-      userId: 'user-2',
-      membershipStatus: AuthMembershipStatus.active,
-    ),
+    seed:
+        () => const AuthState(
+          status: AuthStatus.authenticated,
+          userId: 'user-2',
+          membershipStatus: AuthMembershipStatus.active,
+        ),
     act: (bloc) => bloc.add(const AuthMembershipRefreshRequested()),
     wait: const Duration(milliseconds: 900),
     skip: 2,
-    expect: () => [
-      isA<AuthState>()
-          .having((s) => s.status, 'status', AuthStatus.authenticated)
-          .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.unknown),
-      isA<AuthState>()
-          .having((s) => s.errorMessage, 'errorMessage', AuthBloc.membershipLoadFailedKey)
-          .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.active),
-    ],
-    verify: (_) => verify(() => homeRepository.getCurrentMembership()).called(greaterThanOrEqualTo(2)),
+    expect:
+        () => [
+          isA<AuthState>()
+              .having((s) => s.status, 'status', AuthStatus.authenticated)
+              .having(
+                (s) => s.membershipStatus,
+                'membershipStatus',
+                AuthMembershipStatus.unknown,
+              ),
+          isA<AuthState>()
+              .having(
+                (s) => s.errorMessage,
+                'errorMessage',
+                AuthBloc.membershipLoadFailedKey,
+              )
+              .having(
+                (s) => s.membershipStatus,
+                'membershipStatus',
+                AuthMembershipStatus.active,
+              ),
+        ],
+    verify:
+        (_) => verify(
+          () => homeRepository.getCurrentMembership(),
+        ).called(greaterThanOrEqualTo(2)),
   );
 
   blocTest<AuthBloc, AuthState>(
@@ -283,20 +332,36 @@ void main() {
           validFrom: DateTime.utc(2025, 1, 2),
         );
       });
-      when(() => authRepository.current).thenReturn(const AuthSession(userId: 'user-3'));
+      when(
+        () => authRepository.current,
+      ).thenReturn(const AuthSession(userId: 'user-3'));
       return buildBloc();
     },
     act: (bloc) => bloc.add(const AuthMembershipRefreshRequested()),
     wait: const Duration(milliseconds: 900),
     skip: 2,
-    expect: () => [
-      isA<AuthState>()
-          .having((s) => s.status, 'status', AuthStatus.authenticated)
-          .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.unknown),
-      isA<AuthState>()
-          .having((s) => s.membershipStatus, 'membershipStatus', AuthMembershipStatus.active)
-          .having((s) => s.membership?.homeId, 'membership.homeId', 'home-777'),
-    ],
-    verify: (_) => verify(() => homeRepository.getCurrentMembership()).called(3),
+    expect:
+        () => [
+          isA<AuthState>()
+              .having((s) => s.status, 'status', AuthStatus.authenticated)
+              .having(
+                (s) => s.membershipStatus,
+                'membershipStatus',
+                AuthMembershipStatus.unknown,
+              ),
+          isA<AuthState>()
+              .having(
+                (s) => s.membershipStatus,
+                'membershipStatus',
+                AuthMembershipStatus.active,
+              )
+              .having(
+                (s) => s.membership?.homeId,
+                'membership.homeId',
+                'home-777',
+              ),
+        ],
+    verify:
+        (_) => verify(() => homeRepository.getCurrentMembership()).called(3),
   );
 }

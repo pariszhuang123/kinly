@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/homes/models.dart';
 import '../../../data/repositories/auth_repository.dart';
@@ -98,9 +99,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(isLoading: true, errorMessage: null));
     try {
       await action();
+      emit(state.copyWith(isLoading: false));
     } catch (error) {
-      emit(state.copyWith(isLoading: false, errorMessage: error.toString()));
+      emit(
+        state.copyWith(isLoading: false, errorMessage: _describeError(error)),
+      );
     }
+  }
+
+  String _describeError(Object error) {
+    if (error is AuthException) return error.message;
+    return error.toString();
   }
 
   void _onErrorCleared(AuthErrorCleared event, Emitter<AuthState> emit) {

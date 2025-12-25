@@ -50,7 +50,9 @@ void setupDependencies() {
     );
   }
   if (!sl.isRegistered<AuthRepository>()) {
-    sl.registerLazySingleton<AuthRepository>(() => SupabaseAuthRepository());
+    sl.registerLazySingleton<AuthRepository>(
+      () => SupabaseAuthRepository(logger: sl<Logger>()),
+    );
   }
   if (!sl.isRegistered<HomeRepository>()) {
     // Prefer real Supabase repo; fall back to fake if Supabase is unavailable.

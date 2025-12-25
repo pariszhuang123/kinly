@@ -56,6 +56,15 @@
 				<string>io.supabase.flutter</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.447657171212-5o1gqf767ajq9qaeiqgfrkkcoarejq41</string>
+				<string>com.googleusercontent.apps.695504754770-amkc2t6i0er916tom1os03bdlo37jim3</string>
+			</array>
+		</dict>
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Kinly needs camera access to capture expectation photos for chores.</string>

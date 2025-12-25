@@ -15,7 +15,8 @@ import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kinly/core/router/app_router.dart';
 
-class _MockAuthBloc extends MockBloc<AuthEvent, AuthState> implements AuthBloc {}
+class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
+    implements AuthBloc {}
 
 class _FakeAuthEvent extends Fake implements AuthEvent {}
 
@@ -61,7 +62,9 @@ void main() {
     );
   }
 
-  testWidgets('requires consent before enabling Google sign-in', (tester) async {
+  testWidgets('requires consent before enabling Google sign-in', (
+    tester,
+  ) async {
     when(() => authBloc.state).thenReturn(const AuthState());
     final router = GoRouter(
       initialLocation: AppRoutes.welcome,
@@ -77,11 +80,25 @@ void main() {
     await tester.pump();
 
     final googleButton = find.text(S.current.login_with_google);
-    expect(tester.widget<Opacity>(find.ancestor(of: googleButton, matching: find.byType(Opacity))).opacity, lessThan(1.0));
+    expect(
+      tester
+          .widget<Opacity>(
+            find.ancestor(of: googleButton, matching: find.byType(Opacity)),
+          )
+          .opacity,
+      lessThan(1.0),
+    );
 
     await tester.tap(find.byType(Checkbox));
     await tester.pump();
-    expect(tester.widget<Opacity>(find.ancestor(of: googleButton, matching: find.byType(Opacity))).opacity, 1.0);
+    expect(
+      tester
+          .widget<Opacity>(
+            find.ancestor(of: googleButton, matching: find.byType(Opacity)),
+          )
+          .opacity,
+      1.0,
+    );
 
     await tester.tap(googleButton);
     verify(() => authBloc.add(const AuthSignInWithGoogleRequested())).called(1);
@@ -102,9 +119,7 @@ void main() {
     await tester.pumpWidget(buildRouterApp(router));
     await tester.pump();
 
-    final googleButton = tester.widget<SignInButton>(
-      find.byType(SignInButton),
-    );
+    final googleButton = tester.widget<SignInButton>(find.byType(SignInButton));
     expect(googleButton.button, Buttons.google);
   });
 
@@ -120,16 +135,18 @@ void main() {
       ],
     );
 
-    await tester.pumpWidget(buildRouterApp(router, brightness: Brightness.dark));
+    await tester.pumpWidget(
+      buildRouterApp(router, brightness: Brightness.dark),
+    );
     await tester.pump();
 
-    final googleButton = tester.widget<SignInButton>(
-      find.byType(SignInButton),
-    );
+    final googleButton = tester.widget<SignInButton>(find.byType(SignInButton));
     expect(googleButton.button, Buttons.google);
   });
 
-  testWidgets('navigates to start when authenticated without membership', (tester) async {
+  testWidgets('navigates to start when authenticated without membership', (
+    tester,
+  ) async {
     when(() => authBloc.state).thenReturn(const AuthState());
     whenListen(
       authBloc,
@@ -163,7 +180,9 @@ void main() {
     expect(find.text('start-screen'), findsOneWidget);
   });
 
-  testWidgets('navigates to today when authenticated with membership', (tester) async {
+  testWidgets('navigates to today when authenticated with membership', (
+    tester,
+  ) async {
     when(() => authBloc.state).thenReturn(const AuthState());
     whenListen(
       authBloc,
@@ -195,5 +214,34 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('today-screen'), findsOneWidget);
+  });
+
+  testWidgets('disables Google sign-in while loading', (tester) async {
+    when(() => authBloc.state).thenReturn(const AuthState(isLoading: true));
+    final router = GoRouter(
+      initialLocation: AppRoutes.welcome,
+      routes: [
+        GoRoute(
+          path: AppRoutes.welcome,
+          builder: (_, __) => const WelcomeScreen(),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(buildRouterApp(router));
+    await tester.pump();
+
+    // Consent checked, but busy => button should stay disabled.
+    await tester.tap(find.byType(Checkbox));
+    await tester.pump();
+
+    final googleButton = find.text(S.current.login_with_google);
+    final opacityWidget = tester.widget<Opacity>(
+      find.ancestor(of: googleButton, matching: find.byType(Opacity)),
+    );
+    expect(opacityWidget.opacity, lessThan(1.0));
+
+    await tester.tap(googleButton);
+    verifyNever(() => authBloc.add(const AuthSignInWithGoogleRequested()));
   });
 }
