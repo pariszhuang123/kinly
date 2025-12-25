@@ -241,7 +241,7 @@ void main() {
     );
     expect(opacityWidget.opacity, lessThan(1.0));
 
-    await tester.tap(googleButton);
+    await tester.tap(googleButton, warnIfMissed: false);
     verifyNever(() => authBloc.add(const AuthSignInWithGoogleRequested()));
   });
 }
