@@ -99,41 +99,11 @@ class S {
     );
   }
 
-  /// `Create Home`
-  String get create_title {
-    return Intl.message(
-      'Create Home',
-      name: 'create_title',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `We'll spin up your home instantly. You can rename and invite later.`
   String get create_subtitle {
     return Intl.message(
       'We\'ll spin up your home instantly. You can rename and invite later.',
       name: 'create_subtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Create home`
-  String get create_submit {
-    return Intl.message(
-      'Create home',
-      name: 'create_submit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Home created!`
-  String get create_success {
-    return Intl.message(
-      'Home created!',
-      name: 'create_success',
       desc: '',
       args: [],
     );
@@ -404,11 +374,6 @@ class S {
     );
   }
 
-  /// `Today`
-  String get today_title {
-    return Intl.message('Today', name: 'today_title', desc: '', args: []);
-  }
-
   /// `Quick Add`
   String get quick_add_title {
     return Intl.message(
@@ -454,46 +419,6 @@ class S {
     return Intl.message(
       'Add a bill',
       name: 'quick_add_share_subtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Poll`
-  String get quick_add_poll_title {
-    return Intl.message(
-      'Poll',
-      name: 'quick_add_poll_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Create a quick home poll`
-  String get quick_add_poll_subtitle {
-    return Intl.message(
-      'Create a quick home poll',
-      name: 'quick_add_poll_subtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Fair Share`
-  String get quick_add_fair_share_title {
-    return Intl.message(
-      'Fair Share',
-      name: 'quick_add_fair_share_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Note a fairness entry`
-  String get quick_add_fair_share_subtitle {
-    return Intl.message(
-      'Note a fairness entry',
-      name: 'quick_add_fair_share_subtitle',
       desc: '',
       args: [],
     );
@@ -644,26 +569,6 @@ class S {
     );
   }
 
-  /// `No active home yet. Create or join to see today's view.`
-  String get today_no_membership {
-    return Intl.message(
-      'No active home yet. Create or join to see today\'s view.',
-      name: 'today_no_membership',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Current home: {homeId} • Role: {role}`
-  String today_home_details(String homeId, String role) {
-    return Intl.message(
-      'Current home: $homeId • Role: $role',
-      name: 'today_home_details',
-      desc: '',
-      args: [homeId, role],
-    );
-  }
-
   /// `You're offline`
   String get offline_title {
     return Intl.message(
@@ -754,26 +659,6 @@ class S {
     return Intl.message('Hub', name: 'navHub', desc: '', args: []);
   }
 
-  /// `Home members`
-  String get hubMembersTitle {
-    return Intl.message(
-      'Home members',
-      name: 'hubMembersTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `People currently active in this home.`
-  String get hubMembersSubtitle {
-    return Intl.message(
-      'People currently active in this home.',
-      name: 'hubMembersSubtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `No active members yet.`
   String get hubMembersEmpty {
     return Intl.message(
@@ -844,16 +729,6 @@ class S {
     return Intl.message(
       'Share Kinly',
       name: 'hubShareAppCta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Copy invite code`
-  String get hubCopyCode {
-    return Intl.message(
-      'Copy invite code',
-      name: 'hubCopyCode',
       desc: '',
       args: [],
     );
@@ -1054,11 +929,6 @@ class S {
     );
   }
 
-  /// `?`
-  String get unknownInitial {
-    return Intl.message('?', name: 'unknownInitial', desc: '', args: []);
-  }
-
   /// `Good {partOfDay}, {name}`
   String greetingPartOfDay(String partOfDay, String name) {
     return Intl.message(
@@ -1066,36 +936,6 @@ class S {
       name: 'greetingPartOfDay',
       desc: '',
       args: [partOfDay, name],
-    );
-  }
-
-  /// `morning`
-  String get greetingPartMorning {
-    return Intl.message(
-      'morning',
-      name: 'greetingPartMorning',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `afternoon`
-  String get greetingPartAfternoon {
-    return Intl.message(
-      'afternoon',
-      name: 'greetingPartAfternoon',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `evening`
-  String get greetingPartEvening {
-    return Intl.message(
-      'evening',
-      name: 'greetingPartEvening',
-      desc: '',
-      args: [],
     );
   }
 
@@ -1164,66 +1004,6 @@ class S {
     return Intl.message(
       'Bill',
       name: 'todayShareSectionTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `upcoming`
-  String get todayShareBadgeUpcoming {
-    return Intl.message(
-      'upcoming',
-      name: 'todayShareBadgeUpcoming',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `See all bills`
-  String get todayShareSeeAll {
-    return Intl.message(
-      'See all bills',
-      name: 'todayShareSeeAll',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Shared groceries from yesterday`
-  String get todayShareSampleGroceries {
-    return Intl.message(
-      'Shared groceries from yesterday',
-      name: 'todayShareSampleGroceries',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Rent reminder coming up`
-  String get todayShareSampleRent {
-    return Intl.message(
-      'Rent reminder coming up',
-      name: 'todayShareSampleRent',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Internet bill this week`
-  String get todayShareSampleInternet {
-    return Intl.message(
-      'Internet bill this week',
-      name: 'todayShareSampleInternet',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nothing to see here yet.`
-  String get todayShareEmptyState {
-    return Intl.message(
-      'Nothing to see here yet.',
-      name: 'todayShareEmptyState',
       desc: '',
       args: [],
     );
@@ -1304,16 +1084,6 @@ class S {
     );
   }
 
-  /// `Split based on the bill share.`
-  String get todayShareDraftSubtitle {
-    return Intl.message(
-      'Split based on the bill share.',
-      name: 'todayShareDraftSubtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Home Gratitude wall`
   String get todayGratitudeSectionTitle {
     return Intl.message(
@@ -1354,31 +1124,11 @@ class S {
     );
   }
 
-  /// `Select the bill you just settled.`
-  String get shareOwedDetailSubtitle {
-    return Intl.message(
-      'Select the bill you just settled.',
-      name: 'shareOwedDetailSubtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `You're all caught up with this person.`
   String get shareOwedDetailEmpty {
     return Intl.message(
       'You\'re all caught up with this person.',
       name: 'shareOwedDetailEmpty',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Select who to share with.`
-  String get shareOwedDetailSelectionLabel {
-    return Intl.message(
-      'Select who to share with.',
-      name: 'shareOwedDetailSelectionLabel',
       desc: '',
       args: [],
     );
@@ -1534,16 +1284,6 @@ class S {
     );
   }
 
-  /// `Cancel`
-  String get shareEditDeleteCancel {
-    return Intl.message(
-      'Cancel',
-      name: 'shareEditDeleteCancel',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Delete`
   String get shareEditDeleteConfirm {
     return Intl.message(
@@ -1684,16 +1424,6 @@ class S {
     return Intl.message(
       'Choose amounts',
       name: 'shareCreateSplitCustom',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Who's sharing?`
-  String get shareCreateParticipantsLabel {
-    return Intl.message(
-      'Who\'s sharing?',
-      name: 'shareCreateParticipantsLabel',
       desc: '',
       args: [],
     );
@@ -1854,16 +1584,6 @@ class S {
     return Intl.message(
       'Enter a valid amount greater than zero.',
       name: 'shareCreateValidationAmount',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Choose how you want to share.`
-  String get shareCreateValidationSplit {
-    return Intl.message(
-      'Choose how you want to share.',
-      name: 'shareCreateValidationSplit',
       desc: '',
       args: [],
     );
@@ -2089,16 +1809,6 @@ class S {
     );
   }
 
-  /// `Open to anyone`
-  String get flowChoreAssigneeUnassigned {
-    return Intl.message(
-      'Open to anyone',
-      name: 'flowChoreAssigneeUnassigned',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Choose someone, or leave it open for anyone.`
   String get flowChoreValidationAssignee {
     return Intl.message(
@@ -2279,16 +1989,6 @@ class S {
     );
   }
 
-  /// `storage/households/... (optional)`
-  String get flowChorePhotoHint {
-    return Intl.message(
-      'storage/households/... (optional)',
-      name: 'flowChorePhotoHint',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `A photo can help everyone stay aligned`
   String get flowChorePhotoPlaceholder {
     return Intl.message(
@@ -2384,16 +2084,6 @@ class S {
     return Intl.message(
       'This removes the flow for everyone in your home.',
       name: 'flowChoreDeleteDialogMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get flowChoreDeleteCancel {
-    return Intl.message(
-      'Cancel',
-      name: 'flowChoreDeleteCancel',
       desc: '',
       args: [],
     );
@@ -3114,31 +2804,11 @@ class S {
     );
   }
 
-  /// `Member removed`
-  String get profileKickSuccessTitle {
-    return Intl.message(
-      'Member removed',
-      name: 'profileKickSuccessTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `They no longer have access to this home.`
   String get profileKickSuccessMessage {
     return Intl.message(
       'They no longer have access to this home.',
       name: 'profileKickSuccessMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Back to settings`
-  String get profileKickSuccessClose {
-    return Intl.message(
-      'Back to settings',
-      name: 'profileKickSuccessClose',
       desc: '',
       args: [],
     );
@@ -3354,26 +3024,6 @@ class S {
     );
   }
 
-  /// `Sign out?`
-  String get profileLogoutDialogTitle {
-    return Intl.message(
-      'Sign out?',
-      name: 'profileLogoutDialogTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `You'll need to sign in again to access your home.`
-  String get profileLogoutDialogMessage {
-    return Intl.message(
-      'You\'ll need to sign in again to access your home.',
-      name: 'profileLogoutDialogMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Delete account`
   String get profileDeleteAccountTitle {
     return Intl.message(
@@ -3429,16 +3079,6 @@ class S {
     return Intl.message(
       'This removes your account and signs you out. You won\'t be able to undo this.',
       name: 'profileConfirmDeleteMessage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get profileActionCancel {
-    return Intl.message(
-      'Cancel',
-      name: 'profileActionCancel',
       desc: '',
       args: [],
     );
@@ -3504,31 +3144,11 @@ class S {
     );
   }
 
-  /// `Weekly house harmony`
-  String get harmonyTitle {
-    return Intl.message(
-      'Weekly house harmony',
-      name: 'harmonyTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `How's your home feeling this week?`
   String get harmonyQuestion {
     return Intl.message(
       'How\'s your home feeling this week?',
       name: 'harmonyQuestion',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Pick the weather that best matches your vibe and leave an optional note.`
-  String get harmonySubtext {
-    return Intl.message(
-      'Pick the weather that best matches your vibe and leave an optional note.',
-      name: 'harmonySubtext',
       desc: '',
       args: [],
     );
@@ -3664,46 +3284,6 @@ class S {
     );
   }
 
-  /// `Share this week's mood`
-  String get harmonyEntryCta {
-    return Intl.message(
-      'Share this week\'s mood',
-      name: 'harmonyEntryCta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Couldn't open harmony feedback. Try again.`
-  String get harmonyEntryError {
-    return Intl.message(
-      'Couldn\'t open harmony feedback. Try again.',
-      name: 'harmonyEntryError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Gratitude wall`
-  String get gratitudeWallTitle {
-    return Intl.message(
-      'Gratitude wall',
-      name: 'gratitudeWallTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `{time} today`
-  String gratitudeWallTimestamp(String time) {
-    return Intl.message(
-      '$time today',
-      name: 'gratitudeWallTimestamp',
-      desc: '',
-      args: [time],
-    );
-  }
-
   /// `No gratitude posts yet`
   String get gratitudeWallEmptyTitle {
     return Intl.message(
@@ -3774,31 +3354,11 @@ class S {
     );
   }
 
-  /// `Powered by`
-  String get gratitudeWallPoweredBy {
-    return Intl.message(
-      'Powered by',
-      name: 'gratitudeWallPoweredBy',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Shared moments from your home.`
   String get gratitudeWallSubtitle {
     return Intl.message(
       'Shared moments from your home.',
       name: 'gratitudeWallSubtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Kinly helps your home share small moments of gratitude.`
-  String get gratitudeWallKinlySubtitle {
-    return Intl.message(
-      'Kinly helps your home share small moments of gratitude.',
-      name: 'gratitudeWallKinlySubtitle',
       desc: '',
       args: [],
     );

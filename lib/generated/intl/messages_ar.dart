@@ -33,41 +33,36 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(link) =>
       "مشاركة لمحة من جدار الامتنان لدينا على Kinly. حمّل التطبيق: ${link}";
 
-  static String m5(time) => "${time} اليوم";
-
-  static String m6(count) =>
+  static String m5(count) =>
       "جدار الامتنان ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m7(weeks) =>
+  static String m6(weeks) =>
       "${Intl.plural(weeks, zero: 'هذا الأسبوع', one: 'قبل أسبوع واحد', other: 'قبل # أسابيع')}";
 
-  static String m8(partOfDay, name) => "صباح/مساء ${partOfDay}، ${name}";
+  static String m7(partOfDay, name) => "صباح/مساء ${partOfDay}، ${name}";
 
-  static String m9(link) => "شارك Kinly ليصبح التشارك أخف: ${link}";
+  static String m8(link) => "شارك Kinly ليصبح التشارك أخف: ${link}";
 
-  static String m10(code, link) =>
+  static String m9(code, link) =>
       "مرحبًا بك في منزلنا على Kinly! أدخل رمز الدعوة التالي: ${code}\n\nحمّل تطبيق Kinly: ${link}";
 
-  static String m11(code) => "تم الانضمام باستخدام الرمز: ${code}";
+  static String m10(code) => "تم الانضمام باستخدام الرمز: ${code}";
 
-  static String m12(price) => "${price} شهريًا لمنزلك بالكامل.";
+  static String m11(price) => "${price} شهريًا لمنزلك بالكامل.";
 
-  static String m13(paidAmount, totalAmount) =>
+  static String m12(paidAmount, totalAmount) =>
       "${paidAmount} من ${totalAmount} تم تحصيلها";
 
-  static String m14(paid, total) => "${paid} من ${total} مدفوعة";
+  static String m13(paid, total) => "${paid} من ${total} مدفوعة";
 
-  static String m15(count) =>
+  static String m14(count) =>
       "عرض الكل ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m16(count) =>
+  static String m15(count) =>
       "${Intl.plural(count, one: '${count} دفعة معلّقة', other: '${count} دفعات معلّقة')}";
 
-  static String m17(count) =>
+  static String m16(count) =>
       "${Intl.plural(count, one: '${count} new payment to you', other: '${count} new payments to you')}";
-
-  static String m18(homeId, role) =>
-      "المنزل الحالي: ${homeId} • الدور: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -103,12 +98,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
       "تعذّر إنشاء المنزل. حاول مرة أخرى.",
     ),
-    "create_submit": MessageLookupByLibrary.simpleMessage("إنشاء منزل"),
     "create_subtitle": MessageLookupByLibrary.simpleMessage(
       "سنُنشئ منزلك فورًا. يمكنك تغيير الاسم ودعوة الآخرين لاحقًا.",
     ),
-    "create_success": MessageLookupByLibrary.simpleMessage("تم إنشاء المنزل!"),
-    "create_title": MessageLookupByLibrary.simpleMessage("إنشاء منزل"),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "راجع كل Flow وحافظ على استمرارها",
     ),
@@ -119,15 +111,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "شاهد كل Share أنشأتها وتابع التحصيل.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("إسناد إلى"),
-    "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
-      "غير مُسند",
-    ),
     "flowChoreCreateSuccess": MessageLookupByLibrary.simpleMessage(
       "تم إنشاء الـFlow.",
     ),
     "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("إضافة Flow"),
     "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage("حذف Flow"),
-    "flowChoreDeleteCancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
     "flowChoreDeleteConfirm": MessageLookupByLibrary.simpleMessage("حذف"),
     "flowChoreDeleteDialogMessage": MessageLookupByLibrary.simpleMessage(
       "سيؤدي هذا إلى إزالة الـ Flow للجميع في منزلك.",
@@ -203,9 +191,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "أضف سياقًا أو تذكيرات اختيارية",
     ),
     "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage("ملاحظات"),
-    "flowChorePhotoHint": MessageLookupByLibrary.simpleMessage(
-      "storage/households/... (اختياري)",
-    ),
     "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage("صورة للتوقع"),
     "flowChorePhotoLoadError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل الصورة",
@@ -288,10 +273,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "لا توجد منشورات امتنان بعد",
     ),
     "gratitudeWallFooter": m3,
-    "gratitudeWallKinlySubtitle": MessageLookupByLibrary.simpleMessage(
-      "يساعد Kinly منزلك على مشاركة لحظات امتنان صغيرة.",
-    ),
-    "gratitudeWallPoweredBy": MessageLookupByLibrary.simpleMessage("بدعم من"),
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("حاول مرة أخرى"),
     "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage(
       "مشاركة هذا الجدار",
@@ -306,25 +287,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "لحظات مشتركة من منزلك.",
     ),
-    "gratitudeWallTimestamp": m5,
-    "gratitudeWallTitle": MessageLookupByLibrary.simpleMessage("جدار الامتنان"),
-    "gratitudeWallTitleCount": m6,
-    "gratitudeWallWeeksAgo": m7,
-    "greetingPartAfternoon": MessageLookupByLibrary.simpleMessage("بعد الظهر"),
-    "greetingPartEvening": MessageLookupByLibrary.simpleMessage("المساء"),
-    "greetingPartMorning": MessageLookupByLibrary.simpleMessage("الصباح"),
-    "greetingPartOfDay": m8,
+    "gratitudeWallTitleCount": m5,
+    "gratitudeWallWeeksAgo": m6,
+    "greetingPartOfDay": m7,
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
       "ما الذي يجعل المنزل يشعر بهذا الشكل؟",
     ),
     "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
       "أضف ملاحظة (اختياري)",
-    ),
-    "harmonyEntryCta": MessageLookupByLibrary.simpleMessage(
-      "شارك حالة هذا الأسبوع",
-    ),
-    "harmonyEntryError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر فتح انسجام المنزل. حاول مرة أخرى.",
     ),
     "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
       "لقد شاركت حالتك لهذا الأسبوع بالفعل.",
@@ -357,12 +327,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
       "شكرًا! تم حفظ ملاحظاتك.",
     ),
-    "harmonySubtext": MessageLookupByLibrary.simpleMessage(
-      "اختر الطقس الذي يطابق الأجواء واترك ملاحظة اختيارية.",
-    ),
-    "harmonyTitle": MessageLookupByLibrary.simpleMessage(
-      "انسجام المنزل الأسبوعي",
-    ),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "اقرأ شكرًا سريعًا ولحظات صغيرة من التقدير.",
     ),
@@ -370,7 +334,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "جدار الامتنان",
     ),
     "hubCodeCopied": MessageLookupByLibrary.simpleMessage("تم نسخ رمز الدعوة"),
-    "hubCopyCode": MessageLookupByLibrary.simpleMessage("نسخ رمز الدعوة"),
     "hubError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل المركز. حاول مرة أخرى.",
     ),
@@ -381,10 +344,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubMembersEmpty": MessageLookupByLibrary.simpleMessage(
       "لا يوجد أعضاء نشطون بعد.",
     ),
-    "hubMembersSubtitle": MessageLookupByLibrary.simpleMessage(
-      "الأشخاص النشطون حاليًا في هذا المنزل.",
-    ),
-    "hubMembersTitle": MessageLookupByLibrary.simpleMessage("أعضاء المنزل"),
     "hubQrSubtitle": MessageLookupByLibrary.simpleMessage("امسح لتحميل Kinly"),
     "hubQrTitle": MessageLookupByLibrary.simpleMessage("مشاركة التطبيق"),
     "hubRetry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
@@ -393,12 +352,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "hubRotateInvite": MessageLookupByLibrary.simpleMessage("تدوير الدعوة"),
     "hubRotateSuccess": MessageLookupByLibrary.simpleMessage("تم تدوير الدعوة"),
-    "hubShareAppBody": m9,
+    "hubShareAppBody": m8,
     "hubShareAppCta": MessageLookupByLibrary.simpleMessage("مشاركة Kinly"),
     "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
       "احصل على تطبيق Kinly",
     ),
-    "hubShareInviteBody": m10,
+    "hubShareInviteBody": m9,
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "دعوة إلى منزلي على Kinly",
     ),
@@ -425,7 +384,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage("أدخل رمز الدعوة"),
     "join_submit": MessageLookupByLibrary.simpleMessage("انضمام"),
-    "join_success": m11,
+    "join_success": m10,
     "join_title": MessageLookupByLibrary.simpleMessage("الانضمام إلى منزل"),
     "login_consent_connector": MessageLookupByLibrary.simpleMessage(" و"),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
@@ -507,7 +466,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
       "خطة واحدة للمنزل، بدون مستويات مخفية.",
     ),
-    "paywallPricePerMonth": m12,
+    "paywallPricePerMonth": m11,
     "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
       "التسعير غير متاح الآن.",
     ),
@@ -533,7 +492,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
       "مزيد من الانسجام لمنزلك",
     ),
-    "profileActionCancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage(
       "مغادرة المنزل",
     ),
@@ -649,14 +607,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "اختر عضوًا لإزالته. سيفقد الوصول فورًا.",
     ),
     "profileKickSheetTitle": MessageLookupByLibrary.simpleMessage("إزالة عضو"),
-    "profileKickSuccessClose": MessageLookupByLibrary.simpleMessage(
-      "العودة إلى الإعدادات",
-    ),
     "profileKickSuccessMessage": MessageLookupByLibrary.simpleMessage(
       "لم يعد لديه وصول إلى هذا المنزل.",
-    ),
-    "profileKickSuccessTitle": MessageLookupByLibrary.simpleMessage(
-      "تمت إزالة العضو",
     ),
     "profileLeaveEligibilityError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل أعضاء المنزل. حاول مرة أخرى.",
@@ -688,12 +640,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileLeaveTransferSuccessMessage": MessageLookupByLibrary.simpleMessage(
       "تم نقل الملكية. جارٍ إكمال المغادرة…",
     ),
-    "profileLogoutDialogMessage": MessageLookupByLibrary.simpleMessage(
-      "ستحتاج لتسجيل الدخول مجددًا للوصول إلى منزلك.",
-    ),
-    "profileLogoutDialogTitle": MessageLookupByLibrary.simpleMessage(
-      "تسجيل الخروج؟",
-    ),
     "profileLogoutSubtitle": MessageLookupByLibrary.simpleMessage(
       "تسجيل الخروج من Kinly على هذا الجهاز.",
     ),
@@ -707,20 +653,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileSettingsTitle": MessageLookupByLibrary.simpleMessage(
       "الملف الشخصي والمنزل",
     ),
-    "quick_add_fair_share_subtitle": MessageLookupByLibrary.simpleMessage(
-      "تسجيل إدخال للإنصاف",
-    ),
-    "quick_add_fair_share_title": MessageLookupByLibrary.simpleMessage(
-      "تقسيم عادل",
-    ),
     "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
       "إضافة Flow",
     ),
     "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Flow"),
-    "quick_add_poll_subtitle": MessageLookupByLibrary.simpleMessage(
-      "إنشاء استطلاع منزلي سريع",
-    ),
-    "quick_add_poll_title": MessageLookupByLibrary.simpleMessage("استطلاع"),
     "quick_add_share_subtitle": MessageLookupByLibrary.simpleMessage(
       "تسجيل Share",
     ),
@@ -761,9 +697,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("ملاحظات"),
     "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
       "تحتاج إلى عضوين على الأقل في المنزل للمشاركة.",
-    ),
-    "shareCreateParticipantsLabel": MessageLookupByLibrary.simpleMessage(
-      "من يشارك؟",
     ),
     "shareCreateRecurrenceAnnual": MessageLookupByLibrary.simpleMessage("سنوي"),
     "shareCreateRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
@@ -833,17 +766,14 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "اختر طريقة التقسيم قبل ضبط التكرار.",
         ),
-    "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
-      "اختر طريقة المشاركة.",
-    ),
     "shareCreateValidationStartDate": MessageLookupByLibrary.simpleMessage(
       "اختر تاريخ البدء.",
     ),
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
       "اختر تاريخًا ضمن النطاق المسموح.",
     ),
-    "shareCreatedListActiveAmount": m13,
-    "shareCreatedListActiveSubtitle": m14,
+    "shareCreatedListActiveAmount": m12,
+    "shareCreatedListActiveSubtitle": m13,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "غير مُسند",
     ),
@@ -870,7 +800,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareEditClose": MessageLookupByLibrary.simpleMessage("إغلاق"),
     "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("حذف"),
-    "shareEditDeleteCancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
     "shareEditDeleteConfirm": MessageLookupByLibrary.simpleMessage("حذف"),
     "shareEditDeleteConfirmMessage": MessageLookupByLibrary.simpleMessage(
       "سيؤدي هذا إلى إزالة المسودة للجميع.",
@@ -913,12 +842,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "تعذّر وضع علامة مدفوع. حاول مرة أخرى.",
     ),
     "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage("تحديد كمدفوع"),
-    "shareOwedDetailSelectionLabel": MessageLookupByLibrary.simpleMessage(
-      "اختر من تريد المشاركة معه.",
-    ),
-    "shareOwedDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "اختر الـ Share الذي قمت بتسويته للتو.",
-    ),
     "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تسجيل الدفع.",
     ),
@@ -952,7 +875,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("جديد اليوم"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m15,
+    "todayFlowSeeAll": m14,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "إليك ما يجري في منزلك اليوم.",
     ),
@@ -975,43 +898,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
       "مشاركة الدعوة",
     ),
-    "todayShareActiveSubtitle": m16,
-    "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("قادمة"),
-    "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
-      "قسّم بناءً على الـ Share.",
-    ),
-    "todayShareEmptyState": MessageLookupByLibrary.simpleMessage(
-      "لا يوجد شيء هنا بعد.",
-    ),
+    "todayShareActiveSubtitle": m15,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحديث Share الآن.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "Paid to you",
     ),
-    "todaySharePaidUnseen": m17,
-    "todayShareSampleGroceries": MessageLookupByLibrary.simpleMessage(
-      "مشتريات مشتركة من الأمس",
-    ),
-    "todayShareSampleInternet": MessageLookupByLibrary.simpleMessage(
-      "فاتورة الإنترنت هذا الأسبوع",
-    ),
-    "todayShareSampleRent": MessageLookupByLibrary.simpleMessage(
-      "تذكير الإيجار قريبًا",
-    ),
+    "todaySharePaidUnseen": m16,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Share"),
-    "todayShareSeeAll": MessageLookupByLibrary.simpleMessage(
-      "عرض كل المشاركات",
-    ),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To pay"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("مسودات"),
     "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("Paid to me"),
-    "today_home_details": m18,
-    "today_no_membership": MessageLookupByLibrary.simpleMessage(
-      "لا يوجد منزل نشط بعد. أنشئ منزلًا أو انضم إلى واحد لرؤية صفحة اليوم.",
-    ),
-    "today_title": MessageLookupByLibrary.simpleMessage("اليوم"),
-    "unknownInitial": MessageLookupByLibrary.simpleMessage("؟"),
     "welcome_create": MessageLookupByLibrary.simpleMessage("إنشاء منزل"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("الانضمام إلى منزل"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("مرحبًا بك في Kinly"),

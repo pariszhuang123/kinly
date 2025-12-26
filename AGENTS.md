@@ -119,6 +119,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
   - `dart format` + `dart analyze`
   - `flutter test` (add widget/RTL/golden tests when relevant)
   - `dart run tool/check_i18n.dart`
+  - `dart run tool/l10n_integrity_check.dart lib/l10n/intl_en.arb`
   - `dart run tool/check_directionality.dart`
   - `dart run tool/check_enums.dart`
   - `dart run tool/check_copy_contract.dart` (see `docs/contracts/copy_taste_v1_1.md`)

@@ -14,10 +14,7 @@
   "welcome_title": "Welcome to Kinly",
   "welcome_create": "Create a Home",
   "welcome_join": "Join a Home",
-  "create_title": "Create Home",
   "create_subtitle": "We'll spin up your home instantly. You can rename and invite later.",
-  "create_submit": "Create home",
-  "create_success": "Home created!",
   "create_failed_generic": "Could not create the home. Try again.",
   "join_title": "Join Home",
   "join_hint": "Enter invite code",
@@ -65,16 +62,11 @@
   "paywallRetryLabel": "Retry",
   "join_error_unauthorized": "Please sign in to join this home.",
   "join_error_forbidden": "You don't have permission to join this home.",
-  "today_title": "Today",
   "quick_add_title": "Quick Add",
   "quick_add_flow_title": "Flow",
   "quick_add_flow_subtitle": "Create a flow",
   "quick_add_share_title": "Bill",
   "quick_add_share_subtitle": "Add a bill",
-  "quick_add_poll_title": "Poll",
-  "quick_add_poll_subtitle": "Create a quick home poll",
-  "quick_add_fair_share_title": "Fair Share",
-  "quick_add_fair_share_subtitle": "Note a fairness entry",
   "todayAddSheetTitle": "Add to your home",
   "todayAddSheetFlow": "Add Flow",
   "todayAddSheetShare": "Add Bill",
@@ -90,21 +82,6 @@
   "membership_status_none": "You haven't joined a home yet.",
   "membership_status_active": "You’re already connected to a home.",
   "authMembershipLoadFailed": "We couldn't refresh your home membership. Please try again.",
-  "today_no_membership": "No active home yet. Create or join to see today's view.",
-  "today_home_details": "Current home: {homeId} • Role: {role}",
-  "@today_home_details": {
-    "surface": "subtitle",
-    "placeholders": {
-      "homeId": {
-        "type": "String",
-        "example": "Home-1234"
-      },
-      "role": {
-        "type": "String",
-        "example": "owner"
-      }
-    }
-  },
   "offline_title": "You're offline",
   "offline_body": "Kinly needs an internet connection. Check your signal and try again.",
   "offline_retry": "Try again",
@@ -128,8 +105,6 @@
   "navToday": "Today",
   "navExplore": "Explore",
   "navHub": "Hub",
-  "hubMembersTitle": "Home members",
-  "hubMembersSubtitle": "People currently active in this home.",
   "hubMembersEmpty": "No active members yet.",
   "hubInviteCta": "Invite",
   "hubInviteUnavailable": "Couldn't load invite. Please try again.",
@@ -160,7 +135,6 @@
     }
   },
   "hubShareAppCta": "Share Kinly",
-  "hubCopyCode": "Copy invite code",
   "todayFlatmateInviteTitle": "Bring your home into Kinly",
   "todayFlatmateInviteSubtitle": "Invite them so you can stay aligned and share the load.",
   "todayInviteFriendsTitle": "Invite friends to Kinly",
@@ -181,7 +155,6 @@
   "todayEmptyCardBadge": "Take a breather",
   "todayEmptyBody": "Enjoy the calm - Kinly will let you know when something needs your attention.",
   "friendDefaultName": "friend",
-  "unknownInitial": "?",
   "greetingPartOfDay": "Good {partOfDay}, {name}",
   "@greetingPartOfDay": {
     "surface": "title",
@@ -196,9 +169,6 @@
       }
     }
   },
-  "greetingPartMorning": "morning",
-  "greetingPartAfternoon": "afternoon",
-  "greetingPartEvening": "evening",
   "todayFlowSubtitle": "Here's what's flowing in your home today.",
   "todayFlowSectionTitle": "Flow",
   "todayFlowTabActive": "Active",
@@ -215,12 +185,6 @@
   },
   "todayFlowBadgeNew": "new today",
   "todayShareSectionTitle": "Bill",
-  "todayShareBadgeUpcoming": "upcoming",
-  "todayShareSeeAll": "See all bills",
-  "todayShareSampleGroceries": "Shared groceries from yesterday",
-  "todayShareSampleRent": "Rent reminder coming up",
-  "todayShareSampleInternet": "Internet bill this week",
-  "todayShareEmptyState": "Nothing to see here yet.",
   "todayShareTabActive": "To settle",
   "todayShareTabDrafts": "Drafts",
   "todayShareTabPaidToMe": "Settled",
@@ -247,14 +211,11 @@
     },
     "surface": "subtitle"
   },
-  "todayShareDraftSubtitle": "Split based on the bill share.",
   "todayGratitudeSectionTitle": "Home Gratitude wall",
   "todayGratitudeUnreadBody": "New gratitude posts are waiting for you.",
   "todayGratitudeOpenCta": "View wall",
   "shareOwedDetailTitle": "To settle",
-  "shareOwedDetailSubtitle": "Select the bill you just settled.",
   "shareOwedDetailEmpty": "You're all caught up with this person.",
-  "shareOwedDetailSelectionLabel": "Select who to share with.",
   "shareOwedDetailPaid": "Mark as settled",
   "shareOwedDetailSuccess": "Settled.",
   "shareOwedDetailError": "We couldn't mark that share paid. Try again.",
@@ -271,7 +232,6 @@
   "shareEditDeleteButton": "Delete",
   "shareEditDeleteConfirmTitle": "Delete?",
   "shareEditDeleteConfirmMessage": "This removes the draft for everyone.",
-  "shareEditDeleteCancel": "Cancel",
   "shareEditDeleteConfirm": "Delete",
   "shareEditDeleteError": "Couldn't delete. Try again.",
   "shareEditDeleteSuccess": "Share deleted.",
@@ -287,7 +247,6 @@
   "shareCreateSplitLabel": "How do we want to split this?",
   "shareCreateSplitEqual": "Split evenly",
   "shareCreateSplitCustom": "Choose amounts",
-  "shareCreateParticipantsLabel": "Who's sharing?",
   "shareCreateParticipantsEmpty": "You need at least two household members to share.",
   "shareCreateNotesLabel": "Context",
   "shareCreateNotesHint": "Optional context everyone can see",
@@ -304,7 +263,6 @@
   "shareCreateSubmit": "Create",
   "shareCreateValidationDescription": "Enter a description.",
   "shareCreateValidationAmount": "Enter a valid amount greater than zero.",
-  "shareCreateValidationSplit": "Choose how you want to share.",
   "shareCreateValidationEqualParticipants": "Select at least two people to split the amount.",
   "shareCreateValidationCustomParticipants": "Custom split needs at least two people.",
   "shareCreateValidationCustomAmounts": "Enter a valid amount for each selected person.",
@@ -327,7 +285,6 @@
   "flowChoreNameHint": "Eg. Bin night, clean the fridge, water plants",
   "flowChoreValidationName": "Give the flow a name.",
   "flowChoreAssigneeLabel": "Who’s taking this on?",
-  "flowChoreAssigneeUnassigned": "Open to anyone",
   "flowChoreValidationAssignee": "Choose someone, or leave it open for anyone.",
   "flowChoreStartLabel": "When does this come up? ",
   "flowChoreValidationDate": "Pick a date up to a year from today.",
@@ -346,7 +303,6 @@
   "flowChoreValidationHowToUrl": "Enter a valid link that starts with http or https.",
   "flowChoreHowToLaunchError": "We couldn't open that link. Try again.",
   "flowChorePhotoLabel": "What 'great' looks like",
-  "flowChorePhotoHint": "storage/households/... (optional)",
   "flowChorePhotoPlaceholder": "A photo can help everyone stay aligned",
   "flowChorePhotoPermissionDenied": "Allow camera access to take a photo.",
   "flowChorePhotoPermissionOpenSettings": "Open settings",
@@ -357,7 +313,6 @@
   "flowChoreDeleteButton": "Delete flow",
   "flowChoreDeleteDialogTitle": "Delete this flow?",
   "flowChoreDeleteDialogMessage": "This removes the flow for everyone in your home.",
-  "flowChoreDeleteCancel": "Cancel",
   "flowChoreDeleteConfirm": "Delete",
   "flowChoreLoadError": "We couldn't load this flow. Please try again.",
   "flowChoreRetry": "Retry",
@@ -455,9 +410,7 @@
   "profileKickActionConfirm": "Remove member",
   "profileKickNoMembers": "No other members to remove right now.",
   "profileKickOwnerOnly": "Only the home owner can remove members.",
-  "profileKickSuccessTitle": "Member removed",
   "profileKickSuccessMessage": "They no longer have access to this home.",
-  "profileKickSuccessClose": "Back to settings",
   "profileLeaveTransferSuccessMessage": "Ownership transferred. Finishing your leave...",
   "profileInfoHubTitle": "Info Hub",
   "profileInfoHubSubtitle": "Open the Kinly Notion hub in-app.",
@@ -488,24 +441,19 @@
   "profileContactLaunchError": "We couldn't open your email app. Try again.",
   "profileLogoutTitle": "Sign out",
   "profileLogoutSubtitle": "Sign out of Kinly on this device.",
-  "profileLogoutDialogTitle": "Sign out?",
-  "profileLogoutDialogMessage": "You'll need to sign in again to access your home.",
   "profileDeleteAccountTitle": "Delete account",
   "profileDeleteAccountSubtitle": "Remove your Kinly account and profile data.",
   "profileConfirmLeaveTitle": "Leave this home?",
   "profileConfirmLeaveMessage": "You'll lose access to Flow, history, and invites.",
   "profileConfirmDeleteTitle": "Delete your account?",
   "profileConfirmDeleteMessage": "This removes your account and signs you out. You won't be able to undo this.",
-  "profileActionCancel": "Cancel",
   "profileActionConfirmDelete": "Delete account",
   "profileActionConfirm": "Leave Home",
   "profileLeaveSuccessMessage": "You left your home.",
   "profileDeleteSuccessMessage": "Your account will be deleted shortly. We'll sign you out.",
   "profileGenericError": "Something went wrong. Please try again.",
   "profileMissingHomeError": "We couldn't find your current home. Try again.",
-  "harmonyTitle": "Weekly house harmony",
   "harmonyQuestion": "How's your home feeling this week?",
-  "harmonySubtext": "Pick the weather that best matches your vibe and leave an optional note.",
   "harmonyMoodSunny": "Sunny",
   "harmonyMoodPartiallySunny": "Partly sunny",
   "harmonyMoodCloudy": "Cloudy",
@@ -520,19 +468,6 @@
   "harmonyErrorForbidden": "You are unable to submit feedback for this home.",
   "harmonyErrorUnknown": "Something went wrong. Please try again.",
   "harmonyErrorSelectMood": "Pick a mood before submitting.",
-  "harmonyEntryCta": "Share this week's mood",
-  "harmonyEntryError": "Couldn't open harmony feedback. Try again.",
-  "gratitudeWallTitle": "Gratitude wall",
-  "gratitudeWallTimestamp": "{time} today",
-  "@gratitudeWallTimestamp": {
-    "surface": "subtitle",
-    "placeholders": {
-      "time": {
-        "type": "String",
-        "example": "2:45 PM"
-      }
-    }
-  },
   "gratitudeWallEmptyTitle": "No gratitude posts yet",
   "gratitudeWallEmptySubtitle": "Share a sunny moment to start filling the wall.",
   "gratitudeWallRetry": "Try again",
@@ -548,9 +483,7 @@
     }
   },
   "gratitudeWallShareError": "Couldn't share right now. Please try again.",
-  "gratitudeWallPoweredBy": "Powered by",
   "gratitudeWallSubtitle": "Shared moments from your home.",
-  "gratitudeWallKinlySubtitle": "Kinly helps your home share small moments of gratitude.",
   "gratitudeWallFooter": "Made with {appName} - Together feels lighter",
   "gratitudeWallWeeksAgo": "{weeks, plural, =0{This week} one{# week ago} other{# weeks ago}}",
   "@gratitudeWallWeeksAgo": {
@@ -597,17 +530,8 @@
   "@welcome_title": {
     "surface": "title"
   },
-  "@create_title": {
-    "surface": "title"
-  },
   "@create_subtitle": {
     "surface": "subtitle"
-  },
-  "@create_submit": {
-    "surface": "button"
-  },
-  "@create_success": {
-    "surface": "success_message"
   },
   "@join_title": {
     "surface": "title"
@@ -636,9 +560,6 @@
   "@paywallErrorTitle": {
     "surface": "title"
   },
-  "@today_title": {
-    "surface": "title"
-  },
   "@quick_add_title": {
     "surface": "title"
   },
@@ -652,18 +573,6 @@
     "surface": "title"
   },
   "@quick_add_share_subtitle": {
-    "surface": "subtitle"
-  },
-  "@quick_add_poll_title": {
-    "surface": "title"
-  },
-  "@quick_add_poll_subtitle": {
-    "surface": "subtitle"
-  },
-  "@quick_add_fair_share_title": {
-    "surface": "title"
-  },
-  "@quick_add_fair_share_subtitle": {
     "surface": "subtitle"
   },
   "@todayAddSheetTitle": {
@@ -686,12 +595,6 @@
   },
   "@force_update_button": {
     "surface": "button"
-  },
-  "@hubMembersTitle": {
-    "surface": "title"
-  },
-  "@hubMembersSubtitle": {
-    "surface": "subtitle"
   },
   "@hubMembersEmpty": {
     "surface": "empty_body"
@@ -765,9 +668,6 @@
   "@todayShareError": {
     "surface": "error"
   },
-  "@todayShareDraftSubtitle": {
-    "surface": "subtitle"
-  },
   "@todayGratitudeSectionTitle": {
     "surface": "title"
   },
@@ -779,9 +679,6 @@
   },
   "@shareOwedDetailTitle": {
     "surface": "title"
-  },
-  "@shareOwedDetailSubtitle": {
-    "surface": "subtitle"
   },
   "@shareOwedDetailEmpty": {
     "surface": "empty_body"
@@ -812,9 +709,6 @@
   },
   "@shareEditDeleteConfirmTitle": {
     "surface": "title"
-  },
-  "@shareEditDeleteCancel": {
-    "surface": "button"
   },
   "@shareEditDeleteError": {
     "surface": "error"
@@ -872,9 +766,6 @@
   },
   "@flowChoreDeleteDialogMessage": {
     "surface": "dialog_body"
-  },
-  "@flowChoreDeleteCancel": {
-    "surface": "button"
   },
   "@flowChoreLoadError": {
     "surface": "error"
@@ -1029,14 +920,8 @@
   "@profileKickSheetSubtitle": {
     "surface": "subtitle"
   },
-  "@profileKickSuccessTitle": {
-    "surface": "title"
-  },
   "@profileKickSuccessMessage": {
     "surface": "success_message"
-  },
-  "@profileKickSuccessClose": {
-    "surface": "button"
   },
   "@profileLeaveTransferSuccessMessage": {
     "surface": "success_message"
@@ -1089,12 +974,6 @@
   "@profileLogoutSubtitle": {
     "surface": "subtitle"
   },
-  "@profileLogoutDialogTitle": {
-    "surface": "dialog_title"
-  },
-  "@profileLogoutDialogMessage": {
-    "surface": "dialog_body"
-  },
   "@profileDeleteAccountTitle": {
     "surface": "title"
   },
@@ -1107,9 +986,6 @@
   "@profileConfirmDeleteTitle": {
     "surface": "title"
   },
-  "@profileActionCancel": {
-    "surface": "button"
-  },
   "@profileLeaveSuccessMessage": {
     "surface": "success_message"
   },
@@ -1121,9 +997,6 @@
   },
   "@profileMissingHomeError": {
     "surface": "error"
-  },
-  "@harmonyTitle": {
-    "surface": "title"
   },
   "@harmonySubmitCta": {
     "surface": "button"
@@ -1142,15 +1015,6 @@
   },
   "@harmonyErrorSelectMood": {
     "surface": "error"
-  },
-  "@harmonyEntryCta": {
-    "surface": "button"
-  },
-  "@harmonyEntryError": {
-    "surface": "error"
-  },
-  "@gratitudeWallTitle": {
-    "surface": "title"
   },
   "@gratitudeWallEmptyTitle": {
     "surface": "title"
@@ -1171,9 +1035,6 @@
     "surface": "error"
   },
   "@gratitudeWallSubtitle": {
-    "surface": "subtitle"
-  },
-  "@gratitudeWallKinlySubtitle": {
     "surface": "subtitle"
   },
   "@npsTitle": {

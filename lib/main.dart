@@ -302,14 +302,29 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final platformName = defaultTargetPlatform.name;
     String? deviceToken;
     try {
-      deviceToken = await FirebaseMessaging.instance.getToken();
+      final canReadToken = await _canReadFcmToken(osPermission);
+      if (canReadToken) {
+        deviceToken = await FirebaseMessaging.instance.getToken();
+      } else {
+        _logger.debug(
+          'Skipping FCM token read; APNS token not yet available',
+          tag: _logTag,
+        );
+      }
     } catch (error, stackTrace) {
-      _logger.warn(
-        'Failed to read FCM token during prefs refresh: $error',
-        tag: _logTag,
-        error: error,
-        stackTrace: stackTrace,
-      );
+      if (_isApnsTokenMissing(error)) {
+        _logger.debug(
+          'Skipping FCM token read; APNS token not yet available ($error)',
+          tag: _logTag,
+        );
+      } else {
+        _logger.warn(
+          'Failed to read FCM token during prefs refresh: $error',
+          tag: _logTag,
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
       deviceToken = null;
     }
 
@@ -350,6 +365,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (status.isDenied || status.isRestricted) return 'blocked';
     return 'unknown';
   }
+
+  Future<bool> _canReadFcmToken(String osPermission) async {
+    if (defaultTargetPlatform != TargetPlatform.iOS) return true;
+    if (osPermission != 'allowed') return false;
+    final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+    return apnsToken != null && apnsToken.isNotEmpty;
+  }
+
+  bool _isApnsTokenMissing(Object error) =>
+      error.toString().contains('apns-token-not-set');
 }
 
 class _RouterInitializingFallback extends StatelessWidget {

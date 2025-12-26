@@ -97,6 +97,9 @@ jobs:
       - name: Check UI strings localized
         run: dart run tool/check_i18n.dart
 
+      - name: Check l10n integrity (keys used and valid)
+        run: dart run tool/l10n_integrity_check.dart lib/l10n/intl_en.arb
+
       - name: Check shared enums grouped
         run: dart run tool/check_enums.dart
 

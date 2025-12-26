@@ -14,10 +14,7 @@
   "welcome_title": "Bienvenido a Kinly",
   "welcome_create": "Crear un hogar",
   "welcome_join": "Unirse a un hogar",
-  "create_title": "Crear hogar",
   "create_subtitle": "Crearemos tu hogar al instante. Podrás cambiarle el nombre e invitar a otros más tarde.",
-  "create_submit": "Crear hogar",
-  "create_success": "¡Hogar creado!",
   "create_failed_generic": "No se pudo crear el hogar. Inténtalo de nuevo.",
   "join_title": "Unirse a un hogar",
   "join_hint": "Introduce el código de invitación",
@@ -65,16 +62,11 @@
   "paywallRetryLabel": "Reintentar",
   "join_error_unauthorized": "Inicia sesión para unirte a este hogar.",
   "join_error_forbidden": "No tienes permiso para unirte a este hogar.",
-  "today_title": "Hoy",
   "quick_add_title": "Añadir rápido",
   "quick_add_flow_title": "Flow",
   "quick_add_flow_subtitle": "Añadir un Flow",
   "quick_add_share_title": "Share",
   "quick_add_share_subtitle": "Registrar un Share",
-  "quick_add_poll_title": "Encuesta",
-  "quick_add_poll_subtitle": "Crear una encuesta rápida del hogar",
-  "quick_add_fair_share_title": "Fair Share",
-  "quick_add_fair_share_subtitle": "Registrar una entrada de equidad",
   "todayAddSheetTitle": "Añadir a tu hogar",
   "todayAddSheetFlow": "Añadir Flow",
   "todayAddSheetShare": "Añadir Share",
@@ -90,21 +82,6 @@
   "membership_status_none": "Aún no te has unido a un hogar.",
   "membership_status_active": "Ya formas parte de un hogar.",
   "authMembershipLoadFailed": "No pudimos actualizar tu membresía del hogar. Inténtalo de nuevo.",
-  "today_no_membership": "Aún no hay un hogar activo. Crea o únete a uno para ver la vista de hoy.",
-  "today_home_details": "Hogar actual: {homeId} • Rol: {role}",
-  "@today_home_details": {
-    "surface": "subtitle",
-    "placeholders": {
-      "homeId": {
-        "type": "String",
-        "example": "Home-1234"
-      },
-      "role": {
-        "type": "String",
-        "example": "owner"
-      }
-    }
-  },
   "offline_title": "Estás sin conexión",
   "offline_body": "Kinly necesita una conexión a internet. Revisa tu señal e inténtalo de nuevo.",
   "offline_retry": "Intentar de nuevo",
@@ -128,8 +105,6 @@
   "navToday": "Hoy",
   "navExplore": "Explorar",
   "navHub": "Hub",
-  "hubMembersTitle": "Miembros del hogar",
-  "hubMembersSubtitle": "Personas actualmente activas en este hogar.",
   "hubMembersEmpty": "Aún no hay miembros activos.",
   "hubInviteCta": "Invitar",
   "hubInviteUnavailable": "No se pudo cargar la invitación. Inténtalo de nuevo.",
@@ -160,7 +135,6 @@
     }
   },
   "hubShareAppCta": "Compartir Kinly",
-  "hubCopyCode": "Copiar código de invitación",
   "todayFlatmateInviteTitle": "Invita a tu compañero de piso",
   "todayFlatmateInviteSubtitle": "Comparte tu invitación para poder dividir las tareas juntos.",
   "todayInviteFriendsTitle": "Invita a amigos a Kinly",
@@ -181,7 +155,6 @@
   "todayEmptyCardBadge": "Tómate un respiro",
   "todayEmptyBody": "Disfruta de la calma: Kinly te avisará cuando algo necesite tu atención.",
   "friendDefaultName": "amigo",
-  "unknownInitial": "?",
   "greetingPartOfDay": "Buen{partOfDay}, {name}",
   "@greetingPartOfDay": {
     "surface": "title",
@@ -196,9 +169,6 @@
       }
     }
   },
-  "greetingPartMorning": "día",
-  "greetingPartAfternoon": "as tardes",
-  "greetingPartEvening": "as noches",
   "todayFlowSubtitle": "Esto es lo que fluye hoy en tu hogar.",
   "todayFlowSectionTitle": "Flow",
   "todayFlowTabActive": "Activos",
@@ -215,12 +185,6 @@
   },
   "todayFlowBadgeNew": "nuevo hoy",
   "todayShareSectionTitle": "Share",
-  "todayShareBadgeUpcoming": "próximo",
-  "todayShareSeeAll": "Ver todos los shares",
-  "todayShareSampleGroceries": "Compra compartida de ayer",
-  "todayShareSampleRent": "Recordatorio de renta próximamente",
-  "todayShareSampleInternet": "Factura de internet esta semana",
-  "todayShareEmptyState": "Aún no hay nada que ver aquí.",
   "todayShareTabActive": "Por pagar",
   "todayShareTabDrafts": "Borradores",
   "todayShareTabPaidToMe": "Pagado a mí",
@@ -247,14 +211,11 @@
     },
     "surface": "subtitle"
   },
-  "todayShareDraftSubtitle": "Divide según el share.",
   "todayGratitudeSectionTitle": "Muro de gratitud del hogar",
   "todayGratitudeUnreadBody": "Hay nuevas publicaciones de gratitud esperándote.",
   "todayGratitudeOpenCta": "Ver muro",
   "shareOwedDetailTitle": "Pago pendiente",
-  "shareOwedDetailSubtitle": "Selecciona el share que acabas de saldar.",
   "shareOwedDetailEmpty": "Estás al día con esta persona.",
-  "shareOwedDetailSelectionLabel": "Selecciona con quién compartir.",
   "shareOwedDetailPaid": "Marcar como pagado",
   "shareOwedDetailSuccess": "Pago registrado.",
   "shareOwedDetailError": "No pudimos marcar ese share como pagado. Inténtalo de nuevo.",
@@ -271,7 +232,6 @@
   "shareEditDeleteButton": "Eliminar",
   "shareEditDeleteConfirmTitle": "¿Eliminar?",
   "shareEditDeleteConfirmMessage": "Esto elimina el borrador para todos.",
-  "shareEditDeleteCancel": "Cancelar",
   "shareEditDeleteConfirm": "Eliminar",
   "shareEditDeleteError": "No se pudo eliminar. Inténtalo de nuevo.",
   "shareEditDeleteSuccess": "Share eliminado.",
@@ -287,7 +247,6 @@
   "shareCreateSplitLabel": "Tipo de reparto",
   "shareCreateSplitEqual": "Repartir automáticamente",
   "shareCreateSplitCustom": "Reparto personalizado",
-  "shareCreateParticipantsLabel": "¿Quién comparte?",
   "shareCreateParticipantsEmpty": "Necesitas al menos dos miembros del hogar para compartir.",
   "shareCreateNotesLabel": "Notas",
   "shareCreateNotesHint": "Contexto opcional que todos pueden ver",
@@ -304,7 +263,6 @@
   "shareCreateSubmit": "Crear",
   "shareCreateValidationDescription": "Introduce una descripción.",
   "shareCreateValidationAmount": "Introduce un importe válido mayor que cero.",
-  "shareCreateValidationSplit": "Elige cómo quieres compartir.",
   "shareCreateValidationEqualParticipants": "Selecciona al menos dos personas para dividir el importe.",
   "shareCreateValidationCustomParticipants": "El reparto personalizado necesita al menos dos personas.",
   "shareCreateValidationCustomAmounts": "Introduce un importe válido para cada persona seleccionada.",
@@ -327,7 +285,6 @@
   "flowChoreNameHint": "Dale a tu flow un título corto y claro",
   "flowChoreValidationName": "Ponle un nombre al flow.",
   "flowChoreAssigneeLabel": "Asignar a",
-  "flowChoreAssigneeUnassigned": "Sin asignar",
   "flowChoreValidationAssignee": "Elige a alguien para asignar este flow.",
   "flowChoreStartLabel": "Fecha del Flow",
   "flowChoreValidationDate": "Elige una fecha de hasta un año a partir de hoy.",
@@ -346,7 +303,6 @@
   "flowChoreValidationHowToUrl": "Introduce un enlace válido que empiece por http o https.",
   "flowChoreHowToLaunchError": "No pudimos abrir ese enlace. Inténtalo de nuevo.",
   "flowChorePhotoLabel": "Foto de referencia",
-  "flowChorePhotoHint": "storage/households/... (opcional)",
   "flowChorePhotoPlaceholder": "Añade una foto para mostrar cómo se ve “bien hecho”",
   "flowChorePhotoPermissionDenied": "Se requiere permiso de cámara para tomar una foto.",
   "flowChorePhotoPermissionOpenSettings": "Abrir ajustes",
@@ -357,7 +313,6 @@
   "flowChoreDeleteButton": "Eliminar flow",
   "flowChoreDeleteDialogTitle": "¿Eliminar este flow?",
   "flowChoreDeleteDialogMessage": "Esto elimina el flow para todos en tu hogar.",
-  "flowChoreDeleteCancel": "Cancelar",
   "flowChoreDeleteConfirm": "Eliminar",
   "flowChoreLoadError": "No pudimos cargar este flow. Inténtalo de nuevo.",
   "flowChoreRetry": "Reintentar",
@@ -456,9 +411,7 @@
   "profileKickActionConfirm": "Eliminar miembro",
   "profileKickNoMembers": "Ahora mismo no hay otros miembros para eliminar.",
   "profileKickOwnerOnly": "Solo el dueño del hogar puede eliminar miembros.",
-  "profileKickSuccessTitle": "Miembro eliminado",
   "profileKickSuccessMessage": "Ya no tiene acceso a este hogar.",
-  "profileKickSuccessClose": "Volver a ajustes",
   "profileLeaveTransferSuccessMessage": "Propiedad transferida. Finalizando tu salida...",
   "profileInfoHubTitle": "Info Hub",
   "profileInfoHubSubtitle": "Abrir el hub de Notion de Kinly dentro de la app.",
@@ -489,24 +442,19 @@
   "profileContactLaunchError": "No pudimos abrir tu app de correo. Inténtalo de nuevo.",
   "profileLogoutTitle": "Cerrar sesión",
   "profileLogoutSubtitle": "Cerrar sesión de Kinly en este dispositivo.",
-  "profileLogoutDialogTitle": "¿Cerrar sesión?",
-  "profileLogoutDialogMessage": "Tendrás que iniciar sesión de nuevo para acceder a tu hogar.",
   "profileDeleteAccountTitle": "Eliminar cuenta",
   "profileDeleteAccountSubtitle": "Elimina tu cuenta de Kinly y los datos de tu perfil.",
   "profileConfirmLeaveTitle": "¿Salir de este hogar?",
   "profileConfirmLeaveMessage": "Perderás acceso a Flow, el historial y las invitaciones.",
   "profileConfirmDeleteTitle": "¿Eliminar tu cuenta?",
   "profileConfirmDeleteMessage": "Esto elimina tu cuenta y cierra sesión. No podrás deshacerlo.",
-  "profileActionCancel": "Cancelar",
   "profileActionConfirmDelete": "Eliminar cuenta",
   "profileActionConfirm": "Salir del hogar",
   "profileLeaveSuccessMessage": "Saliste de tu hogar.",
   "profileDeleteSuccessMessage": "Tu cuenta se eliminará en breve. Cerraremos tu sesión.",
   "profileGenericError": "Algo salió mal. Inténtalo de nuevo.",
   "profileMissingHomeError": "No pudimos encontrar tu hogar actual. Inténtalo de nuevo.",
-  "harmonyTitle": "Armonía semanal del hogar",
   "harmonyQuestion": "¿Cómo se siente tu hogar esta semana?",
-  "harmonySubtext": "Elige el clima que mejor refleje tu vibra y deja una nota opcional.",
   "harmonyMoodSunny": "Soleado",
   "harmonyMoodPartiallySunny": "Parcialmente soleado",
   "harmonyMoodCloudy": "Nublado",
@@ -522,19 +470,6 @@
   "harmonyErrorForbidden": "No puedes enviar feedback para este hogar.",
   "harmonyErrorUnknown": "Algo salió mal. Inténtalo de nuevo.",
   "harmonyErrorSelectMood": "Elige un ánimo antes de enviar.",
-  "harmonyEntryCta": "Compartir el ánimo de esta semana",
-  "harmonyEntryError": "No se pudo abrir el feedback de armonía. Inténtalo de nuevo.",
-  "gratitudeWallTitle": "Muro de gratitud",
-  "gratitudeWallTimestamp": "{time} hoy",
-  "@gratitudeWallTimestamp": {
-    "surface": "subtitle",
-    "placeholders": {
-      "time": {
-        "type": "String",
-        "example": "2:45 PM"
-      }
-    }
-  },
   "gratitudeWallEmptyTitle": "Aún no hay publicaciones de gratitud",
   "gratitudeWallEmptySubtitle": "Comparte un momento soleado para empezar a llenar el muro.",
   "gratitudeWallRetry": "Intentar de nuevo",
@@ -550,9 +485,7 @@
     }
   },
   "gratitudeWallShareError": "No se pudo compartir ahora mismo. Inténtalo de nuevo.",
-  "gratitudeWallPoweredBy": "Impulsado por",
   "gratitudeWallSubtitle": "Momentos compartidos de tu hogar.",
-  "gratitudeWallKinlySubtitle": "Kinly ayuda a tu hogar a compartir pequeños momentos de gratitud.",
   "gratitudeWallFooter": "Hecho con {appName} - Juntos se siente más ligero",
   "gratitudeWallWeeksAgo": "{weeks, plural, =0{Esta semana} one{hace # semana} other{hace # semanas}}",
   "@gratitudeWallWeeksAgo": {
@@ -593,214 +526,559 @@
   "npsSubmitErrorGeneric": "No se pudo enviar tu feedback. Inténtalo de nuevo.",
   "npsLaunchError": "No se pudo abrir el siguiente paso.",
   "npsEmailSubject": "¿Qué podemos mejorar?",
-
-  "@app_title": { "surface": "title" },
-  "@welcome_title": { "surface": "title" },
-  "@create_title": { "surface": "title" },
-  "@create_subtitle": { "surface": "subtitle" },
-  "@create_submit": { "surface": "button" },
-  "@create_success": { "surface": "success_message" },
-  "@join_title": { "surface": "title" },
-  "@join_submit": { "surface": "button" },
-  "@paywallTitle": { "surface": "title_hero" },
-  "@paywallSubtitle": { "surface": "subtitle" },
-  "@paywallPrimaryCta": { "surface": "button" },
-  "@paywallSecondaryCta": { "surface": "button" },
-  "@paywallPurchaseSuccess": { "surface": "success_message" },
-  "@paywallRestoreCta": { "surface": "button" },
-  "@paywallErrorTitle": { "surface": "title" },
-  "@today_title": { "surface": "title" },
-  "@quick_add_title": { "surface": "title" },
-  "@quick_add_flow_title": { "surface": "title" },
-  "@quick_add_flow_subtitle": { "surface": "subtitle" },
-  "@quick_add_share_title": { "surface": "title" },
-  "@quick_add_share_subtitle": { "surface": "subtitle" },
-  "@quick_add_poll_title": { "surface": "title" },
-  "@quick_add_poll_subtitle": { "surface": "subtitle" },
-  "@quick_add_fair_share_title": { "surface": "title" },
-  "@quick_add_fair_share_subtitle": { "surface": "subtitle" },
-  "@todayAddSheetTitle": { "surface": "title" },
-  "@offline_title": { "surface": "title" },
-  "@offline_body": { "surface": "subtitle" },
-  "@offline_retry": { "surface": "button" },
-  "@force_update_title": { "surface": "title" },
-  "@force_update_body": { "surface": "subtitle" },
-  "@force_update_button": { "surface": "button" },
-  "@hubMembersTitle": { "surface": "title" },
-  "@hubMembersSubtitle": { "surface": "subtitle" },
-  "@hubMembersEmpty": { "surface": "empty_body" },
-  "@hubInviteCta": { "surface": "button" },
-  "@hubShareInviteTitle": { "surface": "title" },
-  "@hubShareAppTitle": { "surface": "title" },
-  "@hubShareAppCta": { "surface": "button" },
-  "@todayFlatmateInviteTitle": { "surface": "title" },
-  "@todayFlatmateInviteSubtitle": { "surface": "subtitle" },
-  "@todayInviteFriendsTitle": { "surface": "title" },
-  "@todayInviteFriendsSubtitle": { "surface": "subtitle" },
-  "@todayInviteShareCta": { "surface": "button" },
-  "@hubRotateSuccess": { "surface": "success_message" },
-  "@hubRotateError": { "surface": "error" },
-  "@hubQrTitle": { "surface": "title" },
-  "@hubQrSubtitle": { "surface": "subtitle" },
-  "@hubCardGratitudeWallTitle": { "surface": "title" },
-  "@hubCardGratitudeWallSubtitle": { "surface": "subtitle" },
-  "@hubError": { "surface": "error" },
-  "@hubRetry": { "surface": "button" },
-  "@todayEmptyCardTitle": { "surface": "title" },
-  "@todayEmptyBody": { "surface": "subtitle" },
-  "@todayFlowSubtitle": { "surface": "subtitle" },
-  "@todayFlowSectionTitle": { "surface": "title" },
-  "@todayShareSectionTitle": { "surface": "title" },
-  "@todayShareError": { "surface": "error" },
-  "@todayShareDraftSubtitle": { "surface": "subtitle" },
-  "@todayGratitudeSectionTitle": { "surface": "title" },
-  "@todayGratitudeUnreadBody": { "surface": "subtitle" },
-  "@todayGratitudeOpenCta": { "surface": "button" },
-  "@shareOwedDetailTitle": { "surface": "title" },
-  "@shareOwedDetailSubtitle": { "surface": "subtitle" },
-  "@shareOwedDetailEmpty": { "surface": "empty_body" },
-  "@shareOwedDetailSuccess": { "surface": "success_message" },
-  "@shareOwedDetailError": { "surface": "error" },
-  "@shareEditTitle": { "surface": "title" },
-  "@shareEditSubmit": { "surface": "button" },
-  "@shareEditSuccess": { "surface": "success_message" },
-  "@shareEditLoadError": { "surface": "error" },
-  "@shareEditClose": { "surface": "button" },
-  "@shareEditDeleteButton": { "surface": "button" },
-  "@shareEditDeleteConfirmTitle": { "surface": "title" },
-  "@shareEditDeleteCancel": { "surface": "button" },
-  "@shareEditDeleteError": { "surface": "error" },
-  "@shareEditDeleteSuccess": { "surface": "success_message" },
-  "@shareCreateTitle": { "surface": "title" },
-  "@shareCreateParticipantsEmpty": { "surface": "empty_body" },
-  "@shareCreateSubmit": { "surface": "button" },
-  "@shareCreateLoadError": { "surface": "error" },
-  "@shareCreateRetry": { "surface": "button" },
-  "@shareCreateErrorGeneric": { "surface": "error" },
-  "@shareCreateErrorPaywallActiveCap": { "surface": "error" },
-  "@shareCreateErrorForbidden": { "surface": "error" },
-  "@shareCreateSuccess": { "surface": "success_message" },
-  "@flowChoreCreateTitle": { "surface": "title" },
-  "@flowChoreEditTitle": { "surface": "title" },
-  "@flowChoreHowToLaunchError": { "surface": "error" },
-  "@flowChorePhotoUploadError": { "surface": "error" },
-  "@flowChorePhotoLoadError": { "surface": "error" },
-  "@flowChoreDeleteButton": { "surface": "button" },
-  "@flowChoreDeleteDialogTitle": { "surface": "dialog_title" },
-  "@flowChoreDeleteDialogMessage": { "surface": "dialog_body" },
-  "@flowChoreDeleteCancel": { "surface": "button" },
-  "@flowChoreLoadError": { "surface": "error" },
-  "@flowChoreRetry": { "surface": "button" },
-  "@flowChoreErrorPaywallActiveCap": { "surface": "error" },
-  "@flowChoreErrorPaywallMediaCap": { "surface": "error" },
-  "@flowChoreErrorAssigneeNotMember": { "surface": "error" },
-  "@flowChoreErrorForbidden": { "surface": "error" },
-  "@flowChoreErrorInvalidPhoto": { "surface": "error" },
-  "@flowChoreErrorInvalidStart": { "surface": "error" },
-  "@flowChoreErrorInvalidState": { "surface": "error" },
-  "@flowChoreErrorGeneric": { "surface": "error" },
-  "@flowChoreDetailTitle": { "surface": "title" },
-  "@flowChoreDetailCompleteButton": { "surface": "button" },
-  "@flowChoreCreateSuccess": { "surface": "snackbar" },
-  "@flowChoreUpdateSuccess": { "surface": "snackbar" },
-  "@flowChoreDetailCompletionSuccess": { "surface": "snackbar" },
-  "@flowChoreDetailCompletionError": { "surface": "error" },
-  "@flowChoreDetailMoreInfoTitle": { "surface": "title" },
-  "@flowListEmptyTitle": { "surface": "title" },
-  "@flowListEmptySubtitle": { "surface": "subtitle" },
-  "@flowListError": { "surface": "error" },
-  "@exploreIntroTitle": { "surface": "title" },
-  "@exploreIntroSubtitle": { "surface": "subtitle" },
-  "@exploreFlowSubtitle": { "surface": "subtitle" },
-  "@exploreShareSubtitle": { "surface": "subtitle" },
-  "@shareCreatedListTitle": { "surface": "title" },
-  "@shareCreatedListEmptyTitle": { "surface": "title" },
-  "@shareCreatedListEmptySubtitle": { "surface": "subtitle" },
-  "@shareCreatedListError": { "surface": "error" },
-  "@shareCreatedListRetry": { "surface": "button" },
-  "@shareCreatedListDraftSubtitle": { "surface": "subtitle" },
-  "@profileSettingsTitle": { "surface": "title" },
-  "@profileSettingsSubtitle": { "surface": "subtitle" },
-  "@profileIdentityTitle": { "surface": "title" },
-  "@profileIdentitySubtitle": { "surface": "subtitle" },
-  "@profileIdentityUsernameEmptyError": { "surface": "error" },
-  "@profileIdentityUsernameFormatError": { "surface": "error" },
-  "@profileIdentityUsernameTakenError": { "surface": "error" },
-  "@profileIdentityAvatarSectionTitle": { "surface": "title" },
-  "@profileIdentityAvatarEmpty": { "surface": "empty_body" },
-  "@profileIdentityLoadError": { "surface": "error" },
-  "@profileIdentityRetry": { "surface": "button" },
-  "@profileIdentitySaveButton": { "surface": "button" },
-  "@profileIdentitySuccessMessage": { "surface": "success_message" },
-  "@profileLeaveHomeTitle": { "surface": "title" },
-  "@profileLeaveHomeSubtitle": { "surface": "subtitle" },
-  "@profileLeaveEligibilityError": { "surface": "error" },
-  "@profileLeaveTransferSheetTitle": { "surface": "title" },
-  "@profileLeaveTransferSheetSubtitle": { "surface": "subtitle" },
-  "@profileKickMemberTitle": { "surface": "title" },
-  "@profileKickMemberSubtitle": { "surface": "subtitle" },
-  "@profileKickSheetTitle": { "surface": "title" },
-  "@profileKickSheetSubtitle": { "surface": "subtitle" },
-  "@profileKickSuccessTitle": { "surface": "title" },
-  "@profileKickSuccessMessage": { "surface": "success_message" },
-  "@profileKickSuccessClose": { "surface": "button" },
-  "@profileLeaveTransferSuccessMessage": { "surface": "success_message" },
-  "@profileInfoHubTitle": { "surface": "title" },
-  "@profileInfoHubSubtitle": { "surface": "subtitle" },
-  "@profileInfoHubLoadError": { "surface": "error" },
-  "@profileContactUsTitle": { "surface": "title" },
-  "@profileContactUsSubtitle": { "surface": "subtitle" },
-  "@profileConnectionSettingsTitle": { "surface": "title" },
-  "@profileConnectionSettingsSubtitle": { "surface": "subtitle" },
-  "@connectionSettingsTitle": { "surface": "title" },
-  "@connectionSettingsSubtitle": { "surface": "subtitle" },
-  "@connectionSettingsGenericError": { "surface": "error" },
-  "@connectionNotificationsToggleTitle": { "surface": "title" },
-  "@connectionNotificationsToggleSubtitleOn": { "surface": "notification_title" },
-  "@connectionNotificationsToggleSubtitleOff": { "surface": "notification_title" },
-  "@profileContactLaunchError": { "surface": "error" },
-  "@profileLogoutTitle": { "surface": "title" },
-  "@profileLogoutSubtitle": { "surface": "subtitle" },
-  "@profileLogoutDialogTitle": { "surface": "dialog_title" },
-  "@profileLogoutDialogMessage": { "surface": "dialog_body" },
-  "@profileDeleteAccountTitle": { "surface": "title" },
-  "@profileDeleteAccountSubtitle": { "surface": "subtitle" },
-  "@profileConfirmLeaveTitle": { "surface": "title" },
-  "@profileConfirmDeleteTitle": { "surface": "title" },
-  "@profileActionCancel": { "surface": "button" },
-  "@profileLeaveSuccessMessage": { "surface": "success_message" },
-  "@profileDeleteSuccessMessage": { "surface": "success_message" },
-  "@profileGenericError": { "surface": "error" },
-  "@profileMissingHomeError": { "surface": "error" },
-  "@harmonyTitle": { "surface": "title" },
-  "@harmonyShareSubtitle": { "surface": "subtitle" },
-  "@harmonySubmitCta": { "surface": "button" },
-  "@harmonySubmitSuccess": { "surface": "success_message" },
-  "@harmonyErrorAlreadySubmitted": { "surface": "error" },
-  "@harmonyErrorForbidden": { "surface": "error" },
-  "@harmonyErrorUnknown": { "surface": "error" },
-  "@harmonyErrorSelectMood": { "surface": "error" },
-  "@harmonyEntryCta": { "surface": "button" },
-  "@harmonyEntryError": { "surface": "error" },
-  "@gratitudeWallTitle": { "surface": "title" },
-  "@gratitudeWallEmptyTitle": { "surface": "title" },
-  "@gratitudeWallEmptySubtitle": { "surface": "subtitle" },
-  "@gratitudeWallRetry": { "surface": "button" },
-  "@gratitudeWallShareCta": { "surface": "button" },
-  "@gratitudeWallShareTitle": { "surface": "title" },
-  "@gratitudeWallShareError": { "surface": "error" },
-  "@gratitudeWallSubtitle": { "surface": "subtitle" },
-  "@gratitudeWallKinlySubtitle": { "surface": "subtitle" },
-  "@npsTitle": { "surface": "subtitle" },
-  "@npsSubmitErrorNotRequired": { "surface": "error" },
-  "@npsSubmitErrorInvalidScore": { "surface": "error" },
-  "@npsSubmitErrorForbidden": { "surface": "error" },
-  "@npsSubmitErrorGeneric": { "surface": "error" },
-  "@npsLaunchError": { "surface": "error" },
-  "@join_error_invalid_code": { "surface": "error" },
-  "@join_error_inactive_invite": { "surface": "error" },
-  "@join_error_already_in_other_home": { "surface": "error" },
-  "@join_error_paywall_limit": { "surface": "error" },
-  "@join_error_unauthorized": { "surface": "error" },
-  "@join_error_forbidden": { "surface": "error" }
+  "@app_title": {
+    "surface": "title"
+  },
+  "@welcome_title": {
+    "surface": "title"
+  },
+  "@create_subtitle": {
+    "surface": "subtitle"
+  },
+  "@join_title": {
+    "surface": "title"
+  },
+  "@join_submit": {
+    "surface": "button"
+  },
+  "@paywallTitle": {
+    "surface": "title_hero"
+  },
+  "@paywallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@paywallPrimaryCta": {
+    "surface": "button"
+  },
+  "@paywallSecondaryCta": {
+    "surface": "button"
+  },
+  "@paywallPurchaseSuccess": {
+    "surface": "success_message"
+  },
+  "@paywallRestoreCta": {
+    "surface": "button"
+  },
+  "@paywallErrorTitle": {
+    "surface": "title"
+  },
+  "@quick_add_title": {
+    "surface": "title"
+  },
+  "@quick_add_flow_title": {
+    "surface": "title"
+  },
+  "@quick_add_flow_subtitle": {
+    "surface": "subtitle"
+  },
+  "@quick_add_share_title": {
+    "surface": "title"
+  },
+  "@quick_add_share_subtitle": {
+    "surface": "subtitle"
+  },
+  "@todayAddSheetTitle": {
+    "surface": "title"
+  },
+  "@offline_title": {
+    "surface": "title"
+  },
+  "@offline_body": {
+    "surface": "subtitle"
+  },
+  "@offline_retry": {
+    "surface": "button"
+  },
+  "@force_update_title": {
+    "surface": "title"
+  },
+  "@force_update_body": {
+    "surface": "subtitle"
+  },
+  "@force_update_button": {
+    "surface": "button"
+  },
+  "@hubMembersEmpty": {
+    "surface": "empty_body"
+  },
+  "@hubInviteCta": {
+    "surface": "button"
+  },
+  "@hubShareInviteTitle": {
+    "surface": "title"
+  },
+  "@hubShareAppTitle": {
+    "surface": "title"
+  },
+  "@hubShareAppCta": {
+    "surface": "button"
+  },
+  "@todayFlatmateInviteTitle": {
+    "surface": "title"
+  },
+  "@todayFlatmateInviteSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayInviteFriendsTitle": {
+    "surface": "title"
+  },
+  "@todayInviteFriendsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayInviteShareCta": {
+    "surface": "button"
+  },
+  "@hubRotateSuccess": {
+    "surface": "success_message"
+  },
+  "@hubRotateError": {
+    "surface": "error"
+  },
+  "@hubQrTitle": {
+    "surface": "title"
+  },
+  "@hubQrSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubCardGratitudeWallTitle": {
+    "surface": "title"
+  },
+  "@hubCardGratitudeWallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubError": {
+    "surface": "error"
+  },
+  "@hubRetry": {
+    "surface": "button"
+  },
+  "@todayEmptyCardTitle": {
+    "surface": "title"
+  },
+  "@todayEmptyBody": {
+    "surface": "subtitle"
+  },
+  "@todayFlowSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayFlowSectionTitle": {
+    "surface": "title"
+  },
+  "@todayShareSectionTitle": {
+    "surface": "title"
+  },
+  "@todayShareError": {
+    "surface": "error"
+  },
+  "@todayGratitudeSectionTitle": {
+    "surface": "title"
+  },
+  "@todayGratitudeUnreadBody": {
+    "surface": "subtitle"
+  },
+  "@todayGratitudeOpenCta": {
+    "surface": "button"
+  },
+  "@shareOwedDetailTitle": {
+    "surface": "title"
+  },
+  "@shareOwedDetailEmpty": {
+    "surface": "empty_body"
+  },
+  "@shareOwedDetailSuccess": {
+    "surface": "success_message"
+  },
+  "@shareOwedDetailError": {
+    "surface": "error"
+  },
+  "@shareEditTitle": {
+    "surface": "title"
+  },
+  "@shareEditSubmit": {
+    "surface": "button"
+  },
+  "@shareEditSuccess": {
+    "surface": "success_message"
+  },
+  "@shareEditLoadError": {
+    "surface": "error"
+  },
+  "@shareEditClose": {
+    "surface": "button"
+  },
+  "@shareEditDeleteButton": {
+    "surface": "button"
+  },
+  "@shareEditDeleteConfirmTitle": {
+    "surface": "title"
+  },
+  "@shareEditDeleteError": {
+    "surface": "error"
+  },
+  "@shareEditDeleteSuccess": {
+    "surface": "success_message"
+  },
+  "@shareCreateTitle": {
+    "surface": "title"
+  },
+  "@shareCreateParticipantsEmpty": {
+    "surface": "empty_body"
+  },
+  "@shareCreateSubmit": {
+    "surface": "button"
+  },
+  "@shareCreateLoadError": {
+    "surface": "error"
+  },
+  "@shareCreateRetry": {
+    "surface": "button"
+  },
+  "@shareCreateErrorGeneric": {
+    "surface": "error"
+  },
+  "@shareCreateErrorPaywallActiveCap": {
+    "surface": "error"
+  },
+  "@shareCreateErrorForbidden": {
+    "surface": "error"
+  },
+  "@shareCreateSuccess": {
+    "surface": "success_message"
+  },
+  "@flowChoreCreateTitle": {
+    "surface": "title"
+  },
+  "@flowChoreEditTitle": {
+    "surface": "title"
+  },
+  "@flowChoreHowToLaunchError": {
+    "surface": "error"
+  },
+  "@flowChorePhotoUploadError": {
+    "surface": "error"
+  },
+  "@flowChorePhotoLoadError": {
+    "surface": "error"
+  },
+  "@flowChoreDeleteButton": {
+    "surface": "button"
+  },
+  "@flowChoreDeleteDialogTitle": {
+    "surface": "dialog_title"
+  },
+  "@flowChoreDeleteDialogMessage": {
+    "surface": "dialog_body"
+  },
+  "@flowChoreLoadError": {
+    "surface": "error"
+  },
+  "@flowChoreRetry": {
+    "surface": "button"
+  },
+  "@flowChoreErrorPaywallActiveCap": {
+    "surface": "error"
+  },
+  "@flowChoreErrorPaywallMediaCap": {
+    "surface": "error"
+  },
+  "@flowChoreErrorAssigneeNotMember": {
+    "surface": "error"
+  },
+  "@flowChoreErrorForbidden": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidPhoto": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidStart": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidState": {
+    "surface": "error"
+  },
+  "@flowChoreErrorGeneric": {
+    "surface": "error"
+  },
+  "@flowChoreDetailTitle": {
+    "surface": "title"
+  },
+  "@flowChoreDetailCompleteButton": {
+    "surface": "button"
+  },
+  "@flowChoreCreateSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreUpdateSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreDetailCompletionSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreDetailCompletionError": {
+    "surface": "error"
+  },
+  "@flowChoreDetailMoreInfoTitle": {
+    "surface": "title"
+  },
+  "@flowListEmptyTitle": {
+    "surface": "title"
+  },
+  "@flowListEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@flowListError": {
+    "surface": "error"
+  },
+  "@exploreIntroTitle": {
+    "surface": "title"
+  },
+  "@exploreIntroSubtitle": {
+    "surface": "subtitle"
+  },
+  "@exploreFlowSubtitle": {
+    "surface": "subtitle"
+  },
+  "@exploreShareSubtitle": {
+    "surface": "subtitle"
+  },
+  "@shareCreatedListTitle": {
+    "surface": "title"
+  },
+  "@shareCreatedListEmptyTitle": {
+    "surface": "title"
+  },
+  "@shareCreatedListEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@shareCreatedListError": {
+    "surface": "error"
+  },
+  "@shareCreatedListRetry": {
+    "surface": "button"
+  },
+  "@shareCreatedListDraftSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileSettingsTitle": {
+    "surface": "title"
+  },
+  "@profileSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileIdentityTitle": {
+    "surface": "title"
+  },
+  "@profileIdentitySubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileIdentityUsernameEmptyError": {
+    "surface": "error"
+  },
+  "@profileIdentityUsernameFormatError": {
+    "surface": "error"
+  },
+  "@profileIdentityUsernameTakenError": {
+    "surface": "error"
+  },
+  "@profileIdentityAvatarSectionTitle": {
+    "surface": "title"
+  },
+  "@profileIdentityAvatarEmpty": {
+    "surface": "empty_body"
+  },
+  "@profileIdentityLoadError": {
+    "surface": "error"
+  },
+  "@profileIdentityRetry": {
+    "surface": "button"
+  },
+  "@profileIdentitySaveButton": {
+    "surface": "button"
+  },
+  "@profileIdentitySuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileLeaveHomeTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveHomeSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileLeaveEligibilityError": {
+    "surface": "error"
+  },
+  "@profileLeaveTransferSheetTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveTransferSheetSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickMemberTitle": {
+    "surface": "title"
+  },
+  "@profileKickMemberSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickSheetTitle": {
+    "surface": "title"
+  },
+  "@profileKickSheetSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileLeaveTransferSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileInfoHubTitle": {
+    "surface": "title"
+  },
+  "@profileInfoHubSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileInfoHubLoadError": {
+    "surface": "error"
+  },
+  "@profileContactUsTitle": {
+    "surface": "title"
+  },
+  "@profileContactUsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileConnectionSettingsTitle": {
+    "surface": "title"
+  },
+  "@profileConnectionSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@connectionSettingsTitle": {
+    "surface": "title"
+  },
+  "@connectionSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@connectionSettingsGenericError": {
+    "surface": "error"
+  },
+  "@connectionNotificationsToggleTitle": {
+    "surface": "title"
+  },
+  "@connectionNotificationsToggleSubtitleOn": {
+    "surface": "notification_title"
+  },
+  "@connectionNotificationsToggleSubtitleOff": {
+    "surface": "notification_title"
+  },
+  "@profileContactLaunchError": {
+    "surface": "error"
+  },
+  "@profileLogoutTitle": {
+    "surface": "title"
+  },
+  "@profileLogoutSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileDeleteAccountTitle": {
+    "surface": "title"
+  },
+  "@profileDeleteAccountSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileConfirmLeaveTitle": {
+    "surface": "title"
+  },
+  "@profileConfirmDeleteTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileDeleteSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileGenericError": {
+    "surface": "error"
+  },
+  "@profileMissingHomeError": {
+    "surface": "error"
+  },
+  "@harmonyShareSubtitle": {
+    "surface": "subtitle"
+  },
+  "@harmonySubmitCta": {
+    "surface": "button"
+  },
+  "@harmonySubmitSuccess": {
+    "surface": "success_message"
+  },
+  "@harmonyErrorAlreadySubmitted": {
+    "surface": "error"
+  },
+  "@harmonyErrorForbidden": {
+    "surface": "error"
+  },
+  "@harmonyErrorUnknown": {
+    "surface": "error"
+  },
+  "@harmonyErrorSelectMood": {
+    "surface": "error"
+  },
+  "@gratitudeWallEmptyTitle": {
+    "surface": "title"
+  },
+  "@gratitudeWallEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@gratitudeWallRetry": {
+    "surface": "button"
+  },
+  "@gratitudeWallShareCta": {
+    "surface": "button"
+  },
+  "@gratitudeWallShareTitle": {
+    "surface": "title"
+  },
+  "@gratitudeWallShareError": {
+    "surface": "error"
+  },
+  "@gratitudeWallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@npsTitle": {
+    "surface": "subtitle"
+  },
+  "@npsSubmitErrorNotRequired": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorInvalidScore": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorForbidden": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorGeneric": {
+    "surface": "error"
+  },
+  "@npsLaunchError": {
+    "surface": "error"
+  },
+  "@join_error_invalid_code": {
+    "surface": "error"
+  },
+  "@join_error_inactive_invite": {
+    "surface": "error"
+  },
+  "@join_error_already_in_other_home": {
+    "surface": "error"
+  },
+  "@join_error_paywall_limit": {
+    "surface": "error"
+  },
+  "@join_error_unauthorized": {
+    "surface": "error"
+  },
+  "@join_error_forbidden": {
+    "surface": "error"
+  }
 }

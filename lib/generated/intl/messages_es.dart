@@ -33,41 +33,37 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(link) =>
       "Compartiendo un vistazo de nuestro muro de gratitud de Kinly. Descarga la app: ${link}";
 
-  static String m5(time) => "${time} hoy";
-
-  static String m6(count) =>
+  static String m5(count) =>
       "Muro de gratitud ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m7(weeks) =>
+  static String m6(weeks) =>
       "${Intl.plural(weeks, zero: 'Esta semana', one: 'hace # semana', other: 'hace # semanas')}";
 
-  static String m8(partOfDay, name) => "Buen${partOfDay}, ${name}";
+  static String m7(partOfDay, name) => "Buen${partOfDay}, ${name}";
 
-  static String m9(link) =>
+  static String m8(link) =>
       "Comparte Kinly para que compartir se sienta más ligero: ${link}";
 
-  static String m10(code, link) =>
+  static String m9(code, link) =>
       "¡Bienvenido a nuestro hogar de Kinly! Introduce este código de invitación: ${code}\n\nDescarga la app de Kinly: ${link}";
 
-  static String m11(code) => "Te uniste con el código: ${code}";
+  static String m10(code) => "Te uniste con el código: ${code}";
 
-  static String m12(price) => "${price} al mes para todo tu hogar.";
+  static String m11(price) => "${price} al mes para todo tu hogar.";
 
-  static String m13(paidAmount, totalAmount) =>
+  static String m12(paidAmount, totalAmount) =>
       "${paidAmount} de ${totalAmount} cobrados";
 
-  static String m14(paid, total) => "${paid} de ${total} pagados";
+  static String m13(paid, total) => "${paid} de ${total} pagados";
 
-  static String m15(count) =>
+  static String m14(count) =>
       "Ver todo ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m16(count) =>
+  static String m15(count) =>
       "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} pagos pendientes')}";
 
-  static String m17(count) =>
+  static String m16(count) =>
       "${Intl.plural(count, one: '${count} pago nuevo para ti', other: '${count} pagos nuevos para ti')}";
-
-  static String m18(homeId, role) => "Hogar actual: ${homeId} • Rol: ${role}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -105,12 +101,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
       "No se pudo crear el hogar. Inténtalo de nuevo.",
     ),
-    "create_submit": MessageLookupByLibrary.simpleMessage("Crear hogar"),
     "create_subtitle": MessageLookupByLibrary.simpleMessage(
       "Crearemos tu hogar al instante. Podrás cambiarle el nombre e invitar a otros más tarde.",
     ),
-    "create_success": MessageLookupByLibrary.simpleMessage("¡Hogar creado!"),
-    "create_title": MessageLookupByLibrary.simpleMessage("Crear hogar"),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Revisa cada Flow y mantén los flows en movimiento",
     ),
@@ -121,9 +114,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ve cada Share que has creado y haz seguimiento de los cobros.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage("Asignar a"),
-    "flowChoreAssigneeUnassigned": MessageLookupByLibrary.simpleMessage(
-      "Sin asignar",
-    ),
     "flowChoreCreateSuccess": MessageLookupByLibrary.simpleMessage(
       "Flow creado.",
     ),
@@ -131,7 +121,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage(
       "Eliminar flow",
     ),
-    "flowChoreDeleteCancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
     "flowChoreDeleteConfirm": MessageLookupByLibrary.simpleMessage("Eliminar"),
     "flowChoreDeleteDialogMessage": MessageLookupByLibrary.simpleMessage(
       "Esto elimina el flow para todos en tu hogar.",
@@ -213,9 +202,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Añade contexto o recordatorios opcionales",
     ),
     "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage("Notas"),
-    "flowChorePhotoHint": MessageLookupByLibrary.simpleMessage(
-      "storage/households/... (opcional)",
-    ),
     "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
       "Foto de referencia",
     ),
@@ -308,12 +294,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Aún no hay publicaciones de gratitud",
     ),
     "gratitudeWallFooter": m3,
-    "gratitudeWallKinlySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Kinly ayuda a tu hogar a compartir pequeños momentos de gratitud.",
-    ),
-    "gratitudeWallPoweredBy": MessageLookupByLibrary.simpleMessage(
-      "Impulsado por",
-    ),
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage(
       "Intentar de nuevo",
     ),
@@ -330,27 +310,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "Momentos compartidos de tu hogar.",
     ),
-    "gratitudeWallTimestamp": m5,
-    "gratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
-      "Muro de gratitud",
-    ),
-    "gratitudeWallTitleCount": m6,
-    "gratitudeWallWeeksAgo": m7,
-    "greetingPartAfternoon": MessageLookupByLibrary.simpleMessage("as tardes"),
-    "greetingPartEvening": MessageLookupByLibrary.simpleMessage("as noches"),
-    "greetingPartMorning": MessageLookupByLibrary.simpleMessage("día"),
-    "greetingPartOfDay": m8,
+    "gratitudeWallTitleCount": m5,
+    "gratitudeWallWeeksAgo": m6,
+    "greetingPartOfDay": m7,
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
       "¿Qué hace que el hogar se sienta así?",
     ),
     "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
       "Añadir una nota (opcional)",
-    ),
-    "harmonyEntryCta": MessageLookupByLibrary.simpleMessage(
-      "Compartir el ánimo de esta semana",
-    ),
-    "harmonyEntryError": MessageLookupByLibrary.simpleMessage(
-      "No se pudo abrir el feedback de armonía. Inténtalo de nuevo.",
     ),
     "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
       "Ya compartiste tu ánimo de esta semana.",
@@ -383,12 +350,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
       "¡Gracias! Tu feedback se guardó.",
     ),
-    "harmonySubtext": MessageLookupByLibrary.simpleMessage(
-      "Elige el clima que mejor refleje tu vibra y deja una nota opcional.",
-    ),
-    "harmonyTitle": MessageLookupByLibrary.simpleMessage(
-      "Armonía semanal del hogar",
-    ),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "Lee agradecimientos rápidos y pequeños momentos de aprecio.",
     ),
@@ -397,9 +358,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "hubCodeCopied": MessageLookupByLibrary.simpleMessage(
       "Código de invitación copiado",
-    ),
-    "hubCopyCode": MessageLookupByLibrary.simpleMessage(
-      "Copiar código de invitación",
     ),
     "hubError": MessageLookupByLibrary.simpleMessage(
       "No se pudo cargar el Hub. Inténtalo de nuevo.",
@@ -410,12 +368,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "hubMembersEmpty": MessageLookupByLibrary.simpleMessage(
       "Aún no hay miembros activos.",
-    ),
-    "hubMembersSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Personas actualmente activas en este hogar.",
-    ),
-    "hubMembersTitle": MessageLookupByLibrary.simpleMessage(
-      "Miembros del hogar",
     ),
     "hubQrSubtitle": MessageLookupByLibrary.simpleMessage(
       "Escanea para descargar Kinly",
@@ -429,12 +381,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubRotateSuccess": MessageLookupByLibrary.simpleMessage(
       "Invitación rotada",
     ),
-    "hubShareAppBody": m9,
+    "hubShareAppBody": m8,
     "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Compartir Kinly"),
     "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
       "Consigue la app de Kinly",
     ),
-    "hubShareInviteBody": m10,
+    "hubShareInviteBody": m9,
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "Invitar a mi hogar de Kinly",
     ),
@@ -463,7 +415,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Introduce el código de invitación",
     ),
     "join_submit": MessageLookupByLibrary.simpleMessage("Unirse"),
-    "join_success": m11,
+    "join_success": m10,
     "join_title": MessageLookupByLibrary.simpleMessage("Unirse a un hogar"),
     "login_consent_connector": MessageLookupByLibrary.simpleMessage(" y "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
@@ -551,7 +503,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
       "Un solo plan para el hogar, sin niveles ocultos.",
     ),
-    "paywallPricePerMonth": m12,
+    "paywallPricePerMonth": m11,
     "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
       "Los precios no están disponibles en este momento.",
     ),
@@ -577,7 +529,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
       "Trae más armonía a tu hogar",
     ),
-    "profileActionCancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage(
       "Salir del hogar",
     ),
@@ -697,14 +648,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileKickSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Eliminar a un miembro",
     ),
-    "profileKickSuccessClose": MessageLookupByLibrary.simpleMessage(
-      "Volver a ajustes",
-    ),
     "profileKickSuccessMessage": MessageLookupByLibrary.simpleMessage(
       "Ya no tiene acceso a este hogar.",
-    ),
-    "profileKickSuccessTitle": MessageLookupByLibrary.simpleMessage(
-      "Miembro eliminado",
     ),
     "profileLeaveEligibilityError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar los miembros de tu hogar. Inténtalo de nuevo.",
@@ -736,12 +681,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileLeaveTransferSuccessMessage": MessageLookupByLibrary.simpleMessage(
       "Propiedad transferida. Finalizando tu salida...",
     ),
-    "profileLogoutDialogMessage": MessageLookupByLibrary.simpleMessage(
-      "Tendrás que iniciar sesión de nuevo para acceder a tu hogar.",
-    ),
-    "profileLogoutDialogTitle": MessageLookupByLibrary.simpleMessage(
-      "¿Cerrar sesión?",
-    ),
     "profileLogoutSubtitle": MessageLookupByLibrary.simpleMessage(
       "Cerrar sesión de Kinly en este dispositivo.",
     ),
@@ -755,20 +694,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileSettingsTitle": MessageLookupByLibrary.simpleMessage(
       "Perfil y hogar",
     ),
-    "quick_add_fair_share_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Registrar una entrada de equidad",
-    ),
-    "quick_add_fair_share_title": MessageLookupByLibrary.simpleMessage(
-      "Fair Share",
-    ),
     "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
       "Añadir un Flow",
     ),
     "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Flow"),
-    "quick_add_poll_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Crear una encuesta rápida del hogar",
-    ),
-    "quick_add_poll_title": MessageLookupByLibrary.simpleMessage("Encuesta"),
     "quick_add_share_subtitle": MessageLookupByLibrary.simpleMessage(
       "Registrar un Share",
     ),
@@ -809,9 +738,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("Notas"),
     "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
       "Necesitas al menos dos miembros del hogar para compartir.",
-    ),
-    "shareCreateParticipantsLabel": MessageLookupByLibrary.simpleMessage(
-      "¿Quién comparte?",
     ),
     "shareCreateRecurrenceAnnual": MessageLookupByLibrary.simpleMessage(
       "Anual",
@@ -882,17 +808,14 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Elige cómo dividir antes de configurar una repetición.",
         ),
-    "shareCreateValidationSplit": MessageLookupByLibrary.simpleMessage(
-      "Elige cómo quieres compartir.",
-    ),
     "shareCreateValidationStartDate": MessageLookupByLibrary.simpleMessage(
       "Elige una fecha de inicio.",
     ),
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
       "Elige una fecha dentro del rango permitido.",
     ),
-    "shareCreatedListActiveAmount": m13,
-    "shareCreatedListActiveSubtitle": m14,
+    "shareCreatedListActiveAmount": m12,
+    "shareCreatedListActiveSubtitle": m13,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "Sin asignar",
     ),
@@ -917,7 +840,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage("Tu share"),
     "shareEditClose": MessageLookupByLibrary.simpleMessage("Cerrar"),
     "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("Eliminar"),
-    "shareEditDeleteCancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
     "shareEditDeleteConfirm": MessageLookupByLibrary.simpleMessage("Eliminar"),
     "shareEditDeleteConfirmMessage": MessageLookupByLibrary.simpleMessage(
       "Esto elimina el borrador para todos.",
@@ -966,12 +888,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage(
       "Marcar como pagado",
     ),
-    "shareOwedDetailSelectionLabel": MessageLookupByLibrary.simpleMessage(
-      "Selecciona con quién compartir.",
-    ),
-    "shareOwedDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Selecciona el share que acabas de saldar.",
-    ),
     "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage(
       "Pago registrado.",
     ),
@@ -1009,7 +925,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m15,
+    "todayFlowSeeAll": m14,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Esto es lo que fluye hoy en tu hogar.",
     ),
@@ -1032,45 +948,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
       "Compartir invitación",
     ),
-    "todayShareActiveSubtitle": m16,
-    "todayShareBadgeUpcoming": MessageLookupByLibrary.simpleMessage("próximo"),
-    "todayShareDraftSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Divide según el share.",
-    ),
-    "todayShareEmptyState": MessageLookupByLibrary.simpleMessage(
-      "Aún no hay nada que ver aquí.",
-    ),
+    "todayShareActiveSubtitle": m15,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "No pudimos actualizar Share en este momento.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "Pagado a ti",
     ),
-    "todaySharePaidUnseen": m17,
-    "todayShareSampleGroceries": MessageLookupByLibrary.simpleMessage(
-      "Compra compartida de ayer",
-    ),
-    "todayShareSampleInternet": MessageLookupByLibrary.simpleMessage(
-      "Factura de internet esta semana",
-    ),
-    "todayShareSampleRent": MessageLookupByLibrary.simpleMessage(
-      "Recordatorio de renta próximamente",
-    ),
+    "todaySharePaidUnseen": m16,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Share"),
-    "todayShareSeeAll": MessageLookupByLibrary.simpleMessage(
-      "Ver todos los shares",
-    ),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Por pagar"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
     "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage(
       "Pagado a mí",
     ),
-    "today_home_details": m18,
-    "today_no_membership": MessageLookupByLibrary.simpleMessage(
-      "Aún no hay un hogar activo. Crea o únete a uno para ver la vista de hoy.",
-    ),
-    "today_title": MessageLookupByLibrary.simpleMessage("Hoy"),
-    "unknownInitial": MessageLookupByLibrary.simpleMessage("?"),
     "welcome_create": MessageLookupByLibrary.simpleMessage("Crear un hogar"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("Unirse a un hogar"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("Bienvenido a Kinly"),

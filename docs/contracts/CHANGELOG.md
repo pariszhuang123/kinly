@@ -2,6 +2,14 @@
 
 Tracks versioned contract changes and related ADRs.
 
+## CODEX-L10N-001 -- Codex i18n Hygiene
+- Date: 2025-12-24
+- Scope: `docs/contracts/codex_i18n_hygiene.md`
+- Changes:
+  - Define canonical EN source (`lib/l10n/intl_en.arb`) and enforce no unused keys or invalid references.
+  - Add `tool/l10n_integrity_check.dart` with optional non-EN drift enforcement.
+  - Wire the new check into CI and AGENTS merge checklist.
+
 ## v1 — Expenses MVP
 - Date: 2025-11-20
 - Scope: `docs/contracts/expenses_v1.md`
