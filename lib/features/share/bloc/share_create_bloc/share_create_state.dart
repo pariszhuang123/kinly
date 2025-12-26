@@ -6,6 +6,7 @@ class ShareCreateState extends Equatable {
     required List<ShareParticipant> participants,
     required this.isLoading,
     required this.isSubmitting,
+    required this.isTerminatingPlan,
     required this.isDeleting,
     required this.showValidationErrors,
     required this.loadErrorMessage,
@@ -18,18 +19,23 @@ class ShareCreateState extends Equatable {
     required this.successExpenseId,
     required this.isEditing,
     required this.editingExpenseId,
+    required this.planId,
     required this.isAmountLocked,
     required this.allPaid,
     required this.paidByOther,
     required this.hasUserEdits,
     required this.canEdit,
     required this.editDisabledReason,
+    required this.planTerminationErrorMessage,
+    required this.planTerminationErrorTick,
+    required this.planTerminationSuccessTick,
   }) : participants = List.unmodifiable(participants);
 
   factory ShareCreateState.initial({
     ShareCreateForm? form,
     bool isEditing = false,
     String? editingExpenseId,
+    String? planId,
     bool isAmountLocked = false,
     bool allPaid = false,
     bool paidByOther = false,
@@ -41,6 +47,7 @@ class ShareCreateState extends Equatable {
       participants: const [],
       isLoading: true,
       isSubmitting: false,
+      isTerminatingPlan: false,
       isDeleting: false,
       showValidationErrors: false,
       loadErrorMessage: null,
@@ -53,12 +60,16 @@ class ShareCreateState extends Equatable {
       successExpenseId: null,
       isEditing: isEditing,
       editingExpenseId: editingExpenseId,
+      planId: planId,
       isAmountLocked: isAmountLocked,
       allPaid: allPaid,
       paidByOther: paidByOther,
       hasUserEdits: false, // starts as "pristine"
       canEdit: canEdit,
       editDisabledReason: editDisabledReason,
+      planTerminationErrorMessage: null,
+      planTerminationErrorTick: 0,
+      planTerminationSuccessTick: 0,
     );
   }
 
@@ -66,6 +77,7 @@ class ShareCreateState extends Equatable {
   final List<ShareParticipant> participants;
   final bool isLoading;
   final bool isSubmitting;
+  final bool isTerminatingPlan;
   final bool isDeleting;
   final bool showValidationErrors;
   final String? loadErrorMessage;
@@ -78,11 +90,15 @@ class ShareCreateState extends Equatable {
   final String? successExpenseId;
   final bool isEditing;
   final String? editingExpenseId;
+  final String? planId;
   final bool isAmountLocked;
   final bool allPaid;
   final bool paidByOther;
   final bool canEdit;
   final String? editDisabledReason;
+  final String? planTerminationErrorMessage;
+  final int planTerminationErrorTick;
+  final int planTerminationSuccessTick;
 
   /// Tracks whether the user has made *any* edits in this session.
   /// Used by the primary button to decide between Delete vs Update.
@@ -93,6 +109,7 @@ class ShareCreateState extends Equatable {
     List<ShareParticipant>? participants,
     bool? isLoading,
     bool? isSubmitting,
+    bool? isTerminatingPlan,
     bool? isDeleting,
     bool? showValidationErrors,
     String? loadErrorMessage,
@@ -109,18 +126,24 @@ class ShareCreateState extends Equatable {
     bool clearSuccess = false,
     bool? isEditing,
     String? editingExpenseId,
+    String? planId,
     bool? isAmountLocked,
     bool? allPaid,
     bool? paidByOther,
     bool? hasUserEdits,
     bool? canEdit,
     String? editDisabledReason,
+    String? planTerminationErrorMessage,
+    bool clearPlanTerminationError = false,
+    int? planTerminationErrorTick,
+    int? planTerminationSuccessTick,
   }) {
     return ShareCreateState(
       form: form ?? this.form,
       participants: participants ?? this.participants,
       isLoading: isLoading ?? this.isLoading,
       isSubmitting: isSubmitting ?? this.isSubmitting,
+      isTerminatingPlan: isTerminatingPlan ?? this.isTerminatingPlan,
       isDeleting: isDeleting ?? this.isDeleting,
       showValidationErrors: showValidationErrors ?? this.showValidationErrors,
       loadErrorMessage:
@@ -144,12 +167,21 @@ class ShareCreateState extends Equatable {
           clearSuccess ? null : successExpenseId ?? this.successExpenseId,
       isEditing: isEditing ?? this.isEditing,
       editingExpenseId: editingExpenseId ?? this.editingExpenseId,
+      planId: planId ?? this.planId,
       isAmountLocked: isAmountLocked ?? this.isAmountLocked,
       allPaid: allPaid ?? this.allPaid,
       paidByOther: paidByOther ?? this.paidByOther,
       hasUserEdits: hasUserEdits ?? this.hasUserEdits,
       canEdit: canEdit ?? this.canEdit,
       editDisabledReason: editDisabledReason ?? this.editDisabledReason,
+      planTerminationErrorMessage:
+          clearPlanTerminationError
+              ? null
+              : planTerminationErrorMessage ?? this.planTerminationErrorMessage,
+      planTerminationErrorTick:
+          planTerminationErrorTick ?? this.planTerminationErrorTick,
+      planTerminationSuccessTick:
+          planTerminationSuccessTick ?? this.planTerminationSuccessTick,
     );
   }
 
@@ -206,6 +238,7 @@ class ShareCreateState extends Equatable {
     participants,
     isLoading,
     isSubmitting,
+    isTerminatingPlan,
     isDeleting,
     showValidationErrors,
     loadErrorMessage,
@@ -218,12 +251,16 @@ class ShareCreateState extends Equatable {
     successExpenseId,
     isEditing,
     editingExpenseId,
+    planId,
     isAmountLocked,
     allPaid,
     paidByOther,
     hasUserEdits,
     canEdit,
     editDisabledReason,
+    planTerminationErrorMessage,
+    planTerminationErrorTick,
+    planTerminationSuccessTick,
   ];
 }
 

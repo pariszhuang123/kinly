@@ -34,6 +34,10 @@ class ShareCreateFormView extends StatelessWidget {
     required this.customControllers,
     required this.allowDelete,
     required this.onDeleteRequested,
+    this.showTerminatePlan = false,
+    this.isTerminatingPlan = false,
+    this.onTerminatePlan,
+    this.showPrimaryActions = true,
   });
 
   final ShareCreateState state;
@@ -48,6 +52,10 @@ class ShareCreateFormView extends StatelessWidget {
 
   /// Callback to trigger delete (shows confirm dialog + dispatches event).
   final VoidCallback? onDeleteRequested;
+  final bool showTerminatePlan;
+  final bool isTerminatingPlan;
+  final VoidCallback? onTerminatePlan;
+  final bool showPrimaryActions;
 
   String _mapEditDisabledReason(BuildContext context, String code) {
     final s = S.of(context);
@@ -118,6 +126,7 @@ class ShareCreateFormView extends StatelessWidget {
     }
 
     return ListView(
+      padding: EdgeInsetsDirectional.only(bottom: spacing.lg),
       children: [
         SizedBox(height: spacing.lg),
         if (editingDisabled && state.editDisabledReason != null)
@@ -170,7 +179,7 @@ class ShareCreateFormView extends StatelessWidget {
         SizedBox(height: spacing.lg),
         _NotesField(controller: notesController),
         SizedBox(height: spacing.xl),
-        if (!hidePrimary)
+        if (showPrimaryActions && !hidePrimary)
           _PrimaryActionButton(
             label: primaryLabel,
             shareColors: shareColors,
@@ -179,6 +188,16 @@ class ShareCreateFormView extends StatelessWidget {
             destructive: isDeleteAction,
             onPressed: handlePrimaryPressed,
           ),
+        if (showTerminatePlan) ...[
+          SizedBox(height: spacing.md),
+          KinlyFilledButton.destructiveText(
+            fullWidth: true,
+            onPressed: isTerminatingPlan ? null : onTerminatePlan,
+            label: isTerminatingPlan
+                ? s.shareEditTerminatePlanBusy
+                : s.shareEditTerminatePlan,
+          ),
+        ],
       ],
     );
   }

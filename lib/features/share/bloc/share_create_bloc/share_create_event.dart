@@ -93,3 +93,7 @@ class ShareCreateSubmitted extends ShareCreateEvent {
 class ShareCreateDeleted extends ShareCreateEvent {
   const ShareCreateDeleted();
 }
+
+class ShareCreatePlanTerminationRequested extends ShareCreateEvent {
+  const ShareCreatePlanTerminationRequested();
+}

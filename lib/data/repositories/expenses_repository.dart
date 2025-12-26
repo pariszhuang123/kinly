@@ -65,6 +65,9 @@ abstract class ExpensesRepository {
 
   /// Cancels an expense created by the caller (draft or active without payments).
   Future<Expense> cancel(String expenseId);
+
+  /// Terminates a recurring plan; stops future cycles.
+  Future<ExpensePlan> terminatePlan(String planId);
 }
 
 /// Payload for custom split entries accepted by Supabase RPCs.
@@ -171,6 +174,61 @@ class ExpensePaidToMeItem {
       debtorAvatarUrl: json['debtorAvatarUrl'] as String?,
       isOwner: json['isOwner'] as bool? ?? false,
       notes: json['notes'] as String?,
+    );
+  }
+}
+
+class ExpensePlan {
+  ExpensePlan({
+    required this.id,
+    required this.homeId,
+    required this.createdByUserId,
+    required this.splitType,
+    required this.amountCents,
+    required this.description,
+    this.notes,
+    required this.recurrenceInterval,
+    required this.startDate,
+    required this.status,
+    this.terminatedAt,
+  });
+
+  final String id;
+  final String homeId;
+  final String createdByUserId;
+  final ExpenseSplitType splitType;
+  final int amountCents;
+  final String description;
+  final String? notes;
+  final ExpenseRecurrenceInterval recurrenceInterval;
+  final DateTime startDate;
+  final String status;
+  final DateTime? terminatedAt;
+
+  factory ExpensePlan.fromJson(Map<String, dynamic> json) {
+    final recurrenceRaw =
+        json['recurrenceInterval'] ?? json['recurrence_interval'];
+    final startDateRaw = json['startDate'] ?? json['start_date'];
+    final terminatedRaw = json['terminatedAt'] ?? json['terminated_at'];
+
+    return ExpensePlan(
+      id: json['id'] as String,
+      homeId: json['home_id'] as String,
+      createdByUserId: json['created_by_user_id'] as String,
+      splitType: ExpenseSplitTypeWire.fromWire(json['split_type'] as String?) ??
+          ExpenseSplitType.equal,
+      amountCents: (json['amount_cents'] as num?)?.toInt() ?? 0,
+      description: json['description'] as String? ?? '',
+      notes: json['notes'] as String?,
+      recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
+        recurrenceRaw as String?,
+      ),
+      startDate:
+          parseDateToLocal(startDateRaw) ??
+          parseTimestampToLocal(startDateRaw) ??
+          DateTime.now(),
+      status: json['status'] as String? ?? '',
+      terminatedAt: parseTimestampToLocal(terminatedRaw),
     );
   }
 }

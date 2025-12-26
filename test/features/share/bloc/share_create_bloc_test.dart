@@ -514,11 +514,11 @@ void main() {
       return [submitting, success];
     },
     verify: (_) {
-      verify(
-        () => expensesRepository.edit(
-          expenseId: 'expense-draft',
-          amountCents: 3000,
-          description: 'Draft expense',
+    verify(
+      () => expensesRepository.edit(
+        expenseId: 'expense-draft',
+        amountCents: 3000,
+        description: 'Draft expense',
           notes: null,
           splitType: ExpenseSplitType.equal,
           memberIds: ['member_a', 'member_b'],
@@ -527,6 +527,111 @@ void main() {
           startDate: any(named: 'startDate'),
         ),
       ).called(1);
+    },
+  );
+
+  late ShareCreateState deleteSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'deletes draft via repository when requested',
+    build: () => buildBloc(editingExpenseId: 'expense-draft'),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Draft expense',
+        amountInput: '0',
+      );
+      deleteSeed = seededState(
+        form: form,
+        isEditing: true,
+        editingExpenseId: 'expense-draft',
+      );
+      return deleteSeed;
+    },
+    setUp: () {
+      when(() => expensesRepository.cancel(any())).thenAnswer(
+        (_) async => Expense(
+          id: 'expense-draft',
+          homeId: 'home-1',
+          createdByUserId: 'user-1',
+          status: ExpenseStatus.draft,
+          splitType: null,
+          amountCents: 0,
+          description: 'Draft expense',
+          notes: null,
+          createdAt: DateTime.now().toUtc(),
+          updatedAt: DateTime.now().toUtc(),
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime.now(),
+          planId: null,
+          fullyPaidAt: null,
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateDeleted()),
+    expect: () {
+      final deleting = deleteSeed.copyWith(
+        isDeleting: true,
+        clearDeletionError: true,
+      );
+      final success = deleting.copyWith(
+        isDeleting: false,
+        deletionSuccessTick: deleting.deletionSuccessTick + 1,
+      );
+      return [deleting, success];
+    },
+    verify: (_) {
+      verify(() => expensesRepository.cancel('expense-draft')).called(1);
+    },
+  );
+
+  late ShareCreateState terminateSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'terminates plan via repository',
+    build: () => buildBloc(editingExpenseId: 'expense-plan', initialForm: null),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Recurring bill',
+        amountInput: '30.00',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_a', 'member_b'},
+        recurrence: ExpenseRecurrenceInterval.monthly,
+      );
+      terminateSeed = seededState(
+        form: form,
+        isEditing: true,
+        editingExpenseId: 'expense-plan',
+      ).copyWith(planId: 'plan-1');
+      return terminateSeed;
+    },
+    setUp: () {
+      when(() => expensesRepository.terminatePlan(any())).thenAnswer(
+        (_) async => ExpensePlan(
+          id: 'plan-1',
+          homeId: 'home-1',
+          createdByUserId: 'user-1',
+          splitType: ExpenseSplitType.equal,
+          amountCents: 3000,
+          description: 'Recurring bill',
+          recurrenceInterval: ExpenseRecurrenceInterval.monthly,
+          startDate: DateTime(2024, 1, 1),
+          status: 'terminated',
+          terminatedAt: DateTime.now(),
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreatePlanTerminationRequested()),
+    expect: () {
+      final terminating = terminateSeed.copyWith(
+        isTerminatingPlan: true,
+        clearPlanTerminationError: true,
+      );
+      final success = terminating.copyWith(
+        isTerminatingPlan: false,
+        planTerminationSuccessTick: terminating.planTerminationSuccessTick + 1,
+      );
+      return [terminating, success];
+    },
+    verify: (_) {
+      verify(() => expensesRepository.terminatePlan('plan-1')).called(1);
     },
   );
 

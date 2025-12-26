@@ -1164,10 +1164,10 @@ class S {
     );
   }
 
-  /// `Acknowledge payments`
+  /// `Acknowledge Receipt`
   String get sharePaidDetailAcknowledge {
     return Intl.message(
-      'Acknowledge payments',
+      'Acknowledge Receipt',
       name: 'sharePaidDetailAcknowledge',
       desc: '',
       args: [],
@@ -1184,20 +1184,20 @@ class S {
     );
   }
 
-  /// `We couldn't acknowledge these payments.`
+  /// `We couldn't acknowledge receipting the bills.`
   String get sharePaidDetailAcknowledgeError {
     return Intl.message(
-      'We couldn\'t acknowledge these payments.',
+      'We couldn\'t acknowledge receipting the bills.',
       name: 'sharePaidDetailAcknowledgeError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Edit Share`
+  /// `Edit Bill`
   String get shareEditTitle {
     return Intl.message(
-      'Edit Share',
+      'Edit Bill',
       name: 'shareEditTitle',
       desc: '',
       args: [],
@@ -1209,10 +1209,10 @@ class S {
     return Intl.message('Update', name: 'shareEditSubmit', desc: '', args: []);
   }
 
-  /// `Share updated.`
+  /// `Bill updated.`
   String get shareEditSuccess {
     return Intl.message(
-      'Share updated.',
+      'Bill updated.',
       name: 'shareEditSuccess',
       desc: '',
       args: [],
@@ -1309,6 +1309,66 @@ class S {
     return Intl.message(
       'Share deleted.',
       name: 'shareEditDeleteSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terminate plan`
+  String get shareEditTerminatePlan {
+    return Intl.message(
+      'Terminate plan',
+      name: 'shareEditTerminatePlan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terminating...`
+  String get shareEditTerminatePlanBusy {
+    return Intl.message(
+      'Terminating...',
+      name: 'shareEditTerminatePlanBusy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terminate recurring plan?`
+  String get shareEditTerminatePlanTitle {
+    return Intl.message(
+      'Terminate recurring plan?',
+      name: 'shareEditTerminatePlanTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This stops future cycles. Existing expenses remain payable.`
+  String get shareEditTerminatePlanMessage {
+    return Intl.message(
+      'This stops future cycles. Existing expenses remain payable.',
+      name: 'shareEditTerminatePlanMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terminate plan`
+  String get shareEditTerminatePlanConfirm {
+    return Intl.message(
+      'Terminate plan',
+      name: 'shareEditTerminatePlanConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't terminate the plan. Try again.`
+  String get shareEditTerminateError {
+    return Intl.message(
+      'Couldn\'t terminate the plan. Try again.',
+      name: 'shareEditTerminateError',
       desc: '',
       args: [],
     );
@@ -2694,10 +2754,10 @@ class S {
     );
   }
 
-  /// `You're the last member. Leaving will deactivate this home for everyone.`
+  /// `You're the last member. Leaving will deactivate this home.`
   String get profileLeaveOwnerSoloMessage {
     return Intl.message(
-      'You\'re the last member. Leaving will deactivate this home for everyone.',
+      'You\'re the last member. Leaving will deactivate this home.',
       name: 'profileLeaveOwnerSoloMessage',
       desc: '',
       args: [],

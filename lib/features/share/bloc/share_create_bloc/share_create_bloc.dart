@@ -21,6 +21,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     required HomeRepository homeRepository,
     ShareCreateForm? initialForm,
     String? editingExpenseId,
+    String? planId,
     bool amountLocked = false,
     bool allPaid = false,
     bool paidByOther = false,
@@ -34,6 +35,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
             form: initialForm,
             isEditing: editingExpenseId != null,
             editingExpenseId: editingExpenseId,
+            planId: planId,
             isAmountLocked: amountLocked,
             allPaid: allPaid,
             paidByOther: paidByOther,
@@ -52,6 +54,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     on<ShareCreateRecurrenceChanged>(_onRecurrenceChanged);
     on<ShareCreateSubmitted>(_onSubmitted);
     on<ShareCreateDeleted>(_onDeleted);
+    on<ShareCreatePlanTerminationRequested>(_onPlanTerminationRequested);
   }
 
   final String _homeId;
@@ -393,6 +396,47 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
           isDeleting: false,
           deletionErrorMessage: error.toString(),
           deletionErrorTick: state.deletionErrorTick + 1,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onPlanTerminationRequested(
+    ShareCreatePlanTerminationRequested event,
+    Emitter<ShareCreateState> emit,
+  ) async {
+    final planId = state.planId;
+    if (planId == null) return;
+
+    emit(
+      state.copyWith(
+        isTerminatingPlan: true,
+        clearPlanTerminationError: true,
+      ),
+    );
+
+    try {
+      await _expensesRepository.terminatePlan(planId);
+      emit(
+        state.copyWith(
+          isTerminatingPlan: false,
+          planTerminationSuccessTick: state.planTerminationSuccessTick + 1,
+        ),
+      );
+    } on ExpenseException catch (error) {
+      emit(
+        state.copyWith(
+          isTerminatingPlan: false,
+          planTerminationErrorMessage: error.message,
+          planTerminationErrorTick: state.planTerminationErrorTick + 1,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isTerminatingPlan: false,
+          planTerminationErrorMessage: error.toString(),
+          planTerminationErrorTick: state.planTerminationErrorTick + 1,
         ),
       );
     }

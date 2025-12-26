@@ -76,7 +76,10 @@ void main() {
       ),
     ).thenAnswer((_) async => 1);
 
-    await tester.tap(find.text('Acknowledge payments'));
+    final context = tester.element(find.byType(SharePaidToMeDetailScreen));
+    final label = S.of(context).sharePaidDetailAcknowledge;
+
+    await tester.tap(find.text(label));
     await tester.pump();
     await tester.pumpAndSettle();
 

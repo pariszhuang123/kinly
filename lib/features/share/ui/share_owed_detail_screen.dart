@@ -209,6 +209,7 @@ class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
     final sectionColors = Theme.of(context).extension<KinlySections>()!.share;
 
     return ListView.separated(
+      padding: EdgeInsetsDirectional.only(top: spacing.sm),
       itemCount: widget.items.length,
       separatorBuilder: (_, __) => SizedBox(height: spacing.sm),
       itemBuilder: (context, index) {

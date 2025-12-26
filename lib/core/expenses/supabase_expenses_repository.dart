@@ -264,6 +264,27 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     }
   }
 
+  @override
+  Future<ExpensePlan> terminatePlan(String planId) async {
+    try {
+      final response = await _client.rpc(
+        'expense_plans_terminate',
+        params: {'p_plan_id': planId},
+      );
+      final payload = _coerceMap(response);
+      if (payload != null) {
+        return ExpensePlan.fromJson(payload);
+      }
+
+      throw const ExpenseException(
+        ExpenseErrorCode.unknown,
+        'Malformed terminate plan payload from Supabase.',
+      );
+    } catch (error) {
+      throw SupabaseErrorMapper.mapExpense(error);
+    }
+  }
+
   Map<String, dynamic>? _coerceMap(dynamic value) {
     if (value is Map<String, dynamic>) return value;
     if (value is Map) return value.cast<String, dynamic>();

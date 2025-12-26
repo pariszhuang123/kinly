@@ -643,7 +643,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "No one else can take ownership right now. Try again later.",
     ),
     "profileLeaveOwnerSoloMessage": MessageLookupByLibrary.simpleMessage(
-      "You\'re the last member. Leaving will deactivate this home for everyone.",
+      "You\'re the last member. Leaving will deactivate this home.",
     ),
     "profileLeaveSuccessMessage": MessageLookupByLibrary.simpleMessage(
       "You left your home.",
@@ -847,8 +847,26 @@ class MessageLookup extends MessageLookupByLibrary {
       "Splits are locked because someone already paid. You can still update the description and notes.",
     ),
     "shareEditSubmit": MessageLookupByLibrary.simpleMessage("Update"),
-    "shareEditSuccess": MessageLookupByLibrary.simpleMessage("Share updated."),
-    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Edit Share"),
+    "shareEditSuccess": MessageLookupByLibrary.simpleMessage("Bill updated."),
+    "shareEditTerminateError": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t terminate the plan. Try again.",
+    ),
+    "shareEditTerminatePlan": MessageLookupByLibrary.simpleMessage(
+      "Terminate plan",
+    ),
+    "shareEditTerminatePlanBusy": MessageLookupByLibrary.simpleMessage(
+      "Terminating...",
+    ),
+    "shareEditTerminatePlanConfirm": MessageLookupByLibrary.simpleMessage(
+      "Terminate plan",
+    ),
+    "shareEditTerminatePlanMessage": MessageLookupByLibrary.simpleMessage(
+      "This stops future cycles. Existing expenses remain payable.",
+    ),
+    "shareEditTerminatePlanTitle": MessageLookupByLibrary.simpleMessage(
+      "Terminate recurring plan?",
+    ),
+    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Edit Bill"),
     "shareOwedDetailEmpty": MessageLookupByLibrary.simpleMessage(
       "You\'re all caught up with this person.",
     ),
@@ -861,10 +879,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage("Settled."),
     "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage("To settle"),
     "sharePaidDetailAcknowledge": MessageLookupByLibrary.simpleMessage(
-      "Acknowledge payments",
+      "Acknowledge Receipt",
     ),
     "sharePaidDetailAcknowledgeError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t acknowledge these payments.",
+      "We couldn\'t acknowledge receipting the bills.",
     ),
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
       "Acknowledging...",

@@ -528,7 +528,7 @@ class _TodayScreenState extends State<TodayScreen>
   ) async {
     final result = await context.push(
       AppRoutes.shareDraftEditPath(draft.expenseId),
-      extra: const ShareEditRouteArgs(allowDelete: false),
+      extra: const ShareEditRouteArgs(allowDelete: true),
     );
     if (!context.mounted) return;
     final s = S.of(context);
