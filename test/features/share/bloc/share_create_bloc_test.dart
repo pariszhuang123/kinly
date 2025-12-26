@@ -246,6 +246,39 @@ void main() {
     expect: () => [emptySeed.copyWith(showValidationErrors: true)],
   );
 
+  late ShareCreateState recurringDraftSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'blocks recurrence selection without split mode',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Weekly draft',
+        amountInput: '10.00',
+        recurrence: ExpenseRecurrenceInterval.weekly,
+        splitMode: null,
+      );
+      recurringDraftSeed = seededState(form: form);
+      return recurringDraftSeed;
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () => [recurringDraftSeed.copyWith(showValidationErrors: true)],
+    verify: (_) {
+      verifyNever(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any<int?>(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrence: any(named: 'recurrence'),
+          startDate: any(named: 'startDate'),
+        ),
+      );
+    },
+  );
+
   late ShareCreateState equalSeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'submits equal split successfully',

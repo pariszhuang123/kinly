@@ -44,6 +44,15 @@ class Expense {
   final DateTime? fullyPaidAt;
 
   factory Expense.fromJson(Map<String, dynamic> json) {
+    final id = json['id'] ?? json['expenseId'];
+    final homeId = json['home_id'] ?? json['homeId'];
+    final createdBy = json['created_by_user_id'] ?? json['createdByUserId'];
+    final splitTypeRaw = json['split_type'] ?? json['splitType'];
+    final amountRaw = json['amount_cents'] ?? json['amountCents'];
+    final description = json['description'] ?? json['description'];
+    final notes = json['notes'];
+    final createdAtRaw = json['created_at'] ?? json['createdAt'];
+    final updatedAtRaw = json['updated_at'] ?? json['updatedAt'];
     final recurrenceWire =
         json['recurrenceInterval'] ?? json['recurrence_interval'];
     final startDateRaw = json['startDate'] ?? json['start_date'];
@@ -51,16 +60,16 @@ class Expense {
     final fullyPaidRaw = json['fullyPaidAt'] ?? json['fully_paid_at'];
 
     return Expense(
-      id: json['id'] as String,
-      homeId: json['home_id'] as String,
-      createdByUserId: json['created_by_user_id'] as String,
+      id: id as String,
+      homeId: homeId as String,
+      createdByUserId: createdBy as String,
       status: ExpenseStatusWire.fromWire(json['status'] as String?),
-      splitType: ExpenseSplitTypeWire.fromWire(json['split_type'] as String?),
-      amountCents: (json['amount_cents'] as num?)?.toInt() ?? 0,
-      description: json['description'] as String,
-      notes: json['notes'] as String?,
-      createdAt: parseTimestampToLocal(json['created_at'])!,
-      updatedAt: parseTimestampToLocal(json['updated_at'])!,
+      splitType: ExpenseSplitTypeWire.fromWire(splitTypeRaw as String?),
+      amountCents: (amountRaw as num?)?.toInt() ?? 0,
+      description: (description as String?) ?? '',
+      notes: notes as String?,
+      createdAt: parseTimestampToLocal(createdAtRaw)!,
+      updatedAt: parseTimestampToLocal(updatedAtRaw)!,
       planId: planId as String?,
       recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
         recurrenceWire as String?,
@@ -93,12 +102,17 @@ class ExpenseSplit {
   final DateTime? markedPaidAt;
 
   factory ExpenseSplit.fromJson(Map<String, dynamic> json) {
+    final expenseId = json['expense_id'] ?? json['expenseId'];
+    final debtorId = json['debtor_user_id'] ?? json['debtorUserId'];
+    final amountRaw = json['amount_cents'] ?? json['amountCents'];
+    final markedPaidRaw = json['marked_paid_at'] ?? json['markedPaidAt'];
+
     return ExpenseSplit(
-      expenseId: json['expense_id'] as String,
-      debtorUserId: json['debtor_user_id'] as String,
-      amountCents: (json['amount_cents'] as num).toInt(),
+      expenseId: expenseId as String,
+      debtorUserId: debtorId as String,
+      amountCents: (amountRaw as num).toInt(),
       status: ExpenseShareStatusWire.fromWire(json['status'] as String?),
-      markedPaidAt: parseTimestampToLocal(json['marked_paid_at']),
+      markedPaidAt: parseTimestampToLocal(markedPaidRaw),
     );
   }
 }

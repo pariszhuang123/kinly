@@ -1,15 +1,16 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/intl.dart';
 
 import '../../data/repositories/expenses_repository.dart';
 import '../supabase/supabase_error_mapper.dart';
 import 'models.dart';
-import '../time/timezone.dart';
 
 class SupabaseExpensesRepository implements ExpensesRepository {
   SupabaseExpensesRepository({SupabaseClient? client})
     : _client = client ?? Supabase.instance.client;
 
   final SupabaseClient _client;
+  final _dateFormatter = DateFormat('yyyy-MM-dd');
 
   @override
   Future<Expense> create({
@@ -37,7 +38,7 @@ class SupabaseExpensesRepository implements ExpensesRepository {
           if (customSplits != null && customSplits.isNotEmpty)
             'p_splits': customSplits.map((split) => split.toJson()).toList(),
           'p_recurrence': recurrence.wireValue,
-          'p_start_date': toUtcIsoString(startDate),
+          'p_start_date': _dateFormatter.format(startDate),
         },
       );
 
@@ -81,7 +82,7 @@ class SupabaseExpensesRepository implements ExpensesRepository {
           if (customSplits != null && customSplits.isNotEmpty)
             'p_splits': customSplits.map((split) => split.toJson()).toList(),
           'p_recurrence': recurrence.wireValue,
-          'p_start_date': toUtcIsoString(startDate),
+          'p_start_date': _dateFormatter.format(startDate),
         },
       );
 
@@ -158,21 +159,23 @@ class SupabaseExpensesRepository implements ExpensesRepository {
   }
 
   @override
-  Future<ExpenseMarkSharePaidResult> markSharePaid(String expenseId) async {
+  Future<ExpensesPayMyDueResult> payMyDue({
+    required String recipientUserId,
+  }) async {
     try {
       final response = await _client.rpc(
-        'expenses_mark_share_paid',
-        params: {'p_expense_id': expenseId},
+        'expenses_pay_my_due',
+        params: {'p_recipient_user_id': recipientUserId},
       );
 
       final payload = _coerceMap(response);
       if (payload != null) {
-        return ExpenseMarkSharePaidResult.fromJson(payload);
+        return ExpensesPayMyDueResult.fromJson(payload);
       }
 
       throw const ExpenseException(
         ExpenseErrorCode.unknown,
-        'Malformed markSharePaid payload from Supabase.',
+        'Malformed payMyDue payload from Supabase.',
       );
     } catch (error) {
       throw SupabaseErrorMapper.mapExpense(error);

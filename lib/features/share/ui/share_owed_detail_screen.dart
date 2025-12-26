@@ -80,7 +80,7 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     );
   }
 
-  /// Option A: loop over all owed items and call markSharePaid(expenseId)
+  /// Bulk pay all owed items for this recipient via expenses_pay_my_due.
   Future<void> _markAllPaid() async {
     final strings = S.of(context);
 
@@ -97,9 +97,9 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     });
 
     try {
-      for (final item in widget.owed.items) {
-        await widget.expensesRepository.markSharePaid(item.expenseId);
-      }
+      await widget.expensesRepository.payMyDue(
+        recipientUserId: widget.owed.payerUserId,
+      );
 
       if (!mounted) return;
       Navigator.of(context).pop(true);

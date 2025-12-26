@@ -10,7 +10,6 @@ import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
-import 'package:kinly/core/expenses/enums/expense_share_status.dart';
 
 class _MockExpensesRepository extends Mock implements ExpensesRepository {}
 
@@ -51,17 +50,14 @@ void main() {
 
   testWidgets('marks paid pops true and calls repository', (tester) async {
     final repo = _MockExpensesRepository();
-    when(() => repo.markSharePaid(any())).thenAnswer(
-      (_) async => ExpenseMarkSharePaidResult(
-        deduped: false,
-        split: ExpensePaidSplit(
-          expenseId: 'exp-1',
-          debtorUserId: 'user-1',
-          status: ExpenseShareStatus.paid,
-          amountCents: 0,
-          markedPaidAt: DateTime.now(),
-          recipientViewedAt: null,
-        ),
+    when(
+      () => repo.payMyDue(recipientUserId: any(named: 'recipientUserId')),
+    ).thenAnswer(
+      (_) async => ExpensesPayMyDueResult(
+        recipientUserId: 'user-1',
+        splitsPaid: 2,
+        expensesTouched: 2,
+        expensesNewlyFullyPaid: 1,
       ),
     );
 
@@ -152,8 +148,7 @@ void main() {
     await tester.pump();
     await tester.pumpAndSettle();
 
-    verify(() => repo.markSharePaid('exp-1')).called(1);
-    verify(() => repo.markSharePaid('exp-2')).called(1);
+    verify(() => repo.payMyDue(recipientUserId: 'user-1')).called(1);
 
     final hostState = tester.state<_RouteHostState>(find.byType(_RouteHost));
     expect(hostState.poppedResult, true);
@@ -161,7 +156,9 @@ void main() {
 
   testWidgets('error path shows message on failure', (tester) async {
     final repo = _MockExpensesRepository();
-    when(() => repo.markSharePaid(any())).thenThrow(Exception('boom'));
+    when(
+      () => repo.payMyDue(recipientUserId: any(named: 'recipientUserId')),
+    ).thenThrow(Exception('boom'));
 
     final owed = TodayShareOwed(
       payerUserId: 'user-1',

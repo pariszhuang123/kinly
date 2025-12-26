@@ -146,7 +146,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     Emitter<ShareCreateState> emit,
   ) {
     var nextForm = state.form.copyWith(
-      splitMode: event.mode, // ShareSplitMode? now
+      splitMode: event.mode,
       recurrence:
           event.mode == null
               ? ExpenseRecurrenceInterval.none
