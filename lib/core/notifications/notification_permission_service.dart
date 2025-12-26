@@ -1,11 +1,10 @@
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
 
 import '../../data/repositories/notifications_repository.dart';
 import 'enums/permission_status.dart';
 
 class NotificationPermissionException implements Exception {
   NotificationPermissionException({required this.permanentlyDenied});
-
   final bool permanentlyDenied;
 }
 
@@ -17,8 +16,6 @@ class NotificationPermissionService {
 
   final NotificationsRepository _notificationsRepository;
 
-  /// Requests OS permission. If granted, syncs opt-in state + token (when provided).
-  /// If denied permanently, throws [NotificationPermissionException].
   Future<void> requestAndSync({
     required bool wantsDaily,
     required int preferredHour,
@@ -29,9 +26,14 @@ class NotificationPermissionService {
     String? platform,
   }) async {
     final status = await _ensureNotificationPermission();
-    final granted = status == PermissionStatus.allowed;
+    final granted = status == NotificationPermissionStatus.allowed;
+
     final osPermission =
-        status == PermissionStatus.permanentlyDenied ? 'blocked' : granted ? 'allowed' : 'unknown';
+        status == NotificationPermissionStatus.permanentlyDenied
+            ? 'blocked'
+            : granted
+            ? 'allowed'
+            : 'unknown';
 
     await _notificationsRepository.syncPreferences(
       wantsDaily: granted ? wantsDaily : false,
@@ -45,23 +47,33 @@ class NotificationPermissionService {
     );
 
     if (!granted) {
-      final isPermanent = status == PermissionStatus.permanentlyDenied;
+      final isPermanent =
+          status == NotificationPermissionStatus.permanentlyDenied;
       throw NotificationPermissionException(permanentlyDenied: isPermanent);
     }
   }
 
-  Future<PermissionStatus> _ensureNotificationPermission() async {
-    final status = await Permission.notification.status;
-    if (status.isGranted) return PermissionStatus.allowed;
+  Future<NotificationPermissionStatus> _ensureNotificationPermission() async {
+    final status = await ph.Permission.notification.status;
+
+    if (status.isGranted) {
+      return NotificationPermissionStatus.allowed;
+    }
+
     if (status.isPermanentlyDenied) {
-      return PermissionStatus.permanentlyDenied;
+      return NotificationPermissionStatus.permanentlyDenied;
     }
-    final requested = await Permission.notification.request();
-    if (requested.isGranted) return PermissionStatus.allowed;
+
+    final requested = await ph.Permission.notification.request();
+
+    if (requested.isGranted) {
+      return NotificationPermissionStatus.allowed;
+    }
+
     if (requested.isPermanentlyDenied) {
-      return PermissionStatus.permanentlyDenied;
+      return NotificationPermissionStatus.permanentlyDenied;
     }
-    return PermissionStatus.denied;
+
+    return NotificationPermissionStatus.denied;
   }
 }
-

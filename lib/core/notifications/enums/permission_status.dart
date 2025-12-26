@@ -1,1 +1,1 @@
-enum PermissionStatus { allowed, denied, permanentlyDenied }
+enum NotificationPermissionStatus { allowed, denied, permanentlyDenied }
