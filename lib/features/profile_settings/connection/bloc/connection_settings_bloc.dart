@@ -117,7 +117,7 @@ class ConnectionSettingsBloc
         emit(
           state.copyWith(
             wantsDaily: false,
-            osPermission: 'blocked',
+            osPermission: error.permanentlyDenied ? 'blocked' : 'unknown',
             isSavingToggle: false,
             pendingEnableAfterSettings: error.permanentlyDenied,
             action: error.permanentlyDenied
@@ -271,7 +271,7 @@ class ConnectionSettingsBloc
     final status = await Permission.notification.status;
     if (status.isGranted) return 'allowed';
     if (status.isPermanentlyDenied) return 'blocked';
-    if (status.isDenied || status.isRestricted) return 'blocked';
+    if (status.isDenied || status.isRestricted) return 'unknown';
     return 'unknown';
   }
 }

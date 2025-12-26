@@ -27,8 +27,10 @@ class NotificationPermissionService {
     String? deviceToken,
     String? platform,
   }) async {
-    final granted = await _ensureNotificationPermission();
-    final osPermission = granted ? 'allowed' : 'blocked';
+    final status = await _ensureNotificationPermission();
+    final granted = status == _PermissionStatus.allowed;
+    final osPermission =
+        status == _PermissionStatus.permanentlyDenied ? 'blocked' : granted ? 'allowed' : 'unknown';
 
     await _notificationsRepository.syncPreferences(
       wantsDaily: granted ? wantsDaily : false,
@@ -42,21 +44,24 @@ class NotificationPermissionService {
     );
 
     if (!granted) {
-      throw NotificationPermissionException(permanentlyDenied: false);
+      final isPermanent = status == _PermissionStatus.permanentlyDenied;
+      throw NotificationPermissionException(permanentlyDenied: isPermanent);
     }
   }
 
-  Future<bool> _ensureNotificationPermission() async {
+  Future<_PermissionStatus> _ensureNotificationPermission() async {
     final status = await Permission.notification.status;
-    if (status.isGranted) return true;
+    if (status.isGranted) return _PermissionStatus.allowed;
     if (status.isPermanentlyDenied) {
-      throw NotificationPermissionException(permanentlyDenied: true);
+      return _PermissionStatus.permanentlyDenied;
     }
     final requested = await Permission.notification.request();
-    if (requested.isGranted) return true;
+    if (requested.isGranted) return _PermissionStatus.allowed;
     if (requested.isPermanentlyDenied) {
-      throw NotificationPermissionException(permanentlyDenied: true);
+      return _PermissionStatus.permanentlyDenied;
     }
-    return false;
+    return _PermissionStatus.denied;
   }
 }
+
+enum _PermissionStatus { allowed, denied, permanentlyDenied }

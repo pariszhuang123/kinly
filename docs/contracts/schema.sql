@@ -5937,14 +5937,12 @@ CREATE TABLE IF NOT EXISTS "public"."notification_preferences" (
     "last_sent_local_date" "date",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "preferred_minute" integer DEFAULT 0 NOT NULL
+    "preferred_minute" integer DEFAULT 0 NOT NULL,
+    CONSTRAINT "chk_notification_preferences_preferred_minute" CHECK ((("preferred_minute" >= 0) AND ("preferred_minute" < 60)))
 );
 
 
 ALTER TABLE "public"."notification_preferences" OWNER TO "postgres";
-
-ALTER TABLE ONLY "public"."notification_preferences"
-    ADD CONSTRAINT "chk_notification_preferences_preferred_minute" CHECK (("preferred_minute" >= 0) AND ("preferred_minute" < 60));
 
 
 CREATE OR REPLACE FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean DEFAULT NULL::boolean, "p_preferred_hour" integer DEFAULT NULL::integer, "p_preferred_minute" integer DEFAULT NULL::integer) RETURNS "public"."notification_preferences"
@@ -5952,10 +5950,10 @@ CREATE OR REPLACE FUNCTION "public"."notifications_sync_client_state"("p_token" 
     SET "search_path" TO ''
     AS $$
 DECLARE
-  v_user_id    uuid := auth.uid();
-  v_current    public.notification_preferences;
-  v_effective_wants_daily    boolean;
-  v_effective_preferred_hour integer;
+  v_user_id     uuid := auth.uid();
+  v_current     public.notification_preferences;
+  v_effective_wants_daily      boolean;
+  v_effective_preferred_hour   integer;
   v_effective_preferred_minute integer;
   v_should_upsert boolean;
 BEGIN
@@ -5964,7 +5962,6 @@ BEGIN
     RAISE EXCEPTION 'NOT_AUTHENTICATED';
   END IF;
 
-  -- Load existing row if any
   SELECT *
   INTO v_current
   FROM public.notification_preferences
@@ -5977,7 +5974,7 @@ BEGIN
       (p_os_permission = 'allowed')
     );
 
-  -- Force off when OS is blocked/unknown so UI toggle matches system
+  -- Force off when OS is blocked/unknown so UI toggle mirrors system status
   IF p_os_permission IS DISTINCT FROM 'allowed' THEN
     v_effective_wants_daily := FALSE;
   END IF;
@@ -5996,17 +5993,16 @@ BEGIN
       0
     );
 
-  -- Only upsert when we have something explicit or an existing row
+  -- Upsert only when we have an explicit change, an existing row, or OS is allowed.
+  -- Do NOT upsert just because a token is present if permission is blocked/unknown.
   v_should_upsert :=
        v_current.user_id IS NOT NULL
     OR p_wants_daily IS NOT NULL
     OR p_preferred_hour IS NOT NULL
     OR p_preferred_minute IS NOT NULL
-    OR p_token IS NOT NULL
     OR p_os_permission = 'allowed';
 
   IF NOT v_should_upsert THEN
-    -- Return a synthetic row without creating DB state
     RETURN (
       v_user_id,
       v_effective_wants_daily,
@@ -6022,7 +6018,6 @@ BEGIN
     )::public.notification_preferences;
   END IF;
 
-  -- Upsert prefs
   INSERT INTO public.notification_preferences (
     user_id,
     wants_daily,
@@ -6050,17 +6045,16 @@ BEGIN
     now()
   )
   ON CONFLICT (user_id) DO UPDATE
-    SET wants_daily     = EXCLUDED.wants_daily,
-        preferred_hour  = EXCLUDED.preferred_hour,
+    SET wants_daily      = EXCLUDED.wants_daily,
+        preferred_hour   = EXCLUDED.preferred_hour,
         preferred_minute = EXCLUDED.preferred_minute,
-        timezone        = EXCLUDED.timezone,
-        locale          = EXCLUDED.locale,
-        os_permission   = EXCLUDED.os_permission,
-        last_os_sync_at = EXCLUDED.last_os_sync_at,
-        updated_at      = EXCLUDED.updated_at
+        timezone         = EXCLUDED.timezone,
+        locale           = EXCLUDED.locale,
+        os_permission    = EXCLUDED.os_permission,
+        last_os_sync_at  = EXCLUDED.last_os_sync_at,
+        updated_at       = EXCLUDED.updated_at
   RETURNING * INTO v_current;
 
-  -- Upsert device token if provided
   IF p_token IS NOT NULL THEN
     INSERT INTO public.device_tokens (
       user_id, token, provider, platform, status,
@@ -6144,10 +6138,10 @@ BEGIN
     SELECT 1 FROM public.notification_preferences WHERE user_id = v_user_id
   )
   ON CONFLICT (user_id) DO UPDATE
-    SET wants_daily    = EXCLUDED.wants_daily,
-        preferred_hour = EXCLUDED.preferred_hour,
+    SET wants_daily     = EXCLUDED.wants_daily,
+        preferred_hour  = EXCLUDED.preferred_hour,
         preferred_minute = EXCLUDED.preferred_minute,
-        updated_at     = EXCLUDED.updated_at
+        updated_at      = EXCLUDED.updated_at
   RETURNING * INTO v_pref;
 
   RETURN v_pref;
@@ -6749,7 +6743,10 @@ DECLARE
 
   v_lifetime_authored_chore_count int := 0;
 
-  v_has_notif_pref boolean := FALSE;
+  -- Default to 'unknown' so "no row" behaves like unknown.
+  v_notif_os_permission text := 'unknown';
+  v_notif_wants_daily boolean := FALSE;
+
   v_has_flatmate_invite_share boolean := FALSE;
   v_has_invite_share boolean := FALSE;
 
@@ -6759,13 +6756,10 @@ DECLARE
 BEGIN
   PERFORM public._assert_authenticated();
 
-  ------------------------------------------------------------------
-  -- Resolve current home (if any)
-  ------------------------------------------------------------------
   SELECT m.home_id
   INTO v_home_id
   FROM public.memberships AS m
-  WHERE m.user_id   = v_user_id
+  WHERE m.user_id    = v_user_id
     AND m.is_current = TRUE
   LIMIT 1;
 
@@ -6778,24 +6772,23 @@ BEGIN
     );
   END IF;
 
-  ------------------------------------------------------------------
-  -- Guards: membership + active home
-  ------------------------------------------------------------------
   PERFORM public._assert_home_member(v_home_id);
   PERFORM public._assert_home_active(v_home_id);
 
-  ------------------------------------------------------------------
-  ------------------------------------------------------------------
   SELECT COUNT(*)
   INTO v_lifetime_authored_chore_count
   FROM public.chores AS c
   WHERE c.created_by_user_id = v_user_id;
 
-  SELECT EXISTS (
-    SELECT 1 FROM public.notification_preferences AS np
-    WHERE np.user_id = v_user_id
-  )
-  INTO v_has_notif_pref;
+  -- Normalize "no prefs row" to ('unknown', FALSE).
+  -- This avoids the SELECT INTO "no row -> NULL overwrite" footgun.
+  SELECT
+    COALESCE(np.os_permission, 'unknown'),
+    COALESCE(np.wants_daily, FALSE)
+  INTO v_notif_os_permission, v_notif_wants_daily
+  FROM public.notification_preferences AS np
+  WHERE np.user_id = v_user_id
+  LIMIT 1;
 
   SELECT EXISTS (
     SELECT 1
@@ -6815,20 +6808,16 @@ BEGIN
   )
   INTO v_has_invite_share;
 
-  ------------------------------------------------------------------
-  -- Ladder (user-authored chore gates)
-  ------------------------------------------------------------------
-  -- Step 1: notifications only after the user has authored at least 1 chore
-  IF NOT v_has_notif_pref
+  -- Step 1: prompt notifications when permission is unknown (including "no row")
+  -- and the user has authored at least 1 chore.
+  IF v_notif_os_permission = 'unknown'
      AND v_lifetime_authored_chore_count >= 1 THEN
     v_prompt_notifications := TRUE;
 
-  -- Step 2: flatmate invite after 2+ user-authored chores
   ELSIF v_lifetime_authored_chore_count >= 2
         AND NOT v_has_flatmate_invite_share THEN
     v_prompt_flatmate_invite_share := TRUE;
 
-  -- Step 3: generic invite after 5+ user-authored chores
   ELSIF v_lifetime_authored_chore_count >= 5
         AND NOT v_has_invite_share THEN
     v_prompt_invite_share := TRUE;
@@ -10939,6 +10928,15 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
+
+
+
+
+
+
+
+
+
 
 
 

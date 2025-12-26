@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(10);
+SELECT plan(11);
 
 CREATE TEMP TABLE tmp_ids (
   label   text PRIMARY KEY,
@@ -83,6 +83,25 @@ SELECT public.chores_create(
   p_start_date := current_date
 );
 
+-- Simulate runtime fetch creating an unknown/false prefs row (matching RPC defaults)
+INSERT INTO public.notification_preferences (
+  user_id,
+  wants_daily,
+  preferred_hour,
+  preferred_minute,
+  timezone,
+  locale,
+  os_permission
+) VALUES (
+  (SELECT user_id FROM tmp_ids WHERE label = 'owner'),
+  FALSE,
+  9,
+  0,
+  'UTC',
+  'en',
+  'unknown'
+) ON CONFLICT (user_id) DO NOTHING;
+
 SELECT is(
   ((public.today_onboarding_hints())->>'shouldPromptNotifications')::boolean,
   true,
@@ -91,10 +110,23 @@ SELECT is(
 
 -- 4) With prefs, notifications prompt suppressed
 SELECT public.notifications_update_preferences(true, 9, 0);
+UPDATE public.notification_preferences
+SET os_permission = 'allowed'
+WHERE user_id = (SELECT user_id FROM tmp_ids WHERE label = 'owner');
 SELECT is(
   ((public.today_onboarding_hints())->>'shouldPromptNotifications')::boolean,
   false,
   'Existing prefs suppress notification prompt'
+);
+
+-- 4b) If prefs exist with os_permission blocked, prompt is suppressed
+UPDATE public.notification_preferences
+SET os_permission = 'blocked'
+WHERE user_id = '00000000-0000-4000-8000-000000000702';
+SELECT is(
+  ((public.today_onboarding_hints())->>'shouldPromptNotifications')::boolean,
+  false,
+  'Blocked os_permission suppresses notification prompt'
 );
 
 -- 5) 2 user-authored chores -> flatmate invite prompt when not shared

@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 -- pgTAP tests for notifications daily migration
 BEGIN;
-SELECT plan(29);
+SELECT plan(30);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -41,7 +41,8 @@ INSERT INTO tmp_users (label, user_id, email) VALUES
   ('expired_token',   '20000000-0000-4000-9000-000000000003', 'expired-notify@example.com'),
   ('reserve_target',  '20000000-0000-4000-9000-000000000004', 'reserve-notify@example.com'),
   ('success_target',  '20000000-0000-4000-9000-000000000005', 'success-notify@example.com'),
-  ('failure_target',  '20000000-0000-4000-9000-000000000006', 'failure-notify@example.com');
+  ('failure_target',  '20000000-0000-4000-9000-000000000006', 'failure-notify@example.com'),
+  ('minute_mismatch', '20000000-0000-4000-9000-000000000007', 'minute-mismatch@example.com');
 
 INSERT INTO auth.users (id, instance_id, email, raw_user_meta_data, raw_app_meta_data, aud, role, encrypted_password)
 SELECT
@@ -197,6 +198,41 @@ FROM tmp_users u
 CROSS JOIN now_parts np
 WHERE u.label IN ('eligible', 'no_content', 'expired_token', 'success_target', 'failure_target');
 
+-- Seed a user whose minute is offset so they should not be in candidates
+WITH now_parts AS (
+  SELECT
+    date_part('hour', timezone('UTC', now()))::int   AS current_hour,
+    date_part('minute', timezone('UTC', now()))::int AS current_minute
+)
+INSERT INTO public.notification_preferences (
+  user_id,
+  wants_daily,
+  preferred_hour,
+  preferred_minute,
+  timezone,
+  locale,
+  os_permission,
+  last_os_sync_at,
+  last_sent_local_date,
+  created_at,
+  updated_at
+)
+SELECT
+  u.user_id,
+  TRUE,
+  np.current_hour,
+  (np.current_minute + 1) % 60,
+  'UTC',
+  'en',
+  'allowed',
+  now(),
+  NULL,
+  now(),
+  now()
+FROM tmp_users u
+CROSS JOIN now_parts np
+WHERE u.label = 'minute_mismatch';
+
 -- Keep success/failure users out of candidate list while still allowing status updates
 UPDATE public.notification_preferences
 SET wants_daily = FALSE, os_permission = 'blocked'
@@ -211,14 +247,16 @@ VALUES
   ('30000000-0000-4000-9000-000000000002', '20000000-0000-4000-9000-000000000002', 'no-content-token', 'fcm', 'ios', 'active', now(), now(), now()),
   ('30000000-0000-4000-9000-000000000003', '20000000-0000-4000-9000-000000000003', 'expired-token', 'fcm', 'ios', 'expired', now(), now(), now()),
   ('30000000-0000-4000-9000-000000000004', '20000000-0000-4000-9000-000000000006', 'failure-token', 'fcm', 'android', 'active', now(), now(), now()),
-  ('30000000-0000-4000-9000-000000000005', '20000000-0000-4000-9000-000000000005', 'success-token', 'fcm', 'android', 'active', now(), now(), now());
+  ('30000000-0000-4000-9000-000000000005', '20000000-0000-4000-9000-000000000005', 'success-token', 'fcm', 'android', 'active', now(), now(), now()),
+  ('30000000-0000-4000-9000-000000000006', '20000000-0000-4000-9000-000000000007', 'minute-mismatch-token', 'fcm', 'ios', 'active', now(), now(), now());
 
 INSERT INTO tmp_tokens (label, token_id, user_id) VALUES
   ('eligible', '30000000-0000-4000-9000-000000000001', '20000000-0000-4000-9000-000000000001'),
   ('no_content', '30000000-0000-4000-9000-000000000002', '20000000-0000-4000-9000-000000000002'),
   ('expired', '30000000-0000-4000-9000-000000000003', '20000000-0000-4000-9000-000000000003'),
   ('failure', '30000000-0000-4000-9000-000000000004', '20000000-0000-4000-9000-000000000006'),
-  ('success', '30000000-0000-4000-9000-000000000005', '20000000-0000-4000-9000-000000000005');
+  ('success', '30000000-0000-4000-9000-000000000005', '20000000-0000-4000-9000-000000000005'),
+  ('minute_mismatch', '30000000-0000-4000-9000-000000000006', '20000000-0000-4000-9000-000000000007');
 
 -- Candidate selection filters for wants_daily + allowed + current hour + content present + active token
 SET LOCAL ROLE service_role;
@@ -244,6 +282,13 @@ SELECT is(
   (SELECT token_id::text FROM tmp_candidates LIMIT 1),
   '30000000-0000-4000-9000-000000000001',
   'Returns active token id'
+);
+
+SELECT ok(
+  NOT EXISTS (
+    SELECT 1 FROM tmp_candidates WHERE user_id = '20000000-0000-4000-9000-000000000007'
+  ),
+  'Candidate list excludes users whose preferred_minute does not match current minute'
 );
 
 SELECT is(

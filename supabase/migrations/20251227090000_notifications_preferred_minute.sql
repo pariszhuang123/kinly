@@ -100,10 +100,10 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 DECLARE
-  v_user_id    uuid := auth.uid();
-  v_current    public.notification_preferences;
-  v_effective_wants_daily     boolean;
-  v_effective_preferred_hour  integer;
+  v_user_id     uuid := auth.uid();
+  v_current     public.notification_preferences;
+  v_effective_wants_daily      boolean;
+  v_effective_preferred_hour   integer;
   v_effective_preferred_minute integer;
   v_should_upsert boolean;
 BEGIN
@@ -112,7 +112,6 @@ BEGIN
     RAISE EXCEPTION 'NOT_AUTHENTICATED';
   END IF;
 
-  -- Load existing row if any
   SELECT *
   INTO v_current
   FROM public.notification_preferences
@@ -125,7 +124,7 @@ BEGIN
       (p_os_permission = 'allowed')
     );
 
-  -- Force off when OS is blocked/unknown so UI toggle matches system
+  -- Force off when OS is blocked/unknown so UI toggle mirrors system status
   IF p_os_permission IS DISTINCT FROM 'allowed' THEN
     v_effective_wants_daily := FALSE;
   END IF;
@@ -144,17 +143,16 @@ BEGIN
       0
     );
 
-  -- Only upsert when we have something explicit or an existing row
+  -- Upsert only when we have an explicit change, an existing row, or OS is allowed.
+  -- Do NOT upsert just because a token is present if permission is blocked/unknown.
   v_should_upsert :=
        v_current.user_id IS NOT NULL
     OR p_wants_daily IS NOT NULL
     OR p_preferred_hour IS NOT NULL
     OR p_preferred_minute IS NOT NULL
-    OR p_token IS NOT NULL
     OR p_os_permission = 'allowed';
 
   IF NOT v_should_upsert THEN
-    -- Return a synthetic row without creating DB state
     RETURN (
       v_user_id,
       v_effective_wants_daily,
@@ -170,45 +168,43 @@ BEGIN
     )::public.notification_preferences;
   END IF;
 
-  -- Upsert prefs
   INSERT INTO public.notification_preferences (
     user_id,
     wants_daily,
     preferred_hour,
+    preferred_minute,
     timezone,
     locale,
     os_permission,
     last_os_sync_at,
     last_sent_local_date,
     created_at,
-    updated_at,
-    preferred_minute
+    updated_at
   )
   VALUES (
     v_user_id,
     v_effective_wants_daily,
     v_effective_preferred_hour,
+    v_effective_preferred_minute,
     p_timezone,
     p_locale,
     p_os_permission,
     now(),
     COALESCE(v_current.last_sent_local_date, NULL),
     COALESCE(v_current.created_at, now()),
-    now(),
-    v_effective_preferred_minute
+    now()
   )
   ON CONFLICT (user_id) DO UPDATE
-    SET wants_daily     = EXCLUDED.wants_daily,
-        preferred_hour  = EXCLUDED.preferred_hour,
+    SET wants_daily      = EXCLUDED.wants_daily,
+        preferred_hour   = EXCLUDED.preferred_hour,
         preferred_minute = EXCLUDED.preferred_minute,
-        timezone        = EXCLUDED.timezone,
-        locale          = EXCLUDED.locale,
-        os_permission   = EXCLUDED.os_permission,
-        last_os_sync_at = EXCLUDED.last_os_sync_at,
-        updated_at      = EXCLUDED.updated_at
+        timezone         = EXCLUDED.timezone,
+        locale           = EXCLUDED.locale,
+        os_permission    = EXCLUDED.os_permission,
+        last_os_sync_at  = EXCLUDED.last_os_sync_at,
+        updated_at       = EXCLUDED.updated_at
   RETURNING * INTO v_current;
 
-  -- Upsert device token if provided
   IF p_token IS NOT NULL THEN
     INSERT INTO public.device_tokens (
       user_id, token, provider, platform, status,
@@ -231,24 +227,6 @@ BEGIN
 END;
 $$;
 
--- Permissions for updated signatures
-REVOKE ALL ON FUNCTION public.notifications_sync_client_state(
-  text, text, text, text, text, boolean, integer, integer
-) FROM PUBLIC;
-
-REVOKE ALL ON FUNCTION public.notifications_update_preferences(
-  boolean, integer, integer
-) FROM PUBLIC;
-
-GRANT EXECUTE ON FUNCTION public.notifications_sync_client_state(
-  text, text, text, text, text, boolean, integer, integer
-) TO authenticated;
-
-GRANT EXECUTE ON FUNCTION public.notifications_update_preferences(
-  boolean, integer, integer
-) TO authenticated;
-
--- -------------------------------------------------------------------
 -- notifications_update_preferences: add preferred_minute
 -- -------------------------------------------------------------------
 DROP FUNCTION IF EXISTS public.notifications_update_preferences(
@@ -325,5 +303,124 @@ BEGIN
   RETURNING * INTO v_pref;
 
   RETURN v_pref;
+END;
+$$;
+
+-- Permissions for updated signatures
+REVOKE ALL ON FUNCTION public.notifications_sync_client_state(
+  text, text, text, text, text, boolean, integer, integer
+) FROM PUBLIC;
+
+REVOKE ALL ON FUNCTION public.notifications_update_preferences(
+  boolean, integer, integer
+) FROM PUBLIC;
+
+GRANT EXECUTE ON FUNCTION public.notifications_sync_client_state(
+  text, text, text, text, text, boolean, integer, integer
+) TO authenticated;
+
+GRANT EXECUTE ON FUNCTION public.notifications_update_preferences(
+  boolean, integer, integer
+) TO authenticated;
+
+
+CREATE OR REPLACE FUNCTION public.today_onboarding_hints()
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_user_id uuid := auth.uid();
+  v_home_id uuid;
+
+  v_lifetime_authored_chore_count int := 0;
+
+  -- Default to 'unknown' so "no row" behaves like unknown.
+  v_notif_os_permission text := 'unknown';
+  v_notif_wants_daily boolean := FALSE;
+
+  v_has_flatmate_invite_share boolean := FALSE;
+  v_has_invite_share boolean := FALSE;
+
+  v_prompt_notifications boolean := FALSE;
+  v_prompt_flatmate_invite_share boolean := FALSE;
+  v_prompt_invite_share boolean := FALSE;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  SELECT m.home_id
+  INTO v_home_id
+  FROM public.memberships AS m
+  WHERE m.user_id    = v_user_id
+    AND m.is_current = TRUE
+  LIMIT 1;
+
+  IF v_home_id IS NULL THEN
+    RETURN jsonb_build_object(
+      'userAuthoredChoreCountLifetime', 0,
+      'shouldPromptNotifications', FALSE,
+      'shouldPromptFlatmateInviteShare', FALSE,
+      'shouldPromptInviteShare', FALSE
+    );
+  END IF;
+
+  PERFORM public._assert_home_member(v_home_id);
+  PERFORM public._assert_home_active(v_home_id);
+
+  SELECT COUNT(*)
+  INTO v_lifetime_authored_chore_count
+  FROM public.chores AS c
+  WHERE c.created_by_user_id = v_user_id;
+
+  -- Normalize "no prefs row" to ('unknown', FALSE).
+  -- This avoids the SELECT INTO "no row -> NULL overwrite" footgun.
+  SELECT
+    COALESCE(np.os_permission, 'unknown'),
+    COALESCE(np.wants_daily, FALSE)
+  INTO v_notif_os_permission, v_notif_wants_daily
+  FROM public.notification_preferences AS np
+  WHERE np.user_id = v_user_id
+  LIMIT 1;
+
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.share_events AS se
+    WHERE se.user_id = v_user_id
+      AND se.feature = 'invite_housemate'
+      AND se.channel IS NOT NULL
+  )
+  INTO v_has_flatmate_invite_share;
+
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.share_events AS se
+    WHERE se.user_id = v_user_id
+      AND se.feature = 'invite_button'
+      AND se.channel IS NOT NULL
+  )
+  INTO v_has_invite_share;
+
+  -- Step 1: prompt notifications when permission is unknown (including "no row")
+  -- and the user has authored at least 1 chore.
+  IF v_notif_os_permission = 'unknown'
+     AND v_lifetime_authored_chore_count >= 1 THEN
+    v_prompt_notifications := TRUE;
+
+  ELSIF v_lifetime_authored_chore_count >= 2
+        AND NOT v_has_flatmate_invite_share THEN
+    v_prompt_flatmate_invite_share := TRUE;
+
+  ELSIF v_lifetime_authored_chore_count >= 5
+        AND NOT v_has_invite_share THEN
+    v_prompt_invite_share := TRUE;
+  END IF;
+
+  RETURN jsonb_build_object(
+    'userAuthoredChoreCountLifetime', v_lifetime_authored_chore_count,
+    'shouldPromptNotifications', v_prompt_notifications,
+    'shouldPromptFlatmateInviteShare', v_prompt_flatmate_invite_share,
+    'shouldPromptInviteShare', v_prompt_invite_share
+  );
 END;
 $$;
