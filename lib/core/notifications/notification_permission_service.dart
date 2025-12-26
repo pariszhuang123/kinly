@@ -1,6 +1,7 @@
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../data/repositories/notifications_repository.dart';
+import 'enums/permission_status.dart';
 
 class NotificationPermissionException implements Exception {
   NotificationPermissionException({required this.permanentlyDenied});
@@ -28,9 +29,9 @@ class NotificationPermissionService {
     String? platform,
   }) async {
     final status = await _ensureNotificationPermission();
-    final granted = status == _PermissionStatus.allowed;
+    final granted = status == PermissionStatus.allowed;
     final osPermission =
-        status == _PermissionStatus.permanentlyDenied ? 'blocked' : granted ? 'allowed' : 'unknown';
+        status == PermissionStatus.permanentlyDenied ? 'blocked' : granted ? 'allowed' : 'unknown';
 
     await _notificationsRepository.syncPreferences(
       wantsDaily: granted ? wantsDaily : false,
@@ -44,24 +45,23 @@ class NotificationPermissionService {
     );
 
     if (!granted) {
-      final isPermanent = status == _PermissionStatus.permanentlyDenied;
+      final isPermanent = status == PermissionStatus.permanentlyDenied;
       throw NotificationPermissionException(permanentlyDenied: isPermanent);
     }
   }
 
-  Future<_PermissionStatus> _ensureNotificationPermission() async {
+  Future<PermissionStatus> _ensureNotificationPermission() async {
     final status = await Permission.notification.status;
-    if (status.isGranted) return _PermissionStatus.allowed;
+    if (status.isGranted) return PermissionStatus.allowed;
     if (status.isPermanentlyDenied) {
-      return _PermissionStatus.permanentlyDenied;
+      return PermissionStatus.permanentlyDenied;
     }
     final requested = await Permission.notification.request();
-    if (requested.isGranted) return _PermissionStatus.allowed;
+    if (requested.isGranted) return PermissionStatus.allowed;
     if (requested.isPermanentlyDenied) {
-      return _PermissionStatus.permanentlyDenied;
+      return PermissionStatus.permanentlyDenied;
     }
-    return _PermissionStatus.denied;
+    return PermissionStatus.denied;
   }
 }
 
-enum _PermissionStatus { allowed, denied, permanentlyDenied }
