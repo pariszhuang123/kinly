@@ -44,6 +44,7 @@ class _TestNotificationPermissionService extends NotificationPermissionService {
   Future<void> requestAndSync({
     required bool wantsDaily,
     required int preferredHour,
+    required int preferredMinute,
     required String timezone,
     required String locale,
     String? deviceToken,
@@ -56,6 +57,7 @@ class _TestNotificationPermissionService extends NotificationPermissionService {
     await repo.syncPreferences(
       wantsDaily: wantsDaily,
       preferredHour: preferredHour,
+      preferredMinute: preferredMinute,
       timezone: timezone,
       locale: locale,
       osPermission: 'allowed',
@@ -137,6 +139,7 @@ void main() {
       () => notificationsRepository.syncPreferences(
         wantsDaily: any(named: 'wantsDaily'),
         preferredHour: any(named: 'preferredHour'),
+        preferredMinute: any(named: 'preferredMinute'),
         timezone: any(named: 'timezone'),
         locale: any(named: 'locale'),
         osPermission: any(named: 'osPermission'),
@@ -148,6 +151,7 @@ void main() {
       return const NotificationPreferences(
         wantsDaily: true,
         preferredHour: 9,
+        preferredMinute: 0,
         osPermission: 'allowed',
       );
     });

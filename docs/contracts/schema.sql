@@ -5811,6 +5811,7 @@ CREATE OR REPLACE FUNCTION "public"."notifications_daily_candidates"("p_limit" i
     WHERE np.wants_daily = TRUE
       AND np.os_permission = 'allowed'
       AND np.preferred_hour = date_part('hour', timezone(np.timezone, now()))::int
+      AND np.preferred_minute = date_part('minute', timezone(np.timezone, now()))::int
       AND (
         np.last_sent_local_date IS NULL
         OR np.last_sent_local_date < (timezone(np.timezone, now()))::date
@@ -5935,14 +5936,18 @@ CREATE TABLE IF NOT EXISTS "public"."notification_preferences" (
     "last_os_sync_at" timestamp with time zone,
     "last_sent_local_date" "date",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "preferred_minute" integer DEFAULT 0 NOT NULL
 );
 
 
 ALTER TABLE "public"."notification_preferences" OWNER TO "postgres";
 
+ALTER TABLE ONLY "public"."notification_preferences"
+    ADD CONSTRAINT "chk_notification_preferences_preferred_minute" CHECK (("preferred_minute" >= 0) AND ("preferred_minute" < 60));
 
-CREATE OR REPLACE FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean DEFAULT NULL::boolean, "p_preferred_hour" integer DEFAULT NULL::integer) RETURNS "public"."notification_preferences"
+
+CREATE OR REPLACE FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean DEFAULT NULL::boolean, "p_preferred_hour" integer DEFAULT NULL::integer, "p_preferred_minute" integer DEFAULT NULL::integer) RETURNS "public"."notification_preferences"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -5951,6 +5956,7 @@ DECLARE
   v_current    public.notification_preferences;
   v_effective_wants_daily    boolean;
   v_effective_preferred_hour integer;
+  v_effective_preferred_minute integer;
   v_should_upsert boolean;
 BEGIN
   PERFORM public._assert_authenticated();
@@ -5983,11 +5989,19 @@ BEGIN
       9
     );
 
+  v_effective_preferred_minute :=
+    COALESCE(
+      p_preferred_minute,
+      v_current.preferred_minute,
+      0
+    );
+
   -- Only upsert when we have something explicit or an existing row
   v_should_upsert :=
        v_current.user_id IS NOT NULL
     OR p_wants_daily IS NOT NULL
     OR p_preferred_hour IS NOT NULL
+    OR p_preferred_minute IS NOT NULL
     OR p_token IS NOT NULL
     OR p_os_permission = 'allowed';
 
@@ -6003,7 +6017,8 @@ BEGIN
       now(),
       v_current.last_sent_local_date,
       COALESCE(v_current.created_at, now()),
-      now()
+      now(),
+      v_effective_preferred_minute
     )::public.notification_preferences;
   END IF;
 
@@ -6012,6 +6027,7 @@ BEGIN
     user_id,
     wants_daily,
     preferred_hour,
+    preferred_minute,
     timezone,
     locale,
     os_permission,
@@ -6024,6 +6040,7 @@ BEGIN
     v_user_id,
     v_effective_wants_daily,
     v_effective_preferred_hour,
+    v_effective_preferred_minute,
     p_timezone,
     p_locale,
     p_os_permission,
@@ -6035,6 +6052,7 @@ BEGIN
   ON CONFLICT (user_id) DO UPDATE
     SET wants_daily     = EXCLUDED.wants_daily,
         preferred_hour  = EXCLUDED.preferred_hour,
+        preferred_minute = EXCLUDED.preferred_minute,
         timezone        = EXCLUDED.timezone,
         locale          = EXCLUDED.locale,
         os_permission   = EXCLUDED.os_permission,
@@ -6066,10 +6084,10 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer) OWNER TO "postgres";
+ALTER FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) RETURNS "public"."notification_preferences"
+CREATE OR REPLACE FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) RETURNS "public"."notification_preferences"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -6086,6 +6104,7 @@ BEGIN
     user_id,
     wants_daily,
     preferred_hour,
+    preferred_minute,
     timezone,
     locale,
     os_permission,
@@ -6098,6 +6117,7 @@ BEGIN
     v_user_id,
     p_wants_daily,
     p_preferred_hour,
+    p_preferred_minute,
     COALESCE(np.timezone, 'UTC'),
     COALESCE(np.locale, 'en'),
     COALESCE(np.os_permission, 'unknown'),
@@ -6112,6 +6132,7 @@ BEGIN
     v_user_id,
     p_wants_daily,
     p_preferred_hour,
+    p_preferred_minute,
     'UTC',
     'en',
     'unknown',
@@ -6125,6 +6146,7 @@ BEGIN
   ON CONFLICT (user_id) DO UPDATE
     SET wants_daily    = EXCLUDED.wants_daily,
         preferred_hour = EXCLUDED.preferred_hour,
+        preferred_minute = EXCLUDED.preferred_minute,
         updated_at     = EXCLUDED.updated_at
   RETURNING * INTO v_pref;
 
@@ -6133,7 +6155,7 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) OWNER TO "postgres";
+ALTER FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."notifications_update_send_status"("p_send_id" "uuid", "p_status" "text", "p_error" "text") RETURNS "void"
@@ -10477,17 +10499,17 @@ GRANT ALL ON TABLE "public"."notification_preferences" TO "service_role";
 
 
 
-REVOKE ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer) TO "anon";
-GRANT ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer) TO "authenticated";
-GRANT ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer) TO "service_role";
+REVOKE ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."notifications_sync_client_state"("p_token" "text", "p_platform" "text", "p_locale" "text", "p_timezone" "text", "p_os_permission" "text", "p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) TO "service_role";
 
 
 
-REVOKE ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) TO "anon";
-GRANT ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) TO "authenticated";
-GRANT ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer) TO "service_role";
+REVOKE ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."notifications_update_preferences"("p_wants_daily" boolean, "p_preferred_hour" integer, "p_preferred_minute" integer) TO "service_role";
 
 
 
@@ -10917,15 +10939,6 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
-
-
-
-
-
-
-
-
-
 
 
 

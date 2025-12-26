@@ -341,6 +341,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         NotificationSyncPayload(
           wantsDaily: prefs.wantsDaily,
           preferredHour: prefs.preferredHour,
+          preferredMinute: prefs.preferredMinute,
           timezone: timezone,
           locale: locale,
           osPermission:

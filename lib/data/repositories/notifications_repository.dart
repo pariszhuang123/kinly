@@ -5,10 +5,11 @@ abstract class NotificationsRepository {
   /// Upserts the user's daily notification preferences and the current device token.
   ///
   /// [osPermission] is a backend-friendly string: allowed | blocked | unknown.
-  /// [preferredHour] is local hour (24h). Phase 1 uses 9.
+  /// [preferredHour]/[preferredMinute] are local time (24h). Defaults: 9:00.
   Future<NotificationPreferences> syncPreferences({
     required bool wantsDaily,
     required int preferredHour,
+    required int preferredMinute,
     required String timezone,
     required String locale,
     required String osPermission,
@@ -29,6 +30,7 @@ abstract class NotificationsRepository {
   Future<NotificationPreferences> updatePreferences({
     required bool wantsDaily,
     required int preferredHour,
+    required int preferredMinute,
   });
 
   /// Marks a device token as revoked (e.g., on logout/uninstall).

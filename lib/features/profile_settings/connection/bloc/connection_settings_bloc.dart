@@ -58,6 +58,7 @@ class ConnectionSettingsBloc
           isLoading: false,
           wantsDaily: prefs.wantsDaily,
           preferredHour: prefs.preferredHour,
+          preferredMinute: prefs.preferredMinute,
           osPermission: prefs.osPermission.isNotEmpty
               ? prefs.osPermission
               : osPermission,
@@ -95,6 +96,7 @@ class ConnectionSettingsBloc
         await _permissionService.requestAndSync(
           wantsDaily: true,
           preferredHour: state.preferredHour,
+          preferredMinute: state.preferredMinute,
           timezone: state.timezone,
           locale: state.locale,
           deviceToken: state.deviceToken,
@@ -137,12 +139,13 @@ class ConnectionSettingsBloc
     }
 
     try {
-      final prefs = await _notificationsRepository.updatePreferences(
-        wantsDaily: false,
-        preferredHour: state.preferredHour,
-      );
-      emit(
-        state.copyWith(
+          final prefs = await _notificationsRepository.updatePreferences(
+            wantsDaily: false,
+            preferredHour: state.preferredHour,
+            preferredMinute: state.preferredMinute,
+          );
+          emit(
+            state.copyWith(
           wantsDaily: prefs.wantsDaily,
           preferredHour: prefs.preferredHour,
           osPermission: prefs.osPermission,
@@ -177,11 +180,13 @@ class ConnectionSettingsBloc
       final prefs = await _notificationsRepository.updatePreferences(
         wantsDaily: state.wantsDaily,
         preferredHour: event.hour,
+        preferredMinute: event.minute,
       );
 
       emit(
         state.copyWith(
           preferredHour: prefs.preferredHour,
+          preferredMinute: prefs.preferredMinute,
           wantsDaily: prefs.wantsDaily,
           isSavingTime: false,
         ),
@@ -217,6 +222,7 @@ class ConnectionSettingsBloc
       final prefs = await _notificationsRepository.syncPreferences(
         wantsDaily: true,
         preferredHour: state.preferredHour,
+        preferredMinute: state.preferredMinute,
         timezone: state.timezone,
         locale: state.locale,
         osPermission: osPermission,

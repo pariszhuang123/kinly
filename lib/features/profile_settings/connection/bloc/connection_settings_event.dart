@@ -34,12 +34,16 @@ class ConnectionSettingsToggleRequested extends ConnectionSettingsEvent {
 }
 
 class ConnectionSettingsTimeChanged extends ConnectionSettingsEvent {
-  const ConnectionSettingsTimeChanged({required this.hour});
+  const ConnectionSettingsTimeChanged({
+    required this.hour,
+    required this.minute,
+  });
 
   final int hour;
+  final int minute;
 
   @override
-  List<Object?> get props => [hour];
+  List<Object?> get props => [hour, minute];
 }
 
 class ConnectionSettingsPermissionRechecked extends ConnectionSettingsEvent {

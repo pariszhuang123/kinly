@@ -64,6 +64,7 @@ void main() {
           (_) async => const NotificationPreferences(
             wantsDaily: true,
             preferredHour: 9,
+            preferredMinute: 0,
             osPermission: 'allowed',
           ),
         );
@@ -95,6 +96,7 @@ void main() {
           deviceToken: 'token-1',
           wantsDaily: true,
           preferredHour: 9,
+          preferredMinute: 0,
           osPermission: 'allowed',
           pendingEnableAfterSettings: false,
           action: ConnectionSettingsAction.none,
@@ -121,6 +123,7 @@ void main() {
           () => permissionService.requestAndSync(
             wantsDaily: any(named: 'wantsDaily'),
             preferredHour: any(named: 'preferredHour'),
+            preferredMinute: any(named: 'preferredMinute'),
             timezone: any(named: 'timezone'),
             locale: any(named: 'locale'),
             deviceToken: any(named: 'deviceToken'),
@@ -134,6 +137,7 @@ void main() {
         locale: 'en',
         platform: 'ios',
         preferredHour: 9,
+        preferredMinute: 0,
       ),
       act: (bloc) => bloc.add(const ConnectionSettingsToggleRequested(
         enabled: true,
@@ -144,6 +148,7 @@ void main() {
           locale: 'en',
           platform: 'ios',
           preferredHour: 9,
+          preferredMinute: 0,
           isSavingToggle: true,
           action: ConnectionSettingsAction.none,
           actionMessage: null,
@@ -153,6 +158,7 @@ void main() {
           locale: 'en',
           platform: 'ios',
           preferredHour: 9,
+          preferredMinute: 0,
           wantsDaily: true,
           osPermission: 'allowed',
           isSavingToggle: false,
@@ -166,6 +172,7 @@ void main() {
           () => permissionService.requestAndSync(
             wantsDaily: true,
             preferredHour: 9,
+            preferredMinute: 0,
             timezone: 'UTC',
             locale: 'en',
             deviceToken: null,
@@ -182,6 +189,7 @@ void main() {
           () => permissionService.requestAndSync(
             wantsDaily: any(named: 'wantsDaily'),
             preferredHour: any(named: 'preferredHour'),
+            preferredMinute: any(named: 'preferredMinute'),
             timezone: any(named: 'timezone'),
             locale: any(named: 'locale'),
             deviceToken: any(named: 'deviceToken'),
@@ -197,6 +205,7 @@ void main() {
         locale: 'en',
         platform: 'ios',
         preferredHour: 9,
+        preferredMinute: 0,
       ),
       act: (bloc) => bloc.add(const ConnectionSettingsToggleRequested(
         enabled: true,
@@ -207,6 +216,7 @@ void main() {
           locale: 'en',
           platform: 'ios',
           preferredHour: 9,
+          preferredMinute: 0,
           isSavingToggle: true,
           action: ConnectionSettingsAction.none,
           actionMessage: null,
@@ -216,6 +226,7 @@ void main() {
           locale: 'en',
           platform: 'ios',
           preferredHour: 9,
+          preferredMinute: 0,
           wantsDaily: false,
           osPermission: 'blocked',
           isSavingToggle: false,
@@ -233,11 +244,13 @@ void main() {
           () => notificationsRepository.updatePreferences(
             wantsDaily: any(named: 'wantsDaily'),
             preferredHour: any(named: 'preferredHour'),
+            preferredMinute: any(named: 'preferredMinute'),
           ),
         ).thenAnswer(
           (_) async => const NotificationPreferences(
             wantsDaily: true,
             preferredHour: 7,
+            preferredMinute: 15,
             osPermission: 'allowed',
           ),
         );
@@ -247,13 +260,17 @@ void main() {
         wantsDaily: true,
         osPermission: 'allowed',
         preferredHour: 9,
+        preferredMinute: 0,
       ),
-      act: (bloc) => bloc.add(const ConnectionSettingsTimeChanged(hour: 7)),
+      act: (bloc) => bloc.add(
+        const ConnectionSettingsTimeChanged(hour: 7, minute: 15),
+      ),
       expect: () => [
         ConnectionSettingsState.initial().copyWith(
           wantsDaily: true,
           osPermission: 'allowed',
           preferredHour: 9,
+          preferredMinute: 0,
           isSavingTime: true,
           action: ConnectionSettingsAction.none,
           actionMessage: null,
@@ -262,6 +279,7 @@ void main() {
           wantsDaily: true,
           osPermission: 'allowed',
           preferredHour: 7,
+          preferredMinute: 15,
           isSavingTime: false,
         ),
       ],

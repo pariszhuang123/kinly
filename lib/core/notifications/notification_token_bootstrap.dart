@@ -10,6 +10,7 @@ class NotificationSyncPayload {
   const NotificationSyncPayload({
     required this.wantsDaily,
     required this.preferredHour,
+    required this.preferredMinute,
     required this.timezone,
     required this.locale,
     required this.osPermission,
@@ -18,6 +19,7 @@ class NotificationSyncPayload {
 
   final bool wantsDaily;
   final int preferredHour;
+  final int preferredMinute;
   final String timezone;
   final String locale;
   final String osPermission; // allowed | blocked | unknown
@@ -106,6 +108,7 @@ class NotificationTokenBootstrap {
     await _notificationsRepository.syncPreferences(
       wantsDaily: payload.wantsDaily,
       preferredHour: payload.preferredHour,
+      preferredMinute: payload.preferredMinute,
       timezone: payload.timezone,
       locale: payload.locale,
       osPermission: payload.osPermission,

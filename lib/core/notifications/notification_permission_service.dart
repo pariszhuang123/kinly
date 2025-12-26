@@ -21,6 +21,7 @@ class NotificationPermissionService {
   Future<void> requestAndSync({
     required bool wantsDaily,
     required int preferredHour,
+    required int preferredMinute,
     required String timezone,
     required String locale,
     String? deviceToken,
@@ -32,6 +33,7 @@ class NotificationPermissionService {
     await _notificationsRepository.syncPreferences(
       wantsDaily: granted ? wantsDaily : false,
       preferredHour: preferredHour,
+      preferredMinute: preferredMinute,
       timezone: timezone,
       locale: locale,
       osPermission: osPermission,

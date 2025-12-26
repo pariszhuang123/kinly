@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 -- pgTAP tests for notifications daily migration
 BEGIN;
-SELECT plan(28);
+SELECT plan(29);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -85,6 +85,13 @@ SELECT has_column(
 
 SELECT has_column(
   'public',
+  'notification_preferences',
+  'preferred_minute',
+  'preferred_minute column exists on notification_preferences'
+);
+
+SELECT has_column(
+  'public',
   'device_tokens',
   'token',
   'token column exists on device_tokens'
@@ -157,13 +164,15 @@ SELECT has_function(
 -- Seed preferences + tokens for candidate selection (current hour)
 WITH now_parts AS (
   SELECT
-    date_part('hour', timezone('UTC', now()))::int AS current_hour,
+    date_part('hour', timezone('UTC', now()))::int   AS current_hour,
+    date_part('minute', timezone('UTC', now()))::int AS current_minute,
     timezone('UTC', now())::date                     AS current_date
 )
 INSERT INTO public.notification_preferences (
   user_id,
   wants_daily,
   preferred_hour,
+  preferred_minute,
   timezone,
   locale,
   os_permission,
@@ -176,6 +185,7 @@ SELECT
   u.user_id,
   TRUE,
   np.current_hour,
+  np.current_minute,
   'UTC',
   'en',
   'allowed',

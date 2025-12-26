@@ -962,6 +962,7 @@ export type Database = {
           locale: string
           os_permission: string
           preferred_hour: number
+          preferred_minute: number
           timezone: string
           updated_at: string
           user_id: string
@@ -974,6 +975,7 @@ export type Database = {
           locale: string
           os_permission?: string
           preferred_hour?: number
+          preferred_minute?: number
           timezone: string
           updated_at?: string
           user_id: string
@@ -986,6 +988,7 @@ export type Database = {
           locale?: string
           os_permission?: string
           preferred_hour?: number
+          preferred_minute?: number
           timezone?: string
           updated_at?: string
           user_id?: string
@@ -2027,6 +2030,7 @@ export type Database = {
           p_os_permission: string
           p_platform: string
           p_preferred_hour?: number
+          p_preferred_minute?: number
           p_timezone: string
           p_token: string
           p_wants_daily?: boolean
@@ -2038,6 +2042,7 @@ export type Database = {
           locale: string
           os_permission: string
           preferred_hour: number
+          preferred_minute: number
           timezone: string
           updated_at: string
           user_id: string
@@ -2051,7 +2056,11 @@ export type Database = {
         }
       }
       notifications_update_preferences: {
-        Args: { p_preferred_hour: number; p_wants_daily: boolean }
+        Args: {
+          p_preferred_hour: number
+          p_preferred_minute: number
+          p_wants_daily: boolean
+        }
         Returns: {
           created_at: string
           last_os_sync_at: string | null
@@ -2059,6 +2068,7 @@ export type Database = {
           locale: string
           os_permission: string
           preferred_hour: number
+          preferred_minute: number
           timezone: string
           updated_at: string
           user_id: string
@@ -2336,4 +2346,3 @@ export const Constants = {
     },
   },
 } as const
-

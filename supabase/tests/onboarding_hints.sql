@@ -90,7 +90,7 @@ SELECT is(
 );
 
 -- 4) With prefs, notifications prompt suppressed
-SELECT public.notifications_update_preferences(true, 9);
+SELECT public.notifications_update_preferences(true, 9, 0);
 SELECT is(
   ((public.today_onboarding_hints())->>'shouldPromptNotifications')::boolean,
   false,

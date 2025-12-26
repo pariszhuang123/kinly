@@ -20,6 +20,7 @@ class SupabaseNotificationsRepository implements NotificationsRepository {
   Future<NotificationPreferences> syncPreferences({
     required bool wantsDaily,
     required int preferredHour,
+    required int preferredMinute,
     required String timezone,
     required String locale,
     required String osPermission,
@@ -34,6 +35,7 @@ class SupabaseNotificationsRepository implements NotificationsRepository {
     final preferences = await _syncClientState(
       wantsDaily: wantsDaily,
       preferredHour: preferredHour,
+      preferredMinute: preferredMinute,
       timezone: timezone,
       locale: locale,
       osPermission: osPermission,
@@ -45,6 +47,7 @@ class SupabaseNotificationsRepository implements NotificationsRepository {
       NotificationSyncPayload(
         wantsDaily: wantsDaily,
         preferredHour: preferredHour,
+        preferredMinute: preferredMinute,
         timezone: timezone,
         locale: locale,
         osPermission: osPermission,
@@ -66,6 +69,7 @@ class SupabaseNotificationsRepository implements NotificationsRepository {
     return _syncClientState(
       wantsDaily: null,
       preferredHour: null,
+      preferredMinute: null,
       timezone: timezone,
       locale: locale,
       osPermission: osPermission,
@@ -78,12 +82,14 @@ class SupabaseNotificationsRepository implements NotificationsRepository {
   Future<NotificationPreferences> updatePreferences({
     required bool wantsDaily,
     required int preferredHour,
+    required int preferredMinute,
   }) async {
     final response = await _client.rpc(
       'notifications_update_preferences',
       params: {
         'p_wants_daily': wantsDaily,
         'p_preferred_hour': preferredHour,
+        'p_preferred_minute': preferredMinute,
       },
     );
     return NotificationPreferences.fromMap(
@@ -110,6 +116,7 @@ class SupabaseNotificationsRepository implements NotificationsRepository {
   Future<NotificationPreferences> _syncClientState({
     required bool? wantsDaily,
     required int? preferredHour,
+    required int? preferredMinute,
     required String timezone,
     required String locale,
     required String osPermission,
@@ -122,12 +129,13 @@ class SupabaseNotificationsRepository implements NotificationsRepository {
         'p_token': deviceToken,
         'p_platform': platform,
         'p_locale': locale,
-        'p_timezone': timezone,
-        'p_os_permission': osPermission,
-        'p_wants_daily': wantsDaily,
-        'p_preferred_hour': preferredHour,
-      },
-    );
+      'p_timezone': timezone,
+      'p_os_permission': osPermission,
+      'p_wants_daily': wantsDaily,
+      'p_preferred_hour': preferredHour,
+      'p_preferred_minute': preferredMinute,
+    },
+  );
     return NotificationPreferences.fromMap(
       (response as Map<String, dynamic>?) ?? const {},
     );

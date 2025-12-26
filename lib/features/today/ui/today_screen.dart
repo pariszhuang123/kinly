@@ -696,6 +696,7 @@ class _TodayScreenState extends State<TodayScreen>
       await permissionService.requestAndSync(
         wantsDaily: true,
         preferredHour: 9,
+        preferredMinute: 0,
         timezone: timezone,
         locale: locale,
         deviceToken: deviceToken,

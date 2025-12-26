@@ -104,7 +104,11 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
             return const Center(child: KinlyLoader());
           }
 
-          final timeText = _formatHour(context, state.preferredHour);
+          final timeText = _formatHour(
+            context,
+            state.preferredHour,
+            state.preferredMinute,
+          );
 
           return ListView(
             padding: EdgeInsetsDirectional.fromSTEB(
@@ -216,7 +220,11 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                       onTap:
                           state.isSavingTime
                               ? null
-                              : () => _pickTime(context, state.preferredHour),
+                              : () => _pickTime(
+                                context,
+                                state.preferredHour,
+                                state.preferredMinute,
+                              ),
                     ),
                   ],
                 ],
@@ -228,21 +236,33 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
     );
   }
 
-  Future<void> _pickTime(BuildContext context, int currentHour) async {
+  Future<void> _pickTime(
+    BuildContext context,
+    int currentHour,
+    int currentMinute,
+  ) async {
     final bloc = context.read<ConnectionSettingsBloc>();
-    final initialTime = TimeOfDay(hour: currentHour, minute: 0);
+    final initialTime = TimeOfDay(
+      hour: currentHour,
+      minute: currentMinute,
+    );
     final picked = await showKinlyTimePicker(
       context: context,
       initialTime: initialTime,
       initialEntryMode: TimePickerEntryMode.input,
     );
     if (!context.mounted || picked == null) return;
-    if (picked.hour == currentHour && picked.minute == 0) return;
-    bloc.add(ConnectionSettingsTimeChanged(hour: picked.hour));
+    if (picked.hour == currentHour && picked.minute == currentMinute) return;
+    bloc.add(
+      ConnectionSettingsTimeChanged(
+        hour: picked.hour,
+        minute: picked.minute,
+      ),
+    );
   }
 
-  String _formatHour(BuildContext context, int hour) {
-    final time = TimeOfDay(hour: hour, minute: 0);
+  String _formatHour(BuildContext context, int hour, int minute) {
+    final time = TimeOfDay(hour: hour, minute: minute);
     final localizations = MaterialLocalizations.of(context);
     final mediaQuery = MediaQuery.of(context);
     return localizations.formatTimeOfDay(
