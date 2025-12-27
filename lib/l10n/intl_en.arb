@@ -235,10 +235,11 @@
   "shareEditDeleteConfirm": "Delete",
   "shareEditDeleteError": "Couldn't delete. Try again.",
   "shareEditDeleteSuccess": "Bill deleted.",
+  "shareEditTerminateSuccess": "Plan terminated.",
   "shareEditTerminatePlan": "Terminate plan",
   "shareEditTerminatePlanBusy": "Terminating...",
   "shareEditTerminatePlanTitle": "Terminate recurring plan?",
-  "shareEditTerminatePlanMessage": "This stops future cycles. Existing expenses remain payable.",
+  "shareEditTerminatePlanMessage": "This stops future bill cycles.",
   "shareEditTerminatePlanConfirm": "Terminate plan",
   "shareEditTerminateError": "Couldn't terminate the plan. Try again.",
   "shareEditDisabledConverted": "This bill is now a plan, and editing is off.",
@@ -259,6 +260,15 @@
   "shareCreateCustomHelper": "Enter each person's part. Make sure the total matches the amount above.",
   "shareCreateCustomAmountLabel": "Amount",
   "shareCreateStartLabel": "When does this apply?",
+  "shareCreateCyclePeriod": "Applies to {period}",
+  "@shareCreateCyclePeriod": {
+    "placeholders": {
+      "period": {
+        "type": "String",
+        "example": "Jan 5 - Jan 11, 2026"
+      }
+    }
+  },
   "shareCreateRecurrenceLabel": "Repeat",
   "shareCreateRecurrenceNone": "One-time",
   "shareCreateRecurrenceWeekly": "Weekly",

@@ -1304,11 +1304,21 @@ class S {
     );
   }
 
-  /// `Share deleted.`
+  /// `Bill deleted.`
   String get shareEditDeleteSuccess {
     return Intl.message(
-      'Share deleted.',
+      'Bill deleted.',
       name: 'shareEditDeleteSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Plan terminated.`
+  String get shareEditTerminateSuccess {
+    return Intl.message(
+      'Plan terminated.',
+      name: 'shareEditTerminateSuccess',
       desc: '',
       args: [],
     );
@@ -1344,10 +1354,10 @@ class S {
     );
   }
 
-  /// `This stops future cycles. Existing expenses remain payable.`
+  /// `This stops future bill cycles.`
   String get shareEditTerminatePlanMessage {
     return Intl.message(
-      'This stops future cycles. Existing expenses remain payable.',
+      'This stops future bill cycles.',
       name: 'shareEditTerminatePlanMessage',
       desc: '',
       args: [],
@@ -1414,9 +1424,14 @@ class S {
     );
   }
 
-  /// `Create`
+  /// `Create Bill`
   String get shareCreateTitle {
-    return Intl.message('Create', name: 'shareCreateTitle', desc: '', args: []);
+    return Intl.message(
+      'Create Bill',
+      name: 'shareCreateTitle',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Description`
@@ -1546,6 +1561,16 @@ class S {
       name: 'shareCreateStartLabel',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Applies to {period}`
+  String shareCreateCyclePeriod(String period) {
+    return Intl.message(
+      'Applies to $period',
+      name: 'shareCreateCyclePeriod',
+      desc: '',
+      args: [period],
     );
   }
 

@@ -49,6 +49,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m11(price) => "${price} per month.";
 
+  static String m17(period) => "Applies to ${period}";
+
   static String m12(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
 
@@ -687,6 +689,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
       "Enter each person\'s part. Make sure the total matches the amount above.",
     ),
+    "shareCreateCyclePeriod": m17,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
       "e.g. Grocery run",
     ),
@@ -751,7 +754,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Create"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Bill created."),
-    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Create"),
+    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Create Bill"),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
       "Enter a valid amount greater than zero.",
     ),
@@ -823,7 +826,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Couldn\'t delete. Try again.",
     ),
     "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
-      "Share deleted.",
+      "Bill deleted.",
     ),
     "shareEditDisabledActive": MessageLookupByLibrary.simpleMessage(
       "Active bills are locked from edits.",
@@ -861,10 +864,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Terminate plan",
     ),
     "shareEditTerminatePlanMessage": MessageLookupByLibrary.simpleMessage(
-      "This stops future cycles. Existing expenses remain payable.",
+      "This stops future bill cycles.",
     ),
     "shareEditTerminatePlanTitle": MessageLookupByLibrary.simpleMessage(
       "Terminate recurring plan?",
+    ),
+    "shareEditTerminateSuccess": MessageLookupByLibrary.simpleMessage(
+      "Plan terminated.",
     ),
     "shareEditTitle": MessageLookupByLibrary.simpleMessage("Edit Bill"),
     "shareOwedDetailEmpty": MessageLookupByLibrary.simpleMessage(

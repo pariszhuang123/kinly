@@ -107,6 +107,7 @@ class ShareEditProvider extends StatelessWidget {
                 homeId: homeId,
                 expensesRepository: expensesRepository,
                 homeRepository: homeRepository,
+                planStatus: detail.planStatus,
                 planId: expense.planId,
                 initialForm: initialForm,
                 editingExpenseId: expense.id,

@@ -116,6 +116,8 @@ class ShareCreateFormView extends StatelessWidget {
         // Only require splitMode when doing create/update.
         (!canDelete && isEditing && state.form.splitMode == null);
 
+    final periodLabel = _formattedPeriod();
+
     void handlePrimaryPressed() {
       if (shouldDisable) return;
       if (canDelete) {
@@ -155,6 +157,15 @@ class ShareCreateFormView extends StatelessWidget {
           state: state,
           locked: locked,
         ),
+        if (periodLabel != null) ...[
+          SizedBox(height: spacing.xs),
+          Text(
+            s.shareCreateCyclePeriod(periodLabel),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
         SizedBox(height: spacing.lg),
         _RecurrenceField(
           state: state,
@@ -200,6 +211,49 @@ class ShareCreateFormView extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  String? _formattedPeriod() {
+    final recurrence = state.form.recurrence;
+    final start = state.form.startDate;
+    if (recurrence == ExpenseRecurrenceInterval.none || start == null) {
+      return null;
+    }
+
+    DateTime end;
+    switch (recurrence) {
+      case ExpenseRecurrenceInterval.weekly:
+        end = start.add(const Duration(days: 6));
+        break;
+      case ExpenseRecurrenceInterval.every2Weeks:
+        end = start.add(const Duration(days: 13));
+        break;
+      case ExpenseRecurrenceInterval.monthly:
+        end = DateTime(start.year, start.month + 1, start.day)
+            .subtract(const Duration(days: 1));
+        break;
+      case ExpenseRecurrenceInterval.every2Months:
+        end = DateTime(start.year, start.month + 2, start.day)
+            .subtract(const Duration(days: 1));
+        break;
+      case ExpenseRecurrenceInterval.annual:
+        end = DateTime(start.year + 1, start.month, start.day)
+            .subtract(const Duration(days: 1));
+        break;
+      case ExpenseRecurrenceInterval.none:
+        return null;
+    }
+
+    final sameMonth = start.month == end.month && start.year == end.year;
+    final formatter = DateFormat.MMMMd();
+    final startStr = formatter.format(start);
+    final endStr = sameMonth ? DateFormat.d().format(end) : formatter.format(end);
+
+    if (start.year == end.year) {
+      return '$startStr - $endStr, ${start.year}';
+    }
+
+    return '$startStr, ${start.year} - $endStr, ${end.year}';
   }
 }
 

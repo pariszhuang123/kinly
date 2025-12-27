@@ -392,6 +392,29 @@ SELECT is(
   'Edit payload clarifies converted draft cannot be edited'
 );
 
+WITH payload AS (
+  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_cycle')) AS body
+)
+SELECT is(
+  (SELECT body->>'planStatus' FROM payload),
+  'active',
+  'expenses_get_for_edit returns planStatus=active for recurring cycle'
+);
+
+-- Terminate plan and ensure planStatus surfaces as terminated
+SELECT public.expense_plans_terminate(
+  (SELECT plan_id FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_cycle'))
+);
+
+WITH payload AS (
+  SELECT public.expenses_get_for_edit((SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_cycle')) AS body
+)
+SELECT is(
+  (SELECT body->>'planStatus' FROM payload),
+  'terminated',
+  'expenses_get_for_edit returns planStatus=terminated after termination'
+);
+
 -- Bulk pay via expenses_pay_my_due decrements usage once per fully paid expense
 -- Create new active expense with unpaid split for member_one and observe counter delta
 INSERT INTO tmp_counters (label, active_expenses)

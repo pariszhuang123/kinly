@@ -55,10 +55,10 @@ class Chore {
       createdByUserId: json['created_by_user_id'] as String,
       assigneeUserId: json['assignee_user_id'] as String?,
       name: json['name'] as String,
-      startDate: parseTimestampToLocal(json['start_date'])!,
+      startDate: parseDateToLocal(json['start_date'])!,
       recurrence: ChoreRecurrenceWire.fromWire(json['recurrence'] as String?),
-      recurrenceCursor: parseTimestampToLocal(json['recurrence_cursor']),
-      nextOccurrence: parseTimestampToLocal(json['next_occurrence']),
+      recurrenceCursor: parseDateToLocal(json['recurrence_cursor']),
+      nextOccurrence: parseDateToLocal(json['next_occurrence']),
       expectationPhotoPath: json['expectation_photo_path'] as String?,
       howToVideoUrl: json['how_to_video_url'] as String?,
       notes: json['notes'] as String?,
@@ -98,7 +98,7 @@ class ChoreListEntry {
       id: json['id'] as String,
       homeId: json['home_id'] as String,
       name: json['name'] as String,
-      startDate: parseTimestampToLocal(json['start_date'])!,
+      startDate: parseDateToLocal(json['start_date'])!,
       assigneeUserId: json['assignee_user_id'] as String?,
       assigneeFullName: json['assignee_full_name'] as String?,
       assigneeAvatarStoragePath:
@@ -148,7 +148,7 @@ class TodayFlowEntry {
       id: json['id'] as String,
       homeId: json['home_id'] as String,
       name: json['name'] as String,
-      startDate: parseTimestampToLocal(json['start_date'])!,
+      startDate: parseDateToLocal(json['start_date'])!,
       state: ChoreStateWire.fromWire(json['state'] as String?),
     );
   }

@@ -125,6 +125,7 @@ class ExpenseForEdit {
     required this.amountLocked,
     required this.canEdit,
     required this.editDisabledReason,
+    this.planStatus,
   });
 
   final Expense expense;
@@ -132,6 +133,7 @@ class ExpenseForEdit {
   final bool amountLocked;
   final bool canEdit;
   final String? editDisabledReason;
+  final String? planStatus;
 
   factory ExpenseForEdit.fromJson(Map<String, dynamic> json) {
     final rawSplits = json['splits'];
@@ -151,6 +153,7 @@ class ExpenseForEdit {
       amountLocked: json['amount_locked'] as bool? ?? false,
       canEdit: json['canEdit'] as bool? ?? true,
       editDisabledReason: json['editDisabledReason'] as String?,
+      planStatus: json['planStatus'] as String?,
     );
   }
 }

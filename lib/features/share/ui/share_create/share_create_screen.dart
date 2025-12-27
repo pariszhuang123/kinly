@@ -108,11 +108,6 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
           return;
         }
 
-        if (state.planTerminationSuccessTick > 0) {
-          Navigator.of(context).pop(ShareEditOutcome.deleted);
-          return;
-        }
-
         if (state.successExpenseId != null) {
           final result = state.isEditing ? ShareEditOutcome.updated : true;
           Navigator.of(context).pop(result);
@@ -145,6 +140,18 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
               Theme.of(context).extension<KinlySections>()?.share.accent;
           KinlySnackBar.showError(context, message, accentColor: accent);
         }
+
+        if (state.planTerminationSuccessTick > 0) {
+          final accent =
+              Theme.of(context).extension<KinlySections>()?.share.accent;
+          KinlySnackBar.showSuccess(
+            context,
+            s.shareEditTerminateSuccess,
+            accentColor: accent,
+          );
+          Navigator.of(context).pop(ShareEditOutcome.updated);
+          return;
+        }
       },
       builder: (context, state) {
         _hydrateBaseControllers(state.form);
@@ -153,6 +160,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
         final showTerminatePlan =
             state.isEditing &&
             state.planId != null &&
+            state.planStatus != 'terminated' &&
             state.form.recurrence != ExpenseRecurrenceInterval.none;
 
         return Scaffold(

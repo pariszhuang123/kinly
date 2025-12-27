@@ -319,7 +319,7 @@ $$;
 ALTER FUNCTION "public"."_assert_home_member"("p_home_id" "uuid") OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") RETURNS TABLE("id" "uuid", "home_id" "uuid", "assignee_user_id" "uuid", "created_by_user_id" "uuid", "name" "text", "state" "public"."chore_state", "current_due_at" timestamp with time zone, "created_at" timestamp with time zone, "assignee_full_name" "text", "assignee_avatar_storage_path" "text")
+CREATE OR REPLACE FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") RETURNS TABLE("id" "uuid", "home_id" "uuid", "assignee_user_id" "uuid", "created_by_user_id" "uuid", "name" "text", "state" "public"."chore_state", "current_due_on" "date", "created_at" timestamp with time zone, "assignee_full_name" "text", "assignee_avatar_storage_path" "text")
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -338,10 +338,10 @@ BEGIN
     c.created_by_user_id,
     c.name,
     c.state,
-CASE
-  WHEN c.completed_at IS NULL THEN c.start_date
-  ELSE c.recurrence_cursor
-END AS current_due_at,
+    CASE
+      WHEN c.completed_at IS NULL THEN c.start_date
+      ELSE c.recurrence_cursor
+    END AS current_due_on,
     c.created_at,
     pa.full_name AS assignee_full_name,
     a.storage_path AS assignee_avatar_storage_path
@@ -1553,7 +1553,7 @@ CREATE OR REPLACE FUNCTION "public"."chore_complete"("_chore_id" "uuid") RETURNS
     AS $$
 DECLARE
   v_chore          public.chores%ROWTYPE;
-  v_current_due    timestamptz;
+  v_current_due    date;
   v_steps_advanced integer := 0;
   v_user           uuid := auth.uid();
 BEGIN
@@ -1587,14 +1587,14 @@ BEGIN
   v_current_due := COALESCE(v_chore.recurrence_cursor, v_chore.start_date);
 
   -------------------------------------------------------------------
-  -- Case 1: non-recurring chore → mark completed once and for all
+  -- Case 1: non-recurring chore — mark completed once and for all
   -------------------------------------------------------------------
   IF v_chore.recurrence = 'none' THEN
     UPDATE public.chores
-    SET state            = 'completed',
-        completed_at     = COALESCE(v_chore.completed_at, now()),
+    SET state             = 'completed',
+        completed_at      = COALESCE(v_chore.completed_at, now()),
         recurrence_cursor = NULL,
-        updated_at       = now()
+        updated_at        = now()
     WHERE id = _chore_id;
 
     -- Decrement active counter
@@ -1612,16 +1612,16 @@ BEGIN
   END IF;
 
   -------------------------------------------------------------------
-  -- Case 2: recurring chore → advance to first date AFTER today
+  -- Case 2: recurring chore — advance to first date AFTER today
   -------------------------------------------------------------------
-  WHILE v_current_due <= now() LOOP
+  WHILE v_current_due <= current_date LOOP
     CASE v_chore.recurrence
-      WHEN 'daily'          THEN v_current_due := v_current_due + INTERVAL '1 day';
-      WHEN 'weekly'         THEN v_current_due := v_current_due + INTERVAL '7 days';
-      WHEN 'every_2_weeks'  THEN v_current_due := v_current_due + INTERVAL '14 days';
-      WHEN 'monthly'        THEN v_current_due := v_current_due + INTERVAL '1 month';
-      WHEN 'every_2_months' THEN v_current_due := v_current_due + INTERVAL '2 months';
-      WHEN 'annual'         THEN v_current_due := v_current_due + INTERVAL '1 year';
+      WHEN 'daily'          THEN v_current_due := v_current_due + 1;
+      WHEN 'weekly'         THEN v_current_due := v_current_due + 7;
+      WHEN 'every_2_weeks'  THEN v_current_due := v_current_due + 14;
+      WHEN 'monthly'        THEN v_current_due := (v_current_due + INTERVAL '1 month')::date;
+      WHEN 'every_2_months' THEN v_current_due := (v_current_due + INTERVAL '2 months')::date;
+      WHEN 'annual'         THEN v_current_due := (v_current_due + INTERVAL '1 year')::date;
       ELSE EXIT;
     END CASE;
     v_steps_advanced := v_steps_advanced + 1;
@@ -1644,12 +1644,12 @@ BEGIN
   WHERE id = _chore_id;
 
   RETURN jsonb_build_object(
-    'status',        'recurring_completed',
-    'chore_id',      _chore_id,
-    'home_id',       v_chore.home_id,
-    'recurrence',    v_chore.recurrence,
-    'state',         v_chore.state,
-    'cursor_after',  v_current_due,
+    'status',         'recurring_completed',
+    'chore_id',       _chore_id,
+    'home_id',        v_chore.home_id,
+    'recurrence',     v_chore.recurrence,
+    'state',          v_chore.state,
+    'cursor_after',   v_current_due,
     'steps_advanced', v_steps_advanced
   );
 END;
@@ -1664,8 +1664,8 @@ CREATE OR REPLACE FUNCTION "public"."chores_cancel"("p_chore_id" "uuid") RETURNS
     SET "search_path" TO ''
     AS $$
 DECLARE
+  v_chore public.chores%ROWTYPE;
   v_user  uuid := auth.uid();
-  v_chore public.chores;
 BEGIN
   PERFORM public._assert_authenticated();
 
@@ -1675,7 +1675,7 @@ BEGIN
   FOR UPDATE;
 
   IF NOT FOUND THEN
-    PERFORM public.api_error('NOT_FOUND', 'Chore not found.', 'P0002', jsonb_build_object('choreId', p_chore_id));
+    PERFORM public.api_error('NOT_FOUND', 'Chore not found.', '22023', jsonb_build_object('chore_id', p_chore_id));
   END IF;
 
   PERFORM public._assert_home_member(v_chore.home_id);
@@ -1721,9 +1721,9 @@ CREATE TABLE IF NOT EXISTS "public"."chores" (
     "created_by_user_id" "uuid" NOT NULL,
     "assignee_user_id" "uuid",
     "name" "text" NOT NULL,
-    "start_date" timestamp with time zone DEFAULT CURRENT_DATE NOT NULL,
+    "start_date" "date" DEFAULT CURRENT_DATE NOT NULL,
     "recurrence" "public"."recurrence_interval" DEFAULT 'none'::"public"."recurrence_interval" NOT NULL,
-    "recurrence_cursor" timestamp with time zone,
+    "recurrence_cursor" "date",
     "expectation_photo_path" "text",
     "how_to_video_url" "text",
     "notes" "text",
@@ -1758,7 +1758,7 @@ COMMENT ON COLUMN "public"."chores"."assignee_user_id" IS 'Responsible user when
 
 
 
-COMMENT ON COLUMN "public"."chores"."start_date" IS 'Initial due timestamp.';
+COMMENT ON COLUMN "public"."chores"."start_date" IS 'Initial due date.';
 
 
 
@@ -1766,7 +1766,7 @@ COMMENT ON COLUMN "public"."chores"."recurrence" IS 'none|daily|weekly|every_2_w
 
 
 
-COMMENT ON COLUMN "public"."chores"."recurrence_cursor" IS 'Anchor timestamptz for recurrence (next due).';
+COMMENT ON COLUMN "public"."chores"."recurrence_cursor" IS 'Anchor date for recurrence (next due).';
 
 
 
@@ -1782,7 +1782,7 @@ COMMENT ON COLUMN "public"."chores"."state" IS 'draft|active|completed|cancelled
 
 
 
-CREATE OR REPLACE FUNCTION "public"."chores_create"("p_home_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid" DEFAULT NULL::"uuid", "p_start_date" timestamp with time zone DEFAULT "now"(), "p_recurrence" "public"."recurrence_interval" DEFAULT 'none'::"public"."recurrence_interval", "p_how_to_video_url" "text" DEFAULT NULL::"text", "p_notes" "text" DEFAULT NULL::"text", "p_expectation_photo_path" "text" DEFAULT NULL::"text") RETURNS "public"."chores"
+CREATE OR REPLACE FUNCTION "public"."chores_create"("p_home_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid" DEFAULT NULL::"uuid", "p_start_date" "date" DEFAULT CURRENT_DATE, "p_recurrence" "public"."recurrence_interval" DEFAULT 'none'::"public"."recurrence_interval", "p_how_to_video_url" "text" DEFAULT NULL::"text", "p_notes" "text" DEFAULT NULL::"text", "p_expectation_photo_path" "text" DEFAULT NULL::"text") RETURNS "public"."chores"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -1864,7 +1864,7 @@ BEGIN
     v_user_id,
     p_assignee_user_id,
     p_name,
-    COALESCE(p_start_date, now()),
+    COALESCE(p_start_date, current_date),
     COALESCE(p_recurrence, 'none'),
     p_how_to_video_url,
     p_notes,
@@ -1889,7 +1889,7 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."chores_create"("p_home_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" timestamp with time zone, "p_recurrence" "public"."recurrence_interval", "p_how_to_video_url" "text", "p_notes" "text", "p_expectation_photo_path" "text") OWNER TO "postgres";
+ALTER FUNCTION "public"."chores_create"("p_home_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" "date", "p_recurrence" "public"."recurrence_interval", "p_how_to_video_url" "text", "p_notes" "text", "p_expectation_photo_path" "text") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."chores_events_trigger"() RETURNS "trigger"
@@ -1909,10 +1909,10 @@ BEGIN
     v_event_type := 'create';
     v_to_state   := NEW.state;
     v_payload := jsonb_build_object(
-      'name',             NEW.name,
-      'recurrence',       NEW.recurrence,
+      'name',              NEW.name,
+      'recurrence',        NEW.recurrence,
       'recurrence_cursor', NEW.recurrence_cursor,
-      'assignee_user_id', NEW.assignee_user_id
+      'assignee_user_id',  NEW.assignee_user_id
     );
     INSERT INTO public.chore_events (
       chore_id, home_id, actor_user_id, event_type, from_state, to_state, payload
@@ -1929,28 +1929,17 @@ BEGIN
 
     v_from_state := OLD.state;
     v_to_state   := NEW.state;
-    ----------------------------------------------------------------
-    -- Priority:
-    -- 1) Recurring completion inferred from next_occurrence moving
-    -- 2) Non-recurring completion via state change
-    -- 3) Cancel (draft/active -> cancelled)
-    -- 4) Activate (draft -> active)
-    -- 5) Assignee change (update with assignee payload)
-    -- 6) Recurrence config change (update)
-    -- 7) Generic state change update
-    ----------------------------------------------------------------
 
-    -- 1️⃣ Recurring completion inferred from next_occurrence advancing
-
+    -- Priority order documented in previous version; preserved here.
     IF NEW.recurrence <> 'none'
        AND OLD.recurrence_cursor IS NOT NULL
        AND NEW.recurrence_cursor IS NOT NULL
        AND NEW.recurrence_cursor > OLD.recurrence_cursor THEN
       v_event_type := 'complete';
       v_payload := jsonb_build_object(
-        'recurrence',        NEW.recurrence,
-        'cursor_before',     OLD.recurrence_cursor,
-        'cursor_after',      NEW.recurrence_cursor
+        'recurrence',    NEW.recurrence,
+        'cursor_before', OLD.recurrence_cursor,
+        'cursor_after',  NEW.recurrence_cursor
       );
 
     ELSIF OLD.state <> 'completed'
@@ -2128,7 +2117,7 @@ $$;
 ALTER FUNCTION "public"."chores_get_for_home"("p_home_id" "uuid", "p_chore_id" "uuid") OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."chores_list_for_home"("p_home_id" "uuid") RETURNS TABLE("id" "uuid", "home_id" "uuid", "assignee_user_id" "uuid", "name" "text", "start_date" timestamp with time zone, "assignee_full_name" "text", "assignee_avatar_storage_path" "text")
+CREATE OR REPLACE FUNCTION "public"."chores_list_for_home"("p_home_id" "uuid") RETURNS TABLE("id" "uuid", "home_id" "uuid", "assignee_user_id" "uuid", "name" "text", "start_date" "date", "assignee_full_name" "text", "assignee_avatar_storage_path" "text")
     LANGUAGE "sql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -2137,7 +2126,7 @@ CREATE OR REPLACE FUNCTION "public"."chores_list_for_home"("p_home_id" "uuid") R
     home_id,
     assignee_user_id,
     name,
-    current_due_at AS start_date,
+    current_due_on AS start_date,
     assignee_full_name,
     assignee_avatar_storage_path
   FROM public._chores_base_for_home(p_home_id)
@@ -2146,7 +2135,7 @@ CREATE OR REPLACE FUNCTION "public"."chores_list_for_home"("p_home_id" "uuid") R
       state = 'active'::public.chore_state
       OR (state = 'draft'::public.chore_state AND created_by_user_id = auth.uid())
     )
-  ORDER BY current_due_at DESC, created_at DESC;
+  ORDER BY current_due_on DESC, created_at DESC;
 $$;
 
 
@@ -2189,7 +2178,7 @@ $$;
 ALTER FUNCTION "public"."chores_reassign_on_member_leave"("v_home_id" "uuid", "v_user_id" "uuid") OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."chores_update"("p_chore_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" timestamp with time zone, "p_recurrence" "public"."recurrence_interval" DEFAULT 'none'::"public"."recurrence_interval", "p_expectation_photo_path" "text" DEFAULT NULL::"text", "p_how_to_video_url" "text" DEFAULT NULL::"text", "p_notes" "text" DEFAULT NULL::"text") RETURNS "public"."chores"
+CREATE OR REPLACE FUNCTION "public"."chores_update"("p_chore_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" "date", "p_recurrence" "public"."recurrence_interval" DEFAULT NULL::"public"."recurrence_interval", "p_expectation_photo_path" "text" DEFAULT NULL::"text", "p_how_to_video_url" "text" DEFAULT NULL::"text", "p_notes" "text" DEFAULT NULL::"text") RETURNS "public"."chores"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -2226,35 +2215,36 @@ BEGIN
     PERFORM public.api_error('NOT_FOUND', 'Chore not found.', '22023', jsonb_build_object('chore_id', p_chore_id));
   END IF;
 
-PERFORM public._assert_home_member(v_existing.home_id);
+  PERFORM public._assert_home_member(v_existing.home_id);
 
-PERFORM public.api_assert(
-  v_existing.created_by_user_id = v_user_id
-  OR v_existing.assignee_user_id = v_user_id,
-  'FORBIDDEN',
-  'Only the chore creator or current assignee can update this chore.',
-  '42501',
-  jsonb_build_object('chore_id', p_chore_id, 'home_id', v_existing.home_id)
-);
+  PERFORM public.api_assert(
+    v_existing.created_by_user_id = v_user_id
+    OR v_existing.assignee_user_id = v_user_id,
+    'FORBIDDEN',
+    'Only the chore creator or current assignee can update this chore.',
+    '42501',
+    jsonb_build_object('chore_id', p_chore_id, 'home_id', v_existing.home_id)
+  );
 
-PERFORM public.api_assert(
-  EXISTS (
-    SELECT 1
-    FROM public.memberships m
-    WHERE m.home_id = v_existing.home_id
-      AND m.user_id = p_assignee_user_id
-      AND m.is_current
-  ),
-  'ASSIGNEE_NOT_CURRENT_MEMBER',
-  'Assignee must be a current member of this home.',
-  '42501',
-  jsonb_build_object(
-    'home_id',  v_existing.home_id,
-    'assignee', p_assignee_user_id
-  )
-);
+  -- Assignee must be a current member of this home
+  PERFORM public.api_assert(
+    EXISTS (
+      SELECT 1
+      FROM public.memberships m
+      WHERE m.home_id = v_existing.home_id
+        AND m.user_id = p_assignee_user_id
+        AND m.is_current
+    ),
+    'ASSIGNEE_NOT_CURRENT_MEMBER',
+    'Assignee must be a current member of this home.',
+    '42501',
+    jsonb_build_object(
+      'home_id',  v_existing.home_id,
+      'assignee', p_assignee_user_id
+    )
+  );
+
   -- Work out what the *new* path will be after COALESCE
-
   v_new_path := COALESCE(p_expectation_photo_path, v_existing.expectation_photo_path);
   IF v_existing.expectation_photo_path IS NULL AND v_new_path IS NOT NULL THEN
     v_photo_delta := 1;
@@ -2301,7 +2291,7 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."chores_update"("p_chore_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" timestamp with time zone, "p_recurrence" "public"."recurrence_interval", "p_expectation_photo_path" "text", "p_how_to_video_url" "text", "p_notes" "text") OWNER TO "postgres";
+ALTER FUNCTION "public"."chores_update"("p_chore_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" "date", "p_recurrence" "public"."recurrence_interval", "p_expectation_photo_path" "text", "p_how_to_video_url" "text", "p_notes" "text") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."expense_plans_generate_due_cycles"() RETURNS "void"
@@ -3940,6 +3930,7 @@ DECLARE
   v_splits             jsonb := '[]'::jsonb;
   v_can_edit           boolean := FALSE;
   v_edit_disabled      text := NULL;
+  v_plan_status        text := NULL;
 BEGIN
   PERFORM public._assert_authenticated();
 
@@ -3977,6 +3968,14 @@ BEGIN
     PERFORM public.api_error('NOT_CREATOR', 'Only the creator can edit this expense.', '42501',
       jsonb_build_object('expenseId', p_expense_id, 'userId', v_user)
     );
+  END IF;
+
+  IF v_expense.plan_id IS NOT NULL THEN
+    SELECT ep.status
+      INTO v_plan_status
+      FROM public.expense_plans ep
+     WHERE ep.id = v_expense.plan_id
+     LIMIT 1;
   END IF;
 
   v_can_edit := (v_expense.status = 'draft'::public.expense_status);
@@ -4026,6 +4025,7 @@ BEGIN
     'createdAt',          v_expense.created_at,
     'updatedAt',          v_expense.updated_at,
     'planId',             v_expense.plan_id,
+    'planStatus',         v_plan_status,
     'recurrenceInterval', v_expense.recurrence_interval,
     'startDate',          v_expense.start_date,
     'canEdit',            v_can_edit,
@@ -6634,7 +6634,7 @@ COMMENT ON FUNCTION "public"."share_log_event"("p_home_id" "uuid", "p_feature" "
 
 
 
-CREATE OR REPLACE FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state") RETURNS TABLE("id" "uuid", "home_id" "uuid", "name" "text", "start_date" timestamp with time zone, "state" "public"."chore_state")
+CREATE OR REPLACE FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state") RETURNS TABLE("id" "uuid", "home_id" "uuid", "name" "text", "start_date" "date", "state" "public"."chore_state")
     LANGUAGE "sql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -6642,16 +6642,16 @@ CREATE OR REPLACE FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_sta
     id,
     home_id,
     name,
-    current_due_at AS start_date,
+    current_due_on AS start_date,
     state
   FROM public._chores_base_for_home(p_home_id)
   WHERE state = p_state
-    AND current_due_at <= now()  -- due now or overdue
+    AND current_due_on <= current_date  -- due now or overdue
     AND (
       (p_state = 'draft'::public.chore_state AND created_by_user_id = auth.uid())
       OR (p_state = 'active'::public.chore_state AND assignee_user_id = auth.uid())
     )
-  ORDER BY current_due_at ASC, created_at ASC;
+  ORDER BY current_due_on ASC, created_at ASC;
 $$;
 
 
@@ -8870,9 +8870,9 @@ GRANT ALL ON TABLE "public"."chores" TO "service_role";
 
 
 
-REVOKE ALL ON FUNCTION "public"."chores_create"("p_home_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" timestamp with time zone, "p_recurrence" "public"."recurrence_interval", "p_how_to_video_url" "text", "p_notes" "text", "p_expectation_photo_path" "text") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."chores_create"("p_home_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" timestamp with time zone, "p_recurrence" "public"."recurrence_interval", "p_how_to_video_url" "text", "p_notes" "text", "p_expectation_photo_path" "text") TO "service_role";
-GRANT ALL ON FUNCTION "public"."chores_create"("p_home_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" timestamp with time zone, "p_recurrence" "public"."recurrence_interval", "p_how_to_video_url" "text", "p_notes" "text", "p_expectation_photo_path" "text") TO "authenticated";
+REVOKE ALL ON FUNCTION "public"."chores_create"("p_home_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" "date", "p_recurrence" "public"."recurrence_interval", "p_how_to_video_url" "text", "p_notes" "text", "p_expectation_photo_path" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."chores_create"("p_home_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" "date", "p_recurrence" "public"."recurrence_interval", "p_how_to_video_url" "text", "p_notes" "text", "p_expectation_photo_path" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."chores_create"("p_home_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" "date", "p_recurrence" "public"."recurrence_interval", "p_how_to_video_url" "text", "p_notes" "text", "p_expectation_photo_path" "text") TO "authenticated";
 
 
 
@@ -8899,9 +8899,9 @@ GRANT ALL ON FUNCTION "public"."chores_reassign_on_member_leave"("v_home_id" "uu
 
 
 
-REVOKE ALL ON FUNCTION "public"."chores_update"("p_chore_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" timestamp with time zone, "p_recurrence" "public"."recurrence_interval", "p_expectation_photo_path" "text", "p_how_to_video_url" "text", "p_notes" "text") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."chores_update"("p_chore_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" timestamp with time zone, "p_recurrence" "public"."recurrence_interval", "p_expectation_photo_path" "text", "p_how_to_video_url" "text", "p_notes" "text") TO "service_role";
-GRANT ALL ON FUNCTION "public"."chores_update"("p_chore_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" timestamp with time zone, "p_recurrence" "public"."recurrence_interval", "p_expectation_photo_path" "text", "p_how_to_video_url" "text", "p_notes" "text") TO "authenticated";
+REVOKE ALL ON FUNCTION "public"."chores_update"("p_chore_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" "date", "p_recurrence" "public"."recurrence_interval", "p_expectation_photo_path" "text", "p_how_to_video_url" "text", "p_notes" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."chores_update"("p_chore_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" "date", "p_recurrence" "public"."recurrence_interval", "p_expectation_photo_path" "text", "p_how_to_video_url" "text", "p_notes" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."chores_update"("p_chore_id" "uuid", "p_name" "text", "p_assignee_user_id" "uuid", "p_start_date" "date", "p_recurrence" "public"."recurrence_interval", "p_expectation_photo_path" "text", "p_how_to_video_url" "text", "p_notes" "text") TO "authenticated";
 
 
 

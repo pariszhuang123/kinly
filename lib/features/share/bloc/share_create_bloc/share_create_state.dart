@@ -19,6 +19,7 @@ class ShareCreateState extends Equatable {
     required this.successExpenseId,
     required this.isEditing,
     required this.editingExpenseId,
+    required this.planStatus,
     required this.planId,
     required this.isAmountLocked,
     required this.allPaid,
@@ -35,6 +36,7 @@ class ShareCreateState extends Equatable {
     ShareCreateForm? form,
     bool isEditing = false,
     String? editingExpenseId,
+    String? planStatus,
     String? planId,
     bool isAmountLocked = false,
     bool allPaid = false,
@@ -60,6 +62,7 @@ class ShareCreateState extends Equatable {
       successExpenseId: null,
       isEditing: isEditing,
       editingExpenseId: editingExpenseId,
+      planStatus: planStatus,
       planId: planId,
       isAmountLocked: isAmountLocked,
       allPaid: allPaid,
@@ -90,6 +93,7 @@ class ShareCreateState extends Equatable {
   final String? successExpenseId;
   final bool isEditing;
   final String? editingExpenseId;
+  final String? planStatus;
   final String? planId;
   final bool isAmountLocked;
   final bool allPaid;
@@ -126,6 +130,7 @@ class ShareCreateState extends Equatable {
     bool clearSuccess = false,
     bool? isEditing,
     String? editingExpenseId,
+    String? planStatus,
     String? planId,
     bool? isAmountLocked,
     bool? allPaid,
@@ -167,6 +172,7 @@ class ShareCreateState extends Equatable {
           clearSuccess ? null : successExpenseId ?? this.successExpenseId,
       isEditing: isEditing ?? this.isEditing,
       editingExpenseId: editingExpenseId ?? this.editingExpenseId,
+      planStatus: planStatus ?? this.planStatus,
       planId: planId ?? this.planId,
       isAmountLocked: isAmountLocked ?? this.isAmountLocked,
       allPaid: allPaid ?? this.allPaid,
@@ -251,6 +257,7 @@ class ShareCreateState extends Equatable {
     successExpenseId,
     isEditing,
     editingExpenseId,
+    planStatus,
     planId,
     isAmountLocked,
     allPaid,

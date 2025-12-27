@@ -21,6 +21,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     required HomeRepository homeRepository,
     ShareCreateForm? initialForm,
     String? editingExpenseId,
+    String? planStatus,
     String? planId,
     bool amountLocked = false,
     bool allPaid = false,
@@ -35,6 +36,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
             form: initialForm,
             isEditing: editingExpenseId != null,
             editingExpenseId: editingExpenseId,
+            planStatus: planStatus,
             planId: planId,
             isAmountLocked: amountLocked,
             allPaid: allPaid,
@@ -420,6 +422,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
       emit(
         state.copyWith(
           isTerminatingPlan: false,
+          planStatus: 'terminated',
           planTerminationSuccessTick: state.planTerminationSuccessTick + 1,
         ),
       );

@@ -599,7 +599,7 @@ void main() {
         form: form,
         isEditing: true,
         editingExpenseId: 'expense-plan',
-      ).copyWith(planId: 'plan-1');
+      ).copyWith(planId: 'plan-1', planStatus: 'active');
       return terminateSeed;
     },
     setUp: () {
@@ -626,6 +626,7 @@ void main() {
       );
       final success = terminating.copyWith(
         isTerminatingPlan: false,
+        planStatus: 'terminated',
         planTerminationSuccessTick: terminating.planTerminationSuccessTick + 1,
       );
       return [terminating, success];

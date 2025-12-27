@@ -1433,7 +1433,7 @@ export type Database = {
           assignee_user_id: string
           created_at: string
           created_by_user_id: string
-          current_due_at: string
+          current_due_on: string
           home_id: string
           id: string
           name: string

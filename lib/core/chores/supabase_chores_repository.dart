@@ -1,14 +1,15 @@
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/repositories/chores_repository.dart';
 import '../supabase/storage_path_resolver.dart';
 import '../supabase/supabase_error_mapper.dart';
 import '../utils/url_validator.dart';
-import '../time/timezone.dart';
 import 'models.dart';
 
 class SupabaseChoresRepository implements ChoresRepository {
   final SupabaseClient _client;
+  final _dateFormatter = DateFormat('yyyy-MM-dd');
 
   SupabaseChoresRepository({SupabaseClient? client})
     : _client = client ?? Supabase.instance.client;
@@ -37,7 +38,7 @@ class SupabaseChoresRepository implements ChoresRepository {
           'p_home_id': homeId,
           'p_name': name,
           if (assigneeUserId != null) 'p_assignee_user_id': assigneeUserId,
-          if (startDate != null) 'p_start_date': toUtcIsoString(startDate),
+          if (startDate != null) 'p_start_date': _dateFormatter.format(startDate),
           'p_recurrence': recurrence.wireValue,
           if (notes != null) 'p_notes': notes,
           'p_how_to_video_url': sanitizedHowTo,
@@ -75,7 +76,7 @@ class SupabaseChoresRepository implements ChoresRepository {
           'p_chore_id': choreId,
           'p_name': name,
           'p_assignee_user_id': assigneeUserId,
-          'p_start_date': toUtcIsoString(startDate),
+          'p_start_date': _dateFormatter.format(startDate),
           if (recurrence != null) 'p_recurrence': recurrence.wireValue,
           if (notes != null) 'p_notes': notes,
           'p_how_to_video_url': sanitizedHowTo,
