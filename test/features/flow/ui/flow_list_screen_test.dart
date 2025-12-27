@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kinly/core/chores/models.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kinly/features/flow/bloc/flow_list_bloc.dart';
 import 'package:kinly/features/flow/ui/flow_list_filter.dart';
 import 'package:kinly/features/flow/ui/flow_list_screen.dart';
@@ -38,6 +39,69 @@ void main() {
         extensions: const <ThemeExtension<dynamic>>[KinlyOpacity.defaults],
       ),
       home: child,
+    );
+  }
+
+  Widget buildRouterApp({
+    required FlowListFilter filter,
+    required FlowListState state,
+  }) {
+    when(() => bloc.state).thenReturn(state);
+    whenListen(
+      bloc,
+      Stream<FlowListState>.fromIterable([state]),
+      initialState: state,
+    );
+
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder:
+              (_, __) => BlocProvider<FlowListBloc>.value(
+                value: bloc,
+                child: FlowListScreen(
+                  filter: filter,
+                  currentUserId: 'user-123',
+                  showOnlyCurrentUser: false,
+                ),
+              ),
+        ),
+        GoRoute(
+          path: '/flow/chore/:choreId/detail',
+          builder:
+              (_, state) => Scaffold(
+                body: Text('detail:${state.pathParameters['choreId']}'),
+              ),
+        ),
+        GoRoute(
+          path: '/flow/chore/:choreId',
+          builder:
+              (_, state) => Scaffold(
+                body: Text('edit:${state.pathParameters['choreId']}'),
+              ),
+        ),
+        GoRoute(
+          path: '/flow/chore/new',
+          builder: (_, __) => const Scaffold(body: Text('create')),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+
+    return MaterialApp.router(
+      routerConfig: router,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      theme: ThemeData.light().copyWith(
+        extensions: const <ThemeExtension<dynamic>>[KinlyOpacity.defaults],
+      ),
     );
   }
 
@@ -133,5 +197,54 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Draft chore'), findsOneWidget);
+  });
+
+  testWidgets('tapping active entry navigates to detail screen', (
+    tester,
+  ) async {
+    final now = DateTime.now();
+    final active = ChoreListEntry(
+      id: 'active-1',
+      homeId: 'home-1',
+      name: 'Active chore',
+      startDate: now,
+      assigneeUserId: 'user-123',
+    );
+    final state = FlowListState(
+      status: FlowListStatus.success,
+      items: [active],
+    );
+
+    await tester.pumpWidget(
+      buildRouterApp(filter: FlowListFilter.active, state: state),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Active chore'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('detail:active-1'), findsOneWidget);
+  });
+
+  testWidgets('tapping draft entry navigates to edit screen', (tester) async {
+    final now = DateTime.now();
+    final draft = ChoreListEntry(
+      id: 'draft-1',
+      homeId: 'home-1',
+      name: 'Draft chore',
+      startDate: now,
+      assigneeUserId: null,
+    );
+    final state = FlowListState(status: FlowListStatus.success, items: [draft]);
+
+    await tester.pumpWidget(
+      buildRouterApp(filter: FlowListFilter.drafts, state: state),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Draft chore'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('edit:draft-1'), findsOneWidget);
   });
 }

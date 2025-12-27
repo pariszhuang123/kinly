@@ -48,7 +48,7 @@ class FlowListScreen extends StatelessWidget {
         title: Text(s.quick_add_flow_title),
       ),
       floatingActionButton: KinlyFab(
-        onPressed: () => _openChore(context),
+        onPressed: () => _openChoreEntry(context, null),
         heroTag: 'flow_list_fab',
       ),
       body: SafeArea(
@@ -70,14 +70,15 @@ class FlowListScreen extends StatelessWidget {
                 case FlowListStatus.success:
                   final filteredItems = _filteredItems(state.items);
                   if (filteredItems.isEmpty) {
-                    return _FlowListEmpty(onAddTap: () => _openChore(context));
+                    return _FlowListEmpty(
+                      onAddTap: () => _openChoreEntry(context, null),
+                    );
                   }
                   return _FlowList(
                     items: filteredItems,
                     ownerUserId: state.ownerUserId,
                     onRefresh: () => _handleRefresh(context),
-                    onItemTap:
-                        (entry) => _openChore(context, choreId: entry.id),
+                    onItemTap: (entry) => _openChoreEntry(context, entry),
                   );
                 case FlowListStatus.initial:
                   return const SizedBox.shrink();
@@ -103,22 +104,33 @@ class FlowListScreen extends StatelessWidget {
     await completer.future;
   }
 
-  Future<void> _openChore(BuildContext context, {String? choreId}) async {
+  Future<void> _openChoreEntry(
+    BuildContext context,
+    ChoreListEntry? entry,
+  ) async {
     final path =
-        choreId == null
+        entry == null
             ? AppRoutes.flowChoreCreate
-            : AppRoutes.flowChoreEditPath(choreId);
+            : filter == FlowListFilter.active
+            ? AppRoutes.flowChoreDetailPath(entry.id)
+            : AppRoutes.flowChoreEditPath(entry.id);
     final result = await context.push(path);
     if (result is FlowChoreOutcome && context.mounted) {
       final s = S.of(context);
       final accent = Theme.of(context).extension<KinlySections>()?.flow.accent;
-      if (result.isUpdate) {
+      if (result.isCompleted) {
+        KinlySnackBar.showSuccess(
+          context,
+          s.flowChoreDetailCompletionSuccess,
+          accentColor: accent,
+        );
+      } else if (result.isUpdate) {
         KinlySnackBar.showSuccess(
           context,
           s.flowChoreUpdateSuccess,
           accentColor: accent,
         );
-      } else if (!result.isDeleted && !result.isCompleted) {
+      } else if (!result.isDeleted) {
         KinlySnackBar.showSuccess(
           context,
           s.flowChoreCreateSuccess,
@@ -273,7 +285,10 @@ class _FlowListTile extends StatelessWidget {
                   ),
                   if (isOverdue) ...[
                     SizedBox(width: spacing?.xs ?? 6),
-                    KinlyBadge(label: s.flowListOverdueLabel, destructive: true),
+                    KinlyBadge(
+                      label: s.flowListOverdueLabel,
+                      destructive: true,
+                    ),
                   ],
                 ],
               ),

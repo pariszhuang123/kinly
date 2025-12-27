@@ -135,8 +135,10 @@ class ShareCreateFormView extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(bottom: spacing.md),
             child: KinlyInfoBanner(
-              message:
-                  _mapEditDisabledReason(context, state.editDisabledReason!),
+              message: _mapEditDisabledReason(
+                context,
+                state.editDisabledReason!,
+              ),
               type: KinlyBannerType.warning,
             ),
           ),
@@ -153,10 +155,7 @@ class ShareCreateFormView extends StatelessWidget {
           locked: locked,
         ),
         SizedBox(height: spacing.lg),
-        _StartDateField(
-          state: state,
-          locked: locked,
-        ),
+        _StartDateField(state: state, locked: locked),
         if (periodLabel != null) ...[
           SizedBox(height: spacing.xs),
           Text(
@@ -204,9 +203,10 @@ class ShareCreateFormView extends StatelessWidget {
           KinlyFilledButton.destructiveText(
             fullWidth: true,
             onPressed: isTerminatingPlan ? null : onTerminatePlan,
-            label: isTerminatingPlan
-                ? s.shareEditTerminatePlanBusy
-                : s.shareEditTerminatePlan,
+            label:
+                isTerminatingPlan
+                    ? s.shareEditTerminatePlanBusy
+                    : s.shareEditTerminatePlan,
           ),
         ],
       ],
@@ -216,7 +216,7 @@ class ShareCreateFormView extends StatelessWidget {
   String? _formattedPeriod() {
     final recurrence = state.form.recurrence;
     final start = state.form.startDate;
-    if (recurrence == ExpenseRecurrenceInterval.none || start == null) {
+    if (recurrence == ExpenseRecurrenceInterval.none) {
       return null;
     }
 
@@ -229,16 +229,25 @@ class ShareCreateFormView extends StatelessWidget {
         end = start.add(const Duration(days: 13));
         break;
       case ExpenseRecurrenceInterval.monthly:
-        end = DateTime(start.year, start.month + 1, start.day)
-            .subtract(const Duration(days: 1));
+        end = DateTime(
+          start.year,
+          start.month + 1,
+          start.day,
+        ).subtract(const Duration(days: 1));
         break;
       case ExpenseRecurrenceInterval.every2Months:
-        end = DateTime(start.year, start.month + 2, start.day)
-            .subtract(const Duration(days: 1));
+        end = DateTime(
+          start.year,
+          start.month + 2,
+          start.day,
+        ).subtract(const Duration(days: 1));
         break;
       case ExpenseRecurrenceInterval.annual:
-        end = DateTime(start.year + 1, start.month, start.day)
-            .subtract(const Duration(days: 1));
+        end = DateTime(
+          start.year + 1,
+          start.month,
+          start.day,
+        ).subtract(const Duration(days: 1));
         break;
       case ExpenseRecurrenceInterval.none:
         return null;
@@ -247,7 +256,8 @@ class ShareCreateFormView extends StatelessWidget {
     final sameMonth = start.month == end.month && start.year == end.year;
     final formatter = DateFormat.MMMMd();
     final startStr = formatter.format(start);
-    final endStr = sameMonth ? DateFormat.d().format(end) : formatter.format(end);
+    final endStr =
+        sameMonth ? DateFormat.d().format(end) : formatter.format(end);
 
     if (start.year == end.year) {
       return '$startStr - $endStr, ${start.year}';
@@ -402,26 +412,26 @@ class _StartDateField extends StatelessWidget {
               locked
                   ? null
                   : () async {
-                      final picked = await showKinlyDatePicker(
-                        context: context,
-                        initialDate: state.form.startDate,
-                        firstDate: DateTime(
-                          firstDate.year,
-                          firstDate.month,
-                          firstDate.day,
-                        ),
-                        lastDate: DateTime(
-                          lastDate.year,
-                          lastDate.month,
-                          lastDate.day,
-                        ),
+                    final picked = await showKinlyDatePicker(
+                      context: context,
+                      initialDate: state.form.startDate,
+                      firstDate: DateTime(
+                        firstDate.year,
+                        firstDate.month,
+                        firstDate.day,
+                      ),
+                      lastDate: DateTime(
+                        lastDate.year,
+                        lastDate.month,
+                        lastDate.day,
+                      ),
+                    );
+                    if (picked != null && context.mounted) {
+                      context.read<ShareCreateBloc>().add(
+                        ShareCreateStartDateChanged(picked),
                       );
-                      if (picked != null && context.mounted) {
-                        context
-                            .read<ShareCreateBloc>()
-                            .add(ShareCreateStartDateChanged(picked));
-                      }
-                    },
+                    }
+                  },
           label: dateLabel,
         ),
       ],
@@ -706,19 +716,18 @@ class _ParticipantsSection extends StatelessWidget {
           child: Opacity(
             opacity: locked ? 0.6 : 1.0,
             child: KinlySelectableMemberAvatarRow(
-              members:
-                  state.participants
-                      .map(
-                        (participant) => HomeMemberSummary(
-                          userId: participant.userId,
-                          username: participant.displayName,
-                          role: participant.isOwner ? 'owner' : 'member',
-                          validFrom:
-                              DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
-                          avatarUrl: participant.avatarUrl,
-                        ),
-                      )
-                      .toList(growable: false),
+              members: state.participants
+                  .map(
+                    (participant) => HomeMemberSummary(
+                      userId: participant.userId,
+                      username: participant.displayName,
+                      role: participant.isOwner ? 'owner' : 'member',
+                      validFrom:
+                          DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
+                      avatarUrl: participant.avatarUrl,
+                    ),
+                  )
+                  .toList(growable: false),
               selectedMemberIds: state.form.selectedParticipantIds,
               onToggle:
                   (memberId) => context.read<ShareCreateBloc>().add(

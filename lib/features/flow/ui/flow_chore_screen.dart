@@ -157,10 +157,6 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
                   () => context.read<FlowChoreBloc>().add(
                     const FlowChorePhotoCaptureRequested(),
                   ),
-              onDeleteRequested:
-                  state.isEditMode && state.canEditOrDelete
-                      ? () => _confirmDelete(context)
-                      : null,
             ),
           );
         }
@@ -172,9 +168,27 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
             ),
           ),
           body: SafeArea(
-            child: Padding(
-              padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
-              child: content,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
+                    child: content,
+                  ),
+                ),
+                if (!state.isLoading && state.loadErrorMessage == null)
+                  _ChoreActionBar(
+                    state: state,
+                    onSubmit:
+                        () => context
+                            .read<FlowChoreBloc>()
+                            .add(const FlowChoreSubmitted()),
+                    onDeleteRequested:
+                        state.isEditMode && state.canEditOrDelete
+                            ? () => _confirmDelete(context)
+                            : null,
+                  ),
+              ],
             ),
           ),
         );
@@ -271,7 +285,6 @@ class _FlowChoreFormView extends StatelessWidget {
     required this.isUploadingPhoto,
     required this.expectationPhotoUrl,
     required this.onPhotoCapture,
-    required this.onDeleteRequested,
   });
 
   final TextEditingController titleController;
@@ -283,7 +296,6 @@ class _FlowChoreFormView extends StatelessWidget {
   final bool isUploadingPhoto;
   final String? expectationPhotoUrl;
   final VoidCallback onPhotoCapture;
-  final VoidCallback? onDeleteRequested;
 
   @override
   Widget build(BuildContext context) {
@@ -302,10 +314,6 @@ class _FlowChoreFormView extends StatelessWidget {
         form.expectationPhotoPath.trim().isNotEmpty;
     final expandOptional = hasOptionalContent || hasHowToError;
     final dateLabel = DateFormat.yMMMMd().format(form.startDate);
-    final canSubmit = !state.isSubmitting;
-    final canEditOrDelete = state.canEditOrDelete;
-    final showDeleteCta =
-        state.isEditMode && !state.hasChanges && canEditOrDelete;
 
     return ListView(
       children: [
@@ -390,18 +398,6 @@ class _FlowChoreFormView extends StatelessWidget {
           initiallyExpanded: expandOptional,
         ),
         SizedBox(height: spacing?.xl ?? 24),
-        if (canEditOrDelete)
-          SizedBox(
-            width: double.infinity,
-            child: _buildCtaButton(
-              context: context,
-              state: state,
-              canSubmit: canSubmit,
-              showDeleteCta: showDeleteCta,
-              onDeleteRequested: onDeleteRequested,
-            ),
-          ),
-        SizedBox(height: spacing?.xl ?? 24),
       ],
     );
   }
@@ -427,60 +423,6 @@ class _FlowChoreFormView extends StatelessWidget {
     }
   }
 
-  Widget _buildCtaButton({
-    required BuildContext context,
-    required FlowChoreState state,
-    required bool canSubmit,
-    required bool showDeleteCta,
-    required VoidCallback? onDeleteRequested,
-  }) {
-    final s = S.of(context);
-
-    if (showDeleteCta) {
-      Widget button = KinlyFilledButton.destructiveText(
-        fullWidth: true,
-        onPressed:
-            state.isDeleting || onDeleteRequested == null
-                ? null
-                : onDeleteRequested,
-        label: s.flowChoreDeleteButton,
-      );
-      if (state.isDeleting) {
-        button = Stack(
-          alignment: Alignment.center,
-          children: [
-            Opacity(opacity: 0.6, child: button),
-            const SizedBox(height: 20, width: 20, child: KinlyLoader(size: 20)),
-          ],
-        );
-      }
-      return button;
-    }
-
-    final submitLabel =
-        state.isEditMode ? s.flowChoreSubmitUpdate : s.flowChoreSubmitCreate;
-
-    Widget button = KinlyFilledButton.text(
-      fullWidth: true,
-      onPressed:
-          state.isSubmitting || !canSubmit
-              ? null
-              : () =>
-                  context.read<FlowChoreBloc>().add(const FlowChoreSubmitted()),
-      label: submitLabel,
-    );
-    if (state.isSubmitting) {
-      button = Stack(
-        alignment: Alignment.center,
-        children: [
-          Opacity(opacity: 0.6, child: button),
-          const SizedBox(height: 20, width: 20, child: KinlyLoader(size: 20)),
-        ],
-      );
-    }
-    return button;
-  }
-
   String _recurrenceLabel(BuildContext context, ChoreRecurrence recurrence) {
     final s = S.of(context);
     switch (recurrence) {
@@ -499,6 +441,75 @@ class _FlowChoreFormView extends StatelessWidget {
       case ChoreRecurrence.annual:
         return s.flowChoreRecurrenceAnnual;
     }
+  }
+}
+
+class _ChoreActionBar extends StatelessWidget {
+  const _ChoreActionBar({
+    required this.state,
+    required this.onSubmit,
+    required this.onDeleteRequested,
+  });
+
+  final FlowChoreState state;
+  final VoidCallback onSubmit;
+  final VoidCallback? onDeleteRequested;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!state.canEditOrDelete) {
+      return const SizedBox.shrink();
+    }
+
+    final s = S.of(context);
+    final spacing = Theme.of(context).extension<Spacing>();
+
+    final showDeleteCta =
+        state.isEditMode && !state.hasChanges && state.canEditOrDelete;
+    final label =
+        showDeleteCta
+            ? s.flowChoreDeleteButton
+            : state.isEditMode
+                ? s.flowChoreSubmitUpdate
+                : s.flowChoreSubmitCreate;
+    final isBusy = state.isSubmitting || state.isDeleting;
+    final handler = showDeleteCta ? onDeleteRequested : onSubmit;
+    final effectiveOnPressed = (isBusy || handler == null) ? null : handler;
+
+    Widget button = showDeleteCta
+        ? KinlyFilledButton.destructiveText(
+          fullWidth: true,
+          onPressed: effectiveOnPressed,
+          label: label,
+        )
+        : KinlyFilledButton.text(
+          fullWidth: true,
+          onPressed: effectiveOnPressed,
+          label: label,
+        );
+
+    if (isBusy) {
+      button = Stack(
+        alignment: Alignment.center,
+        children: [
+          Opacity(opacity: 0.6, child: button),
+          const SizedBox(height: 20, width: 20, child: KinlyLoader(size: 20)),
+        ],
+      );
+    }
+
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(
+          spacing?.lg ?? 16,
+          spacing?.md ?? 12,
+          spacing?.lg ?? 16,
+          spacing?.lg ?? 16,
+        ),
+        child: button,
+      ),
+    );
   }
 }
 
