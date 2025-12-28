@@ -2,11 +2,14 @@ import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../core/expenses/models.dart';
 import '../../../../data/repositories/expenses_repository.dart';
 import '../../../../data/repositories/home_repository.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
+import '../../../../core/paywall/paywall_gate.dart';
+import '../../../../core/paywall/paywall_sources.dart';
 import '../../domain/share_create_form.dart';
 import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
@@ -31,6 +34,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   }) : _homeId = homeId,
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
+       _uuid = const Uuid(),
        super(
          ShareCreateState.initial(
             form: initialForm,
@@ -57,11 +61,14 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     on<ShareCreateSubmitted>(_onSubmitted);
     on<ShareCreateDeleted>(_onDeleted);
     on<ShareCreatePlanTerminationRequested>(_onPlanTerminationRequested);
+    on<ShareCreatePaywallOpened>(_onPaywallOpened);
+    on<ShareCreatePaywallResolved>(_onPaywallResolved);
   }
 
   final String _homeId;
   final ExpensesRepository _expensesRepository;
   final HomeRepository _homeRepository;
+  final Uuid _uuid;
 
   Future<void> _onParticipantsRequested(
     ShareCreateParticipantsRequested event,
@@ -346,6 +353,28 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
         ),
       );
     } on ExpenseException catch (error) {
+      if (error.code == ExpenseErrorCode.paywallActiveExpensesCap) {
+        final tick = state.paywallRequestTick + 1;
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            clearSuccess: true,
+            clearSubmissionError: true,
+            paywallAction: PaywallRetryAction.submit,
+            paywallRequestTick: tick,
+            paywallRequest: PaywallGateRequest(
+              requestId: _uuid.v4(),
+              homeId: _homeId,
+              source: PaywallSources.shareCreateExpense,
+              action: PaywallRetryAction.submit,
+              tick: tick,
+            ),
+            paywallInFlightRequestId: null,
+          ),
+        );
+        return;
+      }
+
       emit(
         state.copyWith(
           isSubmitting: false,
@@ -442,6 +471,25 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
           planTerminationErrorTick: state.planTerminationErrorTick + 1,
         ),
       );
+    }
+  }
+
+  void _onPaywallOpened(
+    ShareCreatePaywallOpened event,
+    Emitter<ShareCreateState> emit,
+  ) {
+    emit(state.copyWith(paywallInFlightRequestId: event.requestId));
+  }
+
+  void _onPaywallResolved(
+    ShareCreatePaywallResolved event,
+    Emitter<ShareCreateState> emit,
+  ) {
+    emit(state.copyWith(paywallInFlightRequestId: null));
+
+    if (event.outcome.status == PaywallGateStatus.granted &&
+        event.outcome.action == PaywallRetryAction.submit) {
+      add(const ShareCreateSubmitted());
     }
   }
 

@@ -78,3 +78,19 @@ class FlowChoreSubmitted extends FlowChoreEvent {
 class FlowChoreDeleted extends FlowChoreEvent {
   const FlowChoreDeleted();
 }
+
+class FlowChorePaywallOpened extends FlowChoreEvent {
+  final String requestId;
+  const FlowChorePaywallOpened(this.requestId);
+
+  @override
+  List<Object?> get props => [requestId];
+}
+
+class FlowChorePaywallResolved extends FlowChoreEvent {
+  final PaywallGateOutcome outcome;
+  const FlowChorePaywallResolved(this.outcome);
+
+  @override
+  List<Object?> get props => [outcome];
+}

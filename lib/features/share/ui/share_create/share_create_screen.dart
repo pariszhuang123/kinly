@@ -10,6 +10,7 @@ import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../generated/l10n.dart';
+import '../../../paywall/ui/paywall_gate_listener.dart';
 import '../../../paywall/ui/paywall_screen.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
 import '../../domain/share_create_form.dart';
@@ -17,6 +18,7 @@ import '../share_edit_outcome.dart';
 import '../widgets/share_create_form_view.dart';
 import '../widgets/share_create_error.dart';
 import '../../../../core/expenses/enums/expense_recurrence_interval.dart';
+import '../../../../core/paywall/paywall_gate.dart';
 
 class ShareCreateScreen extends StatefulWidget {
   const ShareCreateScreen({
@@ -88,143 +90,168 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>();
     final shareColors = sections?.share;
+    final s = S.of(context);
+    final paywallStrings = PaywallStrings(
+      title: s.paywallTitle,
+      subtitle: s.paywallSubtitle,
+      bulletMembers: s.paywallBulletMembers,
+      bulletFlows: s.paywallBulletFlows,
+      bulletPhotos: s.paywallBulletPhotos,
+      bulletShares: s.paywallBulletShares,
+      unlimitedLabel: s.paywallSubtitle,
+      priceCaption: s.paywallPriceCaption,
+      priceUnavailableLabel: s.paywallPriceUnavailable,
+      priceFormatter: (price) => s.paywallPricePerMonth(price),
+      primaryCta: s.paywallPrimaryCta,
+      secondaryCta: s.paywallSecondaryCta,
+      purchaseFailed: s.paywallPurchaseFailed,
+      purchaseSuccess: s.paywallPurchaseSuccess,
+      restoreCta: s.paywallRestoreCta,
+      errorTitle: s.paywallErrorTitle,
+      retryLabel: s.paywallRetryLabel,
+    );
 
-    return BlocConsumer<ShareCreateBloc, ShareCreateState>(
-      listenWhen:
-          (previous, current) =>
-              previous.successExpenseId != current.successExpenseId ||
-              previous.submissionErrorTick != current.submissionErrorTick ||
-              previous.deletionErrorTick != current.deletionErrorTick ||
-              previous.deletionSuccessTick != current.deletionSuccessTick ||
-              previous.planTerminationErrorTick !=
-                  current.planTerminationErrorTick ||
-              previous.planTerminationSuccessTick !=
-                  current.planTerminationSuccessTick,
-      listener: (context, state) {
-        final s = S.of(context);
-
-        if (state.deletionSuccessTick > 0) {
-          Navigator.of(context).pop(ShareEditOutcome.deleted);
-          return;
-        }
-
-        if (state.successExpenseId != null) {
-          final result = state.isEditing ? ShareEditOutcome.updated : true;
-          Navigator.of(context).pop(result);
-          return;
-        }
-
-        if (state.submissionErrorTick > 0) {
-          if (state.submissionErrorCode ==
-              ExpenseErrorCode.paywallActiveExpensesCap) {
-            _showPaywallAndMaybeRetry(context);
+    return PaywallGateListener<ShareCreateBloc, ShareCreateState>(
+      strings: paywallStrings,
+      requestSelector: (state) => state.paywallRequest,
+      inFlightRequestIdSelector: (state) => state.paywallInFlightRequestId,
+      onOpened:
+          (requestId) => context
+              .read<ShareCreateBloc>()
+              .add(ShareCreatePaywallOpened(requestId)),
+      onOutcome:
+          (outcome) => context
+              .read<ShareCreateBloc>()
+              .add(ShareCreatePaywallResolved(outcome)),
+      child: BlocConsumer<ShareCreateBloc, ShareCreateState>(
+        listenWhen:
+            (previous, current) =>
+                previous.successExpenseId != current.successExpenseId ||
+                previous.submissionErrorTick != current.submissionErrorTick ||
+                previous.deletionErrorTick != current.deletionErrorTick ||
+                previous.deletionSuccessTick != current.deletionSuccessTick ||
+                previous.planTerminationErrorTick !=
+                    current.planTerminationErrorTick ||
+                previous.planTerminationSuccessTick !=
+                    current.planTerminationSuccessTick,
+        listener: (context, state) {
+          if (state.deletionSuccessTick > 0) {
+            Navigator.of(context).pop(ShareEditOutcome.deleted);
             return;
           }
-          final snackText = _mapSubmissionError(context, state);
-          final accent =
-              Theme.of(context).extension<KinlySections>()?.share.accent;
-          KinlySnackBar.showError(context, snackText, accentColor: accent);
-        }
 
-        if (state.deletionErrorTick > 0) {
-          final message = state.deletionErrorMessage ?? s.shareEditDeleteError;
-          final accent =
-              Theme.of(context).extension<KinlySections>()?.share.accent;
-          KinlySnackBar.showError(context, message, accentColor: accent);
-        }
+          if (state.successExpenseId != null) {
+            final result = state.isEditing ? ShareEditOutcome.updated : true;
+            Navigator.of(context).pop(result);
+            return;
+          }
 
-        if (state.planTerminationErrorTick > 0) {
-          final message =
-              state.planTerminationErrorMessage ?? s.shareEditTerminateError;
-          final accent =
-              Theme.of(context).extension<KinlySections>()?.share.accent;
-          KinlySnackBar.showError(context, message, accentColor: accent);
-        }
+          if (state.submissionErrorTick > 0) {
+            final snackText = _mapSubmissionError(context, state);
+            final accent =
+                Theme.of(context).extension<KinlySections>()?.share.accent;
+            KinlySnackBar.showError(context, snackText, accentColor: accent);
+          }
 
-        if (state.planTerminationSuccessTick > 0) {
-          final accent =
-              Theme.of(context).extension<KinlySections>()?.share.accent;
-          KinlySnackBar.showSuccess(
-            context,
-            s.shareEditTerminateSuccess,
-            accentColor: accent,
-          );
-          Navigator.of(context).pop(ShareEditOutcome.updated);
-          return;
-        }
-      },
-      builder: (context, state) {
-        _hydrateBaseControllers(state.form);
-        _syncCustomControllers(state);
-        final s = S.of(context);
-        final showTerminatePlan =
-            state.isEditing &&
-            state.planId != null &&
-            state.planStatus != 'terminated' &&
-            state.form.recurrence != ExpenseRecurrenceInterval.none;
+          if (state.deletionErrorTick > 0) {
+            final message = state.deletionErrorMessage ?? s.shareEditDeleteError;
+            final accent =
+                Theme.of(context).extension<KinlySections>()?.share.accent;
+            KinlySnackBar.showError(context, message, accentColor: accent);
+          }
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              state.isEditing ? s.shareEditTitle : s.shareCreateTitle,
+          if (state.planTerminationErrorTick > 0) {
+            final message =
+                state.planTerminationErrorMessage ?? s.shareEditTerminateError;
+            final accent =
+                Theme.of(context).extension<KinlySections>()?.share.accent;
+            KinlySnackBar.showError(context, message, accentColor: accent);
+          }
+
+          if (state.planTerminationSuccessTick > 0) {
+            final accent =
+                Theme.of(context).extension<KinlySections>()?.share.accent;
+            KinlySnackBar.showSuccess(
+              context,
+              s.shareEditTerminateSuccess,
+              accentColor: accent,
+            );
+            Navigator.of(context).pop(ShareEditOutcome.updated);
+            return;
+          }
+        },
+        builder: (context, state) {
+          _hydrateBaseControllers(state.form);
+          _syncCustomControllers(state);
+          final showTerminatePlan =
+              state.isEditing &&
+              state.planId != null &&
+              state.planStatus != 'terminated' &&
+              state.form.recurrence != ExpenseRecurrenceInterval.none;
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                state.isEditing ? s.shareEditTitle : s.shareCreateTitle,
+              ),
+              // Delete now handled by primary button in the form.
             ),
-            // Delete now handled by primary button in the form.
-          ),
-          body: SafeArea(
-            child:
-                state.isLoading
-                    ? const Center(child: KinlyLoader(size: 40))
-                    : state.loadErrorMessage != null
-                    ? Padding(
-                      padding: EdgeInsetsDirectional.all(spacing.lg),
-                      child: ShareCreateError(
-                        message: s.shareCreateLoadError,
-                        onRetry:
-                            () => context.read<ShareCreateBloc>().add(
-                              const ShareCreateParticipantsRequested(),
-                            ),
-                      ),
-                    )
-                    : Column(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsetsDirectional.all(spacing.lg),
-                          child: KinlyScrollFade(
-                            child: ShareCreateFormView(
-                              state: state,
-                              shareColors: shareColors,
-                              descriptionController: _descriptionController,
-                              amountController: _amountController,
-                              notesController: _notesController,
-                              customControllers: _customControllers,
-                              allowDelete: false,
-                              onDeleteRequested: null,
-                              showTerminatePlan: false,
-                              showPrimaryActions: false,
+            body: SafeArea(
+              child:
+                  state.isLoading
+                      ? const Center(child: KinlyLoader(size: 40))
+                      : state.loadErrorMessage != null
+                      ? Padding(
+                        padding: EdgeInsetsDirectional.all(spacing.lg),
+                        child: ShareCreateError(
+                          message: s.shareCreateLoadError,
+                          onRetry:
+                              () => context.read<ShareCreateBloc>().add(
+                                const ShareCreateParticipantsRequested(),
+                              ),
+                        ),
+                      )
+                      : Column(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsetsDirectional.all(spacing.lg),
+                            child: KinlyScrollFade(
+                              child: ShareCreateFormView(
+                                state: state,
+                                shareColors: shareColors,
+                                descriptionController: _descriptionController,
+                                amountController: _amountController,
+                                notesController: _notesController,
+                                customControllers: _customControllers,
+                                allowDelete: false,
+                                onDeleteRequested: null,
+                                showTerminatePlan: false,
+                                showPrimaryActions: false,
+                              ),
                             ),
                           ),
-                        ),
-                        ),
-                        _ActionBar(
-                          state: state,
-                          allowDelete: widget.allowDelete,
-                          onDeleteRequested:
-                              widget.allowDelete
-                                  ? () => _confirmDelete(context)
-                                  : null,
-                          onSubmit: () => context
-                              .read<ShareCreateBloc>()
-                              .add(const ShareCreateSubmitted()),
-                          showTerminatePlan: showTerminatePlan,
-                          isTerminatingPlan: state.isTerminatingPlan,
-                          onTerminatePlan: () => _confirmTerminatePlan(context),
-                        ),
-                      ],
-                    ),
-          ),
-        );
-      },
+                          ),
+                          _ActionBar(
+                            state: state,
+                            allowDelete: widget.allowDelete,
+                            onDeleteRequested:
+                                widget.allowDelete
+                                    ? () => _confirmDelete(context)
+                                    : null,
+                            onSubmit: () => context
+                                .read<ShareCreateBloc>()
+                                .add(const ShareCreateSubmitted()),
+                            showTerminatePlan: showTerminatePlan,
+                            isTerminatingPlan: state.isTerminatingPlan,
+                            onTerminatePlan: () => _confirmTerminatePlan(context),
+                          ),
+                        ],
+                      ),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -292,42 +319,6 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
 
     if (shouldTerminate == true && mounted) {
       bloc.add(const ShareCreatePlanTerminationRequested());
-    }
-  }
-
-  Future<void> _showPaywallAndMaybeRetry(BuildContext context) async {
-    final s = S.of(context);
-    final result = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder:
-            (_) => KinlyPaywallScreen(
-              homeId: widget.homeId,
-              strings: PaywallStrings(
-                title: s.paywallTitle,
-                subtitle: s.paywallSubtitle,
-                bulletMembers: s.paywallBulletMembers,
-                bulletFlows: s.paywallBulletFlows,
-                bulletPhotos: s.paywallBulletPhotos,
-                bulletShares: s.paywallBulletShares,
-                unlimitedLabel: s.paywallSubtitle,
-                priceCaption: s.paywallPriceCaption,
-                priceUnavailableLabel: s.paywallPriceUnavailable,
-                priceFormatter: (price) => s.paywallPricePerMonth(price),
-                primaryCta: s.paywallPrimaryCta,
-                secondaryCta: s.paywallSecondaryCta,
-                purchaseFailed: s.paywallPurchaseFailed,
-                purchaseSuccess: s.paywallPurchaseSuccess,
-                restoreCta: s.paywallRestoreCta,
-                errorTitle: s.paywallErrorTitle,
-                retryLabel: s.paywallRetryLabel,
-              ),
-              source: 'share_create',
-            ),
-      ),
-    );
-    if (!context.mounted) return;
-    if (result == true) {
-      context.read<ShareCreateBloc>().add(const ShareCreateSubmitted());
     }
   }
 }

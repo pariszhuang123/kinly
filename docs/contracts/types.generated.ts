@@ -2113,6 +2113,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      paywall_status_get: { Args: { p_home_id: string }; Returns: Json }
       profile_identity_update: {
         Args: { p_avatar_id: string; p_username: string }
         Returns: {

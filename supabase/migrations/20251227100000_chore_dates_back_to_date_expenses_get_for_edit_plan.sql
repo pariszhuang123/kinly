@@ -838,3 +838,68 @@ BEGIN
   );
 END;
 $$;
+
+
+-- Client-facing paywall status RPC: returns plan, usage, and limits.
+
+CREATE OR REPLACE FUNCTION public.paywall_status_get(p_home_id uuid)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_plan           text;
+  v_now            timestamptz := now();
+BEGIN
+  PERFORM public._assert_home_member(p_home_id);
+
+  SELECT COALESCE(he.plan, 'free')
+    INTO v_plan
+    FROM public.home_entitlements he
+   WHERE he.home_id = p_home_id;
+
+  RETURN jsonb_build_object(
+    'plan', v_plan,
+    'is_premium', (v_plan <> 'free'),
+    'has_ai',     (v_plan = 'premium_ai'),
+    'usage', COALESCE((
+      SELECT jsonb_build_object(
+        'active_chores',   c.active_chores,
+        'chore_photos',    c.chore_photos,
+        'active_members',  c.active_members,
+        'active_expenses', c.active_expenses,
+        'updated_at',      c.updated_at
+      )
+      FROM public.home_usage_counters c
+      WHERE c.home_id = p_home_id
+    ), jsonb_build_object(
+      'active_chores', 0,
+      'chore_photos', 0,
+      'active_members', 0,
+      'active_expenses', 0,
+      'updated_at', v_now
+    )),
+
+    'limits', COALESCE((
+      SELECT jsonb_agg(
+        jsonb_build_object(
+          'metric',    x.metric::text,
+          'max_value', x.max_value
+        )
+        ORDER BY x.metric::text
+      )
+      FROM (
+        SELECT l.metric, l.max_value
+        FROM public.home_plan_limits l
+        WHERE l.plan = v_plan
+      ) x
+    ), '[]'::jsonb)
+  );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.paywall_status_get(uuid)
+  FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.paywall_status_get(uuid)
+  TO authenticated, service_role;

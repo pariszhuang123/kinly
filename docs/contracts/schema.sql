@@ -6381,6 +6381,65 @@ COMMENT ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "
 
 
 
+CREATE OR REPLACE FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_plan           text;
+  v_now            timestamptz := now();
+BEGIN
+  PERFORM public._assert_home_member(p_home_id);
+
+  SELECT COALESCE(he.plan, 'free')
+    INTO v_plan
+    FROM public.home_entitlements he
+   WHERE he.home_id = p_home_id;
+
+  RETURN jsonb_build_object(
+    'plan', v_plan,
+    'is_premium', (v_plan <> 'free'),
+    'has_ai',     (v_plan = 'premium_ai'),
+    'usage', COALESCE((
+      SELECT jsonb_build_object(
+        'active_chores',   c.active_chores,
+        'chore_photos',    c.chore_photos,
+        'active_members',  c.active_members,
+        'active_expenses', c.active_expenses,
+        'updated_at',      c.updated_at
+      )
+      FROM public.home_usage_counters c
+      WHERE c.home_id = p_home_id
+    ), jsonb_build_object(
+      'active_chores', 0,
+      'chore_photos', 0,
+      'active_members', 0,
+      'active_expenses', 0,
+      'updated_at', v_now
+    )),
+
+    'limits', COALESCE((
+      SELECT jsonb_agg(
+        jsonb_build_object(
+          'metric',    x.metric::text,
+          'max_value', x.max_value
+        )
+        ORDER BY x.metric::text
+      )
+      FROM (
+        SELECT l.metric, l.max_value
+        FROM public.home_plan_limits l
+        WHERE l.plan = v_plan
+      ) x
+    ), '[]'::jsonb)
+  );
+END;
+$$;
+
+
+ALTER FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."profile_identity_update"("p_username" "public"."citext", "p_avatar_id" "uuid") RETURNS TABLE("username" "public"."citext", "avatar_id" "uuid", "avatar_storage_path" "text")
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -10527,6 +10586,12 @@ REVOKE ALL ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key
 GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "text", "p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_entitlement_ids" "text"[], "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_rc_event_id" "text", "p_original_transaction_id" "text", "p_raw_event" "jsonb", "p_warnings" "text"[]) TO "anon";
 GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "text", "p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_entitlement_ids" "text"[], "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_rc_event_id" "text", "p_original_transaction_id" "text", "p_raw_event" "jsonb", "p_warnings" "text"[]) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key" "text", "p_user_id" "uuid", "p_home_id" "uuid", "p_store" "public"."subscription_store", "p_rc_app_user_id" "text", "p_entitlement_id" "text", "p_product_id" "text", "p_status" "public"."subscription_status", "p_current_period_end_at" timestamp with time zone, "p_original_purchase_at" timestamp with time zone, "p_last_purchase_at" timestamp with time zone, "p_latest_transaction_id" "text", "p_entitlement_ids" "text"[], "p_event_timestamp" timestamp with time zone, "p_environment" "text", "p_rc_event_id" "text", "p_original_transaction_id" "text", "p_raw_event" "jsonb", "p_warnings" "text"[]) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") TO "service_role";
 
 
 

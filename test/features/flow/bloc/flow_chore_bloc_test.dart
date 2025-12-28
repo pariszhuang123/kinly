@@ -4,6 +4,8 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/core/media/expectation_photo_service.dart';
+import 'package:kinly/core/paywall/paywall_gate.dart';
+import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/data/repositories/chores_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_bloc.dart';
@@ -185,5 +187,114 @@ void main() {
         ),
       ).called(1);
     },
+  );
+
+  blocTest<FlowChoreBloc, FlowChoreState>(
+    'emits paywall gate request on paywall cap error',
+    build: () => buildBloc(),
+    setUp: () {
+      when(
+        () => choresRepository.create(
+          homeId: any(named: 'homeId'),
+          name: any(named: 'name'),
+          assigneeUserId: any(named: 'assigneeUserId'),
+          startDate: any(named: 'startDate'),
+          recurrence: any(named: 'recurrence'),
+          notes: any(named: 'notes'),
+          howToVideoUrl: any(named: 'howToVideoUrl'),
+          expectationPhotoPath: any(named: 'expectationPhotoPath'),
+        ),
+      ).thenThrow(ChoreException(ChoreErrorCode.paywallActiveCap, 'cap'));
+    },
+    act: (bloc) {
+      bloc.add(const FlowChoreTitleChanged('Valid title'));
+      bloc.add(const FlowChoreSubmitted());
+    },
+    expect: () => [
+      isA<FlowChoreState>().having(
+        (s) => s.form.title,
+        'title updated',
+        'Valid title',
+      ),
+      isA<FlowChoreState>().having(
+        (s) => s.isSubmitting,
+        'isSubmitting while sending',
+        true,
+      ),
+      isA<FlowChoreState>()
+          .having((s) => s.paywallRequestTick, 'paywallRequestTick', 1)
+          .having(
+            (s) => s.paywallRequest?.action,
+            'action',
+            PaywallRetryAction.submit,
+          )
+          .having((s) => s.paywallRequest?.homeId, 'homeId', 'home-1'),
+    ],
+  );
+
+  blocTest<FlowChoreBloc, FlowChoreState>(
+    'retries submission after paywall resolved as granted',
+    build: () => buildBloc(),
+    setUp: () {
+      var callCount = 0;
+      when(
+        () => choresRepository.create(
+          homeId: any(named: 'homeId'),
+          name: any(named: 'name'),
+          assigneeUserId: any(named: 'assigneeUserId'),
+          startDate: any(named: 'startDate'),
+          recurrence: any(named: 'recurrence'),
+          notes: any(named: 'notes'),
+          howToVideoUrl: any(named: 'howToVideoUrl'),
+          expectationPhotoPath: any(named: 'expectationPhotoPath'),
+        ),
+      ).thenAnswer((_) async {
+        callCount += 1;
+        if (callCount == 1) {
+          throw ChoreException(ChoreErrorCode.paywallActiveCap, 'cap');
+        }
+        return sampleChore;
+      });
+    },
+    act: (bloc) async {
+      bloc.add(const FlowChoreTitleChanged('Valid title'));
+      bloc.add(const FlowChoreSubmitted());
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+      final req = bloc.state.paywallRequest!;
+      bloc.add(FlowChorePaywallOpened(req.requestId));
+      bloc.add(
+        FlowChorePaywallResolved(
+          PaywallGateOutcome(
+            requestId: req.requestId,
+            action: PaywallRetryAction.submit,
+            status: PaywallGateStatus.granted,
+          ),
+        ),
+      );
+    },
+    expect: () => [
+      isA<FlowChoreState>(),
+      isA<FlowChoreState>().having((s) => s.isSubmitting, 'isSubmitting', true),
+      isA<FlowChoreState>().having(
+        (s) => s.paywallRequest?.action,
+        'paywall request emitted',
+        PaywallRetryAction.submit,
+      ),
+      isA<FlowChoreState>().having(
+        (s) => s.paywallInFlightRequestId,
+        'in-flight set',
+        isNotNull,
+      ),
+      isA<FlowChoreState>().having(
+        (s) => s.isSubmitting,
+        'isSubmitting on retry',
+        true,
+      ),
+      isA<FlowChoreState>().having(
+        (s) => s.successChoreId,
+        'success after retry',
+        sampleChore.id,
+      ),
+    ],
   );
 }

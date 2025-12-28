@@ -21,6 +21,10 @@ class FlowChoreState extends Equatable {
   final bool isCameraPermissionPermanentlyDenied;
   final String? currentUserId;
   final ChoreState? choreState;
+  final int paywallRequestTick;
+  final PaywallRetryAction? paywallAction;
+  final PaywallGateRequest? paywallRequest;
+  final String? paywallInFlightRequestId;
 
   const FlowChoreState({
     required this.form,
@@ -43,6 +47,10 @@ class FlowChoreState extends Equatable {
     required this.isCameraPermissionPermanentlyDenied,
     required this.currentUserId,
     required this.choreState,
+    required this.paywallRequestTick,
+    required this.paywallAction,
+    required this.paywallRequest,
+    required this.paywallInFlightRequestId,
   });
 
   factory FlowChoreState.initial({
@@ -70,6 +78,10 @@ class FlowChoreState extends Equatable {
       isCameraPermissionPermanentlyDenied: false,
       currentUserId: null,
       choreState: isEditMode ? null : ChoreState.draft,
+      paywallRequestTick: 0,
+      paywallAction: null,
+      paywallRequest: null,
+      paywallInFlightRequestId: null,
     );
   }
 
@@ -98,6 +110,10 @@ class FlowChoreState extends Equatable {
     bool? isCameraPermissionPermanentlyDenied,
     String? currentUserId,
     ChoreState? choreState,
+    int? paywallRequestTick,
+    PaywallRetryAction? paywallAction,
+    PaywallGateRequest? paywallRequest,
+    String? paywallInFlightRequestId,
   }) {
     return FlowChoreState(
       form: form ?? this.form,
@@ -132,6 +148,11 @@ class FlowChoreState extends Equatable {
           this.isCameraPermissionPermanentlyDenied,
       currentUserId: currentUserId ?? this.currentUserId,
       choreState: choreState ?? this.choreState,
+      paywallRequestTick: paywallRequestTick ?? this.paywallRequestTick,
+      paywallAction: paywallAction ?? this.paywallAction,
+      paywallRequest: paywallRequest ?? this.paywallRequest,
+      paywallInFlightRequestId:
+          paywallInFlightRequestId ?? this.paywallInFlightRequestId,
     );
   }
 
@@ -172,5 +193,9 @@ class FlowChoreState extends Equatable {
     isCameraPermissionPermanentlyDenied,
     currentUserId,
     choreState,
+    paywallRequestTick,
+    paywallAction,
+    paywallRequest,
+    paywallInFlightRequestId,
   ];
 }

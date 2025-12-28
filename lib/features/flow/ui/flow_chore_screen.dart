@@ -19,11 +19,13 @@ import '../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/members/kinly_selectable_member_avatar_row.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
-import '../../paywall/ui/paywall_screen.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/homes/models.dart';
+import '../../../core/paywall/paywall_gate.dart';
+import '../../paywall/ui/paywall_gate_listener.dart';
+import '../../paywall/ui/paywall_screen.dart';
 import '../bloc/flow_chore_bloc.dart';
 import '../domain/flow_chore_form.dart';
 import '../domain/flow_chore_outcome.dart';
@@ -62,137 +64,167 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final s = S.of(context);
+    final paywallStrings = PaywallStrings(
+      title: s.paywallTitle,
+      subtitle: s.paywallSubtitle,
+      bulletMembers: s.paywallBulletMembers,
+      bulletFlows: s.paywallBulletFlows,
+      bulletPhotos: s.paywallBulletPhotos,
+      bulletShares: s.paywallBulletShares,
+      unlimitedLabel: s.paywallSubtitle,
+      priceCaption: s.paywallPriceCaption,
+      priceUnavailableLabel: s.paywallPriceUnavailable,
+      priceFormatter: (price) => s.paywallPricePerMonth(price),
+      primaryCta: s.paywallPrimaryCta,
+      secondaryCta: s.paywallSecondaryCta,
+      purchaseFailed: s.paywallPurchaseFailed,
+      purchaseSuccess: s.paywallPurchaseSuccess,
+      restoreCta: s.paywallRestoreCta,
+      errorTitle: s.paywallErrorTitle,
+      retryLabel: s.paywallRetryLabel,
+    );
 
-    return BlocConsumer<FlowChoreBloc, FlowChoreState>(
-      listenWhen:
-          (previous, current) =>
-              previous.successChoreId != current.successChoreId ||
-              previous.submissionErrorTick != current.submissionErrorTick ||
-              previous.photoErrorTick != current.photoErrorTick,
-      listener: (context, state) {
-        if (state.photoErrorTick > 0) {
-          final s = S.of(context);
-          final isPermission = state.photoErrorMessage == 'permission';
-          final snackText =
-              isPermission
-                  ? s.flowChorePhotoPermissionDenied
-                  : s.flowChorePhotoUploadError;
-          final accent =
-              Theme.of(context).extension<KinlySections>()?.flow.accent;
-          KinlySnackBar.showError(
-            context,
-            snackText,
-            accentColor: accent,
-            actionLabel:
-                state.isCameraPermissionPermanentlyDenied
-                    ? s.flowChorePhotoPermissionOpenSettings
-                    : null,
-            onAction:
-                state.isCameraPermissionPermanentlyDenied
-                    ? openAppSettings
-                    : null,
-          );
-          return;
-        }
-
-        if (state.successChoreId != null) {
-          Navigator.of(context).pop(
-            FlowChoreOutcome(
-              choreId: state.successChoreId!,
-              isUpdate: state.isEditMode && !state.successWasDelete,
-              isDeleted: state.successWasDelete,
-            ),
-          );
-          return;
-        }
-
-        if (state.submissionErrorTick > 0) {
-          if (state.submissionErrorCode == ChoreErrorCode.paywallActiveCap ||
-              state.submissionErrorCode == ChoreErrorCode.paywallMediaCap) {
-            _showPaywallAndMaybeRetry(context);
+    return PaywallGateListener<FlowChoreBloc, FlowChoreState>(
+      strings: paywallStrings,
+      requestSelector: (state) => state.paywallRequest,
+      inFlightRequestIdSelector: (state) => state.paywallInFlightRequestId,
+      onOpened:
+          (requestId) => context
+              .read<FlowChoreBloc>()
+              .add(FlowChorePaywallOpened(requestId)),
+      onOutcome:
+          (outcome) => context
+              .read<FlowChoreBloc>()
+              .add(FlowChorePaywallResolved(outcome)),
+      child: BlocConsumer<FlowChoreBloc, FlowChoreState>(
+        listenWhen:
+            (previous, current) =>
+                previous.successChoreId != current.successChoreId ||
+                previous.submissionErrorTick != current.submissionErrorTick ||
+                previous.photoErrorTick != current.photoErrorTick,
+        listener: (context, state) {
+          if (state.photoErrorTick > 0) {
+            final s = S.of(context);
+            final isPermission = state.photoErrorMessage == 'permission';
+            final snackText =
+                isPermission
+                    ? s.flowChorePhotoPermissionDenied
+                    : s.flowChorePhotoUploadError;
+            final accent =
+                Theme.of(context).extension<KinlySections>()?.flow.accent;
+            KinlySnackBar.showError(
+              context,
+              snackText,
+              accentColor: accent,
+              actionLabel:
+                  state.isCameraPermissionPermanentlyDenied
+                      ? s.flowChorePhotoPermissionOpenSettings
+                      : null,
+              onAction:
+                  state.isCameraPermissionPermanentlyDenied
+                      ? openAppSettings
+                      : null,
+            );
             return;
           }
-          final snackText = _mapSubmissionError(context, state);
-          final accent =
-              Theme.of(context).extension<KinlySections>()?.flow.accent;
-          KinlySnackBar.showError(context, snackText, accentColor: accent);
-        }
-      },
-      builder: (context, state) {
-        if (!state.isLoading) {
-          _hydrateControllers(state.form);
-        }
 
-        final s = S.of(context);
-        final spacing = theme.extension<Spacing>();
-        final sections = theme.extension<KinlySections>();
-        final flowColors = sections?.flow;
-        final expectationPhotoUrl = storagePathToPublicUrl(
-          Supabase.instance.client,
-          state.form.expectationPhotoPath,
-        );
+          if (state.successChoreId != null) {
+            Navigator.of(context).pop(
+              FlowChoreOutcome(
+                choreId: state.successChoreId!,
+                isUpdate: state.isEditMode && !state.successWasDelete,
+                isDeleted: state.successWasDelete,
+              ),
+            );
+            return;
+          }
 
-        Widget content;
-        if (state.isLoading) {
-          content = const Center(child: KinlyLoader(size: 40));
-        } else if (state.loadErrorMessage != null) {
-          content = _FlowChoreError(
-            message: s.flowChoreLoadError,
-            onRetry:
-                () =>
-                    context.read<FlowChoreBloc>().add(const FlowChoreStarted()),
+          if (state.submissionErrorTick > 0) {
+            final snackText = _mapSubmissionError(context, state);
+            final accent =
+                Theme.of(context).extension<KinlySections>()?.flow.accent;
+            KinlySnackBar.showError(context, snackText, accentColor: accent);
+          }
+        },
+        builder: (context, state) {
+          if (!state.isLoading) {
+            _hydrateControllers(state.form);
+          }
+
+          final spacing = theme.extension<Spacing>();
+          final sections = theme.extension<KinlySections>();
+          final flowColors = sections?.flow;
+          final expectationPhotoUrl = storagePathToPublicUrl(
+            Supabase.instance.client,
+            state.form.expectationPhotoPath,
           );
-        } else {
-          content = KinlyScrollFade(
-            child: _FlowChoreFormView(
-              titleController: _titleController,
-              notesController: _notesController,
-              howToController: _howToController,
-              state: state,
-              spacing: spacing,
-              flowColors: flowColors,
-              isUploadingPhoto: state.isUploadingPhoto,
-              expectationPhotoUrl: expectationPhotoUrl,
-              onPhotoCapture:
-                  () => context.read<FlowChoreBloc>().add(
-                    const FlowChorePhotoCaptureRequested(),
+
+          Widget content;
+          if (state.isLoading) {
+            content = const Center(child: KinlyLoader(size: 40));
+          } else if (state.loadErrorMessage != null) {
+            content = _FlowChoreError(
+              message: s.flowChoreLoadError,
+              onRetry:
+                  () => context
+                      .read<FlowChoreBloc>()
+                      .add(const FlowChoreStarted()),
+            );
+          } else {
+            content = KinlyScrollFade(
+              child: _FlowChoreFormView(
+                titleController: _titleController,
+                notesController: _notesController,
+                howToController: _howToController,
+                state: state,
+                spacing: spacing,
+                flowColors: flowColors,
+                isUploadingPhoto: state.isUploadingPhoto,
+                expectationPhotoUrl: expectationPhotoUrl,
+                onPhotoCapture:
+                    () => context.read<FlowChoreBloc>().add(
+                      const FlowChorePhotoCaptureRequested(),
+                    ),
+              ),
+            );
+          }
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                state.isEditMode
+                    ? s.flowChoreEditTitle
+                    : s.flowChoreCreateTitle,
+              ),
+            ),
+            body: SafeArea(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
+                      child: content,
+                    ),
                   ),
+                  if (!state.isLoading && state.loadErrorMessage == null)
+                    _ChoreActionBar(
+                      state: state,
+                      onSubmit:
+                          () => context
+                              .read<FlowChoreBloc>()
+                              .add(const FlowChoreSubmitted()),
+                      onDeleteRequested:
+                          state.isEditMode && state.canEditOrDelete
+                              ? () => _confirmDelete(context)
+                              : null,
+                    ),
+                ],
+              ),
             ),
           );
-        }
-
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              state.isEditMode ? s.flowChoreEditTitle : s.flowChoreCreateTitle,
-            ),
-          ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
-                    child: content,
-                  ),
-                ),
-                if (!state.isLoading && state.loadErrorMessage == null)
-                  _ChoreActionBar(
-                    state: state,
-                    onSubmit:
-                        () => context
-                            .read<FlowChoreBloc>()
-                            .add(const FlowChoreSubmitted()),
-                    onDeleteRequested:
-                        state.isEditMode && state.canEditOrDelete
-                            ? () => _confirmDelete(context)
-                            : null,
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
+        },
+      ),
     );
   }
 
@@ -234,42 +266,6 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         return s.flowChoreErrorInvalidState;
       default:
         return state.submissionErrorMessage ?? s.flowChoreErrorGeneric;
-    }
-  }
-
-  Future<void> _showPaywallAndMaybeRetry(BuildContext context) async {
-    final s = S.of(context);
-    final result = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder:
-            (_) => KinlyPaywallScreen(
-              homeId: widget.homeId,
-              strings: PaywallStrings(
-                title: s.paywallTitle,
-                subtitle: s.paywallSubtitle,
-                bulletMembers: s.paywallBulletMembers,
-                bulletFlows: s.paywallBulletFlows,
-                bulletPhotos: s.paywallBulletPhotos,
-                bulletShares: s.paywallBulletShares,
-                unlimitedLabel: s.paywallSubtitle,
-                priceCaption: s.paywallPriceCaption,
-                priceUnavailableLabel: s.paywallPriceUnavailable,
-                priceFormatter: (price) => s.paywallPricePerMonth(price),
-                primaryCta: s.paywallPrimaryCta,
-                secondaryCta: s.paywallSecondaryCta,
-                purchaseFailed: s.paywallPurchaseFailed,
-                purchaseSuccess: s.paywallPurchaseSuccess,
-                restoreCta: s.paywallRestoreCta,
-                errorTitle: s.paywallErrorTitle,
-                retryLabel: s.paywallRetryLabel,
-              ),
-              source: 'flow_chore',
-            ),
-      ),
-    );
-    if (!context.mounted) return;
-    if (result == true) {
-      context.read<FlowChoreBloc>().add(const FlowChoreSubmitted());
     }
   }
 }

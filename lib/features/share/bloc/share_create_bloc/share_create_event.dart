@@ -97,3 +97,19 @@ class ShareCreateDeleted extends ShareCreateEvent {
 class ShareCreatePlanTerminationRequested extends ShareCreateEvent {
   const ShareCreatePlanTerminationRequested();
 }
+
+class ShareCreatePaywallOpened extends ShareCreateEvent {
+  final String requestId;
+  const ShareCreatePaywallOpened(this.requestId);
+
+  @override
+  List<Object?> get props => [requestId];
+}
+
+class ShareCreatePaywallResolved extends ShareCreateEvent {
+  final PaywallGateOutcome outcome;
+  const ShareCreatePaywallResolved(this.outcome);
+
+  @override
+  List<Object?> get props => [outcome];
+}

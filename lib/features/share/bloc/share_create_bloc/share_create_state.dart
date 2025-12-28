@@ -30,6 +30,10 @@ class ShareCreateState extends Equatable {
     required this.planTerminationErrorMessage,
     required this.planTerminationErrorTick,
     required this.planTerminationSuccessTick,
+    required this.paywallRequestTick,
+    required this.paywallAction,
+    required this.paywallRequest,
+    required this.paywallInFlightRequestId,
   }) : participants = List.unmodifiable(participants);
 
   factory ShareCreateState.initial({
@@ -73,6 +77,10 @@ class ShareCreateState extends Equatable {
       planTerminationErrorMessage: null,
       planTerminationErrorTick: 0,
       planTerminationSuccessTick: 0,
+      paywallRequestTick: 0,
+      paywallAction: null,
+      paywallRequest: null,
+      paywallInFlightRequestId: null,
     );
   }
 
@@ -103,6 +111,10 @@ class ShareCreateState extends Equatable {
   final String? planTerminationErrorMessage;
   final int planTerminationErrorTick;
   final int planTerminationSuccessTick;
+  final int paywallRequestTick;
+  final PaywallRetryAction? paywallAction;
+  final PaywallGateRequest? paywallRequest;
+  final String? paywallInFlightRequestId;
 
   /// Tracks whether the user has made *any* edits in this session.
   /// Used by the primary button to decide between Delete vs Update.
@@ -142,6 +154,10 @@ class ShareCreateState extends Equatable {
     bool clearPlanTerminationError = false,
     int? planTerminationErrorTick,
     int? planTerminationSuccessTick,
+    int? paywallRequestTick,
+    PaywallRetryAction? paywallAction,
+    PaywallGateRequest? paywallRequest,
+    String? paywallInFlightRequestId,
   }) {
     return ShareCreateState(
       form: form ?? this.form,
@@ -188,6 +204,11 @@ class ShareCreateState extends Equatable {
           planTerminationErrorTick ?? this.planTerminationErrorTick,
       planTerminationSuccessTick:
           planTerminationSuccessTick ?? this.planTerminationSuccessTick,
+      paywallRequestTick: paywallRequestTick ?? this.paywallRequestTick,
+      paywallAction: paywallAction ?? this.paywallAction,
+      paywallRequest: paywallRequest ?? this.paywallRequest,
+      paywallInFlightRequestId:
+          paywallInFlightRequestId ?? this.paywallInFlightRequestId,
     );
   }
 
@@ -268,6 +289,10 @@ class ShareCreateState extends Equatable {
     planTerminationErrorMessage,
     planTerminationErrorTick,
     planTerminationSuccessTick,
+    paywallRequestTick,
+    paywallAction,
+    paywallRequest,
+    paywallInFlightRequestId,
   ];
 }
 

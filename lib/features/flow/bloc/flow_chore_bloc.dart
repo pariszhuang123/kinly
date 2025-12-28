@@ -1,9 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/chores/models.dart';
 import '../../../core/media/expectation_photo_service.dart';
 import '../../../core/media/supabase_media_repository.dart';
+import '../../../core/paywall/paywall_gate.dart';
+import '../../../core/paywall/paywall_sources.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../data/repositories/chores_repository.dart';
 import '../../../data/repositories/home_repository.dart';
@@ -26,6 +29,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
        _expectationPhotoService =
            expectationPhotoService ??
            ExpectationPhotoService(mediaRepository: SupabaseMediaRepository()),
+       _uuid = const Uuid(),
        super(
          FlowChoreState.initial(
            isEditMode: choreId != null,
@@ -43,6 +47,8 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     on<FlowChorePhotoCaptureRequested>(_onPhotoCaptureRequested);
     on<FlowChoreSubmitted>(_onSubmitted);
     on<FlowChoreDeleted>(_onDeleted);
+    on<FlowChorePaywallOpened>(_onPaywallOpened);
+    on<FlowChorePaywallResolved>(_onPaywallResolved);
   }
 
   final String _homeId;
@@ -50,6 +56,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
   final ChoresRepository _choresRepository;
   final HomeRepository _homeRepository;
   final ExpectationPhotoService _expectationPhotoService;
+  final Uuid _uuid;
 
   Future<void> _onStarted(
     FlowChoreStarted event,
@@ -279,6 +286,33 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
         ),
       );
     } on ChoreException catch (error) {
+      if (error.code == ChoreErrorCode.paywallActiveCap ||
+          error.code == ChoreErrorCode.paywallMediaCap) {
+        final tick = state.paywallRequestTick + 1;
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            isDeleting: false,
+            clearSuccess: true,
+            clearSubmissionError: true,
+            paywallAction: PaywallRetryAction.submit,
+            paywallRequestTick: tick,
+            paywallRequest: PaywallGateRequest(
+              requestId: _uuid.v4(),
+              homeId: _homeId,
+              source:
+                  _choreId == null
+                      ? PaywallSources.flowCreateChore
+                      : PaywallSources.flowEditChore,
+              action: PaywallRetryAction.submit,
+              tick: tick,
+            ),
+            paywallInFlightRequestId: null,
+          ),
+        );
+        return;
+      }
+
       emit(
         state.copyWith(
           isSubmitting: false,
@@ -352,6 +386,25 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
           submissionErrorTick: state.submissionErrorTick + 1,
         ),
       );
+    }
+  }
+
+  void _onPaywallOpened(
+    FlowChorePaywallOpened event,
+    Emitter<FlowChoreState> emit,
+  ) {
+    emit(state.copyWith(paywallInFlightRequestId: event.requestId));
+  }
+
+  void _onPaywallResolved(
+    FlowChorePaywallResolved event,
+    Emitter<FlowChoreState> emit,
+  ) {
+    emit(state.copyWith(paywallInFlightRequestId: null));
+
+    if (event.outcome.status == PaywallGateStatus.granted &&
+        event.outcome.action == PaywallRetryAction.submit) {
+      add(const FlowChoreSubmitted());
     }
   }
 }

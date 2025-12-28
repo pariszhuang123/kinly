@@ -278,13 +278,13 @@ Deno.test("dedupes by rc_event_id and skips rpc on duplicate", async () => {
   expect(res1.status === 200, "first call 200");
   const body1 = await res1.json();
   expect(body1.ok === true, "first call ok");
-  expect(rpcs.length === 1, "rpc called first time");
+  expect(rpcs.length === 2, "two rpcs on first call (subscription + status)");
 
   const res2 = await handleRevenueCatWebhook(requestFactory(), env, supabaseFactory);
   expect(res2.status === 200, "second call 200");
   const body2 = await res2.json();
   expect(body2.deduped === true, "deduped flag set");
-  expect(rpcs.length === 2, "rpc called twice (idempotent rpc returns deduped)");
+  expect(rpcs.length === 4, "two more rpcs on retry (deduped + status refresh)");
 });
 
 Deno.test("calls paywall_record_subscription on valid payload", async () => {
@@ -330,11 +330,12 @@ Deno.test("calls paywall_record_subscription on valid payload", async () => {
   expect(res.status === 200, "valid payload returns 200");
   const body = await res.json();
   expect(body.ok === true, "body ok true");
-  expect(rpcs.length === 1, "one rpc call");
-  expect(rpcs[0]?.fn === "paywall_record_subscription", "rpc name correct");
+  expect(rpcs.length === 2, "two rpc calls (record subscription + refresh status)");
+  expect(rpcs[0]?.fn === "paywall_record_subscription", "first rpc name correct");
   expect(rpcs[0]?.args.p_store === "play_store", "store normalized to play_store");
   expect(rpcs[0]?.args.p_status === "active", "status normalized");
   expect(rpcs[0]?.args.p_home_id === "00000000-0000-4000-8000-000000000123", "home id provided");
+  expect(rpcs[1]?.fn === "paywall_status_get", "second rpc refreshes status");
 });
 
 Deno.test("logs missing_latest_transaction_id but still calls rpc", async () => {
@@ -389,7 +390,7 @@ Deno.test("logs missing_latest_transaction_id but still calls rpc", async () => 
   expect(res.status === 200, "returns 200 even when txn missing");
   const body = await res.json();
   expect(body.ok === true, "ok true");
-  expect(rpcs.length === 1, "rpc still called");
+  expect(rpcs.length === 2, "two rpcs (subscription + status refresh)");
   const warnings = (upserts[0] as { warnings?: string[] } | undefined)?.warnings ?? [];
   expect(warnings.includes("missing_latest_transaction_id"), "missing txn logged");
 });

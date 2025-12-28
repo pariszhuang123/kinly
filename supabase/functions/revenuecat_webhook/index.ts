@@ -344,6 +344,18 @@ export const handleRevenueCatWebhook = async (
     );
   }
 
+  // Best-effort: hydrate/refresh paywall status for this home.
+  try {
+    const { error: statusError } = await supabase.rpc("paywall_status_get", {
+      p_home_id: parsed.homeId,
+    });
+    if (statusError) {
+      warnings.push(`paywall_status_get_error:${statusError.message ?? "unknown"}`);
+    }
+  } catch (error) {
+    warnings.push(`paywall_status_get_exception:${String(error)}`);
+  }
+
   return json({ ok: true, deduped: Boolean(deduped), warnings }, 200);
 };
 

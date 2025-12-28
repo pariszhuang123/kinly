@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/core/expenses/models.dart';
 import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/core/paywall/paywall_gate.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/data/repositories/expenses_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
@@ -718,5 +719,129 @@ void main() {
         ),
       ).called(1);
     },
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'emits paywall gate request on expenses cap error',
+    build: () => buildBloc(),
+    seed: seededState,
+    setUp: () {
+      when(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrence: any(named: 'recurrence'),
+          startDate: any(named: 'startDate'),
+        ),
+      ).thenThrow(
+        ExpenseException(ExpenseErrorCode.paywallActiveExpensesCap, 'cap'),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () => [
+      isA<ShareCreateState>().having(
+        (s) => s.isSubmitting,
+        'isSubmitting',
+        true,
+      ),
+      isA<ShareCreateState>()
+          .having((s) => s.paywallRequestTick, 'paywallRequestTick', 1)
+          .having(
+            (s) => s.paywallRequest?.action,
+            'action',
+            PaywallRetryAction.submit,
+          )
+          .having((s) => s.paywallRequest?.homeId, 'homeId', 'home-1'),
+    ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'retries submission after paywall resolved',
+    build: () => buildBloc(),
+    seed: seededState,
+    setUp: () {
+      var callCount = 0;
+      when(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrence: any(named: 'recurrence'),
+          startDate: any(named: 'startDate'),
+        ),
+      ).thenAnswer((_) async {
+        callCount += 1;
+        if (callCount == 1) {
+          throw ExpenseException(ExpenseErrorCode.paywallActiveExpensesCap, 'cap');
+        }
+        return Expense(
+          id: 'expense-123',
+          homeId: 'home-1',
+          createdByUserId: 'creator',
+          status: ExpenseStatus.active,
+          splitType: ExpenseSplitType.equal,
+          amountCents: 4200,
+          description: 'Dinner',
+          notes: null,
+          createdAt: DateTime.now().toUtc(),
+          updatedAt: DateTime.now().toUtc(),
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime(2024, 1, 1),
+          planId: null,
+          fullyPaidAt: null,
+        );
+      });
+    },
+    act: (bloc) async {
+      bloc.add(const ShareCreateSubmitted());
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+      final req = bloc.state.paywallRequest!;
+      bloc.add(ShareCreatePaywallOpened(req.requestId));
+      bloc.add(
+        ShareCreatePaywallResolved(
+          PaywallGateOutcome(
+            requestId: req.requestId,
+            action: PaywallRetryAction.submit,
+            status: PaywallGateStatus.granted,
+          ),
+        ),
+      );
+    },
+    expect: () => [
+      isA<ShareCreateState>().having(
+        (s) => s.isSubmitting,
+        'isSubmitting',
+        true,
+      ),
+      isA<ShareCreateState>().having(
+        (s) => s.paywallRequest?.action,
+        'paywall request emitted',
+        PaywallRetryAction.submit,
+      ),
+      isA<ShareCreateState>().having(
+        (s) => s.paywallInFlightRequestId,
+        'in-flight set',
+        isNotNull,
+      ),
+      isA<ShareCreateState>().having(
+        (s) => s.isSubmitting,
+        'isSubmitting on retry',
+        true,
+      ),
+      isA<ShareCreateState>().having(
+        (s) => s.successExpenseId,
+        'success after retry',
+        'expense-123',
+      ),
+    ],
   );
 }
