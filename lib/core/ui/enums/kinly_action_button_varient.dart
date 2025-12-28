@@ -1,0 +1,1 @@
+enum KinlyActionButtonVariant { filled, outlined }

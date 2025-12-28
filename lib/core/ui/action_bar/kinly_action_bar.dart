@@ -4,6 +4,7 @@ import '../../theme/spacing.dart';
 import '../buttons/kinly_filled_button.dart';
 import '../buttons/kinly_outlined_button.dart';
 import '../kinly_loader.dart';
+import '../enums/kinly_action_button_varient.dart';
 
 class KinlyActionButton {
   const KinlyActionButton({
@@ -22,8 +23,6 @@ class KinlyActionButton {
   final bool disabled;
   final KinlyActionButtonVariant variant;
 }
-
-enum KinlyActionButtonVariant { filled, outlined }
 
 class KinlyActionBar extends StatelessWidget {
   const KinlyActionBar({
