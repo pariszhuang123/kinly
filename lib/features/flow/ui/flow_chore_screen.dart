@@ -23,7 +23,6 @@ import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/homes/models.dart';
-import '../../../core/paywall/paywall_gate.dart';
 import '../../paywall/ui/paywall_gate_listener.dart';
 import '../../paywall/ui/paywall_screen.dart';
 import '../bloc/flow_chore_bloc.dart';
@@ -90,13 +89,13 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
       requestSelector: (state) => state.paywallRequest,
       inFlightRequestIdSelector: (state) => state.paywallInFlightRequestId,
       onOpened:
-          (requestId) => context
-              .read<FlowChoreBloc>()
-              .add(FlowChorePaywallOpened(requestId)),
+          (requestId) => context.read<FlowChoreBloc>().add(
+            FlowChorePaywallOpened(requestId),
+          ),
       onOutcome:
-          (outcome) => context
-              .read<FlowChoreBloc>()
-              .add(FlowChorePaywallResolved(outcome)),
+          (outcome) => context.read<FlowChoreBloc>().add(
+            FlowChorePaywallResolved(outcome),
+          ),
       child: BlocConsumer<FlowChoreBloc, FlowChoreState>(
         listenWhen:
             (previous, current) =>
@@ -167,9 +166,9 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
             content = _FlowChoreError(
               message: s.flowChoreLoadError,
               onRetry:
-                  () => context
-                      .read<FlowChoreBloc>()
-                      .add(const FlowChoreStarted()),
+                  () => context.read<FlowChoreBloc>().add(
+                    const FlowChoreStarted(),
+                  ),
             );
           } else {
             content = KinlyScrollFade(
@@ -211,9 +210,9 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
                     _ChoreActionBar(
                       state: state,
                       onSubmit:
-                          () => context
-                              .read<FlowChoreBloc>()
-                              .add(const FlowChoreSubmitted()),
+                          () => context.read<FlowChoreBloc>().add(
+                            const FlowChoreSubmitted(),
+                          ),
                       onDeleteRequested:
                           state.isEditMode && state.canEditOrDelete
                               ? () => _confirmDelete(context)
@@ -466,23 +465,24 @@ class _ChoreActionBar extends StatelessWidget {
         showDeleteCta
             ? s.flowChoreDeleteButton
             : state.isEditMode
-                ? s.flowChoreSubmitUpdate
-                : s.flowChoreSubmitCreate;
+            ? s.flowChoreSubmitUpdate
+            : s.flowChoreSubmitCreate;
     final isBusy = state.isSubmitting || state.isDeleting;
     final handler = showDeleteCta ? onDeleteRequested : onSubmit;
     final effectiveOnPressed = (isBusy || handler == null) ? null : handler;
 
-    Widget button = showDeleteCta
-        ? KinlyFilledButton.destructiveText(
-          fullWidth: true,
-          onPressed: effectiveOnPressed,
-          label: label,
-        )
-        : KinlyFilledButton.text(
-          fullWidth: true,
-          onPressed: effectiveOnPressed,
-          label: label,
-        );
+    Widget button =
+        showDeleteCta
+            ? KinlyFilledButton.destructiveText(
+              fullWidth: true,
+              onPressed: effectiveOnPressed,
+              label: label,
+            )
+            : KinlyFilledButton.text(
+              fullWidth: true,
+              onPressed: effectiveOnPressed,
+              label: label,
+            );
 
     if (isBusy) {
       button = Stack(
@@ -773,10 +773,7 @@ class _ExpectationPhotoPicker extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 color: Colors.black.withValues(
-                  alpha:
-                      Theme.of(context)
-                          .extension<KinlyOpacity>()!
-                          .alphaHalo,
+                  alpha: Theme.of(context).extension<KinlyOpacity>()!.alphaHalo,
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),

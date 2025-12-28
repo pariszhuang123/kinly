@@ -18,7 +18,6 @@ import '../share_edit_outcome.dart';
 import '../widgets/share_create_form_view.dart';
 import '../widgets/share_create_error.dart';
 import '../../../../core/expenses/enums/expense_recurrence_interval.dart';
-import '../../../../core/paywall/paywall_gate.dart';
 
 class ShareCreateScreen extends StatefulWidget {
   const ShareCreateScreen({
@@ -116,13 +115,13 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
       requestSelector: (state) => state.paywallRequest,
       inFlightRequestIdSelector: (state) => state.paywallInFlightRequestId,
       onOpened:
-          (requestId) => context
-              .read<ShareCreateBloc>()
-              .add(ShareCreatePaywallOpened(requestId)),
+          (requestId) => context.read<ShareCreateBloc>().add(
+            ShareCreatePaywallOpened(requestId),
+          ),
       onOutcome:
-          (outcome) => context
-              .read<ShareCreateBloc>()
-              .add(ShareCreatePaywallResolved(outcome)),
+          (outcome) => context.read<ShareCreateBloc>().add(
+            ShareCreatePaywallResolved(outcome),
+          ),
       child: BlocConsumer<ShareCreateBloc, ShareCreateState>(
         listenWhen:
             (previous, current) =>
@@ -154,7 +153,8 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
           }
 
           if (state.deletionErrorTick > 0) {
-            final message = state.deletionErrorMessage ?? s.shareEditDeleteError;
+            final message =
+                state.deletionErrorMessage ?? s.shareEditDeleteError;
             final accent =
                 Theme.of(context).extension<KinlySections>()?.share.accent;
             KinlySnackBar.showError(context, message, accentColor: accent);
@@ -216,21 +216,21 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
                           Expanded(
                             child: Padding(
                               padding: EdgeInsetsDirectional.all(spacing.lg),
-                            child: KinlyScrollFade(
-                              child: ShareCreateFormView(
-                                state: state,
-                                shareColors: shareColors,
-                                descriptionController: _descriptionController,
-                                amountController: _amountController,
-                                notesController: _notesController,
-                                customControllers: _customControllers,
-                                allowDelete: false,
-                                onDeleteRequested: null,
-                                showTerminatePlan: false,
-                                showPrimaryActions: false,
+                              child: KinlyScrollFade(
+                                child: ShareCreateFormView(
+                                  state: state,
+                                  shareColors: shareColors,
+                                  descriptionController: _descriptionController,
+                                  amountController: _amountController,
+                                  notesController: _notesController,
+                                  customControllers: _customControllers,
+                                  allowDelete: false,
+                                  onDeleteRequested: null,
+                                  showTerminatePlan: false,
+                                  showPrimaryActions: false,
+                                ),
                               ),
                             ),
-                          ),
                           ),
                           _ActionBar(
                             state: state,
@@ -239,12 +239,14 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
                                 widget.allowDelete
                                     ? () => _confirmDelete(context)
                                     : null,
-                            onSubmit: () => context
-                                .read<ShareCreateBloc>()
-                                .add(const ShareCreateSubmitted()),
+                            onSubmit:
+                                () => context.read<ShareCreateBloc>().add(
+                                  const ShareCreateSubmitted(),
+                                ),
                             showTerminatePlan: showTerminatePlan,
                             isTerminatingPlan: state.isTerminatingPlan,
-                            onTerminatePlan: () => _confirmTerminatePlan(context),
+                            onTerminatePlan:
+                                () => _confirmTerminatePlan(context),
                           ),
                         ],
                       ),
@@ -386,11 +388,12 @@ class _ActionBar extends StatelessWidget {
             if (!hidePrimary)
               KinlyFilledButton.text(
                 fullWidth: true,
-                onPressed: shouldDisable
-                    ? null
-                    : canDelete
-                    ? onDeleteRequested
-                    : onSubmit,
+                onPressed:
+                    shouldDisable
+                        ? null
+                        : canDelete
+                        ? onDeleteRequested
+                        : onSubmit,
                 label: primaryLabel,
                 destructive: isDeleteAction,
               ),
@@ -399,9 +402,10 @@ class _ActionBar extends StatelessWidget {
               KinlyFilledButton.destructiveText(
                 fullWidth: true,
                 onPressed: isTerminatingPlan ? null : onTerminatePlan,
-                label: isTerminatingPlan
-                    ? s.shareEditTerminatePlanBusy
-                    : s.shareEditTerminatePlan,
+                label:
+                    isTerminatingPlan
+                        ? s.shareEditTerminatePlanBusy
+                        : s.shareEditTerminatePlan,
               ),
             ],
           ],

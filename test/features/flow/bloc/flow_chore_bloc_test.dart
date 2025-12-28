@@ -5,6 +5,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/core/media/expectation_photo_service.dart';
 import 'package:kinly/core/paywall/paywall_gate.dart';
+import 'package:kinly/core/paywall/enums/paywall_retry_action.dart';
+import 'package:kinly/core/paywall/enums/paywall_gate_status.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/data/repositories/chores_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
@@ -59,8 +61,9 @@ void main() {
     choresRepository = _MockChoresRepository();
     homeRepository = _MockHomeRepository();
     expectationPhotoService = _MockExpectationPhotoService();
-    when(() => homeRepository.getCurrentMembership())
-        .thenAnswer((_) async => null);
+    when(
+      () => homeRepository.getCurrentMembership(),
+    ).thenAnswer((_) async => null);
     when(
       () => homeRepository.listActiveMembers(
         any(),
@@ -210,26 +213,27 @@ void main() {
       bloc.add(const FlowChoreTitleChanged('Valid title'));
       bloc.add(const FlowChoreSubmitted());
     },
-    expect: () => [
-      isA<FlowChoreState>().having(
-        (s) => s.form.title,
-        'title updated',
-        'Valid title',
-      ),
-      isA<FlowChoreState>().having(
-        (s) => s.isSubmitting,
-        'isSubmitting while sending',
-        true,
-      ),
-      isA<FlowChoreState>()
-          .having((s) => s.paywallRequestTick, 'paywallRequestTick', 1)
-          .having(
-            (s) => s.paywallRequest?.action,
-            'action',
-            PaywallRetryAction.submit,
-          )
-          .having((s) => s.paywallRequest?.homeId, 'homeId', 'home-1'),
-    ],
+    expect:
+        () => [
+          isA<FlowChoreState>().having(
+            (s) => s.form.title,
+            'title updated',
+            'Valid title',
+          ),
+          isA<FlowChoreState>().having(
+            (s) => s.isSubmitting,
+            'isSubmitting while sending',
+            true,
+          ),
+          isA<FlowChoreState>()
+              .having((s) => s.paywallRequestTick, 'paywallRequestTick', 1)
+              .having(
+                (s) => s.paywallRequest?.action,
+                'action',
+                PaywallRetryAction.submit,
+              )
+              .having((s) => s.paywallRequest?.homeId, 'homeId', 'home-1'),
+        ],
   );
 
   blocTest<FlowChoreBloc, FlowChoreState>(
@@ -272,29 +276,34 @@ void main() {
         ),
       );
     },
-    expect: () => [
-      isA<FlowChoreState>(),
-      isA<FlowChoreState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-      isA<FlowChoreState>().having(
-        (s) => s.paywallRequest?.action,
-        'paywall request emitted',
-        PaywallRetryAction.submit,
-      ),
-      isA<FlowChoreState>().having(
-        (s) => s.paywallInFlightRequestId,
-        'in-flight set',
-        isNotNull,
-      ),
-      isA<FlowChoreState>().having(
-        (s) => s.isSubmitting,
-        'isSubmitting on retry',
-        true,
-      ),
-      isA<FlowChoreState>().having(
-        (s) => s.successChoreId,
-        'success after retry',
-        sampleChore.id,
-      ),
-    ],
+    expect:
+        () => [
+          isA<FlowChoreState>(),
+          isA<FlowChoreState>().having(
+            (s) => s.isSubmitting,
+            'isSubmitting',
+            true,
+          ),
+          isA<FlowChoreState>().having(
+            (s) => s.paywallRequest?.action,
+            'paywall request emitted',
+            PaywallRetryAction.submit,
+          ),
+          isA<FlowChoreState>().having(
+            (s) => s.paywallInFlightRequestId,
+            'in-flight set',
+            isNotNull,
+          ),
+          isA<FlowChoreState>().having(
+            (s) => s.isSubmitting,
+            'isSubmitting on retry',
+            true,
+          ),
+          isA<FlowChoreState>().having(
+            (s) => s.successChoreId,
+            'success after retry',
+            sampleChore.id,
+          ),
+        ],
   );
 }

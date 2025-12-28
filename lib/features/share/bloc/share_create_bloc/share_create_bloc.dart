@@ -9,6 +9,8 @@ import '../../../../data/repositories/expenses_repository.dart';
 import '../../../../data/repositories/home_repository.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../core/paywall/paywall_gate.dart';
+import '../../../../core/paywall/enums/paywall_retry_action.dart';
+import '../../../../core/paywall/enums/paywall_gate_status.dart';
 import '../../../../core/paywall/paywall_sources.dart';
 import '../../domain/share_create_form.dart';
 import '../../domain/share_participant.dart';
@@ -37,17 +39,17 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
        _uuid = const Uuid(),
        super(
          ShareCreateState.initial(
-            form: initialForm,
-            isEditing: editingExpenseId != null,
-            editingExpenseId: editingExpenseId,
-            planStatus: planStatus,
-            planId: planId,
-            isAmountLocked: amountLocked,
-            allPaid: allPaid,
-            paidByOther: paidByOther,
-            canEdit: canEdit,
-            editDisabledReason: editDisabledReason,
-          ),
+           form: initialForm,
+           isEditing: editingExpenseId != null,
+           editingExpenseId: editingExpenseId,
+           planStatus: planStatus,
+           planId: planId,
+           isAmountLocked: amountLocked,
+           allPaid: allPaid,
+           paidByOther: paidByOther,
+           canEdit: canEdit,
+           editDisabledReason: editDisabledReason,
+         ),
        ) {
     on<ShareCreateParticipantsRequested>(_onParticipantsRequested);
     on<ShareCreateDescriptionChanged>(_onDescriptionChanged);
@@ -169,19 +171,13 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     final hasNoSelection = nextForm.selectedParticipantIds.isEmpty;
     if (isSwitchingToEqual && hasNoSelection && state.participants.isNotEmpty) {
       nextForm = nextForm.copyWith(
-        selectedParticipantIds:
-            LinkedHashSet<String>.from(
-              state.participants.map((p) => p.userId),
-            ),
+        selectedParticipantIds: LinkedHashSet<String>.from(
+          state.participants.map((p) => p.userId),
+        ),
       );
     }
 
-    emit(
-      state.copyWith(
-        form: nextForm,
-        hasUserEdits: true,
-      ),
-    );
+    emit(state.copyWith(form: nextForm, hasUserEdits: true));
   }
 
   void _onNotesChanged(
@@ -254,8 +250,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     final isEditing = state.isEditing;
     final editingExpenseId = state.editingExpenseId;
     final amountLocked = state.isAmountLocked;
-    final requiresAmount =
-        isEditing ? !amountLocked : splitMode != null;
+    final requiresAmount = isEditing ? !amountLocked : splitMode != null;
 
     var isValid =
         descriptionValid &&
@@ -440,10 +435,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     if (planId == null) return;
 
     emit(
-      state.copyWith(
-        isTerminatingPlan: true,
-        clearPlanTerminationError: true,
-      ),
+      state.copyWith(isTerminatingPlan: true, clearPlanTerminationError: true),
     );
 
     try {
