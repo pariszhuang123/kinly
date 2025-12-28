@@ -105,7 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "We\'ll spin up your home instantly. You can rename and invite later.",
     ),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Review every Flow and keep flows moving",
+      "See what needs doing — and who’s taking care of it.",
     ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
       "Explore more ways to keep your home feeling lighter.",
@@ -114,7 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "See every Bill you\'ve created and track collections.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
-      "Who’s taking this on?",
+      "Who\'s handling this?",
     ),
     "flowChoreCreateSuccess": MessageLookupByLibrary.simpleMessage(
       "Flow created.",
@@ -177,15 +177,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "You\'re at the free limit for active flows. Upgrade for more space.",
     ),
     "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
-      "You\'re at the free limit for expectation photos. Upgrade for more space.",
+      "You\'re at the free limit for flow photos. Upgrade for more space.",
     ),
     "flowChoreExpectationPhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "Expectation photo",
+      "Reference photo",
     ),
     "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
-      "Add a link to help someone to follow",
+      "Add a link if there\'s a specific way to do it",
     ),
-    "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage("Guide link"),
+    "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage(
+      "How to do it (optional)",
+    ),
     "flowChoreHowToLaunchError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t open that link. Try again.",
     ),
@@ -196,16 +198,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "Eg. Bin night, clean the fridge, water plants",
     ),
     "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage(
-      "What are we agreeing on?",
+      "What needs to be done?",
     ),
     "flowChoreNotesHint": MessageLookupByLibrary.simpleMessage(
-      "Anything that helps others understand the flow",
+      "Anything that helps others do this easily",
     ),
     "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage(
       "Why this matters",
     ),
     "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "What \'great\' looks like",
+      "What good looks like",
     ),
     "flowChorePhotoLoadError": MessageLookupByLibrary.simpleMessage(
       "Could not load photo",
@@ -267,12 +269,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "Create your first flow so everyone feels clear and aligned.",
     ),
     "flowListEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "Nothing in Flow yet",
+      "Nothing here yet",
     ),
     "flowListError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load Flow. Pull to refresh.",
+      "We couldn\'t load flows. Pull to refresh.",
     ),
-    "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage("Past date"),
+    "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage(
+      "Needs attention",
+    ),
     "force_update_body": MessageLookupByLibrary.simpleMessage(
       "This version of Kinly is no longer supported. Please install the newest release to continue.",
     ),

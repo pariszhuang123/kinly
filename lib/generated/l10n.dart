@@ -1854,10 +1854,10 @@ class S {
     );
   }
 
-  /// `What are we agreeing on?`
+  /// `What needs to be done?`
   String get flowChoreNameLabel {
     return Intl.message(
-      'What are we agreeing on?',
+      'What needs to be done?',
       name: 'flowChoreNameLabel',
       desc: '',
       args: [],
@@ -1884,10 +1884,10 @@ class S {
     );
   }
 
-  /// `Who’s taking this on?`
+  /// `Who's handling this?`
   String get flowChoreAssigneeLabel {
     return Intl.message(
-      'Who’s taking this on?',
+      'Who\'s handling this?',
       name: 'flowChoreAssigneeLabel',
       desc: '',
       args: [],
@@ -2014,30 +2014,30 @@ class S {
     );
   }
 
-  /// `Anything that helps others understand the flow`
+  /// `Anything that helps others do this easily`
   String get flowChoreNotesHint {
     return Intl.message(
-      'Anything that helps others understand the flow',
+      'Anything that helps others do this easily',
       name: 'flowChoreNotesHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `Guide link`
+  /// `How to do it (optional)`
   String get flowChoreHowToLabel {
     return Intl.message(
-      'Guide link',
+      'How to do it (optional)',
       name: 'flowChoreHowToLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add a link to help someone to follow`
+  /// `Add a link if there's a specific way to do it`
   String get flowChoreHowToHint {
     return Intl.message(
-      'Add a link to help someone to follow',
+      'Add a link if there\'s a specific way to do it',
       name: 'flowChoreHowToHint',
       desc: '',
       args: [],
@@ -2064,10 +2064,10 @@ class S {
     );
   }
 
-  /// `What 'great' looks like`
+  /// `What good looks like`
   String get flowChorePhotoLabel {
     return Intl.message(
-      'What \'great\' looks like',
+      'What good looks like',
       name: 'flowChorePhotoLabel',
       desc: '',
       args: [],
@@ -2209,10 +2209,10 @@ class S {
     );
   }
 
-  /// `You're at the free limit for expectation photos. Upgrade for more space.`
+  /// `You're at the free limit for flow photos. Upgrade for more space.`
   String get flowChoreErrorPaywallMediaCap {
     return Intl.message(
-      'You\'re at the free limit for expectation photos. Upgrade for more space.',
+      'You\'re at the free limit for flow photos. Upgrade for more space.',
       name: 'flowChoreErrorPaywallMediaCap',
       desc: '',
       args: [],
@@ -2379,20 +2379,20 @@ class S {
     );
   }
 
-  /// `Expectation photo`
+  /// `Reference photo`
   String get flowChoreExpectationPhotoLabel {
     return Intl.message(
-      'Expectation photo',
+      'Reference photo',
       name: 'flowChoreExpectationPhotoLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Nothing in Flow yet`
+  /// `Nothing here yet`
   String get flowListEmptyTitle {
     return Intl.message(
-      'Nothing in Flow yet',
+      'Nothing here yet',
       name: 'flowListEmptyTitle',
       desc: '',
       args: [],
@@ -2419,20 +2419,20 @@ class S {
     );
   }
 
-  /// `Past date`
+  /// `Needs attention`
   String get flowListOverdueLabel {
     return Intl.message(
-      'Past date',
+      'Needs attention',
       name: 'flowListOverdueLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't load Flow. Pull to refresh.`
+  /// `We couldn't load flows. Pull to refresh.`
   String get flowListError {
     return Intl.message(
-      'We couldn\'t load Flow. Pull to refresh.',
+      'We couldn\'t load flows. Pull to refresh.',
       name: 'flowListError',
       desc: '',
       args: [],
@@ -2449,10 +2449,10 @@ class S {
     );
   }
 
-  /// `Review every Flow and keep flows moving`
+  /// `See what needs doing — and who’s taking care of it.`
   String get exploreFlowSubtitle {
     return Intl.message(
-      'Review every Flow and keep flows moving',
+      'See what needs doing — and who’s taking care of it.',
       name: 'exploreFlowSubtitle',
       desc: '',
       args: [],
