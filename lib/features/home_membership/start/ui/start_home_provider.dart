@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/locator.dart';
 import '../../../../data/repositories/home_repository.dart';
+import '../../../auth/bloc/auth_bloc.dart';
 import '../bloc/start_home_bloc.dart';
 import 'start_home_screen.dart';
 
@@ -12,7 +13,11 @@ class StartHomeProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => StartHomeBloc(sl<HomeRepository>()),
+      create: (ctx) => StartHomeBloc(
+        sl<HomeRepository>(),
+        onProfileDeactivated: () =>
+            ctx.read<AuthBloc>().add(const AuthProfileDeactivatedDetected()),
+      ),
       child: const StartHomeScreen(),
     );
   }

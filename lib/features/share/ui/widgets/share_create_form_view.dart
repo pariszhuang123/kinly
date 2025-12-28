@@ -24,6 +24,7 @@ import '../../domain/share_split_mode.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
 
 part 'share_create_form_fields.dart';
+part 'share_create_participants_fields.dart';
 
 class ShareCreateFormView extends StatelessWidget {
   const ShareCreateFormView({
@@ -182,38 +183,7 @@ class ShareCreateFormView extends StatelessWidget {
       return null;
     }
 
-    DateTime end;
-    switch (recurrence) {
-      case ExpenseRecurrenceInterval.weekly:
-        end = start.add(const Duration(days: 6));
-        break;
-      case ExpenseRecurrenceInterval.every2Weeks:
-        end = start.add(const Duration(days: 13));
-        break;
-      case ExpenseRecurrenceInterval.monthly:
-        end = DateTime(
-          start.year,
-          start.month + 1,
-          start.day,
-        ).subtract(const Duration(days: 1));
-        break;
-      case ExpenseRecurrenceInterval.every2Months:
-        end = DateTime(
-          start.year,
-          start.month + 2,
-          start.day,
-        ).subtract(const Duration(days: 1));
-        break;
-      case ExpenseRecurrenceInterval.annual:
-        end = DateTime(
-          start.year + 1,
-          start.month,
-          start.day,
-        ).subtract(const Duration(days: 1));
-        break;
-      case ExpenseRecurrenceInterval.none:
-        return null;
-    }
+    final end = _periodEndDate(start, recurrence);
 
     final sameMonth = start.month == end.month && start.year == end.year;
     final formatter = DateFormat.MMMMd();
@@ -226,6 +196,38 @@ class ShareCreateFormView extends StatelessWidget {
     }
 
     return '$startStr, ${start.year} - $endStr, ${end.year}';
+  }
+
+  DateTime _periodEndDate(
+    DateTime start,
+    ExpenseRecurrenceInterval recurrence,
+  ) {
+    switch (recurrence) {
+      case ExpenseRecurrenceInterval.weekly:
+        return start.add(const Duration(days: 6));
+      case ExpenseRecurrenceInterval.every2Weeks:
+        return start.add(const Duration(days: 13));
+      case ExpenseRecurrenceInterval.monthly:
+        return DateTime(
+          start.year,
+          start.month + 1,
+          start.day,
+        ).subtract(const Duration(days: 1));
+      case ExpenseRecurrenceInterval.every2Months:
+        return DateTime(
+          start.year,
+          start.month + 2,
+          start.day,
+        ).subtract(const Duration(days: 1));
+      case ExpenseRecurrenceInterval.annual:
+        return DateTime(
+          start.year + 1,
+          start.month,
+          start.day,
+        ).subtract(const Duration(days: 1));
+      case ExpenseRecurrenceInterval.none:
+        return start;
+    }
   }
 }
 

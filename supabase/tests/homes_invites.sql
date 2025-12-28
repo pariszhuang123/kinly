@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(23);
+SELECT plan(25);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -46,9 +46,10 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Seed logical users
 INSERT INTO tmp_users (label, user_id, email) VALUES
-  ('owner',      '00000000-0000-4000-8000-000000000111', 'owner-test@example.com'),
-  ('member_one', '00000000-0000-4000-8000-000000000112', 'member1-test@example.com'),
-  ('member_two', '00000000-0000-4000-8000-000000000113', 'member2-test@example.com');
+  ('owner',        '00000000-0000-4000-8000-000000000111', 'owner-test@example.com'),
+  ('member_one',   '00000000-0000-4000-8000-000000000112', 'member1-test@example.com'),
+  ('member_two',   '00000000-0000-4000-8000-000000000113', 'member2-test@example.com'),
+  ('deactivated',  '00000000-0000-4000-8000-000000000114', 'deactivated-test@example.com');
 
 -- Seed auth users (profiles auto-created via trigger)
 INSERT INTO auth.users (id, instance_id, email, raw_user_meta_data, raw_app_meta_data, aud, role, encrypted_password)
@@ -321,6 +322,30 @@ LIMIT 1;
 SELECT ok(
   (SELECT code FROM invite_codes WHERE label = 'post_transfer') IS NOT NULL,
   'new invite code created after rotation by new owner'
+);
+
+-- Deactivated profile cannot create or join homes
+SELECT set_config(
+  'request.jwt.claim.sub',
+  (SELECT user_id::text FROM tmp_users WHERE label = 'deactivated'),
+  true
+);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
+UPDATE public.profiles
+SET deactivated_at = now()
+WHERE id = (SELECT user_id FROM tmp_users WHERE label = 'deactivated');
+
+SELECT throws_like(
+  $$ SELECT public.homes_create_with_invite(); $$,
+  '%PROFILE_DEACTIVATED%',
+  'deactivated profile cannot create a home'
+);
+
+SELECT throws_like(
+  $$ SELECT public.homes_join((SELECT code FROM invite_codes WHERE label = 'post_transfer')); $$,
+  '%PROFILE_DEACTIVATED%',
+  'deactivated profile cannot join a home'
 );
 
 -- Original owner (now member) can leave successfully

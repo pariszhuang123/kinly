@@ -250,27 +250,29 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
 
   String _mapSubmissionError(BuildContext context, FlowChoreState state) {
     final s = S.of(context);
-    switch (state.submissionErrorCode) {
-      case ChoreErrorCode.paywallActiveCap:
-        return s.flowChoreErrorPaywallActiveCap;
-      case ChoreErrorCode.paywallMediaCap:
-        return s.flowChoreErrorPaywallMediaCap;
-      case ChoreErrorCode.assigneeNotMember:
-        return s.flowChoreErrorAssigneeNotMember;
-      case ChoreErrorCode.forbidden:
-      case ChoreErrorCode.unauthorized:
-      case ChoreErrorCode.notHomeMember:
-        return s.flowChoreErrorForbidden;
-      case ChoreErrorCode.invalidMediaPath:
-        return s.flowChoreErrorInvalidPhoto;
-      case ChoreErrorCode.invalidName:
-        return s.flowChoreValidationName;
-      case ChoreErrorCode.invalidStart:
-        return s.flowChoreErrorInvalidStart;
-      case ChoreErrorCode.invalidState:
-        return s.flowChoreErrorInvalidState;
-      default:
-        return state.submissionErrorMessage ?? s.flowChoreErrorGeneric;
+    final code = state.submissionErrorCode;
+    const forbiddenCodes = {
+      ChoreErrorCode.forbidden,
+      ChoreErrorCode.unauthorized,
+      ChoreErrorCode.notHomeMember,
+    };
+    final codeToMessage = {
+      ChoreErrorCode.paywallActiveCap: s.flowChoreErrorPaywallActiveCap,
+      ChoreErrorCode.paywallMediaCap: s.flowChoreErrorPaywallMediaCap,
+      ChoreErrorCode.assigneeNotMember: s.flowChoreErrorAssigneeNotMember,
+      ChoreErrorCode.invalidMediaPath: s.flowChoreErrorInvalidPhoto,
+      ChoreErrorCode.invalidName: s.flowChoreValidationName,
+      ChoreErrorCode.invalidStart: s.flowChoreErrorInvalidStart,
+      ChoreErrorCode.invalidState: s.flowChoreErrorInvalidState,
+    };
+
+    if (code != null && codeToMessage.containsKey(code)) {
+      return codeToMessage[code]!;
     }
+    if (code != null && forbiddenCodes.contains(code)) {
+      return s.flowChoreErrorForbidden;
+    }
+
+    return state.submissionErrorMessage ?? s.flowChoreErrorGeneric;
   }
 }

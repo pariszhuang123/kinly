@@ -227,6 +227,31 @@ CREATE TYPE "public"."subscription_store" AS ENUM (
 ALTER TYPE "public"."subscription_store" OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."_assert_active_profile"() RETURNS "void"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  PERFORM public.api_assert(
+    EXISTS (
+      SELECT 1
+      FROM public.profiles p
+      WHERE p.id = auth.uid()
+        AND p.deactivated_at IS NULL
+    ),
+    'PROFILE_DEACTIVATED',
+    'Your profile is deactivated. Reactivate it to continue.',
+    '42501'
+  );
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_assert_active_profile"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."_assert_authenticated"() RETURNS "void"
     LANGUAGE "plpgsql"
     SET "search_path" TO ''
@@ -4773,6 +4798,7 @@ DECLARE
   v_inv  public.invites;
 BEGIN
   PERFORM public._assert_authenticated();
+  PERFORM public._assert_active_profile();
 
   -- 1) Create home
   INSERT INTO public.homes (owner_user_id)
@@ -4843,6 +4869,7 @@ DECLARE
   v_active  boolean;
 BEGIN
   PERFORM public._assert_authenticated();
+  PERFORM public._assert_active_profile();
 
   --------------------------------------------------------------------
   -- Combined lookup: home_id + invite state
@@ -8761,6 +8788,13 @@ GRANT ALL ON FUNCTION "public"."citext"("inet") TO "service_role";
 
 
 
+
+
+
+REVOKE ALL ON FUNCTION "public"."_assert_active_profile"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."_assert_active_profile"() TO "anon";
+GRANT ALL ON FUNCTION "public"."_assert_active_profile"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."_assert_active_profile"() TO "service_role";
 
 
 

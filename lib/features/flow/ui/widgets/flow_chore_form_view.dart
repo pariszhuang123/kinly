@@ -29,69 +29,21 @@ class _FlowChoreFormView extends StatelessWidget {
     final theme = Theme.of(context);
     final form = state.form;
     final showValidation = state.showValidationErrors;
-    final requiresAssignee = state.requiresAssignee;
     final hasAssigneeError =
-        showValidation && requiresAssignee && form.assigneeUserId == null;
+        _hasAssigneeValidation(showValidation, state.requiresAssignee, form);
     final hasDateError = showValidation && !state.isStartDateValid;
     final hasHowToError = showValidation && !form.isHowToUrlValid;
-    final hasOptionalContent =
-        form.notes.trim().isNotEmpty ||
-        form.howToVideoUrl.trim().isNotEmpty ||
-        form.expectationPhotoPath.trim().isNotEmpty;
-    final expandOptional = hasOptionalContent || hasHowToError;
-    final dateLabel = DateFormat.yMMMMd().format(form.startDate);
+    final expandOptional =
+        _shouldExpandOptional(form, hasHowToError: hasHowToError);
 
     return ListView(
       children: [
         SizedBox(height: spacing?.xl ?? 16),
-        KinlyTextField(
-          controller: titleController,
-          labelText: s.flowChoreNameLabel,
-          hintText: s.flowChoreNameHint,
-          errorText:
-              showValidation && !form.isTitleValid
-                  ? s.flowChoreValidationName
-                  : null,
-          textInputAction: TextInputAction.next,
-          onChanged:
-              (value) => context.read<FlowChoreBloc>().add(
-                FlowChoreTitleChanged(value),
-              ),
-        ),
+        _buildTitleField(context, s, form, showValidation),
         SizedBox(height: spacing?.lg ?? 16),
-        Text(s.flowChoreAssigneeLabel, style: theme.textTheme.titleMedium),
-        SizedBox(height: spacing?.sm ?? 8),
-        _AssigneeSelector(
-          assignees: state.assignees,
-          selectedUserId: form.assigneeUserId,
-        ),
-        if (hasAssigneeError)
-          Padding(
-            padding: EdgeInsets.only(top: spacing?.xs ?? 4),
-            child: Text(
-              s.flowChoreValidationAssignee,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.error,
-              ),
-            ),
-          ),
+        ..._buildAssigneeSection(context, theme, s, hasAssigneeError, form),
         SizedBox(height: spacing?.lg ?? 16),
-        Text(s.flowChoreStartLabel, style: theme.textTheme.titleMedium),
-        SizedBox(height: spacing?.xs ?? 4),
-        KinlyOutlinedButton.text(
-          onPressed: () => _pickStartDate(context, form.startDate),
-          label: dateLabel,
-        ),
-        if (hasDateError)
-          Padding(
-            padding: EdgeInsets.only(top: spacing?.xs ?? 4),
-            child: Text(
-              s.flowChoreValidationDate,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.error,
-              ),
-            ),
-          ),
+        ..._buildStartDateSection(context, theme, s, form, hasDateError),
         SizedBox(height: spacing?.lg ?? 16),
         KinlyDropdownField<ChoreRecurrence>(
           value: form.recurrence,
@@ -126,6 +78,102 @@ class _FlowChoreFormView extends StatelessWidget {
         SizedBox(height: spacing?.xl ?? 24),
       ],
     );
+  }
+
+  bool _hasAssigneeValidation(
+    bool showValidation,
+    bool requiresAssignee,
+    FlowChoreForm form,
+  ) {
+    return showValidation && requiresAssignee && form.assigneeUserId == null;
+  }
+
+  bool _shouldExpandOptional(
+    FlowChoreForm form, {
+    required bool hasHowToError,
+  }) {
+    final hasOptionalContent =
+        form.notes.trim().isNotEmpty ||
+        form.howToVideoUrl.trim().isNotEmpty ||
+        form.expectationPhotoPath.trim().isNotEmpty;
+    return hasOptionalContent || hasHowToError;
+  }
+
+  Widget _buildTitleField(
+    BuildContext context,
+    S s,
+    FlowChoreForm form,
+    bool showValidation,
+  ) {
+    return KinlyTextField(
+      controller: titleController,
+      labelText: s.flowChoreNameLabel,
+      hintText: s.flowChoreNameHint,
+      errorText:
+          showValidation && !form.isTitleValid
+              ? s.flowChoreValidationName
+              : null,
+      textInputAction: TextInputAction.next,
+      onChanged:
+          (value) => context.read<FlowChoreBloc>().add(
+            FlowChoreTitleChanged(value),
+          ),
+    );
+  }
+
+  List<Widget> _buildAssigneeSection(
+    BuildContext context,
+    ThemeData theme,
+    S s,
+    bool hasAssigneeError,
+    FlowChoreForm form,
+  ) {
+    return [
+      Text(s.flowChoreAssigneeLabel, style: theme.textTheme.titleMedium),
+      SizedBox(height: spacing?.sm ?? 8),
+      _AssigneeSelector(
+        assignees: state.assignees,
+        selectedUserId: form.assigneeUserId,
+      ),
+      if (hasAssigneeError)
+        Padding(
+          padding: EdgeInsets.only(top: spacing?.xs ?? 4),
+          child: Text(
+            s.flowChoreValidationAssignee,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ),
+    ];
+  }
+
+  List<Widget> _buildStartDateSection(
+    BuildContext context,
+    ThemeData theme,
+    S s,
+    FlowChoreForm form,
+    bool hasDateError,
+  ) {
+    final dateLabel = DateFormat.yMMMMd().format(form.startDate);
+    return [
+      Text(s.flowChoreStartLabel, style: theme.textTheme.titleMedium),
+      SizedBox(height: spacing?.xs ?? 4),
+      KinlyOutlinedButton.text(
+        onPressed: () => _pickStartDate(context, form.startDate),
+        label: dateLabel,
+      ),
+      if (hasDateError)
+        Padding(
+          padding: EdgeInsets.only(top: spacing?.xs ?? 4),
+          child: Text(
+            s.flowChoreValidationDate,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ),
+    ];
   }
 
   Future<void> _pickStartDate(BuildContext context, DateTime current) async {

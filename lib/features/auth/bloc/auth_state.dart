@@ -12,6 +12,7 @@ class AuthState extends Equatable {
     this.errorMessage,
     this.membershipStatus = AuthMembershipStatus.unknown,
     this.membership,
+    this.isProfileDeactivated = false,
   });
 
   final AuthStatus status;
@@ -20,6 +21,7 @@ class AuthState extends Equatable {
   final String? errorMessage;
   final AuthMembershipStatus membershipStatus;
   final CurrentMembership? membership;
+  final bool isProfileDeactivated;
 
   bool get isAuthenticated => status == AuthStatus.authenticated;
   bool get hasActiveMembership =>
@@ -32,6 +34,7 @@ class AuthState extends Equatable {
     Object? errorMessage = _unset,
     AuthMembershipStatus? membershipStatus,
     Object? membership = _unset,
+    bool? isProfileDeactivated,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -44,6 +47,7 @@ class AuthState extends Equatable {
           membership == _unset
               ? this.membership
               : membership as CurrentMembership?,
+      isProfileDeactivated: isProfileDeactivated ?? this.isProfileDeactivated,
     );
   }
 
@@ -57,5 +61,6 @@ class AuthState extends Equatable {
     errorMessage,
     membershipStatus,
     membership,
+    isProfileDeactivated,
   ];
 }

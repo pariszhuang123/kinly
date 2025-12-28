@@ -146,6 +146,8 @@ class _JoinFormState extends State<_JoinForm> {
         return s.join_error_already_in_other_home;
       case JoinHomeErrorType.paywallLimit:
         return s.join_error_paywall_limit;
+      case JoinHomeErrorType.profileDeactivated:
+        return s.create_failed_generic;
       case JoinHomeErrorType.unauthorized:
         return s.join_error_unauthorized;
       case JoinHomeErrorType.forbidden:

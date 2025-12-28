@@ -156,33 +156,27 @@ class KinlyOptionSelectorRow<T> extends StatelessWidget {
   }
 
   List<int> _computeRowCounts(int n) {
-    switch (n) {
-      case 1:
-        return [1];
-      case 2:
-        return [2];
-      case 3:
-        return [3];
-      case 4:
-        return [4];
-      case 5:
-        return [3, 2];
-      case 6:
-        return [3, 3];
-      case 7:
-        return [4, 3];
-      case 8:
-        return [4, 4];
-      default:
-        // fallback layout: rows of 4
-        const perRow = 4;
-        final full = n ~/ perRow;
-        final leftover = n % perRow;
+    const presets = <int, List<int>>{
+      1: [1],
+      2: [2],
+      3: [3],
+      4: [4],
+      5: [3, 2],
+      6: [3, 3],
+      7: [4, 3],
+      8: [4, 4],
+    };
+    final preset = presets[n];
+    if (preset != null) return preset;
 
-        final result = List<int>.filled(full, perRow);
-        if (leftover > 0) result.add(leftover);
-        return result;
-    }
+    // fallback layout: rows of 4
+    const perRow = 4;
+    final full = n ~/ perRow;
+    final leftover = n % perRow;
+
+    final result = List<int>.filled(full, perRow);
+    if (leftover > 0) result.add(leftover);
+    return result;
   }
 
   double _computeIconSize(int rowCount) {

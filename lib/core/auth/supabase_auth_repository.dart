@@ -69,46 +69,9 @@ class SupabaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> signInWithGoogle() async {
-    if (kDebugMode) {
-      _logger.debug('GOOGLE_TAP', tag: _logTag);
-    }
-
-    // Supabase validates Google ID tokens against the *Web* OAuth client ID.
-    if (AppConfig.webClientId.isEmpty) {
-      throw AuthException(
-        'Missing WEB_CLIENT_ID dart-define (Google web client ID required).',
-      );
-    }
-
-    // iOS requires the reversed iOS client id URL scheme present in Info.plist
-    // to receive the OAuth callback, but the token "aud" must still match WEB_CLIENT_ID.
-    if (_isApplePlatform() && AppConfig.iosClientId.isEmpty) {
-      throw AuthException(
-        'Missing IOS_CLIENT_ID dart-define (Google iOS client ID required).',
-      );
-    }
-
-    // IMPORTANT:
-    // When switching between dev/prod (or changing WEB_CLIENT_ID),
-    // iOS can reuse a cached Google session via signInSilently() and return an ID token
-    // whose "aud" is tied to the previous client configuration.
-    //
-    // To make env switching reliable:
-    // 1) force a clean session (disconnect clears granted scopes + cached auth),
-    // 2) do an interactive sign-in (no silent sign-in).
-    try {
-      await _googleSignIn.disconnect();
-    } catch (e) {
-      // disconnect can throw if there is no previous session; safe to ignore.
-      if (kDebugMode) {
-        _logger.debug('GOOGLE: disconnect noop/failed: $e', tag: _logTag);
-      } else {
-        _logger.info('GOOGLE: disconnect noop/failed', tag: _logTag);
-      }
-      if (kDebugMode) {
-        _logger.debug('GOOGLE: disconnect stack', tag: _logTag);
-      }
-    }
+    _logGoogleTap();
+    _ensureGoogleConfig();
+    await _disconnectPreviousGoogleSession();
 
     final GoogleSignInAccount? account = await _googleSignIn.signIn();
     if (account == null) {
@@ -119,38 +82,15 @@ class SupabaseAuthRepository implements AuthRepository {
     final auth = await account.authentication;
     final idToken = auth.idToken;
 
-    if (idToken == null) {
-      throw AuthException(
-        'Missing Google ID token. Check WEB_CLIENT_ID dart-define.',
-      );
-    }
-
-    // Guardrail: verify the ID token audience matches the web client ID used by Supabase.
-    final audience = _readAudience(idToken);
-
-    if (kDebugMode) {
-      _logger.debug(
-        'GOOGLE: aud=$audience webClientId=${_redactClientId(AppConfig.webClientId)} '
-        'iosClientId=${_isApplePlatform() ? _redactClientId(AppConfig.iosClientId) : 'n/a'}',
-        tag: _logTag,
-      );
-    }
-
-    if (audience != null && audience != AppConfig.webClientId) {
-      _logger.error(
-        'GOOGLE: unexpected ID token audience "$audience" (expected ${_redactClientId(AppConfig.webClientId)}).',
-        tag: _logTag,
-      );
-      throw AuthException(
-        'Google sign-in returned an unexpected audience. '
-        'Please ensure WEB_CLIENT_ID matches the Supabase Google OAuth client ID '
-        'for this environment, then delete/reinstall the app if needed.',
-      );
-    }
+    _ensureIdTokenPresent(idToken);
+    final safeIdToken = idToken!;
+    final audience = _readAudience(safeIdToken);
+    _logAudienceInfo(audience);
+    _validateAudience(audience);
 
     await _client.auth.signInWithIdToken(
       provider: OAuthProvider.google,
-      idToken: idToken,
+      idToken: safeIdToken,
       accessToken: auth.accessToken,
     );
   }
@@ -282,6 +222,71 @@ class SupabaseAuthRepository implements AuthRepository {
       length,
       (_) => charset[random.nextInt(charset.length)],
     ).join();
+  }
+
+  void _logGoogleTap() {
+    if (kDebugMode) {
+      _logger.debug('GOOGLE_TAP', tag: _logTag);
+    }
+  }
+
+  void _ensureGoogleConfig() {
+    if (AppConfig.webClientId.isEmpty) {
+      throw AuthException(
+        'Missing WEB_CLIENT_ID dart-define (Google web client ID required).',
+      );
+    }
+    if (_isApplePlatform() && AppConfig.iosClientId.isEmpty) {
+      throw AuthException(
+        'Missing IOS_CLIENT_ID dart-define (Google iOS client ID required).',
+      );
+    }
+  }
+
+  Future<void> _disconnectPreviousGoogleSession() async {
+    // Force a clean session to avoid cached tokens tied to a different client ID.
+    try {
+      await _googleSignIn.disconnect();
+    } catch (e) {
+      // disconnect can throw if there is no previous session; safe to ignore.
+      if (kDebugMode) {
+        _logger.debug('GOOGLE: disconnect noop/failed: $e', tag: _logTag);
+        _logger.debug('GOOGLE: disconnect stack', tag: _logTag);
+      } else {
+        _logger.info('GOOGLE: disconnect noop/failed', tag: _logTag);
+      }
+    }
+  }
+
+  void _ensureIdTokenPresent(String? idToken) {
+    if (idToken == null) {
+      throw AuthException(
+        'Missing Google ID token. Check WEB_CLIENT_ID dart-define.',
+      );
+    }
+  }
+
+  void _logAudienceInfo(String? audience) {
+    if (!kDebugMode) return;
+    _logger.debug(
+      'GOOGLE: aud=$audience webClientId=${_redactClientId(AppConfig.webClientId)} '
+      'iosClientId=${_isApplePlatform() ? _redactClientId(AppConfig.iosClientId) : 'n/a'}',
+      tag: _logTag,
+    );
+  }
+
+  void _validateAudience(String? audience) {
+    if (audience != null && audience != AppConfig.webClientId) {
+      _logger.error(
+        'GOOGLE: unexpected ID token audience "$audience" (expected ${_redactClientId(AppConfig.webClientId)}).',
+        tag: _logTag,
+      );
+      throw AuthException(
+        'Google sign-in returned an unexpected audience. '
+        'Please ensure WEB_CLIENT_ID matches the Supabase Google OAuth client ID '
+        'for this environment, then delete/reinstall the app if needed.',
+      );
+    }
   }
 
   static String _sha256ofString(String input) {

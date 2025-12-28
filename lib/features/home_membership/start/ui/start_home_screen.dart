@@ -10,6 +10,7 @@ import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
 import '../bloc/start_home_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StartHomeScreen extends StatelessWidget {
   const StartHomeScreen({super.key});
@@ -20,6 +21,9 @@ class StartHomeScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final membershipStatus = context.select(
       (AuthBloc bloc) => bloc.state.membershipStatus,
+    );
+    final isProfileDeactivated = context.select(
+      (AuthBloc bloc) => bloc.state.isProfileDeactivated,
     );
     final membershipMessage = switch (membershipStatus) {
       AuthMembershipStatus.unknown => s.membership_status_checking,
@@ -55,10 +59,20 @@ class StartHomeScreen extends StatelessWidget {
                   state.status == StartHomeStatus.success;
 
               final canManageHome =
-                  membershipStatus == AuthMembershipStatus.none;
+                  membershipStatus == AuthMembershipStatus.none &&
+                  !isProfileDeactivated;
 
               final canPress = !isCreating && canManageHome;
               final spacing = theme.extension<Spacing>();
+
+              if (isProfileDeactivated) {
+                return _DeactivatedBody(
+                  onSignOut: () => context
+                      .read<AuthBloc>()
+                      .add(const AuthSignOutRequested()),
+                  email: 'support@kinly.app',
+                );
+              }
 
               return Padding(
                 padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
@@ -117,6 +131,68 @@ class StartHomeScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _DeactivatedBody extends StatelessWidget {
+  const _DeactivatedBody({required this.onSignOut, required this.email});
+
+  final VoidCallback onSignOut;
+  final String email;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>();
+    final mailto = Uri(scheme: 'mailto', path: email);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  s.create_failed_generic,
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.colorScheme.error,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: spacing?.m ?? 12),
+                Text(
+                  s.create_subtitle,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium,
+                ),
+                SizedBox(height: spacing?.lg ?? 16),
+                TextButton(
+                  onPressed: () => launchUrl(mailto),
+                  child: Text(
+                    email,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+                SizedBox(height: spacing?.m ?? 12),
+                KinlyFilledButton.text(
+                  fullWidth: true,
+                  label: s.logout,
+                  onPressed: onSignOut,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

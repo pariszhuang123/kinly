@@ -1,16 +1,22 @@
 import 'package:bloc/bloc.dart';
 
+import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../data/repositories/home_repository.dart';
 
 part 'start_home_event.dart';
 part 'start_home_state.dart';
 
 class StartHomeBloc extends Bloc<StartHomeEvent, StartHomeState> {
-  StartHomeBloc(this._homeRepository) : super(const StartHomeState()) {
+  StartHomeBloc(
+    this._homeRepository, {
+    void Function()? onProfileDeactivated,
+  }) : _onProfileDeactivated = onProfileDeactivated,
+       super(const StartHomeState()) {
     on<StartHomeCreateRequested>(_onCreateRequested);
   }
 
   final HomeRepository _homeRepository;
+  final void Function()? _onProfileDeactivated;
 
   Future<void> _onCreateRequested(
     StartHomeCreateRequested event,
@@ -27,12 +33,24 @@ class StartHomeBloc extends Bloc<StartHomeEvent, StartHomeState> {
 
       emit(state.copyWith(status: StartHomeStatus.success));
     } catch (e) {
-      emit(
-        state.copyWith(
-          status: StartHomeStatus.failure,
-          errorMessage: e.toString(),
-        ),
-      );
+      if (e is HomeCreateException &&
+          e.code == CreateHomeErrorCode.profileDeactivated) {
+        _onProfileDeactivated?.call();
+        emit(
+          state.copyWith(
+            status: StartHomeStatus.failure,
+            errorMessage: e.message,
+            isProfileDeactivated: true,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            status: StartHomeStatus.failure,
+            errorMessage: e.toString(),
+          ),
+        );
+      }
     }
   }
 }

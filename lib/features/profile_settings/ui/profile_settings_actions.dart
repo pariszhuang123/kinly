@@ -14,51 +14,33 @@ void handleProfileAction(BuildContext context, ProfileSettingsState state) {
     );
   }
 
-  switch (state.action) {
-    case ProfileSettingsAction.leaveSuccess:
-      KinlySnackBar.showSuccess(
-        context,
-        s.profileLeaveSuccessMessage,
-        accentColor: accent,
-      );
+  final successMessages = {
+    ProfileSettingsAction.leaveSuccess: s.profileLeaveSuccessMessage,
+    ProfileSettingsAction.transferSuccess: s.profileLeaveTransferSuccessMessage,
+    ProfileSettingsAction.kickSuccess: s.profileKickSuccessMessage,
+    ProfileSettingsAction.deleteSuccess: s.profileDeleteSuccessMessage,
+  };
+  final failureActions = const {
+    ProfileSettingsAction.leaveFailure,
+    ProfileSettingsAction.transferFailure,
+    ProfileSettingsAction.kickFailure,
+    ProfileSettingsAction.deleteFailure,
+  };
+
+  final successMessage = successMessages[state.action];
+  if (successMessage != null) {
+    KinlySnackBar.showSuccess(
+      context,
+      successMessage,
+      accentColor: accent,
+    );
+    if (state.action == ProfileSettingsAction.leaveSuccess) {
       authBloc.add(const AuthMembershipRefreshRequested());
-      break;
-    case ProfileSettingsAction.leaveFailure:
-      showError();
-      break;
-    case ProfileSettingsAction.transferSuccess:
-      KinlySnackBar.showSuccess(
-        context,
-        s.profileLeaveTransferSuccessMessage,
-        accentColor: accent,
-      );
-      break;
-    case ProfileSettingsAction.transferFailure:
-      showError();
-      break;
-    case ProfileSettingsAction.kickSuccess:
-      KinlySnackBar.showSuccess(
-        context,
-        s.profileKickSuccessMessage,
-        accentColor: accent,
-      );
-      break;
-    case ProfileSettingsAction.kickFailure:
-      showError();
-      break;
-    case ProfileSettingsAction.deleteSuccess:
-      KinlySnackBar.showSuccess(
-        context,
-        s.profileDeleteSuccessMessage,
-        accentColor: accent,
-      );
+    } else if (state.action == ProfileSettingsAction.deleteSuccess) {
       authBloc.add(const AuthSignOutRequested());
-      break;
-    case ProfileSettingsAction.deleteFailure:
-      showError();
-      break;
-    case ProfileSettingsAction.none:
-      break;
+    }
+  } else if (failureActions.contains(state.action)) {
+    showError();
   }
 
   if (!context.mounted) return;
@@ -143,51 +125,63 @@ Future<void> handleProfileLeaveTap(BuildContext context) async {
   final s = S.of(context);
   final accent = _profileAccent(context);
 
+  if (_handleEligibilityMessages(context, state, s, accent)) return;
+  if (_handleMissingMembership(context, state, s, accent)) return;
+  if (await _handleOwnerFlow(context, state, s, bloc, accent)) return;
+  if (!context.mounted) return;
+  await _handleNonOwnerFlow(context, state, s, bloc);
+}
+
+bool _handleEligibilityMessages(
+  BuildContext context,
+  ProfileSettingsState state,
+  S s,
+  Color? accent,
+) {
   if (state.leaveEligibilityLoading) {
     KinlySnackBar.showInfo(
       context,
       s.profileLeaveEligibilityLoading,
       accentColor: accent,
     );
-    return;
+    return true;
   }
-
   if (state.leaveEligibilityError != null) {
     KinlySnackBar.showError(
       context,
       s.profileLeaveEligibilityError,
       accentColor: accent,
     );
-    return;
+    return true;
   }
+  return false;
+}
 
-  final membership = state.membership;
-  if (membership == null) {
-    KinlySnackBar.showError(
-      context,
-      s.profileMissingHomeError,
-      accentColor: accent,
-    );
-    return;
-  }
+bool _handleMissingMembership(
+  BuildContext context,
+  ProfileSettingsState state,
+  S s,
+  Color? accent,
+) {
+  if (state.membership != null) return false;
+  KinlySnackBar.showError(
+    context,
+    s.profileMissingHomeError,
+    accentColor: accent,
+  );
+  return true;
+}
 
+Future<bool> _handleOwnerFlow(
+  BuildContext context,
+  ProfileSettingsState state,
+  S s,
+  ProfileSettingsBloc bloc,
+  Color? accent,
+) async {
   final isOwner = state.isOwner;
   final hasOtherMembers = state.otherActiveMembers.isNotEmpty;
-
-  if (!isOwner || !hasOtherMembers) {
-    final message =
-        isOwner && !hasOtherMembers
-            ? s.profileLeaveOwnerSoloMessage
-            : s.profileConfirmLeaveMessage;
-
-    final confirmed = await showProfileLeaveDialog(context, message: message);
-    if (!context.mounted) return;
-
-    if (confirmed == true) {
-      bloc.add(const ProfileSettingsLeaveRequested());
-    }
-    return;
-  }
+  if (!isOwner || !hasOtherMembers) return false;
 
   final candidates = state.transferCandidates;
   if (candidates.isEmpty) {
@@ -196,14 +190,35 @@ Future<void> handleProfileLeaveTap(BuildContext context) async {
       s.profileLeaveOwnerNoEligibleMembers,
       accentColor: accent,
     );
-    return;
+    return true;
   }
 
   final selectedUserId = await showTransferOwnershipSheet(context, candidates);
-  if (!context.mounted) return;
+  if (!context.mounted) return true;
 
   if (selectedUserId != null) {
     bloc.add(ProfileSettingsTransferOwnerRequested(selectedUserId));
+  }
+  return true;
+}
+
+Future<void> _handleNonOwnerFlow(
+  BuildContext context,
+  ProfileSettingsState state,
+  S s,
+  ProfileSettingsBloc bloc,
+) async {
+  final isOwner = state.isOwner;
+  final hasOtherMembers = state.otherActiveMembers.isNotEmpty;
+  final message =
+      isOwner && !hasOtherMembers
+          ? s.profileLeaveOwnerSoloMessage
+          : s.profileConfirmLeaveMessage;
+
+  final confirmed = await showProfileLeaveDialog(context, message: message);
+  if (!context.mounted) return;
+  if (confirmed == true) {
+    bloc.add(const ProfileSettingsLeaveRequested());
   }
 }
 

@@ -7,6 +7,7 @@ enum JoinHomeErrorType {
   inactiveInvite,
   alreadyInOtherHome,
   paywallLimit,
+  profileDeactivated,
   unauthorized,
   forbidden,
   unknown,

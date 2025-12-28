@@ -40,238 +40,167 @@ class SupabaseErrorMapper {
   const SupabaseErrorMapper._();
 
   /// Map a PostgrestException thrown by Supabase RPC into a typed [HomeJoinException].
-  static HomeJoinException mapJoin(Object error) {
-    // Unauthorized at transport/auth level
-    if (error is AuthException) {
-      return HomeJoinException(JoinErrorCode.unauthorized, error.message);
-    }
-
-    if (error is PostgrestException) {
-      // We raised MESSAGE as a JSON string containing { code, message, details }
-      String? machineCode;
-      String humanMessage = error.message;
-      Map<String, dynamic>? details;
-      try {
-        final decoded = jsonDecode(error.message);
-        if (decoded is Map<String, dynamic>) {
-          machineCode = decoded['code'] as String?;
-          humanMessage = (decoded['message'] as String?) ?? humanMessage;
-          final d = decoded['details'];
-          if (d is Map<String, dynamic>) details = d;
-        }
-      } catch (_) {
-        // ignore: message not JSON — keep defaults
-      }
-
-      switch ((machineCode ?? '').toUpperCase()) {
-        case 'INVALID_CODE':
-          return HomeJoinException(
-            JoinErrorCode.invalidCode,
-            humanMessage,
-            details: details,
-          );
-        case 'INACTIVE_INVITE':
-          return HomeJoinException(
-            JoinErrorCode.inactiveInvite,
-            humanMessage,
-            details: details,
-          );
-        case 'PAYWALL_LIMIT_ACTIVE_MEMBERS':
-          return HomeJoinException(
-            JoinErrorCode.paywallLimitActiveMembers,
-            humanMessage,
-            details: details,
-          );
-        case 'ALREADY_IN_OTHER_HOME':
-          return HomeJoinException(
-            JoinErrorCode.alreadyInOtherHome,
-            humanMessage,
-            details: details,
-          );
-        case 'FORBIDDEN':
-          return HomeJoinException(
-            JoinErrorCode.forbidden,
-            humanMessage,
-            details: details,
-          );
-        case 'UNAUTHORIZED':
-          return HomeJoinException(
-            JoinErrorCode.unauthorized,
-            humanMessage,
-            details: details,
-          );
-        default:
-          return HomeJoinException(
-            JoinErrorCode.unknown,
-            humanMessage,
-            details: details,
-          );
-      }
-    }
-
-    // Fallback for unexpected errors
-    return HomeJoinException(JoinErrorCode.unknown, error.toString());
-  }
+  static HomeJoinException mapJoin(Object error) =>
+      _mapWithAuth<HomeJoinException, JoinErrorCode>(
+        error: error,
+        authFactory: (message) =>
+            HomeJoinException(JoinErrorCode.unauthorized, message),
+        postgrestFactory: (parsed) => HomeJoinException(
+          _joinCodeMap[parsed.code] ?? JoinErrorCode.unknown,
+          parsed.message,
+          details: parsed.details,
+        ),
+        fallbackFactory: (message) =>
+            HomeJoinException(JoinErrorCode.unknown, message),
+      );
 
   /// Map Supabase errors for homes.create RPC.
-  static HomeCreateException mapCreate(Object error) {
-    if (error is AuthException) {
-      return HomeCreateException(
-        CreateHomeErrorCode.unauthorized,
-        error.message,
+  static HomeCreateException mapCreate(Object error) =>
+      _mapWithAuth<HomeCreateException, CreateHomeErrorCode>(
+        error: error,
+        authFactory: (message) =>
+            HomeCreateException(CreateHomeErrorCode.unauthorized, message),
+        postgrestFactory: (parsed) => HomeCreateException(
+          _createHomeCodeMap[parsed.code] ?? CreateHomeErrorCode.unknown,
+          parsed.message,
+          details: parsed.details,
+        ),
+        fallbackFactory: (message) =>
+            HomeCreateException(CreateHomeErrorCode.unknown, message),
       );
-    }
-
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final code =
-          _createHomeCodeMap[parsed.code] ?? CreateHomeErrorCode.unknown;
-      return HomeCreateException(code, parsed.message, details: parsed.details);
-    }
-
-    return HomeCreateException(CreateHomeErrorCode.unknown, error.toString());
-  }
 
   // ----- invites.rotate -----
-  static InviteRotateException mapRotate(Object error) {
-    if (error is AuthException) {
-      return InviteRotateException(RotateErrorCode.unauthorized, error.message);
-    }
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final code = _rotateCodeMap[parsed.code] ?? RotateErrorCode.unknown;
-      return InviteRotateException(
-        code,
-        parsed.message,
-        details: parsed.details,
+  static InviteRotateException mapRotate(Object error) =>
+      _mapWithAuth<InviteRotateException, RotateErrorCode>(
+        error: error,
+        authFactory: (message) =>
+            InviteRotateException(RotateErrorCode.unauthorized, message),
+        postgrestFactory: (parsed) => InviteRotateException(
+          _rotateCodeMap[parsed.code] ?? RotateErrorCode.unknown,
+          parsed.message,
+          details: parsed.details,
+        ),
+        fallbackFactory: (message) =>
+            InviteRotateException(RotateErrorCode.unknown, message),
       );
-    }
-    return InviteRotateException(RotateErrorCode.unknown, error.toString());
-  }
 
   // ----- invites.revoke -----
-  static InviteRevokeException mapRevoke(Object error) {
-    if (error is AuthException) {
-      return InviteRevokeException(RevokeErrorCode.unauthorized, error.message);
-    }
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final code = _revokeCodeMap[parsed.code] ?? RevokeErrorCode.unknown;
-      return InviteRevokeException(
-        code,
-        parsed.message,
-        details: parsed.details,
+  static InviteRevokeException mapRevoke(Object error) =>
+      _mapWithAuth<InviteRevokeException, RevokeErrorCode>(
+        error: error,
+        authFactory: (message) =>
+            InviteRevokeException(RevokeErrorCode.unauthorized, message),
+        postgrestFactory: (parsed) => InviteRevokeException(
+          _revokeCodeMap[parsed.code] ?? RevokeErrorCode.unknown,
+          parsed.message,
+          details: parsed.details,
+        ),
+        fallbackFactory: (message) =>
+            InviteRevokeException(RevokeErrorCode.unknown, message),
       );
-    }
-    return InviteRevokeException(RevokeErrorCode.unknown, error.toString());
-  }
 
   // ----- invites.get_or_create -----
-  static InviteGetOrCreateException mapInviteGetOrCreate(Object error) {
-    if (error is AuthException) {
-      return InviteGetOrCreateException(
-        InviteGetOrCreateErrorCode.unauthorized,
-        error.message,
+  static InviteGetOrCreateException mapInviteGetOrCreate(Object error) =>
+      _mapWithAuth<InviteGetOrCreateException, InviteGetOrCreateErrorCode>(
+        error: error,
+        authFactory: (message) => InviteGetOrCreateException(
+          InviteGetOrCreateErrorCode.unauthorized,
+          message,
+        ),
+        postgrestFactory: (parsed) {
+          final mapped = _inviteGetOrCreateMap[parsed.code];
+          final code =
+              mapped ??
+              ((parsed.message.toLowerCase().contains('inactive') ||
+                      parsed.message.toLowerCase().contains('not found'))
+                  ? InviteGetOrCreateErrorCode.inactiveHome
+                  : InviteGetOrCreateErrorCode.unknown);
+          return InviteGetOrCreateException(
+            code,
+            parsed.message,
+            details: parsed.details,
+          );
+        },
+        fallbackFactory: (message) => InviteGetOrCreateException(
+          InviteGetOrCreateErrorCode.unknown,
+          message,
+        ),
       );
-    }
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final mapped = _inviteGetOrCreateMap[parsed.code];
-      final code =
-          mapped ??
-          ((parsed.message.toLowerCase().contains('inactive') ||
-                  parsed.message.toLowerCase().contains('not found'))
-              ? InviteGetOrCreateErrorCode.inactiveHome
-              : InviteGetOrCreateErrorCode.unknown);
-      return InviteGetOrCreateException(
-        code,
-        parsed.message,
-        details: parsed.details,
-      );
-    }
-    return InviteGetOrCreateException(
-      InviteGetOrCreateErrorCode.unknown,
-      error.toString(),
-    );
-  }
 
   // ----- homes.transfer_owner -----
-  static TransferOwnerException mapTransfer(Object error) {
-    if (error is AuthException) {
-      return TransferOwnerException(
-        TransferErrorCode.unauthorized,
-        error.message,
+  static TransferOwnerException mapTransfer(Object error) =>
+      _mapWithAuth<TransferOwnerException, TransferErrorCode>(
+        error: error,
+        authFactory: (message) =>
+            TransferOwnerException(TransferErrorCode.unauthorized, message),
+        postgrestFactory: (parsed) => TransferOwnerException(
+          _transferOwnerMap[parsed.code] ?? TransferErrorCode.unknown,
+          parsed.message,
+          details: parsed.details,
+        ),
+        fallbackFactory: (message) =>
+            TransferOwnerException(TransferErrorCode.unknown, message),
       );
-    }
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final code = _transferOwnerMap[parsed.code] ?? TransferErrorCode.unknown;
-      return TransferOwnerException(
-        code,
-        parsed.message,
-        details: parsed.details,
-      );
-    }
-    return TransferOwnerException(TransferErrorCode.unknown, error.toString());
-  }
 
   // ----- homes.leave -----
-  static LeaveException mapLeave(Object error) {
-    if (error is AuthException) {
-      return LeaveException(LeaveErrorCode.unauthorized, error.message);
-    }
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final code = _leaveMap[parsed.code] ?? LeaveErrorCode.unknown;
-      return LeaveException(code, parsed.message, details: parsed.details);
-    }
-    return LeaveException(LeaveErrorCode.unknown, error.toString());
-  }
+  static LeaveException mapLeave(Object error) =>
+      _mapWithAuth<LeaveException, LeaveErrorCode>(
+        error: error,
+        authFactory: (message) =>
+            LeaveException(LeaveErrorCode.unauthorized, message),
+        postgrestFactory: (parsed) => LeaveException(
+          _leaveMap[parsed.code] ?? LeaveErrorCode.unknown,
+          parsed.message,
+          details: parsed.details,
+        ),
+        fallbackFactory: (message) =>
+            LeaveException(LeaveErrorCode.unknown, message),
+      );
 
   // ----- members.kick -----
-  static KickMemberException mapKick(Object error) {
-    if (error is AuthException) {
-      return KickMemberException(
-        KickMemberErrorCode.unauthorized,
-        error.message,
+  static KickMemberException mapKick(Object error) =>
+      _mapWithAuth<KickMemberException, KickMemberErrorCode>(
+        error: error,
+        authFactory: (message) =>
+            KickMemberException(KickMemberErrorCode.unauthorized, message),
+        postgrestFactory: (parsed) => KickMemberException(
+          _kickMap[parsed.code] ?? KickMemberErrorCode.unknown,
+          parsed.message,
+          details: parsed.details,
+        ),
+        fallbackFactory: (message) =>
+            KickMemberException(KickMemberErrorCode.unknown, message),
       );
-    }
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final code = _kickMap[parsed.code] ?? KickMemberErrorCode.unknown;
-      return KickMemberException(code, parsed.message, details: parsed.details);
-    }
-    return KickMemberException(KickMemberErrorCode.unknown, error.toString());
-  }
 
   // ----- mood.submit -----
-  static MoodSubmitException mapMoodSubmit(Object error) {
-    if (error is AuthException) {
-      return MoodSubmitException(
-        MoodSubmitErrorCode.unauthorized,
-        error.message,
+  static MoodSubmitException mapMoodSubmit(Object error) =>
+      _mapWithAuth<MoodSubmitException, MoodSubmitErrorCode>(
+        error: error,
+        authFactory: (message) =>
+            MoodSubmitException(MoodSubmitErrorCode.unauthorized, message),
+        postgrestFactory: (parsed) => MoodSubmitException(
+          _moodSubmitMap[parsed.code] ?? MoodSubmitErrorCode.unknown,
+          parsed.message,
+          details: parsed.details,
+        ),
+        fallbackFactory: (message) =>
+            MoodSubmitException(MoodSubmitErrorCode.unknown, message),
       );
-    }
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final code = _moodSubmitMap[parsed.code] ?? MoodSubmitErrorCode.unknown;
-      return MoodSubmitException(code, parsed.message, details: parsed.details);
-    }
-    return MoodSubmitException(MoodSubmitErrorCode.unknown, error.toString());
-  }
 
   // ----- nps.submit -----
-  static NpsSubmitException mapNpsSubmit(Object error) {
-    if (error is AuthException) {
-      return NpsSubmitException(NpsSubmitErrorCode.unauthorized, error.message);
-    }
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final code = _npsSubmitMap[parsed.code] ?? NpsSubmitErrorCode.unknown;
-      return NpsSubmitException(code, parsed.message, details: parsed.details);
-    }
-    return NpsSubmitException(NpsSubmitErrorCode.unknown, error.toString());
-  }
+  static NpsSubmitException mapNpsSubmit(Object error) =>
+      _mapWithAuth<NpsSubmitException, NpsSubmitErrorCode>(
+        error: error,
+        authFactory: (message) =>
+            NpsSubmitException(NpsSubmitErrorCode.unauthorized, message),
+        postgrestFactory: (parsed) => NpsSubmitException(
+          _npsSubmitMap[parsed.code] ?? NpsSubmitErrorCode.unknown,
+          parsed.message,
+          details: parsed.details,
+        ),
+        fallbackFactory: (message) =>
+            NpsSubmitException(NpsSubmitErrorCode.unknown, message),
+      );
 
   // Internal helper to parse JSON (code/message/details) from RPC errors
   static _Parsed _parseErrorJson(String message) {
@@ -325,6 +254,22 @@ class _Parsed {
   _Parsed({required this.code, required this.message, required this.details});
 }
 
+T _mapWithAuth<T, C>({
+  required Object error,
+  required T Function(String message) authFactory,
+  required T Function(_Parsed parsed) postgrestFactory,
+  required T Function(String message) fallbackFactory,
+}) {
+  if (error is AuthException) {
+    return authFactory(error.message);
+  }
+  if (error is PostgrestException) {
+    final parsed = SupabaseErrorMapper._parseErrorJson(error.message);
+    return postgrestFactory(parsed);
+  }
+  return fallbackFactory(error.toString());
+}
+
 const _choreCodeMap = <String, ChoreErrorCode>{
   'INVALID_INPUT': ChoreErrorCode.invalidInput,
   'INVALID_NAME': ChoreErrorCode.invalidInput,
@@ -368,7 +313,18 @@ const _expenseCodeMap = <String, ExpenseErrorCode>{
   'UNAUTHORIZED': ExpenseErrorCode.unauthorized,
 };
 
+const _joinCodeMap = <String, JoinErrorCode>{
+  'INVALID_CODE': JoinErrorCode.invalidCode,
+  'INACTIVE_INVITE': JoinErrorCode.inactiveInvite,
+  'PROFILE_DEACTIVATED': JoinErrorCode.profileDeactivated,
+  'PAYWALL_LIMIT_ACTIVE_MEMBERS': JoinErrorCode.paywallLimitActiveMembers,
+  'ALREADY_IN_OTHER_HOME': JoinErrorCode.alreadyInOtherHome,
+  'FORBIDDEN': JoinErrorCode.forbidden,
+  'UNAUTHORIZED': JoinErrorCode.unauthorized,
+};
+
 const _createHomeCodeMap = <String, CreateHomeErrorCode>{
+  'PROFILE_DEACTIVATED': CreateHomeErrorCode.profileDeactivated,
   'ALREADY_IN_OTHER_HOME': CreateHomeErrorCode.alreadyInOtherHome,
   'FORBIDDEN': CreateHomeErrorCode.forbidden,
   'UNAUTHORIZED': CreateHomeErrorCode.unauthorized,
@@ -505,3 +461,4 @@ class ExpenseException implements Exception {
   @override
   String toString() => 'ExpenseException($code): $message';
 }
+

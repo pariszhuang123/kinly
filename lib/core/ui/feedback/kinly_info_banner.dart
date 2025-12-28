@@ -33,18 +33,8 @@ class KinlyInfoBanner extends StatelessWidget {
     final typeScale = theme.extension<KinlyTypography>();
     final opacities = theme.extension<KinlyOpacity>()!;
 
-    final bg = switch (type) {
-      KinlyBannerType.success => colors.primaryContainer,
-      KinlyBannerType.info => colors.info,
-      KinlyBannerType.warning => colors.warning,
-      KinlyBannerType.error => colors.error.withValues(alpha: opacities.alphaSM),
-    };
-    final fg = switch (type) {
-      KinlyBannerType.success => colors.onPrimaryContainer,
-      KinlyBannerType.info => colors.onSurface,
-      KinlyBannerType.warning => colors.onSurface,
-      KinlyBannerType.error => colors.onError,
-    };
+    final bg = _backgroundForType(colors, opacities);
+    final fg = _foregroundForType(colors);
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -72,5 +62,30 @@ class KinlyInfoBanner extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color _backgroundForType(KinlyColorTokens colors, KinlyOpacity opacities) {
+    switch (type) {
+      case KinlyBannerType.success:
+        return colors.primaryContainer;
+      case KinlyBannerType.info:
+        return colors.info;
+      case KinlyBannerType.warning:
+        return colors.warning;
+      case KinlyBannerType.error:
+        return colors.error.withValues(alpha: opacities.alphaSM);
+    }
+  }
+
+  Color _foregroundForType(KinlyColorTokens colors) {
+    switch (type) {
+      case KinlyBannerType.success:
+        return colors.onPrimaryContainer;
+      case KinlyBannerType.info:
+      case KinlyBannerType.warning:
+        return colors.onSurface;
+      case KinlyBannerType.error:
+        return colors.onError;
+    }
   }
 }

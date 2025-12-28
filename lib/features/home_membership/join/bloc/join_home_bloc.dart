@@ -90,6 +90,8 @@ class JoinHomeBloc extends Bloc<JoinHomeEvent, JoinHomeState> {
         return JoinHomeErrorType.alreadyInOtherHome;
       case JoinErrorCode.paywallLimitActiveMembers:
         return JoinHomeErrorType.paywallLimit;
+      case JoinErrorCode.profileDeactivated:
+        return JoinHomeErrorType.profileDeactivated;
       case JoinErrorCode.unauthorized:
         return JoinHomeErrorType.unauthorized;
       case JoinErrorCode.forbidden:

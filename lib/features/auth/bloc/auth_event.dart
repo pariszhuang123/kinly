@@ -27,6 +27,10 @@ class AuthErrorCleared extends AuthEvent {
   const AuthErrorCleared();
 }
 
+class AuthProfileDeactivatedDetected extends AuthEvent {
+  const AuthProfileDeactivatedDetected();
+}
+
 class _AuthSessionChanged extends AuthEvent {
   const _AuthSessionChanged(this.session);
 

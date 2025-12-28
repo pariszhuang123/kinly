@@ -3,6 +3,7 @@
 enum JoinErrorCode {
   invalidCode,
   inactiveInvite,
+  profileDeactivated,
   alreadyInOtherHome,
   paywallLimitActiveMembers,
   unauthorized,
@@ -11,6 +12,7 @@ enum JoinErrorCode {
 }
 
 enum CreateHomeErrorCode {
+  profileDeactivated,
   alreadyInOtherHome,
   unauthorized,
   forbidden,

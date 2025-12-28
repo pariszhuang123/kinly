@@ -138,8 +138,7 @@ class _ShareCreatedTile extends StatelessWidget {
     );
 
     final badgeColor = shareColors?.accent ?? theme.colorScheme.secondary;
-    final isPaidOff = entry.isActive && entry.allPaid;
-    final isUnassigned = entry.isDraft;
+    final shareStatus = _ShareStatus.resolve(entry);
 
     final paidBadge = KinlyBadge(
       label: s.shareCreatedListPaidBadge,
@@ -149,11 +148,12 @@ class _ShareCreatedTile extends StatelessWidget {
     );
 
     final String? subtitle =
-        (isPaidOff || isUnassigned)
-            ? null
-            : (entry.isActive
-                ? progressLabel
-                : s.shareCreatedListDraftSubtitle);
+        _buildSubtitle(
+          entry,
+          shareStatus: shareStatus,
+          progressLabel: progressLabel,
+          draftLabel: s.shareCreatedListDraftSubtitle,
+        );
 
     final double progressValue =
         entry.amountCents == 0
@@ -183,10 +183,10 @@ class _ShareCreatedTile extends StatelessWidget {
           ),
           onTap: onTap,
         ),
-        if (isPaidOff || isUnassigned) ...[
+        if (shareStatus.isPaidOff || shareStatus.isDraft) ...[
           SizedBox(height: spacing?.xs ?? 6),
-          if (isPaidOff) paidBadge,
-          if (isUnassigned)
+          if (shareStatus.isPaidOff) paidBadge,
+          if (shareStatus.isDraft)
             KinlyBadge(label: s.shareCreatedListDraftBadge, compact: false),
         ],
         if (entry.isActive && !entry.allPaid) ...[
@@ -211,6 +211,30 @@ class _ShareCreatedTile extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+
+  String? _buildSubtitle(
+    ShareCreatedListEntry entry, {
+    required _ShareStatus shareStatus,
+    required String progressLabel,
+    required String draftLabel,
+  }) {
+    if (shareStatus.isPaidOff || shareStatus.isDraft) return null;
+    return entry.isActive ? progressLabel : draftLabel;
+  }
+}
+
+class _ShareStatus {
+  const _ShareStatus({required this.isPaidOff, required this.isDraft});
+
+  final bool isPaidOff;
+  final bool isDraft;
+
+  static _ShareStatus resolve(ShareCreatedListEntry entry) {
+    return _ShareStatus(
+      isPaidOff: entry.isActive && entry.allPaid,
+      isDraft: entry.isDraft,
     );
   }
 }

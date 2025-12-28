@@ -70,24 +70,7 @@ class KinlyBadge extends StatelessWidget {
     );
     assert(maxLines > 0, 'maxLines must be > 0');
 
-    late final Color foreground;
-    late final Color background;
-
-    if (backgroundColor != null && foregroundColor != null) {
-      foreground = foregroundColor!;
-      background = backgroundColor!;
-    } else {
-      if (destructive) {
-        foreground = controls.errorBadgeFg;
-        background = controls.errorBadgeBg;
-      } else if (accentColor != null) {
-        foreground = accentColor!;
-        background = accentColor!.withValues(alpha: opacities.alphaXS);
-      } else {
-        foreground = controls.badgeFg;
-        background = controls.badgeBg;
-      }
-    }
+    final badgeColors = _resolveColors(controls, opacities);
 
     final horizontal = compact ? (spacing?.xs ?? 4) : (spacing?.sm ?? 8);
     final vertical = compact ? 4.0 : (spacing?.xs ?? 4);
@@ -101,7 +84,7 @@ class KinlyBadge extends StatelessWidget {
       child: ExcludeSemantics(
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: background,
+            color: badgeColors.background,
             borderRadius: BorderRadius.circular(radius),
             border: border,
           ),
@@ -119,7 +102,7 @@ class KinlyBadge extends StatelessWidget {
               style:
                   (textStyle ?? (type?.labelSmall ?? theme.textTheme.labelSmall))
                       ?.copyWith(
-                        color: foreground,
+                        color: badgeColors.foreground,
                         fontWeight:
                             (textStyle?.fontWeight) ?? FontWeight.w700,
                         letterSpacing:
@@ -131,4 +114,35 @@ class KinlyBadge extends StatelessWidget {
       ),
     );
   }
+
+  _BadgeColors _resolveColors(
+    KinlyControlColors controls,
+    KinlyOpacity opacities,
+  ) {
+    if (backgroundColor != null && foregroundColor != null) {
+      return _BadgeColors(foreground: foregroundColor!, background: backgroundColor!);
+    }
+    if (destructive) {
+      return _BadgeColors(
+        foreground: controls.errorBadgeFg,
+        background: controls.errorBadgeBg,
+      );
+    }
+    if (accentColor != null) {
+      return _BadgeColors(
+        foreground: accentColor!,
+        background: accentColor!.withValues(alpha: opacities.alphaXS),
+      );
+    }
+    return _BadgeColors(
+      foreground: controls.badgeFg,
+      background: controls.badgeBg,
+    );
+  }
+}
+
+class _BadgeColors {
+  const _BadgeColors({required this.foreground, required this.background});
+  final Color foreground;
+  final Color background;
 }

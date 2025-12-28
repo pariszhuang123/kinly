@@ -136,37 +136,13 @@ class KinlyFilledButton extends StatelessWidget {
     final horizontal = compact ? spacing.sm : spacing.lg;
     final vertical = compact ? spacing.xs : spacing.sm;
 
-    final Widget child =
-        icon != null
-            ? Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                icon!,
-                SizedBox(width: spacing.xs),
-                Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
-              ],
-            )
-            : Text(label, overflow: TextOverflow.ellipsis);
-
-    // ---- COLOR LOGIC (aligned with KinlyAddTileButton / FAB / TabBar) ----
-    final Color backgroundColor =
-        destructive
-            ? (disabled
-                ? tokens.filledDestructiveDisabledBg
-                : tokens.filledDestructiveBg)
-            : (disabled ? tokens.filledDisabledBg : tokens.filledBg);
-    final Color foregroundColor =
-        destructive
-            ? (disabled
-                ? tokens.filledDestructiveDisabledFg
-                : tokens.filledDestructiveFg)
-            : (disabled ? tokens.filledDisabledFg : tokens.filledFg);
+    final child = _buildChild(spacing);
+    final buttonColors = _resolveColors(tokens, destructive: destructive, disabled: disabled);
 
     final baseStyle = FilledButton.styleFrom(
       minimumSize: const Size(48, 48),
-      backgroundColor: backgroundColor,
-      foregroundColor: foregroundColor,
+      backgroundColor: buttonColors.background,
+      foregroundColor: buttonColors.foreground,
       textStyle: type?.labelMedium ?? theme.textTheme.labelLarge,
       padding: EdgeInsets.symmetric(horizontal: horizontal, vertical: vertical),
       shape: RoundedRectangleBorder(
@@ -177,7 +153,7 @@ class KinlyFilledButton extends StatelessWidget {
     final overlay = WidgetStateProperty.resolveWith<Color?>((states) {
       if (states.contains(WidgetState.pressed)) {
         final opacities = Theme.of(context).extension<KinlyOpacity>()!;
-        return foregroundColor.withValues(alpha: opacities.alphaSM);
+        return buttonColors.foreground.withValues(alpha: opacities.alphaSM);
       }
       return null;
     });
@@ -198,4 +174,52 @@ class KinlyFilledButton extends StatelessWidget {
       child: finalButton,
     );
   }
+
+  Widget _buildChild(Spacing spacing) {
+    if (icon == null) {
+      return Text(label, overflow: TextOverflow.ellipsis);
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        icon!,
+        SizedBox(width: spacing.xs),
+        Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
+      ],
+    );
+  }
+
+  _ButtonColors _resolveColors(
+    KinlyControlColors tokens, {
+    required bool destructive,
+    required bool disabled,
+  }) {
+    if (destructive) {
+      return disabled
+          ? _ButtonColors(
+            background: tokens.filledDestructiveDisabledBg,
+            foreground: tokens.filledDestructiveDisabledFg,
+          )
+          : _ButtonColors(
+            background: tokens.filledDestructiveBg,
+            foreground: tokens.filledDestructiveFg,
+          );
+    }
+    return disabled
+        ? _ButtonColors(
+          background: tokens.filledDisabledBg,
+          foreground: tokens.filledDisabledFg,
+        )
+        : _ButtonColors(
+          background: tokens.filledBg,
+          foreground: tokens.filledFg,
+        );
+  }
+}
+
+class _ButtonColors {
+  const _ButtonColors({required this.background, required this.foreground});
+  final Color background;
+  final Color foreground;
 }

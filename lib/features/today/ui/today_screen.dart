@@ -173,152 +173,12 @@ class _TodayScreenState extends State<TodayScreen>
                                   ),
                                   child: BlocBuilder<TodayBloc, TodayState>(
                                     builder: (context, state) {
-                                      if (state.isLoading) {
-                                        return const Center(
-                                          child: KinlyLoader(),
-                                        );
-                                      }
-
-                                      final hasFlow = state.hasFlowContent;
-                                      final hasShare = state.hasShareContent;
-                                      final hasGratitude =
-                                          state.hasGratitudeUnread;
-
-                                      if (!hasFlow &&
-                                          !hasShare &&
-                                          !hasGratitude) {
-                                        return const TodayEmptyStateCard();
-                                      }
-
-                                      final shouldShowFlatmateInvite =
-                                          state.shouldPromptFlatmateInviteShare;
-                                      final shouldShowGenericInvite =
-                                          !shouldShowFlatmateInvite &&
-                                          state.shouldPromptInviteShare;
-                                      final showInvitePrompt =
-                                          shouldShowFlatmateInvite ||
-                                          shouldShowGenericInvite;
-
-                                      return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          if (showInvitePrompt) ...[
-                                            TodayInvitePrompt(
-                                              title:
-                                                  shouldShowFlatmateInvite
-                                                      ? s.todayFlatmateInviteTitle
-                                                      : s.todayInviteFriendsTitle,
-                                              subtitle:
-                                                  shouldShowFlatmateInvite
-                                                      ? s.todayFlatmateInviteSubtitle
-                                                      : s.todayInviteFriendsSubtitle,
-                                              primaryLabel:
-                                                  s.todayInviteShareCta,
-                                              secondaryLabel:
-                                                  shouldShowFlatmateInvite
-                                                      ? s.todayInviteNotNow
-                                                      : s.todayInviteNotNow,
-                                              onPrimary: () async {
-                                                final shared = await _shareInvite(
-                                                  context,
-                                                  isFlatmate:
-                                                      shouldShowFlatmateInvite,
-                                                );
-                                                if (!context.mounted ||
-                                                    !shared) {
-                                                  return;
-                                                }
-                                                if (shouldShowFlatmateInvite) {
-                                                  context.read<TodayBloc>().add(
-                                                    const TodayFlatmateInviteShareLogged(
-                                                      channel: 'system_share',
-                                                    ),
-                                                  );
-                                                } else {
-                                                  context.read<TodayBloc>().add(
-                                                    const TodayInviteShareLogged(
-                                                      channel: 'system_share',
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                              onSecondary:
-                                                  shouldShowFlatmateInvite
-                                                      ? () => context
-                                                          .read<TodayBloc>()
-                                                          .add(
-                                                            const TodayFlatmateInviteDismissed(),
-                                                          )
-                                                      : null,
-                                            ),
-                                            SizedBox(height: spacing.lg),
-                                          ],
-                                          if (hasFlow) ...[
-                                            TodayFlowSectionContainer(
-                                              onTaskTap:
-                                                  (task) => _handleFlowTaskTap(
-                                                    context,
-                                                    task,
-                                                  ),
-                                              onSeeAllTap:
-                                                  (filter) => _openFlowList(
-                                                    context,
-                                                    filter,
-                                                  ),
-                                            ),
-                                            SizedBox(height: spacing.lg),
-                                          ],
-                                          if (hasShare)
-                                            TodayShareSectionContainer(
-                                              onOwedTap: (owed) {
-                                                logger.info(
-                                                  'Tapped owed entry: ${owed.displayName}',
-                                                  tag: _shareLogTag,
-                                                );
-                                                _openShareOwedDetail(
-                                                  context,
-                                                  owed,
-                                                );
-                                              },
-                                              onPaidToMeTap: (entry) {
-                                                logger.info(
-                                                  'Tapped paid-to-me entry: ${entry.debtorUsername}',
-                                                  tag: _shareLogTag,
-                                                );
-                                                _openSharePaidToMeDetail(
-                                                  context,
-                                                  entry,
-                                                );
-                                              },
-                                              onDraftTap: (draft) {
-                                                logger.info(
-                                                  'Tapped draft share: ${draft.expenseId}',
-                                                  tag: _shareLogTag,
-                                                );
-                                                _openShareDraftEdit(
-                                                  context,
-                                                  draft,
-                                                );
-                                              },
-                                              onSeeAllDraftsTap: () {
-                                                logger.info(
-                                                  'Tapped see all share drafts',
-                                                  tag: _shareLogTag,
-                                                );
-                                                _openShareCreatedList(context);
-                                              },
-                                            ),
-                                          if (hasGratitude) ...[
-                                            SizedBox(height: spacing.lg),
-                                            TodayGratitudeSection(
-                                              onTap:
-                                                  () => _openGratitudeWall(
-                                                    context,
-                                                  ),
-                                            ),
-                                          ],
-                                        ],
+                                      return _buildTodayContent(
+                                        context,
+                                        state,
+                                        spacing,
+                                        s,
+                                        logger,
                                       );
                                     },
                                   ),
@@ -438,4 +298,128 @@ class _TodayScreenState extends State<TodayScreen>
 
   Future<void> _maybePromptNotifications(BuildContext context) =>
       maybePromptNotificationsExt(context);
+
+  Widget _buildTodayContent(
+    BuildContext context,
+    TodayState state,
+    Spacing spacing,
+    S s,
+    Logger logger,
+  ) {
+    if (state.isLoading) {
+      return const Center(child: KinlyLoader());
+    }
+
+    final hasFlow = state.hasFlowContent;
+    final hasShare = state.hasShareContent;
+    final hasGratitude = state.hasGratitudeUnread;
+
+    if (!hasFlow && !hasShare && !hasGratitude) {
+      return const TodayEmptyStateCard();
+    }
+
+    final inviteConfig = _inviteConfig(state);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (inviteConfig.showPrompt) ...[
+          TodayInvitePrompt(
+            title: inviteConfig.isFlatmate
+                ? s.todayFlatmateInviteTitle
+                : s.todayInviteFriendsTitle,
+            subtitle: inviteConfig.isFlatmate
+                ? s.todayFlatmateInviteSubtitle
+                : s.todayInviteFriendsSubtitle,
+            primaryLabel: s.todayInviteShareCta,
+            secondaryLabel: inviteConfig.isFlatmate
+                ? s.todayInviteNotNow
+                : s.todayInviteNotNow,
+            onPrimary: () async {
+              final shared = await _shareInvite(
+                context,
+                isFlatmate: inviteConfig.isFlatmate,
+              );
+              if (!context.mounted || !shared) return;
+              context.read<TodayBloc>().add(inviteConfig.logEvent);
+            },
+            onSecondary: inviteConfig.isFlatmate
+                ? () => context.read<TodayBloc>().add(
+                      const TodayFlatmateInviteDismissed(),
+                    )
+                : null,
+          ),
+          SizedBox(height: spacing.lg),
+        ],
+        if (hasFlow) ...[
+          TodayFlowSectionContainer(
+            onTaskTap: (task) => _handleFlowTaskTap(context, task),
+            onSeeAllTap: (filter) => _openFlowList(context, filter),
+          ),
+          SizedBox(height: spacing.lg),
+        ],
+        if (hasShare)
+          TodayShareSectionContainer(
+            onOwedTap: (owed) {
+              logger.info(
+                'Tapped owed entry: ${owed.displayName}',
+                tag: _shareLogTag,
+              );
+              _openShareOwedDetail(context, owed);
+            },
+            onPaidToMeTap: (entry) {
+              logger.info(
+                'Tapped paid-to-me entry: ${entry.debtorUsername}',
+                tag: _shareLogTag,
+              );
+              _openSharePaidToMeDetail(context, entry);
+            },
+            onDraftTap: (draft) {
+              logger.info(
+                'Tapped draft share: ${draft.expenseId}',
+                tag: _shareLogTag,
+              );
+              _openShareDraftEdit(context, draft);
+            },
+            onSeeAllDraftsTap: () {
+              logger.info(
+                'Tapped see all share drafts',
+                tag: _shareLogTag,
+              );
+              _openShareCreatedList(context);
+            },
+          ),
+        if (hasGratitude) ...[
+          SizedBox(height: spacing.lg),
+          TodayGratitudeSection(
+            onTap: () => _openGratitudeWall(context),
+          ),
+        ],
+      ],
+    );
+  }
+
+  _InviteConfig _inviteConfig(TodayState state) {
+    final isFlatmate = state.shouldPromptFlatmateInviteShare;
+    final shouldShowGeneric = !isFlatmate && state.shouldPromptInviteShare;
+    return _InviteConfig(
+      showPrompt: isFlatmate || shouldShowGeneric,
+      isFlatmate: isFlatmate,
+      logEvent: isFlatmate
+          ? const TodayFlatmateInviteShareLogged(channel: 'system_share')
+          : const TodayInviteShareLogged(channel: 'system_share'),
+    );
+  }
+}
+
+class _InviteConfig {
+  const _InviteConfig({
+    required this.showPrompt,
+    required this.isFlatmate,
+    required this.logEvent,
+  });
+
+  final bool showPrompt;
+  final bool isFlatmate;
+  final TodayEvent logEvent;
 }

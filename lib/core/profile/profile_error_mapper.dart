@@ -30,66 +30,32 @@ class ProfileErrorMapper {
     }
 
     if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'USERNAME_TAKEN':
-          return ProfileIdentityException(
-            ProfileErrorCode.usernameTaken,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'AVATAR_NOT_FOUND':
-          return ProfileIdentityException(
-            ProfileErrorCode.avatarNotFound,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'AVATAR_NOT_ALLOWED_FOR_PLAN':
-          return ProfileIdentityException(
-            ProfileErrorCode.avatarNotAllowedForPlan,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'AVATAR_IN_USE':
-          return ProfileIdentityException(
-            ProfileErrorCode.avatarInUse,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_USERNAME':
-          return ProfileIdentityException(
-            ProfileErrorCode.invalidUsername,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'PROFILE_NOT_FOUND':
-          return ProfileIdentityException(
-            ProfileErrorCode.profileNotFound,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'FORBIDDEN':
-          return ProfileIdentityException(
-            ProfileErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return ProfileIdentityException(
-            ProfileErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return ProfileIdentityException(
-            ProfileErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      return _mapPostgrestError(error.message);
     }
 
     return ProfileIdentityException(ProfileErrorCode.unknown, error.toString());
+  }
+
+  static ProfileIdentityException _mapPostgrestError(String message) {
+    final parsed = _parseErrorJson(message);
+    const codeMap = {
+      'USERNAME_TAKEN': ProfileErrorCode.usernameTaken,
+      'AVATAR_NOT_FOUND': ProfileErrorCode.avatarNotFound,
+      'AVATAR_NOT_ALLOWED_FOR_PLAN': ProfileErrorCode.avatarNotAllowedForPlan,
+      'AVATAR_IN_USE': ProfileErrorCode.avatarInUse,
+      'INVALID_USERNAME': ProfileErrorCode.invalidUsername,
+      'PROFILE_NOT_FOUND': ProfileErrorCode.profileNotFound,
+      'FORBIDDEN': ProfileErrorCode.forbidden,
+      'UNAUTHORIZED': ProfileErrorCode.unauthorized,
+    };
+    final code =
+        codeMap[parsed.code] ?? ProfileErrorCode.unknown;
+
+    return ProfileIdentityException(
+      code,
+      parsed.message,
+      details: parsed.details,
+    );
   }
 
   static _Parsed _parseErrorJson(String message) {

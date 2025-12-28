@@ -26,6 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignOutRequested>(_onSignOutRequested);
     on<AuthMembershipRefreshRequested>(_onMembershipRefreshRequested);
     on<AuthErrorCleared>(_onErrorCleared);
+    on<AuthProfileDeactivatedDetected>(_onProfileDeactivatedDetected);
 
     _sessionSub = _authRepository.session$.listen(
       (session) => add(_AuthSessionChanged(session)),
@@ -55,6 +56,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           isLoading: false,
           errorMessage: null,
           membership: null,
+          isProfileDeactivated: false,
         ),
       );
       return;
@@ -68,6 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         isLoading: false,
         errorMessage: null,
         membership: null,
+        isProfileDeactivated: false,
       ),
     );
     await _refreshMembership(emit);
@@ -151,6 +154,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                   : AuthMembershipStatus.active,
           membership: membership,
           errorMessage: null,
+          isProfileDeactivated: false,
         ),
       );
     } catch (error) {
@@ -162,6 +166,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     }
+  }
+
+  void _onProfileDeactivatedDetected(
+    AuthProfileDeactivatedDetected event,
+    Emitter<AuthState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        isProfileDeactivated: true,
+        membershipStatus: AuthMembershipStatus.none,
+      ),
+    );
   }
 
   Future<CurrentMembership?> _retryNullMembership() async {
