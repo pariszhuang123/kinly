@@ -76,63 +76,12 @@ GoRouter createRouter({
   return GoRouter(
     initialLocation: AppRoutes.splash,
     refreshListenable: refreshListenable,
-    redirect: (context, state) {
-      final authState = authBloc.state;
-      final authStatus = authState.status;
-      final isLoggedIn = authStatus == AuthStatus.authenticated;
-      final uri = state.uri;
-      final goingTo = uri.path;
-      final isForceUpdate = goingTo == AppRoutes.forceUpdate;
-      final forceUpdateRequired =
-          appVersionCubit.state.status == AppVersionStatus.hardBlocked;
-      if (forceUpdateRequired && !isForceUpdate) {
-        return AppRoutes.forceUpdate;
-      }
-      if (!forceUpdateRequired && isForceUpdate) {
-        return AppRoutes.splash;
-      }
-      final isSplash = goingTo == AppRoutes.splash;
-      final isWelcome = goingTo == AppRoutes.welcome;
-
-      if (authStatus == AuthStatus.unknown) {
-        return isSplash ? null : AppRoutes.splash;
-      }
-
-      if (!isLoggedIn) {
-        final segs = uri.pathSegments;
-        if (segs.isNotEmpty && segs.first == 'join' && segs.length >= 2) {
-          NavigationIntents.setPendingJoinCode(segs[1]);
-        }
-        if (isSplash) return AppRoutes.welcome;
-        if (!isWelcome) return AppRoutes.welcome;
-        return null;
-      }
-
-      final membershipStatus = authState.membershipStatus;
-      final membershipKnown = membershipStatus != AuthMembershipStatus.unknown;
-      if (!membershipKnown) {
-        return isSplash ? null : AppRoutes.splash;
-      }
-      final hasMembership = membershipStatus == AuthMembershipStatus.active;
-
-      if (isSplash) {
-        return hasMembership ? AppRoutes.today : AppRoutes.start;
-      }
-
-      if (isWelcome) {
-        return hasMembership ? AppRoutes.today : AppRoutes.start;
-      }
-
-      if (goingTo == AppRoutes.start && hasMembership) {
-        return AppRoutes.today;
-      }
-
-      if (goingTo == AppRoutes.today && !hasMembership) {
-        return AppRoutes.start;
-      }
-
-      return null;
-    },
+    redirect:
+        (context, state) => _redirect(
+          state: state,
+          authBloc: authBloc,
+          appVersionCubit: appVersionCubit,
+        ),
     routes: <RouteBase>[
       GoRoute(
         path: AppRoutes.forceUpdate,
@@ -423,4 +372,65 @@ GoRouter createRouter({
       ),
     ],
   );
+}
+
+String? _redirect({
+  required GoRouterState state,
+  required AuthBloc authBloc,
+  required AppVersionCubit appVersionCubit,
+}) {
+  final uri = state.uri;
+  final path = uri.path;
+  final forceUpdateRequired =
+      appVersionCubit.state.status == AppVersionStatus.hardBlocked;
+  if (forceUpdateRequired && path != AppRoutes.forceUpdate) {
+    return AppRoutes.forceUpdate;
+  }
+  if (!forceUpdateRequired && path == AppRoutes.forceUpdate) {
+    return AppRoutes.splash;
+  }
+
+  final authState = authBloc.state;
+  final authStatus = authState.status;
+  if (authStatus == AuthStatus.unknown) {
+    return path == AppRoutes.splash ? null : AppRoutes.splash;
+  }
+  if (authStatus != AuthStatus.authenticated) {
+    _captureJoinCodeIfPresent(uri);
+    return path == AppRoutes.welcome ? null : AppRoutes.welcome;
+  }
+
+  final membershipStatus = authState.membershipStatus;
+  if (membershipStatus == AuthMembershipStatus.unknown) {
+    return path == AppRoutes.splash ? null : AppRoutes.splash;
+  }
+  if (membershipStatus != AuthMembershipStatus.active) {
+    return _redirectForNoMembership(path);
+  }
+  return _redirectForMember(path);
+}
+
+void _captureJoinCodeIfPresent(Uri uri) {
+  final segments = uri.pathSegments;
+  final isJoin = segments.isNotEmpty && segments.first == 'join';
+  final hasCode = segments.length >= 2;
+  if (isJoin && hasCode) {
+    NavigationIntents.setPendingJoinCode(segments[1]);
+  }
+}
+
+String? _redirectForNoMembership(String path) {
+  if (path == AppRoutes.today) return AppRoutes.start;
+  if (path == AppRoutes.splash || path == AppRoutes.welcome) {
+    return AppRoutes.start;
+  }
+  return null;
+}
+
+String? _redirectForMember(String path) {
+  if (path == AppRoutes.splash || path == AppRoutes.welcome) {
+    return AppRoutes.today;
+  }
+  if (path == AppRoutes.start) return AppRoutes.today;
+  return null;
 }

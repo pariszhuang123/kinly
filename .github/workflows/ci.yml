@@ -106,6 +106,9 @@ jobs:
       - name: Check design system guardrails
         run: dart run tool/check_design_system.dart
 
+      - name: Check complexity budget
+        run: dart run tool/check_complexity_budget.dart
+
       - name: Check directionality-safe layout
         run: dart run tool/check_directionality.dart
 
@@ -247,11 +250,17 @@ jobs:
             print(f"Total: {int(t_code)} lines of code across {int(t_files)} files")
           PY
 
+      - name: Complexity hotspots report
+        run: dart run tool/report_complexity_hotspots.dart --out build/complexity_report.json --txt build/complexity_report.txt --baseline docs/engineering/complexity_baseline.json
+
       - name: Upload metrics artifact
         uses: actions/upload-artifact@v4
         with:
           name: code-metrics
-          path: code_metrics.json
+          path: |
+            code_metrics.json
+            build/complexity_report.json
+            build/complexity_report.txt
           retention-days: 7
 
   contracts_drift:

@@ -236,70 +236,10 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     ShareCreateSubmitted event,
     Emitter<ShareCreateState> emit,
   ) async {
-    if (state.isEditing && !state.canEdit) {
-      return;
-    }
+    if (state.isEditing && !state.canEdit) return;
 
-    final form = state.form;
-    final amountCents = form.amountCents;
-    final descriptionValid = form.hasValidDescription;
-    final amountValid = amountCents != null && amountCents > 0;
-    final splitMode = form.splitMode;
-    final recurrence = form.recurrence;
-    final startDate = form.startDate;
-    final isEditing = state.isEditing;
-    final editingExpenseId = state.editingExpenseId;
-    final amountLocked = state.isAmountLocked;
-    final requiresAmount = isEditing ? !amountLocked : splitMode != null;
-
-    var isValid =
-        descriptionValid &&
-        (!requiresAmount || amountValid) &&
-        (splitMode != null || recurrence == ExpenseRecurrenceInterval.none);
-
-    List<String>? memberIds;
-    List<ExpenseCustomSplitInput>? customSplits;
-    ExpenseSplitType? splitType;
-
-    // For edit mode, we require splitMode + editing id unless amountLocked
-    if (isEditing &&
-        !amountLocked &&
-        (splitMode == null || editingExpenseId == null)) {
-      isValid = false;
-    }
-
-    final selectedEqualIds = state.equalSelectionIds;
-
-    if (!amountLocked && isValid && splitMode == ShareSplitMode.equal) {
-      if (selectedEqualIds.length < 2) {
-        isValid = false;
-      } else {
-        memberIds = selectedEqualIds.toList(growable: false);
-        splitType = ExpenseSplitType.equal;
-      }
-    } else if (!amountLocked && isValid && splitMode == ShareSplitMode.custom) {
-      final summary = state.evaluateCustomSplit();
-      if (!summary.isValid) {
-        isValid = false;
-      } else {
-        customSplits = summary.entries
-            .map(
-              (entry) => ExpenseCustomSplitInput(
-                userId: entry.userId,
-                amountCents: entry.amountCents,
-              ),
-            )
-            .toList(growable: false);
-        splitType = ExpenseSplitType.custom;
-      }
-    } else if (amountLocked) {
-      // When amount/splits are locked, we don't send new split info
-      memberIds = null;
-      customSplits = null;
-      splitType = null;
-    }
-
-    if (!isValid) {
+    final plan = _buildSubmissionPlan(state);
+    if (plan == null) {
       emit(state.copyWith(showValidationErrors: true));
       return;
     }
@@ -314,30 +254,29 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     );
 
     try {
-      final normalizedNotes = _normalize(form.notes);
       final saved =
-          isEditing
+          plan.isEditing
               ? await _expensesRepository.edit(
-                expenseId: editingExpenseId!,
-                amountCents: amountCents!,
-                description: form.description.trim(),
-                notes: normalizedNotes,
-                splitType: splitType,
-                memberIds: memberIds,
-                customSplits: customSplits,
-                recurrence: recurrence,
-                startDate: startDate,
+                expenseId: plan.editingExpenseId!,
+                amountCents: plan.amountCents!,
+                description: plan.description,
+                notes: plan.notes,
+                splitType: plan.splitType,
+                memberIds: plan.memberIds,
+                customSplits: plan.customSplits,
+                recurrence: plan.recurrence,
+                startDate: plan.startDate,
               )
               : await _expensesRepository.create(
                 homeId: _homeId,
-                amountCents: amountCents,
-                description: form.description.trim(),
-                notes: normalizedNotes,
-                splitType: splitType,
-                memberIds: memberIds,
-                customSplits: customSplits,
-                recurrence: recurrence,
-                startDate: startDate,
+                amountCents: plan.amountCents,
+                description: plan.description,
+                notes: plan.notes,
+                splitType: plan.splitType,
+                memberIds: plan.memberIds,
+                customSplits: plan.customSplits,
+                recurrence: plan.recurrence,
+                startDate: plan.startDate,
               );
 
       emit(
@@ -349,43 +288,22 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
       );
     } on ExpenseException catch (error) {
       if (error.code == ExpenseErrorCode.paywallActiveExpensesCap) {
-        final tick = state.paywallRequestTick + 1;
-        emit(
-          state.copyWith(
-            isSubmitting: false,
-            clearSuccess: true,
-            clearSubmissionError: true,
-            paywallAction: PaywallRetryAction.submit,
-            paywallRequestTick: tick,
-            paywallRequest: PaywallGateRequest(
-              requestId: _uuid.v4(),
-              homeId: _homeId,
-              source: PaywallSources.shareCreateExpense,
-              action: PaywallRetryAction.submit,
-              tick: tick,
-            ),
-            paywallInFlightRequestId: null,
-          ),
-        );
+        _emitPaywallRequest(emit, state);
         return;
       }
 
-      emit(
-        state.copyWith(
-          isSubmitting: false,
-          submissionErrorCode: error.code,
-          submissionErrorMessage: error.message,
-          submissionErrorTick: state.submissionErrorTick + 1,
-        ),
+      _emitSubmissionError(
+        emit: emit,
+        code: error.code,
+        message: error.message,
+        tick: state.submissionErrorTick + 1,
       );
     } catch (error) {
-      emit(
-        state.copyWith(
-          isSubmitting: false,
-          submissionErrorCode: ExpenseErrorCode.unknown,
-          submissionErrorMessage: error.toString(),
-          submissionErrorTick: state.submissionErrorTick + 1,
-        ),
+      _emitSubmissionError(
+        emit: emit,
+        code: ExpenseErrorCode.unknown,
+        message: error.toString(),
+        tick: state.submissionErrorTick + 1,
       );
     }
   }
@@ -489,4 +407,217 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     final trimmed = value.trim();
     return trimmed.isEmpty ? null : trimmed;
   }
+
+  _SubmissionPlan? _buildSubmissionPlan(ShareCreateState currentState) {
+    final ctx = _buildValidationContext(currentState);
+    if (!_hasBasicValidity(ctx)) return null;
+
+    final splitDecision = _buildSplitDecision(currentState, ctx);
+    if (splitDecision == null) return null;
+
+    return _SubmissionPlan(
+      isEditing: ctx.isEditing,
+      editingExpenseId: ctx.editingExpenseId,
+      amountCents: ctx.amountCents,
+      description: ctx.description,
+      notes: ctx.notes,
+      splitType: splitDecision.splitType,
+      memberIds: splitDecision.memberIds,
+      customSplits: splitDecision.customSplits,
+      recurrence: ctx.recurrence,
+      startDate: ctx.startDate,
+    );
+  }
+
+  void _emitPaywallRequest(
+    Emitter<ShareCreateState> emit,
+    ShareCreateState currentState,
+  ) {
+    final tick = currentState.paywallRequestTick + 1;
+    emit(
+      currentState.copyWith(
+        isSubmitting: false,
+        clearSuccess: true,
+        clearSubmissionError: true,
+        paywallAction: PaywallRetryAction.submit,
+        paywallRequestTick: tick,
+        paywallRequest: PaywallGateRequest(
+          requestId: _uuid.v4(),
+          homeId: _homeId,
+          source: PaywallSources.shareCreateExpense,
+          action: PaywallRetryAction.submit,
+          tick: tick,
+        ),
+        paywallInFlightRequestId: null,
+      ),
+    );
+  }
+
+  void _emitSubmissionError({
+    required Emitter<ShareCreateState> emit,
+    required ExpenseErrorCode code,
+    required String message,
+    required int tick,
+  }) {
+    emit(
+      state.copyWith(
+        isSubmitting: false,
+        submissionErrorCode: code,
+        submissionErrorMessage: message,
+        submissionErrorTick: tick,
+      ),
+    );
+  }
+
+  _ValidationContext _buildValidationContext(ShareCreateState currentState) {
+    final form = currentState.form;
+    final amountCents = form.amountCents;
+    final amountValid = amountCents != null && amountCents > 0;
+    final isEditing = currentState.isEditing;
+    final amountLocked = currentState.isAmountLocked;
+    final splitMode = form.splitMode;
+    final requiresAmount = isEditing ? !amountLocked : splitMode != null;
+
+    return _ValidationContext(
+      isEditing: isEditing,
+      editingExpenseId: currentState.editingExpenseId,
+      amountCents: amountCents,
+      description: form.description.trim(),
+      notes: _normalize(form.notes),
+      descriptionValid: form.hasValidDescription,
+      amountValid: amountValid,
+      requiresAmount: requiresAmount,
+      splitMode: splitMode,
+      recurrence: form.recurrence,
+      startDate: form.startDate,
+      amountLocked: amountLocked,
+    );
+  }
+
+  bool _hasBasicValidity(_ValidationContext ctx) {
+    final recurrenceOk =
+        ctx.splitMode != null ||
+        ctx.recurrence == ExpenseRecurrenceInterval.none;
+    final hasEditInputs =
+        ctx.isEditing
+            ? ctx.amountLocked ||
+                (ctx.splitMode != null && ctx.editingExpenseId != null)
+            : true;
+
+    return ctx.descriptionValid &&
+        (!ctx.requiresAmount || ctx.amountValid) &&
+        recurrenceOk &&
+        hasEditInputs;
+  }
+
+  _SplitDecision? _buildSplitDecision(
+    ShareCreateState currentState,
+    _ValidationContext ctx,
+  ) {
+    if (ctx.amountLocked) {
+      return const _SplitDecision(
+        splitType: null,
+        memberIds: null,
+        customSplits: null,
+      );
+    }
+
+    if (ctx.splitMode == ShareSplitMode.equal) {
+      final selection = currentState.equalSelectionIds;
+      if (selection.length < 2) return null;
+      return _SplitDecision(
+        splitType: ExpenseSplitType.equal,
+        memberIds: selection.toList(growable: false),
+        customSplits: null,
+      );
+    }
+
+    if (ctx.splitMode == ShareSplitMode.custom) {
+      final summary = currentState.evaluateCustomSplit();
+      if (!summary.isValid) return null;
+      final splits = summary.entries
+          .map(
+            (entry) => ExpenseCustomSplitInput(
+              userId: entry.userId,
+              amountCents: entry.amountCents,
+            ),
+          )
+          .toList(growable: false);
+      return _SplitDecision(
+        splitType: ExpenseSplitType.custom,
+        memberIds: null,
+        customSplits: splits,
+      );
+    }
+
+    return _SplitDecision(splitType: null, memberIds: null, customSplits: null);
+  }
+}
+
+class _SubmissionPlan {
+  const _SubmissionPlan({
+    required this.isEditing,
+    required this.editingExpenseId,
+    required this.amountCents,
+    required this.description,
+    required this.notes,
+    required this.splitType,
+    required this.memberIds,
+    required this.customSplits,
+    required this.recurrence,
+    required this.startDate,
+  });
+
+  final bool isEditing;
+  final String? editingExpenseId;
+  final int? amountCents;
+  final String description;
+  final String? notes;
+  final ExpenseSplitType? splitType;
+  final List<String>? memberIds;
+  final List<ExpenseCustomSplitInput>? customSplits;
+  final ExpenseRecurrenceInterval recurrence;
+  final DateTime startDate;
+}
+
+class _ValidationContext {
+  _ValidationContext({
+    required this.isEditing,
+    required this.editingExpenseId,
+    required this.amountCents,
+    required this.description,
+    required this.notes,
+    required this.descriptionValid,
+    required this.amountValid,
+    required this.requiresAmount,
+    required this.splitMode,
+    required this.recurrence,
+    required this.startDate,
+    required this.amountLocked,
+  });
+
+  final bool isEditing;
+  final String? editingExpenseId;
+  final int? amountCents;
+  final String description;
+  final String? notes;
+  final bool descriptionValid;
+  final bool amountValid;
+  final bool requiresAmount;
+  final ShareSplitMode? splitMode;
+  final ExpenseRecurrenceInterval recurrence;
+  final DateTime startDate;
+  final bool amountLocked;
+}
+
+class _SplitDecision {
+  const _SplitDecision({
+    required this.splitType,
+    required this.memberIds,
+    required this.customSplits,
+  });
+
+  final ExpenseSplitType? splitType;
+  final List<String>? memberIds;
+  final List<ExpenseCustomSplitInput>? customSplits;
 }

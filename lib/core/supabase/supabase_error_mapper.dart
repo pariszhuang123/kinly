@@ -124,32 +124,9 @@ class SupabaseErrorMapper {
 
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'ALREADY_IN_OTHER_HOME':
-          return HomeCreateException(
-            CreateHomeErrorCode.alreadyInOtherHome,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'FORBIDDEN':
-          return HomeCreateException(
-            CreateHomeErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return HomeCreateException(
-            CreateHomeErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return HomeCreateException(
-            CreateHomeErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final code =
+          _createHomeCodeMap[parsed.code] ?? CreateHomeErrorCode.unknown;
+      return HomeCreateException(code, parsed.message, details: parsed.details);
     }
 
     return HomeCreateException(CreateHomeErrorCode.unknown, error.toString());
@@ -162,26 +139,12 @@ class SupabaseErrorMapper {
     }
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'FORBIDDEN':
-          return InviteRotateException(
-            RotateErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return InviteRotateException(
-            RotateErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return InviteRotateException(
-            RotateErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final code = _rotateCodeMap[parsed.code] ?? RotateErrorCode.unknown;
+      return InviteRotateException(
+        code,
+        parsed.message,
+        details: parsed.details,
+      );
     }
     return InviteRotateException(RotateErrorCode.unknown, error.toString());
   }
@@ -193,26 +156,12 @@ class SupabaseErrorMapper {
     }
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'FORBIDDEN':
-          return InviteRevokeException(
-            RevokeErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return InviteRevokeException(
-            RevokeErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return InviteRevokeException(
-            RevokeErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final code = _revokeCodeMap[parsed.code] ?? RevokeErrorCode.unknown;
+      return InviteRevokeException(
+        code,
+        parsed.message,
+        details: parsed.details,
+      );
     }
     return InviteRevokeException(RevokeErrorCode.unknown, error.toString());
   }
@@ -227,34 +176,18 @@ class SupabaseErrorMapper {
     }
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      final message = parsed.message.toLowerCase();
-      switch (parsed.code) {
-        case 'FORBIDDEN':
-          return InviteGetOrCreateException(
-            InviteGetOrCreateErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return InviteGetOrCreateException(
-            InviteGetOrCreateErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          if (message.contains('inactive') || message.contains('not found')) {
-            return InviteGetOrCreateException(
-              InviteGetOrCreateErrorCode.inactiveHome,
-              parsed.message,
-              details: parsed.details,
-            );
-          }
-          return InviteGetOrCreateException(
-            InviteGetOrCreateErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final mapped = _inviteGetOrCreateMap[parsed.code];
+      final code =
+          mapped ??
+          ((parsed.message.toLowerCase().contains('inactive') ||
+                  parsed.message.toLowerCase().contains('not found'))
+              ? InviteGetOrCreateErrorCode.inactiveHome
+              : InviteGetOrCreateErrorCode.unknown);
+      return InviteGetOrCreateException(
+        code,
+        parsed.message,
+        details: parsed.details,
+      );
     }
     return InviteGetOrCreateException(
       InviteGetOrCreateErrorCode.unknown,
@@ -272,44 +205,12 @@ class SupabaseErrorMapper {
     }
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'INVALID_NEW_OWNER':
-          return TransferOwnerException(
-            TransferErrorCode.invalidNewOwner,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'NEW_OWNER_NOT_MEMBER':
-          return TransferOwnerException(
-            TransferErrorCode.newOwnerNotMember,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'FORBIDDEN':
-          return TransferOwnerException(
-            TransferErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'STATE_CHANGED_RETRY':
-          return TransferOwnerException(
-            TransferErrorCode.stateChangedRetry,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return TransferOwnerException(
-            TransferErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return TransferOwnerException(
-            TransferErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final code = _transferOwnerMap[parsed.code] ?? TransferErrorCode.unknown;
+      return TransferOwnerException(
+        code,
+        parsed.message,
+        details: parsed.details,
+      );
     }
     return TransferOwnerException(TransferErrorCode.unknown, error.toString());
   }
@@ -321,44 +222,8 @@ class SupabaseErrorMapper {
     }
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'NOT_MEMBER':
-          return LeaveException(
-            LeaveErrorCode.notMember,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'OWNER_MUST_TRANSFER_FIRST':
-          return LeaveException(
-            LeaveErrorCode.ownerMustTransferFirst,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'STATE_CHANGED_RETRY':
-          return LeaveException(
-            LeaveErrorCode.stateChangedRetry,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'FORBIDDEN':
-          return LeaveException(
-            LeaveErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return LeaveException(
-            LeaveErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return LeaveException(
-            LeaveErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final code = _leaveMap[parsed.code] ?? LeaveErrorCode.unknown;
+      return LeaveException(code, parsed.message, details: parsed.details);
     }
     return LeaveException(LeaveErrorCode.unknown, error.toString());
   }
@@ -373,56 +238,10 @@ class SupabaseErrorMapper {
     }
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'TARGET_NOT_MEMBER':
-          return KickMemberException(
-            KickMemberErrorCode.targetNotMember,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'CANNOT_KICK_OWNER':
-          return KickMemberException(
-            KickMemberErrorCode.cannotKickOwner,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'STATE_CHANGED_RETRY':
-          return KickMemberException(
-            KickMemberErrorCode.stateChangedRetry,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'HOME_INACTIVE':
-        case 'HOME_NOT_FOUND':
-          return KickMemberException(
-            KickMemberErrorCode.homeInactive,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'FORBIDDEN':
-          return KickMemberException(
-            KickMemberErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return KickMemberException(
-            KickMemberErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return KickMemberException(
-            KickMemberErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final code = _kickMap[parsed.code] ?? KickMemberErrorCode.unknown;
+      return KickMemberException(code, parsed.message, details: parsed.details);
     }
-    return KickMemberException(
-      KickMemberErrorCode.unknown,
-      error.toString(),
-    );
+    return KickMemberException(KickMemberErrorCode.unknown, error.toString());
   }
 
   // ----- mood.submit -----
@@ -435,44 +254,8 @@ class SupabaseErrorMapper {
     }
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'INVALID_HOME':
-          return MoodSubmitException(
-            MoodSubmitErrorCode.invalidHome,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_MOOD':
-          return MoodSubmitException(
-            MoodSubmitErrorCode.invalidMood,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'MOOD_ALREADY_SUBMITTED':
-          return MoodSubmitException(
-            MoodSubmitErrorCode.moodAlreadySubmitted,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'FORBIDDEN':
-          return MoodSubmitException(
-            MoodSubmitErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return MoodSubmitException(
-            MoodSubmitErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return MoodSubmitException(
-            MoodSubmitErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final code = _moodSubmitMap[parsed.code] ?? MoodSubmitErrorCode.unknown;
+      return MoodSubmitException(code, parsed.message, details: parsed.details);
     }
     return MoodSubmitException(MoodSubmitErrorCode.unknown, error.toString());
   }
@@ -484,44 +267,8 @@ class SupabaseErrorMapper {
     }
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'INVALID_NPS_SCORE':
-          return NpsSubmitException(
-            NpsSubmitErrorCode.invalidScore,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'NPS_NOT_ELIGIBLE':
-          return NpsSubmitException(
-            NpsSubmitErrorCode.notEligible,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'NPS_NOT_REQUIRED':
-          return NpsSubmitException(
-            NpsSubmitErrorCode.notRequired,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'FORBIDDEN':
-          return NpsSubmitException(
-            NpsSubmitErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return NpsSubmitException(
-            NpsSubmitErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return NpsSubmitException(
-            NpsSubmitErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final code = _npsSubmitMap[parsed.code] ?? NpsSubmitErrorCode.unknown;
+      return NpsSubmitException(code, parsed.message, details: parsed.details);
     }
     return NpsSubmitException(NpsSubmitErrorCode.unknown, error.toString());
   }
@@ -551,88 +298,8 @@ class SupabaseErrorMapper {
     }
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'INVALID_INPUT':
-        case 'INVALID_NAME':
-          return ChoreException(
-            ChoreErrorCode.invalidInput,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_STATE':
-          return ChoreException(
-            ChoreErrorCode.invalidState,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_MEDIA_PATH':
-          return ChoreException(
-            ChoreErrorCode.invalidMediaPath,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'ASSIGNEE_NOT_MEMBER':
-          return ChoreException(
-            ChoreErrorCode.assigneeNotMember,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'ALREADY_FINALIZED':
-          return ChoreException(
-            ChoreErrorCode.alreadyFinalized,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'PAYWALL_LIMIT_ACTIVE_CHORES':
-          return ChoreException(
-            ChoreErrorCode.paywallActiveCap,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'PAYWALL_LIMIT_CHORE_PHOTOS':
-          return ChoreException(
-            ChoreErrorCode.paywallMediaCap,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_START':
-          return ChoreException(
-            ChoreErrorCode.invalidStart,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'NOT_FOUND':
-        case 'CHORE_NOT_FOUND':
-          return ChoreException(
-            ChoreErrorCode.notFound,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'NOT_HOME_MEMBER':
-          return ChoreException(
-            ChoreErrorCode.notHomeMember,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'FORBIDDEN':
-          return ChoreException(
-            ChoreErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return ChoreException(
-            ChoreErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return ChoreException(
-            ChoreErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final code = _choreCodeMap[parsed.code] ?? ChoreErrorCode.unknown;
+      return ChoreException(code, parsed.message, details: parsed.details);
     }
     return ChoreException(ChoreErrorCode.unknown, error.toString());
   }
@@ -644,152 +311,8 @@ class SupabaseErrorMapper {
     }
     if (error is PostgrestException) {
       final parsed = _parseErrorJson(error.message);
-      switch (parsed.code) {
-        case 'INVALID_HOME':
-          return ExpenseException(
-            ExpenseErrorCode.invalidHome,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_AMOUNT':
-          return ExpenseException(
-            ExpenseErrorCode.invalidAmount,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_DESCRIPTION':
-          return ExpenseException(
-            ExpenseErrorCode.invalidDescription,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_NOTES':
-          return ExpenseException(
-            ExpenseErrorCode.invalidNotes,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_RECURRENCE':
-          return ExpenseException(
-            ExpenseErrorCode.invalidRecurrence,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_RECURRENCE_DRAFT':
-          return ExpenseException(
-            ExpenseErrorCode.invalidRecurrenceDraft,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_START_DATE':
-          return ExpenseException(
-            ExpenseErrorCode.invalidStartDate,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_START_DATE_RANGE':
-          return ExpenseException(
-            ExpenseErrorCode.invalidStartDateRange,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'NOT_HOME_MEMBER':
-          return ExpenseException(
-            ExpenseErrorCode.notHomeMember,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'HOME_INACTIVE':
-          return ExpenseException(
-            ExpenseErrorCode.homeInactive,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_SPLIT':
-          return ExpenseException(
-            ExpenseErrorCode.invalidSplit,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'SPLIT_MEMBERS_REQUIRED':
-          return ExpenseException(
-            ExpenseErrorCode.splitMembersRequired,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_DEBTOR':
-          return ExpenseException(
-            ExpenseErrorCode.invalidDebtor,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'SPLIT_SUM_MISMATCH':
-          return ExpenseException(
-            ExpenseErrorCode.splitSumMismatch,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'NOT_FOUND':
-          return ExpenseException(
-            ExpenseErrorCode.notFound,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'NOT_CREATOR':
-          return ExpenseException(
-            ExpenseErrorCode.notCreator,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'INVALID_STATE':
-          return ExpenseException(
-            ExpenseErrorCode.invalidState,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'SPLIT_REQUIRED':
-          return ExpenseException(
-            ExpenseErrorCode.splitRequired,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'EXPENSE_LOCKED_AFTER_PAYMENT':
-          return ExpenseException(
-            ExpenseErrorCode.lockedAfterPayment,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'EDIT_NOT_ALLOWED':
-          return ExpenseException(
-            ExpenseErrorCode.editNotAllowed,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'PAYWALL_LIMIT_ACTIVE_EXPENSES':
-          return ExpenseException(
-            ExpenseErrorCode.paywallActiveExpensesCap,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'FORBIDDEN':
-          return ExpenseException(
-            ExpenseErrorCode.forbidden,
-            parsed.message,
-            details: parsed.details,
-          );
-        case 'UNAUTHORIZED':
-          return ExpenseException(
-            ExpenseErrorCode.unauthorized,
-            parsed.message,
-            details: parsed.details,
-          );
-        default:
-          return ExpenseException(
-            ExpenseErrorCode.unknown,
-            parsed.message,
-            details: parsed.details,
-          );
-      }
+      final code = _expenseCodeMap[parsed.code] ?? ExpenseErrorCode.unknown;
+      return ExpenseException(code, parsed.message, details: parsed.details);
     }
     return ExpenseException(ExpenseErrorCode.unknown, error.toString());
   }
@@ -801,6 +324,112 @@ class _Parsed {
   final Map<String, dynamic>? details;
   _Parsed({required this.code, required this.message, required this.details});
 }
+
+const _choreCodeMap = <String, ChoreErrorCode>{
+  'INVALID_INPUT': ChoreErrorCode.invalidInput,
+  'INVALID_NAME': ChoreErrorCode.invalidInput,
+  'INVALID_STATE': ChoreErrorCode.invalidState,
+  'INVALID_MEDIA_PATH': ChoreErrorCode.invalidMediaPath,
+  'ASSIGNEE_NOT_MEMBER': ChoreErrorCode.assigneeNotMember,
+  'ALREADY_FINALIZED': ChoreErrorCode.alreadyFinalized,
+  'PAYWALL_LIMIT_ACTIVE_CHORES': ChoreErrorCode.paywallActiveCap,
+  'PAYWALL_LIMIT_CHORE_PHOTOS': ChoreErrorCode.paywallMediaCap,
+  'INVALID_START': ChoreErrorCode.invalidStart,
+  'NOT_FOUND': ChoreErrorCode.notFound,
+  'CHORE_NOT_FOUND': ChoreErrorCode.notFound,
+  'NOT_HOME_MEMBER': ChoreErrorCode.notHomeMember,
+  'FORBIDDEN': ChoreErrorCode.forbidden,
+  'UNAUTHORIZED': ChoreErrorCode.unauthorized,
+};
+
+const _expenseCodeMap = <String, ExpenseErrorCode>{
+  'INVALID_HOME': ExpenseErrorCode.invalidHome,
+  'INVALID_AMOUNT': ExpenseErrorCode.invalidAmount,
+  'INVALID_DESCRIPTION': ExpenseErrorCode.invalidDescription,
+  'INVALID_NOTES': ExpenseErrorCode.invalidNotes,
+  'INVALID_RECURRENCE': ExpenseErrorCode.invalidRecurrence,
+  'INVALID_RECURRENCE_DRAFT': ExpenseErrorCode.invalidRecurrenceDraft,
+  'INVALID_START_DATE': ExpenseErrorCode.invalidStartDate,
+  'INVALID_START_DATE_RANGE': ExpenseErrorCode.invalidStartDateRange,
+  'NOT_HOME_MEMBER': ExpenseErrorCode.notHomeMember,
+  'HOME_INACTIVE': ExpenseErrorCode.homeInactive,
+  'INVALID_SPLIT': ExpenseErrorCode.invalidSplit,
+  'SPLIT_MEMBERS_REQUIRED': ExpenseErrorCode.splitMembersRequired,
+  'INVALID_DEBTOR': ExpenseErrorCode.invalidDebtor,
+  'SPLIT_SUM_MISMATCH': ExpenseErrorCode.splitSumMismatch,
+  'NOT_FOUND': ExpenseErrorCode.notFound,
+  'NOT_CREATOR': ExpenseErrorCode.notCreator,
+  'INVALID_STATE': ExpenseErrorCode.invalidState,
+  'SPLIT_REQUIRED': ExpenseErrorCode.splitRequired,
+  'EXPENSE_LOCKED_AFTER_PAYMENT': ExpenseErrorCode.lockedAfterPayment,
+  'EDIT_NOT_ALLOWED': ExpenseErrorCode.editNotAllowed,
+  'PAYWALL_LIMIT_ACTIVE_EXPENSES': ExpenseErrorCode.paywallActiveExpensesCap,
+  'FORBIDDEN': ExpenseErrorCode.forbidden,
+  'UNAUTHORIZED': ExpenseErrorCode.unauthorized,
+};
+
+const _createHomeCodeMap = <String, CreateHomeErrorCode>{
+  'ALREADY_IN_OTHER_HOME': CreateHomeErrorCode.alreadyInOtherHome,
+  'FORBIDDEN': CreateHomeErrorCode.forbidden,
+  'UNAUTHORIZED': CreateHomeErrorCode.unauthorized,
+};
+
+const _rotateCodeMap = <String, RotateErrorCode>{
+  'FORBIDDEN': RotateErrorCode.forbidden,
+  'UNAUTHORIZED': RotateErrorCode.unauthorized,
+};
+
+const _revokeCodeMap = <String, RevokeErrorCode>{
+  'FORBIDDEN': RevokeErrorCode.forbidden,
+  'UNAUTHORIZED': RevokeErrorCode.unauthorized,
+};
+
+const _inviteGetOrCreateMap = <String, InviteGetOrCreateErrorCode?>{
+  'FORBIDDEN': InviteGetOrCreateErrorCode.forbidden,
+  'UNAUTHORIZED': InviteGetOrCreateErrorCode.unauthorized,
+};
+
+const _transferOwnerMap = <String, TransferErrorCode>{
+  'INVALID_NEW_OWNER': TransferErrorCode.invalidNewOwner,
+  'NEW_OWNER_NOT_MEMBER': TransferErrorCode.newOwnerNotMember,
+  'FORBIDDEN': TransferErrorCode.forbidden,
+  'STATE_CHANGED_RETRY': TransferErrorCode.stateChangedRetry,
+  'UNAUTHORIZED': TransferErrorCode.unauthorized,
+};
+
+const _leaveMap = <String, LeaveErrorCode>{
+  'NOT_MEMBER': LeaveErrorCode.notMember,
+  'OWNER_MUST_TRANSFER_FIRST': LeaveErrorCode.ownerMustTransferFirst,
+  'STATE_CHANGED_RETRY': LeaveErrorCode.stateChangedRetry,
+  'FORBIDDEN': LeaveErrorCode.forbidden,
+  'UNAUTHORIZED': LeaveErrorCode.unauthorized,
+};
+
+const _kickMap = <String, KickMemberErrorCode>{
+  'TARGET_NOT_MEMBER': KickMemberErrorCode.targetNotMember,
+  'CANNOT_KICK_OWNER': KickMemberErrorCode.cannotKickOwner,
+  'STATE_CHANGED_RETRY': KickMemberErrorCode.stateChangedRetry,
+  'HOME_INACTIVE': KickMemberErrorCode.homeInactive,
+  'HOME_NOT_FOUND': KickMemberErrorCode.homeInactive,
+  'FORBIDDEN': KickMemberErrorCode.forbidden,
+  'UNAUTHORIZED': KickMemberErrorCode.unauthorized,
+};
+
+const _moodSubmitMap = <String, MoodSubmitErrorCode>{
+  'INVALID_HOME': MoodSubmitErrorCode.invalidHome,
+  'INVALID_MOOD': MoodSubmitErrorCode.invalidMood,
+  'MOOD_ALREADY_SUBMITTED': MoodSubmitErrorCode.moodAlreadySubmitted,
+  'FORBIDDEN': MoodSubmitErrorCode.forbidden,
+  'UNAUTHORIZED': MoodSubmitErrorCode.unauthorized,
+};
+
+const _npsSubmitMap = <String, NpsSubmitErrorCode>{
+  'INVALID_NPS_SCORE': NpsSubmitErrorCode.invalidScore,
+  'NPS_NOT_ELIGIBLE': NpsSubmitErrorCode.notEligible,
+  'NPS_NOT_REQUIRED': NpsSubmitErrorCode.notRequired,
+  'FORBIDDEN': NpsSubmitErrorCode.forbidden,
+  'UNAUTHORIZED': NpsSubmitErrorCode.unauthorized,
+};
 
 class InviteRotateException implements Exception {
   final RotateErrorCode code;

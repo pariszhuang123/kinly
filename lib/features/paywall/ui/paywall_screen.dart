@@ -5,8 +5,8 @@ import '../../../core/di/locator.dart';
 import '../../../core/homes/models.dart';
 import '../../../core/purchases/revenuecat_service.dart';
 import '../../../core/theme/kinly_sections.dart';
+import '../../../core/ui/action_bar/kinly_action_bar.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
-import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/logging/logger.dart';
 import '../../../core/ui/kinly_action_card.dart';
 import '../../../core/ui/kinly_loader.dart';
@@ -154,6 +154,7 @@ class KinlyPaywallScreen extends StatelessWidget {
                   return _PaywallBody(
                     strings: strings,
                     priceString: pkg?.priceString,
+                    isActionBusy: state.isActionInFlight,
                     onUpgrade: () {
                       context.read<PaywallBloc>().add(
                         const PaywallCtaPressed(),
@@ -181,6 +182,7 @@ class _PaywallBody extends StatelessWidget {
   const _PaywallBody({
     required this.strings,
     required this.priceString,
+    required this.isActionBusy,
     required this.onUpgrade,
     required this.onRestore,
     required this.onDismiss,
@@ -189,6 +191,7 @@ class _PaywallBody extends StatelessWidget {
 
   final PaywallStrings strings;
   final String? priceString;
+  final bool isActionBusy;
   final VoidCallback onUpgrade;
   final VoidCallback onRestore;
   final VoidCallback onDismiss;
@@ -297,17 +300,19 @@ class _PaywallBody extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: spacing.l),
-                KinlyFilledButton.text(
-                  label: primaryLabel,
-                  onPressed: onUpgrade,
-                  fullWidth: true,
-                ),
-                SizedBox(height: spacing.m),
-                KinlyOutlinedButton.text(
-                  label: strings.restoreCta,
-                  onPressed: onRestore,
-                  compact: true,
-                  fullWidth: true,
+                KinlyActionBar(
+                  primary: KinlyActionButton(
+                    label: primaryLabel,
+                    onPressed: isActionBusy ? null : onUpgrade,
+                    busy: isActionBusy,
+                  ),
+                  secondary: KinlyActionButton(
+                    label: strings.restoreCta,
+                    onPressed: isActionBusy ? null : onRestore,
+                    variant: KinlyActionButtonVariant.outlined,
+                  ),
+                  includeSafeArea: false,
+                  padding: EdgeInsetsDirectional.zero,
                 ),
               ],
             ),

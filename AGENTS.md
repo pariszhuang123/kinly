@@ -116,6 +116,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - Unknowns: PR must contain Assumptions; mark Blocking if delivery halted.
 - Merge/trunk checklist (applies to trunk and PRs):
   - `dart run tool/check_design_system.dart` (see Design System section)
+  - `dart run tool/check_complexity_budget.dart` (see `docs/engineering/complexity_budget_v1.md`)
   - `dart format` + `dart analyze`
   - `flutter test` (add widget/RTL/golden tests when relevant)
   - `dart run tool/check_i18n.dart`
@@ -132,6 +133,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 
 ## Guardrails (Prohibited)
 - No direct Supabase/HTTP in UI/BLoC.
+- Keep CC within `docs/engineering/complexity_budget_v1.md`; allowed exceptions require `CC_BUDGET_EXCEPTION` with expiry; hard caps are non-negotiable.
 - No schema change without migration + RLS policies + reviews.
 - No hard-coded UI strings (use i18n). Run `dart run tool/check_i18n.dart`
   before submitting a PR; reviewers (Codex) will block if this check fails.
@@ -154,6 +156,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - UI must use Kinly primitives under `lib/core/ui/**`; new or changed primitives require Planner + Docs review; update `docs/ui/core_ui_primitives.md`.
 - Dark/light handling must be palette-driven: primitives and feature UI must not branch on `Brightness.dark`; use theme extensions (`KinlyControlColors`, `KinlyColorTokens`, `KinlySections`) instead.
 - Design System: use theme extensions for spacing/radius/elevation/motion/color/typography; no hard-coded colors/paddings/text styles; no raw `SnackBar`/`AlertDialog`/`BottomSheet`—use `KinlySnackBar`/`KinlyAlertDialog`/`KinlyBottomSheet`; inputs via Kinly wrappers.
+- BLoC event handlers: register events with `on<Event>(_onEvent);` and implement `_on<Event>` methods (no inline closures); keep branching in small helpers to stay within the complexity budget.
 
 ## Shared Enums
 - Domain-owned/shared enums live in `lib/core/<domain>/enums/` (e.g., `lib/core/homes/enums/leave_outcome.dart`).

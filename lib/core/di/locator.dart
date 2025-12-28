@@ -35,97 +35,57 @@ import '../time/iana_timezone_resolver.dart';
 final sl = GetIt.instance;
 
 void setupDependencies() {
-  if (!sl.isRegistered<Logger>()) {
-    const debugLogger = DebugLogger();
-    sl.registerLazySingleton<Logger>(
-      () =>
-        AppConfig.sentryDsn.isNotEmpty
+  final registrations = <void Function()>[
+    () {
+      _registerLazy<Logger>(() {
+        const debugLogger = DebugLogger();
+        return AppConfig.sentryDsn.isNotEmpty
             ? SentryLogger(fallback: debugLogger)
-            : debugLogger,
-    );
-  }
-  if (!sl.isRegistered<IanaTimezoneResolver>()) {
-    sl.registerLazySingleton<IanaTimezoneResolver>(
+            : debugLogger;
+      });
+    },
+    () => _registerLazy<IanaTimezoneResolver>(
       () => IanaTimezoneResolver(logger: sl<Logger>()),
-    );
-  }
-  if (!sl.isRegistered<AuthRepository>()) {
-    sl.registerLazySingleton<AuthRepository>(
+    ),
+    () => _registerLazy<AuthRepository>(
       () => SupabaseAuthRepository(logger: sl<Logger>()),
-    );
-  }
-  if (!sl.isRegistered<HomeRepository>()) {
-    // Prefer real Supabase repo; fall back to fake if Supabase is unavailable.
-    sl.registerLazySingleton<HomeRepository>(() => SupabaseHomeRepository());
-  }
-  if (!sl.isRegistered<ChoresRepository>()) {
-    sl.registerLazySingleton<ChoresRepository>(
-      () => SupabaseChoresRepository(),
-    );
-  }
-  if (!sl.isRegistered<ProfileRepository>()) {
-    sl.registerLazySingleton<ProfileRepository>(
-      () => SupabaseProfileRepository(),
-    );
-  }
-  if (!sl.isRegistered<ProfileUpdateNotifier>()) {
-    sl.registerLazySingleton<ProfileUpdateNotifier>(
-      () => ProfileUpdateNotifier(),
-    );
-  }
-  if (!sl.isRegistered<AccountRepository>()) {
-    sl.registerLazySingleton<AccountRepository>(
-      () => SupabaseAccountRepository(),
-    );
-  }
-  if (!sl.isRegistered<ConnectivityMonitor>()) {
-    sl.registerLazySingleton<ConnectivityMonitor>(
+    ),
+    () => _registerLazy<HomeRepository>(() => SupabaseHomeRepository()),
+    () => _registerLazy<ChoresRepository>(() => SupabaseChoresRepository()),
+    () => _registerLazy<ProfileRepository>(() => SupabaseProfileRepository()),
+    () => _registerLazy<ProfileUpdateNotifier>(() => ProfileUpdateNotifier()),
+    () => _registerLazy<AccountRepository>(() => SupabaseAccountRepository()),
+    () => _registerLazy<ConnectivityMonitor>(
       () => ConnectivityMonitor()..initialize(),
-    );
-  }
-  if (!sl.isRegistered<AppVersionRepository>()) {
-    sl.registerLazySingleton<AppVersionRepository>(
+    ),
+    () => _registerLazy<AppVersionRepository>(
       () => SupabaseAppVersionRepository(),
-    );
-  }
-  if (!sl.isRegistered<ExpensesRepository>()) {
-    sl.registerLazySingleton<ExpensesRepository>(
-      () => SupabaseExpensesRepository(),
-    );
-  }
-  if (!sl.isRegistered<MoodRepository>()) {
-    sl.registerLazySingleton<MoodRepository>(() => SupabaseMoodRepository());
-  }
-  if (!sl.isRegistered<NotificationSyncState>()) {
-    sl.registerLazySingleton<NotificationSyncState>(
-      () => NotificationSyncState(),
-    );
-  }
-  if (!sl.isRegistered<DeviceTokenProvider>()) {
-    sl.registerLazySingleton<DeviceTokenProvider>(
+    ),
+    () => _registerLazy<ExpensesRepository>(() => SupabaseExpensesRepository()),
+    () => _registerLazy<MoodRepository>(() => SupabaseMoodRepository()),
+    () => _registerLazy<NotificationSyncState>(() => NotificationSyncState()),
+    () => _registerLazy<DeviceTokenProvider>(
       () => const FirebaseDeviceTokenProvider(),
-    );
-  }
-  if (!sl.isRegistered<NotificationsRepository>()) {
-    sl.registerLazySingleton<NotificationsRepository>(
+    ),
+    () => _registerLazy<NotificationsRepository>(
       () => SupabaseNotificationsRepository(
         syncState: sl<NotificationSyncState>(),
       ),
-    );
-  }
-  if (!sl.isRegistered<OnboardingRepository>()) {
-    sl.registerLazySingleton<OnboardingRepository>(
+    ),
+    () => _registerLazy<OnboardingRepository>(
       () => SupabaseOnboardingRepository(),
-    );
+    ),
+    () => _registerLazy<PaywallRepository>(() => SupabasePaywallRepository()),
+    () => _registerLazy<RevenueCatService>(() => DefaultRevenueCatService()),
+  ];
+
+  for (final register in registrations) {
+    register();
   }
-  if (!sl.isRegistered<PaywallRepository>()) {
-    sl.registerLazySingleton<PaywallRepository>(
-      () => SupabasePaywallRepository(),
-    );
-  }
-  if (!sl.isRegistered<RevenueCatService>()) {
-    sl.registerLazySingleton<RevenueCatService>(
-      () => DefaultRevenueCatService(),
-    );
+}
+
+void _registerLazy<T extends Object>(T Function() builder) {
+  if (!sl.isRegistered<T>()) {
+    sl.registerLazySingleton<T>(builder);
   }
 }

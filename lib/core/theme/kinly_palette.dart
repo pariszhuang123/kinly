@@ -156,7 +156,9 @@ class KinlyPalette {
     final errorBadgeFg = colorScheme.error;
 
     // Expand badge: use section accent alpha handled by caller; icon uses onSurface in dark
-    final expandBadgeBg = colorScheme.primary.withValues(alpha: opacities.alphaSM);
+    final expandBadgeBg = colorScheme.primary.withValues(
+      alpha: opacities.alphaSM,
+    );
     final expandBadgeIcon =
         isDark ? colorScheme.onSurface : colorScheme.primary;
 
@@ -317,181 +319,79 @@ class _DerivedEngine {
     final isDark = brightness == Brightness.dark;
     const opacities = KinlyOpacity.defaults;
 
-    final surfaceBase =
-        isDark
-            ? KinlyFoundationColors.surfaceDark
-            : KinlyFoundationColors.surfaceLight;
+    final surfaceBase = _surfaceBase(brightness);
     Color lift(double amount) => _mix(surfaceBase, _white, amount);
     Color shade(double amount) => _mix(surfaceBase, _black, amount);
 
-    // Surfaces
-    final surface = surfaceBase;
-    final surfaceContainerLowest = isDark ? lift(0.05) : lift(0.02);
-    final surfaceContainerLow = isDark ? lift(0.08) : lift(0.04);
-    final surfaceContainer = isDark ? lift(0.12) : lift(0.06);
-    final surfaceContainerHigh = isDark ? lift(0.16) : lift(0.08);
-    final surfaceContainerHighest = isDark ? lift(0.22) : lift(0.12);
-    final surfaceBright = isDark ? lift(0.20) : lift(0.10);
-    final surfaceDim = isDark ? shade(0.06) : shade(0.08);
-    final inverseSurface = isDark ? lift(0.92) : shade(0.82);
-    final onSurface = _pickOnColor(
-      background: surface,
-      preferred: isDark ? _white : KinlyFoundationColors.ink,
+    final surfaces = _deriveSurfaces(
+      isDark: isDark,
+      lift: lift,
+      shade: shade,
+      surfaceBase: surfaceBase,
     );
-
-    // Brand roles
-    final primary =
-        isDark
-            ? _mix(KinlyFoundationColors.brandPrimary, _white, 0.35)
-            : _mix(KinlyFoundationColors.brandPrimary, _black, 0.10);
-    final primaryContainer = _mix(
-      primary,
-      isDark ? surfaceBase : _white,
-      isDark ? 0.28 : 0.18,
-    );
-    final onPrimary = _pickOnColor(background: primary, preferred: _white);
-    final onPrimaryContainer = _pickOnColor(
-      background: primaryContainer,
-      preferred: KinlyFoundationColors.ink,
-    );
-
-    final secondary =
-        isDark
-            ? _mix(KinlyFoundationColors.brandSecondary, _white, 0.06)
-            : _mix(KinlyFoundationColors.brandSecondary, _black, 0.10);
-    final secondaryContainer = _mix(
-      secondary,
-      isDark ? surfaceBase : _white,
-      isDark ? 0.26 : 0.18,
-    );
-    final onSecondary = _pickOnColor(background: secondary, preferred: _white);
-    final onSecondaryContainer = _pickOnColor(
-      background: secondaryContainer,
-      preferred: KinlyFoundationColors.ink,
-    );
-
-    final tertiary =
-        isDark
-            ? _mix(KinlyFoundationColors.brandAccent, _white, 0.02)
-            : _mix(KinlyFoundationColors.brandAccent, _black, 0.1);
-    final tertiaryContainer = _mix(
-      tertiary,
-      isDark ? surfaceBase : _white,
-      isDark ? 0.24 : 0.16,
-    );
-    final onTertiary = _pickOnColor(background: tertiary, preferred: _white);
-    final onTertiaryContainer = _pickOnColor(
-      background: tertiaryContainer,
-      preferred: KinlyFoundationColors.ink,
-    );
-
-    // Error semantics
-    final error =
-        isDark
-            ? _mix(KinlyFoundationColors.error, _white, 0.28)
-            : _mix(KinlyFoundationColors.error, _black, 0.16);
-    final errorContainer = _mix(
-      surfaceBase,
-      KinlyFoundationColors.error,
-      isDark ? 0.28 : 0.16,
-    );
-    final onError = _pickOnColor(background: error, preferred: _white);
-    final onErrorContainer = _pickOnColor(
-      background: errorContainer,
-      preferred: KinlyFoundationColors.ink,
-    );
-
-    // Outline
-    final outline =
-        isDark
-            ? _mix(KinlyFoundationColors.outline, surfaceBase, 0.65)
-            : KinlyFoundationColors.outline;
-    final outlineVariant = _mix(outline, surfaceBase, 0.35);
-
-    final inversePrimary = _mix(primary, _white, 0.55);
-    final onInverseSurface = _pickOnColor(
-      background: inverseSurface,
-      preferred: KinlyFoundationColors.ink,
-    );
-
-    // Sections
+    final brand = _deriveBrand(isDark: isDark, surfaceBase: surfaceBase);
+    final error = _deriveError(isDark: isDark, surfaceBase: surfaceBase);
+    final outline = _deriveOutline(isDark: isDark, surfaceBase: surfaceBase);
     final sections = _buildSections(
       isDark: isDark,
-      surface: surface,
-      primary: primary,
-      secondary: secondary,
+      surface: surfaces.surface,
+      primary: brand.primary,
+      secondary: brand.secondary,
       accent: KinlyFoundationColors.brandAccent,
-      outline: outline,
+      outline: outline.outline,
       opacities: opacities,
     );
-
-    // Link colors
     final linkColors =
         isDark
-            ? KinlyLinkColors(link: onSurface, icon: onSurface)
-            : KinlyLinkColors(link: primary, icon: primary);
-
-    // Brand text
-    final brandTextColors = KinlyBrandTextColors(
-      sageText: _mix(KinlyFoundationColors.brandSecondary, _black, 0.4),
-      honeyText: _mix(KinlyFoundationColors.brandAccent, _black, 0.55),
-      tealBrand: _mix(KinlyFoundationColors.brandPrimary, _black, 0.4),
+            ? KinlyLinkColors(
+              link: surfaces.onSurface,
+              icon: surfaces.onSurface,
+            )
+            : KinlyLinkColors(link: brand.primary, icon: brand.primary);
+    final brandTextColors = _deriveBrandText();
+    final support = _deriveSupport(
+      isDark: isDark,
+      surfaceBase: surfaceBase,
+      outline: outline.outline,
     );
-
-    // Support tokens (derived)
-    final success = _mix(
-      KinlyFoundationColors.brandSecondary,
-      _black,
-      isDark ? 0.0 : 0.12,
-    );
-    final warning = _mix(
-      KinlyFoundationColors.brandAccent,
-      _black,
-      isDark ? 0.0 : 0.12,
-    );
-    final info = _mix(
-      KinlyFoundationColors.brandPrimary,
-      _white,
-      isDark ? 0.12 : 0.06,
-    );
-    final disabled = _mix(surfaceBase, outline, 0.5);
 
     final scheme = ColorScheme(
       brightness: brightness,
-      primary: primary,
-      onPrimary: onPrimary,
-      primaryContainer: primaryContainer,
-      onPrimaryContainer: onPrimaryContainer,
-      secondary: secondary,
-      onSecondary: onSecondary,
-      secondaryContainer: secondaryContainer,
-      onSecondaryContainer: onSecondaryContainer,
-      tertiary: tertiary,
-      onTertiary: onTertiary,
-      tertiaryContainer: tertiaryContainer,
-      onTertiaryContainer: onTertiaryContainer,
-      error: error,
-      onError: onError,
-      errorContainer: errorContainer,
-      onErrorContainer: onErrorContainer,
-      surface: surface,
-      onSurface: onSurface,
-      surfaceContainerHighest: surfaceContainerHighest,
-      surfaceContainerHigh: surfaceContainerHigh,
-      surfaceContainer: surfaceContainer,
-      surfaceContainerLow: surfaceContainerLow,
-      surfaceContainerLowest: surfaceContainerLowest,
-      surfaceDim: surfaceDim,
-      surfaceBright: surfaceBright,
-      outline: outline,
-      outlineVariant: outlineVariant,
-      shadow:
-          (isDark ? _white : _black).withValues(alpha: opacities.alphaShadow),
+      primary: brand.primary,
+      onPrimary: brand.onPrimary,
+      primaryContainer: brand.primaryContainer,
+      onPrimaryContainer: brand.onPrimaryContainer,
+      secondary: brand.secondary,
+      onSecondary: brand.onSecondary,
+      secondaryContainer: brand.secondaryContainer,
+      onSecondaryContainer: brand.onSecondaryContainer,
+      tertiary: brand.tertiary,
+      onTertiary: brand.onTertiary,
+      tertiaryContainer: brand.tertiaryContainer,
+      onTertiaryContainer: brand.onTertiaryContainer,
+      error: error.error,
+      onError: error.onError,
+      errorContainer: error.errorContainer,
+      onErrorContainer: error.onErrorContainer,
+      surface: surfaces.surface,
+      onSurface: surfaces.onSurface,
+      surfaceContainerHighest: surfaces.surfaceContainerHighest,
+      surfaceContainerHigh: surfaces.surfaceContainerHigh,
+      surfaceContainer: surfaces.surfaceContainer,
+      surfaceContainerLow: surfaces.surfaceContainerLow,
+      surfaceContainerLowest: surfaces.surfaceContainerLowest,
+      surfaceDim: surfaces.surfaceDim,
+      surfaceBright: surfaces.surfaceBright,
+      outline: outline.outline,
+      outlineVariant: outline.outlineVariant,
+      shadow: (isDark ? _white : _black).withValues(
+        alpha: opacities.alphaShadow,
+      ),
       scrim: _black.withValues(alpha: opacities.alphaScrim),
-      inverseSurface: inverseSurface,
-      onInverseSurface: onInverseSurface,
-      inversePrimary: inversePrimary,
-      surfaceTint: primary,
+      inverseSurface: surfaces.inverseSurface,
+      onInverseSurface: surfaces.onInverseSurface,
+      inversePrimary: brand.inversePrimary,
+      surfaceTint: brand.primary,
     );
 
     return _DerivedColors(
@@ -499,10 +399,10 @@ class _DerivedEngine {
       sections: sections,
       linkColors: linkColors,
       brandTextColors: brandTextColors,
-      success: success,
-      warning: warning,
-      info: info,
-      disabled: disabled,
+      success: support.success,
+      warning: support.warning,
+      info: support.info,
+      disabled: support.disabled,
     );
   }
 
@@ -515,18 +415,16 @@ class _DerivedEngine {
     required Color outline,
     required KinlyOpacity opacities,
   }) {
-    Color sectionBackground(Color accentColor) =>
-        _mix(
-          surface,
-          accentColor,
-          isDark ? opacities.alphaMD : opacities.alphaXS,
-        );
-    Color sectionCard(Color accentColor) =>
-        _mix(
-          surface,
-          accentColor,
-          isDark ? opacities.alphaXL : opacities.alphaSM,
-        );
+    Color sectionBackground(Color accentColor) => _mix(
+      surface,
+      accentColor,
+      isDark ? opacities.alphaMD : opacities.alphaXS,
+    );
+    Color sectionCard(Color accentColor) => _mix(
+      surface,
+      accentColor,
+      isDark ? opacities.alphaXL : opacities.alphaSM,
+    );
     SectionColors buildSection(Color accentColor) {
       final card = sectionCard(accentColor);
       return SectionColors(
@@ -550,6 +448,293 @@ class _DerivedEngine {
       empty: buildSection(emptyAccent),
     );
   }
+
+  static Color _surfaceBase(Brightness brightness) {
+    return brightness == Brightness.dark
+        ? KinlyFoundationColors.surfaceDark
+        : KinlyFoundationColors.surfaceLight;
+  }
+
+  static _SurfaceSet _deriveSurfaces({
+    required bool isDark,
+    required Color Function(double) lift,
+    required Color Function(double) shade,
+    required Color surfaceBase,
+  }) {
+    final surfaceContainerLowest = isDark ? lift(0.05) : lift(0.02);
+    final surfaceContainerLow = isDark ? lift(0.08) : lift(0.04);
+    final surfaceContainer = isDark ? lift(0.12) : lift(0.06);
+    final surfaceContainerHigh = isDark ? lift(0.16) : lift(0.08);
+    final surfaceContainerHighest = isDark ? lift(0.22) : lift(0.12);
+    final surfaceBright = isDark ? lift(0.20) : lift(0.10);
+    final surfaceDim = isDark ? shade(0.06) : shade(0.08);
+    final inverseSurface = isDark ? lift(0.92) : shade(0.82);
+    final onSurface = _pickOnColor(
+      background: surfaceBase,
+      preferred: isDark ? _white : KinlyFoundationColors.ink,
+    );
+    final onInverseSurface = _pickOnColor(
+      background: inverseSurface,
+      preferred: KinlyFoundationColors.ink,
+    );
+
+    return _SurfaceSet(
+      surface: surfaceBase,
+      surfaceContainerLowest: surfaceContainerLowest,
+      surfaceContainerLow: surfaceContainerLow,
+      surfaceContainer: surfaceContainer,
+      surfaceContainerHigh: surfaceContainerHigh,
+      surfaceContainerHighest: surfaceContainerHighest,
+      surfaceBright: surfaceBright,
+      surfaceDim: surfaceDim,
+      inverseSurface: inverseSurface,
+      onSurface: onSurface,
+      onInverseSurface: onInverseSurface,
+    );
+  }
+
+  static _BrandSet _deriveBrand({
+    required bool isDark,
+    required Color surfaceBase,
+  }) {
+    final primary = _mix(
+      KinlyFoundationColors.brandPrimary,
+      isDark ? _white : _black,
+      isDark ? 0.35 : 0.10,
+    );
+    final primaryContainer = _mix(
+      primary,
+      isDark ? surfaceBase : _white,
+      isDark ? 0.28 : 0.18,
+    );
+    final onPrimary = _pickOnColor(background: primary, preferred: _white);
+    final onPrimaryContainer = _pickOnColor(
+      background: primaryContainer,
+      preferred: KinlyFoundationColors.ink,
+    );
+
+    final secondary = _mix(
+      KinlyFoundationColors.brandSecondary,
+      isDark ? _white : _black,
+      isDark ? 0.06 : 0.10,
+    );
+    final secondaryContainer = _mix(
+      secondary,
+      isDark ? surfaceBase : _white,
+      isDark ? 0.26 : 0.18,
+    );
+    final onSecondary = _pickOnColor(background: secondary, preferred: _white);
+    final onSecondaryContainer = _pickOnColor(
+      background: secondaryContainer,
+      preferred: KinlyFoundationColors.ink,
+    );
+
+    final tertiary = _mix(
+      KinlyFoundationColors.brandAccent,
+      isDark ? _white : _black,
+      isDark ? 0.02 : 0.10,
+    );
+    final tertiaryContainer = _mix(
+      tertiary,
+      isDark ? surfaceBase : _white,
+      isDark ? 0.24 : 0.16,
+    );
+    final onTertiary = _pickOnColor(background: tertiary, preferred: _white);
+    final onTertiaryContainer = _pickOnColor(
+      background: tertiaryContainer,
+      preferred: KinlyFoundationColors.ink,
+    );
+
+    final inversePrimary = _mix(primary, _white, 0.55);
+
+    return _BrandSet(
+      primary: primary,
+      primaryContainer: primaryContainer,
+      onPrimary: onPrimary,
+      onPrimaryContainer: onPrimaryContainer,
+      secondary: secondary,
+      secondaryContainer: secondaryContainer,
+      onSecondary: onSecondary,
+      onSecondaryContainer: onSecondaryContainer,
+      tertiary: tertiary,
+      tertiaryContainer: tertiaryContainer,
+      onTertiary: onTertiary,
+      onTertiaryContainer: onTertiaryContainer,
+      inversePrimary: inversePrimary,
+    );
+  }
+
+  static _ErrorSet _deriveError({
+    required bool isDark,
+    required Color surfaceBase,
+  }) {
+    final error = _mix(
+      KinlyFoundationColors.error,
+      isDark ? _white : _black,
+      isDark ? 0.28 : 0.16,
+    );
+    final errorContainer = _mix(
+      surfaceBase,
+      KinlyFoundationColors.error,
+      isDark ? 0.28 : 0.16,
+    );
+    final onError = _pickOnColor(background: error, preferred: _white);
+    final onErrorContainer = _pickOnColor(
+      background: errorContainer,
+      preferred: KinlyFoundationColors.ink,
+    );
+
+    return _ErrorSet(
+      error: error,
+      errorContainer: errorContainer,
+      onError: onError,
+      onErrorContainer: onErrorContainer,
+    );
+  }
+
+  static _OutlineSet _deriveOutline({
+    required bool isDark,
+    required Color surfaceBase,
+  }) {
+    final outline =
+        isDark
+            ? _mix(KinlyFoundationColors.outline, surfaceBase, 0.65)
+            : KinlyFoundationColors.outline;
+    final outlineVariant = _mix(outline, surfaceBase, 0.35);
+    return _OutlineSet(outline: outline, outlineVariant: outlineVariant);
+  }
+
+  static KinlyBrandTextColors _deriveBrandText() {
+    return KinlyBrandTextColors(
+      sageText: _mix(KinlyFoundationColors.brandSecondary, _black, 0.4),
+      honeyText: _mix(KinlyFoundationColors.brandAccent, _black, 0.55),
+      tealBrand: _mix(KinlyFoundationColors.brandPrimary, _black, 0.4),
+    );
+  }
+
+  static _SupportSet _deriveSupport({
+    required bool isDark,
+    required Color surfaceBase,
+    required Color outline,
+  }) {
+    final success = _mix(
+      KinlyFoundationColors.brandSecondary,
+      _black,
+      isDark ? 0.0 : 0.12,
+    );
+    final warning = _mix(
+      KinlyFoundationColors.brandAccent,
+      _black,
+      isDark ? 0.0 : 0.12,
+    );
+    final info = _mix(
+      KinlyFoundationColors.brandPrimary,
+      _white,
+      isDark ? 0.12 : 0.06,
+    );
+    final disabled = _mix(surfaceBase, outline, 0.5);
+    return _SupportSet(
+      success: success,
+      warning: warning,
+      info: info,
+      disabled: disabled,
+    );
+  }
+}
+
+class _SurfaceSet {
+  _SurfaceSet({
+    required this.surface,
+    required this.surfaceContainerLowest,
+    required this.surfaceContainerLow,
+    required this.surfaceContainer,
+    required this.surfaceContainerHigh,
+    required this.surfaceContainerHighest,
+    required this.surfaceBright,
+    required this.surfaceDim,
+    required this.inverseSurface,
+    required this.onSurface,
+    required this.onInverseSurface,
+  });
+
+  final Color surface;
+  final Color surfaceContainerLowest;
+  final Color surfaceContainerLow;
+  final Color surfaceContainer;
+  final Color surfaceContainerHigh;
+  final Color surfaceContainerHighest;
+  final Color surfaceBright;
+  final Color surfaceDim;
+  final Color inverseSurface;
+  final Color onSurface;
+  final Color onInverseSurface;
+}
+
+class _BrandSet {
+  _BrandSet({
+    required this.primary,
+    required this.primaryContainer,
+    required this.onPrimary,
+    required this.onPrimaryContainer,
+    required this.secondary,
+    required this.secondaryContainer,
+    required this.onSecondary,
+    required this.onSecondaryContainer,
+    required this.tertiary,
+    required this.tertiaryContainer,
+    required this.onTertiary,
+    required this.onTertiaryContainer,
+    required this.inversePrimary,
+  });
+
+  final Color primary;
+  final Color primaryContainer;
+  final Color onPrimary;
+  final Color onPrimaryContainer;
+  final Color secondary;
+  final Color secondaryContainer;
+  final Color onSecondary;
+  final Color onSecondaryContainer;
+  final Color tertiary;
+  final Color tertiaryContainer;
+  final Color onTertiary;
+  final Color onTertiaryContainer;
+  final Color inversePrimary;
+}
+
+class _ErrorSet {
+  _ErrorSet({
+    required this.error,
+    required this.errorContainer,
+    required this.onError,
+    required this.onErrorContainer,
+  });
+
+  final Color error;
+  final Color errorContainer;
+  final Color onError;
+  final Color onErrorContainer;
+}
+
+class _OutlineSet {
+  _OutlineSet({required this.outline, required this.outlineVariant});
+
+  final Color outline;
+  final Color outlineVariant;
+}
+
+class _SupportSet {
+  _SupportSet({
+    required this.success,
+    required this.warning,
+    required this.info,
+    required this.disabled,
+  });
+
+  final Color success;
+  final Color warning;
+  final Color info;
+  final Color disabled;
 }
 
 class _DerivedColors {

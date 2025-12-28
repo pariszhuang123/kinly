@@ -23,6 +23,8 @@ import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
 
+part 'share_create_form_fields.dart';
+
 class ShareCreateFormView extends StatelessWidget {
   const ShareCreateFormView({
     super.key,
@@ -76,62 +78,17 @@ class ShareCreateFormView extends StatelessWidget {
     final s = S.of(context);
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final showValidation = state.showValidationErrors;
-    final customSummary = state.evaluateCustomSplit();
-    final editingDisabled = state.isEditing && !state.canEdit;
-    final locked = state.isAmountLocked || editingDisabled;
-    final fullyPaid = state.allPaid;
-    final deleteBlocked = state.paidByOther || locked || fullyPaid;
-    final recurrenceNeedsSplit =
-        showValidation &&
-        state.form.recurrence != ExpenseRecurrenceInterval.none &&
-        state.form.splitMode == null;
-
-    // ------------------------------------------------------------------
-    // Primary button behaviour:
-    // - Create mode: always "Create"
-    // - Edit, pristine, allowDelete: "Delete"
-    // - Edit, dirty: "Update"
-    // ------------------------------------------------------------------
-    final isEditing = state.isEditing;
-    final isPristineEdit = isEditing && !state.hasUserEdits;
-    final canDelete =
-        allowDelete && isPristineEdit && !deleteBlocked && !editingDisabled;
-    final isDeleteAction = canDelete;
-    final hidePrimary = fullyPaid || editingDisabled;
-
-    final String primaryLabel;
-    if (!isEditing) {
-      primaryLabel = s.shareCreateSubmit;
-    } else if (canDelete) {
-      primaryLabel = s.shareEditDeleteButton;
-    } else {
-      primaryLabel = s.shareEditSubmit;
-    }
-
-    final bool shouldDisable =
-        state.isSubmitting ||
-        state.isDeleting ||
-        editingDisabled ||
-        // Only require splitMode when doing create/update.
-        (!canDelete && isEditing && state.form.splitMode == null);
-
+    final viewState = _FormViewState.fromBloc(
+      state: state,
+      allowDelete: allowDelete,
+    );
     final periodLabel = _formattedPeriod();
-
-    void handlePrimaryPressed() {
-      if (shouldDisable) return;
-      if (canDelete) {
-        onDeleteRequested?.call();
-      } else {
-        context.read<ShareCreateBloc>().add(const ShareCreateSubmitted());
-      }
-    }
 
     return ListView(
       padding: EdgeInsetsDirectional.only(bottom: spacing.lg),
       children: [
         SizedBox(height: spacing.lg),
-        if (editingDisabled && state.editDisabledReason != null)
+        if (viewState.editingDisabled && state.editDisabledReason != null)
           Padding(
             padding: EdgeInsets.only(bottom: spacing.md),
             child: KinlyInfoBanner(
@@ -145,17 +102,17 @@ class ShareCreateFormView extends StatelessWidget {
         _DescriptionField(
           controller: descriptionController,
           state: state,
-          showValidation: showValidation,
+          showValidation: viewState.showValidation,
         ),
         SizedBox(height: spacing.lg),
         _AmountField(
           controller: amountController,
           state: state,
-          showValidation: showValidation,
-          locked: locked,
+          showValidation: viewState.showValidation,
+          locked: viewState.locked,
         ),
         SizedBox(height: spacing.lg),
-        _StartDateField(state: state, locked: locked),
+        _StartDateField(state: state, locked: viewState.locked),
         if (periodLabel != null) ...[
           SizedBox(height: spacing.xs),
           Text(
@@ -168,11 +125,11 @@ class ShareCreateFormView extends StatelessWidget {
         SizedBox(height: spacing.lg),
         _RecurrenceField(
           state: state,
-          locked: locked,
-          recurrenceNeedsSplit: recurrenceNeedsSplit,
+          locked: viewState.locked,
+          recurrenceNeedsSplit: viewState.recurrenceNeedsSplit,
         ),
         SizedBox(height: spacing.lg),
-        _SplitModeSelector(state: state, locked: locked),
+        _SplitModeSelector(state: state, locked: viewState.locked),
         SizedBox(height: spacing.lg),
         if (state.participants.isEmpty)
           _EmptyParticipantsText()
@@ -181,22 +138,27 @@ class ShareCreateFormView extends StatelessWidget {
             state: state,
             shareColors: shareColors,
             spacing: spacing,
-            customSummary: customSummary,
-            showValidation: showValidation,
-            locked: locked,
+            customSummary: state.evaluateCustomSplit(),
+            showValidation: viewState.showValidation,
+            locked: viewState.locked,
             customControllers: customControllers,
           ),
         SizedBox(height: spacing.lg),
         _NotesField(controller: notesController),
         SizedBox(height: spacing.xl),
-        if (showPrimaryActions && !hidePrimary)
+        if (showPrimaryActions && !viewState.hidePrimary)
           _PrimaryActionButton(
-            label: primaryLabel,
+            label: viewState.primaryLabel(s),
             shareColors: shareColors,
-            isBusy: state.isSubmitting || state.isDeleting,
-            shouldDisable: shouldDisable,
-            destructive: isDeleteAction,
-            onPressed: handlePrimaryPressed,
+            isBusy: viewState.isBusy,
+            shouldDisable: viewState.shouldDisable,
+            destructive: viewState.isDeleteAction,
+            onPressed:
+                () => _handlePrimaryPressed(
+                  blocContext: context,
+                  viewState: viewState,
+                  onDeleteRequested: onDeleteRequested,
+                ),
           ),
         if (showTerminatePlan) ...[
           SizedBox(height: spacing.md),
@@ -267,594 +229,136 @@ class ShareCreateFormView extends StatelessWidget {
   }
 }
 
-// ----------------------------------------------------------------------
-// Sub-widgets: fields + sections
-// ----------------------------------------------------------------------
-
-class _DescriptionField extends StatelessWidget {
-  const _DescriptionField({
-    required this.controller,
-    required this.state,
+class _FormViewState {
+  _FormViewState({
     required this.showValidation,
-  });
-
-  final TextEditingController controller;
-  final ShareCreateState state;
-  final bool showValidation;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-
-    return KinlyTextField(
-      controller: controller,
-      labelText: s.shareCreateDescriptionLabel,
-      hintText: s.shareCreateDescriptionHint,
-      errorText:
-          showValidation && !state.form.hasValidDescription
-              ? s.shareCreateValidationDescription
-              : null,
-      onChanged:
-          (value) => context.read<ShareCreateBloc>().add(
-            ShareCreateDescriptionChanged(value),
-          ),
-    );
-  }
-}
-
-class _AmountField extends StatelessWidget {
-  const _AmountField({
-    required this.controller,
-    required this.state,
-    required this.showValidation,
-    required this.locked,
-  });
-
-  final TextEditingController controller;
-  final ShareCreateState state;
-  final bool showValidation;
-  final bool locked;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    final requiresAmount =
-        state.isEditing ? !state.isAmountLocked : state.form.splitMode != null;
-
-    return KinlyTextField(
-      controller: controller,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      enabled: !locked,
-      labelText: s.shareCreateAmountLabel,
-      hintText: s.shareCreateAmountHint,
-      errorText:
-          showValidation &&
-                  requiresAmount &&
-                  (state.form.amountCents == null ||
-                      state.form.amountCents! <= 0)
-              ? s.shareCreateValidationAmount
-              : null,
-      onChanged:
-          (value) => context.read<ShareCreateBloc>().add(
-            ShareCreateAmountChanged(value),
-          ),
-    );
-  }
-}
-
-class _SplitModeSelector extends StatelessWidget {
-  const _SplitModeSelector({required this.state, required this.locked});
-
-  final ShareCreateState state;
-  final bool locked;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>()!;
-
-    final splitMode = state.form.splitMode; // ShareSplitMode?
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(s.shareCreateSplitLabel, style: theme.textTheme.titleMedium),
-        SizedBox(height: spacing.sm),
-        Opacity(
-          opacity: locked ? 0.6 : 1.0,
-          child: IgnorePointer(
-            ignoring: locked,
-            child: KinlyTabBar<ShareSplitMode>(
-              tabs: {
-                ShareSplitMode.equal: s.shareCreateSplitEqual,
-                ShareSplitMode.custom: s.shareCreateSplitCustom,
-              },
-              selected: splitMode, // nullable
-              emptySelectionAllowed: true, // key line
-              onChanged: (mode) {
-                // mode is ShareSplitMode? (can be null)
-                context.read<ShareCreateBloc>().add(
-                  ShareCreateSplitModeChanged(mode),
-                );
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StartDateField extends StatelessWidget {
-  const _StartDateField({required this.state, required this.locked});
-
-  final ShareCreateState state;
-  final bool locked;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>()!;
-    final dateLabel = DateFormat.yMMMMd().format(state.form.startDate);
-    final now = DateTime.now();
-    final firstDate = now.subtract(const Duration(days: 90));
-    final lastDate = now.add(const Duration(days: 365));
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(s.shareCreateStartLabel, style: theme.textTheme.titleMedium),
-        SizedBox(height: spacing.xs),
-        KinlyOutlinedButton.text(
-          onPressed:
-              locked
-                  ? null
-                  : () async {
-                    final picked = await showKinlyDatePicker(
-                      context: context,
-                      initialDate: state.form.startDate,
-                      firstDate: DateTime(
-                        firstDate.year,
-                        firstDate.month,
-                        firstDate.day,
-                      ),
-                      lastDate: DateTime(
-                        lastDate.year,
-                        lastDate.month,
-                        lastDate.day,
-                      ),
-                    );
-                    if (picked != null && context.mounted) {
-                      context.read<ShareCreateBloc>().add(
-                        ShareCreateStartDateChanged(picked),
-                      );
-                    }
-                  },
-          label: dateLabel,
-        ),
-      ],
-    );
-  }
-}
-
-class _RecurrenceField extends StatelessWidget {
-  const _RecurrenceField({
-    required this.state,
+    required this.editingDisabled,
     required this.locked,
     required this.recurrenceNeedsSplit,
+    required this.canDelete,
+    required this.isDeleteAction,
+    required this.hidePrimary,
+    required this.shouldDisable,
+    required this.isBusy,
+    required this.isEditing,
   });
 
-  final ShareCreateState state;
+  final bool showValidation;
+  final bool editingDisabled;
   final bool locked;
   final bool recurrenceNeedsSplit;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>()!;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(s.shareCreateRecurrenceLabel, style: theme.textTheme.titleMedium),
-        SizedBox(height: spacing.xs),
-        Opacity(
-          opacity: locked ? 0.6 : 1.0,
-          child: IgnorePointer(
-            ignoring: locked,
-            child: KinlyDropdownField<ExpenseRecurrenceInterval>(
-              value: state.form.recurrence,
-              items:
-                  ExpenseRecurrenceInterval.values
-                      .map(
-                        (value) => DropdownMenuItem(
-                          value: value,
-                          child: Text(_recurrenceLabel(context, value)),
-                        ),
-                      )
-                      .toList(),
-              onChanged:
-                  (value) => context.read<ShareCreateBloc>().add(
-                    ShareCreateRecurrenceChanged(value!),
-                  ),
-            ),
-          ),
-        ),
-        if (recurrenceNeedsSplit)
-          Padding(
-            padding: EdgeInsets.only(top: spacing.xs),
-            child: Text(
-              s.shareCreateValidationRecurrenceSplit,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.error,
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
-  String _recurrenceLabel(
-    BuildContext context,
-    ExpenseRecurrenceInterval recurrence,
-  ) {
-    final s = S.of(context);
-    switch (recurrence) {
-      case ExpenseRecurrenceInterval.none:
-        return s.shareCreateRecurrenceNone;
-      case ExpenseRecurrenceInterval.weekly:
-        return s.shareCreateRecurrenceWeekly;
-      case ExpenseRecurrenceInterval.every2Weeks:
-        return s.shareCreateRecurrenceEvery2Weeks;
-      case ExpenseRecurrenceInterval.monthly:
-        return s.shareCreateRecurrenceMonthly;
-      case ExpenseRecurrenceInterval.every2Months:
-        return s.shareCreateRecurrenceEvery2Months;
-      case ExpenseRecurrenceInterval.annual:
-        return s.shareCreateRecurrenceAnnual;
-    }
-  }
-}
-
-class _EmptyParticipantsText extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    final theme = Theme.of(context);
-
-    return Text(
-      s.shareCreateParticipantsEmpty,
-      style: theme.textTheme.bodyMedium?.copyWith(
-        color: theme.colorScheme.onSurfaceVariant,
-      ),
-    );
-  }
-}
-
-class _NotesField extends StatelessWidget {
-  const _NotesField({required this.controller});
-
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-
-    return KinlyTextField(
-      controller: controller,
-      minLines: 3,
-      maxLines: 4,
-      labelText: s.shareCreateNotesLabel,
-      hintText: s.shareCreateNotesHint,
-      onChanged:
-          (value) => context.read<ShareCreateBloc>().add(
-            ShareCreateNotesChanged(value),
-          ),
-    );
-  }
-}
-
-class _PrimaryActionButton extends StatelessWidget {
-  const _PrimaryActionButton({
-    required this.label,
-    required this.shareColors,
-    required this.isBusy,
-    required this.shouldDisable,
-    this.destructive = false,
-    required this.onPressed,
-  });
-
-  final String label;
-  final SectionColors? shareColors;
-  final bool isBusy;
+  final bool canDelete;
+  final bool isDeleteAction;
+  final bool hidePrimary;
   final bool shouldDisable;
-  final bool destructive;
-  final VoidCallback onPressed;
+  final bool isBusy;
+  final bool isEditing;
 
-  @override
-  Widget build(BuildContext context) {
-    final button =
-        destructive
-            ? KinlyFilledButton.destructiveText(
-              fullWidth: true,
-              onPressed: shouldDisable ? null : onPressed,
-              label: label,
-            )
-            : KinlyFilledButton.text(
-              fullWidth: true,
-              onPressed: shouldDisable ? null : onPressed,
-              label: label,
-            );
-
-    if (!isBusy) return button;
-
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Opacity(opacity: 0.6, child: button),
-        const SizedBox(height: 20, width: 20, child: KinlyLoader(size: 20)),
-      ],
+  factory _FormViewState.fromBloc({
+    required ShareCreateState state,
+    required bool allowDelete,
+  }) {
+    final showValidation = state.showValidationErrors;
+    final editingDisabled = _isEditingDisabled(state);
+    final locked = _isLocked(state, editingDisabled);
+    final fullyPaid = state.allPaid;
+    final recurrenceNeedsSplit = _needsSplit(
+      state,
+      showValidation: showValidation,
     );
-  }
-}
+    final isEditing = state.isEditing;
+    final canDelete = _canDelete(
+      state,
+      allowDelete: allowDelete,
+      locked: locked,
+      fullyPaid: fullyPaid,
+      editingDisabled: editingDisabled,
+    );
+    final hidePrimary = _shouldHidePrimary(
+      fullyPaid: fullyPaid,
+      editingDisabled: editingDisabled,
+    );
+    final shouldDisable = _shouldDisable(
+      state,
+      editingDisabled: editingDisabled,
+      canDelete: canDelete,
+    );
 
-// ----------------------------------------------------------------------
-// Participants section + row
-// ----------------------------------------------------------------------
-
-class _ParticipantsSection extends StatelessWidget {
-  const _ParticipantsSection({
-    required this.state,
-    required this.shareColors,
-    required this.spacing,
-    required this.customSummary,
-    required this.showValidation,
-    required this.locked,
-    required this.customControllers,
-  });
-
-  final ShareCreateState state;
-  final SectionColors? shareColors;
-  final Spacing spacing;
-  final ShareCustomSplitSummary customSummary;
-  final bool showValidation;
-  final bool locked;
-  final Map<String, TextEditingController> customControllers;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final s = S.of(context);
-    final splitMode = state.form.splitMode;
-
-    if (splitMode == null) {
-      return const SizedBox.shrink();
-    }
-
-    if (splitMode == ShareSplitMode.custom) {
-      final errorText = _customErrorText(
-        s,
-        customSummary,
-        showValidation,
-        theme,
-      );
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            s.shareCreateCustomHelper,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-          SizedBox(height: spacing.sm),
-          ...state.participants.map((participant) {
-            final controller = customControllers[participant.userId]!;
-            final isSelected = state.form.selectedParticipantIds.contains(
-              participant.userId,
-            );
-            return _CustomSplitRow(
-              participant: participant,
-              controller: controller,
-              selected: isSelected,
-              canToggle: !locked,
-              canEditAmount: !locked && isSelected,
-              onToggled:
-                  locked
-                      ? null
-                      : (value) => context.read<ShareCreateBloc>().add(
-                        ShareCreateParticipantToggled(
-                          participant.userId,
-                          value,
-                        ),
-                      ),
-              onAmountChanged:
-                  locked
-                      ? null
-                      : (value) => context.read<ShareCreateBloc>().add(
-                        ShareCreateCustomAmountChanged(
-                          participant.userId,
-                          value,
-                        ),
-                      ),
-            );
-          }),
-          if (errorText != null)
-            Padding(
-              padding: EdgeInsets.only(top: spacing.xs),
-              child: Text(
-                errorText,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: _validationColor(theme),
-                ),
-              ),
-            ),
-        ],
-      );
-    }
-
-    // Equal split
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (locked)
-          Padding(
-            padding: EdgeInsets.only(bottom: spacing.xs),
-            child: Text(
-              s.shareEditSplitsLocked,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-        IgnorePointer(
-          ignoring: locked,
-          child: Opacity(
-            opacity: locked ? 0.6 : 1.0,
-            child: KinlySelectableMemberAvatarRow(
-              members: state.participants
-                  .map(
-                    (participant) => HomeMemberSummary(
-                      userId: participant.userId,
-                      username: participant.displayName,
-                      role: participant.isOwner ? 'owner' : 'member',
-                      validFrom:
-                          DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
-                      avatarUrl: participant.avatarUrl,
-                    ),
-                  )
-                  .toList(growable: false),
-              selectedMemberIds: state.form.selectedParticipantIds,
-              onToggle:
-                  (memberId) => context.read<ShareCreateBloc>().add(
-                    ShareCreateParticipantToggled(
-                      memberId,
-                      !state.form.selectedParticipantIds.contains(memberId),
-                    ),
-                  ),
-            ),
-          ),
-        ),
-        if (!locked &&
-            showValidation &&
-            splitMode == ShareSplitMode.equal &&
-            !state.hasEqualSelection)
-          Padding(
-            padding: EdgeInsets.only(top: spacing.xs),
-            child: Text(
-              s.shareCreateValidationEqualParticipants,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: _validationColor(theme),
-              ),
-            ),
-          ),
-      ],
+    return _FormViewState(
+      showValidation: showValidation,
+      locked: locked,
+      recurrenceNeedsSplit: recurrenceNeedsSplit,
+      canDelete: canDelete,
+      isDeleteAction: canDelete,
+      hidePrimary: hidePrimary,
+      shouldDisable: shouldDisable,
+      isBusy: state.isSubmitting || state.isDeleting,
+      editingDisabled: editingDisabled,
+      isEditing: isEditing,
     );
   }
 
-  String? _customErrorText(
-    S s,
-    ShareCustomSplitSummary summary,
-    bool showValidation,
-    ThemeData theme,
-  ) {
-    if (!showValidation) return null;
-    if (summary.missingTotal) return s.shareCreateValidationAmount;
-    if (summary.hasInvalidAmounts) {
-      return s.shareCreateValidationCustomAmounts;
-    }
-    if (summary.hasInsufficientParticipants) {
-      return s.shareCreateValidationCustomParticipants;
-    }
-    if (!summary.sumMatchesTotal) {
-      return s.shareCreateValidationCustomSum;
-    }
-    if (summary.hasSinglePayer) {
-      return s.shareCreateValidationCustomSinglePayer;
-    }
-    return null;
+  String primaryLabel(S s) {
+    if (isDeleteAction) return s.shareEditDeleteButton;
+    if (isEditing) return s.shareEditSubmit;
+    return s.shareCreateSubmit;
   }
+
+  static bool _isEditingDisabled(ShareCreateState state) =>
+      state.isEditing && !state.canEdit;
+
+  static bool _isLocked(ShareCreateState state, bool editingDisabled) =>
+      state.isAmountLocked || editingDisabled;
+
+  static bool _needsSplit(
+    ShareCreateState state, {
+    required bool showValidation,
+  }) {
+    if (!showValidation) return false;
+    final recurrence = state.form.recurrence;
+    return recurrence != ExpenseRecurrenceInterval.none &&
+        state.form.splitMode == null;
+  }
+
+  static bool _canDelete(
+    ShareCreateState state, {
+    required bool allowDelete,
+    required bool locked,
+    required bool fullyPaid,
+    required bool editingDisabled,
+  }) {
+    final isPristineEdit = state.isEditing && !state.hasUserEdits;
+    final deleteBlocked = state.paidByOther || locked || fullyPaid;
+    return allowDelete && isPristineEdit && !deleteBlocked && !editingDisabled;
+  }
+
+  static bool _shouldHidePrimary({
+    required bool fullyPaid,
+    required bool editingDisabled,
+  }) => fullyPaid || editingDisabled;
+
+  static bool _isBusy(ShareCreateState state) =>
+      state.isSubmitting || state.isDeleting;
+
+  static bool _shouldDisable(
+    ShareCreateState state, {
+    required bool editingDisabled,
+    required bool canDelete,
+  }) =>
+      _isBusy(state) ||
+      editingDisabled ||
+      (!canDelete && state.isEditing && state.form.splitMode == null);
 }
 
-class _CustomSplitRow extends StatelessWidget {
-  const _CustomSplitRow({
-    required this.participant,
-    required this.controller,
-    required this.selected,
-    required this.canToggle,
-    required this.canEditAmount,
-    required this.onToggled,
-    required this.onAmountChanged,
-  });
-
-  final ShareParticipant participant;
-  final TextEditingController controller;
-  final bool selected;
-  final bool canToggle;
-  final bool canEditAmount;
-  final ValueChanged<bool>? onToggled;
-  final ValueChanged<String>? onAmountChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>()!;
-    final s = S.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Container(
-      margin: EdgeInsets.only(bottom: spacing.sm),
-      padding: EdgeInsetsDirectional.all(spacing.sm),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: theme.colorScheme.surfaceContainerHighest,
-      ),
-      child: Row(
-        children: [
-          Checkbox(
-            value: selected,
-            activeColor: colorScheme.primaryContainer,
-            checkColor: colorScheme.onPrimaryContainer,
-            onChanged:
-                canToggle ? (value) => onToggled?.call(value ?? false) : null,
-          ),
-          KinlyCircleAvatar(
-            avatarUrl: participant.avatarUrl,
-            radius: 20,
-            isOwner: participant.isOwner,
-          ),
-          SizedBox(width: spacing.sm),
-          Expanded(
-            child: Text(
-              participant.displayName,
-              style: theme.textTheme.bodyLarge,
-            ),
-          ),
-          SizedBox(
-            width: 110,
-            child: KinlyTextField(
-              controller: controller,
-              enabled: canEditAmount,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              labelText: s.shareCreateCustomAmountLabel,
-              onChanged: onAmountChanged,
-            ),
-          ),
-        ],
-      ),
-    );
+void _handlePrimaryPressed({
+  required BuildContext blocContext,
+  required _FormViewState viewState,
+  required VoidCallback? onDeleteRequested,
+}) {
+  if (viewState.shouldDisable) return;
+  if (viewState.isDeleteAction) {
+    onDeleteRequested?.call();
+    return;
   }
-}
-
-Color _validationColor(ThemeData theme) {
-  final tokens = theme.extension<KinlyColorTokens>();
-  final scheme = theme.colorScheme;
-  // Use the same high-contrast error color in both themes to keep helper text visible.
-  return tokens?.error ?? scheme.error;
+  blocContext.read<ShareCreateBloc>().add(const ShareCreateSubmitted());
 }
