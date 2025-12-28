@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import '../../features/paywall/ui/paywall_screen.dart';
 import '../../data/repositories/paywall_repository.dart';
 import '../di/locator.dart';
-
-enum PaywallRetryAction { submit }
-
-enum PaywallGateStatus { granted, cancelled, failed }
+import 'enums/paywall_retry_action.dart';
+import 'enums/paywall_gate_status.dart';
 
 class PaywallGateRequest {
   final String requestId;
@@ -48,11 +46,12 @@ Future<PaywallGateOutcome> showPaywallAndAwait({
 
   final result = await Navigator.of(context).push<bool>(
     MaterialPageRoute(
-      builder: (_) => KinlyPaywallScreen(
-        homeId: request.homeId,
-        strings: strings,
-        source: request.source,
-      ),
+      builder:
+          (_) => KinlyPaywallScreen(
+            homeId: request.homeId,
+            strings: strings,
+            source: request.source,
+          ),
     ),
   );
 
@@ -70,9 +69,10 @@ Future<PaywallGateOutcome> showPaywallAndAwait({
       await Future<void>.delayed(Duration(milliseconds: delayMs));
     }
   } else {
-    status = result == false
-        ? PaywallGateStatus.cancelled
-        : PaywallGateStatus.failed;
+    status =
+        result == false
+            ? PaywallGateStatus.cancelled
+            : PaywallGateStatus.failed;
   }
 
   return PaywallGateOutcome(

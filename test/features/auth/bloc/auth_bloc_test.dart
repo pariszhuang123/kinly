@@ -86,6 +86,49 @@ void main() {
   );
 
   blocTest<AuthBloc, AuthState>(
+    'retries when membership is null immediately after sign-in',
+    build: () {
+      var calls = 0;
+      when(() => homeRepository.getCurrentMembership()).thenAnswer((_) async {
+        if (calls == 0) {
+          calls++;
+          return null;
+        }
+        return CurrentMembership(
+          userId: 'user-4',
+          homeId: 'home-4',
+          role: 'member',
+          validFrom: DateTime.utc(2025, 2, 1),
+        );
+      });
+      return buildBloc();
+    },
+    act: (bloc) => sessionController.add(const AuthSession(userId: 'user-4')),
+    wait: const Duration(milliseconds: 600),
+    expect:
+        () => [
+          const AuthState(
+            status: AuthStatus.unauthenticated,
+            membershipStatus: AuthMembershipStatus.none,
+          ),
+          const AuthState(
+            status: AuthStatus.authenticated,
+            userId: 'user-4',
+            membershipStatus: AuthMembershipStatus.unknown,
+          ),
+          predicate<AuthState>(
+            (state) =>
+                state.status == AuthStatus.authenticated &&
+                state.membershipStatus == AuthMembershipStatus.active &&
+                state.membership?.homeId == 'home-4',
+          ),
+        ],
+    verify: (_) {
+      verify(() => homeRepository.getCurrentMembership()).called(2);
+    },
+  );
+
+  blocTest<AuthBloc, AuthState>(
     'surfaces errors when Google sign-in fails',
     build: () {
       when(

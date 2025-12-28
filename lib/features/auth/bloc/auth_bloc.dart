@@ -38,6 +38,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   late final StreamSubscription<AuthSession?> _sessionSub;
   static const _retryDelay = Duration(milliseconds: 800);
   static const _maxAttempts = 2;
+  static const _nullMembershipRetryDelay = Duration(milliseconds: 250);
+  static const _nullMembershipMaxAttempts = 2;
 
   Future<void> _onSessionChanged(
     _AuthSessionChanged event,
@@ -135,7 +137,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             : AuthMembershipStatus.unknown;
     emit(state.copyWith(membershipStatus: AuthMembershipStatus.unknown));
     try {
-      final membership = await _fetchMembershipWithRetry();
+      var membership = await _fetchMembershipWithRetry();
+      if (membership == null &&
+          previousMembership == null &&
+          state.status == AuthStatus.authenticated) {
+        membership = await _retryNullMembership();
+      }
       emit(
         state.copyWith(
           membershipStatus:
@@ -155,6 +162,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     }
+  }
+
+  Future<CurrentMembership?> _retryNullMembership() async {
+    for (var attempt = 0; attempt < _nullMembershipMaxAttempts; attempt++) {
+      await Future<void>.delayed(_nullMembershipRetryDelay);
+      final membership = await _fetchMembershipWithRetry();
+      if (membership != null) return membership;
+    }
+    return null;
   }
 
   Future<CurrentMembership?> _fetchMembershipWithRetry() async {
