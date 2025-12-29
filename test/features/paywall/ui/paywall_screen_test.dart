@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
+import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
@@ -42,6 +43,28 @@ class _FakeSvgBundle extends CachingAssetBundle {
     }
     throw FlutterError('Asset $key not mocked in tests');
   }
+}
+
+PaywallStrings _buildStrings() {
+  return PaywallStrings(
+    title: 'Harmony headline',
+    subtitle: 'Affordable message',
+    bulletMembers: 'Unlimited members',
+    bulletFlows: 'Unlimited flows',
+    bulletPhotos: 'Unlimited photos',
+    bulletShares: 'Unlimited shares',
+    unlimitedLabel: 'Unlimited everything',
+    priceCaption: 'Home-level plan',
+    priceUnavailableLabel: 'Price unavailable',
+    priceFormatter: (p) => '$p per home',
+    primaryCta: 'Upgrade',
+    secondaryCta: 'Continue free',
+    purchaseFailed: 'Purchase failed',
+    purchaseSuccess: 'Purchase success',
+    restoreCta: 'Restore',
+    errorTitle: 'Load error',
+    retryLabel: 'Retry',
+  );
 }
 
 void main() {
@@ -127,32 +150,18 @@ void main() {
       ),
     ).thenAnswer((_) async {});
 
-    final strings = PaywallStrings(
-      title: 'Harmony headline',
-      subtitle: 'Affordable message',
-      bulletMembers: 'Unlimited members',
-      bulletFlows: 'Unlimited flows',
-      bulletPhotos: 'Unlimited photos',
-      bulletShares: 'Unlimited shares',
-      unlimitedLabel: 'Unlimited everything',
-      priceCaption: 'Home-level plan',
-      priceUnavailableLabel: 'Price unavailable',
-      priceFormatter: (p) => '$p per home',
-      primaryCta: 'Upgrade',
-      secondaryCta: 'Continue free',
-      purchaseFailed: 'Purchase failed',
-      purchaseSuccess: 'Purchase success',
-      restoreCta: 'Restore',
-      errorTitle: 'Load error',
-      retryLabel: 'Retry',
-    );
+    final strings = _buildStrings();
 
     await tester.pumpWidget(
       DefaultAssetBundle(
         bundle: _FakeSvgBundle(),
         child: MaterialApp(
           theme: buildKinlyTheme(Brightness.light),
-          home: KinlyPaywallScreen(homeId: 'home-1', strings: strings),
+          home: KinlyPaywallScreen(
+            homeId: 'home-1',
+            strings: strings,
+            triggers: const {PaywallTrigger.membersCap},
+          ),
         ),
       ),
     );
@@ -169,5 +178,37 @@ void main() {
     await tester.tap(find.text('\$4.99 per home'));
     await tester.pumpAndSettle();
     verify(() => rc.purchaseMonthly(any())).called(1);
+  });
+
+  test('orders benefits using trigger priority', () {
+    final strings = _buildStrings();
+    expect(
+      orderPaywallBenefits(
+        strings: strings,
+        triggers: const {PaywallTrigger.membersCap},
+      ),
+      [
+        'Unlimited members',
+        'Unlimited flows',
+        'Unlimited photos',
+        'Unlimited shares',
+      ],
+    );
+
+    expect(
+      orderPaywallBenefits(
+        strings: strings,
+        triggers: const {
+          PaywallTrigger.flowPhotosCap,
+          PaywallTrigger.expenseActiveCap,
+        },
+      ),
+      [
+        'Unlimited photos',
+        'Unlimited shares',
+        'Unlimited flows',
+        'Unlimited members',
+      ],
+    );
   });
 }

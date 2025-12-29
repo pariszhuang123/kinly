@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/locator.dart';
 import '../../../core/homes/models.dart';
+import '../../../core/paywall/enums/paywall_trigger.dart';
 import '../../../core/purchases/revenuecat_service.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/ui/action_bar/kinly_action_bar.dart';
@@ -73,12 +74,14 @@ class KinlyPaywallScreen extends StatelessWidget {
     required this.strings,
     this.source,
     this.placementId,
+    this.triggers = const {},
   });
 
   final String homeId;
   final PaywallStrings strings;
   final String? source;
   final String? placementId;
+  final Set<PaywallTrigger> triggers;
 
   @override
   Widget build(BuildContext context) {
@@ -92,11 +95,15 @@ class KinlyPaywallScreen extends StatelessWidget {
             homeId: homeId,
             logger: sl<Logger>(),
             placementId: placementId,
-          )..add(PaywallStarted(source: source)),
+          )..add(PaywallStarted(source: source, triggers: triggers)),
       child: Builder(
         builder: (context) {
           final theme = Theme.of(context);
           final typography = theme.extension<KinlyTypography>()!;
+          final orderedBenefits = orderPaywallBenefits(
+            strings: strings,
+            triggers: triggers,
+          );
 
           void handleDismiss() {
             context.read<PaywallBloc>().add(const PaywallDismissed());
@@ -168,6 +175,7 @@ class KinlyPaywallScreen extends StatelessWidget {
                     },
                     onDismiss: handleDismiss,
                     members: state.activeMembers,
+                    orderedFeatures: orderedBenefits,
                   );
                 },
               ),
@@ -188,6 +196,7 @@ class _PaywallBody extends StatelessWidget {
     required this.onRestore,
     required this.onDismiss,
     required this.members,
+    required this.orderedFeatures,
   });
 
   final PaywallStrings strings;
@@ -197,6 +206,7 @@ class _PaywallBody extends StatelessWidget {
   final VoidCallback onRestore;
   final VoidCallback onDismiss;
   final List<HomeMemberSummary> members;
+  final List<String> orderedFeatures;
 
   @override
   Widget build(BuildContext context) {
@@ -226,13 +236,6 @@ class _PaywallBody extends StatelessWidget {
     final heroGradient = [
       Color.alphaBlend(shareCard.withValues(alpha: opacities.alphaMD), surface),
       Color.alphaBlend(flowCard.withValues(alpha: opacities.alphaXXL), surface),
-    ];
-
-    final features = [
-      strings.bulletMembers,
-      strings.bulletFlows,
-      strings.bulletPhotos,
-      strings.bulletShares,
     ];
 
     return LayoutBuilder(
@@ -285,7 +288,7 @@ class _PaywallBody extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _BenefitChecklist(
-                                features: features,
+                                features: orderedFeatures,
                                 accent:
                                     sections?.share.accent ??
                                     theme.colorScheme.primary,
@@ -322,6 +325,82 @@ class _PaywallBody extends StatelessWidget {
       },
     );
   }
+}
+
+enum _PaywallBenefitGroup { flow, flowPhotos, expenses, members }
+
+const _groupPriority = [
+  _PaywallBenefitGroup.flow,
+  _PaywallBenefitGroup.flowPhotos,
+  _PaywallBenefitGroup.expenses,
+  _PaywallBenefitGroup.members,
+];
+
+class _Benefit {
+  const _Benefit(this.group, this.label);
+
+  final _PaywallBenefitGroup group;
+  final String label;
+}
+
+List<_PaywallBenefitGroup> _resolvePrimaryGroups(Set<PaywallTrigger> triggers) {
+  final groups = <_PaywallBenefitGroup>{};
+  for (final trigger in triggers) {
+    switch (trigger) {
+      case PaywallTrigger.flowActiveCap:
+        groups.add(_PaywallBenefitGroup.flow);
+        break;
+      case PaywallTrigger.flowPhotosCap:
+        groups.add(_PaywallBenefitGroup.flowPhotos);
+        break;
+      case PaywallTrigger.expenseActiveCap:
+        groups.add(_PaywallBenefitGroup.expenses);
+        break;
+      case PaywallTrigger.membersCap:
+        groups.add(_PaywallBenefitGroup.members);
+        break;
+    }
+  }
+  return _groupPriority.where(groups.contains).toList(growable: false);
+}
+
+List<String> _orderedBenefitsForGroups(
+  Iterable<_PaywallBenefitGroup> groups,
+  List<_Benefit> benefits,
+) {
+  return groups
+      .expand(
+        (group) => benefits
+            .where((benefit) => benefit.group == group)
+            .map((benefit) => benefit.label),
+      )
+      .toList(growable: false);
+}
+
+@visibleForTesting
+List<String> orderPaywallBenefits({
+  required PaywallStrings strings,
+  required Set<PaywallTrigger> triggers,
+}) {
+  final benefits = <_Benefit>[
+    _Benefit(_PaywallBenefitGroup.flow, strings.bulletFlows),
+    _Benefit(_PaywallBenefitGroup.flowPhotos, strings.bulletPhotos),
+    _Benefit(_PaywallBenefitGroup.expenses, strings.bulletShares),
+    _Benefit(_PaywallBenefitGroup.members, strings.bulletMembers),
+  ];
+
+  final primaryGroups = _resolvePrimaryGroups(triggers);
+  final primaryBenefits = _orderedBenefitsForGroups(primaryGroups, benefits);
+
+  final secondaryGroups = _groupPriority.where(
+    (group) => !primaryGroups.contains(group),
+  );
+  final secondaryBenefits = _orderedBenefitsForGroups(
+    secondaryGroups,
+    benefits,
+  );
+
+  return [...primaryBenefits, ...secondaryBenefits];
 }
 
 class _BenefitChecklist extends StatelessWidget {

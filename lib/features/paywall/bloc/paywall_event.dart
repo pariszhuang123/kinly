@@ -5,11 +5,12 @@ abstract class PaywallEvent extends Equatable {
 }
 
 class PaywallStarted extends PaywallEvent {
-  const PaywallStarted({this.source});
+  const PaywallStarted({this.source, this.triggers = const {}});
   final String? source;
+  final Set<PaywallTrigger> triggers;
 
   @override
-  List<Object?> get props => [source];
+  List<Object?> get props => [source, triggers];
 }
 
 class PaywallCtaPressed extends PaywallEvent {

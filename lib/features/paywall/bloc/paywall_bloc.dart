@@ -7,6 +7,7 @@ import '../../../core/logging/logger.dart';
 import '../../../core/purchases/revenuecat_service.dart';
 import '../../../core/paywall/paywall_models.dart';
 import '../../../core/paywall/enums/paywall_event_type.dart';
+import '../../../core/paywall/enums/paywall_trigger.dart';
 import '../../../core/homes/models.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/home_repository.dart';
@@ -56,7 +57,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     try {
       final rcUserId = await Purchases.appUserID;
       _logger.debug(
-        'Paywall start: homeId=$_homeId placement=$_placementId rcUserId=$rcUserId source=${event.source}',
+        'Paywall start: homeId=$_homeId placement=$_placementId rcUserId=$rcUserId source=${event.source} triggers=${event.triggers}',
         tag: _logTag,
       );
     } catch (_) {}

@@ -8,6 +8,7 @@ import '../../../core/media/supabase_media_repository.dart';
 import '../../../core/paywall/paywall_gate.dart';
 import '../../../core/paywall/enums/paywall_retry_action.dart';
 import '../../../core/paywall/enums/paywall_gate_status.dart';
+import '../../../core/paywall/enums/paywall_trigger.dart';
 import '../../../core/paywall/paywall_sources.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../data/repositories/chores_repository.dart';
@@ -290,6 +291,17 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     } on ChoreException catch (error) {
       if (error.code == ChoreErrorCode.paywallActiveCap ||
           error.code == ChoreErrorCode.paywallMediaCap) {
+        final triggers = <PaywallTrigger>{
+          if (error.code == ChoreErrorCode.paywallActiveCap)
+            PaywallTrigger.flowActiveCap
+          else
+            PaywallTrigger.flowPhotosCap,
+        };
+        final hasPhotoIntent =
+            state.form.expectationPhotoPath.trim().isNotEmpty;
+        if (error.code == ChoreErrorCode.paywallActiveCap && hasPhotoIntent) {
+          triggers.add(PaywallTrigger.flowPhotosCap);
+        }
         final tick = state.paywallRequestTick + 1;
         emit(
           state.copyWith(
@@ -308,6 +320,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
                       : PaywallSources.flowEditChore,
               action: PaywallRetryAction.submit,
               tick: tick,
+              triggers: triggers,
             ),
             paywallInFlightRequestId: null,
           ),

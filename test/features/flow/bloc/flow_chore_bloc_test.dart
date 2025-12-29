@@ -7,6 +7,7 @@ import 'package:kinly/core/media/expectation_photo_service.dart';
 import 'package:kinly/core/paywall/paywall_gate.dart';
 import 'package:kinly/core/paywall/enums/paywall_retry_action.dart';
 import 'package:kinly/core/paywall/enums/paywall_gate_status.dart';
+import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/data/repositories/chores_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
@@ -234,6 +235,82 @@ void main() {
               )
               .having((s) => s.paywallRequest?.homeId, 'homeId', 'home-1'),
         ],
+  );
+
+  blocTest<FlowChoreBloc, FlowChoreState>(
+    'sets trigger for active cap with photo intent',
+    build: () => buildBloc(),
+    setUp: () {
+      when(
+        () => choresRepository.create(
+          homeId: any(named: 'homeId'),
+          name: any(named: 'name'),
+          assigneeUserId: any(named: 'assigneeUserId'),
+          startDate: any(named: 'startDate'),
+          recurrence: any(named: 'recurrence'),
+          notes: any(named: 'notes'),
+          howToVideoUrl: any(named: 'howToVideoUrl'),
+          expectationPhotoPath: any(named: 'expectationPhotoPath'),
+        ),
+      ).thenThrow(
+        const ChoreException(ChoreErrorCode.paywallActiveCap, 'cap'),
+      );
+    },
+    act: (bloc) {
+      bloc
+        ..add(const FlowChoreTitleChanged('Valid title'))
+        ..add(const FlowChorePhotoChanged('photo.jpg'))
+        ..add(const FlowChoreSubmitted());
+    },
+    expect: () => [
+      isA<FlowChoreState>(),
+      isA<FlowChoreState>(),
+      isA<FlowChoreState>(),
+      isA<FlowChoreState>().having(
+        (s) => s.paywallRequest?.triggers,
+        'triggers',
+        containsAll(
+          {PaywallTrigger.flowActiveCap, PaywallTrigger.flowPhotosCap},
+        ),
+      ),
+    ],
+  );
+
+  blocTest<FlowChoreBloc, FlowChoreState>(
+    'sets trigger for media cap',
+    build: () => buildBloc(),
+    setUp: () {
+      when(
+        () => choresRepository.create(
+          homeId: any(named: 'homeId'),
+          name: any(named: 'name'),
+          assigneeUserId: any(named: 'assigneeUserId'),
+          startDate: any(named: 'startDate'),
+          recurrence: any(named: 'recurrence'),
+          notes: any(named: 'notes'),
+          howToVideoUrl: any(named: 'howToVideoUrl'),
+          expectationPhotoPath: any(named: 'expectationPhotoPath'),
+        ),
+      ).thenThrow(
+        const ChoreException(ChoreErrorCode.paywallMediaCap, 'cap'),
+      );
+    },
+    act: (bloc) {
+      bloc
+        ..add(const FlowChoreTitleChanged('Valid title'))
+        ..add(const FlowChorePhotoChanged('photo.jpg'))
+        ..add(const FlowChoreSubmitted());
+    },
+    expect: () => [
+      isA<FlowChoreState>(),
+      isA<FlowChoreState>(),
+      isA<FlowChoreState>(),
+      isA<FlowChoreState>().having(
+        (s) => s.paywallRequest?.triggers,
+        'triggers',
+        contains(PaywallTrigger.flowPhotosCap),
+      ),
+    ],
   );
 
   blocTest<FlowChoreBloc, FlowChoreState>(

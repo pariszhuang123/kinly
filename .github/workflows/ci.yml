@@ -174,13 +174,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Dart
-        uses: dart-lang/setup-dart@v1
+      # Use Flutter SDK (includes Dart) so flutter_test "from sdk" resolves
+      - uses: subosito/flutter-action@v2
         with:
-          sdk: stable
+          channel: stable
 
-      - name: Install Dart deps
-        run: dart pub get
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Install Flutter deps
+        run: flutter pub get
 
       - name: Install scc
         run: |

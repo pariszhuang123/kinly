@@ -18,14 +18,14 @@ File: `lib/core/paywall/paywall_gate.dart`
 ### Types
 - `enum PaywallRetryAction { submit /* later: invite, upload, join... */ }`
 - `enum PaywallGateStatus { granted, cancelled, failed }`
-- `class PaywallGateRequest { String requestId; String homeId; String source; PaywallRetryAction action; int tick; }`
+- `class PaywallGateRequest { String requestId; String homeId; String source; PaywallRetryAction action; int tick; Set<PaywallTrigger> triggers; }`
 - `class PaywallGateOutcome { String requestId; PaywallRetryAction action; PaywallGateStatus status; }`
 
 ### Helper
 `Future<PaywallGateOutcome> showPaywallAndAwait({ required BuildContext context, required PaywallGateRequest request, required PaywallStrings strings })`
 
 Requirements:
-- Push `KinlyPaywallScreen` and await result.
+- Push `KinlyPaywallScreen` and await result (forward `request.triggers` so benefits can be ordered by trigger).
 - If result indicates purchase success/restore:
   - call `await paywallRepository.refreshStatus(homeId)`
   - optional backoff retry refresh: 250ms → 500ms → 1000ms (max 3)

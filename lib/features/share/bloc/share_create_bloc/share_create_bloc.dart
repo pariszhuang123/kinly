@@ -11,6 +11,7 @@ import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../core/paywall/paywall_gate.dart';
 import '../../../../core/paywall/enums/paywall_retry_action.dart';
 import '../../../../core/paywall/enums/paywall_gate_status.dart';
+import '../../../../core/paywall/enums/paywall_trigger.dart';
 import '../../../../core/paywall/paywall_sources.dart';
 import '../../domain/share_create_form.dart';
 import '../../domain/share_participant.dart';
@@ -434,6 +435,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     ShareCreateState currentState,
   ) {
     final tick = currentState.paywallRequestTick + 1;
+    const triggers = {PaywallTrigger.expenseActiveCap};
     emit(
       currentState.copyWith(
         isSubmitting: false,
@@ -447,6 +449,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
           source: PaywallSources.shareCreateExpense,
           action: PaywallRetryAction.submit,
           tick: tick,
+          triggers: triggers,
         ),
         paywallInFlightRequestId: null,
       ),

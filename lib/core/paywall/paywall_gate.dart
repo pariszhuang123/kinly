@@ -7,6 +7,7 @@ import '../../data/repositories/paywall_repository.dart';
 import '../di/locator.dart';
 import 'enums/paywall_retry_action.dart';
 import 'enums/paywall_gate_status.dart';
+import 'enums/paywall_trigger.dart';
 
 class PaywallGateRequest {
   final String requestId;
@@ -14,6 +15,7 @@ class PaywallGateRequest {
   final String source;
   final PaywallRetryAction action;
   final int tick;
+  final Set<PaywallTrigger> triggers;
 
   const PaywallGateRequest({
     required this.requestId,
@@ -21,6 +23,7 @@ class PaywallGateRequest {
     required this.source,
     required this.action,
     required this.tick,
+    required this.triggers,
   });
 }
 
@@ -51,6 +54,7 @@ Future<PaywallGateOutcome> showPaywallAndAwait({
             homeId: request.homeId,
             strings: strings,
             source: request.source,
+            triggers: request.triggers,
           ),
     ),
   );

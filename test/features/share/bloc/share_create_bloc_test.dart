@@ -7,6 +7,7 @@ import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/paywall/paywall_gate.dart';
 import 'package:kinly/core/paywall/enums/paywall_retry_action.dart';
 import 'package:kinly/core/paywall/enums/paywall_gate_status.dart';
+import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/data/repositories/expenses_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
@@ -759,7 +760,12 @@ void main() {
                 'action',
                 PaywallRetryAction.submit,
               )
-              .having((s) => s.paywallRequest?.homeId, 'homeId', 'home-1'),
+              .having((s) => s.paywallRequest?.homeId, 'homeId', 'home-1')
+              .having(
+                (s) => s.paywallRequest?.triggers,
+                'triggers',
+                contains(PaywallTrigger.expenseActiveCap),
+              ),
         ],
   );
 
