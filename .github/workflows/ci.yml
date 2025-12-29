@@ -284,6 +284,7 @@ jobs:
         id: changes
         shell: bash
         run: |
+          set -euo pipefail
           git fetch --no-tags --prune --depth=200 origin +refs/heads/main:refs/remotes/origin/main
           BASE=$(if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then echo "HEAD~1"; elif [ -n "${{ github.base_ref }}" ]; then echo "origin/${{ github.base_ref }}"; else echo "origin/main"; fi)
           echo "Comparing changes against $BASE"
@@ -313,7 +314,9 @@ jobs:
 
       - name: Start local Supabase and reset DB
         if: steps.changes.outputs.do_db_check == 'true'
+        shell: bash
         run: |
+          set -euo pipefail
           supabase start
           supabase db reset --yes
 
@@ -321,15 +324,39 @@ jobs:
         if: steps.changes.outputs.do_db_check == 'true'
         shell: bash
         run: |
-          set -e
+          set -euo pipefail
+
+          # Read [api].port from supabase/config.toml (fallback to Supabase default 54321)
+          API_PORT=$(awk -F'=' '
+            $0 ~ /^\[api\]/ {in_api=1; next}
+            $0 ~ /^\[/ {in_api=0}
+            in_api && $1 ~ /^[[:space:]]*port[[:space:]]*$/ {
+              v=$2
+              gsub(/[[:space:]]/,"",v)
+              print v
+              exit
+            }
+          ' supabase/config.toml)
+          API_PORT=${API_PORT:-54321}
+
+          echo "Waiting for PostgREST via API port: ${API_PORT}"
+
           for i in {1..60}; do
-            if curl -s -H 'Accept: application/openapi+json' http://127.0.0.1:54321/rest/v1/ > /dev/null; then
-              echo "PostgREST is up"; exit 0; fi; sleep 2; done
-          echo "::error::PostgREST did not become ready"; exit 1
+            if curl -s -H 'Accept: application/openapi+json' "http://127.0.0.1:${API_PORT}/rest/v1/" > /dev/null; then
+              echo "PostgREST is up on ${API_PORT}"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "::error::PostgREST did not become ready on port ${API_PORT}"
+          exit 1
 
       - name: Install PostgreSQL client
         if: steps.changes.outputs.do_db_check == 'true'
+        shell: bash
         run: |
+          set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y postgresql-client
 
@@ -338,9 +365,23 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PORT=$(awk -F'=' '/^\s*port\s*=/{gsub(/ /,"",$2); print $2; exit}' supabase/config.toml)
-          PORT=${PORT:-54322}
-          URI="postgresql://postgres:postgres@127.0.0.1:${PORT}/postgres"
+
+          # Read [db].port from supabase/config.toml (fallback to Supabase default 54322)
+          DB_PORT=$(awk -F'=' '
+            $0 ~ /^\[db\]/ {in_db=1; next}
+            $0 ~ /^\[/ {in_db=0}
+            in_db && $1 ~ /^[[:space:]]*port[[:space:]]*$/ {
+              v=$2
+              gsub(/[[:space:]]/,"",v)
+              print v
+              exit
+            }
+          ' supabase/config.toml)
+          DB_PORT=${DB_PORT:-54322}
+
+          URI="postgresql://postgres:postgres@127.0.0.1:${DB_PORT}/postgres"
+          echo "Using DB URI: $URI"
+
           for file in supabase/tests/*.sql; do
             echo "::group::pgTap $file"
             psql "$URI" -v ON_ERROR_STOP=1 -f "$file"
@@ -351,6 +392,7 @@ jobs:
         if: steps.changes.outputs.do_db_check == 'true'
         shell: bash
         run: |
+          set -euo pipefail
           chmod +x tool/contracts_regen.sh
           ./tool/contracts_regen.sh
 
@@ -358,6 +400,7 @@ jobs:
         if: steps.changes.outputs.do_db_check == 'true'
         shell: bash
         run: |
+          set -euo pipefail
           CHANGED=$(git status --porcelain \
             docs/contracts/schema.sql \
             docs/contracts/rls_policies.sql \
@@ -366,15 +409,15 @@ jobs:
             docs/contracts/edge_functions.json \
             docs/contracts/registry.json)
           if [ -n "$CHANGED" ]; then
-            echo "::error::Contract snapshots are out of date. Commit updated schema/rls files.";
+            echo "::error::Contract snapshots are out of date. Commit updated schema/rls files."
             git --no-pager diff -- \
               docs/contracts/schema.sql \
               docs/contracts/rls_policies.sql \
               docs/contracts/openapi.json \
               docs/contracts/types.generated.ts \
               docs/contracts/edge_functions.json \
-              docs/contracts/registry.json || true;
-            exit 1;
+              docs/contracts/registry.json || true
+            exit 1
           fi
 
   supabase_dev:
