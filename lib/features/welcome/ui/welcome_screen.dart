@@ -15,6 +15,7 @@ import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/widgets/auth_error_listener.dart';
 import '../../splash/ui/widgets/kinly_logo.dart';
 import '../../../core/ui/toggles/kinly_checkbox.dart'; // <-- NEW IMPORT
+import '../../../core/ui/snackbars/kinly_snackbar.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -55,9 +56,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       listenWhen:
           (previous, current) =>
               previous.status != current.status ||
-              previous.membershipStatus != current.membershipStatus,
+              previous.membershipStatus != current.membershipStatus ||
+              previous.isProfileDeactivated != current.isProfileDeactivated,
       listener: (context, state) {
         if (!mounted) return;
+        if (state.isProfileDeactivated) {
+          KinlySnackBar.showError(
+            context,
+            s.profile_deactivated_message,
+          );
+        }
         final membershipReady =
             state.membershipStatus != AuthMembershipStatus.unknown;
         if (state.status == AuthStatus.authenticated && membershipReady) {

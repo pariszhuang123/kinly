@@ -27,6 +27,7 @@ import 'core/logging/debug_logger.dart';
 import 'data/repositories/app_version_repository.dart';
 import 'data/repositories/auth_repository.dart';
 import 'data/repositories/home_repository.dart';
+import 'data/repositories/profile_repository.dart';
 import 'data/repositories/notifications_repository.dart';
 import 'core/notifications/notification_token_bootstrap.dart';
 import 'core/notifications/notification_sync_state.dart';
@@ -121,10 +122,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _timezoneResolver = sl<IanaTimezoneResolver>();
     final authRepo = sl<AuthRepository>();
     final homeRepo = sl<HomeRepository>();
+    final profileRepo = sl<ProfileRepository>();
     final connectivityMonitor = sl<ConnectivityMonitor>();
     final appVersionRepository = sl<AppVersionRepository>();
 
-    _authBloc = AuthBloc(authRepository: authRepo, homeRepository: homeRepo);
+    _authBloc = AuthBloc(
+      authRepository: authRepo,
+      homeRepository: homeRepo,
+      profileRepository: profileRepo,
+    );
     _appVersionCubit = AppVersionCubit(
       repository: appVersionRepository,
       logger: _logger,

@@ -11,6 +11,7 @@ String? _redirect({
     uri: state.uri,
     authStatus: authState.status,
     membershipStatus: authState.membershipStatus,
+    isProfileDeactivated: authState.isProfileDeactivated,
     appVersionStatus: appVersionCubit.state.status,
   );
 }
@@ -20,6 +21,7 @@ String? redirectForTest({
   required String path,
   required AuthStatus authStatus,
   required AuthMembershipStatus membershipStatus,
+  bool isProfileDeactivated = false,
   required AppVersionStatus appVersionStatus,
 }) =>
     _redirectCore(
@@ -27,6 +29,7 @@ String? redirectForTest({
       uri: Uri.parse(path),
       authStatus: authStatus,
       membershipStatus: membershipStatus,
+      isProfileDeactivated: isProfileDeactivated,
       appVersionStatus: appVersionStatus,
     );
 
@@ -35,6 +38,7 @@ String? _redirectCore({
   required Uri uri,
   required AuthStatus authStatus,
   required AuthMembershipStatus membershipStatus,
+  required bool isProfileDeactivated,
   required AppVersionStatus appVersionStatus,
 }) {
   final forceUpdateRedirect = _forceUpdateRedirect(path, appVersionStatus);
@@ -47,6 +51,10 @@ String? _redirectCore({
   );
   if (authStatus != AuthStatus.authenticated) {
     return authRedirect;
+  }
+
+  if (isProfileDeactivated) {
+    return AppRoutes.welcome;
   }
 
   return _membershipRedirect(path, membershipStatus);

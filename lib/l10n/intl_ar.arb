@@ -426,6 +426,7 @@
     "surface": "subtitle"
   },
   "profileContactEmailSubject": "تواصل معنا",
+  "profile_deactivated_message": "Your profile is deactivated. Please sign in with another email address.",
   "profileContactLaunchError": "تعذّر فتح تطبيق البريد. حاول مرة أخرى.",
   "profileLogoutTitle": "تسجيل الخروج",
   "profileLogoutSubtitle": "تسجيل الخروج من Kinly على هذا الجهاز.",

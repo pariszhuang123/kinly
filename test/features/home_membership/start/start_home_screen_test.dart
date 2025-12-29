@@ -158,11 +158,10 @@ void main() {
       final buttons = tester.widgetList<KinlyFilledButton>(
         find.byType(KinlyFilledButton),
       );
-      expect(buttons, hasLength(1));
-      expect(buttons.first.label, 'Sign out');
-
-      expect(find.text('Create a Home'), findsNothing);
-      expect(find.text('Join a Home'), findsNothing);
+      expect(buttons, hasLength(2));
+      for (final btn in buttons) {
+        expect(btn.onPressed, isNull);
+      }
     },
   );
 }

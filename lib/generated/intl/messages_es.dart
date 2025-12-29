@@ -694,6 +694,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileSettingsTitle": MessageLookupByLibrary.simpleMessage(
       "Perfil y hogar",
     ),
+    "profile_deactivated_message": MessageLookupByLibrary.simpleMessage(
+      "Your profile is deactivated. Please sign in with another email address.",
+    ),
     "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
       "Añadir un Flow",
     ),

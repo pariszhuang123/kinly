@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/homes/models.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/home_repository.dart';
+import '../../../data/repositories/profile_repository.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -17,8 +18,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required AuthRepository authRepository,
     required HomeRepository homeRepository,
+    ProfileRepository? profileRepository,
   }) : _authRepository = authRepository,
        _homeRepository = homeRepository,
+       _profileRepository = profileRepository,
        super(const AuthState()) {
     on<_AuthSessionChanged>(_onSessionChanged);
     on<AuthSignInWithGoogleRequested>(_onGoogleSignInRequested);
@@ -36,6 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   final AuthRepository _authRepository;
   final HomeRepository _homeRepository;
+  final ProfileRepository? _profileRepository;
   late final StreamSubscription<AuthSession?> _sessionSub;
   static const _retryDelay = Duration(milliseconds: 800);
   static const _maxAttempts = 2;
@@ -73,6 +77,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         isProfileDeactivated: false,
       ),
     );
+    final deactivated = await _checkProfileActive();
+    if (deactivated) return;
     await _refreshMembership(emit);
   }
 
@@ -172,12 +178,42 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthProfileDeactivatedDetected event,
     Emitter<AuthState> emit,
   ) {
-    emit(
-      state.copyWith(
-        isProfileDeactivated: true,
-        membershipStatus: AuthMembershipStatus.none,
-      ),
+    _handleProfileDeactivated(emit);
+  }
+
+  Future<bool> _checkProfileActive() async {
+    if (_profileRepository == null) return false;
+    try {
+      final profile = await _profileRepository.getCurrentProfile();
+      if (profile == null) {
+        return await _handleProfileDeactivated(null);
+      }
+    } catch (_) {
+      // ignore and proceed
+    }
+    return false;
+  }
+
+  Future<bool> _handleProfileDeactivated(Emitter<AuthState>? emit) async {
+    final newState = state.copyWith(
+      isProfileDeactivated: true,
+      status: AuthStatus.unauthenticated,
+      userId: null,
+      membershipStatus: AuthMembershipStatus.none,
+      membership: null,
+      errorMessage: null,
     );
+    if (emit != null) {
+      emit(newState);
+    } else {
+      // when emit is null (e.g., outside handler), manually add state
+      // ignore: invalid_use_of_visible_for_testing_member
+      this.emit(newState);
+    }
+    try {
+      await _authRepository.signOut();
+    } catch (_) {}
+    return true;
   }
 
   Future<CurrentMembership?> _retryNullMembership() async {

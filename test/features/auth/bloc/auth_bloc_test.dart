@@ -7,33 +7,48 @@ import 'package:mocktail/mocktail.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/data/repositories/profile_repository.dart';
 import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/core/profile/models.dart';
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
+class _MockProfileRepository extends Mock implements ProfileRepository {}
+
 void main() {
   late _MockAuthRepository authRepository;
   late _MockHomeRepository homeRepository;
+  late _MockProfileRepository profileRepository;
   late StreamController<AuthSession?> sessionController;
 
   setUp(() {
     authRepository = _MockAuthRepository();
     homeRepository = _MockHomeRepository();
+    profileRepository = _MockProfileRepository();
     sessionController = StreamController<AuthSession?>.broadcast();
     when(
       () => authRepository.session$,
     ).thenAnswer((_) => sessionController.stream);
     when(() => authRepository.current).thenReturn(null);
+    when(() => profileRepository.getCurrentProfile()).thenAnswer(
+      (_) async => const UserProfile(
+        userId: 'profile-user',
+        username: 'tester',
+      ),
+    );
   });
 
   tearDown(() async {
     await sessionController.close();
   });
 
-  AuthBloc buildBloc() =>
-      AuthBloc(authRepository: authRepository, homeRepository: homeRepository);
+  AuthBloc buildBloc() => AuthBloc(
+    authRepository: authRepository,
+    homeRepository: homeRepository,
+    profileRepository: profileRepository,
+  );
 
   blocTest<AuthBloc, AuthState>(
     'emits unauthenticated state when repository reports no session on start',
@@ -326,13 +341,6 @@ void main() {
     expect:
         () => [
           isA<AuthState>()
-              .having((s) => s.status, 'status', AuthStatus.authenticated)
-              .having(
-                (s) => s.membershipStatus,
-                'membershipStatus',
-                AuthMembershipStatus.unknown,
-              ),
-          isA<AuthState>()
               .having(
                 (s) => s.errorMessage,
                 'errorMessage',
@@ -341,7 +349,7 @@ void main() {
               .having(
                 (s) => s.membershipStatus,
                 'membershipStatus',
-                AuthMembershipStatus.active,
+                AuthMembershipStatus.unknown,
               ),
         ],
     verify:
@@ -385,13 +393,6 @@ void main() {
     skip: 2,
     expect:
         () => [
-          isA<AuthState>()
-              .having((s) => s.status, 'status', AuthStatus.authenticated)
-              .having(
-                (s) => s.membershipStatus,
-                'membershipStatus',
-                AuthMembershipStatus.unknown,
-              ),
           isA<AuthState>()
               .having(
                 (s) => s.membershipStatus,

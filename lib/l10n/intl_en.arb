@@ -454,6 +454,7 @@
     "surface": "subtitle"
   },
   "profileContactEmailSubject": "Contact us",
+  "profile_deactivated_message": "Your profile is deactivated. Please sign in with another email address.",
   "profileContactLaunchError": "We couldn't open your email app. Try again.",
   "profileLogoutTitle": "Sign out",
   "profileLogoutSubtitle": "Sign out of Kinly on this device.",

@@ -5,14 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
-import '../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
 import '../bloc/start_home_bloc.dart';
-import '../../../../core/utils/kinly_support.dart';
-import '../../../../core/utils/enums/kinly_support_intent.dart';
 
 class StartHomeScreen extends StatelessWidget {
   const StartHomeScreen({super.key});
@@ -66,15 +63,6 @@ class StartHomeScreen extends StatelessWidget {
 
               final canPress = !isCreating && canManageHome;
               final spacing = theme.extension<Spacing>();
-
-              if (isProfileDeactivated) {
-                return _DeactivatedBody(
-                  onSignOut: () => context
-                      .read<AuthBloc>()
-                      .add(const AuthSignOutRequested()),
-                  email: 'support@kinly.app',
-                );
-              }
 
               return Padding(
                 padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
@@ -133,65 +121,6 @@ class StartHomeScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _DeactivatedBody extends StatelessWidget {
-  const _DeactivatedBody({required this.onSignOut, required this.email});
-
-  final VoidCallback onSignOut;
-  final String email;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>();
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  s.create_failed_generic,
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    color: theme.colorScheme.error,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: spacing?.m ?? 12),
-                Text(
-                  s.create_subtitle,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
-                ),
-                SizedBox(height: spacing?.lg ?? 16),
-                KinlyOutlinedButton.text(
-                  fullWidth: true,
-                  label: email,
-                  onPressed: () => KinlySupport.launchEmail(
-                    context,
-                    KinlySupportIntent.reactivate,
-                  ),
-                ),
-                SizedBox(height: spacing?.m ?? 12),
-                KinlyFilledButton.text(
-                  fullWidth: true,
-                  label: s.logout,
-                  onPressed: onSignOut,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

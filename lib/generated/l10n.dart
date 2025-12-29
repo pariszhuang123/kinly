@@ -3079,6 +3079,16 @@ class S {
     );
   }
 
+  /// `Your profile is deactivated. Please sign in with another email address.`
+  String get profile_deactivated_message {
+    return Intl.message(
+      'Your profile is deactivated. Please sign in with another email address.',
+      name: 'profile_deactivated_message',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `We couldn't open your email app. Try again.`
   String get profileContactLaunchError {
     return Intl.message(

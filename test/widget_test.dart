@@ -20,6 +20,8 @@ import 'package:kinly/data/repositories/app_version_repository.dart';
 import 'package:kinly/core/network/connectivity_monitor.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/data/repositories/profile_repository.dart';
+import 'package:kinly/core/profile/models.dart';
 import 'package:kinly/main.dart';
 
 void main() {
@@ -36,6 +38,7 @@ void main() {
     );
     sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepository());
     sl.registerLazySingleton<HomeRepository>(() => FakeHomeRepository());
+    sl.registerLazySingleton<ProfileRepository>(() => _FakeProfileRepository());
     sl.registerLazySingleton<ConnectivityMonitor>(
       () => _FakeConnectivityMonitor()..initialize(),
     );
@@ -96,5 +99,22 @@ class _FakeAppVersionRepository implements AppVersionRepository {
       hardBlocked: false,
       updateRecommended: false,
     );
+  }
+}
+
+class _FakeProfileRepository implements ProfileRepository {
+  @override
+  Future<UserProfile?> getCurrentProfile() async => null;
+
+  @override
+  Future<List<ProfileAvatar>> listAvailableAvatars(String homeId) async =>
+      const [];
+
+  @override
+  Future<UserProfile> updateIdentity({
+    required String username,
+    required String avatarId,
+  }) {
+    throw UnimplementedError();
   }
 }
