@@ -12,6 +12,7 @@ import '../../../data/repositories/expenses_repository.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../today/domain/models.dart';
+import 'share_period_label.dart';
 
 class ShareOwedDetailScreen extends StatefulWidget {
   const ShareOwedDetailScreen({
@@ -205,6 +206,7 @@ class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = S.of(context);
     final spacing = Theme.of(context).extension<Spacing>()!;
     final sectionColors = Theme.of(context).extension<KinlySections>()!.share;
 
@@ -216,8 +218,14 @@ class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
         final item = widget.items[index];
         final hasNotes = _hasNotes(item);
         final isExpanded = _expanded.contains(item.expenseId);
+        final periodLabel = sharePeriodLabel(
+          recurrence: item.recurrenceInterval,
+          startDate: item.startDate,
+          strings: strings,
+        );
         return _DetailRow(
           description: item.description,
+          periodLabel: periodLabel,
           amountLabel: _formatCurrency(item.amountCents),
           notes: item.notes,
           hasNotes: hasNotes,
@@ -267,6 +275,7 @@ class _ShareOwedMarkPaidButton extends StatelessWidget {
 class _DetailRow extends StatelessWidget {
   const _DetailRow({
     required this.description,
+    required this.periodLabel,
     required this.amountLabel,
     required this.hasNotes,
     required this.isExpanded,
@@ -276,6 +285,7 @@ class _DetailRow extends StatelessWidget {
   });
 
   final String description;
+  final String periodLabel;
   final String amountLabel;
   final String? notes;
   final bool hasNotes;
@@ -286,6 +296,7 @@ class _DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
     final noteText = notes?.trim();
 
     final content = Column(
@@ -310,6 +321,13 @@ class _DetailRow extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        SizedBox(height: spacing.xs),
+        Text(
+          periodLabel,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
         if (hasNotes)
           AnimatedSize(

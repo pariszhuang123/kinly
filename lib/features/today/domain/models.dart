@@ -45,12 +45,16 @@ class TodayShareOwedItem extends Equatable {
     required this.expenseId,
     required this.description,
     required this.amountCents,
+    required this.recurrenceInterval,
+    required this.startDate,
     this.notes,
   });
 
   final String expenseId;
   final String description;
   final int amountCents;
+  final ExpenseRecurrenceInterval recurrenceInterval;
+  final DateTime startDate;
   final String? notes;
 
   factory TodayShareOwedItem.fromModel(ExpenseOwedItem model) {
@@ -58,6 +62,8 @@ class TodayShareOwedItem extends Equatable {
       expenseId: model.expenseId,
       description: model.description,
       amountCents: model.amountCents,
+      recurrenceInterval: model.recurrenceInterval,
+      startDate: model.startDate,
       notes: model.notes,
     );
   }
@@ -65,7 +71,14 @@ class TodayShareOwedItem extends Equatable {
   double get amount => amountCents / 100.0;
 
   @override
-  List<Object?> get props => [expenseId, description, amountCents, notes];
+  List<Object?> get props => [
+    expenseId,
+    description,
+    amountCents,
+    recurrenceInterval,
+    startDate,
+    notes,
+  ];
 }
 
 class TodayShareOwed extends Equatable {

@@ -12,7 +12,9 @@ import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../generated/l10n.dart';
+import '../../../core/expenses/enums/expense_recurrence_interval.dart';
 import '../../today/domain/models.dart';
+import 'share_period_label.dart';
 
 class SharePaidToMeDetailScreen extends StatefulWidget {
   const SharePaidToMeDetailScreen({
@@ -205,9 +207,15 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
                                 Theme.of(context).extension<KinlyTypography>();
                             final colors =
                                 Theme.of(context).extension<KinlyColorTokens>();
+                            final periodLabel = sharePeriodLabel(
+                              recurrence: item.recurrenceInterval,
+                              startDate: item.startDate,
+                              strings: s,
+                            );
 
                             return KinlyListTile(
                               title: item.description,
+                              subtitle: periodLabel,
                               trailing: Text(
                                 item.formattedAmount,
                                 style: (typography?.titleSmall ??
@@ -288,6 +296,8 @@ class TodaySharePaidItem {
     required this.description,
     required this.amountCents,
     required this.markedPaidAt,
+    required this.recurrenceInterval,
+    required this.startDate,
     this.notes,
   });
 
@@ -295,6 +305,8 @@ class TodaySharePaidItem {
   final String description;
   final int amountCents;
   final DateTime? markedPaidAt;
+  final ExpenseRecurrenceInterval recurrenceInterval;
+  final DateTime startDate;
   final String? notes;
 
   factory TodaySharePaidItem.fromModel(ExpensePaidToMeItem model) {
@@ -303,6 +315,8 @@ class TodaySharePaidItem {
       description: model.description,
       amountCents: model.amountCents,
       markedPaidAt: model.markedPaidAt,
+      recurrenceInterval: model.recurrenceInterval,
+      startDate: model.startDate,
       notes: model.notes,
     );
   }

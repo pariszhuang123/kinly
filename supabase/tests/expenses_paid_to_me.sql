@@ -159,6 +159,41 @@ WITH created AS (
 INSERT INTO tmp_expenses (label, expense_id)
 SELECT 'snacks', (expense).id FROM created;
 
+-- Debtor sees owed items with recurrence metadata
+SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'debtor'), true);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
+WITH owed AS (
+  SELECT public.expenses_get_current_owed(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  ) AS body
+)
+SELECT is(
+  (SELECT jsonb_array_length((body->0->'items')) FROM owed),
+  2,
+  'Owed list returns both unpaid items with metadata'
+);
+WITH owed AS (
+  SELECT public.expenses_get_current_owed(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  ) AS body
+)
+SELECT is(
+  (SELECT (body->0->'items'->0->>'recurrenceInterval') FROM owed),
+  'none',
+  'Owed items include recurrence interval'
+);
+WITH owed AS (
+  SELECT public.expenses_get_current_owed(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  ) AS body
+)
+SELECT is(
+  (SELECT (body->0->'items'->0->>'startDate')::date FROM owed),
+  current_date,
+  'Owed items include start date'
+);
+
 -- Debtor pays all owed to creator (bulk)
 SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'debtor'), true);
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
@@ -255,6 +290,28 @@ SELECT is(
   (SELECT body->0->>'debtorAvatarUrl' FROM details),
   'avatars/paid-to-me-2.png',
   'Debtor detail includes avatar path for debtor'
+);
+WITH details AS (
+  SELECT public.expenses_get_current_paid_to_me_by_debtor_details(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+    (SELECT user_id FROM tmp_users WHERE label = 'debtor')
+  ) AS body
+)
+SELECT is(
+  (SELECT body->0->>'recurrenceInterval' FROM details),
+  'none',
+  'Debtor detail includes recurrence interval'
+);
+WITH details AS (
+  SELECT public.expenses_get_current_paid_to_me_by_debtor_details(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+    (SELECT user_id FROM tmp_users WHERE label = 'debtor')
+  ) AS body
+)
+SELECT is(
+  (SELECT (body->0->>'startDate')::date FROM details),
+  current_date,
+  'Debtor detail includes start date'
 );
 
 -- Mark viewed clears unseen

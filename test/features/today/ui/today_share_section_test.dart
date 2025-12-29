@@ -6,6 +6,7 @@ import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/features/today/ui/widgets/today_share_section/today_share_section.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/core/expenses/enums/expense_recurrence_interval.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -15,11 +16,13 @@ void main() {
       payerUserId: 'payer-1',
       displayName: 'Alex',
       totalOwedCents: 1234,
-      items: const [
+      items: [
         TodayShareOwedItem(
           expenseId: 'exp-1',
           description: 'Lunch',
           amountCents: 1234,
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime(2024, 1, 1),
         ),
       ],
     );

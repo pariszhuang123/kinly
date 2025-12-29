@@ -7,11 +7,16 @@ import 'package:kinly/features/share/ui/share_paid_to_me_detail_screen.dart';
 import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/core/expenses/enums/expense_recurrence_interval.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class _MockExpensesRepository extends Mock implements ExpensesRepository {}
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await initializeDateFormatting('en');
+  });
 
   testWidgets('loads detail, marks viewed, and renders items', (tester) async {
     final repo = _MockExpensesRepository();
@@ -27,6 +32,8 @@ void main() {
           description: 'Lunch',
           amountCents: 1200,
           markedPaidAt: DateTime.now(),
+          recurrenceInterval: ExpenseRecurrenceInterval.weekly,
+          startDate: DateTime(2024, 1, 1),
           notes: null,
         ),
       ],
@@ -58,6 +65,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Lunch'), findsOneWidget);
+    expect(find.text('Applies to January 1 - 7, 2024'), findsOneWidget);
     verifyNever(
       () => repo.markPaidReceivedViewedForDebtor(
         homeId: 'home-1',

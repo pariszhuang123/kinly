@@ -17,6 +17,7 @@ import 'package:kinly/features/today/ui/widgets/today_header/today_header.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/features/today/ui/widgets/today_empty_state_card.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
+import 'package:kinly/core/expenses/enums/expense_recurrence_interval.dart';
 
 class _MockTodayBloc extends MockBloc<TodayEvent, TodayState>
     implements TodayBloc {}
@@ -190,11 +191,13 @@ void main() {
             payerUserId: 'payer_$i',
             displayName: 'Payer $i',
             totalOwedCents: 1234,
-            items: const [
+            items: [
               TodayShareOwedItem(
                 expenseId: 'e1',
                 description: 'Test expense',
                 amountCents: 1234,
+                recurrenceInterval: ExpenseRecurrenceInterval.none,
+                startDate: DateTime(2024, 1, 1),
               ),
             ],
           ),

@@ -164,19 +164,34 @@ class ExpenseOwedItem {
     required this.expenseId,
     required this.description,
     required this.amountCents,
+    required this.recurrenceInterval,
+    required this.startDate,
     this.notes,
   });
 
   final String expenseId;
   final String description;
   final int amountCents;
+  final ExpenseRecurrenceInterval recurrenceInterval;
+  final DateTime startDate;
   final String? notes;
 
   factory ExpenseOwedItem.fromJson(Map<String, dynamic> json) {
+    final recurrenceWire =
+        json['recurrenceInterval'] ?? json['recurrence_interval'];
+    final startDateRaw = json['startDate'] ?? json['start_date'];
+
     return ExpenseOwedItem(
       expenseId: json['expenseId'] as String,
       description: (json['description'] as String?) ?? '',
       amountCents: (json['amountCents'] as num).toInt(),
+      recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
+        recurrenceWire as String?,
+      ),
+      startDate:
+          parseDateToLocal(startDateRaw) ??
+          parseTimestampToLocal(startDateRaw) ??
+          DateTime.now(),
       notes: json['notes'] as String?,
     );
   }

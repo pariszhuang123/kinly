@@ -10,6 +10,8 @@ import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/core/expenses/enums/expense_recurrence_interval.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class _MockExpensesRepository extends Mock implements ExpensesRepository {}
 
@@ -44,8 +46,9 @@ class _RouteHostState extends State<_RouteHost> {
 }
 
 void main() {
-  setUpAll(() {
+  setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
+    await initializeDateFormatting('en');
   });
 
   testWidgets('marks paid pops true and calls repository', (tester) async {
@@ -65,16 +68,20 @@ void main() {
       payerUserId: 'user-1',
       displayName: 'Alex',
       totalOwedCents: 5000,
-      items: const [
+      items: [
         TodayShareOwedItem(
           expenseId: 'exp-1',
           description: 'Groceries',
           amountCents: 2500,
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime(2024, 1, 1),
         ),
         TodayShareOwedItem(
           expenseId: 'exp-2',
           description: 'Snacks',
           amountCents: 2500,
+          recurrenceInterval: ExpenseRecurrenceInterval.weekly,
+          startDate: DateTime(2024, 1, 8),
         ),
       ],
     );
@@ -164,11 +171,13 @@ void main() {
       payerUserId: 'user-1',
       displayName: 'Alex',
       totalOwedCents: 2500,
-      items: const [
+      items: [
         TodayShareOwedItem(
           expenseId: 'exp-1',
           description: 'Groceries',
           amountCents: 2500,
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime(2024, 1, 1),
         ),
       ],
     );
@@ -245,11 +254,13 @@ void main() {
       payerUserId: 'user-1',
       displayName: 'Alex',
       totalOwedCents: 1500,
-      items: const [
+      items: [
         TodayShareOwedItem(
           expenseId: 'exp-1',
           description: 'Snacks',
           amountCents: 1500,
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime(2024, 1, 1),
           notes: 'Remember to reimburse',
         ),
       ],
@@ -280,5 +291,51 @@ void main() {
     final onSurface = Theme.of(context).colorScheme.onSurface;
 
     expect(icon.color, onSurface);
+  });
+
+  testWidgets('shows period label for recurring and one-time shares', (
+    tester,
+  ) async {
+    final owed = TodayShareOwed(
+      payerUserId: 'user-1',
+      displayName: 'Alex',
+      totalOwedCents: 1500,
+      items: [
+        TodayShareOwedItem(
+          expenseId: 'exp-1',
+          description: 'Weekly groceries',
+          amountCents: 1500,
+          recurrenceInterval: ExpenseRecurrenceInterval.weekly,
+          startDate: DateTime(2024, 1, 1),
+        ),
+        TodayShareOwedItem(
+          expenseId: 'exp-2',
+          description: 'One-off dinner',
+          amountCents: 1500,
+          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          startDate: DateTime(2024, 1, 8),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: buildKinlyTheme(Brightness.light),
+        localizationsDelegates: const [S.delegate],
+        supportedLocales: S.delegate.supportedLocales,
+        home: MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: ShareOwedDetailScreen(
+            owed: owed,
+            expensesRepository: _MockExpensesRepository(),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('Applies to January 1 - 7, 2024'), findsOneWidget);
+    expect(find.text('One time'), findsOneWidget);
   });
 }

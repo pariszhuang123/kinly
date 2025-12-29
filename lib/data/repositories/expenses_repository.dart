@@ -149,6 +149,8 @@ class ExpensePaidToMeItem {
     required this.description,
     required this.amountCents,
     required this.markedPaidAt,
+    required this.recurrenceInterval,
+    required this.startDate,
     this.debtorUsername,
     this.debtorAvatarUrl,
     this.isOwner = false,
@@ -159,17 +161,30 @@ class ExpensePaidToMeItem {
   final String description;
   final int amountCents;
   final DateTime? markedPaidAt;
+  final ExpenseRecurrenceInterval recurrenceInterval;
+  final DateTime startDate;
   final String? debtorUsername;
   final String? debtorAvatarUrl;
   final bool isOwner;
   final String? notes;
 
   factory ExpensePaidToMeItem.fromJson(Map<String, dynamic> json) {
+    final recurrenceWire =
+        json['recurrenceInterval'] ?? json['recurrence_interval'];
+    final startDateRaw = json['startDate'] ?? json['start_date'];
+
     return ExpensePaidToMeItem(
       expenseId: json['expenseId'] as String,
       description: (json['description'] as String?) ?? '',
       amountCents: (json['amountCents'] as num).toInt(),
       markedPaidAt: parseTimestampToLocal(json['markedPaidAt']),
+      recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
+        recurrenceWire as String?,
+      ),
+      startDate:
+          parseDateToLocal(startDateRaw) ??
+          parseTimestampToLocal(startDateRaw) ??
+          DateTime.now(),
       debtorUsername: json['debtorUsername'] as String?,
       debtorAvatarUrl: json['debtorAvatarUrl'] as String?,
       isOwner: json['isOwner'] as bool? ?? false,
