@@ -5,12 +5,14 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';
 import '../bloc/start_home_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/utils/kinly_support.dart';
+import '../../../../core/utils/enums/kinly_support_intent.dart';
 
 class StartHomeScreen extends StatelessWidget {
   const StartHomeScreen({super.key});
@@ -146,7 +148,6 @@ class _DeactivatedBody extends StatelessWidget {
     final s = S.of(context);
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
-    final mailto = Uri(scheme: 'mailto', path: email);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -172,14 +173,12 @@ class _DeactivatedBody extends StatelessWidget {
                   style: theme.textTheme.bodyMedium,
                 ),
                 SizedBox(height: spacing?.lg ?? 16),
-                TextButton(
-                  onPressed: () => launchUrl(mailto),
-                  child: Text(
-                    email,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
+                KinlyOutlinedButton.text(
+                  fullWidth: true,
+                  label: email,
+                  onPressed: () => KinlySupport.launchEmail(
+                    context,
+                    KinlySupportIntent.reactivate,
                   ),
                 ),
                 SizedBox(height: spacing?.m ?? 12),

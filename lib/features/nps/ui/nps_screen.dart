@@ -9,6 +9,8 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
+import '../../../core/utils/kinly_support.dart';
+import '../../../core/utils/enums/kinly_support_intent.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/nps_cubit.dart';
 
@@ -164,15 +166,8 @@ class NpsScreen extends StatelessWidget {
   }
 
   Uri? _destinationUri(BuildContext context, int score) {
-    final s = S.of(context);
-    final subject = s.npsEmailSubject;
-
     if (Platform.isIOS) {
-      return Uri(
-        scheme: 'mailto',
-        path: 'support@makinglifeeasie.com',
-        queryParameters: {'subject': subject},
-      );
+      return KinlySupport.buildEmailUri(context, KinlySupportIntent.nps);
     }
 
     if (Platform.isAndroid && score >= 9) {
@@ -180,10 +175,6 @@ class NpsScreen extends StatelessWidget {
       return Uri.parse(AppConfig.androidStoreUrl);
     }
 
-    return Uri(
-      scheme: 'mailto',
-      path: 'support@makinglifeeasie.com',
-      queryParameters: {'subject': subject},
-    );
+    return KinlySupport.buildEmailUri(context, KinlySupportIntent.nps);
   }
 }
