@@ -118,19 +118,27 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
                     : s.flowChorePhotoUploadError;
             final accent =
                 Theme.of(context).extension<KinlySections>()?.flow.accent;
-            KinlySnackBar.showError(
-              context,
-              snackText,
-              accentColor: accent,
-              actionLabel:
-                  state.isCameraPermissionPermanentlyDenied
-                      ? s.flowChorePhotoPermissionOpenSettings
-                      : null,
-              onAction:
-                  state.isCameraPermissionPermanentlyDenied
-                      ? openAppSettings
-                      : null,
-            );
+            final isPermanent = state.isCameraPermissionPermanentlyDenied;
+            final actionLabel =
+                isPermanent ? s.flowChorePhotoPermissionOpenSettings : null;
+            final onAction = isPermanent ? openAppSettings : null;
+            if (isPermission) {
+              KinlySnackBar.showInfo(
+                context,
+                snackText,
+                accentColor: accent,
+                actionLabel: actionLabel,
+                onAction: onAction,
+              );
+            } else {
+              KinlySnackBar.showError(
+                context,
+                snackText,
+                accentColor: accent,
+                actionLabel: actionLabel,
+                onAction: onAction,
+              );
+            }
             return;
           }
 

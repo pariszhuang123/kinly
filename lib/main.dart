@@ -111,6 +111,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late final IanaTimezoneResolver _timezoneResolver;
   StreamSubscription<AuthState>? _authSub;
   NotificationTokenBootstrap? _tokenBootstrap;
+  bool _requestedInitialNotificationPermission = false;
 
   static const _logTag = 'Bootstrap';
 
@@ -150,6 +151,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
     unawaited(_handleAuthState(_authBloc.state));
     unawaited(_startVersionCheck());
+    unawaited(_requestNotificationPermissionIfNeeded());
   }
 
   Logger _resolveLogger() {
@@ -285,6 +287,44 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<void> _stopNotificationTokenSync() async {
     await _tokenBootstrap?.dispose();
     _tokenBootstrap = null;
+  }
+
+  Future<void> _requestNotificationPermissionIfNeeded() async {
+    if (_requestedInitialNotificationPermission) return;
+    _requestedInitialNotificationPermission = true;
+    if (!Platform.isIOS) return;
+    try {
+      final settings = await FirebaseMessaging.instance.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+        announcement: false,
+        provisional: false,
+      );
+      _logger.info(
+        'iOS notification permission status: ${settings.authorizationStatus.name}',
+        tag: _logTag,
+      );
+      final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+      _logger.info(
+        'APNs token after request: ${apnsToken ?? 'null'}',
+        tag: _logTag,
+      );
+      if (apnsToken != null && apnsToken.isNotEmpty) {
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+        _logger.info(
+          'FCM token after request: ${fcmToken ?? 'null'}',
+          tag: _logTag,
+        );
+      }
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Notification permission request failed: $error',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   Future<void> _refreshNotificationPreferencesFromOs() async {

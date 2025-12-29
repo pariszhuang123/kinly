@@ -45,6 +45,14 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Kinly needs photo access so you can attach and view reference photos for chores.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Kinly needs permission to save photos you capture for chores.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<!-- Supabase OAuth redirect scheme: io.supabase.flutter://callback -->
 	<key>CFBundleURLTypes</key>
 	<array>

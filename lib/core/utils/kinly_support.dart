@@ -15,10 +15,13 @@ class KinlySupport {
       KinlySupportIntent.reactivate => s.profileContactEmailSubject,
       KinlySupportIntent.nps => s.npsEmailSubject,
     };
+    // Build the query manually to keep spaces encoded as %20 instead of +,
+    // since some mail clients surface the raw subject text.
+    final subjectQuery = 'subject=${Uri.encodeComponent(subject)}';
     return Uri(
       scheme: 'mailto',
       path: _supportEmail,
-      queryParameters: {'subject': subject},
+      query: subjectQuery,
     );
   }
 

@@ -9,7 +9,6 @@ import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/badges/kinly_badge.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/kinly_list_tile.dart';
-import '../../../../core/ui/kinly_empty_state.dart';
 import '../../../../core/ui/feedback/kinly_info_banner.dart';
 import '../../../../core/ui/enums/kinly_banner_type.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
@@ -253,12 +252,33 @@ class _ShareCreatedListEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final theme = Theme.of(context);
 
-    return KinlyEmptyState(
-      title: title,
-      body: subtitle,
-      ctaLabel: s.shareCreateSubmit,
-      onCtaTap: onCreateTap,
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            subtitle,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          KinlyFilledButton.text(
+            fullWidth: true,
+            onPressed: onCreateTap,
+            label: s.shareCreateSubmit,
+          ),
+        ],
+      ),
     );
   }
 }
