@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/chores/models.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
-import '../../../data/repositories/chores_repository.dart';
+import 'package:kinly/features/flow/flow.dart';
 
 part 'flow_chore_detail_event.dart';
 part 'flow_chore_detail_state.dart';

@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
-import 'package:kinly/data/repositories/chores_repository.dart';
+import 'package:kinly/features/flow/flow.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_detail_bloc.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}

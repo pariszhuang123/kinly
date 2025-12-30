@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../core/chores/models.dart';
 import '../../../data/repositories/home_repository.dart';
-import '../../../data/repositories/chores_repository.dart';
+import 'package:kinly/features/flow/flow.dart';
 
 part 'flow_list_event.dart';
 part 'flow_list_state.dart';
@@ -87,9 +87,7 @@ class FlowListBloc extends Bloc<FlowListEvent, FlowListState> {
     }
   }
 
-  List<ChoreListEntry> _filterDueTodayOrEarlier(
-    List<ChoreListEntry> entries,
-  ) {
+  List<ChoreListEntry> _filterDueTodayOrEarlier(List<ChoreListEntry> entries) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 

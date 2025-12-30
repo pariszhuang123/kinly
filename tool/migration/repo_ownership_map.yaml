@@ -1,0 +1,14 @@
+# Repository ownership mapping for migration off lib/data/repositories/**
+# Rules: resolve ambiguities before moving code. Use BLOCKED for unclear ownership.
+
+account_repository.dart: core_account
+app_version_repository.dart: version_gating
+auth_repository.dart: auth
+chores_repository.dart: flow
+expenses_repository.dart: share
+home_repository.dart: home_membership
+mood_repository.dart: harmony
+notifications_repository.dart: core_notifications
+onboarding_repository.dart: today
+paywall_repository.dart: paywall
+profile_repository.dart: profile_settings

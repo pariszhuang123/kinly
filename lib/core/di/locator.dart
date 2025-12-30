@@ -2,13 +2,11 @@ import 'package:get_it/get_it.dart';
 import '../../data/repositories/account_repository.dart';
 import '../../data/repositories/app_version_repository.dart';
 import '../../data/repositories/auth_repository.dart';
-import '../../data/repositories/chores_repository.dart';
 import '../../data/repositories/expenses_repository.dart';
 import '../../data/repositories/home_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../account/supabase_account_repository.dart';
 import '../auth/supabase_auth_repository.dart';
-import '../chores/supabase_chores_repository.dart';
 import '../expenses/supabase_expenses_repository.dart';
 import '../homes/supabase_home_repository.dart';
 import '../profile/supabase_profile_repository.dart';
@@ -51,7 +49,6 @@ void setupDependencies() {
       () => SupabaseAuthRepository(logger: sl<Logger>()),
     ),
     () => _registerLazy<HomeRepository>(() => SupabaseHomeRepository()),
-    () => _registerLazy<ChoresRepository>(() => SupabaseChoresRepository()),
     () => _registerLazy<ProfileRepository>(() => SupabaseProfileRepository()),
     () => _registerLazy<ProfileUpdateNotifier>(() => ProfileUpdateNotifier()),
     () => _registerLazy<AccountRepository>(() => SupabaseAccountRepository()),

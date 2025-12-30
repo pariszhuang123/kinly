@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/chores/models.dart'; // ChoreListEntry, etc.
 import '../../../core/expenses/models.dart';
 import '../../../core/profile/models.dart';
-import '../../../data/repositories/chores_repository.dart';
+import 'package:kinly/features/flow/flow.dart';
 import '../../../data/repositories/expenses_repository.dart';
 import '../../../data/repositories/home_repository.dart';
 import '../../../data/repositories/profile_repository.dart';
@@ -129,7 +129,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             notificationPromptTick: prevNotificationPromptTick,
             hasShownNotificationPrompt: prevHasShownNotification,
             activeChoreCount: state.activeChoreCount,
-            shouldPromptFlatmateInviteShare: state.shouldPromptFlatmateInviteShare,
+            shouldPromptFlatmateInviteShare:
+                state.shouldPromptFlatmateInviteShare,
             shouldPromptInviteShare: state.shouldPromptInviteShare,
           ),
         );
@@ -276,11 +277,11 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     }
   }
 
-  TodayFlowTask _mapEntryToTodayTask(
-    TodayFlowEntry entry,
-  ) {
-    final isCreatedToday =
-        _isSameDay(entry.startDate.toLocal(), DateTime.now());
+  TodayFlowTask _mapEntryToTodayTask(TodayFlowEntry entry) {
+    final isCreatedToday = _isSameDay(
+      entry.startDate.toLocal(),
+      DateTime.now(),
+    );
     return TodayFlowTask(
       id: entry.id,
       title: entry.name,
@@ -374,10 +375,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     );
   }
 
-  TodayState _stateWithProfile(
-    TodayState current,
-    TodayUserProfile? profile,
-  ) {
+  TodayState _stateWithProfile(TodayState current, TodayUserProfile? profile) {
     if (current.isLoading) {
       return TodayState.loading(
         profile: profile,
@@ -392,7 +390,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         notificationPromptTick: current.notificationPromptTick,
         hasShownNotificationPrompt: current.hasShownNotificationPrompt,
         activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+        shouldPromptFlatmateInviteShare:
+            current.shouldPromptFlatmateInviteShare,
         shouldPromptInviteShare: current.shouldPromptInviteShare,
       );
     }
@@ -414,7 +413,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         notificationPromptTick: current.notificationPromptTick,
         hasShownNotificationPrompt: current.hasShownNotificationPrompt,
         activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+        shouldPromptFlatmateInviteShare:
+            current.shouldPromptFlatmateInviteShare,
         shouldPromptInviteShare: current.shouldPromptInviteShare,
       );
     }
@@ -455,7 +455,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         notificationPromptTick: current.notificationPromptTick,
         hasShownNotificationPrompt: current.hasShownNotificationPrompt,
         activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+        shouldPromptFlatmateInviteShare:
+            current.shouldPromptFlatmateInviteShare,
         shouldPromptInviteShare: false,
       );
     }
@@ -477,7 +478,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         notificationPromptTick: current.notificationPromptTick,
         hasShownNotificationPrompt: current.hasShownNotificationPrompt,
         activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+        shouldPromptFlatmateInviteShare:
+            current.shouldPromptFlatmateInviteShare,
         shouldPromptInviteShare: false,
       );
     }

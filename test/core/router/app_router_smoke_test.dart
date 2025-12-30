@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_router.dart';
 import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';

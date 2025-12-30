@@ -22,6 +22,7 @@ This document defines roles, boundaries, workflows, guardrails, and the Definiti
 - Contracts/DTOs → Supabase/DB + Repositories co-own (versioned).
 - CI/infra → Release (Planner approves changes).
 - Accessibility → Design System + UI co-own implementation; Planner approves contract changes.
+- Cross-feature imports must use feature barrels (`lib/features/<feature>/<feature>.dart`); deep imports into another feature’s internals will fail `dart run tool/check_dependency_rules.dart`.
 
 ## MVP Scope (Home‑only)
 - Auth (Supabase OAuth: Google/Apple)

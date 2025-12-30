@@ -1,7 +1,7 @@
-import '../../core/chores/models.dart';
+import 'package:kinly/core/chores/models.dart';
 
 /// Repository boundary for chore lifecycle operations.
-/// Keep UI/BLoC isolated from Supabase specifics.
+/// Keeps UI/BLoC isolated from Supabase specifics.
 abstract class ChoresRepository {
   /// Creates a new chore within [homeId].
   Future<Chore> create({

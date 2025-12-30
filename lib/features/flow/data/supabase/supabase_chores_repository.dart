@@ -1,22 +1,18 @@
 import 'package:intl/intl.dart';
+import 'package:kinly/core/chores/models.dart';
+import 'package:kinly/core/supabase/storage_path_resolver.dart';
+import 'package:kinly/core/supabase/supabase_error_mapper.dart';
+import 'package:kinly/core/utils/url_validator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../data/repositories/chores_repository.dart';
-import '../supabase/storage_path_resolver.dart';
-import '../supabase/supabase_error_mapper.dart';
-import '../utils/url_validator.dart';
-import 'models.dart';
+import 'package:kinly/features/flow/flow.dart';
 
 class SupabaseChoresRepository implements ChoresRepository {
-  final SupabaseClient _client;
-  final _dateFormatter = DateFormat('yyyy-MM-dd');
-
   SupabaseChoresRepository({SupabaseClient? client})
     : _client = client ?? Supabase.instance.client;
 
-  // ---------------------------------------------------------------------------
-  // CREATE
-  // ---------------------------------------------------------------------------
+  final SupabaseClient _client;
+  final _dateFormatter = DateFormat('yyyy-MM-dd');
 
   @override
   Future<Chore> create({
@@ -38,7 +34,8 @@ class SupabaseChoresRepository implements ChoresRepository {
           'p_home_id': homeId,
           'p_name': name,
           if (assigneeUserId != null) 'p_assignee_user_id': assigneeUserId,
-          if (startDate != null) 'p_start_date': _dateFormatter.format(startDate),
+          if (startDate != null)
+            'p_start_date': _dateFormatter.format(startDate),
           'p_recurrence': recurrence.wireValue,
           if (notes != null) 'p_notes': notes,
           'p_how_to_video_url': sanitizedHowTo,
@@ -51,10 +48,6 @@ class SupabaseChoresRepository implements ChoresRepository {
       throw SupabaseErrorMapper.mapChore(error);
     }
   }
-
-  // ---------------------------------------------------------------------------
-  // UPDATE
-  // ---------------------------------------------------------------------------
 
   @override
   Future<Chore> update({
@@ -90,10 +83,6 @@ class SupabaseChoresRepository implements ChoresRepository {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // COMPLETE
-  // ---------------------------------------------------------------------------
-
   @override
   Future<ChoreCompletionResult> complete(String choreId) async {
     try {
@@ -101,12 +90,10 @@ class SupabaseChoresRepository implements ChoresRepository {
         'chore_complete',
         params: {'_chore_id': choreId},
       );
-
       final payload = _coerceMap(response);
       if (payload != null) {
         return ChoreCompletionResult.fromJson(payload);
       }
-
       throw const ChoreException(
         ChoreErrorCode.unknown,
         'Malformed chore completion payload from Supabase.',
@@ -115,10 +102,6 @@ class SupabaseChoresRepository implements ChoresRepository {
       throw SupabaseErrorMapper.mapChore(error);
     }
   }
-
-  // ---------------------------------------------------------------------------
-  // CANCEL
-  // ---------------------------------------------------------------------------
 
   @override
   Future<Chore> cancel(String choreId) async {
@@ -133,10 +116,6 @@ class SupabaseChoresRepository implements ChoresRepository {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // LIST FOR HOME (chores_list_for_home)
-  // ---------------------------------------------------------------------------
-
   @override
   Future<List<ChoreListEntry>> listForHome(String homeId) async {
     try {
@@ -144,7 +123,6 @@ class SupabaseChoresRepository implements ChoresRepository {
         'chores_list_for_home',
         params: {'p_home_id': homeId},
       );
-
       if (response is List) {
         return response
             .map((raw) {
@@ -162,7 +140,6 @@ class SupabaseChoresRepository implements ChoresRepository {
             })
             .toList(growable: false);
       }
-
       throw const ChoreException(
         ChoreErrorCode.unknown,
         'Malformed chores list payload from Supabase.',
@@ -182,7 +159,6 @@ class SupabaseChoresRepository implements ChoresRepository {
         'today_flow_list',
         params: {'p_home_id': homeId, 'p_state': state.wireValue},
       );
-
       if (response is List) {
         return response
             .map(
@@ -191,7 +167,6 @@ class SupabaseChoresRepository implements ChoresRepository {
             )
             .toList(growable: false);
       }
-
       throw const ChoreException(
         ChoreErrorCode.unknown,
         'Malformed today flow payload from Supabase.',
@@ -200,10 +175,6 @@ class SupabaseChoresRepository implements ChoresRepository {
       throw SupabaseErrorMapper.mapChore(error);
     }
   }
-
-  // ---------------------------------------------------------------------------
-  // GET FOR HOME (single chore + assignees) - chores_get_for_home
-  // ---------------------------------------------------------------------------
 
   @override
   Future<ChoreDetails> getForHome({
@@ -215,12 +186,10 @@ class SupabaseChoresRepository implements ChoresRepository {
         'chores_get_for_home',
         params: {'p_home_id': homeId, 'p_chore_id': choreId},
       );
-
       final payload = _coerceMap(response);
       if (payload != null) {
         return ChoreDetails.fromJson(payload);
       }
-
       throw const ChoreException(
         ChoreErrorCode.unknown,
         'Malformed chore details payload from Supabase.',
@@ -230,10 +199,6 @@ class SupabaseChoresRepository implements ChoresRepository {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // OPTIONAL: list all potential assignees in a home (home_assignees_list)
-  // ---------------------------------------------------------------------------
-
   @override
   Future<List<ChoreAssigneeSummary>> listAssigneesForHome(String homeId) async {
     try {
@@ -241,7 +206,6 @@ class SupabaseChoresRepository implements ChoresRepository {
         'home_assignees_list',
         params: {'p_home_id': homeId},
       );
-
       if (response is List) {
         return response
             .map((raw) {
@@ -258,7 +222,6 @@ class SupabaseChoresRepository implements ChoresRepository {
             })
             .toList(growable: false);
       }
-
       throw const ChoreException(
         ChoreErrorCode.unknown,
         'Malformed assignee list payload from Supabase.',
@@ -268,13 +231,8 @@ class SupabaseChoresRepository implements ChoresRepository {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Helpers
-  // ---------------------------------------------------------------------------
-
   Chore _extractChore(dynamic rpcResult) {
     if (rpcResult is Map<String, dynamic>) {
-      // Handle shape: { "chore": { ... } }
       if (rpcResult.containsKey('chore')) {
         final payload = rpcResult['chore'];
         final mapPayload = _coerceMap(payload);
@@ -282,26 +240,22 @@ class SupabaseChoresRepository implements ChoresRepository {
           return Chore.fromJson(mapPayload);
         }
       }
-
-      // Or direct row: { id, home_id, ... }
       return Chore.fromJson(rpcResult);
     }
-
     if (rpcResult is Map) {
       return _extractChore(Map<String, dynamic>.from(rpcResult));
     }
-
-  throw const ChoreException(
-    ChoreErrorCode.unknown,
-    'Malformed chore payload from Supabase.',
-  );
-}
-
-Map<String, dynamic>? _coerceMap(dynamic value) {
-  if (value is Map<String, dynamic>) return value;
-  if (value is Map) {
-    return value.cast<String, dynamic>();
+    throw const ChoreException(
+      ChoreErrorCode.unknown,
+      'Malformed chore payload from Supabase.',
+    );
   }
+
+  Map<String, dynamic>? _coerceMap(dynamic value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) {
+      return value.cast<String, dynamic>();
+    }
     return null;
   }
 }
