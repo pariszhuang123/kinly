@@ -6,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/homes/models.dart';
 import '../../../data/repositories/auth_repository.dart';
-import '../../../data/repositories/home_repository.dart';
+import '../../../../features/home/home.dart';
 import '../../../data/repositories/profile_repository.dart';
 
 part 'auth_event.dart';

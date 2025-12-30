@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/di/locator.dart';
 import '../../../core/logging/debug_logger.dart';
 import '../../../core/logging/logger.dart';
-import '../../../data/repositories/home_repository.dart';
+import '../../../../features/home/home.dart';
 import '../bloc/hub_bloc.dart';
 import 'hub_screen.dart';
 

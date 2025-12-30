@@ -14,6 +14,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import 'core/config/app_config.dart';
+import 'core/di/compose.dart';
 import 'core/di/locator.dart';
 import 'core/purchases/revenuecat_initializer.dart';
 import 'core/purchases/revenuecat_user_sync.dart';
@@ -24,11 +25,9 @@ import 'core/supabase/supabase_init.dart';
 import 'core/theme/kinly_theme.dart';
 import 'core/logging/logger.dart';
 import 'core/logging/debug_logger.dart';
-import 'features/flow/flow_di.dart';
-import 'features/paywall/paywall_di.dart';
 import 'data/repositories/app_version_repository.dart';
 import 'data/repositories/auth_repository.dart';
-import 'data/repositories/home_repository.dart';
+import 'features/home/home.dart';
 import 'data/repositories/profile_repository.dart';
 import 'data/repositories/notifications_repository.dart';
 import 'core/notifications/notification_token_bootstrap.dart';
@@ -87,9 +86,7 @@ Future<void> _bootstrapApp() async {
     badge: true,
     sound: true,
   );
-  setupDependencies();
-  installFlowDependencies(sl);
-  installPaywallDependencies(sl);
+  composeDependencies();
   AppConfig.validate();
   await initSupabase();
   await initRevenueCat(

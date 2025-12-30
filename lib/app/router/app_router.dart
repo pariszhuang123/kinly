@@ -5,7 +5,7 @@ import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/profile/profile_update_notifier.dart';
 import 'package:kinly/features/flow/flow.dart';
 import 'package:kinly/data/repositories/expenses_repository.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/data/repositories/mood_repository.dart';
 import 'package:kinly/data/repositories/onboarding_repository.dart';
 import 'package:kinly/data/repositories/profile_repository.dart';

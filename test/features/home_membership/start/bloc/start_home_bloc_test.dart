@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/features/home_membership/start/bloc/start_home_bloc.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/core/homes/models.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}

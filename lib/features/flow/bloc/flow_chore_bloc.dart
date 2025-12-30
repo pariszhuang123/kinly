@@ -11,7 +11,7 @@ import '../../../core/paywall/enums/paywall_trigger.dart';
 import '../../../core/paywall/paywall_sources.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/features/flow/flow.dart';
-import '../../../data/repositories/home_repository.dart';
+import '../../../../features/home/home.dart';
 import 'package:kinly/features/paywall/paywall.dart';
 import '../domain/flow_chore_form.dart';
 

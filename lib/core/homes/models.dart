@@ -112,6 +112,35 @@ class HomeCreationResult {
   }
 }
 
+class HomeJoinResult {
+  final String homeId;
+  final CurrentMembership? membership;
+
+  const HomeJoinResult({required this.homeId, this.membership});
+
+  factory HomeJoinResult.fromJson(Map<String, dynamic> json) {
+    final homeFromPayload =
+        (json['home'] as Map?)?.cast<String, dynamic>() ??
+        (json['data'] as Map?)?.cast<String, dynamic>() ??
+        const <String, dynamic>{};
+    final membershipPayload =
+        (json['membership'] as Map?)?.cast<String, dynamic>() ??
+        (json['current_membership'] as Map?)?.cast<String, dynamic>();
+    final homeId =
+        json['home_id'] as String? ??
+        json['homeId'] as String? ??
+        homeFromPayload['id'] as String? ??
+        '';
+    return HomeJoinResult(
+      homeId: homeId,
+      membership:
+          membershipPayload != null
+              ? CurrentMembership.fromJson(membershipPayload)
+              : null,
+    );
+  }
+}
+
 class HomeInvite {
   final String id;
   final String homeId;

@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../core/expenses/models.dart';
 import '../../../../data/repositories/expenses_repository.dart';
-import '../../../../data/repositories/home_repository.dart';
+import '../../../../../features/home/home.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../core/paywall/enums/paywall_retry_action.dart';
 import '../../../../core/paywall/enums/paywall_gate_status.dart';

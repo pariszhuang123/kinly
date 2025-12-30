@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/data/repositories/profile_repository.dart';
 import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/profile/models.dart';

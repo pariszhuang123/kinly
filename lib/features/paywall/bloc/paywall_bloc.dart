@@ -10,7 +10,7 @@ import '../../../core/paywall/enums/paywall_event_type.dart';
 import '../../../core/paywall/enums/paywall_trigger.dart';
 import '../../../core/homes/models.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/paywall/paywall.dart';
 
 part 'paywall_event.dart';

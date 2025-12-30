@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../core/chores/models.dart';
-import '../../../data/repositories/home_repository.dart';
+import '../../../../features/home/home.dart';
 import 'package:kinly/features/flow/flow.dart';
 
 part 'flow_list_event.dart';

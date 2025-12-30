@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/locator.dart';
 import '../../../../app/router/app_router.dart';
-import '../../../../data/repositories/home_repository.dart';
+import '../../../../../features/home/home.dart';
 import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/widgets/auth_error_listener.dart';

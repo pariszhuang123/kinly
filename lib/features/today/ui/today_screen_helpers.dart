@@ -214,7 +214,7 @@ Future<bool> _shareInviteImpl(
       invite = await repository.getActiveInvite(homeId);
     } catch (_) {
       try {
-        invite = await repository.getOrCreateInvite(homeId);
+        invite = await repository.getOrCreateInvite(homeId: homeId);
       } catch (_) {
         invite = null;
       }

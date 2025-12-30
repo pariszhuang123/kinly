@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../data/repositories/account_repository.dart';
-import '../../../data/repositories/home_repository.dart';
+import '../../../../features/home/home.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../../../core/homes/models.dart';
 import '../../../core/profile/models.dart';
@@ -107,7 +107,7 @@ class ProfileSettingsBloc
       ),
     );
     try {
-      await _homeRepository.leave(_homeId);
+      await _homeRepository.leave(homeId: _homeId);
       emit(
         state.copyWith(
           leaveInProgress: false,
@@ -137,7 +137,10 @@ class ProfileSettingsBloc
       ),
     );
     try {
-      await _homeRepository.transferOwner(_homeId, event.newOwnerUserId);
+      await _homeRepository.transferOwner(
+        homeId: _homeId,
+        newOwnerId: event.newOwnerUserId,
+      );
       emit(
         state.copyWith(
           transferInProgress: false,
@@ -172,7 +175,10 @@ class ProfileSettingsBloc
       ),
     );
     try {
-      await _homeRepository.kickMember(_homeId, event.userId);
+      await _homeRepository.kickMember(
+        homeId: _homeId,
+        userId: event.userId,
+      );
       emit(
         state.copyWith(
           kickInProgress: false,

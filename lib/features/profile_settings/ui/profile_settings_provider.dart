@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/locator.dart';
 import '../../../data/repositories/account_repository.dart';
-import '../../../data/repositories/home_repository.dart';
+import '../../../../features/home/home.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../bloc/profile_settings_bloc.dart';
 import 'profile_settings_screen.dart';

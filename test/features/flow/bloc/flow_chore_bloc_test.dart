@@ -10,7 +10,7 @@ import 'package:kinly/core/paywall/enums/paywall_gate_status.dart';
 import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/features/flow/flow.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_bloc.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}

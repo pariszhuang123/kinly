@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/home_membership/start/bloc/start_home_bloc.dart';
 import 'package:kinly/features/home_membership/start/ui/start_home_screen.dart';
@@ -19,23 +19,30 @@ class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
 
 class _FakeHomeRepository implements HomeRepository {
   @override
-  Future<HomeCreationResult> create() async =>
+  Future<HomeCreationResult> create({String? name}) async =>
       const HomeCreationResult(homeId: 'home-1');
 
   @override
-  Future<void> join(String code) {
-    throw UnimplementedError();
-  }
+  Future<HomeJoinResult> join(String code) async =>
+      const HomeJoinResult(homeId: 'home-1');
 
   @override
-  Future<void> revokeInvite(String homeId) {
-    throw UnimplementedError();
-  }
+  Future<HomeJoinResult> joinHome(String code) => join(code);
 
   @override
-  Future<String> rotateInvite(String homeId) {
-    throw UnimplementedError();
-  }
+  Future<HomeInvite> revokeInvite({required String homeId}) =>
+      Future.value(
+        HomeInvite(
+          id: 'invite-1',
+          homeId: homeId,
+          code: 'code',
+          createdBy: 'user',
+          createdAt: DateTime(2024),
+        ),
+      );
+
+  @override
+  Future<HomeInvite> rotateInvite(String homeId) => getActiveInvite(homeId);
 
   @override
   Future<HomeInvite> getActiveInvite(String homeId) {
@@ -43,35 +50,49 @@ class _FakeHomeRepository implements HomeRepository {
   }
 
   @override
-  Future<HomeInvite> getOrCreateInvite(String homeId) {
+  Future<HomeInvite> getOrCreateInvite({required String homeId}) {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> transferOwner(String homeId, String newOwnerId) {
+  Future<void> transferOwner({
+    required String homeId,
+    required String newOwnerId,
+  }) async {}
+
+  @override
+  Future<LeaveResult> leave({required String homeId}) =>
+      Future.value(
+        LeaveResult(
+          outcome: LeaveOutcome.leftOk,
+          homeDeactivated: false,
+          membersRemaining: 1,
+          roleBefore: 'owner',
+        ),
+      );
+
+  @override
+  Future<void> kickMember({required String homeId, required String userId}) {
     throw UnimplementedError();
   }
 
   @override
-  Future<LeaveResult> leave(String homeId) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> kickMember(String homeId, String userId) {
-    throw UnimplementedError();
-  }
+  Future<List<HomeMemberSummary>> listMembers({
+    required String homeId,
+    bool activeOnly = false,
+    bool excludeSelf = false,
+  }) async =>
+      const <HomeMemberSummary>[];
 
   @override
   Future<List<HomeMemberSummary>> listActiveMembers(
     String homeId, {
     bool excludeSelf = false,
-  }) {
-    throw UnimplementedError();
-  }
+  }) async =>
+      const <HomeMemberSummary>[];
 
   @override
-  Future<CurrentMembership?> getCurrentMembership() {
+  Future<CurrentMembership?> getCurrentMembership({bool excludeSelf = false}) {
     throw UnimplementedError();
   }
 
@@ -79,7 +100,7 @@ class _FakeHomeRepository implements HomeRepository {
   Future<void> logShareEvent({
     required String feature,
     required String channel,
-    String? homeId,
+    required String homeId,
   }) {
     throw UnimplementedError();
   }

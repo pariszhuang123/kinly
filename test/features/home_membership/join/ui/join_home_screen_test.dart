@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/core/di/locator.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/home_membership/join/ui/join_home_screen.dart';
 import 'package:kinly/generated/l10n.dart';
@@ -15,6 +15,7 @@ import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_router.dart';
+import 'package:kinly/core/homes/models.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
@@ -66,7 +67,8 @@ void main() {
   testWidgets('submit button enables only after entering a code', (
     tester,
   ) async {
-    when(() => homeRepository.join(any())).thenAnswer((_) async {});
+    when(() => homeRepository.join(any()))
+        .thenAnswer((_) async => const HomeJoinResult(homeId: 'hid'));
 
     await tester.pumpWidget(buildApp(const JoinHomeScreen()));
 
@@ -102,7 +104,8 @@ void main() {
   });
 
   testWidgets('success navigates to today and refreshes membership', (tester) async {
-    when(() => homeRepository.join(any())).thenAnswer((_) async {});
+    when(() => homeRepository.join(any()))
+        .thenAnswer((_) async => const HomeJoinResult(homeId: 'hid'));
     when(() => authBloc.state).thenReturn(const AuthState());
 
     final router = GoRouter(

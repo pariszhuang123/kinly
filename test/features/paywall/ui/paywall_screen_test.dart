@@ -8,7 +8,7 @@ import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
 import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/paywall/paywall.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';

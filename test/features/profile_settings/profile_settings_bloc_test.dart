@@ -5,7 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/profile/models.dart';
 import 'package:kinly/data/repositories/account_repository.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/data/repositories/profile_repository.dart';
 import 'package:kinly/features/profile_settings/bloc/profile_settings_bloc.dart';
 
@@ -50,7 +50,10 @@ void main() {
       ),
     ).thenAnswer((_) async => const <HomeMemberSummary>[]);
     when(
-      () => homeRepository.kickMember(any(), any()),
+      () => homeRepository.kickMember(
+        homeId: any(named: 'homeId'),
+        userId: any(named: 'userId'),
+      ),
     ).thenAnswer((_) async => {});
   });
 
@@ -107,7 +110,9 @@ void main() {
     blocTest<ProfileSettingsBloc, ProfileSettingsState>(
       'emits success after leaving home',
       build: () {
-        when(() => homeRepository.leave(any())).thenAnswer(
+        when(
+          () => homeRepository.leave(homeId: any(named: 'homeId')),
+        ).thenAnswer(
           (_) async => const LeaveResult(
             outcome: LeaveOutcome.leftOk,
             homeDeactivated: false,
@@ -162,7 +167,12 @@ void main() {
         return [progress, success, reloading, refreshed];
       },
       verify: (_) {
-        verify(() => homeRepository.kickMember('home-1', 'user-2')).called(1);
+        verify(
+          () => homeRepository.kickMember(
+            homeId: 'home-1',
+            userId: 'user-2',
+          ),
+        ).called(1);
         verify(() => homeRepository.getCurrentMembership()).called(1);
         verify(() => homeRepository.listActiveMembers('home-1')).called(1);
       },
@@ -172,7 +182,10 @@ void main() {
       'emits failure when kicking a member fails',
       build: () {
         when(
-          () => homeRepository.kickMember(any(), any()),
+          () => homeRepository.kickMember(
+            homeId: any(named: 'homeId'),
+            userId: any(named: 'userId'),
+          ),
         ).thenThrow(Exception('kick failed'));
         return buildBloc();
       },
@@ -199,7 +212,7 @@ void main() {
       'emits failure when leaving home fails',
       build: () {
         when(
-          () => homeRepository.leave(any()),
+          () => homeRepository.leave(homeId: any(named: 'homeId')),
         ).thenThrow(Exception('leave failed'));
         return buildBloc();
       },
@@ -270,9 +283,14 @@ void main() {
       'emits leave success after transferring ownership',
       build: () {
         when(
-          () => homeRepository.transferOwner(any(), any()),
+          () => homeRepository.transferOwner(
+            homeId: any(named: 'homeId'),
+            newOwnerId: any(named: 'newOwnerId'),
+          ),
         ).thenAnswer((_) async => {});
-        when(() => homeRepository.leave(any())).thenAnswer(
+        when(
+          () => homeRepository.leave(homeId: any(named: 'homeId')),
+        ).thenAnswer(
           (_) async => const LeaveResult(
             outcome: LeaveOutcome.leftOk,
             homeDeactivated: false,
@@ -309,9 +327,12 @@ void main() {
       },
       verify: (_) {
         verify(
-          () => homeRepository.transferOwner('home-1', 'user-2'),
+          () => homeRepository.transferOwner(
+            homeId: 'home-1',
+            newOwnerId: 'user-2',
+          ),
         ).called(1);
-        verify(() => homeRepository.leave('home-1')).called(1);
+        verify(() => homeRepository.leave(homeId: 'home-1')).called(1);
       },
     );
 
@@ -319,7 +340,10 @@ void main() {
       'emits failure when transferring ownership fails',
       build: () {
         when(
-          () => homeRepository.transferOwner(any(), any()),
+          () => homeRepository.transferOwner(
+            homeId: any(named: 'homeId'),
+            newOwnerId: any(named: 'newOwnerId'),
+          ),
         ).thenThrow(Exception('transfer failed'));
         return buildBloc();
       },

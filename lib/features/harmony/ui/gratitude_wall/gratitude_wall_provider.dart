@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data/repositories/mood_repository.dart';
-import '../../../../data/repositories/home_repository.dart';
+import '../../../../../features/home/home.dart';
 import '../../bloc/gratitude_wall_cubit.dart';
 import 'gratitude_wall_screen.dart';
 

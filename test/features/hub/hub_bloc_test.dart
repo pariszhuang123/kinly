@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/hub/bloc/hub_bloc.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
@@ -56,7 +56,7 @@ void main() {
         Exception('no active invite'),
       );
       when(
-        () => homeRepository.getOrCreateInvite(homeId),
+        () => homeRepository.getOrCreateInvite(homeId: homeId),
       ).thenAnswer((_) async => invite);
 
       return HubBloc(
@@ -77,7 +77,7 @@ void main() {
       verify(
         () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
       ).called(1);
-      verify(() => homeRepository.getOrCreateInvite(homeId)).called(1);
+      verify(() => homeRepository.getOrCreateInvite(homeId: homeId)).called(1);
     },
   );
 
@@ -91,7 +91,7 @@ void main() {
         () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
       ).thenThrow(Exception('boom'));
       when(
-        () => homeRepository.getOrCreateInvite(homeId),
+        () => homeRepository.getOrCreateInvite(homeId: homeId),
       ).thenAnswer((_) async => invite);
 
       return HubBloc(
@@ -120,7 +120,7 @@ void main() {
         Exception('no active invite'),
       );
       when(
-        () => homeRepository.getOrCreateInvite(homeId),
+        () => homeRepository.getOrCreateInvite(homeId: homeId),
       ).thenThrow(Exception('forbidden'));
 
       return HubBloc(

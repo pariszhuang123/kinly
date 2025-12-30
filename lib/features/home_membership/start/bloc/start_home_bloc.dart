@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../core/supabase/supabase_error_mapper.dart';
-import '../../../../data/repositories/home_repository.dart';
+import '../../../../../features/home/home.dart';
 
 part 'start_home_event.dart';
 part 'start_home_state.dart';

@@ -21,7 +21,7 @@ import 'package:kinly/core/ui/members/kinly_member_avatar_stack.dart';
 import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/paywall/paywall.dart';
 import '../bloc/paywall_bloc.dart';
 

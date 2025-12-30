@@ -21,7 +21,7 @@ import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../data/repositories/expenses_repository.dart';
-import '../../../../data/repositories/home_repository.dart';
+import '../../../../../features/home/home.dart';
 import '../../../../data/repositories/notifications_repository.dart';
 import '../../../../generated/l10n.dart';
 import '../../../core/config/app_config.dart';

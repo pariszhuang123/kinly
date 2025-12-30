@@ -7,7 +7,7 @@ import '../../../core/config/app_config.dart';
 import '../../../core/homes/models.dart';
 import '../../../core/logging/debug_logger.dart';
 import '../../../core/logging/logger.dart';
-import '../../../data/repositories/home_repository.dart';
+import '../../../../features/home/home.dart';
 
 part 'hub_event.dart';
 part 'hub_state.dart';
@@ -136,7 +136,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
       );
       // Owners still get a best-effort create path if allowed.
       try {
-        invite = await _homeRepository.getOrCreateInvite(_homeId);
+        invite = await _homeRepository.getOrCreateInvite(homeId: _homeId);
         inviteLink = _buildInviteLink(invite);
       } catch (_) {
         // Swallow; sharing will be disabled but hub still renders.

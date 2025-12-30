@@ -2,7 +2,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
+import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/features/home_membership/join/bloc/join_home_bloc.dart';
 
@@ -30,7 +31,8 @@ void main() {
   blocTest<JoinHomeBloc, JoinHomeState>(
     'emits success when repository join succeeds',
     build: () {
-      when(() => homeRepository.join(any())).thenAnswer((_) async {});
+      when(() => homeRepository.join(any()))
+          .thenAnswer((_) async => const HomeJoinResult(homeId: 'home-1'));
       return buildBloc();
     },
     seed:

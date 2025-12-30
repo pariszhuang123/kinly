@@ -7,7 +7,7 @@ import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
 import '../../../data/repositories/expenses_repository.dart';
-import '../../../data/repositories/home_repository.dart';
+import '../../../../features/home/home.dart';
 import '../bloc/share_create_bloc/share_create_bloc.dart';
 import '../domain/share_create_form.dart';
 import '../domain/share_split_mode.dart';

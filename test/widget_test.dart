@@ -13,13 +13,13 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:kinly/core/auth/fake_auth_repository.dart';
 import 'package:kinly/core/di/locator.dart';
-import 'package:kinly/core/homes/fake_home_repository.dart';
+import 'package:kinly/features/home/testing/fake_home_repository.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/time/iana_timezone_resolver.dart';
 import 'package:kinly/data/repositories/app_version_repository.dart';
 import 'package:kinly/core/network/connectivity_monitor.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
-import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/home/home.dart';
 import 'package:kinly/data/repositories/profile_repository.dart';
 import 'package:kinly/core/profile/models.dart';
 import 'package:kinly/main.dart';
