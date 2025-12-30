@@ -31,6 +31,7 @@ import 'data/repositories/profile_repository.dart';
 import 'data/repositories/notifications_repository.dart';
 import 'core/notifications/notification_token_bootstrap.dart';
 import 'core/notifications/notification_sync_state.dart';
+import 'core/notifications/authorization_status_mapper.dart';
 import 'features/auth/bloc/auth_bloc.dart';
 import 'features/offline/bloc/connectivity_cubit.dart';
 import 'features/offline/ui/connectivity_gate.dart';
@@ -406,6 +407,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<String> _readOsPermission() async {
+    if (Platform.isIOS) {
+      final settings = await FirebaseMessaging.instance.getNotificationSettings();
+      return mapAuthorizationStatusToOsPermission(settings.authorizationStatus);
+    }
+
     final status = await Permission.notification.status;
     if (status.isGranted) return 'allowed';
     if (status.isPermanentlyDenied) return 'blocked';

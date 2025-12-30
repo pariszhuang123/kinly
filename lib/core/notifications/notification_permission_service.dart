@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
+
+import 'authorization_status_mapper.dart';
 
 import '../../data/repositories/notifications_repository.dart';
 import 'enums/permission_status.dart';
@@ -54,6 +59,19 @@ class NotificationPermissionService {
   }
 
   Future<NotificationPermissionStatus> _ensureNotificationPermission() async {
+    if (Platform.isIOS) {
+      final settings = await FirebaseMessaging.instance.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+        announcement: false,
+        provisional: false,
+      );
+      return mapAuthorizationStatusToPermissionStatus(
+        settings.authorizationStatus,
+      );
+    }
+
     final status = await ph.Permission.notification.status;
 
     if (status.isGranted) {

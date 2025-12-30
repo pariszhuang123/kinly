@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../../../../core/notifications/authorization_status_mapper.dart';
 
 import '../../../../core/notifications/notification_permission_service.dart';
 import '../../../../data/repositories/notifications_repository.dart';
@@ -268,6 +273,11 @@ class ConnectionSettingsBloc
   }
 
   Future<String> _readOsPermission() async {
+    if (Platform.isIOS) {
+      final settings = await FirebaseMessaging.instance.getNotificationSettings();
+      return mapAuthorizationStatusToOsPermission(settings.authorizationStatus);
+    }
+
     final status = await Permission.notification.status;
     if (status.isGranted) return 'allowed';
     if (status.isPermanentlyDenied) return 'blocked';
