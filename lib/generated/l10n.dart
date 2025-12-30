@@ -854,26 +854,6 @@ class S {
     );
   }
 
-  /// `Gratitude Wall`
-  String get hubCardGratitudeWallTitle {
-    return Intl.message(
-      'Gratitude Wall',
-      name: 'hubCardGratitudeWallTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Read quick thank-yous and small moments of appreciation.`
-  String get hubCardGratitudeWallSubtitle {
-    return Intl.message(
-      'Read quick thank-yous and small moments of appreciation.',
-      name: 'hubCardGratitudeWallSubtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Couldn't load Hub. Please try again.`
   String get hubError {
     return Intl.message(
@@ -2179,16 +2159,6 @@ class S {
     return Intl.message(
       'Delete',
       name: 'flowChoreDeleteConfirm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `We couldn't load this flow. Please try again.`
-  String get flowChoreLoadError {
-    return Intl.message(
-      'We couldn\'t load this flow. Please try again.',
-      name: 'flowChoreLoadError',
       desc: '',
       args: [],
     );
