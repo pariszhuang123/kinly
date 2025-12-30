@@ -13,7 +13,7 @@ Scope: client-side paywall gating + deterministic retry.
 - No feature-specific callbacks for retry.
 
 ## Shared module
-File: `lib/core/paywall/paywall_gate.dart`
+File: `lib/features/paywall/ui/paywall_gate.dart`
 
 ### Types
 - `enum PaywallRetryAction { submit /* later: invite, upload, join... */ }`

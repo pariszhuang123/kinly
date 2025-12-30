@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../core/router/app_router.dart';
+import '../../../app/router/app_router.dart';
 import '../../../core/theme/app_sizes.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
@@ -61,71 +61,12 @@ class HubScreen extends StatelessWidget {
                     padding: EdgeInsetsDirectional.all(spacing.lg),
                     child: BlocBuilder<HubBloc, HubState>(
                       builder: (context, state) {
-                        if (state.isLoading && !state.isRefreshing) {
-                          return const Center(child: KinlyLoader());
-                        }
-
-                        if (state.isFailure) {
-                          return _HubError(
-                            onRetry:
-                                () => context.read<HubBloc>().add(
-                                  const HubRefreshed(),
-                                ),
-                          );
-                        }
-
-                        return RefreshIndicator(
-                          onRefresh:
-                              () async => context.read<HubBloc>().add(
-                                const HubRefreshed(),
-                              ),
-                          child: KinlyScrollFade(
-                            child: SingleChildScrollView(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: spacing.lg),
-                                  HubMembersSection(
-                                    state: state,
-                                    onInviteTap:
-                                        () => _shareInvite(context, state),
-                                    onCopyCode:
-                                        state.hasInvite
-                                            ? () =>
-                                                _copyInviteCode(context, state)
-                                            : null,
-                                    onRotateInvite:
-                                        state.isOwner
-                                            ? () => _rotateInvite(context)
-                                            : null,
-                                  ),
-                                  HubQrSection(
-                                    state: state,
-                                    onShareAppTap:
-                                        () => _shareAppLink(context, state),
-                                    onQrTap: () => _showQrSheet(context, state),
-                                  ),
-                                  SizedBox(height: spacing.xl),
-                                  KinlySelectionCard(
-                                    colors: sections.pulse,
-                                    title: s.hubCardGratitudeWallTitle,
-                                    subtitle: s.hubCardGratitudeWallSubtitle,
-                                    icon: Icon(
-                                      Icons.favorite_rounded,
-                                      color: sections.pulse.icon,
-                                      size: 28,
-                                    ),
-                                    onTap:
-                                        () => context.push(
-                                          AppRoutes.gratitudeWall,
-                                        ),
-                                  ),
-                                  SizedBox(height: spacing.lg),
-                                ],
-                              ),
-                            ),
-                          ),
+                        return _buildHubContent(
+                          context: context,
+                          state: state,
+                          spacing: spacing,
+                          sections: sections,
+                          strings: s,
                         );
                       },
                     ),
@@ -149,6 +90,65 @@ class HubScreen extends StatelessWidget {
                 break;
             }
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHubContent({
+    required BuildContext context,
+    required HubState state,
+    required Spacing spacing,
+    required KinlySections sections,
+    required S strings,
+  }) {
+    if (state.isLoading && !state.isRefreshing) {
+      return const Center(child: KinlyLoader());
+    }
+    if (state.isFailure) {
+      return _HubError(
+        onRetry: () => context.read<HubBloc>().add(const HubRefreshed()),
+      );
+    }
+    return RefreshIndicator(
+      onRefresh: () async => context.read<HubBloc>().add(const HubRefreshed()),
+      child: KinlyScrollFade(
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: spacing.lg),
+              HubMembersSection(
+                state: state,
+                onInviteTap: () => _shareInvite(context, state),
+                onCopyCode:
+                    state.hasInvite
+                        ? () => _copyInviteCode(context, state)
+                        : null,
+                onRotateInvite:
+                    state.isOwner ? () => _rotateInvite(context) : null,
+              ),
+              HubQrSection(
+                state: state,
+                onShareAppTap: () => _shareAppLink(context, state),
+                onQrTap: () => _showQrSheet(context, state),
+              ),
+              SizedBox(height: spacing.xl),
+              KinlySelectionCard(
+                colors: sections.pulse,
+                title: strings.hubCardGratitudeWallTitle,
+                subtitle: strings.hubCardGratitudeWallSubtitle,
+                icon: Icon(
+                  Icons.favorite_rounded,
+                  color: sections.pulse.icon,
+                  size: 28,
+                ),
+                onTap: () => context.push(AppRoutes.gratitudeWall),
+              ),
+              SizedBox(height: spacing.lg),
+            ],
+          ),
         ),
       ),
     );

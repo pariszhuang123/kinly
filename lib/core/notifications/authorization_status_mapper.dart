@@ -12,7 +12,6 @@ NotificationPermissionStatus mapAuthorizationStatusToPermissionStatus(
     case AuthorizationStatus.denied:
       return NotificationPermissionStatus.permanentlyDenied;
     case AuthorizationStatus.notDetermined:
-    default:
       return NotificationPermissionStatus.denied;
   }
 }
@@ -25,7 +24,6 @@ String mapAuthorizationStatusToOsPermission(AuthorizationStatus status) {
     case AuthorizationStatus.denied:
       return 'blocked';
     case AuthorizationStatus.notDetermined:
-    default:
       return 'unknown';
   }
 }

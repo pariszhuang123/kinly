@@ -29,11 +29,7 @@ void handleProfileAction(BuildContext context, ProfileSettingsState state) {
 
   final successMessage = successMessages[state.action];
   if (successMessage != null) {
-    KinlySnackBar.showSuccess(
-      context,
-      successMessage,
-      accentColor: accent,
-    );
+    KinlySnackBar.showSuccess(context, successMessage, accentColor: accent);
     if (state.action == ProfileSettingsAction.leaveSuccess) {
       authBloc.add(const AuthMembershipRefreshRequested());
     } else if (state.action == ProfileSettingsAction.deleteSuccess) {
@@ -338,59 +334,65 @@ Future<String?> showKickMemberSheet(
     isScrollControlled: true,
     title: s.profileKickSheetTitle,
     subtitle: s.profileKickSheetSubtitle,
-    body: Builder(
-      builder: (sheetContext) {
-        final theme = Theme.of(sheetContext);
-        final spacing = theme.extension<Spacing>()!;
-
-        String? selectedUserId;
-
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Wrap(
-                  spacing: spacing.md,
-                  runSpacing: spacing.md,
-                  alignment: WrapAlignment.center,
-                  children:
-                      members.map((member) {
-                        final displayName =
-                            member.username.isNotEmpty
-                                ? member.username
-                                : s.friendDefaultName;
-
-                        return KinlyMemberAvatarChip(
-                          displayName: displayName,
-                          avatarUrl: member.avatarUrl,
-                          isOwner: member.isOwner,
-                          isSelected: selectedUserId == member.userId,
-                          onTap:
-                              () => setState(
-                                () => selectedUserId = member.userId,
-                              ),
-                        );
-                      }).toList(),
-                ),
-                SizedBox(height: spacing.xl),
-                KinlyFilledButton.destructiveText(
-                  onPressed:
-                      selectedUserId == null
-                          ? null
-                          : () =>
-                              Navigator.of(sheetContext).pop(selectedUserId),
-                  label: s.profileKickActionConfirm,
-                  fullWidth: true,
-                ),
-                SizedBox(height: spacing.sm),
-              ],
-            );
-          },
-        );
-      },
-    ),
+    body: _KickMemberSheetContent(members: members),
   );
+}
+
+class _KickMemberSheetContent extends StatefulWidget {
+  const _KickMemberSheetContent({required this.members});
+
+  final List<HomeMemberSummary> members;
+
+  @override
+  State<_KickMemberSheetContent> createState() =>
+      _KickMemberSheetContentState();
+}
+
+class _KickMemberSheetContentState extends State<_KickMemberSheetContent> {
+  String? _selectedUserId;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final spacing = Theme.of(context).extension<Spacing>()!;
+    final onConfirmTap =
+        _selectedUserId == null
+            ? null
+            : () => Navigator.of(context).pop(_selectedUserId);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Wrap(
+          spacing: spacing.md,
+          runSpacing: spacing.md,
+          alignment: WrapAlignment.center,
+          children:
+              widget.members.map((member) {
+                final displayName =
+                    member.username.isNotEmpty
+                        ? member.username
+                        : s.friendDefaultName;
+
+                return KinlyMemberAvatarChip(
+                  displayName: displayName,
+                  avatarUrl: member.avatarUrl,
+                  isOwner: member.isOwner,
+                  isSelected: _selectedUserId == member.userId,
+                  onTap: () => setState(() => _selectedUserId = member.userId),
+                );
+              }).toList(),
+        ),
+        SizedBox(height: spacing.xl),
+        KinlyFilledButton.destructiveText(
+          onPressed: onConfirmTap,
+          label: s.profileKickActionConfirm,
+          fullWidth: true,
+        ),
+        SizedBox(height: spacing.sm),
+      ],
+    );
+  }
 }
 
 Future<void> confirmProfileLogout(BuildContext context) async {

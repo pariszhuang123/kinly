@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/locator.dart';
-import '../../../../core/router/app_router.dart';
+import '../../../../app/router/app_router.dart';
 import '../../../../data/repositories/home_repository.dart';
 import '../../../../generated/l10n.dart';
 import '../../../auth/bloc/auth_bloc.dart';

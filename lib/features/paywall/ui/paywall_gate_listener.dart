@@ -1,8 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/paywall/paywall_gate.dart';
-import 'paywall_screen.dart';
+import 'package:kinly/features/paywall/paywall.dart';
 
 class PaywallGateListener<B extends StateStreamable<S>, S>
     extends StatelessWidget {
@@ -36,8 +35,7 @@ class PaywallGateListener<B extends StateStreamable<S>, S>
         final currTick = currReq?.tick ?? 0;
 
         final changed =
-            currReq != null &&
-            (prevId != currId || prevTick != currTick);
+            currReq != null && (prevId != currId || prevTick != currTick);
 
         return changed;
       },

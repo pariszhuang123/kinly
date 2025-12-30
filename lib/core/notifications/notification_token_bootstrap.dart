@@ -34,9 +34,9 @@ class NotificationTokenBootstrap {
     required NotificationsRepository notificationsRepository,
     required NotificationSyncProvider syncProvider,
     required Logger logger,
-  })  : _notificationsRepository = notificationsRepository,
-        _syncProvider = syncProvider,
-        _logger = logger;
+  }) : _notificationsRepository = notificationsRepository,
+       _syncProvider = syncProvider,
+       _logger = logger;
 
   final NotificationsRepository _notificationsRepository;
   final NotificationSyncProvider _syncProvider;
@@ -55,37 +55,9 @@ class NotificationTokenBootstrap {
   }
 
   Future<void> _getAndSyncToken({required String source}) async {
-    try {
-      final initialToken = await FirebaseMessaging.instance.getToken();
-      if (initialToken == null || initialToken.isEmpty) return;
-      await _syncTokenSafe(initialToken, source: source);
-    } catch (error, stackTrace) {
-      final message = error.toString();
-      if (_isTooManyRegistrations(message)) {
-        // Reset and retry once to avoid crashing on saturated token quota.
-        try {
-          await FirebaseMessaging.instance.deleteToken();
-          final fresh = await FirebaseMessaging.instance.getToken();
-          if (fresh != null && fresh.isNotEmpty) {
-            await _syncTokenSafe(fresh, source: '$source-retry');
-          }
-        } catch (retryError, retryStack) {
-          _logger.warn(
-            'FCM token retry after TOO_MANY_REGISTRATIONS failed: $retryError',
-            tag: 'Notifications',
-            error: retryError,
-            stackTrace: retryStack,
-          );
-        }
-        return;
-      }
-      _logger.warn(
-        'FCM getToken failed ($source): $error',
-        tag: 'Notifications',
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
+    final token = await _fetchTokenWithRetry(source);
+    if (token == null || token.isEmpty) return;
+    await _syncTokenSafe(token, source: source);
   }
 
   Future<void> _syncTokenSafe(String token, {required String source}) async {
@@ -123,4 +95,37 @@ class NotificationTokenBootstrap {
 
   bool _isTooManyRegistrations(String message) =>
       message.contains('TOO_MANY_REGISTRATIONS');
+
+  Future<String?> _fetchTokenWithRetry(String source) async {
+    try {
+      return await FirebaseMessaging.instance.getToken();
+    } catch (error, stackTrace) {
+      final message = error.toString();
+      if (_isTooManyRegistrations(message)) {
+        return _retryAfterTooManyRegistrations(source);
+      }
+      _logger.warn(
+        'FCM getToken failed ($source): $error',
+        tag: 'Notifications',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return null;
+    }
+  }
+
+  Future<String?> _retryAfterTooManyRegistrations(String source) async {
+    try {
+      await FirebaseMessaging.instance.deleteToken();
+      return await FirebaseMessaging.instance.getToken();
+    } catch (retryError, retryStack) {
+      _logger.warn(
+        'FCM token retry after TOO_MANY_REGISTRATIONS failed: $retryError',
+        tag: 'Notifications',
+        error: retryError,
+        stackTrace: retryStack,
+      );
+      return null;
+    }
+  }
 }

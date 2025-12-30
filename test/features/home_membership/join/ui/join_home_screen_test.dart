@@ -14,7 +14,7 @@ import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kinly/core/router/app_router.dart';
+import 'package:kinly/app/router/app_router.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 

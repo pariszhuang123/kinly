@@ -98,13 +98,7 @@ class KinlyShareScaffold extends StatelessWidget {
               tooltip: s.gratitudeWallShareCta,
               icon: Icons.ios_share_rounded,
               onPressed: () async {
-                if (onSharePressed != null) {
-                  try {
-                    await onSharePressed!();
-                  } catch (_) {
-                    // Swallow logging errors to avoid blocking share.
-                  }
-                }
+                await _runShareHook();
                 await onShare();
               },
             ),
@@ -112,5 +106,14 @@ class KinlyShareScaffold extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<void> _runShareHook() async {
+    if (onSharePressed == null) return;
+    try {
+      await onSharePressed!();
+    } catch (_) {
+      // Swallow logging errors to avoid blocking share.
+    }
   }
 }

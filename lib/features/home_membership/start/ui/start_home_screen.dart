@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/router/app_router.dart';
+import '../../../../app/router/app_router.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';

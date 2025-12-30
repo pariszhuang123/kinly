@@ -117,6 +117,8 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - Merge/trunk checklist (applies to trunk and PRs):
   - `dart run tool/check_design_system.dart` (see Design System section)
   - `dart run tool/check_complexity_budget.dart` (see `docs/engineering/complexity_budget_v1.md`)
+  - `dart run tool/check_dependency_rules.dart`
+  - `dart run tool/check_nesting_depth.dart`
   - `dart format` + `dart analyze`
   - `flutter test` (add widget/RTL/golden tests when relevant)
   - `dart run tool/check_i18n.dart`

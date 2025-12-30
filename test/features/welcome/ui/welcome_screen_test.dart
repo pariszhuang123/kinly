@@ -13,7 +13,7 @@ import 'package:kinly/features/welcome/ui/welcome_screen.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:kinly/core/router/app_router.dart';
+import 'package:kinly/app/router/app_router.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}

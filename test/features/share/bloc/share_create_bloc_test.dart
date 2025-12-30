@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/core/expenses/models.dart';
 import 'package:kinly/core/homes/models.dart';
-import 'package:kinly/core/paywall/paywall_gate.dart';
+import 'package:kinly/features/paywall/paywall.dart';
 import 'package:kinly/core/paywall/enums/paywall_retry_action.dart';
 import 'package:kinly/core/paywall/enums/paywall_gate_status.dart';
 import 'package:kinly/core/paywall/enums/paywall_trigger.dart';

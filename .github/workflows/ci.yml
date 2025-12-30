@@ -109,6 +109,12 @@ jobs:
       - name: Check complexity budget
         run: dart run tool/check_complexity_budget.dart
 
+      - name: Check dependency guardrails
+        run: dart run tool/check_dependency_rules.dart
+
+      - name: Check nesting depth
+        run: dart run tool/check_nesting_depth.dart
+
       - name: Check directionality-safe layout
         run: dart run tool/check_directionality.dart
 

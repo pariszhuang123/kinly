@@ -5,7 +5,6 @@ import 'package:uuid/uuid.dart';
 import '../../../core/chores/models.dart';
 import '../../../core/media/expectation_photo_service.dart';
 import '../../../core/media/supabase_media_repository.dart';
-import '../../../core/paywall/paywall_gate.dart';
 import '../../../core/paywall/enums/paywall_retry_action.dart';
 import '../../../core/paywall/enums/paywall_gate_status.dart';
 import '../../../core/paywall/enums/paywall_trigger.dart';
@@ -13,6 +12,7 @@ import '../../../core/paywall/paywall_sources.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../data/repositories/chores_repository.dart';
 import '../../../data/repositories/home_repository.dart';
+import 'package:kinly/features/paywall/paywall.dart';
 import '../domain/flow_chore_form.dart';
 
 part 'flow_chore_event.dart';

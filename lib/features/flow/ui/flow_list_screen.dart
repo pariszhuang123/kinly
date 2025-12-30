@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/chores/models.dart';
-import '../../../core/router/app_router.dart';
+import '../../../app/router/app_router.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_circle_avatar.dart';
@@ -55,35 +55,7 @@ class FlowListScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
           child: BlocBuilder<FlowListBloc, FlowListState>(
-            builder: (context, state) {
-              switch (state.status) {
-                case FlowListStatus.loading:
-                  return const Center(child: KinlyLoader(size: 40));
-                case FlowListStatus.failure:
-                  return _FlowListError(
-                    message: state.errorMessage ?? s.flowListError,
-                    onRetry:
-                        () => context.read<FlowListBloc>().add(
-                          const FlowListRequested(),
-                        ),
-                  );
-                case FlowListStatus.success:
-                  final filteredItems = _filteredItems(state.items);
-                  if (filteredItems.isEmpty) {
-                    return _FlowListEmpty(
-                      onAddTap: () => _openChoreEntry(context, null),
-                    );
-                  }
-                  return _FlowList(
-                    items: filteredItems,
-                    ownerUserId: state.ownerUserId,
-                    onRefresh: () => _handleRefresh(context),
-                    onItemTap: (entry) => _openChoreEntry(context, entry),
-                  );
-                case FlowListStatus.initial:
-                  return const SizedBox.shrink();
-              }
-            },
+            builder: _buildStateContent,
           ),
         ),
       ),
@@ -116,28 +88,63 @@ class FlowListScreen extends StatelessWidget {
             : AppRoutes.flowChoreEditPath(entry.id);
     final result = await context.push(path);
     if (result is FlowChoreOutcome && context.mounted) {
-      final s = S.of(context);
-      final accent = Theme.of(context).extension<KinlySections>()?.flow.accent;
-      if (result.isCompleted) {
-        KinlySnackBar.showSuccess(
-          context,
-          s.flowChoreDetailCompletionSuccess,
-          accentColor: accent,
-        );
-      } else if (result.isUpdate) {
-        KinlySnackBar.showSuccess(
-          context,
-          s.flowChoreUpdateSuccess,
-          accentColor: accent,
-        );
-      } else if (!result.isDeleted) {
-        KinlySnackBar.showSuccess(
-          context,
-          s.flowChoreCreateSuccess,
-          accentColor: accent,
-        );
-      }
+      _showOutcomeSnackbar(context, result);
       context.read<FlowListBloc>().add(const FlowListRefreshed());
+    }
+  }
+
+  Widget _buildStateContent(BuildContext context, FlowListState state) {
+    final s = S.of(context);
+    if (state.status == FlowListStatus.loading) {
+      return const Center(child: KinlyLoader(size: 40));
+    }
+    if (state.status == FlowListStatus.failure) {
+      return _FlowListError(
+        message: state.errorMessage ?? s.flowListError,
+        onRetry:
+            () => context.read<FlowListBloc>().add(const FlowListRequested()),
+      );
+    }
+    if (state.status == FlowListStatus.success) {
+      final filteredItems = _filteredItems(state.items);
+      if (filteredItems.isEmpty) {
+        return _FlowListEmpty(onAddTap: () => _openChoreEntry(context, null));
+      }
+      return _FlowList(
+        items: filteredItems,
+        ownerUserId: state.ownerUserId,
+        onRefresh: () => _handleRefresh(context),
+        onItemTap: (entry) => _openChoreEntry(context, entry),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  void _showOutcomeSnackbar(BuildContext context, FlowChoreOutcome result) {
+    final s = S.of(context);
+    final accent = Theme.of(context).extension<KinlySections>()?.flow.accent;
+    if (result.isCompleted) {
+      KinlySnackBar.showSuccess(
+        context,
+        s.flowChoreDetailCompletionSuccess,
+        accentColor: accent,
+      );
+      return;
+    }
+    if (result.isUpdate) {
+      KinlySnackBar.showSuccess(
+        context,
+        s.flowChoreUpdateSuccess,
+        accentColor: accent,
+      );
+      return;
+    }
+    if (!result.isDeleted) {
+      KinlySnackBar.showSuccess(
+        context,
+        s.flowChoreCreateSuccess,
+        accentColor: accent,
+      );
     }
   }
 

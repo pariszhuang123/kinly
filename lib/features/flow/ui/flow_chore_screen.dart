@@ -24,8 +24,7 @@ import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/homes/models.dart';
-import '../../paywall/ui/paywall_screen.dart';
-import '../../paywall/ui/paywall_gate_listener.dart';
+import 'package:kinly/features/paywall/paywall.dart';
 import '../bloc/flow_chore_bloc.dart';
 import '../domain/flow_chore_form.dart';
 import '../domain/flow_chore_outcome.dart';
@@ -110,35 +109,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
                 previous.photoErrorTick != current.photoErrorTick,
         listener: (context, state) {
           if (state.photoErrorTick > 0) {
-            final s = S.of(context);
-            final isPermission = state.photoErrorMessage == 'permission';
-            final snackText =
-                isPermission
-                    ? s.flowChorePhotoPermissionDenied
-                    : s.flowChorePhotoUploadError;
-            final accent =
-                Theme.of(context).extension<KinlySections>()?.flow.accent;
-            final isPermanent = state.isCameraPermissionPermanentlyDenied;
-            final actionLabel =
-                isPermanent ? s.flowChorePhotoPermissionOpenSettings : null;
-            final onAction = isPermanent ? openAppSettings : null;
-            if (isPermission) {
-              KinlySnackBar.showInfo(
-                context,
-                snackText,
-                accentColor: accent,
-                actionLabel: actionLabel,
-                onAction: onAction,
-              );
-            } else {
-              KinlySnackBar.showError(
-                context,
-                snackText,
-                accentColor: accent,
-                actionLabel: actionLabel,
-                onAction: onAction,
-              );
-            }
+            _showPhotoError(context, state);
             return;
           }
 
@@ -167,41 +138,20 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
 
           final spacing = theme.extension<Spacing>();
           final sections = theme.extension<KinlySections>();
-          final flowColors = sections?.flow;
+          final SectionColors? flowColors = sections?.flow;
           final expectationPhotoUrl = storagePathToPublicUrl(
             Supabase.instance.client,
             state.form.expectationPhotoPath,
           );
 
-          Widget content;
-          if (state.isLoading) {
-            content = const Center(child: KinlyLoader(size: 40));
-          } else if (state.loadErrorMessage != null) {
-            content = _FlowChoreError(
-              message: s.flowChoreLoadError,
-              onRetry:
-                  () => context.read<FlowChoreBloc>().add(
-                    const FlowChoreStarted(),
-                  ),
-            );
-          } else {
-            content = KinlyScrollFade(
-              child: _FlowChoreFormView(
-                titleController: _titleController,
-                notesController: _notesController,
-                howToController: _howToController,
-                state: state,
-                spacing: spacing,
-                flowColors: flowColors,
-                isUploadingPhoto: state.isUploadingPhoto,
-                expectationPhotoUrl: expectationPhotoUrl,
-                onPhotoCapture:
-                    () => context.read<FlowChoreBloc>().add(
-                      const FlowChorePhotoCaptureRequested(),
-                    ),
-              ),
-            );
-          }
+          final content = _buildContent(
+            context: context,
+            state: state,
+            spacing: spacing,
+            flowColors: flowColors,
+            expectationPhotoUrl: expectationPhotoUrl,
+            strings: s,
+          );
 
           return Scaffold(
             appBar: AppBar(
@@ -237,6 +187,65 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showPhotoError(BuildContext context, FlowChoreState state) {
+    final s = S.of(context);
+    final isPermission = state.photoErrorMessage == 'permission';
+    final snackText =
+        isPermission
+            ? s.flowChorePhotoPermissionDenied
+            : s.flowChorePhotoUploadError;
+    final accent = Theme.of(context).extension<KinlySections>()?.flow.accent;
+    final isPermanent = state.isCameraPermissionPermanentlyDenied;
+    final actionLabel =
+        isPermanent ? s.flowChorePhotoPermissionOpenSettings : null;
+    final onAction = isPermanent ? openAppSettings : null;
+    final showSnack =
+        isPermission ? KinlySnackBar.showInfo : KinlySnackBar.showError;
+    showSnack(
+      context,
+      snackText,
+      accentColor: accent,
+      actionLabel: actionLabel,
+      onAction: onAction,
+    );
+  }
+
+  Widget _buildContent({
+    required BuildContext context,
+    required FlowChoreState state,
+    required Spacing? spacing,
+    required SectionColors? flowColors,
+    required String? expectationPhotoUrl,
+    required S strings,
+  }) {
+    if (state.isLoading) {
+      return const Center(child: KinlyLoader(size: 40));
+    }
+    if (state.loadErrorMessage != null) {
+      return _FlowChoreError(
+        message: strings.flowChoreLoadError,
+        onRetry:
+            () => context.read<FlowChoreBloc>().add(const FlowChoreStarted()),
+      );
+    }
+    return KinlyScrollFade(
+      child: _FlowChoreFormView(
+        titleController: _titleController,
+        notesController: _notesController,
+        howToController: _howToController,
+        state: state,
+        spacing: spacing,
+        flowColors: flowColors,
+        isUploadingPhoto: state.isUploadingPhoto,
+        expectationPhotoUrl: expectationPhotoUrl,
+        onPhotoCapture:
+            () => context.read<FlowChoreBloc>().add(
+              const FlowChorePhotoCaptureRequested(),
+            ),
       ),
     );
   }

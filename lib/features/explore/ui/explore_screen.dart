@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/router/app_router.dart';
+import '../../../app/router/app_router.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/home_bottom_nav.dart';

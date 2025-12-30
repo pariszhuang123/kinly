@@ -1,6 +1,6 @@
 # Module Guardrails Checklist
 
-This checklist turns `modules.yml` into enforceable boundaries and kill-switch safety. Wire these into CI and local pre-push.
+This checklist turns `modules.yml` into enforceable boundaries and kill-switch safety. Wire these into CI and local pre-push. Dependency/layering rules now live in `docs/engineering/architecture_guardrails_v1_1.md`; treat this file as the manifest/kill-switch companion to that contract.
 
 ## Manifest
 - Validate `modules.yml` schema (required fields, unknown modules, duplicate table/RPC names).

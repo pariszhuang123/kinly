@@ -54,63 +54,12 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     PaywallStarted event,
     Emitter<PaywallState> emit,
   ) async {
-    try {
-      final rcUserId = await Purchases.appUserID;
-      _logger.debug(
-        'Paywall start: homeId=$_homeId placement=$_placementId rcUserId=$rcUserId source=${event.source} triggers=${event.triggers}',
-        tag: _logTag,
-      );
-    } catch (_) {}
+    await _logStart(event);
     emit(state.copyWith(status: PaywallLoadStatus.loading, error: null));
     try {
-      RevenueCatPackage? pkg;
-      List<HomeMemberSummary> members = const [];
-      try {
-        pkg = await _revenueCatService.fetchMonthlyPackage(
-          placementId: _placementId,
-        );
-      } catch (_) {
-        pkg = null;
-      }
-      if (pkg == null) {
-        try {
-          final offerings = await Purchases.getOfferings();
-          final currentId = offerings.current?.identifier;
-          final available =
-              offerings.current?.availablePackages
-                  .map((p) => p.identifier)
-                  .join(', ') ??
-              '';
-          _logger.warn(
-            'RevenueCat monthly package unavailable (currentOffering=$currentId availablePackages=[$available])',
-            tag: _logTag,
-          );
-        } catch (error, stackTrace) {
-          _logger.warn(
-            'Failed to inspect RevenueCat offerings after missing monthly package',
-            tag: _logTag,
-            error: error,
-            stackTrace: stackTrace,
-          );
-        }
-      }
-
-      try {
-        members = await _homeRepository.listActiveMembers(_homeId);
-      } catch (error, stackTrace) {
-        _logger.warn(
-          'Failed to load active members for paywall',
-          tag: _logTag,
-          error: error,
-          stackTrace: stackTrace,
-        );
-      }
-
-      try {
-        await _logEvent(PaywallEventType.impression, event.source);
-      } catch (_) {
-        // Ignore telemetry errors to avoid blocking UI
-      }
+      final pkg = await _loadMonthlyPackage();
+      final members = await _loadActiveMembers();
+      await _logImpressionSafe(event.source);
 
       emit(
         state.copyWith(
@@ -164,7 +113,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
       final pkg =
           state.package ??
           await _revenueCatService.fetchMonthlyPackage(
-          placementId: _placementId,
+            placementId: _placementId,
           );
       if (pkg == null) {
         throw Exception(
@@ -190,9 +139,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
         ),
       );
     } catch (e) {
-      emit(
-        state.copyWith(actionStatus: PaywallActionStatus.idle, error: '$e'),
-      );
+      emit(state.copyWith(actionStatus: PaywallActionStatus.idle, error: '$e'));
     }
   }
 
@@ -227,9 +174,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
         ),
       );
     } catch (e) {
-      emit(
-        state.copyWith(actionStatus: PaywallActionStatus.idle, error: '$e'),
-      );
+      emit(state.copyWith(actionStatus: PaywallActionStatus.idle, error: '$e'));
     }
   }
 
@@ -270,10 +215,81 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
   }
 
   Future<void> _ensureEntitlementActive() async {
-    final active =
-        await _revenueCatService.isEntitlementActive(_premiumEntitlementId);
+    final active = await _revenueCatService.isEntitlementActive(
+      _premiumEntitlementId,
+    );
     if (!active) {
       throw Exception('Premium entitlement inactive after purchase');
+    }
+  }
+
+  Future<void> _logStart(PaywallStarted event) async {
+    try {
+      final rcUserId = await Purchases.appUserID;
+      _logger.debug(
+        'Paywall start: homeId=$_homeId placement=$_placementId rcUserId=$rcUserId source=${event.source} triggers=${event.triggers}',
+        tag: _logTag,
+      );
+    } catch (_) {}
+  }
+
+  Future<RevenueCatPackage?> _loadMonthlyPackage() async {
+    try {
+      final pkg = await _revenueCatService.fetchMonthlyPackage(
+        placementId: _placementId,
+      );
+      if (pkg == null) {
+        await _logMissingPackage();
+      }
+      return pkg;
+    } catch (_) {
+      await _logMissingPackage();
+      return null;
+    }
+  }
+
+  Future<void> _logMissingPackage() async {
+    try {
+      final offerings = await Purchases.getOfferings();
+      final currentId = offerings.current?.identifier;
+      final available =
+          offerings.current?.availablePackages
+              .map((p) => p.identifier)
+              .join(', ') ??
+          '';
+      _logger.warn(
+        'RevenueCat monthly package unavailable (currentOffering=$currentId availablePackages=[$available])',
+        tag: _logTag,
+      );
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to inspect RevenueCat offerings after missing monthly package',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<List<HomeMemberSummary>> _loadActiveMembers() async {
+    try {
+      return await _homeRepository.listActiveMembers(_homeId);
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to load active members for paywall',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return const [];
+    }
+  }
+
+  Future<void> _logImpressionSafe(String? source) async {
+    try {
+      await _logEvent(PaywallEventType.impression, source);
+    } catch (_) {
+      // Ignore telemetry errors to avoid blocking UI
     }
   }
 }

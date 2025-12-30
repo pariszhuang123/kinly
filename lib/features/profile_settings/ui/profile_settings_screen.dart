@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/homes/models.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
-import '../../../core/router/app_router.dart';
+import '../../../app/router/app_router.dart';
 import '../../../core/profile/models.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
@@ -105,64 +105,7 @@ class ProfileSettingsScreen extends StatelessWidget {
 
                   // ── Danger zone: Leave / Kick / Delete account ────────────
                   KinlySettingsCard(
-                    children: () {
-                      final tiles = <Widget>[
-                        // Leave Home (always shown)
-                        KinlySettingsTile(
-                          title: s.profileLeaveHomeTitle,
-                          subtitle: s.profileLeaveHomeSubtitle,
-                          icon: Icons.exit_to_app_rounded,
-                          destructive: true,
-                          showProgress: state.isLeaveActionBusy,
-                          onTap:
-                              state.isLeaveActionBusy
-                                  ? null
-                                  : () => _handleLeaveTap(context),
-                        ),
-                      ];
-
-                      final hasKickTargets =
-                          state.isOwner && state.kickEligibleMembers.isNotEmpty;
-
-                      if (hasKickTargets) {
-                        tiles.addAll([
-                          const Divider(height: 0),
-                          KinlySettingsTile(
-                            title: s.profileKickMemberTitle,
-                            subtitle: s.profileKickMemberSubtitle,
-                            icon: Icons.person_remove_alt_1_rounded,
-                            destructive: true,
-                            showProgress: state.kickInProgress,
-                            onTap:
-                                state.kickInProgress
-                                    ? null
-                                    : () => _handleKickTap(context),
-                          ),
-                        ]);
-                      }
-
-                      // Delete account at the bottom of the danger card
-                      tiles.addAll([
-                        const Divider(height: 0),
-                        KinlySettingsTile(
-                          title: s.profileDeleteAccountTitle,
-                          subtitle: s.profileDeleteAccountSubtitle,
-                          icon: Icons.delete_forever_outlined,
-                          destructive: true,
-                          showProgress:
-                              state.deleteInProgress ||
-                              state.transferInProgress,
-                          onTap:
-                              state.deleteInProgress ||
-                                      state.transferInProgress ||
-                                      state.leaveEligibilityLoading
-                                  ? null
-                                  : () => _handleDeleteTap(context),
-                        ),
-                      ]);
-
-                      return tiles;
-                    }(),
+                    children: _buildDangerZoneTiles(context, state, s),
                   ),
                   SizedBox(height: spacing.xl),
                 ],
@@ -172,6 +115,58 @@ class ProfileSettingsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> _buildDangerZoneTiles(
+    BuildContext context,
+    ProfileSettingsState state,
+    S s,
+  ) {
+    final tiles = <Widget>[
+      KinlySettingsTile(
+        title: s.profileLeaveHomeTitle,
+        subtitle: s.profileLeaveHomeSubtitle,
+        icon: Icons.exit_to_app_rounded,
+        destructive: true,
+        showProgress: state.isLeaveActionBusy,
+        onTap: state.isLeaveActionBusy ? null : () => _handleLeaveTap(context),
+      ),
+    ];
+
+    final hasKickTargets =
+        state.isOwner && state.kickEligibleMembers.isNotEmpty;
+    if (hasKickTargets) {
+      tiles.addAll([
+        const Divider(height: 0),
+        KinlySettingsTile(
+          title: s.profileKickMemberTitle,
+          subtitle: s.profileKickMemberSubtitle,
+          icon: Icons.person_remove_alt_1_rounded,
+          destructive: true,
+          showProgress: state.kickInProgress,
+          onTap: state.kickInProgress ? null : () => _handleKickTap(context),
+        ),
+      ]);
+    }
+
+    tiles.addAll([
+      const Divider(height: 0),
+      KinlySettingsTile(
+        title: s.profileDeleteAccountTitle,
+        subtitle: s.profileDeleteAccountSubtitle,
+        icon: Icons.delete_forever_outlined,
+        destructive: true,
+        showProgress: state.deleteInProgress || state.transferInProgress,
+        onTap:
+            state.deleteInProgress ||
+                    state.transferInProgress ||
+                    state.leaveEligibilityLoading
+                ? null
+                : () => _handleDeleteTap(context),
+      ),
+    ]);
+
+    return tiles;
   }
 
   void _handleAction(BuildContext context, ProfileSettingsState state) {

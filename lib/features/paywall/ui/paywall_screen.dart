@@ -135,54 +135,63 @@ class KinlyPaywallScreen extends StatelessWidget {
                     (prev, next) =>
                         prev.actionStatus != next.actionStatus ||
                         prev.error != next.error,
-                listener: (context, state) {
-                  if (state.actionStatus == PaywallActionStatus.success) {
-                    KinlySnackBar.showSuccess(context, strings.purchaseSuccess);
-                    Navigator.of(context).pop(true);
-                  } else if (state.error != null) {
-                    KinlySnackBar.showError(context, strings.purchaseFailed);
-                  }
-                },
-                builder: (context, state) {
-                  if (state.status == PaywallLoadStatus.loading ||
-                      state.status == PaywallLoadStatus.initial) {
-                    return const Center(child: KinlyLoader());
-                  }
-                  if (state.status == PaywallLoadStatus.error) {
-                    return _ErrorView(
-                      strings: strings,
-                      onRetry: () {
-                        context.read<PaywallBloc>().add(
-                          PaywallStarted(source: source),
-                        );
-                      },
-                    );
-                  }
-                  final pkg = state.package;
-                  return _PaywallBody(
-                    strings: strings,
-                    priceString: pkg?.priceString,
-                    isActionBusy: state.isActionInFlight,
-                    onUpgrade: () {
-                      context.read<PaywallBloc>().add(
-                        const PaywallCtaPressed(),
-                      );
-                    },
-                    onRestore: () {
-                      context.read<PaywallBloc>().add(
-                        const PaywallRestorePressed(),
-                      );
-                    },
-                    onDismiss: handleDismiss,
-                    members: state.activeMembers,
-                    orderedFeatures: orderedBenefits,
-                  );
-                },
+                listener: _onPaywallStateChanged,
+                builder:
+                    (context, state) => _buildPaywallContent(
+                      context: context,
+                      state: state,
+                      orderedBenefits: orderedBenefits,
+                      handleDismiss: handleDismiss,
+                    ),
               ),
             ),
           );
         },
       ),
+    );
+  }
+
+  void _onPaywallStateChanged(BuildContext context, PaywallState state) {
+    if (state.actionStatus == PaywallActionStatus.success) {
+      KinlySnackBar.showSuccess(context, strings.purchaseSuccess);
+      Navigator.of(context).pop(true);
+    } else if (state.error != null) {
+      KinlySnackBar.showError(context, strings.purchaseFailed);
+    }
+  }
+
+  Widget _buildPaywallContent({
+    required BuildContext context,
+    required PaywallState state,
+    required List<String> orderedBenefits,
+    required VoidCallback handleDismiss,
+  }) {
+    if (state.status == PaywallLoadStatus.loading ||
+        state.status == PaywallLoadStatus.initial) {
+      return const Center(child: KinlyLoader());
+    }
+    if (state.status == PaywallLoadStatus.error) {
+      return _ErrorView(
+        strings: strings,
+        onRetry: () {
+          context.read<PaywallBloc>().add(PaywallStarted(source: source));
+        },
+      );
+    }
+    final pkg = state.package;
+    return _PaywallBody(
+      strings: strings,
+      priceString: pkg?.priceString,
+      isActionBusy: state.isActionInFlight,
+      onUpgrade: () {
+        context.read<PaywallBloc>().add(const PaywallCtaPressed());
+      },
+      onRestore: () {
+        context.read<PaywallBloc>().add(const PaywallRestorePressed());
+      },
+      onDismiss: handleDismiss,
+      members: state.activeMembers,
+      orderedFeatures: orderedBenefits,
     );
   }
 }

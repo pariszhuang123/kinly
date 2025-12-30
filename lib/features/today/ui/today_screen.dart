@@ -10,7 +10,7 @@ import '../../../../core/logging/debug_logger.dart';
 import '../../../../core/logging/logger.dart';
 import '../../../../core/notifications/device_token_provider.dart';
 import '../../../../core/notifications/notification_permission_service.dart';
-import '../../../../core/router/app_router.dart';
+import '../../../../app/router/app_router.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
