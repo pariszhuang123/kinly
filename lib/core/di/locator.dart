@@ -25,8 +25,6 @@ import '../notifications/notification_sync_state.dart';
 import '../notifications/device_token_provider.dart';
 import '../../data/repositories/onboarding_repository.dart';
 import '../onboarding/supabase_onboarding_repository.dart';
-import '../../data/repositories/paywall_repository.dart';
-import '../paywall/supabase_paywall_repository.dart';
 import '../purchases/revenuecat_service.dart';
 import '../time/iana_timezone_resolver.dart';
 
@@ -72,7 +70,6 @@ void setupDependencies() {
     () => _registerLazy<OnboardingRepository>(
       () => SupabaseOnboardingRepository(),
     ),
-    () => _registerLazy<PaywallRepository>(() => SupabasePaywallRepository()),
     () => _registerLazy<RevenueCatService>(() => DefaultRevenueCatService()),
   ];
 

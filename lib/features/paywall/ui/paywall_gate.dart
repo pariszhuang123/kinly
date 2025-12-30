@@ -5,8 +5,7 @@ import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/paywall/enums/paywall_gate_status.dart';
 import 'package:kinly/core/paywall/enums/paywall_retry_action.dart';
 import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
-import 'package:kinly/data/repositories/paywall_repository.dart';
-import 'package:kinly/features/paywall/ui/paywall_screen.dart';
+import 'package:kinly/features/paywall/paywall.dart';
 
 class PaywallGateRequest {
   final String requestId;

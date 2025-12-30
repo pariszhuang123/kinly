@@ -7,7 +7,7 @@ import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
 import 'package:kinly/data/repositories/home_repository.dart';
-import 'package:kinly/data/repositories/paywall_repository.dart';
+import 'package:kinly/features/paywall/paywall.dart';
 import 'package:kinly/features/paywall/bloc/paywall_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';

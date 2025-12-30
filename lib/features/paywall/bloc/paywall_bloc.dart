@@ -9,9 +9,9 @@ import '../../../core/paywall/paywall_models.dart';
 import '../../../core/paywall/enums/paywall_event_type.dart';
 import '../../../core/paywall/enums/paywall_trigger.dart';
 import '../../../core/homes/models.dart';
-import '../../../data/repositories/auth_repository.dart';
-import '../../../data/repositories/home_repository.dart';
-import '../../../data/repositories/paywall_repository.dart';
+import 'package:kinly/data/repositories/auth_repository.dart';
+import 'package:kinly/data/repositories/home_repository.dart';
+import 'package:kinly/features/paywall/paywall.dart';
 
 part 'paywall_event.dart';
 part 'paywall_state.dart';

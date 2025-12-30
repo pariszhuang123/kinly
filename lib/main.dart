@@ -25,6 +25,7 @@ import 'core/theme/kinly_theme.dart';
 import 'core/logging/logger.dart';
 import 'core/logging/debug_logger.dart';
 import 'features/flow/flow_di.dart';
+import 'features/paywall/paywall_di.dart';
 import 'data/repositories/app_version_repository.dart';
 import 'data/repositories/auth_repository.dart';
 import 'data/repositories/home_repository.dart';
@@ -88,6 +89,7 @@ Future<void> _bootstrapApp() async {
   );
   setupDependencies();
   installFlowDependencies(sl);
+  installPaywallDependencies(sl);
   AppConfig.validate();
   await initSupabase();
   await initRevenueCat(
@@ -410,7 +412,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Future<String> _readOsPermission() async {
     if (Platform.isIOS) {
-      final settings = await FirebaseMessaging.instance.getNotificationSettings();
+      final settings =
+          await FirebaseMessaging.instance.getNotificationSettings();
       return mapAuthorizationStatusToOsPermission(settings.authorizationStatus);
     }
 

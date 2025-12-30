@@ -1,7 +1,7 @@
+import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'enums/paywall_event_type.dart';
-import '../../data/repositories/paywall_repository.dart';
+import 'package:kinly/features/paywall/paywall.dart';
 
 class SupabasePaywallRepository implements PaywallRepository {
   SupabasePaywallRepository({SupabaseClient? client})
