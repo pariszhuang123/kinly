@@ -11,12 +11,19 @@ import 'dart:io';
 ///   - S.of(context).key
 ///   - S.current.key
 ///   - context.l10n.key
+///   - context.strings.key              // ✅ optional (common extension naming)
 ///   - Aliases such as:
 ///       final s = S.of(context);
 ///       final S s = S.of(context);
 ///       final s = context.l10n;
+///       final strings = context.strings;
 ///   - Injected localization instances:
-///       class Foo { final S s; ... }  // will treat "s.key" as a localization reference
+///       class Foo { final S strings; ... }  // ✅ now supports ANY variable name typed as S
+///       class Foo { final S s; ... }        // ✅ still supported
+///
+/// How “unused keys” can be false positives:
+/// - The checker is regex-based; if your project uses a different accessor name
+///   or injects S with a different variable name, the scanner must recognize it.
 void main(List<String> args) {
   if (args.contains('--help') || args.contains('-h')) {
     _printUsage();
@@ -153,7 +160,7 @@ bool _shouldSkip(String path) {
 List<_Reference> _extractReferences(String content, String path) {
   final refs = <_Reference>[];
 
-  // 1) Direct patterns: S.of(context).key, S.current.key, context.l10n.key
+  // 1) Direct patterns: S.of(context).key, S.current.key, context.l10n.key, context.strings.key
   for (final pattern in _referencePatterns) {
     for (final match in pattern.allMatches(content)) {
       final key = match.group(1);
@@ -168,7 +175,7 @@ List<_Reference> _extractReferences(String content, String path) {
     }
   }
 
-  // 2) Alias patterns: final s = S.of(context); then s.key
+  // 2) Alias patterns: final strings = context.l10n; then strings.key
   final aliases = _extractAliases(content);
   for (final alias in aliases) {
     final aliasPattern = RegExp(
@@ -187,16 +194,12 @@ List<_Reference> _extractReferences(String content, String path) {
     }
   }
 
-  // 3) Injected/local fields of type S (common in widget composition):
-  //    e.g. "final S s;" and later "s.key"
-  //
-  // We only enable this heuristic if we can see a field/local explicitly typed as S.
-  // This keeps false positives low while supporting your pattern:
-  //   class _X extends StatelessWidget { final S s; ... Text(s.someKey) }
-  if (_hasTypedInjectedS(content)) {
-    const injectedAlias = 's';
+  // 3) Injected/local fields of type S (widget composition):
+  //    Detect ANY variable/field name typed as S, not just `s`.
+  final injectedNames = _findTypedSNames(content);
+  for (final name in injectedNames) {
     final injectedPattern = RegExp(
-      '\\b${RegExp.escape(injectedAlias)}\\s*\\.\\s*([A-Za-z0-9_]+)',
+      '\\b${RegExp.escape(name)}\\s*\\.\\s*([A-Za-z0-9_]+)',
     );
     for (final match in injectedPattern.allMatches(content)) {
       final key = match.group(1);
@@ -222,11 +225,13 @@ Set<String> _extractAliases(String content) {
   // - final S s = S.of(context);
   // - late final s = context.l10n;
   // - var s = S.current;
+  // - final strings = context.strings;
   //
-  // Key improvement vs previous:
+  // Key improvement:
   // - Allows an OPTIONAL explicit type between final/var and the name.
+  // - Allows both context.l10n and context.strings.
   final aliasPattern = RegExp(
-    r'\b(?:late\s+final|final|var|const|late)\s+(?:\w+\s+)?(\w+)\s*=\s*(?:S\.of\([^;]+?\)|S\.current|context\.l10n)\s*;',
+    r'\b(?:late\s+final|final|var|const|late)\s+(?:\w+\s+)?(\w+)\s*=\s*(?:S\.of\([^;]+?\)|S\.current|context\.(?:l10n|strings))\s*;',
     multiLine: true,
     dotAll: true,
   );
@@ -241,23 +246,47 @@ Set<String> _extractAliases(String content) {
   return aliases;
 }
 
-bool _hasTypedInjectedS(String content) {
-  // Very targeted heuristic: only treat `s.key` as localization if the file
-  // explicitly declares a variable/field named `s` typed as `S`.
+Set<String> _findTypedSNames(String content) {
+  // Detect variable/field names typed as `S`.
   //
   // Matches common forms:
   // - final S s;
-  // - late final S s;
-  // - final S s = ...
-  // - S s;
+  // - late final S strings;
+  // - S strings;
+  // - final S strings = ...
+  // - S strings = ...
+  // - final S titleStrings, subtitleStrings;  (comma-separated declarations)
   //
-  // (We keep it strict to avoid accidentally treating random `s.foo` as l10n.)
-  final typedSFieldPattern = RegExp(
-    r'(^|\s)(?:late\s+)?(?:final\s+)?S\s+s(\s*[;=])',
+  // We keep this fairly strict (type must be exactly `S`) to avoid treating random
+  // `x.key` accesses as l10n.
+  final names = <String>{};
+
+  // First match simple single-name declarations.
+  final singlePattern = RegExp(
+    r'(^|\s)(?:late\s+)?(?:final\s+)?S\s+([A-Za-z_]\w*)\s*(?=[;=,\)\n])',
     multiLine: true,
   );
+  for (final m in singlePattern.allMatches(content)) {
+    final name = m.group(2);
+    if (name != null && name.isNotEmpty) names.add(name);
+  }
 
-  return typedSFieldPattern.hasMatch(content);
+  // Then handle comma-separated declarations:
+  // e.g. "final S a, b, c;"
+  final multiPattern = RegExp(
+    r'(^|\s)(?:late\s+)?(?:final\s+)?S\s+([A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)+)\s*(?=[;=\)\n])',
+    multiLine: true,
+  );
+  for (final m in multiPattern.allMatches(content)) {
+    final group = m.group(2);
+    if (group == null || group.isEmpty) continue;
+    for (final part in group.split(',')) {
+      final name = part.trim();
+      if (name.isNotEmpty) names.add(name);
+    }
+  }
+
+  return names;
 }
 
 int _lineForOffset(String content, int offset) {
@@ -313,4 +342,7 @@ final _referencePatterns = <RegExp>[
   RegExp(r'S\.of\([^)]*\)\s*\.\s*([A-Za-z0-9_]+)'),
   RegExp(r'S\.current\s*\.\s*([A-Za-z0-9_]+)'),
   RegExp(r'context\.l10n\s*\.\s*([A-Za-z0-9_]+)'),
+  RegExp(
+    r'context\.strings\s*\.\s*([A-Za-z0-9_]+)',
+  ), // ✅ supports your common extension naming
 ];

@@ -180,6 +180,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreHowToLaunchError": MessageLookupByLibrary.simpleMessage(
       "تعذّر فتح الرابط. حاول مرة أخرى.",
     ),
+    "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل هذا الـ Flow. حاول مرة أخرى.",
+    ),
     "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
       "امنح Flow عنوانًا قصيرًا وواضحًا",
     ),
@@ -323,6 +326,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("إرسال الملاحظات"),
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
       "شكرًا! تم حفظ ملاحظاتك.",
+    ),
+    "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
+      "اقرأ شكرًا سريعًا ولحظات صغيرة من التقدير.",
+    ),
+    "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
+      "جدار الامتنان",
     ),
     "hubCodeCopied": MessageLookupByLibrary.simpleMessage("تم نسخ رمز الدعوة"),
     "hubError": MessageLookupByLibrary.simpleMessage(

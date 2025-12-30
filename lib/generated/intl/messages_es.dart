@@ -189,6 +189,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreHowToLaunchError": MessageLookupByLibrary.simpleMessage(
       "No pudimos abrir ese enlace. Inténtalo de nuevo.",
     ),
+    "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos cargar este flow. Inténtalo de nuevo.",
+    ),
     "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
       "Dale a tu flow un título corto y claro",
     ),
@@ -346,6 +349,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Enviar feedback"),
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
       "¡Gracias! Tu feedback se guardó.",
+    ),
+    "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Lee agradecimientos rápidos y pequeños momentos de aprecio.",
+    ),
+    "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
+      "Muro de gratitud",
     ),
     "hubCodeCopied": MessageLookupByLibrary.simpleMessage(
       "Código de invitación copiado",

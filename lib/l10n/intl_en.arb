@@ -147,6 +147,8 @@
   "hubRotateError": "Couldn't rotate invite. Try again.",
   "hubQrTitle": "Share the app",
   "hubQrSubtitle": "Scan to download Kinly",
+  "hubCardGratitudeWallTitle": "Gratitude Wall",
+  "hubCardGratitudeWallSubtitle": "Read quick thank-yous and small moments of appreciation.",
   "hubError": "Couldn't load Hub. Please try again.",
   "hubRetry": "Retry",
   "todayEmptyCardTitle": "All caught up today",
@@ -328,6 +330,7 @@
   "flowChoreDeleteDialogTitle": "Delete this flow?",
   "flowChoreDeleteDialogMessage": "This removes the flow for everyone in your home.",
   "flowChoreDeleteConfirm": "Delete",
+  "flowChoreLoadError": "We couldn't load this flow. Please try again.",
   "flowChoreRetry": "Retry",
   "flowChoreErrorPaywallActiveCap": "You're at the free limit for active flows. Upgrade for more space.",
   "flowChoreErrorPaywallMediaCap": "You're at the free limit for flow photos. Upgrade for more space.",
@@ -652,6 +655,12 @@
   "@hubQrSubtitle": {
     "surface": "subtitle"
   },
+    "@hubCardGratitudeWallTitle": {
+    "surface": "title"
+  },
+  "@hubCardGratitudeWallSubtitle": {
+    "surface": "subtitle"
+  },
   "@hubError": {
     "surface": "error"
   },
@@ -774,6 +783,9 @@
   },
   "@flowChoreDeleteDialogMessage": {
     "surface": "dialog_body"
+  },
+    "@flowChoreLoadError": {
+    "surface": "error"
   },
   "@flowChoreRetry": {
     "surface": "button"
