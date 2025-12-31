@@ -6,7 +6,7 @@ import '../../../data/repositories/expenses_repository.dart';
 import '../../../../features/home/home.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../../../data/repositories/mood_repository.dart';
-import '../../../data/repositories/onboarding_repository.dart';
+import '../../../core/onboarding/onboarding.dart';
 import '../../../core/profile/profile_update_notifier.dart';
 import '../bloc/today_bloc.dart';
 import 'today_screen.dart';

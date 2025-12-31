@@ -16,7 +16,7 @@ import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/home/testing/fake_home_repository.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/time/iana_timezone_resolver.dart';
-import 'package:kinly/data/repositories/app_version_repository.dart';
+import 'package:kinly/core/app_version/app_version.dart';
 import 'package:kinly/core/network/connectivity_monitor.dart';
 import 'package:kinly/data/repositories/auth_repository.dart';
 import 'package:kinly/features/home/home.dart';

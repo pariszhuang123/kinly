@@ -11,7 +11,7 @@ import '../../../data/repositories/expenses_repository.dart';
 import '../../../../features/home/home.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../../../data/repositories/mood_repository.dart';
-import '../../../data/repositories/onboarding_repository.dart';
+import '../../../core/onboarding/onboarding.dart';
 import '../../../core/mood/models.dart';
 import '../../../core/logging/logger.dart';
 import '../../../core/logging/debug_logger.dart';

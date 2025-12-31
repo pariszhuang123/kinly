@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../data/repositories/app_version_repository.dart';
+import 'app_version.dart';
 import '../time/timezone.dart';
 
 class SupabaseAppVersionRepository implements AppVersionRepository {
@@ -31,5 +31,4 @@ class SupabaseAppVersionRepository implements AppVersionRepository {
       releasedAt: parseTimestampToLocal(response['releasedAt']),
     );
   }
-
 }

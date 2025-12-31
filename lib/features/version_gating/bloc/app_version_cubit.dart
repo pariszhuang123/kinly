@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/repositories/app_version_repository.dart';
+import '../../../core/app_version/app_version.dart';
 import '../../../core/logging/debug_logger.dart';
 import '../../../core/logging/logger.dart';
 

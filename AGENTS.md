@@ -188,4 +188,4 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - Host/prefix TBD (e.g., `https://makinglifeeasie.com/kinly/join/:code`) — captured as TODO until assigned.
 
 ## Composition Root
-- Runtime DI wiring lives in lib/core/di/compose.dart; add new install<Feature>Dependencies there and keep main.dart limited to calling composeDependencies().
+- Runtime DI wiring lives in lib/app/di/compose.dart; add new install<Feature>Dependencies there and keep main.dart limited to calling composeDependencies().

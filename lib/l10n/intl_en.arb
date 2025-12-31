@@ -87,21 +87,7 @@
   "offline_retry": "Try again",
   "force_update_title": "Update needed",
   "force_update_body": "This version of Kinly is no longer supported. Please install the newest release to continue.",
-  "force_update_notes_label": "What's new",
   "force_update_button": "Update Kinly",
-  "force_update_version_details": "Your version: {client}\nLatest version: {current}",
-  "@force_update_version_details": {
-    "placeholders": {
-      "client": {
-        "type": "String",
-        "example": "1.2.0"
-      },
-      "current": {
-        "type": "String",
-        "example": "1.3.5"
-      }
-    }
-  },
   "navToday": "Today",
   "navExplore": "Explore",
   "navHub": "Hub",

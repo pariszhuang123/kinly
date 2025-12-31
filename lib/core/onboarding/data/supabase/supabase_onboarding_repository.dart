@@ -1,11 +1,10 @@
+import 'package:kinly/core/onboarding/onboarding.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../../data/repositories/onboarding_repository.dart';
 
 /// Supabase implementation backed by `today_onboarding_hints` SEC DEFINER RPC.
 class SupabaseOnboardingRepository implements OnboardingRepository {
   SupabaseOnboardingRepository({SupabaseClient? client})
-      : _client = client ?? Supabase.instance.client;
+    : _client = client ?? Supabase.instance.client;
 
   final SupabaseClient _client;
 

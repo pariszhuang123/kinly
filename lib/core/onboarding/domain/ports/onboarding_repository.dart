@@ -25,7 +25,8 @@ class OnboardingHints {
           json['shouldPromptNotifications'] as bool? ?? false,
       shouldPromptFlatmateInviteShare:
           json['shouldPromptFlatmateInviteShare'] as bool? ?? false,
-      shouldPromptInviteShare: json['shouldPromptInviteShare'] as bool? ?? false,
+      shouldPromptInviteShare:
+          json['shouldPromptInviteShare'] as bool? ?? false,
     );
   }
 }

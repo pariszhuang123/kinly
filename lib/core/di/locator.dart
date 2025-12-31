@@ -1,11 +1,11 @@
 import 'package:get_it/get_it.dart';
 
 import '../account/account.dart';
-import '../../data/repositories/app_version_repository.dart';
+import '../app_version/app_version.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/expenses_repository.dart';
 import '../../data/repositories/mood_repository.dart';
-import '../../data/repositories/onboarding_repository.dart';
+import '../onboarding/onboarding.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../account/data/supabase/supabase_account_repository.dart';
 import '../app_version/supabase_app_version_repository.dart';
@@ -20,7 +20,7 @@ import '../network/connectivity_monitor.dart';
 import '../notifications/device_token_provider.dart';
 import '../notifications/notifications.dart';
 import '../notifications/data/supabase/supabase_notifications_repository.dart';
-import '../onboarding/supabase_onboarding_repository.dart';
+import '../onboarding/data/supabase/supabase_onboarding_repository.dart';
 import '../profile/profile_update_notifier.dart';
 import '../profile/supabase_profile_repository.dart';
 import '../purchases/revenuecat_service.dart';

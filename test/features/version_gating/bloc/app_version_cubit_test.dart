@@ -2,7 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/data/repositories/app_version_repository.dart';
+import 'package:kinly/core/app_version/app_version.dart';
 import 'package:kinly/features/version_gating/bloc/app_version_cubit.dart';
 
 class _MockAppVersionRepository extends Mock implements AppVersionRepository {}

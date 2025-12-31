@@ -14,8 +14,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import 'core/config/app_config.dart';
-import 'core/di/compose.dart';
 import 'core/di/locator.dart';
+import 'app/di/compose.dart';
 import 'core/purchases/revenuecat_initializer.dart';
 import 'core/purchases/revenuecat_user_sync.dart';
 import 'app/router/app_router.dart';
@@ -25,7 +25,7 @@ import 'core/supabase/supabase_init.dart';
 import 'core/theme/kinly_theme.dart';
 import 'core/logging/logger.dart';
 import 'core/logging/debug_logger.dart';
-import 'data/repositories/app_version_repository.dart';
+import 'core/app_version/app_version.dart';
 import 'data/repositories/auth_repository.dart';
 import 'features/home/home.dart';
 import 'data/repositories/profile_repository.dart';

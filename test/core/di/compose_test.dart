@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kinly/core/di/compose.dart';
+import 'package:kinly/app/di/compose.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/flow/domain/ports/chores_repository.dart';
 import 'package:kinly/features/home/domain/ports/home_repository.dart';

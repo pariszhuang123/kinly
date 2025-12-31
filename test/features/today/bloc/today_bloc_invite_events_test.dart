@@ -8,13 +8,12 @@ import 'package:kinly/data/repositories/expenses_repository.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/data/repositories/profile_repository.dart';
 import 'package:kinly/data/repositories/mood_repository.dart';
-import 'package:kinly/data/repositories/onboarding_repository.dart';
+import 'package:kinly/core/onboarding/onboarding.dart';
 import 'package:kinly/core/profile/profile_update_notifier.dart';
 import 'package:kinly/core/mood/models.dart';
 import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/core/expenses/models.dart';
-import 'package:kinly/data/repositories/onboarding_repository.dart'
-    as onboarding;
+import 'package:kinly/core/onboarding/onboarding.dart' as onboarding;
 import 'package:kinly/core/homes/models.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}
