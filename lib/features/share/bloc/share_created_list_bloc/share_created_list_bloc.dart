@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/expenses/models.dart';
-import '../../../../data/repositories/expenses_repository.dart';
+import '../../../share/share.dart';
 
 part 'share_created_list_event.dart';
 part 'share_created_list_state.dart';

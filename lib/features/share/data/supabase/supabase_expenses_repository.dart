@@ -1,9 +1,9 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:kinly/core/expenses/models.dart';
+import 'package:kinly/core/supabase/supabase_error_mapper.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../data/repositories/expenses_repository.dart';
-import '../supabase/supabase_error_mapper.dart';
-import 'models.dart';
+import '../../share.dart';
 
 class SupabaseExpensesRepository implements ExpensesRepository {
   SupabaseExpensesRepository({SupabaseClient? client})
@@ -209,10 +209,7 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     try {
       final response = await _client.rpc(
         'expenses_get_current_paid_to_me_by_debtor_details',
-        params: {
-          'p_home_id': homeId,
-          'p_debtor_user_id': debtorUserId,
-        },
+        params: {'p_home_id': homeId, 'p_debtor_user_id': debtorUserId},
       );
       final list = _coerceList(response);
       if (list == null) return const [];
@@ -232,10 +229,7 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     try {
       final response = await _client.rpc(
         'expenses_mark_paid_received_viewed_for_debtor',
-        params: {
-          'p_home_id': homeId,
-          'p_debtor_user_id': debtorUserId,
-        },
+        params: {'p_home_id': homeId, 'p_debtor_user_id': debtorUserId},
       );
       final payload = _coerceMap(response);
       return (payload?['updated'] as num?)?.toInt() ?? 0;
@@ -302,7 +296,6 @@ class SupabaseExpensesRepository implements ExpensesRepository {
           .toList();
     }
     if (value is Map) {
-      // rpc may return jsonb array already decoded as List<dynamic>
       final root = value['_data'];
       if (root is List) {
         return root

@@ -1,5 +1,5 @@
-import '../../core/expenses/models.dart';
-import '../../core/time/timezone.dart';
+import 'package:kinly/core/expenses/models.dart';
+import 'package:kinly/core/time/timezone.dart';
 
 /// Repository boundary for expense/share workflows.
 abstract class ExpensesRepository {
@@ -81,9 +81,9 @@ class ExpenseCustomSplitInput {
   final int amountCents;
 
   Map<String, dynamic> toJson() => {
-    'user_id': userId,
-    'amount_cents': amountCents,
-  };
+        'user_id': userId,
+        'amount_cents': amountCents,
+      };
 }
 
 class ExpensePaidToMeDebtor {
@@ -181,8 +181,7 @@ class ExpensePaidToMeItem {
       recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
         recurrenceWire as String?,
       ),
-      startDate:
-          parseDateToLocal(startDateRaw) ??
+      startDate: parseDateToLocal(startDateRaw) ??
           parseTimestampToLocal(startDateRaw) ??
           DateTime.now(),
       debtorUsername: json['debtorUsername'] as String?,
@@ -230,16 +229,16 @@ class ExpensePlan {
       id: json['id'] as String,
       homeId: json['home_id'] as String,
       createdByUserId: json['created_by_user_id'] as String,
-      splitType: ExpenseSplitTypeWire.fromWire(json['split_type'] as String?) ??
-          ExpenseSplitType.equal,
+      splitType:
+          ExpenseSplitTypeWire.fromWire(json['split_type'] as String?) ??
+              ExpenseSplitType.equal,
       amountCents: (json['amount_cents'] as num?)?.toInt() ?? 0,
       description: json['description'] as String? ?? '',
       notes: json['notes'] as String?,
       recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
         recurrenceRaw as String?,
       ),
-      startDate:
-          parseDateToLocal(startDateRaw) ??
+      startDate: parseDateToLocal(startDateRaw) ??
           parseTimestampToLocal(startDateRaw) ??
           DateTime.now(),
       status: json['status'] as String? ?? '',

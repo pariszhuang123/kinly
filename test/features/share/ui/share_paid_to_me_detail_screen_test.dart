@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/data/repositories/expenses_repository.dart';
+import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/share/ui/share_paid_to_me_detail_screen.dart';
 import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/generated/l10n.dart';

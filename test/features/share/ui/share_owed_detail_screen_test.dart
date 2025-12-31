@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/data/repositories/expenses_repository.dart';
+import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/share/ui/share_owed_detail_screen.dart';
 import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/generated/l10n.dart';
@@ -16,9 +16,7 @@ import 'package:intl/date_symbol_data_local.dart';
 class _MockExpensesRepository extends Mock implements ExpensesRepository {}
 
 class _RouteHost extends StatefulWidget {
-  const _RouteHost({
-    required this.buildRoute,
-  });
+  const _RouteHost({required this.buildRoute});
 
   final Route<Object?> Function(BuildContext context) buildRoute;
 
@@ -33,9 +31,9 @@ class _RouteHostState extends State<_RouteHost> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final result = await Navigator.of(context).push<Object?>(
-        widget.buildRoute(context),
-      );
+      final result = await Navigator.of(
+        context,
+      ).push<Object?>(widget.buildRoute(context));
       if (!mounted) return;
       setState(() => poppedResult = result);
     });
@@ -229,10 +227,7 @@ void main() {
         ),
         home: MediaQuery(
           data: const MediaQueryData(disableAnimations: true),
-          child: ShareOwedDetailScreen(
-            owed: owed,
-            expensesRepository: repo,
-          ),
+          child: ShareOwedDetailScreen(owed: owed, expensesRepository: repo),
         ),
       ),
     );

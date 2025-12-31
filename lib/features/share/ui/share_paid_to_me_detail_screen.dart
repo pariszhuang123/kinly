@@ -10,7 +10,7 @@ import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/kinly_list_tile.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
-import '../../../data/repositories/expenses_repository.dart';
+import '../../share/share.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/expenses/enums/expense_recurrence_interval.dart';
 import '../../today/domain/models.dart';

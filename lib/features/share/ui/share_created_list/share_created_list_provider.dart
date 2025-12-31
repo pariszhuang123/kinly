@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../data/repositories/expenses_repository.dart';
+import '../../../share/share.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
 import 'share_created_list_screen.dart';
 

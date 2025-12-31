@@ -134,6 +134,34 @@ modules:
       plan_gate: false
     notes: Wraps Core home/member RPCs for UI/BLoC; killable via feature flag.
 
+  - name: home
+    owner_role: Planner
+    status: feature
+    killable: false
+    kill_switch_flag: null
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["hub", "today", "profile_settings", "share", "flow", "paywall"]
+    public_api:
+      dart: lib/features/home/home.dart
+    data:
+      tables_owned: []
+      cross_module_refs:
+        - homes.id
+        - members.id
+        - invites.code
+    rpcs:
+      owner: []
+      orchestration: []
+    entrypoints:
+      routes: []
+      deep_links: []
+      navigation_tiles: []
+    test_matrix:
+      feature_flag_off: false
+      plan_gate: false
+    notes: Feature module for home ownership/invite flows; uses core RPCs via repository.
+
   - name: welcome
     owner_role: UI
     status: feature

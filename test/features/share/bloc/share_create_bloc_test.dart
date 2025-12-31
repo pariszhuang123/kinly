@@ -9,7 +9,7 @@ import 'package:kinly/core/paywall/enums/paywall_retry_action.dart';
 import 'package:kinly/core/paywall/enums/paywall_gate_status.dart';
 import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
-import 'package:kinly/data/repositories/expenses_repository.dart';
+import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/share/bloc/share_create_bloc/share_create_bloc.dart';
 import 'package:kinly/features/share/domain/share_create_form.dart';

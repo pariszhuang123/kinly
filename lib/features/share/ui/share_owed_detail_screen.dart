@@ -8,7 +8,7 @@ import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
-import '../../../data/repositories/expenses_repository.dart';
+import '../../share/share.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../today/domain/models.dart';

@@ -6,7 +6,7 @@ import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
-import '../../../data/repositories/expenses_repository.dart';
+import '../share.dart';
 import '../../../../features/home/home.dart';
 import '../bloc/share_create_bloc/share_create_bloc.dart';
 import '../domain/share_create_form.dart';

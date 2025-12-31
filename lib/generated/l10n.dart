@@ -99,10 +99,10 @@ class S {
     );
   }
 
-  /// `We'll spin up your home instantly. You can rename and invite later.`
+  /// `We’ll set up your home in seconds. You can rename it and invite people later.`
   String get create_subtitle {
     return Intl.message(
-      'We\'ll spin up your home instantly. You can rename and invite later.',
+      'We’ll set up your home in seconds. You can rename it and invite people later.',
       name: 'create_subtitle',
       desc: '',
       args: [],
@@ -139,10 +139,10 @@ class S {
     return Intl.message('Join', name: 'join_submit', desc: '', args: []);
   }
 
-  /// `Joined with code: {code}`
+  /// `You're in. Welcome home.`
   String join_success(String code) {
     return Intl.message(
-      'Joined with code: $code',
+      'You\'re in. Welcome home.',
       name: 'join_success',
       desc: 'Snackbar message displayed when the user joins successfully',
       args: [code],
@@ -529,10 +529,10 @@ class S {
     return Intl.message('Sign out', name: 'logout', desc: '', args: []);
   }
 
-  /// `Checking membership status...`
+  /// `Connecting you to your home…`
   String get membership_status_checking {
     return Intl.message(
-      'Checking membership status...',
+      'Connecting you to your home…',
       name: 'membership_status_checking',
       desc: '',
       args: [],
@@ -549,10 +549,10 @@ class S {
     );
   }
 
-  /// `You’re already connected to a home.`
+  /// `You're connected to a home.`
   String get membership_status_active {
     return Intl.message(
-      'You’re already connected to a home.',
+      'You\'re connected to a home.',
       name: 'membership_status_active',
       desc: '',
       args: [],
@@ -614,16 +614,6 @@ class S {
     );
   }
 
-  /// `What's new`
-  String get force_update_notes_label {
-    return Intl.message(
-      'What\'s new',
-      name: 'force_update_notes_label',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Update Kinly`
   String get force_update_button {
     return Intl.message(
@@ -631,16 +621,6 @@ class S {
       name: 'force_update_button',
       desc: '',
       args: [],
-    );
-  }
-
-  /// `Your version: {client}\nLatest version: {current}`
-  String force_update_version_details(String client, String current) {
-    return Intl.message(
-      'Your version: $client\nLatest version: $current',
-      name: 'force_update_version_details',
-      desc: '',
-      args: [client, current],
     );
   }
 
@@ -2399,10 +2379,10 @@ class S {
     );
   }
 
-  /// `Create your first flow so everyone feels clear and aligned.`
+  /// `Flows are small agreements that help everyone stay aligned.\n\nAdd one when something keeps coming up.`
   String get flowListEmptySubtitle {
     return Intl.message(
-      'Create your first flow so everyone feels clear and aligned.',
+      'Flows are small agreements that help everyone stay aligned.\n\nAdd one when something keeps coming up.',
       name: 'flowListEmptySubtitle',
       desc: '',
       args: [],
@@ -2489,10 +2469,10 @@ class S {
     );
   }
 
-  /// `Create a Bill to see it listed here.`
+  /// `Bills keep money clear between people — without awkward reminders.`
   String get shareCreatedListEmptySubtitle {
     return Intl.message(
-      'Create a Bill to see it listed here.',
+      'Bills keep money clear between people — without awkward reminders.',
       name: 'shareCreatedListEmptySubtitle',
       desc: '',
       args: [],
@@ -3389,10 +3369,10 @@ class S {
     );
   }
 
-  /// `Share a sunny moment to start filling the wall.`
+  /// `This is where small thank-yous live.\n\nStart with one moment from this week.`
   String get gratitudeWallEmptySubtitle {
     return Intl.message(
-      'Share a sunny moment to start filling the wall.',
+      'This is where small thank-yous live.\n\nStart with one moment from this week.',
       name: 'gratitudeWallEmptySubtitle',
       desc: '',
       args: [],

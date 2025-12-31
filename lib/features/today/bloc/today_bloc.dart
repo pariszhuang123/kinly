@@ -7,7 +7,7 @@ import '../../../core/chores/models.dart'; // ChoreListEntry, etc.
 import '../../../core/expenses/models.dart';
 import '../../../core/profile/models.dart';
 import 'package:kinly/features/flow/flow.dart';
-import '../../../data/repositories/expenses_repository.dart';
+import '../../share/share.dart';
 import '../../../../features/home/home.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../../../data/repositories/mood_repository.dart';

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/chores/models.dart';
 import '../../../core/expenses/models.dart';
-import '../../../data/repositories/expenses_repository.dart';
+import '../../share/share.dart';
 
 /// A minimal representation of a task shown on the Today page.
 class TodayFlowTask extends Equatable {
