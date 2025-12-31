@@ -378,9 +378,9 @@ modules:
     kill_switch_flag: feature.harmony.enabled
     plan_gates: []
     depends_on: [core, home_membership]
-    allowed_imports_from: ["hub", "today"]
+    allowed_imports_from: ["hub", "today", "nps"]
     public_api:
-      dart: null
+      dart: lib/features/harmony/harmony.dart
     data:
       tables_owned:
         - moods

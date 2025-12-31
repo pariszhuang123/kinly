@@ -123,7 +123,7 @@ class SupabaseHomeRepository implements HomeRepository {
     try {
       final response = await _client.rpc(
         'members_list_by_home',
-        params: {'p_home_id': homeId},
+        params: {'p_home_id': homeId, 'p_exclude_self': excludeSelf},
       );
       var members = _mapMembers(response);
       if (excludeSelf) {
@@ -143,7 +143,7 @@ class SupabaseHomeRepository implements HomeRepository {
     try {
       final response = await _client.rpc(
         'members_list_active_by_home',
-        params: {'p_home_id': homeId},
+        params: {'p_home_id': homeId, 'p_exclude_self': excludeSelf},
       );
       var members = _mapMembers(response);
       if (excludeSelf) {

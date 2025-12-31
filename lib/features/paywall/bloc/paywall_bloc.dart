@@ -273,7 +273,10 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
 
   Future<List<HomeMemberSummary>> _loadActiveMembers() async {
     try {
-      return await _homeRepository.listActiveMembers(_homeId);
+      return await _homeRepository.listActiveMembers(
+        _homeId,
+        excludeSelf: false,
+      );
     } catch (error, stackTrace) {
       _logger.warn(
         'Failed to load active members for paywall',

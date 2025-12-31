@@ -102,7 +102,10 @@ class HubBloc extends Bloc<HubEvent, HubState> {
     try {
       final membership = await _homeRepository.getCurrentMembership();
       currentRole = membership?.role.toLowerCase();
-      members = await _homeRepository.listActiveMembers(_homeId);
+      members = await _homeRepository.listActiveMembers(
+        _homeId,
+        excludeSelf: false,
+      );
     } catch (error, stack) {
       _logger.error(
         'Failed to load members',

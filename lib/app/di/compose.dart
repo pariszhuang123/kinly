@@ -5,6 +5,7 @@ import '../../features/home/home_di.dart';
 import '../../features/paywall/paywall_di.dart';
 import '../../features/share/share_di.dart';
 import '../../features/harmony/harmony_di.dart';
+import '../../features/profile_settings/profile_settings_di.dart';
 
 /// Central composition root for runtime dependencies.
 /// Add new feature installers here; keep `main` free of per-feature wiring.
@@ -18,4 +19,5 @@ void composeDependencies() {
   installPaywallDependencies(sl);
   installShareDependencies(sl);
   installHarmonyDependencies(sl);
+  installProfileSettingsDependencies(sl);
 }

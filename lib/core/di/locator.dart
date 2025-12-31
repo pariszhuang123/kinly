@@ -16,8 +16,6 @@ import '../notifications/device_token_provider.dart';
 import '../notifications/notifications.dart';
 import '../notifications/data/supabase/supabase_notifications_repository.dart';
 import '../onboarding/data/supabase/supabase_onboarding_repository.dart';
-import 'package:kinly/features/profile_settings/domain/ports/profile_repository.dart';
-import 'package:kinly/features/profile_settings/data/supabase/supabase_profile_repository.dart';
 import '../profile/profile_update_notifier.dart';
 import '../purchases/revenuecat_service.dart';
 import '../time/iana_timezone_resolver.dart';
@@ -40,7 +38,6 @@ void setupDependencies() {
     () => _registerLazy<AuthRepository>(
       () => SupabaseAuthRepository(logger: sl<Logger>()),
     ),
-    () => _registerLazy<ProfileRepository>(() => SupabaseProfileRepository()),
     () => _registerLazy<ProfileUpdateNotifier>(() => ProfileUpdateNotifier()),
     () => _registerLazy<AccountRepository>(() => SupabaseAccountRepository()),
     () => _registerLazy<ConnectivityMonitor>(
@@ -52,6 +49,7 @@ void setupDependencies() {
     () => _registerLazy<DeviceTokenProvider>(
       () => const FirebaseDeviceTokenProvider(),
     ),
+    () => _registerLazy<NotificationSyncState>(() => NotificationSyncState()),
     () => _registerLazy<NotificationsRepository>(
       () => SupabaseNotificationsRepository(
         syncState: sl<NotificationSyncState>(),
