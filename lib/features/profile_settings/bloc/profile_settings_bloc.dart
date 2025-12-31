@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../core/account/account.dart';
 import '../../../../features/home/home.dart';
-import '../../../data/repositories/profile_repository.dart';
+import '../profile_settings.dart';
 import '../../../core/homes/models.dart';
 import '../../../core/profile/models.dart';
 

@@ -7,7 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/homes/models.dart';
 import '../../../core/auth/auth.dart';
 import '../../../../features/home/home.dart';
-import '../../../data/repositories/profile_repository.dart';
+import '../../profile_settings/profile_settings.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

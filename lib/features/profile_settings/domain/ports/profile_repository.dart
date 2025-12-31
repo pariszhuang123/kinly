@@ -1,4 +1,4 @@
-import '../../core/profile/models.dart';
+import 'package:kinly/core/profile/models.dart';
 
 /// Repository boundary for user profile lookups scoped to the caller.
 /// Keeps UI/BLoC unaware of Supabase specifics.

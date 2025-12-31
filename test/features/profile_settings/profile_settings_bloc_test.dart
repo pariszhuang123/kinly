@@ -6,7 +6,7 @@ import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/profile/models.dart';
 import 'package:kinly/core/account/account.dart';
 import 'package:kinly/features/home/home.dart';
-import 'package:kinly/data/repositories/profile_repository.dart';
+import 'package:kinly/features/profile_settings/profile_settings.dart';
 import 'package:kinly/features/profile_settings/bloc/profile_settings_bloc.dart';
 
 class _MockProfileRepository extends Mock implements ProfileRepository {}

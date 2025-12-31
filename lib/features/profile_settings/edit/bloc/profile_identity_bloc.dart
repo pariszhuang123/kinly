@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import '../../../../core/profile/models.dart';
 import '../../../../core/profile/enums/profile_error_code.dart';
 import '../../../../core/profile/profile_error_mapper.dart';
-import '../../../../data/repositories/profile_repository.dart';
+import '../../profile_settings.dart';
 
 part 'profile_identity_event.dart';
 part 'profile_identity_state.dart';

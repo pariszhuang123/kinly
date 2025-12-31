@@ -20,7 +20,7 @@ import 'package:kinly/core/app_version/app_version.dart';
 import 'package:kinly/core/network/connectivity_monitor.dart';
 import 'package:kinly/core/auth/auth.dart';
 import 'package:kinly/features/home/home.dart';
-import 'package:kinly/data/repositories/profile_repository.dart';
+import 'package:kinly/features/profile_settings/profile_settings.dart';
 import 'package:kinly/core/profile/models.dart';
 import 'package:kinly/main.dart';
 

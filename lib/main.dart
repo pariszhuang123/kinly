@@ -28,7 +28,7 @@ import 'core/logging/debug_logger.dart';
 import 'core/app_version/app_version.dart';
 import 'core/auth/auth.dart';
 import 'features/home/home.dart';
-import 'data/repositories/profile_repository.dart';
+import 'features/profile_settings/profile_settings.dart';
 import 'core/notifications/notifications.dart';
 import 'core/notifications/authorization_status_mapper.dart';
 import 'features/auth/bloc/auth_bloc.dart';

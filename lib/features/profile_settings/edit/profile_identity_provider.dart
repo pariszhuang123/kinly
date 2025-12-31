@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/locator.dart';
-import '../../../data/repositories/profile_repository.dart';
+import '../profile_settings.dart';
 import 'bloc/profile_identity_bloc.dart';
 import 'profile_identity_screen.dart';
 

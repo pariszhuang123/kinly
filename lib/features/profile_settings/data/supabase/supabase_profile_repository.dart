@@ -1,10 +1,10 @@
+import '../../utils/avatar_cache_buster.dart';
+import 'package:kinly/core/profile/models.dart';
+import 'package:kinly/core/profile/profile_error_mapper.dart';
+import 'package:kinly/core/supabase/storage_path_resolver.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../data/repositories/profile_repository.dart';
-import '../supabase/storage_path_resolver.dart';
-import 'avatar_cache_buster.dart';
-import 'models.dart';
-import 'profile_error_mapper.dart';
+import '../../profile_settings.dart';
 
 class SupabaseProfileRepository implements ProfileRepository {
   SupabaseProfileRepository({SupabaseClient? client})
@@ -104,9 +104,6 @@ class SupabaseProfileRepository implements ProfileRepository {
     }
     return null;
   }
-
-  // Left here because other repositories still rely on the helper, but
-  // profile repository now defers to [storagePathToPublicUrl].
 
   List<Map<String, dynamic>>? _coerceList(dynamic response) {
     if (response is List) {
