@@ -62,7 +62,9 @@ class SupabaseHomeRepository implements HomeRepository {
         params: {'p_code': code},
       );
       final payload =
-          (response is Map ? response.cast<String, dynamic>() : <String, dynamic>{});
+          (response is Map
+              ? response.cast<String, dynamic>()
+              : <String, dynamic>{});
       return HomeJoinResult.fromJson(payload);
     } catch (error) {
       throw SupabaseErrorMapper.mapJoin(error);
@@ -123,18 +125,11 @@ class SupabaseHomeRepository implements HomeRepository {
         'members_list_by_home',
         params: {'p_home_id': homeId},
       );
-      var rows = (response as List)
-          .map((e) => (e as Map).cast<String, dynamic>())
-          .map(HomeMemberSummary.fromJson)
-          .toList(growable: false);
+      var members = _mapMembers(response);
       if (excludeSelf) {
-        final self = await getCurrentMembership(excludeSelf: false);
-        final userId = self?.userId;
-        if (userId != null) {
-          rows = rows.where((m) => m.userId != userId).toList(growable: false);
-        }
+        members = await _excludeSelf(members);
       }
-      return activeOnly ? rows.where((m) => m.role.isNotEmpty).toList() : rows;
+      return activeOnly ? _onlyActive(members) : members;
     } catch (error) {
       rethrow;
     }
@@ -150,18 +145,9 @@ class SupabaseHomeRepository implements HomeRepository {
         'members_list_active_by_home',
         params: {'p_home_id': homeId},
       );
-      var members = (response as List)
-          .map((e) => (e as Map).cast<String, dynamic>())
-          .map(HomeMemberSummary.fromJson)
-          .toList(growable: false);
+      var members = _mapMembers(response);
       if (excludeSelf) {
-        final self = await getCurrentMembership(excludeSelf: false);
-        final userId = self?.userId;
-        if (userId != null) {
-          members = members
-              .where((member) => member.userId != userId)
-              .toList(growable: false);
-        }
+        members = await _excludeSelf(members);
       }
       return members;
     } catch (error) {
@@ -221,7 +207,10 @@ class SupabaseHomeRepository implements HomeRepository {
   }) async {
     try {
       final response = await _client.rpc('membership_me_current');
-      final map = response is Map ? response.cast<String, dynamic>() : <String, dynamic>{};
+      final map =
+          response is Map
+              ? response.cast<String, dynamic>()
+              : <String, dynamic>{};
       final currentRaw = map['current'];
       final current =
           currentRaw is Map ? currentRaw.cast<String, dynamic>() : null;
@@ -241,11 +230,35 @@ class SupabaseHomeRepository implements HomeRepository {
 
   HomeInvite _parseInvite(dynamic response) {
     final map =
-        response is Map ? response.cast<String, dynamic>() : <String, dynamic>{};
+        response is Map
+            ? response.cast<String, dynamic>()
+            : <String, dynamic>{};
     final inviteRaw = map['invite'];
     if (inviteRaw is! Map) {
       throw Exception('Missing invite payload');
     }
     return HomeInvite.fromJson(inviteRaw.cast<String, dynamic>());
   }
+
+  List<HomeMemberSummary> _mapMembers(dynamic response) {
+    final rows = response is List ? response : const <dynamic>[];
+    return rows
+        .map((raw) => (raw as Map).cast<String, dynamic>())
+        .map(HomeMemberSummary.fromJson)
+        .toList(growable: false);
+  }
+
+  Future<List<HomeMemberSummary>> _excludeSelf(
+    List<HomeMemberSummary> members,
+  ) async {
+    final self = await getCurrentMembership(excludeSelf: false);
+    final userId = self?.userId;
+    if (userId == null) return members;
+    return members
+        .where((member) => member.userId != userId)
+        .toList(growable: false);
+  }
+
+  List<HomeMemberSummary> _onlyActive(List<HomeMemberSummary> members) =>
+      members.where((m) => m.role.isNotEmpty).toList(growable: false);
 }

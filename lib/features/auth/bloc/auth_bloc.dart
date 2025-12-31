@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/homes/models.dart';
-import '../../../data/repositories/auth_repository.dart';
+import '../../../core/auth/auth.dart';
 import '../../../../features/home/home.dart';
 import '../../../data/repositories/profile_repository.dart';
 

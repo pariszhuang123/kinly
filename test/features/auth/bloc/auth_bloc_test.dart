@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
-import 'package:kinly/data/repositories/auth_repository.dart';
+import 'package:kinly/core/auth/auth.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/data/repositories/profile_repository.dart';
 import 'package:kinly/core/homes/models.dart';
@@ -33,10 +33,8 @@ void main() {
     ).thenAnswer((_) => sessionController.stream);
     when(() => authRepository.current).thenReturn(null);
     when(() => profileRepository.getCurrentProfile()).thenAnswer(
-      (_) async => const UserProfile(
-        userId: 'profile-user',
-        username: 'tester',
-      ),
+      (_) async =>
+          const UserProfile(userId: 'profile-user', username: 'tester'),
     );
   });
 

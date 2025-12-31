@@ -26,7 +26,7 @@ import 'core/theme/kinly_theme.dart';
 import 'core/logging/logger.dart';
 import 'core/logging/debug_logger.dart';
 import 'core/app_version/app_version.dart';
-import 'data/repositories/auth_repository.dart';
+import 'core/auth/auth.dart';
 import 'features/home/home.dart';
 import 'data/repositories/profile_repository.dart';
 import 'core/notifications/notifications.dart';

@@ -1,5 +1,5 @@
 import 'dart:async';
-import '../../data/repositories/auth_repository.dart';
+import 'auth.dart';
 
 class FakeAuthRepository implements AuthRepository {
   FakeAuthRepository() {

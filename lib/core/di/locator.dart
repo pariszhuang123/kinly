@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import '../account/account.dart';
 import '../app_version/app_version.dart';
-import '../../data/repositories/auth_repository.dart';
+import '../auth/auth.dart';
 import '../../data/repositories/expenses_repository.dart';
 import '../../data/repositories/mood_repository.dart';
 import '../onboarding/onboarding.dart';
