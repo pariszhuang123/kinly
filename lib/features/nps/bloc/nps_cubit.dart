@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/repositories/mood_repository.dart';
+import '../../harmony/harmony.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 
 part 'nps_state.dart';

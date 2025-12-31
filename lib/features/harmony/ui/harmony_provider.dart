@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/repositories/mood_repository.dart';
+import '../harmony.dart';
 import '../../harmony/bloc/harmony_cubit.dart';
 
 class HarmonyProvider extends StatelessWidget {

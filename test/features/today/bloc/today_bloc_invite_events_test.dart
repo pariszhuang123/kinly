@@ -7,7 +7,7 @@ import 'package:kinly/features/flow/flow.dart';
 import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/data/repositories/profile_repository.dart';
-import 'package:kinly/data/repositories/mood_repository.dart';
+import 'package:kinly/features/harmony/harmony.dart';
 import 'package:kinly/core/onboarding/onboarding.dart';
 import 'package:kinly/core/profile/profile_update_notifier.dart';
 import 'package:kinly/core/mood/models.dart';

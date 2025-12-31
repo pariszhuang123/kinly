@@ -3,18 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/mood/enums/mood_scale.dart';
 import '../../../core/mood/models.dart';
-import '../../../data/repositories/mood_repository.dart';
+import '../harmony.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 
 part 'harmony_state.dart';
 
 class HarmonyCubit extends Cubit<HarmonyState> {
-  HarmonyCubit({
-    required String homeId,
-    required MoodRepository moodRepository,
-  }) : _homeId = homeId,
-       _moodRepository = moodRepository,
-       super(const HarmonyState());
+  HarmonyCubit({required String homeId, required MoodRepository moodRepository})
+    : _homeId = homeId,
+      _moodRepository = moodRepository,
+      super(const HarmonyState());
 
   final String _homeId;
   final MoodRepository _moodRepository;
@@ -82,12 +80,7 @@ class HarmonyCubit extends Cubit<HarmonyState> {
         ),
       );
     } catch (error) {
-      emit(
-        state.copyWith(
-          isSubmitting: false,
-          submitError: _mapError(error),
-        ),
-      );
+      emit(state.copyWith(isSubmitting: false, submitError: _mapError(error)));
     }
   }
 

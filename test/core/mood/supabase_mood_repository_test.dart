@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:kinly/core/mood/enums/mood_scale.dart';
 import 'package:kinly/core/mood/models.dart';
-import 'package:kinly/core/mood/supabase_mood_repository.dart';
+import 'package:kinly/features/harmony/data/supabase/supabase_mood_repository.dart';
 
 void main() {
   const homeId = 'home';
@@ -15,17 +15,17 @@ void main() {
       client: SupabaseClient('https://example.supabase.co', 'anon-key'),
       rpc: (fn, {params}) async {
         expect(fn, 'mood_submit');
-        expect(
-          params,
-          {
-            'p_home_id': homeId,
-            'p_mood': MoodScale.sunny.wireValue,
-            'p_comment': comment,
-            'p_add_to_wall': true,
-          },
-        );
+        expect(params, {
+          'p_home_id': homeId,
+          'p_mood': MoodScale.sunny.wireValue,
+          'p_comment': comment,
+          'p_add_to_wall': true,
+        });
         return [
-          {'entry_id': expected.entryId, 'gratitude_post_id': expected.gratitudePostId}
+          {
+            'entry_id': expected.entryId,
+            'gratitude_post_id': expected.gratitudePostId,
+          },
         ];
       },
     );

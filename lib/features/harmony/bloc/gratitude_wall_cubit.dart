@@ -5,7 +5,7 @@ import '../../../core/logging/debug_logger.dart';
 import '../../../core/logging/logger.dart';
 import '../../../core/mood/models.dart';
 import '../../../../features/home/home.dart';
-import '../../../data/repositories/mood_repository.dart';
+import '../harmony.dart';
 
 part 'gratitude_wall_state.dart';
 
@@ -63,10 +63,7 @@ class GratitudeWallCubit extends Cubit<GratitudeWallState> {
         cursorCreatedAt: state.cursorCreatedAt,
         cursorId: state.cursorId,
       );
-      final merged = [
-        ...state.posts,
-        ...page.posts,
-      ];
+      final merged = [...state.posts, ...page.posts];
       final totalPosts = state.totalPosts ?? merged.length;
       final hasMore = merged.length < totalPosts;
       emit(

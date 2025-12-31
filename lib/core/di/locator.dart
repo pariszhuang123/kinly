@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import '../account/account.dart';
 import '../app_version/app_version.dart';
 import '../auth/auth.dart';
-import '../../data/repositories/mood_repository.dart';
 import '../onboarding/onboarding.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../account/data/supabase/supabase_account_repository.dart';
@@ -13,7 +12,6 @@ import '../config/app_config.dart';
 import '../logging/debug_logger.dart';
 import '../logging/logger.dart';
 import '../logging/sentry_logger.dart';
-import '../mood/supabase_mood_repository.dart';
 import '../network/connectivity_monitor.dart';
 import '../notifications/device_token_provider.dart';
 import '../notifications/notifications.dart';
@@ -51,8 +49,6 @@ void setupDependencies() {
     () => _registerLazy<AppVersionRepository>(
       () => SupabaseAppVersionRepository(),
     ),
-    () => _registerLazy<MoodRepository>(() => SupabaseMoodRepository()),
-    () => _registerLazy<NotificationSyncState>(() => NotificationSyncState()),
     () => _registerLazy<DeviceTokenProvider>(
       () => const FirebaseDeviceTokenProvider(),
     ),

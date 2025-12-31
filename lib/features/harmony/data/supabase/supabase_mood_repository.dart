@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:kinly/core/mood/enums/mood_scale.dart';
+import 'package:kinly/core/mood/models.dart';
+import 'package:kinly/core/supabase/supabase_error_mapper.dart';
+import 'package:kinly/core/time/timezone.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../data/repositories/mood_repository.dart';
-import '../time/timezone.dart';
-import 'enums/mood_scale.dart';
-import 'models.dart';
-import '../supabase/supabase_error_mapper.dart';
+import '../../harmony.dart';
 
 typedef RpcInvoker =
     FutureOr<dynamic> Function(String fn, {Map<String, dynamic>? params});
@@ -59,7 +59,6 @@ class SupabaseMoodRepository implements MoodRepository {
       if (res is Map) {
         return MoodSubmitResult.fromJson(res.cast<String, dynamic>());
       }
-      // Supabase RETURNS TABLE typically comes back as a list of rows; accept a 1-row list.
       if (res is List && res.isNotEmpty) {
         final first = res.first;
         if (first is Map<String, dynamic>) {
@@ -163,13 +162,10 @@ class SupabaseMoodRepository implements MoodRepository {
       params: {'p_home_id': homeId},
     );
 
-    // CASE 1: Supabase returns a list of rows (most common for RETURNS TABLE)
     if (res is List && res.isNotEmpty) {
       final row = (res.first as Map).cast<String, dynamic>();
       return GratitudeWallStatus.fromJson(row);
     }
-
-    // CASE 2: Supabase returns a single row as a map
     if (res is Map<String, dynamic>) {
       return GratitudeWallStatus.fromJson(res);
     }
@@ -177,8 +173,6 @@ class SupabaseMoodRepository implements MoodRepository {
       return GratitudeWallStatus.fromJson(res.cast<String, dynamic>());
     }
 
-    // CASE 3: unexpected shape – be explicit (I’d probably default to true or log)
-    // but if you prefer safe: assume no unread
     return const GratitudeWallStatus(hasUnread: false);
   }
 

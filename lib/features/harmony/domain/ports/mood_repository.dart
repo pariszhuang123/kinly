@@ -1,5 +1,5 @@
-import '../../core/mood/enums/mood_scale.dart';
-import '../../core/mood/models.dart';
+import 'package:kinly/core/mood/enums/mood_scale.dart';
+import 'package:kinly/core/mood/models.dart';
 
 abstract class MoodRepository {
   /// Returns true if the current user already submitted a mood for this ISO week.

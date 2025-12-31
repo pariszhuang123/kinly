@@ -7,9 +7,8 @@ import 'package:kinly/core/mood/enums/mood_scale.dart';
 import 'package:kinly/core/mood/models.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/theme/opacity.dart';
-import 'package:kinly/data/repositories/mood_repository.dart';
+import 'package:kinly/features/harmony/harmony.dart';
 import 'package:kinly/features/harmony/bloc/harmony_cubit.dart';
-import 'package:kinly/features/harmony/ui/harmony_page.dart';
 import 'package:kinly/generated/l10n.dart';
 
 class _FakeMoodRepository extends Fake implements MoodRepository {
