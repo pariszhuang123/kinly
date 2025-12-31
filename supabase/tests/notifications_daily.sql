@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 -- pgTAP tests for notifications daily migration
 BEGIN;
-SELECT plan(30);
+SELECT plan(31);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -119,15 +119,22 @@ SELECT has_column(
   'status column exists on notification_sends'
 );
 
--- 3) Unique per user per local_date when sent
+SELECT has_column(
+  'public',
+  'notification_sends',
+  'token_id',
+  'token_id column exists on notification_sends'
+);
+
+-- 3) Unique per token per local_date when sent
 SELECT ok(
   (
     SELECT COUNT(*)
     FROM pg_indexes
     WHERE schemaname = 'public'
-      AND indexname = 'uq_notification_sends_user_date'
+      AND indexname = 'uq_notification_sends_token_date'
   ) = 1,
-  'unique index for sent per day exists'
+  'unique index for token per day exists'
 );
 
 -- 4) RLS enabled on prefs/tokens
@@ -248,7 +255,9 @@ VALUES
   ('30000000-0000-4000-9000-000000000003', '20000000-0000-4000-9000-000000000003', 'expired-token', 'fcm', 'ios', 'expired', now(), now(), now()),
   ('30000000-0000-4000-9000-000000000004', '20000000-0000-4000-9000-000000000006', 'failure-token', 'fcm', 'android', 'active', now(), now(), now()),
   ('30000000-0000-4000-9000-000000000005', '20000000-0000-4000-9000-000000000005', 'success-token', 'fcm', 'android', 'active', now(), now(), now()),
-  ('30000000-0000-4000-9000-000000000006', '20000000-0000-4000-9000-000000000007', 'minute-mismatch-token', 'fcm', 'ios', 'active', now(), now(), now());
+  ('30000000-0000-4000-9000-000000000006', '20000000-0000-4000-9000-000000000007', 'minute-mismatch-token', 'fcm', 'ios', 'active', now(), now(), now()),
+  ('30000000-0000-4000-9000-000000000007', '20000000-0000-4000-9000-000000000004', 'reserve-token-1', 'fcm', 'android', 'active', now(), now(), now()),
+  ('30000000-0000-4000-9000-000000000008', '20000000-0000-4000-9000-000000000004', 'reserve-token-2', 'fcm', 'android', 'active', now(), now(), now());
 
 INSERT INTO tmp_tokens (label, token_id, user_id) VALUES
   ('eligible', '30000000-0000-4000-9000-000000000001', '20000000-0000-4000-9000-000000000001'),
@@ -256,7 +265,9 @@ INSERT INTO tmp_tokens (label, token_id, user_id) VALUES
   ('expired', '30000000-0000-4000-9000-000000000003', '20000000-0000-4000-9000-000000000003'),
   ('failure', '30000000-0000-4000-9000-000000000004', '20000000-0000-4000-9000-000000000006'),
   ('success', '30000000-0000-4000-9000-000000000005', '20000000-0000-4000-9000-000000000005'),
-  ('minute_mismatch', '30000000-0000-4000-9000-000000000006', '20000000-0000-4000-9000-000000000007');
+  ('minute_mismatch', '30000000-0000-4000-9000-000000000006', '20000000-0000-4000-9000-000000000007'),
+  ('reserve_one', '30000000-0000-4000-9000-000000000007', '20000000-0000-4000-9000-000000000004'),
+  ('reserve_two', '30000000-0000-4000-9000-000000000008', '20000000-0000-4000-9000-000000000004');
 
 -- Candidate selection filters for wants_daily + allowed + current hour + content present + active token
 SET LOCAL ROLE service_role;
@@ -299,18 +310,38 @@ SELECT is(
 
 DROP TABLE IF EXISTS tmp_candidates;
 
--- Reserve send is idempotent per user+date and stores job_run_id
+-- Reserve send is idempotent per token+date and stores job_run_id
+SELECT set_config(
+  'app.test.reserve_token_one',
+  (SELECT token_id::text FROM tmp_tokens WHERE label = 'reserve_one'),
+  true
+);
+SELECT set_config(
+  'app.test.reserve_token_two',
+  (SELECT token_id::text FROM tmp_tokens WHERE label = 'reserve_two'),
+  true
+);
+
 SET LOCAL ROLE service_role;
 SET LOCAL search_path = public, auth, extensions;
 CREATE TEMP TABLE tmp_reserved AS
 SELECT public.notifications_reserve_send(
   '20000000-0000-4000-9000-000000000004',
+  current_setting('app.test.reserve_token_one', false)::uuid,
   timezone('UTC', now())::date,
   'job-run-1'
 ) AS send_id;
 CREATE TEMP TABLE tmp_second_attempt AS
 SELECT public.notifications_reserve_send(
   '20000000-0000-4000-9000-000000000004',
+  current_setting('app.test.reserve_token_one', false)::uuid,
+  timezone('UTC', now())::date,
+  'job-run-1'
+) AS send_id;
+CREATE TEMP TABLE tmp_other_token AS
+SELECT public.notifications_reserve_send(
+  '20000000-0000-4000-9000-000000000004',
+  current_setting('app.test.reserve_token_two', false)::uuid,
   timezone('UTC', now())::date,
   'job-run-1'
 ) AS send_id;
@@ -325,7 +356,7 @@ SELECT ok(
 SELECT is(
   (SELECT send_id FROM tmp_second_attempt),
   NULL,
-  'Second reservation for same user/date returns null'
+  'Second reservation for same token/date returns null'
 );
 
 SELECT is(
@@ -335,8 +366,8 @@ SELECT is(
     WHERE user_id = '20000000-0000-4000-9000-000000000004'
       AND local_date = timezone('UTC', now())::date
   ),
-  1,
-  'Only one send row persisted per user/date'
+  2,
+  'Two send rows persisted for distinct tokens on same day'
 );
 
 SELECT is(
@@ -344,6 +375,7 @@ SELECT is(
     SELECT job_run_id
     FROM public.notification_sends
     WHERE user_id = '20000000-0000-4000-9000-000000000004'
+      AND token_id = (SELECT token_id FROM tmp_tokens WHERE label = 'reserve_one')
       AND local_date = timezone('UTC', now())::date
   ),
   'job-run-1',
@@ -352,13 +384,21 @@ SELECT is(
 
 DROP TABLE IF EXISTS tmp_reserved;
 DROP TABLE IF EXISTS tmp_second_attempt;
+DROP TABLE IF EXISTS tmp_other_token;
 
 -- Mark send success updates status + prefs.last_sent_local_date
+SELECT set_config(
+  'app.test.success_token_id',
+  (SELECT token_id::text FROM tmp_tokens WHERE label = 'success'),
+  true
+);
+
 SET LOCAL ROLE service_role;
 SET LOCAL search_path = public, auth, extensions;
 CREATE TEMP TABLE tmp_success AS
 SELECT public.notifications_reserve_send(
   '20000000-0000-4000-9000-000000000005',
+  current_setting('app.test.success_token_id', false)::uuid,
   timezone('UTC', now())::date,
   'job-success'
 ) AS send_id;
@@ -413,6 +453,7 @@ SET LOCAL search_path = public, auth, extensions;
 CREATE TEMP TABLE tmp_failed AS
 SELECT public.notifications_reserve_send(
   '20000000-0000-4000-9000-000000000006',
+  current_setting('app.test.failure_token_id', false)::uuid,
   timezone('UTC', now())::date,
   'job-fail'
 ) AS send_id;

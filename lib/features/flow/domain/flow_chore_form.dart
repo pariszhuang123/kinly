@@ -1,4 +1,5 @@
 import '../../../core/chores/models.dart';
+import '../../../core/time/date_only.dart';
 import '../../../core/utils/url_validator.dart';
 
 const _unset = Object();
@@ -23,10 +24,11 @@ class FlowChoreForm {
   });
 
   factory FlowChoreForm.initial({DateTime? startDate}) {
+    final normalizedStart = dateOnly(startDate ?? DateTime.now());
     return FlowChoreForm(
       title: '',
       assigneeUserId: null,
-      startDate: startDate ?? DateTime.now(),
+      startDate: normalizedStart,
       recurrence: ChoreRecurrence.none,
       notes: '',
       howToVideoUrl: '',
@@ -38,7 +40,7 @@ class FlowChoreForm {
     return FlowChoreForm(
       title: chore.name,
       assigneeUserId: chore.assigneeUserId,
-      startDate: chore.startDate,
+      startDate: dateOnly(chore.startDate),
       recurrence: chore.recurrence,
       notes: chore.notes ?? '',
       howToVideoUrl: chore.howToVideoUrl ?? '',
@@ -61,7 +63,8 @@ class FlowChoreForm {
           identical(assigneeUserId, _unset)
               ? this.assigneeUserId
               : assigneeUserId as String?,
-      startDate: startDate ?? this.startDate,
+      startDate:
+          startDate != null ? dateOnly(startDate) : this.startDate,
       recurrence: recurrence ?? this.recurrence,
       notes: notes ?? this.notes,
       howToVideoUrl: howToVideoUrl ?? this.howToVideoUrl,

@@ -1,6 +1,7 @@
 // lib/core/ui/kinly_date_picker.dart
 import 'package:flutter/material.dart';
 import '../theme/kinly_palette.dart';
+import '../time/date_only.dart';
 
 Future<DateTime?> showKinlyDatePicker({
   required BuildContext context,
@@ -46,4 +47,20 @@ Future<DateTime?> showKinlyDatePicker({
       );
     },
   );
+}
+
+Future<DateTime?> showKinlyDateOnlyPicker({
+  required BuildContext context,
+  required DateTime initialDate,
+  required DateTime firstDate,
+  required DateTime lastDate,
+}) async {
+  final picked = await showKinlyDatePicker(
+    context: context,
+    initialDate: dateOnly(initialDate),
+    firstDate: dateOnly(firstDate),
+    lastDate: dateOnly(lastDate),
+  );
+  if (picked == null) return null;
+  return dateOnly(picked);
 }

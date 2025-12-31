@@ -190,6 +190,7 @@ async function handleCandidate(
   const sendId = await reserveSend(
     supabase,
     candidate.user_id,
+    candidate.token_id,
     localDate,
     jobRunId,
   );
@@ -224,11 +225,13 @@ async function handleCandidate(
 async function reserveSend(
   supabase: SupabaseClient,
   userId: string,
+  tokenId: string,
   localDate: string,
   jobRunId: string,
 ): Promise<string | null> {
   const { data, error } = await supabase.rpc("notifications_reserve_send", {
     p_user_id: userId,
+    p_token_id: tokenId,
     p_local_date: localDate,
     p_job_run_id: jobRunId,
   });

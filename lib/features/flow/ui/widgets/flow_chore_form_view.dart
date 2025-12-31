@@ -178,16 +178,18 @@ class _FlowChoreFormView extends StatelessWidget {
 
   Future<void> _pickStartDate(BuildContext context, DateTime current) async {
     final now = DateTime.now();
-    final earliestBase = DateTime(now.year - 10, now.month, now.day);
+    final today = todayDateOnly(now);
+    final currentDay = dateOnly(current);
+    final earliestBase = DateTime(today.year - 10, today.month, today.day);
     final firstDate =
-        current.isBefore(earliestBase)
-            ? DateTime(current.year, current.month, current.day)
+        currentDay.isBefore(earliestBase)
+            ? DateTime(currentDay.year, currentDay.month, currentDay.day)
             : earliestBase;
-    final lastDate = DateTime(now.year + 1, now.month, now.day);
+    final lastDate = DateTime(today.year + 1, today.month, today.day);
 
-    final picked = await showKinlyDatePicker(
+    final picked = await showKinlyDateOnlyPicker(
       context: context,
-      initialDate: current,
+      initialDate: currentDay,
       firstDate: firstDate,
       lastDate: lastDate,
     );

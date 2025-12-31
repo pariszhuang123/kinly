@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 
 import 'share_split_mode.dart';
 import '../../../core/expenses/enums/expense_recurrence_interval.dart';
+import '../../../core/time/date_only.dart';
 
 class ShareCreateForm extends Equatable {
   ShareCreateForm({
@@ -33,7 +34,7 @@ class ShareCreateForm extends Equatable {
       selectedParticipantIds: const <String>{},
       customAmountInputs: const <String, String>{},
       recurrence: ExpenseRecurrenceInterval.none,
-      startDate: _normalizeDate(DateTime.now()),
+      startDate: dateOnly(DateTime.now()),
     );
   }
 
@@ -68,7 +69,7 @@ class ShareCreateForm extends Equatable {
               : this.selectedParticipantIds,
       customAmountInputs: customAmountInputs ?? this.customAmountInputs,
       recurrence: recurrence ?? this.recurrence,
-      startDate: startDate != null ? _normalizeDate(startDate) : this.startDate,
+      startDate: startDate != null ? dateOnly(startDate) : this.startDate,
     );
   }
 
@@ -140,6 +141,4 @@ class ShareCreateForm extends Equatable {
     ];
   }
 
-  static DateTime _normalizeDate(DateTime value) =>
-      DateTime(value.year, value.month, value.day);
 }

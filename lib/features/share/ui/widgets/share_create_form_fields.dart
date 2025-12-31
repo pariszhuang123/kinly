@@ -131,9 +131,9 @@ class _StartDateField extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final dateLabel = DateFormat.yMMMMd().format(state.form.startDate);
-    final now = DateTime.now();
-    final firstDate = now.subtract(const Duration(days: 90));
-    final lastDate = now.add(const Duration(days: 365));
+    final today = todayDateOnly();
+    final firstDate = today.subtract(const Duration(days: 90));
+    final lastDate = today.add(const Duration(days: 365));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,19 +145,11 @@ class _StartDateField extends StatelessWidget {
               locked
                   ? null
                   : () async {
-                    final picked = await showKinlyDatePicker(
+                    final picked = await showKinlyDateOnlyPicker(
                       context: context,
-                      initialDate: state.form.startDate,
-                      firstDate: DateTime(
-                        firstDate.year,
-                        firstDate.month,
-                        firstDate.day,
-                      ),
-                      lastDate: DateTime(
-                        lastDate.year,
-                        lastDate.month,
-                        lastDate.day,
-                      ),
+                      initialDate: dateOnly(state.form.startDate),
+                      firstDate: firstDate,
+                      lastDate: lastDate,
                     );
                     if (picked != null && context.mounted) {
                       context.read<ShareCreateBloc>().add(
