@@ -4,8 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:flutter/services.dart';
 
 import 'package:kinly/core/notifications/notification_permission_service.dart';
-import 'package:kinly/core/notifications/notification_preferences.dart';
-import 'package:kinly/data/repositories/notifications_repository.dart';
+import 'package:kinly/core/notifications/notifications.dart';
 import 'package:kinly/features/profile_settings/connection/bloc/connection_settings_bloc.dart';
 
 class _MockNotificationsRepository extends Mock
@@ -22,18 +21,20 @@ void main() {
     final binding = TestWidgetsFlutterBinding.ensureInitialized();
     const channelName = 'flutter.baseflow.com/permissions/methods';
     binding.defaultBinaryMessenger.setMockMethodCallHandler(
-        const MethodChannel(channelName), (methodCall) async {
-      switch (methodCall.method) {
-        case 'checkPermissionStatus':
-          return 1; // granted
-        case 'requestPermissions':
-          final perms = methodCall.arguments['permissions'] as List<dynamic>;
-          return {for (final p in perms) p: 1}; // granted
-        case 'shouldShowRequestPermissionRationale':
-          return false;
-      }
-      return null;
-    });
+      const MethodChannel(channelName),
+      (methodCall) async {
+        switch (methodCall.method) {
+          case 'checkPermissionStatus':
+            return 1; // granted
+          case 'requestPermissions':
+            final perms = methodCall.arguments['permissions'] as List<dynamic>;
+            return {for (final p in perms) p: 1}; // granted
+          case 'shouldShowRequestPermissionRationale':
+            return false;
+        }
+        return null;
+      },
+    );
   });
 
   setUp(() {
@@ -70,39 +71,41 @@ void main() {
         );
         return buildBloc();
       },
-      act: (bloc) => bloc.add(
-        const ConnectionSettingsStarted(
-          locale: 'en',
-          timezone: 'UTC',
-          platform: 'ios',
-          deviceToken: 'token-1',
-        ),
-      ),
-      expect: () => [
-        ConnectionSettingsState.initial().copyWith(
-          isLoading: true,
-          locale: 'en',
-          timezone: 'UTC',
-          platform: 'ios',
-          deviceToken: 'token-1',
-          action: ConnectionSettingsAction.none,
-          actionMessage: null,
-        ),
-        ConnectionSettingsState.initial().copyWith(
-          isLoading: false,
-          locale: 'en',
-          timezone: 'UTC',
-          platform: 'ios',
-          deviceToken: 'token-1',
-          wantsDaily: true,
-          preferredHour: 9,
-          preferredMinute: 0,
-          osPermission: 'allowed',
-          pendingEnableAfterSettings: false,
-          action: ConnectionSettingsAction.none,
-          actionMessage: null,
-        ),
-      ],
+      act:
+          (bloc) => bloc.add(
+            const ConnectionSettingsStarted(
+              locale: 'en',
+              timezone: 'UTC',
+              platform: 'ios',
+              deviceToken: 'token-1',
+            ),
+          ),
+      expect:
+          () => [
+            ConnectionSettingsState.initial().copyWith(
+              isLoading: true,
+              locale: 'en',
+              timezone: 'UTC',
+              platform: 'ios',
+              deviceToken: 'token-1',
+              action: ConnectionSettingsAction.none,
+              actionMessage: null,
+            ),
+            ConnectionSettingsState.initial().copyWith(
+              isLoading: false,
+              locale: 'en',
+              timezone: 'UTC',
+              platform: 'ios',
+              deviceToken: 'token-1',
+              wantsDaily: true,
+              preferredHour: 9,
+              preferredMinute: 0,
+              osPermission: 'allowed',
+              pendingEnableAfterSettings: false,
+              action: ConnectionSettingsAction.none,
+              actionMessage: null,
+            ),
+          ],
       verify: (_) {
         verify(
           () => notificationsRepository.fetchPreferences(
@@ -132,41 +135,43 @@ void main() {
         ).thenAnswer((_) async {});
         return buildBloc();
       },
-      seed: () => ConnectionSettingsState.initial().copyWith(
-        timezone: 'UTC',
-        locale: 'en',
-        platform: 'ios',
-        preferredHour: 9,
-        preferredMinute: 0,
-      ),
-      act: (bloc) => bloc.add(const ConnectionSettingsToggleRequested(
-        enabled: true,
-      )),
-      expect: () => [
-        ConnectionSettingsState.initial().copyWith(
-          timezone: 'UTC',
-          locale: 'en',
-          platform: 'ios',
-          preferredHour: 9,
-          preferredMinute: 0,
-          isSavingToggle: true,
-          action: ConnectionSettingsAction.none,
-          actionMessage: null,
-        ),
-        ConnectionSettingsState.initial().copyWith(
-          timezone: 'UTC',
-          locale: 'en',
-          platform: 'ios',
-          preferredHour: 9,
-          preferredMinute: 0,
-          wantsDaily: true,
-          osPermission: 'allowed',
-          isSavingToggle: false,
-          pendingEnableAfterSettings: false,
-          action: ConnectionSettingsAction.none,
-          actionMessage: null,
-        ),
-      ],
+      seed:
+          () => ConnectionSettingsState.initial().copyWith(
+            timezone: 'UTC',
+            locale: 'en',
+            platform: 'ios',
+            preferredHour: 9,
+            preferredMinute: 0,
+          ),
+      act:
+          (bloc) =>
+              bloc.add(const ConnectionSettingsToggleRequested(enabled: true)),
+      expect:
+          () => [
+            ConnectionSettingsState.initial().copyWith(
+              timezone: 'UTC',
+              locale: 'en',
+              platform: 'ios',
+              preferredHour: 9,
+              preferredMinute: 0,
+              isSavingToggle: true,
+              action: ConnectionSettingsAction.none,
+              actionMessage: null,
+            ),
+            ConnectionSettingsState.initial().copyWith(
+              timezone: 'UTC',
+              locale: 'en',
+              platform: 'ios',
+              preferredHour: 9,
+              preferredMinute: 0,
+              wantsDaily: true,
+              osPermission: 'allowed',
+              isSavingToggle: false,
+              pendingEnableAfterSettings: false,
+              action: ConnectionSettingsAction.none,
+              actionMessage: null,
+            ),
+          ],
       verify: (_) {
         verify(
           () => permissionService.requestAndSync(
@@ -195,46 +200,46 @@ void main() {
             deviceToken: any(named: 'deviceToken'),
             platform: any(named: 'platform'),
           ),
-        ).thenThrow(
-          NotificationPermissionException(permanentlyDenied: true),
-        );
+        ).thenThrow(NotificationPermissionException(permanentlyDenied: true));
         return buildBloc();
       },
-      seed: () => ConnectionSettingsState.initial().copyWith(
-        timezone: 'UTC',
-        locale: 'en',
-        platform: 'ios',
-        preferredHour: 9,
-        preferredMinute: 0,
-      ),
-      act: (bloc) => bloc.add(const ConnectionSettingsToggleRequested(
-        enabled: true,
-      )),
-      expect: () => [
-        ConnectionSettingsState.initial().copyWith(
-          timezone: 'UTC',
-          locale: 'en',
-          platform: 'ios',
-          preferredHour: 9,
-          preferredMinute: 0,
-          isSavingToggle: true,
-          action: ConnectionSettingsAction.none,
-          actionMessage: null,
-        ),
-        ConnectionSettingsState.initial().copyWith(
-          timezone: 'UTC',
-          locale: 'en',
-          platform: 'ios',
-          preferredHour: 9,
-          preferredMinute: 0,
-          wantsDaily: false,
-          osPermission: 'blocked',
-          isSavingToggle: false,
-          pendingEnableAfterSettings: true,
-          action: ConnectionSettingsAction.openSystemSettings,
-          actionMessage: null,
-        ),
-      ],
+      seed:
+          () => ConnectionSettingsState.initial().copyWith(
+            timezone: 'UTC',
+            locale: 'en',
+            platform: 'ios',
+            preferredHour: 9,
+            preferredMinute: 0,
+          ),
+      act:
+          (bloc) =>
+              bloc.add(const ConnectionSettingsToggleRequested(enabled: true)),
+      expect:
+          () => [
+            ConnectionSettingsState.initial().copyWith(
+              timezone: 'UTC',
+              locale: 'en',
+              platform: 'ios',
+              preferredHour: 9,
+              preferredMinute: 0,
+              isSavingToggle: true,
+              action: ConnectionSettingsAction.none,
+              actionMessage: null,
+            ),
+            ConnectionSettingsState.initial().copyWith(
+              timezone: 'UTC',
+              locale: 'en',
+              platform: 'ios',
+              preferredHour: 9,
+              preferredMinute: 0,
+              wantsDaily: false,
+              osPermission: 'blocked',
+              isSavingToggle: false,
+              pendingEnableAfterSettings: true,
+              action: ConnectionSettingsAction.openSystemSettings,
+              actionMessage: null,
+            ),
+          ],
     );
 
     blocTest<ConnectionSettingsBloc, ConnectionSettingsState>(
@@ -256,33 +261,36 @@ void main() {
         );
         return buildBloc();
       },
-      seed: () => ConnectionSettingsState.initial().copyWith(
-        wantsDaily: true,
-        osPermission: 'allowed',
-        preferredHour: 9,
-        preferredMinute: 0,
-      ),
-      act: (bloc) => bloc.add(
-        const ConnectionSettingsTimeChanged(hour: 7, minute: 15),
-      ),
-      expect: () => [
-        ConnectionSettingsState.initial().copyWith(
-          wantsDaily: true,
-          osPermission: 'allowed',
-          preferredHour: 9,
-          preferredMinute: 0,
-          isSavingTime: true,
-          action: ConnectionSettingsAction.none,
-          actionMessage: null,
-        ),
-        ConnectionSettingsState.initial().copyWith(
-          wantsDaily: true,
-          osPermission: 'allowed',
-          preferredHour: 7,
-          preferredMinute: 15,
-          isSavingTime: false,
-        ),
-      ],
+      seed:
+          () => ConnectionSettingsState.initial().copyWith(
+            wantsDaily: true,
+            osPermission: 'allowed',
+            preferredHour: 9,
+            preferredMinute: 0,
+          ),
+      act:
+          (bloc) => bloc.add(
+            const ConnectionSettingsTimeChanged(hour: 7, minute: 15),
+          ),
+      expect:
+          () => [
+            ConnectionSettingsState.initial().copyWith(
+              wantsDaily: true,
+              osPermission: 'allowed',
+              preferredHour: 9,
+              preferredMinute: 0,
+              isSavingTime: true,
+              action: ConnectionSettingsAction.none,
+              actionMessage: null,
+            ),
+            ConnectionSettingsState.initial().copyWith(
+              wantsDaily: true,
+              osPermission: 'allowed',
+              preferredHour: 7,
+              preferredMinute: 15,
+              isSavingTime: false,
+            ),
+          ],
     );
   });
 }

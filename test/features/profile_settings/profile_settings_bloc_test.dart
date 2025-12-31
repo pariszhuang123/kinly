@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/core/profile/models.dart';
-import 'package:kinly/data/repositories/account_repository.dart';
+import 'package:kinly/core/account/account.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/data/repositories/profile_repository.dart';
 import 'package:kinly/features/profile_settings/bloc/profile_settings_bloc.dart';
@@ -140,9 +140,9 @@ void main() {
     blocTest<ProfileSettingsBloc, ProfileSettingsState>(
       'emits success after kicking a member',
       build: () => buildBloc(),
-      act: (bloc) => bloc.add(
-        const ProfileSettingsKickMemberRequested('user-2'),
-      ),
+      act:
+          (bloc) =>
+              bloc.add(const ProfileSettingsKickMemberRequested('user-2')),
       expect: () {
         final initial = ProfileSettingsState.initial();
         final progress = initial.copyWith(
@@ -168,10 +168,7 @@ void main() {
       },
       verify: (_) {
         verify(
-          () => homeRepository.kickMember(
-            homeId: 'home-1',
-            userId: 'user-2',
-          ),
+          () => homeRepository.kickMember(homeId: 'home-1', userId: 'user-2'),
         ).called(1);
         verify(() => homeRepository.getCurrentMembership()).called(1);
         verify(() => homeRepository.listActiveMembers('home-1')).called(1);
@@ -189,9 +186,9 @@ void main() {
         ).thenThrow(Exception('kick failed'));
         return buildBloc();
       },
-      act: (bloc) => bloc.add(
-        const ProfileSettingsKickMemberRequested('user-3'),
-      ),
+      act:
+          (bloc) =>
+              bloc.add(const ProfileSettingsKickMemberRequested('user-3')),
       expect: () {
         final initial = ProfileSettingsState.initial();
         final progress = initial.copyWith(

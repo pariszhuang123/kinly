@@ -22,7 +22,7 @@ import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../data/repositories/expenses_repository.dart';
 import '../../../../../features/home/home.dart';
-import '../../../../data/repositories/notifications_repository.dart';
+import '../../../../core/notifications/notifications.dart';
 import '../../../../generated/l10n.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/homes/models.dart';
@@ -325,16 +325,19 @@ class _TodayScreenState extends State<TodayScreen>
       children: [
         if (inviteConfig.showPrompt) ...[
           TodayInvitePrompt(
-            title: inviteConfig.isFlatmate
-                ? s.todayFlatmateInviteTitle
-                : s.todayInviteFriendsTitle,
-            subtitle: inviteConfig.isFlatmate
-                ? s.todayFlatmateInviteSubtitle
-                : s.todayInviteFriendsSubtitle,
+            title:
+                inviteConfig.isFlatmate
+                    ? s.todayFlatmateInviteTitle
+                    : s.todayInviteFriendsTitle,
+            subtitle:
+                inviteConfig.isFlatmate
+                    ? s.todayFlatmateInviteSubtitle
+                    : s.todayInviteFriendsSubtitle,
             primaryLabel: s.todayInviteShareCta,
-            secondaryLabel: inviteConfig.isFlatmate
-                ? s.todayInviteNotNow
-                : s.todayInviteNotNow,
+            secondaryLabel:
+                inviteConfig.isFlatmate
+                    ? s.todayInviteNotNow
+                    : s.todayInviteNotNow,
             onPrimary: () async {
               final shared = await _shareInvite(
                 context,
@@ -343,11 +346,12 @@ class _TodayScreenState extends State<TodayScreen>
               if (!context.mounted || !shared) return;
               context.read<TodayBloc>().add(inviteConfig.logEvent);
             },
-            onSecondary: inviteConfig.isFlatmate
-                ? () => context.read<TodayBloc>().add(
+            onSecondary:
+                inviteConfig.isFlatmate
+                    ? () => context.read<TodayBloc>().add(
                       const TodayFlatmateInviteDismissed(),
                     )
-                : null,
+                    : null,
           ),
           SizedBox(height: spacing.lg),
         ],
@@ -382,18 +386,13 @@ class _TodayScreenState extends State<TodayScreen>
               _openShareDraftEdit(context, draft);
             },
             onSeeAllDraftsTap: () {
-              logger.info(
-                'Tapped see all share drafts',
-                tag: _shareLogTag,
-              );
+              logger.info('Tapped see all share drafts', tag: _shareLogTag);
               _openShareCreatedList(context);
             },
           ),
         if (hasGratitude) ...[
           SizedBox(height: spacing.lg),
-          TodayGratitudeSection(
-            onTap: () => _openGratitudeWall(context),
-          ),
+          TodayGratitudeSection(onTap: () => _openGratitudeWall(context)),
         ],
       ],
     );
@@ -405,9 +404,10 @@ class _TodayScreenState extends State<TodayScreen>
     return _InviteConfig(
       showPrompt: isFlatmate || shouldShowGeneric,
       isFlatmate: isFlatmate,
-      logEvent: isFlatmate
-          ? const TodayFlatmateInviteShareLogged(channel: 'system_share')
-          : const TodayInviteShareLogged(channel: 'system_share'),
+      logEvent:
+          isFlatmate
+              ? const TodayFlatmateInviteShareLogged(channel: 'system_share')
+              : const TodayInviteShareLogged(channel: 'system_share'),
     );
   }
 }

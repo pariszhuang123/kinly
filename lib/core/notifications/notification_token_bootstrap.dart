@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import '../../data/repositories/notifications_repository.dart';
+import '../../core/notifications/notifications.dart';
 import '../logging/logger.dart';
 
 /// Snapshot of the values needed to sync a device token.

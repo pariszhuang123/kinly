@@ -9,9 +9,8 @@ import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/notifications/device_token_provider.dart';
 import 'package:kinly/core/notifications/notification_permission_service.dart';
-import 'package:kinly/core/notifications/notification_preferences.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
-import 'package:kinly/data/repositories/notifications_repository.dart';
+import 'package:kinly/core/notifications/notifications.dart';
 import 'package:kinly/features/today/bloc/today_bloc.dart';
 import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/features/today/ui/today_screen.dart';
@@ -34,7 +33,7 @@ class _TestDeviceTokenProvider implements DeviceTokenProvider {
 
 class _TestNotificationPermissionService extends NotificationPermissionService {
   _TestNotificationPermissionService({required this.repo})
-      : super(notificationsRepository: repo);
+    : super(notificationsRepository: repo);
 
   final NotificationsRepository repo;
   int callCount = 0;
@@ -91,9 +90,7 @@ void main() {
       supportedLocales: S.delegate.supportedLocales,
       home: BlocProvider<TodayBloc>.value(
         value: todayBloc,
-        child: TodayScreen(
-          onNotificationPrompt: null,
-        ),
+        child: TodayScreen(onNotificationPrompt: null),
       ),
     );
   }
@@ -120,8 +117,9 @@ void main() {
     await sl.reset();
     todayBloc = _MockTodayBloc();
     notificationsRepository = _MockNotificationsRepository();
-    permissionService =
-        _TestNotificationPermissionService(repo: notificationsRepository);
+    permissionService = _TestNotificationPermissionService(
+      repo: notificationsRepository,
+    );
     tokenProvider = _TestDeviceTokenProvider();
     capturedTimezone = '';
 
@@ -162,7 +160,6 @@ void main() {
     await sl.reset(dispose: true);
   });
 
-
   testWidgets(
     'fires notification permission sync when onboarding hint tick increments',
     (tester) async {
@@ -175,29 +172,25 @@ void main() {
     },
   );
 
-  testWidgets(
-    'passes resolver timezone to notification sync',
-    (tester) async {
-      await tester.pumpWidget(buildApp());
-      final dynamic state = tester.state(find.byType(TodayScreen));
-      await state.debugTriggerNotificationPrompt();
-      await tester.pumpAndSettle();
+  testWidgets('passes resolver timezone to notification sync', (tester) async {
+    await tester.pumpWidget(buildApp());
+    final dynamic state = tester.state(find.byType(TodayScreen));
+    await state.debugTriggerNotificationPrompt();
+    await tester.pumpAndSettle();
 
-      expect(capturedTimezone, 'Europe/Paris');
-    },
-  );
+    expect(capturedTimezone, 'Europe/Paris');
+  });
 
-  testWidgets(
-    'swallows NotificationPermissionException and continues',
-    (tester) async {
-      permissionService.throwPermission = true;
+  testWidgets('swallows NotificationPermissionException and continues', (
+    tester,
+  ) async {
+    permissionService.throwPermission = true;
 
-      await tester.pumpWidget(buildApp());
-      final dynamic state = tester.state(find.byType(TodayScreen));
-      await state.debugTriggerNotificationPrompt();
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(buildApp());
+    final dynamic state = tester.state(find.byType(TodayScreen));
+    await state.debugTriggerNotificationPrompt();
+    await tester.pumpAndSettle();
 
-      expect(permissionService.callCount, 1);
-    },
-  );
+    expect(permissionService.callCount, 1);
+  });
 }

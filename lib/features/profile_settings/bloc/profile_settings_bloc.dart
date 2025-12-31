@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../data/repositories/account_repository.dart';
+import '../../../core/account/account.dart';
 import '../../../../features/home/home.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../../../core/homes/models.dart';
@@ -175,10 +175,7 @@ class ProfileSettingsBloc
       ),
     );
     try {
-      await _homeRepository.kickMember(
-        homeId: _homeId,
-        userId: event.userId,
-      );
+      await _homeRepository.kickMember(homeId: _homeId, userId: event.userId);
       emit(
         state.copyWith(
           kickInProgress: false,

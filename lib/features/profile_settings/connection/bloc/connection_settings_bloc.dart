@@ -8,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/notifications/authorization_status_mapper.dart';
 
 import '../../../../core/notifications/notification_permission_service.dart';
-import '../../../../data/repositories/notifications_repository.dart';
+import '../../../../core/notifications/notifications.dart';
 
 part 'connection_settings_event.dart';
 part 'connection_settings_state.dart';
@@ -18,9 +18,9 @@ class ConnectionSettingsBloc
   ConnectionSettingsBloc({
     required NotificationsRepository notificationsRepository,
     required NotificationPermissionService permissionService,
-  })  : _notificationsRepository = notificationsRepository,
-        _permissionService = permissionService,
-        super(ConnectionSettingsState.initial()) {
+  }) : _notificationsRepository = notificationsRepository,
+       _permissionService = permissionService,
+       super(ConnectionSettingsState.initial()) {
     on<ConnectionSettingsStarted>(_onStarted);
     on<ConnectionSettingsToggleRequested>(_onToggleRequested);
     on<ConnectionSettingsTimeChanged>(_onTimeChanged);
@@ -64,9 +64,8 @@ class ConnectionSettingsBloc
           wantsDaily: prefs.wantsDaily,
           preferredHour: prefs.preferredHour,
           preferredMinute: prefs.preferredMinute,
-          osPermission: prefs.osPermission.isNotEmpty
-              ? prefs.osPermission
-              : osPermission,
+          osPermission:
+              prefs.osPermission.isNotEmpty ? prefs.osPermission : osPermission,
           pendingEnableAfterSettings: false,
           action: ConnectionSettingsAction.none,
           actionMessage: null,
@@ -125,9 +124,10 @@ class ConnectionSettingsBloc
             osPermission: error.permanentlyDenied ? 'blocked' : 'unknown',
             isSavingToggle: false,
             pendingEnableAfterSettings: error.permanentlyDenied,
-            action: error.permanentlyDenied
-                ? ConnectionSettingsAction.openSystemSettings
-                : ConnectionSettingsAction.permissionBlocked,
+            action:
+                error.permanentlyDenied
+                    ? ConnectionSettingsAction.openSystemSettings
+                    : ConnectionSettingsAction.permissionBlocked,
             actionMessage: null,
           ),
         );
@@ -144,13 +144,13 @@ class ConnectionSettingsBloc
     }
 
     try {
-          final prefs = await _notificationsRepository.updatePreferences(
-            wantsDaily: false,
-            preferredHour: state.preferredHour,
-            preferredMinute: state.preferredMinute,
-          );
-          emit(
-            state.copyWith(
+      final prefs = await _notificationsRepository.updatePreferences(
+        wantsDaily: false,
+        preferredHour: state.preferredHour,
+        preferredMinute: state.preferredMinute,
+      );
+      emit(
+        state.copyWith(
           wantsDaily: prefs.wantsDaily,
           preferredHour: prefs.preferredHour,
           osPermission: prefs.osPermission,
@@ -274,7 +274,8 @@ class ConnectionSettingsBloc
 
   Future<String> _readOsPermission() async {
     if (Platform.isIOS) {
-      final settings = await FirebaseMessaging.instance.getNotificationSettings();
+      final settings =
+          await FirebaseMessaging.instance.getNotificationSettings();
       return mapAuthorizationStatusToOsPermission(settings.authorizationStatus);
     }
 

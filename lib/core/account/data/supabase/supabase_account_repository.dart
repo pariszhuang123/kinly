@@ -1,6 +1,5 @@
+import 'package:kinly/core/account/account.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../../data/repositories/account_repository.dart';
 
 class SupabaseAccountRepository implements AccountRepository {
   SupabaseAccountRepository({SupabaseClient? client})

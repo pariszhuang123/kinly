@@ -5,7 +5,7 @@ import 'package:permission_handler/permission_handler.dart' as ph;
 
 import 'authorization_status_mapper.dart';
 
-import '../../data/repositories/notifications_repository.dart';
+import '../../core/notifications/notifications.dart';
 import 'enums/permission_status.dart';
 
 class NotificationPermissionException implements Exception {

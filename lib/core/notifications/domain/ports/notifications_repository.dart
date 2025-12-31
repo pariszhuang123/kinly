@@ -1,4 +1,4 @@
-import '../../core/notifications/notification_preferences.dart';
+import 'package:kinly/core/notifications/notification_preferences.dart';
 
 /// Boundary for daily notification preferences and device tokens.
 abstract class NotificationsRepository {

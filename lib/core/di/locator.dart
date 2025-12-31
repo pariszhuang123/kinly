@@ -1,14 +1,13 @@
 import 'package:get_it/get_it.dart';
 
-import '../../data/repositories/account_repository.dart';
+import '../account/account.dart';
 import '../../data/repositories/app_version_repository.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/expenses_repository.dart';
 import '../../data/repositories/mood_repository.dart';
-import '../../data/repositories/notifications_repository.dart';
 import '../../data/repositories/onboarding_repository.dart';
 import '../../data/repositories/profile_repository.dart';
-import '../account/supabase_account_repository.dart';
+import '../account/data/supabase/supabase_account_repository.dart';
 import '../app_version/supabase_app_version_repository.dart';
 import '../auth/supabase_auth_repository.dart';
 import '../config/app_config.dart';
@@ -19,8 +18,8 @@ import '../logging/sentry_logger.dart';
 import '../mood/supabase_mood_repository.dart';
 import '../network/connectivity_monitor.dart';
 import '../notifications/device_token_provider.dart';
-import '../notifications/notification_sync_state.dart';
-import '../notifications/supabase_notifications_repository.dart';
+import '../notifications/notifications.dart';
+import '../notifications/data/supabase/supabase_notifications_repository.dart';
 import '../onboarding/supabase_onboarding_repository.dart';
 import '../profile/profile_update_notifier.dart';
 import '../profile/supabase_profile_repository.dart';

@@ -8,7 +8,7 @@ import 'package:kinly/core/notifications/device_token_provider.dart';
 import 'package:kinly/core/notifications/notification_permission_service.dart';
 import 'package:kinly/core/time/iana_timezone_resolver.dart';
 import 'package:kinly/features/home/home.dart';
-import 'package:kinly/data/repositories/notifications_repository.dart';
+import 'package:kinly/core/notifications/notifications.dart';
 import 'package:kinly/features/today/ui/today_screen.dart';
 import 'package:kinly/generated/l10n.dart';
 

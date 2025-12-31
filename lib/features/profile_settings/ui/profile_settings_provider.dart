@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/locator.dart';
-import '../../../data/repositories/account_repository.dart';
+import '../../../core/account/account.dart';
 import '../../../../features/home/home.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../bloc/profile_settings_bloc.dart';

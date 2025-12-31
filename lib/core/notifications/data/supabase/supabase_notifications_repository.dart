@@ -1,17 +1,13 @@
+import 'package:kinly/core/notifications/notifications.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../../data/repositories/notifications_repository.dart';
-import 'notification_preferences.dart';
-import 'notification_sync_state.dart';
-import 'notification_token_bootstrap.dart';
 
 /// Supabase implementation for daily notification preferences + device tokens.
 class SupabaseNotificationsRepository implements NotificationsRepository {
   SupabaseNotificationsRepository({
     SupabaseClient? client,
     NotificationSyncState? syncState,
-  })  : _client = client ?? Supabase.instance.client,
-        _syncState = syncState;
+  }) : _client = client ?? Supabase.instance.client,
+       _syncState = syncState;
 
   final SupabaseClient _client;
   final NotificationSyncState? _syncState;
@@ -29,7 +25,9 @@ class SupabaseNotificationsRepository implements NotificationsRepository {
   }) async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) {
-      throw const AuthException("Missing authenticated user for notifications sync.");
+      throw const AuthException(
+        "Missing authenticated user for notifications sync.",
+      );
     }
 
     final preferences = await _syncClientState(
@@ -129,13 +127,13 @@ class SupabaseNotificationsRepository implements NotificationsRepository {
         'p_token': deviceToken,
         'p_platform': platform,
         'p_locale': locale,
-      'p_timezone': timezone,
-      'p_os_permission': osPermission,
-      'p_wants_daily': wantsDaily,
-      'p_preferred_hour': preferredHour,
-      'p_preferred_minute': preferredMinute,
-    },
-  );
+        'p_timezone': timezone,
+        'p_os_permission': osPermission,
+        'p_wants_daily': wantsDaily,
+        'p_preferred_hour': preferredHour,
+        'p_preferred_minute': preferredMinute,
+      },
+    );
     return NotificationPreferences.fromMap(
       (response as Map<String, dynamic>?) ?? const {},
     );
