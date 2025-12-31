@@ -583,6 +583,21 @@ jobs:
           EOF
           echo "${{ secrets.DEBUG_KEYSTORE_BASE64 }}" | base64 --decode > android/app/dev_keystore.jks
 
+      - name: Diagnose Maven Central access
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Proxy env (if any):"
+          env | grep -i proxy || true
+          echo
+          echo "HEAD okio-jvm jar:"
+          curl -I --retry 3 --retry-all-errors --connect-timeout 10 \
+            https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/3.3.0/okio-jvm-3.3.0.jar || true
+          echo
+          echo "HEAD Maven Central root:"
+          curl -I --retry 3 --retry-all-errors --connect-timeout 10 \
+            https://repo.maven.apache.org/maven2/ || true
+
       - name: Build dev APK (debug)
         run: |
           flutter build apk --debug \
@@ -773,6 +788,21 @@ jobs:
           storeType=JKS
           EOF
           echo "${{ secrets.PROD_KEYSTORE_BASE64 }}" | base64 --decode > android/app/prod_keystore.jks
+
+      - name: Diagnose Maven Central access
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Proxy env (if any):"
+          env | grep -i proxy || true
+          echo
+          echo "HEAD okio-jvm jar:"
+          curl -I --retry 3 --retry-all-errors --connect-timeout 10 \
+            https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/3.3.0/okio-jvm-3.3.0.jar || true
+          echo
+          echo "HEAD Maven Central root:"
+          curl -I --retry 3 --retry-all-errors --connect-timeout 10 \
+            https://repo.maven.apache.org/maven2/ || true
 
       - name: Build prod AAB (release)
         run: |
