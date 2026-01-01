@@ -419,10 +419,10 @@ class S {
     );
   }
 
-  /// `A member is requesting access. Upgrade to support unlimited members.`
+  /// `Your home is growing. Upgrade to welcome more people.`
   String get todayMemberCapSubtitleGeneric {
     return Intl.message(
-      'A member is requesting access. Upgrade to support unlimited members.',
+      'Your home is growing. Upgrade to welcome more people.',
       name: 'todayMemberCapSubtitleGeneric',
       desc: '',
       args: [],

@@ -966,7 +966,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayMemberCapSubtitle": m17,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
-      "A member is requesting access. Upgrade to support unlimited members.",
+      "Your home is growing. Upgrade to welcome more people.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
       "Someone wants to join your home",
