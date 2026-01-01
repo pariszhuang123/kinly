@@ -19,6 +19,7 @@ ALTER TABLE "public"."home_plan_limits" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."home_usage_counters" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."homes" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."invites" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."member_cap_join_requests" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."memberships" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."notification_preferences" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."notification_sends" ENABLE ROW LEVEL SECURITY;

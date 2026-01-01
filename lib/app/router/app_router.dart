@@ -31,6 +31,7 @@ class AppRoutes {
   static const start = '/start';
   static const create = '/create';
   static const join = '/join';
+  static const joinBlocked = '/join/blocked';
   static const today = '/today';
   static const hub = '/hub';
   static const explore = '/explore';

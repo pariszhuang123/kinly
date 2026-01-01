@@ -383,6 +383,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "Invitar a mi hogar de Kinly",
     ),
+    "join_blocked_body": MessageLookupByLibrary.simpleMessage(
+      "We\'ve notified the home owner.",
+    ),
+    "join_blocked_cta": MessageLookupByLibrary.simpleMessage("Done"),
+    "join_blocked_title": MessageLookupByLibrary.simpleMessage(
+      "This home isn\'t accepting new members right now",
+    ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
       "Ya estás en otro hogar. Sal de él antes de unirte a uno nuevo.",
     ),
@@ -399,7 +406,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Este hogar ha alcanzado su límite de miembros. Pídele al dueño que actualice el plan o elimine a un miembro.",
     ),
     "join_error_unauthorized": MessageLookupByLibrary.simpleMessage(
-      "Inicia sesión para unirte a este hogar.",
+      "Inicia sesiA3n para unirte a este hogar.",
     ),
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
       "No pudimos unirte a este hogar. Inténtalo de nuevo.",

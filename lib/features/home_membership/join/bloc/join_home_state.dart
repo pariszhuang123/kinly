@@ -1,6 +1,6 @@
 part of 'join_home_bloc.dart';
 
-enum JoinHomeStatus { initial, editing, submitting, success, failure }
+enum JoinHomeStatus { initial, editing, submitting, success, blocked, failure }
 
 enum JoinHomeErrorType {
   invalidCode,

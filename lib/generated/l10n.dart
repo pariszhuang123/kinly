@@ -374,6 +374,31 @@ class S {
     );
   }
 
+  /// `This home isn’t accepting new members right now`
+  String get join_blocked_title {
+    return Intl.message(
+      'This home isn’t accepting new members right now',
+      name: 'join_blocked_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We’ve notified the home owner.`
+  String get join_blocked_body {
+    return Intl.message(
+      'We’ve notified the home owner.',
+      name: 'join_blocked_body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get join_blocked_cta {
+    return Intl.message('Done', name: 'join_blocked_cta', desc: '', args: []);
+  }
+
   /// `Quick Add`
   String get quick_add_title {
     return Intl.message(

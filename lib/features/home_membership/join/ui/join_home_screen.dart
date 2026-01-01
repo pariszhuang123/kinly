@@ -81,6 +81,9 @@ class _JoinFormState extends State<_JoinForm> {
           context.read<AuthBloc>().add(const AuthMembershipRefreshRequested());
           if (!mounted) return;
           context.go(AppRoutes.today);
+        } else if (state.status == JoinHomeStatus.blocked) {
+          if (!mounted) return;
+          context.go(AppRoutes.joinBlocked);
         } else if (state.status == JoinHomeStatus.failure) {
           final errorText = _resolveErrorText(context, state);
           KinlySnackBar.showError(context, errorText);

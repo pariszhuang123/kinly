@@ -354,11 +354,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "دعوة إلى منزلي على Kinly",
     ),
+    "join_blocked_body": MessageLookupByLibrary.simpleMessage(
+      "We\'ve notified the home owner.",
+    ),
+    "join_blocked_cta": MessageLookupByLibrary.simpleMessage("Done"),
+    "join_blocked_title": MessageLookupByLibrary.simpleMessage(
+      "This home isn\'t accepting new members right now",
+    ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
       "أنت بالفعل في منزل آخر. غادره قبل الانضمام إلى منزل جديد.",
     ),
     "join_error_forbidden": MessageLookupByLibrary.simpleMessage(
-      "ليست لديك صلاحية الانضمام إلى هذا المنزل.",
+      "You do not have permission to join this home.",
     ),
     "join_error_inactive_invite": MessageLookupByLibrary.simpleMessage(
       "هذه الدعوة لم تعد نشطة. اطلب من المالك رمزًا جديدًا.",
@@ -370,7 +377,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "وصل هذا المنزل إلى الحد الأقصى للأعضاء. اطلب من المالك الترقية أو إزالة عضو.",
     ),
     "join_error_unauthorized": MessageLookupByLibrary.simpleMessage(
-      "يرجى تسجيل الدخول للانضمام إلى هذا المنزل.",
+      "Please sign in to join this home.",
     ),
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
       "لم نتمكن من الانضمام إلى هذا المنزل. يرجى المحاولة مرة أخرى.",

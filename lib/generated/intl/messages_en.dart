@@ -377,6 +377,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "Invite to my Kinly home",
     ),
+    "join_blocked_body": MessageLookupByLibrary.simpleMessage(
+      "We’ve notified the home owner.",
+    ),
+    "join_blocked_cta": MessageLookupByLibrary.simpleMessage("Done"),
+    "join_blocked_title": MessageLookupByLibrary.simpleMessage(
+      "This home isn’t accepting new members right now",
+    ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
       "Leave your current home to join a new one",
     ),

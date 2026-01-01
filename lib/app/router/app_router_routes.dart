@@ -41,6 +41,11 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
       name: 'join',
       builder: (_, __) => const JoinHomeScreen(),
     ),
+    _RouteSpec(
+      path: AppRoutes.joinBlocked,
+      name: 'joinBlocked',
+      builder: (_, __) => const JoinHomeBlockedScreen(),
+    ),
   ];
 
   final dynamicSpecs = <_RouteSpec>[

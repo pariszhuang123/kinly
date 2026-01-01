@@ -31,8 +31,10 @@ void main() {
   blocTest<JoinHomeBloc, JoinHomeState>(
     'emits success when repository join succeeds',
     build: () {
-      when(() => homeRepository.join(any()))
-          .thenAnswer((_) async => const HomeJoinResult(homeId: 'home-1'));
+      when(() => homeRepository.join(any())).thenAnswer(
+        (_) async =>
+            const HomeJoinResult(homeId: 'home-1', outcome: JoinOutcome.success),
+      );
       return buildBloc();
     },
     seed:
@@ -46,6 +48,29 @@ void main() {
         ],
     verify: (_) {
       verify(() => homeRepository.join('ABC123')).called(1);
+    },
+  );
+
+  blocTest<JoinHomeBloc, JoinHomeState>(
+    'emits blocked when repository returns blocked outcome',
+    build: () {
+      when(() => homeRepository.join(any())).thenAnswer(
+        (_) async =>
+            const HomeJoinResult(homeId: 'home-1', outcome: JoinOutcome.blocked),
+      );
+      return buildBloc();
+    },
+    seed:
+        () =>
+            const JoinHomeState(code: 'CAP123', status: JoinHomeStatus.editing),
+    act: (bloc) => bloc.add(const JoinHomeSubmitted()),
+    expect:
+        () => const [
+          JoinHomeState(code: 'CAP123', status: JoinHomeStatus.submitting),
+          JoinHomeState(code: 'CAP123', status: JoinHomeStatus.blocked),
+        ],
+    verify: (_) {
+      verify(() => homeRepository.join('CAP123')).called(1);
     },
   );
 

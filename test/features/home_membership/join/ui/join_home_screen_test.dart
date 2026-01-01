@@ -9,6 +9,7 @@ import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/home_membership/join/ui/join_home_screen.dart';
+import 'package:kinly/features/home_membership/join/ui/join_home_blocked_screen.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
@@ -67,8 +68,10 @@ void main() {
   testWidgets('submit button enables only after entering a code', (
     tester,
   ) async {
-    when(() => homeRepository.join(any()))
-        .thenAnswer((_) async => const HomeJoinResult(homeId: 'hid'));
+    when(() => homeRepository.join(any())).thenAnswer(
+      (_) async =>
+          const HomeJoinResult(homeId: 'hid', outcome: JoinOutcome.success),
+    );
 
     await tester.pumpWidget(buildApp(const JoinHomeScreen()));
 
@@ -104,8 +107,10 @@ void main() {
   });
 
   testWidgets('success navigates to today and refreshes membership', (tester) async {
-    when(() => homeRepository.join(any()))
-        .thenAnswer((_) async => const HomeJoinResult(homeId: 'hid'));
+    when(() => homeRepository.join(any())).thenAnswer(
+      (_) async =>
+          const HomeJoinResult(homeId: 'hid', outcome: JoinOutcome.success),
+    );
     when(() => authBloc.state).thenReturn(const AuthState());
 
     final router = GoRouter(
@@ -152,5 +157,57 @@ void main() {
     expect(find.text('today'), findsOneWidget);
     verify(() => homeRepository.join('OKCODE')).called(1);
     verify(() => authBloc.add(const AuthMembershipRefreshRequested())).called(1);
+  });
+
+  testWidgets('blocked joins navigate to blocked screen', (tester) async {
+    when(() => homeRepository.join(any())).thenAnswer(
+      (_) async =>
+          const HomeJoinResult(homeId: 'hid', outcome: JoinOutcome.blocked),
+    );
+    when(() => authBloc.state).thenReturn(const AuthState());
+
+    final router = GoRouter(
+      initialLocation: AppRoutes.join,
+      routes: [
+        GoRoute(
+          path: AppRoutes.join,
+          builder: (context, state) => const JoinHomeScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.joinBlocked,
+          builder: (context, state) => const JoinHomeBlockedScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.start,
+          builder: (context, state) => const Scaffold(body: Text('start')),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      BlocProvider<AuthBloc>.value(
+        value: authBloc,
+        child: MaterialApp.router(
+          theme: buildKinlyTheme(Brightness.light),
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          routerConfig: router,
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), 'CAP123');
+    await tester.pump();
+    await tester.tap(find.byType(KinlyFilledButton));
+    await tester.pumpAndSettle();
+
+    expect(find.text(S.current.join_blocked_title), findsNWidgets(2));
+    verify(() => homeRepository.join('CAP123')).called(1);
   });
 }

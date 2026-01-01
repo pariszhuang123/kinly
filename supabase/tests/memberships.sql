@@ -169,14 +169,15 @@ SELECT set_config(
 );
 SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
-SELECT throws_like(
-  $$
+WITH payload AS (
   SELECT public.homes_join(
     (SELECT code FROM invite_codes WHERE label = 'primary')
-  )
-  $$,
-  '%PAYWALL_LIMIT_ACTIVE_MEMBERS%',
-  'free homes cannot exceed the active member cap'
+  ) AS body
+)
+SELECT is(
+  (SELECT body->>'code' FROM payload),
+  'member_cap',
+  'free homes cannot exceed the active member cap (blocked, no exception)'
 );
 
 -- Restore default limit for other tests.

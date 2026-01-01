@@ -344,6 +344,28 @@ $$;
 ALTER FUNCTION "public"."_assert_home_member"("p_home_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."_assert_home_owner"("p_home_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  IF NOT public.is_home_owner(p_home_id, auth.uid()) THEN
+    PERFORM public.api_error(
+      'NOT_HOME_OWNER',
+      'Only the home owner can perform this action.',
+      '42501',
+      jsonb_build_object('home_id', p_home_id)
+    );
+  END IF;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_assert_home_owner"("p_home_id" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") RETURNS TABLE("id" "uuid", "home_id" "uuid", "assignee_user_id" "uuid", "created_by_user_id" "uuid", "name" "text", "state" "public"."chore_state", "current_due_on" "date", "created_at" timestamp with time zone, "assignee_full_name" "text", "assignee_avatar_storage_path" "text")
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -1378,6 +1400,77 @@ $$;
 
 
 ALTER FUNCTION "public"."_home_usage_apply_delta"("p_home_id" "uuid", "p_deltas" "jsonb") OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."member_cap_join_requests" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "home_id" "uuid" NOT NULL,
+    "joiner_user_id" "uuid" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "resolved_at" timestamp with time zone,
+    "resolved_reason" "text",
+    "resolved_payload" "jsonb",
+    CONSTRAINT "member_cap_join_requests_resolved_reason_check" CHECK (("resolved_reason" = ANY (ARRAY['joined'::"text", 'joiner_superseded'::"text", 'home_inactive'::"text", 'invite_missing'::"text", 'owner_dismissed'::"text"])))
+);
+
+
+ALTER TABLE "public"."member_cap_join_requests" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."member_cap_join_requests" IS 'Queue of join attempts blocked by member cap; resolved on owner upgrade/dismiss. Joiner names are read live from profiles.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."_member_cap_enqueue_request"("p_home_id" "uuid", "p_joiner_user_id" "uuid") RETURNS "public"."member_cap_join_requests"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_row public.member_cap_join_requests;
+BEGIN
+  IF p_home_id IS NULL OR p_joiner_user_id IS NULL THEN
+    PERFORM public.api_error('INVALID_INPUT', 'home_id and joiner_user_id are required.', '22023');
+  END IF;
+
+  INSERT INTO public.member_cap_join_requests (home_id, joiner_user_id)
+  VALUES (p_home_id, p_joiner_user_id)
+  ON CONFLICT (home_id, joiner_user_id) WHERE resolved_at IS NULL DO UPDATE
+    SET home_id = EXCLUDED.home_id  -- no-op; keeps RETURNING working
+  RETURNING * INTO v_row;
+
+  RETURN v_row;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_member_cap_enqueue_request"("p_home_id" "uuid", "p_joiner_user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."_member_cap_resolve_requests"("p_home_id" "uuid", "p_reason" "text", "p_request_ids" "uuid"[] DEFAULT NULL::"uuid"[], "p_payload" "jsonb" DEFAULT NULL::"jsonb") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  IF p_home_id IS NULL THEN
+    PERFORM public.api_error('INVALID_INPUT', 'home_id is required.', '22023');
+  END IF;
+
+  IF p_reason IS NULL THEN
+    PERFORM public.api_error('INVALID_REASON', 'resolved_reason is required.', '22023');
+  END IF;
+
+  UPDATE public.member_cap_join_requests
+     SET resolved_at      = now(),
+         resolved_reason  = p_reason,
+         resolved_payload = p_payload
+   WHERE home_id = p_home_id
+     AND resolved_at IS NULL
+     AND (p_request_ids IS NULL OR id = ANY(p_request_ids));
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_member_cap_resolve_requests"("p_home_id" "uuid", "p_reason" "text", "p_request_ids" "uuid"[], "p_payload" "jsonb") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") RETURNS "void"
@@ -4512,81 +4605,38 @@ CREATE OR REPLACE FUNCTION "public"."home_entitlements_refresh"("_home_id" "uuid
     SET "search_path" TO ''
     AS $$
 DECLARE
-  -- Whether the home has ANY valid subscription right now
   v_has_valid  boolean;
-
-  -- The maximum expiry across all subscriptions for this home
   v_latest_exp timestamptz;
 BEGIN
-  -------------------------------------------------------------------------
-  -- 1. Aggregate subscription status for this home
-  --
-  -- We compute:
-  --   - v_has_valid: does ANY subscription satisfy "currently premium?"
-  --   - v_latest_exp: the furthest current_period_end_at we have on record
-  --
-  -- NOTE: This uses SELECT ... INTO (PL/pgSQL syntax).
-  -------------------------------------------------------------------------
   SELECT
     EXISTS (
       SELECT 1
-      FROM public.user_subscriptions us
-      WHERE us.home_id = _home_id
-        -- Subs we still treat as "funding" the home
-        AND us.status IN ('active', 'cancelled')
-        -- Valid if end date is in the future OR not provided yet
-        AND (us.current_period_end_at IS NULL OR us.current_period_end_at > now())
+        FROM public.user_subscriptions us
+       WHERE us.home_id = _home_id
+         AND us.status IN ('active', 'cancelled')
+         AND (us.current_period_end_at IS NULL OR us.current_period_end_at > now())
     ) AS has_valid_subscription,
-
-    -- Latest expiry (can be NULL if no expiry exists)
     MAX(us.current_period_end_at) AS latest_expiry
-
   INTO v_has_valid, v_latest_exp
   FROM public.user_subscriptions us
   WHERE us.home_id = _home_id;
 
-
-  -------------------------------------------------------------------------
-  -- 2. Upsert into home_entitlements (the source of truth for "is this
-  --    home premium or free?")
-  --
-  -- We insert the newly computed "plan" and "expires_at" values.
-  -- If the home already has a row, ON CONFLICT triggers an UPDATE.
-  --
-  -- IMPORTANT:
-  --   - We MUST use EXCLUDED.plan instead of referencing PL/pgSQL vars
-  --     inside the UPDATE clause.
-  --
-  -- WHY?
-  --   - PL/pgSQL variables (v_has_valid, v_latest_exp) are NOT visible
-  --     inside the SQL UPDATE engine.
-  --   - Postgres exposes the pseudo-table EXCLUDED to represent the
-  --     values we *attempted* to insert.
-  --   - EXCLUDED is the ONLY legal way to access those values inside
-  --     ON CONFLICT DO UPDATE.
-  -------------------------------------------------------------------------
   INSERT INTO public.home_entitlements AS he (home_id, plan, expires_at)
   VALUES (
     _home_id,
-
-    -- If any valid sub exists → premium, else free
     CASE WHEN v_has_valid THEN 'premium' ELSE 'free' END,
-
-    -- Expiry is only meaningful if premium
     CASE WHEN v_has_valid THEN v_latest_exp ELSE NULL END
   )
-
   ON CONFLICT (home_id) DO UPDATE
   SET
-    -- EXCLUDED.plan = the plan we *intended* to insert
     plan       = EXCLUDED.plan,
-
-    -- EXCLUDED.expires_at = the expiry we *intended* to insert
     expires_at = EXCLUDED.expires_at,
-
-    -- Always update updated_at timestamp
     updated_at = now();
 
+  -- If upgraded to premium, attempt to process pending member-cap joins
+  IF v_has_valid THEN
+    PERFORM public.member_cap_process_pending(_home_id);
+  END IF;
 END;
 $$;
 
@@ -4872,13 +4922,17 @@ DECLARE
   v_home_id uuid;
   v_revoked boolean;
   v_active  boolean;
+
+  v_plan    text;
+  v_cap     integer;
+  v_current_members integer := 0;
+
+  v_req public.member_cap_join_requests;
 BEGIN
   PERFORM public._assert_authenticated();
   PERFORM public._assert_active_profile();
 
-  --------------------------------------------------------------------
   -- Combined lookup: home_id + invite state
-  --------------------------------------------------------------------
   SELECT
     i.home_id,
     (i.revoked_at IS NOT NULL) AS revoked,
@@ -4912,19 +4966,16 @@ BEGIN
     );
   END IF;
 
-  --------------------------------------------------------------------
   -- Ensure caller has a unique avatar within this home (plan-gated)
-  -- This now runs even if they are already a member of the home.
-  --------------------------------------------------------------------
   PERFORM public._ensure_unique_avatar_for_home(v_home_id, v_user);
 
   -- Already current member of this same home
   IF EXISTS (
     SELECT 1
-    FROM public.memberships m
-    WHERE m.user_id = v_user
-      AND m.home_id = v_home_id
-      AND m.is_current = TRUE
+      FROM public.memberships m
+     WHERE m.user_id = v_user
+       AND m.home_id = v_home_id
+       AND m.is_current = TRUE
   ) THEN
     RETURN jsonb_build_object(
       'status',  'success',
@@ -4937,10 +4988,10 @@ BEGIN
   -- Already in another active home (only one allowed)
   IF EXISTS (
     SELECT 1
-    FROM public.memberships m
-    WHERE m.user_id = v_user
-      AND m.is_current = TRUE
-      AND m.home_id <> v_home_id
+      FROM public.memberships m
+     WHERE m.user_id = v_user
+       AND m.is_current = TRUE
+       AND m.home_id <> v_home_id
   ) THEN
     PERFORM public.api_error(
       'ALREADY_IN_OTHER_HOME',
@@ -4949,17 +5000,62 @@ BEGIN
     );
   END IF;
 
-  --------------------------------------------------------------------
-  -- Paywall: enforce active_members limit on this home
-  --------------------------------------------------------------------
+  -- Member-cap precheck (free-only): block + enqueue instead of raising paywall
+  v_plan := public._home_effective_plan(v_home_id);
+
+  IF v_plan = 'free' THEN
+    -- Align lock order explicitly (homes -> home_usage_counters ...)
+    PERFORM 1
+      FROM public.homes h
+     WHERE h.id = v_home_id
+     FOR UPDATE;
+
+    -- Ensure counters row exists and lock it
+    PERFORM public._home_usage_apply_delta(v_home_id, '{}'::jsonb);
+
+    SELECT COALESCE(active_members, 0)
+      INTO v_current_members
+      FROM public.home_usage_counters
+     WHERE home_id = v_home_id
+     FOR UPDATE;
+
+    SELECT max_value
+      INTO v_cap
+      FROM public.home_plan_limits
+     WHERE plan = v_plan
+       AND metric = 'active_members';
+
+    IF v_cap IS NOT NULL AND (v_current_members + 1) > v_cap THEN
+      v_req := public._member_cap_enqueue_request(v_home_id, v_user);
+
+      RETURN jsonb_build_object(
+        'status',     'blocked',
+        'code',       'member_cap',
+        'message',    'Home is not accepting new members right now. We notified the owner.',
+        'home_id',    v_home_id,
+        'request_id', v_req.id
+      );
+    END IF;
+  END IF;
+
+  -- Paywall: enforce active_members limit on this home (raises on free over-limit)
   PERFORM public._home_assert_quota(
     v_home_id,
     jsonb_build_object('active_members', 1)
   );
 
-  -- Create new membership
-  INSERT INTO public.memberships (user_id, home_id, role, valid_from, valid_to)
-  VALUES (v_user, v_home_id, 'member', now(), NULL);
+  -- Create new membership (race-safe)
+  BEGIN
+    INSERT INTO public.memberships (user_id, home_id, role, valid_from, valid_to)
+    VALUES (v_user, v_home_id, 'member', now(), NULL);
+  EXCEPTION
+    WHEN unique_violation THEN
+      PERFORM public.api_error(
+        'ALREADY_IN_OTHER_HOME',
+        'You are already a member of another household. Leave it first before joining a new one.',
+        '42501'
+      );
+  END;
 
   -- Increment cached active_members
   PERFORM public._home_usage_apply_delta(
@@ -5507,6 +5603,155 @@ $$;
 
 
 ALTER FUNCTION "public"."is_home_owner"("p_home_id" "uuid", "p_user_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."member_cap_owner_dismiss"("p_home_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user uuid := auth.uid();
+BEGIN
+  PERFORM public._assert_authenticated();
+  PERFORM public._assert_home_owner(p_home_id);
+
+  PERFORM public._member_cap_resolve_requests(
+    p_home_id,
+    'owner_dismissed',
+    NULL,
+    jsonb_build_object('by', v_user)
+  );
+END;
+$$;
+
+
+ALTER FUNCTION "public"."member_cap_owner_dismiss"("p_home_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."member_cap_process_pending"("p_home_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_inv public.invites;
+  v_row public.member_cap_join_requests%ROWTYPE;
+  v_home_active boolean;
+BEGIN
+  IF p_home_id IS NULL THEN
+    RETURN;
+  END IF;
+
+  -- Only process when premium
+  IF NOT public._home_is_premium(p_home_id) THEN
+    RETURN;
+  END IF;
+
+  SELECT h.is_active
+    INTO v_home_active
+    FROM public.homes h
+   WHERE h.id = p_home_id;
+
+  IF v_home_active IS DISTINCT FROM TRUE THEN
+    RETURN;
+  END IF;
+
+  -- Ensure invite exists (one active per home)
+  SELECT *
+    INTO v_inv
+    FROM public.invites
+   WHERE home_id = p_home_id
+     AND revoked_at IS NULL
+   ORDER BY created_at DESC, id DESC
+   LIMIT 1;
+
+  IF NOT FOUND THEN
+    INSERT INTO public.invites (home_id, code)
+    VALUES (p_home_id, public._gen_invite_code())
+    ON CONFLICT (home_id) WHERE revoked_at IS NULL DO NOTHING;
+
+    SELECT *
+      INTO v_inv
+      FROM public.invites
+     WHERE home_id = p_home_id
+       AND revoked_at IS NULL
+     ORDER BY created_at DESC, id DESC
+     LIMIT 1;
+  END IF;
+
+  FOR v_row IN
+    SELECT *
+      FROM public.member_cap_join_requests
+     WHERE home_id = p_home_id
+       AND resolved_at IS NULL
+     ORDER BY created_at ASC, id ASC
+  LOOP
+    -- home inactive (defensive)
+    IF v_home_active IS DISTINCT FROM TRUE THEN
+      PERFORM public._member_cap_resolve_requests(
+        p_home_id,
+        'home_inactive',
+        ARRAY[v_row.id],
+        NULL
+      );
+      CONTINUE;
+    END IF;
+
+    -- no invite (defensive)
+    IF v_inv.id IS NULL THEN
+      PERFORM public._member_cap_resolve_requests(
+        p_home_id,
+        'invite_missing',
+        ARRAY[v_row.id],
+        NULL
+      );
+      CONTINUE;
+    END IF;
+
+    -- attempt to join; handle races safely via unique constraint on memberships(user_id) WHERE is_current
+    BEGIN
+      INSERT INTO public.memberships (user_id, home_id, role, valid_from, valid_to)
+      VALUES (v_row.joiner_user_id, p_home_id, 'member', now(), NULL);
+
+      PERFORM public._home_usage_apply_delta(
+        p_home_id,
+        jsonb_build_object('active_members', 1)
+      );
+
+      UPDATE public.invites
+         SET used_count = used_count + 1
+       WHERE id = v_inv.id;
+
+      PERFORM public._home_attach_subscription_to_home(v_row.joiner_user_id, p_home_id);
+
+      PERFORM public._member_cap_resolve_requests(
+        p_home_id,
+        'joined',
+        ARRAY[v_row.id],
+        jsonb_build_object('invite_id', v_inv.id, 'invite_code', v_inv.code)
+      );
+
+    EXCEPTION
+      WHEN unique_violation THEN
+        -- joiner got a current membership elsewhere (or already joined) between checks and insert
+        PERFORM public._member_cap_resolve_requests(
+          p_home_id,
+          'joiner_superseded',
+          ARRAY[v_row.id],
+          NULL
+        );
+        CONTINUE;
+
+      WHEN OTHERS THEN
+        -- Do NOT RAISE: one bad request should not stall the entire queue.
+        -- Leaving unresolved allows future retries after transient issues.
+        CONTINUE;
+    END;
+  END LOOP;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."member_cap_process_pending"("p_home_id" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."members_kick"("p_home_id" "uuid", "p_target_user_id" "uuid") RETURNS "jsonb"
@@ -6754,7 +6999,7 @@ COMMENT ON FUNCTION "public"."share_log_event"("p_home_id" "uuid", "p_feature" "
 
 
 
-CREATE OR REPLACE FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state") RETURNS TABLE("id" "uuid", "home_id" "uuid", "name" "text", "start_date" "date", "state" "public"."chore_state")
+CREATE OR REPLACE FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state", "p_local_date" "date" DEFAULT CURRENT_DATE) RETURNS TABLE("id" "uuid", "home_id" "uuid", "name" "text", "start_date" "date", "state" "public"."chore_state")
     LANGUAGE "sql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -6766,7 +7011,7 @@ CREATE OR REPLACE FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_sta
     state
   FROM public._chores_base_for_home(p_home_id)
   WHERE state = p_state
-    AND current_due_on <= current_date  -- due now or overdue
+    AND current_due_on <= p_local_date  -- client-local day boundary
     AND (
       (p_state = 'draft'::public.chore_state AND created_by_user_id = auth.uid())
       OR (p_state = 'active'::public.chore_state AND assignee_user_id = auth.uid())
@@ -6775,7 +7020,7 @@ CREATE OR REPLACE FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_sta
 $$;
 
 
-ALTER FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state") OWNER TO "postgres";
+ALTER FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state", "p_local_date" "date") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."today_has_content"("p_user_id" "uuid", "p_timezone" "text", "p_local_date" "date") RETURNS boolean
@@ -6863,7 +7108,6 @@ DECLARE
 
   v_lifetime_authored_chore_count int := 0;
 
-  -- Default to 'unknown' so "no row" behaves like unknown.
   v_notif_os_permission text := 'unknown';
   v_notif_wants_daily boolean := FALSE;
 
@@ -6873,35 +7117,43 @@ DECLARE
   v_prompt_notifications boolean := FALSE;
   v_prompt_flatmate_invite_share boolean := FALSE;
   v_prompt_invite_share boolean := FALSE;
+
+  v_member_cap_payload jsonb := NULL;
+  v_home_plan text;
+  v_is_owner boolean := FALSE;
 BEGIN
   PERFORM public._assert_authenticated();
 
-  SELECT m.home_id
-  INTO v_home_id
-  FROM public.memberships AS m
-  WHERE m.user_id    = v_user_id
-    AND m.is_current = TRUE
-  LIMIT 1;
+  SELECT m.home_id, (m.role = 'owner')
+    INTO v_home_id, v_is_owner
+    FROM public.memberships AS m
+   WHERE m.user_id    = v_user_id
+     AND m.is_current = TRUE
+   LIMIT 1;
 
   IF v_home_id IS NULL THEN
     RETURN jsonb_build_object(
       'userAuthoredChoreCountLifetime', 0,
       'shouldPromptNotifications', FALSE,
       'shouldPromptFlatmateInviteShare', FALSE,
-      'shouldPromptInviteShare', FALSE
+      'shouldPromptInviteShare', FALSE,
+      'memberCapJoinRequests', 'null'::jsonb
     );
   END IF;
 
   PERFORM public._assert_home_member(v_home_id);
   PERFORM public._assert_home_active(v_home_id);
 
-  SELECT COUNT(*)
-  INTO v_lifetime_authored_chore_count
-  FROM public.chores AS c
-  WHERE c.created_by_user_id = v_user_id;
+  SELECT plan
+    INTO v_home_plan
+    FROM public.home_entitlements
+   WHERE home_id = v_home_id;
 
-  -- Normalize "no prefs row" to ('unknown', FALSE).
-  -- This avoids the SELECT INTO "no row -> NULL overwrite" footgun.
+  SELECT COUNT(*)
+    INTO v_lifetime_authored_chore_count
+    FROM public.chores AS c
+   WHERE c.created_by_user_id = v_user_id;
+
   SELECT
     COALESCE(np.os_permission, 'unknown'),
     COALESCE(np.wants_daily, FALSE)
@@ -6912,24 +7164,22 @@ BEGIN
 
   SELECT EXISTS (
     SELECT 1
-    FROM public.share_events AS se
-    WHERE se.user_id = v_user_id
-      AND se.feature = 'invite_housemate'
-      AND se.channel IS NOT NULL
+      FROM public.share_events AS se
+     WHERE se.user_id = v_user_id
+       AND se.feature = 'invite_housemate'
+       AND se.channel IS NOT NULL
   )
   INTO v_has_flatmate_invite_share;
 
   SELECT EXISTS (
     SELECT 1
-    FROM public.share_events AS se
-    WHERE se.user_id = v_user_id
-      AND se.feature = 'invite_button'
-      AND se.channel IS NOT NULL
+      FROM public.share_events AS se
+     WHERE se.user_id = v_user_id
+       AND se.feature = 'invite_button'
+       AND se.channel IS NOT NULL
   )
   INTO v_has_invite_share;
 
-  -- Step 1: prompt notifications when permission is unknown (including "no row")
-  -- and the user has authored at least 1 chore.
   IF v_notif_os_permission = 'unknown'
      AND v_lifetime_authored_chore_count >= 1 THEN
     v_prompt_notifications := TRUE;
@@ -6943,11 +7193,33 @@ BEGIN
     v_prompt_invite_share := TRUE;
   END IF;
 
+  IF v_is_owner IS TRUE AND v_home_plan = 'free' THEN
+    SELECT jsonb_build_object(
+      'homeId', v_home_id,
+      'pendingCount', COUNT(*),
+      'joinerNames', COALESCE(
+        jsonb_agg(p.username ORDER BY r.created_at ASC)
+          FILTER (WHERE p.username IS NOT NULL),
+        '[]'::jsonb
+      ),
+      'requestIds', COALESCE(
+        jsonb_agg(r.id ORDER BY r.created_at ASC),
+        '[]'::jsonb
+      )
+    )
+    INTO v_member_cap_payload
+    FROM public.member_cap_join_requests r
+    LEFT JOIN public.profiles p ON p.id = r.joiner_user_id
+    WHERE r.home_id = v_home_id
+      AND r.resolved_at IS NULL;
+  END IF;
+
   RETURN jsonb_build_object(
     'userAuthoredChoreCountLifetime', v_lifetime_authored_chore_count,
     'shouldPromptNotifications', v_prompt_notifications,
     'shouldPromptFlatmateInviteShare', v_prompt_flatmate_invite_share,
-    'shouldPromptInviteShare', v_prompt_invite_share
+    'shouldPromptInviteShare', v_prompt_invite_share,
+    'memberCapJoinRequests', COALESCE(v_member_cap_payload, 'null'::jsonb)
   );
 END;
 $$;
@@ -7890,6 +8162,11 @@ ALTER TABLE ONLY "public"."invites"
 
 
 
+ALTER TABLE ONLY "public"."member_cap_join_requests"
+    ADD CONSTRAINT "member_cap_join_requests_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."memberships"
     ADD CONSTRAINT "memberships_pkey" PRIMARY KEY ("id");
 
@@ -8103,6 +8380,10 @@ CREATE UNIQUE INDEX "uq_app_version_is_current_true" ON "public"."app_version" U
 
 
 CREATE UNIQUE INDEX "uq_invites_active_one_per_home" ON "public"."invites" USING "btree" ("home_id") WHERE ("revoked_at" IS NULL);
+
+
+
+CREATE UNIQUE INDEX "uq_member_cap_requests_home_joiner_open" ON "public"."member_cap_join_requests" USING "btree" ("home_id", "joiner_user_id") WHERE ("resolved_at" IS NULL);
 
 
 
@@ -8328,6 +8609,16 @@ ALTER TABLE ONLY "public"."invites"
 
 
 
+ALTER TABLE ONLY "public"."member_cap_join_requests"
+    ADD CONSTRAINT "member_cap_join_requests_home_id_fkey" FOREIGN KEY ("home_id") REFERENCES "public"."homes"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."member_cap_join_requests"
+    ADD CONSTRAINT "member_cap_join_requests_joiner_user_id_fkey" FOREIGN KEY ("joiner_user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."memberships"
     ADD CONSTRAINT "memberships_home_id_fkey" FOREIGN KEY ("home_id") REFERENCES "public"."homes"("id") ON DELETE CASCADE;
 
@@ -8460,6 +8751,9 @@ ALTER TABLE "public"."homes" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."invites" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."member_cap_join_requests" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."memberships" ENABLE ROW LEVEL SECURITY;
@@ -8854,6 +9148,12 @@ GRANT ALL ON FUNCTION "public"."_assert_home_member"("p_home_id" "uuid") TO "ser
 
 
 
+REVOKE ALL ON FUNCTION "public"."_assert_home_owner"("p_home_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."_assert_home_owner"("p_home_id" "uuid") TO "service_role";
+GRANT ALL ON FUNCTION "public"."_assert_home_owner"("p_home_id" "uuid") TO "authenticated";
+
+
+
 REVOKE ALL ON FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") TO "service_role";
 GRANT ALL ON FUNCTION "public"."_chores_base_for_home"("p_home_id" "uuid") TO "authenticated";
@@ -8943,6 +9243,20 @@ GRANT ALL ON TABLE "public"."home_usage_counters" TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."_home_usage_apply_delta"("p_home_id" "uuid", "p_deltas" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."_home_usage_apply_delta"("p_home_id" "uuid", "p_deltas" "jsonb") TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."member_cap_join_requests" TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."_member_cap_enqueue_request"("p_home_id" "uuid", "p_joiner_user_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."_member_cap_enqueue_request"("p_home_id" "uuid", "p_joiner_user_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."_member_cap_resolve_requests"("p_home_id" "uuid", "p_reason" "text", "p_request_ids" "uuid"[], "p_payload" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."_member_cap_resolve_requests"("p_home_id" "uuid", "p_reason" "text", "p_request_ids" "uuid"[], "p_payload" "jsonb") TO "service_role";
 
 
 
@@ -10555,6 +10869,17 @@ GRANT ALL ON FUNCTION "public"."is_home_owner"("p_home_id" "uuid", "p_user_id" "
 
 
 
+REVOKE ALL ON FUNCTION "public"."member_cap_owner_dismiss"("p_home_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."member_cap_owner_dismiss"("p_home_id" "uuid") TO "service_role";
+GRANT ALL ON FUNCTION "public"."member_cap_owner_dismiss"("p_home_id" "uuid") TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."member_cap_process_pending"("p_home_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."member_cap_process_pending"("p_home_id" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."members_kick"("p_home_id" "uuid", "p_target_user_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."members_kick"("p_home_id" "uuid", "p_target_user_id" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."members_kick"("p_home_id" "uuid", "p_target_user_id" "uuid") TO "authenticated";
@@ -10850,9 +11175,9 @@ GRANT ALL ON FUNCTION "public"."time_dist"(time without time zone, time without 
 
 
 
-REVOKE ALL ON FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state") TO "service_role";
-GRANT ALL ON FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state") TO "authenticated";
+REVOKE ALL ON FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state", "p_local_date" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state", "p_local_date" "date") TO "service_role";
+GRANT ALL ON FUNCTION "public"."today_flow_list"("p_home_id" "uuid", "p_state" "public"."chore_state", "p_local_date" "date") TO "authenticated";
 
 
 

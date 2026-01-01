@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(4);
+SELECT plan(5);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -103,6 +103,17 @@ SELECT public.chores_create(
 
 SELECT public.chores_create(
   (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+  'Draft Tomorrow',
+  NULL,
+  current_date + 1,
+  'none',
+  NULL,
+  'Draft chore tomorrow local day',
+  NULL
+);
+
+SELECT public.chores_create(
+  (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
   'Active Due Yesterday',
   (SELECT user_id FROM tmp_users WHERE label = 'helper'),
   current_date - 1,
@@ -152,6 +163,19 @@ SELECT is(
   ),
   ARRAY['Draft Yesterday', 'Draft Today']::text[],
   'today_flow_list(draft) returns creator drafts due today or earlier ordered by start date'
+);
+
+SELECT is(
+  (
+    SELECT COALESCE(array_agg(name ORDER BY start_date, name), ARRAY[]::text[])
+    FROM public.today_flow_list(
+      (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+      'draft',
+      current_date + 1  -- simulate caller a day ahead of server
+    )
+  ),
+  ARRAY['Draft Yesterday', 'Draft Today', 'Draft Tomorrow']::text[],
+  'today_flow_list(draft) honors caller local date when ahead of UTC'
 );
 
 -- Active listings: helper sees chores assigned to them, not creator-owned.

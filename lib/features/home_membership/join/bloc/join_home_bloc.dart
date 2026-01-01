@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../../features/home/home.dart';
+import '../../../../core/homes/models.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 
 part 'join_home_event.dart';
@@ -43,10 +44,13 @@ class JoinHomeBloc extends Bloc<JoinHomeEvent, JoinHomeState> {
       ),
     );
     try {
-      await _homeRepository.join(state.code);
+      final result = await _homeRepository.join(state.code);
       emit(
         state.copyWith(
-          status: JoinHomeStatus.success,
+          status:
+              result.outcome == JoinOutcome.blocked
+                  ? JoinHomeStatus.blocked
+                  : JoinHomeStatus.success,
           errorType: null,
           errorMessage: null,
         ),

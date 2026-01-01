@@ -157,7 +157,11 @@ class SupabaseChoresRepository implements ChoresRepository {
     try {
       final response = await _client.rpc(
         'today_flow_list',
-        params: {'p_home_id': homeId, 'p_state': state.wireValue},
+        params: {
+          'p_home_id': homeId,
+          'p_state': state.wireValue,
+          'p_local_date': _dateFormatter.format(DateTime.now()),
+        },
       );
       if (response is List) {
         return response

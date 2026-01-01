@@ -1,7 +1,9 @@
 import 'enums/leave_outcome.dart';
+import 'enums/join_outcome.dart';
 import '../time/timezone.dart';
 
 export 'enums/leave_outcome.dart';
+export 'enums/join_outcome.dart';
 
 class LeaveResult {
   final LeaveOutcome outcome;
@@ -115,10 +117,21 @@ class HomeCreationResult {
 class HomeJoinResult {
   final String homeId;
   final CurrentMembership? membership;
+  final JoinOutcome outcome;
+  final String? code;
 
-  const HomeJoinResult({required this.homeId, this.membership});
+  const HomeJoinResult({
+    required this.homeId,
+    required this.outcome,
+    this.membership,
+    this.code,
+  });
 
   factory HomeJoinResult.fromJson(Map<String, dynamic> json) {
+    final status =
+        (json['status'] as String?)?.toLowerCase() ?? 'success';
+    final outcome =
+        status == 'blocked' ? JoinOutcome.blocked : JoinOutcome.success;
     final homeFromPayload =
         (json['home'] as Map?)?.cast<String, dynamic>() ??
         (json['data'] as Map?)?.cast<String, dynamic>() ??
@@ -133,10 +146,12 @@ class HomeJoinResult {
         '';
     return HomeJoinResult(
       homeId: homeId,
+      outcome: outcome,
       membership:
           membershipPayload != null
               ? CurrentMembership.fromJson(membershipPayload)
               : null,
+      code: json['code'] as String?,
     );
   }
 }
