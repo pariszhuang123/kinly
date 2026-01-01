@@ -376,6 +376,45 @@ SELECT is(
   'Generated cycle is active'
 );
 
+-- expenses_get_created_by_me includes recurrence and start date for recurring cycles
+WITH payload AS (
+  SELECT public.expenses_get_created_by_me(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  ) AS body
+),
+recurring_entry AS (
+  SELECT elem
+  FROM payload,
+  LATERAL jsonb_array_elements(body) elem
+  WHERE elem->>'expenseId' = (
+    SELECT expense_id::text FROM tmp_expenses WHERE label = 'recurring_cycle'
+  )
+)
+SELECT is(
+  (SELECT elem->>'recurrenceInterval' FROM recurring_entry),
+  'monthly',
+  'Created list payload includes recurrenceInterval for recurring cycle'
+);
+
+WITH payload AS (
+  SELECT public.expenses_get_created_by_me(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  ) AS body
+),
+recurring_entry AS (
+  SELECT elem
+  FROM payload,
+  LATERAL jsonb_array_elements(body) elem
+  WHERE elem->>'expenseId' = (
+    SELECT expense_id::text FROM tmp_expenses WHERE label = 'recurring_cycle'
+  )
+)
+SELECT is(
+  (SELECT (elem->>'startDate')::date FROM recurring_entry),
+  current_date,
+  'Created list payload includes startDate for recurring cycle'
+);
+
 SELECT is(
   (SELECT status::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_draft')),
   'converted',

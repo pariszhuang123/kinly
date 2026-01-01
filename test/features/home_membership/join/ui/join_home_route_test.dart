@@ -7,7 +7,6 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/app/router/app_router.dart';
 import 'package:kinly/core/di/locator.dart';
-import 'package:kinly/core/homes/enums/join_outcome.dart';
 import 'package:kinly/core/homes/models.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/home/home.dart';
@@ -39,7 +38,9 @@ void main() {
     homeRepository = _MockHomeRepository();
     sl.registerLazySingleton<HomeRepository>(() => homeRepository);
     authBloc = _MockAuthBloc();
-    when(() => authBloc.stream).thenAnswer((_) => const Stream<AuthState>.empty());
+    when(
+      () => authBloc.stream,
+    ).thenAnswer((_) => const Stream<AuthState>.empty());
     when(() => authBloc.state).thenReturn(const AuthState());
   });
 
@@ -47,55 +48,59 @@ void main() {
     await sl.reset();
   });
 
-  testWidgets('deep link /join/:code with blocked outcome navigates to blocked screen', (tester) async {
-    when(() => homeRepository.join(any())).thenAnswer(
-      (_) async => const HomeJoinResult(homeId: 'hid', outcome: JoinOutcome.blocked),
-    );
+  testWidgets(
+    'deep link /join/:code with blocked outcome navigates to blocked screen',
+    (tester) async {
+      when(() => homeRepository.join(any())).thenAnswer(
+        (_) async =>
+            const HomeJoinResult(homeId: 'hid', outcome: JoinOutcome.blocked),
+      );
 
-    final router = GoRouter(
-      initialLocation: '/join/CAP123',
-      routes: [
-        GoRoute(
-          path: AppRoutes.joinBlocked,
-          builder: (context, state) => const JoinHomeBlockedScreen(),
-        ),
-        GoRoute(
-          path: '/join/:code',
-          builder: (context, state) => JoinHomeScreen(
-            initialCode: state.pathParameters['code'],
+      final router = GoRouter(
+        initialLocation: '/join/CAP123',
+        routes: [
+          GoRoute(
+            path: AppRoutes.joinBlocked,
+            builder: (context, state) => const JoinHomeBlockedScreen(),
+          ),
+          GoRoute(
+            path: '/join/:code',
+            builder:
+                (context, state) =>
+                    JoinHomeScreen(initialCode: state.pathParameters['code']),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        BlocProvider<AuthBloc>.value(
+          value: authBloc,
+          child: MaterialApp.router(
+            theme: buildKinlyTheme(Brightness.light),
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            routerConfig: router,
           ),
         ),
-      ],
-    );
+      );
 
-    await tester.pumpWidget(
-      BlocProvider<AuthBloc>.value(
-        value: authBloc,
-        child: MaterialApp.router(
-          theme: buildKinlyTheme(Brightness.light),
-          localizationsDelegates: const [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          routerConfig: router,
-        ),
-      ),
-    );
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'CAP123');
+      await tester.pump();
+      final button = tester.widget<KinlyFilledButton>(
+        find.byType(KinlyFilledButton),
+      );
+      expect(button.onPressed, isNotNull);
+      await tester.tap(find.byType(KinlyFilledButton));
+      await tester.pumpAndSettle();
 
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'CAP123');
-    await tester.pump();
-    final button = tester.widget<KinlyFilledButton>(
-      find.byType(KinlyFilledButton),
-    );
-    expect(button.onPressed, isNotNull);
-    await tester.tap(find.byType(KinlyFilledButton));
-    await tester.pumpAndSettle();
-
-    verify(() => homeRepository.join('CAP123')).called(1);
-    expect(find.byType(JoinHomeBlockedScreen), findsOneWidget);
-  });
+      verify(() => homeRepository.join('CAP123')).called(1);
+      expect(find.byType(JoinHomeBlockedScreen), findsOneWidget);
+    },
+  );
 }

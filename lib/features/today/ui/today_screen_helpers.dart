@@ -13,6 +13,8 @@ void _onTodayStateChangedImpl(_TodayScreenState state, TodayState newState) {
   final previous = state._lastNonLoadingState;
   state._lastNonLoadingState = newState;
 
+  _maybeShowMemberCapResolutionSnackBar(state, newState, previous);
+
   if (!newState.isCaughtUp) {
     state._hasPendingTodayItems = true;
     return;
@@ -26,6 +28,51 @@ void _onTodayStateChangedImpl(_TodayScreenState state, TodayState newState) {
 
   state._hasPendingTodayItems = false;
   state._confettiController.play();
+}
+
+void _maybeShowMemberCapResolutionSnackBar(
+  _TodayScreenState state,
+  TodayState newState,
+  TodayState? previous,
+) {
+  final resolution = newState.memberCapJoinResolution;
+  if (resolution == null) return;
+  if (!state.mounted) return;
+
+  final previousId = previous?.memberCapJoinResolution?.requestId;
+  if (resolution.requestId.isEmpty || resolution.requestId == previousId) {
+    return;
+  }
+
+  final s = S.of(state.context);
+  final name =
+      resolution.joinerName.isEmpty
+          ? s.todayMemberCapResolutionUnknownName
+          : resolution.joinerName;
+
+  switch (resolution.resolvedReason) {
+    case 'joined':
+      KinlySnackBar.showSuccess(
+        state.context,
+        s.todayMemberCapResolutionJoined(name),
+      );
+      return;
+    case 'joiner_superseded':
+      KinlySnackBar.showError(
+        state.context,
+        s.todayMemberCapResolutionSuperseded(name),
+      );
+      return;
+    case 'home_inactive':
+    case 'invite_missing':
+      KinlySnackBar.showError(
+        state.context,
+        s.todayMemberCapResolutionFailed(name),
+      );
+      return;
+    default:
+      return;
+  }
 }
 
 void _openFlowListImpl(BuildContext context, FlowListFilter filter) {
@@ -184,6 +231,55 @@ Future<void> _openGratitudeWallImpl(BuildContext context) async {
 
 Future<void> _openHarmonyPageImpl(BuildContext context) async {
   await context.push(AppRoutes.harmony);
+}
+
+String _formatMemberCapNamesImpl(List<String> names) {
+  if (names.isEmpty) return '';
+  if (names.length <= 3) {
+    return names.join(', ');
+  }
+  final visible = names.take(3).join(', ');
+  final remaining = names.length - 3;
+  return '$visible +$remaining more';
+}
+
+Future<void> _openMemberCapPaywallImpl(
+  BuildContext context, {
+  required String homeId,
+}) async {
+  final s = S.of(context);
+  final result = await Navigator.of(context).push<bool>(
+    MaterialPageRoute(
+      builder:
+          (_) => KinlyPaywallScreen(
+            homeId: homeId,
+            source: PaywallSources.membersCap,
+            triggers: const {PaywallTrigger.membersCap},
+            strings: PaywallStrings(
+              title: s.paywallTitle,
+              subtitle: s.paywallSubtitle,
+              bulletMembers: s.paywallBulletMembers,
+              bulletFlows: s.paywallBulletFlows,
+              bulletPhotos: s.paywallBulletPhotos,
+              bulletShares: s.paywallBulletShares,
+              unlimitedLabel: s.paywallSubtitle,
+              priceCaption: s.paywallPriceCaption,
+              priceUnavailableLabel: s.paywallPriceUnavailable,
+              priceFormatter: (price) => s.paywallPricePerMonth(price),
+              primaryCta: s.paywallPrimaryCta,
+              secondaryCta: s.paywallSecondaryCta,
+              purchaseFailed: s.paywallPurchaseFailed,
+              purchaseSuccess: s.paywallPurchaseSuccess,
+              restoreCta: s.paywallRestoreCta,
+              errorTitle: s.paywallErrorTitle,
+              retryLabel: s.paywallRetryLabel,
+            ),
+          ),
+    ),
+  );
+  if (result == true && context.mounted) {
+    context.read<TodayBloc>().add(const TodayRefreshed());
+  }
 }
 
 Future<bool> _shareInviteImpl(
@@ -427,6 +523,14 @@ extension _TodayScreenStateActions on _TodayScreenState {
 
   Future<void> openHarmonyPageExt(BuildContext context) =>
       _openHarmonyPageImpl(context);
+
+  String formatMemberCapNamesExt(List<String> names) =>
+      _formatMemberCapNamesImpl(names);
+
+  Future<void> openMemberCapPaywallExt(
+    BuildContext context, {
+    required String homeId,
+  }) => _openMemberCapPaywallImpl(context, homeId: homeId);
 
   Future<bool> shareInviteExt(
     BuildContext context, {

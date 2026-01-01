@@ -3,7 +3,7 @@ SET search_path = pgtap, public, auth, extensions;
 BEGIN;
 SET ROLE postgres;
 
-SELECT plan(9);
+SELECT plan(13);
 
 -- Seed avatars for unique avatar enforcement on join
 INSERT INTO public.avatars (id, storage_path, category, name)
@@ -179,6 +179,47 @@ SELECT is(
   (SELECT resolved_reason FROM public.member_cap_join_requests WHERE joiner_user_id = (SELECT user_id FROM tmp_users WHERE label = 'joiner2') LIMIT 1),
   'joined',
   'joiner2 pending request resolved as joined'
+);
+
+-- owner sees resolution once
+SELECT set_config('request.jwt.claim.sub',  (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
+WITH payload AS (
+  SELECT public.today_onboarding_hints() AS body
+)
+SELECT is(
+  (SELECT body->'memberCapJoinResolution'->>'resolvedReason' FROM payload),
+  'joined',
+  'owner sees joiner2 resolution after upgrade'
+);
+
+SELECT ok(
+  EXISTS (
+    SELECT 1
+      FROM public.member_cap_join_requests
+     WHERE joiner_user_id = (SELECT user_id FROM tmp_users WHERE label = 'joiner2')
+       AND resolution_notified_at IS NOT NULL
+  ),
+  'resolution marked as notified'
+);
+
+WITH payload AS (
+  SELECT public.today_onboarding_hints() AS body
+)
+SELECT is(
+  (SELECT (body->'memberCapJoinResolution')::text FROM payload),
+  'null',
+  'resolution only shown once'
+);
+
+SELECT is(
+  (SELECT resolution_notified_at IS NULL
+     FROM public.member_cap_join_requests
+    WHERE joiner_user_id = (SELECT user_id FROM tmp_users WHERE label = 'joiner1')
+    LIMIT 1),
+  true,
+  'non-eligible resolution not marked notified'
 );
 
 -- Restore cap to default (10) to avoid side-effects on other tests

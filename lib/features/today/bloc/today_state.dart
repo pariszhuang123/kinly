@@ -21,6 +21,8 @@ class TodayState extends Equatable {
   final int activeChoreCount;
   final bool shouldPromptFlatmateInviteShare;
   final bool shouldPromptInviteShare;
+  final MemberCapJoinRequests? memberCapJoinRequests;
+  final MemberCapJoinResolution? memberCapJoinResolution;
 
   const TodayState._({
     required this.isLoading,
@@ -43,6 +45,8 @@ class TodayState extends Equatable {
     this.activeChoreCount = 0,
     this.shouldPromptFlatmateInviteShare = false,
     this.shouldPromptInviteShare = false,
+    this.memberCapJoinRequests,
+    this.memberCapJoinResolution,
   });
 
   const TodayState.loading({
@@ -60,6 +64,8 @@ class TodayState extends Equatable {
     int activeChoreCount = 0,
     bool shouldPromptFlatmateInviteShare = false,
     bool shouldPromptInviteShare = false,
+    MemberCapJoinRequests? memberCapJoinRequests,
+    MemberCapJoinResolution? memberCapJoinResolution,
   }) : this._(
          isLoading: true,
          activeTasks: const [],
@@ -75,10 +81,12 @@ class TodayState extends Equatable {
          hasShownNpsPrompt: hasShownNpsPrompt,
          notificationPromptTick: notificationPromptTick,
          hasShownNotificationPrompt: hasShownNotificationPrompt,
-         activeChoreCount: activeChoreCount,
-         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
-         shouldPromptInviteShare: shouldPromptInviteShare,
-       );
+        activeChoreCount: activeChoreCount,
+        shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: shouldPromptInviteShare,
+        memberCapJoinRequests: memberCapJoinRequests,
+        memberCapJoinResolution: memberCapJoinResolution,
+      );
 
   const TodayState.loaded({
     required List<TodayFlowTask> activeTasks,
@@ -98,6 +106,8 @@ class TodayState extends Equatable {
     int activeChoreCount = 0,
     bool shouldPromptFlatmateInviteShare = false,
     bool shouldPromptInviteShare = false,
+    MemberCapJoinRequests? memberCapJoinRequests,
+    MemberCapJoinResolution? memberCapJoinResolution,
   }) : this._(
          isLoading: false,
          activeTasks: activeTasks,
@@ -114,10 +124,12 @@ class TodayState extends Equatable {
          hasShownNpsPrompt: hasShownNpsPrompt,
          notificationPromptTick: notificationPromptTick,
          hasShownNotificationPrompt: hasShownNotificationPrompt,
-         activeChoreCount: activeChoreCount,
-         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
-         shouldPromptInviteShare: shouldPromptInviteShare,
-       );
+        activeChoreCount: activeChoreCount,
+        shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: shouldPromptInviteShare,
+        memberCapJoinRequests: memberCapJoinRequests,
+        memberCapJoinResolution: memberCapJoinResolution,
+      );
 
   const TodayState.failure({
     TodayUserProfile? profile,
@@ -137,6 +149,8 @@ class TodayState extends Equatable {
     int activeChoreCount = 0,
     bool shouldPromptFlatmateInviteShare = false,
     bool shouldPromptInviteShare = false,
+    MemberCapJoinRequests? memberCapJoinRequests,
+    MemberCapJoinResolution? memberCapJoinResolution,
   }) : this._(
          isLoading: false,
          activeTasks: const [],
@@ -155,10 +169,12 @@ class TodayState extends Equatable {
          hasShownNpsPrompt: hasShownNpsPrompt,
          notificationPromptTick: notificationPromptTick,
          hasShownNotificationPrompt: hasShownNotificationPrompt,
-         activeChoreCount: activeChoreCount,
-         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
-         shouldPromptInviteShare: shouldPromptInviteShare,
-       );
+        activeChoreCount: activeChoreCount,
+        shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: shouldPromptInviteShare,
+        memberCapJoinRequests: memberCapJoinRequests,
+        memberCapJoinResolution: memberCapJoinResolution,
+      );
 
   bool get hasFlowContent => activeTasks.isNotEmpty || draftTasks.isNotEmpty;
   bool get hasShareContent =>
@@ -190,5 +206,7 @@ class TodayState extends Equatable {
     activeChoreCount,
     shouldPromptFlatmateInviteShare,
     shouldPromptInviteShare,
+    memberCapJoinRequests,
+    memberCapJoinResolution,
   ];
 }

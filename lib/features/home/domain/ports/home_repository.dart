@@ -45,4 +45,6 @@ abstract class HomeRepository {
     required String feature,
     required String channel,
   });
+
+  Future<void> dismissMemberCapJoinRequests({required String homeId});
 }

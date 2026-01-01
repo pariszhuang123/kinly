@@ -56,10 +56,19 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m13(count) =>
       "Ver todo ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m14(count) =>
+  static String m14(name) => "We could not complete ${name}\'s request.";
+
+  static String m15(name) => "${name} joined your home.";
+
+  static String m16(name) => "${name} joined another home.";
+
+  static String m17(names) =>
+      "${names} wants to join your home. Upgrade to support unlimited members.";
+
+  static String m18(count) =>
       "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} pagos pendientes')}";
 
-  static String m15(count) =>
+  static String m19(count) =>
       "${Intl.plural(count, one: '${count} pago nuevo para ti', other: '${count} pagos nuevos para ti')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -951,14 +960,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
       "Compartir invitación",
     ),
-    "todayShareActiveSubtitle": m14,
+    "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
+      "Upgrade home",
+    ),
+    "todayMemberCapResolutionFailed": m14,
+    "todayMemberCapResolutionJoined": m15,
+    "todayMemberCapResolutionSuperseded": m16,
+    "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
+      "Someone",
+    ),
+    "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage(
+      "Ignore",
+    ),
+    "todayMemberCapSubtitle": m17,
+    "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
+      "A member is requesting access. Upgrade to support unlimited members.",
+    ),
+    "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
+      "Someone wants to join your home",
+    ),
+    "todayShareActiveSubtitle": m18,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "No pudimos actualizar Share en este momento.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "Pagado a ti",
     ),
-    "todaySharePaidUnseen": m15,
+    "todaySharePaidUnseen": m19,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Share"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Por pagar"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),

@@ -13,6 +13,7 @@ import '../../../../core/ui/feedback/kinly_info_banner.dart';
 import '../../../../core/ui/enums/kinly_banner_type.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../../generated/l10n.dart';
+import '../share_period_label.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
 
 class ShareCreatedListView extends StatelessWidget {
@@ -135,6 +136,14 @@ class _ShareCreatedTile extends StatelessWidget {
       paidAmountLabel,
       amountLabel,
     );
+    final periodLabel =
+        entry.isRecurring
+            ? sharePeriodLabel(
+              recurrence: entry.recurrenceInterval,
+              startDate: entry.startDate,
+              strings: s,
+            )
+            : null;
 
     final badgeColor = shareColors?.accent ?? theme.colorScheme.secondary;
     final shareStatus = _ShareStatus.resolve(entry);
@@ -152,6 +161,7 @@ class _ShareCreatedTile extends StatelessWidget {
           shareStatus: shareStatus,
           progressLabel: progressLabel,
           draftLabel: s.shareCreatedListDraftSubtitle,
+          periodLabel: periodLabel,
         );
 
     final double progressValue =
@@ -218,9 +228,19 @@ class _ShareCreatedTile extends StatelessWidget {
     required _ShareStatus shareStatus,
     required String progressLabel,
     required String draftLabel,
+    required String? periodLabel,
   }) {
-    if (shareStatus.isPaidOff || shareStatus.isDraft) return null;
-    return entry.isActive ? progressLabel : draftLabel;
+    final baseLabel =
+        shareStatus.isPaidOff || shareStatus.isDraft
+            ? null
+            : (entry.isActive ? progressLabel : draftLabel);
+    if (periodLabel == null) {
+      return baseLabel;
+    }
+    if (baseLabel == null) {
+      return periodLabel;
+    }
+    return '$periodLabel\n$baseLabel';
   }
 }
 

@@ -62,6 +62,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     on<TodayFlatmateInviteDismissed>(_onFlatmateInviteDismissed);
     on<TodayFlatmateInviteShareLogged>(_onFlatmateInviteShareLogged);
     on<TodayInviteShareLogged>(_onInviteShareLogged);
+    on<TodayMemberCapDismissed>(_onMemberCapDismissed);
 
     _profileUpdateSub = _profileUpdateNotifier.stream.listen(
       (profile) => add(TodayProfileUpdated(profile)),
@@ -113,6 +114,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     var shouldPromptFlatmateInviteShare = state.shouldPromptFlatmateInviteShare;
     var shouldPromptInviteShare = state.shouldPromptInviteShare;
     var activeChoreCount = state.activeChoreCount;
+    var memberCapJoinRequests = state.memberCapJoinRequests;
+    var memberCapJoinResolution = state.memberCapJoinResolution;
     try {
       if (!isRefresh) {
         emit(
@@ -132,6 +135,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             shouldPromptFlatmateInviteShare:
                 state.shouldPromptFlatmateInviteShare,
             shouldPromptInviteShare: state.shouldPromptInviteShare,
+            memberCapJoinRequests: state.memberCapJoinRequests,
+            memberCapJoinResolution: state.memberCapJoinResolution,
           ),
         );
       }
@@ -158,6 +163,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
                 : prevNotificationPromptTick;
         shouldPromptFlatmateInviteShare = hints.shouldPromptFlatmateInviteShare;
         shouldPromptInviteShare = hints.shouldPromptInviteShare;
+        memberCapJoinRequests = hints.memberCapJoinRequests;
+        memberCapJoinResolution = hints.memberCapJoinResolution;
       } catch (_) {
         // Keep previous hints if the RPC fails; avoid blocking Today.
       }
@@ -230,11 +237,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           hasShownNpsPrompt: hasShownNpsPromptNext,
           notificationPromptTick: notificationPromptTick,
           hasShownNotificationPrompt: hasShownNotificationPrompt,
-          activeChoreCount: activeChoreCount,
-          shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
-          shouldPromptInviteShare: shouldPromptInviteShare,
-          // later: you can add today's expenses, gratitude items, etc.
-        ),
+            activeChoreCount: activeChoreCount,
+            shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+            shouldPromptInviteShare: shouldPromptInviteShare,
+            memberCapJoinRequests: memberCapJoinRequests,
+            memberCapJoinResolution: memberCapJoinResolution,
+            // later: you can add today's expenses, gratitude items, etc.
+          ),
       );
     } catch (error) {
       // for now: basic error handling
@@ -247,13 +256,15 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           sharePaidToMe: state.sharePaidToMe,
           shareDrafts: state.shareDrafts,
           shareErrorMessage: state.shareErrorMessage,
-          gratitudeStatus: prevGratitudeStatus,
-          harmonyPromptTick: prevPromptTick,
-          hasShownHarmonyPrompt: prevHasShownHarmony,
-          npsPromptTick: prevNpsPromptTick,
-          hasShownNpsPrompt: prevHasShownNps,
-        ),
-      );
+            gratitudeStatus: prevGratitudeStatus,
+            harmonyPromptTick: prevPromptTick,
+            hasShownHarmonyPrompt: prevHasShownHarmony,
+            npsPromptTick: prevNpsPromptTick,
+            hasShownNpsPrompt: prevHasShownNps,
+            memberCapJoinRequests: memberCapJoinRequests,
+            memberCapJoinResolution: memberCapJoinResolution,
+          ),
+        );
       // optional: log error/stackTrace via your logger/Sentry here
     }
   }
@@ -376,8 +387,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   }
 
   TodayState _stateWithProfile(TodayState current, TodayUserProfile? profile) {
-    if (current.isLoading) {
-      return TodayState.loading(
+      if (current.isLoading) {
+        return TodayState.loading(
         profile: profile,
         shareOwed: current.shareOwed,
         sharePaidToMe: current.sharePaidToMe,
@@ -390,14 +401,16 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         notificationPromptTick: current.notificationPromptTick,
         hasShownNotificationPrompt: current.hasShownNotificationPrompt,
         activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-      );
+          shouldPromptFlatmateInviteShare:
+              current.shouldPromptFlatmateInviteShare,
+          shouldPromptInviteShare: current.shouldPromptInviteShare,
+          memberCapJoinRequests: current.memberCapJoinRequests,
+          memberCapJoinResolution: current.memberCapJoinResolution,
+        );
     }
 
     if (current.message != null || current.error != null) {
-      return TodayState.failure(
+        return TodayState.failure(
         profile: profile,
         message: current.message,
         error: current.error,
@@ -413,13 +426,15 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         notificationPromptTick: current.notificationPromptTick,
         hasShownNotificationPrompt: current.hasShownNotificationPrompt,
         activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-      );
+          shouldPromptFlatmateInviteShare:
+              current.shouldPromptFlatmateInviteShare,
+          shouldPromptInviteShare: current.shouldPromptInviteShare,
+          memberCapJoinRequests: current.memberCapJoinRequests,
+          memberCapJoinResolution: current.memberCapJoinResolution,
+        );
     }
 
-    return TodayState.loaded(
+      return TodayState.loaded(
       activeTasks: current.activeTasks,
       draftTasks: current.draftTasks,
       shareOwed: current.shareOwed,
@@ -435,9 +450,11 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       notificationPromptTick: current.notificationPromptTick,
       hasShownNotificationPrompt: current.hasShownNotificationPrompt,
       activeChoreCount: current.activeChoreCount,
-      shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
-      shouldPromptInviteShare: current.shouldPromptInviteShare,
-    );
+        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: current.shouldPromptInviteShare,
+        memberCapJoinRequests: current.memberCapJoinRequests,
+        memberCapJoinResolution: current.memberCapJoinResolution,
+      );
   }
 
   TodayState _stateWithoutInvitePrompt(TodayState current) {
@@ -454,15 +471,17 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         hasShownNpsPrompt: current.hasShownNpsPrompt,
         notificationPromptTick: current.notificationPromptTick,
         hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: false,
-      );
-    }
+          activeChoreCount: current.activeChoreCount,
+          shouldPromptFlatmateInviteShare:
+              current.shouldPromptFlatmateInviteShare,
+          shouldPromptInviteShare: false,
+          memberCapJoinRequests: current.memberCapJoinRequests,
+          memberCapJoinResolution: current.memberCapJoinResolution,
+        );
+      }
 
-    if (current.message != null || current.error != null) {
-      return TodayState.failure(
+      if (current.message != null || current.error != null) {
+        return TodayState.failure(
         profile: current.profile,
         message: current.message,
         error: current.error,
@@ -477,12 +496,153 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         hasShownNpsPrompt: current.hasShownNpsPrompt,
         notificationPromptTick: current.notificationPromptTick,
         hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+          activeChoreCount: current.activeChoreCount,
+          shouldPromptFlatmateInviteShare:
+              current.shouldPromptFlatmateInviteShare,
+          shouldPromptInviteShare: false,
+          memberCapJoinRequests: current.memberCapJoinRequests,
+          memberCapJoinResolution: current.memberCapJoinResolution,
+        );
+      }
+
+      return TodayState.loaded(
+      activeTasks: current.activeTasks,
+      draftTasks: current.draftTasks,
+      shareOwed: current.shareOwed,
+      sharePaidToMe: current.sharePaidToMe,
+      shareDrafts: current.shareDrafts,
+      profile: current.profile,
+      shareErrorMessage: current.shareErrorMessage,
+      gratitudeStatus: current.gratitudeStatus,
+      harmonyPromptTick: current.harmonyPromptTick,
+      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+      npsPromptTick: current.npsPromptTick,
+      hasShownNpsPrompt: current.hasShownNpsPrompt,
+      notificationPromptTick: current.notificationPromptTick,
+      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
         activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
+        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
         shouldPromptInviteShare: false,
+        memberCapJoinRequests: current.memberCapJoinRequests,
+        memberCapJoinResolution: current.memberCapJoinResolution,
       );
     }
+
+  TodayState _stateWithoutFlatmatePrompt(TodayState current) {
+    if (current.isLoading) {
+      return TodayState.loading(
+        profile: current.profile,
+        shareOwed: current.shareOwed,
+        shareDrafts: current.shareDrafts,
+        gratitudeStatus: current.gratitudeStatus,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+          activeChoreCount: current.activeChoreCount,
+          shouldPromptFlatmateInviteShare: false,
+          shouldPromptInviteShare: current.shouldPromptInviteShare,
+          memberCapJoinRequests: current.memberCapJoinRequests,
+          memberCapJoinResolution: current.memberCapJoinResolution,
+        );
+      }
+
+      if (current.message != null || current.error != null) {
+        return TodayState.failure(
+        profile: current.profile,
+        message: current.message,
+        error: current.error,
+        shareOwed: current.shareOwed,
+        sharePaidToMe: current.sharePaidToMe,
+        shareDrafts: current.shareDrafts,
+        shareErrorMessage: current.shareErrorMessage,
+        gratitudeStatus: current.gratitudeStatus,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+          activeChoreCount: current.activeChoreCount,
+          shouldPromptFlatmateInviteShare: false,
+          shouldPromptInviteShare: current.shouldPromptInviteShare,
+          memberCapJoinRequests: current.memberCapJoinRequests,
+          memberCapJoinResolution: current.memberCapJoinResolution,
+        );
+      }
+
+      return TodayState.loaded(
+      activeTasks: current.activeTasks,
+      draftTasks: current.draftTasks,
+      shareOwed: current.shareOwed,
+      sharePaidToMe: current.sharePaidToMe,
+      shareDrafts: current.shareDrafts,
+      profile: current.profile,
+      shareErrorMessage: current.shareErrorMessage,
+      gratitudeStatus: current.gratitudeStatus,
+      harmonyPromptTick: current.harmonyPromptTick,
+      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+      npsPromptTick: current.npsPromptTick,
+      hasShownNpsPrompt: current.hasShownNpsPrompt,
+      notificationPromptTick: current.notificationPromptTick,
+      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+        activeChoreCount: current.activeChoreCount,
+        shouldPromptFlatmateInviteShare: false,
+        shouldPromptInviteShare: current.shouldPromptInviteShare,
+        memberCapJoinRequests: current.memberCapJoinRequests,
+        memberCapJoinResolution: current.memberCapJoinResolution,
+      );
+    }
+
+  TodayState _stateWithoutMemberCapPrompt(TodayState current) {
+    if (current.isLoading) {
+      return TodayState.loading(
+        profile: current.profile,
+        shareOwed: current.shareOwed,
+        sharePaidToMe: current.sharePaidToMe,
+        shareDrafts: current.shareDrafts,
+        gratitudeStatus: current.gratitudeStatus,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+          activeChoreCount: current.activeChoreCount,
+          shouldPromptFlatmateInviteShare:
+              current.shouldPromptFlatmateInviteShare,
+          shouldPromptInviteShare: current.shouldPromptInviteShare,
+          memberCapJoinRequests: null,
+          memberCapJoinResolution: current.memberCapJoinResolution,
+        );
+      }
+
+      if (current.message != null || current.error != null) {
+        return TodayState.failure(
+        profile: current.profile,
+        message: current.message,
+        error: current.error,
+        shareOwed: current.shareOwed,
+        sharePaidToMe: current.sharePaidToMe,
+        shareDrafts: current.shareDrafts,
+        shareErrorMessage: current.shareErrorMessage,
+        gratitudeStatus: current.gratitudeStatus,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+          activeChoreCount: current.activeChoreCount,
+          shouldPromptFlatmateInviteShare:
+              current.shouldPromptFlatmateInviteShare,
+          shouldPromptInviteShare: current.shouldPromptInviteShare,
+          memberCapJoinRequests: null,
+          memberCapJoinResolution: current.memberCapJoinResolution,
+        );
+      }
 
     return TodayState.loaded(
       activeTasks: current.activeTasks,
@@ -501,69 +661,9 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       hasShownNotificationPrompt: current.hasShownNotificationPrompt,
       activeChoreCount: current.activeChoreCount,
       shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
-      shouldPromptInviteShare: false,
-    );
-  }
-
-  TodayState _stateWithoutFlatmatePrompt(TodayState current) {
-    if (current.isLoading) {
-      return TodayState.loading(
-        profile: current.profile,
-        shareOwed: current.shareOwed,
-        shareDrafts: current.shareDrafts,
-        gratitudeStatus: current.gratitudeStatus,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare: false,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-      );
-    }
-
-    if (current.message != null || current.error != null) {
-      return TodayState.failure(
-        profile: current.profile,
-        message: current.message,
-        error: current.error,
-        shareOwed: current.shareOwed,
-        sharePaidToMe: current.sharePaidToMe,
-        shareDrafts: current.shareDrafts,
-        shareErrorMessage: current.shareErrorMessage,
-        gratitudeStatus: current.gratitudeStatus,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare: false,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-      );
-    }
-
-    return TodayState.loaded(
-      activeTasks: current.activeTasks,
-      draftTasks: current.draftTasks,
-      shareOwed: current.shareOwed,
-      sharePaidToMe: current.sharePaidToMe,
-      shareDrafts: current.shareDrafts,
-      profile: current.profile,
-      shareErrorMessage: current.shareErrorMessage,
-      gratitudeStatus: current.gratitudeStatus,
-      harmonyPromptTick: current.harmonyPromptTick,
-      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-      npsPromptTick: current.npsPromptTick,
-      hasShownNpsPrompt: current.hasShownNpsPrompt,
-      notificationPromptTick: current.notificationPromptTick,
-      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-      activeChoreCount: current.activeChoreCount,
-      shouldPromptFlatmateInviteShare: false,
       shouldPromptInviteShare: current.shouldPromptInviteShare,
+      memberCapJoinRequests: null,
+      memberCapJoinResolution: current.memberCapJoinResolution,
     );
   }
 
@@ -628,6 +728,23 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       );
     }
     emit(_stateWithoutInvitePrompt(state));
+  }
+
+  Future<void> _onMemberCapDismissed(
+    TodayMemberCapDismissed event,
+    Emitter<TodayState> emit,
+  ) async {
+    try {
+      await _homeRepository.dismissMemberCapJoinRequests(homeId: _homeId);
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to dismiss member cap prompt',
+        error: error,
+        stackTrace: stackTrace,
+        tag: _onboardingLogTag,
+      );
+    }
+    emit(_stateWithoutMemberCapPrompt(state));
   }
 
   @override

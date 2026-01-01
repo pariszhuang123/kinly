@@ -207,7 +207,7 @@ void main() {
     await tester.tap(find.byType(KinlyFilledButton));
     await tester.pumpAndSettle();
 
-    expect(find.text(S.current.join_blocked_title), findsNWidgets(2));
+    expect(find.text(S.current.join_blocked_title), findsOneWidget);
     verify(() => homeRepository.join('CAP123')).called(1);
   });
 }

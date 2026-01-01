@@ -399,6 +399,96 @@ class S {
     return Intl.message('Done', name: 'join_blocked_cta', desc: '', args: []);
   }
 
+  /// `Someone wants to join your home`
+  String get todayMemberCapTitle {
+    return Intl.message(
+      'Someone wants to join your home',
+      name: 'todayMemberCapTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{names} wants to join your home. Upgrade to support unlimited members.`
+  String todayMemberCapSubtitle(String names) {
+    return Intl.message(
+      '$names wants to join your home. Upgrade to support unlimited members.',
+      name: 'todayMemberCapSubtitle',
+      desc: '',
+      args: [names],
+    );
+  }
+
+  /// `A member is requesting access. Upgrade to support unlimited members.`
+  String get todayMemberCapSubtitleGeneric {
+    return Intl.message(
+      'A member is requesting access. Upgrade to support unlimited members.',
+      name: 'todayMemberCapSubtitleGeneric',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upgrade home`
+  String get todayMemberCapPrimaryCta {
+    return Intl.message(
+      'Upgrade home',
+      name: 'todayMemberCapPrimaryCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ignore`
+  String get todayMemberCapSecondaryCta {
+    return Intl.message(
+      'Ignore',
+      name: 'todayMemberCapSecondaryCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{name} joined your home.`
+  String todayMemberCapResolutionJoined(String name) {
+    return Intl.message(
+      '$name joined your home.',
+      name: 'todayMemberCapResolutionJoined',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `{name} joined another home.`
+  String todayMemberCapResolutionSuperseded(String name) {
+    return Intl.message(
+      '$name joined another home.',
+      name: 'todayMemberCapResolutionSuperseded',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `We could not complete {name}'s request.`
+  String todayMemberCapResolutionFailed(String name) {
+    return Intl.message(
+      'We could not complete $name\'s request.',
+      name: 'todayMemberCapResolutionFailed',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Someone`
+  String get todayMemberCapResolutionUnknownName {
+    return Intl.message(
+      'Someone',
+      name: 'todayMemberCapResolutionUnknownName',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Quick Add`
   String get quick_add_title {
     return Intl.message(

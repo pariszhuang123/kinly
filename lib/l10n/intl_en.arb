@@ -65,6 +65,48 @@
   "join_blocked_title": "This home isn’t accepting new members right now",
   "join_blocked_body": "We’ve notified the home owner.",
   "join_blocked_cta": "Done",
+  "todayMemberCapTitle": "Someone wants to join your home",
+  "todayMemberCapSubtitle": "{names} wants to join your home. Upgrade to support unlimited members.",
+  "@todayMemberCapSubtitle": {
+    "surface": "subtitle",
+    "placeholders": {
+      "names": {
+        "type": "String",
+        "example": "Alex, Sam"
+      }
+    }
+  },
+  "todayMemberCapSubtitleGeneric": "A member is requesting access. Upgrade to support unlimited members.",
+  "todayMemberCapPrimaryCta": "Upgrade home",
+  "todayMemberCapSecondaryCta": "Ignore",
+  "todayMemberCapResolutionJoined": "{name} joined your home.",
+  "@todayMemberCapResolutionJoined": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionSuperseded": "{name} joined another home.",
+  "@todayMemberCapResolutionSuperseded": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionFailed": "We could not complete {name}'s request.",
+  "@todayMemberCapResolutionFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionUnknownName": "Someone",
   "quick_add_title": "Quick Add",
   "quick_add_flow_title": "Flow",
   "quick_add_flow_subtitle": "Create a flow",

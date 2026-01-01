@@ -113,6 +113,9 @@ class FakeHomeRepository implements HomeRepository {
   }) async {}
 
   @override
+  Future<void> dismissMemberCapJoinRequests({required String homeId}) async {}
+
+  @override
   Future<CurrentMembership?> getCurrentMembership({
     bool excludeSelf = false,
   }) async => excludeSelf ? null : currentMembership;

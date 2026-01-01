@@ -104,6 +104,11 @@ class _FakeHomeRepository implements HomeRepository {
   }) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> dismissMemberCapJoinRequests({required String homeId}) {
+    throw UnimplementedError();
+  }
 }
 
 void main() {

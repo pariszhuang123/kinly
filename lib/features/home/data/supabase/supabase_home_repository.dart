@@ -202,6 +202,18 @@ class SupabaseHomeRepository implements HomeRepository {
   }
 
   @override
+  Future<void> dismissMemberCapJoinRequests({required String homeId}) async {
+    try {
+      await _client.rpc(
+        'member_cap_owner_dismiss',
+        params: {'p_home_id': homeId},
+      );
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<CurrentMembership?> getCurrentMembership({
     bool excludeSelf = false,
   }) async {

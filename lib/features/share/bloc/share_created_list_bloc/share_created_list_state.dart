@@ -54,6 +54,8 @@ class ShareCreatedListEntry extends Equatable {
     required this.paidAmountCents,
     required this.status,
     required this.createdAt,
+    required this.recurrenceInterval,
+    required this.startDate,
     this.allPaid = false,
   });
 
@@ -65,10 +67,13 @@ class ShareCreatedListEntry extends Equatable {
   final int paidAmountCents;
   final ExpenseStatus status;
   final DateTime createdAt;
+  final ExpenseRecurrenceInterval recurrenceInterval;
+  final DateTime startDate;
   final bool allPaid;
 
   bool get isActive => status == ExpenseStatus.active;
   bool get isDraft => status == ExpenseStatus.draft;
+  bool get isRecurring => recurrenceInterval != ExpenseRecurrenceInterval.none;
 
   factory ShareCreatedListEntry.fromSummary(ExpenseCreatedSummary summary) {
     return ShareCreatedListEntry(
@@ -80,6 +85,8 @@ class ShareCreatedListEntry extends Equatable {
       paidAmountCents: summary.paidAmountCents,
       status: summary.status,
       createdAt: summary.createdAt,
+      recurrenceInterval: summary.recurrenceInterval,
+      startDate: summary.startDate,
       allPaid: summary.allPaid,
     );
   }
@@ -94,6 +101,8 @@ class ShareCreatedListEntry extends Equatable {
     paidAmountCents,
     status,
     createdAt,
+    recurrenceInterval,
+    startDate,
     allPaid,
   ];
 }

@@ -49,3 +49,7 @@ class TodayInviteShareLogged extends TodayEvent {
   @override
   List<Object?> get props => [channel];
 }
+
+class TodayMemberCapDismissed extends TodayEvent {
+  const TodayMemberCapDismissed();
+}

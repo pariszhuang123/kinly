@@ -15,9 +15,6 @@ class JoinHomeBlockedScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
     return Scaffold(
-      appBar: AppBar(
-        title: Text(s.join_blocked_title, style: theme.textTheme.titleLarge),
-      ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),

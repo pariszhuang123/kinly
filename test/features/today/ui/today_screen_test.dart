@@ -2,11 +2,21 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
+import 'package:kinly/core/auth/auth.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/core/logging/logger.dart';
+import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
+import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
+import 'package:kinly/core/purchases/revenuecat_service.dart';
+import 'package:kinly/features/home/home.dart';
+import 'package:kinly/features/paywall/paywall.dart';
 
 import 'package:kinly/core/chores/models.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
@@ -18,16 +28,57 @@ import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/features/today/ui/widgets/today_empty_state_card.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/core/expenses/enums/expense_recurrence_interval.dart';
+import 'package:kinly/core/onboarding/onboarding.dart';
 
 class _MockTodayBloc extends MockBloc<TodayEvent, TodayState>
     implements TodayBloc {}
 
 class _FakeTodayEvent extends Fake implements TodayEvent {}
 
+class _MockPaywallRepository extends Mock implements PaywallRepository {}
+
+class _MockRevenueCatService extends Mock implements RevenueCatService {}
+
+class _MockAuthRepository extends Mock implements AuthRepository {}
+
+class _MockHomeRepository extends Mock implements HomeRepository {}
+
+class _MockLogger extends Mock implements Logger {}
+
+class _RevenueCatPackageFake extends Fake implements RevenueCatPackage {}
+
+class _FakeSvgBundle extends CachingAssetBundle {
+  static const _emptySvg = '<svg viewBox="0 0 24 24"></svg>';
+
+  @override
+  Future<ByteData> load(String key) async {
+    return ByteData.view(Uint8List.fromList(_emptySvg.codeUnits).buffer);
+  }
+
+  @override
+  Future<String> loadString(String key, {bool cache = true}) async {
+    if (key.endsWith('Share.svg') ||
+        key.endsWith('Hub.svg') ||
+        key.endsWith('Home.svg')) {
+      return _emptySvg;
+    }
+    throw FlutterError('Asset $key not mocked in tests');
+  }
+}
+
 void main() {
   setUpAll(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    const purchasesChannel = MethodChannel('purchases_flutter');
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(purchasesChannel, (methodCall) async {
+          if (methodCall.method == 'getAppUserID') return 'rc-test-user';
+          return null;
+        });
     registerFallbackValue(_FakeTodayEvent());
     registerFallbackValue(const TodayState.loading());
+    registerFallbackValue(PaywallEventType.impression);
+    registerFallbackValue(_RevenueCatPackageFake());
   });
 
   late _MockTodayBloc todayBloc;
@@ -42,8 +93,8 @@ void main() {
     ).thenReturn(const TodayState.loading(harmonyPromptTick: 0));
   });
 
-  Widget buildApp() {
-    return MaterialApp(
+  Widget buildApp({AssetBundle? bundle}) {
+    final app = MaterialApp(
       theme: buildKinlyTheme(Brightness.light),
       localizationsDelegates: const [
         S.delegate,
@@ -57,6 +108,12 @@ void main() {
         child: const TodayScreen(),
       ),
     );
+
+    if (bundle == null) {
+      return app;
+    }
+
+    return DefaultAssetBundle(bundle: bundle, child: app);
   }
 
   testWidgets('shows loading indicator while state is loading', (tester) async {
@@ -106,6 +163,149 @@ void main() {
     await tester.pump();
 
     expect(find.byType(TodayEmptyStateCard), findsOneWidget);
+  });
+
+  testWidgets('shows member cap prompt when onboarding hints provide it', (
+    tester,
+  ) async {
+    when(() => todayBloc.state).thenReturn(
+      TodayState.loaded(
+        activeTasks: const [
+          TodayFlowTask(
+            id: '1',
+            title: 'Take out trash',
+            state: ChoreState.active,
+          ),
+        ],
+        draftTasks: const [],
+        shareOwed: const [],
+        sharePaidToMe: const [],
+        shareDrafts: const [],
+        profile: const TodayUserProfile(
+          userId: 'owner-1',
+          username: 'Owner',
+          isOwner: true,
+        ),
+        memberCapJoinRequests: const MemberCapJoinRequests(
+          homeId: 'home-1',
+          pendingCount: 1,
+          joinerNames: ['Alex'],
+          requestIds: ['req-1'],
+        ),
+      ),
+    );
+    when(() => todayBloc.homeId).thenReturn('home-1');
+
+    await tester.pumpWidget(buildApp());
+    await tester.pump();
+
+    expect(find.text(S.current.todayMemberCapTitle), findsOneWidget);
+  });
+
+  testWidgets('member cap CTA opens paywall with members cap trigger', (
+    tester,
+  ) async {
+    final sl = GetIt.instance;
+    await sl.reset();
+    addTearDown(sl.reset);
+    sl.registerLazySingleton<PaywallRepository>(() => _MockPaywallRepository());
+    sl.registerLazySingleton<RevenueCatService>(() => _MockRevenueCatService());
+    sl.registerLazySingleton<AuthRepository>(() => _MockAuthRepository());
+    sl.registerLazySingleton<HomeRepository>(() => _MockHomeRepository());
+    sl.registerLazySingleton<Logger>(() => _MockLogger());
+
+    final repo = sl<PaywallRepository>() as _MockPaywallRepository;
+    final rc = sl<RevenueCatService>() as _MockRevenueCatService;
+    final auth = sl<AuthRepository>() as _MockAuthRepository;
+    final homeRepo = sl<HomeRepository>() as _MockHomeRepository;
+    final logger = sl<Logger>() as _MockLogger;
+
+    when(() => auth.current).thenReturn(const AuthSession(userId: 'user-1'));
+    when(() => logger.debug(any(), tag: any(named: 'tag'))).thenReturn(null);
+    when(() => logger.info(any(), tag: any(named: 'tag'))).thenReturn(null);
+    when(
+      () => logger.warn(
+        any(),
+        tag: any(named: 'tag'),
+        error: any(named: 'error'),
+        stackTrace: any(named: 'stackTrace'),
+      ),
+    ).thenReturn(null);
+    when(
+      () => logger.error(
+        any(),
+        tag: any(named: 'tag'),
+        error: any(named: 'error'),
+        stackTrace: any(named: 'stackTrace'),
+      ),
+    ).thenReturn(null);
+    when(
+      () => repo.logEvent(
+        homeId: any(named: 'homeId'),
+        eventType: any(named: 'eventType'),
+        source: any(named: 'source'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => homeRepo.listActiveMembers(
+        any(),
+        excludeSelf: any(named: 'excludeSelf'),
+      ),
+    ).thenAnswer((_) async => const <HomeMemberSummary>[]);
+    when(
+      () => rc.fetchMonthlyPackage(placementId: any(named: 'placementId')),
+    ).thenAnswer(
+      (_) async =>
+          RevenueCatPackage(identifier: 'monthly', priceString: '\$4.99'),
+    );
+    when(() => rc.isEntitlementActive(any())).thenAnswer((_) async => false);
+    when(
+      () => rc.setSubscriberAttributes(
+        appUserId: any(named: 'appUserId'),
+        homeId: any(named: 'homeId'),
+        locale: any(named: 'locale'),
+        email: any(named: 'email'),
+      ),
+    ).thenAnswer((_) async {});
+
+    when(() => todayBloc.state).thenReturn(
+      TodayState.loaded(
+        activeTasks: const [
+          TodayFlowTask(
+            id: '1',
+            title: 'Take out trash',
+            state: ChoreState.active,
+          ),
+        ],
+        draftTasks: const [],
+        shareOwed: const [],
+        sharePaidToMe: const [],
+        shareDrafts: const [],
+        profile: const TodayUserProfile(
+          userId: 'owner-1',
+          username: 'Owner',
+          isOwner: true,
+        ),
+        memberCapJoinRequests: const MemberCapJoinRequests(
+          homeId: 'home-1',
+          pendingCount: 1,
+          joinerNames: ['Alex'],
+          requestIds: ['req-1'],
+        ),
+      ),
+    );
+    when(() => todayBloc.homeId).thenReturn('home-1');
+
+    await tester.pumpWidget(buildApp(bundle: _FakeSvgBundle()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(S.current.todayMemberCapPrimaryCta));
+    await tester.pumpAndSettle();
+
+    final paywallFinder = find.byType(KinlyPaywallScreen);
+    expect(paywallFinder, findsOneWidget);
+    final paywall = tester.widget<KinlyPaywallScreen>(paywallFinder);
+    expect(paywall.triggers, const {PaywallTrigger.membersCap});
   });
 
   testWidgets('plays confetti when transitioning from tasks to caught up', (

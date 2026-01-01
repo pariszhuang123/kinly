@@ -40,6 +40,9 @@ import 'widgets/today_share_section/today_share_section_container.dart';
 import '../../share/ui/share_edit_outcome.dart';
 import '../../share/ui/share_owed_detail_screen.dart';
 import '../../share/ui/share_paid_to_me_detail_screen.dart';
+import 'package:kinly/features/paywall/paywall.dart';
+import 'package:kinly/core/paywall/paywall_sources.dart';
+import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
 
 part 'today_screen_helpers.dart';
 
@@ -288,6 +291,14 @@ class _TodayScreenState extends State<TodayScreen>
   Future<void> _openHarmonyPage(BuildContext context) =>
       openHarmonyPageExt(context);
 
+  String _formatMemberCapNames(List<String> names) =>
+      formatMemberCapNamesExt(names);
+
+  Future<void> _openMemberCapPaywall(
+    BuildContext context, {
+    required String homeId,
+  }) => openMemberCapPaywallExt(context, homeId: homeId);
+
   Future<bool> _shareInvite(BuildContext context, {required bool isFlatmate}) =>
       shareInviteExt(context, isFlatmate: isFlatmate);
 
@@ -317,11 +328,39 @@ class _TodayScreenState extends State<TodayScreen>
       return const TodayEmptyStateCard();
     }
 
+    final memberCap = state.memberCapJoinRequests;
+    final memberCapNames = memberCap?.joinerNames ?? const <String>[];
+    final memberCapNamesLabel = _formatMemberCapNames(memberCapNames);
+    final memberCapSubtitle =
+        memberCapNamesLabel.isNotEmpty
+            ? s.todayMemberCapSubtitle(memberCapNamesLabel)
+            : s.todayMemberCapSubtitleGeneric;
+    final showMemberCapPrompt =
+        (memberCap?.pendingCount ?? 0) > 0 &&
+        state.profile?.isOwner == true;
+
     final inviteConfig = _inviteConfig(state);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (showMemberCapPrompt) ...[
+          TodayInvitePrompt(
+            title: s.todayMemberCapTitle,
+            subtitle: memberCapSubtitle,
+            primaryLabel: s.todayMemberCapPrimaryCta,
+            secondaryLabel: s.todayMemberCapSecondaryCta,
+            onPrimary: () {
+              final homeId = context.read<TodayBloc>().homeId;
+              _openMemberCapPaywall(context, homeId: homeId);
+            },
+            onSecondary:
+                () => context.read<TodayBloc>().add(
+                  const TodayMemberCapDismissed(),
+                ),
+          ),
+          SizedBox(height: spacing.lg),
+        ],
         if (inviteConfig.showPrompt) ...[
           TodayInvitePrompt(
             title:

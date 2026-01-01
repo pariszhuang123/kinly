@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:kinly/core/homes/models.dart';
-import 'package:kinly/core/homes/enums/join_outcome.dart';
 
 void main() {
   group('HomeJoinResult.fromJson', () {
