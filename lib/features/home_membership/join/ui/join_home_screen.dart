@@ -75,20 +75,7 @@ class _JoinFormState extends State<_JoinForm> {
     final s = S.of(context);
     return BlocListener<JoinHomeBloc, JoinHomeState>(
       listenWhen: (previous, current) => previous.status != current.status,
-      listener: (context, state) {
-        if (state.status == JoinHomeStatus.success) {
-          KinlySnackBar.showSuccess(context, s.join_success(state.code));
-          context.read<AuthBloc>().add(const AuthMembershipRefreshRequested());
-          if (!mounted) return;
-          context.go(AppRoutes.today);
-        } else if (state.status == JoinHomeStatus.blocked) {
-          if (!mounted) return;
-          context.go(AppRoutes.joinBlocked);
-        } else if (state.status == JoinHomeStatus.failure) {
-          final errorText = _resolveErrorText(context, state);
-          KinlySnackBar.showError(context, errorText);
-        }
-      },
+      listener: _handleStatusChange,
       child: Padding(
         padding: EdgeInsetsDirectional.all(
           Theme.of(context).extension<Spacing>()!.lg,
@@ -136,6 +123,30 @@ class _JoinFormState extends State<_JoinForm> {
         ),
       ),
     );
+  }
+
+  void _handleStatusChange(BuildContext context, JoinHomeState state) {
+    final s = S.of(context);
+    switch (state.status) {
+      case JoinHomeStatus.success:
+        KinlySnackBar.showSuccess(context, s.join_success(state.code));
+        context.read<AuthBloc>().add(const AuthMembershipRefreshRequested());
+        if (!mounted) return;
+        context.go(AppRoutes.today);
+        break;
+      case JoinHomeStatus.blocked:
+        if (!mounted) return;
+        context.go(AppRoutes.joinBlocked);
+        break;
+      case JoinHomeStatus.failure:
+        final errorText = _resolveErrorText(context, state);
+        KinlySnackBar.showError(context, errorText);
+        break;
+      case JoinHomeStatus.initial:
+      case JoinHomeStatus.editing:
+      case JoinHomeStatus.submitting:
+        break;
+    }
   }
 
   String _resolveErrorText(BuildContext context, JoinHomeState state) {
