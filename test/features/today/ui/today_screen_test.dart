@@ -24,11 +24,16 @@ import 'package:kinly/features/today/bloc/today_bloc.dart';
 import 'package:kinly/features/today/domain/models.dart';
 import 'package:kinly/features/today/ui/today_screen.dart';
 import 'package:kinly/features/today/ui/widgets/today_header/today_header.dart';
+import 'package:kinly/features/today/ui/widgets/today_gratitude_section.dart';
+import 'package:kinly/features/today/ui/widgets/today_invite_prompt.dart';
+import 'package:kinly/features/today/ui/widgets/today_flow_section/today_flow_section_container.dart';
+import 'package:kinly/features/today/ui/widgets/today_share_section/today_share_section_container.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/features/today/ui/widgets/today_empty_state_card.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/core/expenses/enums/expense_recurrence_interval.dart';
 import 'package:kinly/core/onboarding/onboarding.dart';
+import 'package:kinly/core/mood/models.dart';
 
 class _MockTodayBloc extends MockBloc<TodayEvent, TodayState>
     implements TodayBloc {}
@@ -200,6 +205,51 @@ void main() {
     await tester.pump();
 
     expect(find.text(S.current.todayMemberCapTitle), findsOneWidget);
+  });
+
+  testWidgets('renders flow, share, gratitude, and invite sections', (
+    tester,
+  ) async {
+    when(() => todayBloc.state).thenReturn(
+      TodayState.loaded(
+        activeTasks: const [
+          TodayFlowTask(
+            id: '1',
+            title: 'Take out trash',
+            state: ChoreState.active,
+          ),
+        ],
+        draftTasks: const [],
+        shareOwed: [
+          TodayShareOwed(
+            payerUserId: 'payer-1',
+            displayName: 'Payer',
+            totalOwedCents: 1200,
+            items: [
+              TodayShareOwedItem(
+                expenseId: 'expense-1',
+                description: 'Test expense',
+                amountCents: 1200,
+                recurrenceInterval: ExpenseRecurrenceInterval.none,
+                startDate: DateTime(2024, 1, 1),
+              ),
+            ],
+          ),
+        ],
+        sharePaidToMe: const [],
+        shareDrafts: const [],
+        gratitudeStatus: const GratitudeWallStatus(hasUnread: true),
+        shouldPromptInviteShare: true,
+      ),
+    );
+
+    await tester.pumpWidget(buildApp(bundle: _FakeSvgBundle()));
+    await tester.pump();
+
+    expect(find.byType(TodayFlowSectionContainer), findsOneWidget);
+    expect(find.byType(TodayShareSectionContainer), findsOneWidget);
+    expect(find.byType(TodayGratitudeSection), findsOneWidget);
+    expect(find.byType(TodayInvitePrompt), findsOneWidget);
   });
 
   testWidgets('member cap CTA opens paywall with members cap trigger', (

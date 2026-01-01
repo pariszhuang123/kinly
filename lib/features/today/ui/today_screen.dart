@@ -45,6 +45,9 @@ import 'package:kinly/core/paywall/paywall_sources.dart';
 import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
 
 part 'today_screen_helpers.dart';
+part 'today_screen_flow_helpers.dart';
+part 'today_screen_share_helpers.dart';
+part 'today_screen_notifications_helpers.dart';
 
 const _shareLogTag = 'TodayShare';
 
@@ -328,6 +331,28 @@ class _TodayScreenState extends State<TodayScreen>
       return const TodayEmptyStateCard();
     }
 
+    final inviteConfig = _inviteConfig(state);
+
+    final children = <Widget>[
+      ..._buildMemberCapSection(context, state, spacing, s),
+      ..._buildInviteSection(context, inviteConfig, spacing, s),
+      ..._buildFlowSection(context, hasFlow, spacing),
+      ..._buildShareSection(context, hasShare, logger),
+      ..._buildGratitudeSection(context, hasGratitude, spacing),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
+  }
+
+  List<Widget> _buildMemberCapSection(
+    BuildContext context,
+    TodayState state,
+    Spacing spacing,
+    S s,
+  ) {
     final memberCap = state.memberCapJoinRequests;
     final memberCapNames = memberCap?.joinerNames ?? const <String>[];
     final memberCapNamesLabel = _formatMemberCapNames(memberCapNames);
@@ -339,101 +364,144 @@ class _TodayScreenState extends State<TodayScreen>
         (memberCap?.pendingCount ?? 0) > 0 &&
         state.profile?.isOwner == true;
 
-    final inviteConfig = _inviteConfig(state);
+    if (!showMemberCapPrompt) {
+      return const <Widget>[];
+    }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (showMemberCapPrompt) ...[
-          TodayInvitePrompt(
-            title: s.todayMemberCapTitle,
-            subtitle: memberCapSubtitle,
-            primaryLabel: s.todayMemberCapPrimaryCta,
-            secondaryLabel: s.todayMemberCapSecondaryCta,
-            onPrimary: () {
-              final homeId = context.read<TodayBloc>().homeId;
-              _openMemberCapPaywall(context, homeId: homeId);
-            },
-            onSecondary:
-                () => context.read<TodayBloc>().add(
-                  const TodayMemberCapDismissed(),
-                ),
-          ),
-          SizedBox(height: spacing.lg),
-        ],
-        if (inviteConfig.showPrompt) ...[
-          TodayInvitePrompt(
-            title:
-                inviteConfig.isFlatmate
-                    ? s.todayFlatmateInviteTitle
-                    : s.todayInviteFriendsTitle,
-            subtitle:
-                inviteConfig.isFlatmate
-                    ? s.todayFlatmateInviteSubtitle
-                    : s.todayInviteFriendsSubtitle,
-            primaryLabel: s.todayInviteShareCta,
-            secondaryLabel:
-                inviteConfig.isFlatmate
-                    ? s.todayInviteNotNow
-                    : s.todayInviteNotNow,
-            onPrimary: () async {
-              final shared = await _shareInvite(
-                context,
-                isFlatmate: inviteConfig.isFlatmate,
-              );
-              if (!context.mounted || !shared) return;
-              context.read<TodayBloc>().add(inviteConfig.logEvent);
-            },
-            onSecondary:
-                inviteConfig.isFlatmate
-                    ? () => context.read<TodayBloc>().add(
-                      const TodayFlatmateInviteDismissed(),
-                    )
-                    : null,
-          ),
-          SizedBox(height: spacing.lg),
-        ],
-        if (hasFlow) ...[
-          TodayFlowSectionContainer(
-            onTaskTap: (task) => _handleFlowTaskTap(context, task),
-            onSeeAllTap: (filter) => _openFlowList(context, filter),
-          ),
-          SizedBox(height: spacing.lg),
-        ],
-        if (hasShare)
-          TodayShareSectionContainer(
-            onOwedTap: (owed) {
-              logger.info(
-                'Tapped owed entry: ${owed.displayName}',
-                tag: _shareLogTag,
-              );
-              _openShareOwedDetail(context, owed);
-            },
-            onPaidToMeTap: (entry) {
-              logger.info(
-                'Tapped paid-to-me entry: ${entry.debtorUsername}',
-                tag: _shareLogTag,
-              );
-              _openSharePaidToMeDetail(context, entry);
-            },
-            onDraftTap: (draft) {
-              logger.info(
-                'Tapped draft share: ${draft.expenseId}',
-                tag: _shareLogTag,
-              );
-              _openShareDraftEdit(context, draft);
-            },
-            onSeeAllDraftsTap: () {
-              logger.info('Tapped see all share drafts', tag: _shareLogTag);
-              _openShareCreatedList(context);
-            },
-          ),
-        if (hasGratitude) ...[
-          SizedBox(height: spacing.lg),
-          TodayGratitudeSection(onTap: () => _openGratitudeWall(context)),
-        ],
-      ],
-    );
+    return [
+      TodayInvitePrompt(
+        title: s.todayMemberCapTitle,
+        subtitle: memberCapSubtitle,
+        primaryLabel: s.todayMemberCapPrimaryCta,
+        secondaryLabel: s.todayMemberCapSecondaryCta,
+        onPrimary: () {
+          final homeId = context.read<TodayBloc>().homeId;
+          _openMemberCapPaywall(context, homeId: homeId);
+        },
+        onSecondary:
+            () => context.read<TodayBloc>().add(
+              const TodayMemberCapDismissed(),
+            ),
+      ),
+      SizedBox(height: spacing.lg),
+    ];
+  }
+
+  List<Widget> _buildInviteSection(
+    BuildContext context,
+    _InviteConfig inviteConfig,
+    Spacing spacing,
+    S s,
+  ) {
+    if (!inviteConfig.showPrompt) {
+      return const <Widget>[];
+    }
+
+    return [
+      TodayInvitePrompt(
+        title:
+            inviteConfig.isFlatmate
+                ? s.todayFlatmateInviteTitle
+                : s.todayInviteFriendsTitle,
+        subtitle:
+            inviteConfig.isFlatmate
+                ? s.todayFlatmateInviteSubtitle
+                : s.todayInviteFriendsSubtitle,
+        primaryLabel: s.todayInviteShareCta,
+        secondaryLabel:
+            inviteConfig.isFlatmate
+                ? s.todayInviteNotNow
+                : s.todayInviteNotNow,
+        onPrimary: () async {
+          final shared = await _shareInvite(
+            context,
+            isFlatmate: inviteConfig.isFlatmate,
+          );
+          if (!context.mounted || !shared) return;
+          context.read<TodayBloc>().add(inviteConfig.logEvent);
+        },
+        onSecondary:
+            inviteConfig.isFlatmate
+                ? () => context.read<TodayBloc>().add(
+                  const TodayFlatmateInviteDismissed(),
+                )
+                : null,
+      ),
+      SizedBox(height: spacing.lg),
+    ];
+  }
+
+  List<Widget> _buildFlowSection(
+    BuildContext context,
+    bool hasFlow,
+    Spacing spacing,
+  ) {
+    if (!hasFlow) {
+      return const <Widget>[];
+    }
+
+    return [
+      TodayFlowSectionContainer(
+        onTaskTap: (task) => _handleFlowTaskTap(context, task),
+        onSeeAllTap: (filter) => _openFlowList(context, filter),
+      ),
+      SizedBox(height: spacing.lg),
+    ];
+  }
+
+  List<Widget> _buildShareSection(
+    BuildContext context,
+    bool hasShare,
+    Logger logger,
+  ) {
+    if (!hasShare) {
+      return const <Widget>[];
+    }
+
+    return [
+      TodayShareSectionContainer(
+        onOwedTap: (owed) {
+          logger.info(
+            'Tapped owed entry: ${owed.displayName}',
+            tag: _shareLogTag,
+          );
+          _openShareOwedDetail(context, owed);
+        },
+        onPaidToMeTap: (entry) {
+          logger.info(
+            'Tapped paid-to-me entry: ${entry.debtorUsername}',
+            tag: _shareLogTag,
+          );
+          _openSharePaidToMeDetail(context, entry);
+        },
+        onDraftTap: (draft) {
+          logger.info(
+            'Tapped draft share: ${draft.expenseId}',
+            tag: _shareLogTag,
+          );
+          _openShareDraftEdit(context, draft);
+        },
+        onSeeAllDraftsTap: () {
+          logger.info('Tapped see all share drafts', tag: _shareLogTag);
+          _openShareCreatedList(context);
+        },
+      ),
+    ];
+  }
+
+  List<Widget> _buildGratitudeSection(
+    BuildContext context,
+    bool hasGratitude,
+    Spacing spacing,
+  ) {
+    if (!hasGratitude) {
+      return const <Widget>[];
+    }
+
+    return [
+      SizedBox(height: spacing.lg),
+      TodayGratitudeSection(onTap: () => _openGratitudeWall(context)),
+    ];
   }
 
   _InviteConfig _inviteConfig(TodayState state) {
