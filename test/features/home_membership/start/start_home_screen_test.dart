@@ -11,7 +11,7 @@ import 'package:kinly/features/home_membership/start/bloc/start_home_bloc.dart';
 import 'package:kinly/features/home_membership/start/ui/start_home_screen.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/core/theme/spacing.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>

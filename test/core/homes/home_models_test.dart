@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 
 void main() {
   test('LeaveResult maps home deactivated outcome', () {

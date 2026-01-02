@@ -1,4 +1,4 @@
-import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_event_type.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:kinly/features/paywall/paywall.dart';

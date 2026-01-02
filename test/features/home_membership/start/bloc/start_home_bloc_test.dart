@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/features/home_membership/start/bloc/start_home_bloc.dart';
 import 'package:kinly/features/home/home.dart';
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 

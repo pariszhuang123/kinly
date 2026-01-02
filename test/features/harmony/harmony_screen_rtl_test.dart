@@ -3,8 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:kinly/core/mood/enums/mood_scale.dart';
-import 'package:kinly/core/mood/models.dart';
+import 'package:kinly/contracts/mood/enums/mood_scale.dart';
+import 'package:kinly/contracts/mood/models.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/features/harmony/harmony.dart';

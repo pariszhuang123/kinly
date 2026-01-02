@@ -1,5 +1,1 @@
-class ShareEditRouteArgs {
-  const ShareEditRouteArgs({this.allowDelete = false});
-
-  final bool allowDelete;
-}
+export 'package:kinly/contracts/share/share_edit_route_args.dart';

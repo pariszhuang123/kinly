@@ -1,3 +1,9 @@
 export 'join/ui/join_home_screen.dart';
 export 'join/ui/join_home_blocked_screen.dart';
+export 'join/ui/join_home_surface_contract.dart';
+export 'join/ui/join_home_surface_registry.dart';
+export 'join/ui/join_home_blocked_surface_contract.dart';
+export 'join/ui/join_home_blocked_surface_registry.dart';
 export 'start/ui/start_home_provider.dart';
+export 'start/ui/start_home_surface_contract.dart';
+export 'start/ui/start_home_surface_registry.dart';

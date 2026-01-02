@@ -112,6 +112,9 @@ jobs:
       - name: Check dependency guardrails
         run: dart run tool/check_dependency_rules.dart
 
+      - name: Check composable system guardrails (warning-only)
+        run: dart run tool/check_composable_system.dart
+
       - name: Check nesting depth
         run: dart run tool/check_nesting_depth.dart
 

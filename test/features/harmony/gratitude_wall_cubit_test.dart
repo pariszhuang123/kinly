@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/features/harmony/bloc/gratitude_wall_cubit.dart';
-import 'package:kinly/core/mood/enums/mood_scale.dart';
-import 'package:kinly/core/mood/models.dart';
+import 'package:kinly/contracts/mood/enums/mood_scale.dart';
+import 'package:kinly/contracts/mood/models.dart';
 import 'package:kinly/features/harmony/harmony.dart';
 import 'package:kinly/features/home/home.dart';
 

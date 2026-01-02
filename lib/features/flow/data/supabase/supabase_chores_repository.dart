@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:kinly/core/chores/models.dart';
+import 'package:kinly/contracts/chores/models.dart';
 import 'package:kinly/core/supabase/storage_path_resolver.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/core/utils/url_validator.dart';

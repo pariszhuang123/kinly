@@ -2,20 +2,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kinly/app/di/compose.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/flow/domain/ports/chores_repository.dart';
-import 'package:kinly/features/harmony/domain/ports/mood_repository.dart';
+import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'package:kinly/features/home/domain/ports/home_repository.dart';
 import 'package:kinly/features/paywall/domain/ports/paywall_repository.dart';
 import 'package:kinly/features/share/domain/ports/expenses_repository.dart';
-import 'package:kinly/features/profile_settings/domain/ports/profile_repository.dart';
-import 'package:kinly/core/auth/auth.dart';
+import 'package:kinly/contracts/profile/ports/profile_repository.dart';
+import 'package:kinly/contracts/auth/ports/auth_repository.dart';
 import 'package:kinly/core/logging/logger.dart';
-import 'package:kinly/core/account/account.dart';
-import 'package:kinly/core/app_version/app_version.dart';
+import 'package:kinly/contracts/account/ports/account_repository.dart';
+import 'package:kinly/contracts/app_version/ports/app_version_repository.dart';
 import 'package:kinly/core/network/connectivity_monitor.dart';
-import 'package:kinly/core/onboarding/onboarding.dart';
+import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
 import 'package:kinly/core/notifications/notifications.dart';
 import 'package:kinly/core/notifications/device_token_provider.dart';
-import 'package:kinly/core/profile/profile_update_notifier.dart';
+import 'package:kinly/core/notifications/profile_update_notifier.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
 import 'package:kinly/core/time/iana_timezone_resolver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,3 +90,4 @@ void main() {
     },
   );
 }
+

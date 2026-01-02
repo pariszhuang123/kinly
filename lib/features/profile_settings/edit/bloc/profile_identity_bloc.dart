@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../../core/profile/models.dart';
+import 'package:kinly/contracts/profile/models.dart';
+import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import '../../../../core/profile/enums/profile_error_code.dart';
 import '../../../../core/profile/profile_error_mapper.dart';
-import '../../profile_settings.dart';
 
 part 'profile_identity_event.dart';
 part 'profile_identity_state.dart';

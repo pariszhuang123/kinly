@@ -1,10 +1,10 @@
 import '../../utils/avatar_cache_buster.dart';
-import 'package:kinly/core/profile/models.dart';
+import 'package:kinly/contracts/profile/models.dart';
 import 'package:kinly/core/profile/profile_error_mapper.dart';
 import 'package:kinly/core/supabase/storage_path_resolver.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../profile_settings.dart';
+import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 
 class SupabaseProfileRepository implements ProfileRepository {
   SupabaseProfileRepository({SupabaseClient? client})

@@ -120,6 +120,7 @@ class _ParticipantsSection extends StatelessWidget {
                       validFrom:
                           DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
                       avatarUrl: participant.avatarUrl,
+                      isOwner: participant.isOwner,
                     ),
                   )
                   .toList(growable: false),

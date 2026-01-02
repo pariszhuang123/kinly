@@ -1,4 +1,4 @@
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -14,7 +14,7 @@ class SupabaseHomeRepository implements HomeRepository {
   Future<HomeCreationResult> create({String? name}) async {
     try {
       final response = await _client.rpc(
-        'homes_create',
+        'homes_create_with_invite',
         params: {if (name != null) 'p_name': name},
       );
       return HomeCreationResult.fromJson(response);

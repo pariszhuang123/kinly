@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/chores/models.dart';
+import '../../../contracts/chores/models.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/features/flow/flow.dart';
 

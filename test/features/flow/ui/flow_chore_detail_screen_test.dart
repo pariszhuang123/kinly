@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/core/chores/models.dart';
+import 'package:kinly/contracts/chores/models.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_detail_bloc.dart';
 import 'package:kinly/features/flow/domain/flow_chore_outcome.dart';
 import 'package:kinly/features/flow/ui/flow_chore_detail/flow_chore_detail_screen.dart';

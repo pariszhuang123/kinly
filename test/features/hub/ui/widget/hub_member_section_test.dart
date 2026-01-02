@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/core/ui/buttons/kinly_add_tile_button.dart';
-import 'package:kinly/features/hub/bloc/hub_bloc.dart';
-import 'package:kinly/features/hub/ui/widget/hub_member_section.dart';
+import 'package:kinly/foundation/surfaces/hub/bloc/hub_bloc.dart';
+import 'package:kinly/foundation/surfaces/hub/widget/hub_member_section.dart';
 import 'package:kinly/generated/l10n.dart';
 
 class _FakeSvgBundle extends CachingAssetBundle {

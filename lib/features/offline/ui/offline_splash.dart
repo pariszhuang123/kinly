@@ -5,7 +5,7 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/theme/opacity.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
-import '../../splash/ui/widgets/kinly_logo.dart';
+import '../../../core/ui/branding/kinly_logo.dart';
 
 class OfflineSplash extends StatelessWidget {
   const OfflineSplash({super.key, required this.onRetry});

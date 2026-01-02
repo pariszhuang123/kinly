@@ -1,18 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
-import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
-import '../../../core/ui/kinly_circle_avatar.dart';
-import '../../../core/ui/kinly_loader.dart';
-import '../../../core/ui/buttons/kinly_filled_button.dart';
-import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../share/share.dart';
 import '../../../generated/l10n.dart';
-import '../../../core/ui/selector/kinly_expand_badge.dart';
-import '../../today/domain/models.dart';
-import 'share_period_label.dart';
+import '../../../contracts/share/models.dart';
 
 class ShareOwedDetailScreen extends StatefulWidget {
   const ShareOwedDetailScreen({
@@ -34,6 +25,7 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ShareOwedDetailRegistry.bootstrap();
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
@@ -45,37 +37,7 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsetsDirectional.all(spacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _ShareOwedHeader(owed: widget.owed),
-              SizedBox(height: spacing.lg),
-              Expanded(
-                child:
-                    hasItems
-                        ? KinlyScrollFade(
-                          child: _ShareOwedItemsList(items: widget.owed.items),
-                        )
-                        : _ShareOwedEmptyState(message: s.shareOwedDetailEmpty),
-              ),
-              if (_errorMessage != null) ...[
-                SizedBox(height: spacing.sm),
-                Text(
-                  _errorMessage!,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.error,
-                  ),
-                ),
-              ],
-              SizedBox(height: spacing.lg),
-              _ShareOwedMarkPaidButton(
-                isSubmitting: _isSubmitting,
-                isEnabled: !_isSubmitting && hasItems,
-                label: s.shareOwedDetailPaid,
-                onPressed: (!_isSubmitting && hasItems) ? _markAllPaid : null,
-              ),
-            ],
-          ),
+          child: _buildOwedBody(context, spacing, s, hasItems),
         ),
       ),
     );
@@ -118,257 +80,38 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
       });
     }
   }
-}
 
-/// Header section: avatar, name, subtitle, total owed
-class _ShareOwedHeader extends StatelessWidget {
-  const _ShareOwedHeader({required this.owed});
-
-  final TodayShareOwed owed;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>()!;
-
-    return Row(
-      children: [
-        KinlyCircleAvatar(
-          avatarUrl: owed.avatarUrl,
-          radius: 28,
-          isOwner: owed.isOwner,
-        ),
-        SizedBox(width: spacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(owed.displayName, style: theme.textTheme.titleLarge),
-            ],
-          ),
-        ),
-        Text(
-          _formatCurrency(owed.totalOwedCents),
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
+  Widget _buildOwedBody(
+    BuildContext context,
+    Spacing spacing,
+    S strings,
+    bool hasItems,
+  ) {
+    final actions = ShareOwedDetailSurfaceActions(onMarkAllPaid: _markAllPaid);
+    final scope = ShareOwedDetailSurfaceScope(
+      context: context,
+      owed: widget.owed,
+      spacing: spacing,
+      strings: strings,
+      hasItems: hasItems,
+      isSubmitting: _isSubmitting,
+      errorMessage: _errorMessage,
+      actions: actions,
     );
-  }
-}
-
-/// Empty state when there are no owed items
-class _ShareOwedEmptyState extends StatelessWidget {
-  const _ShareOwedEmptyState({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Center(
-      child: Text(
-        message,
-        style: theme.textTheme.bodyMedium,
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-}
-
-/// List of all owed items, read-only (no selection)
-class _ShareOwedItemsList extends StatefulWidget {
-  const _ShareOwedItemsList({required this.items});
-
-  final List<TodayShareOwedItem> items;
-
-  @override
-  State<_ShareOwedItemsList> createState() => _ShareOwedItemsListState();
-}
-
-class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
-  final Set<String> _expanded = <String>{};
-
-  bool _hasNotes(TodayShareOwedItem item) =>
-      (item.notes?.trim().isNotEmpty ?? false);
-
-  void _toggle(String expenseId) {
-    setState(() {
-      if (_expanded.contains(expenseId)) {
-        _expanded.remove(expenseId);
-      } else {
-        _expanded.add(expenseId);
-      }
-    });
+    final slots = ShareOwedDetailSurfaceSlots(body: _buildOwedSections(scope));
+    return slots.body;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final strings = S.of(context);
-    final spacing = Theme.of(context).extension<Spacing>()!;
-    final sectionColors = Theme.of(context).extension<KinlySections>()!.share;
-
-    return ListView.separated(
-      padding: EdgeInsetsDirectional.only(top: spacing.sm),
-      itemCount: widget.items.length,
-      separatorBuilder: (_, __) => SizedBox(height: spacing.sm),
-      itemBuilder: (context, index) {
-        final item = widget.items[index];
-        final hasNotes = _hasNotes(item);
-        final isExpanded = _expanded.contains(item.expenseId);
-        final periodLabel = sharePeriodLabel(
-          recurrence: item.recurrenceInterval,
-          startDate: item.startDate,
-          strings: strings,
-        );
-        return _DetailRow(
-          description: item.description,
-          periodLabel: periodLabel,
-          amountLabel: _formatCurrency(item.amountCents),
-          notes: item.notes,
-          hasNotes: hasNotes,
-          isExpanded: isExpanded,
-          onToggle: hasNotes ? () => _toggle(item.expenseId) : null,
-          colors: sectionColors,
-        );
-      },
-    );
-  }
-}
-
-/// Footer button + loading state for marking all as paid
-class _ShareOwedMarkPaidButton extends StatelessWidget {
-  const _ShareOwedMarkPaidButton({
-    required this.isSubmitting,
-    required this.isEnabled,
-    required this.label,
-    required this.onPressed,
-  });
-
-  final bool isSubmitting;
-  final bool isEnabled;
-  final String label;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          KinlyFilledButton.text(
-            fullWidth: true,
-            onPressed: isEnabled ? onPressed : null,
-            label: label,
-          ),
-          if (isSubmitting)
-            const SizedBox(height: 20, width: 20, child: KinlyLoader(size: 20)),
-        ],
-      ),
-    );
-  }
-}
-
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({
-    required this.description,
-    required this.periodLabel,
-    required this.amountLabel,
-    required this.hasNotes,
-    required this.isExpanded,
-    required this.colors,
-    this.notes,
-    this.onToggle,
-  });
-
-  final String description;
-  final String periodLabel;
-  final String amountLabel;
-  final String? notes;
-  final bool hasNotes;
-  final bool isExpanded;
-  final SectionColors colors;
-  final VoidCallback? onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>()!;
-    final noteText = notes?.trim();
-
-    final content = Column(
+  Widget _buildOwedSections(ShareOwedDetailSurfaceScope scope) {
+    final entries = ShareOwedDetailRegistry.bodySections;
+    if (entries.length == 1) {
+      return entries.first.builder(scope);
+    }
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (hasNotes)
-              KinlyExpandBadge(isExpanded: isExpanded, colors: colors)
-            else
-              const SizedBox(width: 32),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(description, style: theme.textTheme.bodyMedium),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              amountLabel,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: spacing.xs),
-        Text(
-          periodLabel,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        if (hasNotes)
-          AnimatedSize(
-            duration: const Duration(milliseconds: 180),
-            curve: Curves.easeInOut,
-            child:
-                isExpanded
-                    ? Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        start: 32,
-                        top: 8,
-                        end: 12,
-                      ),
-                      child: Text(
-                        noteText ?? '',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    )
-                    : const SizedBox.shrink(),
-          ),
-      ],
-    );
-
-    return Material(
-      borderRadius: BorderRadius.circular(16),
-      color: theme.colorScheme.surfaceContainerHighest,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onToggle,
-        child: Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 14),
-          child: content,
-        ),
-      ),
+      children: entries
+          .map((entry) => entry.builder(scope))
+          .toList(growable: false),
     );
   }
-}
-
-String _formatCurrency(int amountCents) {
-  final formatter = NumberFormat.simpleCurrency(decimalDigits: 2);
-  return formatter.format(amountCents / 100.0);
 }

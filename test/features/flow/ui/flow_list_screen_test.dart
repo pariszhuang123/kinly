@@ -2,7 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kinly/core/chores/models.dart';
+import 'package:kinly/contracts/chores/models.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/features/flow/bloc/flow_list_bloc.dart';
@@ -10,7 +10,7 @@ import 'package:kinly/features/flow/ui/flow_list_filter.dart';
 import 'package:kinly/features/flow/ui/flow_list_screen.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:kinly/generated/l10n.dart';
-import 'package:kinly/core/theme/opacity.dart';
+import 'package:kinly/core/theme/kinly_theme.dart';
 
 class _MockFlowListBloc extends MockBloc<FlowListEvent, FlowListState>
     implements FlowListBloc {}
@@ -35,9 +35,7 @@ void main() {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      theme: ThemeData.light().copyWith(
-        extensions: const <ThemeExtension<dynamic>>[KinlyOpacity.defaults],
-      ),
+      theme: buildKinlyTheme(Brightness.light),
       home: child,
     );
   }
@@ -99,9 +97,7 @@ void main() {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      theme: ThemeData.light().copyWith(
-        extensions: const <ThemeExtension<dynamic>>[KinlyOpacity.defaults],
-      ),
+      theme: buildKinlyTheme(Brightness.light),
     );
   }
 

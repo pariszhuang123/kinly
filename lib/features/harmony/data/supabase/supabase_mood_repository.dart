@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:kinly/core/mood/enums/mood_scale.dart';
-import 'package:kinly/core/mood/models.dart';
+import 'package:kinly/contracts/mood/enums/mood_scale.dart';
+import 'package:kinly/contracts/mood/models.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/core/time/timezone.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

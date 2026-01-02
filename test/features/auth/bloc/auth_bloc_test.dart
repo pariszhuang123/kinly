@@ -5,11 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
-import 'package:kinly/core/auth/auth.dart';
+import 'package:kinly/contracts/auth/ports/auth_repository.dart';
 import 'package:kinly/features/home/home.dart';
-import 'package:kinly/features/profile_settings/profile_settings.dart';
-import 'package:kinly/core/homes/models.dart';
-import 'package:kinly/core/profile/models.dart';
+import 'package:kinly/contracts/profile/ports/profile_repository.dart';
+import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/contracts/profile/models.dart';
 
 class _MockAuthRepository extends Mock implements AuthRepository {}
 

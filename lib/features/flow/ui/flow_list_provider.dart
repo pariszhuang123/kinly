@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:kinly/features/flow/flow.dart';
-import '../../../../features/home/home.dart';
+import 'package:kinly/contracts/flow/enums/flow_list_filter.dart';
+import 'package:kinly/contracts/flow/ports/chores_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import '../bloc/flow_list_bloc.dart';
 import 'flow_list_screen.dart';
 

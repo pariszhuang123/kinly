@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
-import '../../../core/theme/color_tokens.dart';
-import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
-import '../../../core/theme/typography_tokens.dart';
-import '../../../core/ui/kinly_circle_avatar.dart';
-import '../../../core/ui/kinly_loader.dart';
-import '../../../core/ui/kinly_list_tile.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
-import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../share/share.dart';
 import '../../../generated/l10n.dart';
-import '../../../core/expenses/enums/expense_recurrence_interval.dart';
-import '../../today/domain/models.dart';
-import 'share_period_label.dart';
+import '../../../contracts/share/models.dart';
+import 'share_paid_to_me_detail_models.dart';
 
 class SharePaidToMeDetailScreen extends StatefulWidget {
   const SharePaidToMeDetailScreen({
@@ -98,17 +88,13 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SharePaidToMeDetailRegistry.bootstrap();
     final s = S.of(context);
     final spacing = Theme.of(context).extension<Spacing>()!;
     final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
-    // Ensure last tile can scroll above the bottomNavigationBar.
-    final bottomScrollPad = spacing.lg + spacing.xl + spacing.lg;
-
     return Scaffold(
       appBar: AppBar(title: Text(s.todayShareTabPaidToMe)),
-
-      // ✅ Bottom controls are NOT part of the scroll.
       bottomNavigationBar: SafeArea(
         top: false,
         child: Container(
@@ -150,180 +136,36 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
           ),
         ),
       ),
-
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Material(
-              color: backgroundColor,
-              child: _Header(entry: widget.entry),
-            ),
-
-            SizedBox(height: spacing.lg),
-
-            // ✅ Only this area scrolls.
-            Expanded(
-              child: ClipRect(
-                child: KinlyScrollFade(
-                  fadeTop: true,
-                  maskColor: backgroundColor,
-                  child: CustomScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    slivers: [
-                      if (_isLoading)
-                        const SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(child: KinlyLoader()),
-                        )
-                      else if (_error != null)
-                        SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(
-                            child: Text(
-                              _error!,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        )
-                      else if (_items.isEmpty)
-                        SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(child: Text(s.shareOwedDetailEmpty)),
-                        )
-                      else
-                        SliverList.separated(
-                          itemCount: _items.length,
-                          separatorBuilder:
-                              (_, __) => SizedBox(height: spacing.sm),
-                          itemBuilder: (context, index) {
-                            final item = _items[index];
-                            final typography =
-                                Theme.of(context).extension<KinlyTypography>();
-                            final colors =
-                                Theme.of(context).extension<KinlyColorTokens>();
-                            final periodLabel = sharePeriodLabel(
-                              recurrence: item.recurrenceInterval,
-                              startDate: item.startDate,
-                              strings: s,
-                            );
-
-                            return KinlyListTile(
-                              title: item.description,
-                              subtitle: periodLabel,
-                              trailing: Text(
-                                item.formattedAmount,
-                                style: (typography?.titleSmall ??
-                                        Theme.of(context).textTheme.titleSmall)
-                                    ?.copyWith(color: colors?.onSurface),
-                              ),
-                            );
-                          },
-                        ),
-
-                      // ✅ Spacer so the last item never sits under the bottom bar.
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: bottomScrollPad),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header({required this.entry});
-
-  final TodaySharePaidToMe entry;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>()!;
-    final colors = Theme.of(context).extension<KinlySections>()?.share;
-
-    return Row(
-      children: [
-        KinlyCircleAvatar(
-          avatarUrl: entry.debtorAvatarUrl,
-          isOwner: entry.isOwner,
-          radius: 28,
-        ),
-        SizedBox(width: spacing.md),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              entry.debtorUsername,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: colors?.icon),
-            ),
-            Text(
-              entry.hasUnseen
-                  ? S.of(context).todaySharePaidUnseen(entry.unseenCount)
-                  : S.of(context).todaySharePaidSubtitle,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
-        ),
-        const Spacer(),
-        Text(
-          entry.totalPaidFormatted,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: colors?.icon,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class TodaySharePaidItem {
-  TodaySharePaidItem({
-    required this.expenseId,
-    required this.description,
-    required this.amountCents,
-    required this.markedPaidAt,
-    required this.recurrenceInterval,
-    required this.startDate,
-    this.notes,
-  });
-
-  final String expenseId;
-  final String description;
-  final int amountCents;
-  final DateTime? markedPaidAt;
-  final ExpenseRecurrenceInterval recurrenceInterval;
-  final DateTime startDate;
-  final String? notes;
-
-  factory TodaySharePaidItem.fromModel(ExpensePaidToMeItem model) {
-    return TodaySharePaidItem(
-      expenseId: model.expenseId,
-      description: model.description,
-      amountCents: model.amountCents,
-      markedPaidAt: model.markedPaidAt,
-      recurrenceInterval: model.recurrenceInterval,
-      startDate: model.startDate,
-      notes: model.notes,
+      body: SafeArea(child: _buildPaidToMeBody(context, spacing, s)),
     );
   }
 
-  String get formattedAmount {
-    return NumberFormat.simpleCurrency(
-      decimalDigits: 2,
-    ).format(amountCents / 100.0);
+  Widget _buildPaidToMeBody(BuildContext context, Spacing spacing, S strings) {
+    final scope = SharePaidToMeDetailSurfaceScope(
+      context: context,
+      entry: widget.entry,
+      items: _items,
+      spacing: spacing,
+      strings: strings,
+      isLoading: _isLoading,
+      error: _error,
+    );
+    final slots = SharePaidToMeDetailSurfaceSlots(
+      body: _buildPaidToMeSections(scope),
+    );
+    return slots.body;
+  }
+
+  Widget _buildPaidToMeSections(SharePaidToMeDetailSurfaceScope scope) {
+    final entries = SharePaidToMeDetailRegistry.bodySections;
+    if (entries.length == 1) {
+      return entries.first.builder(scope);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: entries
+          .map((entry) => entry.builder(scope))
+          .toList(growable: false),
+    );
   }
 }

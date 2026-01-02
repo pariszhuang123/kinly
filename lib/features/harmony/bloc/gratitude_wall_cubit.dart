@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/logging/debug_logger.dart';
 import '../../../core/logging/logger.dart';
-import '../../../core/mood/models.dart';
-import '../../../../features/home/home.dart';
+import 'package:kinly/contracts/mood/models.dart';
+import 'package:kinly/contracts/homes/ports/home_repository.dart';
+import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import '../harmony.dart';
 
 part 'gratitude_wall_state.dart';

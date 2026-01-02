@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/expenses/models.dart';
+import '../../../contracts/expenses/models.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
-import '../share.dart';
-import '../../../../features/home/home.dart';
+import 'package:kinly/contracts/share/ports/expenses_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import '../bloc/share_create_bloc/share_create_bloc.dart';
 import '../domain/share_create_form.dart';
 import '../domain/share_split_mode.dart';

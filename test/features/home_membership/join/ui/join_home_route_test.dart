@@ -7,7 +7,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/app/router/app_router.dart';
 import 'package:kinly/core/di/locator.dart';
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/home_membership/join/ui/join_home_blocked_screen.dart';

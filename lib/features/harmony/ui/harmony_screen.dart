@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/mood/enums/mood_scale.dart';
+import 'package:kinly/contracts/mood/enums/mood_scale.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';

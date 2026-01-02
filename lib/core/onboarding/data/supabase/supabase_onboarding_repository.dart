@@ -1,4 +1,4 @@
-import 'package:kinly/core/onboarding/onboarding.dart';
+import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Supabase implementation backed by `today_onboarding_hints` SEC DEFINER RPC.

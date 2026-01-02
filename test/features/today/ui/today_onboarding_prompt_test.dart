@@ -5,15 +5,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/core/chores/models.dart';
+import 'package:kinly/contracts/chores/models.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/notifications/device_token_provider.dart';
 import 'package:kinly/core/notifications/notification_permission_service.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/core/notifications/notifications.dart';
-import 'package:kinly/features/today/bloc/today_bloc.dart';
-import 'package:kinly/features/today/domain/models.dart';
-import 'package:kinly/features/today/ui/today_screen.dart';
+import 'package:kinly/foundation/surfaces/today/bloc/today_bloc.dart';
+import 'package:kinly/foundation/surfaces/today/domain/models.dart';
+import 'package:kinly/foundation/surfaces/today/today_surface.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/time/iana_timezone_resolver.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
@@ -194,3 +194,4 @@ void main() {
     expect(permissionService.callCount, 1);
   });
 }
+

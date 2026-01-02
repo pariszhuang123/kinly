@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/mood/enums/mood_scale.dart';
-import '../../../core/mood/models.dart';
+import 'package:kinly/contracts/mood/enums/mood_scale.dart';
+import 'package:kinly/contracts/mood/models.dart';
 import '../harmony.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 

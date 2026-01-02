@@ -5,9 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:kinly/features/today/bloc/today_bloc.dart';
-import 'package:kinly/features/today/ui/today_screen.dart';
-import 'package:kinly/features/today/ui/widgets/today_empty_state_card.dart';
+import 'package:kinly/foundation/surfaces/today/bloc/today_bloc.dart';
+import 'package:kinly/foundation/surfaces/today/today_surface.dart';
+import 'package:kinly/foundation/surfaces/today/widgets/today_empty_state_card.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/generated/l10n.dart';
 
@@ -58,3 +58,5 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 }
+
+

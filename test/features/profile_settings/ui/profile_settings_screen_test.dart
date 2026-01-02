@@ -6,9 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/core/theme/kinly_theme.dart';
-import 'package:kinly/features/auth/bloc/auth_bloc.dart';
-import 'package:kinly/features/profile_settings/bloc/profile_settings_bloc.dart';
-import 'package:kinly/features/profile_settings/ui/profile_settings_screen.dart';
+import 'package:kinly/foundation/surfaces/profile/bloc/profile_settings_bloc.dart';
+import 'package:kinly/foundation/surfaces/profile/profile_surface.dart';
 import 'package:kinly/generated/l10n.dart';
 
 class _MockProfileSettingsBloc
@@ -18,30 +17,19 @@ class _MockProfileSettingsBloc
 class _FakeProfileSettingsEvent extends Fake
     implements ProfileSettingsEvent {}
 
-class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
-    implements AuthBloc {}
-
-class _FakeAuthEvent extends Fake implements AuthEvent {}
-
 void main() {
   setUpAll(() {
     registerFallbackValue(_FakeProfileSettingsEvent());
-    registerFallbackValue(_FakeAuthEvent());
   });
 
   group('ProfileSettingsScreen', () {
     late _MockProfileSettingsBloc profileSettingsBloc;
-    late _MockAuthBloc authBloc;
+    bool didSignOut = false;
 
     setUp(() {
       profileSettingsBloc = _MockProfileSettingsBloc();
-      authBloc = _MockAuthBloc();
-
       when(() => profileSettingsBloc.stream).thenAnswer(
         (_) => const Stream<ProfileSettingsState>.empty(),
-      );
-      when(() => authBloc.stream).thenAnswer(
-        (_) => const Stream<AuthState>.empty(),
       );
     });
 
@@ -55,14 +43,14 @@ void main() {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
-        home: MultiBlocProvider(
-          providers: [
-            BlocProvider<AuthBloc>.value(value: authBloc),
-            BlocProvider<ProfileSettingsBloc>.value(
-              value: profileSettingsBloc,
-            ),
-          ],
-          child: const ProfileSettingsScreen(),
+        home: BlocProvider<ProfileSettingsBloc>.value(
+          value: profileSettingsBloc,
+          child: ProfileSettingsScreen(
+            onMembershipRefresh: () {},
+            onSignOut: () {
+              didSignOut = true;
+            },
+          ),
         ),
       );
     }
@@ -75,15 +63,13 @@ void main() {
           user: const ProfileSettingsUser(displayName: 'Alex'),
         ),
       );
-      when(() => authBloc.state).thenReturn(const AuthState());
-
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.logout));
       await tester.pump();
 
-      verify(() => authBloc.add(const AuthSignOutRequested())).called(1);
+      expect(didSignOut, isTrue);
       expect(find.byType(AlertDialog), findsNothing);
     });
   });

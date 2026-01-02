@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../harmony.dart';
-import '../../../../../features/home/home.dart';
+import 'package:kinly/contracts/homes/ports/home_repository.dart';
+import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import '../../bloc/gratitude_wall_cubit.dart';
 import 'gratitude_wall_screen.dart';
 

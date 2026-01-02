@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import '../kinly_circle_avatar.dart';
 import '../selector/kinly_selectable_item_row.dart';
 

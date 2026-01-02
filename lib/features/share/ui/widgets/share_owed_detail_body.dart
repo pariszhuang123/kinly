@@ -1,0 +1,320 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../core/theme/kinly_sections.dart';
+import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../core/ui/kinly_loader.dart';
+import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
+import '../../../../core/ui/selector/kinly_expand_badge.dart';
+import '../../../../generated/l10n.dart';
+import '../../../../contracts/share/models.dart';
+import '../share_period_label.dart';
+
+class ShareOwedDetailBody extends StatelessWidget {
+  const ShareOwedDetailBody({
+    super.key,
+    required this.owed,
+    required this.spacing,
+    required this.strings,
+    required this.hasItems,
+    required this.isSubmitting,
+    required this.errorMessage,
+    required this.onMarkAllPaid,
+  });
+
+  final TodayShareOwed owed;
+  final Spacing spacing;
+  final S strings;
+  final bool hasItems;
+  final bool isSubmitting;
+  final String? errorMessage;
+  final Future<void> Function() onMarkAllPaid;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _ShareOwedHeader(owed: owed),
+        SizedBox(height: spacing.lg),
+        Expanded(
+          child:
+              hasItems
+                  ? KinlyScrollFade(
+                    child: _ShareOwedItemsList(items: owed.items),
+                  )
+                  : _ShareOwedEmptyState(message: strings.shareOwedDetailEmpty),
+        ),
+        if (errorMessage != null) ...[
+          SizedBox(height: spacing.sm),
+          Text(
+            errorMessage!,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ],
+        SizedBox(height: spacing.lg),
+        _ShareOwedMarkPaidButton(
+          isSubmitting: isSubmitting,
+          isEnabled: !isSubmitting && hasItems,
+          label: strings.shareOwedDetailPaid,
+          onPressed: (!isSubmitting && hasItems) ? onMarkAllPaid : null,
+        ),
+      ],
+    );
+  }
+}
+
+class _ShareOwedHeader extends StatelessWidget {
+  const _ShareOwedHeader({required this.owed});
+
+  final TodayShareOwed owed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+
+    return Row(
+      children: [
+        KinlyCircleAvatar(
+          avatarUrl: owed.avatarUrl,
+          radius: 28,
+          isOwner: owed.isOwner,
+        ),
+        SizedBox(width: spacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(owed.displayName, style: theme.textTheme.titleLarge),
+            ],
+          ),
+        ),
+        Text(
+          _formatCurrency(owed.totalOwedCents),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ShareOwedEmptyState extends StatelessWidget {
+  const _ShareOwedEmptyState({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Text(
+        message,
+        style: theme.textTheme.bodyMedium,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+class _ShareOwedItemsList extends StatefulWidget {
+  const _ShareOwedItemsList({required this.items});
+
+  final List<TodayShareOwedItem> items;
+
+  @override
+  State<_ShareOwedItemsList> createState() => _ShareOwedItemsListState();
+}
+
+class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
+  final Set<String> _expanded = <String>{};
+
+  bool _hasNotes(TodayShareOwedItem item) =>
+      (item.notes?.trim().isNotEmpty ?? false);
+
+  void _toggle(String expenseId) {
+    setState(() {
+      if (_expanded.contains(expenseId)) {
+        _expanded.remove(expenseId);
+      } else {
+        _expanded.add(expenseId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final strings = S.of(context);
+    final spacing = Theme.of(context).extension<Spacing>()!;
+    final sectionColors = Theme.of(context).extension<KinlySections>()!.share;
+
+    return ListView.separated(
+      padding: EdgeInsetsDirectional.only(top: spacing.sm),
+      itemCount: widget.items.length,
+      separatorBuilder: (_, __) => SizedBox(height: spacing.sm),
+      itemBuilder: (context, index) {
+        final item = widget.items[index];
+        final hasNotes = _hasNotes(item);
+        final isExpanded = _expanded.contains(item.expenseId);
+        final periodLabel = sharePeriodLabel(
+          recurrence: item.recurrenceInterval,
+          startDate: item.startDate,
+          strings: strings,
+        );
+        return _DetailRow(
+          description: item.description,
+          periodLabel: periodLabel,
+          amountLabel: _formatCurrency(item.amountCents),
+          notes: item.notes,
+          hasNotes: hasNotes,
+          isExpanded: isExpanded,
+          onToggle: hasNotes ? () => _toggle(item.expenseId) : null,
+          colors: sectionColors,
+        );
+      },
+    );
+  }
+}
+
+class _ShareOwedMarkPaidButton extends StatelessWidget {
+  const _ShareOwedMarkPaidButton({
+    required this.isSubmitting,
+    required this.isEnabled,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final bool isSubmitting;
+  final bool isEnabled;
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          KinlyFilledButton.text(
+            fullWidth: true,
+            onPressed: isEnabled ? onPressed : null,
+            label: label,
+          ),
+          if (isSubmitting)
+            const SizedBox(height: 20, width: 20, child: KinlyLoader(size: 20)),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  const _DetailRow({
+    required this.description,
+    required this.periodLabel,
+    required this.amountLabel,
+    required this.hasNotes,
+    required this.isExpanded,
+    required this.colors,
+    this.notes,
+    this.onToggle,
+  });
+
+  final String description;
+  final String periodLabel;
+  final String amountLabel;
+  final String? notes;
+  final bool hasNotes;
+  final bool isExpanded;
+  final SectionColors colors;
+  final VoidCallback? onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final noteText = notes?.trim();
+
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (hasNotes)
+              KinlyExpandBadge(isExpanded: isExpanded, colors: colors)
+            else
+              const SizedBox(width: 32),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(description, style: theme.textTheme.bodyMedium),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              amountLabel,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: spacing.xs),
+        Text(
+          periodLabel,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        if (hasNotes)
+          AnimatedSize(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeInOut,
+            child:
+                isExpanded
+                    ? Padding(
+                      padding: const EdgeInsetsDirectional.only(
+                        start: 32,
+                        top: 8,
+                        end: 12,
+                      ),
+                      child: Text(
+                        noteText ?? '',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    )
+                    : const SizedBox.shrink(),
+          ),
+      ],
+    );
+
+    return Material(
+      borderRadius: BorderRadius.circular(16),
+      color: theme.colorScheme.surfaceContainerHighest,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onToggle,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 14),
+          child: content,
+        ),
+      ),
+    );
+  }
+}
+
+String _formatCurrency(int amountCents) {
+  final formatter = NumberFormat.simpleCurrency(decimalDigits: 2);
+  return formatter.format(amountCents / 100.0);
+}

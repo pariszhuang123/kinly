@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'media_repository.dart';
+import 'package:kinly/contracts/media/ports/media_repository.dart';
 
 class CameraPermissionException implements Exception {
   CameraPermissionException({required this.permanentlyDenied});

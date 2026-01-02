@@ -198,9 +198,11 @@ void _checkFeatureDirs(
   for (final module in modules) {
     final hasFeatureDir = featureFolders.contains(module.name);
     final hasLibRoot = Directory('lib/${module.name}').existsSync();
-    if (!hasFeatureDir && !hasLibRoot) {
+    final hasFoundationSurface =
+        Directory('lib/foundation/surfaces/${module.name}').existsSync();
+    if (!hasFeatureDir && !hasLibRoot && !hasFoundationSurface) {
       warnings.add(
-        'module "${module.name}" has no matching folder under lib/features/ or lib/${module.name}/',
+        'module "${module.name}" has no matching folder under lib/features/, lib/${module.name}/, or lib/foundation/surfaces/${module.name}/',
       );
     }
   }

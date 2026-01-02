@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../harmony/harmony.dart';
+import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import '../bloc/nps_cubit.dart';
 import 'nps_screen.dart';
 

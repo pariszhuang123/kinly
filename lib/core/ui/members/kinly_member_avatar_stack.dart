@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import '../../theme/color_tokens.dart';
 import '../../theme/kinly_palette.dart';
 import '../../theme/opacity.dart';

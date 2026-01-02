@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:kinly/core/expenses/models.dart';
+import 'package:kinly/contracts/expenses/models.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

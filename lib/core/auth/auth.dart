@@ -1,1 +1,1 @@
-export 'domain/ports/auth_repository.dart';
+export 'package:kinly/contracts/auth/ports/auth_repository.dart';

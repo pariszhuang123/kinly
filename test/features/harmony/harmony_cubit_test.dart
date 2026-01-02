@@ -3,8 +3,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:kinly/features/harmony/bloc/harmony_cubit.dart';
-import 'package:kinly/core/mood/enums/mood_scale.dart';
-import 'package:kinly/core/mood/models.dart';
+import 'package:kinly/contracts/mood/enums/mood_scale.dart';
+import 'package:kinly/contracts/mood/models.dart';
 import 'package:kinly/features/harmony/harmony.dart';
 
 class _MockMoodRepository extends Mock implements MoodRepository {}

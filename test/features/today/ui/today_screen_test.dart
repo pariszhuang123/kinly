@@ -8,32 +8,34 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
-import 'package:kinly/core/auth/auth.dart';
+import 'package:kinly/contracts/auth/ports/auth_repository.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/core/logging/logger.dart';
-import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
-import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_event_type.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
+import 'package:kinly/core/ui/paywall/ports/paywall_launcher.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/paywall/paywall.dart';
+import 'package:kinly/features/paywall/ui/paywall_launcher.dart';
 
-import 'package:kinly/core/chores/models.dart';
+import 'package:kinly/contracts/chores/models.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
-import 'package:kinly/features/today/bloc/today_bloc.dart';
-import 'package:kinly/features/today/domain/models.dart';
-import 'package:kinly/features/today/ui/today_screen.dart';
-import 'package:kinly/features/today/ui/widgets/today_header/today_header.dart';
-import 'package:kinly/features/today/ui/widgets/today_gratitude_section.dart';
-import 'package:kinly/features/today/ui/widgets/today_invite_prompt.dart';
-import 'package:kinly/features/today/ui/widgets/today_flow_section/today_flow_section_container.dart';
-import 'package:kinly/features/today/ui/widgets/today_share_section/today_share_section_container.dart';
+import 'package:kinly/foundation/surfaces/today/bloc/today_bloc.dart';
+import 'package:kinly/foundation/surfaces/today/domain/models.dart';
+import 'package:kinly/foundation/surfaces/today/today_surface.dart';
+import 'package:kinly/foundation/surfaces/today/widgets/today_header/today_header.dart';
+import 'package:kinly/foundation/surfaces/today/widgets/today_gratitude_section.dart';
+import 'package:kinly/foundation/surfaces/today/widgets/today_invite_prompt.dart';
+import 'package:kinly/foundation/surfaces/today/widgets/today_flow_section/today_flow_section_container.dart';
+import 'package:kinly/foundation/surfaces/today/widgets/today_share_section/today_share_section_container.dart';
 import 'package:kinly/generated/l10n.dart';
-import 'package:kinly/features/today/ui/widgets/today_empty_state_card.dart';
+import 'package:kinly/foundation/surfaces/today/widgets/today_empty_state_card.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
-import 'package:kinly/core/expenses/enums/expense_recurrence_interval.dart';
-import 'package:kinly/core/onboarding/onboarding.dart';
-import 'package:kinly/core/mood/models.dart';
+import 'package:kinly/contracts/expenses/enums/expense_recurrence_interval.dart';
+import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
+import 'package:kinly/contracts/mood/models.dart';
 
 class _MockTodayBloc extends MockBloc<TodayEvent, TodayState>
     implements TodayBloc {}
@@ -263,6 +265,7 @@ void main() {
     sl.registerLazySingleton<AuthRepository>(() => _MockAuthRepository());
     sl.registerLazySingleton<HomeRepository>(() => _MockHomeRepository());
     sl.registerLazySingleton<Logger>(() => _MockLogger());
+    sl.registerLazySingleton<PaywallLauncher>(() => const PaywallLauncherImpl());
 
     final repo = sl<PaywallRepository>() as _MockPaywallRepository;
     final rc = sl<RevenueCatService>() as _MockRevenueCatService;
@@ -483,3 +486,5 @@ void main() {
     expect(listItemTopAfter, lessThan(listItemTopBefore - 20));
   });
 }
+
+

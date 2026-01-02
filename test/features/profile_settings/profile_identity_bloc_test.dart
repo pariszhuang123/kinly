@@ -2,8 +2,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/core/profile/models.dart';
-import 'package:kinly/features/profile_settings/profile_settings.dart';
+import 'package:kinly/contracts/profile/models.dart';
+import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'package:kinly/features/profile_settings/edit/bloc/profile_identity_bloc.dart';
 
 class _MockProfileRepository extends Mock implements ProfileRepository {}

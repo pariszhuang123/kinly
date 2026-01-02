@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/core/chores/models.dart';
+import 'package:kinly/contracts/chores/models.dart';
 import 'package:kinly/core/media/expectation_photo_service.dart';
-import 'package:kinly/core/media/media_repository.dart';
+import 'package:kinly/contracts/media/ports/media_repository.dart';
 import 'package:kinly/features/flow/flow.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/flow/bloc/flow_chore_bloc.dart';

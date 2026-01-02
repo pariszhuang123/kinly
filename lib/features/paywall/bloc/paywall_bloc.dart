@@ -5,12 +5,12 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../../../core/logging/logger.dart';
 import '../../../core/purchases/revenuecat_service.dart';
-import '../../../core/paywall/paywall_models.dart';
-import '../../../core/paywall/enums/paywall_event_type.dart';
-import '../../../core/paywall/enums/paywall_trigger.dart';
-import '../../../core/homes/models.dart';
-import 'package:kinly/core/auth/auth.dart';
-import 'package:kinly/features/home/home.dart';
+import '../domain/paywall_models.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_event_type.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
+import '../../../contracts/homes/models.dart';
+import 'package:kinly/contracts/auth/ports/auth_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/features/paywall/paywall.dart';
 
 part 'paywall_event.dart';

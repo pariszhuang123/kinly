@@ -1,4 +1,4 @@
-import '../../../core/chores/models.dart';
+import '../../../contracts/chores/models.dart';
 import '../../../core/time/date_only.dart';
 import '../../../core/utils/url_validator.dart';
 

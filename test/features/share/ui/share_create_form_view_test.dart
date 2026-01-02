@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'package:kinly/core/expenses/enums/expense_recurrence_interval.dart';
+import 'package:kinly/contracts/expenses/enums/expense_recurrence_interval.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/features/share/bloc/share_create_bloc/share_create_bloc.dart';

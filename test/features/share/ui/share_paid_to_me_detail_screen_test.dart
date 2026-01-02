@@ -4,10 +4,10 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/share/ui/share_paid_to_me_detail_screen.dart';
-import 'package:kinly/features/today/domain/models.dart';
+import 'package:kinly/foundation/surfaces/today/domain/models.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
-import 'package:kinly/core/expenses/enums/expense_recurrence_interval.dart';
+import 'package:kinly/contracts/expenses/models.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class _MockExpensesRepository extends Mock implements ExpensesRepository {}
@@ -99,3 +99,4 @@ void main() {
     ).called(1);
   });
 }
+

@@ -1,24 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/di/locator.dart';
-import '../profile_settings.dart';
+import 'package:kinly/core/di/locator.dart';
+import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'bloc/profile_identity_bloc.dart';
 import 'profile_identity_screen.dart';
-
-class ProfileIdentityRouteArgs {
-  const ProfileIdentityRouteArgs({
-    required this.homeId,
-    this.initialUsername,
-    this.initialAvatarStoragePath,
-    this.initialAvatarUrl,
-  });
-
-  final String homeId;
-  final String? initialUsername;
-  final String? initialAvatarStoragePath;
-  final String? initialAvatarUrl;
-}
 
 class ProfileIdentityProvider extends StatelessWidget {
   ProfileIdentityProvider({

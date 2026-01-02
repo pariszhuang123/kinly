@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:kinly/core/utils/kinly_support.dart';
-import 'package:kinly/core/utils/enums/kinly_support_intent.dart';
+import 'package:kinly/core/ui/support/kinly_support.dart';
+import 'package:kinly/core/ui/support/enums/kinly_support_intent.dart';
 import 'package:kinly/generated/l10n.dart';
 
 void main() {
@@ -25,3 +25,4 @@ void main() {
     expect(nps.queryParameters['subject'], S.of(context).npsEmailSubject);
   });
 }
+

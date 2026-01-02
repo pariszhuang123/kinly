@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/notifications/device_token_provider.dart';
 import 'package:kinly/core/notifications/notification_permission_service.dart';
 import 'package:kinly/core/time/iana_timezone_resolver.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/core/notifications/notifications.dart';
-import 'package:kinly/features/today/ui/today_screen.dart';
+import 'package:kinly/foundation/surfaces/today/today_surface.dart';
 import 'package:kinly/generated/l10n.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}

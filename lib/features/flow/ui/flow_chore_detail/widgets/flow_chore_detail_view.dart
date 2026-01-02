@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/ui/buttons/kinly_filled_button.dart';
-import '../../../../../core/chores/models.dart';
+import '../../../../../contracts/chores/models.dart';
 import '../../../../../core/supabase/storage_path_resolver.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/kinly_loader.dart';

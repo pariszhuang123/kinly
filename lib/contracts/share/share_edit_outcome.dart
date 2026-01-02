@@ -1,0 +1,1 @@
+enum ShareEditOutcome { updated, deleted }

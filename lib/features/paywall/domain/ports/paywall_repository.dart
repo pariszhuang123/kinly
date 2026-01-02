@@ -1,4 +1,4 @@
-import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_event_type.dart';
 
 abstract class PaywallRepository {
   Future<void> logEvent({

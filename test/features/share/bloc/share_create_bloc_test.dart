@@ -2,12 +2,12 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/core/expenses/models.dart';
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/expenses/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/features/paywall/paywall.dart';
-import 'package:kinly/core/paywall/enums/paywall_retry_action.dart';
-import 'package:kinly/core/paywall/enums/paywall_gate_status.dart';
-import 'package:kinly/core/paywall/enums/paywall_trigger.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_retry_action.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_gate_status.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/home/home.dart';

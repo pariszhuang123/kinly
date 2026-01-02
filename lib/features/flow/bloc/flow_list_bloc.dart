@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../core/chores/models.dart';
-import '../../../../features/home/home.dart';
-import 'package:kinly/features/flow/flow.dart';
+import '../../../contracts/chores/models.dart';
+import 'package:kinly/contracts/flow/ports/chores_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_repository.dart';
 
 part 'flow_list_event.dart';
 part 'flow_list_state.dart';

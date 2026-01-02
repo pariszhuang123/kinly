@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'media_repository.dart';
+import 'package:kinly/contracts/media/ports/media_repository.dart';
 
 class SupabaseMediaRepository implements MediaRepository {
   SupabaseMediaRepository({SupabaseClient? client})

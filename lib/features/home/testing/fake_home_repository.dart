@@ -1,4 +1,4 @@
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/features/home/home.dart';
 
 class FakeHomeRepository implements HomeRepository {

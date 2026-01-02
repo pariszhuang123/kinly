@@ -1,11 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart' as flutter_test;
-import 'package:kinly/core/homes/models.dart';
-import 'package:kinly/core/paywall/enums/paywall_event_type.dart';
+import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_event_type.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
-import 'package:kinly/core/auth/auth.dart';
+import 'package:kinly/contracts/auth/ports/auth_repository.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/paywall/paywall.dart';
 import 'package:kinly/features/paywall/bloc/paywall_bloc.dart';

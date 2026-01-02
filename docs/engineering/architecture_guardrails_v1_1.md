@@ -15,6 +15,9 @@ This contract supersedes overlapping guidance in `docs/engineering/module_guardr
 
 Non-goals: Clean Architecture rewrite, banning SDK use, or perfectly classifying every file. Path-based rules are sufficient.
 
+## Composable system boundary
+Structural UI composition rules live in `docs/contracts/kinly_composable_system_v1.md`. This guardrail contract focuses on dependency direction and layering; it does not define slots, registries, or surface composition.
+
 ## Modules and Layers
 - Modules: `lib/core/**` (shared/feature-agnostic) and `lib/features/<feature>/**` (feature modules).
 - Layers inside a feature:

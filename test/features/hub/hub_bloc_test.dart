@@ -2,10 +2,10 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/features/home/home.dart';
-import 'package:kinly/features/hub/bloc/hub_bloc.dart';
+import 'package:kinly/foundation/surfaces/hub/bloc/hub_bloc.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 

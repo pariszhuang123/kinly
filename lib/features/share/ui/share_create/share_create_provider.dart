@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../share.dart';
-import '../../../../../features/home/home.dart';
+import 'package:kinly/contracts/share/ports/expenses_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
 import 'share_create_screen.dart';
 

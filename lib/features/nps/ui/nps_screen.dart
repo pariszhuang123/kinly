@@ -9,8 +9,8 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
-import '../../../core/utils/kinly_support.dart';
-import '../../../core/utils/enums/kinly_support_intent.dart';
+import '../../../core/ui/support/kinly_support.dart';
+import '../../../core/ui/support/enums/kinly_support_intent.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/nps_cubit.dart';
 
@@ -178,3 +178,4 @@ class NpsScreen extends StatelessWidget {
     return KinlySupport.buildEmailUri(context, KinlySupportIntent.nps);
   }
 }
+

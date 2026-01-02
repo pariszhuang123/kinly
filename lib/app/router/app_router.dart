@@ -5,17 +5,21 @@ import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/flow/flow.dart';
 import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/home/home.dart';
-import 'package:kinly/core/onboarding/onboarding.dart';
+import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
+import 'package:kinly/contracts/profile/ports/profile_repository.dart';
+import 'package:kinly/contracts/profile_settings/profile_identity_route_args.dart';
+import 'package:kinly/contracts/profile_settings/profile_settings_route_args.dart';
+import 'package:kinly/foundation/surfaces/profile/profile_provider.dart';
 import 'package:kinly/features/profile_settings/profile_settings.dart';
-import 'package:kinly/core/profile/profile_update_notifier.dart';
+import 'package:kinly/core/notifications/profile_update_notifier.dart';
 import 'package:kinly/features/auth/auth.dart';
-import 'package:kinly/features/explore/explore.dart';
+import 'package:kinly/foundation/surfaces/explore/explore_surface.dart';
 import 'package:kinly/features/harmony/harmony.dart';
 import 'package:kinly/features/home_membership/home_membership.dart';
-import 'package:kinly/features/hub/hub.dart';
+import 'package:kinly/foundation/surfaces/hub/hub_provider.dart';
 import 'package:kinly/features/nps/nps.dart';
 import 'package:kinly/features/splash/splash.dart';
-import 'package:kinly/features/today/today.dart';
+import 'package:kinly/foundation/surfaces/today/today_provider.dart';
 import 'package:kinly/features/version_gating/version_gating.dart';
 import 'package:kinly/features/welcome/welcome.dart';
 
@@ -73,3 +77,4 @@ GoRouter createRouter({
     routes: _buildRoutes(authBloc),
   );
 }
+

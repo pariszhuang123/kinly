@@ -16,7 +16,7 @@ import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_router.dart';
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 

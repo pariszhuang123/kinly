@@ -13,17 +13,19 @@ import '../../../../generated/l10n.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
 import '../share_edit_outcome.dart';
 import '../share_edit_route_args.dart';
-import '../widgets/share_created_list_view.dart';
+import 'share_created_list_surface_contract.dart';
+import 'share_created_list_surface_registry.dart';
 
 class ShareCreatedListScreen extends StatelessWidget {
   const ShareCreatedListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    ShareCreatedListRegistry.bootstrap();
     final theme = Theme.of(context);
     final sections = theme.extension<KinlySections>()!;
     final shareColors = sections.share;
-    final spacing = theme.extension<Spacing>();
+    final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
     return Scaffold(
@@ -38,16 +40,26 @@ class ShareCreatedListScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
+          padding: EdgeInsetsDirectional.all(spacing.lg),
           child: BlocBuilder<ShareCreatedListBloc, ShareCreatedListState>(
             builder: (context, state) {
-              return ShareCreatedListView(
-                state: state,
-                shareColors: shareColors,
+              final actions = ShareCreatedListSurfaceActions(
                 onRefreshRequested: () => _handleRefresh(context),
                 onCreateTap: () => _openShareCreate(context),
                 onEntryTap: (entry) => _openShareEntry(context, entry),
               );
+              final scope = ShareCreatedListSurfaceScope(
+                context: context,
+                state: state,
+                spacing: spacing,
+                sections: sections,
+                strings: s,
+                actions: actions,
+              );
+              final slots = ShareCreatedListSurfaceSlots(
+                body: _buildCreatedListBody(scope),
+              );
+              return slots.body;
             },
           ),
         ),
@@ -118,5 +130,17 @@ class ShareCreatedListScreen extends StatelessWidget {
       );
       _refreshList(context);
     }
+  }
+
+  Widget _buildCreatedListBody(ShareCreatedListSurfaceScope scope) {
+    final entries = ShareCreatedListRegistry.bodySections;
+    if (entries.length == 1) {
+      return entries.first.builder(scope);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children:
+          entries.map((entry) => entry.builder(scope)).toList(growable: false),
+    );
   }
 }

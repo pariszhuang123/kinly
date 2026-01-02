@@ -1,6 +1,7 @@
 import 'dart:io';
 
 final _featureImport = RegExp(r"^package:kinly/features/([^/]+)/(.+)");
+final _featureUiImport = RegExp(r"^package:kinly/features/([^/]+)/ui/");
 
 void main() {
   final violations = <String>[];
@@ -69,9 +70,11 @@ bool _isTestFile(String path) {
 void _checkFile(File file, List<String> violations) {
   final path = file.path.replaceAll("\\", "/");
   final isCore = path.startsWith("lib/core/");
+  final isRouter = path.startsWith("lib/app/router/");
   final feature = _featureForPath(path);
   final layer = _layerForPath(path);
   final isSharedData = path.startsWith("lib/data/");
+  final isTestFile = _isTestFile(path);
 
   final lines = file.readAsLinesSync();
   for (var i = 0; i < lines.length; i++) {
@@ -86,6 +89,18 @@ void _checkFile(File file, List<String> violations) {
       );
     }
 
+    final featureUiMatch = _featureUiImport.firstMatch(importPath);
+    if (featureUiMatch != null) {
+      final targetFeature = featureUiMatch.group(1)!;
+      final isSameFeature = feature == targetFeature;
+      final isAllowed = isRouter || isSameFeature || isTestFile;
+      if (!isAllowed) {
+        violations.add(
+          "$path:${i + 1} only router may import feature UI ($importPath)",
+        );
+      }
+    }
+
     if (feature != null) {
       _checkFeatureImport(
         path: path,
@@ -93,7 +108,7 @@ void _checkFile(File file, List<String> violations) {
         feature: feature,
         layer: layer,
         importPath: importPath,
-        isTestFile: _isTestFile(path),
+        isTestFile: isTestFile,
         violations: violations,
       );
     }

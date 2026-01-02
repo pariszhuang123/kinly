@@ -1,1 +1,1 @@
-export 'domain/ports/onboarding_repository.dart';
+export 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';

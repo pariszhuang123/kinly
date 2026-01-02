@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-import '../../../core/expenses/enums/expense_recurrence_interval.dart';
+import '../../../contracts/expenses/enums/expense_recurrence_interval.dart';
 import '../../../generated/l10n.dart';
 
 String sharePeriodLabel({

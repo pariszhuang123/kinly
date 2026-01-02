@@ -278,6 +278,13 @@
         }
       ]
     },
+    "composable_system": {
+      "latest": "v1",
+      "docs": "docs/contracts/kinly_composable_system_v1.md",
+      "entities": {},
+      "functions": {},
+      "rls": []
+    },
     "expenses": {
       "latest": "v1",
       "docs": "docs/contracts/expenses_v1.md",

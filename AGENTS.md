@@ -119,6 +119,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
   - `dart run tool/check_design_system.dart` (see Design System section)
   - `dart run tool/check_complexity_budget.dart` (see `docs/engineering/complexity_budget_v1.md`)
   - `dart run tool/check_dependency_rules.dart`
+  - `dart run tool/check_composable_system.dart`
   - `dart run tool/check_nesting_depth.dart`
   - `dart format` + `dart analyze`
   - `flutter test` (add widget/RTL/golden tests when relevant)
@@ -151,6 +152,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - No public endpoints for invites or joins.
 - No writes outside approved RPCs.
 - No raw `CircularProgressIndicator` usage; UI/BLoC agents must use `lib/core/ui/kinly_loader.dart` for loaders to keep branding consistent.
+- Composable system: surfaces must not import other features directly; use registries and slots per `docs/contracts/kinly_composable_system_v1.md`.
 - No raw Material buttons/FABs for CTAs. Use Kinly primitives so light/dark colors and spacing stay consistent:
   - Filled CTAs: `lib/core/ui/buttons/kinly_filled_button.dart` (`text/icon`, `destructive*`, `fullWidth` as needed)
   - Outlined CTAs: `lib/core/ui/buttons/kinly_outlined_button.dart` (`text/icon`, `compact/fullWidth`)

@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../../../features/home/home.dart';
-import '../../../../core/homes/models.dart';
+import 'package:kinly/contracts/homes/ports/home_repository.dart';
+import '../../../../contracts/homes/models.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 
 part 'join_home_event.dart';

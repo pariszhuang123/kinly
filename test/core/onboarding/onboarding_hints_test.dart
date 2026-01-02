@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:kinly/core/onboarding/onboarding.dart';
+import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
 
 void main() {
   test('OnboardingHints parses member cap join requests', () {

@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import 'share_split_mode.dart';
-import '../../../core/expenses/enums/expense_recurrence_interval.dart';
+import '../../../contracts/expenses/enums/expense_recurrence_interval.dart';
 import '../../../core/time/date_only.dart';
 
 class ShareCreateForm extends Equatable {

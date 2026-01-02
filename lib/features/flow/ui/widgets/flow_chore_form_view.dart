@@ -241,6 +241,7 @@ class _AssigneeSelector extends StatelessWidget {
             role: assignee.isOwner ? 'owner' : 'member',
             validFrom: DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
             avatarUrl: assignee.avatarStoragePath,
+            isOwner: assignee.isOwner,
           ),
         )
         .toList(growable: false);

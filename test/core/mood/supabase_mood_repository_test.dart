@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:kinly/core/mood/enums/mood_scale.dart';
-import 'package:kinly/core/mood/models.dart';
+import 'package:kinly/contracts/mood/enums/mood_scale.dart';
+import 'package:kinly/contracts/mood/models.dart';
 import 'package:kinly/features/harmony/data/supabase/supabase_mood_repository.dart';
 
 void main() {

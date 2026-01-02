@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
-import '../../../../core/theme/spacing.dart';
-import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../generated/l10n.dart';
+import 'join_home_blocked_surface_contract.dart';
+import 'join_home_blocked_surface_registry.dart';
 
 class JoinHomeBlockedScreen extends StatelessWidget {
   const JoinHomeBlockedScreen({super.key});
@@ -12,37 +12,35 @@ class JoinHomeBlockedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
-    final spacing = theme.extension<Spacing>();
+    JoinHomeBlockedRegistry.bootstrap();
+
+    final actions = JoinHomeBlockedSurfaceActions(
+      onBack: () => context.go(AppRoutes.start),
+    );
+    final scope = JoinHomeBlockedSurfaceScope(
+      context: context,
+      strings: s,
+      actions: actions,
+    );
+    final slots = JoinHomeBlockedSurfaceSlots(
+      body: _buildJoinHomeBlockedSections(scope),
+    );
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Spacer(),
-              Text(
-                s.join_blocked_title,
-                style: theme.textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: spacing?.m ?? 12),
-              Text(
-                s.join_blocked_body,
-                style: theme.textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const Spacer(),
-              KinlyFilledButton.text(
-                fullWidth: true,
-                label: s.join_blocked_cta,
-                onPressed: () => context.go(AppRoutes.start),
-              ),
-            ],
-          ),
-        ),
+        child: slots.body,
       ),
+    );
+  }
+
+  Widget _buildJoinHomeBlockedSections(JoinHomeBlockedSurfaceScope scope) {
+    final entries = JoinHomeBlockedRegistry.bodySections;
+    if (entries.length == 1) {
+      return entries.first.builder(scope);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children:
+          entries.map((entry) => entry.builder(scope)).toList(growable: false),
     );
   }
 }

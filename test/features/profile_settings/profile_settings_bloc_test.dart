@@ -2,12 +2,12 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/core/homes/models.dart';
-import 'package:kinly/core/profile/models.dart';
-import 'package:kinly/core/account/account.dart';
+import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/contracts/profile/models.dart';
+import 'package:kinly/contracts/account/ports/account_repository.dart';
 import 'package:kinly/features/home/home.dart';
-import 'package:kinly/features/profile_settings/profile_settings.dart';
-import 'package:kinly/features/profile_settings/bloc/profile_settings_bloc.dart';
+import 'package:kinly/contracts/profile/ports/profile_repository.dart';
+import 'package:kinly/foundation/surfaces/profile/bloc/profile_settings_bloc.dart';
 
 class _MockProfileRepository extends Mock implements ProfileRepository {}
 

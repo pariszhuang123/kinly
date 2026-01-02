@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/mood/models.dart';
+import 'package:kinly/contracts/mood/models.dart';
 import '../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/kinly_masonry_grid.dart';

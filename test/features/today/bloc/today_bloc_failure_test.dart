@@ -2,19 +2,19 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/features/today/bloc/today_bloc.dart';
+import 'package:kinly/foundation/surfaces/today/bloc/today_bloc.dart';
 import 'package:kinly/features/flow/flow.dart';
 import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/home/home.dart';
-import 'package:kinly/features/profile_settings/profile_settings.dart';
+import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'package:kinly/features/harmony/harmony.dart';
-import 'package:kinly/core/onboarding/onboarding.dart';
-import 'package:kinly/core/profile/profile_update_notifier.dart';
-import 'package:kinly/core/mood/models.dart';
-import 'package:kinly/core/expenses/models.dart';
-import 'package:kinly/core/chores/models.dart';
-import 'package:kinly/core/onboarding/onboarding.dart' as onboarding;
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
+import 'package:kinly/core/notifications/profile_update_notifier.dart';
+import 'package:kinly/contracts/mood/models.dart';
+import 'package:kinly/contracts/expenses/models.dart';
+import 'package:kinly/contracts/chores/models.dart';
+import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart' as onboarding;
+import 'package:kinly/contracts/homes/models.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}
 
@@ -137,3 +137,5 @@ void main() {
         ],
   );
 }
+
+

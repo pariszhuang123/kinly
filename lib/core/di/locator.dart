@@ -16,7 +16,7 @@ import '../notifications/device_token_provider.dart';
 import '../notifications/notifications.dart';
 import '../notifications/data/supabase/supabase_notifications_repository.dart';
 import '../onboarding/data/supabase/supabase_onboarding_repository.dart';
-import '../profile/profile_update_notifier.dart';
+import '../notifications/profile_update_notifier.dart';
 import '../purchases/revenuecat_service.dart';
 import '../time/iana_timezone_resolver.dart';
 

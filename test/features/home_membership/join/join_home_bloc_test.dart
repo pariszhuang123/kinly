@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:kinly/features/home_membership/join/bloc/join_home_bloc.dart';
 import 'package:kinly/features/home/home.dart';
-import 'package:kinly/core/homes/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 
 class _FakeHomeRepository implements HomeRepository {

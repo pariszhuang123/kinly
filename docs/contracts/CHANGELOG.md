@@ -2,6 +2,14 @@
 
 Tracks versioned contract changes and related ADRs.
 
+## v1 - Foundation Composable System
+- Date: 2026-01-02
+- Scope: `docs/contracts/kinly_composable_system_v1.md`
+- Changes:
+  - Define composable units, surfaces, slots, and registry-based feature composition.
+  - Add CI lint in warning mode (`tool/check_composable_system.dart`) with a migration plan to strict enforcement.
+  - Add initial audit checklist in `docs/engineering/composable_system_audit_v1.md`.
+
 ## CODEX-L10N-001 -- Codex i18n Hygiene
 - Date: 2025-12-24
 - Scope: `docs/contracts/codex_i18n_hygiene.md`

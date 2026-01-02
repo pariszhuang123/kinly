@@ -276,6 +276,9 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
           homeId: homeId,
           initialDisplayName: args?.displayName,
           initialAvatarUrl: args?.avatarUrl,
+          onMembershipRefresh: () =>
+              authBloc.add(const AuthMembershipRefreshRequested()),
+          onSignOut: () => authBloc.add(const AuthSignOutRequested()),
         );
       },
     ),
