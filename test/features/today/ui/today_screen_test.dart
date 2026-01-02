@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kinly/contracts/auth/ports/auth_repository.dart';
 import 'package:mocktail/mocktail.dart';
@@ -19,9 +20,11 @@ import 'package:kinly/core/ui/paywall/ports/paywall_launcher.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/features/paywall/paywall.dart';
 import 'package:kinly/features/paywall/ui/paywall_launcher.dart';
+import 'package:kinly/features/paywall/ui/paywall_route_args.dart';
 
 import 'package:kinly/contracts/chores/models.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/foundation/surfaces/today/bloc/today_bloc.dart';
 import 'package:kinly/foundation/surfaces/today/domain/models.dart';
 import 'package:kinly/foundation/surfaces/today/today_surface.dart';
@@ -114,6 +117,56 @@ void main() {
         value: todayBloc,
         child: const TodayScreen(),
       ),
+    );
+
+    if (bundle == null) {
+      return app;
+    }
+
+    return DefaultAssetBundle(bundle: bundle, child: app);
+  }
+
+  Widget buildRouterApp({AssetBundle? bundle}) {
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          name: AppRouteNames.today,
+          builder:
+              (_, __) => BlocProvider<TodayBloc>.value(
+                value: todayBloc,
+                child: const TodayScreen(),
+              ),
+        ),
+        GoRoute(
+          path: '/paywall',
+          name: AppRouteNames.paywall,
+          builder: (_, state) {
+            final args = state.extra as PaywallRouteArgs;
+            return KinlyPaywallScreen(
+              homeId: args.homeId,
+              strings: args.strings,
+              source: args.source,
+              placementId: args.placementId,
+              triggers: args.triggers,
+            );
+          },
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+
+    final app = MaterialApp.router(
+      routerConfig: router,
+      theme: buildKinlyTheme(Brightness.light),
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
     );
 
     if (bundle == null) {
@@ -245,7 +298,7 @@ void main() {
       ),
     );
 
-    await tester.pumpWidget(buildApp(bundle: _FakeSvgBundle()));
+    await tester.pumpWidget(buildRouterApp(bundle: _FakeSvgBundle()));
     await tester.pump();
 
     expect(find.byType(TodayFlowSectionContainer), findsOneWidget);
@@ -349,7 +402,7 @@ void main() {
     );
     when(() => todayBloc.homeId).thenReturn('home-1');
 
-    await tester.pumpWidget(buildApp(bundle: _FakeSvgBundle()));
+    await tester.pumpWidget(buildRouterApp(bundle: _FakeSvgBundle()));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text(S.current.todayMemberCapPrimaryCta));

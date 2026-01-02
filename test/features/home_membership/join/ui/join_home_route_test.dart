@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/app/router/app_router.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
@@ -61,10 +62,12 @@ void main() {
         routes: [
           GoRoute(
             path: AppRoutes.joinBlocked,
+            name: AppRouteNames.joinBlocked,
             builder: (context, state) => const JoinHomeBlockedScreen(),
           ),
           GoRoute(
             path: '/join/:code',
+            name: AppRouteNames.joinWithCode,
             builder:
                 (context, state) =>
                     JoinHomeScreen(initialCode: state.pathParameters['code']),

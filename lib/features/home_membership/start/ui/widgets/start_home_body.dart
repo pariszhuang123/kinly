@@ -32,12 +32,6 @@ class StartHomeBody extends StatelessWidget {
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium,
           ),
-          SizedBox(height: spacing?.s ?? 8),
-          Text(
-            s.create_subtitle,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall,
-          ),
           const Spacer(),
           KinlyFilledButton.text(
             fullWidth: true,

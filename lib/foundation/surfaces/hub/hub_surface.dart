@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../app/router/app_router.dart';
+import '../../../app/router/app_route_names.dart';
 import '../../../core/theme/app_sizes.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
@@ -109,10 +109,10 @@ class HubScreen extends StatelessWidget {
           onTap: (index) {
             switch (index) {
               case 0:
-                context.go(AppRoutes.today);
+                context.goNamed(AppRouteNames.today);
                 break;
               case 1:
-                context.go(AppRoutes.explore);
+                context.goNamed(AppRouteNames.explore);
                 break;
               case 2:
                 break;
@@ -142,7 +142,7 @@ class HubScreen extends StatelessWidget {
       onInviteTap: () => _shareInvite(context, state),
       onShareAppTap: () => _shareAppLink(context, state),
       onQrTap: () => _showQrSheet(context, state),
-      onGratitudeTap: () => context.push(AppRoutes.gratitudeWall),
+      onGratitudeTap: () => context.pushNamed(AppRouteNames.gratitudeWall),
       onCopyCode: state.hasInvite ? () => _copyInviteCode(context, state) : null,
       onRotateInvite: state.isOwner ? () => _rotateInvite(context) : null,
     );

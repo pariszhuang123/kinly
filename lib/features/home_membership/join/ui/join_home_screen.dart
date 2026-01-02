@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/locator.dart';
-import '../../../../app/router/app_router.dart';
+import '../../../../app/router/app_route_names.dart';
 import '../../../../contracts/homes/ports/home_repository.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../core/auth/widgets/auth_error_listener.dart';
@@ -32,7 +32,7 @@ class JoinHomeScreen extends StatelessWidget {
             actions: [
               IconButton(
                 icon: const Icon(Icons.close),
-                onPressed: () => context.go(AppRoutes.start),
+                onPressed: () => context.goNamed(AppRouteNames.start),
               ),
             ],
           ),

@@ -99,16 +99,6 @@ class S {
     );
   }
 
-  /// `We’ll set up your home in seconds. You can rename it and invite people later.`
-  String get create_subtitle {
-    return Intl.message(
-      'We’ll set up your home in seconds. You can rename it and invite people later.',
-      name: 'create_subtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Could not create the home. Try again.`
   String get create_failed_generic {
     return Intl.message(
@@ -654,10 +644,10 @@ class S {
     );
   }
 
-  /// `You haven't joined a home yet.`
+  /// `Your shared home starts here.`
   String get membership_status_none {
     return Intl.message(
-      'You haven\'t joined a home yet.',
+      'Your shared home starts here.',
       name: 'membership_status_none',
       desc: '',
       args: [],
@@ -2494,10 +2484,10 @@ class S {
     );
   }
 
-  /// `Flows are small agreements that help everyone stay aligned.\n\nAdd one when something keeps coming up.`
+  /// `Flows are small agreements that help everyone stay aligned.`
   String get flowListEmptySubtitle {
     return Intl.message(
-      'Flows are small agreements that help everyone stay aligned.\n\nAdd one when something keeps coming up.',
+      'Flows are small agreements that help everyone stay aligned.',
       name: 'flowListEmptySubtitle',
       desc: '',
       args: [],

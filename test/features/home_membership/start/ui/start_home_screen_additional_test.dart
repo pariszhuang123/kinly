@@ -12,6 +12,7 @@ import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/app/router/app_router.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
@@ -98,6 +99,7 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.start,
+          name: AppRouteNames.start,
           builder:
               (_, __) => MultiBlocProvider(
                 providers: [
@@ -109,6 +111,7 @@ void main() {
         ),
         GoRoute(
           path: AppRoutes.join,
+          name: AppRouteNames.join,
           builder: (_, __) => const Scaffold(body: Text('join-screen')),
         ),
       ],

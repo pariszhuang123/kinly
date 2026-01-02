@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kinly/contracts/chores/models.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/features/flow/bloc/flow_list_bloc.dart';
 import 'package:kinly/features/flow/ui/flow_list_filter.dart';
 import 'package:kinly/features/flow/ui/flow_list_screen.dart';
@@ -68,6 +69,7 @@ void main() {
         ),
         GoRoute(
           path: '/flow/chore/:choreId/detail',
+          name: AppRouteNames.flowChoreDetail,
           builder:
               (_, state) => Scaffold(
                 body: Text('detail:${state.pathParameters['choreId']}'),
@@ -75,6 +77,7 @@ void main() {
         ),
         GoRoute(
           path: '/flow/chore/:choreId',
+          name: AppRouteNames.flowChoreEdit,
           builder:
               (_, state) => Scaffold(
                 body: Text('edit:${state.pathParameters['choreId']}'),
@@ -82,6 +85,7 @@ void main() {
         ),
         GoRoute(
           path: '/flow/chore/new',
+          name: AppRouteNames.flowChoreCreate,
           builder: (_, __) => const Scaffold(body: Text('create')),
         ),
       ],

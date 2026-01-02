@@ -18,32 +18,32 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
   final specs = <_RouteSpec>[
     _RouteSpec(
       path: AppRoutes.forceUpdate,
-      name: 'forceUpdate',
+      name: AppRouteNames.forceUpdate,
       builder: (_, __) => const ForceUpdateScreen(),
     ),
     _RouteSpec(
       path: AppRoutes.splash,
-      name: 'splash',
+      name: AppRouteNames.splash,
       builder: (_, __) => const SplashScreen(),
     ),
     _RouteSpec(
       path: AppRoutes.welcome,
-      name: 'welcome',
+      name: AppRouteNames.welcome,
       builder: (_, __) => const WelcomeScreen(),
     ),
     _RouteSpec(
       path: AppRoutes.start,
-      name: 'start',
+      name: AppRouteNames.start,
       builder: (_, __) => const StartHomeProvider(),
     ),
     _RouteSpec(
       path: AppRoutes.join,
-      name: 'join',
+      name: AppRouteNames.join,
       builder: (_, __) => const JoinHomeScreen(),
     ),
     _RouteSpec(
       path: AppRoutes.joinBlocked,
-      name: 'joinBlocked',
+      name: AppRouteNames.joinBlocked,
       builder: (_, __) => const JoinHomeBlockedScreen(),
     ),
   ];
@@ -51,13 +51,13 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
   final dynamicSpecs = <_RouteSpec>[
     _RouteSpec(
       path: '/join/:code',
-      name: 'joinWithCode',
+      name: AppRouteNames.joinWithCode,
       builder: (context, state) =>
           JoinHomeScreen(initialCode: state.pathParameters['code']),
     ),
     _RouteSpec(
       path: AppRoutes.today,
-      name: 'today',
+      name: AppRouteNames.today,
       builder: (_, __) {
         final homeId = authBloc.state.membership!.homeId;
         return TodayProvider(
@@ -74,7 +74,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.nps,
-      name: 'nps',
+      name: AppRouteNames.nps,
       builder: (_, __) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -88,7 +88,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.explore,
-      name: 'explore',
+      name: AppRouteNames.explore,
       builder: (_, __) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -99,7 +99,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.hub,
-      name: 'hub',
+      name: AppRouteNames.hub,
       builder: (_, __) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -113,7 +113,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.harmony,
-      name: 'harmony',
+      name: AppRouteNames.harmony,
       builder: (_, __) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -128,7 +128,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.gratitudeWall,
-      name: 'gratitudeWall',
+      name: AppRouteNames.gratitudeWall,
       builder: (_, __) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -143,7 +143,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.flow,
-      name: 'flow',
+      name: AppRouteNames.flow,
       builder: (_, state) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -166,7 +166,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.flowChoreCreate,
-      name: 'flowChoreCreate',
+      name: AppRouteNames.flowChoreCreate,
       builder: (_, __) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -181,7 +181,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.flowChoreEdit,
-      name: 'flowChoreEdit',
+      name: AppRouteNames.flowChoreEdit,
       builder: (_, state) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -198,7 +198,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.flowChoreDetail,
-      name: 'flowChoreDetail',
+      name: AppRouteNames.flowChoreDetail,
       builder: (_, state) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -214,7 +214,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.shareCreatedList,
-      name: 'shareCreatedList',
+      name: AppRouteNames.shareCreatedList,
       builder: (_, state) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -230,7 +230,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.shareCreate,
-      name: 'shareCreate',
+      name: AppRouteNames.shareCreate,
       builder: (_, __) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -245,7 +245,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.shareDraftEdit,
-      name: 'shareDraftEdit',
+      name: AppRouteNames.shareDraftEdit,
       builder: (_, state) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -263,8 +263,37 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
       },
     ),
     _RouteSpec(
+      path: AppRoutes.shareOwedDetail,
+      name: AppRouteNames.shareOwedDetail,
+      builder: (_, state) {
+        final args = state.extra as ShareOwedDetailRouteArgs?;
+        if (args == null) {
+          throw StateError('Share owed detail requires args.');
+        }
+        return ShareOwedDetailScreen(
+          owed: args.owed,
+          expensesRepository: sl<ExpensesRepository>(),
+        );
+      },
+    ),
+    _RouteSpec(
+      path: AppRoutes.sharePaidToMeDetail,
+      name: AppRouteNames.sharePaidToMeDetail,
+      builder: (_, state) {
+        final args = state.extra as SharePaidToMeDetailRouteArgs?;
+        if (args == null) {
+          throw StateError('Share paid-to-me detail requires args.');
+        }
+        return SharePaidToMeDetailScreen(
+          entry: args.entry,
+          homeId: args.homeId,
+          expensesRepository: sl<ExpensesRepository>(),
+        );
+      },
+    ),
+    _RouteSpec(
       path: AppRoutes.profileSettings,
-      name: 'profileSettings',
+      name: AppRouteNames.profileSettings,
       builder: (_, state) {
         final args = state.extra as ProfileSettingsRouteArgs?;
         final membership = authBloc.state.membership;
@@ -284,7 +313,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.connectionSettings,
-      name: 'connectionSettings',
+      name: AppRouteNames.connectionSettings,
       builder: (_, __) {
         final membership = authBloc.state.membership;
         if (membership == null) {
@@ -297,7 +326,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ),
     _RouteSpec(
       path: AppRoutes.profileIdentity,
-      name: 'profileIdentity',
+      name: AppRouteNames.profileIdentity,
       builder: (_, state) {
         final args = state.extra as ProfileIdentityRouteArgs?;
         final membership = authBloc.state.membership;
@@ -310,6 +339,43 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
           initialUsername: args?.initialUsername,
           initialAvatarStoragePath: args?.initialAvatarStoragePath,
           initialAvatarUrl: args?.initialAvatarUrl,
+        );
+      },
+    ),
+    _RouteSpec(
+      path: AppRoutes.infoHub,
+      name: AppRouteNames.infoHub,
+      builder: (_, __) => const InfoHubWebViewScreen(),
+    ),
+    _RouteSpec(
+      path: AppRoutes.paywall,
+      name: AppRouteNames.paywall,
+      builder: (_, state) {
+        final args = state.extra as PaywallRouteArgs?;
+        if (args == null) {
+          throw StateError('Paywall requires args.');
+        }
+        return KinlyPaywallScreen(
+          homeId: args.homeId,
+          strings: args.strings,
+          source: args.source,
+          placementId: args.placementId,
+          triggers: args.triggers,
+        );
+      },
+    ),
+    _RouteSpec(
+      path: AppRoutes.flowChorePhoto,
+      name: AppRouteNames.flowChorePhoto,
+      builder: (_, state) {
+        final args = state.extra as FlowChorePhotoViewerArgs?;
+        if (args == null) {
+          throw StateError('Flow chore photo viewer requires args.');
+        }
+        return FlowChoreExpectationPhotoViewerPage(
+          photoUrl: args.photoUrl,
+          heroTag: args.heroTag,
+          title: args.title,
         );
       },
     ),

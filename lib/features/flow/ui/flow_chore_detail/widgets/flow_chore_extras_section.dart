@@ -1,9 +1,11 @@
 // lib/features/flow/ui/widgets/flow_chore_extras_section.dart
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/theme/kinly_theme.dart'; // to access link colors extension
+import '../../../../../app/router/app_route_names.dart';
 import 'flow_chore_expectation_photo_viewer.dart';
 
 class FlowChoreExtrasSection extends StatelessWidget {
@@ -173,14 +175,12 @@ class _ExpectationPhotoSection extends StatelessWidget {
         const SizedBox(height: 8),
         GestureDetector(
           onTap:
-              () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder:
-                      (_) => FlowChoreExpectationPhotoViewerPage(
-                        photoUrl: photoUrl,
-                        heroTag: heroTag,
-                        title: title,
-                      ),
+              () => context.pushNamed(
+                AppRouteNames.flowChorePhoto,
+                extra: FlowChorePhotoViewerArgs(
+                  photoUrl: photoUrl,
+                  heroTag: heroTag,
+                  title: title,
                 ),
               ),
           child: Hero(

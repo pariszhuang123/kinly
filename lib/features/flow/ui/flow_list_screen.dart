@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../contracts/chores/models.dart';
-import '../../../app/router/app_router.dart';
+import '../../../app/router/app_route_names.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_loader.dart';
@@ -78,14 +78,35 @@ class FlowListScreen extends StatelessWidget {
     BuildContext context,
     ChoreListEntry? entry,
   ) async {
-    final path =
-        entry == null
-            ? AppRoutes.flowChoreCreate
-            : filter == FlowListFilter.active
-            ? AppRoutes.flowChoreDetailPath(entry.id)
-            : AppRoutes.flowChoreEditPath(entry.id);
-    final result = await context.push(path);
-    if (result is FlowChoreOutcome && context.mounted) {
+    if (entry == null) {
+      final result = await context.pushNamed(AppRouteNames.flowChoreCreate);
+      if (!context.mounted) return;
+      if (result is FlowChoreOutcome) {
+        _showOutcomeSnackbar(context, result);
+        context.read<FlowListBloc>().add(const FlowListRefreshed());
+      }
+      return;
+    }
+
+    if (filter == FlowListFilter.active) {
+      final result = await context.pushNamed(
+        AppRouteNames.flowChoreDetail,
+        pathParameters: {'choreId': entry.id},
+      );
+      if (!context.mounted) return;
+      if (result is FlowChoreOutcome) {
+        _showOutcomeSnackbar(context, result);
+        context.read<FlowListBloc>().add(const FlowListRefreshed());
+      }
+      return;
+    }
+
+    final result = await context.pushNamed(
+      AppRouteNames.flowChoreEdit,
+      pathParameters: {'choreId': entry.id},
+    );
+    if (!context.mounted) return;
+    if (result is FlowChoreOutcome) {
       _showOutcomeSnackbar(context, result);
       context.read<FlowListBloc>().add(const FlowListRefreshed());
     }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/di/locator.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/ui/paywall/paywall_strings.dart';
 import 'package:kinly/core/ui/paywall/ports/paywall_launcher.dart';
 import '../domain/ports/paywall_repository.dart';
-import 'paywall_screen.dart';
+import 'paywall_route_args.dart';
+import '../../../app/router/app_route_names.dart';
 
 class PaywallLauncherImpl implements PaywallLauncher {
   const PaywallLauncherImpl();
@@ -37,16 +39,14 @@ class PaywallLauncherImpl implements PaywallLauncher {
     String? placementId,
     Set<PaywallTrigger> triggers = const {},
   }) async {
-    final result = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder:
-            (_) => KinlyPaywallScreen(
-              homeId: homeId,
-              strings: strings,
-              source: source,
-              placementId: placementId,
-              triggers: triggers,
-            ),
+    final result = await context.pushNamed<bool>(
+      AppRouteNames.paywall,
+      extra: PaywallRouteArgs(
+        homeId: homeId,
+        strings: strings,
+        source: source,
+        placementId: placementId,
+        triggers: triggers,
       ),
     );
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/app_router.dart';
+import '../../../../app/router/app_route_names.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_fab.dart';
@@ -90,7 +90,7 @@ class ShareCreatedListScreen extends StatelessWidget {
 
   Future<void> _openShareCreate(BuildContext context) async {
     final s = S.of(context);
-    final result = await context.push<bool>(AppRoutes.shareCreate);
+    final result = await context.pushNamed<bool>(AppRouteNames.shareCreate);
     if (result == true && context.mounted) {
       final accent = Theme.of(context).extension<KinlySections>()?.share.accent;
       KinlySnackBar.showSuccess(
@@ -107,8 +107,9 @@ class ShareCreatedListScreen extends StatelessWidget {
     ShareCreatedListEntry entry,
   ) async {
     final s = S.of(context);
-    final result = await context.push(
-      AppRoutes.shareDraftEditPath(entry.expenseId),
+    final result = await context.pushNamed(
+      AppRouteNames.shareDraftEdit,
+      pathParameters: {'expenseId': entry.expenseId},
       extra: const ShareEditRouteArgs(allowDelete: true),
     );
 

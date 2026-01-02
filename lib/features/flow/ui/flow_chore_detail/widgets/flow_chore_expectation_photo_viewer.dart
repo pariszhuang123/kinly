@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/ui/kinly_loader.dart';
 
+class FlowChorePhotoViewerArgs {
+  const FlowChorePhotoViewerArgs({
+    required this.photoUrl,
+    required this.heroTag,
+    this.title,
+  });
+
+  final String photoUrl;
+  final Object heroTag;
+  final String? title;
+}
+
 class FlowChoreExpectationPhotoViewerPage extends StatelessWidget {
   const FlowChoreExpectationPhotoViewerPage({
     super.key,

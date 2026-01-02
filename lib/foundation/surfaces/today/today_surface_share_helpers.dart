@@ -1,7 +1,7 @@
 part of 'today_surface.dart';
 
 Future<void> _openShareCreateImpl(BuildContext context) async {
-  final result = await context.push<bool>(AppRoutes.shareCreate);
+  final result = await context.pushNamed<bool>(AppRouteNames.shareCreate);
   if (!context.mounted) return;
   context.read<TodayBloc>().add(const TodayRefreshed());
   if (result == true) {
@@ -37,8 +37,9 @@ Future<void> _openShareDraftEditImpl(
   BuildContext context,
   TodayShareDraft draft,
 ) async {
-  final result = await context.push(
-    AppRoutes.shareDraftEditPath(draft.expenseId),
+  final result = await context.pushNamed(
+    AppRouteNames.shareDraftEdit,
+    pathParameters: {'expenseId': draft.expenseId},
     extra: const ShareEditRouteArgs(allowDelete: true),
   );
   if (!context.mounted) return;
@@ -74,7 +75,10 @@ Future<void> _openSharePaidToMeDetailImpl(
 }
 
 Future<void> _openShareCreatedListImpl(BuildContext context) async {
-  await context.push<bool>(AppRoutes.shareCreatedList, extra: true);
+  await context.pushNamed<bool>(
+    AppRouteNames.shareCreatedList,
+    extra: true,
+  );
   if (context.mounted) {
     context.read<TodayBloc>().add(const TodayRefreshed());
   }

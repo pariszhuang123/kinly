@@ -1,0 +1,31 @@
+class AppRouteNames {
+  static const forceUpdate = 'forceUpdate';
+  static const splash = 'splash';
+  static const welcome = 'welcome';
+  static const start = 'start';
+  static const create = 'create';
+  static const join = 'join';
+  static const joinBlocked = 'joinBlocked';
+  static const joinWithCode = 'joinWithCode';
+  static const today = 'today';
+  static const hub = 'hub';
+  static const explore = 'explore';
+  static const flow = 'flow';
+  static const flowChoreCreate = 'flowChoreCreate';
+  static const flowChoreEdit = 'flowChoreEdit';
+  static const flowChoreDetail = 'flowChoreDetail';
+  static const flowChorePhoto = 'flowChorePhoto';
+  static const shareCreate = 'shareCreate';
+  static const shareDraftEdit = 'shareDraftEdit';
+  static const shareCreatedList = 'shareCreatedList';
+  static const shareOwedDetail = 'shareOwedDetail';
+  static const sharePaidToMeDetail = 'sharePaidToMeDetail';
+  static const profileSettings = 'profileSettings';
+  static const profileIdentity = 'profileIdentity';
+  static const connectionSettings = 'connectionSettings';
+  static const infoHub = 'infoHub';
+  static const paywall = 'paywall';
+  static const harmony = 'harmony';
+  static const gratitudeWall = 'gratitudeWall';
+  static const nps = 'nps';
+}

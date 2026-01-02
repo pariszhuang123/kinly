@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/router/app_router.dart';
+import '../../../app/router/app_route_names.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/home_bottom_nav.dart';
@@ -42,13 +42,13 @@ class ExploreScreen extends StatelessWidget {
           onTap: (index) {
             switch (index) {
               case 0:
-                context.go(AppRoutes.today);
+                context.goNamed(AppRouteNames.today);
                 break;
               case 1:
                 // Already on Explore
                 break;
               case 2:
-                context.go(AppRoutes.hub);
+                context.goNamed(AppRouteNames.hub);
                 break;
             }
           },
@@ -64,8 +64,8 @@ class ExploreScreen extends StatelessWidget {
     S strings,
   ) {
     final actions = ExploreSurfaceActions(
-      onFlowTap: () => context.push(AppRoutes.flow),
-      onShareTap: () => context.push(AppRoutes.shareCreatedList),
+      onFlowTap: () => context.pushNamed(AppRouteNames.flow),
+      onShareTap: () => context.pushNamed(AppRouteNames.shareCreatedList),
     );
     final scope = ExploreSurfaceScope(
       context: context,

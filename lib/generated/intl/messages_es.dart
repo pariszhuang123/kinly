@@ -107,9 +107,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
       "No se pudo crear el hogar. Inténtalo de nuevo.",
     ),
-    "create_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Crearemos tu hogar al instante. Podrás cambiarle el nombre e invitar a otros más tarde.",
-    ),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Revisa cada Flow y mantén los flows en movimiento",
     ),

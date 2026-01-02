@@ -86,14 +86,14 @@ String _formatMemberCapNamesImpl(List<String> names) {
 }
 
 Future<void> _openGratitudeWallImpl(BuildContext context) async {
-  await context.push(AppRoutes.gratitudeWall);
+  await context.pushNamed(AppRouteNames.gratitudeWall);
   if (context.mounted) {
     context.read<TodayBloc>().add(const TodayRefreshed());
   }
 }
 
 Future<void> _openHarmonyPageImpl(BuildContext context) async {
-  await context.push(AppRoutes.harmony);
+  await context.pushNamed(AppRouteNames.harmony);
 }
 
 Future<void> _openMemberCapPaywallImpl(

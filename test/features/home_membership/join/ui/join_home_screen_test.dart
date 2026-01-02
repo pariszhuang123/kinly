@@ -16,6 +16,7 @@ import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_router.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/homes/models.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
@@ -118,14 +119,17 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.join,
+          name: AppRouteNames.join,
           builder: (context, state) => const JoinHomeScreen(),
         ),
         GoRoute(
           path: AppRoutes.today,
+          name: AppRouteNames.today,
           builder: (context, state) => const Scaffold(body: Text('today')),
         ),
         GoRoute(
           path: AppRoutes.start,
+          name: AppRouteNames.start,
           builder: (context, state) => const Scaffold(body: Text('start')),
         ),
       ],
@@ -171,14 +175,17 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.join,
+          name: AppRouteNames.join,
           builder: (context, state) => const JoinHomeScreen(),
         ),
         GoRoute(
           path: AppRoutes.joinBlocked,
+          name: AppRouteNames.joinBlocked,
           builder: (context, state) => const JoinHomeBlockedScreen(),
         ),
         GoRoute(
           path: AppRoutes.start,
+          name: AppRouteNames.start,
           builder: (context, state) => const Scaffold(body: Text('start')),
         ),
       ],

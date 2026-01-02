@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/app_router.dart';
+import '../../../../app/router/app_route_names.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../../core/auth/bloc/auth_bloc.dart';
@@ -70,7 +70,7 @@ class StartHomeScreen extends StatelessWidget {
                     const StartHomeCreateRequested(),
                   );
                 },
-                onJoin: () => context.go(AppRoutes.join),
+                onJoin: () => context.goNamed(AppRouteNames.join),
               );
               final scope = StartHomeSurfaceScope(
                 context: context,

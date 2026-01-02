@@ -22,7 +22,9 @@ This document defines roles, boundaries, workflows, guardrails, and the Definiti
 - Contracts/DTOs → Supabase/DB + Repositories co-own (versioned).
 - CI/infra → Release (Planner approves changes).
 - Accessibility → Design System + UI co-own implementation; Planner approves contract changes.
-- Cross-feature imports must use feature barrels (`lib/features/<feature>/<feature>.dart`); deep imports into another feature’s internals will fail `dart run tool/check_dependency_rules.dart`.
+- Foundation surfaces (Today/Explore/Hub/Profile) live under `lib/foundation/surfaces/**` and must not import `lib/features/**`.
+- Router composition root lives in `lib/app/router/**`; only router may import feature UI screens for navigation composition.
+- Cross-feature imports are forbidden; use registries + `lib/contracts/**` for shared types.
 
 ## MVP Scope (Home‑only)
 - Auth (Supabase OAuth: Google/Apple)
@@ -119,7 +121,9 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
   - `dart run tool/check_design_system.dart` (see Design System section)
   - `dart run tool/check_complexity_budget.dart` (see `docs/engineering/complexity_budget_v1.md`)
   - `dart run tool/check_dependency_rules.dart`
+  - `dart run tool/check_named_routes.dart`
   - `dart run tool/check_composable_system.dart`
+  - `dart run tool/check_modules.dart`
   - `dart run tool/check_nesting_depth.dart`
   - `dart format` + `dart analyze`
   - `flutter test` (add widget/RTL/golden tests when relevant)
@@ -141,6 +145,7 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - No schema change without migration + RLS policies + reviews.
 - No hard-coded UI strings (use i18n). Run `dart run tool/check_i18n.dart`
   before submitting a PR; reviewers (Codex) will block if this check fails.
+- Contracts are a strict seam: `lib/contracts/**` must not import `lib/core/**`, `lib/features/**`, or `lib/foundation/**`.
 - Copy: follow `docs/contracts/copy_taste_v1_1.md` for voice, surfaces, and metadata, and `docs/contracts/shared_understanding_copy_v1.md` for framing; CI enforces objective rules via `dart run tool/check_copy_contract.dart` and `dart run tool/check_shared_understanding_copy.dart`.
 - Accessibility baseline must be honored: use Kinly primitives with built-in semantics/min 48dp touch targets; respect reduced motion; run contrast/i18n/directionality checks. Changes to the accessibility contract require Planner approval and Design System review.
 - All UI must be directionality-safe. Use directional APIs
@@ -153,6 +158,8 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - No writes outside approved RPCs.
 - No raw `CircularProgressIndicator` usage; UI/BLoC agents must use `lib/core/ui/kinly_loader.dart` for loaders to keep branding consistent.
 - Composable system: surfaces must not import other features directly; use registries and slots per `docs/contracts/kinly_composable_system_v1.md`.
+- Registry ordering must use the shared comparator in `lib/foundation/registry/**`.
+- Features must not import other features; composition happens via registries and router routes.
 - No raw Material buttons/FABs for CTAs. Use Kinly primitives so light/dark colors and spacing stay consistent:
   - Filled CTAs: `lib/core/ui/buttons/kinly_filled_button.dart` (`text/icon`, `destructive*`, `fullWidth` as needed)
   - Outlined CTAs: `lib/core/ui/buttons/kinly_outlined_button.dart` (`text/icon`, `compact/fullWidth`)

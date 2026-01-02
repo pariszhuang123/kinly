@@ -104,9 +104,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
       "تعذّر إنشاء المنزل. حاول مرة أخرى.",
     ),
-    "create_subtitle": MessageLookupByLibrary.simpleMessage(
-      "سنُنشئ منزلك فورًا. يمكنك تغيير الاسم ودعوة الآخرين لاحقًا.",
-    ),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "راجع كل Flow وحافظ على استمرارها",
     ),

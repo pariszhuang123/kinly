@@ -14,6 +14,7 @@ import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kinly/app/router/app_router.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
@@ -71,6 +72,7 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.welcome,
+          name: AppRouteNames.welcome,
           builder: (_, __) => const WelcomeScreen(),
         ),
       ],
@@ -111,6 +113,7 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.welcome,
+          name: AppRouteNames.welcome,
           builder: (_, __) => const WelcomeScreen(),
         ),
       ],
@@ -130,6 +133,7 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.welcome,
+          name: AppRouteNames.welcome,
           builder: (_, __) => const WelcomeScreen(),
         ),
       ],
@@ -165,10 +169,12 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.welcome,
+          name: AppRouteNames.welcome,
           builder: (_, __) => const WelcomeScreen(),
         ),
         GoRoute(
           path: AppRoutes.start,
+          name: AppRouteNames.start,
           builder: (_, __) => const Scaffold(body: Text('start-screen')),
         ),
       ],
@@ -201,10 +207,12 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.welcome,
+          name: AppRouteNames.welcome,
           builder: (_, __) => const WelcomeScreen(),
         ),
         GoRoute(
           path: AppRoutes.today,
+          name: AppRouteNames.today,
           builder: (_, __) => const Scaffold(body: Text('today-screen')),
         ),
       ],
@@ -223,6 +231,7 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.welcome,
+          name: AppRouteNames.welcome,
           builder: (_, __) => const WelcomeScreen(),
         ),
       ],

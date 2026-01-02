@@ -10,7 +10,7 @@ import '../../../core/logging/debug_logger.dart';
 import '../../../core/logging/logger.dart';
 import '../../../core/notifications/device_token_provider.dart';
 import '../../../core/notifications/notification_permission_service.dart';
-import '../../../app/router/app_router.dart';
+import '../../../app/router/app_route_names.dart';
 import '../../../core/theme/app_sizes.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
@@ -126,7 +126,7 @@ class _TodayScreenState extends State<TodayScreen>
                   prev.npsPromptTick != curr.npsPromptTick &&
                   curr.npsPromptTick > 0,
           listener: (context, state) async {
-            await context.push(AppRoutes.nps);
+            await context.pushNamed(AppRouteNames.nps);
             if (context.mounted) {
               context.read<TodayBloc>().add(const TodayRefreshed());
             }
@@ -240,10 +240,10 @@ class _TodayScreenState extends State<TodayScreen>
                 case 0:
                   break;
                 case 1:
-                  context.go(AppRoutes.explore);
+                  context.goNamed(AppRouteNames.explore);
                   break;
                 case 2:
-                  context.go(AppRoutes.hub);
+                  context.goNamed(AppRouteNames.hub);
                   break;
               }
             },

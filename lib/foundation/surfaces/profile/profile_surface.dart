@@ -20,9 +20,8 @@ import 'package:kinly/core/ui/settings/kinly_settings_tile.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/core/ui/support/kinly_support.dart';
 import 'package:kinly/generated/l10n.dart';
-import 'package:kinly/app/router/app_router.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 import 'bloc/profile_settings_bloc.dart';
-import 'profile_info_hub_webview.dart';
 
 part 'profile_surface_actions.dart';
 
@@ -93,7 +92,10 @@ class ProfileSettingsScreen extends StatelessWidget {
                         title: s.profileConnectionSettingsTitle,
                         subtitle: s.profileConnectionSettingsSubtitle,
                         icon: Icons.notifications_active_outlined,
-                        onTap: () => context.push(AppRoutes.connectionSettings),
+                        onTap:
+                            () => context.pushNamed(
+                              AppRouteNames.connectionSettings,
+                            ),
                       ),
                     ],
                   ),

@@ -6,7 +6,7 @@ import '../../bloc/today_bloc.dart';
 import '../../domain/models.dart';
 import 'today_header.dart';
 import 'package:kinly/contracts/profile_settings/profile_settings_route_args.dart';
-import '../../../../../../app/router/app_router.dart';
+import '../../../../../../app/router/app_route_names.dart';
 import '../../../../../../generated/l10n.dart';
 import '../../../../../../core/ui/snackbars/kinly_snackbar.dart';
 
@@ -48,7 +48,7 @@ class TodayHeaderContainer extends StatelessWidget {
       avatarUrl: profile?.avatarUrl,
     );
 
-    await context.push(AppRoutes.profileSettings, extra: args);
+    await context.pushNamed(AppRouteNames.profileSettings, extra: args);
   }
 }
 

@@ -429,7 +429,10 @@ Future<void> openProfileIdentity(
     initialAvatarUrl: user?.avatarUrl,
   );
 
-  final result = await context.push(AppRoutes.profileIdentity, extra: args);
+  final result = await context.pushNamed(
+    AppRouteNames.profileIdentity,
+    extra: args,
+  );
   if (!context.mounted) return;
 
   if (result is UserProfile) {
@@ -456,9 +459,7 @@ Future<void> openProfileIdentity(
 }
 
 Future<void> openInfoHub(BuildContext context) async {
-  await Navigator.of(
-    context,
-  ).push(MaterialPageRoute(builder: (_) => const InfoHubWebViewScreen()));
+  await context.pushNamed(AppRouteNames.infoHub);
 }
 
 Color? _profileAccent(BuildContext context) {

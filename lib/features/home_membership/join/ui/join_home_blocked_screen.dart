@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../app/router/app_router.dart';
+import '../../../../app/router/app_route_names.dart';
 import '../../../../generated/l10n.dart';
 import 'join_home_blocked_surface_contract.dart';
 import 'join_home_blocked_surface_registry.dart';
@@ -15,7 +15,7 @@ class JoinHomeBlockedScreen extends StatelessWidget {
     JoinHomeBlockedRegistry.bootstrap();
 
     final actions = JoinHomeBlockedSurfaceActions(
-      onBack: () => context.go(AppRoutes.start),
+      onBack: () => context.goNamed(AppRouteNames.start),
     );
     final scope = JoinHomeBlockedSurfaceScope(
       context: context,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../app/router/app_router.dart';
+import '../../../../../app/router/app_route_names.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../../core/ui/inputs/kinly_text_field.dart';
@@ -98,11 +98,11 @@ class _JoinHomeFormState extends State<JoinHomeForm> {
         KinlySnackBar.showSuccess(context, s.join_success(state.code));
         context.read<AuthBloc>().add(const AuthMembershipRefreshRequested());
         if (!mounted) return;
-        context.go(AppRoutes.today);
+        context.goNamed(AppRouteNames.today);
         break;
       case JoinHomeStatus.blocked:
         if (!mounted) return;
-        context.go(AppRoutes.joinBlocked);
+        context.goNamed(AppRouteNames.joinBlocked);
         break;
       case JoinHomeStatus.failure:
         final errorText = _resolveErrorText(context, state);

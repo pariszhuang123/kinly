@@ -14,7 +14,6 @@
   "welcome_title": "Welcome to Kinly",
   "welcome_create": "Create a Home",
   "welcome_join": "Join a Home",
-  "create_subtitle": "We’ll set up your home in seconds. You can rename it and invite people later.",
   "create_failed_generic": "Could not create the home. Try again.",
   "join_title": "Join Home",
   "join_hint": "Enter invite code",
@@ -124,7 +123,7 @@
   "login_privacy": "Privacy Policy",
   "logout": "Sign out",
   "membership_status_checking": "Connecting you to your home…",
-  "membership_status_none": "You haven't joined a home yet.",
+  "membership_status_none": "Your shared home starts here.",
   "membership_status_active": "You're connected to a home.",
   "authMembershipLoadFailed": "We couldn't refresh your home membership. Please try again.",
   "offline_title": "You're offline",
@@ -383,7 +382,7 @@
   "flowChoreDetailMoreInfoTitle": "Helpful context",
   "flowChoreExpectationPhotoLabel": "Reference photo",
   "flowListEmptyTitle": "Nothing here yet",
-  "flowListEmptySubtitle": "Flows are small agreements that help everyone stay aligned.\n\nAdd one when something keeps coming up.",
+  "flowListEmptySubtitle": "Flows are small agreements that help everyone stay aligned.",
   "flowListDraftLabel": "Draft",
   "flowListOverdueLabel": "Needs attention",
   "flowListError": "We couldn't load flows. Pull to refresh.",
@@ -577,9 +576,6 @@
   },
   "@welcome_title": {
     "surface": "title"
-  },
-  "@create_subtitle": {
-    "surface": "subtitle"
   },
   "@join_title": {
     "surface": "title"

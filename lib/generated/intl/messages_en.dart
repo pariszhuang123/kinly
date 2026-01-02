@@ -107,9 +107,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
       "Could not create the home. Try again.",
     ),
-    "create_subtitle": MessageLookupByLibrary.simpleMessage(
-      "We’ll set up your home in seconds. You can rename it and invite people later.",
-    ),
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "See what needs doing — and who’s taking care of it.",
     ),
@@ -272,7 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("Draft"),
     "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Flows are small agreements that help everyone stay aligned.\n\nAdd one when something keeps coming up.",
+      "Flows are small agreements that help everyone stay aligned.",
     ),
     "flowListEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Nothing here yet",
@@ -441,7 +438,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Connecting you to your home…",
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
-      "You haven\'t joined a home yet.",
+      "Your shared home starts here.",
     ),
     "navExplore": MessageLookupByLibrary.simpleMessage("Explore"),
     "navHub": MessageLookupByLibrary.simpleMessage("Hub"),

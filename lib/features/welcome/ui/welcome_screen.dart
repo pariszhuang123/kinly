@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../app/router/app_router.dart';
+import '../../../app/router/app_route_names.dart';
 import '../../../app/router/navigation_intents.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/auth/bloc/auth_bloc.dart';
@@ -67,14 +67,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         if (state.status == AuthStatus.authenticated && membershipReady) {
           final pending = NavigationIntents.takePendingJoinCode();
           if (pending != null) {
-            context.go('/join/$pending');
+            context.goNamed(
+              AppRouteNames.joinWithCode,
+              pathParameters: {'code': pending},
+            );
             return;
           }
-          final nextRoute =
+          final nextRouteName =
               state.membershipStatus == AuthMembershipStatus.active
-                  ? AppRoutes.today
-                  : AppRoutes.start;
-          context.go(nextRoute);
+                  ? AppRouteNames.today
+                  : AppRouteNames.start;
+          context.goNamed(nextRouteName);
         }
       },
       child: AuthErrorListener(
