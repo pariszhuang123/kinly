@@ -1,1 +1,1 @@
-export '../../../renderer/material/kinly_alert_dialog.dart';
+export '../../../renderer/material/ui/dialogs/kinly_alert_dialog.dart';

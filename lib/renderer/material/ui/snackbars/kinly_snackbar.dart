@@ -2,10 +2,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import 'theme/kinly_palette.dart';
-import 'theme/radius.dart';
-import 'theme/spacing.dart';
-import 'theme/typography_tokens.dart';
+import '../../theme/kinly_palette.dart';
+import '../../theme/radius.dart';
+import '../../theme/spacing.dart';
+import '../../theme/typography_tokens.dart';
 
 class KinlySnackBar {
   static Color _foregroundFor(Color background) {

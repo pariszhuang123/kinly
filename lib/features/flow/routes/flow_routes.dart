@@ -56,6 +56,21 @@ List<GoRoute> buildFlowRoutes({
       },
     ),
     GoRoute(
+      path: AppRoutePaths.flowChorePhoto,
+      name: AppRouteNames.flowChorePhoto,
+      builder: (_, state) {
+        final args = state.extra as FlowChorePhotoViewerArgs?;
+        if (args == null) {
+          throw StateError('Flow chore photo viewer requires args.');
+        }
+        return FlowChoreExpectationPhotoViewerPage(
+          photoUrl: args.photoUrl,
+          heroTag: args.heroTag,
+          title: args.title,
+        );
+      },
+    ),
+    GoRoute(
       path: AppRoutePaths.flowChoreEdit,
       name: AppRouteNames.flowChoreEdit,
       builder: (_, state) {
@@ -79,21 +94,6 @@ List<GoRoute> buildFlowRoutes({
           homeId: membership.homeId,
           choreId: choreId,
           choresRepository: sl<ChoresRepository>(),
-        );
-      },
-    ),
-    GoRoute(
-      path: AppRoutePaths.flowChorePhoto,
-      name: AppRouteNames.flowChorePhoto,
-      builder: (_, state) {
-        final args = state.extra as FlowChorePhotoViewerArgs?;
-        if (args == null) {
-          throw StateError('Flow chore photo viewer requires args.');
-        }
-        return FlowChoreExpectationPhotoViewerPage(
-          photoUrl: args.photoUrl,
-          heroTag: args.heroTag,
-          title: args.title,
         );
       },
     ),

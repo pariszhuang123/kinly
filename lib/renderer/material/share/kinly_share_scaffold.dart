@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'snapshot_share_surface.dart';
 import '../theme/spacing.dart';
 import '../../../generated/l10n.dart';
-import '../kinly_snackbar.dart';
+import '../ui/snackbars/kinly_snackbar.dart';
 import '../ui/buttons/kinly_fab.dart';
 import '../kinly_scaffold.dart';
 

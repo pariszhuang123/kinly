@@ -7,7 +7,7 @@ import '../../theme/kinly_sections.dart';
 import '../../theme/opacity.dart';
 import '../../../../generated/l10n.dart';
 import 'kinly_fab.dart';
-import '../../kinly_bottom_sheet.dart';
+import '../bottom_sheet/kinly_bottom_sheet.dart';
 import '../kinly_list_tile.dart';
 
 class KinlyQuickAddFab extends StatelessWidget {

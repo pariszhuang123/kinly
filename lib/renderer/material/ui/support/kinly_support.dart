@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../generated/l10n.dart';
-import '../../kinly_snackbar.dart';
+import '../snackbars/kinly_snackbar.dart';
 import 'enums/kinly_support_intent.dart';
 
 class KinlySupport {

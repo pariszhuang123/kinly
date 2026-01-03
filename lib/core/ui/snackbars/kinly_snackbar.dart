@@ -1,1 +1,1 @@
-export '../../../renderer/material/kinly_snackbar.dart';
+export '../../../renderer/material/ui/snackbars/kinly_snackbar.dart';

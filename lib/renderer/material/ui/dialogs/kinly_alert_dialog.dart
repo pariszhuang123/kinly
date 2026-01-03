@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'theme/color_tokens.dart';
-import 'theme/elevation.dart';
-import 'theme/kinly_palette.dart';
-import 'theme/opacity.dart';
-import 'theme/radius.dart';
-import 'theme/spacing.dart';
-import 'theme/typography_tokens.dart';
-import '../../core/ui/buttons/kinly_filled_button.dart';
-import '../../core/ui/buttons/kinly_outlined_button.dart';
+import '../../theme/color_tokens.dart';
+import '../../theme/elevation.dart';
+import '../../theme/kinly_palette.dart';
+import '../../theme/opacity.dart';
+import '../../theme/radius.dart';
+import '../../theme/spacing.dart';
+import '../../theme/typography_tokens.dart';
+import '../../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../../core/ui/buttons/kinly_outlined_button.dart';
 
 class KinlyAlertDialog extends StatelessWidget {
   const KinlyAlertDialog._({
