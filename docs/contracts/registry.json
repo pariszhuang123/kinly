@@ -112,6 +112,13 @@
         }
       }
     },
+    "architecture_guardrails": {
+      "latest": "v1",
+      "docs": "docs/contracts/architecture_guardrails_amendment_foundation_surfaces_v1.md",
+      "entities": {},
+      "functions": {},
+      "rls": []
+    },
     "chores": {
       "latest": "v1",
       "docs": "docs/contracts/chores_v1.md",
@@ -280,7 +287,7 @@
     },
     "composable_system": {
       "latest": "v1",
-      "docs": "docs/contracts/kinly_composable_system_v1.md",
+      "docs": "docs/contracts/kinly_foundation_surfaces_amendment_v1.md",
       "entities": {},
       "functions": {},
       "rls": []

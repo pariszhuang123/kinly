@@ -342,6 +342,7 @@ Explore/Hub/Profile/Today can link to them, but do not contain their internals.
 {
   "domain": "composable_system",
   "amendment": "foundation_surfaces_v1",
-  "surfaces": ["today", "explore", "hub", "profile"]
+  "surfaces": ["today", "explore", "hub", "profile"],
+  "rls": []
 }
 ```

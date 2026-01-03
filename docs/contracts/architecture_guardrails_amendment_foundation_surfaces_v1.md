@@ -188,6 +188,7 @@ Suggested command (existing pattern):
   "router_composition_root": true,
   "feature_to_feature_imports": "forbidden",
   "navigation": "go_router_named_routes_only",
-  "b_ready": true
+  "b_ready": true,
+  "rls": []
 }
 ```
