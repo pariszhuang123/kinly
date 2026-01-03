@@ -2,6 +2,14 @@
 
 Tracks versioned contract changes and related ADRs.
 
+## v1 - Avatar Identity
+- Date: 2026-01-06
+- Scope: `docs/contracts/kinly_avatar_identity_v1.md`
+- Changes:
+  - Define progressive identity disclosure for avatar selection and commitment.
+  - Require visible display names on selection/focus and persisted on commit.
+  - Codify accessibility semantics for avatar identity cues.
+
 ## v1 - Design System Umbrella
 - Date: 2026-01-05
 - Scope: `docs/contracts/kinly_design_system_v1.md`, `docs/contracts/kinly_composable_system_v1.md`, `docs/contracts/architecture_guardrails_amendment_foundation_surfaces_v1.md`

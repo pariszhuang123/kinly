@@ -53,6 +53,7 @@ class KinlySelectableMemberAvatarRow extends StatelessWidget {
       selectedValues: selectedMemberIds,
       onToggle: onToggle,
       showLabels: showNames,
+      showLabelOnSelected: true,
       itemVisualSize: avatarRadius * 2,
       spacing: spacing,
       runSpacing: runSpacing,

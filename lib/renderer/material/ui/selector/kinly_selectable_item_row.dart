@@ -38,6 +38,7 @@ class KinlySelectableItemRow<T> extends StatelessWidget {
     required this.selectedValues,
     required this.onToggle,
     this.showLabels = false,
+    this.showLabelOnSelected = false,
     this.itemVisualSize = 40,
     this.spacing,
     this.runSpacing,
@@ -49,6 +50,7 @@ class KinlySelectableItemRow<T> extends StatelessWidget {
   final Set<T> selectedValues;
   final ValueChanged<T> onToggle;
   final bool showLabels;
+  final bool showLabelOnSelected;
   final double itemVisualSize;
   final double? spacing;
   final double? runSpacing;
@@ -72,6 +74,7 @@ class KinlySelectableItemRow<T> extends StatelessWidget {
               item: item,
               isSelected: selectedValues.contains(item.value),
               showLabel: showLabels,
+              showLabelOnSelected: showLabelOnSelected,
               visualSize: itemVisualSize,
               allowDeselect: allowDeselect,
               onTap: () => onToggle(item.value),
@@ -87,6 +90,7 @@ class _SelectableItem<T> extends StatelessWidget {
     required this.item,
     required this.isSelected,
     required this.showLabel,
+    required this.showLabelOnSelected,
     required this.visualSize,
     required this.allowDeselect,
     required this.onTap,
@@ -95,6 +99,7 @@ class _SelectableItem<T> extends StatelessWidget {
   final KinlySelectableItem<T> item;
   final bool isSelected;
   final bool showLabel;
+  final bool showLabelOnSelected;
   final double visualSize;
   final bool allowDeselect;
   final VoidCallback onTap;
@@ -147,7 +152,10 @@ class _SelectableItem<T> extends StatelessWidget {
       ),
     );
 
-    if (showLabel) {
+    final shouldShowLabel =
+        (showLabel || (showLabelOnSelected && isSelected)) &&
+        item.label.trim().isNotEmpty;
+    if (shouldShowLabel) {
       content = Column(
         mainAxisSize: MainAxisSize.min,
         children: [

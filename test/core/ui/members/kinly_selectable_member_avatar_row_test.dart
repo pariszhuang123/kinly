@@ -84,4 +84,32 @@ void main() {
     final data = semantics.getSemanticsData();
     expect(data.flagsCollection.isSelected.toBoolOrNull(), isFalse);
   });
+
+  testWidgets('names stay hidden when unselected', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        KinlySelectableMemberAvatarRow(
+          members: [_member('user-1', 'Alice')],
+          selectedMemberIds: const {},
+          onToggle: (_) {},
+        ),
+      ),
+    );
+
+    expect(find.text('Alice'), findsNothing);
+  });
+
+  testWidgets('names appear when selected', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        KinlySelectableMemberAvatarRow(
+          members: [_member('user-1', 'Alice')],
+          selectedMemberIds: const {'user-1'},
+          onToggle: (_) {},
+        ),
+      ),
+    );
+
+    expect(find.text('Alice'), findsOneWidget);
+  });
 }
