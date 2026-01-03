@@ -2,6 +2,9 @@ import 'dart:io';
 
 final _featureImport = RegExp(r"^package:kinly/features/([^/]+)/(.+)");
 final _featureUiImport = RegExp(r"^package:kinly/features/([^/]+)/ui/");
+final _allowedRouterFeatureImports = {
+  'version_gating/bloc/app_version_cubit.dart',
+};
 
 void main() {
   final violations = <String>[];
@@ -91,9 +94,15 @@ void _checkFile(File file, List<String> violations) {
 
     final featureUiMatch = _featureUiImport.firstMatch(importPath);
     if (featureUiMatch != null) {
+      if (isRouter) {
+        violations.add(
+          "$path:${i + 1} router must not import feature UI ($importPath)",
+        );
+        continue;
+      }
       final targetFeature = featureUiMatch.group(1)!;
       final isSameFeature = feature == targetFeature;
-      final isAllowed = isRouter || isSameFeature || isTestFile;
+      final isAllowed = isSameFeature || isTestFile;
       if (!isAllowed) {
         violations.add(
           "$path:${i + 1} only router may import feature UI ($importPath)",
@@ -111,6 +120,27 @@ void _checkFile(File file, List<String> violations) {
         isTestFile: isTestFile,
         violations: violations,
       );
+    }
+
+    if (isRouter) {
+      final match = _featureImport.firstMatch(importPath);
+      if (match != null) {
+        final featureName = match.group(1)!;
+        final rest = match.group(2)!;
+        final fullPath = "$featureName/$rest";
+        if (!rest.startsWith("routes/") &&
+            !_allowedRouterFeatureImports.contains(fullPath)) {
+          violations.add(
+            "$path:${i + 1} router must import features/**/routes only ($importPath)",
+          );
+        }
+      }
+      if (importPath.startsWith("package:kinly/foundation/") &&
+          !importPath.contains("/routes/")) {
+        violations.add(
+          "$path:${i + 1} router must import foundation routes only ($importPath)",
+        );
+      }
     }
 
     if (isSharedData && importPath.contains("/features/")) {

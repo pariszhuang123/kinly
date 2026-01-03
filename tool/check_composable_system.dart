@@ -21,6 +21,7 @@ final _allowedCorePrefixes = <String>[
   'lib/core/logging/',
   'lib/core/time/',
   'lib/core/config/',
+  'lib/core/platform/',
   'lib/core/notifications/',
 ];
 final _portNamePattern = RegExp(r'(Port|Repository|Gateway)$');

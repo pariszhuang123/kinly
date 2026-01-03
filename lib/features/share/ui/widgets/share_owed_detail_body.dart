@@ -8,6 +8,7 @@ import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../../core/ui/selector/kinly_expand_badge.dart';
+import '../../../../core/ui/kinly_tap_target.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../contracts/share/models.dart';
 import '../share_period_label.dart';
@@ -302,9 +303,10 @@ class _DetailRow extends StatelessWidget {
     return Material(
       borderRadius: BorderRadius.circular(16),
       color: theme.colorScheme.surfaceContainerHighest,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+      child: KinlyTapTarget(
         onTap: onToggle,
+        borderRadius: BorderRadius.circular(16),
+        alignment: AlignmentDirectional.centerStart,
         child: Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 14),
           child: content,

@@ -87,8 +87,9 @@ class _ExpectationPhotoPicker extends StatelessWidget {
       children: [
         Text(s.flowChorePhotoLabel, style: theme.textTheme.titleMedium),
         SizedBox(height: spacing?.xs ?? 8),
-        GestureDetector(
+        KinlyTapTarget(
           onTap: isUploading ? null : onCapture,
+          borderRadius: BorderRadius.circular(12),
           child: AspectRatio(aspectRatio: 4 / 3, child: preview),
         ),
       ],

@@ -2484,10 +2484,10 @@ class S {
     );
   }
 
-  /// `Flows are small agreements that help everyone stay aligned.`
+  /// `Flows keep everyone aligned.`
   String get flowListEmptySubtitle {
     return Intl.message(
-      'Flows are small agreements that help everyone stay aligned.',
+      'Flows keep everyone aligned.',
       name: 'flowListEmptySubtitle',
       desc: '',
       args: [],

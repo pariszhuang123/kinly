@@ -5,6 +5,7 @@ import '../../../../../../core/theme/spacing.dart';
 import '../../../../../../core/theme/opacity.dart';
 import '../../domain/models.dart';
 import '../../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../../core/ui/kinly_tap_target.dart';
 
 class TodayHeader extends StatelessWidget {
   final String partOfDay; // “morning”, “afternoon”, “evening”
@@ -57,18 +58,15 @@ class TodayHeader extends StatelessWidget {
           ),
         ),
         SizedBox(width: spacing.md),
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onAvatarTap,
-            borderRadius: BorderRadius.circular(32),
-            child: Padding(
-              padding: EdgeInsetsDirectional.all(spacing.xs / 2),
-              child: KinlyCircleAvatar(
-                avatarUrl: profile?.avatarUrl,
-                radius: 30,
-                isOwner: profile?.isOwner ?? false,
-              ),
+        KinlyTapTarget(
+          onTap: onAvatarTap,
+          borderRadius: BorderRadius.circular(32),
+          child: Padding(
+            padding: EdgeInsetsDirectional.all(spacing.xs / 2),
+            child: KinlyCircleAvatar(
+              avatarUrl: profile?.avatarUrl,
+              radius: 30,
+              isOwner: profile?.isOwner ?? false,
             ),
           ),
         ),

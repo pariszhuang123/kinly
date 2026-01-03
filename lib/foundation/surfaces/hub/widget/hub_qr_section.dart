@@ -4,6 +4,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../../core/ui/kinly_tap_target.dart';
 import '../../../../generated/l10n.dart';
 import '../bloc/hub_bloc.dart';
 
@@ -36,8 +37,9 @@ class HubQrSection extends StatelessWidget {
       padding: EdgeInsetsDirectional.all(spacing.md),
       child: Row(
         children: [
-          GestureDetector(
+          KinlyTapTarget(
             onTap: onQrTap,
+            borderRadius: BorderRadius.circular(1),
             child: Container(
               decoration: BoxDecoration(
                 color: colorScheme.surface,

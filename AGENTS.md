@@ -118,63 +118,27 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 - Acceptance criteria: Given / When / Then + DoD checklist.
 - Unknowns: PR must contain Assumptions; mark Blocking if delivery halted.
 - Merge/trunk checklist (applies to trunk and PRs):
-  - `dart run tool/check_design_system.dart` (see Design System section)
-  - `dart run tool/check_complexity_budget.dart` (see `docs/engineering/complexity_budget_v1.md`)
-  - `dart run tool/check_dependency_rules.dart`
-  - `dart run tool/check_named_routes.dart`
-  - `dart run tool/check_composable_system.dart`
-  - `dart run tool/check_modules.dart`
-  - `dart run tool/check_nesting_depth.dart`
+  - `dart run tool/check_all.dart` (single source of truth for guardrails)
   - `dart format` + `dart analyze`
   - `flutter test` (add widget/RTL/golden tests when relevant)
-  - `dart run tool/check_i18n.dart`
-  - `dart run tool/l10n_integrity_check.dart lib/l10n/intl_en.arb`
-  - `dart run tool/check_directionality.dart`
-  - `dart run tool/check_enums.dart`
-  - `dart run tool/check_copy_contract.dart` (see `docs/contracts/copy_taste_v1_1.md`)
-  - `dart run tool/check_shared_understanding_copy.dart` (see `docs/contracts/shared_understanding_copy_v1.md`)
   - Screenshots/GIFs for happy paths when UI changes
-- No raw Material buttons/loaders; use Kinly primitives; strings via `S.of(context)`; keep padding/alignments directionality-safe
+- If you add a new guardrail, add it to `check_all.dart` (and only that).
 - If adding or changing a core UI primitive, update `docs/ui/core_ui_primitives.md` and get Planner + Docs review
-- Theme tokens: do not use raw alphas or null-aware on required theme extensions. Use `KinlyOpacity`, `Spacing`, `Corners`, `KinlyTypography`, and color/tokens via theme extensions; use the closest token rather than literals.
 
 
 ## Guardrails (Prohibited)
-- No direct Supabase/HTTP in UI/BLoC.
 - Keep CC within `docs/engineering/complexity_budget_v1.md`; allowed exceptions require `CC_BUDGET_EXCEPTION` with expiry; hard caps are non-negotiable.
 - No schema change without migration + RLS policies + reviews.
-- No hard-coded UI strings (use i18n). Run `dart run tool/check_i18n.dart`
-  before submitting a PR; reviewers (Codex) will block if this check fails.
-- Contracts are a strict seam: `lib/contracts/**` must not import `lib/core/**`, `lib/features/**`, or `lib/foundation/**`.
-- Copy: follow `docs/contracts/copy_taste_v1_1.md` for voice, surfaces, and metadata, and `docs/contracts/shared_understanding_copy_v1.md` for framing; CI enforces objective rules via `dart run tool/check_copy_contract.dart` and `dart run tool/check_shared_understanding_copy.dart`.
-- Accessibility baseline must be honored: use Kinly primitives with built-in semantics/min 48dp touch targets; respect reduced motion; run contrast/i18n/directionality checks. Changes to the accessibility contract require Planner approval and Design System review.
-- All UI must be directionality-safe. Use directional APIs
-  (`EdgeInsetsDirectional`, `AlignmentDirectional`, `PositionedDirectional`,
-  `TabBar` that mirrors), and add an RTL widget/golden test for new screens.
-  Run `dart run tool/check_directionality.dart` before PR to block LTR-only
-  paddings/alignments.
-- No ad-hoc logging (no `print`/`debugPrint`/console writes); all logs go through `core/logging/logger.dart` via DI so Release can route them.
-- No public endpoints for invites or joins.
-- No writes outside approved RPCs.
-- No raw `CircularProgressIndicator` usage; UI/BLoC agents must use `lib/core/ui/kinly_loader.dart` for loaders to keep branding consistent.
-- Composable system: surfaces must not import other features directly; use registries and slots per `docs/contracts/kinly_composable_system_v1.md`.
+- Accessibility baseline must be honored: use Kinly primitives with built-in semantics/min 48dp touch targets; respect reduced motion. Changes to the accessibility contract require Planner approval and Design System review.
 - Registry ordering must use the shared comparator in `lib/foundation/registry/**`.
-- Features must not import other features; composition happens via registries and router routes.
-- No raw Material buttons/FABs for CTAs. Use Kinly primitives so light/dark colors and spacing stay consistent:
-  - Filled CTAs: `lib/core/ui/buttons/kinly_filled_button.dart` (`text/icon`, `destructive*`, `fullWidth` as needed)
-  - Outlined CTAs: `lib/core/ui/buttons/kinly_outlined_button.dart` (`text/icon`, `compact/fullWidth`)
-  - FABs: `lib/core/ui/buttons/kinly_fab.dart` (inherits add-tile palette; supports hero/mini/tooltip)
-  - Add tile: `lib/core/ui/buttons/kinly_add_tile_button.dart`
-- UI must use Kinly primitives under `lib/core/ui/**`; new or changed primitives require Planner + Docs review; update `docs/ui/core_ui_primitives.md`.
 - Dark/light handling must be palette-driven: primitives and feature UI must not branch on `Brightness.dark`; use theme extensions (`KinlyControlColors`, `KinlyColorTokens`, `KinlySections`) instead.
-- Design System: use theme extensions for spacing/radius/elevation/motion/color/typography; no hard-coded colors/paddings/text styles; no raw `SnackBar`/`AlertDialog`/`BottomSheet`—use `KinlySnackBar`/`KinlyAlertDialog`/`KinlyBottomSheet`; inputs via Kinly wrappers.
 - BLoC event handlers: register events with `on<Event>(_onEvent);` and implement `_on<Event>` methods (no inline closures); keep branching in small helpers to stay within the complexity budget.
 
 ## Shared Enums
 - Domain-owned/shared enums live in `lib/core/<domain>/enums/` (e.g., `lib/core/homes/enums/leave_outcome.dart`).
 - Keep BLoC/UI-only enums next to the widget/state files that own them; only promote to `lib/core/.../enums` if they are part of a cross-agent contract.
 - Repositories and Supabase/DB co-own the enums under `lib/core/**/enums`; update both sides when contract values change.
-- Run `dart run tool/check_enums.dart` locally and in CI; it fails if a `lib/core/**` file defines an enum outside an `enums/` folder.
+- It fails if a `lib/core/**` file defines an enum outside an `enums/` folder.
 
 ## Logging Standard
 - Ownership: Planner defines taxonomy + severity expectations, Docs maintains this section, Release verifies sinks in CI.
@@ -195,6 +159,3 @@ Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: n
 ## Deep Linking
 - Join flow: `/join/:code` → OAuth if needed → `homes.join(code)` → Hub.
 - Host/prefix TBD (e.g., `https://makinglifeeasie.com/kinly/join/:code`) — captured as TODO until assigned.
-
-## Composition Root
-- Runtime DI wiring lives in lib/app/di/compose.dart; add new install<Feature>Dependencies there and keep main.dart limited to calling composeDependencies().

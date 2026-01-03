@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +9,7 @@ import '../../../app/router/navigation_intents.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/auth/bloc/auth_bloc.dart';
 import '../../../core/auth/widgets/auth_error_listener.dart';
+import '../../../core/platform/platform_info.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import 'welcome_surface_contract.dart';
 import 'welcome_surface_registry.dart';
@@ -43,7 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final s = S.of(context);
     final theme = Theme.of(context);
     final busy = context.select((AuthBloc bloc) => bloc.state.isLoading);
-    final supportsApple = Platform.isIOS;
+    final supportsApple = PlatformInfo.isIOS;
     final isDarkMode = theme.brightness == Brightness.dark;
     final googleButtonStyle = isDarkMode ? Buttons.google : Buttons.google;
     final appleButtonStyle = isDarkMode ? Buttons.appleDark : Buttons.apple;

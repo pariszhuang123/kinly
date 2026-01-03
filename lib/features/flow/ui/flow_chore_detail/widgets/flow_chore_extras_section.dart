@@ -6,6 +6,7 @@ import '../../../../../core/theme/spacing.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/theme/kinly_theme.dart'; // to access link colors extension
 import '../../../../../app/router/app_route_names.dart';
+import '../../../../../core/ui/kinly_tap_target.dart';
 import 'flow_chore_expectation_photo_viewer.dart';
 
 class FlowChoreExtrasSection extends StatelessWidget {
@@ -114,8 +115,9 @@ class _FlowDetailSection extends StatelessWidget {
 
     final bodyContent =
         isLink
-            ? GestureDetector(
+            ? KinlyTapTarget(
               onTap: onTap,
+              alignment: AlignmentDirectional.centerStart,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -173,7 +175,7 @@ class _ExpectationPhotoSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        GestureDetector(
+        KinlyTapTarget(
           onTap:
               () => context.pushNamed(
                 AppRouteNames.flowChorePhoto,
@@ -183,6 +185,7 @@ class _ExpectationPhotoSection extends StatelessWidget {
                   title: title,
                 ),
               ),
+          borderRadius: BorderRadius.circular(12),
           child: Hero(
             tag: heroTag,
             child: ClipRRect(

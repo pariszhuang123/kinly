@@ -10,10 +10,13 @@ import 'package:kinly/features/flow/domain/flow_chore_outcome.dart';
 import 'package:kinly/features/flow/ui/flow_chore_detail/flow_chore_detail_screen.dart';
 import 'package:kinly/features/flow/ui/flow_chore_detail/widgets/flow_chore_detail_view.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/core/auth/bloc/auth_bloc.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/opacity.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:kinly/core/supabase/storage_path_resolver.dart';
+import 'package:get_it/get_it.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -24,6 +27,9 @@ class _MockFlowChoreDetailBloc
 class _FakeFlowChoreDetailEvent extends Fake implements FlowChoreDetailEvent {}
 
 class _FakeFlowChoreDetailState extends Fake implements FlowChoreDetailState {}
+
+class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
+    implements AuthBloc {}
 
 class _RouteHost extends StatefulWidget {
   const _RouteHost({
@@ -60,10 +66,16 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     await initializeDateFormatting('en');
     SharedPreferences.setMockInitialValues({});
-    await Supabase.initialize(
+    await supabase.Supabase.initialize(
       url: 'https://example.supabase.co',
       anonKey: 'public-anon-key',
     );
+    final sl = GetIt.instance;
+    if (!sl.isRegistered<StoragePathResolver>()) {
+      sl.registerSingleton<StoragePathResolver>(
+        StoragePathResolver(client: supabase.Supabase.instance.client),
+      );
+    }
     registerFallbackValue(_FakeFlowChoreDetailEvent());
     registerFallbackValue(_FakeFlowChoreDetailState());
   });
@@ -121,6 +133,11 @@ void main() {
       initialState: loadedState,
     );
 
+    final authBloc = _MockAuthBloc();
+    when(() => authBloc.state).thenReturn(
+      const AuthState(status: AuthStatus.authenticated, userId: 'user-1'),
+    );
+
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: const [S.delegate],
@@ -170,8 +187,11 @@ void main() {
           buildRoute:
               (_) => MaterialPageRoute<Object?>(
                 builder:
-                    (_) => BlocProvider<FlowChoreDetailBloc>.value(
-                      value: bloc,
+                    (_) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider<FlowChoreDetailBloc>.value(value: bloc),
+                        BlocProvider<AuthBloc>.value(value: authBloc),
+                      ],
                       child: const FlowChoreDetailScreen(),
                     ),
               ),
@@ -230,6 +250,10 @@ void main() {
       Stream<FlowChoreDetailState>.fromIterable([loadedState, errorState]),
       initialState: loadedState,
     );
+    final authBloc = _MockAuthBloc();
+    when(() => authBloc.state).thenReturn(
+      const AuthState(status: AuthStatus.authenticated, userId: 'user-1'),
+    );
 
     await tester.pumpWidget(
       MaterialApp(
@@ -276,8 +300,11 @@ void main() {
             KinlyOpacity.defaults,
           ],
         ),
-        home: BlocProvider<FlowChoreDetailBloc>.value(
-          value: bloc,
+        home: MultiBlocProvider(
+          providers: [
+            BlocProvider<FlowChoreDetailBloc>.value(value: bloc),
+            BlocProvider<AuthBloc>.value(value: authBloc),
+          ],
           child: const FlowChoreDetailScreen(),
         ),
       ),
@@ -371,6 +398,9 @@ void main() {
               onComplete: null,
               completeButtonKey: GlobalKey(),
               currentUserId: 'user-123',
+              storagePathResolver: StoragePathResolver(
+                client: supabase.Supabase.instance.client,
+              ),
             ),
           ),
         ),
@@ -464,6 +494,9 @@ void main() {
               onComplete: null,
               completeButtonKey: GlobalKey(),
               currentUserId: 'user-123',
+              storagePathResolver: StoragePathResolver(
+                client: supabase.Supabase.instance.client,
+              ),
             ),
           ),
         ),

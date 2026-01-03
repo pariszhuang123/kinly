@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kinly/core/config/app_config.dart';
+import 'package:kinly/core/platform/platform_info.dart';
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/logging/logger.dart';
@@ -187,10 +186,10 @@ class HubBloc extends Bloc<HubEvent, HubState> {
 }
 
 String _resolveAppLink() {
-  if (Platform.isIOS && AppConfig.iosStoreUrl.isNotEmpty) {
+  if (PlatformInfo.isIOS && AppConfig.iosStoreUrl.isNotEmpty) {
     return AppConfig.iosStoreUrl;
   }
-  if (Platform.isAndroid && AppConfig.androidStoreUrl.isNotEmpty) {
+  if (PlatformInfo.isAndroid && AppConfig.androidStoreUrl.isNotEmpty) {
     return AppConfig.androidStoreUrl;
   }
   if (AppConfig.androidStoreUrl.isNotEmpty) return AppConfig.androidStoreUrl;

@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../generated/l10n.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/auth/bloc/auth_bloc.dart';
+import '../../../../core/di/locator.dart';
+import '../../../../core/supabase/storage_path_resolver.dart';
 import '../../bloc/flow_chore_detail_bloc.dart';
 import '../../domain/flow_chore_outcome.dart';
 import 'widgets/flow_chore_detail_view.dart';
@@ -52,6 +54,10 @@ class _FlowChoreDetailScreenState extends State<FlowChoreDetailScreen> {
             }
           },
           builder: (context, state) {
+            final currentUserId =
+                context.select<AuthBloc, String?>(
+                  (bloc) => bloc.state.userId,
+                );
             return FlowChoreDetailView(
               state: state,
               onRetry:
@@ -65,7 +71,8 @@ class _FlowChoreDetailScreenState extends State<FlowChoreDetailScreen> {
                       )
                       : null,
               completeButtonKey: _completeButtonKey,
-              currentUserId: Supabase.instance.client.auth.currentUser?.id,
+              currentUserId: currentUserId,
+              storagePathResolver: sl<StoragePathResolver>(),
             );
           },
         ),

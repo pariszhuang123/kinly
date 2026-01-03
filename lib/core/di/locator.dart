@@ -18,6 +18,7 @@ import '../notifications/data/supabase/supabase_notifications_repository.dart';
 import '../onboarding/data/supabase/supabase_onboarding_repository.dart';
 import '../notifications/profile_update_notifier.dart';
 import '../purchases/revenuecat_service.dart';
+import '../supabase/storage_path_resolver.dart';
 import '../time/iana_timezone_resolver.dart';
 
 final sl = GetIt.instance;
@@ -59,6 +60,7 @@ void setupDependencies() {
       () => SupabaseOnboardingRepository(),
     ),
     () => _registerLazy<RevenueCatService>(() => DefaultRevenueCatService()),
+    () => _registerLazy<StoragePathResolver>(() => StoragePathResolver()),
   ];
 
   for (final register in registrations) {

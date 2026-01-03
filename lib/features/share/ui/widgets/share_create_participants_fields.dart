@@ -200,7 +200,6 @@ class _CustomSplitRow extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
-    final colorScheme = theme.colorScheme;
 
     return Container(
       margin: EdgeInsets.only(bottom: spacing.sm),
@@ -211,12 +210,15 @@ class _CustomSplitRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Checkbox(
-            value: selected,
-            activeColor: colorScheme.primaryContainer,
-            checkColor: colorScheme.onPrimaryContainer,
-            onChanged:
-                canToggle ? (value) => onToggled?.call(value ?? false) : null,
+          IgnorePointer(
+            ignoring: !canToggle,
+            child: Opacity(
+              opacity: canToggle ? 1.0 : 0.6,
+              child: KinlyCheckbox(
+                value: selected,
+                onChanged: (value) => onToggled?.call(value),
+              ),
+            ),
           ),
           KinlyCircleAvatar(
             avatarUrl: participant.avatarUrl,

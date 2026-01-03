@@ -1,5 +1,16 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+class StoragePathResolver {
+  StoragePathResolver({SupabaseClient? client})
+    : _client = client ?? Supabase.instance.client;
+
+  final SupabaseClient _client;
+
+  String? toPublicUrl(String? storagePath) {
+    return storagePathToPublicUrl(_client, storagePath);
+  }
+}
+
 /// Helpers for turning storage paths into public URLs.
 /// Accepts:
 ///  - full URLs (returned as-is)

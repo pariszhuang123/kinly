@@ -7,6 +7,7 @@ import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/badges/kinly_badge.dart';
 import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
+import '../../../../core/ui/kinly_tap_target.dart';
 import '../../../../generated/l10n.dart';
 
 class FlowListView extends StatelessWidget {
@@ -88,9 +89,10 @@ class _FlowListTile extends StatelessWidget {
     return Material(
       color: flowColors.card,
       borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+      child: KinlyTapTarget(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        alignment: AlignmentDirectional.centerStart,
         child: Padding(
           padding: EdgeInsetsDirectional.all(spacing.lg),
           child: Column(

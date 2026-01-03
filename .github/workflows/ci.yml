@@ -24,10 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: "Guard: require tests when code/migrations change"
-        shell: bash
-        run: bash tool/check_test_guard.sh
-
       # ---------------------------
       # ✅ DENO (Edge Functions)
       # ---------------------------
@@ -82,6 +78,17 @@ jobs:
       - name: Generate contracts registry
         run: dart tool/contracts_extract.dart
 
+      - name: Debug registry types
+        run: |
+          python - <<'PY'
+          import json
+          p="docs/contracts/registry.json"
+          j=json.load(open(p,"r",encoding="utf-8"))
+          d=j["domains"]["architecture_guardrails"]
+          print("entities type:", type(d.get("entities")).__name__)
+          print("entities value:", d.get("entities"))
+          PY
+
       - name: Validate registry structure
         run: dart tool/validate_registry.dart docs/contracts/registry.json
 
@@ -94,50 +101,8 @@ jobs:
             exit 1;
           fi
 
-      - name: Check UI strings localized
-        run: dart run tool/check_i18n.dart
-
-      - name: Check l10n integrity (keys used and valid)
-        run: dart run tool/l10n_integrity_check.dart lib/l10n/intl_en.arb
-
-      - name: Check shared enums grouped
-        run: dart run tool/check_enums.dart
-
-      - name: Check design system guardrails
-        run: dart run tool/check_design_system.dart
-
-      - name: Check complexity budget
-        run: dart run tool/check_complexity_budget.dart
-
-      - name: Check dependency guardrails
-        run: dart run tool/check_dependency_rules.dart
-
-      - name: Check named-route guardrails
-        run: dart run tool/check_named_routes.dart
-
-      - name: Check composable system guardrails
-        run: dart run tool/check_composable_system.dart --strict
-
-      - name: Check nesting depth
-        run: dart run tool/check_nesting_depth.dart
-
-      - name: Check directionality-safe layout
-        run: dart run tool/check_directionality.dart
-
-      - name: Check copy contract
-        run: dart run tool/check_copy_contract.dart
-
-      - name: Check shared understanding copy
-        run: dart run tool/check_shared_understanding_copy.dart
-
-      - name: Run color guard + token checks
-        run: bash tool/check_colors.sh
-
-      - name: Check theme token usage (no raw alphas / null-aware required tokens)
-        run: dart run tool/check_theme_tokens.dart
-
-      - name: Check module manifest guardrails
-        run: dart run tool/check_modules.dart
+      - name: Run guardrail checks (aggregated)
+        run: bash tool/guardrails.sh
 
       - name: Install lcov
         run: |

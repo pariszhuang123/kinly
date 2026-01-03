@@ -5,6 +5,7 @@ import '../../../../core/theme/kinly_theme.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/toggles/kinly_checkbox.dart';
 import '../../../../core/ui/branding/kinly_logo.dart';
+import '../../../../core/ui/kinly_tap_target.dart';
 import '../welcome_surface_contract.dart';
 
 class WelcomeBody extends StatelessWidget {
@@ -45,9 +46,10 @@ class WelcomeBody extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: InkWell(
+                child: KinlyTapTarget(
                   onTap: scope.actions.onToggleConsent,
                   borderRadius: BorderRadius.circular(4),
+                  alignment: AlignmentDirectional.centerStart,
                   child: Wrap(
                     alignment: WrapAlignment.start,
                     crossAxisAlignment: WrapCrossAlignment.center,
@@ -56,8 +58,9 @@ class WelcomeBody extends StatelessWidget {
                         s.login_consent_prefix,
                         style: theme.textTheme.bodyMedium,
                       ),
-                      InkWell(
+                      KinlyTapTarget(
                         onTap: scope.actions.onOpenTerms,
+                        alignment: AlignmentDirectional.centerStart,
                         child: Text(
                           s.login_terms,
                           style: theme.textTheme.bodyMedium?.copyWith(
@@ -71,8 +74,9 @@ class WelcomeBody extends StatelessWidget {
                         s.login_consent_connector,
                         style: theme.textTheme.bodyMedium,
                       ),
-                      InkWell(
+                      KinlyTapTarget(
                         onTap: scope.actions.onOpenPrivacy,
+                        alignment: AlignmentDirectional.centerStart,
                         child: Text(
                           s.login_privacy,
                           style: theme.textTheme.bodyMedium?.copyWith(

@@ -102,13 +102,21 @@ class SupabaseNotificationsRepository implements NotificationsRepository {
       throw const AuthException("Missing authenticated user for token revoke.");
     }
 
-    final nowIso = DateTime.now().toUtc().toIso8601String();
+    final tokenRow =
+        await _client
+            .from('device_tokens')
+            .select('id')
+            .eq('token', deviceToken)
+            .eq('user_id', userId)
+            .maybeSingle();
 
-    await _client
-        .from('device_tokens')
-        .update({'status': 'revoked', 'updated_at': nowIso})
-        .eq('token', deviceToken)
-        .eq('user_id', userId);
+    final tokenId = tokenRow?['id'] as String?;
+    if (tokenId == null) return;
+
+    await _client.rpc(
+      'notifications_mark_token_status',
+      params: {'p_token_id': tokenId, 'p_status': 'revoked'},
+    );
   }
 
   Future<NotificationPreferences> _syncClientState({

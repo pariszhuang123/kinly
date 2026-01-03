@@ -11,16 +11,17 @@ import 'dart:io';
 ///   - S.of(context).key
 ///   - S.current.key
 ///   - context.l10n.key
-///   - context.strings.key              // ✅ optional (common extension naming)
+///   - context.strings.key              // optional (common extension naming)
+///   - scope.strings.key                // SurfaceScope/registry access
+///   - scope.l10n.key                    // SurfaceScope/registry access
 ///   - Aliases such as:
 ///       final s = S.of(context);
 ///       final S s = S.of(context);
 ///       final s = context.l10n;
 ///       final strings = context.strings;
 ///   - Injected localization instances:
-///       class Foo { final S strings; ... }  // ✅ now supports ANY variable name typed as S
-///       class Foo { final S s; ... }        // ✅ still supported
-///
+///       class Foo { final S strings; ... }  // supports ANY variable name typed as S
+///       class Foo { final S s; ... }        // still supported
 /// How “unused keys” can be false positives:
 /// - The checker is regex-based; if your project uses a different accessor name
 ///   or injects S with a different variable name, the scanner must recognize it.
@@ -226,12 +227,13 @@ Set<String> _extractAliases(String content) {
   // - late final s = context.l10n;
   // - var s = S.current;
   // - final strings = context.strings;
+  // - final s = scope.strings;
   //
   // Key improvement:
   // - Allows an OPTIONAL explicit type between final/var and the name.
-  // - Allows both context.l10n and context.strings.
+  // - Allows any "<identifier>.l10n" or "<identifier>.strings" source.
   final aliasPattern = RegExp(
-    r'\b(?:late\s+final|final|var|const|late)\s+(?:\w+\s+)?(\w+)\s*=\s*(?:S\.of\([^;]+?\)|S\.current|context\.(?:l10n|strings))\s*;',
+    r'\b(?:late\s+final|final|var|const|late)\s+(?:\w+\s+)?(\w+)\s*=\s*(?:S\.of\([^;]+?\)|S\.current|[A-Za-z_]\w*\.(?:l10n|strings))\s*;',
     multiLine: true,
     dotAll: true,
   );
@@ -342,7 +344,7 @@ final _referencePatterns = <RegExp>[
   RegExp(r'S\.of\([^)]*\)\s*\.\s*([A-Za-z0-9_]+)'),
   RegExp(r'S\.current\s*\.\s*([A-Za-z0-9_]+)'),
   RegExp(r'context\.l10n\s*\.\s*([A-Za-z0-9_]+)'),
-  RegExp(
-    r'context\.strings\s*\.\s*([A-Za-z0-9_]+)',
-  ), // ✅ supports your common extension naming
+  RegExp(r'context\.strings\s*\.\s*([A-Za-z0-9_]+)'),
+  RegExp(r'\b\w+\.l10n\s*\.\s*([A-Za-z0-9_]+)'),
+  RegExp(r'\b\w+\.strings\s*\.\s*([A-Za-z0-9_]+)'),
 ];

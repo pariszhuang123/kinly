@@ -269,7 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("Draft"),
     "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Flows are small agreements that help everyone stay aligned.",
+      "Flows keep everyone aligned.",
     ),
     "flowListEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Nothing here yet",

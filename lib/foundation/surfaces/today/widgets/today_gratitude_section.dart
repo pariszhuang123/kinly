@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/section_container.dart';
+import '../../../../core/ui/kinly_tap_target.dart';
 import '../../../../generated/l10n.dart';
 
 class TodayGratitudeSection extends StatelessWidget {
@@ -17,9 +18,9 @@ class TodayGratitudeSection extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return KinlyTapTarget(
       onTap: onTap,
+      alignment: AlignmentDirectional.centerStart,
       child: SectionContainer(
         title: s.todayGratitudeSectionTitle,
         colors: sections.pulse,

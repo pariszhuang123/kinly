@@ -12,6 +12,7 @@ import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/inputs/kinly_text_field.dart';
+import '../../../core/ui/kinly_tap_target.dart';
 import '../../../contracts/profile/models.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
@@ -330,7 +331,7 @@ class _AvatarOption extends StatelessWidget {
             : theme.colorScheme.outline.withValues(alpha: opacities.alphaScrim);
     return Material(
       color: Colors.transparent,
-      child: InkWell(
+      child: KinlyTapTarget(
         onTap: onTap,
         borderRadius: BorderRadius.circular(56),
         child: Container(

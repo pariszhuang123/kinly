@@ -15,6 +15,7 @@ import '../../../../../core/ui/kinly_tab_bar.dart';
 import '../../../../../core/ui/members/kinly_selectable_member_avatar_row.dart';
 import '../../../../../core/ui/feedback/kinly_info_banner.dart';
 import '../../../../../core/ui/enums/kinly_banner_type.dart';
+import '../../../../../core/ui/toggles/kinly_checkbox.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/theme/color_tokens.dart';
 import '../../../../../contracts/homes/models.dart';

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../../contracts/chores/models.dart';
@@ -25,6 +24,7 @@ class FlowChoreDetailView extends StatelessWidget {
     required this.onComplete,
     required this.completeButtonKey,
     this.currentUserId,
+    required this.storagePathResolver,
   });
 
   final FlowChoreDetailState state;
@@ -32,6 +32,7 @@ class FlowChoreDetailView extends StatelessWidget {
   final VoidCallback? onComplete;
   final GlobalKey completeButtonKey;
   final String? currentUserId;
+  final StoragePathResolver storagePathResolver;
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +62,10 @@ class FlowChoreDetailView extends StatelessWidget {
         (chore.howToVideoUrl?.trim().isNotEmpty == true
             ? chore.howToVideoUrl!.trim()
             : s.flowChoreDetailNoHowTo);
-    final expectationPhotoUrl = storagePathToPublicUrl(
-      Supabase.instance.client,
+    final expectationPhotoUrl = storagePathResolver.toPublicUrl(
       chore.expectationPhotoPath,
     );
-    final userId = currentUserId ?? Supabase.instance.client.auth.currentUser?.id;
+    final userId = currentUserId;
     final isAssignedToCurrentUser =
         chore.assigneeUserId != null &&
         userId != null &&

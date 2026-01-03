@@ -382,7 +382,7 @@
   "flowChoreDetailMoreInfoTitle": "Helpful context",
   "flowChoreExpectationPhotoLabel": "Reference photo",
   "flowListEmptyTitle": "Nothing here yet",
-  "flowListEmptySubtitle": "Flows are small agreements that help everyone stay aligned.",
+  "flowListEmptySubtitle": "Flows keep everyone aligned.",
   "flowListDraftLabel": "Draft",
   "flowListOverdueLabel": "Needs attention",
   "flowListError": "We couldn't load flows. Pull to refresh.",

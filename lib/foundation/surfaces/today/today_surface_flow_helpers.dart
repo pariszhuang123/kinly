@@ -18,24 +18,7 @@ Future<void> _openFlowChoreImpl(BuildContext context, {String? choreId}) async {
   if (choreId == null) {
     final result = await context.pushNamed(AppRouteNames.flowChoreCreate);
     if (!context.mounted) return;
-    if (result is FlowChoreOutcome) {
-      final s = S.of(context);
-      final accent = Theme.of(context).extension<KinlySections>()?.flow.accent;
-      if (result.isUpdate) {
-        KinlySnackBar.showSuccess(
-          context,
-          s.flowChoreUpdateSuccess,
-          accentColor: accent,
-        );
-      } else if (!result.isDeleted && !result.isCompleted) {
-        KinlySnackBar.showSuccess(
-          context,
-          s.flowChoreCreateSuccess,
-          accentColor: accent,
-        );
-      }
-      context.read<TodayBloc>().add(const TodayRefreshed());
-    }
+    _handleFlowChoreOutcome(context, result);
     return;
   }
 
@@ -44,24 +27,7 @@ Future<void> _openFlowChoreImpl(BuildContext context, {String? choreId}) async {
     pathParameters: {'choreId': choreId},
   );
   if (!context.mounted) return;
-  if (result is FlowChoreOutcome) {
-    final s = S.of(context);
-    final accent = Theme.of(context).extension<KinlySections>()?.flow.accent;
-    if (result.isUpdate) {
-      KinlySnackBar.showSuccess(
-        context,
-        s.flowChoreUpdateSuccess,
-        accentColor: accent,
-      );
-    } else if (!result.isDeleted && !result.isCompleted) {
-      KinlySnackBar.showSuccess(
-        context,
-        s.flowChoreCreateSuccess,
-        accentColor: accent,
-      );
-    }
-    context.read<TodayBloc>().add(const TodayRefreshed());
-  }
+  _handleFlowChoreOutcome(context, result);
 }
 
 Future<void> _openFlowChoreDetailImpl(
@@ -85,4 +51,24 @@ Future<void> _openFlowChoreDetailImpl(
     }
     context.read<TodayBloc>().add(const TodayRefreshed());
   }
+}
+
+void _handleFlowChoreOutcome(BuildContext context, Object? result) {
+  if (result is! FlowChoreOutcome) return;
+  final s = S.of(context);
+  final accent = Theme.of(context).extension<KinlySections>()?.flow.accent;
+  if (result.isUpdate) {
+    KinlySnackBar.showSuccess(
+      context,
+      s.flowChoreUpdateSuccess,
+      accentColor: accent,
+    );
+  } else if (!result.isDeleted && !result.isCompleted) {
+    KinlySnackBar.showSuccess(
+      context,
+      s.flowChoreCreateSuccess,
+      accentColor: accent,
+    );
+  }
+  context.read<TodayBloc>().add(const TodayRefreshed());
 }

@@ -3,7 +3,6 @@ class AppRouteNames {
   static const splash = 'splash';
   static const welcome = 'welcome';
   static const start = 'start';
-  static const create = 'create';
   static const join = 'join';
   static const joinBlocked = 'joinBlocked';
   static const joinWithCode = 'joinWithCode';

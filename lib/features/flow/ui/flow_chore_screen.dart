@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../contracts/chores/models.dart';
+import '../../../core/di/locator.dart';
 import '../../../core/supabase/storage_path_resolver.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/opacity.dart';
@@ -18,6 +18,7 @@ import '../../../core/ui/inputs/kinly_text_field.dart';
 import '../../../core/ui/kinly_date_picker.dart';
 import '../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/kinly_tap_target.dart';
 import '../../../core/ui/members/kinly_selectable_member_avatar_row.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
@@ -141,8 +142,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
           final spacing = theme.extension<Spacing>();
           final sections = theme.extension<KinlySections>();
           final SectionColors? flowColors = sections?.flow;
-          final expectationPhotoUrl = storagePathToPublicUrl(
-            Supabase.instance.client,
+          final expectationPhotoUrl = sl<StoragePathResolver>().toPublicUrl(
             state.form.expectationPhotoPath,
           );
 

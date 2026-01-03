@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../../core/platform/platform_info.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/kinly_loader.dart';
@@ -166,11 +165,11 @@ class NpsScreen extends StatelessWidget {
   }
 
   Uri? _destinationUri(BuildContext context, int score) {
-    if (Platform.isIOS) {
+    if (PlatformInfo.isIOS) {
       return KinlySupport.buildEmailUri(context, KinlySupportIntent.nps);
     }
 
-    if (Platform.isAndroid && score >= 9) {
+    if (PlatformInfo.isAndroid && score >= 9) {
       if (AppConfig.androidStoreUrl.isEmpty) return null;
       return Uri.parse(AppConfig.androidStoreUrl);
     }

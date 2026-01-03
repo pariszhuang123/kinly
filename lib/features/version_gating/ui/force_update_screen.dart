@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../../core/platform/platform_info.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
@@ -64,8 +63,8 @@ class ForceUpdateScreen extends StatelessWidget {
   }
 
   String get _storeUrl {
-    if (Platform.isIOS) return AppConfig.iosStoreUrl;
-    if (Platform.isAndroid) return AppConfig.androidStoreUrl;
+    if (PlatformInfo.isIOS) return AppConfig.iosStoreUrl;
+    if (PlatformInfo.isAndroid) return AppConfig.androidStoreUrl;
     return AppConfig.androidStoreUrl.isNotEmpty
         ? AppConfig.androidStoreUrl
         : AppConfig.iosStoreUrl;
