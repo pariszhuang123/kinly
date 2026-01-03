@@ -27,12 +27,6 @@ abstract class HomeRepository {
 
   Future<CurrentMembership?> getCurrentMembership({bool excludeSelf = false});
 
-  Future<List<HomeMemberSummary>> listMembers({
-    required String homeId,
-    bool activeOnly = false,
-    bool excludeSelf = false,
-  });
-
   Future<List<HomeMemberSummary>> listActiveMembers(
     String homeId, {
     bool excludeSelf = false,

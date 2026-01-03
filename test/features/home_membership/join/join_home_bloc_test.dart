@@ -23,19 +23,17 @@ class _FakeHomeRepository implements HomeRepository {
       Future.value(const HomeCreationResult(homeId: ''));
 
   @override
-  Future<HomeInvite> revokeInvite({required String homeId}) async =>
-      HomeInvite(
-        id: 'invite-1',
-        homeId: homeId,
-        code: 'code',
-        createdBy: 'user',
-        createdAt: DateTime(2024),
-      );
+  Future<HomeInvite> revokeInvite({required String homeId}) async => HomeInvite(
+    id: 'invite-1',
+    homeId: homeId,
+    code: 'code',
+    createdBy: 'user',
+    createdAt: DateTime(2024),
+  );
 
   @override
-  Future<HomeInvite> rotateInvite(String homeId) async => revokeInvite(
-        homeId: homeId,
-      );
+  Future<HomeInvite> rotateInvite(String homeId) async =>
+      revokeInvite(homeId: homeId);
 
   @override
   Future<HomeInvite> getActiveInvite(String homeId) {
@@ -54,20 +52,15 @@ class _FakeHomeRepository implements HomeRepository {
   }) async {}
 
   @override
-  Future<void> kickMember({required String homeId, required String userId}) async {}
+  Future<void> kickMember({
+    required String homeId,
+    required String userId,
+  }) async {}
 
   @override
   Future<LeaveResult> leave({required String homeId}) {
     throw UnimplementedError();
   }
-
-  @override
-  Future<List<HomeMemberSummary>> listMembers({
-    required String homeId,
-    bool activeOnly = false,
-    bool excludeSelf = false,
-  }) async =>
-      const <HomeMemberSummary>[];
 
   @override
   Future<List<HomeMemberSummary>> listActiveMembers(
@@ -83,10 +76,11 @@ class _FakeHomeRepository implements HomeRepository {
   }
 
   @override
-  Future<void> logShareEvent(
-    {required String feature,
+  Future<void> logShareEvent({
+    required String feature,
     required String channel,
-    required String homeId}) {
+    required String homeId,
+  }) {
     throw UnimplementedError();
   }
 
@@ -116,20 +110,21 @@ void main() {
           ..add(const JoinHomeCodeChanged('ABCDEF'))
           ..add(const JoinHomeSubmitted());
       },
-      expect: () => [
-        const JoinHomeState(code: 'ABCDEF', status: JoinHomeStatus.editing),
-        const JoinHomeState(
-          code: 'ABCDEF',
-          status: JoinHomeStatus.submitting,
-          errorType: null,
-          errorMessage: null,
-        ),
-        predicate<JoinHomeState>(
-          (state) =>
-              state.status == JoinHomeStatus.failure &&
-              state.errorType == JoinHomeErrorType.profileDeactivated,
-        ),
-      ],
+      expect:
+          () => [
+            const JoinHomeState(code: 'ABCDEF', status: JoinHomeStatus.editing),
+            const JoinHomeState(
+              code: 'ABCDEF',
+              status: JoinHomeStatus.submitting,
+              errorType: null,
+              errorMessage: null,
+            ),
+            predicate<JoinHomeState>(
+              (state) =>
+                  state.status == JoinHomeStatus.failure &&
+                  state.errorType == JoinHomeErrorType.profileDeactivated,
+            ),
+          ],
     );
   });
 }

@@ -30,16 +30,15 @@ class _FakeHomeRepository implements HomeRepository {
   Future<HomeJoinResult> joinHome(String code) => join(code);
 
   @override
-  Future<HomeInvite> revokeInvite({required String homeId}) =>
-      Future.value(
-        HomeInvite(
-          id: 'invite-1',
-          homeId: homeId,
-          code: 'code',
-          createdBy: 'user',
-          createdAt: DateTime(2024),
-        ),
-      );
+  Future<HomeInvite> revokeInvite({required String homeId}) => Future.value(
+    HomeInvite(
+      id: 'invite-1',
+      homeId: homeId,
+      code: 'code',
+      createdBy: 'user',
+      createdAt: DateTime(2024),
+    ),
+  );
 
   @override
   Future<HomeInvite> rotateInvite(String homeId) => getActiveInvite(homeId);
@@ -61,15 +60,14 @@ class _FakeHomeRepository implements HomeRepository {
   }) async {}
 
   @override
-  Future<LeaveResult> leave({required String homeId}) =>
-      Future.value(
-        LeaveResult(
-          outcome: LeaveOutcome.leftOk,
-          homeDeactivated: false,
-          membersRemaining: 1,
-          roleBefore: 'owner',
-        ),
-      );
+  Future<LeaveResult> leave({required String homeId}) => Future.value(
+    LeaveResult(
+      outcome: LeaveOutcome.leftOk,
+      homeDeactivated: false,
+      membersRemaining: 1,
+      roleBefore: 'owner',
+    ),
+  );
 
   @override
   Future<void> kickMember({required String homeId, required String userId}) {
@@ -77,19 +75,10 @@ class _FakeHomeRepository implements HomeRepository {
   }
 
   @override
-  Future<List<HomeMemberSummary>> listMembers({
-    required String homeId,
-    bool activeOnly = false,
-    bool excludeSelf = false,
-  }) async =>
-      const <HomeMemberSummary>[];
-
-  @override
   Future<List<HomeMemberSummary>> listActiveMembers(
     String homeId, {
     bool excludeSelf = false,
-  }) async =>
-      const <HomeMemberSummary>[];
+  }) async => const <HomeMemberSummary>[];
 
   @override
   Future<CurrentMembership?> getCurrentMembership({bool excludeSelf = false}) {
@@ -138,16 +127,7 @@ void main() {
     final theme = ThemeData(
       useMaterial3: true,
       extensions: const [
-        Spacing(
-          xxs: 2,
-          xs: 4,
-          s: 8,
-          m: 12,
-          l: 16,
-          xl: 24,
-          xxl: 32,
-          xxxl: 40,
-        ),
+        Spacing(xxs: 2, xs: 4, s: 8, m: 12, l: 16, xl: 24, xxl: 32, xxxl: 40),
       ],
     );
 
@@ -170,24 +150,23 @@ void main() {
     );
   }
 
-  testWidgets(
-    'disables create/join buttons when profile is deactivated',
-    (tester) async {
-      final startBloc = StartHomeBloc(
-        _FakeHomeRepository(),
-        onProfileDeactivated: () {},
-      );
+  testWidgets('disables create/join buttons when profile is deactivated', (
+    tester,
+  ) async {
+    final startBloc = StartHomeBloc(
+      _FakeHomeRepository(),
+      onProfileDeactivated: () {},
+    );
 
-      await tester.pumpWidget(app(const StartHomeScreen(), startBloc));
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(app(const StartHomeScreen(), startBloc));
+    await tester.pumpAndSettle();
 
-      final buttons = tester.widgetList<KinlyFilledButton>(
-        find.byType(KinlyFilledButton),
-      );
-      expect(buttons, hasLength(2));
-      for (final btn in buttons) {
-        expect(btn.onPressed, isNull);
-      }
-    },
-  );
+    final buttons = tester.widgetList<KinlyFilledButton>(
+      find.byType(KinlyFilledButton),
+    );
+    expect(buttons, hasLength(2));
+    for (final btn in buttons) {
+      expect(btn.onPressed, isNull);
+    }
+  });
 }

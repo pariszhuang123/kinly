@@ -169,12 +169,6 @@ Invite
           "can_transfer_to": "boolean"
         }
       }
-    },
-    "members.listByHome": {
-      "type": "rpc",
-      "caller": "member",
-      "status": "absent",
-      "notes": "Not present in DB; historical memberships RPC TBD."
     }
   },
   "rls": [
@@ -341,10 +335,6 @@ members.listActiveByHome(homeId)
 - Lists current members only (isCurrent = true).
  - DB Impl: `public.members_list_active_by_home`
 
-members.listByHome(homeId)
-- Lists all historical membership stints (current + past).
- - DB Impl: `public.members_list_by_home`
-
 membership.meCurrent()
 - Returns the caller's current membership details (homeId, role, validFrom) or null if not currently in a home.
  - DB Impl: `public.membership_me_current`
@@ -391,4 +381,3 @@ avatars.listForHome(homeId)
 
 ## Related
 - Migration: `supabase/migrations/20251111225015_home_membership_invites_table.sql`
-

@@ -115,27 +115,6 @@ class SupabaseHomeRepository implements HomeRepository {
   }
 
   @override
-  Future<List<HomeMemberSummary>> listMembers({
-    required String homeId,
-    bool activeOnly = false,
-    bool excludeSelf = false,
-  }) async {
-    try {
-      final response = await _client.rpc(
-        'members_list_by_home',
-        params: {'p_home_id': homeId, 'p_exclude_self': excludeSelf},
-      );
-      var members = _mapMembers(response);
-      if (excludeSelf) {
-        members = await _excludeSelf(members);
-      }
-      return activeOnly ? _onlyActive(members) : members;
-    } catch (error) {
-      rethrow;
-    }
-  }
-
-  @override
   Future<List<HomeMemberSummary>> listActiveMembers(
     String homeId, {
     bool excludeSelf = false,
@@ -271,6 +250,4 @@ class SupabaseHomeRepository implements HomeRepository {
         .toList(growable: false);
   }
 
-  List<HomeMemberSummary> _onlyActive(List<HomeMemberSummary> members) =>
-      members.where((m) => m.role.isNotEmpty).toList(growable: false);
 }

@@ -57,60 +57,60 @@ Entities:
     deactivatedAt       // set when last active member leaves
   }
 
-- Member {
-    id,
+- Membership {
+    id,                 // unique stint id
     userId,
     homeId,
     role (owner|member),
+    validFrom,          // inclusive start
+    validTo,            // exclusive end; NULL = current
+    isCurrent,          // derived in DB; exposed to clients
     createdAt,
-    updatedAt,
-    leftAt              // NULL = active membership; timestamp = user left this home
+    updatedAt
   }
 
 - Invite {
     id,
     homeId,
-    code,               // UNIQUE
-    createdBy,
-    createdAt,
-    updatedAt,
+    code,               // UNIQUE (CITEXT; Crockford Base32, 6 chars)
     revokedAt           // NULL = active; set if owner rotates/revokes
+    usedCount,          // total times used (analytics)
+    createdAt,
     // Valid iff: home.isActive = true AND revokedAt IS NULL
   }
 
 - homes.create()
-  → Creates a home; caller becomes owner & active member. Returns `{ home: { id } }`.
+  -> Creates a home; caller becomes owner & current member. Returns `{ home: { id } }`.
 
-- invites.getOrCreate(homeId)
-  → Returns the current active invite for the home, or creates one if none exists.
+- invites.get_active(homeId)
+  -> Returns the current active invite for the home.
   (No ttl/maxUses; permanent until revoked or home deactivated.)
 
 - invites.revoke(homeId)
-  → Revokes the current invite (for manual rotation). Optional but useful.
+  -> Revokes the current invite (for manual rotation). Optional but useful.
 
 - homes.join(code)
-  → Joins the home for the caller using invite code.
+  -> Joins the home for the caller using invite code.
   Guards:
     - home.isActive = true
     - invite.revokedAt IS NULL
-    - user has no other active membership (unique index enforces)
+    - user has no other current membership (unique index enforces)
 
 - homes.transferOwner(homeId, newOwnerId)
-  → Transfers ownership (both users must be active members).
+  -> Transfers ownership (both users must be current members).
 
 - homes.leave(homeId)
-  → Sets member.leftAt = now() for caller.
-  If that was the last active member:
+  -> Closes caller's current membership stint (validTo = now()).
+  If that was the last current member:
     - home.isActive = false
     - home.deactivatedAt = now()
 
 - members.listActiveByHome(homeId)
-  → Lists active members only (leftAt IS NULL).
+  -> Lists current members only (isCurrent = true).
 
-- members.listByHome(homeId)
-  → Lists all historical memberships (active + past).
 
-Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: none (read‑through). Performance: TTI ≤ 1.5s; join p95 ≤ 400 ms.
+Client access: via repositories only (no direct Supabase in UI/BLoC). Offline: none (read-through). Performance: TTI <= 1.5s; join p95 <= 400 ms.
+
 
 ## Workflow
 - Work verticals per feature: Data model/contract → Repository → BLoC → UI → Tests → DoD artifacts.

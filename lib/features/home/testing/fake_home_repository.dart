@@ -67,23 +67,6 @@ class FakeHomeRepository implements HomeRepository {
   }
 
   @override
-  Future<List<HomeMemberSummary>> listMembers({
-    required String homeId,
-    bool activeOnly = false,
-    bool excludeSelf = false,
-  }) async {
-    final filtered =
-        excludeSelf && currentMembership != null
-            ? _members
-                .where((m) => m.userId != currentMembership!.userId)
-                .toList()
-            : List<HomeMemberSummary>.from(_members);
-    return activeOnly
-        ? filtered.where((m) => m.role.isNotEmpty).toList()
-        : filtered;
-  }
-
-  @override
   Future<List<HomeMemberSummary>> listActiveMembers(
     String homeId, {
     bool excludeSelf = false,

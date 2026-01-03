@@ -49,7 +49,7 @@ Tracks versioned contract changes and related ADRs.
   - 2025-12-27: Fold recurring activation into `expenses.create`/`expenses.edit`, add `expense_plans` + `expense_plan_debtors`, introduce `expense_status=converted` and `expense_plan_status`, add `expenses.payMyDue` bulk payment, make active expenses immutable, store `fully_paid_at` for idempotent quota decrements, and update `docs/contracts/share_recurring_v1.md`.
 - Notes: Home members can author expenses; drafts stay private; Today/Explore surfaces consume the summary RPCs.
 
-## v2 — Homes Memberships/Invites Alignment
+## v2 – Homes Memberships/Invites Alignment
 - Date: 2025-11-11
 - Scope: `docs/contracts/homes_v2.md`
 - Changes:
@@ -57,6 +57,7 @@ Tracks versioned contract changes and related ADRs.
   - Enforce: one current membership per user across homes; one current owner per home; no overlap per (user, home).
   - Invites: `code` is `CITEXT` with Crockford Base32 (6 chars) and added `usedCount`; removed `updatedAt`.
   - RLS: enabled on `homes`, `memberships`, and `invites`; anon/auth revoked on tables.
+  - Deprecate `members.listByHome` in favor of `members.listActiveByHome` (only active members are used by clients).
 - Notes: Contracts reflect migration `20251111225015_home_membership_invites_table.sql`. Repositories should pin to v2.
 
 ## v1 — Home MVP
