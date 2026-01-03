@@ -1,5 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -14,6 +14,13 @@ import '../../../../core/ui/kinly_time_picker.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../core/time/iana_timezone_resolver.dart';
 import '../bloc/connection_settings_bloc.dart';
+import '../../../../core/ui/kinly_scaffold.dart';
+import '../../../../core/ui/kinly_app_bar.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
+import '../../../../core/ui/kinly_icons.dart';
+import '../../../../core/ui/kinly_switch.dart';
+import '../../../../core/ui/kinly_divider.dart';
+import '../../../../core/ui/kinly_time_types.dart';
 
 class ConnectionSettingsScreen extends StatefulWidget {
   const ConnectionSettingsScreen({super.key});
@@ -33,7 +40,7 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
   Future<void> _start() async {
     final ctx = context;
     final locale = Localizations.localeOf(ctx).toLanguageTag();
-    final platform = Theme.of(ctx).platform.name;
+    final platform = KinlyThemeAccess.of(ctx).platform.name;
     final timezone = await sl<IanaTimezoneResolver>().resolve();
     String? deviceToken;
     try {
@@ -54,15 +61,15 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>()!;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
     final s = S.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(s.connectionSettingsTitle)),
+    return KinlyScaffold(
+      appBar: KinlyAppBar(title: Text(s.connectionSettingsTitle)),
       body: BlocConsumer<ConnectionSettingsBloc, ConnectionSettingsState>(
         listener: (context, state) async {
           final accent =
-              Theme.of(context).extension<KinlySections>()?.pulse.accent;
+              KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
           if (state.action == ConnectionSettingsAction.showError) {
             KinlySnackBar.showError(
               context,
@@ -120,7 +127,7 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
             children: [
               Text(
                 s.connectionSettingsSubtitle,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: KinlyThemeAccess.of(context).textTheme.bodyMedium,
               ),
               SizedBox(height: spacing.md),
               KinlySettingsCard(
@@ -140,7 +147,7 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                             children: [
                               Text(
                                 s.connectionNotificationsToggleTitle,
-                                style: Theme.of(context).textTheme.titleMedium
+                                style: KinlyThemeAccess.of(context).textTheme.titleMedium
                                     ?.copyWith(fontWeight: FontWeight.w600),
                               ),
                               SizedBox(height: spacing.xs),
@@ -148,11 +155,11 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                                 state.wantsDaily
                                     ? s.connectionNotificationsToggleSubtitleOn
                                     : s.connectionNotificationsToggleSubtitleOff,
-                                style: Theme.of(
+                                style: KinlyThemeAccess.of(
                                   context,
                                 ).textTheme.bodyMedium?.copyWith(
                                   color:
-                                      Theme.of(
+                                      KinlyThemeAccess.of(
                                         context,
                                       ).colorScheme.onSurfaceVariant,
                                 ),
@@ -160,7 +167,7 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                             ],
                           ),
                         ),
-                        Switch.adaptive(
+                        KinlySwitch.adaptive(
                           value: state.wantsDaily,
                           onChanged:
                               state.isSavingToggle
@@ -187,14 +194,14 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                       ),
                       child: Text(
                         s.connectionNotificationsPermissionBlocked,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        style: KinlyThemeAccess.of(context).textTheme.bodySmall?.copyWith(
+                          color: KinlyThemeAccess.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
                   ],
                   if (state.canEditTime) ...[
-                    const Divider(height: 0),
+                    const KinlyDivider(height: 0),
                     KinlyListTile(
                       contentPadding: EdgeInsetsDirectional.fromSTEB(
                         spacing.l,
@@ -213,10 +220,10 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                                 height: 20,
                                 child: KinlyLoader(
                                   size: 18,
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: KinlyThemeAccess.of(context).colorScheme.primary,
                                 ),
                               )
-                              : const Icon(Icons.chevron_right),
+                                : Icon(KinlyIcons.chevronRight),
                       onTap:
                           state.isSavingTime
                               ? null
@@ -271,3 +278,7 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
     );
   }
 }
+
+
+
+

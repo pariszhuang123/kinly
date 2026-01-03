@@ -1,5 +1,5 @@
 // lib/features/today/presentation/pages/widgets/today_add_sheet.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/theme/kinly_sections.dart';
@@ -7,6 +7,7 @@ import '../../../../../core/theme/section_assets.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/ui/kinly_bottom_sheet.dart';
 import '../../../../../core/ui/kinly_list_tile.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class TodayAddSheet extends StatelessWidget {
   final KinlySections sections;
@@ -41,7 +42,7 @@ class TodayAddSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
@@ -81,3 +82,7 @@ class TodayAddSheet extends StatelessWidget {
     );
   }
 }
+
+
+
+

@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../share/share.dart';
 import '../../../generated/l10n.dart';
 import '../../../contracts/share/models.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 class ShareOwedDetailScreen extends StatefulWidget {
   const ShareOwedDetailScreen({
@@ -26,14 +29,14 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
   @override
   Widget build(BuildContext context) {
     ShareOwedDetailRegistry.bootstrap();
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
     final hasItems = widget.owed.items.isNotEmpty;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(s.shareOwedDetailTitle)),
+    return KinlyScaffold(
+      appBar: KinlyAppBar(title: Text(s.shareOwedDetailTitle)),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsetsDirectional.all(spacing.lg),
@@ -115,3 +118,7 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     );
   }
 }
+
+
+
+

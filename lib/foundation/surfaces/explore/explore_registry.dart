@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../core/theme/section_assets.dart';
 import '../../../core/ui/kinly_selection_card.dart';
 import 'explore_slots.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 typedef ExploreSectionBuilder = Widget Function(ExploreSurfaceScope scope);
 
@@ -54,7 +55,7 @@ class ExploreRegistry {
         order: 10,
         spacingAfter: ExploreSectionSpacing.lg,
         builder: (scope) {
-          final theme = Theme.of(scope.context);
+          final theme = KinlyThemeAccess.of(scope.context);
           return Text(
             scope.strings.exploreIntroSubtitle,
             style: theme.textTheme.bodyMedium?.copyWith(
@@ -109,3 +110,7 @@ class ExploreRegistry {
     );
   }
 }
+
+
+
+

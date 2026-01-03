@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/color_tokens.dart';
@@ -9,10 +9,12 @@ import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/kinly_list_tile.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
+import '../../../../core/ui/kinly_material.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../contracts/share/models.dart';
 import '../share_paid_to_me_detail_models.dart';
 import '../share_period_label.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class SharePaidToMeDetailBody extends StatelessWidget {
   const SharePaidToMeDetailBody({
@@ -34,13 +36,13 @@ class SharePaidToMeDetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final backgroundColor = KinlyThemeAccess.of(context).scaffoldBackgroundColor;
     final bottomScrollPad = spacing.lg + spacing.xl + spacing.lg;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Material(
+        KinlyMaterial(
           color: backgroundColor,
           child: _Header(entry: entry),
         ),
@@ -64,10 +66,10 @@ class SharePaidToMeDetailBody extends StatelessWidget {
                       child: Center(
                         child: Text(
                           error!,
-                          style: Theme.of(
+                          style: KinlyThemeAccess.of(
                             context,
                           ).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.error,
+                            color: KinlyThemeAccess.of(context).colorScheme.error,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -85,9 +87,9 @@ class SharePaidToMeDetailBody extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final item = items[index];
                         final typography =
-                            Theme.of(context).extension<KinlyTypography>();
+                            KinlyThemeAccess.of(context).extension<KinlyTypography>();
                         final colors =
-                            Theme.of(context).extension<KinlyColorTokens>();
+                            KinlyThemeAccess.of(context).extension<KinlyColorTokens>();
                         final periodLabel = sharePeriodLabel(
                           recurrence: item.recurrenceInterval,
                           startDate: item.startDate,
@@ -100,7 +102,7 @@ class SharePaidToMeDetailBody extends StatelessWidget {
                           trailing: Text(
                             item.formattedAmount,
                             style: (typography?.titleSmall ??
-                                    Theme.of(context).textTheme.titleSmall)
+                                    KinlyThemeAccess.of(context).textTheme.titleSmall)
                                 ?.copyWith(color: colors?.onSurface),
                           ),
                         );
@@ -126,8 +128,8 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>()!;
-    final colors = Theme.of(context).extension<KinlySections>()?.share;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
+    final colors = KinlyThemeAccess.of(context).extension<KinlySections>()?.share;
     final hasUnseen = entry.unseenCount > 0;
     final totalPaidFormatted =
         NumberFormat.simpleCurrency(decimalDigits: 2)
@@ -146,7 +148,7 @@ class _Header extends StatelessWidget {
           children: [
             Text(
               entry.debtorUsername,
-              style: Theme.of(
+              style: KinlyThemeAccess.of(
                 context,
               ).textTheme.titleMedium?.copyWith(color: colors?.icon),
             ),
@@ -154,14 +156,14 @@ class _Header extends StatelessWidget {
               hasUnseen
                   ? S.of(context).todaySharePaidUnseen(entry.unseenCount)
                   : S.of(context).todaySharePaidSubtitle,
-              style: Theme.of(context).textTheme.bodySmall,
+              style: KinlyThemeAccess.of(context).textTheme.bodySmall,
             ),
           ],
         ),
         const Spacer(),
         Text(
           totalPaidFormatted,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          style: KinlyThemeAccess.of(context).textTheme.titleMedium?.copyWith(
             color: colors?.icon,
             fontWeight: FontWeight.w700,
           ),
@@ -170,3 +172,7 @@ class _Header extends StatelessWidget {
     );
   }
 }
+
+
+
+

@@ -1,5 +1,5 @@
 // lib/features/hub/ui/hub_members_section.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_add_tile_button.dart';
@@ -8,6 +8,8 @@ import '../../../../core/ui/members/kinly_member_avatar_stack.dart';
 import '../../../../generated/l10n.dart';
 import '../bloc/hub_bloc.dart';
 import '../../../../core/theme/kinly_sections.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
+import '../../../../core/ui/kinly_icons.dart';
 
 class HubMembersSection extends StatelessWidget {
   const HubMembersSection({
@@ -28,7 +30,7 @@ class HubMembersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>()!;
@@ -60,7 +62,7 @@ class HubMembersSection extends StatelessWidget {
                 SizedBox(width: spacing.sm),
                 KinlyOutlinedButton.icon(
                   onPressed: onRotateInvite!,
-                  icon: Icons.refresh,
+                  icon: KinlyIcons.refresh,
                   label: s.hubRotateInvite,
                   compact: true,
                 ),
@@ -135,3 +137,7 @@ class _AddMemberTile extends StatelessWidget {
     );
   }
 }
+
+
+
+

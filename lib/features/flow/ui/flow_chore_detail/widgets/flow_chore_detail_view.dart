@@ -1,5 +1,5 @@
 // lib/features/flow/ui/widgets/flow_chore_detail_view.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,6 +15,7 @@ import '../../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../bloc/flow_chore_detail_bloc.dart';
 import 'flow_chore_core_info_section.dart';
 import 'flow_chore_extras_section.dart';
+import '../../../../../core/ui/kinly_theme_access.dart';
 
 class FlowChoreDetailView extends StatelessWidget {
   const FlowChoreDetailView({
@@ -36,7 +37,7 @@ class FlowChoreDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
 
     if (state.isLoading) {
@@ -145,7 +146,7 @@ class _FlowDetailError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -204,7 +205,7 @@ class _CompletionButton extends StatelessWidget {
                 height: 18,
                 child: KinlyLoader(
                   size: 18,
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  color: KinlyThemeAccess.of(context).colorScheme.onPrimary,
                 ),
               ),
             ),
@@ -260,3 +261,7 @@ String? _resolveAssignee(BuildContext context, ChoreDetails details) {
 
   return summary.fullName ?? S.of(context).friendDefaultName;
 }
+
+
+
+

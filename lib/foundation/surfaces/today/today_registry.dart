@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'today_slots.dart';
 import 'widgets/today_flow_section/today_flow_section_container.dart';
@@ -156,3 +156,5 @@ Widget _buildInvitePrompt(TodaySurfaceScope scope) {
     onSecondary: config.isFlatmate ? scope.actions.onInviteSecondary : null,
   );
 }
+
+

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
@@ -45,3 +45,4 @@ class ExploreSurfaceScope {
   final S strings;
   final ExploreSurfaceActions actions;
 }
+

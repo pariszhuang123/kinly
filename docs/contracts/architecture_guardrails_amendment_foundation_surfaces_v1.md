@@ -75,6 +75,13 @@ Phase 1 (now):
 Phase 2 (after route name migration):
 - Enforce named-route usage only.
 
+#### 3.3 Design System boundary (hard)
+Design System rules are enforced by the umbrella contract:
+`kinly_design_system_v1.md`.
+
+Hard rule:
+- `package:flutter/material.dart` imports are allowed only under `lib/renderer/**`.
+
 ### 4) Dependency direction rules (hard)
 
 #### 4.1 Foundation surfaces must not depend on features (hard)

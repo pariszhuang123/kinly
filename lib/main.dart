@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -22,7 +21,6 @@ import 'app/router/app_router.dart';
 import 'app/router/go_router_refresh_stream.dart';
 import 'core/network/connectivity_monitor.dart';
 import 'core/supabase/supabase_init.dart';
-import 'core/theme/kinly_theme.dart';
 import 'core/logging/logger.dart';
 import 'core/logging/debug_logger.dart';
 import 'contracts/app_version/ports/app_version_repository.dart';
@@ -38,6 +36,8 @@ import 'features/version_gating/bloc/app_version_cubit.dart';
 import 'generated/l10n.dart';
 import 'core/ui/kinly_loader.dart';
 import 'core/time/iana_timezone_resolver.dart';
+import 'core/ui/kinly_scaffold.dart';
+import 'renderer/material/kinly_app.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -230,22 +230,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         BlocProvider.value(value: _appVersionCubit),
         BlocProvider.value(value: _connectivityCubit),
       ],
-      child: MaterialApp.router(
-        onGenerateTitle: (context) => S.of(context).app_title,
+      child: KinlyApp(
         routerConfig: _router,
         builder: (context, child) {
           final resolvedChild = child ?? const _RouterInitializingFallback();
           return ConnectivityGate(child: resolvedChild);
         },
-        theme: buildKinlyTheme(Brightness.light),
-        darkTheme: buildKinlyTheme(Brightness.dark),
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
       ),
     );
   }
@@ -435,7 +425,7 @@ class _RouterInitializingFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return KinlyScaffold(
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

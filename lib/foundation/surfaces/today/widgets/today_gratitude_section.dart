@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/section_container.dart';
 import '../../../../core/ui/kinly_tap_target.dart';
+import '../../../../core/ui/kinly_icons.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class TodayGratitudeSection extends StatelessWidget {
   const TodayGratitudeSection({super.key, required this.onTap});
@@ -13,7 +15,7 @@ class TodayGratitudeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final sections = theme.extension<KinlySections>()!;
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
@@ -41,7 +43,7 @@ class TodayGratitudeSection extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 4),
-                const Icon(Icons.arrow_forward_rounded, size: 16),
+                Icon(KinlyIcons.arrowForwardRounded, size: 16),
               ],
             ),
           ],
@@ -50,3 +52,7 @@ class TodayGratitudeSection extends StatelessWidget {
     );
   }
 }
+
+
+
+

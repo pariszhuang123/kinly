@@ -1,16 +1,1 @@
-import 'package:flutter/material.dart';
-
-import 'package:kinly/contracts/share/models.dart';
-
-abstract class ShareNavigation {
-  Future<bool?> openOwedDetail({
-    required BuildContext context,
-    required TodayShareOwed owed,
-  });
-
-  Future<bool?> openPaidToMeDetail({
-    required BuildContext context,
-    required TodaySharePaidToMe entry,
-    required String homeId,
-  });
-}
+export '../../../renderer/material/ui/navigation/share_navigation.dart';

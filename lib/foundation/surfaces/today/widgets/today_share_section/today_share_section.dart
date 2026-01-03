@@ -1,5 +1,5 @@
 // lib/features/today/ui/widgets/today_share_section.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/theme/kinly_sections.dart';
@@ -15,6 +15,7 @@ import '../../../../../generated/l10n.dart';
 import '../../domain/models.dart';
 import '../../../../../core/theme/section_assets.dart';
 import '../today_section_tabs.dart';
+import '../../../../../core/ui/kinly_theme_access.dart';
 
 class TodayShareSection extends StatefulWidget {
   const TodayShareSection({
@@ -81,7 +82,7 @@ class _TodayShareSectionState extends State<TodayShareSection> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final sections = theme.extension<KinlySections>()!;
     final spacing = theme.extension<Spacing>();
     final s = S.of(context);
@@ -193,7 +194,7 @@ class _OwedList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>()!;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
     final s = S.of(context);
 
     return Column(
@@ -213,7 +214,7 @@ class _OwedList extends StatelessWidget {
             subtitle: s.todayShareActiveSubtitle(entry.items.length),
             trailing: Text(
               _formatCurrency(entry.totalOwedCents),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              style: KinlyThemeAccess.of(context).textTheme.titleSmall?.copyWith(
                 color: colors.icon,
                 fontWeight: FontWeight.w700,
               ),
@@ -241,7 +242,7 @@ class _PaidToMeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>()!;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
 
     return Column(
       children: List.generate(entries.length, (index) {
@@ -263,7 +264,7 @@ class _PaidToMeList extends StatelessWidget {
             subtitle: subtitle,
             trailing: Text(
               _formatCurrency(entry.totalPaidCents),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              style: KinlyThemeAccess.of(context).textTheme.titleSmall?.copyWith(
                 color: colors.icon,
                 fontWeight: FontWeight.w700,
               ),
@@ -293,7 +294,7 @@ class _DraftList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>()!;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
     final s = strings ?? S.of(context);
     const maxVisible = 3;
     final visibleDrafts = drafts.take(maxVisible).toList(growable: false);
@@ -305,7 +306,7 @@ class _DraftList extends StatelessWidget {
             title: visibleDrafts[i].description,
             trailing: Text(
               _formatCurrency(visibleDrafts[i].amountCents),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              style: KinlyThemeAccess.of(context).textTheme.titleSmall?.copyWith(
                 color: colors.icon,
                 fontWeight: FontWeight.w700,
               ),
@@ -345,4 +346,8 @@ String _replaceCountPlaceholder(String text, String replacement) {
       ? text.replaceFirst(pattern, replacement)
       : '$text ($replacement)';
 }
+
+
+
+
 

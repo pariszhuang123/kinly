@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'share_paid_to_me_detail_surface_contract.dart';
 import 'widgets/share_paid_to_me_detail_body.dart';
@@ -59,3 +59,4 @@ class SharePaidToMeDetailRegistry {
     );
   }
 }
+

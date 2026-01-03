@@ -17,7 +17,7 @@ class _ExpectationPhotoPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final hasPhoto = photoUrl?.trim().isNotEmpty == true;
 
@@ -53,7 +53,7 @@ class _ExpectationPhotoPicker extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            Icons.photo_camera_outlined,
+                            KinlyIcons.photoCameraOutlined,
                             size: 32,
                             color: colorScheme.onSurfaceVariant,
                           ),
@@ -71,8 +71,11 @@ class _ExpectationPhotoPicker extends StatelessWidget {
           if (isUploading)
             Container(
               decoration: BoxDecoration(
-                color: Colors.black.withValues(
-                  alpha: Theme.of(context).extension<KinlyOpacity>()!.alphaHalo,
+                color: colorScheme.onSurface.withValues(
+                  alpha:
+                      KinlyThemeAccess.of(context)
+                          .extension<KinlyOpacity>()!
+                          .alphaHalo,
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -96,3 +99,4 @@ class _ExpectationPhotoPicker extends StatelessWidget {
     );
   }
 }
+

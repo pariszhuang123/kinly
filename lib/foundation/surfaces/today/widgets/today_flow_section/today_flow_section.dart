@@ -1,5 +1,5 @@
 // lib/features/today/ui/widgets/today_flow_section.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../../core/theme/kinly_sections.dart';
 import '../../../../../core/theme/spacing.dart';
@@ -7,12 +7,14 @@ import '../../../../../core/ui/section_container.dart';
 import '../../../../../core/ui/kinly_list_tile.dart';
 import '../../../../../core/ui/kinly_tab_bar.dart';
 import '../../../../../core/ui/buttons/kinly_outlined_button.dart';
+import '../../../../../core/ui/kinly_icons.dart';
 import '../../../../../generated/l10n.dart';
 import '../../domain/models.dart';
 import 'package:kinly/contracts/flow/enums/flow_list_filter.dart';
 import '../../../../../core/theme/section_assets.dart';
 import '../today_section_tabs.dart';
 import '../../../../../core/ui/badges/kinly_badge.dart';
+import '../../../../../core/ui/kinly_theme_access.dart';
 
 class TodayFlowSection extends StatefulWidget {
   const TodayFlowSection({
@@ -71,7 +73,7 @@ class _TodayFlowSectionState extends State<TodayFlowSection> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final sections = theme.extension<KinlySections>()!;
     final spacing = theme.extension<Spacing>();
     final s = S.of(context);
@@ -247,10 +249,10 @@ class _TaskList extends StatelessWidget {
                     label: s.todayFlowBadgeNew,
                     accentColor: colors.accent,
                   ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(
-                    alpha: 0.7,
+                  Icon(
+                    KinlyIcons.chevronRightRounded,
+                    color: KinlyThemeAccess.of(context).colorScheme.onSurface.withValues(
+                      alpha: 0.7,
                   ),
                 ),
               ],
@@ -297,4 +299,8 @@ String _replaceCountPlaceholder(String text, String replacement) {
       ? text.replaceFirst(pattern, replacement)
       : '$text ($replacement)';
 }
+
+
+
+
 

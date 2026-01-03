@@ -1,10 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../share/share.dart';
 import '../../../generated/l10n.dart';
 import '../../../contracts/share/models.dart';
 import 'share_paid_to_me_detail_models.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 class SharePaidToMeDetailScreen extends StatefulWidget {
   const SharePaidToMeDetailScreen({
@@ -90,11 +93,11 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
   Widget build(BuildContext context) {
     SharePaidToMeDetailRegistry.bootstrap();
     final s = S.of(context);
-    final spacing = Theme.of(context).extension<Spacing>()!;
-    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
+    final backgroundColor = KinlyThemeAccess.of(context).scaffoldBackgroundColor;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(s.todayShareTabPaidToMe)),
+    return KinlyScaffold(
+      appBar: KinlyAppBar(title: Text(s.todayShareTabPaidToMe)),
       bottomNavigationBar: SafeArea(
         top: false,
         child: Container(
@@ -112,8 +115,8 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
               if (_acknowledgeError != null) ...[
                 Text(
                   _acknowledgeError!,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
+                  style: KinlyThemeAccess.of(context).textTheme.bodySmall?.copyWith(
+                    color: KinlyThemeAccess.of(context).colorScheme.error,
                   ),
                 ),
                 SizedBox(height: spacing.sm),
@@ -169,3 +172,7 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
     );
   }
 }
+
+
+
+

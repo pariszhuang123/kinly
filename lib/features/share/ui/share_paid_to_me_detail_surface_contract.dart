@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../core/theme/spacing.dart';
 import '../../../generated/l10n.dart';
@@ -40,3 +40,4 @@ class SharePaidToMeDetailSurfaceScope {
   final bool isLoading;
   final String? error;
 }
+

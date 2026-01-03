@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kinly/core/di/locator.dart';
@@ -11,6 +11,11 @@ import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/contracts/auth/ports/auth_repository.dart';
 import 'package:kinly/features/paywall/paywall.dart';
 import '../bloc/paywall_bloc.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
+import '../../../core/ui/kinly_theme_access.dart';
+import '../../../core/ui/kinly_icon_button.dart';
+import '../../../core/ui/kinly_icons.dart';
 
 class KinlyPaywallScreen extends StatelessWidget {
   const KinlyPaywallScreen({
@@ -43,7 +48,7 @@ class KinlyPaywallScreen extends StatelessWidget {
           )..add(PaywallStarted(source: source, triggers: triggers)),
       child: Builder(
         builder: (context) {
-          final theme = Theme.of(context);
+          final theme = KinlyThemeAccess.of(context);
           final typography = theme.extension<KinlyTypography>()!;
           PaywallRegistry.bootstrap();
           final orderedBenefits = orderPaywallBenefits(
@@ -56,8 +61,8 @@ class KinlyPaywallScreen extends StatelessWidget {
             Navigator.of(context).pop(false);
           }
 
-          return Scaffold(
-            appBar: AppBar(
+          return KinlyScaffold(
+            appBar: KinlyAppBar(
               title: Text(
                 strings.title,
                 style: typography.titleSmall.copyWith(
@@ -68,9 +73,9 @@ class KinlyPaywallScreen extends StatelessWidget {
               ),
               automaticallyImplyLeading: false,
               actions: [
-                IconButton(
+                KinlyIconButton(
                   tooltip: strings.secondaryCta,
-                  icon: const Icon(Icons.close_rounded),
+                  icon: KinlyIcons.closeRounded,
                   onPressed: handleDismiss,
                 ),
               ],
@@ -224,3 +229,7 @@ List<String> orderPaywallBenefits({
 
   return [...primaryBenefits, ...secondaryBenefits];
 }
+
+
+
+

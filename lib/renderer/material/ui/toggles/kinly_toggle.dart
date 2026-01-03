@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+import 'kinly_checkbox.dart';
+import '../../theme/kinly_palette.dart';
+import '../../theme/color_tokens.dart';
+import '../../theme/opacity.dart';
+
+/// Kinly-styled toggle row: checkbox + title + optional subtitle.
+/// Design-system "molecule" built on top of KinlyCheckbox.
+///
+/// Use for settings, sharing options, mood screens, etc.
+class KinlyToggle extends StatelessWidget {
+  const KinlyToggle({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    required this.title,
+    this.subtitle,
+    this.visible = true,
+    this.semanticsLabel,
+  });
+
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final String title;
+  final String? subtitle;
+  final bool visible;
+
+  final String? semanticsLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!visible) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    final tokens =
+        theme.extension<KinlyColorTokens>() ??
+        KinlyPalette.build(theme.brightness).colorTokens;
+    final opacities = theme.extension<KinlyOpacity>()!;
+
+    final titleStyle = theme.textTheme.bodyLarge?.copyWith(
+      color: tokens.onSurface,
+    );
+
+    final subtitleStyle = theme.textTheme.bodyMedium?.copyWith(
+      color: tokens.onSurface.withValues(alpha: opacities.alphaFaintStrong),
+    );
+
+    final toggleRow = InkWell(
+      onTap: () => onChanged(!value),
+      borderRadius: BorderRadius.circular(8),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            KinlyCheckbox(value: value, onChanged: onChanged),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: titleStyle),
+                  if (subtitle != null) Text(subtitle!, style: subtitleStyle),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return Semantics(
+      container: true,
+      button: true,
+      enabled: true,
+      toggled: value,
+      label: semanticsLabel ?? title,
+      child: toggleRow,
+    );
+  }
+}

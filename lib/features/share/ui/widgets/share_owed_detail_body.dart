@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/kinly_sections.dart';
@@ -9,9 +9,11 @@ import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../../../core/ui/kinly_tap_target.dart';
+import '../../../../core/ui/kinly_material.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../contracts/share/models.dart';
 import '../share_period_label.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class ShareOwedDetailBody extends StatelessWidget {
   const ShareOwedDetailBody({
@@ -35,7 +37,7 @@ class ShareOwedDetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,7 +80,7 @@ class _ShareOwedHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
 
     return Row(
@@ -115,7 +117,7 @@ class _ShareOwedEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
 
     return Center(
       child: Text(
@@ -155,8 +157,8 @@ class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
   @override
   Widget build(BuildContext context) {
     final strings = S.of(context);
-    final spacing = Theme.of(context).extension<Spacing>()!;
-    final sectionColors = Theme.of(context).extension<KinlySections>()!.share;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
+    final sectionColors = KinlyThemeAccess.of(context).extension<KinlySections>()!.share;
 
     return ListView.separated(
       padding: EdgeInsetsDirectional.only(top: spacing.sm),
@@ -242,7 +244,7 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final noteText = notes?.trim();
 
@@ -300,7 +302,7 @@ class _DetailRow extends StatelessWidget {
       ],
     );
 
-    return Material(
+    return KinlyMaterial(
       borderRadius: BorderRadius.circular(16),
       color: theme.colorScheme.surfaceContainerHighest,
       child: KinlyTapTarget(
@@ -320,3 +322,7 @@ String _formatCurrency(int amountCents) {
   final formatter = NumberFormat.simpleCurrency(decimalDigits: 2);
   return formatter.format(amountCents / 100.0);
 }
+
+
+
+

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'flow_surface_contract.dart';
 import 'widgets/flow_list_view.dart';
@@ -55,3 +55,4 @@ class FlowRegistry {
     );
   }
 }
+

@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_route_names.dart';
 import '../../../../generated/l10n.dart';
 import 'join_home_blocked_surface_contract.dart';
 import 'join_home_blocked_surface_registry.dart';
+import '../../../../core/ui/kinly_scaffold.dart';
 
 class JoinHomeBlockedScreen extends StatelessWidget {
   const JoinHomeBlockedScreen({super.key});
@@ -25,7 +26,7 @@ class JoinHomeBlockedScreen extends StatelessWidget {
     final slots = JoinHomeBlockedSurfaceSlots(
       body: _buildJoinHomeBlockedSections(scope),
     );
-    return Scaffold(
+    return KinlyScaffold(
       body: SafeArea(
         child: slots.body,
       ),
@@ -44,3 +45,7 @@ class JoinHomeBlockedScreen extends StatelessWidget {
     );
   }
 }
+
+
+
+

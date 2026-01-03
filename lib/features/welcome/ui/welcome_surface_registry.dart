@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'welcome_surface_contract.dart';
 import 'widgets/welcome_body.dart';
@@ -50,3 +50,4 @@ class WelcomeRegistry {
     );
   }
 }
+

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../contracts/chores/models.dart';
@@ -6,9 +6,13 @@ import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/badges/kinly_badge.dart';
 import '../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../core/ui/kinly_material.dart';
+import '../../../../core/ui/kinly_refresh_indicator.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../../core/ui/kinly_tap_target.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
+import '../../../../core/ui/kinly_icons.dart';
 
 class FlowListView extends StatelessWidget {
   const FlowListView({
@@ -26,7 +30,7 @@ class FlowListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final sections = theme.extension<KinlySections>()!;
     final flowColors = sections.flow;
     final spacing = theme.extension<Spacing>()!;
@@ -34,7 +38,7 @@ class FlowListView extends StatelessWidget {
     final bottomSpacer = spacing.lg;
 
     return KinlyScrollFade(
-      child: RefreshIndicator(
+      child: KinlyRefreshIndicator(
         onRefresh: onRefresh,
         child: ListView.separated(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -71,7 +75,7 @@ class _FlowListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final s = S.of(context);
     final spacing = theme.extension<Spacing>()!;
@@ -86,7 +90,7 @@ class _FlowListTile extends StatelessWidget {
     final isOverdue = entryDateLocal.isBefore(today);
     final dateText = DateFormat.yMMMd().format(entryDateLocal);
 
-    return Material(
+    return KinlyMaterial(
       color: flowColors.card,
       borderRadius: BorderRadius.circular(16),
       child: KinlyTapTarget(
@@ -114,7 +118,7 @@ class _FlowListTile extends StatelessWidget {
               Row(
                 children: [
                   Icon(
-                    Icons.calendar_today_rounded,
+                    KinlyIcons.calendarTodayRounded,
                     size: 16,
                     color: flowColors.accent,
                   ),
@@ -169,3 +173,7 @@ class _AssigneeAvatar extends StatelessWidget {
     );
   }
 }
+
+
+
+

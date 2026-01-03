@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../widgets/share_create_body.dart';
 import 'share_create_surface_contract.dart';
@@ -69,3 +69,4 @@ class ShareCreateRegistry {
     );
   }
 }
+

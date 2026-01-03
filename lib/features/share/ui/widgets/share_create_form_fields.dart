@@ -84,7 +84,7 @@ class _SplitModeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
 
     final splitMode = state.form.splitMode; // ShareSplitMode?
@@ -128,7 +128,7 @@ class _StartDateField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final dateLabel = DateFormat.yMMMMd().format(state.form.startDate);
     final today = todayDateOnly();
@@ -178,7 +178,7 @@ class _RecurrenceField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
 
     return Column(
@@ -193,12 +193,12 @@ class _RecurrenceField extends StatelessWidget {
             child: KinlyDropdownField<ExpenseRecurrenceInterval>(
               value: state.form.recurrence,
               items:
-                  ExpenseRecurrenceInterval.values
-                      .map(
-                        (value) => DropdownMenuItem(
-                          value: value,
-                          child: Text(_recurrenceLabel(context, value)),
-                        ),
+                    ExpenseRecurrenceInterval.values
+                        .map(
+                          (value) => KinlyDropdownMenuItem.item(
+                            value: value,
+                            child: Text(_recurrenceLabel(context, value)),
+                          ),
                       )
                       .toList(),
               onChanged:
@@ -248,7 +248,7 @@ class _EmptyParticipantsText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
 
     return Text(
       s.shareCreateParticipantsEmpty,
@@ -329,3 +329,4 @@ class _PrimaryActionButton extends StatelessWidget {
 // ----------------------------------------------------------------------
 // Participants section + row
 // ----------------------------------------------------------------------
+

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'share_owed_detail_surface_contract.dart';
 import 'widgets/share_owed_detail_body.dart';
@@ -60,3 +60,4 @@ class ShareOwedDetailRegistry {
     );
   }
 }
+

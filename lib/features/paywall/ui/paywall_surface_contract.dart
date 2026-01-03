@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'paywall_strings.dart';
 import '../bloc/paywall_bloc.dart';
@@ -48,3 +48,4 @@ class PaywallSurfaceScope {
   final List<String> orderedBenefits;
   final PaywallSurfaceActions actions;
 }
+

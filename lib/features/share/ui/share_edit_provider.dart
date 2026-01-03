@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../contracts/expenses/models.dart';
@@ -12,6 +12,8 @@ import '../bloc/share_create_bloc/share_create_bloc.dart';
 import '../domain/share_create_form.dart';
 import '../domain/share_split_mode.dart';
 import 'share_create/share_create_screen.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
 
 class ShareEditProvider extends StatelessWidget {
   const ShareEditProvider({
@@ -35,7 +37,7 @@ class ShareEditProvider extends StatelessWidget {
       future: expensesRepository.getForEdit(expenseId),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return const Scaffold(body: Center(child: KinlyLoader(size: 32)));
+          return const KinlyScaffold(body: Center(child: KinlyLoader(size: 32)));
         }
         if (snapshot.hasError || !snapshot.hasData) {
           final s = S.of(context);
@@ -45,8 +47,8 @@ class ShareEditProvider extends StatelessWidget {
               error.code == ExpenseErrorCode.editNotAllowed;
           final message =
               isEditNotAllowed ? s.shareEditNotAllowed : s.shareEditLoadError;
-          return Scaffold(
-            appBar: AppBar(title: Text(s.shareEditTitle)),
+          return KinlyScaffold(
+            appBar: KinlyAppBar(title: Text(s.shareEditTitle)),
             body: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -142,3 +144,7 @@ ShareSplitMode? _splitModeFromExpense(ExpenseSplitType? type) {
       return null;
   }
 }
+
+
+
+

@@ -1,5 +1,5 @@
 // lib/features/harmony/ui/gratitude_wall/gratitude_wall_content.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/spacing.dart';
@@ -8,6 +8,7 @@ import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../bloc/gratitude_wall_cubit.dart';
 import 'gratitude_wall_widgets.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class GratitudeWallContent extends StatelessWidget {
   const GratitudeWallContent({super.key, required this.maxHeight});
@@ -16,7 +17,7 @@ class GratitudeWallContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final opacities = theme.extension<KinlyOpacity>()!;
 
@@ -151,3 +152,7 @@ class GratitudeWallContent extends StatelessWidget {
     );
   }
 }
+
+
+
+

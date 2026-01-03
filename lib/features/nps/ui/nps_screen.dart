@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -12,13 +12,15 @@ import '../../../core/ui/support/kinly_support.dart';
 import '../../../core/ui/support/enums/kinly_support_intent.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/nps_cubit.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 class NpsScreen extends StatelessWidget {
   const NpsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
@@ -43,7 +45,7 @@ class NpsScreen extends StatelessWidget {
         },
         child: PopScope(
           canPop: false,
-          child: Scaffold(
+          child: KinlyScaffold(
             body: SafeArea(
               child: Padding(
                 padding: EdgeInsetsDirectional.all(spacing.lg),
@@ -177,4 +179,8 @@ class NpsScreen extends StatelessWidget {
     return KinlySupport.buildEmailUri(context, KinlySupportIntent.nps);
   }
 }
+
+
+
+
 

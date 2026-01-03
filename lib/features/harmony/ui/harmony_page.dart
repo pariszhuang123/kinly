@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import 'harmony_screen.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 class HarmonyPage extends StatelessWidget {
   final String homeId;
@@ -11,9 +13,9 @@ class HarmonyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>()!;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
 
-    return Scaffold(
+    return KinlyScaffold(
       // No AppBar → gives full control of header layout
       body: SafeArea(
         child: Padding(
@@ -45,3 +47,7 @@ class HarmonyPage extends StatelessWidget {
     );
   }
 }
+
+
+
+

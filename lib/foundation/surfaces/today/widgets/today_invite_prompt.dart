@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/buttons/kinly_outlined_button.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class TodayInvitePrompt extends StatelessWidget {
   const TodayInvitePrompt({
@@ -24,7 +25,7 @@ class TodayInvitePrompt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final colorScheme = theme.colorScheme;
     final secondaryTap = onSecondary;
@@ -78,3 +79,7 @@ class TodayInvitePrompt extends StatelessWidget {
     );
   }
 }
+
+
+
+

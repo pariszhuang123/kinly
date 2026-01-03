@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,10 +13,15 @@ import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../core/ui/inputs/kinly_text_field.dart';
 import '../../../core/ui/kinly_tap_target.dart';
+import '../../../core/ui/kinly_grid.dart';
 import '../../../contracts/profile/models.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import 'bloc/profile_identity_bloc.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
+import '../../../core/ui/kinly_theme_access.dart';
+import '../../../core/ui/kinly_material.dart';
 
 class ProfileIdentityScreen extends StatefulWidget {
   const ProfileIdentityScreen({super.key});
@@ -44,13 +49,13 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final opacities = theme.extension<KinlyOpacity>()!;
     final s = S.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(s.profileIdentityTitle)),
+    return KinlyScaffold(
+      appBar: KinlyAppBar(title: Text(s.profileIdentityTitle)),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsetsDirectional.all(spacing.lg),
@@ -92,16 +97,17 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _ProfilePreview(
+                      child: CustomScrollView(
+                        slivers: [
+                          SliverToBoxAdapter(
+                            child: _ProfilePreview(
                               username: state.username,
                               avatarUrl: state.selectedAvatarUrl,
                             ),
-                            SizedBox(height: spacing.lg),
-                            Text(
+                          ),
+                          SliverToBoxAdapter(child: SizedBox(height: spacing.lg)),
+                          SliverToBoxAdapter(
+                            child: Text(
                               s.profileIdentitySubtitle,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: theme.colorScheme.onSurface.withValues(
@@ -109,8 +115,10 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: spacing.lg),
-                            KinlyTextField(
+                          ),
+                          SliverToBoxAdapter(child: SizedBox(height: spacing.lg)),
+                          SliverToBoxAdapter(
+                            child: KinlyTextField(
                               controller: _controller,
                               labelText: s.profileIdentityUsernameLabel,
                               hintText: s.profileIdentityUsernameHint,
@@ -129,15 +137,19 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                                         ProfileIdentityUsernameChanged(value),
                                       ),
                             ),
-                            SizedBox(height: spacing.xl),
-                            Text(
+                          ),
+                          SliverToBoxAdapter(child: SizedBox(height: spacing.xl)),
+                          SliverToBoxAdapter(
+                            child: Text(
                               s.profileIdentityAvatarSectionTitle,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            SizedBox(height: spacing.xs),
-                            Text(
+                          ),
+                          SliverToBoxAdapter(child: SizedBox(height: spacing.xs)),
+                          SliverToBoxAdapter(
+                            child: Text(
                               s.profileIdentityAvatarSectionDescription,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: theme.colorScheme.onSurface.withValues(
@@ -145,30 +157,47 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: spacing.md),
-                            if (state.isLoading)
-                              const Center(child: KinlyLoader(size: 32))
-                            else if (state.avatars.isEmpty)
-                              Text(
+                          ),
+                          SliverToBoxAdapter(child: SizedBox(height: spacing.md)),
+                          if (state.isLoading)
+                            const SliverToBoxAdapter(
+                              child: Center(child: KinlyLoader(size: 32)),
+                            )
+                          else if (state.avatars.isEmpty)
+                            SliverToBoxAdapter(
+                              child: Text(
                                 s.profileIdentityAvatarEmpty,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: theme.colorScheme.onSurfaceVariant,
                                 ),
-                              )
-                            else
-                              _AvatarGrid(
-                                avatars: state.avatars,
-                                selectedAvatarId: state.selectedAvatarId,
-                                onSelected:
-                                    (avatarId) =>
-                                        context.read<ProfileIdentityBloc>().add(
-                                          ProfileIdentityAvatarSelected(
-                                            avatarId,
-                                          ),
-                                        ),
                               ),
-                          ],
-                        ),
+                            )
+                          else
+                            KinlyGrid.sliver(
+                              minTileWidth: 88,
+                              spacing: spacing.md,
+                              crossAxisCount: 5,
+                              children:
+                                  state.avatars
+                                      .map<Widget>(
+                                        (avatar) => _AvatarOption(
+                                          avatar: avatar,
+                                          isSelected:
+                                              avatar.id == state.selectedAvatarId,
+                                          onTap:
+                                              () => context
+                                                  .read<ProfileIdentityBloc>()
+                                                  .add(
+                                                    ProfileIdentityAvatarSelected(
+                                                      avatar.id,
+                                                    ),
+                                                  ),
+                                        ),
+                                      )
+                                      .toList(growable: false),
+                            ),
+                          SliverToBoxAdapter(child: SizedBox(height: spacing.md)),
+                        ],
                       ),
                     ),
                     SizedBox(height: spacing.md),
@@ -222,7 +251,7 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
       case ProfileIdentityAction.failure:
         final message = _resolveActionMessage(state, s);
         final accent =
-            Theme.of(context).extension<KinlySections>()?.pulse.accent;
+            KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
         KinlySnackBar.showError(context, message, accentColor: accent);
         break;
       case ProfileIdentityAction.none:
@@ -256,7 +285,7 @@ class _ProfilePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
     final display =
@@ -279,36 +308,6 @@ class _ProfilePreview extends StatelessWidget {
   }
 }
 
-class _AvatarGrid extends StatelessWidget {
-  const _AvatarGrid({
-    required this.avatars,
-    required this.selectedAvatarId,
-    required this.onSelected,
-  });
-
-  final List<ProfileAvatar> avatars;
-  final String? selectedAvatarId;
-  final ValueChanged<String> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>()!;
-    return Wrap(
-      spacing: spacing.md,
-      runSpacing: spacing.md,
-      children: avatars
-          .map<Widget>(
-            (avatar) => _AvatarOption(
-              avatar: avatar,
-              isSelected: avatar.id == selectedAvatarId,
-              onTap: () => onSelected(avatar.id),
-            ),
-          )
-          .toList(growable: false),
-    );
-  }
-}
-
 class _AvatarOption extends StatelessWidget {
   const _AvatarOption({
     required this.avatar,
@@ -322,15 +321,15 @@ class _AvatarOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final opacities = theme.extension<KinlyOpacity>()!;
     final borderColor =
         isSelected
             ? theme.colorScheme.primary
             : theme.colorScheme.outline.withValues(alpha: opacities.alphaScrim);
-    return Material(
-      color: Colors.transparent,
+    return KinlyMaterial(
+      color: theme.colorScheme.surface.withValues(alpha: 0),
       child: KinlyTapTarget(
         onTap: onTap,
         borderRadius: BorderRadius.circular(56),
@@ -357,7 +356,7 @@ class _ProfileIdentityError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
     return Center(
@@ -395,3 +394,7 @@ class _LowercaseTextFormatter extends TextInputFormatter {
     );
   }
 }
+
+
+
+

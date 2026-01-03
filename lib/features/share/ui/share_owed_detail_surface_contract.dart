@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../core/theme/spacing.dart';
 import '../../../generated/l10n.dart';
@@ -49,3 +49,4 @@ class ShareOwedDetailSurfaceScope {
   final String? errorMessage;
   final ShareOwedDetailSurfaceActions actions;
 }
+

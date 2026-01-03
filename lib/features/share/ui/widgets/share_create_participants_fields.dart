@@ -21,7 +21,7 @@ class _ParticipantsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final s = S.of(context);
     final splitMode = state.form.splitMode;
 
@@ -154,10 +154,10 @@ class _ParticipantsSection extends StatelessWidget {
 
   String? _customErrorText(
     S s,
-    ShareCustomSplitSummary summary,
-    bool showValidation,
-    ThemeData theme,
-  ) {
+      ShareCustomSplitSummary summary,
+      bool showValidation,
+      dynamic theme,
+    ) {
     if (!showValidation) return null;
     if (summary.missingTotal) return s.shareCreateValidationAmount;
     if (summary.hasInvalidAmounts) {
@@ -197,7 +197,7 @@ class _CustomSplitRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
@@ -250,9 +250,10 @@ class _CustomSplitRow extends StatelessWidget {
   }
 }
 
-Color _validationColor(ThemeData theme) {
+  Color _validationColor(dynamic theme) {
   final tokens = theme.extension<KinlyColorTokens>();
   final scheme = theme.colorScheme;
   // Use the same high-contrast error color in both themes to keep helper text visible.
   return tokens?.error ?? scheme.error;
 }
+

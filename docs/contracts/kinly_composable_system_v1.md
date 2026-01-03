@@ -140,10 +140,17 @@ Foundation scope (v1):
 - `lib/core/notifications/**`
 
 ### 9) Design system boundary
-- Design System governs appearance.
-- Composable System governs structure.
-- Tokens and primitives can be used anywhere.
-- Slot/layout rules cannot be bypassed.
+- Design System governs appearance; Composable System governs structure.
+- The umbrella Design System contract (`kinly_design_system_v1.md`) references:
+  - `kinly_foundation_colors_v1.md`
+  - `kinly_derived_color_engine_v1.md`
+  - `kinly_control_color_tokens_v1.md`
+- Tokens and primitives can be used anywhere; slot/layout rules cannot be bypassed.
+- Renderer boundary: `package:flutter/material.dart` imports are allowed only under
+  `lib/renderer/**` (renderer adapters). All other layers must use renderer-agnostic
+  primitives.
+- Enforcement: `tool/check_design_system.dart` (material import + raw widget guard),
+  `tool/check_no_raw_material.dart`, and `tool/check_colors.sh` (color/brightness).
 
 ### 10) Agent rules
 AI agents must:

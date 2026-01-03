@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
 import '../../../../core/theme/kinly_theme.dart';
@@ -7,6 +7,7 @@ import '../../../../core/ui/toggles/kinly_checkbox.dart';
 import '../../../../core/ui/branding/kinly_logo.dart';
 import '../../../../core/ui/kinly_tap_target.dart';
 import '../welcome_surface_contract.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class WelcomeBody extends StatelessWidget {
   const WelcomeBody({super.key, required this.scope});
@@ -16,7 +17,7 @@ class WelcomeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = scope.strings;
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final linkColors = theme.extension<KinlyLinkColors>()!;
     final canPressGoogle = scope.consented && !scope.busy;
@@ -141,3 +142,7 @@ class WelcomeBody extends StatelessWidget {
     );
   }
 }
+
+
+
+

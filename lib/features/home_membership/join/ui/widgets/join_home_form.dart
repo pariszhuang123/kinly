@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,6 +11,7 @@ import '../../../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/auth/bloc/auth_bloc.dart';
 import '../../bloc/join_home_bloc.dart';
+import '../../../../../core/ui/kinly_theme_access.dart';
 
 class JoinHomeForm extends StatefulWidget {
   const JoinHomeForm({super.key, required this.initialCode});
@@ -44,12 +45,12 @@ class _JoinHomeFormState extends State<JoinHomeForm> {
       listener: _handleStatusChange,
       child: Padding(
         padding: EdgeInsetsDirectional.all(
-          Theme.of(context).extension<Spacing>()!.lg,
+          KinlyThemeAccess.of(context).extension<Spacing>()!.lg,
         ),
         child: BlocBuilder<JoinHomeBloc, JoinHomeState>(
           builder: (context, state) {
             final isSubmitting = state.status == JoinHomeStatus.submitting;
-            final spacing = Theme.of(context).extension<Spacing>();
+            final spacing = KinlyThemeAccess.of(context).extension<Spacing>();
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -138,3 +139,7 @@ class _JoinHomeFormState extends State<JoinHomeForm> {
     }
   }
 }
+
+
+
+

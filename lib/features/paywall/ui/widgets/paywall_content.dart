@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/core/theme/app_sizes.dart';
@@ -14,10 +14,13 @@ import 'package:kinly/core/ui/kinly_action_card.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/core/ui/members/kinly_member_avatar_stack.dart';
 import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
+import 'package:kinly/core/ui/kinly_icons.dart';
+import 'package:kinly/core/ui/kinly_scrollbar.dart';
 
 import '../paywall_strings.dart';
 import '../paywall_surface_contract.dart';
 import '../../bloc/paywall_bloc.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class PaywallContent extends StatelessWidget {
   const PaywallContent({super.key, required this.scope});
@@ -74,7 +77,7 @@ class _PaywallBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final sections = theme.extension<KinlySections>();
     final spacing = theme.extension<Spacing>()!;
     final opacities = theme.extension<KinlyOpacity>()!;
@@ -137,7 +140,7 @@ class _PaywallBody extends StatelessWidget {
                         theme.colorScheme.surfaceContainerHighest.withValues(
                           alpha: opacities.alphaOpaque,
                         ),
-                    child: Scrollbar(
+                    child: KinlyScrollbar(
                       thumbVisibility: false,
                       child: KinlyScrollFade(
                         child: SingleChildScrollView(
@@ -208,7 +211,7 @@ class _BenefitChecklist extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final textTheme = theme.textTheme;
     final surface = theme.colorScheme.surface;
     final opacities = theme.extension<KinlyOpacity>()!;
@@ -236,12 +239,12 @@ class _BenefitChecklist extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: checkBg,
                       shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.check_rounded,
-                      color: checkColor,
-                      size: iconDimension,
-                    ),
+                      ),
+                      child: Icon(
+                        KinlyIcons.checkRounded,
+                        color: checkColor,
+                        size: iconDimension,
+                      ),
                   ),
                   SizedBox(width: spacing.m),
                   Expanded(
@@ -280,7 +283,7 @@ class _PaywallHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final corners = theme.extension<Corners>()!;
@@ -381,3 +384,7 @@ class _ErrorView extends StatelessWidget {
     );
   }
 }
+
+
+
+

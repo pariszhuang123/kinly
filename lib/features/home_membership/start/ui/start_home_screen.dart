@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,6 +10,9 @@ import '../../../../../core/auth/widgets/auth_error_listener.dart';
 import '../bloc/start_home_bloc.dart';
 import 'start_home_surface_contract.dart';
 import 'start_home_surface_registry.dart';
+import '../../../../core/ui/kinly_scaffold.dart';
+import '../../../../core/ui/kinly_app_bar.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class StartHomeScreen extends StatelessWidget {
   const StartHomeScreen({super.key});
@@ -17,7 +20,7 @@ class StartHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final membershipStatus = context.select(
       (AuthBloc bloc) => bloc.state.membershipStatus,
     );
@@ -31,8 +34,8 @@ class StartHomeScreen extends StatelessWidget {
     };
 
     return AuthErrorListener(
-      child: Scaffold(
-        appBar: AppBar(
+      child: KinlyScaffold(
+        appBar: KinlyAppBar(
           title: Text(s.app_title, style: theme.textTheme.titleLarge),
         ),
         body: SafeArea(
@@ -103,3 +106,7 @@ class StartHomeScreen extends StatelessWidget {
     );
   }
 }
+
+
+
+

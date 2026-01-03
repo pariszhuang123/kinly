@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../generated/l10n.dart';
 
@@ -35,3 +35,4 @@ class JoinHomeBlockedSurfaceScope {
   final S strings;
   final JoinHomeBlockedSurfaceActions actions;
 }
+

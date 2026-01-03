@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kinly/contracts/mood/enums/mood_scale.dart';
@@ -13,6 +13,7 @@ import '../../../core/ui/harmony/kinly_weather_selector_row.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/harmony_cubit.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 /// Harmony content used by both the Harmony page and (legacy) bottom sheet.
 /// Assumes [HarmonyCubit] is already provided above in the tree.
@@ -37,7 +38,7 @@ class HarmonyScreen extends StatelessWidget {
               previous.submitError != current.submitError,
       listener: (context, state) {
         final accent =
-            Theme.of(context).extension<KinlySections>()?.pulse.accent;
+            KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
         if (state.submitSuccessTick > 0) {
           KinlySnackBar.showSuccess(
             context,
@@ -53,7 +54,7 @@ class HarmonyScreen extends StatelessWidget {
       },
       child: BlocBuilder<HarmonyCubit, HarmonyState>(
         builder: (context, state) {
-          final theme = Theme.of(context);
+          final theme = KinlyThemeAccess.of(context);
           final spacing = theme.extension<Spacing>()!;
           final canPop = state.submitSuccessTick > 0;
 
@@ -111,7 +112,7 @@ class HarmonySubmitButton extends StatelessWidget {
         void handler() {
           if (!hasMood || state.submitSuccessTick > 0) {
             final accent =
-                Theme.of(context).extension<KinlySections>()?.pulse.accent;
+                KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
             KinlySnackBar.showError(
               context,
               s.harmonyErrorSelectMood,
@@ -149,7 +150,7 @@ class _HarmonyHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final s = S.of(context);
 
     return Column(
@@ -256,3 +257,7 @@ class _GratitudeToggle extends StatelessWidget {
     );
   }
 }
+
+
+
+

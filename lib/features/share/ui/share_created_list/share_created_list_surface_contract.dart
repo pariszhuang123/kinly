@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
@@ -50,3 +50,4 @@ class ShareCreatedListSurfaceScope {
   final S strings;
   final ShareCreatedListSurfaceActions actions;
 }
+

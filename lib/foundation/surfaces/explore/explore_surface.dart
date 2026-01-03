@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/app_route_names.dart';
@@ -9,6 +9,9 @@ import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../generated/l10n.dart';
 import 'explore_registry.dart';
 import 'explore_slots.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 class ExploreScreen extends StatelessWidget {
   const ExploreScreen({super.key});
@@ -16,7 +19,7 @@ class ExploreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ExploreRegistry.bootstrap();
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
     final colorScheme = theme.colorScheme;
@@ -24,9 +27,9 @@ class ExploreScreen extends StatelessWidget {
     return PopScope(
       // ❗ Prevent Explore from being popped via back button / gesture
       canPop: false,
-      child: Scaffold(
+      child: KinlyScaffold(
         backgroundColor: colorScheme.surface,
-        appBar: AppBar(
+        appBar: KinlyAppBar(
           title: Text(s.navExplore),
           // Just in case, no back arrow on Explore root tab
           automaticallyImplyLeading: false,
@@ -59,7 +62,7 @@ class ExploreScreen extends StatelessWidget {
 
   Widget _buildExploreBody(
     BuildContext context,
-    ThemeData theme,
+    dynamic theme,
     Spacing spacing,
     S strings,
   ) {
@@ -128,3 +131,7 @@ class ExploreScreen extends StatelessWidget {
     }
   }
 }
+
+
+
+

@@ -26,7 +26,7 @@ class _FlowChoreFormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final form = state.form;
     final showValidation = state.showValidationErrors;
     final hasAssigneeError =
@@ -51,7 +51,7 @@ class _FlowChoreFormView extends StatelessWidget {
           items:
               ChoreRecurrence.values
                   .map(
-                    (value) => DropdownMenuItem(
+                    (value) => KinlyDropdownMenuItem.item(
                       value: value,
                       child: Text(_recurrenceLabel(context, value)),
                     ),
@@ -123,7 +123,7 @@ class _FlowChoreFormView extends StatelessWidget {
 
   List<Widget> _buildAssigneeSection(
     BuildContext context,
-    ThemeData theme,
+    dynamic theme,
     S s,
     bool hasAssigneeError,
     FlowChoreForm form,
@@ -150,7 +150,7 @@ class _FlowChoreFormView extends StatelessWidget {
 
   List<Widget> _buildStartDateSection(
     BuildContext context,
-    ThemeData theme,
+    dynamic theme,
     S s,
     FlowChoreForm form,
     bool hasDateError,
@@ -310,7 +310,7 @@ class _OptionalDetailsExpansionState extends State<_OptionalDetailsExpansion> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final colors =
         widget.flowColors ??
@@ -326,7 +326,7 @@ class _OptionalDetailsExpansionState extends State<_OptionalDetailsExpansion> {
         color: colors.card,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: ExpansionTile(
+      child: KinlyExpansionTile(
         initiallyExpanded: _isExpanded,
         onExpansionChanged:
             (expanded) => setState(() {
@@ -384,3 +384,4 @@ class _OptionalDetailsExpansionState extends State<_OptionalDetailsExpansion> {
     );
   }
 }
+

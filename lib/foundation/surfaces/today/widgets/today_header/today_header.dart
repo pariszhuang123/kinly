@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../../../generated/l10n.dart';
 import '../../../../../../core/theme/spacing.dart';
@@ -6,6 +6,7 @@ import '../../../../../../core/theme/opacity.dart';
 import '../../domain/models.dart';
 import '../../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../../core/ui/kinly_tap_target.dart';
+import '../../../../../core/ui/kinly_theme_access.dart';
 
 class TodayHeader extends StatelessWidget {
   final String partOfDay; // “morning”, “afternoon”, “evening”
@@ -21,7 +22,7 @@ class TodayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final opacities = theme.extension<KinlyOpacity>()!;
@@ -74,4 +75,8 @@ class TodayHeader extends StatelessWidget {
     );
   }
 }
+
+
+
+
 

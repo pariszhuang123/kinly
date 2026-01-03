@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../contracts/expenses/enums/expense_recurrence_interval.dart';
@@ -16,6 +16,9 @@ import '../share_edit_outcome.dart';
 import '../widgets/share_create_body.dart';
 import 'share_create_surface_contract.dart';
 import 'share_create_surface_registry.dart';
+import '../../../../core/ui/kinly_scaffold.dart';
+import '../../../../core/ui/kinly_app_bar.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class ShareCreateScreen extends StatefulWidget {
   const ShareCreateScreen({
@@ -82,7 +85,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
   @override
   Widget build(BuildContext context) {
     ShareCreateRegistry.bootstrap();
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>();
     final shareColors = sections?.share;
@@ -145,7 +148,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
           if (state.submissionErrorTick > 0) {
             final snackText = _mapSubmissionError(context, state);
             final accent =
-                Theme.of(context).extension<KinlySections>()?.share.accent;
+                KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
             KinlySnackBar.showError(context, snackText, accentColor: accent);
           }
 
@@ -153,7 +156,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
             final message =
                 state.deletionErrorMessage ?? s.shareEditDeleteError;
             final accent =
-                Theme.of(context).extension<KinlySections>()?.share.accent;
+                KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
             KinlySnackBar.showError(context, message, accentColor: accent);
           }
 
@@ -161,13 +164,13 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
             final message =
                 state.planTerminationErrorMessage ?? s.shareEditTerminateError;
             final accent =
-                Theme.of(context).extension<KinlySections>()?.share.accent;
+                KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
             KinlySnackBar.showError(context, message, accentColor: accent);
           }
 
           if (state.planTerminationSuccessTick > 0) {
             final accent =
-                Theme.of(context).extension<KinlySections>()?.share.accent;
+                KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
             KinlySnackBar.showSuccess(
               context,
               s.shareEditTerminateSuccess,
@@ -186,8 +189,8 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
               state.planStatus != 'terminated' &&
               state.form.recurrence != ExpenseRecurrenceInterval.none;
 
-          return Scaffold(
-            appBar: AppBar(
+          return KinlyScaffold(
+            appBar: KinlyAppBar(
               title: Text(
                 state.isEditing ? s.shareEditTitle : s.shareCreateTitle,
               ),
@@ -298,7 +301,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
       context: context,
       state: state,
       spacing: spacing,
-      sections: Theme.of(context).extension<KinlySections>(),
+      sections: KinlyThemeAccess.of(context).extension<KinlySections>(),
       strings: S.of(context),
       actions: actions,
       allowDelete: widget.allowDelete,
@@ -343,3 +346,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
     );
   }
 }
+
+
+
+

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../widgets/share_created_list_view.dart';
 import 'share_created_list_surface_contract.dart';
@@ -58,3 +58,4 @@ class ShareCreatedListRegistry {
     );
   }
 }
+

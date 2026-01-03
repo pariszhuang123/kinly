@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../contracts/chores/models.dart';
@@ -17,6 +17,9 @@ import 'flow_surface_contract.dart';
 import 'flow_surface_registry.dart';
 import '../bloc/flow_list_bloc.dart';
 import '../domain/flow_chore_outcome.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 class FlowListScreen extends StatelessWidget {
   const FlowListScreen({
@@ -33,15 +36,15 @@ class FlowListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FlowRegistry.bootstrap();
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final sections = theme.extension<KinlySections>()!;
     final flowColors = sections.flow;
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
-    return Scaffold(
+    return KinlyScaffold(
       backgroundColor: flowColors.background,
-      appBar: AppBar(
+      appBar: KinlyAppBar(
         backgroundColor: flowColors.background,
         title: Text(s.quick_add_flow_title),
       ),
@@ -114,7 +117,7 @@ class FlowListScreen extends StatelessWidget {
 
   Widget _buildStateContent(BuildContext context, FlowListState state) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>()!;
     if (state.status == FlowListStatus.loading) {
@@ -171,7 +174,7 @@ class FlowListScreen extends StatelessWidget {
 
   void _showOutcomeSnackbar(BuildContext context, FlowChoreOutcome result) {
     final s = S.of(context);
-    final accent = Theme.of(context).extension<KinlySections>()!.flow.accent;
+    final accent = KinlyThemeAccess.of(context).extension<KinlySections>()!.flow.accent;
     if (result.isCompleted) {
       KinlySnackBar.showSuccess(
         context,
@@ -230,7 +233,7 @@ class _FlowListEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
 
     return Center(
       child: Column(
@@ -269,7 +272,7 @@ class _FlowListError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -292,3 +295,7 @@ class _FlowListError extends StatelessWidget {
     );
   }
 }
+
+
+
+

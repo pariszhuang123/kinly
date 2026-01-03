@@ -2,6 +2,16 @@
 
 Tracks versioned contract changes and related ADRs.
 
+## v1 - Design System Umbrella
+- Date: 2026-01-05
+- Scope: `docs/contracts/kinly_design_system_v1.md`, `docs/contracts/kinly_composable_system_v1.md`, `docs/contracts/architecture_guardrails_amendment_foundation_surfaces_v1.md`
+- Changes:
+  - Add umbrella Design System contract referencing token/color contracts.
+  - Add renderer boundary + enforcement references to the Composable System contract.
+  - Add renderer boundary to the Architecture Guardrails amendment.
+  - Extend design system lint to detect `material.dart` imports outside `lib/renderer/**`.
+  - Add baseline snapshot support and flip CI to fail on new violations only.
+
 ## v1 - Foundation Composable System
 - Date: 2026-01-02
 - Scope: `docs/contracts/kinly_composable_system_v1.md`

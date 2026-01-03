@@ -1,5 +1,5 @@
 // lib/features/share/ui/widgets/share_created_list_view.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/kinly_sections.dart';
@@ -12,9 +12,12 @@ import '../../../../core/ui/kinly_list_tile.dart';
 import '../../../../core/ui/feedback/kinly_info_banner.dart';
 import '../../../../core/ui/enums/kinly_banner_type.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
+import '../../../../core/ui/kinly_refresh_indicator.dart';
+import '../../../../core/ui/kinly_linear_progress_indicator.dart';
 import '../../../../generated/l10n.dart';
 import '../share_period_label.dart';
 import '../../bloc/share_created_list_bloc/share_created_list_bloc.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class ShareCreatedListView extends StatelessWidget {
   const ShareCreatedListView({
@@ -82,11 +85,11 @@ class _ShareCreatedList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>();
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>();
     final gap = spacing?.md ?? 12.0;
     final bottomSpacer = spacing?.lg ?? 16.0;
     return KinlyScrollFade(
-      child: RefreshIndicator(
+      child: KinlyRefreshIndicator(
         onRefresh: onRefresh,
         child: ListView.separated(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -120,7 +123,7 @@ class _ShareCreatedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
     final opacities = theme.extension<KinlyOpacity>()!;
     final s = S.of(context);
@@ -200,7 +203,7 @@ class _ShareCreatedTile extends StatelessWidget {
         ],
         if (entry.isActive && !entry.allPaid) ...[
           SizedBox(height: spacing?.xs ?? 6),
-          LinearProgressIndicator(
+          KinlyLinearProgressIndicator(
             value: progressValue,
             minHeight: 8,
             backgroundColor:
@@ -272,7 +275,7 @@ class _ShareCreatedListEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
 
     return Center(
       child: Column(
@@ -311,7 +314,7 @@ class _ShareCreatedListError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
     final s = S.of(context);
 
@@ -331,3 +334,7 @@ class _ShareCreatedListError extends StatelessWidget {
     );
   }
 }
+
+
+
+

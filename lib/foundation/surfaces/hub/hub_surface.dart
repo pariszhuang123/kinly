@@ -1,5 +1,5 @@
 // lib/foundation/surfaces/hub/hub_surface.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,11 +15,16 @@ import '../../../core/ui/kinly_bottom_sheet.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
+import '../../../core/ui/kinly_refresh_indicator.dart';
+import '../../../core/ui/kinly_icons.dart';
 import '../../../generated/l10n.dart';
 import 'bloc/hub_bloc.dart';
 import 'hub_registry.dart';
 import 'hub_slots.dart';
 import 'widget/hub_qr_section.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 class HubScreen extends StatelessWidget {
   const HubScreen({super.key, required this.homeId});
@@ -29,7 +34,7 @@ class HubScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HubRegistry.bootstrap();
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final sizes = theme.extension<AppSizes>();
@@ -38,9 +43,9 @@ class HubScreen extends StatelessWidget {
 
     return PopScope(
       canPop: false,
-      child: Scaffold(
+      child: KinlyScaffold(
         backgroundColor: colorScheme.surface,
-        appBar: AppBar(
+        appBar: KinlyAppBar(
           backgroundColor: colorScheme.surface,
           title: Text(s.navHub),
           automaticallyImplyLeading: false,
@@ -162,7 +167,7 @@ class HubScreen extends StatelessWidget {
   }
 
   Widget _buildHubBody(HubSurfaceScope scope) {
-    return RefreshIndicator(
+    return KinlyRefreshIndicator(
       onRefresh:
           () async => scope.context.read<HubBloc>().add(const HubRefreshed()),
       child: KinlyScrollFade(
@@ -275,7 +280,7 @@ class HubScreen extends StatelessWidget {
   }
 
   void _showQrSheet(BuildContext context, HubState state) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
@@ -318,15 +323,15 @@ class _HubError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final s = S.of(context);
 
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.error_outline, color: colorScheme.error),
+          children: [
+            Icon(KinlyIcons.errorOutline, color: colorScheme.error),
           const SizedBox(height: 8),
           Text(s.hubError, style: theme.textTheme.bodyMedium),
           const SizedBox(height: 12),
@@ -336,3 +341,7 @@ class _HubError extends StatelessWidget {
     );
   }
 }
+
+
+
+

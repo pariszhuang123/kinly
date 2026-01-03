@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'widgets/kinly_logo.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,9 +31,9 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
-    return Scaffold(
+    return KinlyScaffold(
       backgroundColor: colorScheme.surface,
       body: Center(
         child: Column(
@@ -44,3 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 }
+
+
+
+

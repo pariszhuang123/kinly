@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../core/theme/color_tokens.dart';
 import '../../../core/theme/spacing.dart';
@@ -6,6 +6,9 @@ import '../../../core/theme/opacity.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/branding/kinly_logo.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_theme_access.dart';
+import '../../../core/ui/kinly_icons.dart';
 
 class OfflineSplash extends StatelessWidget {
   const OfflineSplash({super.key, required this.onRetry});
@@ -15,13 +18,13 @@ class OfflineSplash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final strings = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colors = theme.colorScheme;
     final colorTokens = theme.extension<KinlyColorTokens>();
     final opacities = theme.extension<KinlyOpacity>()!;
     final spacing = theme.extension<Spacing>()!;
 
-    return Scaffold(
+    return KinlyScaffold(
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -55,7 +58,7 @@ class OfflineSplash extends StatelessWidget {
                 KinlyFilledButton.icon(
                   fullWidth: true,
                   onPressed: onRetry,
-                  icon: Icons.refresh,
+                  icon: KinlyIcons.refresh,
                   label: strings.offline_retry,
                 ),
               ],
@@ -66,3 +69,7 @@ class OfflineSplash extends StatelessWidget {
     );
   }
 }
+
+
+
+

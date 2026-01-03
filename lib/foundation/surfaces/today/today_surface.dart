@@ -1,5 +1,5 @@
 // lib/foundation/surfaces/today/today_surface.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
@@ -41,6 +41,9 @@ import '../../../contracts/share/share_edit_outcome.dart';
 import '../../../contracts/share/share_edit_route_args.dart';
 import 'package:kinly/core/ui/paywall/paywall_sources.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_theme_access.dart';
+import '../../../core/ui/kinly_fab_location.dart';
 
 part 'today_surface_helpers.dart';
 part 'today_surface_flow_helpers.dart';
@@ -83,7 +86,7 @@ class _TodayScreenState extends State<TodayScreen>
   @override
   Widget build(BuildContext context) {
     TodayRegistry.bootstrap();
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final sizes = theme.extension<AppSizes>();
@@ -135,7 +138,7 @@ class _TodayScreenState extends State<TodayScreen>
       ],
       child: PopScope(
         canPop: false,
-        child: Scaffold(
+        child: KinlyScaffold(
           backgroundColor: colorScheme.surface,
           body: Stack(
             children: [
@@ -382,7 +385,7 @@ class _TodayScreenState extends State<TodayScreen>
       context: context,
       state: state,
       spacing: spacing,
-      sections: Theme.of(context).extension<KinlySections>()!,
+      sections: KinlyThemeAccess.of(context).extension<KinlySections>()!,
       strings: s,
       actions: actions,
       inviteConfig: inviteConfig,
@@ -451,3 +454,7 @@ class _TodayScreenState extends State<TodayScreen>
     );
   }
 }
+
+
+
+

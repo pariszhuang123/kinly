@@ -1,13 +1,15 @@
 // lib/features/flow/ui/widgets/flow_chore_extras_section.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../generated/l10n.dart';
-import '../../../../../core/theme/kinly_theme.dart'; // to access link colors extension
+import '../../../../../core/theme/kinly_palette.dart';
 import '../../../../../app/router/app_route_names.dart';
 import '../../../../../core/ui/kinly_tap_target.dart';
+import '../../../../../core/ui/kinly_icons.dart';
 import 'flow_chore_expectation_photo_viewer.dart';
+import '../../../../../core/ui/kinly_theme_access.dart';
 
 class FlowChoreExtrasSection extends StatelessWidget {
   const FlowChoreExtrasSection({
@@ -31,12 +33,12 @@ class FlowChoreExtrasSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final colorScheme = theme.colorScheme;
     final linkColors =
         theme.extension<KinlyLinkColors>() ??
-        const KinlyLinkColors(link: Colors.blue, icon: Colors.blue);
+        KinlyLinkColors(link: colorScheme.primary, icon: colorScheme.primary);
     final s = S.of(context);
 
     final hasExpectationPhoto = expectationPhotoUrl?.trim().isNotEmpty == true;
@@ -97,7 +99,7 @@ class _FlowDetailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>();
     final isLink = onTap != null;
@@ -123,7 +125,11 @@ class _FlowDetailSection extends StatelessWidget {
                 children: [
                   Expanded(child: bodyText),
                   const SizedBox(width: 8),
-                  Icon(Icons.open_in_new, size: 16, color: linkColors.icon),
+                  Icon(
+                    KinlyIcons.openInNew,
+                    size: 16,
+                    color: linkColors.icon,
+                  ),
                 ],
               ),
             )
@@ -161,7 +167,7 @@ class _ExpectationPhotoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final heroTag = 'flow-chore-photo-${photoUrl.hashCode}';
 
@@ -201,3 +207,7 @@ class _ExpectationPhotoSection extends StatelessWidget {
     );
   }
 }
+
+
+
+

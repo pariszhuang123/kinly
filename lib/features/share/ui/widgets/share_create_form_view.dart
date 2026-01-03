@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -11,6 +11,7 @@ import '../../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../../core/ui/inputs/kinly_dropdown_field.dart';
 import '../../../../../core/ui/inputs/kinly_text_field.dart';
 import '../../../../../core/ui/kinly_date_picker.dart';
+import '../../../../../core/ui/kinly_dropdown_menu_item.dart';
 import '../../../../../core/ui/kinly_tab_bar.dart';
 import '../../../../../core/ui/members/kinly_selectable_member_avatar_row.dart';
 import '../../../../../core/ui/feedback/kinly_info_banner.dart';
@@ -24,6 +25,7 @@ import '../../../../../core/time/date_only.dart';
 import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 part 'share_create_form_fields.dart';
 part 'share_create_participants_fields.dart';
@@ -79,7 +81,7 @@ class ShareCreateFormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final viewState = _FormViewState.fromBloc(
       state: state,
@@ -366,3 +368,7 @@ void _handlePrimaryPressed({
   }
   blocContext.read<ShareCreateBloc>().add(const ShareCreateSubmitted());
 }
+
+
+
+

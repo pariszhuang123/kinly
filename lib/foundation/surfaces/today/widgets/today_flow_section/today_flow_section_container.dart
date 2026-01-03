@@ -1,5 +1,5 @@
 // lib/features/today/ui/widgets/today_flow_section_container.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/today_bloc.dart';
@@ -8,6 +8,7 @@ import 'today_flow_section.dart';
 import '../today_empty_state_card.dart';
 import '../../../../../core/ui/kinly_loader.dart';
 import 'package:kinly/contracts/flow/enums/flow_list_filter.dart';
+import '../../../../../core/ui/kinly_theme_access.dart';
 
 class TodayFlowSectionContainer extends StatelessWidget {
   final void Function(TodayFlowTask task) onTaskTap;
@@ -21,7 +22,7 @@ class TodayFlowSectionContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
 
     return BlocBuilder<TodayBloc, TodayState>(
@@ -58,4 +59,8 @@ class TodayFlowSectionContainer extends StatelessWidget {
     );
   }
 }
+
+
+
+
 

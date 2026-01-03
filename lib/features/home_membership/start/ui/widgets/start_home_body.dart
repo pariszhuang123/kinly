@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../start_home_surface_contract.dart';
+import '../../../../../core/ui/kinly_theme_access.dart';
 
 class StartHomeBody extends StatelessWidget {
   const StartHomeBody({super.key, required this.scope});
@@ -11,7 +12,7 @@ class StartHomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
     final s = scope.strings;
 
@@ -52,3 +53,7 @@ class StartHomeBody extends StatelessWidget {
     );
   }
 }
+
+
+
+

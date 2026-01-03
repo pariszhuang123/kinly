@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/kinly_sections.dart';
@@ -10,6 +10,9 @@ import '../../../../core/supabase/storage_path_resolver.dart';
 import '../../bloc/flow_chore_detail_bloc.dart';
 import '../../domain/flow_chore_outcome.dart';
 import 'widgets/flow_chore_detail_view.dart';
+import '../../../../core/ui/kinly_scaffold.dart';
+import '../../../../core/ui/kinly_app_bar.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class FlowChoreDetailScreen extends StatefulWidget {
   const FlowChoreDetailScreen({super.key});
@@ -23,8 +26,8 @@ class _FlowChoreDetailScreenState extends State<FlowChoreDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).flowChoreDetailTitle)),
+    return KinlyScaffold(
+      appBar: KinlyAppBar(title: Text(S.of(context).flowChoreDetailTitle)),
       body: SafeArea(
         child: BlocConsumer<FlowChoreDetailBloc, FlowChoreDetailState>(
           listenWhen:
@@ -49,7 +52,7 @@ class _FlowChoreDetailScreenState extends State<FlowChoreDetailScreen> {
                   S.of(context).flowChoreDetailCompletionError;
 
               final accent =
-                  Theme.of(context).extension<KinlySections>()?.flow.accent;
+                  KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
               KinlySnackBar.showError(context, message, accentColor: accent);
             }
           },
@@ -80,3 +83,7 @@ class _FlowChoreDetailScreenState extends State<FlowChoreDetailScreen> {
     );
   }
 }
+
+
+
+

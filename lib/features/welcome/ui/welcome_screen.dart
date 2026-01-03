@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sign_in_button/sign_in_button.dart';
@@ -13,6 +13,8 @@ import '../../../core/platform/platform_info.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import 'welcome_surface_contract.dart';
 import 'welcome_surface_registry.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -40,7 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final busy = context.select((AuthBloc bloc) => bloc.state.isLoading);
     final supportsApple = PlatformInfo.isIOS;
     final isDarkMode = theme.brightness == Brightness.dark;
@@ -80,7 +82,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         }
       },
       child: AuthErrorListener(
-        child: Scaffold(
+        child: KinlyScaffold(
           body: SafeArea(
             child: _buildWelcomeBody(
               context: context,
@@ -149,3 +151,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 }
+
+
+
+

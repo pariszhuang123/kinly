@@ -1,7 +1,8 @@
 // lib/features/flow/ui/widgets/flow_chore_core_info_section.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../../core/theme/spacing.dart';
+import '../../../../../core/ui/kinly_theme_access.dart';
 
 class FlowChoreCoreInfoSection extends StatelessWidget {
   const FlowChoreCoreInfoSection({
@@ -31,7 +32,7 @@ class FlowChoreCoreInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
 
     return Column(
@@ -63,7 +64,7 @@ class _FlowDetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -85,3 +86,7 @@ class _FlowDetailRow extends StatelessWidget {
     );
   }
 }
+
+
+
+

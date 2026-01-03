@@ -50,7 +50,7 @@ Future<void> _maybePromptNotificationsImpl(
   final resolvedTimezoneResolver =
       timezoneResolver ?? sl<IanaTimezoneResolver>();
   final locale = Localizations.localeOf(context).toLanguageTag();
-  final platformName = Theme.of(context).platform.name;
+  final platformName = KinlyThemeAccess.of(context).platform.name;
   final timezone = await resolvedTimezoneResolver.resolve();
   final resolvedLogger =
       logger ??
@@ -98,3 +98,4 @@ Future<void> _maybePromptNotificationsImpl(
     );
   }
 }
+

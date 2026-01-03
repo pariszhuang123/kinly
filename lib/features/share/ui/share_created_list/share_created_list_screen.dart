@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,6 +15,9 @@ import '../share_edit_outcome.dart';
 import '../share_edit_route_args.dart';
 import 'share_created_list_surface_contract.dart';
 import 'share_created_list_surface_registry.dart';
+import '../../../../core/ui/kinly_scaffold.dart';
+import '../../../../core/ui/kinly_app_bar.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class ShareCreatedListScreen extends StatelessWidget {
   const ShareCreatedListScreen({super.key});
@@ -22,15 +25,15 @@ class ShareCreatedListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ShareCreatedListRegistry.bootstrap();
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final sections = theme.extension<KinlySections>()!;
     final shareColors = sections.share;
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
-    return Scaffold(
+    return KinlyScaffold(
       backgroundColor: shareColors.background,
-      appBar: AppBar(
+      appBar: KinlyAppBar(
         backgroundColor: shareColors.background,
         title: Text(s.shareCreatedListTitle),
       ),
@@ -92,7 +95,7 @@ class ShareCreatedListScreen extends StatelessWidget {
     final s = S.of(context);
     final result = await context.pushNamed<bool>(AppRouteNames.shareCreate);
     if (result == true && context.mounted) {
-      final accent = Theme.of(context).extension<KinlySections>()?.share.accent;
+      final accent = KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
       KinlySnackBar.showSuccess(
         context,
         s.shareCreateSuccess,
@@ -115,7 +118,7 @@ class ShareCreatedListScreen extends StatelessWidget {
 
     if (!context.mounted || result == null) return;
 
-    final accent = Theme.of(context).extension<KinlySections>()?.share.accent;
+    final accent = KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
     if (result == true || result == ShareEditOutcome.updated) {
       KinlySnackBar.showSuccess(
         context,
@@ -145,3 +148,7 @@ class ShareCreatedListScreen extends StatelessWidget {
     );
   }
 }
+
+
+
+

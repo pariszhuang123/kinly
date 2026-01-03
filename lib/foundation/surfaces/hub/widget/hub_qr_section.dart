@@ -1,12 +1,14 @@
 // lib/features/hub/ui/hub_qr_section.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/kinly_tap_target.dart';
+import '../../../../core/ui/kinly_icons.dart';
 import '../../../../generated/l10n.dart';
 import '../bloc/hub_bloc.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class HubQrSection extends StatelessWidget {
   const HubQrSection({
@@ -22,7 +24,7 @@ class HubQrSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final appLink =
@@ -60,7 +62,7 @@ class HubQrSection extends StatelessWidget {
               children: [
                 KinlyFilledButton.icon(
                   onPressed: onShareAppTap,
-                  icon: Icons.ios_share_rounded,
+                  icon: KinlyIcons.iosShareRounded,
                   label: S.of(context).hubShareAppCta,
                   fullWidth: false,
                 ),
@@ -79,30 +81,32 @@ class HubQrCode extends StatelessWidget {
     super.key,
     required this.data,
     required this.backgroundColor,
-    this.isDarkOverride,
     this.size = 250,
   });
 
   final String data;
   final Color backgroundColor;
-  final bool? isDarkOverride;
   final double size;
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        isDarkOverride ?? Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = KinlyThemeAccess.of(context).colorScheme;
+    final qrColor = colorScheme.onSurface;
 
     return QrImageView(
       data: data,
       version: QrVersions.auto,
       size: size,
-      eyeStyle: QrEyeStyle(color: isDark ? Colors.white : Colors.black),
+      eyeStyle: QrEyeStyle(color: qrColor),
       dataModuleStyle: QrDataModuleStyle(
-        color: isDark ? Colors.white : Colors.black,
+        color: qrColor,
         dataModuleShape: QrDataModuleShape.square,
       ),
       backgroundColor: backgroundColor,
     );
   }
 }
+
+
+
+

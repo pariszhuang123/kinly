@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'paywall_surface_contract.dart';
 import 'widgets/paywall_content.dart';
@@ -50,3 +50,4 @@ class PaywallRegistry {
     );
   }
 }
+

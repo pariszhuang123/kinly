@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,6 +17,9 @@ import '../../../core/ui/dialogs/kinly_dialogs.dart';
 import '../../../core/ui/inputs/kinly_dropdown_field.dart';
 import '../../../core/ui/inputs/kinly_text_field.dart';
 import '../../../core/ui/kinly_date_picker.dart';
+import '../../../core/ui/kinly_dropdown_menu_item.dart';
+import '../../../core/ui/kinly_expansion_tile.dart';
+import '../../../core/ui/kinly_icons.dart';
 import '../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/kinly_tap_target.dart';
@@ -31,6 +35,9 @@ import 'package:kinly/core/ui/paywall/paywall_strings.dart';
 import '../bloc/flow_chore_bloc.dart';
 import '../domain/flow_chore_form.dart';
 import '../domain/flow_chore_outcome.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
+import '../../../core/ui/kinly_theme_access.dart';
 
 part 'widgets/flow_chore_form_view.dart';
 part 'widgets/flow_chore_action_bar.dart';
@@ -70,7 +77,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final s = S.of(context);
     final paywallStrings = PaywallStrings(
       title: s.paywallTitle,
@@ -130,7 +137,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
           if (state.submissionErrorTick > 0) {
             final snackText = _mapSubmissionError(context, state);
             final accent =
-                Theme.of(context).extension<KinlySections>()?.flow.accent;
+                KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
             KinlySnackBar.showError(context, snackText, accentColor: accent);
           }
         },
@@ -155,8 +162,8 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
             strings: s,
           );
 
-          return Scaffold(
-            appBar: AppBar(
+          return KinlyScaffold(
+            appBar: KinlyAppBar(
               title: Text(
                 state.isEditMode
                     ? s.flowChoreEditTitle
@@ -200,7 +207,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         isPermission
             ? s.flowChorePhotoPermissionDenied
             : s.flowChorePhotoUploadError;
-    final accent = Theme.of(context).extension<KinlySections>()?.flow.accent;
+    final accent = KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
     final isPermanent = state.isCameraPermissionPermanentlyDenied;
     final actionLabel =
         isPermanent ? s.flowChorePhotoPermissionOpenSettings : null;
@@ -295,3 +302,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
     return state.submissionErrorMessage ?? s.flowChoreErrorGeneric;
   }
 }
+
+
+
+

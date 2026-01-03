@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
 import '../../../generated/l10n.dart';
@@ -58,3 +58,4 @@ class WelcomeSurfaceScope {
   final Buttons appleButtonStyle;
   final WelcomeSurfaceActions actions;
 }
+

@@ -1,17 +1,19 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/badges/kinly_badge.dart';
 import '../../../../core/ui/kinly_list_tile.dart';
+import '../../../../core/ui/kinly_icons.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class TodayEmptyStateCard extends StatelessWidget {
   const TodayEmptyStateCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>()!;
     final s = S.of(context);
@@ -23,7 +25,7 @@ class TodayEmptyStateCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         KinlyListTile(
-          leading: Icon(Icons.self_improvement_rounded, color: colors.accent),
+          leading: Icon(KinlyIcons.selfImprovementRounded, color: colors.accent),
           title: s.todayEmptyCardTitle,
           semanticsLabel: '${s.todayEmptyCardTitle}, ${s.todayEmptyCardBadge}',
           trailing: KinlyBadge(
@@ -43,3 +45,7 @@ class TodayEmptyStateCard extends StatelessWidget {
     );
   }
 }
+
+
+
+

@@ -22,7 +22,7 @@ Future<void> main() async {
     const _Check(
       'check_design_system',
       'dart',
-      ['run', 'tool/check_design_system.dart'],
+      ['run', 'tool/check_design_system.dart', '--mode=fail'],
     ),
     const _Check(
       'check_complexity_budget',

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/config/app_config.dart';
@@ -7,6 +7,9 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/ui/branding/kinly_logo.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_theme_access.dart';
+import '../../../core/ui/kinly_icons.dart';
 
 class ForceUpdateScreen extends StatelessWidget {
   const ForceUpdateScreen({super.key});
@@ -14,9 +17,9 @@ class ForceUpdateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final strings = S.of(context);
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
-    return Scaffold(
+    return KinlyScaffold(
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -43,7 +46,7 @@ class ForceUpdateScreen extends StatelessWidget {
                 const SizedBox(height: 32),
                 KinlyFilledButton.icon(
                   onPressed: () => _launchStore(),
-                  icon: Icons.system_update,
+                  icon: KinlyIcons.systemUpdate,
                   label: strings.force_update_button,
                 ),
               ],
@@ -70,3 +73,7 @@ class ForceUpdateScreen extends StatelessWidget {
         : AppConfig.iosStoreUrl;
   }
 }
+
+
+
+

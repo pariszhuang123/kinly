@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
 import '../../../../core/ui/action_bar/kinly_action_bar.dart';
@@ -145,3 +145,5 @@ bool _shouldDisable(
 
 bool _shouldOpenPaywall(ShareCreateState state) =>
     state.paywallRequest != null && state.paywallInFlightRequestId == null;
+
+

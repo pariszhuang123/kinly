@@ -1,1 +1,1 @@
-enum KinlySupportIntent { contact, reactivate, nps }
+export '../../../../renderer/material/ui/support/enums/kinly_support_intent.dart';

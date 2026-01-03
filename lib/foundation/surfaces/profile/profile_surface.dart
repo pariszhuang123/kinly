@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,6 +22,11 @@ import 'package:kinly/core/ui/support/kinly_support.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'bloc/profile_settings_bloc.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
+import '../../../core/ui/kinly_theme_access.dart';
+import '../../../core/ui/kinly_icons.dart';
+import '../../../core/ui/kinly_divider.dart';
 
 part 'profile_surface_actions.dart';
 
@@ -37,11 +42,11 @@ class ProfileSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>()!;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
     final s = S.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(s.profileSettingsTitle)),
+    return KinlyScaffold(
+      appBar: KinlyAppBar(title: Text(s.profileSettingsTitle)),
       body: BlocListener<ProfileSettingsBloc, ProfileSettingsState>(
         listenWhen: (previous, current) => previous.action != current.action,
         listener: _handleAction,
@@ -76,22 +81,22 @@ class ProfileSettingsScreen extends StatelessWidget {
                       KinlySettingsTile(
                         title: s.profileInfoHubTitle,
                         subtitle: s.profileInfoHubSubtitle,
-                        icon: Icons.menu_book_outlined,
+                        icon: KinlyIcons.menuBookOutlined,
                         onTap: () => _openInfoHub(context),
                       ),
-                      const Divider(height: 0),
+                      const KinlyDivider(height: 0),
                       KinlySettingsTile(
                         title: s.profileContactUsTitle,
                         subtitle: s.profileContactUsSubtitle,
-                        icon: Icons.support_agent_outlined,
+                        icon: KinlyIcons.supportAgentOutlined,
                         // Shared support helper (with mounted check inside)
                         onTap: () => KinlySupport.contactSupport(context),
                       ),
-                      const Divider(height: 0),
+                      const KinlyDivider(height: 0),
                       KinlySettingsTile(
                         title: s.profileConnectionSettingsTitle,
                         subtitle: s.profileConnectionSettingsSubtitle,
-                        icon: Icons.notifications_active_outlined,
+                        icon: KinlyIcons.notificationsActiveOutlined,
                         onTap:
                             () => context.pushNamed(
                               AppRouteNames.connectionSettings,
@@ -107,7 +112,7 @@ class ProfileSettingsScreen extends StatelessWidget {
                       KinlySettingsTile(
                         title: s.profileLogoutTitle,
                         subtitle: s.profileLogoutSubtitle,
-                        icon: Icons.logout,
+                        icon: KinlyIcons.logout,
                         onTap: () => _confirmLogout(context),
                       ),
                     ],
@@ -137,7 +142,7 @@ class ProfileSettingsScreen extends StatelessWidget {
       KinlySettingsTile(
         title: s.profileLeaveHomeTitle,
         subtitle: s.profileLeaveHomeSubtitle,
-        icon: Icons.exit_to_app_rounded,
+        icon: KinlyIcons.exitToAppRounded,
         destructive: true,
         showProgress: state.isLeaveActionBusy,
         onTap: state.isLeaveActionBusy ? null : () => _handleLeaveTap(context),
@@ -148,11 +153,11 @@ class ProfileSettingsScreen extends StatelessWidget {
         state.isOwner && state.kickEligibleMembers.isNotEmpty;
     if (hasKickTargets) {
       tiles.addAll([
-        const Divider(height: 0),
+        const KinlyDivider(height: 0),
         KinlySettingsTile(
           title: s.profileKickMemberTitle,
           subtitle: s.profileKickMemberSubtitle,
-          icon: Icons.person_remove_alt_1_rounded,
+          icon: KinlyIcons.personRemoveAlt1Rounded,
           destructive: true,
           showProgress: state.kickInProgress,
           onTap: state.kickInProgress ? null : () => _handleKickTap(context),
@@ -161,11 +166,11 @@ class ProfileSettingsScreen extends StatelessWidget {
     }
 
     tiles.addAll([
-      const Divider(height: 0),
+      const KinlyDivider(height: 0),
       KinlySettingsTile(
         title: s.profileDeleteAccountTitle,
         subtitle: s.profileDeleteAccountSubtitle,
-        icon: Icons.delete_forever_outlined,
+        icon: KinlyIcons.deleteForeverOutlined,
         destructive: true,
         showProgress: state.deleteInProgress || state.transferInProgress,
         onTap:
@@ -221,5 +226,9 @@ class ProfileSettingsScreen extends StatelessWidget {
     await openInfoHub(context);
   }
 }
+
+
+
+
 
 

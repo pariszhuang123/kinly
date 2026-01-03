@@ -300,7 +300,7 @@ Future<String?> showTransferOwnershipSheet(
     subtitle: s.profileLeaveTransferSheetSubtitle,
     body: Builder(
       builder: (sheetContext) {
-        final theme = Theme.of(sheetContext);
+        final theme = KinlyThemeAccess.of(sheetContext);
         final spacing = theme.extension<Spacing>()!;
 
         return Wrap(
@@ -358,7 +358,7 @@ class _KickMemberSheetContentState extends State<_KickMemberSheetContent> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final spacing = Theme.of(context).extension<Spacing>()!;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
     final onConfirmTap =
         _selectedUserId == null
             ? null
@@ -463,5 +463,6 @@ Future<void> openInfoHub(BuildContext context) async {
 }
 
 Color? _profileAccent(BuildContext context) {
-  return Theme.of(context).extension<KinlySections>()?.pulse.accent;
+  return KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
 }
+

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../generated/l10n.dart';
 
@@ -45,3 +45,4 @@ class StartHomeSurfaceScope {
   final bool canPress;
   final StartHomeSurfaceActions actions;
 }
+

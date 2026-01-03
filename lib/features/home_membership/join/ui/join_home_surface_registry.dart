@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'join_home_surface_contract.dart';
 import 'widgets/join_home_form.dart';
@@ -50,3 +50,4 @@ class JoinHomeRegistry {
     );
   }
 }
+

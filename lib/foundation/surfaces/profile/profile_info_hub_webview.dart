@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../generated/l10n.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
+import '../../../core/ui/kinly_scaffold.dart';
+import '../../../core/ui/kinly_app_bar.dart';
 
 class InfoHubWebViewScreen extends StatefulWidget {
   const InfoHubWebViewScreen({super.key});
@@ -53,8 +55,8 @@ class _InfoHubWebViewScreenState extends State<InfoHubWebViewScreen> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    return Scaffold(
-      appBar: AppBar(
+    return KinlyScaffold(
+      appBar: KinlyAppBar(
         title: Text(s.profileInfoHubTitle),
         actions: [
           if (_progress < 1)
@@ -72,3 +74,7 @@ class _InfoHubWebViewScreenState extends State<InfoHubWebViewScreen> {
     );
   }
 }
+
+
+
+

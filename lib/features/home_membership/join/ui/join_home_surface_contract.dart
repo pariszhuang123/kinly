@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class JoinHomeSurfaceSlots {
   const JoinHomeSurfaceSlots({
@@ -25,3 +25,4 @@ class JoinHomeSurfaceScope {
   final BuildContext context;
   final String initialCode;
 }
+

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'start_home_surface_contract.dart';
 import 'widgets/start_home_body.dart';
@@ -50,3 +50,4 @@ class StartHomeRegistry {
     );
   }
 }
+

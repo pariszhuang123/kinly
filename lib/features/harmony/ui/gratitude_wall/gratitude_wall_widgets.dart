@@ -1,7 +1,7 @@
 // lib/features/harmony/ui/gratitude_wall/gratitude_wall_widgets.dart
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:kinly/contracts/mood/models.dart';
 import '../../../../core/ui/buttons/kinly_outlined_button.dart';
@@ -11,6 +11,7 @@ import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/badges/kinly_badge.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../core/ui/kinly_theme_access.dart';
 
 class GratitudeWallMasonryGrid extends StatelessWidget {
   const GratitudeWallMasonryGrid({super.key, required this.posts});
@@ -19,7 +20,7 @@ class GratitudeWallMasonryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = Theme.of(context).extension<Spacing>()!;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
 
     return KinlyMasonryGrid<GratitudeWallPost>(
       items: posts,
@@ -49,7 +50,7 @@ class GratitudeWallCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
     final colorScheme = theme.colorScheme;
@@ -162,7 +163,7 @@ class GratitudeWallEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
@@ -201,7 +202,7 @@ class GratitudeWallErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final spacing = Theme.of(context).extension<Spacing>()!;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
 
     return Center(
       child: Column(
@@ -231,7 +232,7 @@ class GratitudeWallHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final s = S.of(context);
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
@@ -267,7 +268,7 @@ class PoweredByTagline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = KinlyThemeAccess.of(context);
     final colorScheme = theme.colorScheme;
     final s = S.of(context);
 
@@ -303,7 +304,7 @@ class PoweredByTagline extends StatelessWidget {
 double _estimateHeight(
   GratitudeWallPost post, {
   required Spacing spacing,
-  required TextTheme textTheme,
+  required dynamic textTheme,
 }) {
   final messageLength = post.message?.trim().length ?? 0;
   final lineHeight =
@@ -328,3 +329,7 @@ String _replaceCountPlaceholder(
   // No placeholder and we don't want to append anything.
   return text;
 }
+
+
+
+
