@@ -2029,66 +2029,6 @@ class S {
     );
   }
 
-  /// `Daily`
-  String get flowChoreRecurrenceDaily {
-    return Intl.message(
-      'Daily',
-      name: 'flowChoreRecurrenceDaily',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Weekly`
-  String get flowChoreRecurrenceWeekly {
-    return Intl.message(
-      'Weekly',
-      name: 'flowChoreRecurrenceWeekly',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Every 2 weeks`
-  String get flowChoreRecurrenceEvery2Weeks {
-    return Intl.message(
-      'Every 2 weeks',
-      name: 'flowChoreRecurrenceEvery2Weeks',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Monthly`
-  String get flowChoreRecurrenceMonthly {
-    return Intl.message(
-      'Monthly',
-      name: 'flowChoreRecurrenceMonthly',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Every 2 months`
-  String get flowChoreRecurrenceEvery2Months {
-    return Intl.message(
-      'Every 2 months',
-      name: 'flowChoreRecurrenceEvery2Months',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Annual`
-  String get flowChoreRecurrenceAnnual {
-    return Intl.message(
-      'Annual',
-      name: 'flowChoreRecurrenceAnnual',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Why this matters`
   String get flowChoreNotesLabel {
     return Intl.message(

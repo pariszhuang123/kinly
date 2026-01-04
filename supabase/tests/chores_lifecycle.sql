@@ -2,8 +2,8 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
--- We now have 11 assertions (see bottom)
-SELECT plan(13);
+-- We now have 19 assertions (see bottom)
+SELECT plan(19);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -303,6 +303,95 @@ SELECT is(
    WHERE home_id = (SELECT home_id FROM tmp_homes WHERE label = 'primary')),
   1,
   'adding expectation photo increments photo counter'
+);
+
+-- v1 create should backfill recurrence_every/unit for weekly cadence.
+SELECT is(
+  (SELECT recurrence_every
+   FROM public.chores
+   WHERE id = (SELECT chore_id FROM tmp_chores WHERE label = 'photo_chore')),
+  1,
+  'v1 create backfills recurrence_every for weekly cadence'
+);
+
+SELECT is(
+  (SELECT recurrence_unit
+   FROM public.chores
+   WHERE id = (SELECT chore_id FROM tmp_chores WHERE label = 'photo_chore')),
+  'week',
+  'v1 create backfills recurrence_unit for weekly cadence'
+);
+
+SELECT throws_like(
+  $$
+    SELECT public.chores_create_v2(
+      (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+      'Bad recurrence unit',
+      NULL,
+      current_date,
+      1,
+      'fortnight',
+      NULL,
+      NULL,
+      NULL
+    )
+  $$,
+  '%recurrenceUnit must be one of day|week|month|year%',
+  'chores_create_v2 rejects invalid recurrenceUnit'
+);
+
+WITH res AS (
+  SELECT public.chores_create_v2(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+    'Trash day',
+    NULL,
+    current_date,
+    2,
+    'week',
+    NULL,
+    NULL,
+    NULL
+  ) AS payload
+)
+INSERT INTO tmp_chores (label, chore_id)
+SELECT 'v2_recurring', (payload).id FROM res;
+
+SELECT is(
+  (SELECT recurrence_every
+   FROM public.chores
+   WHERE id = (SELECT chore_id FROM tmp_chores WHERE label = 'v2_recurring')),
+  2,
+  'chores_create_v2 stores recurrence_every'
+);
+
+SELECT is(
+  (SELECT recurrence_unit
+   FROM public.chores
+   WHERE id = (SELECT chore_id FROM tmp_chores WHERE label = 'v2_recurring')),
+  'week',
+  'chores_create_v2 stores recurrence_unit'
+);
+
+SELECT throws_like(
+  $$
+    SELECT public.chores_update_v2(
+      (SELECT chore_id FROM tmp_chores WHERE label = 'v2_recurring'),
+      'Trash day',
+      NULL,
+      current_date,
+      2,
+      'week',
+      NULL,
+      NULL,
+      NULL
+    )
+  $$,
+  '%Assignee is required%',
+  'chores_update_v2 requires an assignee'
+);
+
+SELECT public.chores_cancel(
+  (SELECT chore_id FROM tmp_chores WHERE label = 'v2_recurring')
 );
 
 -- NOTE:

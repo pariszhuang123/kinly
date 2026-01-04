@@ -32,7 +32,8 @@ void main() {
     assigneeUserId: null,
     name: 'Test chore',
     startDate: DateTime.utc(2024, 1, 1),
-    recurrence: ChoreRecurrence.none,
+    recurrenceEvery: null,
+    recurrenceUnit: null,
     recurrenceCursor: null,
     nextOccurrence: null,
     expectationPhotoPath: null,
@@ -54,7 +55,6 @@ void main() {
   }
 
   setUpAll(() {
-    registerFallbackValue(ChoreRecurrence.none);
     registerFallbackValue(DateTime.now());
   });
 
@@ -120,7 +120,8 @@ void main() {
           name: any(named: 'name'),
           assigneeUserId: any(named: 'assigneeUserId'),
           startDate: any(named: 'startDate'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           notes: any(named: 'notes'),
           howToVideoUrl: any(named: 'howToVideoUrl'),
           expectationPhotoPath: any(named: 'expectationPhotoPath'),
@@ -139,7 +140,8 @@ void main() {
           name: any(named: 'name'),
           assigneeUserId: any(named: 'assigneeUserId'),
           startDate: any(named: 'startDate'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           notes: any(named: 'notes'),
           howToVideoUrl: any(named: 'howToVideoUrl'),
           expectationPhotoPath: any(named: 'expectationPhotoPath'),
@@ -184,9 +186,78 @@ void main() {
           name: 'Wash dishes',
           assigneeUserId: null,
           startDate: any(named: 'startDate'),
-          recurrence: ChoreRecurrence.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           notes: null,
           howToVideoUrl: 'https://example.com/video',
+          expectationPhotoPath: null,
+        ),
+      ).called(1);
+    },
+  );
+
+  blocTest<FlowChoreBloc, FlowChoreState>(
+    'recurrence toggle defaults to 1 week when empty',
+    build: () => buildBloc(),
+    act: (bloc) async {
+      bloc.add(const FlowChoreStarted());
+      await Future<void>.delayed(Duration.zero);
+      bloc.add(const FlowChoreRecurrenceToggled(true));
+    },
+    expect:
+        () => [
+          isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', true),
+          isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', false),
+          isA<FlowChoreState>()
+              .having(
+                (s) => s.form.recurrenceEvery,
+                'recurrenceEvery',
+                1,
+              )
+              .having(
+                (s) => s.form.recurrenceUnit,
+                'recurrenceUnit',
+                ChoreRecurrenceUnit.week,
+              ),
+        ],
+  );
+
+  blocTest<FlowChoreBloc, FlowChoreState>(
+    'submits recurrenceEvery/unit when recurring',
+    build: () => buildBloc(),
+    setUp: () {
+      when(
+        () => choresRepository.create(
+          homeId: any(named: 'homeId'),
+          name: any(named: 'name'),
+          assigneeUserId: any(named: 'assigneeUserId'),
+          startDate: any(named: 'startDate'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          notes: any(named: 'notes'),
+          howToVideoUrl: any(named: 'howToVideoUrl'),
+          expectationPhotoPath: any(named: 'expectationPhotoPath'),
+        ),
+      ).thenAnswer((_) async => sampleChore);
+    },
+    act: (bloc) async {
+      bloc.add(const FlowChoreStarted());
+      await Future<void>.delayed(Duration.zero);
+      bloc.add(const FlowChoreTitleChanged('Vacuum'));
+      bloc.add(const FlowChoreRecurrenceToggled(true));
+      bloc.add(const FlowChoreSubmitted());
+    },
+    verify: (_) {
+      verify(
+        () => choresRepository.create(
+          homeId: 'home-1',
+          name: 'Vacuum',
+          assigneeUserId: null,
+          startDate: any(named: 'startDate'),
+          recurrenceEvery: 1,
+          recurrenceUnit: ChoreRecurrenceUnit.week,
+          notes: null,
+          howToVideoUrl: null,
           expectationPhotoPath: null,
         ),
       ).called(1);
@@ -203,7 +274,8 @@ void main() {
           name: any(named: 'name'),
           assigneeUserId: any(named: 'assigneeUserId'),
           startDate: any(named: 'startDate'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           notes: any(named: 'notes'),
           howToVideoUrl: any(named: 'howToVideoUrl'),
           expectationPhotoPath: any(named: 'expectationPhotoPath'),
@@ -247,7 +319,8 @@ void main() {
           name: any(named: 'name'),
           assigneeUserId: any(named: 'assigneeUserId'),
           startDate: any(named: 'startDate'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           notes: any(named: 'notes'),
           howToVideoUrl: any(named: 'howToVideoUrl'),
           expectationPhotoPath: any(named: 'expectationPhotoPath'),
@@ -286,7 +359,8 @@ void main() {
           name: any(named: 'name'),
           assigneeUserId: any(named: 'assigneeUserId'),
           startDate: any(named: 'startDate'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           notes: any(named: 'notes'),
           howToVideoUrl: any(named: 'howToVideoUrl'),
           expectationPhotoPath: any(named: 'expectationPhotoPath'),
@@ -324,7 +398,8 @@ void main() {
           name: any(named: 'name'),
           assigneeUserId: any(named: 'assigneeUserId'),
           startDate: any(named: 'startDate'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           notes: any(named: 'notes'),
           howToVideoUrl: any(named: 'howToVideoUrl'),
           expectationPhotoPath: any(named: 'expectationPhotoPath'),

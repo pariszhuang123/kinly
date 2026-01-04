@@ -2,6 +2,14 @@
 
 Tracks versioned contract changes and related ADRs.
 
+## v2 - Chores Recurrence Every/Unit
+- Date: 2026-01-04
+- Scope: `docs/contracts/chores_v2.md`
+- Changes:
+  - Replace `RecurrenceInterval` enum usage at the API boundary with `recurrenceEvery` + `recurrenceUnit`.
+  - Add v2 RPCs for create/update (`public.chores_create_v2`, `public.chores_update_v2`).
+  - Update chores read payloads to return `recurrenceEvery/recurrenceUnit`.
+
 ## v1 - Avatar Identity
 - Date: 2026-01-06
 - Scope: `docs/contracts/kinly_avatar_identity_v1.md`

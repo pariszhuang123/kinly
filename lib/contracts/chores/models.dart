@@ -1,11 +1,11 @@
 import 'package:kinly/contracts/time/timezone.dart';
 
 import 'enums/chore_completion_status.dart';
-import 'enums/chore_recurrence.dart';
+import 'enums/chore_recurrence_unit.dart';
 import 'enums/chore_state.dart';
 
 export 'enums/chore_completion_status.dart';
-export 'enums/chore_recurrence.dart';
+export 'enums/chore_recurrence_unit.dart';
 export 'enums/chore_state.dart';
 
 // -----------------------------------------------------------------------------
@@ -19,7 +19,8 @@ class Chore {
   final String? assigneeUserId;
   final String name;
   final DateTime startDate;
-  final ChoreRecurrence recurrence;
+  final int? recurrenceEvery;
+  final ChoreRecurrenceUnit? recurrenceUnit;
   final DateTime? recurrenceCursor;
   final DateTime? nextOccurrence;
   final String? expectationPhotoPath;
@@ -37,7 +38,8 @@ class Chore {
     required this.assigneeUserId,
     required this.name,
     required this.startDate,
-    required this.recurrence,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.recurrenceCursor,
     required this.nextOccurrence,
     required this.expectationPhotoPath,
@@ -57,7 +59,12 @@ class Chore {
       assigneeUserId: json['assignee_user_id'] as String?,
       name: json['name'] as String,
       startDate: parseDateToLocal(json['start_date'])!,
-      recurrence: ChoreRecurrenceWire.fromWire(json['recurrence'] as String?),
+      recurrenceEvery: _coerceInt(
+        json['recurrence_every'] ?? json['recurrenceEvery'],
+      ),
+      recurrenceUnit: ChoreRecurrenceUnitWire.fromWire(
+        json['recurrence_unit'] ?? json['recurrenceUnit'],
+      ),
       recurrenceCursor: parseDateToLocal(json['recurrence_cursor']),
       nextOccurrence: parseDateToLocal(json['next_occurrence']),
       expectationPhotoPath: json['expectation_photo_path'] as String?,
@@ -237,7 +244,8 @@ class ChoreCompletionResult {
   final String choreId;
   final String homeId;
   final ChoreState? state;
-  final ChoreRecurrence? recurrence;
+  final int? recurrenceEvery;
+  final ChoreRecurrenceUnit? recurrenceUnit;
   final DateTime? previousNextOccurrence;
   final DateTime? newNextOccurrence;
   final int? stepsAdvanced;
@@ -247,7 +255,8 @@ class ChoreCompletionResult {
     required this.choreId,
     required this.homeId,
     this.state,
-    this.recurrence,
+    this.recurrenceEvery,
+    this.recurrenceUnit,
     this.previousNextOccurrence,
     this.newNextOccurrence,
     this.stepsAdvanced,
@@ -261,14 +270,25 @@ class ChoreCompletionResult {
       state: (json['state'] as String?)?.let(
         (value) => ChoreStateWire.fromWire(value),
       ),
-      recurrence: (json['recurrence'] as String?)?.let(
-        (value) => ChoreRecurrenceWire.fromWire(value),
+      recurrenceEvery: _coerceInt(
+        json['recurrence_every'] ?? json['recurrenceEvery'],
+      ),
+      recurrenceUnit: ChoreRecurrenceUnitWire.fromWire(
+        json['recurrence_unit'] ?? json['recurrenceUnit'],
       ),
       previousNextOccurrence: parseDateToLocal(json['previous_next_occurrence']),
       newNextOccurrence: parseDateToLocal(json['new_next_occurrence']),
       stepsAdvanced: (json['steps_advanced'] as num?)?.toInt(),
     );
   }
+}
+
+int? _coerceInt(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  if (value is String) return int.tryParse(value);
+  return null;
 }
 
 // -----------------------------------------------------------------------------

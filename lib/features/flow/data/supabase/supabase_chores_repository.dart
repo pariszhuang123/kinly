@@ -20,7 +20,8 @@ class SupabaseChoresRepository implements ChoresRepository {
     required String name,
     String? assigneeUserId,
     DateTime? startDate,
-    ChoreRecurrence recurrence = ChoreRecurrence.none,
+    int? recurrenceEvery,
+    ChoreRecurrenceUnit? recurrenceUnit,
     String? notes,
     String? howToVideoUrl,
     String? expectationPhotoPath,
@@ -29,14 +30,16 @@ class SupabaseChoresRepository implements ChoresRepository {
       final sanitizedHowTo =
           howToVideoUrl == null ? null : normalizeHttpUrlOrNull(howToVideoUrl);
       final response = await _client.rpc(
-        'chores_create',
+        'chores_create_v2',
         params: {
           'p_home_id': homeId,
           'p_name': name,
           if (assigneeUserId != null) 'p_assignee_user_id': assigneeUserId,
           if (startDate != null)
             'p_start_date': _dateFormatter.format(startDate),
-          'p_recurrence': recurrence.wireValue,
+          if (recurrenceEvery != null) 'p_recurrence_every': recurrenceEvery,
+          if (recurrenceUnit != null)
+            'p_recurrence_unit': recurrenceUnit.wireValue,
           if (notes != null) 'p_notes': notes,
           'p_how_to_video_url': sanitizedHowTo,
           if (expectationPhotoPath != null)
@@ -55,7 +58,8 @@ class SupabaseChoresRepository implements ChoresRepository {
     required String name,
     required String assigneeUserId,
     required DateTime startDate,
-    ChoreRecurrence? recurrence,
+    int? recurrenceEvery,
+    ChoreRecurrenceUnit? recurrenceUnit,
     String? notes,
     String? howToVideoUrl,
     String? expectationPhotoPath,
@@ -64,13 +68,15 @@ class SupabaseChoresRepository implements ChoresRepository {
       final sanitizedHowTo =
           howToVideoUrl == null ? null : normalizeHttpUrlOrNull(howToVideoUrl);
       final response = await _client.rpc(
-        'chores_update',
+        'chores_update_v2',
         params: {
           'p_chore_id': choreId,
           'p_name': name,
           'p_assignee_user_id': assigneeUserId,
           'p_start_date': _dateFormatter.format(startDate),
-          if (recurrence != null) 'p_recurrence': recurrence.wireValue,
+          if (recurrenceEvery != null) 'p_recurrence_every': recurrenceEvery,
+          if (recurrenceUnit != null)
+            'p_recurrence_unit': recurrenceUnit.wireValue,
           if (notes != null) 'p_notes': notes,
           'p_how_to_video_url': sanitizedHowTo,
           if (expectationPhotoPath != null)

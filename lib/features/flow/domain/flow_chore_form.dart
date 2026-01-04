@@ -8,7 +8,8 @@ class FlowChoreForm {
   final String title;
   final String? assigneeUserId;
   final DateTime startDate;
-  final ChoreRecurrence recurrence;
+  final int? recurrenceEvery;
+  final ChoreRecurrenceUnit? recurrenceUnit;
   final String notes;
   final String howToVideoUrl;
   final String expectationPhotoPath;
@@ -17,7 +18,8 @@ class FlowChoreForm {
     required this.title,
     required this.assigneeUserId,
     required this.startDate,
-    required this.recurrence,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.notes,
     required this.howToVideoUrl,
     required this.expectationPhotoPath,
@@ -29,7 +31,8 @@ class FlowChoreForm {
       title: '',
       assigneeUserId: null,
       startDate: normalizedStart,
-      recurrence: ChoreRecurrence.none,
+      recurrenceEvery: null,
+      recurrenceUnit: null,
       notes: '',
       howToVideoUrl: '',
       expectationPhotoPath: '',
@@ -41,7 +44,8 @@ class FlowChoreForm {
       title: chore.name,
       assigneeUserId: chore.assigneeUserId,
       startDate: dateOnly(chore.startDate),
-      recurrence: chore.recurrence,
+      recurrenceEvery: chore.recurrenceEvery,
+      recurrenceUnit: chore.recurrenceUnit,
       notes: chore.notes ?? '',
       howToVideoUrl: chore.howToVideoUrl ?? '',
       expectationPhotoPath: chore.expectationPhotoPath ?? '',
@@ -52,10 +56,12 @@ class FlowChoreForm {
     String? title,
     Object? assigneeUserId = _unset,
     DateTime? startDate,
-    ChoreRecurrence? recurrence,
+    int? recurrenceEvery,
+    ChoreRecurrenceUnit? recurrenceUnit,
     String? notes,
     String? howToVideoUrl,
     String? expectationPhotoPath,
+    bool clearRecurrence = false,
   }) {
     return FlowChoreForm(
       title: title ?? this.title,
@@ -65,7 +71,14 @@ class FlowChoreForm {
               : assigneeUserId as String?,
       startDate:
           startDate != null ? dateOnly(startDate) : this.startDate,
-      recurrence: recurrence ?? this.recurrence,
+      recurrenceEvery:
+          clearRecurrence
+              ? null
+              : recurrenceEvery ?? this.recurrenceEvery,
+      recurrenceUnit:
+          clearRecurrence
+              ? null
+              : recurrenceUnit ?? this.recurrenceUnit,
       notes: notes ?? this.notes,
       howToVideoUrl: howToVideoUrl ?? this.howToVideoUrl,
       expectationPhotoPath: expectationPhotoPath ?? this.expectationPhotoPath,
@@ -82,7 +95,8 @@ class FlowChoreForm {
     return title == other.title &&
         assigneeUserId == other.assigneeUserId &&
         startDate.isAtSameMomentAs(other.startDate) &&
-        recurrence == other.recurrence &&
+        recurrenceEvery == other.recurrenceEvery &&
+        recurrenceUnit == other.recurrenceUnit &&
         notes == other.notes &&
         howToVideoUrl == other.howToVideoUrl &&
         expectationPhotoPath == other.expectationPhotoPath;
@@ -102,7 +116,8 @@ class FlowChoreForm {
           title == other.title &&
           assigneeUserId == other.assigneeUserId &&
           startDate.isAtSameMomentAs(other.startDate) &&
-          recurrence == other.recurrence &&
+          recurrenceEvery == other.recurrenceEvery &&
+          recurrenceUnit == other.recurrenceUnit &&
           notes == other.notes &&
           howToVideoUrl == other.howToVideoUrl &&
           expectationPhotoPath == other.expectationPhotoPath;
@@ -112,9 +127,16 @@ class FlowChoreForm {
     title,
     assigneeUserId,
     startDate.toIso8601String(),
-    recurrence,
+    recurrenceEvery,
+    recurrenceUnit,
     notes,
     howToVideoUrl,
     expectationPhotoPath,
   );
+
+  bool get isRecurring =>
+      recurrenceEvery != null && recurrenceUnit != null;
+
+  bool get isRecurrenceValid =>
+      !isRecurring || (recurrenceEvery != null && recurrenceEvery! >= 1);
 }

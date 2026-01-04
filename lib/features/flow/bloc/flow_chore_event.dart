@@ -35,12 +35,28 @@ class FlowChoreStartDateChanged extends FlowChoreEvent {
   List<Object?> get props => [startDate];
 }
 
-class FlowChoreRecurrenceChanged extends FlowChoreEvent {
-  final ChoreRecurrence recurrence;
-  const FlowChoreRecurrenceChanged(this.recurrence);
+class FlowChoreRecurrenceToggled extends FlowChoreEvent {
+  final bool isRecurring;
+  const FlowChoreRecurrenceToggled(this.isRecurring);
 
   @override
-  List<Object?> get props => [recurrence];
+  List<Object?> get props => [isRecurring];
+}
+
+class FlowChoreRecurrenceEveryChanged extends FlowChoreEvent {
+  final String value;
+  const FlowChoreRecurrenceEveryChanged(this.value);
+
+  @override
+  List<Object?> get props => [value];
+}
+
+class FlowChoreRecurrenceUnitChanged extends FlowChoreEvent {
+  final ChoreRecurrenceUnit unit;
+  const FlowChoreRecurrenceUnitChanged(this.unit);
+
+  @override
+  List<Object?> get props => [unit];
 }
 
 class FlowChoreNotesChanged extends FlowChoreEvent {

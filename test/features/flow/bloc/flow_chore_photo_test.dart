@@ -34,7 +34,6 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(DateTime.now());
-    registerFallbackValue(ChoreRecurrence.none);
   });
 
   test(
@@ -118,7 +117,8 @@ void main() {
         name: any(named: 'name'),
         assigneeUserId: any(named: 'assigneeUserId'),
         startDate: any(named: 'startDate'),
-        recurrence: any(named: 'recurrence'),
+        recurrenceEvery: any(named: 'recurrenceEvery'),
+        recurrenceUnit: any(named: 'recurrenceUnit'),
         notes: any(named: 'notes'),
         howToVideoUrl: any(named: 'howToVideoUrl'),
         expectationPhotoPath: any(named: 'expectationPhotoPath'),
@@ -152,7 +152,8 @@ void main() {
         name: 'Test chore',
         assigneeUserId: null,
         startDate: any(named: 'startDate'),
-        recurrence: ChoreRecurrence.none,
+        recurrenceEvery: null,
+        recurrenceUnit: null,
         notes: null,
         howToVideoUrl: null,
         expectationPhotoPath: photoPath,
@@ -203,7 +204,8 @@ Chore _fakeChore({required String id, String? expectationPhotoPath}) {
     assigneeUserId: null,
     name: 'Test chore',
     startDate: now,
-    recurrence: ChoreRecurrence.none,
+    recurrenceEvery: null,
+    recurrenceUnit: null,
     recurrenceCursor: null,
     nextOccurrence: null,
     expectationPhotoPath: expectationPhotoPath,

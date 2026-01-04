@@ -120,8 +120,8 @@
       "rls": []
     },
     "chores": {
-      "latest": "v1",
-      "docs": "docs/contracts/chores_v1.md",
+      "latest": "v2",
+      "docs": "docs/contracts/chores_v2.md",
       "entities": {
         "Chore": {
           "id": "uuid",
@@ -130,7 +130,8 @@
           "assigneeUserId": "uuid|null",
           "name": "text",
           "startDate": "date",
-          "recurrence": "RecurrenceInterval",
+          "recurrenceEvery": "int|null",
+          "recurrenceUnit": "text|null",
           "recurrenceCursor": "timestamptz|null",
           "nextOccurrence": "date|null",
           "expectationPhotoPath": "text|null",
@@ -151,6 +152,30 @@
           "occurredAt": "timestamptz",
           "fromState": "ChoreState",
           "toState": "ChoreState"
+        },
+        "ChoreDetailDto": {
+          "id": "uuid",
+          "homeId": "uuid",
+          "createdByUserId": "uuid",
+          "assigneeUserId": "uuid|null",
+          "name": "text",
+          "startDate": "date|null",
+          "recurrenceEvery": "int|null",
+          "recurrenceUnit": "text|null",
+          "expectationPhotoPath": "text|null",
+          "howToVideoUrl": "text|null",
+          "notes": "text|null",
+          "assignee": "ChoreAssigneeInlineDto|null"
+        },
+        "ChoreAssigneeInlineDto": {
+          "id": "uuid",
+          "fullName": "text",
+          "avatarStoragePath": "text|null"
+        },
+        "ChoreAssigneeDto": {
+          "userId": "uuid",
+          "fullName": "text",
+          "avatarStoragePath": "text|null"
         }
       },
       "functions": {
@@ -189,10 +214,11 @@
               "start_date": "date",
               "state": "public.chore_state"
             },
-            "ordering": "start_date ASC, created_at ASC",
+            "ordering": "due only: next_occurrence <= current_date; internal ordering recommended by next_occurrence ASC, created_at ASC",
             "notes": [
               "Requires `_assert_home_member`",
               "When `p_state='active'`, rows are limited to chores assigned to `auth.uid()`",
+              "When `p_state='active'`, only chores due today or earlier are returned (next_occurrence <= current_date)",
               "When `p_state='draft'`, all draft chores for the home are returned"
             ]
           }
@@ -216,18 +242,24 @@
         "chores.create": {
           "type": "rpc",
           "caller": "member",
-          "impl": "public.chores_create",
+          "impl": "public.chores_create_v2",
           "args": {
             "p_home_id": "uuid",
             "p_name": "text",
             "p_assignee_user_id": "uuid|null",
             "p_start_date": "date|null",
-            "p_recurrence": "RecurrenceInterval|null",
+            "p_recurrence_every": "int|null",
+            "p_recurrence_unit": "text|null",
             "p_how_to_video_url": "text|null",
             "p_notes": "text|null",
             "p_expectation_photo_path": "text|null"
           },
-          "returns": "Chore"
+          "returns": "Chore",
+          "notes": [
+            "recurrenceEvery/unit are paired: both null (one-off) OR both set (recurring).",
+            "Backend computes recurrenceCursor and nextOccurrence.",
+            "If assignee provided, state becomes active; otherwise draft."
+          ]
         },
         "chores.getForHome": {
           "type": "rpc",
@@ -237,23 +269,32 @@
             "p_home_id": "uuid",
             "p_chore_id": "uuid"
           },
-          "returns": "jsonb"
+          "returns": "jsonb",
+          "notes": [
+            "Payload returns recurrenceEvery/recurrenceUnit (not legacy recurrence enum).",
+            "Edit DTO is partial; clients must not rely on state/cursors/timestamps being present."
+          ]
         },
         "chores.update": {
           "type": "rpc",
           "caller": "member",
-          "impl": "public.chores_update",
+          "impl": "public.chores_update_v2",
           "args": {
             "p_chore_id": "uuid",
             "p_name": "text",
             "p_assignee_user_id": "uuid",
-            "p_start_date": "date",
-            "p_recurrence": "RecurrenceInterval|null",
+            "p_start_date": "date|null",
+            "p_recurrence_every": "int|null",
+            "p_recurrence_unit": "text|null",
             "p_expectation_photo_path": "text|null",
             "p_how_to_video_url": "text|null",
             "p_notes": "text|null"
           },
-          "returns": "Chore"
+          "returns": "Chore",
+          "notes": [
+            "Assignee is required; state remains active after updates.",
+            "When recurrence fields change, backend recomputes recurrenceCursor/nextOccurrence."
+          ]
         },
         "chores.cancel": {
           "type": "rpc",
@@ -271,7 +312,11 @@
           "args": {
             "_chore_id": "uuid"
           },
-          "returns": "jsonb"
+          "returns": "jsonb",
+          "notes": [
+            "One-off: state=completed, completedAt=now(), nextOccurrence=null, decrements active_chores.",
+            "Recurring: keep state=active, emit complete event, advance nextOccurrence to the next date after today so it no longer appears in Today due list."
+          ]
         }
       },
       "rls": [

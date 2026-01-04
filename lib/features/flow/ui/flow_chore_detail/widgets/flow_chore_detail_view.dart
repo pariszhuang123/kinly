@@ -75,7 +75,8 @@ class FlowChoreDetailView extends StatelessWidget {
 
     final assigneeName = _resolveAssignee(context, details);
     final formattedDate = DateFormat.yMMMMd().format(chore.startDate);
-    final recurrenceLabel = _recurrenceLabel(context, chore.recurrence);
+    final recurrenceLabel =
+        _recurrenceLabel(context, chore.recurrenceEvery, chore.recurrenceUnit);
 
     return Padding(
       padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
@@ -230,24 +231,22 @@ Future<void> _launchHowToUrl(BuildContext context, String url) async {
   }
 }
 
-String _recurrenceLabel(BuildContext context, ChoreRecurrence recurrence) {
+String _recurrenceLabel(
+  BuildContext context,
+  int? recurrenceEvery,
+  ChoreRecurrenceUnit? recurrenceUnit,
+) {
   final s = S.of(context);
-  switch (recurrence) {
-    case ChoreRecurrence.none:
-      return s.flowChoreRecurrenceNone;
-    case ChoreRecurrence.daily:
-      return s.flowChoreRecurrenceDaily;
-    case ChoreRecurrence.weekly:
-      return s.flowChoreRecurrenceWeekly;
-    case ChoreRecurrence.every2Weeks:
-      return s.flowChoreRecurrenceEvery2Weeks;
-    case ChoreRecurrence.monthly:
-      return s.flowChoreRecurrenceMonthly;
-    case ChoreRecurrence.every2Months:
-      return s.flowChoreRecurrenceEvery2Months;
-    case ChoreRecurrence.annual:
-      return s.flowChoreRecurrenceAnnual;
+  if (recurrenceEvery == null || recurrenceUnit == null) {
+    return s.flowChoreRecurrenceNone;
   }
+  final unitLabel = switch (recurrenceUnit) {
+    ChoreRecurrenceUnit.day => s.shareCreateRecurrenceUnitDay,
+    ChoreRecurrenceUnit.week => s.shareCreateRecurrenceUnitWeek,
+    ChoreRecurrenceUnit.month => s.shareCreateRecurrenceUnitMonth,
+    ChoreRecurrenceUnit.year => s.shareCreateRecurrenceUnitYear,
+  };
+  return '${s.shareCreateRecurrenceEveryLabel} $recurrenceEvery $unitLabel';
 }
 
 String? _resolveAssignee(BuildContext context, ChoreDetails details) {

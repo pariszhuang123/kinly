@@ -23,6 +23,7 @@ import '../../../core/ui/kinly_icons.dart';
 import '../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/kinly_tap_target.dart';
+import '../../../core/ui/toggles/kinly_checkbox.dart';
 import '../../../core/ui/members/kinly_selectable_member_avatar_row.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
@@ -57,6 +58,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
   final _titleController = TextEditingController();
   final _notesController = TextEditingController();
   final _howToController = TextEditingController();
+  final _recurrenceEveryController = TextEditingController();
   bool _hasHydratedControllers = false;
 
   @override
@@ -64,6 +66,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
     _titleController.dispose();
     _notesController.dispose();
     _howToController.dispose();
+    _recurrenceEveryController.dispose();
     super.dispose();
   }
 
@@ -72,7 +75,16 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
     _titleController.text = form.title;
     _notesController.text = form.notes;
     _howToController.text = form.howToVideoUrl;
+    _recurrenceEveryController.text =
+        form.recurrenceEvery?.toString() ?? '';
     _hasHydratedControllers = true;
+  }
+
+  void _syncRecurrenceController(FlowChoreForm form) {
+    final desired = form.recurrenceEvery?.toString() ?? '';
+    if (_recurrenceEveryController.text != desired) {
+      _recurrenceEveryController.text = desired;
+    }
   }
 
   @override
@@ -144,6 +156,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         builder: (context, state) {
           if (!state.isLoading) {
             _hydrateControllers(state.form);
+            _syncRecurrenceController(state.form);
           }
 
           final spacing = theme.extension<Spacing>();
@@ -251,6 +264,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         flowColors: flowColors,
         isUploadingPhoto: state.isUploadingPhoto,
         expectationPhotoUrl: expectationPhotoUrl,
+        recurrenceEveryController: _recurrenceEveryController,
         onPhotoCapture:
             () => context.read<FlowChoreBloc>().add(
               const FlowChorePhotoCaptureRequested(),

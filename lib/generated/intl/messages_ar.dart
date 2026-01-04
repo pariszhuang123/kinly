@@ -209,23 +209,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChorePhotoUploadError": MessageLookupByLibrary.simpleMessage(
       "تعذّر رفع الصورة. حاول مرة أخرى.",
     ),
-    "flowChoreRecurrenceAnnual": MessageLookupByLibrary.simpleMessage("سنويًا"),
-    "flowChoreRecurrenceDaily": MessageLookupByLibrary.simpleMessage("يوميًا"),
-    "flowChoreRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
-      "كل شهرين",
-    ),
-    "flowChoreRecurrenceEvery2Weeks": MessageLookupByLibrary.simpleMessage(
-      "كل أسبوعين",
-    ),
     "flowChoreRecurrenceLabel": MessageLookupByLibrary.simpleMessage("تكرار"),
-    "flowChoreRecurrenceMonthly": MessageLookupByLibrary.simpleMessage(
-      "شهريًا",
-    ),
     "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage(
       "مرة واحدة",
-    ),
-    "flowChoreRecurrenceWeekly": MessageLookupByLibrary.simpleMessage(
-      "أسبوعيًا",
     ),
     "flowChoreRetry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
     "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage(

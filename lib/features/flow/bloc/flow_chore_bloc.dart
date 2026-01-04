@@ -43,7 +43,9 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     on<FlowChoreTitleChanged>(_onTitleChanged);
     on<FlowChoreAssigneeChanged>(_onAssigneeChanged);
     on<FlowChoreStartDateChanged>(_onStartDateChanged);
-    on<FlowChoreRecurrenceChanged>(_onRecurrenceChanged);
+    on<FlowChoreRecurrenceToggled>(_onRecurrenceToggled);
+    on<FlowChoreRecurrenceEveryChanged>(_onRecurrenceEveryChanged);
+    on<FlowChoreRecurrenceUnitChanged>(_onRecurrenceUnitChanged);
     on<FlowChoreNotesChanged>(_onNotesChanged);
     on<FlowChoreHowToChanged>(_onHowToChanged);
     on<FlowChorePhotoChanged>(_onPhotoChanged);
@@ -144,12 +146,44 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     emit(state.copyWith(form: state.form.copyWith(startDate: event.startDate)));
   }
 
-  void _onRecurrenceChanged(
-    FlowChoreRecurrenceChanged event,
+  void _onRecurrenceToggled(
+    FlowChoreRecurrenceToggled event,
+    Emitter<FlowChoreState> emit,
+  ) {
+    if (!event.isRecurring) {
+      emit(
+        state.copyWith(form: state.form.copyWith(clearRecurrence: true)),
+      );
+      return;
+    }
+
+    final nextEvery = state.form.recurrenceEvery ?? 1;
+    final nextUnit = state.form.recurrenceUnit ?? ChoreRecurrenceUnit.week;
+    emit(
+      state.copyWith(
+        form: state.form.copyWith(
+          recurrenceEvery: nextEvery,
+          recurrenceUnit: nextUnit,
+        ),
+      ),
+    );
+  }
+
+  void _onRecurrenceEveryChanged(
+    FlowChoreRecurrenceEveryChanged event,
+    Emitter<FlowChoreState> emit,
+  ) {
+    final trimmed = event.value.trim();
+    final every = trimmed.isEmpty ? null : int.tryParse(trimmed);
+    emit(state.copyWith(form: state.form.copyWith(recurrenceEvery: every)));
+  }
+
+  void _onRecurrenceUnitChanged(
+    FlowChoreRecurrenceUnitChanged event,
     Emitter<FlowChoreState> emit,
   ) {
     emit(
-      state.copyWith(form: state.form.copyWith(recurrence: event.recurrence)),
+      state.copyWith(form: state.form.copyWith(recurrenceUnit: event.unit)),
     );
   }
 
@@ -230,14 +264,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     Emitter<FlowChoreState> emit,
   ) async {
     final form = state.form;
-    final requiresAssignee = _choreId != null;
-    final hasValidAssignee = !requiresAssignee || form.assigneeUserId != null;
-    final hasValidDate = form.isStartDateInRange(DateTime.now());
-    final hasValidHowTo = form.isHowToUrlValid;
-    if (!form.isTitleValid ||
-        !hasValidAssignee ||
-        !hasValidDate ||
-        !hasValidHowTo) {
+    if (!_isFormValid(form)) {
       emit(state.copyWith(showValidationErrors: true));
       return;
     }
@@ -252,33 +279,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     );
 
     try {
-      final normalizedNotes = _normalizeOptional(form.notes);
-      final normalizedHowTo = form.normalizedHowToUrl;
-      final normalizedPhoto = _normalizeOptional(form.expectationPhotoPath);
-
-      final savedChore =
-          _choreId == null
-              ? await _choresRepository.create(
-                homeId: _homeId,
-                name: form.title.trim(),
-                assigneeUserId: form.assigneeUserId,
-                startDate: form.startDate,
-                recurrence: form.recurrence,
-                notes: normalizedNotes,
-                howToVideoUrl: normalizedHowTo,
-                expectationPhotoPath: normalizedPhoto,
-              )
-              : await _choresRepository.update(
-                choreId: _choreId,
-                name: form.title.trim(),
-                assigneeUserId: form.assigneeUserId!,
-                startDate: form.startDate,
-                recurrence: form.recurrence,
-                notes: normalizedNotes,
-                howToVideoUrl: normalizedHowTo,
-                expectationPhotoPath: normalizedPhoto,
-              );
-
+      final savedChore = await _submitForm(form);
       emit(
         state.copyWith(
           isSubmitting: false,
@@ -289,67 +290,120 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
         ),
       );
     } on ChoreException catch (error) {
-      if (error.code == ChoreErrorCode.paywallActiveCap ||
-          error.code == ChoreErrorCode.paywallMediaCap) {
-        final triggers = <PaywallTrigger>{
-          if (error.code == ChoreErrorCode.paywallActiveCap)
-            PaywallTrigger.flowActiveCap
-          else
-            PaywallTrigger.flowPhotosCap,
-        };
-        final hasPhotoIntent =
-            state.form.expectationPhotoPath.trim().isNotEmpty;
-        if (error.code == ChoreErrorCode.paywallActiveCap && hasPhotoIntent) {
-          triggers.add(PaywallTrigger.flowPhotosCap);
-        }
-        final tick = state.paywallRequestTick + 1;
-        emit(
-          state.copyWith(
-            isSubmitting: false,
-            isDeleting: false,
-            clearSuccess: true,
-            clearSubmissionError: true,
-            paywallAction: PaywallRetryAction.submit,
-            paywallRequestTick: tick,
-            paywallRequest: PaywallGateRequest(
-              requestId: _uuid.v4(),
-              homeId: _homeId,
-              source:
-                  _choreId == null
-                      ? PaywallSources.flowCreateChore
-                      : PaywallSources.flowEditChore,
-              action: PaywallRetryAction.submit,
-              tick: tick,
-              triggers: triggers,
-            ),
-            paywallInFlightRequestId: null,
-          ),
-        );
-        return;
-      }
-
-      emit(
-        state.copyWith(
-          isSubmitting: false,
-          isDeleting: false,
-          clearSuccess: true,
-          submissionErrorCode: error.code,
-          submissionErrorMessage: error.message,
-          submissionErrorTick: state.submissionErrorTick + 1,
-        ),
+      if (_handlePaywall(error, emit)) return;
+      _emitSubmissionError(
+        emit,
+        code: error.code,
+        message: error.message,
       );
     } catch (error) {
-      emit(
-        state.copyWith(
-          isSubmitting: false,
-          isDeleting: false,
-          clearSuccess: true,
-          submissionErrorCode: null,
-          submissionErrorMessage: error.toString(),
-          submissionErrorTick: state.submissionErrorTick + 1,
-        ),
+      _emitSubmissionError(emit, message: error.toString());
+    }
+  }
+
+  bool _isFormValid(FlowChoreForm form) {
+    final requiresAssignee = _choreId != null;
+    final hasValidAssignee = !requiresAssignee || form.assigneeUserId != null;
+    final hasValidDate = form.isStartDateInRange(DateTime.now());
+    final hasValidHowTo = form.isHowToUrlValid;
+    final hasValidRecurrence =
+        !form.isRecurring || form.isRecurrenceValid;
+    return form.isTitleValid &&
+        hasValidAssignee &&
+        hasValidDate &&
+        hasValidHowTo &&
+        hasValidRecurrence;
+  }
+
+  Future<Chore> _submitForm(FlowChoreForm form) {
+    final normalizedNotes = _normalizeOptional(form.notes);
+    final normalizedHowTo = form.normalizedHowToUrl;
+    final normalizedPhoto = _normalizeOptional(form.expectationPhotoPath);
+    final recurrenceEvery = form.isRecurring ? form.recurrenceEvery : null;
+    final recurrenceUnit = form.isRecurring ? form.recurrenceUnit : null;
+    if (_choreId == null) {
+      return _choresRepository.create(
+        homeId: _homeId,
+        name: form.title.trim(),
+        assigneeUserId: form.assigneeUserId,
+        startDate: form.startDate,
+        recurrenceEvery: recurrenceEvery,
+        recurrenceUnit: recurrenceUnit,
+        notes: normalizedNotes,
+        howToVideoUrl: normalizedHowTo,
+        expectationPhotoPath: normalizedPhoto,
       );
     }
+    return _choresRepository.update(
+      choreId: _choreId,
+      name: form.title.trim(),
+      assigneeUserId: form.assigneeUserId!,
+      startDate: form.startDate,
+      recurrenceEvery: recurrenceEvery,
+      recurrenceUnit: recurrenceUnit,
+      notes: normalizedNotes,
+      howToVideoUrl: normalizedHowTo,
+      expectationPhotoPath: normalizedPhoto,
+    );
+  }
+
+  bool _handlePaywall(ChoreException error, Emitter<FlowChoreState> emit) {
+    if (error.code != ChoreErrorCode.paywallActiveCap &&
+        error.code != ChoreErrorCode.paywallMediaCap) {
+      return false;
+    }
+    final triggers = <PaywallTrigger>{
+      if (error.code == ChoreErrorCode.paywallActiveCap)
+        PaywallTrigger.flowActiveCap
+      else
+        PaywallTrigger.flowPhotosCap,
+    };
+    final hasPhotoIntent =
+        state.form.expectationPhotoPath.trim().isNotEmpty;
+    if (error.code == ChoreErrorCode.paywallActiveCap && hasPhotoIntent) {
+      triggers.add(PaywallTrigger.flowPhotosCap);
+    }
+    final tick = state.paywallRequestTick + 1;
+    emit(
+      state.copyWith(
+        isSubmitting: false,
+        isDeleting: false,
+        clearSuccess: true,
+        clearSubmissionError: true,
+        paywallAction: PaywallRetryAction.submit,
+        paywallRequestTick: tick,
+        paywallRequest: PaywallGateRequest(
+          requestId: _uuid.v4(),
+          homeId: _homeId,
+          source:
+              _choreId == null
+                  ? PaywallSources.flowCreateChore
+                  : PaywallSources.flowEditChore,
+          action: PaywallRetryAction.submit,
+          tick: tick,
+          triggers: triggers,
+        ),
+        paywallInFlightRequestId: null,
+      ),
+    );
+    return true;
+  }
+
+  void _emitSubmissionError(
+    Emitter<FlowChoreState> emit, {
+    ChoreErrorCode? code,
+    required String message,
+  }) {
+    emit(
+      state.copyWith(
+        isSubmitting: false,
+        isDeleting: false,
+        clearSuccess: true,
+        submissionErrorCode: code,
+        submissionErrorMessage: message,
+        submissionErrorTick: state.submissionErrorTick + 1,
+      ),
+    );
   }
 
   String? _normalizeOptional(String value) {

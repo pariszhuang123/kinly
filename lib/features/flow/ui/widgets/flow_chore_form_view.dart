@@ -11,6 +11,7 @@ class _FlowChoreFormView extends StatelessWidget {
     required this.isUploadingPhoto,
     required this.expectationPhotoUrl,
     required this.onPhotoCapture,
+    required this.recurrenceEveryController,
   });
 
   final TextEditingController titleController;
@@ -22,6 +23,7 @@ class _FlowChoreFormView extends StatelessWidget {
   final bool isUploadingPhoto;
   final String? expectationPhotoUrl;
   final VoidCallback onPhotoCapture;
+  final TextEditingController recurrenceEveryController;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,8 @@ class _FlowChoreFormView extends StatelessWidget {
         _hasAssigneeValidation(showValidation, state.requiresAssignee, form);
     final hasDateError = showValidation && !state.isStartDateValid;
     final hasHowToError = showValidation && !form.isHowToUrlValid;
+    final hasRecurrenceError =
+        showValidation && form.isRecurring && !form.isRecurrenceValid;
     final expandOptional =
         _shouldExpandOptional(form, hasHowToError: hasHowToError);
 
@@ -45,22 +49,11 @@ class _FlowChoreFormView extends StatelessWidget {
         SizedBox(height: spacing?.lg ?? 16),
         ..._buildStartDateSection(context, theme, s, form, hasDateError),
         SizedBox(height: spacing?.lg ?? 16),
-        KinlyDropdownField<ChoreRecurrence>(
-          value: form.recurrence,
-          labelText: s.flowChoreRecurrenceLabel,
-          items:
-              ChoreRecurrence.values
-                  .map(
-                    (value) => KinlyDropdownMenuItem.item(
-                      value: value,
-                      child: Text(_recurrenceLabel(context, value)),
-                    ),
-                  )
-                  .toList(),
-          onChanged:
-              (value) => context.read<FlowChoreBloc>().add(
-                FlowChoreRecurrenceChanged(value!),
-              ),
+        _RecurrenceField(
+          form: form,
+          showValidation: showValidation,
+          hasRecurrenceError: hasRecurrenceError,
+          controller: recurrenceEveryController,
         ),
         SizedBox(height: spacing?.lg ?? 16),
         _OptionalDetailsExpansion(
@@ -199,23 +192,119 @@ class _FlowChoreFormView extends StatelessWidget {
     }
   }
 
-  String _recurrenceLabel(BuildContext context, ChoreRecurrence recurrence) {
+}
+
+class _RecurrenceField extends StatelessWidget {
+  const _RecurrenceField({
+    required this.form,
+    required this.showValidation,
+    required this.hasRecurrenceError,
+    required this.controller,
+  });
+
+  final FlowChoreForm form;
+  final bool showValidation;
+  final bool hasRecurrenceError;
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
     final s = S.of(context);
-    switch (recurrence) {
-      case ChoreRecurrence.none:
-        return s.flowChoreRecurrenceNone;
-      case ChoreRecurrence.daily:
-        return s.flowChoreRecurrenceDaily;
-      case ChoreRecurrence.weekly:
-        return s.flowChoreRecurrenceWeekly;
-      case ChoreRecurrence.every2Weeks:
-        return s.flowChoreRecurrenceEvery2Weeks;
-      case ChoreRecurrence.monthly:
-        return s.flowChoreRecurrenceMonthly;
-      case ChoreRecurrence.every2Months:
-        return s.flowChoreRecurrenceEvery2Months;
-      case ChoreRecurrence.annual:
-        return s.flowChoreRecurrenceAnnual;
+    final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final isRecurring = form.isRecurring;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(s.flowChoreRecurrenceLabel, style: theme.textTheme.titleMedium),
+        SizedBox(height: spacing.xs),
+        Row(
+          children: [
+            KinlyCheckbox(
+              value: isRecurring,
+              onChanged:
+                  (value) => context.read<FlowChoreBloc>().add(
+                    FlowChoreRecurrenceToggled(value ?? false),
+                  ),
+            ),
+            SizedBox(width: spacing.xs),
+            Text(s.shareCreateRecurrenceToggleLabel),
+          ],
+        ),
+        if (isRecurring) ...[
+          SizedBox(height: spacing.xs),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(s.shareCreateRecurrenceEveryLabel),
+              SizedBox(width: spacing.sm),
+              SizedBox(
+                width: 72,
+                child: KinlyTextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  onChanged:
+                      (value) => context.read<FlowChoreBloc>().add(
+                        FlowChoreRecurrenceEveryChanged(value),
+                      ),
+                  errorText:
+                      showValidation && hasRecurrenceError
+                      ? s.shareCreateValidationRecurrence
+                      : null,
+                ),
+              ),
+              SizedBox(width: spacing.sm),
+              Expanded(
+                child: KinlyDropdownField<ChoreRecurrenceUnit>(
+                  value: form.recurrenceUnit,
+                  items:
+                      ChoreRecurrenceUnit.values
+                          .map(
+                            (value) => KinlyDropdownMenuItem.item(
+                              value: value,
+                              child: Text(_recurrenceUnitLabel(context, value)),
+                            ),
+                          )
+                          .toList(),
+                  onChanged:
+                      (value) => context.read<FlowChoreBloc>().add(
+                        FlowChoreRecurrenceUnitChanged(value!),
+                      ),
+                ),
+              ),
+            ],
+          ),
+        ],
+        if (showValidation && hasRecurrenceError)
+          Padding(
+            padding: EdgeInsets.only(top: spacing.xs),
+            child: Text(
+              s.shareCreateValidationRecurrence,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  String _recurrenceUnitLabel(
+    BuildContext context,
+    ChoreRecurrenceUnit unit,
+  ) {
+    final s = S.of(context);
+    switch (unit) {
+      case ChoreRecurrenceUnit.day:
+        return s.shareCreateRecurrenceUnitDay;
+      case ChoreRecurrenceUnit.week:
+        return s.shareCreateRecurrenceUnitWeek;
+      case ChoreRecurrenceUnit.month:
+        return s.shareCreateRecurrenceUnitMonth;
+      case ChoreRecurrenceUnit.year:
+        return s.shareCreateRecurrenceUnitYear;
     }
   }
 }
