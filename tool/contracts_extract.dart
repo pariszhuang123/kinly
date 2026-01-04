@@ -71,11 +71,16 @@ Future<void> main(List<String> args) async {
       json['functions'],
       context: '$domain.$version functions (${file.path})',
     );
+    final rls = _asList(
+      json['rls'],
+      context: '$domain.$version rls (${file.path})',
+    );
 
     final normalized = <String, dynamic>{
       ...json,
       'entities': entities,
       'functions': functions,
+      'rls': rls,
     };
 
     _normalizeFunctionPaths(normalized);
@@ -89,7 +94,7 @@ Future<void> main(List<String> args) async {
       'docs': file.path.replaceAll('\\', '/'),
       'entities': entities,
       'functions': functions,
-      'rls': json['rls'],
+      'rls': rls,
       'db': json['db'],
     };
   }
@@ -182,6 +187,22 @@ Map<String, dynamic> _asObject(dynamic v, {required String context}) {
   );
   exitCode = 1;
   return <String, dynamic>{};
+}
+
+/// Coerce a value into a list.
+/// - null -> []
+/// - wrong type -> [] + CI failure
+List<dynamic> _asList(dynamic v, {required String context}) {
+  if (v == null) return <dynamic>[];
+
+  if (v is List) return v;
+
+  stderr.writeln(
+    'Invalid $context: expected array, got ${v.runtimeType}. '
+    'Forcing empty array.',
+  );
+  exitCode = 1;
+  return <dynamic>[];
 }
 
 /// Same as `_asObject`, but enforces that each function entry is an object.

@@ -80,6 +80,11 @@ Future<void> main() async {
       ['run', 'tool/check_shared_understanding_copy.dart'],
     ),
     const _Check(
+      'check_contract_registry',
+      'dart',
+      ['run', 'tool/check_contract_registry.dart'],
+    ),
+    const _Check(
       'check_agents_guardrails',
       'dart',
       ['run', 'tool/check_agents_guardrails.dart'],

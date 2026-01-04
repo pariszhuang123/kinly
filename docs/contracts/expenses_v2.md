@@ -185,6 +185,24 @@ Scope: Updates expense recurrence from legacy enum to flexible `recurrenceEvery`
       "paid"
     ]
   },
+  "rls": [
+    {
+      "table": "public.expenses",
+      "rule": "RLS disabled; anon/auth/service roles have no grants. All read/write access flows through SECURITY DEFINER RPCs."
+    },
+    {
+      "table": "public.expense_plans",
+      "rule": "RLS disabled; anon/auth/service roles have no grants. Only RPCs can mutate."
+    },
+    {
+      "table": "public.expense_plan_debtors",
+      "rule": "RLS disabled; anon/auth/service roles have no grants. Only RPCs can mutate."
+    },
+    {
+      "table": "public.expense_splits",
+      "rule": "RLS disabled; anon/auth have no grants. Splits are only visible/mutated inside SECURITY DEFINER RPCs."
+    }
+  ],
   "functions": {
     "expenses.create": {
       "type": "rpc",
@@ -238,7 +256,11 @@ Scope: Updates expense recurrence from legacy enum to flexible `recurrenceEvery`
       "args": {
         "p_recipient_user_id": "uuid"
       },
-      "returns": "jsonb"
+      "returns": "jsonb",
+      "notes": [
+        "Bulk marks caller's unpaid splits owed to the recipient as paid",
+        "Stamps marked_paid_at, stamps fully_paid_at once per expense, decrements usage per fully paid expense"
+      ]
     },
     "expensePlans.terminate": {
       "type": "rpc",
@@ -247,7 +269,10 @@ Scope: Updates expense recurrence from legacy enum to flexible `recurrenceEvery`
       "args": {
         "p_plan_id": "uuid"
       },
-      "returns": "ExpensePlan"
+      "returns": "ExpensePlan",
+      "notes": [
+        "Stops future cycles; existing expenses remain payable"
+      ]
     },
     "expenses.cancel": {
       "type": "rpc",
@@ -283,7 +308,10 @@ Scope: Updates expense recurrence from legacy enum to flexible `recurrenceEvery`
       "args": {
         "p_expense_id": "uuid"
       },
-      "returns": "jsonb"
+      "returns": "jsonb",
+      "notes": [
+        "Creator-only; returns splits, planId, recurrenceEvery/Unit, startDate, canEdit flag, and editDisabledReason (ACTIVE_IMMUTABLE, RECURRING_CYCLE_IMMUTABLE, CONVERTED_TO_PLAN)"
+      ]
     }
   }
 }
