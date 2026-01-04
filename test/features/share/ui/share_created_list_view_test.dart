@@ -5,7 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/theme/spacing.dart';
-import 'package:kinly/contracts/expenses/enums/expense_recurrence_interval.dart';
+import 'package:kinly/contracts/expenses/enums/expense_recurrence_unit.dart';
 import 'package:kinly/contracts/expenses/enums/expense_status.dart';
 import 'package:kinly/features/share/bloc/share_created_list_bloc/share_created_list_bloc.dart';
 import 'package:kinly/features/share/ui/widgets/share_created_list_view.dart';
@@ -89,7 +89,8 @@ void main() {
       final s = await S.delegate.load(const Locale('en'));
       final startDate = DateTime(2026, 1, 6);
       final periodLabel = sharePeriodLabel(
-        recurrence: ExpenseRecurrenceInterval.monthly,
+        recurrenceEvery: 1,
+        recurrenceUnit: ExpenseRecurrenceUnit.month,
         startDate: startDate,
         strings: s,
       );
@@ -135,7 +136,8 @@ void main() {
                     paidAmountCents: 62500,
                     status: ExpenseStatus.active,
                     createdAt: startDate,
-                    recurrenceInterval: ExpenseRecurrenceInterval.monthly,
+                    recurrenceEvery: 1,
+                    recurrenceUnit: ExpenseRecurrenceUnit.month,
                     startDate: startDate,
                   ),
                 ],
@@ -203,7 +205,8 @@ void main() {
                     paidAmountCents: 2500,
                     status: ExpenseStatus.active,
                     createdAt: startDate,
-                    recurrenceInterval: ExpenseRecurrenceInterval.none,
+                    recurrenceEvery: null,
+                    recurrenceUnit: null,
                     startDate: startDate,
                   ),
                 ],

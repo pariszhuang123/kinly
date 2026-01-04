@@ -1,6 +1,7 @@
 import 'package:kinly/contracts/time/timezone.dart';
 
 import 'enums/expense_recurrence_interval.dart';
+import 'enums/expense_recurrence_unit.dart';
 import 'enums/expense_share_status.dart';
 import 'enums/expense_split_type.dart';
 import 'enums/expense_status.dart';
@@ -9,6 +10,7 @@ export 'enums/expense_share_status.dart';
 export 'enums/expense_split_type.dart';
 export 'enums/expense_status.dart';
 export 'enums/expense_recurrence_interval.dart';
+export 'enums/expense_recurrence_unit.dart';
 
 /// Top-level expense record returned by Supabase RPCs.
 class Expense {
@@ -23,7 +25,8 @@ class Expense {
     required this.notes,
     required this.createdAt,
     required this.updatedAt,
-    required this.recurrenceInterval,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.startDate,
     this.planId,
     this.fullyPaidAt,
@@ -40,7 +43,8 @@ class Expense {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? planId;
-  final ExpenseRecurrenceInterval recurrenceInterval;
+  final int? recurrenceEvery;
+  final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
   final DateTime? fullyPaidAt;
 
@@ -54,8 +58,7 @@ class Expense {
     final notes = json['notes'];
     final createdAtRaw = json['created_at'] ?? json['createdAt'];
     final updatedAtRaw = json['updated_at'] ?? json['updatedAt'];
-    final recurrenceWire =
-        json['recurrenceInterval'] ?? json['recurrence_interval'];
+    final recurrence = _parseRecurrence(json);
     final startDateRaw = json['startDate'] ?? json['start_date'];
     final planId = json['planId'] ?? json['plan_id'];
     final fullyPaidRaw = json['fullyPaidAt'] ?? json['fully_paid_at'];
@@ -72,9 +75,8 @@ class Expense {
       createdAt: parseTimestampToLocal(createdAtRaw)!,
       updatedAt: parseTimestampToLocal(updatedAtRaw)!,
       planId: planId as String?,
-      recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
-        recurrenceWire as String?,
-      ),
+      recurrenceEvery: recurrence.every,
+      recurrenceUnit: recurrence.unit,
       startDate:
           parseDateToLocal(startDateRaw) ??
           parseTimestampToLocal(startDateRaw) ??
@@ -163,7 +165,8 @@ class ExpenseOwedItem {
     required this.expenseId,
     required this.description,
     required this.amountCents,
-    required this.recurrenceInterval,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.startDate,
     this.notes,
   });
@@ -171,22 +174,21 @@ class ExpenseOwedItem {
   final String expenseId;
   final String description;
   final int amountCents;
-  final ExpenseRecurrenceInterval recurrenceInterval;
+  final int? recurrenceEvery;
+  final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
   final String? notes;
 
   factory ExpenseOwedItem.fromJson(Map<String, dynamic> json) {
-    final recurrenceWire =
-        json['recurrenceInterval'] ?? json['recurrence_interval'];
+    final recurrence = _parseRecurrence(json);
     final startDateRaw = json['startDate'] ?? json['start_date'];
 
     return ExpenseOwedItem(
       expenseId: json['expenseId'] as String,
       description: (json['description'] as String?) ?? '',
       amountCents: (json['amountCents'] as num).toInt(),
-      recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
-        recurrenceWire as String?,
-      ),
+      recurrenceEvery: recurrence.every,
+      recurrenceUnit: recurrence.unit,
       startDate:
           parseDateToLocal(startDateRaw) ??
           parseTimestampToLocal(startDateRaw) ??
@@ -247,7 +249,8 @@ class ExpenseCreatedSummary {
     required this.paidAmountCents,
     required this.allPaid,
     required this.createdAt,
-    required this.recurrenceInterval,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.startDate,
     this.planId,
     this.splitType,
@@ -268,12 +271,12 @@ class ExpenseCreatedSummary {
   final DateTime createdAt;
   final DateTime? fullyPaidAt;
   final String? planId;
-  final ExpenseRecurrenceInterval recurrenceInterval;
+  final int? recurrenceEvery;
+  final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
 
   factory ExpenseCreatedSummary.fromJson(Map<String, dynamic> json) {
-    final recurrenceWire =
-        json['recurrenceInterval'] ?? json['recurrence_interval'];
+    final recurrence = _parseRecurrence(json);
     final startDateRaw = json['startDate'] ?? json['start_date'];
     final planId = json['planId'] ?? json['plan_id'];
 
@@ -292,9 +295,8 @@ class ExpenseCreatedSummary {
       createdAt: parseTimestampToLocal(json['createdAt'])!,
       fullyPaidAt: parseTimestampToLocal(json['fullyPaidAt']),
       planId: planId as String?,
-      recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
-        recurrenceWire as String?,
-      ),
+      recurrenceEvery: recurrence.every,
+      recurrenceUnit: recurrence.unit,
       startDate:
           parseDateToLocal(startDateRaw) ??
           parseTimestampToLocal(startDateRaw) ??
@@ -382,7 +384,8 @@ class ExpensePaidToMeItem {
     required this.description,
     required this.amountCents,
     required this.markedPaidAt,
-    required this.recurrenceInterval,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.startDate,
     this.debtorUsername,
     this.debtorAvatarUrl,
@@ -394,7 +397,8 @@ class ExpensePaidToMeItem {
   final String description;
   final int amountCents;
   final DateTime? markedPaidAt;
-  final ExpenseRecurrenceInterval recurrenceInterval;
+  final int? recurrenceEvery;
+  final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
   final String? debtorUsername;
   final String? debtorAvatarUrl;
@@ -402,8 +406,7 @@ class ExpensePaidToMeItem {
   final String? notes;
 
   factory ExpensePaidToMeItem.fromJson(Map<String, dynamic> json) {
-    final recurrenceWire =
-        json['recurrenceInterval'] ?? json['recurrence_interval'];
+    final recurrence = _parseRecurrence(json);
     final startDateRaw = json['startDate'] ?? json['start_date'];
 
     return ExpensePaidToMeItem(
@@ -411,9 +414,8 @@ class ExpensePaidToMeItem {
       description: (json['description'] as String?) ?? '',
       amountCents: (json['amountCents'] as num).toInt(),
       markedPaidAt: parseTimestampToLocal(json['markedPaidAt']),
-      recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
-        recurrenceWire as String?,
-      ),
+      recurrenceEvery: recurrence.every,
+      recurrenceUnit: recurrence.unit,
       startDate:
           parseDateToLocal(startDateRaw) ??
           parseTimestampToLocal(startDateRaw) ??
@@ -435,7 +437,8 @@ class ExpensePlan {
     required this.amountCents,
     required this.description,
     this.notes,
-    required this.recurrenceInterval,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.startDate,
     required this.status,
     this.terminatedAt,
@@ -448,14 +451,14 @@ class ExpensePlan {
   final int amountCents;
   final String description;
   final String? notes;
-  final ExpenseRecurrenceInterval recurrenceInterval;
+  final int recurrenceEvery;
+  final ExpenseRecurrenceUnit recurrenceUnit;
   final DateTime startDate;
   final String status;
   final DateTime? terminatedAt;
 
   factory ExpensePlan.fromJson(Map<String, dynamic> json) {
-    final recurrenceRaw =
-        json['recurrenceInterval'] ?? json['recurrence_interval'];
+    final recurrence = _parseRecurrence(json);
     final startDateRaw = json['startDate'] ?? json['start_date'];
     final terminatedRaw = json['terminatedAt'] ?? json['terminated_at'];
 
@@ -469,9 +472,8 @@ class ExpensePlan {
       amountCents: (json['amount_cents'] as num?)?.toInt() ?? 0,
       description: json['description'] as String? ?? '',
       notes: json['notes'] as String?,
-      recurrenceInterval: ExpenseRecurrenceIntervalWire.fromWire(
-        recurrenceRaw as String?,
-      ),
+      recurrenceEvery: recurrence.every ?? 1,
+      recurrenceUnit: recurrence.unit ?? ExpenseRecurrenceUnit.week,
       startDate:
           parseDateToLocal(startDateRaw) ??
           parseTimestampToLocal(startDateRaw) ??
@@ -479,5 +481,42 @@ class ExpensePlan {
       status: json['status'] as String? ?? '',
       terminatedAt: parseTimestampToLocal(terminatedRaw),
     );
+  }
+}
+
+class _ParsedRecurrence {
+  const _ParsedRecurrence(this.every, this.unit);
+
+  final int? every;
+  final ExpenseRecurrenceUnit? unit;
+}
+
+_ParsedRecurrence _parseRecurrence(Map<String, dynamic> json) {
+  final everyRaw = json['recurrenceEvery'] ?? json['recurrence_every'];
+  final unitRaw = json['recurrenceUnit'] ?? json['recurrence_unit'];
+  final every = (everyRaw as num?)?.toInt();
+  final unit = ExpenseRecurrenceUnitWire.fromWire(unitRaw as String?);
+  if (every != null || unit != null) {
+    return _ParsedRecurrence(every, unit);
+  }
+
+  final intervalRaw = json['recurrenceInterval'] ?? json['recurrence_interval'];
+  final interval = ExpenseRecurrenceIntervalWire.fromWire(
+    intervalRaw as String?,
+  );
+
+  switch (interval) {
+    case ExpenseRecurrenceInterval.weekly:
+      return const _ParsedRecurrence(1, ExpenseRecurrenceUnit.week);
+    case ExpenseRecurrenceInterval.every2Weeks:
+      return const _ParsedRecurrence(2, ExpenseRecurrenceUnit.week);
+    case ExpenseRecurrenceInterval.monthly:
+      return const _ParsedRecurrence(1, ExpenseRecurrenceUnit.month);
+    case ExpenseRecurrenceInterval.every2Months:
+      return const _ParsedRecurrence(2, ExpenseRecurrenceUnit.month);
+    case ExpenseRecurrenceInterval.annual:
+      return const _ParsedRecurrence(1, ExpenseRecurrenceUnit.year);
+    case ExpenseRecurrenceInterval.none:
+      return const _ParsedRecurrence(null, null);
   }
 }

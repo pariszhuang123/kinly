@@ -6,7 +6,6 @@ import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/foundation/surfaces/today/domain/models.dart';
 import 'package:kinly/foundation/surfaces/today/widgets/today_share_section/today_share_section.dart';
 import 'package:kinly/generated/l10n.dart';
-import 'package:kinly/contracts/expenses/enums/expense_recurrence_interval.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +20,8 @@ void main() {
           expenseId: 'exp-1',
           description: 'Lunch',
           amountCents: 1234,
-          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: DateTime(2024, 1, 1),
         ),
       ],

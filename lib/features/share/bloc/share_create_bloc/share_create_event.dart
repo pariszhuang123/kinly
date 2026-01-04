@@ -57,13 +57,31 @@ class ShareCreateStartDateChanged extends ShareCreateEvent {
   List<Object?> get props => [date];
 }
 
-class ShareCreateRecurrenceChanged extends ShareCreateEvent {
-  const ShareCreateRecurrenceChanged(this.recurrence);
+class ShareCreateRecurrenceToggled extends ShareCreateEvent {
+  const ShareCreateRecurrenceToggled(this.isRecurring);
 
-  final ExpenseRecurrenceInterval recurrence;
+  final bool isRecurring;
 
   @override
-  List<Object?> get props => [recurrence];
+  List<Object?> get props => [isRecurring];
+}
+
+class ShareCreateRecurrenceEveryChanged extends ShareCreateEvent {
+  const ShareCreateRecurrenceEveryChanged(this.value);
+
+  final String value;
+
+  @override
+  List<Object?> get props => [value];
+}
+
+class ShareCreateRecurrenceUnitChanged extends ShareCreateEvent {
+  const ShareCreateRecurrenceUnitChanged(this.unit);
+
+  final ExpenseRecurrenceUnit unit;
+
+  @override
+  List<Object?> get props => [unit];
 }
 
 class ShareCreateParticipantToggled extends ShareCreateEvent {

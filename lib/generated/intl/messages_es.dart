@@ -748,26 +748,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
       "Necesitas al menos dos miembros del hogar para compartir.",
     ),
-    "shareCreateRecurrenceAnnual": MessageLookupByLibrary.simpleMessage(
-      "Anual",
-    ),
-    "shareCreateRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
-      "Cada 2 meses",
-    ),
-    "shareCreateRecurrenceEvery2Weeks": MessageLookupByLibrary.simpleMessage(
-      "Cada 2 semanas",
+    "shareCreateRecurrenceEveryLabel": MessageLookupByLibrary.simpleMessage(
+      "Cada",
     ),
     "shareCreateRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
       "Repetir",
     ),
-    "shareCreateRecurrenceMonthly": MessageLookupByLibrary.simpleMessage(
-      "Mensual",
+    "shareCreateRecurrenceToggleLabel": MessageLookupByLibrary.simpleMessage(
+      "Recurrente",
     ),
-    "shareCreateRecurrenceNone": MessageLookupByLibrary.simpleMessage(
-      "Una vez",
+    "shareCreateRecurrenceUnitDay": MessageLookupByLibrary.simpleMessage("Día"),
+    "shareCreateRecurrenceUnitMonth": MessageLookupByLibrary.simpleMessage(
+      "Mes",
     ),
-    "shareCreateRecurrenceWeekly": MessageLookupByLibrary.simpleMessage(
-      "Semanal",
+    "shareCreateRecurrenceUnitWeek": MessageLookupByLibrary.simpleMessage(
+      "Semana",
+    ),
+    "shareCreateRecurrenceUnitYear": MessageLookupByLibrary.simpleMessage(
+      "Año",
     ),
     "shareCreateRetry": MessageLookupByLibrary.simpleMessage(
       "Intentar de nuevo",

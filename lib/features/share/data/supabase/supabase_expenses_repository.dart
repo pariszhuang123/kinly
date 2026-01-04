@@ -21,12 +21,13 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
-    required ExpenseRecurrenceInterval recurrence,
+    int? recurrenceEvery,
+    ExpenseRecurrenceUnit? recurrenceUnit,
     required DateTime startDate,
   }) async {
     try {
       final response = await _client.rpc(
-        'expenses_create',
+        'expenses_create_v2',
         params: {
           'p_home_id': homeId,
           'p_description': description,
@@ -37,7 +38,9 @@ class SupabaseExpensesRepository implements ExpensesRepository {
             'p_member_ids': memberIds,
           if (customSplits != null && customSplits.isNotEmpty)
             'p_splits': customSplits.map((split) => split.toJson()).toList(),
-          'p_recurrence': recurrence.wireValue,
+          if (recurrenceEvery != null) 'p_recurrence_every': recurrenceEvery,
+          if (recurrenceUnit != null)
+            'p_recurrence_unit': recurrenceUnit.wireValue,
           'p_start_date': _dateFormatter.format(startDate),
         },
       );
@@ -65,12 +68,13 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
-    required ExpenseRecurrenceInterval recurrence,
+    int? recurrenceEvery,
+    ExpenseRecurrenceUnit? recurrenceUnit,
     required DateTime startDate,
   }) async {
     try {
       final response = await _client.rpc(
-        'expenses_edit',
+        'expenses_edit_v2',
         params: {
           'p_expense_id': expenseId,
           'p_amount_cents': amountCents,
@@ -81,7 +85,9 @@ class SupabaseExpensesRepository implements ExpensesRepository {
             'p_member_ids': memberIds,
           if (customSplits != null && customSplits.isNotEmpty)
             'p_splits': customSplits.map((split) => split.toJson()).toList(),
-          'p_recurrence': recurrence.wireValue,
+          if (recurrenceEvery != null) 'p_recurrence_every': recurrenceEvery,
+          if (recurrenceUnit != null)
+            'p_recurrence_unit': recurrenceUnit.wireValue,
           'p_start_date': _dateFormatter.format(startDate),
         },
       );

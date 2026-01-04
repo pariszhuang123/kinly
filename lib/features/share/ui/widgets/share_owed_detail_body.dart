@@ -169,7 +169,8 @@ class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
         final hasNotes = _hasNotes(item);
         final isExpanded = _expanded.contains(item.expenseId);
         final periodLabel = sharePeriodLabel(
-          recurrence: item.recurrenceInterval,
+          recurrenceEvery: item.recurrenceEvery,
+          recurrenceUnit: item.recurrenceUnit,
           startDate: item.startDate,
           strings: strings,
         );

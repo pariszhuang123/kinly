@@ -36,7 +36,6 @@ import 'package:kinly/foundation/surfaces/today/widgets/today_share_section/toda
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/foundation/surfaces/today/widgets/today_empty_state_card.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
-import 'package:kinly/contracts/expenses/enums/expense_recurrence_interval.dart';
 import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
 import 'package:kinly/contracts/mood/models.dart';
 
@@ -285,7 +284,8 @@ void main() {
                 expenseId: 'expense-1',
                 description: 'Test expense',
                 amountCents: 1200,
-                recurrenceInterval: ExpenseRecurrenceInterval.none,
+                recurrenceEvery: null,
+                recurrenceUnit: null,
                 startDate: DateTime(2024, 1, 1),
               ),
             ],
@@ -502,7 +502,8 @@ void main() {
                 expenseId: 'e1',
                 description: 'Test expense',
                 amountCents: 1234,
-                recurrenceInterval: ExpenseRecurrenceInterval.none,
+                recurrenceEvery: null,
+                recurrenceUnit: null,
                 startDate: DateTime(2024, 1, 1),
               ),
             ],

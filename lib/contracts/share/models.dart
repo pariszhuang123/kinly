@@ -7,7 +7,8 @@ class TodayShareOwedItem extends Equatable {
     required this.expenseId,
     required this.description,
     required this.amountCents,
-    required this.recurrenceInterval,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.startDate,
     this.notes,
   });
@@ -15,7 +16,8 @@ class TodayShareOwedItem extends Equatable {
   final String expenseId;
   final String description;
   final int amountCents;
-  final ExpenseRecurrenceInterval recurrenceInterval;
+  final int? recurrenceEvery;
+  final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
   final String? notes;
 
@@ -24,7 +26,8 @@ class TodayShareOwedItem extends Equatable {
       expenseId: model.expenseId,
       description: model.description,
       amountCents: model.amountCents,
-      recurrenceInterval: model.recurrenceInterval,
+      recurrenceEvery: model.recurrenceEvery,
+      recurrenceUnit: model.recurrenceUnit,
       startDate: model.startDate,
       notes: model.notes,
     );
@@ -35,7 +38,8 @@ class TodayShareOwedItem extends Equatable {
     expenseId,
     description,
     amountCents,
-    recurrenceInterval,
+    recurrenceEvery,
+    recurrenceUnit,
     startDate,
     notes,
   ];

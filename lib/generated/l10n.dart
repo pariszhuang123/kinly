@@ -1669,61 +1669,61 @@ class S {
     );
   }
 
-  /// `One-time`
-  String get shareCreateRecurrenceNone {
+  /// `Recurring`
+  String get shareCreateRecurrenceToggleLabel {
     return Intl.message(
-      'One-time',
-      name: 'shareCreateRecurrenceNone',
+      'Recurring',
+      name: 'shareCreateRecurrenceToggleLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Weekly`
-  String get shareCreateRecurrenceWeekly {
+  /// `Every`
+  String get shareCreateRecurrenceEveryLabel {
     return Intl.message(
-      'Weekly',
-      name: 'shareCreateRecurrenceWeekly',
+      'Every',
+      name: 'shareCreateRecurrenceEveryLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Every 2 weeks`
-  String get shareCreateRecurrenceEvery2Weeks {
+  /// `Day`
+  String get shareCreateRecurrenceUnitDay {
     return Intl.message(
-      'Every 2 weeks',
-      name: 'shareCreateRecurrenceEvery2Weeks',
+      'Day',
+      name: 'shareCreateRecurrenceUnitDay',
       desc: '',
       args: [],
     );
   }
 
-  /// `Monthly`
-  String get shareCreateRecurrenceMonthly {
+  /// `Week`
+  String get shareCreateRecurrenceUnitWeek {
     return Intl.message(
-      'Monthly',
-      name: 'shareCreateRecurrenceMonthly',
+      'Week',
+      name: 'shareCreateRecurrenceUnitWeek',
       desc: '',
       args: [],
     );
   }
 
-  /// `Every 2 months`
-  String get shareCreateRecurrenceEvery2Months {
+  /// `Month`
+  String get shareCreateRecurrenceUnitMonth {
     return Intl.message(
-      'Every 2 months',
-      name: 'shareCreateRecurrenceEvery2Months',
+      'Month',
+      name: 'shareCreateRecurrenceUnitMonth',
       desc: '',
       args: [],
     );
   }
 
-  /// `Annual`
-  String get shareCreateRecurrenceAnnual {
+  /// `Year`
+  String get shareCreateRecurrenceUnitYear {
     return Intl.message(
-      'Annual',
-      name: 'shareCreateRecurrenceAnnual',
+      'Year',
+      name: 'shareCreateRecurrenceUnitYear',
       desc: '',
       args: [],
     );

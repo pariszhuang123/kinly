@@ -8,7 +8,8 @@ class TodaySharePaidItem {
     required this.description,
     required this.amountCents,
     required this.markedPaidAt,
-    required this.recurrenceInterval,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.startDate,
     this.notes,
   });
@@ -17,7 +18,8 @@ class TodaySharePaidItem {
   final String description;
   final int amountCents;
   final DateTime? markedPaidAt;
-  final ExpenseRecurrenceInterval recurrenceInterval;
+  final int? recurrenceEvery;
+  final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
   final String? notes;
 
@@ -27,7 +29,8 @@ class TodaySharePaidItem {
       description: model.description,
       amountCents: model.amountCents,
       markedPaidAt: model.markedPaidAt,
-      recurrenceInterval: model.recurrenceInterval,
+      recurrenceEvery: model.recurrenceEvery,
+      recurrenceUnit: model.recurrenceUnit,
       startDate: model.startDate,
       notes: model.notes,
     );

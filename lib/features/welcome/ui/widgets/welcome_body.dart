@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
@@ -51,43 +52,15 @@ class WelcomeBody extends StatelessWidget {
                   onTap: scope.actions.onToggleConsent,
                   borderRadius: BorderRadius.circular(4),
                   alignment: AlignmentDirectional.centerStart,
-                  child: Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text(
-                        s.login_consent_prefix,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      KinlyTapTarget(
-                        onTap: scope.actions.onOpenTerms,
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(
-                          s.login_terms,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: linkColors.link,
-                            decoration: TextDecoration.underline,
-                            decorationColor: linkColors.link,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        s.login_consent_connector,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      KinlyTapTarget(
-                        onTap: scope.actions.onOpenPrivacy,
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(
-                          s.login_privacy,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: linkColors.link,
-                            decoration: TextDecoration.underline,
-                            decorationColor: linkColors.link,
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: _ConsentLegalText(
+                    prefix: s.login_consent_prefix,
+                    termsText: s.login_terms,
+                    connector: s.login_consent_connector,
+                    privacyText: s.login_privacy,
+                    baseStyle: theme.textTheme.bodyMedium,
+                    linkColor: linkColors.link,
+                    onOpenTerms: scope.actions.onOpenTerms,
+                    onOpenPrivacy: scope.actions.onOpenPrivacy,
                   ),
                 ),
               ),
@@ -143,6 +116,91 @@ class WelcomeBody extends StatelessWidget {
   }
 }
 
+/// Local/private widget to keep WelcomeBody tidy and ensure the legal copy
+/// wraps like a single sentence (instead of each segment wrapping separately).
+class _ConsentLegalText extends StatefulWidget {
+  const _ConsentLegalText({
+    required this.prefix,
+    required this.termsText,
+    required this.connector,
+    required this.privacyText,
+    required this.baseStyle,
+    required this.linkColor,
+    required this.onOpenTerms,
+    required this.onOpenPrivacy,
+  });
 
+  final String prefix;
+  final String termsText;
+  final String connector;
+  final String privacyText;
+  final TextStyle? baseStyle;
+  final Color linkColor;
+  final VoidCallback onOpenTerms;
+  final VoidCallback onOpenPrivacy;
 
+  @override
+  State<_ConsentLegalText> createState() => _ConsentLegalTextState();
+}
 
+class _ConsentLegalTextState extends State<_ConsentLegalText> {
+  late final TapGestureRecognizer _termsTap;
+  late final TapGestureRecognizer _privacyTap;
+
+  @override
+  void initState() {
+    super.initState();
+    _termsTap = TapGestureRecognizer()..onTap = widget.onOpenTerms;
+    _privacyTap = TapGestureRecognizer()..onTap = widget.onOpenPrivacy;
+  }
+
+  @override
+  void didUpdateWidget(covariant _ConsentLegalText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Keep recognizers wired to the latest callbacks.
+    if (oldWidget.onOpenTerms != widget.onOpenTerms) {
+      _termsTap.onTap = widget.onOpenTerms;
+    }
+    if (oldWidget.onOpenPrivacy != widget.onOpenPrivacy) {
+      _privacyTap.onTap = widget.onOpenPrivacy;
+    }
+  }
+
+  @override
+  void dispose() {
+    _termsTap.dispose();
+    _privacyTap.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final linkStyle = widget.baseStyle?.copyWith(
+      color: widget.linkColor,
+      decoration: TextDecoration.underline,
+      decorationColor: widget.linkColor,
+    );
+
+    return Text.rich(
+      TextSpan(
+        style: widget.baseStyle,
+        children: [
+          TextSpan(text: widget.prefix),
+          TextSpan(
+            text: widget.termsText,
+            style: linkStyle,
+            recognizer: _termsTap,
+          ),
+          TextSpan(text: widget.connector),
+          TextSpan(
+            text: widget.privacyText,
+            style: linkStyle,
+            recognizer: _privacyTap,
+          ),
+        ],
+      ),
+      textAlign: TextAlign.start,
+      softWrap: true,
+    );
+  }
+}

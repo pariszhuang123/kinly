@@ -91,7 +91,8 @@ class SharePaidToMeDetailBody extends StatelessWidget {
                         final colors =
                             KinlyThemeAccess.of(context).extension<KinlyColorTokens>();
                         final periodLabel = sharePeriodLabel(
-                          recurrence: item.recurrenceInterval,
+                          recurrenceEvery: item.recurrenceEvery,
+                          recurrenceUnit: item.recurrenceUnit,
                           startDate: item.startDate,
                           strings: strings,
                         );

@@ -100,7 +100,8 @@ class ShareEditProvider extends StatelessWidget {
           selectedParticipantIds: selectedIds,
           customAmountInputs: customInputs,
           startDate: expense.startDate,
-          recurrence: expense.recurrenceInterval,
+          recurrenceEvery: expense.recurrenceEvery,
+          recurrenceUnit: expense.recurrenceUnit,
         );
         final canEdit = detail.canEdit;
         return BlocProvider(

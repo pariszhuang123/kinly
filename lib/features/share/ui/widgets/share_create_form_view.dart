@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -20,7 +21,7 @@ import '../../../../../core/ui/toggles/kinly_checkbox.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/theme/color_tokens.dart';
 import '../../../../../contracts/homes/models.dart';
-import '../../../../../contracts/expenses/enums/expense_recurrence_interval.dart';
+import '../../../../../contracts/expenses/enums/expense_recurrence_unit.dart';
 import '../../../../../core/time/date_only.dart';
 import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
@@ -38,6 +39,7 @@ class ShareCreateFormView extends StatelessWidget {
     required this.descriptionController,
     required this.amountController,
     required this.notesController,
+    required this.recurrenceEveryController,
     required this.customControllers,
     required this.allowDelete,
     required this.onDeleteRequested,
@@ -52,6 +54,7 @@ class ShareCreateFormView extends StatelessWidget {
   final TextEditingController descriptionController;
   final TextEditingController amountController;
   final TextEditingController notesController;
+  final TextEditingController recurrenceEveryController;
   final Map<String, TextEditingController> customControllers;
 
   /// Whether delete is allowed at all for this screen.
@@ -132,6 +135,8 @@ class ShareCreateFormView extends StatelessWidget {
           state: state,
           locked: viewState.locked,
           recurrenceNeedsSplit: viewState.recurrenceNeedsSplit,
+          recurrenceInvalid: viewState.recurrenceInvalid,
+          controller: recurrenceEveryController,
         ),
         SizedBox(height: spacing.lg),
         _SplitModeSelector(state: state, locked: viewState.locked),
@@ -181,13 +186,14 @@ class ShareCreateFormView extends StatelessWidget {
   }
 
   String? _formattedPeriod() {
-    final recurrence = state.form.recurrence;
     final start = state.form.startDate;
-    if (recurrence == ExpenseRecurrenceInterval.none) {
+    final every = state.form.recurrenceEvery;
+    final unit = state.form.recurrenceUnit;
+    if (every == null || unit == null) {
       return null;
     }
 
-    final end = _periodEndDate(start, recurrence);
+    final end = _periodEndDate(start, every, unit);
 
     final sameMonth = start.month == end.month && start.year == end.year;
     final formatter = DateFormat.MMMMd();
@@ -204,33 +210,26 @@ class ShareCreateFormView extends StatelessWidget {
 
   DateTime _periodEndDate(
     DateTime start,
-    ExpenseRecurrenceInterval recurrence,
+    int every,
+    ExpenseRecurrenceUnit unit,
   ) {
-    switch (recurrence) {
-      case ExpenseRecurrenceInterval.weekly:
-        return start.add(const Duration(days: 6));
-      case ExpenseRecurrenceInterval.every2Weeks:
-        return start.add(const Duration(days: 13));
-      case ExpenseRecurrenceInterval.monthly:
+    switch (unit) {
+      case ExpenseRecurrenceUnit.day:
+        return start.add(Duration(days: every - 1));
+      case ExpenseRecurrenceUnit.week:
+        return start.add(Duration(days: (every * 7) - 1));
+      case ExpenseRecurrenceUnit.month:
         return DateTime(
           start.year,
-          start.month + 1,
+          start.month + every,
           start.day,
         ).subtract(const Duration(days: 1));
-      case ExpenseRecurrenceInterval.every2Months:
+      case ExpenseRecurrenceUnit.year:
         return DateTime(
-          start.year,
-          start.month + 2,
-          start.day,
-        ).subtract(const Duration(days: 1));
-      case ExpenseRecurrenceInterval.annual:
-        return DateTime(
-          start.year + 1,
+          start.year + every,
           start.month,
           start.day,
         ).subtract(const Duration(days: 1));
-      case ExpenseRecurrenceInterval.none:
-        return start;
     }
   }
 }
@@ -241,6 +240,7 @@ class _FormViewState {
     required this.editingDisabled,
     required this.locked,
     required this.recurrenceNeedsSplit,
+    required this.recurrenceInvalid,
     required this.canDelete,
     required this.isDeleteAction,
     required this.hidePrimary,
@@ -253,6 +253,7 @@ class _FormViewState {
   final bool editingDisabled;
   final bool locked;
   final bool recurrenceNeedsSplit;
+  final bool recurrenceInvalid;
   final bool canDelete;
   final bool isDeleteAction;
   final bool hidePrimary;
@@ -269,6 +270,10 @@ class _FormViewState {
     final locked = _isLocked(state, editingDisabled);
     final fullyPaid = state.allPaid;
     final recurrenceNeedsSplit = _needsSplit(
+      state,
+      showValidation: showValidation,
+    );
+    final recurrenceInvalid = _recurrenceInvalid(
       state,
       showValidation: showValidation,
     );
@@ -294,6 +299,7 @@ class _FormViewState {
       showValidation: showValidation,
       locked: locked,
       recurrenceNeedsSplit: recurrenceNeedsSplit,
+      recurrenceInvalid: recurrenceInvalid,
       canDelete: canDelete,
       isDeleteAction: canDelete,
       hidePrimary: hidePrimary,
@@ -321,9 +327,18 @@ class _FormViewState {
     required bool showValidation,
   }) {
     if (!showValidation) return false;
-    final recurrence = state.form.recurrence;
-    return recurrence != ExpenseRecurrenceInterval.none &&
-        state.form.splitMode == null;
+    return state.form.isRecurring && state.form.splitMode == null;
+  }
+
+  static bool _recurrenceInvalid(
+    ShareCreateState state, {
+    required bool showValidation,
+  }) {
+    if (!showValidation) return false;
+    if (!state.form.isRecurring) return false;
+    final every = state.form.recurrenceEvery;
+    final unit = state.form.recurrenceUnit;
+    return every == null || every < 1 || unit == null;
   }
 
   static bool _canDelete(

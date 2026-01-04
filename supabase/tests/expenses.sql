@@ -186,9 +186,15 @@ SELECT is(
 );
 
 SELECT is(
-  (SELECT recurrence_interval::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
-  'none',
-  'Drafts force recurrence_interval=none'
+  (SELECT recurrence_every FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
+  NULL,
+  'Drafts store null recurrence_every'
+);
+
+SELECT is(
+  (SELECT recurrence_unit FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'draft_one')),
+  NULL,
+  'Drafts store null recurrence_unit'
 );
 
 -- Draft cannot be recurring
@@ -257,9 +263,15 @@ INSERT INTO tmp_expenses (label, expense_id)
 SELECT 'active_equal', (expense).id FROM created;
 
 SELECT is(
-  (SELECT recurrence_interval::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
-  'none',
-  'One-off expense stores recurrence_interval=none'
+  (SELECT recurrence_every FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
+  NULL,
+  'One-off expense stores null recurrence_every'
+);
+
+SELECT is(
+  (SELECT recurrence_unit FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'active_equal')),
+  NULL,
+  'One-off expense stores null recurrence_unit'
 );
 
 SELECT is(
@@ -365,9 +377,15 @@ SELECT ok(
 );
 
 SELECT is(
-  (SELECT recurrence_interval::text FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_cycle')),
-  'monthly',
-  'Recurring cycle copies recurrence_interval'
+  (SELECT recurrence_every FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_cycle')),
+  1,
+  'Recurring cycle stores recurrence_every'
+);
+
+SELECT is(
+  (SELECT recurrence_unit FROM public.expenses WHERE id = (SELECT expense_id FROM tmp_expenses WHERE label = 'recurring_cycle')),
+  'month',
+  'Recurring cycle stores recurrence_unit'
 );
 
 SELECT is(
@@ -391,9 +409,28 @@ recurring_entry AS (
   )
 )
 SELECT is(
-  (SELECT elem->>'recurrenceInterval' FROM recurring_entry),
-  'monthly',
-  'Created list payload includes recurrenceInterval for recurring cycle'
+  (SELECT elem->>'recurrenceEvery' FROM recurring_entry),
+  '1',
+  'Created list payload includes recurrenceEvery for recurring cycle'
+);
+
+WITH payload AS (
+  SELECT public.expenses_get_created_by_me(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  ) AS body
+),
+recurring_entry AS (
+  SELECT elem
+  FROM payload,
+  LATERAL jsonb_array_elements(body) elem
+  WHERE elem->>'expenseId' = (
+    SELECT expense_id::text FROM tmp_expenses WHERE label = 'recurring_cycle'
+  )
+)
+SELECT is(
+  (SELECT elem->>'recurrenceUnit' FROM recurring_entry),
+  'month',
+  'Created list payload includes recurrenceUnit for recurring cycle'
 );
 
 WITH payload AS (

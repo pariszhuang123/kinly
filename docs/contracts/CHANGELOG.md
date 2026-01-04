@@ -10,6 +10,14 @@ Tracks versioned contract changes and related ADRs.
   - Require visible display names on selection/focus and persisted on commit.
   - Codify accessibility semantics for avatar identity cues.
 
+## v2 - Expenses Recurrence Every/Unit
+- Date: 2026-01-15
+- Scope: `docs/contracts/expenses_v2.md`
+- Changes:
+  - Replace `recurrenceInterval` enum with `recurrenceEvery` + `recurrenceUnit` (day|week|month|year).
+  - Add v2 RPCs for create/edit (`public.expenses_create_v2`, `public.expenses_edit_v2`).
+  - Update expense read payloads to return recurrenceEvery/Unit.
+
 ## v1 - Design System Umbrella
 - Date: 2026-01-05
 - Scope: `docs/contracts/kinly_design_system_v1.md`, `docs/contracts/kinly_composable_system_v1.md`, `docs/contracts/architecture_guardrails_amendment_foundation_surfaces_v1.md`

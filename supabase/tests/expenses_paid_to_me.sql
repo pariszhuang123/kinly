@@ -179,9 +179,19 @@ WITH owed AS (
   ) AS body
 )
 SELECT is(
-  (SELECT (body->0->'items'->0->>'recurrenceInterval') FROM owed),
-  'none',
-  'Owed items include recurrence interval'
+  (SELECT (body->0->'items'->0->>'recurrenceEvery') IS NULL FROM owed),
+  true,
+  'Owed items include null recurrenceEvery'
+);
+WITH owed AS (
+  SELECT public.expenses_get_current_owed(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary')
+  ) AS body
+)
+SELECT is(
+  (SELECT (body->0->'items'->0->>'recurrenceUnit') IS NULL FROM owed),
+  true,
+  'Owed items include null recurrenceUnit'
 );
 WITH owed AS (
   SELECT public.expenses_get_current_owed(
@@ -298,9 +308,20 @@ WITH details AS (
   ) AS body
 )
 SELECT is(
-  (SELECT body->0->>'recurrenceInterval' FROM details),
-  'none',
-  'Debtor detail includes recurrence interval'
+  (SELECT body->0->>'recurrenceEvery' IS NULL FROM details),
+  true,
+  'Debtor detail includes null recurrenceEvery'
+);
+WITH details AS (
+  SELECT public.expenses_get_current_paid_to_me_by_debtor_details(
+    (SELECT home_id FROM tmp_homes WHERE label = 'primary'),
+    (SELECT user_id FROM tmp_users WHERE label = 'debtor')
+  ) AS body
+)
+SELECT is(
+  (SELECT body->0->>'recurrenceUnit' IS NULL FROM details),
+  true,
+  'Debtor detail includes null recurrenceUnit'
 );
 WITH details AS (
   SELECT public.expenses_get_current_paid_to_me_by_debtor_details(

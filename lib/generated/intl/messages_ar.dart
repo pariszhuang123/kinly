@@ -707,24 +707,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
       "تحتاج إلى عضوين على الأقل في المنزل للمشاركة.",
     ),
-    "shareCreateRecurrenceAnnual": MessageLookupByLibrary.simpleMessage("سنوي"),
-    "shareCreateRecurrenceEvery2Months": MessageLookupByLibrary.simpleMessage(
-      "كل شهرين",
-    ),
-    "shareCreateRecurrenceEvery2Weeks": MessageLookupByLibrary.simpleMessage(
-      "كل أسبوعين",
+    "shareCreateRecurrenceEveryLabel": MessageLookupByLibrary.simpleMessage(
+      "كل",
     ),
     "shareCreateRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
       "التكرار",
     ),
-    "shareCreateRecurrenceMonthly": MessageLookupByLibrary.simpleMessage(
-      "شهري",
+    "shareCreateRecurrenceToggleLabel": MessageLookupByLibrary.simpleMessage(
+      "متكرر",
     ),
-    "shareCreateRecurrenceNone": MessageLookupByLibrary.simpleMessage(
-      "مرة واحدة",
+    "shareCreateRecurrenceUnitDay": MessageLookupByLibrary.simpleMessage("يوم"),
+    "shareCreateRecurrenceUnitMonth": MessageLookupByLibrary.simpleMessage(
+      "شهر",
     ),
-    "shareCreateRecurrenceWeekly": MessageLookupByLibrary.simpleMessage(
-      "أسبوعي",
+    "shareCreateRecurrenceUnitWeek": MessageLookupByLibrary.simpleMessage(
+      "أسبوع",
+    ),
+    "shareCreateRecurrenceUnitYear": MessageLookupByLibrary.simpleMessage(
+      "سنة",
     ),
     "shareCreateRetry": MessageLookupByLibrary.simpleMessage("حاول مرة أخرى"),
     "shareCreateSplitCustom": MessageLookupByLibrary.simpleMessage(

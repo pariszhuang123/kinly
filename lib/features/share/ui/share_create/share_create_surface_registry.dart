@@ -58,6 +58,7 @@ class ShareCreateRegistry {
             descriptionController: scope.descriptionController,
             amountController: scope.amountController,
             notesController: scope.notesController,
+            recurrenceEveryController: scope.recurrenceEveryController,
             customControllers: scope.customControllers,
             onSubmit: scope.actions.onSubmit,
             onDeleteRequested: scope.actions.onDeleteRequested,

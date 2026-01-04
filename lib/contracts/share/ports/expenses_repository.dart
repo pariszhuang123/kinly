@@ -14,7 +14,8 @@ abstract class ExpensesRepository {
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
-    required ExpenseRecurrenceInterval recurrence,
+    int? recurrenceEvery,
+    ExpenseRecurrenceUnit? recurrenceUnit,
     required DateTime startDate,
   });
 
@@ -27,7 +28,8 @@ abstract class ExpensesRepository {
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
-    required ExpenseRecurrenceInterval recurrence,
+    int? recurrenceEvery,
+    ExpenseRecurrenceUnit? recurrenceUnit,
     required DateTime startDate,
   });
 

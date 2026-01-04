@@ -1,18 +1,19 @@
 import 'package:intl/intl.dart';
 
-import '../../../contracts/expenses/enums/expense_recurrence_interval.dart';
+import '../../../contracts/expenses/enums/expense_recurrence_unit.dart';
 import '../../../generated/l10n.dart';
 
 String sharePeriodLabel({
-  required ExpenseRecurrenceInterval recurrence,
+  required int? recurrenceEvery,
+  required ExpenseRecurrenceUnit? recurrenceUnit,
   required DateTime startDate,
   required S strings,
 }) {
-  if (recurrence == ExpenseRecurrenceInterval.none) {
+  if (recurrenceEvery == null || recurrenceUnit == null) {
     return strings.flowChoreRecurrenceNone;
   }
 
-  final endDate = _periodEndDate(startDate, recurrence);
+  final endDate = _periodEndDate(startDate, recurrenceEvery, recurrenceUnit);
   final sameMonth =
       startDate.month == endDate.month && startDate.year == endDate.year;
   final formatter = DateFormat.MMMMd();
@@ -29,32 +30,25 @@ String sharePeriodLabel({
 
 DateTime _periodEndDate(
   DateTime startDate,
-  ExpenseRecurrenceInterval recurrence,
+  int recurrenceEvery,
+  ExpenseRecurrenceUnit recurrenceUnit,
 ) {
-  switch (recurrence) {
-    case ExpenseRecurrenceInterval.weekly:
-      return startDate.add(const Duration(days: 6));
-    case ExpenseRecurrenceInterval.every2Weeks:
-      return startDate.add(const Duration(days: 13));
-    case ExpenseRecurrenceInterval.monthly:
+  switch (recurrenceUnit) {
+    case ExpenseRecurrenceUnit.day:
+      return startDate.add(Duration(days: recurrenceEvery - 1));
+    case ExpenseRecurrenceUnit.week:
+      return startDate.add(Duration(days: (recurrenceEvery * 7) - 1));
+    case ExpenseRecurrenceUnit.month:
       return DateTime(
         startDate.year,
-        startDate.month + 1,
+        startDate.month + recurrenceEvery,
         startDate.day,
       ).subtract(const Duration(days: 1));
-    case ExpenseRecurrenceInterval.every2Months:
+    case ExpenseRecurrenceUnit.year:
       return DateTime(
-        startDate.year,
-        startDate.month + 2,
-        startDate.day,
-      ).subtract(const Duration(days: 1));
-    case ExpenseRecurrenceInterval.annual:
-      return DateTime(
-        startDate.year + 1,
+        startDate.year + recurrenceEvery,
         startDate.month,
         startDate.day,
       ).subtract(const Duration(days: 1));
-    case ExpenseRecurrenceInterval.none:
-      return startDate;
   }
 }

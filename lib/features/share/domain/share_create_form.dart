@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import 'share_split_mode.dart';
-import '../../../contracts/expenses/enums/expense_recurrence_interval.dart';
+import '../../../contracts/expenses/enums/expense_recurrence_unit.dart';
 import '../../../core/time/date_only.dart';
 
 class ShareCreateForm extends Equatable {
@@ -14,7 +14,8 @@ class ShareCreateForm extends Equatable {
     required this.splitMode,
     required Set<String> selectedParticipantIds,
     required Map<String, String> customAmountInputs,
-    required this.recurrence,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.startDate,
   }) : selectedParticipantIds = Set.unmodifiable(
          selectedParticipantIds is LinkedHashSet<String>
@@ -33,7 +34,8 @@ class ShareCreateForm extends Equatable {
       splitMode: null,
       selectedParticipantIds: const <String>{},
       customAmountInputs: const <String, String>{},
-      recurrence: ExpenseRecurrenceInterval.none,
+      recurrenceEvery: null,
+      recurrenceUnit: null,
       startDate: dateOnly(DateTime.now()),
     );
   }
@@ -44,7 +46,8 @@ class ShareCreateForm extends Equatable {
   final ShareSplitMode? splitMode;
   final Set<String> selectedParticipantIds;
   final Map<String, String> customAmountInputs;
-  final ExpenseRecurrenceInterval recurrence;
+  final int? recurrenceEvery;
+  final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
 
   ShareCreateForm copyWith({
@@ -55,7 +58,10 @@ class ShareCreateForm extends Equatable {
     bool clearSplitMode = false,
     Set<String>? selectedParticipantIds,
     Map<String, String>? customAmountInputs,
-    ExpenseRecurrenceInterval? recurrence,
+    int? recurrenceEvery,
+    bool clearRecurrenceEvery = false,
+    ExpenseRecurrenceUnit? recurrenceUnit,
+    bool clearRecurrenceUnit = false,
     DateTime? startDate,
   }) {
     return ShareCreateForm(
@@ -68,7 +74,10 @@ class ShareCreateForm extends Equatable {
               ? LinkedHashSet<String>.from(selectedParticipantIds)
               : this.selectedParticipantIds,
       customAmountInputs: customAmountInputs ?? this.customAmountInputs,
-      recurrence: recurrence ?? this.recurrence,
+      recurrenceEvery:
+          clearRecurrenceEvery ? null : recurrenceEvery ?? this.recurrenceEvery,
+      recurrenceUnit:
+          clearRecurrenceUnit ? null : recurrenceUnit ?? this.recurrenceUnit,
       startDate: startDate != null ? dateOnly(startDate) : this.startDate,
     );
   }
@@ -119,7 +128,7 @@ class ShareCreateForm extends Equatable {
     );
   }
 
-  bool get isRecurring => recurrence != ExpenseRecurrenceInterval.none;
+  bool get isRecurring => recurrenceEvery != null && recurrenceUnit != null;
 
   String customAmountFor(String userId) => customAmountInputs[userId] ?? '';
 
@@ -136,7 +145,8 @@ class ShareCreateForm extends Equatable {
       splitMode,
       selection,
       customEntries,
-      recurrence,
+      recurrenceEvery,
+      recurrenceUnit,
       startDate,
     ];
   }

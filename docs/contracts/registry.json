@@ -300,15 +300,16 @@
       "rls": []
     },
     "expenses": {
-      "latest": "v1",
-      "docs": "docs/contracts/expenses_v1.md",
+      "latest": "v2",
+      "docs": "docs/contracts/expenses_v2.md",
       "entities": {
         "Expense": {
           "id": "uuid",
           "homeId": "uuid",
           "createdByUserId": "uuid",
           "planId": "uuid|null",
-          "recurrenceInterval": "RecurrenceInterval",
+          "recurrenceEvery": "int|null",
+          "recurrenceUnit": "text|null",
           "startDate": "date",
           "status": "ExpenseStatus",
           "splitType": "ExpenseSplitType|null",
@@ -327,7 +328,8 @@
           "amountCents": "bigint",
           "description": "text",
           "notes": "text|null",
-          "recurrenceInterval": "RecurrenceInterval",
+          "recurrenceEvery": "int",
+          "recurrenceUnit": "text",
           "startDate": "date",
           "nextCycleDate": "date",
           "status": "ExpensePlanStatus",
@@ -353,7 +355,8 @@
           "homeId": "uuid",
           "createdByUserId": "uuid",
           "planId": "uuid|null",
-          "recurrenceInterval": "RecurrenceInterval",
+          "recurrenceEvery": "int|null",
+          "recurrenceUnit": "text|null",
           "startDate": "date",
           "status": "ExpenseStatus",
           "splitType": "ExpenseSplitType|null",
@@ -371,7 +374,7 @@
         "expenses.create": {
           "type": "rpc",
           "caller": "member",
-          "impl": "public.expenses_create",
+          "impl": "public.expenses_create_v2",
           "args": {
             "p_home_id": "uuid",
             "p_description": "text",
@@ -380,19 +383,20 @@
             "p_split_mode": "ExpenseSplitType|null",
             "p_member_ids": "uuid[]|null",
             "p_splits": "jsonb|null",
-            "p_recurrence": "RecurrenceInterval",
+            "p_recurrence_every": "int|null",
+            "p_recurrence_unit": "text|null",
             "p_start_date": "date"
           },
           "returns": "Expense",
           "notes": [
-            "p_split_mode NULL => draft (recurrence must be none; amount optional)",
-            "p_split_mode set => activation; recurrence none creates one-off active; recurrence != none creates plan + first cycle and marks draft converted"
+            "p_split_mode NULL => draft (recurrence must be null; amount optional)",
+            "p_split_mode set => activation; recurrence null creates one-off active; recurrence set creates plan + first cycle and marks draft converted"
           ]
         },
         "expenses.edit": {
           "type": "rpc",
           "caller": "member",
-          "impl": "public.expenses_edit",
+          "impl": "public.expenses_edit_v2",
           "args": {
             "p_expense_id": "uuid",
             "p_amount_cents": "bigint",
@@ -401,13 +405,14 @@
             "p_split_mode": "ExpenseSplitType|null",
             "p_member_ids": "uuid[]|null",
             "p_splits": "jsonb|null",
-            "p_recurrence": "RecurrenceInterval",
+            "p_recurrence_every": "int|null",
+            "p_recurrence_unit": "text|null",
             "p_start_date": "date"
           },
           "returns": "Expense",
           "notes": [
             "Only allowed for drafts; always activates",
-            "Recurrence != none creates plan, marks draft converted, and generates first cycle",
+            "Recurrence set creates plan, marks draft converted, and generates first cycle",
             "Existing active expenses are immutable"
           ]
         },
@@ -472,7 +477,7 @@
           },
           "returns": "jsonb",
           "notes": [
-            "Creator-only; returns splits, planId, recurrenceInterval, startDate, canEdit flag, and editDisabledReason (ACTIVE_IMMUTABLE, RECURRING_CYCLE_IMMUTABLE, CONVERTED_TO_PLAN)"
+            "Creator-only; returns splits, planId, recurrenceEvery/Unit, startDate, canEdit flag, and editDisabledReason (ACTIVE_IMMUTABLE, RECURRING_CYCLE_IMMUTABLE, CONVERTED_TO_PLAN)"
           ]
         }
       },
@@ -653,12 +658,6 @@
               "can_transfer_to": "boolean"
             }
           }
-        },
-        "members.listByHome": {
-          "type": "rpc",
-          "caller": "member",
-          "status": "absent",
-          "notes": "Not present in DB; historical memberships RPC TBD."
         }
       },
       "rls": [

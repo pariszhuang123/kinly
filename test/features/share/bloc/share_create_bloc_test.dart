@@ -108,7 +108,7 @@ void main() {
     registerFallbackValue(ExpenseSplitType.equal);
     registerFallbackValue(<String>[]);
     registerFallbackValue(<ExpenseCustomSplitInput>[]);
-    registerFallbackValue(ExpenseRecurrenceInterval.none);
+    registerFallbackValue(ExpenseRecurrenceUnit.week);
   });
 
   setUp(() {
@@ -184,7 +184,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
         ),
       ).thenAnswer(
@@ -199,7 +200,8 @@ void main() {
           notes: null,
           createdAt: DateTime.now().toUtc(),
           updatedAt: DateTime.now().toUtc(),
-          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: DateTime(2024, 1, 1),
           planId: null,
           fullyPaidAt: null,
@@ -231,7 +233,8 @@ void main() {
           splitType: null,
           memberIds: null,
           customSplits: null,
-          recurrence: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: any(named: 'startDate'),
         ),
       ).called(1);
@@ -250,6 +253,85 @@ void main() {
     expect: () => [emptySeed.copyWith(showValidationErrors: true)],
   );
 
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'defaults recurrence when toggled on',
+    build: () => buildBloc(),
+    seed: seededState,
+    act: (bloc) => bloc.add(const ShareCreateRecurrenceToggled(true)),
+    expect:
+        () => [
+          seededState().copyWith(
+            form: seededState().form.copyWith(
+              recurrenceEvery: 1,
+              recurrenceUnit: ExpenseRecurrenceUnit.week,
+            ),
+            hasUserEdits: true,
+          ),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'clears recurrence when toggled off',
+    build: () => buildBloc(),
+    seed: () {
+      return seededState(
+        form: ShareCreateForm.initial().copyWith(
+          description: 'Recurring',
+          amountInput: '10.00',
+          splitMode: ShareSplitMode.equal,
+          selectedParticipantIds: {'member_a', 'member_self'},
+          recurrenceEvery: 2,
+          recurrenceUnit: ExpenseRecurrenceUnit.month,
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateRecurrenceToggled(false)),
+    expect:
+        () => [
+          seededState(
+            form: ShareCreateForm.initial().copyWith(
+              description: 'Recurring',
+              amountInput: '10.00',
+              splitMode: ShareSplitMode.equal,
+              selectedParticipantIds: {'member_a', 'member_self'},
+              recurrenceEvery: null,
+              recurrenceUnit: null,
+            ),
+          ).copyWith(hasUserEdits: true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'drops recurrence every when input is invalid',
+    build: () => buildBloc(),
+    seed: () {
+      return seededState(
+        form: ShareCreateForm.initial().copyWith(
+          description: 'Recurring',
+          amountInput: '10.00',
+          splitMode: ShareSplitMode.equal,
+          selectedParticipantIds: {'member_a', 'member_self'},
+          recurrenceEvery: 1,
+          recurrenceUnit: ExpenseRecurrenceUnit.week,
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateRecurrenceEveryChanged('0')),
+    expect:
+        () => [
+          seededState(
+            form: ShareCreateForm.initial().copyWith(
+              description: 'Recurring',
+              amountInput: '10.00',
+              splitMode: ShareSplitMode.equal,
+              selectedParticipantIds: {'member_a', 'member_self'},
+              recurrenceEvery: null,
+              recurrenceUnit: ExpenseRecurrenceUnit.week,
+            ),
+          ).copyWith(hasUserEdits: true),
+        ],
+  );
+
   late ShareCreateState recurringDraftSeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'blocks recurrence selection without split mode',
@@ -258,7 +340,8 @@ void main() {
       final form = ShareCreateForm.initial().copyWith(
         description: 'Weekly draft',
         amountInput: '10.00',
-        recurrence: ExpenseRecurrenceInterval.weekly,
+        recurrenceEvery: 1,
+        recurrenceUnit: ExpenseRecurrenceUnit.week,
         splitMode: null,
       );
       recurringDraftSeed = seededState(form: form);
@@ -276,7 +359,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
         ),
       );
@@ -301,7 +385,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
         ),
       ).thenAnswer(
@@ -316,7 +401,8 @@ void main() {
           notes: null,
           createdAt: DateTime.now().toUtc(),
           updatedAt: DateTime.now().toUtc(),
-          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: DateTime(2024, 1, 1),
           planId: null,
           fullyPaidAt: null,
@@ -348,7 +434,8 @@ void main() {
           splitType: ExpenseSplitType.equal,
           memberIds: ['member_a', 'member_b', 'member_self'],
           customSplits: null,
-          recurrence: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: any(named: 'startDate'),
         ),
       ).called(1);
@@ -382,7 +469,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
         ),
       );
@@ -407,7 +495,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
         ),
       ).thenThrow(
@@ -480,7 +569,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
         ),
       ).thenAnswer(
@@ -495,7 +585,8 @@ void main() {
           notes: null,
           createdAt: DateTime.now().toUtc(),
           updatedAt: DateTime.now().toUtc(),
-          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: DateTime(2024, 1, 1),
           planId: null,
           fullyPaidAt: null,
@@ -527,7 +618,8 @@ void main() {
           splitType: ExpenseSplitType.equal,
           memberIds: ['member_a', 'member_b'],
           customSplits: null,
-          recurrence: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: any(named: 'startDate'),
         ),
       ).called(1);
@@ -563,7 +655,8 @@ void main() {
           notes: null,
           createdAt: DateTime.now().toUtc(),
           updatedAt: DateTime.now().toUtc(),
-          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: DateTime.now(),
           planId: null,
           fullyPaidAt: null,
@@ -597,7 +690,8 @@ void main() {
         amountInput: '30.00',
         splitMode: ShareSplitMode.equal,
         selectedParticipantIds: {'member_a', 'member_b'},
-        recurrence: ExpenseRecurrenceInterval.monthly,
+        recurrenceEvery: 1,
+        recurrenceUnit: ExpenseRecurrenceUnit.month,
       );
       terminateSeed = seededState(
         form: form,
@@ -615,7 +709,8 @@ void main() {
           splitType: ExpenseSplitType.equal,
           amountCents: 3000,
           description: 'Recurring bill',
-          recurrenceInterval: ExpenseRecurrenceInterval.monthly,
+          recurrenceEvery: 1,
+          recurrenceUnit: ExpenseRecurrenceUnit.month,
           startDate: DateTime(2024, 1, 1),
           status: 'terminated',
           terminatedAt: DateTime.now(),
@@ -670,7 +765,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
         ),
       ).thenAnswer(
@@ -685,7 +781,8 @@ void main() {
           notes: 'note',
           createdAt: DateTime.now().toUtc(),
           updatedAt: DateTime.now().toUtc(),
-          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: DateTime(2024, 1, 1),
           planId: null,
           fullyPaidAt: null,
@@ -717,7 +814,8 @@ void main() {
           splitType: null,
           memberIds: null,
           customSplits: null,
-          recurrence: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: any(named: 'startDate'),
         ),
       ).called(1);
@@ -738,7 +836,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
         ),
       ).thenThrow(
@@ -784,7 +883,8 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
-          recurrence: any(named: 'recurrence'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
         ),
       ).thenAnswer((_) async {
@@ -806,7 +906,8 @@ void main() {
           notes: null,
           createdAt: DateTime.now().toUtc(),
           updatedAt: DateTime.now().toUtc(),
-          recurrenceInterval: ExpenseRecurrenceInterval.none,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
           startDate: DateTime(2024, 1, 1),
           planId: null,
           fullyPaidAt: null,

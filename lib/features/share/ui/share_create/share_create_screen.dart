@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../contracts/expenses/enums/expense_recurrence_interval.dart';
+import '../../../../contracts/expenses/enums/expense_recurrence_unit.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
@@ -38,6 +38,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
   final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
+  final _recurrenceEveryController = TextEditingController();
   final Map<String, TextEditingController> _customControllers = {};
   bool _baseHydrated = false;
 
@@ -46,6 +47,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
     _descriptionController.dispose();
     _amountController.dispose();
     _notesController.dispose();
+    _recurrenceEveryController.dispose();
     for (final controller in _customControllers.values) {
       controller.dispose();
     }
@@ -57,7 +59,16 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
     _descriptionController.text = form.description;
     _amountController.text = form.amountInput;
     _notesController.text = form.notes;
+    _recurrenceEveryController.text =
+        form.recurrenceEvery?.toString() ?? '';
     _baseHydrated = true;
+  }
+
+  void _syncRecurrenceController(ShareCreateForm form) {
+    final desired = form.recurrenceEvery?.toString() ?? '';
+    if (_recurrenceEveryController.text != desired) {
+      _recurrenceEveryController.text = desired;
+    }
   }
 
   void _syncCustomControllers(ShareCreateState state) {
@@ -183,11 +194,12 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
         builder: (context, state) {
           _hydrateBaseControllers(state.form);
           _syncCustomControllers(state);
+          _syncRecurrenceController(state.form);
           final showTerminatePlan =
               state.isEditing &&
               state.planId != null &&
               state.planStatus != 'terminated' &&
-              state.form.recurrence != ExpenseRecurrenceInterval.none;
+              state.form.isRecurring;
 
           return KinlyScaffold(
             appBar: KinlyAppBar(
@@ -309,6 +321,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
       descriptionController: _descriptionController,
       amountController: _amountController,
       notesController: _notesController,
+      recurrenceEveryController: _recurrenceEveryController,
       customControllers: _customControllers,
     );
     final slots = ShareCreateSurfaceSlots(
@@ -323,21 +336,22 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
   ) {
     final entries = ShareCreateRegistry.bodySections;
     if (entries.length == 1) {
-      return ShareCreateBody(
-        spacing: scope.spacing,
-        state: scope.state,
-        shareColors: shareColors,
-        allowDelete: scope.allowDelete,
-        showTerminatePlan: scope.showTerminatePlan,
-        onRetry: scope.actions.onRetry,
-        descriptionController: scope.descriptionController,
-        amountController: scope.amountController,
-        notesController: scope.notesController,
-        customControllers: scope.customControllers,
-        onSubmit: scope.actions.onSubmit,
-        onDeleteRequested: scope.actions.onDeleteRequested,
-        onTerminatePlan: scope.actions.onTerminatePlan,
-        onPaywallOpened: scope.actions.onPaywallOpened,
+        return ShareCreateBody(
+          spacing: scope.spacing,
+          state: scope.state,
+          shareColors: shareColors,
+          allowDelete: scope.allowDelete,
+          showTerminatePlan: scope.showTerminatePlan,
+          onRetry: scope.actions.onRetry,
+          descriptionController: scope.descriptionController,
+          amountController: scope.amountController,
+          notesController: scope.notesController,
+          recurrenceEveryController: scope.recurrenceEveryController,
+          customControllers: scope.customControllers,
+          onSubmit: scope.actions.onSubmit,
+          onDeleteRequested: scope.actions.onDeleteRequested,
+          onTerminatePlan: scope.actions.onTerminatePlan,
+          onPaywallOpened: scope.actions.onPaywallOpened,
       );
     }
     return Column(

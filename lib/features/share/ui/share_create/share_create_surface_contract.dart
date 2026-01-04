@@ -50,6 +50,7 @@ class ShareCreateSurfaceScope {
     required this.descriptionController,
     required this.amountController,
     required this.notesController,
+    required this.recurrenceEveryController,
     required this.customControllers,
   });
 
@@ -64,6 +65,7 @@ class ShareCreateSurfaceScope {
   final TextEditingController descriptionController;
   final TextEditingController amountController;
   final TextEditingController notesController;
+  final TextEditingController recurrenceEveryController;
   final Map<String, TextEditingController> customControllers;
 }
 

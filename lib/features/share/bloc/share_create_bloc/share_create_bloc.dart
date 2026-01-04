@@ -60,7 +60,9 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     on<ShareCreateParticipantToggled>(_onParticipantToggled);
     on<ShareCreateCustomAmountChanged>(_onCustomAmountChanged);
     on<ShareCreateStartDateChanged>(_onStartDateChanged);
-    on<ShareCreateRecurrenceChanged>(_onRecurrenceChanged);
+    on<ShareCreateRecurrenceToggled>(_onRecurrenceToggled);
+    on<ShareCreateRecurrenceEveryChanged>(_onRecurrenceEveryChanged);
+    on<ShareCreateRecurrenceUnitChanged>(_onRecurrenceUnitChanged);
     on<ShareCreateSubmitted>(_onSubmitted);
     on<ShareCreateDeleted>(_onDeleted);
     on<ShareCreatePlanTerminationRequested>(_onPlanTerminationRequested);
@@ -162,10 +164,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   ) {
     var nextForm = state.form.copyWith(
       splitMode: event.mode,
-      recurrence:
-          event.mode == null
-              ? ExpenseRecurrenceInterval.none
-              : state.form.recurrence,
+      clearRecurrenceEvery: event.mode == null,
+      clearRecurrenceUnit: event.mode == null,
     );
 
     final isSwitchingToEqual = event.mode == ShareSplitMode.equal;
@@ -221,13 +221,59 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     );
   }
 
-  void _onRecurrenceChanged(
-    ShareCreateRecurrenceChanged event,
+  void _onRecurrenceToggled(
+    ShareCreateRecurrenceToggled event,
+    Emitter<ShareCreateState> emit,
+  ) {
+    if (!event.isRecurring) {
+      emit(
+        state.copyWith(
+          form: state.form.copyWith(
+            clearRecurrenceEvery: true,
+            clearRecurrenceUnit: true,
+          ),
+          hasUserEdits: true,
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        form: state.form.copyWith(
+          recurrenceEvery: state.form.recurrenceEvery ?? 1,
+          recurrenceUnit: state.form.recurrenceUnit ?? ExpenseRecurrenceUnit.week,
+        ),
+        hasUserEdits: true,
+      ),
+    );
+  }
+
+  void _onRecurrenceEveryChanged(
+    ShareCreateRecurrenceEveryChanged event,
+    Emitter<ShareCreateState> emit,
+  ) {
+    final trimmed = event.value.trim();
+    final parsed = int.tryParse(trimmed);
+    final nextEvery = parsed != null && parsed > 0 ? parsed : null;
+    emit(
+      state.copyWith(
+        form: state.form.copyWith(
+          recurrenceEvery: nextEvery,
+          clearRecurrenceEvery: nextEvery == null,
+        ),
+        hasUserEdits: true,
+      ),
+    );
+  }
+
+  void _onRecurrenceUnitChanged(
+    ShareCreateRecurrenceUnitChanged event,
     Emitter<ShareCreateState> emit,
   ) {
     emit(
       state.copyWith(
-        form: state.form.copyWith(recurrence: event.recurrence),
+        form: state.form.copyWith(recurrenceUnit: event.unit),
         hasUserEdits: true,
       ),
     );
@@ -265,7 +311,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
                 splitType: plan.splitType,
                 memberIds: plan.memberIds,
                 customSplits: plan.customSplits,
-                recurrence: plan.recurrence,
+                recurrenceEvery: plan.recurrenceEvery,
+                recurrenceUnit: plan.recurrenceUnit,
                 startDate: plan.startDate,
               )
               : await _expensesRepository.create(
@@ -276,7 +323,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
                 splitType: plan.splitType,
                 memberIds: plan.memberIds,
                 customSplits: plan.customSplits,
-                recurrence: plan.recurrence,
+                recurrenceEvery: plan.recurrenceEvery,
+                recurrenceUnit: plan.recurrenceUnit,
                 startDate: plan.startDate,
               );
 
@@ -425,7 +473,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
       splitType: splitDecision.splitType,
       memberIds: splitDecision.memberIds,
       customSplits: splitDecision.customSplits,
-      recurrence: ctx.recurrence,
+      recurrenceEvery: ctx.recurrenceEvery,
+      recurrenceUnit: ctx.recurrenceUnit,
       startDate: ctx.startDate,
     );
   }
@@ -491,16 +540,23 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
       amountValid: amountValid,
       requiresAmount: requiresAmount,
       splitMode: splitMode,
-      recurrence: form.recurrence,
+      recurrenceEvery: form.recurrenceEvery,
+      recurrenceUnit: form.recurrenceUnit,
       startDate: form.startDate,
       amountLocked: amountLocked,
     );
   }
 
   bool _hasBasicValidity(_ValidationContext ctx) {
+    final recurrencePairOk =
+        (ctx.recurrenceEvery == null && ctx.recurrenceUnit == null) ||
+        (ctx.recurrenceEvery != null && ctx.recurrenceUnit != null);
+    final recurrenceEveryOk =
+        ctx.recurrenceEvery == null || ctx.recurrenceEvery! >= 1;
     final recurrenceOk =
-        ctx.splitMode != null ||
-        ctx.recurrence == ExpenseRecurrenceInterval.none;
+        (ctx.splitMode != null || ctx.recurrenceEvery == null) &&
+        recurrencePairOk &&
+        recurrenceEveryOk;
     final hasEditInputs =
         ctx.isEditing
             ? ctx.amountLocked ||
@@ -567,7 +623,8 @@ class _SubmissionPlan {
     required this.splitType,
     required this.memberIds,
     required this.customSplits,
-    required this.recurrence,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.startDate,
   });
 
@@ -579,7 +636,8 @@ class _SubmissionPlan {
   final ExpenseSplitType? splitType;
   final List<String>? memberIds;
   final List<ExpenseCustomSplitInput>? customSplits;
-  final ExpenseRecurrenceInterval recurrence;
+  final int? recurrenceEvery;
+  final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
 }
 
@@ -594,7 +652,8 @@ class _ValidationContext {
     required this.amountValid,
     required this.requiresAmount,
     required this.splitMode,
-    required this.recurrence,
+    required this.recurrenceEvery,
+    required this.recurrenceUnit,
     required this.startDate,
     required this.amountLocked,
   });
@@ -608,7 +667,8 @@ class _ValidationContext {
   final bool amountValid;
   final bool requiresAmount;
   final ShareSplitMode? splitMode;
-  final ExpenseRecurrenceInterval recurrence;
+  final int? recurrenceEvery;
+  final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
   final bool amountLocked;
 }

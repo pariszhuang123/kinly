@@ -526,14 +526,19 @@ CREATE TABLE IF NOT EXISTS "public"."expenses" (
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "fully_paid_at" timestamp with time zone,
     "plan_id" "uuid",
-    "recurrence_interval" "public"."recurrence_interval" DEFAULT 'none'::"public"."recurrence_interval" NOT NULL,
+    "recurrence_interval" "public"."recurrence_interval",
     "start_date" "date" NOT NULL,
+    "recurrence_every" integer,
+    "recurrence_unit" "text",
     CONSTRAINT "chk_expenses_active_amount_required" CHECK ((("status" <> 'active'::"public"."expense_status") OR (("amount_cents" IS NOT NULL) AND ("amount_cents" > 0)))),
     CONSTRAINT "chk_expenses_active_split_required" CHECK ((("status" <> 'active'::"public"."expense_status") OR ("split_type" IS NOT NULL))),
     CONSTRAINT "chk_expenses_amount_positive" CHECK ((("amount_cents" IS NULL) OR ("amount_cents" > 0))),
     CONSTRAINT "chk_expenses_description_length" CHECK (("char_length"("btrim"("description")) <= 280)),
     CONSTRAINT "chk_expenses_notes_length" CHECK ((("notes" IS NULL) OR ("char_length"("notes") <= 2000))),
-    CONSTRAINT "chk_expenses_plan_alignment" CHECK (((("recurrence_interval" = 'none'::"public"."recurrence_interval") AND ("plan_id" IS NULL)) OR (("recurrence_interval" <> 'none'::"public"."recurrence_interval") AND ("plan_id" IS NOT NULL))))
+    CONSTRAINT "chk_expenses_plan_alignment" CHECK (((("recurrence_every" IS NULL) AND ("recurrence_unit" IS NULL) AND ("plan_id" IS NULL)) OR (("recurrence_every" IS NOT NULL) AND ("recurrence_unit" IS NOT NULL) AND ("plan_id" IS NOT NULL)))),
+    CONSTRAINT "chk_expenses_recurrence_every_min" CHECK ((("recurrence_every" IS NULL) OR ("recurrence_every" >= 1))),
+    CONSTRAINT "chk_expenses_recurrence_pair" CHECK (((("recurrence_every" IS NULL) AND ("recurrence_unit" IS NULL)) OR (("recurrence_every" IS NOT NULL) AND ("recurrence_unit" IS NOT NULL)))),
+    CONSTRAINT "chk_expenses_recurrence_unit_allowed" CHECK ((("recurrence_unit" IS NULL) OR ("recurrence_unit" = ANY (ARRAY['day'::"text", 'week'::"text", 'month'::"text", 'year'::"text"]))))
 );
 
 
@@ -585,6 +590,14 @@ COMMENT ON COLUMN "public"."expenses"."recurrence_interval" IS 'none for one-off
 
 
 COMMENT ON COLUMN "public"."expenses"."start_date" IS 'Cycle start date (or one-off effective date).';
+
+
+
+COMMENT ON COLUMN "public"."expenses"."recurrence_every" IS 'Recurring interval count; NULL for one-off expenses.';
+
+
+
+COMMENT ON COLUMN "public"."expenses"."recurrence_unit" IS 'Recurring interval unit (day|week|month|year); NULL for one-off expenses.';
 
 
 
@@ -665,6 +678,8 @@ BEGIN
       notes,
       plan_id,
       recurrence_interval,
+      recurrence_every,
+      recurrence_unit,
       start_date
     )
     VALUES (
@@ -677,6 +692,8 @@ BEGIN
       v_plan.notes,
       v_plan.id,
       v_plan.recurrence_interval,
+      v_plan.recurrence_every,
+      v_plan.recurrence_unit,
       p_cycle_date
     )
     RETURNING * INTO v_expense;
@@ -768,6 +785,45 @@ $$;
 
 
 ALTER FUNCTION "public"."_expense_plan_next_cycle_date"("p_interval" "public"."recurrence_interval", "p_from" "date") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."_expense_plan_next_cycle_date_v2"("p_every" integer, "p_unit" "text", "p_from" "date") RETURNS "date"
+    LANGUAGE "plpgsql" IMMUTABLE STRICT
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  IF p_every IS NULL OR p_unit IS NULL THEN
+    RAISE EXCEPTION
+      'Recurrence every/unit is required for expense plans.'
+      USING ERRCODE = '22023';
+  END IF;
+
+  IF p_every < 1 THEN
+    RAISE EXCEPTION
+      'Recurrence every must be >= 1.'
+      USING ERRCODE = '22023';
+  END IF;
+
+  CASE p_unit
+    WHEN 'day' THEN
+      RETURN (p_from + p_every)::date;
+    WHEN 'week' THEN
+      RETURN (p_from + (p_every * 7))::date;
+    WHEN 'month' THEN
+      RETURN (p_from + make_interval(months => p_every))::date;
+    WHEN 'year' THEN
+      RETURN (p_from + make_interval(years => p_every))::date;
+    ELSE
+      RAISE EXCEPTION
+        'Recurrence unit % not supported for expense plans.',
+        p_unit
+        USING ERRCODE = '22023';
+  END CASE;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_expense_plan_next_cycle_date_v2"("p_every" integer, "p_unit" "text", "p_from" "date") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."_expense_plans_terminate_for_member_change"("p_home_id" "uuid", "p_affected_user_id" "uuid") RETURNS "void"
@@ -2443,18 +2499,22 @@ BEGIN
     EXIT WHEN v_total_cycles_done >= v_total_cap;
 
     v_cycle_date := v_plan.next_cycle_date;
-    v_next_date  := v_plan.next_cycle_date;
+    v_next_date := v_plan.next_cycle_date;
+
     v_cycles_done := 0;
 
-    WHILE v_cycle_date <= current_date LOOP
-      EXIT WHEN v_cycles_done >= v_cap;
+    WHILE v_cycle_date <= current_date AND v_cycles_done < v_cap LOOP
       EXIT WHEN v_total_cycles_done >= v_total_cap;
 
       PERFORM public._expense_plan_generate_cycle(v_plan.id, v_cycle_date);
 
-      v_cycle_date := public._expense_plan_next_cycle_date(v_plan.recurrence_interval, v_cycle_date);
-      v_next_date  := v_cycle_date;
+      v_next_date := public._expense_plan_next_cycle_date_v2(
+        v_plan.recurrence_every,
+        v_plan.recurrence_unit,
+        v_cycle_date
+      );
 
+      v_cycle_date  := v_next_date;
       v_cycles_done := v_cycles_done + 1;
       v_total_cycles_done := v_total_cycles_done + 1;
     END LOOP;
@@ -2481,23 +2541,34 @@ CREATE TABLE IF NOT EXISTS "public"."expense_plans" (
     "amount_cents" bigint NOT NULL,
     "description" "text" NOT NULL,
     "notes" "text",
-    "recurrence_interval" "public"."recurrence_interval" NOT NULL,
+    "recurrence_interval" "public"."recurrence_interval",
     "start_date" "date" NOT NULL,
     "next_cycle_date" "date" NOT NULL,
     "status" "public"."expense_plan_status" DEFAULT 'active'::"public"."expense_plan_status" NOT NULL,
     "terminated_at" timestamp with time zone,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "recurrence_every" integer NOT NULL,
+    "recurrence_unit" "text" NOT NULL,
     CONSTRAINT "chk_expense_plans_amount_positive" CHECK (("amount_cents" > 0)),
     CONSTRAINT "chk_expense_plans_description_length" CHECK (("char_length"("btrim"("description")) <= 280)),
     CONSTRAINT "chk_expense_plans_next_cycle_not_before_start" CHECK (("next_cycle_date" >= "start_date")),
     CONSTRAINT "chk_expense_plans_notes_length" CHECK ((("notes" IS NULL) OR ("char_length"("notes") <= 2000))),
-    CONSTRAINT "chk_expense_plans_recurrence_non_none" CHECK (("recurrence_interval" <> 'none'::"public"."recurrence_interval")),
+    CONSTRAINT "chk_expense_plans_recurrence_every_min" CHECK (("recurrence_every" >= 1)),
+    CONSTRAINT "chk_expense_plans_recurrence_unit_allowed" CHECK (("recurrence_unit" = ANY (ARRAY['day'::"text", 'week'::"text", 'month'::"text", 'year'::"text"]))),
     CONSTRAINT "chk_expense_plans_status_timestamp" CHECK (((("status" = 'terminated'::"public"."expense_plan_status") AND ("terminated_at" IS NOT NULL)) OR (("status" = 'active'::"public"."expense_plan_status") AND ("terminated_at" IS NULL))))
 );
 
 
 ALTER TABLE "public"."expense_plans" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."expense_plans"."recurrence_every" IS 'Recurring interval count (>= 1).';
+
+
+
+COMMENT ON COLUMN "public"."expense_plans"."recurrence_unit" IS 'Recurring interval unit (day|week|month|year).';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."expense_plans_terminate"("p_plan_id" "uuid") RETURNS "public"."expense_plans"
@@ -2875,6 +2946,9 @@ DECLARE
   v_has_splits     boolean := FALSE;
   v_is_recurring   boolean := FALSE;
 
+  v_recur_every    integer := NULL;
+  v_recur_unit     text := NULL;
+
   v_split_count    integer := 0;
   v_split_sum      bigint  := 0;
   v_split_min      bigint  := 0;
@@ -2908,6 +2982,32 @@ BEGIN
       'Recurrence interval must be weekly, every_2_weeks, monthly, every_2_months, or annual.',
       '22023'
     );
+  END IF;
+
+  IF v_is_recurring THEN
+    CASE p_recurrence
+      WHEN 'weekly' THEN
+        v_recur_every := 1;
+        v_recur_unit := 'week';
+      WHEN 'every_2_weeks' THEN
+        v_recur_every := 2;
+        v_recur_unit := 'week';
+      WHEN 'monthly' THEN
+        v_recur_every := 1;
+        v_recur_unit := 'month';
+      WHEN 'every_2_months' THEN
+        v_recur_every := 2;
+        v_recur_unit := 'month';
+      WHEN 'annual' THEN
+        v_recur_every := 1;
+        v_recur_unit := 'year';
+      ELSE
+        PERFORM public.api_error(
+          'INVALID_RECURRENCE',
+          'Recurrence interval is not supported.',
+          '22023'
+        );
+    END CASE;
   END IF;
 
   IF btrim(COALESCE(p_description, '')) = '' THEN
@@ -3049,7 +3149,6 @@ BEGIN
       );
     END IF;
   END IF;
-
   -- One-off path (non-recurring)
   IF NOT v_is_recurring THEN
     -- Paywall only if we are creating an ACTIVE expense (splits present)
@@ -3066,6 +3165,8 @@ BEGIN
       description,
       notes,
       recurrence_interval,
+      recurrence_every,
+      recurrence_unit,
       start_date
     )
     VALUES (
@@ -3077,6 +3178,8 @@ BEGIN
       btrim(p_description),
       NULLIF(btrim(p_notes), ''),
       'none',
+      NULL,
+      NULL,
       p_start_date
     )
     RETURNING * INTO v_result;
@@ -3120,6 +3223,8 @@ BEGIN
     description,
     notes,
     recurrence_interval,
+    recurrence_every,
+    recurrence_unit,
     start_date,
     next_cycle_date,
     status
@@ -3132,8 +3237,10 @@ BEGIN
     btrim(p_description),
     NULLIF(btrim(p_notes), ''),
     p_recurrence,
+    v_recur_every,
+    v_recur_unit,
     p_start_date,
-    public._expense_plan_next_cycle_date(p_recurrence, p_start_date),
+    public._expense_plan_next_cycle_date_v2(v_recur_every, v_recur_unit, p_start_date),
     'active'
   )
   RETURNING * INTO v_plan;
@@ -3150,6 +3257,320 @@ $$;
 
 
 ALTER FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint, "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence" "public"."recurrence_interval", "p_start_date" "date") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."expenses_create_v2"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint DEFAULT NULL::bigint, "p_notes" "text" DEFAULT NULL::"text", "p_split_mode" "public"."expense_split_type" DEFAULT NULL::"public"."expense_split_type", "p_member_ids" "uuid"[] DEFAULT NULL::"uuid"[], "p_splits" "jsonb" DEFAULT NULL::"jsonb", "p_recurrence_every" integer DEFAULT NULL::integer, "p_recurrence_unit" "text" DEFAULT NULL::"text", "p_start_date" "date" DEFAULT CURRENT_DATE) RETURNS "public"."expenses"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user           uuid;
+  v_home_id        uuid := p_home_id;
+  v_home_is_active boolean;
+
+  v_result         public.expenses%ROWTYPE;
+  v_plan           public.expense_plans%ROWTYPE;
+
+  v_new_status     public.expense_status;
+  v_target_split   public.expense_split_type;
+  v_has_splits     boolean := FALSE;
+  v_is_recurring   boolean := FALSE;
+
+  v_recur_every    integer := p_recurrence_every;
+  v_recur_unit     text := p_recurrence_unit;
+
+  v_split_count    integer := 0;
+  v_split_sum      bigint  := 0;
+  v_split_min      bigint  := 0;
+
+  v_join_date      date;
+
+  v_amount_cap constant bigint  := 900000000000;
+  v_desc_max   constant integer := 280;
+  v_notes_max  constant integer := 2000;
+BEGIN
+  PERFORM public._assert_authenticated();
+  v_user := auth.uid();
+
+  IF v_home_id IS NULL THEN
+    PERFORM public.api_error('INVALID_HOME', 'Home id is required.', '22023');
+  END IF;
+
+  IF p_start_date IS NULL THEN
+    PERFORM public.api_error('INVALID_START_DATE', 'Start date is required.', '22023');
+  END IF;
+
+  IF (p_recurrence_every IS NULL) <> (p_recurrence_unit IS NULL) THEN
+    PERFORM public.api_error(
+      'INVALID_RECURRENCE',
+      'Recurrence every and unit must both be set or both be null.',
+      '22023'
+    );
+  END IF;
+
+  v_is_recurring := p_recurrence_every IS NOT NULL;
+
+  IF v_is_recurring THEN
+    IF p_recurrence_every < 1 THEN
+      PERFORM public.api_error(
+        'INVALID_RECURRENCE',
+        'Recurrence every must be >= 1.',
+        '22023'
+      );
+    END IF;
+
+    IF p_recurrence_unit NOT IN ('day', 'week', 'month', 'year') THEN
+      PERFORM public.api_error(
+        'INVALID_RECURRENCE',
+        'Recurrence unit must be day, week, month, or year.',
+        '22023'
+      );
+    END IF;
+  END IF;
+
+  IF btrim(COALESCE(p_description, '')) = '' THEN
+    PERFORM public.api_error('INVALID_DESCRIPTION', 'Description is required.', '22023');
+  END IF;
+
+  IF char_length(btrim(p_description)) > v_desc_max THEN
+    PERFORM public.api_error(
+      'INVALID_DESCRIPTION',
+      format('Description must be %s characters or fewer.', v_desc_max),
+      '22023'
+    );
+  END IF;
+
+  IF p_notes IS NOT NULL AND char_length(p_notes) > v_notes_max THEN
+    PERFORM public.api_error(
+      'INVALID_NOTES',
+      format('Notes must be %s characters or fewer.', v_notes_max),
+      '22023'
+    );
+  END IF;
+
+  -- Draft vs active based on splits presence (p_split_mode)
+  IF p_split_mode IS NULL THEN
+    -- Draft
+    IF v_is_recurring THEN
+      PERFORM public.api_error(
+        'INVALID_RECURRENCE_DRAFT',
+        'Recurring expenses must be activated with splits; drafts cannot be recurring.',
+        '22023'
+      );
+    END IF;
+
+    -- Draft may optionally include amount, but if present must be valid.
+    IF p_amount_cents IS NOT NULL THEN
+      IF p_amount_cents <= 0 OR p_amount_cents > v_amount_cap THEN
+        PERFORM public.api_error(
+          'INVALID_AMOUNT',
+          format('Amount must be between 1 and %s cents when provided.', v_amount_cap),
+          '22023',
+          jsonb_build_object('amountCents', p_amount_cents)
+        );
+      END IF;
+    END IF;
+
+    v_new_status   := 'draft';
+    v_target_split := NULL;
+    v_has_splits   := FALSE;
+  ELSE
+    -- Activating (one-off active) OR recurring activation (plan + first cycle)
+    v_new_status   := 'active';
+    v_target_split := p_split_mode;
+    v_has_splits   := TRUE;
+
+    IF p_amount_cents IS NULL OR p_amount_cents <= 0 OR p_amount_cents > v_amount_cap THEN
+      PERFORM public.api_error(
+        'INVALID_AMOUNT',
+        format('Amount must be between 1 and %s cents.', v_amount_cap),
+        '22023'
+      );
+    END IF;
+  END IF;
+
+  -- Membership join date for start_date validation
+  SELECT m.valid_from::date
+    INTO v_join_date
+    FROM public.memberships m
+   WHERE m.home_id    = v_home_id
+     AND m.user_id    = v_user
+     AND m.is_current = TRUE
+     AND m.valid_to IS NULL
+   LIMIT 1;
+
+  IF v_join_date IS NULL THEN
+    PERFORM public.api_error(
+      'NOT_HOME_MEMBER',
+      'You are not a current member of this home.',
+      '42501',
+      jsonb_build_object('homeId', v_home_id, 'userId', v_user)
+    );
+  END IF;
+
+  IF p_start_date < v_join_date OR p_start_date < (current_date - 90) THEN
+    PERFORM public.api_error(
+      'INVALID_START_DATE_RANGE',
+      'Start date is outside the allowed range.',
+      '22023',
+      jsonb_build_object(
+        'minStartDate',        GREATEST(v_join_date, current_date - 90),
+        'joinDate',            v_join_date,
+        'maxBackdateDays',     90,
+        'attemptedStartDate',  p_start_date
+      )
+    );
+  END IF;
+
+  -- Lock home (global order: homes -> ...)
+  SELECT h.is_active
+    INTO v_home_is_active
+    FROM public.homes h
+   WHERE h.id = v_home_id
+   FOR UPDATE;
+
+  IF v_home_is_active IS DISTINCT FROM TRUE THEN
+    PERFORM public.api_error('HOME_INACTIVE', 'This home is no longer active.', 'P0004');
+  END IF;
+
+  -- If activating (splits present), build/validate split buffer (also validates members + sums)
+  IF v_has_splits THEN
+    PERFORM public._expenses_prepare_split_buffer(
+      v_home_id,
+      v_user,
+      p_amount_cents,
+      v_target_split,
+      p_member_ids,
+      p_splits
+    );
+
+    SELECT COUNT(*)::int,
+           COALESCE(SUM(amount_cents), 0),
+           COALESCE(MIN(amount_cents), 0)
+      INTO v_split_count, v_split_sum, v_split_min
+      FROM pg_temp.expense_split_buffer;
+
+    IF v_split_count < 2 THEN
+      PERFORM public.api_error('INVALID_DEBTOR', 'At least two debtors are required.', '22023');
+    END IF;
+
+    IF v_split_min <= 0 THEN
+      PERFORM public.api_error('INVALID_SPLITS', 'Split amounts must be positive.', '22023');
+    END IF;
+
+    IF v_split_sum <> p_amount_cents THEN
+      PERFORM public.api_error(
+        'INVALID_SPLITS_SUM',
+        'Split amounts must sum to the expense amount.',
+        '22023',
+        jsonb_build_object('amountCents', p_amount_cents, 'splitSumCents', v_split_sum)
+      );
+    END IF;
+  END IF;
+  -- One-off path (non-recurring)
+  IF NOT v_is_recurring THEN
+    -- Paywall only if we are creating an ACTIVE expense (splits present)
+    IF v_new_status = 'active' THEN
+      PERFORM public._home_assert_quota(v_home_id, jsonb_build_object('active_expenses', 1));
+    END IF;
+
+    INSERT INTO public.expenses (
+      home_id,
+      created_by_user_id,
+      status,
+      split_type,
+      amount_cents,
+      description,
+      notes,
+      recurrence_every,
+      recurrence_unit,
+      start_date
+    )
+    VALUES (
+      v_home_id,
+      v_user,
+      v_new_status,
+      v_target_split,
+      p_amount_cents,
+      btrim(p_description),
+      NULLIF(btrim(p_notes), ''),
+      NULL,
+      NULL,
+      p_start_date
+    )
+    RETURNING * INTO v_result;
+
+    -- Create splits only for active
+    IF v_has_splits THEN
+      INSERT INTO public.expense_splits (
+        expense_id,
+        debtor_user_id,
+        amount_cents,
+        status,
+        marked_paid_at
+      )
+      SELECT v_result.id,
+             debtor_user_id,
+             amount_cents,
+             CASE WHEN debtor_user_id = v_user THEN 'paid'::public.expense_share_status
+                  ELSE 'unpaid'::public.expense_share_status
+             END,
+             CASE WHEN debtor_user_id = v_user THEN now() ELSE NULL END
+        FROM pg_temp.expense_split_buffer;
+    END IF;
+
+    -- Usage only for active
+    IF v_new_status = 'active' THEN
+      PERFORM public._home_usage_apply_delta(v_home_id, jsonb_build_object('active_expenses', 1));
+    END IF;
+
+    RETURN v_result;
+  END IF;
+
+  -- Recurring activation path (user-generated): enforce quota for FIRST cycle intent
+  -- (cron later ignores quota by design)
+  PERFORM public._home_assert_quota(v_home_id, jsonb_build_object('active_expenses', 1));
+
+  INSERT INTO public.expense_plans (
+    home_id,
+    created_by_user_id,
+    split_type,
+    amount_cents,
+    description,
+    notes,
+    recurrence_every,
+    recurrence_unit,
+    start_date,
+    next_cycle_date,
+    status
+  )
+  VALUES (
+    v_home_id,
+    v_user,
+    v_target_split,
+    p_amount_cents,
+    btrim(p_description),
+    NULLIF(btrim(p_notes), ''),
+    v_recur_every,
+    v_recur_unit,
+    p_start_date,
+    public._expense_plan_next_cycle_date_v2(v_recur_every, v_recur_unit, p_start_date),
+    'active'
+  )
+  RETURNING * INTO v_plan;
+
+  INSERT INTO public.expense_plan_debtors (plan_id, debtor_user_id, share_amount_cents)
+  SELECT v_plan.id, debtor_user_id, amount_cents
+    FROM pg_temp.expense_split_buffer;
+
+  -- First cycle creation increments usage inside _expense_plan_generate_cycle (canonical)
+  v_result := public._expense_plan_generate_cycle(v_plan.id, p_start_date);
+  RETURN v_result;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."expenses_create_v2"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint, "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence_every" integer, "p_recurrence_unit" "text", "p_start_date" "date") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."expenses_edit"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text" DEFAULT NULL::"text", "p_split_mode" "public"."expense_split_type" DEFAULT NULL::"public"."expense_split_type", "p_member_ids" "uuid"[] DEFAULT NULL::"uuid"[], "p_splits" "jsonb" DEFAULT NULL::"jsonb") RETURNS "public"."expenses"
@@ -3432,6 +3853,8 @@ DECLARE
 
   v_target_split    public.expense_split_type;
   v_target_recur    public.recurrence_interval;
+  v_target_recur_every integer;
+  v_target_recur_unit  text;
   v_target_start    date;
   v_is_recurring    boolean := FALSE;
 
@@ -3570,6 +3993,35 @@ BEGIN
     );
   END IF;
 
+  IF v_is_recurring THEN
+    CASE v_target_recur
+      WHEN 'weekly' THEN
+        v_target_recur_every := 1;
+        v_target_recur_unit := 'week';
+      WHEN 'every_2_weeks' THEN
+        v_target_recur_every := 2;
+        v_target_recur_unit := 'week';
+      WHEN 'monthly' THEN
+        v_target_recur_every := 1;
+        v_target_recur_unit := 'month';
+      WHEN 'every_2_months' THEN
+        v_target_recur_every := 2;
+        v_target_recur_unit := 'month';
+      WHEN 'annual' THEN
+        v_target_recur_every := 1;
+        v_target_recur_unit := 'year';
+      ELSE
+        PERFORM public.api_error(
+          'INVALID_RECURRENCE',
+          'Recurrence interval is not supported.',
+          '22023'
+        );
+    END CASE;
+  ELSE
+    v_target_recur_every := NULL;
+    v_target_recur_unit := NULL;
+  END IF;
+
   -- Build splits (this truncates pg_temp buffer itself)
   PERFORM public._expenses_prepare_split_buffer(
     v_existing.home_id,
@@ -3603,7 +4055,6 @@ BEGIN
   -- Lock order convention: expense already locked; now safe to mutate splits
   DELETE FROM public.expense_splits s
    WHERE s.expense_id = v_existing.id;
-
   IF v_is_recurring THEN
     -- User-generated recurring activation consumes quota for the first cycle intent
     PERFORM public._home_assert_quota(v_existing.home_id, jsonb_build_object('active_expenses', 1));
@@ -3616,6 +4067,8 @@ BEGIN
       description,
       notes,
       recurrence_interval,
+      recurrence_every,
+      recurrence_unit,
       start_date,
       next_cycle_date,
       status
@@ -3628,8 +4081,10 @@ BEGIN
       btrim(p_description),
       NULLIF(btrim(p_notes), ''),
       v_target_recur,
+      v_target_recur_every,
+      v_target_recur_unit,
       v_target_start,
-      public._expense_plan_next_cycle_date(v_target_recur, v_target_start),
+      public._expense_plan_next_cycle_date_v2(v_target_recur_every, v_target_recur_unit, v_target_start),
       'active'
     )
     RETURNING * INTO v_plan;
@@ -3643,6 +4098,8 @@ BEGIN
        SET status              = 'converted',
            plan_id             = v_plan.id,
            recurrence_interval = v_target_recur,
+           recurrence_every    = v_target_recur_every,
+           recurrence_unit     = v_target_recur_unit,
            start_date          = v_target_start,
            updated_at          = now()
      WHERE id = v_existing.id;
@@ -3662,6 +4119,8 @@ BEGIN
          description         = btrim(p_description),
          notes               = NULLIF(btrim(p_notes), ''),
          recurrence_interval = 'none',
+         recurrence_every    = NULL,
+         recurrence_unit     = NULL,
          start_date          = v_target_start,
          updated_at          = now()
    WHERE id = v_existing.id
@@ -3691,6 +4150,309 @@ $$;
 
 
 ALTER FUNCTION "public"."expenses_edit"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence" "public"."recurrence_interval", "p_start_date" "date") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."expenses_edit_v2"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text" DEFAULT NULL::"text", "p_split_mode" "public"."expense_split_type" DEFAULT NULL::"public"."expense_split_type", "p_member_ids" "uuid"[] DEFAULT NULL::"uuid"[], "p_splits" "jsonb" DEFAULT NULL::"jsonb", "p_recurrence_every" integer DEFAULT NULL::integer, "p_recurrence_unit" "text" DEFAULT NULL::"text", "p_start_date" "date" DEFAULT NULL::"date") RETURNS "public"."expenses"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user            uuid := auth.uid();
+
+  v_existing_unsafe public.expenses%ROWTYPE;
+  v_existing        public.expenses%ROWTYPE;
+
+  v_result          public.expenses%ROWTYPE;
+  v_plan            public.expense_plans%ROWTYPE;
+
+  v_home_is_active  boolean;
+
+  v_target_split       public.expense_split_type;
+  v_target_recur_every integer;
+  v_target_recur_unit  text;
+  v_target_start       date;
+  v_is_recurring       boolean := FALSE;
+
+  v_split_count     integer := 0;
+  v_split_sum       bigint  := 0;
+  v_split_min       bigint  := 0;
+
+  v_join_date       date;
+
+  v_amount_cap constant bigint  := 900000000000;
+  v_desc_max   constant integer := 280;
+  v_notes_max  constant integer := 2000;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  IF p_expense_id IS NULL THEN
+    PERFORM public.api_error('INVALID_EXPENSE', 'Expense id is required.', '22023');
+  END IF;
+
+  -- Activation requires amount
+  IF p_amount_cents IS NULL OR p_amount_cents <= 0 OR p_amount_cents > v_amount_cap THEN
+    PERFORM public.api_error('INVALID_AMOUNT', format('Amount must be between 1 and %s cents.', v_amount_cap), '22023');
+  END IF;
+
+  IF btrim(COALESCE(p_description, '')) = '' THEN
+    PERFORM public.api_error('INVALID_DESCRIPTION', 'Description is required.', '22023');
+  END IF;
+
+  IF char_length(btrim(p_description)) > v_desc_max THEN
+    PERFORM public.api_error('INVALID_DESCRIPTION', format('Description must be %s characters or fewer.', v_desc_max), '22023');
+  END IF;
+
+  IF p_notes IS NOT NULL AND char_length(p_notes) > v_notes_max THEN
+    PERFORM public.api_error('INVALID_NOTES', format('Notes must be %s characters or fewer.', v_notes_max), '22023');
+  END IF;
+
+  IF p_split_mode IS NULL THEN
+    PERFORM public.api_error('INVALID_SPLITS', 'Splits are required. Editing an expense always activates it.', '22023');
+  END IF;
+
+  IF (p_recurrence_every IS NULL) <> (p_recurrence_unit IS NULL) THEN
+    PERFORM public.api_error(
+      'INVALID_RECURRENCE',
+      'Recurrence every and unit must both be set or both be null.',
+      '22023'
+    );
+  END IF;
+
+  v_target_split := p_split_mode;
+  v_target_recur_every := p_recurrence_every;
+  v_target_recur_unit := p_recurrence_unit;
+  v_target_start := COALESCE(p_start_date, NULL);
+
+  v_is_recurring := v_target_recur_every IS NOT NULL;
+
+  IF v_is_recurring THEN
+    IF v_target_recur_every < 1 THEN
+      PERFORM public.api_error(
+        'INVALID_RECURRENCE',
+        'Recurrence every must be >= 1.',
+        '22023'
+      );
+    END IF;
+
+    IF v_target_recur_unit NOT IN ('day', 'week', 'month', 'year') THEN
+      PERFORM public.api_error(
+        'INVALID_RECURRENCE',
+        'Recurrence unit must be day, week, month, or year.',
+        '22023'
+      );
+    END IF;
+  END IF;
+
+  SELECT *
+    INTO v_existing_unsafe
+    FROM public.expenses e
+   WHERE e.id = p_expense_id;
+
+  IF NOT FOUND THEN
+    PERFORM public.api_error('NOT_FOUND', 'Expense not found.', 'P0002', jsonb_build_object('expenseId', p_expense_id));
+  END IF;
+
+  -- Lock home first (global order: homes -> ...)
+  SELECT h.is_active
+    INTO v_home_is_active
+    FROM public.homes h
+   WHERE h.id = v_existing_unsafe.home_id
+   FOR UPDATE;
+
+  IF v_home_is_active IS DISTINCT FROM TRUE THEN
+    PERFORM public.api_error('HOME_INACTIVE', 'This home is no longer active.', 'P0004', jsonb_build_object('homeId', v_existing_unsafe.home_id));
+  END IF;
+
+  -- Lock expense row next (homes -> expenses)
+  SELECT *
+    INTO v_existing
+    FROM public.expenses e
+   WHERE e.id = p_expense_id
+   FOR UPDATE;
+
+  IF v_existing.home_id <> v_existing_unsafe.home_id THEN
+    PERFORM public.api_error('CONCURRENT_MODIFICATION', 'Expense changed while editing. Please retry.', '40001', jsonb_build_object('expenseId', p_expense_id));
+  END IF;
+
+  IF v_existing.created_by_user_id <> v_user THEN
+    PERFORM public.api_error('NOT_CREATOR', 'Only the creator can modify this expense.', '42501');
+  END IF;
+
+  SELECT m.valid_from::date
+    INTO v_join_date
+    FROM public.memberships m
+   WHERE m.home_id    = v_existing.home_id
+     AND m.user_id    = v_user
+     AND m.is_current = TRUE
+     AND m.valid_to IS NULL
+   LIMIT 1;
+
+  IF v_join_date IS NULL THEN
+    PERFORM public.api_error('NOT_HOME_MEMBER', 'You are not a current member of this home.', '42501',
+      jsonb_build_object('homeId', v_existing.home_id, 'userId', v_user)
+    );
+  END IF;
+
+  IF v_existing.plan_id IS NOT NULL THEN
+    PERFORM public.api_error('IMMUTABLE_CYCLE', 'Expenses generated from a recurring plan cannot be edited.', '42501');
+  END IF;
+
+  IF v_existing.status = 'active' THEN
+    PERFORM public.api_error('EDIT_NOT_ALLOWED', 'Active expenses cannot be edited.', '42501',
+      jsonb_build_object('expenseId', v_existing.id, 'status', v_existing.status)
+    );
+  END IF;
+
+  IF v_existing.status <> 'draft' THEN
+    PERFORM public.api_error('INVALID_STATE', 'Only draft expenses can be edited.', '42501',
+      jsonb_build_object('expenseId', v_existing.id, 'status', v_existing.status)
+    );
+  END IF;
+
+  v_target_start := COALESCE(p_start_date, v_existing.start_date);
+
+  IF v_target_start IS NULL THEN
+    PERFORM public.api_error('INVALID_START_DATE', 'Start date is required.', '22023');
+  END IF;
+
+  IF v_target_start < v_join_date OR v_target_start < (current_date - 90) THEN
+    PERFORM public.api_error(
+      'INVALID_START_DATE_RANGE',
+      'Start date is outside the allowed range.',
+      '22023',
+      jsonb_build_object(
+        'minStartDate',        GREATEST(v_join_date, current_date - 90),
+        'joinDate',            v_join_date,
+        'maxBackdateDays',     90,
+        'attemptedStartDate',  v_target_start
+      )
+    );
+  END IF;
+
+  -- Build splits (this truncates pg_temp buffer itself)
+  PERFORM public._expenses_prepare_split_buffer(
+    v_existing.home_id,
+    v_user,
+    p_amount_cents,
+    v_target_split,
+    p_member_ids,
+    p_splits
+  );
+
+  SELECT COUNT(*)::int,
+         COALESCE(SUM(amount_cents), 0),
+         COALESCE(MIN(amount_cents), 0)
+    INTO v_split_count, v_split_sum, v_split_min
+    FROM pg_temp.expense_split_buffer;
+
+  IF v_split_count < 2 THEN
+    PERFORM public.api_error('INVALID_DEBTOR', 'At least two debtors are required.', '22023');
+  END IF;
+
+  IF v_split_min <= 0 THEN
+    PERFORM public.api_error('INVALID_SPLITS', 'Split amounts must be positive.', '22023');
+  END IF;
+
+  IF v_split_sum <> p_amount_cents THEN
+    PERFORM public.api_error('INVALID_SPLITS_SUM', 'Split amounts must sum to the expense amount.', '22023',
+      jsonb_build_object('amountCents', p_amount_cents, 'splitSumCents', v_split_sum)
+    );
+  END IF;
+
+  -- Lock order convention: expense already locked; now safe to mutate splits
+  DELETE FROM public.expense_splits s
+   WHERE s.expense_id = v_existing.id;
+  IF v_is_recurring THEN
+    -- User-generated recurring activation consumes quota for the first cycle intent
+    PERFORM public._home_assert_quota(v_existing.home_id, jsonb_build_object('active_expenses', 1));
+
+    INSERT INTO public.expense_plans (
+      home_id,
+      created_by_user_id,
+      split_type,
+      amount_cents,
+      description,
+      notes,
+      recurrence_every,
+      recurrence_unit,
+      start_date,
+      next_cycle_date,
+      status
+    )
+    VALUES (
+      v_existing.home_id,
+      v_user,
+      v_target_split,
+      p_amount_cents,
+      btrim(p_description),
+      NULLIF(btrim(p_notes), ''),
+      v_target_recur_every,
+      v_target_recur_unit,
+      v_target_start,
+      public._expense_plan_next_cycle_date_v2(v_target_recur_every, v_target_recur_unit, v_target_start),
+      'active'
+    )
+    RETURNING * INTO v_plan;
+
+    INSERT INTO public.expense_plan_debtors (plan_id, debtor_user_id, share_amount_cents)
+    SELECT v_plan.id, debtor_user_id, amount_cents
+      FROM pg_temp.expense_split_buffer;
+
+    -- Mark original draft as converted; do NOT increment usage here
+    UPDATE public.expenses
+       SET status           = 'converted',
+           plan_id          = v_plan.id,
+           recurrence_every = v_target_recur_every,
+           recurrence_unit  = v_target_recur_unit,
+           start_date       = v_target_start,
+           updated_at       = now()
+     WHERE id = v_existing.id;
+
+    -- First cycle creation increments usage inside _expense_plan_generate_cycle
+    v_result := public._expense_plan_generate_cycle(v_plan.id, v_target_start);
+    RETURN v_result;
+  END IF;
+
+  -- One-off activation path
+  PERFORM public._home_assert_quota(v_existing.home_id, jsonb_build_object('active_expenses', 1));
+
+  UPDATE public.expenses
+     SET status           = 'active',
+         split_type       = v_target_split,
+         amount_cents     = p_amount_cents,
+         description      = btrim(p_description),
+         notes            = NULLIF(btrim(p_notes), ''),
+         recurrence_every = NULL,
+         recurrence_unit  = NULL,
+         start_date       = v_target_start,
+         updated_at       = now()
+   WHERE id = v_existing.id
+   RETURNING * INTO v_result;
+
+  INSERT INTO public.expense_splits (
+    expense_id,
+    debtor_user_id,
+    amount_cents,
+    status,
+    marked_paid_at
+  )
+  SELECT v_result.id,
+         debtor_user_id,
+         amount_cents,
+         CASE WHEN debtor_user_id = v_user THEN 'paid'::public.expense_share_status
+              ELSE 'unpaid'::public.expense_share_status
+         END,
+         CASE WHEN debtor_user_id = v_user THEN now() ELSE NULL END
+    FROM pg_temp.expense_split_buffer;
+
+  PERFORM public._home_usage_apply_delta(v_existing.home_id, jsonb_build_object('active_expenses', 1));
+
+  RETURN v_result;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."expenses_edit_v2"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence_every" integer, "p_recurrence_unit" "text", "p_start_date" "date") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."expenses_get_created_by_me"("p_home_id" "uuid") RETURNS "jsonb"
@@ -3746,18 +4508,6 @@ BEGIN
 
   /*
     Build list of live expenses created by the current user.
-
-    Rules:
-    - Include creator in the split stats so paidAmountCents / amountCents
-      reflects:
-        * 25/60 when only the creator has paid
-        * 60/60 when everyone has paid.
-    - Exclude expenses that:
-        * are fully paid (all shares paid), AND
-        * were created more than 14 days ago.
-    - Sort by:
-        1) payment status: unpaid -> partial -> fully paid
-        2) createdAt: newest first
   */
   SELECT COALESCE(
            jsonb_agg(
@@ -3770,7 +4520,8 @@ BEGIN
                'status',           e.status,
                'splitType',        e.split_type,
                'createdAt',        e.created_at,
-               'recurrenceInterval', e.recurrence_interval,
+               'recurrenceEvery',  e.recurrence_every,
+               'recurrenceUnit',   e.recurrence_unit,
                'startDate',        e.start_date,
                'totalShares',      COALESCE(stats.total_shares, 0)::int,
                'paidShares',       COALESCE(stats.paid_shares, 0)::int,
@@ -3789,13 +4540,12 @@ BEGIN
                  END
              )
              ORDER BY
-               -- payment status rank: 0 = unpaid, 1 = partial, 2 = fully paid
                CASE
-                 WHEN COALESCE(stats.total_shares, 0) = 0 THEN 0                             -- treat as unpaid
-                 WHEN COALESCE(stats.paid_shares, 0) = 0 THEN 0                             -- unpaid
+                 WHEN COALESCE(stats.total_shares, 0) = 0 THEN 0
+                 WHEN COALESCE(stats.paid_shares, 0) = 0 THEN 0
                  WHEN COALESCE(stats.total_shares, 0) = COALESCE(stats.paid_shares, 0)
-                   THEN 2                                                                   -- fully paid
-                 ELSE 1                                                                     -- partially paid
+                   THEN 2
+                 ELSE 1
                END,
                e.created_at DESC,
                e.id
@@ -3815,12 +4565,10 @@ BEGIN
         MAX(s.marked_paid_at) FILTER (WHERE s.status = 'paid') AS max_paid_at
       FROM public.expense_splits s
       WHERE s.expense_id = e.id
-      -- creator is included here now
     ) stats ON TRUE
   WHERE e.home_id            = p_home_id
     AND e.created_by_user_id = v_user
     AND e.status IN ('draft', 'active')
-    -- Filter out fully-paid expenses older than 14 days
     AND NOT (
       COALESCE(stats.total_shares, 0) > 0
       AND COALESCE(stats.total_shares, 0) = COALESCE(stats.paid_shares, 0)
@@ -3871,12 +4619,13 @@ BEGIN
       SUM(s.amount_cents)                           AS total_owed_cents,
       jsonb_agg(
         jsonb_build_object(
-          'expenseId',          e.id,
-          'description',        e.description,
-          'amountCents',        s.amount_cents,
-          'notes',              e.notes,
-          'recurrenceInterval', e.recurrence_interval,
-          'startDate',          e.start_date
+          'expenseId',       e.id,
+          'description',     e.description,
+          'amountCents',     s.amount_cents,
+          'notes',           e.notes,
+          'recurrenceEvery', e.recurrence_every,
+          'recurrenceUnit',  e.recurrence_unit,
+          'startDate',       e.start_date
         )
         ORDER BY e.created_at DESC, e.id
       ) AS items
@@ -3927,16 +4676,17 @@ BEGIN
   SELECT COALESCE(
            jsonb_agg(
              jsonb_build_object(
-               'expenseId',          expense_id,
-               'description',        description,
-               'notes',              notes,
-               'amountCents',        amount_cents,
-               'markedPaidAt',       marked_paid_at,
-               'debtorUsername',     debtor_username,
-               'debtorAvatarUrl',    debtor_avatar_url,
-               'isOwner',            debtor_is_owner,
-               'recurrenceInterval', recurrence_interval,
-               'startDate',          start_date
+               'expenseId',       expense_id,
+               'description',     description,
+               'notes',           notes,
+               'amountCents',     amount_cents,
+               'markedPaidAt',    marked_paid_at,
+               'debtorUsername',  debtor_username,
+               'debtorAvatarUrl', debtor_avatar_url,
+               'isOwner',         debtor_is_owner,
+               'recurrenceEvery', recurrence_every,
+               'recurrenceUnit',  recurrence_unit,
+               'startDate',       start_date
              )
              ORDER BY marked_paid_at DESC, expense_id
            ),
@@ -3953,7 +4703,8 @@ BEGIN
       p.username                                AS debtor_username,
       a.storage_path                            AS debtor_avatar_url,
       (h.owner_user_id = s.debtor_user_id)      AS debtor_is_owner,
-      e.recurrence_interval                     AS recurrence_interval,
+      e.recurrence_every                        AS recurrence_every,
+      e.recurrence_unit                         AS recurrence_unit,
       e.start_date                              AS start_date
     FROM public.expense_splits s
     JOIN public.expenses e
@@ -4057,10 +4808,10 @@ DECLARE
   v_user               uuid := auth.uid();
   v_expense            public.expenses%ROWTYPE;
   v_home_is_active     boolean;
+  v_plan_status        public.expense_plan_status;
   v_splits             jsonb := '[]'::jsonb;
   v_can_edit           boolean := FALSE;
   v_edit_disabled      text := NULL;
-  v_plan_status        text := NULL;
 BEGIN
   PERFORM public._assert_authenticated();
 
@@ -4156,7 +4907,8 @@ BEGIN
     'updatedAt',          v_expense.updated_at,
     'planId',             v_expense.plan_id,
     'planStatus',         v_plan_status,
-    'recurrenceInterval', v_expense.recurrence_interval,
+    'recurrenceEvery',    v_expense.recurrence_every,
+    'recurrenceUnit',     v_expense.recurrence_unit,
     'startDate',          v_expense.start_date,
     'canEdit',            v_can_edit,
     'editDisabledReason', v_edit_disabled,
@@ -9227,6 +9979,12 @@ GRANT ALL ON FUNCTION "public"."_expense_plan_next_cycle_date"("p_interval" "pub
 
 
 
+GRANT ALL ON FUNCTION "public"."_expense_plan_next_cycle_date_v2"("p_every" integer, "p_unit" "text", "p_from" "date") TO "anon";
+GRANT ALL ON FUNCTION "public"."_expense_plan_next_cycle_date_v2"("p_every" integer, "p_unit" "text", "p_from" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."_expense_plan_next_cycle_date_v2"("p_every" integer, "p_unit" "text", "p_from" "date") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."_expense_plans_terminate_for_member_change"("p_home_id" "uuid", "p_affected_user_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."_expense_plans_terminate_for_member_change"("p_home_id" "uuid", "p_affected_user_id" "uuid") TO "service_role";
 
@@ -9511,7 +10269,8 @@ GRANT ALL ON FUNCTION "public"."date_dist"("date", "date") TO "service_role";
 
 
 
-REVOKE ALL ON FUNCTION "public"."expense_plans_generate_due_cycles"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."expense_plans_generate_due_cycles"() TO "anon";
+GRANT ALL ON FUNCTION "public"."expense_plans_generate_due_cycles"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."expense_plans_generate_due_cycles"() TO "service_role";
 
 
@@ -9544,6 +10303,12 @@ GRANT ALL ON FUNCTION "public"."expenses_create"("p_home_id" "uuid", "p_descript
 
 
 
+REVOKE ALL ON FUNCTION "public"."expenses_create_v2"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint, "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence_every" integer, "p_recurrence_unit" "text", "p_start_date" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."expenses_create_v2"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint, "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence_every" integer, "p_recurrence_unit" "text", "p_start_date" "date") TO "service_role";
+GRANT ALL ON FUNCTION "public"."expenses_create_v2"("p_home_id" "uuid", "p_description" "text", "p_amount_cents" bigint, "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence_every" integer, "p_recurrence_unit" "text", "p_start_date" "date") TO "authenticated";
+
+
+
 REVOKE ALL ON FUNCTION "public"."expenses_edit"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."expenses_edit"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") TO "service_role";
 GRANT ALL ON FUNCTION "public"."expenses_edit"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb") TO "authenticated";
@@ -9553,6 +10318,12 @@ GRANT ALL ON FUNCTION "public"."expenses_edit"("p_expense_id" "uuid", "p_amount_
 REVOKE ALL ON FUNCTION "public"."expenses_edit"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence" "public"."recurrence_interval", "p_start_date" "date") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."expenses_edit"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence" "public"."recurrence_interval", "p_start_date" "date") TO "service_role";
 GRANT ALL ON FUNCTION "public"."expenses_edit"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence" "public"."recurrence_interval", "p_start_date" "date") TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."expenses_edit_v2"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence_every" integer, "p_recurrence_unit" "text", "p_start_date" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."expenses_edit_v2"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence_every" integer, "p_recurrence_unit" "text", "p_start_date" "date") TO "service_role";
+GRANT ALL ON FUNCTION "public"."expenses_edit_v2"("p_expense_id" "uuid", "p_amount_cents" bigint, "p_description" "text", "p_notes" "text", "p_split_mode" "public"."expense_split_type", "p_member_ids" "uuid"[], "p_splits" "jsonb", "p_recurrence_every" integer, "p_recurrence_unit" "text", "p_start_date" "date") TO "authenticated";
 
 
 

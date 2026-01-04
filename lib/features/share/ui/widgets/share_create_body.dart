@@ -22,6 +22,7 @@ class ShareCreateBody extends StatelessWidget {
     required this.descriptionController,
     required this.amountController,
     required this.notesController,
+    required this.recurrenceEveryController,
     required this.customControllers,
     required this.onSubmit,
     required this.onDeleteRequested,
@@ -38,6 +39,7 @@ class ShareCreateBody extends StatelessWidget {
   final TextEditingController descriptionController;
   final TextEditingController amountController;
   final TextEditingController notesController;
+  final TextEditingController recurrenceEveryController;
   final Map<String, TextEditingController> customControllers;
   final VoidCallback onSubmit;
   final VoidCallback? onDeleteRequested;
@@ -72,6 +74,7 @@ class ShareCreateBody extends StatelessWidget {
                 descriptionController: descriptionController,
                 amountController: amountController,
                 notesController: notesController,
+                recurrenceEveryController: recurrenceEveryController,
                 customControllers: customControllers,
                 allowDelete: false,
                 onDeleteRequested: null,

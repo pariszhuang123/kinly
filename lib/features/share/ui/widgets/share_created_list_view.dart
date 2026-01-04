@@ -142,7 +142,8 @@ class _ShareCreatedTile extends StatelessWidget {
     final periodLabel =
         entry.isRecurring
             ? sharePeriodLabel(
-              recurrence: entry.recurrenceInterval,
+              recurrenceEvery: entry.recurrenceEvery,
+              recurrenceUnit: entry.recurrenceUnit,
               startDate: entry.startDate,
               strings: s,
             )

@@ -169,17 +169,22 @@ class _RecurrenceField extends StatelessWidget {
     required this.state,
     required this.locked,
     required this.recurrenceNeedsSplit,
+    required this.recurrenceInvalid,
+    required this.controller,
   });
 
   final ShareCreateState state;
   final bool locked;
   final bool recurrenceNeedsSplit;
+  final bool recurrenceInvalid;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
+    final isRecurring = state.form.isRecurring;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,29 +195,79 @@ class _RecurrenceField extends StatelessWidget {
           opacity: locked ? 0.6 : 1.0,
           child: IgnorePointer(
             ignoring: locked,
-            child: KinlyDropdownField<ExpenseRecurrenceInterval>(
-              value: state.form.recurrence,
-              items:
-                    ExpenseRecurrenceInterval.values
-                        .map(
-                          (value) => KinlyDropdownMenuItem.item(
-                            value: value,
-                            child: Text(_recurrenceLabel(context, value)),
-                          ),
-                      )
-                      .toList(),
-              onChanged:
-                  (value) => context.read<ShareCreateBloc>().add(
-                    ShareCreateRecurrenceChanged(value!),
-                  ),
+            child: Row(
+              children: [
+                KinlyCheckbox(
+                  value: isRecurring,
+                  onChanged:
+                      (value) => context.read<ShareCreateBloc>().add(
+                        ShareCreateRecurrenceToggled(value ?? false),
+                      ),
+                ),
+                SizedBox(width: spacing.xs),
+                Text(s.shareCreateRecurrenceToggleLabel),
+              ],
             ),
           ),
         ),
-        if (recurrenceNeedsSplit)
+        if (isRecurring) ...[
+          SizedBox(height: spacing.xs),
+          Opacity(
+            opacity: locked ? 0.6 : 1.0,
+            child: IgnorePointer(
+              ignoring: locked,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(s.shareCreateRecurrenceEveryLabel),
+                  SizedBox(width: spacing.sm),
+                  SizedBox(
+                    width: 72,
+                    child: KinlyTextField(
+                      controller: controller,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged:
+                          (value) => context.read<ShareCreateBloc>().add(
+                            ShareCreateRecurrenceEveryChanged(value),
+                          ),
+                      errorText:
+                          recurrenceInvalid
+                              ? s.shareCreateValidationRecurrence
+                              : null,
+                    ),
+                  ),
+                  SizedBox(width: spacing.sm),
+                  Expanded(
+                    child: KinlyDropdownField<ExpenseRecurrenceUnit>(
+                      value: state.form.recurrenceUnit,
+                      items:
+                          ExpenseRecurrenceUnit.values
+                              .map(
+                                (value) => KinlyDropdownMenuItem.item(
+                                  value: value,
+                                  child: Text(_recurrenceUnitLabel(context, value)),
+                                ),
+                              )
+                              .toList(),
+                      onChanged:
+                          (value) => context.read<ShareCreateBloc>().add(
+                            ShareCreateRecurrenceUnitChanged(value!),
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+        if (recurrenceNeedsSplit || recurrenceInvalid)
           Padding(
             padding: EdgeInsets.only(top: spacing.xs),
             child: Text(
-              s.shareCreateValidationRecurrenceSplit,
+              recurrenceNeedsSplit
+                  ? s.shareCreateValidationRecurrenceSplit
+                  : s.shareCreateValidationRecurrence,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.error,
               ),
@@ -222,24 +277,20 @@ class _RecurrenceField extends StatelessWidget {
     );
   }
 
-  String _recurrenceLabel(
+  String _recurrenceUnitLabel(
     BuildContext context,
-    ExpenseRecurrenceInterval recurrence,
+    ExpenseRecurrenceUnit unit,
   ) {
     final s = S.of(context);
-    switch (recurrence) {
-      case ExpenseRecurrenceInterval.none:
-        return s.shareCreateRecurrenceNone;
-      case ExpenseRecurrenceInterval.weekly:
-        return s.shareCreateRecurrenceWeekly;
-      case ExpenseRecurrenceInterval.every2Weeks:
-        return s.shareCreateRecurrenceEvery2Weeks;
-      case ExpenseRecurrenceInterval.monthly:
-        return s.shareCreateRecurrenceMonthly;
-      case ExpenseRecurrenceInterval.every2Months:
-        return s.shareCreateRecurrenceEvery2Months;
-      case ExpenseRecurrenceInterval.annual:
-        return s.shareCreateRecurrenceAnnual;
+    switch (unit) {
+      case ExpenseRecurrenceUnit.day:
+        return s.shareCreateRecurrenceUnitDay;
+      case ExpenseRecurrenceUnit.week:
+        return s.shareCreateRecurrenceUnitWeek;
+      case ExpenseRecurrenceUnit.month:
+        return s.shareCreateRecurrenceUnitMonth;
+      case ExpenseRecurrenceUnit.year:
+        return s.shareCreateRecurrenceUnitYear;
     }
   }
 }
