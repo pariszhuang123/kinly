@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(30);
+SELECT plan(36);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -134,6 +134,34 @@ SELECT ok(
   'preference_responses_submit accepts full answers'
 );
 
+-- Invalid option_index (out of range) should fail
+SELECT throws_like(
+  $$ SELECT public.preference_responses_submit(
+       (SELECT jsonb_object_agg(
+         preference_id,
+         CASE WHEN preference_id = 'environment_noise_tolerance' THEN 3 ELSE 0 END
+       ) FROM public.preference_taxonomy_active_defs)
+     ); $$,
+  '%INVALID_OPTION_INDEX%',
+  'preference_responses_submit rejects option_index out of range'
+);
+
+-- Invalid option_index (non-integer) should fail
+SELECT throws_like(
+  $$ SELECT public.preference_responses_submit(
+       (SELECT jsonb_object_agg(
+         preference_id,
+         CASE
+           WHEN preference_id = 'environment_noise_tolerance'
+             THEN to_jsonb('nope'::text)
+           ELSE to_jsonb(0)
+         END
+       ) FROM public.preference_taxonomy_active_defs)
+     ); $$,
+  '%INVALID_OPTION_INDEX%',
+  'preference_responses_submit rejects non-integer option_index'
+);
+
 -- Missing answer set should fail
 SELECT throws_like(
   $$ SELECT public.preference_responses_submit(
@@ -151,6 +179,20 @@ SELECT ok(
   'preference_reports_generate succeeded'
 );
 
+-- Invalid template key format should fail
+SELECT throws_like(
+  $$ SELECT public.preference_reports_generate('bad key', 'en-NZ', false); $$,
+  '%INVALID_TEMPLATE_KEY%',
+  'preference_reports_generate rejects invalid template key'
+);
+
+-- Invalid locale format should fail
+SELECT throws_like(
+  $$ SELECT public.preference_reports_generate('personal_preferences_v1', 'en-zz', false); $$,
+  '%INVALID_LOCALE%',
+  'preference_reports_generate rejects malformed locale'
+);
+
 -- Invalid locale should fail
 SELECT throws_like(
   $$ SELECT public.preference_reports_generate('personal_preferences_v1', 'xx-ZZ', false); $$,
@@ -162,6 +204,15 @@ SELECT is(
   (SELECT locale FROM public.preference_reports WHERE subject_user_id = (SELECT user_id FROM tmp_users WHERE label = 'owner') LIMIT 1),
   'en',
   'report locale stored as base locale'
+);
+
+-- Generate again without force should not create a new report row
+SELECT ok(
+  (SELECT count(*) FROM public.preference_reports
+   WHERE subject_user_id = (SELECT user_id FROM tmp_users WHERE label = 'owner')
+     AND template_key = 'personal_preferences_v1'
+     AND locale = 'en') = 1,
+  'preference_reports_generate reuses existing row'
 );
 
 -- Edit a section
@@ -420,6 +471,14 @@ SELECT ok(
     (SELECT id FROM public.preference_reports WHERE subject_user_id = (SELECT user_id FROM tmp_users WHERE label = 'owner') LIMIT 1)
   )->>'ok')::boolean,
   'preference_reports_acknowledge succeeds'
+);
+
+-- Acknowledge is idempotent
+SELECT ok(
+  (public.preference_reports_acknowledge(
+    (SELECT id FROM public.preference_reports WHERE subject_user_id = (SELECT user_id FROM tmp_users WHERE label = 'owner') LIMIT 1)
+  )->>'ok')::boolean,
+  'preference_reports_acknowledge is idempotent'
 );
 
 -- Outsider cannot acknowledge

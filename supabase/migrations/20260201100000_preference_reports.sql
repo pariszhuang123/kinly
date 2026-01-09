@@ -668,12 +668,15 @@ BEGIN
     )
   );
 
-  -- Validate each value is an integer 0..2
+  -- Validate each value is an integer 0..2 without unsafe casts.
   SELECT COALESCE(
     jsonb_agg(k) FILTER (WHERE NOT (
-      jsonb_typeof(p_answers->k) = 'number'
-      AND (p_answers->>k) ~ '^[0-9]+$'
-      AND ((p_answers->>k)::int BETWEEN 0 AND 2)
+      CASE
+        WHEN jsonb_typeof(p_answers->k) = 'number'
+          AND (p_answers->>k) ~ '^[0-9]+$'
+          THEN ((p_answers->>k)::int BETWEEN 0 AND 2)
+        ELSE false
+      END
     )),
     '[]'::jsonb
   )
