@@ -22,6 +22,39 @@ if [[ "${1:-}" == "--reset" || "${1:-}" == "-r" ]]; then
   RESET_DB=true
 fi
 
+# ---------------------------
+# Helpers
+# ---------------------------
+read_toml_port() {
+  # read_toml_port <section> <key> <fallback>
+  local section="$1"
+  local key="$2"
+  local fallback="$3"
+
+  if [[ ! -f supabase/config.toml ]]; then
+    echo "$fallback"
+    return
+  fi
+
+  local v
+  v=$(awk -F'=' -v section="[$section]" -v key="$key" '
+    $0 ~ "^\\"section"\\" {in_sec=1; next}
+    $0 ~ "^\\[" {in_sec=0}
+    in_sec && $1 ~ "^[[:space:]]*"key"[[:space:]]*$" {
+      val=$2
+      gsub(/[[:space:]]/,"",val)
+      print val
+      exit
+    }
+  ' supabase/config.toml)
+
+  echo "${v:-$fallback}"
+}
+
+# Prefer explicit env override (nice for CI), else read TOML, else default
+API_PORT="${SUPABASE_LOCAL_API_PORT:-$(read_toml_port api port 54321)}"
+REST_URL="http://127.0.0.1:${API_PORT}/rest/v1/"
+
 echo "👉 Checking that Docker is available..."
 if ! command -v docker >/dev/null 2>&1; then
   echo "❌ docker CLI not found on PATH. Install Docker Desktop first."
@@ -55,10 +88,28 @@ echo "👉 Extracting RLS policies into docs/contracts/rls_policies.sql..."
 awk '/CREATE POLICY|ENABLE ROW LEVEL SECURITY|FORCE ROW LEVEL SECURITY/ {print}' \
   docs/contracts/schema.sql > docs/contracts/rls_policies.sql
 
+echo "👉 Waiting for PostgREST/OpenAPI endpoint on ${REST_URL} ..."
+for i in {1..60}; do
+  if curl -fsS -H 'Accept: application/openapi+json' "${REST_URL}" >/dev/null 2>&1; then
+    echo "✅ PostgREST is reachable (api.port=${API_PORT})"
+    break
+  fi
+  sleep 2
+done
+
+# Hard fail with diagnostics if still not reachable
+if ! curl -fsS -H 'Accept: application/openapi+json' "${REST_URL}" >/dev/null 2>&1; then
+  echo "❌ PostgREST not reachable at ${REST_URL}"
+  echo "---- supabase status ----"
+  supabase status || true
+  echo "---- docker ps ----"
+  docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" || true
+  exit 7
+fi
+
 echo "👉 Dumping OpenAPI from PostgREST to docs/contracts/openapi.json..."
-# Matches CI: PostgREST at 127.0.0.1:54321/rest/v1/
-curl -s -H 'Accept: application/openapi+json' \
-  http://127.0.0.1:54321/rest/v1/ > docs/contracts/openapi.json
+curl -fsS -H 'Accept: application/openapi+json' \
+  "${REST_URL}" > docs/contracts/openapi.json
 
 echo "👉 Generating TypeScript DB types to docs/contracts/types.generated.ts..."
 supabase gen types typescript --local > docs/contracts/types.generated.ts
