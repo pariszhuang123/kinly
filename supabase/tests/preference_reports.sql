@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(27);
+SELECT plan(30);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -315,6 +315,32 @@ SELECT is(
   'report marked out_of_date after response change'
 );
 
+-- Out-of-date reports cannot be edited
+SELECT throws_like(
+  $$ SELECT public.preference_reports_edit_section_text(
+       'personal_preferences_v1',
+       'en-NZ',
+       'environment',
+       'Blocked edit',
+       NULL
+     ); $$,
+  '%No published preference report found to edit%',
+  'preference_reports_edit_section_text rejects edits while out_of_date'
+);
+
+-- Out-of-date reports cannot be acknowledged
+SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'member'), true);
+
+SELECT throws_like(
+  $$ SELECT public.preference_reports_acknowledge(
+       (SELECT id FROM public.preference_reports WHERE subject_user_id = (SELECT user_id FROM tmp_users WHERE label = 'owner') LIMIT 1)
+     ); $$,
+  '%REPORT_NOT_PUBLISHED%',
+  'preference_reports_acknowledge rejects out_of_date reports'
+);
+
+SELECT set_config('request.jwt.claim.sub', (SELECT user_id::text FROM tmp_users WHERE label = 'owner'), true);
+
 -- Regenerate without force should update generated_content and preserve published_content
 SELECT ok(
   (public.preference_reports_generate('personal_preferences_v1', 'en-NZ', false)->>'ok')::boolean,
@@ -325,6 +351,17 @@ SELECT is(
   (SELECT (published_content->'sections'->0->>'text') FROM public.preference_reports WHERE subject_user_id = (SELECT user_id FROM tmp_users WHERE label = 'owner') LIMIT 1),
   'Custom env text',
   'edited published_content preserved on regeneration'
+);
+
+-- Subject can fetch report for home
+SELECT ok(
+  (public.preference_reports_get_for_home(
+    (SELECT home_id FROM tmp_homes WHERE label = 'home'),
+    (SELECT user_id FROM tmp_users WHERE label = 'owner'),
+    'personal_preferences_v1',
+    'en-NZ'
+  )->>'found')::boolean,
+  'preference_reports_get_for_home returns report for subject'
 );
 
 -- Member can fetch report for home

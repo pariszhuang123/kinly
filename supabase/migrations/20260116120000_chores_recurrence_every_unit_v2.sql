@@ -5,6 +5,7 @@ ALTER TABLE public.chores
   ADD COLUMN IF NOT EXISTS recurrence_every integer,
   ADD COLUMN IF NOT EXISTS recurrence_unit text;
 
+ALTER TABLE public.chores DISABLE ROW LEVEL SECURITY;
 -- Backfill from legacy recurrence interval
 UPDATE public.chores
    SET recurrence_every = CASE recurrence
@@ -35,6 +36,8 @@ UPDATE public.chores
  WHERE recurrence = 'none'
    AND recurrence_every IS NULL
    AND recurrence_unit IS NULL;
+
+ALTER TABLE public.chores ENABLE ROW LEVEL SECURITY;
 
 -- Constraints: chores recurrence pair + allowed units
 ALTER TABLE public.chores

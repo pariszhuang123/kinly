@@ -32,17 +32,11 @@ class ShareCreateActionBar extends StatelessWidget {
     final vm = _ActionBarViewModel.from(state: state, allowDelete: allowDelete);
     final s = S.of(context);
 
-    final primary = KinlyActionButton(
-      label: vm.primaryLabel(s),
-      destructive: vm.isDeleteAction,
-      busy: vm.isBusy,
-      disabled: vm.shouldDisable,
-      onPressed: vm.isDeleteAction ? onDeleteRequested : onSubmit,
-    );
-
+    KinlyActionButton primary;
     KinlyActionButton? secondary;
+
     if (showTerminatePlan) {
-      secondary = KinlyActionButton(
+      primary = KinlyActionButton(
         label:
             isTerminatingPlan
                 ? s.shareEditTerminatePlanBusy
@@ -50,12 +44,22 @@ class ShareCreateActionBar extends StatelessWidget {
         onPressed: isTerminatingPlan ? null : onTerminatePlan,
         destructive: true,
       );
-    } else if (vm.shouldOpenPaywall && onPaywallOpened != null) {
-      secondary = KinlyActionButton(
-        label: s.paywallPrimaryCta,
-        onPressed: onPaywallOpened,
-        variant: KinlyActionButtonVariant.outlined,
+    } else {
+      primary = KinlyActionButton(
+        label: vm.primaryLabel(s),
+        destructive: vm.isDeleteAction,
+        busy: vm.isBusy,
+        disabled: vm.shouldDisable,
+        onPressed: vm.isDeleteAction ? onDeleteRequested : onSubmit,
       );
+
+      if (vm.shouldOpenPaywall && onPaywallOpened != null) {
+        secondary = KinlyActionButton(
+          label: s.paywallPrimaryCta,
+          onPressed: onPaywallOpened,
+          variant: KinlyActionButtonVariant.outlined,
+        );
+      }
     }
 
     return KinlyActionBar(primary: primary, secondary: secondary);
@@ -145,5 +149,3 @@ bool _shouldDisable(
 
 bool _shouldOpenPaywall(ShareCreateState state) =>
     state.paywallRequest != null && state.paywallInFlightRequestId == null;
-
-

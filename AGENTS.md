@@ -5,6 +5,42 @@ Scope: Entire repository
 This document defines roles, boundaries, workflows, guardrails, and the
 Definition of Done (DoD) for the Home‑only MVP of Kinly.
 
+## ⚡ Quick Reference
+
+### Commands (Run Before Every Commit)
+
+```bash
+dart run tool/check_all.dart   # All guardrails (single source of truth)
+dart format .                  # Format
+dart analyze                   # Lint
+flutter test                   # Unit tests
+```
+
+### Naming Conventions
+
+| Element          | Pattern                    | Example                          |
+| ---------------- | -------------------------- | -------------------------------- |
+| BLoC event       | `<Action><Entity>Event`    | `JoinHomeEvent`, `LeaveHomeEvent`|
+| BLoC state       | `<Entity><Status>`         | `HomeJoining`, `HomeJoined`      |
+| Repository method| `<verb><Entity>`           | `joinHome()`, `leaveHome()`      |
+| RPC              | `<domain>.<action>`        | `homes.join`, `homes.leave`      |
+
+### Key Documentation
+
+| Need                        | File                                       |
+| --------------------------- | ------------------------------------------ |
+| Architecture layers         | `docs/architecture/di_graph.md`            |
+| Business capabilities       | `contracts/architecture/business_map.md`   |
+| Complexity budget           | `docs/engineering/complexity_budget_v1.md` |
+| Home dynamics contract      | `docs/contracts/home_dynamics_v1.md`       |
+| UI primitives               | `docs/ui/core_ui_primitives.md`            |
+
+### Dependency Direction (Never Violate)
+
+```
+UI → BLoC → Repository → Supabase (RPC only)
+```
+
 ## 🧠 Architecture & Business Understanding (Mandatory)
 
 Before answering questions about features or architecture, you MUST:
@@ -198,3 +234,124 @@ none (read-through). Performance: TTI <= 1.5s; join p95 <= 400 ms.
 - Join flow: `/join/:code` → OAuth if needed → `homes.join(code)` → Hub.
 - Host/prefix TBD (e.g., `https://makinglifeeasie.com/kinly/join/:code`) —
   captured as TODO until assigned.
+
+## ❌ Anti-Patterns (Common Mistakes)
+
+### Direct Supabase Calls in UI/BLoC
+
+```dart
+// ❌ BAD: Direct Supabase call in BLoC
+class HomeBloc extends Bloc<HomeEvent, HomeState> {
+  Future<void> _onJoin(JoinHomeEvent e, Emitter emit) async {
+    final data = await supabase.rpc('homes.join', params: {'code': e.code});
+    emit(HomeJoined(Home.fromJson(data)));
+  }
+}
+
+// ✅ GOOD: Call repository instead
+class HomeBloc extends Bloc<HomeEvent, HomeState> {
+  final HomeRepository _repo;
+  Future<void> _onJoin(JoinHomeEvent e, Emitter emit) async {
+    final home = await _repo.joinHome(e.code);
+    emit(HomeJoined(home));
+  }
+}
+```
+
+### Branching on Brightness
+
+```dart
+// ❌ BAD: Manual brightness check
+final color = Theme.of(context).brightness == Brightness.dark
+    ? Colors.white
+    : Colors.black;
+
+// ✅ GOOD: Use theme extensions
+final color = context.watch<KinlyControlColors>().textPrimary;
+```
+
+### Business Logic in Repository
+
+```dart
+// ❌ BAD: Logic belongs in RPC, not repository
+class HomeRepository {
+  Future<void> leave(String homeId) async {
+    await supabase.rpc('homes.leave', params: {'home_id': homeId});
+    final members = await supabase.from('memberships').select();
+    if (members.isEmpty) {
+      await supabase.from('homes').update({'is_active': false});
+    }
+  }
+}
+
+// ✅ GOOD: Thin repository; logic lives in Supabase RPC
+class HomeRepository {
+  Future<LeaveOutcome> leave(String homeId) async {
+    final data = await supabase.rpc('homes.leave', params: {'home_id': homeId});
+    return LeaveOutcome.fromJson(data);
+  }
+}
+```
+
+### Inline BLoC Event Handlers
+
+```dart
+// ❌ BAD: Inline closure
+on<JoinHomeEvent>((event, emit) async {
+  // ... long handler
+});
+
+// ✅ GOOD: Named method
+on<JoinHomeEvent>(_onJoinHome);
+
+Future<void> _onJoinHome(JoinHomeEvent e, Emitter<HomeState> emit) async {
+  // ...
+}
+```
+
+### Hardcoded UI Strings
+
+```dart
+// ❌ BAD: Hardcoded string
+Text('Welcome to Kinly')
+
+// ✅ GOOD: Use i18n
+Text(S.of(context).welcomeTitle)
+```
+
+## 🔧 Troubleshooting Guide
+
+### "Dependency violation" from check_dependency_rules
+
+1. Read the error—it shows the violating import path
+2. Check `docs/architecture/di_graph.md` for allowed imports
+3. **Fix:** Move shared types to `lib/contracts/**` and import from there
+4. If cross-feature access is genuinely needed, raise with Planner
+
+### "Complexity budget exceeded"
+
+1. Error shows which function exceeds CC ≥16
+2. Extract pure helper functions for decision logic
+3. Replace boolean chains with `.every()` / `.any()`
+4. Move side effects (navigation, logging) to UI callbacks
+5. If unavoidable: add `// CC_BUDGET_EXCEPTION: reason (expires: YYYY-MM-DD)`
+
+### "i18n violation" / hardcoded strings
+
+1. Run `dart run tool/check_all.dart` to find all violations
+2. Add missing keys to `lib/l10n/intl_en.arb`
+3. Replace hardcoded strings with `S.of(context).keyName`
+
+### Tests failing after refactor
+
+1. Run `flutter test --reporter expanded` for detailed output
+2. Check mocks—repositories must mock all Supabase RPC calls
+3. Verify state transitions match new event/state names
+4. Look at `test/` fixtures for existing patterns
+
+### RLS test denying when it should allow
+
+1. Check `auth.uid()` matches the test user UUID
+2. Verify `is_current = true` for membership checks
+3. Ensure `home.is_active = true` for active home checks
+4. Review policy in `supabase/migrations/` for exact conditions
