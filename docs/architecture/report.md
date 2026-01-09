@@ -1,7 +1,6 @@
 # Architecture Report
 
 - **Modules**: 56
-- **Routes**: 32
 - **DI Registrations**: 11
 
 ## Modules List
