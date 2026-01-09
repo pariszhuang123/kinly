@@ -21,6 +21,7 @@ class TodayState extends Equatable {
   final int activeChoreCount;
   final bool shouldPromptFlatmateInviteShare;
   final bool shouldPromptInviteShare;
+  final bool shouldPromptPreferences;
   final MemberCapJoinRequests? memberCapJoinRequests;
   final MemberCapJoinResolution? memberCapJoinResolution;
 
@@ -45,6 +46,7 @@ class TodayState extends Equatable {
     this.activeChoreCount = 0,
     this.shouldPromptFlatmateInviteShare = false,
     this.shouldPromptInviteShare = false,
+    this.shouldPromptPreferences = false,
     this.memberCapJoinRequests,
     this.memberCapJoinResolution,
   });
@@ -64,6 +66,7 @@ class TodayState extends Equatable {
     int activeChoreCount = 0,
     bool shouldPromptFlatmateInviteShare = false,
     bool shouldPromptInviteShare = false,
+    bool shouldPromptPreferences = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
   }) : this._(
@@ -84,6 +87,7 @@ class TodayState extends Equatable {
         activeChoreCount: activeChoreCount,
         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
         shouldPromptInviteShare: shouldPromptInviteShare,
+        shouldPromptPreferences: shouldPromptPreferences,
         memberCapJoinRequests: memberCapJoinRequests,
         memberCapJoinResolution: memberCapJoinResolution,
       );
@@ -106,6 +110,7 @@ class TodayState extends Equatable {
     int activeChoreCount = 0,
     bool shouldPromptFlatmateInviteShare = false,
     bool shouldPromptInviteShare = false,
+    bool shouldPromptPreferences = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
   }) : this._(
@@ -127,6 +132,7 @@ class TodayState extends Equatable {
         activeChoreCount: activeChoreCount,
         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
         shouldPromptInviteShare: shouldPromptInviteShare,
+        shouldPromptPreferences: shouldPromptPreferences,
         memberCapJoinRequests: memberCapJoinRequests,
         memberCapJoinResolution: memberCapJoinResolution,
       );
@@ -149,6 +155,7 @@ class TodayState extends Equatable {
     int activeChoreCount = 0,
     bool shouldPromptFlatmateInviteShare = false,
     bool shouldPromptInviteShare = false,
+    bool shouldPromptPreferences = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
   }) : this._(
@@ -172,6 +179,7 @@ class TodayState extends Equatable {
         activeChoreCount: activeChoreCount,
         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
         shouldPromptInviteShare: shouldPromptInviteShare,
+        shouldPromptPreferences: shouldPromptPreferences,
         memberCapJoinRequests: memberCapJoinRequests,
         memberCapJoinResolution: memberCapJoinResolution,
       );
@@ -206,6 +214,7 @@ class TodayState extends Equatable {
     activeChoreCount,
     shouldPromptFlatmateInviteShare,
     shouldPromptInviteShare,
+    shouldPromptPreferences,
     memberCapJoinRequests,
     memberCapJoinResolution,
   ];

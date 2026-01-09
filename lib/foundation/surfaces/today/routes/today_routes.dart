@@ -7,6 +7,7 @@ import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
 import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
+import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/notifications/profile_update_notifier.dart';
 import 'package:kinly/foundation/surfaces/today/today_provider.dart';
@@ -36,6 +37,7 @@ List<GoRoute> buildTodayRoutes({
           homeRepository: sl<HomeRepository>(),
           moodRepository: sl<MoodRepository>(),
           onboardingRepository: sl<OnboardingRepository>(),
+          preferenceReportsRepository: sl<PreferenceReportsRepository>(),
           profileUpdateNotifier: sl<ProfileUpdateNotifier>(),
         );
       },

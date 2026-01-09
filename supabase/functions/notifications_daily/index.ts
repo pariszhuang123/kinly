@@ -1,3 +1,4 @@
+// supabase/functions/notification_daily/index.ts
 import {
   createClient,
   type SupabaseClient,
@@ -12,7 +13,9 @@ type Candidate = {
   local_date: string;
 };
 
-type SendResult = { ok: true } | { ok: false; permanent: boolean; reason: string };
+type SendResult =
+  | { ok: true }
+  | { ok: false; permanent: boolean; reason: string };
 
 type ServiceAccount = {
   client_email: string;
@@ -34,6 +37,31 @@ const SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
 const ERROR_REASON_MAX_LENGTH = 512;
 
 // ---------------------------------------------------------------------------
+// Logging helpers (safe / non-sensitive)
+// ---------------------------------------------------------------------------
+
+function logFcmContext(
+  context: string,
+  details: {
+    projectId?: string;
+    clientEmail?: string;
+    token?: string;
+    tokenId?: string;
+    userId?: string;
+  },
+) {
+  console.log("[FCM CONTEXT]", {
+    context,
+    projectId: details.projectId,
+    clientEmail: details.clientEmail,
+    token_prefix: details.token ? details.token.slice(0, 12) + "…" : undefined,
+    token_id: details.tokenId,
+    user_id: details.userId,
+    at: new Date().toISOString(),
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Main entry
 // ---------------------------------------------------------------------------
 
@@ -44,7 +72,9 @@ if (import.meta.main) {
 
     if (!supabaseUrl || !supabaseKey) {
       return new Response(
-        JSON.stringify({ error: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY" }),
+        JSON.stringify({
+          error: "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+        }),
         { status: 500, headers: { "Content-Type": "application/json" } },
       );
     }
@@ -60,10 +90,23 @@ if (import.meta.main) {
     let totalExpired = 0;
     const startedAt = Date.now();
 
+    console.log("[notifications-daily] start", {
+      jobRunId,
+      pageSize: PAGE_SIZE,
+      batchConcurrency: BATCH_CONCURRENCY,
+      at: new Date().toISOString(),
+    });
+
     try {
       while (true) {
         const batch = await fetchCandidates(supabase, PAGE_SIZE, offset);
         if (batch.length === 0) break;
+
+        console.log("[notifications-daily] fetched batch", {
+          jobRunId,
+          offset,
+          batchSize: batch.length,
+        });
 
         const { sent, failed, expired } = await processBatch(
           supabase,
@@ -79,6 +122,14 @@ if (import.meta.main) {
       }
 
       const durationMs = Date.now() - startedAt;
+      console.log("[notifications-daily] done", {
+        jobRunId,
+        sent: totalSent,
+        failed: totalFailed,
+        tokensExpired: totalExpired,
+        durationMs,
+      });
+
       return new Response(
         JSON.stringify({
           jobRunId,
@@ -194,13 +245,17 @@ async function handleCandidate(
     localDate,
     jobRunId,
   );
+
   if (!sendId) {
     // Already reserved by another worker or another run
     return { sent: 0, failed: 0, expired: 0 };
   }
 
   // 2️⃣ Attempt to send push
-  const result = await sendPush(candidate.token, message);
+  const result = await sendPush(candidate.token, message, {
+    userId: candidate.user_id,
+    tokenId: candidate.token_id,
+  });
 
   if (result.ok) {
     await markSendSuccess(supabase, sendId, candidate.user_id, localDate);
@@ -298,11 +353,22 @@ async function markTokenStatus(
 // FCM send
 // ---------------------------------------------------------------------------
 
-async function sendPush(token: string, body: string): Promise<SendResult> {
+async function sendPush(
+  token: string,
+  body: string,
+  meta?: { userId?: string; tokenId?: string },
+): Promise<SendResult> {
   const auth = await getAccessToken();
   if (!auth) {
     return { ok: false, permanent: false, reason: "missing_service_account" };
   }
+
+  logFcmContext("sending_push", {
+    projectId: auth.projectId,
+    token,
+    userId: meta?.userId,
+    tokenId: meta?.tokenId,
+  });
 
   const payload = {
     message: {
@@ -317,22 +383,29 @@ async function sendPush(token: string, body: string): Promise<SendResult> {
     },
   };
 
-  const response = await fetch(
-    `https://fcm.googleapis.com/v1/projects/${auth.projectId}/messages:send`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${auth.accessToken}`,
-      },
-      body: JSON.stringify(payload),
+  const url = `https://fcm.googleapis.com/v1/projects/${auth.projectId}/messages:send`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${auth.accessToken}`,
     },
-  );
+    body: JSON.stringify(payload),
+  });
 
   const status = response.status;
 
   if (!response.ok) {
     const text = await response.text();
+
+    console.error("[FCM ERROR]", {
+      projectId: auth.projectId,
+      status,
+      body: text.slice(0, 500),
+      at: new Date().toISOString(),
+    });
+
     // Only treat as permanent if the body clearly indicates a dead token.
     const permanent = isPermanentTokenError(text);
     return {
@@ -350,6 +423,13 @@ async function sendPush(token: string, body: string): Promise<SendResult> {
   if (json.error) {
     const message = json.error.message ?? "unknown_fcm_error";
     const permanent = isPermanentTokenError(message);
+
+    console.error("[FCM JSON ERROR]", {
+      projectId: auth.projectId,
+      message: message.slice(0, 500),
+      at: new Date().toISOString(),
+    });
+
     return { ok: false, permanent, reason: message };
   }
 
@@ -372,13 +452,14 @@ export function isPermanentTokenError(text: string): boolean {
       };
     };
     const status = parsed.error?.status?.toUpperCase();
-    if (status && (status.includes("UNREGISTERED") || status.includes("NOT_FOUND"))) {
+    if (
+      status && (status.includes("UNREGISTERED") || status.includes("NOT_FOUND"))
+    ) {
       return true;
     }
     const details = parsed.error?.details ?? [];
     return details.some((d) => {
-      const code =
-        (d.errorCode ?? d.error_code ?? "").toString().toUpperCase();
+      const code = (d.errorCode ?? d.error_code ?? "").toString().toUpperCase();
       return code.includes("UNREGISTERED") || code.includes("NOT_FOUND");
     });
   } catch (_) {
@@ -392,10 +473,10 @@ export function isPermanentTokenError(text: string): boolean {
 
 let cachedAuth:
   | {
-      accessToken: string;
-      expiresAt: number;
-      projectId: string;
-    }
+    accessToken: string;
+    expiresAt: number;
+    projectId: string;
+  }
   | null = null;
 
 function parseServiceAccount(): ServiceAccount | null {
@@ -412,9 +493,16 @@ function parseServiceAccount(): ServiceAccount | null {
   }
 }
 
-async function getAccessToken(): Promise<{ accessToken: string; projectId: string } | null> {
+async function getAccessToken(): Promise<
+  { accessToken: string; projectId: string } | null
+> {
   const now = Date.now();
+
   if (cachedAuth && cachedAuth.expiresAt > now + 60_000) {
+    logFcmContext("cached_auth", {
+      projectId: cachedAuth.projectId,
+    });
+
     return {
       accessToken: cachedAuth.accessToken,
       projectId: cachedAuth.projectId,
@@ -423,17 +511,27 @@ async function getAccessToken(): Promise<{ accessToken: string; projectId: strin
 
   const sa = parseServiceAccount();
   if (!sa?.client_email || !sa?.private_key) {
+    console.error("FCM service account missing email or private key");
     return null;
   }
 
   const tokenUri = sa.token_uri ?? "https://oauth2.googleapis.com/token";
-  const projectId = sa.project_id ?? Deno.env.get("FCM_PROJECT_ID");
+
+  const projectIdFromJson = sa.project_id;
+  const projectIdFromEnv = Deno.env.get("FCM_PROJECT_ID") ?? undefined;
+  const projectId = projectIdFromJson ?? projectIdFromEnv;
+
   if (!projectId) {
     console.error(
       "project_id missing (use service account project_id or FCM_PROJECT_ID env)",
     );
     return null;
   }
+
+  logFcmContext("service_account_loaded", {
+    projectId,
+    clientEmail: sa.client_email,
+  });
 
   const jwt = await createJwt(sa.client_email, sa.private_key, tokenUri, SCOPE);
   if (!jwt) return null;

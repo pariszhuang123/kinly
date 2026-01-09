@@ -328,8 +328,19 @@ class _TodayScreenState extends State<TodayScreen>
     final hasFlow = state.hasFlowContent;
     final hasShare = state.hasShareContent;
     final hasGratitude = state.hasGratitudeUnread;
+    final hasInvitePrompt =
+        state.shouldPromptFlatmateInviteShare || state.shouldPromptInviteShare;
+    final hasMemberCapPrompt =
+        (state.memberCapJoinRequests?.pendingCount ?? 0) > 0 &&
+        state.profile?.isOwner == true;
+    final hasPreferencePrompt = state.shouldPromptPreferences;
 
-    if (!hasFlow && !hasShare && !hasGratitude) {
+    if (!hasFlow &&
+        !hasShare &&
+        !hasGratitude &&
+        !hasInvitePrompt &&
+        !hasMemberCapPrompt &&
+        !hasPreferencePrompt) {
       return const TodayEmptyStateCard();
     }
 
@@ -343,6 +354,9 @@ class _TodayScreenState extends State<TodayScreen>
           () => context.read<TodayBloc>().add(
             const TodayMemberCapDismissed(),
           ),
+      onPreferencePrompt: () => context.pushNamed(
+        AppRouteNames.preferenceOnboarding,
+      ),
       onInvitePrimary: (config) async {
         final shared = await _shareInvite(
           context,

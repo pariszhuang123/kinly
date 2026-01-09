@@ -1571,6 +1571,201 @@ $$;
 ALTER FUNCTION "public"."_member_cap_resolve_requests"("p_home_id" "uuid", "p_reason" "text", "p_request_ids" "uuid"[], "p_payload" "jsonb") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."_preference_reports_mark_out_of_date"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user uuid := COALESCE(NEW.user_id, OLD.user_id);
+BEGIN
+  UPDATE public.preference_reports pr
+     SET status = 'out_of_date'
+   WHERE pr.subject_user_id = v_user
+     AND pr.status <> 'out_of_date';
+
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_preference_reports_mark_out_of_date"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."_preference_templates_validate"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_pref jsonb;
+
+  v_template_keys text[];
+  v_tax_keys text[];
+  v_extra text[];
+  v_missing text[];
+
+  v_bad_shape_pref_ids jsonb;
+  v_bad_option_pref_ids jsonb;
+
+  v_mismatch_pref_ids jsonb;
+  v_mismatch_details jsonb;
+
+BEGIN
+  v_pref := NEW.body->'preferences';
+
+  PERFORM public.api_assert(
+    jsonb_typeof(v_pref) = 'object',
+    'INVALID_TEMPLATE_SCHEMA',
+    'Template body.preferences must be a JSON object.',
+    '22023',
+    jsonb_build_object('path', '{preferences}')
+  );
+
+  -- preferences[pref_id] must be array length 3
+  SELECT COALESCE(
+    jsonb_agg(key) FILTER (WHERE NOT (
+      jsonb_typeof(value) = 'array' AND jsonb_array_length(value) = 3
+    )),
+    '[]'::jsonb
+  )
+  INTO v_bad_shape_pref_ids
+  FROM jsonb_each(v_pref);
+
+  PERFORM public.api_assert(
+    jsonb_array_length(v_bad_shape_pref_ids) = 0,
+    'INVALID_TEMPLATE_SCHEMA',
+    'Each preferences[pref_id] must be an array of length 3.',
+    '22023',
+    jsonb_build_object('bad_shape_pref_ids', v_bad_shape_pref_ids)
+  );
+
+  -- Collect template keys
+  SELECT COALESCE(array_agg(k ORDER BY k), ARRAY[]::text[])
+    INTO v_template_keys
+  FROM jsonb_object_keys(v_pref) AS k;
+
+  -- Collect active taxonomy keys that have defs
+  SELECT COALESCE(array_agg(t.preference_id ORDER BY t.preference_id), ARRAY[]::text[])
+    INTO v_tax_keys
+  FROM public.preference_taxonomy t
+  JOIN public.preference_taxonomy_defs d USING (preference_id)
+  WHERE t.is_active = true;
+
+  PERFORM public.api_assert(
+    COALESCE(array_length(v_tax_keys, 1), 0) > 0,
+    'INVALID_TEMPLATE_KEYS',
+    'No active preference taxonomy defs exist; cannot validate template keys.',
+    '22023',
+    '{}'::jsonb
+  );
+
+  -- Extra keys
+  SELECT COALESCE(array_agg(x), ARRAY[]::text[]) INTO v_extra
+  FROM (
+    SELECT unnest(v_template_keys) AS x
+    EXCEPT
+    SELECT unnest(v_tax_keys) AS x
+  ) s;
+
+  -- Missing keys
+  SELECT COALESCE(array_agg(x), ARRAY[]::text[]) INTO v_missing
+  FROM (
+    SELECT unnest(v_tax_keys) AS x
+    EXCEPT
+    SELECT unnest(v_template_keys) AS x
+  ) s;
+
+  PERFORM public.api_assert(
+    COALESCE(array_length(v_extra, 1), 0) = 0
+    AND COALESCE(array_length(v_missing, 1), 0) = 0,
+    'INVALID_TEMPLATE_KEYS',
+    'Template preference keys must exactly match active preference_taxonomy_defs for active taxonomy IDs.',
+    '22023',
+    jsonb_build_object(
+      'extra_pref_ids', COALESCE(to_jsonb(v_extra), '[]'::jsonb),
+      'missing_pref_ids', COALESCE(to_jsonb(v_missing), '[]'::jsonb)
+    )
+  );
+
+  -- Enforce option object schema everywhere
+  WITH each_pref AS (
+    SELECT e.key AS preference_id, e.value AS arr
+    FROM jsonb_each(v_pref) e(key, value)
+  ),
+  bad AS (
+    SELECT preference_id
+    FROM each_pref
+    WHERE
+      jsonb_typeof(arr->0) <> 'object'
+      OR jsonb_typeof(arr->1) <> 'object'
+      OR jsonb_typeof(arr->2) <> 'object'
+      OR jsonb_typeof(arr->0->'value_key') <> 'string'
+      OR jsonb_typeof(arr->1->'value_key') <> 'string'
+      OR jsonb_typeof(arr->2->'value_key') <> 'string'
+      OR jsonb_typeof(arr->0->'title') <> 'string'
+      OR jsonb_typeof(arr->1->'title') <> 'string'
+      OR jsonb_typeof(arr->2->'title') <> 'string'
+      OR jsonb_typeof(arr->0->'text') <> 'string'
+      OR jsonb_typeof(arr->1->'text') <> 'string'
+      OR jsonb_typeof(arr->2->'text') <> 'string'
+  )
+  SELECT COALESCE(jsonb_agg(preference_id), '[]'::jsonb)
+  INTO v_bad_option_pref_ids
+  FROM bad;
+
+  PERFORM public.api_assert(
+    jsonb_array_length(v_bad_option_pref_ids) = 0,
+    'INVALID_TEMPLATE_OPTION_SCHEMA',
+    'Each preferences[pref_id][0..2] must be an object with string keys: value_key, title, text.',
+    '22023',
+    jsonb_build_object('bad_option_pref_ids', v_bad_option_pref_ids)
+  );
+
+  -- Enforce value_key matches defs.value_keys by index order (0..2)
+  WITH mismatches AS (
+    SELECT
+      t.preference_id,
+      jsonb_build_object(
+        'expected', jsonb_build_array(d.value_keys[1], d.value_keys[2], d.value_keys[3]),
+        'got', jsonb_build_array(
+          COALESCE(NEW.body->'preferences'->t.preference_id->0->>'value_key', ''),
+          COALESCE(NEW.body->'preferences'->t.preference_id->1->>'value_key', ''),
+          COALESCE(NEW.body->'preferences'->t.preference_id->2->>'value_key', '')
+        )
+      ) AS details
+    FROM public.preference_taxonomy t
+    JOIN public.preference_taxonomy_defs d USING (preference_id)
+    WHERE t.is_active = true
+      AND (
+        COALESCE(NEW.body->'preferences'->t.preference_id->0->>'value_key', '') <> d.value_keys[1]
+        OR COALESCE(NEW.body->'preferences'->t.preference_id->1->>'value_key', '') <> d.value_keys[2]
+        OR COALESCE(NEW.body->'preferences'->t.preference_id->2->>'value_key', '') <> d.value_keys[3]
+      )
+  )
+  SELECT
+    COALESCE(jsonb_agg(preference_id), '[]'::jsonb),
+    COALESCE(jsonb_object_agg(preference_id, details), '{}'::jsonb)
+  INTO v_mismatch_pref_ids, v_mismatch_details
+  FROM mismatches;
+
+  PERFORM public.api_assert(
+    jsonb_array_length(v_mismatch_pref_ids) = 0,
+    'INVALID_TEMPLATE_VALUE_KEYS',
+    'Template option value_key must match preference_taxonomy_defs.value_keys in index order (0..2).',
+    '22023',
+    jsonb_build_object(
+      'mismatched_value_key_pref_ids', v_mismatch_pref_ids,
+      'mismatches', v_mismatch_details
+    )
+  );
+
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_preference_templates_validate"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") RETURNS "void"
     LANGUAGE "plpgsql"
     SET "search_path" TO ''
@@ -1587,6 +1782,20 @@ ALTER FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_
 
 COMMENT ON FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") IS 'Internal helper for writing share attempts; callers must handle auth/membership.';
 
+
+
+CREATE OR REPLACE FUNCTION "public"."_touch_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_touch_updated_at"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."api_assert"("p_condition" boolean, "p_code" "text", "p_msg" "text", "p_sqlstate" "text" DEFAULT 'P0001'::"text", "p_details" "jsonb" DEFAULT NULL::"jsonb", "p_hint" "text" DEFAULT NULL::"text") RETURNS "void"
@@ -6717,6 +6926,21 @@ $$;
 ALTER FUNCTION "public"."is_home_owner"("p_home_id" "uuid", "p_user_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."locale_base"("p_locale" "text") RETURNS "text"
+    LANGUAGE "sql" IMMUTABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  SELECT
+    CASE
+      WHEN p_locale IS NULL OR length(trim(p_locale)) = 0 THEN NULL
+      ELSE lower(split_part(p_locale, '-', 1))
+    END
+$$;
+
+
+ALTER FUNCTION "public"."locale_base"("p_locale" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."member_cap_owner_dismiss"("p_home_id" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -7858,6 +8082,761 @@ $$;
 ALTER FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."preference_reports_acknowledge"("p_report_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user uuid := auth.uid();
+  v_subject uuid;
+  v_status text;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  SELECT r.subject_user_id, r.status
+    INTO v_subject, v_status
+  FROM public.preference_reports r
+  WHERE r.id = p_report_id
+  LIMIT 1;
+
+  IF v_subject IS NULL THEN
+    PERFORM public.api_error('REPORT_NOT_FOUND', 'No preference report found to acknowledge.', 'P0001');
+  END IF;
+
+  IF v_status <> 'published' THEN
+    PERFORM public.api_error('REPORT_NOT_PUBLISHED', 'Only published reports can be acknowledged.', 'P0001');
+  END IF;
+
+  PERFORM public.api_assert(
+    EXISTS (
+      SELECT 1
+      FROM public.memberships a
+      JOIN public.memberships b
+        ON b.home_id = a.home_id
+       AND b.user_id = v_subject
+       AND b.is_current = true
+      WHERE a.user_id = v_user
+        AND a.is_current = true
+    ),
+    'NOT_IN_SAME_HOME',
+    'You can only acknowledge reports for someone in a home you share.',
+    '22023'
+  );
+
+  INSERT INTO public.preference_report_acknowledgements (
+    report_id, viewer_user_id, acknowledged_at
+  ) VALUES (
+    p_report_id, v_user, now()
+  )
+  ON CONFLICT (report_id, viewer_user_id) DO NOTHING;
+
+  RETURN jsonb_build_object('ok', true);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."preference_reports_acknowledge"("p_report_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."preference_reports_edit_section_text"("p_template_key" "text", "p_locale" "text", "p_section_key" "text", "p_new_text" "text", "p_change_summary" "text" DEFAULT NULL::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $_$
+DECLARE
+  v_user uuid := auth.uid();
+  v_report public.preference_reports%ROWTYPE;
+
+  v_sections jsonb;
+  v_new_sections jsonb;
+  v_match_count int := 0;
+
+  v_new_content jsonb;
+  v_old_text text;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  PERFORM public.api_assert(
+    p_template_key ~ '^[a-z0-9_]{1,64}$',
+    'INVALID_TEMPLATE_KEY',
+    'Template key format is invalid.',
+    '22023'
+  );
+
+  PERFORM public.api_assert(
+    p_locale ~ '^[a-z]{2}(-[A-Z]{2})?$',
+    'INVALID_LOCALE',
+    'Locale must be ISO 639-1 (e.g. en) or ISO 639-1 + "-" + ISO 3166-1 (e.g. en-NZ).',
+    '22023'
+  );
+
+  p_locale := public.locale_base(p_locale);
+
+  PERFORM public.api_assert(
+    p_locale IN ('en', 'es', 'ar'),
+    'INVALID_LOCALE',
+    'Locale must be one of: en, es, ar.',
+    '22023'
+  );
+
+  PERFORM public.api_assert(
+    p_section_key IS NOT NULL AND length(trim(p_section_key)) > 0
+      AND p_section_key ~ '^[a-z0-9_]{1,64}$',
+    'INVALID_SECTION_KEY',
+    'Section key is required and must match ^[a-z0-9_]{1,64}$.',
+    '22023'
+  );
+
+  PERFORM public.api_assert(
+    p_new_text IS NOT NULL,
+    'INVALID_TEXT',
+    'Section text cannot be null.',
+    '22023'
+  );
+
+  SELECT *
+    INTO v_report
+  FROM public.preference_reports r
+  WHERE r.subject_user_id = v_user
+    AND r.template_key = p_template_key
+    AND r.locale = p_locale
+    AND r.status = 'published'
+  LIMIT 1;
+
+  IF v_report.id IS NULL THEN
+    PERFORM public.api_error(
+      'REPORT_NOT_FOUND',
+      'No published preference report found to edit.',
+      'P0001',
+      jsonb_build_object('template_key', p_template_key, 'locale', p_locale)
+    );
+  END IF;
+
+  -- Advisory lock per report
+  PERFORM pg_advisory_xact_lock(hashtextextended(v_report.id::text, 0));
+
+  v_sections := v_report.published_content->'sections';
+
+  PERFORM public.api_assert(
+    jsonb_typeof(v_sections) = 'array',
+    'INVALID_REPORT_SHAPE',
+    'published_content.sections must be an array.',
+    '22023'
+  );
+
+  SELECT COUNT(*)
+    INTO v_match_count
+  FROM jsonb_array_elements(v_sections) AS s(value)
+  WHERE (value->>'section_key') = p_section_key;
+
+  PERFORM public.api_assert(
+    v_match_count = 1,
+    'SECTION_NOT_FOUND_OR_DUPLICATE',
+    'Expected exactly 1 section with the given section_key.',
+    '22023',
+    jsonb_build_object('section_key', p_section_key, 'match_count', v_match_count)
+  );
+
+  -- no-op if unchanged
+  SELECT (value->>'text')
+    INTO v_old_text
+  FROM jsonb_array_elements(v_sections) AS s(value)
+  WHERE (value->>'section_key') = p_section_key
+  LIMIT 1;
+
+  IF v_old_text IS NOT DISTINCT FROM p_new_text THEN
+    RETURN jsonb_build_object('ok', true, 'report_id', v_report.id, 'status', 'unchanged');
+  END IF;
+
+  -- rebuild sections
+  SELECT COALESCE(
+    jsonb_agg(
+      CASE
+        WHEN (value->>'section_key') = p_section_key THEN
+          (value || jsonb_build_object('text', to_jsonb(p_new_text)))
+        ELSE
+          value
+      END
+      ORDER BY ord
+    ),
+    '[]'::jsonb
+  )
+  INTO v_new_sections
+  FROM jsonb_array_elements(v_sections) WITH ORDINALITY AS e(value, ord);
+
+  v_new_content := jsonb_set(v_report.published_content, '{sections}', v_new_sections, true);
+
+  UPDATE public.preference_reports
+     SET published_content = v_new_content,
+         last_edited_at = now(),
+         last_edited_by = v_user
+   WHERE id = v_report.id;
+
+  INSERT INTO public.preference_report_revisions (
+    report_id, editor_user_id, edited_at, content, change_summary
+  ) VALUES (
+    v_report.id, v_user, now(), v_new_content,
+    COALESCE(p_change_summary, 'Edited section ' || p_section_key)
+  );
+
+  RETURN jsonb_build_object('ok', true, 'report_id', v_report.id, 'status', 'edited');
+END;
+$_$;
+
+
+ALTER FUNCTION "public"."preference_reports_edit_section_text"("p_template_key" "text", "p_locale" "text", "p_section_key" "text", "p_new_text" "text", "p_change_summary" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."preference_reports_generate"("p_template_key" "text", "p_locale" "text", "p_force" boolean DEFAULT false) RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $_$
+DECLARE
+  v_user uuid := auth.uid();
+
+  v_template public.preference_report_templates%ROWTYPE;
+  v_report public.preference_reports%ROWTYPE;
+
+  v_all_pref_ids text[];
+  v_answered_pref_ids text[];
+
+  v_responses jsonb;
+  v_resolved jsonb;
+
+  v_unresolved_missing jsonb;
+  v_unresolved_nulls jsonb;
+  v_unresolved jsonb;
+
+  v_generated jsonb;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  PERFORM public.api_assert(
+    p_template_key ~ '^[a-z0-9_]{1,64}$',
+    'INVALID_TEMPLATE_KEY',
+    'Template key format is invalid.',
+    '22023'
+  );
+
+  PERFORM public.api_assert(
+    p_locale ~ '^[a-z]{2}(-[A-Z]{2})?$',
+    'INVALID_LOCALE',
+    'Locale must be ISO 639-1 (e.g. en) or ISO 639-1 + "-" + ISO 3166-1 (e.g. en-NZ).',
+    '22023'
+  );
+
+  -- normalize to base locale for templates/reports
+  p_locale := public.locale_base(p_locale);
+
+  PERFORM public.api_assert(
+    p_locale IN ('en', 'es', 'ar'),
+    'INVALID_LOCALE',
+    'Locale must be one of: en, es, ar.',
+    '22023'
+  );
+
+  -- Collision-safe advisory lock per (user, key, locale)
+  PERFORM pg_advisory_xact_lock(
+    hashtextextended(v_user::text || ':' || p_template_key || ':' || p_locale, 0)
+  );
+
+  SELECT *
+    INTO v_template
+  FROM public.preference_report_templates t
+  WHERE t.template_key = p_template_key
+    AND t.locale = p_locale
+  LIMIT 1;
+
+  IF v_template.id IS NULL THEN
+    PERFORM public.api_error(
+      'TEMPLATE_NOT_FOUND',
+      'No preference report template found for the requested key/locale.',
+      'P0001',
+      jsonb_build_object('template_key', p_template_key, 'locale', p_locale)
+    );
+  END IF;
+
+  SELECT *
+    INTO v_report
+  FROM public.preference_reports r
+  WHERE r.subject_user_id = v_user
+    AND r.template_key = p_template_key
+    AND r.locale = p_locale
+  LIMIT 1;
+
+  IF v_report.id IS NOT NULL
+     AND p_force = false
+     AND v_report.status <> 'out_of_date' THEN
+    RETURN jsonb_build_object('ok', true, 'report_id', v_report.id, 'status', 'unchanged');
+  END IF;
+
+  -- all_pref_ids := active taxonomy defs
+  SELECT COALESCE(array_agg(t.preference_id ORDER BY t.preference_id), ARRAY[]::text[])
+    INTO v_all_pref_ids
+  FROM public.preference_taxonomy t
+  JOIN public.preference_taxonomy_defs d USING (preference_id)
+  WHERE t.is_active = true;
+
+  PERFORM public.api_assert(
+    COALESCE(array_length(v_all_pref_ids, 1), 0) > 0,
+    'INVALID_TAXONOMY_STATE',
+    'No active preference taxonomy defs exist; cannot generate report.',
+    '22023'
+  );
+
+  -- answered_pref_ids := responses for user
+  SELECT COALESCE(array_agg(pr.preference_id ORDER BY pr.preference_id), ARRAY[]::text[])
+    INTO v_answered_pref_ids
+  FROM public.preference_responses pr
+  WHERE pr.user_id = v_user;
+
+  -- responses/resolved for answered only
+  WITH resolved_rows AS (
+    SELECT
+      pr.preference_id,
+      pr.option_index,
+      (v_template.body->'preferences'->pr.preference_id->(pr.option_index::int)) AS resolved_obj
+    FROM public.preference_responses pr
+    WHERE pr.user_id = v_user
+  )
+  SELECT
+    COALESCE(jsonb_object_agg(preference_id, option_index), '{}'::jsonb),
+    COALESCE(jsonb_object_agg(preference_id, resolved_obj), '{}'::jsonb),
+    COALESCE(
+      jsonb_agg(preference_id)
+        FILTER (WHERE resolved_obj IS NULL OR resolved_obj = 'null'::jsonb),
+      '[]'::jsonb
+    )
+  INTO v_responses, v_resolved, v_unresolved_nulls
+  FROM resolved_rows;
+
+  -- unresolved_missing := all_pref_ids EXCEPT answered_pref_ids
+  SELECT COALESCE(
+    jsonb_agg(x),
+    '[]'::jsonb
+  )
+  INTO v_unresolved_missing
+  FROM (
+    SELECT unnest(v_all_pref_ids) AS x
+    EXCEPT
+    SELECT unnest(v_answered_pref_ids) AS x
+  ) s;
+
+  -- unresolved := union(missing, nulls), dedup
+  SELECT COALESCE(
+    jsonb_agg(DISTINCT e.value),
+    '[]'::jsonb
+  )
+  INTO v_unresolved
+  FROM jsonb_array_elements(v_unresolved_missing || v_unresolved_nulls) AS e(value);
+
+  v_generated := jsonb_build_object(
+    'template_key', p_template_key,
+    'locale', p_locale,
+    'summary', v_template.body->'summary',
+    'sections', v_template.body->'sections',
+    'responses', v_responses,
+    'resolved', v_resolved,
+    'unresolved_pref_ids', v_unresolved
+  );
+
+  INSERT INTO public.preference_reports (
+    subject_user_id,
+    template_key,
+    locale,
+    status,
+    generated_content,
+    published_content,
+    generated_at,
+    published_at
+  ) VALUES (
+    v_user,
+    p_template_key,
+    p_locale,
+    'published',
+    v_generated,
+    v_generated,
+    now(),
+    now()
+  )
+  ON CONFLICT (subject_user_id, template_key, locale)
+  DO UPDATE SET
+    status            = 'published',
+    generated_content = EXCLUDED.generated_content,
+    generated_at      = EXCLUDED.generated_at,
+
+    -- never-edited rule
+    published_content =
+      CASE
+        WHEN public.preference_reports.last_edited_at IS NULL
+          THEN EXCLUDED.published_content
+        ELSE public.preference_reports.published_content
+      END,
+
+    published_at =
+      CASE
+        WHEN public.preference_reports.last_edited_at IS NULL
+          THEN EXCLUDED.published_at
+        ELSE public.preference_reports.published_at
+      END
+  RETURNING * INTO v_report;
+
+  RETURN jsonb_build_object(
+    'ok', true,
+    'report_id', v_report.id,
+    'status', 'generated',
+    'unresolved_pref_ids', v_unresolved
+  );
+END;
+$_$;
+
+
+ALTER FUNCTION "public"."preference_reports_generate"("p_template_key" "text", "p_locale" "text", "p_force" boolean) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."preference_reports_get_for_home"("p_home_id" "uuid", "p_subject_user_id" "uuid", "p_template_key" "text", "p_locale" "text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $_$
+DECLARE
+  v_report public.preference_reports%ROWTYPE;
+BEGIN
+  PERFORM public._assert_authenticated();
+  PERFORM public._assert_home_member(p_home_id);
+  PERFORM public._assert_home_active(p_home_id);
+
+  PERFORM public.api_assert(
+    p_template_key ~ '^[a-z0-9_]{1,64}$',
+    'INVALID_TEMPLATE_KEY',
+    'Template key format is invalid.',
+    '22023'
+  );
+
+  PERFORM public.api_assert(
+    p_locale ~ '^[a-z]{2}(-[A-Z]{2})?$',
+    'INVALID_LOCALE',
+    'Locale must be ISO 639-1 (e.g. en) or ISO 639-1 + "-" + ISO 3166-1 (e.g. en-NZ).',
+    '22023'
+  );
+
+  p_locale := public.locale_base(p_locale);
+
+  PERFORM public.api_assert(
+    p_locale IN ('en', 'es', 'ar'),
+    'INVALID_LOCALE',
+    'Locale must be one of: en, es, ar.',
+    '22023'
+  );
+
+  -- only current members visible
+  PERFORM public.api_assert(
+    EXISTS (
+      SELECT 1
+      FROM public.memberships m
+      WHERE m.home_id = p_home_id
+        AND m.user_id = p_subject_user_id
+        AND m.is_current = true
+    ),
+    'SUBJECT_NOT_IN_HOME',
+    'Subject user is not a current member of this home.',
+    '22023'
+  );
+
+  SELECT *
+    INTO v_report
+  FROM public.preference_reports r
+  WHERE r.subject_user_id = p_subject_user_id
+    AND r.template_key = p_template_key
+    AND r.locale = p_locale
+    AND r.status = 'published'
+  LIMIT 1;
+
+  IF v_report.id IS NULL THEN
+    RETURN jsonb_build_object('ok', true, 'found', false);
+  END IF;
+
+  RETURN jsonb_build_object(
+    'ok', true,
+    'found', true,
+    'report', jsonb_build_object(
+      'id', v_report.id,
+      'subject_user_id', v_report.subject_user_id,
+      'template_key', v_report.template_key,
+      'locale', v_report.locale,
+      'published_at', v_report.published_at,
+      'published_content', v_report.published_content,
+      'last_edited_at', v_report.last_edited_at,
+      'last_edited_by', v_report.last_edited_by
+    )
+  );
+END;
+$_$;
+
+
+ALTER FUNCTION "public"."preference_reports_get_for_home"("p_home_id" "uuid", "p_subject_user_id" "uuid", "p_template_key" "text", "p_locale" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."preference_reports_list_for_home"("p_home_id" "uuid", "p_template_key" "text", "p_locale" "text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $_$
+BEGIN
+  PERFORM public._assert_authenticated();
+  PERFORM public._assert_home_member(p_home_id);
+  PERFORM public._assert_home_active(p_home_id);
+
+  PERFORM public.api_assert(
+    p_template_key ~ '^[a-z0-9_]{1,64}$',
+    'INVALID_TEMPLATE_KEY',
+    'Template key format is invalid.',
+    '22023'
+  );
+
+  PERFORM public.api_assert(
+    p_locale ~ '^[a-z]{2}(-[A-Z]{2})?$',
+    'INVALID_LOCALE',
+    'Locale must be ISO 639-1 (e.g. en) or ISO 639-1 + "-" + ISO 3166-1 (e.g. en-NZ).',
+    '22023'
+  );
+
+  p_locale := public.locale_base(p_locale);
+
+  PERFORM public.api_assert(
+    p_locale IN ('en', 'es', 'ar'),
+    'INVALID_LOCALE',
+    'Locale must be one of: en, es, ar.',
+    '22023'
+  );
+
+  RETURN jsonb_build_object(
+    'ok', true,
+    'items',
+    COALESCE(
+      (
+        SELECT jsonb_agg(
+          jsonb_build_object(
+            'report_id', r.id,
+            'subject_user_id', r.subject_user_id,
+            'published_at', r.published_at,
+            'last_edited_at', r.last_edited_at
+          )
+          ORDER BY r.published_at DESC NULLS LAST
+        )
+        FROM public.memberships m
+        JOIN public.preference_reports r
+          ON r.subject_user_id = m.user_id
+         AND r.template_key = p_template_key
+         AND r.locale = p_locale
+         AND r.status = 'published'
+        WHERE m.home_id = p_home_id
+          AND m.is_current = true
+      ),
+      '[]'::jsonb
+    )
+  );
+END;
+$_$;
+
+
+ALTER FUNCTION "public"."preference_reports_list_for_home"("p_home_id" "uuid", "p_template_key" "text", "p_locale" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."preference_responses_submit"("p_answers" "jsonb") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $_$
+DECLARE
+  v_user uuid := auth.uid();
+
+  v_tax_keys text[];
+  v_answer_keys text[];
+
+  v_extra text[];
+  v_missing text[];
+
+  v_bad_value_keys jsonb;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  PERFORM public.api_assert(
+    jsonb_typeof(p_answers) = 'object',
+    'INVALID_ANSWERS',
+    'Answers must be a JSON object of { preference_id: option_index }.',
+    '22023',
+    jsonb_build_object('expected', 'object')
+  );
+
+  -- Active taxonomy keys (must have defs)
+  SELECT COALESCE(array_agg(t.preference_id ORDER BY t.preference_id), ARRAY[]::text[])
+    INTO v_tax_keys
+  FROM public.preference_taxonomy t
+  JOIN public.preference_taxonomy_defs d USING (preference_id)
+  WHERE t.is_active = true;
+
+  PERFORM public.api_assert(
+    COALESCE(array_length(v_tax_keys, 1), 0) > 0,
+    'INVALID_TAXONOMY_STATE',
+    'No active preference taxonomy defs exist; cannot accept answers.',
+    '22023'
+  );
+
+  -- Answer keys
+  SELECT COALESCE(array_agg(k ORDER BY k), ARRAY[]::text[])
+    INTO v_answer_keys
+  FROM jsonb_object_keys(p_answers) AS k;
+
+  -- Extra keys
+  SELECT COALESCE(array_agg(x), ARRAY[]::text[]) INTO v_extra
+  FROM (
+    SELECT unnest(v_answer_keys) AS x
+    EXCEPT
+    SELECT unnest(v_tax_keys) AS x
+  ) s;
+
+  -- Missing keys
+  SELECT COALESCE(array_agg(x), ARRAY[]::text[]) INTO v_missing
+  FROM (
+    SELECT unnest(v_tax_keys) AS x
+    EXCEPT
+    SELECT unnest(v_answer_keys) AS x
+  ) s;
+
+  PERFORM public.api_assert(
+    COALESCE(array_length(v_extra, 1), 0) = 0
+    AND COALESCE(array_length(v_missing, 1), 0) = 0,
+    'INCOMPLETE_ANSWERS',
+    'You must answer every preference in one submission (no missing or extra keys).',
+    '22023',
+    jsonb_build_object(
+      'extra_pref_ids', COALESCE(to_jsonb(v_extra), '[]'::jsonb),
+      'missing_pref_ids', COALESCE(to_jsonb(v_missing), '[]'::jsonb)
+    )
+  );
+
+  -- Validate each value is an integer 0..2
+  SELECT COALESCE(
+    jsonb_agg(k) FILTER (WHERE NOT (
+      jsonb_typeof(p_answers->k) = 'number'
+      AND (p_answers->>k) ~ '^[0-9]+$'
+      AND ((p_answers->>k)::int BETWEEN 0 AND 2)
+    )),
+    '[]'::jsonb
+  )
+  INTO v_bad_value_keys
+  FROM unnest(v_answer_keys) AS k;
+
+  PERFORM public.api_assert(
+    jsonb_array_length(v_bad_value_keys) = 0,
+    'INVALID_OPTION_INDEX',
+    'All option_index values must be integers between 0 and 2.',
+    '22023',
+    jsonb_build_object('bad_pref_ids', v_bad_value_keys)
+  );
+
+  -- Atomic upsert of full set
+  INSERT INTO public.preference_responses (user_id, preference_id, option_index, captured_at)
+  SELECT
+    v_user,
+    k AS preference_id,
+    (p_answers->>k)::int2 AS option_index,
+    now() AS captured_at
+  FROM unnest(v_answer_keys) AS k
+  ON CONFLICT (user_id, preference_id)
+  DO UPDATE SET
+    option_index = EXCLUDED.option_index,
+    captured_at  = EXCLUDED.captured_at
+  WHERE public.preference_responses.option_index IS DISTINCT FROM EXCLUDED.option_index;
+
+  RETURN jsonb_build_object('ok', true);
+END;
+$_$;
+
+
+ALTER FUNCTION "public"."preference_responses_submit"("p_answers" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."preference_templates_get_for_user"("p_template_key" "text" DEFAULT 'personal_preferences_v1'::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $_$
+DECLARE
+  v_user uuid := auth.uid();
+  v_user_locale text;
+  v_base text;
+  v_resolved text;
+  v_template public.preference_report_templates%ROWTYPE;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  -- Validate template key
+  PERFORM public.api_assert(
+    p_template_key ~ '^[a-z0-9_]{1,64}$',
+    'INVALID_TEMPLATE_KEY',
+    'Template key format is invalid.',
+    '22023'
+  );
+
+  -- Read user's locale (e.g. en-NZ) from notification_preferences
+  SELECT np.locale
+    INTO v_user_locale
+  FROM public.notification_preferences np
+  WHERE np.user_id = v_user
+  LIMIT 1;
+
+  v_base := public.locale_base(v_user_locale);
+
+  -- Only allow supported languages; otherwise fallback to en
+  IF v_base NOT IN ('en','es','ar') THEN
+    v_base := 'en';
+  END IF;
+
+  -- Prefer base match if exists, else fallback en
+  SELECT t.*
+    INTO v_template
+  FROM public.preference_report_templates t
+  WHERE t.template_key = p_template_key
+    AND t.locale = v_base
+  LIMIT 1;
+
+  IF v_template.id IS NOT NULL THEN
+    v_resolved := v_base;
+  ELSE
+    SELECT t.*
+      INTO v_template
+    FROM public.preference_report_templates t
+    WHERE t.template_key = p_template_key
+      AND t.locale = 'en'
+    LIMIT 1;
+
+    v_resolved := 'en';
+  END IF;
+
+  IF v_template.id IS NULL THEN
+    PERFORM public.api_error(
+      'TEMPLATE_NOT_FOUND',
+      'No template found for template_key (neither user locale nor fallback en).',
+      'P0001',
+      jsonb_build_object(
+        'template_key', p_template_key,
+        'requested_locale', v_user_locale,
+        'base_locale', v_base
+      )
+    );
+  END IF;
+
+  RETURN jsonb_build_object(
+    'ok', true,
+    'template_key', v_template.template_key,
+    'requested_locale', v_user_locale,
+    'resolved_locale', v_resolved,
+    'body', v_template.body
+  );
+END;
+$_$;
+
+
+ALTER FUNCTION "public"."preference_templates_get_for_user"("p_template_key" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."profile_identity_update"("p_username" "public"."citext", "p_avatar_id" "uuid") RETURNS TABLE("username" "public"."citext", "avatar_id" "uuid", "avatar_storage_path" "text")
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -8982,6 +9961,124 @@ COMMENT ON TABLE "public"."paywall_events" IS 'Funnel events for the paywall (im
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."preference_report_acknowledgements" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "report_id" "uuid" NOT NULL,
+    "viewer_user_id" "uuid" NOT NULL,
+    "acknowledged_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."preference_report_acknowledgements" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."preference_report_revisions" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "report_id" "uuid" NOT NULL,
+    "editor_user_id" "uuid" NOT NULL,
+    "edited_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "content" "jsonb" NOT NULL,
+    "change_summary" "text"
+);
+
+
+ALTER TABLE "public"."preference_report_revisions" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."preference_report_templates" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "template_key" "text" NOT NULL,
+    "locale" "text" NOT NULL,
+    "body" "jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "chk_template_key_format" CHECK (("template_key" ~ '^[a-z0-9_]{1,64}$'::"text")),
+    CONSTRAINT "chk_template_locale_base" CHECK (("locale" ~ '^[a-z]{2}$'::"text"))
+);
+
+
+ALTER TABLE "public"."preference_report_templates" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."preference_reports" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "subject_user_id" "uuid" NOT NULL,
+    "template_key" "text" NOT NULL,
+    "locale" "text" NOT NULL,
+    "status" "text" DEFAULT 'published'::"text" NOT NULL,
+    "generated_content" "jsonb" NOT NULL,
+    "published_content" "jsonb" NOT NULL,
+    "generated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "published_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "last_edited_at" timestamp with time zone,
+    "last_edited_by" "uuid",
+    CONSTRAINT "chk_preference_reports_status" CHECK (("status" = ANY (ARRAY['published'::"text", 'out_of_date'::"text"]))),
+    CONSTRAINT "chk_reports_locale" CHECK (("locale" ~ '^[a-z]{2}$'::"text")),
+    CONSTRAINT "chk_reports_template_key_format" CHECK (("template_key" ~ '^[a-z0-9_]{1,64}$'::"text"))
+);
+
+
+ALTER TABLE "public"."preference_reports" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."preference_responses" (
+    "user_id" "uuid" NOT NULL,
+    "preference_id" "text" NOT NULL,
+    "option_index" smallint NOT NULL,
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "chk_preference_option_index" CHECK ((("option_index" >= 0) AND ("option_index" <= 2)))
+);
+
+
+ALTER TABLE "public"."preference_responses" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."preference_taxonomy" (
+    "preference_id" "text" NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "chk_taxonomy_preference_id_format" CHECK (("preference_id" ~ '^[a-z0-9_]{1,64}$'::"text"))
+);
+
+
+ALTER TABLE "public"."preference_taxonomy" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."preference_taxonomy_defs" (
+    "preference_id" "text" NOT NULL,
+    "domain" "text" NOT NULL,
+    "label" "text" DEFAULT ''::"text" NOT NULL,
+    "description" "text" NOT NULL,
+    "value_keys" "text"[] NOT NULL,
+    "aggregation" "text" DEFAULT 'mode'::"text" NOT NULL,
+    "safety_notes" "text"[] DEFAULT ARRAY[]::"text"[] NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "chk_defs_domain_format" CHECK (("domain" ~ '^[a-z0-9_]{1,32}$'::"text")),
+    CONSTRAINT "chk_defs_value_keys_each_format" CHECK ((("value_keys"[1] ~ '^[a-z0-9_]{1,64}$'::"text") AND ("value_keys"[2] ~ '^[a-z0-9_]{1,64}$'::"text") AND ("value_keys"[3] ~ '^[a-z0-9_]{1,64}$'::"text"))),
+    CONSTRAINT "chk_defs_value_keys_len_3" CHECK (("array_length"("value_keys", 1) = 3))
+);
+
+
+ALTER TABLE "public"."preference_taxonomy_defs" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."preference_taxonomy_active_defs" AS
+ SELECT "t"."preference_id",
+    "d"."domain",
+    "d"."label",
+    "d"."description",
+    "d"."value_keys",
+    "d"."aggregation",
+    "d"."safety_notes"
+   FROM ("public"."preference_taxonomy" "t"
+     JOIN "public"."preference_taxonomy_defs" "d" USING ("preference_id"))
+  WHERE ("t"."is_active" = true);
+
+
+ALTER VIEW "public"."preference_taxonomy_active_defs" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "id" "uuid" NOT NULL,
     "email" "text",
@@ -9361,8 +10458,43 @@ ALTER TABLE ONLY "public"."home_mood_feedback_counters"
 
 
 
+ALTER TABLE ONLY "public"."preference_responses"
+    ADD CONSTRAINT "pk_preference_responses" PRIMARY KEY ("user_id", "preference_id");
+
+
+
 ALTER TABLE ONLY "public"."shared_preferences"
     ADD CONSTRAINT "pk_shared_preferences" PRIMARY KEY ("user_id", "pref_key");
+
+
+
+ALTER TABLE ONLY "public"."preference_report_acknowledgements"
+    ADD CONSTRAINT "preference_report_acknowledgements_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."preference_report_revisions"
+    ADD CONSTRAINT "preference_report_revisions_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."preference_report_templates"
+    ADD CONSTRAINT "preference_report_templates_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."preference_reports"
+    ADD CONSTRAINT "preference_reports_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."preference_taxonomy_defs"
+    ADD CONSTRAINT "preference_taxonomy_defs_pkey" PRIMARY KEY ("preference_id");
+
+
+
+ALTER TABLE ONLY "public"."preference_taxonomy"
+    ADD CONSTRAINT "preference_taxonomy_pkey" PRIMARY KEY ("preference_id");
 
 
 
@@ -9408,6 +10540,21 @@ ALTER TABLE ONLY "public"."device_tokens"
 
 ALTER TABLE ONLY "public"."home_mood_entries"
     ADD CONSTRAINT "uq_home_mood_entries_user_week" UNIQUE ("user_id", "iso_week_year", "iso_week");
+
+
+
+ALTER TABLE ONLY "public"."preference_report_acknowledgements"
+    ADD CONSTRAINT "uq_preference_report_ack" UNIQUE ("report_id", "viewer_user_id");
+
+
+
+ALTER TABLE ONLY "public"."preference_report_templates"
+    ADD CONSTRAINT "uq_preference_report_templates" UNIQUE ("template_key", "locale");
+
+
+
+ALTER TABLE ONLY "public"."preference_reports"
+    ADD CONSTRAINT "uq_preference_reports_subject_tpl_locale" UNIQUE ("subject_user_id", "template_key", "locale");
 
 
 
@@ -9504,6 +10651,22 @@ COMMENT ON INDEX "public"."idx_invites_code_active" IS 'Optimizes lookups for ac
 
 
 
+CREATE INDEX "idx_preference_report_revisions_report" ON "public"."preference_report_revisions" USING "btree" ("report_id", "edited_at" DESC);
+
+
+
+CREATE INDEX "idx_preference_report_templates_lookup" ON "public"."preference_report_templates" USING "btree" ("template_key", "locale");
+
+
+
+CREATE INDEX "idx_preference_reports_subject" ON "public"."preference_reports" USING "btree" ("subject_user_id");
+
+
+
+CREATE INDEX "idx_preference_taxonomy_defs_domain" ON "public"."preference_taxonomy_defs" USING "btree" ("domain");
+
+
+
 CREATE UNIQUE INDEX "revenuecat_webhook_events_env_idem_unique" ON "public"."revenuecat_webhook_events" USING "btree" ("environment", "idempotency_key");
 
 
@@ -9577,6 +10740,22 @@ CREATE OR REPLACE TRIGGER "chores_events_trigger" AFTER INSERT OR DELETE OR UPDA
 
 
 CREATE OR REPLACE TRIGGER "trg_home_mood_feedback_counters_inc" AFTER INSERT ON "public"."home_mood_entries" FOR EACH ROW EXECUTE FUNCTION "public"."home_mood_feedback_counters_inc"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_preference_report_templates_touch" BEFORE UPDATE ON "public"."preference_report_templates" FOR EACH ROW EXECUTE FUNCTION "public"."_touch_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_preference_responses_out_of_date" AFTER INSERT OR UPDATE ON "public"."preference_responses" FOR EACH ROW EXECUTE FUNCTION "public"."_preference_reports_mark_out_of_date"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_preference_taxonomy_defs_touch" BEFORE UPDATE ON "public"."preference_taxonomy_defs" FOR EACH ROW EXECUTE FUNCTION "public"."_touch_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_preference_templates_validate" BEFORE INSERT OR UPDATE ON "public"."preference_report_templates" FOR EACH ROW EXECUTE FUNCTION "public"."_preference_templates_validate"();
 
 
 
@@ -9794,6 +10973,51 @@ ALTER TABLE ONLY "public"."paywall_events"
 
 
 
+ALTER TABLE ONLY "public"."preference_report_acknowledgements"
+    ADD CONSTRAINT "preference_report_acknowledgements_report_id_fkey" FOREIGN KEY ("report_id") REFERENCES "public"."preference_reports"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."preference_report_acknowledgements"
+    ADD CONSTRAINT "preference_report_acknowledgements_viewer_user_id_fkey" FOREIGN KEY ("viewer_user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."preference_report_revisions"
+    ADD CONSTRAINT "preference_report_revisions_editor_user_id_fkey" FOREIGN KEY ("editor_user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."preference_report_revisions"
+    ADD CONSTRAINT "preference_report_revisions_report_id_fkey" FOREIGN KEY ("report_id") REFERENCES "public"."preference_reports"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."preference_reports"
+    ADD CONSTRAINT "preference_reports_last_edited_by_fkey" FOREIGN KEY ("last_edited_by") REFERENCES "public"."profiles"("id");
+
+
+
+ALTER TABLE ONLY "public"."preference_reports"
+    ADD CONSTRAINT "preference_reports_subject_user_id_fkey" FOREIGN KEY ("subject_user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."preference_responses"
+    ADD CONSTRAINT "preference_responses_preference_id_fkey" FOREIGN KEY ("preference_id") REFERENCES "public"."preference_taxonomy"("preference_id");
+
+
+
+ALTER TABLE ONLY "public"."preference_responses"
+    ADD CONSTRAINT "preference_responses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."preference_taxonomy_defs"
+    ADD CONSTRAINT "preference_taxonomy_defs_preference_id_fkey" FOREIGN KEY ("preference_id") REFERENCES "public"."preference_taxonomy"("preference_id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_avatar_id_fkey" FOREIGN KEY ("avatar_id") REFERENCES "public"."avatars"("id");
 
@@ -9911,6 +11135,27 @@ ALTER TABLE "public"."notification_sends" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."paywall_events" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."preference_report_acknowledgements" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."preference_report_revisions" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."preference_report_templates" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."preference_reports" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."preference_responses" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."preference_taxonomy" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."preference_taxonomy_defs" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
@@ -10417,9 +11662,27 @@ GRANT ALL ON FUNCTION "public"."_member_cap_resolve_requests"("p_home_id" "uuid"
 
 
 
+GRANT ALL ON FUNCTION "public"."_preference_reports_mark_out_of_date"() TO "anon";
+GRANT ALL ON FUNCTION "public"."_preference_reports_mark_out_of_date"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."_preference_reports_mark_out_of_date"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."_preference_templates_validate"() TO "anon";
+GRANT ALL ON FUNCTION "public"."_preference_templates_validate"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."_preference_templates_validate"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") TO "anon";
 GRANT ALL ON FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."_share_log_event_internal"("p_user_id" "uuid", "p_home_id" "uuid", "p_feature" "text", "p_channel" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."_touch_updated_at"() TO "anon";
+GRANT ALL ON FUNCTION "public"."_touch_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."_touch_updated_at"() TO "service_role";
 
 
 
@@ -12051,6 +13314,12 @@ GRANT ALL ON FUNCTION "public"."is_home_owner"("p_home_id" "uuid", "p_user_id" "
 
 
 
+GRANT ALL ON FUNCTION "public"."locale_base"("p_locale" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."locale_base"("p_locale" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."locale_base"("p_locale" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."member_cap_owner_dismiss"("p_home_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."member_cap_owner_dismiss"("p_home_id" "uuid") TO "service_role";
 GRANT ALL ON FUNCTION "public"."member_cap_owner_dismiss"("p_home_id" "uuid") TO "authenticated";
@@ -12173,6 +13442,48 @@ GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key"
 REVOKE ALL ON FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."preference_reports_acknowledge"("p_report_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."preference_reports_acknowledge"("p_report_id" "uuid") TO "service_role";
+GRANT ALL ON FUNCTION "public"."preference_reports_acknowledge"("p_report_id" "uuid") TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."preference_reports_edit_section_text"("p_template_key" "text", "p_locale" "text", "p_section_key" "text", "p_new_text" "text", "p_change_summary" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."preference_reports_edit_section_text"("p_template_key" "text", "p_locale" "text", "p_section_key" "text", "p_new_text" "text", "p_change_summary" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."preference_reports_edit_section_text"("p_template_key" "text", "p_locale" "text", "p_section_key" "text", "p_new_text" "text", "p_change_summary" "text") TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."preference_reports_generate"("p_template_key" "text", "p_locale" "text", "p_force" boolean) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."preference_reports_generate"("p_template_key" "text", "p_locale" "text", "p_force" boolean) TO "service_role";
+GRANT ALL ON FUNCTION "public"."preference_reports_generate"("p_template_key" "text", "p_locale" "text", "p_force" boolean) TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."preference_reports_get_for_home"("p_home_id" "uuid", "p_subject_user_id" "uuid", "p_template_key" "text", "p_locale" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."preference_reports_get_for_home"("p_home_id" "uuid", "p_subject_user_id" "uuid", "p_template_key" "text", "p_locale" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."preference_reports_get_for_home"("p_home_id" "uuid", "p_subject_user_id" "uuid", "p_template_key" "text", "p_locale" "text") TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."preference_reports_list_for_home"("p_home_id" "uuid", "p_template_key" "text", "p_locale" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."preference_reports_list_for_home"("p_home_id" "uuid", "p_template_key" "text", "p_locale" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."preference_reports_list_for_home"("p_home_id" "uuid", "p_template_key" "text", "p_locale" "text") TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."preference_responses_submit"("p_answers" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."preference_responses_submit"("p_answers" "jsonb") TO "service_role";
+GRANT ALL ON FUNCTION "public"."preference_responses_submit"("p_answers" "jsonb") TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."preference_templates_get_for_user"("p_template_key" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."preference_templates_get_for_user"("p_template_key" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."preference_templates_get_for_user"("p_template_key" "text") TO "authenticated";
 
 
 
@@ -12508,6 +13819,40 @@ GRANT ALL ON TABLE "public"."notification_sends" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."paywall_events" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."preference_report_acknowledgements" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."preference_report_revisions" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."preference_report_templates" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."preference_reports" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."preference_responses" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."preference_taxonomy" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."preference_taxonomy_defs" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."preference_taxonomy_active_defs" TO "anon";
+GRANT ALL ON TABLE "public"."preference_taxonomy_active_defs" TO "authenticated";
+GRANT ALL ON TABLE "public"."preference_taxonomy_active_defs" TO "service_role";
 
 
 

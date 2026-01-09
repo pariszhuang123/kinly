@@ -7,6 +7,16 @@ void main() {
     TodayRegistry.bootstrap();
 
     final ids = TodayRegistry.bodySections.map((e) => e.id).toList();
-    expect(ids, equals(['member_cap', 'invite', 'flow', 'share', 'gratitude']));
+    expect(
+      ids,
+      equals([
+        'member_cap',
+        'preferences',
+        'invite',
+        'flow',
+        'share',
+        'gratitude',
+      ]),
+    );
   });
 }

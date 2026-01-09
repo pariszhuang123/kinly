@@ -10,6 +10,7 @@ import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'package:kinly/features/harmony/harmony.dart';
 import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
 import 'package:kinly/core/notifications/profile_update_notifier.dart';
+import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/contracts/mood/models.dart';
 import 'package:kinly/contracts/expenses/models.dart';
 import 'package:kinly/contracts/chores/models.dart';
@@ -28,6 +29,9 @@ class _MockMoodRepository extends Mock implements MoodRepository {}
 
 class _MockOnboardingRepository extends Mock implements OnboardingRepository {}
 
+class _MockPreferenceReportsRepository extends Mock
+    implements PreferenceReportsRepository {}
+
 void main() {
   setUpAll(() {
     registerFallbackValue(ChoreState.active);
@@ -39,6 +43,7 @@ void main() {
   late _MockHomeRepository homeRepository;
   late _MockMoodRepository moodRepository;
   late _MockOnboardingRepository onboardingRepository;
+  late _MockPreferenceReportsRepository preferenceReportsRepository;
   late ProfileUpdateNotifier profileUpdateNotifier;
 
   setUp(() {
@@ -48,6 +53,7 @@ void main() {
     homeRepository = _MockHomeRepository();
     moodRepository = _MockMoodRepository();
     onboardingRepository = _MockOnboardingRepository();
+    preferenceReportsRepository = _MockPreferenceReportsRepository();
     profileUpdateNotifier = ProfileUpdateNotifier();
 
     when(
@@ -109,6 +115,7 @@ void main() {
       homeRepository: homeRepository,
       moodRepository: moodRepository,
       onboardingRepository: onboardingRepository,
+      preferenceReportsRepository: preferenceReportsRepository,
       homeId: 'home-1',
       profileUpdateNotifier: profileUpdateNotifier,
     );

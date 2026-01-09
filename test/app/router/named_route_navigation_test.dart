@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:kinly/app/router/app_route_names.dart';
-import 'package:kinly/contracts/expenses/models.dart';
 import 'package:kinly/contracts/share/models.dart';
 import 'package:kinly/features/flow/ui/flow_chore_detail/widgets/flow_chore_expectation_photo_viewer.dart';
 import 'package:kinly/features/paywall/ui/paywall_route_args.dart';

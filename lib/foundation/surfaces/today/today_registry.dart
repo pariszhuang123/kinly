@@ -60,6 +60,15 @@ class TodayRegistry {
 
     register(
       TodaySectionEntry(
+        id: 'preferences',
+        order: 15,
+        builder: _buildPreferencesPrompt,
+        isVisible: (scope) => scope.state.shouldPromptPreferences,
+      ),
+    );
+
+    register(
+      TodaySectionEntry(
         id: 'invite',
         order: 20,
         builder: _buildInvitePrompt,
@@ -154,6 +163,15 @@ Widget _buildInvitePrompt(TodaySurfaceScope scope) {
     secondaryLabel: scope.strings.todayInviteNotNow,
     onPrimary: () => scope.actions.onInvitePrimary(config),
     onSecondary: config.isFlatmate ? scope.actions.onInviteSecondary : null,
+  );
+}
+
+Widget _buildPreferencesPrompt(TodaySurfaceScope scope) {
+  return TodayInvitePrompt(
+    title: scope.strings.preferencePromptTitle,
+    subtitle: scope.strings.preferencePromptSubtitle,
+    primaryLabel: scope.strings.preferencePromptCta,
+    onPrimary: scope.actions.onPreferencePrompt,
   );
 }
 

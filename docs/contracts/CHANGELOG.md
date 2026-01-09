@@ -10,6 +10,33 @@ Tracks versioned contract changes and related ADRs.
   - Add v2 RPCs for create/update (`public.chores_create_v2`, `public.chores_update_v2`).
   - Update chores read payloads to return `recurrenceEvery/recurrenceUnit`.
 
+## v1 - Home Preferences, Vibe, and Rules
+- Date: 2026-01-05
+- Scope: `docs/contracts/home_dynamics_v1.md`
+- Changes:
+  - Define the separation between personal preferences, home vibe, and home rules.
+  - Add hard guardrails to prevent auto-derivation or enforcement from vibe or preferences.
+
+## v1 - Preference Taxonomy
+- Date: 2026-01-05
+- Scope: `docs/contracts/preference_taxonomy_v1.md`
+- Changes:
+  - Define preference taxonomy v1 domains, IDs, aggregation rules, and governance.
+
+## v1 - Preference Scenarios
+- Date: 2026-01-05
+- Scope: `docs/contracts/preference_scenarios_v1.md`
+- Changes:
+  - Define scenario-based preference capture and interpretation rules.
+
+## v1 - Preference Reports
+- Date: 2026-01-05
+- Scope: `docs/contracts/preference_reports_v1.md`
+- Changes:
+  - Define generation, subject edits, and revision tracking for preference reports.
+  - Align contract with preference taxonomy tables, template schema, and RPCs.
+  - Sync template schema to value_key/title/text and section title/text structure.
+
 ## v1 - Avatar Identity
 - Date: 2026-01-06
 - Scope: `docs/contracts/kinly_avatar_identity_v1.md`

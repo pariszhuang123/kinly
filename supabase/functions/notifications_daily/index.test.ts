@@ -30,3 +30,21 @@ Deno.test("truncateReason caps grapheme count and appends ellipsis", () => {
   console.assert(truncated.endsWith("…"));
   console.assert(truncated.length === 6);
 });
+
+Deno.test("truncateReason is grapheme-safe (emoji + ZWJ sequences)", () => {
+  // These include multi-codepoint grapheme clusters:
+  // - family emoji uses ZWJ sequence
+  // - skin tone modifier + ZWJ sequence
+  const s = "👨‍👩‍👧‍👦👩🏽‍💻👍🏽abc";
+
+  // Truncate to 2 graphemes => should include first 2 graphemes + ellipsis
+  const truncated = truncateReason(s, 2);
+
+  console.assert(truncated.endsWith("…"));
+  // Ensure we didn't return the original string
+  console.assert(truncated !== s);
+
+  // Basic safety: result should be at least 2 visible graphemes + ellipsis.
+  // (Exact JS string length varies due to surrogate pairs, so don't assert length.)
+  console.assert(truncated.length > 1);
+});

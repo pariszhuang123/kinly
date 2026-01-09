@@ -48,27 +48,29 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(price) => "${price} al mes para todo tu hogar.";
 
-  static String m11(paidAmount, totalAmount) =>
+  static String m11(current, total) => "Question ${current} of ${total}";
+
+  static String m12(paidAmount, totalAmount) =>
       "${paidAmount} de ${totalAmount} cobrados";
 
-  static String m12(paid, total) => "${paid} de ${total} pagados";
+  static String m13(paid, total) => "${paid} de ${total} pagados";
 
-  static String m13(count) =>
+  static String m14(count) =>
       "Ver todo ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m14(name) => "We could not complete ${name}\'s request.";
+  static String m15(name) => "We could not complete ${name}\'s request.";
 
-  static String m15(name) => "${name} joined your home.";
+  static String m16(name) => "${name} joined your home.";
 
-  static String m16(name) => "${name} joined another home.";
+  static String m17(name) => "${name} joined another home.";
 
-  static String m17(names) =>
+  static String m18(names) =>
       "${names} wants to join your home. Upgrade to support unlimited members.";
 
-  static String m18(count) =>
+  static String m19(count) =>
       "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} pagos pendientes')}";
 
-  static String m19(count) =>
+  static String m20(count) =>
       "${Intl.plural(count, one: '${count} pago nuevo para ti', other: '${count} pagos nuevos para ti')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -521,6 +523,247 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
       "Trae más armonía a tu hogar",
     ),
+    "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
+    "preferenceOnboardingProgress": m11,
+    "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
+      "Save preferences",
+    ),
+    "preferenceOnboardingTitle": MessageLookupByLibrary.simpleMessage(
+      "Personal preferences",
+    ),
+    "preferencePromptCta": MessageLookupByLibrary.simpleMessage(
+      "Start preferences",
+    ),
+    "preferencePromptSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Set up your personal preferences so your home can learn how you like things.",
+    ),
+    "preferencePromptTitle": MessageLookupByLibrary.simpleMessage(
+      "Share your preferences",
+    ),
+    "preferenceReportDoneCta": MessageLookupByLibrary.simpleMessage("Done"),
+    "preferenceReportEditCta": MessageLookupByLibrary.simpleMessage("Edit"),
+    "preferenceReportEditError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t save that update.",
+    ),
+    "preferenceReportEditSectionDone": MessageLookupByLibrary.simpleMessage(
+      "Done",
+    ),
+    "preferenceReportEditSectionHint": MessageLookupByLibrary.simpleMessage(
+      "Write what feels right for you",
+    ),
+    "preferenceReportEditSectionPrompt": MessageLookupByLibrary.simpleMessage(
+      "Adjust the wording for this section.",
+    ),
+    "preferenceReportEditTitle": MessageLookupByLibrary.simpleMessage(
+      "Edit preferences",
+    ),
+    "preferenceReportEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Complete your preferences to generate your report.",
+    ),
+    "preferenceReportEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "Preference report not ready",
+    ),
+    "preferenceReportErrorBody": MessageLookupByLibrary.simpleMessage(
+      "Please try again.",
+    ),
+    "preferenceReportErrorTitle": MessageLookupByLibrary.simpleMessage(
+      "Could not load report",
+    ),
+    "preferenceReportTitle": MessageLookupByLibrary.simpleMessage(
+      "Your preference report",
+    ),
+    "preferenceScenarioCleanlinessSharedSpaceOption1":
+        MessageLookupByLibrary.simpleMessage(
+          "I feel best when things are kept fairly tidy",
+        ),
+    "preferenceScenarioCleanlinessSharedSpaceOption2":
+        MessageLookupByLibrary.simpleMessage("Some clutter is okay day-to-day"),
+    "preferenceScenarioCleanlinessSharedSpaceOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "I\'m relaxed about mess in shared areas",
+        ),
+    "preferenceScenarioCleanlinessSharedSpaceQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "In shared spaces, how tidy feels good to you?",
+        ),
+    "preferenceScenarioCommunicationChannelOption1":
+        MessageLookupByLibrary.simpleMessage("Messaging or text"),
+    "preferenceScenarioCommunicationChannelOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "Talking in person when it comes up",
+        ),
+    "preferenceScenarioCommunicationChannelOption3":
+        MessageLookupByLibrary.simpleMessage("A quick call feels easiest"),
+    "preferenceScenarioCommunicationChannelQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "When you need to coordinate at home, what works best for you?",
+        ),
+    "preferenceScenarioCommunicationDirectnessOption1":
+        MessageLookupByLibrary.simpleMessage(
+          "Gently, with context or easing in",
+        ),
+    "preferenceScenarioCommunicationDirectnessOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "A mix - it depends on the situation",
+        ),
+    "preferenceScenarioCommunicationDirectnessOption3":
+        MessageLookupByLibrary.simpleMessage("Directly and clearly"),
+    "preferenceScenarioCommunicationDirectnessQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "When something small is on your mind, how do you like to say it?",
+        ),
+    "preferenceScenarioConflictResolutionOption1":
+        MessageLookupByLibrary.simpleMessage("Taking time to cool off first"),
+    "preferenceScenarioConflictResolutionOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "Gently checking in at the right moment",
+        ),
+    "preferenceScenarioConflictResolutionOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "Talking it through sooner rather than later",
+        ),
+    "preferenceScenarioConflictResolutionQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "If something feels a bit off between people at home, what usually helps you most?",
+        ),
+    "preferenceScenarioEnvironmentLightOption1":
+        MessageLookupByLibrary.simpleMessage("Softer or dimmer lighting"),
+    "preferenceScenarioEnvironmentLightOption2":
+        MessageLookupByLibrary.simpleMessage("Balanced, natural lighting"),
+    "preferenceScenarioEnvironmentLightOption3":
+        MessageLookupByLibrary.simpleMessage("Bright, well-lit spaces"),
+    "preferenceScenarioEnvironmentLightQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "In shared areas, what kind of lighting do you tend to feel most comfortable with?",
+        ),
+    "preferenceScenarioEnvironmentNoiseOption1":
+        MessageLookupByLibrary.simpleMessage(
+          "I\'m most comfortable when things are generally quiet",
+        ),
+    "preferenceScenarioEnvironmentNoiseOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "A moderate level of everyday noise feels fine",
+        ),
+    "preferenceScenarioEnvironmentNoiseOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "Noise doesn\'t bother me much - lively spaces are okay",
+        ),
+    "preferenceScenarioEnvironmentNoiseQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "How ok are you with background noise in shared spaces?",
+        ),
+    "preferenceScenarioEnvironmentScentOption1":
+        MessageLookupByLibrary.simpleMessage(
+          "I\'m quite sensitive to strong scents",
+        ),
+    "preferenceScenarioEnvironmentScentOption2":
+        MessageLookupByLibrary.simpleMessage("I\'m mostly neutral"),
+    "preferenceScenarioEnvironmentScentOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "Strong scents don\'t really bother me",
+        ),
+    "preferenceScenarioEnvironmentScentQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "How do strong scents (candles, cooking, cleaners) feel to you?",
+        ),
+    "preferenceScenarioPrivacyNotificationsOption1":
+        MessageLookupByLibrary.simpleMessage(
+          "I prefer not to be contacted after quiet hours",
+        ),
+    "preferenceScenarioPrivacyNotificationsOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "Limited or important messages are okay",
+        ),
+    "preferenceScenarioPrivacyNotificationsOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "I\'m fine being contacted anytime",
+        ),
+    "preferenceScenarioPrivacyNotificationsQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "How do you feel about messages or notifications at night?",
+        ),
+    "preferenceScenarioPrivacyRoomEntryOption1":
+        MessageLookupByLibrary.simpleMessage(
+          "I prefer people to ask or knock first",
+        ),
+    "preferenceScenarioPrivacyRoomEntryOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "Asking is nice, but flexibility is okay",
+        ),
+    "preferenceScenarioPrivacyRoomEntryOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "I\'m generally comfortable with open access",
+        ),
+    "preferenceScenarioPrivacyRoomEntryQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "About entering each other\'s rooms, what feels right to you?",
+        ),
+    "preferenceScenarioRoutinePlanningOption1":
+        MessageLookupByLibrary.simpleMessage(
+          "Having plans and structure helps me",
+        ),
+    "preferenceScenarioRoutinePlanningOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "A mix of planning and spontaneity",
+        ),
+    "preferenceScenarioRoutinePlanningOption3":
+        MessageLookupByLibrary.simpleMessage("Going with the flow feels best"),
+    "preferenceScenarioRoutinePlanningQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "When it comes to daily life at home, what feels most natural to you?",
+        ),
+    "preferenceScenarioScheduleQuietHoursOption1":
+        MessageLookupByLibrary.simpleMessage(
+          "Evenings tend to be quieter for me",
+        ),
+    "preferenceScenarioScheduleQuietHoursOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "It depends - some nights are quieter than others",
+        ),
+    "preferenceScenarioScheduleQuietHoursOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "Nighttime activity doesn\'t usually bother me",
+        ),
+    "preferenceScenarioScheduleQuietHoursQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "As the day winds down, what usually feels okay to you at home?",
+        ),
+    "preferenceScenarioScheduleSleepTimingOption1":
+        MessageLookupByLibrary.simpleMessage("Earlier nights and mornings"),
+    "preferenceScenarioScheduleSleepTimingOption2":
+        MessageLookupByLibrary.simpleMessage("Somewhere in the middle"),
+    "preferenceScenarioScheduleSleepTimingOption3":
+        MessageLookupByLibrary.simpleMessage("Later nights and mornings"),
+    "preferenceScenarioScheduleSleepTimingQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "When do you usually feel most in sync with your sleep routine?",
+        ),
+    "preferenceScenarioSocialHostingOption1":
+        MessageLookupByLibrary.simpleMessage(
+          "I\'m most comfortable with guests being rare",
+        ),
+    "preferenceScenarioSocialHostingOption2":
+        MessageLookupByLibrary.simpleMessage("Occasional guests feel fine"),
+    "preferenceScenarioSocialHostingOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "Frequent guests are okay with me",
+        ),
+    "preferenceScenarioSocialHostingQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "How do you generally feel about guests coming over to the home?",
+        ),
+    "preferenceScenarioSocialTogethernessOption1":
+        MessageLookupByLibrary.simpleMessage("Mostly doing my own thing"),
+    "preferenceScenarioSocialTogethernessOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "A mix of shared time and solo time",
+        ),
+    "preferenceScenarioSocialTogethernessOption3":
+        MessageLookupByLibrary.simpleMessage("Spending time together often"),
+    "preferenceScenarioSocialTogethernessQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "At home, what balance usually feels best for you?",
+        ),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage(
       "Salir del hogar",
     ),
@@ -807,8 +1050,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
       "Elige una fecha dentro del rango permitido.",
     ),
-    "shareCreatedListActiveAmount": m11,
-    "shareCreatedListActiveSubtitle": m12,
+    "shareCreatedListActiveAmount": m12,
+    "shareCreatedListActiveSubtitle": m13,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "Sin asignar",
     ),
@@ -918,7 +1161,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m13,
+    "todayFlowSeeAll": m14,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Esto es lo que fluye hoy en tu hogar.",
     ),
@@ -944,30 +1187,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "Upgrade home",
     ),
-    "todayMemberCapResolutionFailed": m14,
-    "todayMemberCapResolutionJoined": m15,
-    "todayMemberCapResolutionSuperseded": m16,
+    "todayMemberCapResolutionFailed": m15,
+    "todayMemberCapResolutionJoined": m16,
+    "todayMemberCapResolutionSuperseded": m17,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
       "Someone",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage(
       "Ignore",
     ),
-    "todayMemberCapSubtitle": m17,
+    "todayMemberCapSubtitle": m18,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
       "A member is requesting access. Upgrade to support unlimited members.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
       "Someone wants to join your home",
     ),
-    "todayShareActiveSubtitle": m18,
+    "todayShareActiveSubtitle": m19,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "No pudimos actualizar Share en este momento.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "Pagado a ti",
     ),
-    "todaySharePaidUnseen": m19,
+    "todaySharePaidUnseen": m20,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Share"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Por pagar"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),

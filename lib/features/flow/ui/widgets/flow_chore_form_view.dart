@@ -31,14 +31,19 @@ class _FlowChoreFormView extends StatelessWidget {
     final theme = KinlyThemeAccess.of(context);
     final form = state.form;
     final showValidation = state.showValidationErrors;
-    final hasAssigneeError =
-        _hasAssigneeValidation(showValidation, state.requiresAssignee, form);
+    final hasAssigneeError = _hasAssigneeValidation(
+      showValidation,
+      state.requiresAssignee,
+      form,
+    );
     final hasDateError = showValidation && !state.isStartDateValid;
     final hasHowToError = showValidation && !form.isHowToUrlValid;
     final hasRecurrenceError =
         showValidation && form.isRecurring && !form.isRecurrenceValid;
-    final expandOptional =
-        _shouldExpandOptional(form, hasHowToError: hasHowToError);
+    final expandOptional = _shouldExpandOptional(
+      form,
+      hasHowToError: hasHowToError,
+    );
 
     return ListView(
       children: [
@@ -108,9 +113,8 @@ class _FlowChoreFormView extends StatelessWidget {
               : null,
       textInputAction: TextInputAction.next,
       onChanged:
-          (value) => context.read<FlowChoreBloc>().add(
-            FlowChoreTitleChanged(value),
-          ),
+          (value) =>
+              context.read<FlowChoreBloc>().add(FlowChoreTitleChanged(value)),
     );
   }
 
@@ -191,7 +195,6 @@ class _FlowChoreFormView extends StatelessWidget {
       context.read<FlowChoreBloc>().add(FlowChoreStartDateChanged(picked));
     }
   }
-
 }
 
 class _RecurrenceField extends StatelessWidget {
@@ -225,7 +228,7 @@ class _RecurrenceField extends StatelessWidget {
               value: isRecurring,
               onChanged:
                   (value) => context.read<FlowChoreBloc>().add(
-                    FlowChoreRecurrenceToggled(value ?? false),
+                    FlowChoreRecurrenceToggled(value),
                   ),
             ),
             SizedBox(width: spacing.xs),
@@ -251,8 +254,8 @@ class _RecurrenceField extends StatelessWidget {
                       ),
                   errorText:
                       showValidation && hasRecurrenceError
-                      ? s.shareCreateValidationRecurrence
-                      : null,
+                          ? s.shareCreateValidationRecurrence
+                          : null,
                 ),
               ),
               SizedBox(width: spacing.sm),
@@ -291,10 +294,7 @@ class _RecurrenceField extends StatelessWidget {
     );
   }
 
-  String _recurrenceUnitLabel(
-    BuildContext context,
-    ChoreRecurrenceUnit unit,
-  ) {
+  String _recurrenceUnitLabel(BuildContext context, ChoreRecurrenceUnit unit) {
     final s = S.of(context);
     switch (unit) {
       case ChoreRecurrenceUnit.day:
@@ -473,4 +473,3 @@ class _OptionalDetailsExpansionState extends State<_OptionalDetailsExpansion> {
     );
   }
 }
-

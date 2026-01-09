@@ -545,6 +545,13 @@
         }
       ]
     },
+    "home_dynamics": {
+      "latest": "v1",
+      "docs": "docs/contracts/home_dynamics_v1.md",
+      "entities": {},
+      "functions": {},
+      "rls": []
+    },
     "homes": {
       "latest": "v2",
       "docs": "docs/contracts/homes_v2.md",
@@ -875,6 +882,180 @@
           }
         }
       }
+    },
+    "preference_reports": {
+      "latest": "v1",
+      "docs": "docs/contracts/preference_reports_v1.md",
+      "entities": {
+        "PreferenceTaxonomy": {
+          "preferenceId": "text",
+          "isActive": "boolean",
+          "createdAt": "timestamptz"
+        },
+        "PreferenceTaxonomyDef": {
+          "preferenceId": "text",
+          "domain": "text",
+          "label": "text",
+          "description": "text",
+          "valueKeys": "text[3]",
+          "aggregation": "text",
+          "safetyNotes": "text[]",
+          "createdAt": "timestamptz",
+          "updatedAt": "timestamptz"
+        },
+        "PreferenceResponse": {
+          "userId": "uuid",
+          "preferenceId": "text",
+          "optionIndex": "int2",
+          "capturedAt": "timestamptz"
+        },
+        "PreferenceReport": {
+          "id": "uuid",
+          "subjectUserId": "uuid",
+          "templateKey": "text",
+          "locale": "text",
+          "status": "text",
+          "generatedContent": "jsonb",
+          "publishedContent": "jsonb",
+          "generatedAt": "timestamptz",
+          "publishedAt": "timestamptz",
+          "lastEditedAt": "timestamptz|null",
+          "lastEditedBy": "uuid|null"
+        },
+        "PreferenceReportRevision": {
+          "id": "uuid",
+          "reportId": "uuid",
+          "editorUserId": "uuid",
+          "editedAt": "timestamptz",
+          "content": "jsonb",
+          "changeSummary": "text|null"
+        },
+        "PreferenceReportTemplate": {
+          "id": "uuid",
+          "templateKey": "text",
+          "locale": "text",
+          "body": "jsonb",
+          "createdAt": "timestamptz",
+          "updatedAt": "timestamptz"
+        },
+        "PreferenceReportAcknowledgement": {
+          "id": "uuid",
+          "reportId": "uuid",
+          "viewerUserId": "uuid",
+          "acknowledgedAt": "timestamptz"
+        }
+      },
+      "functions": {
+        "preference.responses.submit": {
+          "type": "rpc",
+          "caller": "authenticated",
+          "impl": "public.preference_responses_submit",
+          "args": {
+            "p_answers": "jsonb"
+          },
+          "returns": "jsonb"
+        },
+        "preference.reports.generate": {
+          "type": "rpc",
+          "caller": "authenticated",
+          "impl": "public.preference_reports_generate",
+          "args": {
+            "p_template_key": "text",
+            "p_locale": "text",
+            "p_force": "boolean"
+          },
+          "returns": "jsonb"
+        },
+        "preference.reports.editSectionText": {
+          "type": "rpc",
+          "caller": "subject-only",
+          "impl": "public.preference_reports_edit_section_text",
+          "args": {
+            "p_template_key": "text",
+            "p_locale": "text",
+            "p_section_key": "text",
+            "p_new_text": "text",
+            "p_change_summary": "text|null"
+          },
+          "returns": "jsonb"
+        },
+        "preference.reports.getForHome": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.preference_reports_get_for_home",
+          "args": {
+            "p_home_id": "uuid",
+            "p_subject_user_id": "uuid",
+            "p_template_key": "text",
+            "p_locale": "text"
+          },
+          "returns": "jsonb"
+        },
+        "preference.reports.listForHome": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.preference_reports_list_for_home",
+          "args": {
+            "p_home_id": "uuid",
+            "p_template_key": "text",
+            "p_locale": "text"
+          },
+          "returns": "jsonb"
+        },
+        "preference.reports.acknowledge": {
+          "type": "rpc",
+          "caller": "member",
+          "impl": "public.preference_reports_acknowledge",
+          "args": {
+            "p_report_id": "uuid"
+          },
+          "returns": "jsonb"
+        },
+        "preference.templates.getForUser": {
+          "type": "rpc",
+          "caller": "authenticated",
+          "impl": "public.preference_templates_get_for_user",
+          "args": {
+            "p_template_key": "text"
+          },
+          "returns": "jsonb"
+        }
+      },
+      "rls": []
+    },
+    "preference_scenarios": {
+      "latest": "v1",
+      "docs": "docs/contracts/preference_scenarios_v1.md",
+      "entities": {
+        "PreferenceScenario": {
+          "id": "text",
+          "domain": "text",
+          "scenario": "text",
+          "options": "text[3]",
+          "mapsToPreferenceId": "text",
+          "intensityModel": "implicit",
+          "enforceable": false
+        }
+      },
+      "functions": {},
+      "rls": []
+    },
+    "preference_taxonomy": {
+      "latest": "v1",
+      "docs": "docs/contracts/preference_taxonomy_v1.md",
+      "entities": {
+        "PreferenceTaxonomyItem": {
+          "id": "text",
+          "domain": "text",
+          "label": "text",
+          "description": "text",
+          "values": "text[]",
+          "aggregation": "text",
+          "safety": "text|null"
+        }
+      },
+      "functions": {},
+      "rls": []
     },
     "users": {
       "latest": "v1",

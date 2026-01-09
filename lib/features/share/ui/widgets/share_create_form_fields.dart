@@ -201,7 +201,7 @@ class _RecurrenceField extends StatelessWidget {
                   value: isRecurring,
                   onChanged:
                       (value) => context.read<ShareCreateBloc>().add(
-                        ShareCreateRecurrenceToggled(value ?? false),
+                        ShareCreateRecurrenceToggled(value),
                       ),
                 ),
                 SizedBox(width: spacing.xs),
@@ -246,7 +246,9 @@ class _RecurrenceField extends StatelessWidget {
                               .map(
                                 (value) => KinlyDropdownMenuItem.item(
                                   value: value,
-                                  child: Text(_recurrenceUnitLabel(context, value)),
+                                  child: Text(
+                                    _recurrenceUnitLabel(context, value),
+                                  ),
                                 ),
                               )
                               .toList(),
@@ -380,4 +382,3 @@ class _PrimaryActionButton extends StatelessWidget {
 // ----------------------------------------------------------------------
 // Participants section + row
 // ----------------------------------------------------------------------
-

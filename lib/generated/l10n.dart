@@ -3626,6 +3626,756 @@ class S {
       args: [],
     );
   }
+
+  /// `Share your preferences`
+  String get preferencePromptTitle {
+    return Intl.message(
+      'Share your preferences',
+      name: 'preferencePromptTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set up your personal preferences so your home can learn how you like things.`
+  String get preferencePromptSubtitle {
+    return Intl.message(
+      'Set up your personal preferences so your home can learn how you like things.',
+      name: 'preferencePromptSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start preferences`
+  String get preferencePromptCta {
+    return Intl.message(
+      'Start preferences',
+      name: 'preferencePromptCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal preferences`
+  String get preferenceOnboardingTitle {
+    return Intl.message(
+      'Personal preferences',
+      name: 'preferenceOnboardingTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get preferenceOnboardingBack {
+    return Intl.message(
+      'Back',
+      name: 'preferenceOnboardingBack',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save preferences`
+  String get preferenceOnboardingSubmit {
+    return Intl.message(
+      'Save preferences',
+      name: 'preferenceOnboardingSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Question {current} of {total}`
+  String preferenceOnboardingProgress(int current, int total) {
+    return Intl.message(
+      'Question $current of $total',
+      name: 'preferenceOnboardingProgress',
+      desc: 'Progress for preference onboarding',
+      args: [current, total],
+    );
+  }
+
+  /// `Your preference report`
+  String get preferenceReportTitle {
+    return Intl.message(
+      'Your preference report',
+      name: 'preferenceReportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get preferenceReportEditCta {
+    return Intl.message(
+      'Edit',
+      name: 'preferenceReportEditCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get preferenceReportDoneCta {
+    return Intl.message(
+      'Done',
+      name: 'preferenceReportDoneCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit preferences`
+  String get preferenceReportEditTitle {
+    return Intl.message(
+      'Edit preferences',
+      name: 'preferenceReportEditTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adjust the wording for this section.`
+  String get preferenceReportEditSectionPrompt {
+    return Intl.message(
+      'Adjust the wording for this section.',
+      name: 'preferenceReportEditSectionPrompt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write what feels right for you`
+  String get preferenceReportEditSectionHint {
+    return Intl.message(
+      'Write what feels right for you',
+      name: 'preferenceReportEditSectionHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get preferenceReportEditSectionDone {
+    return Intl.message(
+      'Done',
+      name: 'preferenceReportEditSectionDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Preference report not ready`
+  String get preferenceReportEmptyTitle {
+    return Intl.message(
+      'Preference report not ready',
+      name: 'preferenceReportEmptyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete your preferences to generate your report.`
+  String get preferenceReportEmptyBody {
+    return Intl.message(
+      'Complete your preferences to generate your report.',
+      name: 'preferenceReportEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load report`
+  String get preferenceReportErrorTitle {
+    return Intl.message(
+      'Could not load report',
+      name: 'preferenceReportErrorTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please try again.`
+  String get preferenceReportErrorBody {
+    return Intl.message(
+      'Please try again.',
+      name: 'preferenceReportErrorBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't save that update.`
+  String get preferenceReportEditError {
+    return Intl.message(
+      'We couldn\'t save that update.',
+      name: 'preferenceReportEditError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How ok are you with background noise in shared spaces?`
+  String get preferenceScenarioEnvironmentNoiseQuestion {
+    return Intl.message(
+      'How ok are you with background noise in shared spaces?',
+      name: 'preferenceScenarioEnvironmentNoiseQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm most comfortable when things are generally quiet`
+  String get preferenceScenarioEnvironmentNoiseOption1 {
+    return Intl.message(
+      'I\'m most comfortable when things are generally quiet',
+      name: 'preferenceScenarioEnvironmentNoiseOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A moderate level of everyday noise feels fine`
+  String get preferenceScenarioEnvironmentNoiseOption2 {
+    return Intl.message(
+      'A moderate level of everyday noise feels fine',
+      name: 'preferenceScenarioEnvironmentNoiseOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Noise doesn't bother me much - lively spaces are okay`
+  String get preferenceScenarioEnvironmentNoiseOption3 {
+    return Intl.message(
+      'Noise doesn\'t bother me much - lively spaces are okay',
+      name: 'preferenceScenarioEnvironmentNoiseOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In shared areas, what kind of lighting do you tend to feel most comfortable with?`
+  String get preferenceScenarioEnvironmentLightQuestion {
+    return Intl.message(
+      'In shared areas, what kind of lighting do you tend to feel most comfortable with?',
+      name: 'preferenceScenarioEnvironmentLightQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Softer or dimmer lighting`
+  String get preferenceScenarioEnvironmentLightOption1 {
+    return Intl.message(
+      'Softer or dimmer lighting',
+      name: 'preferenceScenarioEnvironmentLightOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Balanced, natural lighting`
+  String get preferenceScenarioEnvironmentLightOption2 {
+    return Intl.message(
+      'Balanced, natural lighting',
+      name: 'preferenceScenarioEnvironmentLightOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bright, well-lit spaces`
+  String get preferenceScenarioEnvironmentLightOption3 {
+    return Intl.message(
+      'Bright, well-lit spaces',
+      name: 'preferenceScenarioEnvironmentLightOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How do strong scents (candles, cooking, cleaners) feel to you?`
+  String get preferenceScenarioEnvironmentScentQuestion {
+    return Intl.message(
+      'How do strong scents (candles, cooking, cleaners) feel to you?',
+      name: 'preferenceScenarioEnvironmentScentQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm quite sensitive to strong scents`
+  String get preferenceScenarioEnvironmentScentOption1 {
+    return Intl.message(
+      'I\'m quite sensitive to strong scents',
+      name: 'preferenceScenarioEnvironmentScentOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm mostly neutral`
+  String get preferenceScenarioEnvironmentScentOption2 {
+    return Intl.message(
+      'I\'m mostly neutral',
+      name: 'preferenceScenarioEnvironmentScentOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Strong scents don't really bother me`
+  String get preferenceScenarioEnvironmentScentOption3 {
+    return Intl.message(
+      'Strong scents don\'t really bother me',
+      name: 'preferenceScenarioEnvironmentScentOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `As the day winds down, what usually feels okay to you at home?`
+  String get preferenceScenarioScheduleQuietHoursQuestion {
+    return Intl.message(
+      'As the day winds down, what usually feels okay to you at home?',
+      name: 'preferenceScenarioScheduleQuietHoursQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Evenings tend to be quieter for me`
+  String get preferenceScenarioScheduleQuietHoursOption1 {
+    return Intl.message(
+      'Evenings tend to be quieter for me',
+      name: 'preferenceScenarioScheduleQuietHoursOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It depends - some nights are quieter than others`
+  String get preferenceScenarioScheduleQuietHoursOption2 {
+    return Intl.message(
+      'It depends - some nights are quieter than others',
+      name: 'preferenceScenarioScheduleQuietHoursOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nighttime activity doesn't usually bother me`
+  String get preferenceScenarioScheduleQuietHoursOption3 {
+    return Intl.message(
+      'Nighttime activity doesn\'t usually bother me',
+      name: 'preferenceScenarioScheduleQuietHoursOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When do you usually feel most in sync with your sleep routine?`
+  String get preferenceScenarioScheduleSleepTimingQuestion {
+    return Intl.message(
+      'When do you usually feel most in sync with your sleep routine?',
+      name: 'preferenceScenarioScheduleSleepTimingQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Earlier nights and mornings`
+  String get preferenceScenarioScheduleSleepTimingOption1 {
+    return Intl.message(
+      'Earlier nights and mornings',
+      name: 'preferenceScenarioScheduleSleepTimingOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Somewhere in the middle`
+  String get preferenceScenarioScheduleSleepTimingOption2 {
+    return Intl.message(
+      'Somewhere in the middle',
+      name: 'preferenceScenarioScheduleSleepTimingOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Later nights and mornings`
+  String get preferenceScenarioScheduleSleepTimingOption3 {
+    return Intl.message(
+      'Later nights and mornings',
+      name: 'preferenceScenarioScheduleSleepTimingOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When you need to coordinate at home, what works best for you?`
+  String get preferenceScenarioCommunicationChannelQuestion {
+    return Intl.message(
+      'When you need to coordinate at home, what works best for you?',
+      name: 'preferenceScenarioCommunicationChannelQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Messaging or text`
+  String get preferenceScenarioCommunicationChannelOption1 {
+    return Intl.message(
+      'Messaging or text',
+      name: 'preferenceScenarioCommunicationChannelOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Talking in person when it comes up`
+  String get preferenceScenarioCommunicationChannelOption2 {
+    return Intl.message(
+      'Talking in person when it comes up',
+      name: 'preferenceScenarioCommunicationChannelOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A quick call feels easiest`
+  String get preferenceScenarioCommunicationChannelOption3 {
+    return Intl.message(
+      'A quick call feels easiest',
+      name: 'preferenceScenarioCommunicationChannelOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When something small is on your mind, how do you like to say it?`
+  String get preferenceScenarioCommunicationDirectnessQuestion {
+    return Intl.message(
+      'When something small is on your mind, how do you like to say it?',
+      name: 'preferenceScenarioCommunicationDirectnessQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gently, with context or easing in`
+  String get preferenceScenarioCommunicationDirectnessOption1 {
+    return Intl.message(
+      'Gently, with context or easing in',
+      name: 'preferenceScenarioCommunicationDirectnessOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A mix - it depends on the situation`
+  String get preferenceScenarioCommunicationDirectnessOption2 {
+    return Intl.message(
+      'A mix - it depends on the situation',
+      name: 'preferenceScenarioCommunicationDirectnessOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Directly and clearly`
+  String get preferenceScenarioCommunicationDirectnessOption3 {
+    return Intl.message(
+      'Directly and clearly',
+      name: 'preferenceScenarioCommunicationDirectnessOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In shared spaces, how tidy feels good to you?`
+  String get preferenceScenarioCleanlinessSharedSpaceQuestion {
+    return Intl.message(
+      'In shared spaces, how tidy feels good to you?',
+      name: 'preferenceScenarioCleanlinessSharedSpaceQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I feel best when things are kept fairly tidy`
+  String get preferenceScenarioCleanlinessSharedSpaceOption1 {
+    return Intl.message(
+      'I feel best when things are kept fairly tidy',
+      name: 'preferenceScenarioCleanlinessSharedSpaceOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some clutter is okay day-to-day`
+  String get preferenceScenarioCleanlinessSharedSpaceOption2 {
+    return Intl.message(
+      'Some clutter is okay day-to-day',
+      name: 'preferenceScenarioCleanlinessSharedSpaceOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm relaxed about mess in shared areas`
+  String get preferenceScenarioCleanlinessSharedSpaceOption3 {
+    return Intl.message(
+      'I\'m relaxed about mess in shared areas',
+      name: 'preferenceScenarioCleanlinessSharedSpaceOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About entering each other's rooms, what feels right to you?`
+  String get preferenceScenarioPrivacyRoomEntryQuestion {
+    return Intl.message(
+      'About entering each other\'s rooms, what feels right to you?',
+      name: 'preferenceScenarioPrivacyRoomEntryQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I prefer people to ask or knock first`
+  String get preferenceScenarioPrivacyRoomEntryOption1 {
+    return Intl.message(
+      'I prefer people to ask or knock first',
+      name: 'preferenceScenarioPrivacyRoomEntryOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Asking is nice, but flexibility is okay`
+  String get preferenceScenarioPrivacyRoomEntryOption2 {
+    return Intl.message(
+      'Asking is nice, but flexibility is okay',
+      name: 'preferenceScenarioPrivacyRoomEntryOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm generally comfortable with open access`
+  String get preferenceScenarioPrivacyRoomEntryOption3 {
+    return Intl.message(
+      'I\'m generally comfortable with open access',
+      name: 'preferenceScenarioPrivacyRoomEntryOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How do you feel about messages or notifications at night?`
+  String get preferenceScenarioPrivacyNotificationsQuestion {
+    return Intl.message(
+      'How do you feel about messages or notifications at night?',
+      name: 'preferenceScenarioPrivacyNotificationsQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I prefer not to be contacted after quiet hours`
+  String get preferenceScenarioPrivacyNotificationsOption1 {
+    return Intl.message(
+      'I prefer not to be contacted after quiet hours',
+      name: 'preferenceScenarioPrivacyNotificationsOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Limited or important messages are okay`
+  String get preferenceScenarioPrivacyNotificationsOption2 {
+    return Intl.message(
+      'Limited or important messages are okay',
+      name: 'preferenceScenarioPrivacyNotificationsOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm fine being contacted anytime`
+  String get preferenceScenarioPrivacyNotificationsOption3 {
+    return Intl.message(
+      'I\'m fine being contacted anytime',
+      name: 'preferenceScenarioPrivacyNotificationsOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How do you generally feel about guests coming over to the home?`
+  String get preferenceScenarioSocialHostingQuestion {
+    return Intl.message(
+      'How do you generally feel about guests coming over to the home?',
+      name: 'preferenceScenarioSocialHostingQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I'm most comfortable with guests being rare`
+  String get preferenceScenarioSocialHostingOption1 {
+    return Intl.message(
+      'I\'m most comfortable with guests being rare',
+      name: 'preferenceScenarioSocialHostingOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Occasional guests feel fine`
+  String get preferenceScenarioSocialHostingOption2 {
+    return Intl.message(
+      'Occasional guests feel fine',
+      name: 'preferenceScenarioSocialHostingOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Frequent guests are okay with me`
+  String get preferenceScenarioSocialHostingOption3 {
+    return Intl.message(
+      'Frequent guests are okay with me',
+      name: 'preferenceScenarioSocialHostingOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `At home, what balance usually feels best for you?`
+  String get preferenceScenarioSocialTogethernessQuestion {
+    return Intl.message(
+      'At home, what balance usually feels best for you?',
+      name: 'preferenceScenarioSocialTogethernessQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mostly doing my own thing`
+  String get preferenceScenarioSocialTogethernessOption1 {
+    return Intl.message(
+      'Mostly doing my own thing',
+      name: 'preferenceScenarioSocialTogethernessOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A mix of shared time and solo time`
+  String get preferenceScenarioSocialTogethernessOption2 {
+    return Intl.message(
+      'A mix of shared time and solo time',
+      name: 'preferenceScenarioSocialTogethernessOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spending time together often`
+  String get preferenceScenarioSocialTogethernessOption3 {
+    return Intl.message(
+      'Spending time together often',
+      name: 'preferenceScenarioSocialTogethernessOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When it comes to daily life at home, what feels most natural to you?`
+  String get preferenceScenarioRoutinePlanningQuestion {
+    return Intl.message(
+      'When it comes to daily life at home, what feels most natural to you?',
+      name: 'preferenceScenarioRoutinePlanningQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Having plans and structure helps me`
+  String get preferenceScenarioRoutinePlanningOption1 {
+    return Intl.message(
+      'Having plans and structure helps me',
+      name: 'preferenceScenarioRoutinePlanningOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A mix of planning and spontaneity`
+  String get preferenceScenarioRoutinePlanningOption2 {
+    return Intl.message(
+      'A mix of planning and spontaneity',
+      name: 'preferenceScenarioRoutinePlanningOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Going with the flow feels best`
+  String get preferenceScenarioRoutinePlanningOption3 {
+    return Intl.message(
+      'Going with the flow feels best',
+      name: 'preferenceScenarioRoutinePlanningOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If something feels a bit off between people at home, what usually helps you most?`
+  String get preferenceScenarioConflictResolutionQuestion {
+    return Intl.message(
+      'If something feels a bit off between people at home, what usually helps you most?',
+      name: 'preferenceScenarioConflictResolutionQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Taking time to cool off first`
+  String get preferenceScenarioConflictResolutionOption1 {
+    return Intl.message(
+      'Taking time to cool off first',
+      name: 'preferenceScenarioConflictResolutionOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gently checking in at the right moment`
+  String get preferenceScenarioConflictResolutionOption2 {
+    return Intl.message(
+      'Gently checking in at the right moment',
+      name: 'preferenceScenarioConflictResolutionOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Talking it through sooner rather than later`
+  String get preferenceScenarioConflictResolutionOption3 {
+    return Intl.message(
+      'Talking it through sooner rather than later',
+      name: 'preferenceScenarioConflictResolutionOption3',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

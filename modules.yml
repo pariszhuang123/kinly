@@ -402,6 +402,40 @@ modules:
       plan_gate: true
     notes: Mood/gratitude; allows optional links from expenses/flow orchestrations.
 
+  - name: preferences
+    owner_role: Planner
+    status: feature
+    killable: false
+    kill_switch_flag: null
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["hub", "today"]
+    public_api:
+      dart: null
+    data:
+      tables_owned: []
+      cross_module_refs: []
+    rpcs:
+      owner:
+        - preference_templates_get_for_user
+        - preference_responses_submit
+        - preference_reports_generate
+        - preference_reports_get_for_home
+        - preference_reports_edit_section_text
+      orchestration: []
+    entrypoints:
+      routes:
+        - /preferences/onboarding
+        - /preferences/report
+        - /preferences/report/edit
+        - /preferences/report/edit/:sectionKey
+      deep_links: []
+      navigation_tiles: []
+    test_matrix:
+      feature_flag_off: false
+      plan_gate: false
+    notes: Personal preference capture and report editing.
+
   - name: nps
     owner_role: Planner
     status: feature

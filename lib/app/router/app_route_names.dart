@@ -27,4 +27,8 @@ class AppRouteNames {
   static const harmony = 'harmony';
   static const gratitudeWall = 'gratitudeWall';
   static const nps = 'nps';
+  static const preferenceOnboarding = 'preferenceOnboarding';
+  static const preferenceReport = 'preferenceReport';
+  static const preferenceReportEdit = 'preferenceReportEdit';
+  static const preferenceReportSectionEdit = 'preferenceReportSectionEdit';
 }

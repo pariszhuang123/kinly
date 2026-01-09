@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../contracts/expenses/enums/expense_recurrence_unit.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
@@ -59,8 +58,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
     _descriptionController.text = form.description;
     _amountController.text = form.amountInput;
     _notesController.text = form.notes;
-    _recurrenceEveryController.text =
-        form.recurrenceEvery?.toString() ?? '';
+    _recurrenceEveryController.text = form.recurrenceEvery?.toString() ?? '';
     _baseHydrated = true;
   }
 
@@ -159,7 +157,9 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
           if (state.submissionErrorTick > 0) {
             final snackText = _mapSubmissionError(context, state);
             final accent =
-                KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
+                KinlyThemeAccess.of(
+                  context,
+                ).extension<KinlySections>()?.share.accent;
             KinlySnackBar.showError(context, snackText, accentColor: accent);
           }
 
@@ -167,7 +167,9 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
             final message =
                 state.deletionErrorMessage ?? s.shareEditDeleteError;
             final accent =
-                KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
+                KinlyThemeAccess.of(
+                  context,
+                ).extension<KinlySections>()?.share.accent;
             KinlySnackBar.showError(context, message, accentColor: accent);
           }
 
@@ -175,13 +177,17 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
             final message =
                 state.planTerminationErrorMessage ?? s.shareEditTerminateError;
             final accent =
-                KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
+                KinlyThemeAccess.of(
+                  context,
+                ).extension<KinlySections>()?.share.accent;
             KinlySnackBar.showError(context, message, accentColor: accent);
           }
 
           if (state.planTerminationSuccessTick > 0) {
             final accent =
-                KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
+                KinlyThemeAccess.of(
+                  context,
+                ).extension<KinlySections>()?.share.accent;
             KinlySnackBar.showSuccess(
               context,
               s.shareEditTerminateSuccess,
@@ -296,9 +302,8 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
             const ShareCreateParticipantsRequested(),
           ),
       onSubmit:
-          () => context.read<ShareCreateBloc>().add(
-            const ShareCreateSubmitted(),
-          ),
+          () =>
+              context.read<ShareCreateBloc>().add(const ShareCreateSubmitted()),
       onDeleteRequested:
           widget.allowDelete ? () => _confirmDelete(context) : null,
       onTerminatePlan: () => _confirmTerminatePlan(context),
@@ -336,31 +341,28 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
   ) {
     final entries = ShareCreateRegistry.bodySections;
     if (entries.length == 1) {
-        return ShareCreateBody(
-          spacing: scope.spacing,
-          state: scope.state,
-          shareColors: shareColors,
-          allowDelete: scope.allowDelete,
-          showTerminatePlan: scope.showTerminatePlan,
-          onRetry: scope.actions.onRetry,
-          descriptionController: scope.descriptionController,
-          amountController: scope.amountController,
-          notesController: scope.notesController,
-          recurrenceEveryController: scope.recurrenceEveryController,
-          customControllers: scope.customControllers,
-          onSubmit: scope.actions.onSubmit,
-          onDeleteRequested: scope.actions.onDeleteRequested,
-          onTerminatePlan: scope.actions.onTerminatePlan,
-          onPaywallOpened: scope.actions.onPaywallOpened,
+      return ShareCreateBody(
+        spacing: scope.spacing,
+        state: scope.state,
+        shareColors: shareColors,
+        allowDelete: scope.allowDelete,
+        showTerminatePlan: scope.showTerminatePlan,
+        onRetry: scope.actions.onRetry,
+        descriptionController: scope.descriptionController,
+        amountController: scope.amountController,
+        notesController: scope.notesController,
+        recurrenceEveryController: scope.recurrenceEveryController,
+        customControllers: scope.customControllers,
+        onSubmit: scope.actions.onSubmit,
+        onDeleteRequested: scope.actions.onDeleteRequested,
+        onTerminatePlan: scope.actions.onTerminatePlan,
+        onPaywallOpened: scope.actions.onPaywallOpened,
       );
     }
     return Column(
-      children:
-          entries.map((entry) => entry.builder(scope)).toList(growable: false),
+      children: entries
+          .map((entry) => entry.builder(scope))
+          .toList(growable: false),
     );
   }
 }
-
-
-
-

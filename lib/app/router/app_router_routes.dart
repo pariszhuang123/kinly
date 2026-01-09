@@ -64,6 +64,18 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
         return HarmonyRouteContext(homeId: membership.homeId);
       },
     ),
+    ...buildPreferenceRoutes(
+      resolveContext: () {
+        final membership = authBloc.state.membership;
+        if (membership == null) {
+          throw StateError('Preferences are available after you join a home.');
+        }
+        return PreferenceRouteContext(
+          homeId: membership.homeId,
+          userId: membership.userId,
+        );
+      },
+    ),
     ...buildPaywallRoutes(),
     ...buildSplashRoutes(),
     ...buildVersionGatingRoutes(),

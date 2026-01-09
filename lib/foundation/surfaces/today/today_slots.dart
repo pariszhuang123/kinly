@@ -39,6 +39,7 @@ class TodaySurfaceActions {
   const TodaySurfaceActions({
     required this.onMemberCapPrimary,
     required this.onMemberCapSecondary,
+    required this.onPreferencePrompt,
     required this.onInvitePrimary,
     required this.onInviteSecondary,
     required this.onFlowTaskTap,
@@ -52,6 +53,7 @@ class TodaySurfaceActions {
 
   final Future<void> Function() onMemberCapPrimary;
   final VoidCallback onMemberCapSecondary;
+  final VoidCallback onPreferencePrompt;
   final Future<void> Function(TodayInviteConfig invite) onInvitePrimary;
   final VoidCallback onInviteSecondary;
   final Future<void> Function(TodayFlowTask task) onFlowTaskTap;

@@ -215,6 +215,9 @@ List<_Reference> _extractReferences(String content, String path) {
     }
   }
 
+  // 4) Lambda references for String Function(S) (e.g. preference scenarios).
+  refs.addAll(_extractLambdaSReferences(content, path));
+
   return refs;
 }
 
@@ -289,6 +292,30 @@ Set<String> _findTypedSNames(String content) {
   }
 
   return names;
+}
+
+List<_Reference> _extractLambdaSReferences(String content, String path) {
+  final refs = <_Reference>[];
+  if (!content.contains('String Function(S)') &&
+      !content.contains('PreferenceScenarioDefinition')) {
+    return refs;
+  }
+
+  final lambdaPattern = RegExp(
+    r'\(\s*([A-Za-z_]\w*)\s*\)\s*=>\s*\1\s*\.\s*([A-Za-z0-9_]+)',
+  );
+  for (final match in lambdaPattern.allMatches(content)) {
+    final key = match.group(2);
+    if (key == null || key.isEmpty) continue;
+    refs.add(
+      _Reference(
+        key: key,
+        path: path,
+        line: _lineForOffset(content, match.start),
+      ),
+    );
+  }
+  return refs;
 }
 
 int _lineForOffset(String content, int offset) {

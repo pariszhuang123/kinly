@@ -13,6 +13,7 @@ import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
 import 'package:kinly/contracts/mood/models.dart';
+import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/notifications/profile_update_notifier.dart';
@@ -28,6 +29,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final HomeRepository _homeRepository;
   final MoodRepository _moodRepository;
   final OnboardingRepository _onboardingRepository;
+  final PreferenceReportsRepository _preferenceReportsRepository;
   final ProfileUpdateNotifier _profileUpdateNotifier;
   final Logger _logger;
   final String _homeId;
@@ -43,6 +45,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required HomeRepository homeRepository,
     required MoodRepository moodRepository,
     required OnboardingRepository onboardingRepository,
+    required PreferenceReportsRepository preferenceReportsRepository,
     required String homeId,
     required ProfileUpdateNotifier profileUpdateNotifier,
     Logger? logger,
@@ -52,6 +55,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
        _homeRepository = homeRepository,
        _moodRepository = moodRepository,
        _onboardingRepository = onboardingRepository,
+       _preferenceReportsRepository = preferenceReportsRepository,
        _profileUpdateNotifier = profileUpdateNotifier,
        _logger = logger ?? const DebugLogger(),
        _homeId = homeId,
@@ -113,6 +117,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     var hasShownNotificationPrompt = prevHasShownNotification;
     var shouldPromptFlatmateInviteShare = state.shouldPromptFlatmateInviteShare;
     var shouldPromptInviteShare = state.shouldPromptInviteShare;
+    var shouldPromptPreferences = state.shouldPromptPreferences;
     var activeChoreCount = state.activeChoreCount;
     var memberCapJoinRequests = state.memberCapJoinRequests;
     var memberCapJoinResolution = state.memberCapJoinResolution;
@@ -135,6 +140,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             shouldPromptFlatmateInviteShare:
                 state.shouldPromptFlatmateInviteShare,
             shouldPromptInviteShare: state.shouldPromptInviteShare,
+            shouldPromptPreferences: state.shouldPromptPreferences,
             memberCapJoinRequests: state.memberCapJoinRequests,
             memberCapJoinResolution: state.memberCapJoinResolution,
           ),
@@ -201,6 +207,20 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         fallback: profile,
         ownerUserId: ownerUserId,
       );
+      if (profile != null) {
+        try {
+          final resolution =
+              await _preferenceReportsRepository.getTemplateResolution();
+          final report = await _preferenceReportsRepository.getReportForHome(
+            homeId: _homeId,
+            subjectUserId: profile.userId,
+            locale: resolution.resolvedLocale,
+          );
+          shouldPromptPreferences = report == null;
+        } catch (_) {
+          // Ignore preference prompt errors; keep Today usable.
+        }
+      }
       final drafts = await draftsFuture;
       final active = await activeFuture;
       final shareSnapshot = await _loadShareSnapshot(
@@ -240,6 +260,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             activeChoreCount: activeChoreCount,
             shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
             shouldPromptInviteShare: shouldPromptInviteShare,
+            shouldPromptPreferences: shouldPromptPreferences,
             memberCapJoinRequests: memberCapJoinRequests,
             memberCapJoinResolution: memberCapJoinResolution,
             // later: you can add today's expenses, gratitude items, etc.
@@ -261,6 +282,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             hasShownHarmonyPrompt: prevHasShownHarmony,
             npsPromptTick: prevNpsPromptTick,
             hasShownNpsPrompt: prevHasShownNps,
+            shouldPromptPreferences: state.shouldPromptPreferences,
             memberCapJoinRequests: memberCapJoinRequests,
             memberCapJoinResolution: memberCapJoinResolution,
           ),
@@ -404,6 +426,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shouldPromptFlatmateInviteShare:
               current.shouldPromptFlatmateInviteShare,
           shouldPromptInviteShare: current.shouldPromptInviteShare,
+          shouldPromptPreferences: current.shouldPromptPreferences,
           memberCapJoinRequests: current.memberCapJoinRequests,
           memberCapJoinResolution: current.memberCapJoinResolution,
         );
@@ -429,6 +452,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shouldPromptFlatmateInviteShare:
               current.shouldPromptFlatmateInviteShare,
           shouldPromptInviteShare: current.shouldPromptInviteShare,
+          shouldPromptPreferences: current.shouldPromptPreferences,
           memberCapJoinRequests: current.memberCapJoinRequests,
           memberCapJoinResolution: current.memberCapJoinResolution,
         );
@@ -452,6 +476,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       activeChoreCount: current.activeChoreCount,
         shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
         shouldPromptInviteShare: current.shouldPromptInviteShare,
+        shouldPromptPreferences: current.shouldPromptPreferences,
         memberCapJoinRequests: current.memberCapJoinRequests,
         memberCapJoinResolution: current.memberCapJoinResolution,
       );
@@ -475,6 +500,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shouldPromptFlatmateInviteShare:
               current.shouldPromptFlatmateInviteShare,
           shouldPromptInviteShare: false,
+          shouldPromptPreferences: current.shouldPromptPreferences,
           memberCapJoinRequests: current.memberCapJoinRequests,
           memberCapJoinResolution: current.memberCapJoinResolution,
         );
@@ -500,6 +526,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shouldPromptFlatmateInviteShare:
               current.shouldPromptFlatmateInviteShare,
           shouldPromptInviteShare: false,
+          shouldPromptPreferences: current.shouldPromptPreferences,
           memberCapJoinRequests: current.memberCapJoinRequests,
           memberCapJoinResolution: current.memberCapJoinResolution,
         );
@@ -520,12 +547,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       hasShownNpsPrompt: current.hasShownNpsPrompt,
       notificationPromptTick: current.notificationPromptTick,
       hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: false,
-        memberCapJoinRequests: current.memberCapJoinRequests,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-      );
+      activeChoreCount: current.activeChoreCount,
+      shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+      shouldPromptInviteShare: false,
+      shouldPromptPreferences: current.shouldPromptPreferences,
+      memberCapJoinRequests: current.memberCapJoinRequests,
+      memberCapJoinResolution: current.memberCapJoinResolution,
+    );
     }
 
   TodayState _stateWithoutFlatmatePrompt(TodayState current) {
@@ -544,6 +572,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           activeChoreCount: current.activeChoreCount,
           shouldPromptFlatmateInviteShare: false,
           shouldPromptInviteShare: current.shouldPromptInviteShare,
+          shouldPromptPreferences: current.shouldPromptPreferences,
           memberCapJoinRequests: current.memberCapJoinRequests,
           memberCapJoinResolution: current.memberCapJoinResolution,
         );
@@ -568,6 +597,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           activeChoreCount: current.activeChoreCount,
           shouldPromptFlatmateInviteShare: false,
           shouldPromptInviteShare: current.shouldPromptInviteShare,
+          shouldPromptPreferences: current.shouldPromptPreferences,
           memberCapJoinRequests: current.memberCapJoinRequests,
           memberCapJoinResolution: current.memberCapJoinResolution,
         );
@@ -588,12 +618,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       hasShownNpsPrompt: current.hasShownNpsPrompt,
       notificationPromptTick: current.notificationPromptTick,
       hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare: false,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-        memberCapJoinRequests: current.memberCapJoinRequests,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-      );
+      activeChoreCount: current.activeChoreCount,
+      shouldPromptFlatmateInviteShare: false,
+      shouldPromptInviteShare: current.shouldPromptInviteShare,
+      shouldPromptPreferences: current.shouldPromptPreferences,
+      memberCapJoinRequests: current.memberCapJoinRequests,
+      memberCapJoinResolution: current.memberCapJoinResolution,
+    );
     }
 
   TodayState _stateWithoutMemberCapPrompt(TodayState current) {
@@ -614,6 +645,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shouldPromptFlatmateInviteShare:
               current.shouldPromptFlatmateInviteShare,
           shouldPromptInviteShare: current.shouldPromptInviteShare,
+          shouldPromptPreferences: current.shouldPromptPreferences,
           memberCapJoinRequests: null,
           memberCapJoinResolution: current.memberCapJoinResolution,
         );
@@ -639,6 +671,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shouldPromptFlatmateInviteShare:
               current.shouldPromptFlatmateInviteShare,
           shouldPromptInviteShare: current.shouldPromptInviteShare,
+          shouldPromptPreferences: current.shouldPromptPreferences,
           memberCapJoinRequests: null,
           memberCapJoinResolution: current.memberCapJoinResolution,
         );
@@ -662,6 +695,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       activeChoreCount: current.activeChoreCount,
       shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
       shouldPromptInviteShare: current.shouldPromptInviteShare,
+      shouldPromptPreferences: current.shouldPromptPreferences,
       memberCapJoinRequests: null,
       memberCapJoinResolution: current.memberCapJoinResolution,
     );

@@ -6,6 +6,7 @@ import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'package:kinly/contracts/mood/ports/mood_repository.dart';
+import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import '../../../contracts/onboarding/ports/onboarding_repository.dart';
 import '../../../core/notifications/profile_update_notifier.dart';
 import 'bloc/today_bloc.dart';
@@ -19,6 +20,7 @@ class TodayProvider extends StatelessWidget {
   final HomeRepository homeRepository;
   final MoodRepository moodRepository;
   final OnboardingRepository onboardingRepository;
+  final PreferenceReportsRepository preferenceReportsRepository;
   final ProfileUpdateNotifier profileUpdateNotifier;
 
   const TodayProvider({
@@ -30,6 +32,7 @@ class TodayProvider extends StatelessWidget {
     required this.homeRepository,
     required this.moodRepository,
     required this.onboardingRepository,
+    required this.preferenceReportsRepository,
     required this.profileUpdateNotifier,
   });
 
@@ -44,6 +47,7 @@ class TodayProvider extends StatelessWidget {
             homeRepository: homeRepository,
             moodRepository: moodRepository,
             onboardingRepository: onboardingRepository,
+            preferenceReportsRepository: preferenceReportsRepository,
             homeId: homeId,
             profileUpdateNotifier: profileUpdateNotifier,
           ),

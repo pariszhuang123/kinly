@@ -27,4 +27,9 @@ class AppRoutePaths {
   static const gratitudeWall = '/gratitude-wall';
   static const nps = '/nps';
   static const paywall = '/paywall';
+  static const preferenceOnboarding = '/preferences/onboarding';
+  static const preferenceReport = '/preferences/report';
+  static const preferenceReportEdit = '/preferences/report/edit';
+  static const preferenceReportSectionEdit =
+      '/preferences/report/edit/:sectionKey';
 }
