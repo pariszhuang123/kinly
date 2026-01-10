@@ -8,6 +8,7 @@ graph LR
     contracts_time["contracts.time"]
     core_config["core.config"]
     core_di["core.di"]
+    core_forms["core.forms"]
     core_logging["core.logging"]
     core_media["core.media"]
     core_network["core.network"]
@@ -107,6 +108,8 @@ graph LR
   core_media --> contracts_media
   core_notifications --> contracts_profile
   core_onboarding --> contracts_onboarding
+  core_ui --> core_theme
+  core_ui --> generated
   features_flow --> app_router
   features_flow --> contracts_chores
   features_flow --> contracts_flow
@@ -141,6 +144,8 @@ graph LR
   features_preferences --> app_router
   features_preferences --> contracts_preferences
   features_preferences --> core_di
+  features_preferences --> core_forms
+  features_preferences --> core_logging
   features_preferences --> core_theme
   features_preferences --> core_ui
   features_preferences --> generated

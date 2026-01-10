@@ -179,6 +179,8 @@
   "hubQrSubtitle": "Scan to download Kinly",
   "hubCardGratitudeWallTitle": "Gratitude Wall",
   "hubCardGratitudeWallSubtitle": "Read quick thank-yous and small moments of appreciation.",
+  "hubPreferencesTitle": "Personal preferences",
+  "hubPreferencesSubtitle": "How each person experiences shared living.",
   "hubError": "Couldn't load Hub. Please try again.",
   "hubRetry": "Retry",
   "todayEmptyCardTitle": "All caught up today",
@@ -676,10 +678,16 @@
   "@hubQrSubtitle": {
     "surface": "subtitle"
   },
-    "@hubCardGratitudeWallTitle": {
+  "@hubCardGratitudeWallTitle": {
     "surface": "title"
   },
   "@hubCardGratitudeWallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubPreferencesTitle": {
+    "surface": "title"
+  },
+  "@hubPreferencesSubtitle": {
     "surface": "subtitle"
   },
   "@hubError": {
@@ -805,7 +813,7 @@
   "@flowChoreDeleteDialogMessage": {
     "surface": "dialog_body"
   },
-    "@flowChoreLoadError": {
+  "@flowChoreLoadError": {
     "surface": "error"
   },
   "@flowChoreRetry": {
@@ -1110,8 +1118,7 @@
   },
   "@join_error_forbidden": {
     "surface": "error"
-  }
-  ,
+  },
   "preferencePromptTitle": "Share your preferences",
   "preferencePromptSubtitle": "Set up your personal preferences so your home can learn how you like things.",
   "preferencePromptCta": "Start preferences",
@@ -1144,6 +1151,7 @@
   "preferenceReportErrorTitle": "Could not load report",
   "preferenceReportErrorBody": "Please try again.",
   "preferenceReportEditError": "We couldn't save that update.",
+  "preferenceReportReadOnlyNote": "This shows what feels comfortable for them.",
   "preferenceScenarioEnvironmentNoiseQuestion": "How ok are you with background noise in shared spaces?",
   "preferenceScenarioEnvironmentNoiseOption1": "I'm most comfortable when things are generally quiet",
   "preferenceScenarioEnvironmentNoiseOption2": "A moderate level of everyday noise feels fine",
@@ -1199,5 +1207,17 @@
   "preferenceScenarioConflictResolutionQuestion": "If something feels a bit off between people at home, what usually helps you most?",
   "preferenceScenarioConflictResolutionOption1": "Taking time to cool off first",
   "preferenceScenarioConflictResolutionOption2": "Gently checking in at the right moment",
-  "preferenceScenarioConflictResolutionOption3": "Talking it through sooner rather than later"
+  "preferenceScenarioConflictResolutionOption3": "Talking it through sooner rather than later",
+  "reflectiveAcknowledgementTitle": "Got it.",
+  "reflectivePersonalPrimary": "Reflecting what you shared.",
+  "reflectivePersonalSecondary": "So others can understand what feels comfortable to you.",
+  "reflectiveHousePrimary": "Putting the home’s expectations into words.",
+  "reflectiveHouseSecondary": "So everyone knows what to expect.",
+  "reflectiveGenericPrimary": "Putting this together with care.",
+  "reflectiveGenericSecondary": "A quiet moment before we show it.",
+  "preferenceReportGenerationMissing": "We couldn’t finish your preference reflection. Please try again soon.",
+  "preferenceReportGenerationFailed": "We couldn’t finish your preference reflection. Head back and try again.",
+  "@preferenceReportReadOnlyNote": {
+    "surface": "body"
+  }
 }

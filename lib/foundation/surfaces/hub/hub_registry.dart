@@ -4,6 +4,7 @@ import '../../../core/ui/kinly_selection_card.dart';
 import 'hub_slots.dart';
 import 'widget/hub_member_section.dart';
 import 'widget/hub_qr_section.dart';
+import 'widget/hub_preferences_section.dart';
 
 typedef HubSectionBuilder = Widget Function(HubSurfaceScope scope);
 
@@ -73,6 +74,20 @@ class HubRegistry {
               state: scope.state,
               onShareAppTap: scope.actions.onShareAppTap,
               onQrTap: scope.actions.onQrTap,
+            ),
+      ),
+    );
+
+    register(
+      HubSectionEntry(
+        id: 'preferences',
+        order: 25,
+        spacingAfter: HubSectionSpacing.lg,
+        isVisible: (scope) => scope.state.hasPreferenceReports,
+        builder:
+            (scope) => HubPreferencesSection(
+              members: scope.state.members,
+              reportItems: scope.state.preferenceReports,
             ),
       ),
     );

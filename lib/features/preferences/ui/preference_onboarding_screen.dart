@@ -10,8 +10,12 @@ import 'package:kinly/core/ui/kinly_icons.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
 import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
+import 'package:kinly/core/ui/enums/reflective_generation_mode.dart';
+import 'package:kinly/core/ui/reflective_generation/reflective_generation_overlay.dart';
+import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/generated/l10n.dart';
 import '../bloc/preference_capture_bloc.dart';
+import '../routes/preference_report_navigation_args.dart';
 
 class PreferenceOnboardingScreen extends StatelessWidget {
   const PreferenceOnboardingScreen({super.key});
@@ -23,19 +27,32 @@ class PreferenceOnboardingScreen extends StatelessWidget {
     final s = S.of(context);
 
     return BlocConsumer<PreferenceCaptureBloc, PreferenceCaptureState>(
-      listenWhen:
-          (previous, current) =>
-              previous.status != current.status &&
-              current.status == PreferenceCaptureStatus.success,
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
-        context.goNamed(AppRouteNames.preferenceReport);
+        if (state.status == PreferenceCaptureStatus.success) {
+          final args = PreferenceReportNavigationArgs(
+            showConfetti: true,
+            initialReport: state.generatedReport,
+          );
+          context.goNamed(AppRouteNames.preferenceReport, extra: args);
+        } else if (state.status == PreferenceCaptureStatus.failure) {
+          final message =
+              state.errorMessage == PreferenceCaptureBloc.missingReportErrorCode
+                  ? s.preferenceReportGenerationMissing
+                  : s.preferenceReportGenerationFailed;
+          KinlySnackBar.showError(context, message);
+          context.goNamed(AppRouteNames.today);
+        }
       },
       builder: (context, state) {
         final scenario = state.scenarios[state.currentIndex];
         final selectedIndex = state.responses[scenario.id];
         final isLast = state.currentIndex == state.scenarios.length - 1;
         final isSubmitting = state.status == PreferenceCaptureStatus.submitting;
-        final canSubmit = isLast && selectedIndex != null && state.isComplete;
+        final isReflecting = state.status == PreferenceCaptureStatus.reflecting;
+        final isBusy = isSubmitting || isReflecting;
+        final canSubmit =
+            isLast && selectedIndex != null && state.isComplete && !isBusy;
         final contentPadding = EdgeInsetsDirectional.fromSTEB(
           spacing?.lg ?? 16,
           spacing?.lg ?? 16,
@@ -56,67 +73,84 @@ class PreferenceOnboardingScreen extends StatelessWidget {
                       : () => context.pop(),
             ),
           ),
-          body: SafeArea(
-            child: Padding(
-              padding: contentPadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    s.preferenceOnboardingProgress(
-                      state.currentIndex + 1,
-                      state.scenarios.length,
-                    ),
-                    style: theme.textTheme.labelLarge,
+          body: Stack(
+            children: [
+              SafeArea(
+                child: Padding(
+                  padding: contentPadding,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        s.preferenceOnboardingProgress(
+                          state.currentIndex + 1,
+                          state.scenarios.length,
+                        ),
+                        style: theme.textTheme.labelLarge,
+                      ),
+                      SizedBox(height: spacing?.m ?? 12),
+                      Text(
+                        scenario.question(s),
+                        style: theme.textTheme.headlineSmall,
+                      ),
+                      SizedBox(height: spacing?.lg ?? 16),
+                      Expanded(
+                        child: ListView.separated(
+                          itemCount: scenario.options.length,
+                          separatorBuilder: (_, __) =>
+                              SizedBox(height: spacing?.m ?? 12),
+                          itemBuilder: (context, index) {
+                            final optionText = scenario.options[index](s);
+                            final isSelected = selectedIndex == index;
+                            return _PreferenceOptionTile(
+                              label: optionText,
+                              isSelected: isSelected,
+                              onTap:
+                                  isBusy
+                                      ? null
+                                      : () {
+                                        context.read<PreferenceCaptureBloc>().add(
+                                          PreferenceCaptureOptionSelected(
+                                            preferenceId: scenario.id,
+                                            optionIndex: index,
+                                          ),
+                                        );
+                                      },
+                            );
+                          },
+                        ),
+                      ),
+                      if (isLast && selectedIndex != null) ...[
+                        SizedBox(height: spacing?.lg ?? 16),
+                        KinlyFilledButton.text(
+                          fullWidth: true,
+                          label: s.preferenceOnboardingSubmit,
+                          onPressed:
+                              canSubmit
+                                  ? () => context.read<PreferenceCaptureBloc>().add(
+                                    const PreferenceCaptureSubmitted(),
+                                  )
+                                  : null,
+                        ),
+                      ],
+                    ],
                   ),
-                  SizedBox(height: spacing?.m ?? 12),
-                  Text(
-                    scenario.question(s),
-                    style: theme.textTheme.headlineSmall,
-                  ),
-                  SizedBox(height: spacing?.lg ?? 16),
-                  Expanded(
-                    child: ListView.separated(
-                      itemCount: scenario.options.length,
-                      separatorBuilder: (_, __) =>
-                          SizedBox(height: spacing?.m ?? 12),
-                      itemBuilder: (context, index) {
-                        final optionText = scenario.options[index](s);
-                        final isSelected = selectedIndex == index;
-                        return _PreferenceOptionTile(
-                          label: optionText,
-                          isSelected: isSelected,
-                          onTap:
-                              isSubmitting
-                                  ? null
-                                  : () {
-                                    context.read<PreferenceCaptureBloc>().add(
-                                      PreferenceCaptureOptionSelected(
-                                        preferenceId: scenario.id,
-                                        optionIndex: index,
-                                      ),
-                                    );
-                                  },
-                        );
-                      },
-                    ),
-                  ),
-                  if (isLast && selectedIndex != null) ...[
-                    SizedBox(height: spacing?.lg ?? 16),
-                    KinlyFilledButton.text(
-                      fullWidth: true,
-                      label: s.preferenceOnboardingSubmit,
-                      onPressed:
-                          canSubmit && !isSubmitting
-                              ? () => context.read<PreferenceCaptureBloc>().add(
-                                const PreferenceCaptureSubmitted(),
-                              )
-                              : null,
-                    ),
-                  ],
-                ],
+                ),
               ),
-            ),
+              if (isReflecting)
+                Positioned.fill(
+                  child: ReflectiveGenerationOverlay(
+                    mode:
+                        state.reflectiveMode ??
+                        ReflectiveGenerationMode.personalPreferences,
+                    onCompleted: () {
+                      context.read<PreferenceCaptureBloc>().add(
+                        const PreferenceCaptureReflectionCompleted(),
+                      );
+                    },
+                  ),
+                ),
+            ],
           ),
         );
       },
@@ -144,6 +178,7 @@ class _PreferenceOptionTile extends StatelessWidget {
     return KinlyTapTarget(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
+      alignment: AlignmentDirectional.centerStart,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         padding: EdgeInsetsDirectional.fromSTEB(

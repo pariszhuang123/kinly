@@ -1,6 +1,6 @@
 # Architecture Report
 
-- **Modules**: 56
+- **Modules**: 57
 - **DI Registrations**: 11
 
 ## Modules List
@@ -27,6 +27,7 @@
 - core.auth
 - core.config
 - core.di
+- core.forms
 - core.logging
 - core.media
 - core.network

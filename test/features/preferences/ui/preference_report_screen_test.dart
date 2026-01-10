@@ -53,7 +53,7 @@ void main() {
     );
   }
 
-  Widget buildApp(_MockPreferenceReportCubit cubit) {
+  Widget buildApp(_MockPreferenceReportCubit cubit, Widget child) {
     return MaterialApp(
       theme: buildKinlyTheme(Brightness.light),
       localizationsDelegates: const [
@@ -65,7 +65,7 @@ void main() {
       supportedLocales: S.delegate.supportedLocales,
       home: BlocProvider<PreferenceReportCubit>.value(
         value: cubit,
-        child: const PreferenceReportScreen(),
+        child: child,
       ),
     );
   }
@@ -79,7 +79,7 @@ void main() {
       PreferenceReportState.ready(buildReport()),
     );
 
-    await tester.pumpWidget(buildApp(cubit));
+    await tester.pumpWidget(buildApp(cubit, const PreferenceReportScreen()));
     await tester.pumpAndSettle();
 
     expect(find.text('Summary title'), findsOneWidget);
@@ -92,5 +92,27 @@ void main() {
     final s = S.of(tester.element(find.byType(PreferenceReportScreen)));
     expect(find.text(s.preferenceReportEditCta), findsOneWidget);
     expect(find.text(s.preferenceReportDoneCta), findsOneWidget);
+  });
+
+  testWidgets('hides edit button when read-only', (tester) async {
+    final cubit = _MockPreferenceReportCubit();
+    when(() => cubit.stream).thenAnswer(
+      (_) => const Stream<PreferenceReportState>.empty(),
+    );
+    when(() => cubit.state).thenReturn(
+      PreferenceReportState.ready(buildReport()),
+    );
+
+    await tester.pumpWidget(
+      buildApp(
+        cubit,
+        const PreferenceReportScreen(canEdit: false),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final s = S.of(tester.element(find.byType(PreferenceReportScreen)));
+    expect(find.text(s.preferenceReportReadOnlyNote), findsOneWidget);
+    expect(find.text(s.preferenceReportEditCta), findsNothing);
   });
 }

@@ -356,6 +356,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubMembersEmpty": MessageLookupByLibrary.simpleMessage(
       "Aún no hay miembros activos.",
     ),
+    "hubPreferencesSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Cómo vive cada persona la convivencia.",
+    ),
+    "hubPreferencesTitle": MessageLookupByLibrary.simpleMessage(
+      "Preferencias personales",
+    ),
     "hubQrSubtitle": MessageLookupByLibrary.simpleMessage(
       "Escanea para descargar Kinly",
     ),
@@ -569,6 +575,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "preferenceReportErrorTitle": MessageLookupByLibrary.simpleMessage(
       "Could not load report",
     ),
+    "preferenceReportGenerationFailed": MessageLookupByLibrary.simpleMessage(
+      "We couldn’t finish your preference reflection. Head back and try again.",
+    ),
+    "preferenceReportGenerationMissing": MessageLookupByLibrary.simpleMessage(
+      "We couldn’t finish your preference reflection. Please try again soon.",
+    ),
+    "preferenceReportReadOnlyNote": MessageLookupByLibrary.simpleMessage(
+      "Estas preferencias ayudan a entender lo que les resulta cómodo.",
+    ),
     "preferenceReportTitle": MessageLookupByLibrary.simpleMessage(
       "Your preference report",
     ),
@@ -680,7 +695,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioPrivacyNotificationsQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "How do you feel about messages or notifications at night?",
+          "How do you feel about messages at night?",
         ),
     "preferenceScenarioPrivacyRoomEntryOption1":
         MessageLookupByLibrary.simpleMessage(
@@ -941,6 +956,27 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Share"),
     "quick_add_title": MessageLookupByLibrary.simpleMessage("Añadir rápido"),
+    "reflectiveAcknowledgementTitle": MessageLookupByLibrary.simpleMessage(
+      "Got it.",
+    ),
+    "reflectiveGenericPrimary": MessageLookupByLibrary.simpleMessage(
+      "Putting this together with care.",
+    ),
+    "reflectiveGenericSecondary": MessageLookupByLibrary.simpleMessage(
+      "A quiet moment before we show it.",
+    ),
+    "reflectiveHousePrimary": MessageLookupByLibrary.simpleMessage(
+      "Putting the home’s expectations into words.",
+    ),
+    "reflectiveHouseSecondary": MessageLookupByLibrary.simpleMessage(
+      "So everyone knows what to expect.",
+    ),
+    "reflectivePersonalPrimary": MessageLookupByLibrary.simpleMessage(
+      "Reflecting what you shared.",
+    ),
+    "reflectivePersonalSecondary": MessageLookupByLibrary.simpleMessage(
+      "So others can understand what feels comfortable to you.",
+    ),
     "shareCreateAmountHint": MessageLookupByLibrary.simpleMessage("0.00"),
     "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("Importe"),
     "shareCreateCustomAmountLabel": MessageLookupByLibrary.simpleMessage(

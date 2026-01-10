@@ -8,6 +8,7 @@ class AppRouteNames {
   static const joinWithCode = 'joinWithCode';
   static const today = 'today';
   static const hub = 'hub';
+  static const hubPreferencesList = 'hubPreferencesList';
   static const explore = 'explore';
   static const flow = 'flow';
   static const flowChoreCreate = 'flowChoreCreate';
@@ -29,6 +30,7 @@ class AppRouteNames {
   static const nps = 'nps';
   static const preferenceOnboarding = 'preferenceOnboarding';
   static const preferenceReport = 'preferenceReport';
+  static const preferenceReportView = 'preferenceReportView';
   static const preferenceReportEdit = 'preferenceReportEdit';
   static const preferenceReportSectionEdit = 'preferenceReportSectionEdit';
 }

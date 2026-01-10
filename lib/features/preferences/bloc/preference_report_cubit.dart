@@ -12,16 +12,24 @@ class PreferenceReportCubit extends Cubit<PreferenceReportState> {
     required String homeId,
     required String subjectUserId,
     String templateKey = 'personal_preferences_v1',
+    PreferenceReport? initialReport,
+    bool acknowledgeOnLoad = false,
   }) : _repository = repository,
        _homeId = homeId,
        _subjectUserId = subjectUserId,
        _templateKey = templateKey,
-       super(const PreferenceReportState.loading());
+       _acknowledgeOnLoad = acknowledgeOnLoad,
+       super(
+         initialReport != null
+             ? PreferenceReportState.ready(initialReport)
+             : const PreferenceReportState.loading(),
+       );
 
   final PreferenceReportsRepository _repository;
   final String _homeId;
   final String _subjectUserId;
   final String _templateKey;
+  final bool _acknowledgeOnLoad;
 
   Future<void> load() async {
     emit(const PreferenceReportState.loading());
@@ -39,6 +47,13 @@ class PreferenceReportCubit extends Cubit<PreferenceReportState> {
       if (report == null) {
         emit(const PreferenceReportState.empty());
         return;
+      }
+      if (_acknowledgeOnLoad) {
+        try {
+          await _repository.acknowledgeReport(reportId: report.id);
+        } catch (_) {
+          // Ignore acknowledgement failures so viewing still succeeds.
+        }
       }
       emit(PreferenceReportState.ready(report));
     } catch (error) {

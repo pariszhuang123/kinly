@@ -14,6 +14,7 @@ import '../../../core/ui/home_bottom_nav.dart';
 import '../../../core/ui/kinly_bottom_sheet.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
+import '../../../core/ui/kinly_scrollbar.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../core/ui/kinly_refresh_indicator.dart';
 import '../../../core/ui/kinly_icons.dart';
@@ -158,6 +159,7 @@ class HubScreen extends StatelessWidget {
       sections: sections,
       strings: strings,
       actions: actions,
+      homeId: homeId,
     );
 
     final slots = HubSurfaceSlots(
@@ -167,15 +169,20 @@ class HubScreen extends StatelessWidget {
   }
 
   Widget _buildHubBody(HubSurfaceScope scope) {
+    final controller = ScrollController();
     return KinlyRefreshIndicator(
       onRefresh:
           () async => scope.context.read<HubBloc>().add(const HubRefreshed()),
-      child: KinlyScrollFade(
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildHubSections(scope),
+      child: KinlyScrollbar(
+        controller: controller,
+        child: KinlyScrollFade(
+          child: SingleChildScrollView(
+            controller: controller,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _buildHubSections(scope),
+            ),
           ),
         ),
       ),
@@ -197,6 +204,7 @@ class HubScreen extends StatelessWidget {
         children.add(SizedBox(height: gap));
       }
     }
+    children.add(SizedBox(height: spacing.xl));
 
     return children;
   }

@@ -17,6 +17,14 @@ Tracks versioned contract changes and related ADRs.
   - Define the separation between personal preferences, home vibe, and home rules.
   - Add hard guardrails to prevent auto-derivation or enforcement from vibe or preferences.
 
+## v1 - Hub Personal Preferences Visibility
+- Date: 2026-01-06
+- Scope: `docs/contracts/hub_personal_preferences_visibility_v1.md`
+- Changes:
+  - Define Hub visibility rules for personal preference reports.
+  - Enforce published-only visibility and subject-only edits.
+  - Disallow progress indicators, placeholders, or enforcement cues.
+
 ## v1 - Preference Taxonomy
 - Date: 2026-01-05
 - Scope: `docs/contracts/preference_taxonomy_v1.md`

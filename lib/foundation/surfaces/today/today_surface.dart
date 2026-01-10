@@ -17,6 +17,7 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/time/iana_timezone_resolver.dart';
 import '../../../core/ui/buttons/kinly_fab.dart';
 import '../../../core/ui/home_bottom_nav.dart';
+import '../../../core/ui/kinly_confetti_overlay.dart';
 import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
@@ -200,26 +201,14 @@ class _TodayScreenState extends State<TodayScreen>
                 ),
               ),
               Positioned.fill(
-                child: IgnorePointer(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: ConfettiWidget(
-                      confettiController: _confettiController,
-                      blastDirectionality: BlastDirectionality.explosive,
-                      shouldLoop: false,
-                      emissionFrequency: 0.01,
-                      maxBlastForce: 4,
-                      minBlastForce: 2,
-                      numberOfParticles: 6,
-                      gravity: 0.12,
-                      colors: [
-                        sections.flow.accent,
-                        sections.share.accent,
-                        colorScheme.primary,
-                        colorScheme.secondary,
-                      ],
-                    ),
-                  ),
+                child: KinlyConfettiOverlay(
+                  confettiController: _confettiController,
+                  colors: [
+                    sections.flow.accent,
+                    sections.share.accent,
+                    colorScheme.primary,
+                    colorScheme.secondary,
+                  ],
                 ),
               ),
             ],

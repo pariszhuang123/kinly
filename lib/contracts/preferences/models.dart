@@ -134,6 +134,29 @@ class PreferenceReportGenerationResult {
   }
 }
 
+class PreferenceReportListItem {
+  const PreferenceReportListItem({
+    required this.reportId,
+    required this.subjectUserId,
+    required this.publishedAt,
+    required this.lastEditedAt,
+  });
+
+  final String reportId;
+  final String subjectUserId;
+  final DateTime? publishedAt;
+  final DateTime? lastEditedAt;
+
+  factory PreferenceReportListItem.fromJson(Map<String, dynamic> json) {
+    return PreferenceReportListItem(
+      reportId: json['report_id'] as String? ?? '',
+      subjectUserId: json['subject_user_id'] as String? ?? '',
+      publishedAt: _parseDate(json['published_at']),
+      lastEditedAt: _parseDate(json['last_edited_at']),
+    );
+  }
+}
+
 class PreferenceTemplateResolution {
   const PreferenceTemplateResolution({
     required this.templateKey,

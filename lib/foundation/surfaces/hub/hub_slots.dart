@@ -47,6 +47,7 @@ class HubSurfaceScope {
     required this.sections,
     required this.strings,
     required this.actions,
+    required this.homeId,
   });
 
   final BuildContext context;
@@ -55,5 +56,6 @@ class HubSurfaceScope {
   final KinlySections sections;
   final S strings;
   final HubSurfaceActions actions;
+  final String homeId;
 }
 

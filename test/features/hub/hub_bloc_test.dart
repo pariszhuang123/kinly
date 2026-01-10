@@ -3,17 +3,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/contracts/preferences/models.dart';
+import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/features/home/home.dart';
 import 'package:kinly/foundation/surfaces/hub/bloc/hub_bloc.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
+class _MockPreferenceReportsRepository extends Mock
+    implements PreferenceReportsRepository {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   const homeId = 'home-1';
   late HomeRepository homeRepository;
+  late PreferenceReportsRepository preferenceReportsRepository;
 
   final membership = CurrentMembership(
     userId: 'user-1',
@@ -39,8 +44,16 @@ void main() {
     canTransferTo: false,
   );
 
+  final reportItem = PreferenceReportListItem(
+    reportId: 'report-1',
+    subjectUserId: 'user-1',
+    publishedAt: DateTime.now().toUtc(),
+    lastEditedAt: null,
+  );
+
   setUp(() {
     homeRepository = _MockHomeRepository();
+    preferenceReportsRepository = _MockPreferenceReportsRepository();
   });
 
   blocTest<HubBloc, HubState>(
@@ -58,9 +71,28 @@ void main() {
       when(
         () => homeRepository.getOrCreateInvite(homeId: homeId),
       ).thenAnswer((_) async => invite);
+      when(
+        () => preferenceReportsRepository.getTemplateResolution(
+          templateKey: any(named: 'templateKey'),
+        ),
+      ).thenAnswer(
+        (_) async => const PreferenceTemplateResolution(
+          templateKey: 'personal_preferences_v1',
+          requestedLocale: 'en-NZ',
+          resolvedLocale: 'en',
+        ),
+      );
+      when(
+        () => preferenceReportsRepository.listReportsForHome(
+          homeId: homeId,
+          templateKey: any(named: 'templateKey'),
+          locale: 'en',
+        ),
+      ).thenAnswer((_) async => [reportItem]);
 
       return HubBloc(
         homeRepository: homeRepository,
+        preferenceReportsRepository: preferenceReportsRepository,
         homeId: homeId,
         logger: const DebugLogger(),
       );
@@ -71,6 +103,7 @@ void main() {
           isA<HubState>()
               .having((s) => s.status, 'status', HubStatus.success)
               .having((s) => s.members.length, 'members', 1)
+              .having((s) => s.preferenceReports.length, 'preferenceReports', 1)
               .having((s) => s.inviteCode, 'inviteCode', invite.code),
         ],
     verify: (_) {
@@ -78,6 +111,13 @@ void main() {
         () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
       ).called(1);
       verify(() => homeRepository.getOrCreateInvite(homeId: homeId)).called(1);
+      verify(
+        () => preferenceReportsRepository.listReportsForHome(
+          homeId: homeId,
+          templateKey: any(named: 'templateKey'),
+          locale: 'en',
+        ),
+      ).called(1);
     },
   );
 
@@ -93,9 +133,28 @@ void main() {
       when(
         () => homeRepository.getOrCreateInvite(homeId: homeId),
       ).thenAnswer((_) async => invite);
+      when(
+        () => preferenceReportsRepository.getTemplateResolution(
+          templateKey: any(named: 'templateKey'),
+        ),
+      ).thenAnswer(
+        (_) async => const PreferenceTemplateResolution(
+          templateKey: 'personal_preferences_v1',
+          requestedLocale: 'en-NZ',
+          resolvedLocale: 'en',
+        ),
+      );
+      when(
+        () => preferenceReportsRepository.listReportsForHome(
+          homeId: homeId,
+          templateKey: any(named: 'templateKey'),
+          locale: 'en',
+        ),
+      ).thenAnswer((_) async => const []);
 
       return HubBloc(
         homeRepository: homeRepository,
+        preferenceReportsRepository: preferenceReportsRepository,
         homeId: homeId,
         logger: const DebugLogger(),
       );
@@ -122,9 +181,28 @@ void main() {
       when(
         () => homeRepository.getOrCreateInvite(homeId: homeId),
       ).thenThrow(Exception('forbidden'));
+      when(
+        () => preferenceReportsRepository.getTemplateResolution(
+          templateKey: any(named: 'templateKey'),
+        ),
+      ).thenAnswer(
+        (_) async => const PreferenceTemplateResolution(
+          templateKey: 'personal_preferences_v1',
+          requestedLocale: 'en-NZ',
+          resolvedLocale: 'en',
+        ),
+      );
+      when(
+        () => preferenceReportsRepository.listReportsForHome(
+          homeId: homeId,
+          templateKey: any(named: 'templateKey'),
+          locale: 'en',
+        ),
+      ).thenAnswer((_) async => const []);
 
       return HubBloc(
         homeRepository: homeRepository,
+        preferenceReportsRepository: preferenceReportsRepository,
         homeId: homeId,
         logger: const DebugLogger(),
       );

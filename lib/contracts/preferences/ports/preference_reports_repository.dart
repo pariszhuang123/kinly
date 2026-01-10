@@ -20,6 +20,12 @@ abstract class PreferenceReportsRepository {
     required String locale,
   });
 
+  Future<List<PreferenceReportListItem>> listReportsForHome({
+    required String homeId,
+    String templateKey = 'personal_preferences_v1',
+    required String locale,
+  });
+
   Future<void> editSectionText({
     String templateKey = 'personal_preferences_v1',
     required String locale,
@@ -27,4 +33,6 @@ abstract class PreferenceReportsRepository {
     required String text,
     String? changeSummary,
   });
+
+  Future<void> acknowledgeReport({required String reportId});
 }

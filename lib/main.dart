@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -14,6 +16,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import 'core/config/app_config.dart';
 import 'core/di/locator.dart';
+import 'core/forms/form_draft_storage.dart';
 import 'app/di/compose.dart';
 import 'core/purchases/revenuecat_initializer.dart';
 import 'core/purchases/revenuecat_user_sync.dart';
@@ -77,6 +80,9 @@ Future<void> main() async {
 }
 
 Future<void> _bootstrapApp() async {
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: await getApplicationDocumentsDirectory(),
+  );
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
@@ -112,8 +118,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   StreamSubscription<AuthState>? _authSub;
   NotificationTokenBootstrap? _tokenBootstrap;
   bool _requestedInitialNotificationPermission = false;
+  String? _lastAuthUserId;
+  String? _lastHomeId;
 
   static const _logTag = 'Bootstrap';
+  static const _draftLogTag = 'FormDraft';
 
   @override
   void initState() {
@@ -241,14 +250,54 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> _handleAuthState(AuthState state) async {
+    final previousUserId = _lastAuthUserId;
+    final previousHomeId = _lastHomeId;
+    final currentUserId = state.userId;
+    final currentHomeId = state.membership?.homeId;
     if (!state.isAuthenticated) {
+      await _clearFormDraftsOnLogout(
+        previousUserId: previousUserId,
+        previousHomeId: previousHomeId,
+      );
+      _lastAuthUserId = null;
+      _lastHomeId = null;
       await syncRevenueCatUser(_logger, userId: null);
       await _stopNotificationTokenSync();
       return;
     }
+
+    if (previousUserId != null &&
+        currentUserId != null &&
+        currentUserId != previousUserId) {
+      await FormDraftStorage.clearPersonalPreferencesDraft(previousUserId);
+    }
+    if (previousHomeId != null && previousHomeId != currentHomeId) {
+      await FormDraftStorage.clearHouseRulesDraft(previousHomeId);
+      _logger.info(
+        'form_draft_cleared_on_home_change form=house_rules '
+        'scope=${FormDraftStorage.hashScope(previousHomeId)} '
+        'schemaVersion=${FormDraftStorage.schemaVersionV1}',
+        tag: _draftLogTag,
+      );
+    }
+    _lastAuthUserId = currentUserId;
+    _lastHomeId = currentHomeId;
+
     await syncRevenueCatUser(_logger, userId: state.userId);
     await _refreshNotificationPreferencesFromOs();
     await _startNotificationTokenSync();
+  }
+
+  Future<void> _clearFormDraftsOnLogout({
+    required String? previousUserId,
+    required String? previousHomeId,
+  }) async {
+    if (previousUserId != null) {
+      await FormDraftStorage.clearPersonalPreferencesDraft(previousUserId);
+    }
+    if (previousHomeId != null) {
+      await FormDraftStorage.clearHouseRulesDraft(previousHomeId);
+    }
   }
 
   Future<void> _startNotificationTokenSync() async {

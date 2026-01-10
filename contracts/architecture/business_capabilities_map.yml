@@ -68,6 +68,7 @@ buckets:
     - core.utils
     - core.time
     - core.media
+    - core.forms
     - contracts.time
     - contracts.media
 

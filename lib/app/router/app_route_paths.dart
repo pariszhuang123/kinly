@@ -9,6 +9,7 @@ class AppRoutePaths {
   static const infoHub = '/settings/profile/info-hub';
   static const today = '/today';
   static const hub = '/hub';
+  static const hubPreferencesList = '/hub/preferences';
   static const explore = '/explore';
   static const flow = '/flow';
   static const flowChoreCreate = '/flow/chore/new';
@@ -29,6 +30,7 @@ class AppRoutePaths {
   static const paywall = '/paywall';
   static const preferenceOnboarding = '/preferences/onboarding';
   static const preferenceReport = '/preferences/report';
+  static const preferenceReportView = '/preferences/report/view/:subjectUserId';
   static const preferenceReportEdit = '/preferences/report/edit';
   static const preferenceReportSectionEdit =
       '/preferences/report/edit/:sectionKey';

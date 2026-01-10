@@ -1,0 +1,1 @@
+enum ReflectivePhase { acknowledge, pause }

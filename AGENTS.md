@@ -33,6 +33,7 @@ flutter test                   # Unit tests
 | Business capabilities       | `contracts/architecture/business_map.md`   |
 | Complexity budget           | `docs/engineering/complexity_budget_v1.md` |
 | Home dynamics contract      | `docs/contracts/home_dynamics_v1.md`       |
+| Form hydration contract     | `docs/contracts/form_hydration_v1.md`      |
 | UI primitives               | `docs/ui/core_ui_primitives.md`            |
 
 ### Dependency Direction (Never Violate)

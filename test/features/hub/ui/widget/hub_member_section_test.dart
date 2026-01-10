@@ -31,6 +31,8 @@ void main() {
     return HubState(
       status: HubStatus.success,
       members: members,
+      preferenceReports: const [],
+      currentUserId: 'owner-1',
       invite: HomeInvite(
         id: 'invite-1',
         homeId: 'home-1',

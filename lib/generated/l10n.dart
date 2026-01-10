@@ -959,6 +959,26 @@ class S {
     );
   }
 
+  /// `Personal preferences`
+  String get hubPreferencesTitle {
+    return Intl.message(
+      'Personal preferences',
+      name: 'hubPreferencesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How each person experiences shared living.`
+  String get hubPreferencesSubtitle {
+    return Intl.message(
+      'How each person experiences shared living.',
+      name: 'hubPreferencesSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Couldn't load Hub. Please try again.`
   String get hubError {
     return Intl.message(
@@ -3817,6 +3837,16 @@ class S {
     );
   }
 
+  /// `This shows what feels comfortable for them.`
+  String get preferenceReportReadOnlyNote {
+    return Intl.message(
+      'This shows what feels comfortable for them.',
+      name: 'preferenceReportReadOnlyNote',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `How ok are you with background noise in shared spaces?`
   String get preferenceScenarioEnvironmentNoiseQuestion {
     return Intl.message(
@@ -4177,10 +4207,10 @@ class S {
     );
   }
 
-  /// `How do you feel about messages or notifications at night?`
+  /// `How do you feel about messages at night?`
   String get preferenceScenarioPrivacyNotificationsQuestion {
     return Intl.message(
-      'How do you feel about messages or notifications at night?',
+      'How do you feel about messages at night?',
       name: 'preferenceScenarioPrivacyNotificationsQuestion',
       desc: '',
       args: [],
@@ -4372,6 +4402,96 @@ class S {
     return Intl.message(
       'Talking it through sooner rather than later',
       name: 'preferenceScenarioConflictResolutionOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Got it.`
+  String get reflectiveAcknowledgementTitle {
+    return Intl.message(
+      'Got it.',
+      name: 'reflectiveAcknowledgementTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reflecting what you shared.`
+  String get reflectivePersonalPrimary {
+    return Intl.message(
+      'Reflecting what you shared.',
+      name: 'reflectivePersonalPrimary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `So others can understand what feels comfortable to you.`
+  String get reflectivePersonalSecondary {
+    return Intl.message(
+      'So others can understand what feels comfortable to you.',
+      name: 'reflectivePersonalSecondary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Putting the home’s expectations into words.`
+  String get reflectiveHousePrimary {
+    return Intl.message(
+      'Putting the home’s expectations into words.',
+      name: 'reflectiveHousePrimary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `So everyone knows what to expect.`
+  String get reflectiveHouseSecondary {
+    return Intl.message(
+      'So everyone knows what to expect.',
+      name: 'reflectiveHouseSecondary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Putting this together with care.`
+  String get reflectiveGenericPrimary {
+    return Intl.message(
+      'Putting this together with care.',
+      name: 'reflectiveGenericPrimary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A quiet moment before we show it.`
+  String get reflectiveGenericSecondary {
+    return Intl.message(
+      'A quiet moment before we show it.',
+      name: 'reflectiveGenericSecondary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn’t finish your preference reflection. Please try again soon.`
+  String get preferenceReportGenerationMissing {
+    return Intl.message(
+      'We couldn’t finish your preference reflection. Please try again soon.',
+      name: 'preferenceReportGenerationMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn’t finish your preference reflection. Head back and try again.`
+  String get preferenceReportGenerationFailed {
+    return Intl.message(
+      'We couldn’t finish your preference reflection. Head back and try again.',
+      name: 'preferenceReportGenerationFailed',
       desc: '',
       args: [],
     );

@@ -27,3 +27,7 @@ class PreferenceCapturePreviousRequested extends PreferenceCaptureEvent {
 class PreferenceCaptureSubmitted extends PreferenceCaptureEvent {
   const PreferenceCaptureSubmitted();
 }
+
+class PreferenceCaptureReflectionCompleted extends PreferenceCaptureEvent {
+  const PreferenceCaptureReflectionCompleted();
+}

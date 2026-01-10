@@ -4,6 +4,8 @@ class HubState extends Equatable {
   const HubState({
     required this.status,
     required this.members,
+    required this.preferenceReports,
+    required this.currentUserId,
     required this.appLink,
     required this.isOwner,
     this.invite,
@@ -15,6 +17,8 @@ class HubState extends Equatable {
   factory HubState.initial({required String appLink}) => HubState(
         status: HubStatus.initial,
         members: const [],
+        preferenceReports: const [],
+        currentUserId: '',
         invite: null,
         inviteLink: null,
         appLink: appLink,
@@ -23,6 +27,8 @@ class HubState extends Equatable {
 
   final HubStatus status;
   final List<HomeMemberSummary> members;
+  final List<PreferenceReportListItem> preferenceReports;
+  final String currentUserId;
   final HomeInvite? invite;
   final String? inviteLink;
   final String appLink;
@@ -35,11 +41,14 @@ class HubState extends Equatable {
   bool get isFailure => status == HubStatus.failure;
   bool get hasInvite => invite != null && (inviteLink?.isNotEmpty ?? false);
   bool get hasMembers => members.isNotEmpty;
+  bool get hasPreferenceReports => preferenceReports.isNotEmpty;
   String get inviteCode => invite?.code ?? '';
 
   HubState copyWith({
     HubStatus? status,
     List<HomeMemberSummary>? members,
+    List<PreferenceReportListItem>? preferenceReports,
+    String? currentUserId,
     HomeInvite? invite,
     bool clearInvite = false,
     String? inviteLink,
@@ -51,6 +60,8 @@ class HubState extends Equatable {
     return HubState(
       status: status ?? this.status,
       members: members ?? this.members,
+      preferenceReports: preferenceReports ?? this.preferenceReports,
+      currentUserId: currentUserId ?? this.currentUserId,
       invite: clearInvite ? null : (invite ?? this.invite),
       inviteLink: clearInvite ? null : (inviteLink ?? this.inviteLink),
       appLink: appLink ?? this.appLink,
@@ -64,6 +75,8 @@ class HubState extends Equatable {
   List<Object?> get props => [
         status,
         members,
+        preferenceReports,
+        currentUserId,
         invite,
         inviteLink,
         appLink,

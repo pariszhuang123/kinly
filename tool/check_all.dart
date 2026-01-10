@@ -9,6 +9,11 @@ class _Check {
   final List<String> args;
 }
 
+bool _isCi() {
+  final v = (Platform.environment['CI'] ?? '').toLowerCase().trim();
+  return v == 'true' || v == '1' || v == 'yes';
+}
+
 Future<void> main() async {
   final checks = <_Check>[
     const _Check('check_test_guard', 'bash', ['tool/check_test_guard.sh']),
@@ -139,6 +144,14 @@ Future<void> main() async {
       'tool/check_theme_tokens.dart',
     ]),
     const _Check('check_modules', 'dart', ['run', 'tool/check_modules.dart']),
+
+    // --- Arch diagrams ---
+    // Local dev: regenerate first so checks won't fail just because the diagram is stale.
+    // CI: do not regenerate (no repo mutations). Only verify.
+    if (!_isCi())
+      const _Check('check_arch_diagrams_generate', 'python', [
+        'tools/arch_diagram/generate.py',
+      ]),
     const _Check('check_arch_diagrams', 'python', [
       'tools/arch_diagram/generate.py',
       '--check',
