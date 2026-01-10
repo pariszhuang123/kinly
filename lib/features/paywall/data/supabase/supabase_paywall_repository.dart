@@ -28,10 +28,7 @@ class SupabasePaywallRepository implements PaywallRepository {
   @override
   Future<void> refreshStatus({required String homeId}) async {
     try {
-      await _client.rpc(
-        'paywall_status_get',
-        params: {'p_home_id': homeId},
-      );
+      await _client.rpc('paywall_status_get', params: {'p_home_id': homeId});
     } catch (_) {
       // Best-effort refresh; swallow errors to keep UI responsive.
     }

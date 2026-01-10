@@ -254,4 +254,3 @@ double _contrastRatio(Color foreground, Color background) {
   final dark = math.min(l1, l2);
   return (light + 0.05) / (dark + 0.05);
 }
-

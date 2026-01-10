@@ -38,7 +38,8 @@ class KinlyTabBar<T> extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
     final corners = theme.extension<Corners>();
-    final colors = theme.extension<KinlyColorTokens>() ??
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
 
@@ -92,10 +93,7 @@ class KinlyTabBar<T> extends StatelessWidget {
         }),
         side: WidgetStateProperty.resolveWith((states) {
           final isSelected = states.contains(WidgetState.selected);
-          final color =
-              isSelected
-                  ? colors.primary
-                  : colors.outline;
+          final color = isSelected ? colors.primary : colors.outline;
           return BorderSide(color: color);
         }),
       ),

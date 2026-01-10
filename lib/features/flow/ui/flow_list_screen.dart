@@ -152,9 +152,7 @@ class FlowListScreen extends StatelessWidget {
         strings: s,
         actions: actions,
       );
-      final slots = FlowSurfaceSlots(
-        body: _buildFlowBody(scope),
-      );
+      final slots = FlowSurfaceSlots(body: _buildFlowBody(scope));
       return slots.body;
     }
     return const SizedBox.shrink();
@@ -167,14 +165,16 @@ class FlowListScreen extends StatelessWidget {
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:
-          entries.map((entry) => entry.builder(scope)).toList(growable: false),
+      children: entries
+          .map((entry) => entry.builder(scope))
+          .toList(growable: false),
     );
   }
 
   void _showOutcomeSnackbar(BuildContext context, FlowChoreOutcome result) {
     final s = S.of(context);
-    final accent = KinlyThemeAccess.of(context).extension<KinlySections>()!.flow.accent;
+    final accent =
+        KinlyThemeAccess.of(context).extension<KinlySections>()!.flow.accent;
     if (result.isCompleted) {
       KinlySnackBar.showSuccess(
         context,
@@ -295,7 +295,3 @@ class _FlowListError extends StatelessWidget {
     );
   }
 }
-
-
-
-

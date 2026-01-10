@@ -79,7 +79,9 @@ void main() {
       );
     }
 
-    testWidgets('shows cycle period helper for recurring expenses', (tester) async {
+    testWidgets('shows cycle period helper for recurring expenses', (
+      tester,
+    ) async {
       final startDate = DateTime(2026, 1, 1);
       final form = ShareCreateForm.initial().copyWith(
         recurrenceEvery: 1,
@@ -95,16 +97,21 @@ void main() {
       await tester.pumpWidget(buildFormView(state));
 
       final expectedPeriod = DateFormat.MMMMd().format(startDate);
-      final expectedEnd =
-          DateFormat.d().format(startDate.add(const Duration(days: 6)));
+      final expectedEnd = DateFormat.d().format(
+        startDate.add(const Duration(days: 6)),
+      );
 
       expect(
-        find.text('Applies to $expectedPeriod - $expectedEnd, ${startDate.year}'),
+        find.text(
+          'Applies to $expectedPeriod - $expectedEnd, ${startDate.year}',
+        ),
         findsOneWidget,
       );
     });
 
-    testWidgets('shows recurrence controls only when recurring', (tester) async {
+    testWidgets('shows recurrence controls only when recurring', (
+      tester,
+    ) async {
       final baseState = ShareCreateState.initial().copyWith(
         isLoading: false,
         participants: const [],

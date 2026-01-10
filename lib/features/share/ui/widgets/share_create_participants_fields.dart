@@ -154,10 +154,10 @@ class _ParticipantsSection extends StatelessWidget {
 
   String? _customErrorText(
     S s,
-      ShareCustomSplitSummary summary,
-      bool showValidation,
-      dynamic theme,
-    ) {
+    ShareCustomSplitSummary summary,
+    bool showValidation,
+    dynamic theme,
+  ) {
     if (!showValidation) return null;
     if (summary.missingTotal) return s.shareCreateValidationAmount;
     if (summary.hasInvalidAmounts) {
@@ -250,10 +250,9 @@ class _CustomSplitRow extends StatelessWidget {
   }
 }
 
-  Color _validationColor(dynamic theme) {
+Color _validationColor(dynamic theme) {
   final tokens = theme.extension<KinlyColorTokens>();
   final scheme = theme.colorScheme;
   // Use the same high-contrast error color in both themes to keep helper text visible.
   return tokens?.error ?? scheme.error;
 }
-

@@ -40,4 +40,3 @@ class SharePaidToMeDetailSurfaceScope {
   final bool isLoading;
   final String? error;
 }
-

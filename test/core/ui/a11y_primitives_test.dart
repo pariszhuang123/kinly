@@ -91,10 +91,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       _wrap(
-        const KinlyBadge(
-          label: 'new today',
-          semanticsLabel: 'New items today',
-        ),
+        const KinlyBadge(label: 'new today', semanticsLabel: 'New items today'),
       ),
     );
     await tester.pumpAndSettle();

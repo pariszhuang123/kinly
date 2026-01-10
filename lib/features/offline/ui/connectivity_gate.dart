@@ -23,5 +23,3 @@ class ConnectivityGate extends StatelessWidget {
     return child;
   }
 }
-
-

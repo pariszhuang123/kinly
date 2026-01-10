@@ -34,10 +34,14 @@ class KinlyTypography extends ThemeExtension<KinlyTypography> {
 
   factory KinlyTypography.fromBrightness(Brightness brightness) {
     // DM Sans for headings/titles, Inter for body/labels to match current Kinly feel.
-    final baseColor = brightness == Brightness.dark ? Colors.white : Colors.black;
+    final baseColor =
+        brightness == Brightness.dark ? Colors.white : Colors.black;
 
-    TextStyle dmSans(double size, FontWeight weight) =>
-        GoogleFonts.dmSans(fontSize: size, fontWeight: weight, color: baseColor);
+    TextStyle dmSans(double size, FontWeight weight) => GoogleFonts.dmSans(
+      fontSize: size,
+      fontWeight: weight,
+      color: baseColor,
+    );
     TextStyle inter(double size, FontWeight weight) =>
         GoogleFonts.inter(fontSize: size, fontWeight: weight, color: baseColor);
 
@@ -107,4 +111,3 @@ class KinlyTypography extends ThemeExtension<KinlyTypography> {
     );
   }
 }
-

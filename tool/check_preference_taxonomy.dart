@@ -138,19 +138,17 @@ List<PreferenceTaxonomyViolation> validatePreferenceTaxonomy({
   }
 
   violations.addAll(
-    _validateScenarioMapping(
-      taxonomyIds: ids,
-      scenariosPath: scenariosPath,
-    ),
+    _validateScenarioMapping(taxonomyIds: ids, scenariosPath: scenariosPath),
   );
 
   return violations;
 }
 
 void main(List<String> args) {
-  final path = _readArg(args, '--path=') ??
-      'docs/contracts/preference_taxonomy_v1.md';
-  final scenariosPath = _readArg(args, '--scenarios-path=') ??
+  final path =
+      _readArg(args, '--path=') ?? 'docs/contracts/preference_taxonomy_v1.md';
+  final scenariosPath =
+      _readArg(args, '--scenarios-path=') ??
       'docs/contracts/preference_scenarios_v1.md';
   final violations = validatePreferenceTaxonomy(
     taxonomyPath: path,
@@ -161,9 +159,7 @@ void main(List<String> args) {
     return;
   }
 
-  stdout.writeln(
-    'Preference taxonomy checks failed (${violations.length}):',
-  );
+  stdout.writeln('Preference taxonomy checks failed (${violations.length}):');
   for (final v in violations) {
     stdout.writeln(' - ${v.code}: ${v.message}');
   }

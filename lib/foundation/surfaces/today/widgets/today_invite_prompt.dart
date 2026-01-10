@@ -79,7 +79,3 @@ class TodayInvitePrompt extends StatelessWidget {
     );
   }
 }
-
-
-
-

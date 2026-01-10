@@ -35,10 +35,7 @@ void main() {
 
   group('MoodSubmitResult.fromJson', () {
     test('parses with gratitude post', () {
-      final json = {
-        'entry_id': 'entry-123',
-        'gratitude_post_id': 'post-456',
-      };
+      final json = {'entry_id': 'entry-123', 'gratitude_post_id': 'post-456'};
       final result = MoodSubmitResult.fromJson(json);
 
       expect(result.entryId, 'entry-123');
@@ -46,10 +43,7 @@ void main() {
     });
 
     test('parses without gratitude post', () {
-      final json = {
-        'entry_id': 'entry-123',
-        'gratitude_post_id': null,
-      };
+      final json = {'entry_id': 'entry-123', 'gratitude_post_id': null};
       final result = MoodSubmitResult.fromJson(json);
 
       expect(result.entryId, 'entry-123');
@@ -119,10 +113,7 @@ void main() {
 
   group('GratitudeWallStatus.fromJson', () {
     test('parses with unread posts', () {
-      final json = {
-        'has_unread': true,
-        'last_read_at': '2024-01-15T10:30:00Z',
-      };
+      final json = {'has_unread': true, 'last_read_at': '2024-01-15T10:30:00Z'};
       final result = GratitudeWallStatus.fromJson(json);
 
       expect(result.hasUnread, true);
@@ -172,10 +163,7 @@ void main() {
     });
 
     test('handles numeric types', () {
-      final json = {
-        'total_posts': 10.0,
-        'unread_count': 3.0,
-      };
+      final json = {'total_posts': 10.0, 'unread_count': 3.0};
       final result = GratitudeWallStats.fromJson(json);
 
       expect(result.totalPosts, 10);

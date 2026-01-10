@@ -105,7 +105,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                               avatarUrl: state.selectedAvatarUrl,
                             ),
                           ),
-                          SliverToBoxAdapter(child: SizedBox(height: spacing.lg)),
+                          SliverToBoxAdapter(
+                            child: SizedBox(height: spacing.lg),
+                          ),
                           SliverToBoxAdapter(
                             child: Text(
                               s.profileIdentitySubtitle,
@@ -116,7 +118,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                               ),
                             ),
                           ),
-                          SliverToBoxAdapter(child: SizedBox(height: spacing.lg)),
+                          SliverToBoxAdapter(
+                            child: SizedBox(height: spacing.lg),
+                          ),
                           SliverToBoxAdapter(
                             child: KinlyTextField(
                               controller: _controller,
@@ -138,7 +142,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                                       ),
                             ),
                           ),
-                          SliverToBoxAdapter(child: SizedBox(height: spacing.xl)),
+                          SliverToBoxAdapter(
+                            child: SizedBox(height: spacing.xl),
+                          ),
                           SliverToBoxAdapter(
                             child: Text(
                               s.profileIdentityAvatarSectionTitle,
@@ -147,7 +153,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                               ),
                             ),
                           ),
-                          SliverToBoxAdapter(child: SizedBox(height: spacing.xs)),
+                          SliverToBoxAdapter(
+                            child: SizedBox(height: spacing.xs),
+                          ),
                           SliverToBoxAdapter(
                             child: Text(
                               s.profileIdentityAvatarSectionDescription,
@@ -158,7 +166,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                               ),
                             ),
                           ),
-                          SliverToBoxAdapter(child: SizedBox(height: spacing.md)),
+                          SliverToBoxAdapter(
+                            child: SizedBox(height: spacing.md),
+                          ),
                           if (state.isLoading)
                             const SliverToBoxAdapter(
                               child: Center(child: KinlyLoader(size: 32)),
@@ -177,26 +187,27 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                               minTileWidth: 88,
                               spacing: spacing.md,
                               crossAxisCount: 5,
-                              children:
-                                  state.avatars
-                                      .map<Widget>(
-                                        (avatar) => _AvatarOption(
-                                          avatar: avatar,
-                                          isSelected:
-                                              avatar.id == state.selectedAvatarId,
-                                          onTap:
-                                              () => context
-                                                  .read<ProfileIdentityBloc>()
-                                                  .add(
-                                                    ProfileIdentityAvatarSelected(
-                                                      avatar.id,
-                                                    ),
-                                                  ),
-                                        ),
-                                      )
-                                      .toList(growable: false),
+                              children: state.avatars
+                                  .map<Widget>(
+                                    (avatar) => _AvatarOption(
+                                      avatar: avatar,
+                                      isSelected:
+                                          avatar.id == state.selectedAvatarId,
+                                      onTap:
+                                          () => context
+                                              .read<ProfileIdentityBloc>()
+                                              .add(
+                                                ProfileIdentityAvatarSelected(
+                                                  avatar.id,
+                                                ),
+                                              ),
+                                    ),
+                                  )
+                                  .toList(growable: false),
                             ),
-                          SliverToBoxAdapter(child: SizedBox(height: spacing.md)),
+                          SliverToBoxAdapter(
+                            child: SizedBox(height: spacing.md),
+                          ),
                         ],
                       ),
                     ),
@@ -251,7 +262,9 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
       case ProfileIdentityAction.failure:
         final message = _resolveActionMessage(state, s);
         final accent =
-            KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
+            KinlyThemeAccess.of(
+              context,
+            ).extension<KinlySections>()?.pulse.accent;
         KinlySnackBar.showError(context, message, accentColor: accent);
         break;
       case ProfileIdentityAction.none:
@@ -394,7 +407,3 @@ class _LowercaseTextFormatter extends TextInputFormatter {
     );
   }
 }
-
-
-
-

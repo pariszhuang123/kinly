@@ -28,15 +28,30 @@ void main() {
       final sections = colors.sections;
 
       test('global pairings ${brightness.name}', () {
-        _expectContrast(scheme.onSurface, scheme.surface, 4.5, 'onSurface/surface');
+        _expectContrast(
+          scheme.onSurface,
+          scheme.surface,
+          4.5,
+          'onSurface/surface',
+        );
         _expectContrast(
           scheme.onSurface,
           scheme.surfaceContainer,
           4.5,
           'onSurface/surfaceContainer',
         );
-        _expectContrast(scheme.onPrimary, scheme.primary, 4.5, 'onPrimary/primary');
-        _expectContrast(scheme.onSecondary, scheme.secondary, 4.5, 'onSecondary/secondary');
+        _expectContrast(
+          scheme.onPrimary,
+          scheme.primary,
+          4.5,
+          'onPrimary/primary',
+        );
+        _expectContrast(
+          scheme.onSecondary,
+          scheme.secondary,
+          4.5,
+          'onSecondary/secondary',
+        );
         _expectContrast(scheme.onError, scheme.error, 4.5, 'onError/error');
       });
 

@@ -50,12 +50,7 @@ void main() {
     ];
 
     await tester.pumpWidget(
-      wrap(
-        HubPreferencesSection(
-          members: members,
-          reportItems: reports,
-        ),
-      ),
+      wrap(HubPreferencesSection(members: members, reportItems: reports)),
     );
 
     final s = S.of(tester.element(find.byType(HubPreferencesSection)));

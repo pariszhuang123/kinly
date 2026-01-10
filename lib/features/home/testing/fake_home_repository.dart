@@ -33,10 +33,7 @@ class FakeHomeRepository implements HomeRepository {
 
   @override
   Future<HomeJoinResult> joinHome(String code) async {
-    return const HomeJoinResult(
-      homeId: 'home-1',
-      outcome: JoinOutcome.success,
-    );
+    return const HomeJoinResult(homeId: 'home-1', outcome: JoinOutcome.success);
   }
 
   @override

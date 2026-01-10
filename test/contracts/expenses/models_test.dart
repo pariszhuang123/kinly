@@ -300,9 +300,7 @@ void main() {
     });
 
     test('handles missing optional fields', () {
-      final json = {
-        'debtorUserId': 'user-123',
-      };
+      final json = {'debtorUserId': 'user-123'};
       final result = ExpensePaidToMeDebtor.fromJson(json);
 
       expect(result.debtorUsername, '');
@@ -331,9 +329,7 @@ void main() {
     });
 
     test('handles missing counts', () {
-      final json = {
-        'recipientUserId': 'user-123',
-      };
+      final json = {'recipientUserId': 'user-123'};
       final result = ExpensesPayMyDueResult.fromJson(json);
 
       expect(result.splitsPaid, 0);

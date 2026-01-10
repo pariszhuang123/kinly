@@ -19,10 +19,7 @@ class StartHomeSurfaceSlots {
 }
 
 class StartHomeSurfaceActions {
-  const StartHomeSurfaceActions({
-    required this.onCreate,
-    required this.onJoin,
-  });
+  const StartHomeSurfaceActions({required this.onCreate, required this.onJoin});
 
   final VoidCallback onCreate;
   final VoidCallback onJoin;
@@ -45,4 +42,3 @@ class StartHomeSurfaceScope {
   final bool canPress;
   final StartHomeSurfaceActions actions;
 }
-

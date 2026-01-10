@@ -44,14 +44,15 @@ class KinlyCircleAvatar extends StatelessWidget {
               ? NetworkImage(avatarUrl!)
               : null,
       child: switch ((avatarUrl, showsSvgAvatar)) {
-        (null, _) => fallbackInitial != null
-            ? Text(
+        (null, _) =>
+          fallbackInitial != null
+              ? Text(
                 fallbackInitial!.toUpperCase(),
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: tokens.onPrimaryContainer,
                 ),
               )
-            : null,
+              : null,
         (_, true) => ClipOval(
           child: SizedBox.expand(
             child: SvgPicture.network(
@@ -106,9 +107,7 @@ class KinlyCircleAvatar extends StatelessWidget {
     const allowed = [12.0, 20.0, 28.0];
     return allowed.reduce(
       (closest, current) =>
-          (current - value).abs() < (closest - value).abs()
-              ? current
-              : closest,
+          (current - value).abs() < (closest - value).abs() ? current : closest,
     );
   }
 }

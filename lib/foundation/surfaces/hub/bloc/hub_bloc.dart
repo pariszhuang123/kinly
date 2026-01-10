@@ -125,10 +125,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
       );
       if (isRefresh && state.status == HubStatus.success) {
         emit(
-          state.copyWith(
-            isRefreshing: false,
-            notice: HubNotice.refreshFailed,
-          ),
+          state.copyWith(isRefreshing: false, notice: HubNotice.refreshFailed),
         );
         return;
       }
@@ -144,9 +141,8 @@ class HubBloc extends Bloc<HubEvent, HubState> {
 
     List<PreferenceReportListItem> preferenceReports = const [];
     try {
-      final resolution = await _preferenceReportsRepository.getTemplateResolution(
-        templateKey: 'personal_preferences_v1',
-      );
+      final resolution = await _preferenceReportsRepository
+          .getTemplateResolution(templateKey: 'personal_preferences_v1');
       preferenceReports = await _preferenceReportsRepository.listReportsForHome(
         homeId: _homeId,
         templateKey: 'personal_preferences_v1',
@@ -189,9 +185,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
     final previousCode = previousInviteCode ?? state.invite?.code;
     final nextCode = invite?.code;
     final hasRotateChange =
-        previousCode != null &&
-        nextCode != null &&
-        previousCode != nextCode;
+        previousCode != null && nextCode != null && previousCode != nextCode;
     final notice =
         hasRotateChange
             ? HubNotice.rotateSuccess

@@ -25,10 +25,7 @@ class KinlyTapTarget extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: borderRadius,
-          child: Align(
-            alignment: alignment,
-            child: child,
-          ),
+          child: Align(alignment: alignment, child: child),
         ),
       ),
     );

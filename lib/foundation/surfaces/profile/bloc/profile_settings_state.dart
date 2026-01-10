@@ -170,11 +170,7 @@ class ProfileSettingsState extends Equatable {
   List<HomeMemberSummary> get kickEligibleMembers {
     final currentUserId = membership?.userId;
     return activeMembers
-        .where(
-          (member) =>
-              member.userId != currentUserId &&
-              !member.isOwner,
-        )
+        .where((member) => member.userId != currentUserId && !member.isOwner)
         .toList(growable: false);
   }
 

@@ -23,46 +23,24 @@ SurfaceEntry<void> _entry({
 void main() {
   test('compareSurfaceEntries is deterministic', () {
     final entries = [
-      _entry(
-        slotIndex: 1,
-        featureId: 'flow',
-        contributionId: 'b',
-        order: 200,
-      ),
+      _entry(slotIndex: 1, featureId: 'flow', contributionId: 'b', order: 200),
       _entry(
         slotIndex: 0,
         featureId: 'share',
         contributionId: 'a',
         tier: SurfaceTier.critical,
       ),
-      _entry(
-        slotIndex: 0,
-        featureId: 'flow',
-        contributionId: 'c',
-        order: 600,
-      ),
+      _entry(slotIndex: 0, featureId: 'flow', contributionId: 'c', order: 600),
     ];
 
     entries.sort(compareSurfaceEntries);
 
-    expect(entries.map((e) => e.contributionId).toList(), [
-      'a',
-      'c',
-      'b',
-    ]);
+    expect(entries.map((e) => e.contributionId).toList(), ['a', 'c', 'b']);
   });
 
   test('compareSurfaceEntries uses contributionId as final tie-breaker', () {
-    final first = _entry(
-      slotIndex: 0,
-      featureId: 'flow',
-      contributionId: 'a',
-    );
-    final second = _entry(
-      slotIndex: 0,
-      featureId: 'flow',
-      contributionId: 'b',
-    );
+    final first = _entry(slotIndex: 0, featureId: 'flow', contributionId: 'a');
+    final second = _entry(slotIndex: 0, featureId: 'flow', contributionId: 'b');
 
     final entries = [second, first]..sort(compareSurfaceEntries);
 

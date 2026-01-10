@@ -55,6 +55,3 @@ class TodayProvider extends StatelessWidget {
     );
   }
 }
-
-
-

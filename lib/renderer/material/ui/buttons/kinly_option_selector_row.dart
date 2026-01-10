@@ -269,15 +269,16 @@ class _KinlyOptionCard<T> extends StatelessWidget {
           child: Container(
             width: width,
             padding: EdgeInsets.all(spacing.xs),
-              decoration: BoxDecoration(
-                color: bg,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: isSelected
-                      ? controls.selectableItemBorderSelected
-                      : controls.optionRowBorder,
-                ),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color:
+                    isSelected
+                        ? controls.selectableItemBorderSelected
+                        : controls.optionRowBorder,
               ),
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -287,8 +288,9 @@ class _KinlyOptionCard<T> extends StatelessWidget {
                   Text(
                     option.label,
                     textAlign: TextAlign.center,
-                    style:
-                        theme.textTheme.bodyMedium?.copyWith(color: textColor),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: textColor,
+                    ),
                   ),
                 ],
               ],
@@ -304,9 +306,10 @@ class _KinlyOptionCard<T> extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
 
-    final ringColor = isSelected
-        ? controls.selectableItemBorderSelected
-        : controls.selectableItemBorder;
+    final ringColor =
+        isSelected
+            ? controls.selectableItemBorderSelected
+            : controls.selectableItemBorder;
     final ringBackground = controls.selectableItemBg;
 
     // Inner visual (SVG or Icon).
@@ -318,7 +321,9 @@ class _KinlyOptionCard<T> extends StatelessWidget {
         option.iconData,
         size: iconSize,
         color:
-            isSelected ? controls.selectableItemFgSelected : controls.selectableItemFg,
+            isSelected
+                ? controls.selectableItemFgSelected
+                : controls.selectableItemFg,
       );
     }
 

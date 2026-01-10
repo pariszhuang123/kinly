@@ -26,7 +26,8 @@ class KinlyMotionAware extends InheritedWidget {
     required BuildContext context,
   }) {
     final theme = Theme.of(context);
-    final motion = theme.extension<Motion>() ??
+    final motion =
+        theme.extension<Motion>() ??
         const Motion(
           durationFast: Duration(milliseconds: 120),
           durationMedium: Duration(milliseconds: 200),
@@ -53,7 +54,8 @@ class KinlyMotionAware extends InheritedWidget {
 
   /// Convenience to fetch the nearest motion scope.
   static KinlyMotionAware of(BuildContext context) {
-    final scope = context.dependOnInheritedWidgetOfExactType<KinlyMotionAware>();
+    final scope =
+        context.dependOnInheritedWidgetOfExactType<KinlyMotionAware>();
     if (scope != null) return scope;
     final motion = Theme.of(context).extension<Motion>();
     final reduceMotion =
@@ -61,7 +63,8 @@ class KinlyMotionAware extends InheritedWidget {
         PlatformDispatcher.instance.accessibilityFeatures.disableAnimations;
     return KinlyMotionAware(
       reduceMotion: reduceMotion,
-      motion: motion ??
+      motion:
+          motion ??
           const Motion(
             durationFast: Duration(milliseconds: 120),
             durationMedium: Duration(milliseconds: 200),
@@ -77,7 +80,10 @@ class KinlyMotionAware extends InheritedWidget {
   }
 
   /// Use a shorter duration if reduced motion is requested.
-  Duration effectiveDuration(Duration regular, {Duration reduced = Duration.zero}) {
+  Duration effectiveDuration(
+    Duration regular, {
+    Duration reduced = Duration.zero,
+  }) {
     return reduceMotion ? reduced : regular;
   }
 

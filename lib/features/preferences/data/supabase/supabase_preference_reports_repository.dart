@@ -3,7 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kinly/contracts/preferences/models.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 
-class SupabasePreferenceReportsRepository implements PreferenceReportsRepository {
+class SupabasePreferenceReportsRepository
+    implements PreferenceReportsRepository {
   SupabasePreferenceReportsRepository({SupabaseClient? client})
     : _client = client ?? Supabase.instance.client;
 

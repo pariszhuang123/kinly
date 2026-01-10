@@ -42,7 +42,8 @@ Future<void> _openFlowChoreDetailImpl(
   if (result is FlowChoreOutcome) {
     if (result.isCompleted) {
       final s = S.of(context);
-      final accent = KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
+      final accent =
+          KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
       KinlySnackBar.showSuccess(
         context,
         s.flowChoreDetailCompletionSuccess,
@@ -56,7 +57,8 @@ Future<void> _openFlowChoreDetailImpl(
 void _handleFlowChoreOutcome(BuildContext context, Object? result) {
   if (result is! FlowChoreOutcome) return;
   final s = S.of(context);
-  final accent = KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
+  final accent =
+      KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
   if (result.isUpdate) {
     KinlySnackBar.showSuccess(
       context,
@@ -72,4 +74,3 @@ void _handleFlowChoreOutcome(BuildContext context, Object? result) {
   }
   context.read<TodayBloc>().add(const TodayRefreshed());
 }
-

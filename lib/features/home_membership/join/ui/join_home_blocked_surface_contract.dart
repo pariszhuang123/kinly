@@ -35,4 +35,3 @@ class JoinHomeBlockedSurfaceScope {
   final S strings;
   final JoinHomeBlockedSurfaceActions actions;
 }
-

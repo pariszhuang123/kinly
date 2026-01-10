@@ -194,10 +194,7 @@ void main() {
     });
 
     test('parses blocked result', () {
-      final json = {
-        'status': 'blocked',
-        'home_id': 'home-123',
-      };
+      final json = {'status': 'blocked', 'home_id': 'home-123'};
       final result = HomeJoinResult.fromJson(json);
 
       expect(result.outcome, JoinOutcome.blocked);
@@ -205,10 +202,7 @@ void main() {
     });
 
     test('handles homeId key variant', () {
-      final json = {
-        'status': 'success',
-        'homeId': 'home-123',
-      };
+      final json = {'status': 'success', 'homeId': 'home-123'};
       final result = HomeJoinResult.fromJson(json);
 
       expect(result.homeId, 'home-123');
@@ -288,9 +282,7 @@ void main() {
     });
 
     test('handles missing optional fields', () {
-      final json = {
-        'created_at': '2024-01-15T10:30:00Z',
-      };
+      final json = {'created_at': '2024-01-15T10:30:00Z'};
       final result = HomeInvite.fromJson(json);
 
       expect(result.id, '');

@@ -25,10 +25,7 @@ void main() {
     });
 
     test('parses profile without optional fields', () {
-      final json = {
-        'user_id': 'user-123',
-        'username': 'bob',
-      };
+      final json = {'user_id': 'user-123', 'username': 'bob'};
       final result = UserProfile.fromJson(json);
 
       expect(result.userId, 'user-123');

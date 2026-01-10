@@ -31,5 +31,3 @@ class GratitudeWallProvider extends StatelessWidget {
     );
   }
 }
-
-

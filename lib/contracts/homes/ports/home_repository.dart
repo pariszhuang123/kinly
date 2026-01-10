@@ -18,10 +18,7 @@ abstract class HomeRepository {
     required String newOwnerId,
   });
 
-  Future<void> kickMember({
-    required String homeId,
-    required String userId,
-  });
+  Future<void> kickMember({required String homeId, required String userId});
 
   Future<LeaveResult> leave({required String homeId});
 

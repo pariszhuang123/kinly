@@ -24,7 +24,8 @@ class KinlySearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<KinlyColorTokens>() ??
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final corners = theme.extension<Corners>();
     final spacing = theme.extension<Spacing>();
@@ -50,10 +51,7 @@ class KinlySearchField extends StatelessWidget {
         prefixIcon: const Icon(Icons.search),
         suffixIcon:
             controller.text.isNotEmpty && onClear != null
-                ? IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: onClear,
-                )
+                ? IconButton(icon: const Icon(Icons.close), onPressed: onClear)
                 : null,
         border: OutlineInputBorder(
           borderRadius: borderRadius,
@@ -67,9 +65,11 @@ class KinlySearchField extends StatelessWidget {
           borderRadius: borderRadius,
           borderSide: BorderSide(color: focusedColor, width: 1.4),
         ),
-        labelStyle: type?.bodyMedium ??
+        labelStyle:
+            type?.bodyMedium ??
             theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
-        hintStyle: type?.bodyMedium ??
+        hintStyle:
+            type?.bodyMedium ??
             theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
       ),
       style: type?.bodyMedium ?? theme.textTheme.bodyMedium,

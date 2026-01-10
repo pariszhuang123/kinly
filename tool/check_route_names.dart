@@ -8,10 +8,7 @@ final _appRouteNames = RegExp(r'\bAppRouteNames\.');
 void main() {
   final violations = <String>[];
   final files =
-      [
-        ..._dartFilesUnder('lib/features'),
-        ..._dartFilesUnder('lib/foundation'),
-      ]
+      [..._dartFilesUnder('lib/features'), ..._dartFilesUnder('lib/foundation')]
           .where(
             (f) =>
                 f.path.contains(
@@ -66,9 +63,7 @@ void _checkFile(File file, List<String> violations) {
       if (_nameLine.hasMatch(line)) {
         nameLineIndex = i;
         if (!_appRouteNames.hasMatch(line)) {
-          violations.add(
-            '$path:${i + 1} GoRoute name must use AppRouteNames',
-          );
+          violations.add('$path:${i + 1} GoRoute name must use AppRouteNames');
         }
       }
 

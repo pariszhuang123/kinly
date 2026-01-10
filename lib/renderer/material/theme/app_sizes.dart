@@ -73,4 +73,3 @@ class AppSizes extends ThemeExtension<AppSizes> {
     );
   }
 }
-

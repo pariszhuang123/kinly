@@ -77,10 +77,7 @@ class ExploreRegistry {
             colors: sections.flow,
             title: scope.strings.quick_add_flow_title,
             subtitle: scope.strings.exploreFlowSubtitle,
-            icon: SectionAssets.flow.build(
-              color: sections.flow.icon,
-              size: 32,
-            ),
+            icon: SectionAssets.flow.build(color: sections.flow.icon, size: 32),
             onTap: scope.actions.onFlowTap,
           );
         },
@@ -110,7 +107,3 @@ class ExploreRegistry {
     );
   }
 }
-
-
-
-

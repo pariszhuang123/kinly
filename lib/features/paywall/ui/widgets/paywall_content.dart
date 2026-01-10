@@ -35,10 +35,7 @@ class PaywallContent extends StatelessWidget {
       return const Center(child: KinlyLoader());
     }
     if (state.status == PaywallLoadStatus.error) {
-      return _ErrorView(
-        strings: scope.strings,
-        onRetry: scope.actions.onRetry,
-      );
+      return _ErrorView(strings: scope.strings, onRetry: scope.actions.onRetry);
     }
     final pkg = state.package;
     return _PaywallBody(
@@ -239,12 +236,12 @@ class _BenefitChecklist extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: checkBg,
                       shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        KinlyIcons.checkRounded,
-                        color: checkColor,
-                        size: iconDimension,
-                      ),
+                    ),
+                    child: Icon(
+                      KinlyIcons.checkRounded,
+                      color: checkColor,
+                      size: iconDimension,
+                    ),
                   ),
                   SizedBox(width: spacing.m),
                   Expanded(
@@ -384,7 +381,3 @@ class _ErrorView extends StatelessWidget {
     );
   }
 }
-
-
-
-

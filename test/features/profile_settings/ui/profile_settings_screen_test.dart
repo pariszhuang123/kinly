@@ -14,8 +14,7 @@ class _MockProfileSettingsBloc
     extends MockBloc<ProfileSettingsEvent, ProfileSettingsState>
     implements ProfileSettingsBloc {}
 
-class _FakeProfileSettingsEvent extends Fake
-    implements ProfileSettingsEvent {}
+class _FakeProfileSettingsEvent extends Fake implements ProfileSettingsEvent {}
 
 void main() {
   setUpAll(() {
@@ -28,9 +27,9 @@ void main() {
 
     setUp(() {
       profileSettingsBloc = _MockProfileSettingsBloc();
-      when(() => profileSettingsBloc.stream).thenAnswer(
-        (_) => const Stream<ProfileSettingsState>.empty(),
-      );
+      when(
+        () => profileSettingsBloc.stream,
+      ).thenAnswer((_) => const Stream<ProfileSettingsState>.empty());
     });
 
     Widget buildApp() {

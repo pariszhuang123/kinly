@@ -45,10 +45,7 @@ class KinlyEmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null) ...[
-            icon!,
-            SizedBox(height: spacing?.m ?? 12),
-          ],
+          if (icon != null) ...[icon!, SizedBox(height: spacing?.m ?? 12)],
           Text(
             title,
             style: type?.titleLarge ?? theme.textTheme.titleLarge,
@@ -58,7 +55,8 @@ class KinlyEmptyState extends StatelessWidget {
             SizedBox(height: spacing?.s ?? 8),
             Text(
               body!,
-              style: type?.bodyMedium ??
+              style:
+                  type?.bodyMedium ??
                   theme.textTheme.bodyMedium?.copyWith(
                     color: derived.onSurface.withValues(
                       alpha: opacities.alphaFaint,

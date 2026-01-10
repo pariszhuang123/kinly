@@ -72,4 +72,3 @@ class Corners extends ThemeExtension<Corners> {
     );
   }
 }
-

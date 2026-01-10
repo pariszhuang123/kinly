@@ -318,7 +318,9 @@ void main() {
     sl.registerLazySingleton<AuthRepository>(() => _MockAuthRepository());
     sl.registerLazySingleton<HomeRepository>(() => _MockHomeRepository());
     sl.registerLazySingleton<Logger>(() => _MockLogger());
-    sl.registerLazySingleton<PaywallLauncher>(() => const PaywallLauncherImpl());
+    sl.registerLazySingleton<PaywallLauncher>(
+      () => const PaywallLauncherImpl(),
+    );
 
     final repo = sl<PaywallRepository>() as _MockPaywallRepository;
     final rc = sl<RevenueCatService>() as _MockRevenueCatService;
@@ -540,5 +542,3 @@ void main() {
     expect(listItemTopAfter, lessThan(listItemTopBefore - 20));
   });
 }
-
-

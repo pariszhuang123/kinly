@@ -49,4 +49,3 @@ class SectionAssets {
   // 🟦 Hub → Still SVG asset
   static const hub = SectionAsset.asset('assets/icons/feature/Hub.svg');
 }
-

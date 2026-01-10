@@ -29,8 +29,11 @@ void main() {
     expect(cubit.state.addToWall, isFalse, reason: 'No comment yet');
 
     cubit.commentChanged(' Nice week ');
-    expect(cubit.state.addToWall, isTrue,
-        reason: 'Sunny + comment should pre-check');
+    expect(
+      cubit.state.addToWall,
+      isTrue,
+      reason: 'Sunny + comment should pre-check',
+    );
   });
 
   test('manual untick stays off even after further edits', () {
@@ -43,8 +46,11 @@ void main() {
     expect(cubit.state.addToWall, isFalse);
 
     cubit.commentChanged('Even better');
-    expect(cubit.state.addToWall, isFalse,
-        reason: 'User choice respected while eligible');
+    expect(
+      cubit.state.addToWall,
+      isFalse,
+      reason: 'User choice respected while eligible',
+    );
   });
 
   test('reselecting same mood keeps state unchanged', () {
@@ -69,10 +75,8 @@ void main() {
           addToWall: any(named: 'addToWall'),
         ),
       ).thenAnswer(
-        (_) async => const MoodSubmitResult(
-          entryId: 'e1',
-          gratitudePostId: 'g1',
-        ),
+        (_) async =>
+            const MoodSubmitResult(entryId: 'e1', gratitudePostId: 'g1'),
       );
       return HarmonyCubit(homeId: 'home', moodRepository: repo);
     },
@@ -104,9 +108,7 @@ void main() {
           comment: any(named: 'comment'),
           addToWall: any(named: 'addToWall'),
         ),
-      ).thenAnswer(
-        (_) async => const MoodSubmitResult(entryId: 'e2'),
-      );
+      ).thenAnswer((_) async => const MoodSubmitResult(entryId: 'e2'));
       return HarmonyCubit(homeId: 'home', moodRepository: repo);
     },
     act: (cubit) {

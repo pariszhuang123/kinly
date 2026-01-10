@@ -288,7 +288,10 @@ void main() {
       (state) => state.status == PreferenceCaptureStatus.failure,
     );
 
-    expect(failureState.errorMessage, PreferenceCaptureBloc.missingReportErrorCode);
+    expect(
+      failureState.errorMessage,
+      PreferenceCaptureBloc.missingReportErrorCode,
+    );
     expect(failureState.isDirty, isFalse);
     expect(await HydratedBloc.storage.read(key), isNull);
   });
@@ -339,10 +342,7 @@ PreferenceReport _buildReport(String subjectUserId) {
     locale: 'en',
     publishedAt: DateTime.utc(2026, 1, 10),
     content: const PreferenceReportContent(
-      summary: PreferenceReportSummary(
-        title: 'Title',
-        subtitle: 'Subtitle',
-      ),
+      summary: PreferenceReportSummary(title: 'Title', subtitle: 'Subtitle'),
       sections: [
         PreferenceReportSection(
           sectionKey: 'section',

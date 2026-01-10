@@ -23,15 +23,14 @@ String? redirectForTest({
   required AuthMembershipStatus membershipStatus,
   bool isProfileDeactivated = false,
   required AppVersionStatus appVersionStatus,
-}) =>
-    _redirectCore(
-      path: path,
-      uri: Uri.parse(path),
-      authStatus: authStatus,
-      membershipStatus: membershipStatus,
-      isProfileDeactivated: isProfileDeactivated,
-      appVersionStatus: appVersionStatus,
-    );
+}) => _redirectCore(
+  path: path,
+  uri: Uri.parse(path),
+  authStatus: authStatus,
+  membershipStatus: membershipStatus,
+  isProfileDeactivated: isProfileDeactivated,
+  appVersionStatus: appVersionStatus,
+);
 
 String? _redirectCore({
   required String path,
@@ -44,11 +43,7 @@ String? _redirectCore({
   final forceUpdateRedirect = _forceUpdateRedirect(path, appVersionStatus);
   if (forceUpdateRedirect != null) return forceUpdateRedirect;
 
-  final authRedirect = _authRedirect(
-    path: path,
-    uri: uri,
-    status: authStatus,
-  );
+  final authRedirect = _authRedirect(path: path, uri: uri, status: authStatus);
   if (authStatus != AuthStatus.authenticated) {
     return authRedirect;
   }

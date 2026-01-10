@@ -125,11 +125,7 @@ class _FlowDetailSection extends StatelessWidget {
                 children: [
                   Expanded(child: bodyText),
                   const SizedBox(width: 8),
-                  Icon(
-                    KinlyIcons.openInNew,
-                    size: 16,
-                    color: linkColors.icon,
-                  ),
+                  Icon(KinlyIcons.openInNew, size: 16, color: linkColors.icon),
                 ],
               ),
             )
@@ -207,7 +203,3 @@ class _ExpectationPhotoSection extends StatelessWidget {
     );
   }
 }
-
-
-
-

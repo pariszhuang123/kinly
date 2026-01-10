@@ -214,10 +214,8 @@ class _OwedList extends StatelessWidget {
             subtitle: s.todayShareActiveSubtitle(entry.items.length),
             trailing: Text(
               _formatCurrency(entry.totalOwedCents),
-              style: KinlyThemeAccess.of(context).textTheme.titleSmall?.copyWith(
-                color: colors.icon,
-                fontWeight: FontWeight.w700,
-              ),
+              style: KinlyThemeAccess.of(context).textTheme.titleSmall
+                  ?.copyWith(color: colors.icon, fontWeight: FontWeight.w700),
             ),
             onTap: () => onTap(entry),
           ),
@@ -247,9 +245,10 @@ class _PaidToMeList extends StatelessWidget {
     return Column(
       children: List.generate(entries.length, (index) {
         final entry = entries[index];
-        final subtitle = entry.unseenCount > 0
-            ? strings.todaySharePaidUnseen(entry.unseenCount)
-            : strings.todaySharePaidSubtitle;
+        final subtitle =
+            entry.unseenCount > 0
+                ? strings.todaySharePaidUnseen(entry.unseenCount)
+                : strings.todaySharePaidSubtitle;
         return Padding(
           padding: EdgeInsets.only(
             bottom: index == entries.length - 1 ? 0 : spacing.sm,
@@ -264,10 +263,8 @@ class _PaidToMeList extends StatelessWidget {
             subtitle: subtitle,
             trailing: Text(
               _formatCurrency(entry.totalPaidCents),
-              style: KinlyThemeAccess.of(context).textTheme.titleSmall?.copyWith(
-                color: colors.icon,
-                fontWeight: FontWeight.w700,
-              ),
+              style: KinlyThemeAccess.of(context).textTheme.titleSmall
+                  ?.copyWith(color: colors.icon, fontWeight: FontWeight.w700),
             ),
             onTap: () => onTap(entry),
           ),
@@ -306,10 +303,8 @@ class _DraftList extends StatelessWidget {
             title: visibleDrafts[i].description,
             trailing: Text(
               _formatCurrency(visibleDrafts[i].amountCents),
-              style: KinlyThemeAccess.of(context).textTheme.titleSmall?.copyWith(
-                color: colors.icon,
-                fontWeight: FontWeight.w700,
-              ),
+              style: KinlyThemeAccess.of(context).textTheme.titleSmall
+                  ?.copyWith(color: colors.icon, fontWeight: FontWeight.w700),
             ),
             onTap: () => onTap(visibleDrafts[i]),
           ),
@@ -346,8 +341,3 @@ String _replaceCountPlaceholder(String text, String replacement) {
       ? text.replaceFirst(pattern, replacement)
       : '$text ($replacement)';
 }
-
-
-
-
-

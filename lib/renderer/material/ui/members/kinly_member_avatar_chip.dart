@@ -57,7 +57,10 @@ class KinlyMemberAvatarChip extends StatelessWidget {
                 borderRadius: BorderRadius.circular(48),
                 onTap: onTap,
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+                  constraints: const BoxConstraints(
+                    minHeight: 48,
+                    minWidth: 48,
+                  ),
                   child: AnimatedContainer(
                     duration: motionAware.effectiveDuration(
                       const Duration(milliseconds: 150),
@@ -88,7 +91,9 @@ class KinlyMemberAvatarChip extends StatelessWidget {
               color:
                   isSelected
                       ? colors.onSurface
-                      : colors.onSurface.withValues(alpha: opacities.alphaOpaque),
+                      : colors.onSurface.withValues(
+                        alpha: opacities.alphaOpaque,
+                      ),
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             ),
             textAlign: TextAlign.center,

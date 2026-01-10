@@ -66,8 +66,7 @@ class KinlyProfileHeader extends StatelessWidget {
                           ),
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation(colors.primary),
+                            valueColor: AlwaysStoppedAnimation(colors.primary),
                           ),
                         ),
                       ),

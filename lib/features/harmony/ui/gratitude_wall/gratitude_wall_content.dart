@@ -152,7 +152,3 @@ class GratitudeWallContent extends StatelessWidget {
     );
   }
 }
-
-
-
-

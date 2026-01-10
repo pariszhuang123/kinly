@@ -6,7 +6,8 @@ Future<void> _openShareCreateImpl(BuildContext context) async {
   context.read<TodayBloc>().add(const TodayRefreshed());
   if (result == true) {
     final s = S.of(context);
-    final accent = KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
+    final accent =
+        KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
     KinlySnackBar.showSuccess(
       context,
       s.shareCreateSuccess,
@@ -23,7 +24,8 @@ Future<void> _openShareOwedDetailImpl(
   final result = await navigator.openOwedDetail(context: context, owed: owed);
   if (result == true && context.mounted) {
     final s = S.of(context);
-    final accent = KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
+    final accent =
+        KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
     KinlySnackBar.showSuccess(
       context,
       s.shareOwedDetailSuccess,
@@ -44,7 +46,8 @@ Future<void> _openShareDraftEditImpl(
   );
   if (!context.mounted) return;
   final s = S.of(context);
-  final accent = KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
+  final accent =
+      KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
   if (result == true || result == ShareEditOutcome.updated) {
     KinlySnackBar.showSuccess(context, s.shareEditSuccess, accentColor: accent);
     context.read<TodayBloc>().add(const TodayRefreshed());
@@ -75,10 +78,7 @@ Future<void> _openSharePaidToMeDetailImpl(
 }
 
 Future<void> _openShareCreatedListImpl(BuildContext context) async {
-  await context.pushNamed<bool>(
-    AppRouteNames.shareCreatedList,
-    extra: true,
-  );
+  await context.pushNamed<bool>(AppRouteNames.shareCreatedList, extra: true);
   if (context.mounted) {
     context.read<TodayBloc>().add(const TodayRefreshed());
   }
@@ -171,4 +171,3 @@ Future<bool> shareInviteForTest(
   logger: logger,
   s: s,
 );
-

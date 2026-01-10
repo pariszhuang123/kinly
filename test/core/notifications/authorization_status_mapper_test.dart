@@ -7,14 +7,18 @@ void main() {
   group('mapAuthorizationStatusToPermissionStatus', () {
     test('maps authorized to allowed', () {
       expect(
-        mapAuthorizationStatusToPermissionStatus(AuthorizationStatus.authorized),
+        mapAuthorizationStatusToPermissionStatus(
+          AuthorizationStatus.authorized,
+        ),
         NotificationPermissionStatus.allowed,
       );
     });
 
     test('maps provisional to allowed', () {
       expect(
-        mapAuthorizationStatusToPermissionStatus(AuthorizationStatus.provisional),
+        mapAuthorizationStatusToPermissionStatus(
+          AuthorizationStatus.provisional,
+        ),
         NotificationPermissionStatus.allowed,
       );
     });
@@ -28,7 +32,9 @@ void main() {
 
     test('maps notDetermined to denied', () {
       expect(
-        mapAuthorizationStatusToPermissionStatus(AuthorizationStatus.notDetermined),
+        mapAuthorizationStatusToPermissionStatus(
+          AuthorizationStatus.notDetermined,
+        ),
         NotificationPermissionStatus.denied,
       );
     });

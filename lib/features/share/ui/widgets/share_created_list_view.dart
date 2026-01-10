@@ -159,14 +159,13 @@ class _ShareCreatedTile extends StatelessWidget {
       foregroundColor: theme.colorScheme.onPrimary,
     );
 
-    final String? subtitle =
-        _buildSubtitle(
-          entry,
-          shareStatus: shareStatus,
-          progressLabel: progressLabel,
-          draftLabel: s.shareCreatedListDraftSubtitle,
-          periodLabel: periodLabel,
-        );
+    final String? subtitle = _buildSubtitle(
+      entry,
+      shareStatus: shareStatus,
+      progressLabel: progressLabel,
+      draftLabel: s.shareCreatedListDraftSubtitle,
+      periodLabel: periodLabel,
+    );
 
     final double progressValue =
         entry.amountCents == 0
@@ -335,7 +334,3 @@ class _ShareCreatedListError extends StatelessWidget {
     );
   }
 }
-
-
-
-

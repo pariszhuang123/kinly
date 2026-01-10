@@ -122,7 +122,10 @@ class KinlyFilledButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert((semanticsLabel ?? label).isNotEmpty, 'Semantic label must not be empty');
+    assert(
+      (semanticsLabel ?? label).isNotEmpty,
+      'Semantic label must not be empty',
+    );
 
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>()!;
@@ -137,7 +140,11 @@ class KinlyFilledButton extends StatelessWidget {
     final vertical = compact ? spacing.xs : spacing.sm;
 
     final child = _buildChild(spacing);
-    final buttonColors = _resolveColors(tokens, destructive: destructive, disabled: disabled);
+    final buttonColors = _resolveColors(
+      tokens,
+      destructive: destructive,
+      disabled: disabled,
+    );
 
     final baseStyle = FilledButton.styleFrom(
       minimumSize: const Size(48, 48),

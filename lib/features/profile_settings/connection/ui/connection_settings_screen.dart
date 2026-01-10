@@ -69,7 +69,9 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
       body: BlocConsumer<ConnectionSettingsBloc, ConnectionSettingsState>(
         listener: (context, state) async {
           final accent =
-              KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
+              KinlyThemeAccess.of(
+                context,
+              ).extension<KinlySections>()?.pulse.accent;
           if (state.action == ConnectionSettingsAction.showError) {
             KinlySnackBar.showError(
               context,
@@ -147,7 +149,9 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                             children: [
                               Text(
                                 s.connectionNotificationsToggleTitle,
-                                style: KinlyThemeAccess.of(context).textTheme.titleMedium
+                                style: KinlyThemeAccess.of(context)
+                                    .textTheme
+                                    .titleMedium
                                     ?.copyWith(fontWeight: FontWeight.w600),
                               ),
                               SizedBox(height: spacing.xs),
@@ -194,8 +198,13 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                       ),
                       child: Text(
                         s.connectionNotificationsPermissionBlocked,
-                        style: KinlyThemeAccess.of(context).textTheme.bodySmall?.copyWith(
-                          color: KinlyThemeAccess.of(context).colorScheme.onSurfaceVariant,
+                        style: KinlyThemeAccess.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(
+                          color:
+                              KinlyThemeAccess.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -210,9 +219,7 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                         spacing.md,
                       ),
                       title: s.connectionNotificationsTimeLabel,
-                      subtitle: s.connectionNotificationsTimeSubtitle(
-                        timeText,
-                      ),
+                      subtitle: s.connectionNotificationsTimeSubtitle(timeText),
                       trailing:
                           state.isSavingTime
                               ? SizedBox(
@@ -220,10 +227,13 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
                                 height: 20,
                                 child: KinlyLoader(
                                   size: 18,
-                                  color: KinlyThemeAccess.of(context).colorScheme.primary,
+                                  color:
+                                      KinlyThemeAccess.of(
+                                        context,
+                                      ).colorScheme.primary,
                                 ),
                               )
-                                : Icon(KinlyIcons.chevronRight),
+                              : Icon(KinlyIcons.chevronRight),
                       onTap:
                           state.isSavingTime
                               ? null
@@ -249,10 +259,7 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
     int currentMinute,
   ) async {
     final bloc = context.read<ConnectionSettingsBloc>();
-    final initialTime = TimeOfDay(
-      hour: currentHour,
-      minute: currentMinute,
-    );
+    final initialTime = TimeOfDay(hour: currentHour, minute: currentMinute);
     final picked = await showKinlyTimePicker(
       context: context,
       initialTime: initialTime,
@@ -261,10 +268,7 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
     if (!context.mounted || picked == null) return;
     if (picked.hour == currentHour && picked.minute == currentMinute) return;
     bloc.add(
-      ConnectionSettingsTimeChanged(
-        hour: picked.hour,
-        minute: picked.minute,
-      ),
+      ConnectionSettingsTimeChanged(hour: picked.hour, minute: picked.minute),
     );
   }
 
@@ -278,7 +282,3 @@ class _ConnectionSettingsScreenState extends State<ConnectionSettingsScreen> {
     );
   }
 }
-
-
-
-

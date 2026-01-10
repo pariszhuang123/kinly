@@ -51,6 +51,3 @@ class TodayHeaderContainer extends StatelessWidget {
     await context.pushNamed(AppRouteNames.profileSettings, extra: args);
   }
 }
-
-
-

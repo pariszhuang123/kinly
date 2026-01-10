@@ -628,4 +628,3 @@ Color _pickOnColor({
       ? Colors.white
       : KinlyFoundationColors.ink;
 }
-

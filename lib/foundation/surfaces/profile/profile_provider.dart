@@ -58,5 +58,3 @@ class ProfileSettingsProvider extends StatelessWidget {
     );
   }
 }
-
-

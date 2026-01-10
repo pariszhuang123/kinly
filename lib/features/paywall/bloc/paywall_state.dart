@@ -1,6 +1,7 @@
 part of 'paywall_bloc.dart';
 
 enum PaywallLoadStatus { initial, loading, ready, error }
+
 enum PaywallActionStatus { idle, purchasing, restoring, success }
 
 class PaywallState extends Equatable {
@@ -21,12 +22,12 @@ class PaywallState extends Equatable {
   });
 
   const PaywallState.initial()
-      : status = PaywallLoadStatus.initial,
-        actionStatus = PaywallActionStatus.idle,
-        paywallStatus = null,
-        package = null,
-        error = null,
-        activeMembers = const [];
+    : status = PaywallLoadStatus.initial,
+      actionStatus = PaywallActionStatus.idle,
+      paywallStatus = null,
+      package = null,
+      error = null,
+      activeMembers = const [];
 
   bool get isActionInFlight =>
       actionStatus == PaywallActionStatus.purchasing ||
@@ -52,11 +53,11 @@ class PaywallState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        actionStatus,
-        paywallStatus,
-        package,
-        error,
-        activeMembers,
-      ];
+    status,
+    actionStatus,
+    paywallStatus,
+    package,
+    error,
+    activeMembers,
+  ];
 }

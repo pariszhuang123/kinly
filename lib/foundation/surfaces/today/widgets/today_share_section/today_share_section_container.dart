@@ -52,6 +52,3 @@ class TodayShareSectionContainer extends StatelessWidget {
     );
   }
 }
-
-
-

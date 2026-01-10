@@ -86,4 +86,3 @@ class TodaySurfaceScope {
   final TodayInviteConfig inviteConfig;
   final String Function(List<String> names) formatMemberCapNames;
 }
-

@@ -47,7 +47,3 @@ class HarmonyPage extends StatelessWidget {
     );
   }
 }
-
-
-
-

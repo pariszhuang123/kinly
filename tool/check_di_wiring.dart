@@ -31,9 +31,7 @@ void main() {
     }
     final content = file.readAsStringSync();
     if (content.contains('composeDependencies(')) {
-      violations.add(
-        '$normalized must not call composeDependencies()',
-      );
+      violations.add('$normalized must not call composeDependencies()');
     }
   }
 

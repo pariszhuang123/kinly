@@ -26,11 +26,7 @@ class JoinHomeBlockedScreen extends StatelessWidget {
     final slots = JoinHomeBlockedSurfaceSlots(
       body: _buildJoinHomeBlockedSections(scope),
     );
-    return KinlyScaffold(
-      body: SafeArea(
-        child: slots.body,
-      ),
-    );
+    return KinlyScaffold(body: SafeArea(child: slots.body));
   }
 
   Widget _buildJoinHomeBlockedSections(JoinHomeBlockedSurfaceScope scope) {
@@ -40,12 +36,9 @@ class JoinHomeBlockedScreen extends StatelessWidget {
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children:
-          entries.map((entry) => entry.builder(scope)).toList(growable: false),
+      children: entries
+          .map((entry) => entry.builder(scope))
+          .toList(growable: false),
     );
   }
 }
-
-
-
-

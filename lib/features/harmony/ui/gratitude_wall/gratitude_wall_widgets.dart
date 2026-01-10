@@ -329,7 +329,3 @@ String _replaceCountPlaceholder(
   // No placeholder and we don't want to append anything.
   return text;
 }
-
-
-
-

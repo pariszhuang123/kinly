@@ -21,16 +21,7 @@ void main() {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         extensions: const [
-          Spacing(
-            xxs: 2,
-            xs: 4,
-            s: 8,
-            m: 12,
-            l: 16,
-            xl: 24,
-            xxl: 32,
-            xxxl: 40,
-          ),
+          Spacing(xxs: 2, xs: 4, s: 8, m: 12, l: 16, xl: 24, xxl: 32, xxxl: 40),
           KinlyOpacity.defaults,
         ],
       ),

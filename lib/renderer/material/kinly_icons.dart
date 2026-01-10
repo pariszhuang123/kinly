@@ -9,7 +9,8 @@ class KinlyIcons {
   static const iosShareRounded = Icons.ios_share_rounded;
   static const menuBookOutlined = Icons.menu_book_outlined;
   static const supportAgentOutlined = Icons.support_agent_outlined;
-  static const notificationsActiveOutlined = Icons.notifications_active_outlined;
+  static const notificationsActiveOutlined =
+      Icons.notifications_active_outlined;
   static const exitToAppRounded = Icons.exit_to_app_rounded;
   static const personRemoveAlt1Rounded = Icons.person_remove_alt_1_rounded;
   static const deleteForeverOutlined = Icons.delete_forever_outlined;

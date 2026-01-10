@@ -10,7 +10,8 @@ class ProfileSettingsRouteContext {
   final String homeId;
 }
 
-typedef ProfileSettingsRouteContextResolver = ProfileSettingsRouteContext Function();
+typedef ProfileSettingsRouteContextResolver =
+    ProfileSettingsRouteContext Function();
 typedef ProfileSettingsMembershipRefresh = void Function();
 typedef ProfileSettingsSignOut = void Function();
 

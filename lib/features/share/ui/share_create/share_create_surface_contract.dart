@@ -68,4 +68,3 @@ class ShareCreateSurfaceScope {
   final TextEditingController recurrenceEveryController;
   final Map<String, TextEditingController> customControllers;
 }
-

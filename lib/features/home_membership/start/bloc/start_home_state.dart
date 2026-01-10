@@ -21,8 +21,7 @@ class StartHomeState {
     return StartHomeState(
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
-      isProfileDeactivated:
-          isProfileDeactivated ?? this.isProfileDeactivated,
+      isProfileDeactivated: isProfileDeactivated ?? this.isProfileDeactivated,
     );
   }
 }

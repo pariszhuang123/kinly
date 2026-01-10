@@ -34,5 +34,3 @@ class FlowChoreProvider extends StatelessWidget {
     );
   }
 }
-
-

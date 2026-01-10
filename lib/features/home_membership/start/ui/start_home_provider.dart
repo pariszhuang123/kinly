@@ -13,14 +13,15 @@ class StartHomeProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (ctx) => StartHomeBloc(
-        sl<HomeRepository>(),
-        onProfileDeactivated: () =>
-            ctx.read<AuthBloc>().add(const AuthProfileDeactivatedDetected()),
-      ),
+      create:
+          (ctx) => StartHomeBloc(
+            sl<HomeRepository>(),
+            onProfileDeactivated:
+                () => ctx.read<AuthBloc>().add(
+                  const AuthProfileDeactivatedDetected(),
+                ),
+          ),
       child: const StartHomeScreen(),
     );
   }
 }
-
-

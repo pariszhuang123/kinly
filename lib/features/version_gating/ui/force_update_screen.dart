@@ -73,7 +73,3 @@ class ForceUpdateScreen extends StatelessWidget {
         : AppConfig.iosStoreUrl;
   }
 }
-
-
-
-

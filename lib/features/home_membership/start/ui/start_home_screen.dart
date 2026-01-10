@@ -101,12 +101,9 @@ class StartHomeScreen extends StatelessWidget {
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children:
-          entries.map((entry) => entry.builder(scope)).toList(growable: false),
+      children: entries
+          .map((entry) => entry.builder(scope))
+          .toList(growable: false),
     );
   }
 }
-
-
-
-

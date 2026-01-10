@@ -10,6 +10,7 @@ import 'package:kinly/features/home/home.dart';
 import 'package:kinly/foundation/surfaces/hub/bloc/hub_bloc.dart';
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
+
 class _MockPreferenceReportsRepository extends Mock
     implements PreferenceReportsRepository {}
 
@@ -59,15 +60,15 @@ void main() {
   blocTest<HubBloc, HubState>(
     'loads members and invite on start',
     build: () {
-      when(() => homeRepository.getCurrentMembership()).thenAnswer(
-        (_) async => membership,
-      );
+      when(
+        () => homeRepository.getCurrentMembership(),
+      ).thenAnswer((_) async => membership);
       when(
         () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
       ).thenAnswer((_) async => [member]);
-      when(() => homeRepository.getActiveInvite(homeId)).thenThrow(
-        Exception('no active invite'),
-      );
+      when(
+        () => homeRepository.getActiveInvite(homeId),
+      ).thenThrow(Exception('no active invite'));
       when(
         () => homeRepository.getOrCreateInvite(homeId: homeId),
       ).thenAnswer((_) async => invite);
@@ -124,9 +125,9 @@ void main() {
   blocTest<HubBloc, HubState>(
     'emits failure when repository throws',
     build: () {
-      when(() => homeRepository.getCurrentMembership()).thenAnswer(
-        (_) async => membership,
-      );
+      when(
+        () => homeRepository.getCurrentMembership(),
+      ).thenAnswer((_) async => membership);
       when(
         () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
       ).thenThrow(Exception('boom'));
@@ -169,15 +170,15 @@ void main() {
   blocTest<HubBloc, HubState>(
     'still succeeds when invite fails (non-owner)',
     build: () {
-      when(() => homeRepository.getCurrentMembership()).thenAnswer(
-        (_) async => membership,
-      );
+      when(
+        () => homeRepository.getCurrentMembership(),
+      ).thenAnswer((_) async => membership);
       when(
         () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
       ).thenAnswer((_) async => [member]);
-      when(() => homeRepository.getActiveInvite(homeId)).thenThrow(
-        Exception('no active invite'),
-      );
+      when(
+        () => homeRepository.getActiveInvite(homeId),
+      ).thenThrow(Exception('no active invite'));
       when(
         () => homeRepository.getOrCreateInvite(homeId: homeId),
       ).thenThrow(Exception('forbidden'));

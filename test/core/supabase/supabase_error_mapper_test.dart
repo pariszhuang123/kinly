@@ -6,7 +6,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 
 /// Creates a PostgrestException with JSON-encoded message matching RPC error format.
-PostgrestException _postgrestError(String code, String message, {Map<String, dynamic>? details}) {
+PostgrestException _postgrestError(
+  String code,
+  String message, {
+  Map<String, dynamic>? details,
+}) {
   final json = jsonEncode({
     'code': code,
     'message': message,
@@ -32,28 +36,40 @@ void main() {
     });
 
     test('maps INACTIVE_INVITE to inactiveInvite', () {
-      final error = _postgrestError('INACTIVE_INVITE', 'Invite is no longer active');
+      final error = _postgrestError(
+        'INACTIVE_INVITE',
+        'Invite is no longer active',
+      );
       final result = SupabaseErrorMapper.mapJoin(error);
 
       expect(result.code, JoinErrorCode.inactiveInvite);
     });
 
     test('maps PROFILE_DEACTIVATED to profileDeactivated', () {
-      final error = _postgrestError('PROFILE_DEACTIVATED', 'Your profile is deactivated');
+      final error = _postgrestError(
+        'PROFILE_DEACTIVATED',
+        'Your profile is deactivated',
+      );
       final result = SupabaseErrorMapper.mapJoin(error);
 
       expect(result.code, JoinErrorCode.profileDeactivated);
     });
 
     test('maps PAYWALL_LIMIT_ACTIVE_MEMBERS to paywallLimitActiveMembers', () {
-      final error = _postgrestError('PAYWALL_LIMIT_ACTIVE_MEMBERS', 'Member limit reached');
+      final error = _postgrestError(
+        'PAYWALL_LIMIT_ACTIVE_MEMBERS',
+        'Member limit reached',
+      );
       final result = SupabaseErrorMapper.mapJoin(error);
 
       expect(result.code, JoinErrorCode.paywallLimitActiveMembers);
     });
 
     test('maps ALREADY_IN_OTHER_HOME to alreadyInOtherHome', () {
-      final error = _postgrestError('ALREADY_IN_OTHER_HOME', 'You are already in another home');
+      final error = _postgrestError(
+        'ALREADY_IN_OTHER_HOME',
+        'You are already in another home',
+      );
       final result = SupabaseErrorMapper.mapJoin(error);
 
       expect(result.code, JoinErrorCode.alreadyInOtherHome);
@@ -103,7 +119,10 @@ void main() {
 
   group('SupabaseErrorMapper.mapCreate', () {
     test('maps PROFILE_DEACTIVATED to profileDeactivated', () {
-      final error = _postgrestError('PROFILE_DEACTIVATED', 'Profile deactivated');
+      final error = _postgrestError(
+        'PROFILE_DEACTIVATED',
+        'Profile deactivated',
+      );
       final result = SupabaseErrorMapper.mapCreate(error);
 
       expect(result, isA<HomeCreateException>());
@@ -135,14 +154,20 @@ void main() {
     });
 
     test('maps OWNER_MUST_TRANSFER_FIRST to ownerMustTransferFirst', () {
-      final error = _postgrestError('OWNER_MUST_TRANSFER_FIRST', 'Transfer ownership first');
+      final error = _postgrestError(
+        'OWNER_MUST_TRANSFER_FIRST',
+        'Transfer ownership first',
+      );
       final result = SupabaseErrorMapper.mapLeave(error);
 
       expect(result.code, LeaveErrorCode.ownerMustTransferFirst);
     });
 
     test('maps STATE_CHANGED_RETRY to stateChangedRetry', () {
-      final error = _postgrestError('STATE_CHANGED_RETRY', 'State changed, retry');
+      final error = _postgrestError(
+        'STATE_CHANGED_RETRY',
+        'State changed, retry',
+      );
       final result = SupabaseErrorMapper.mapLeave(error);
 
       expect(result.code, LeaveErrorCode.stateChangedRetry);
@@ -214,21 +239,30 @@ void main() {
     });
 
     test('maps ASSIGNEE_NOT_MEMBER to assigneeNotMember', () {
-      final error = _postgrestError('ASSIGNEE_NOT_MEMBER', 'Assignee not member');
+      final error = _postgrestError(
+        'ASSIGNEE_NOT_MEMBER',
+        'Assignee not member',
+      );
       final result = SupabaseErrorMapper.mapChore(error);
 
       expect(result.code, ChoreErrorCode.assigneeNotMember);
     });
 
     test('maps PAYWALL_LIMIT_ACTIVE_CHORES to paywallActiveCap', () {
-      final error = _postgrestError('PAYWALL_LIMIT_ACTIVE_CHORES', 'Chore limit reached');
+      final error = _postgrestError(
+        'PAYWALL_LIMIT_ACTIVE_CHORES',
+        'Chore limit reached',
+      );
       final result = SupabaseErrorMapper.mapChore(error);
 
       expect(result.code, ChoreErrorCode.paywallActiveCap);
     });
 
     test('maps PAYWALL_LIMIT_CHORE_PHOTOS to paywallMediaCap', () {
-      final error = _postgrestError('PAYWALL_LIMIT_CHORE_PHOTOS', 'Photo limit reached');
+      final error = _postgrestError(
+        'PAYWALL_LIMIT_CHORE_PHOTOS',
+        'Photo limit reached',
+      );
       final result = SupabaseErrorMapper.mapChore(error);
 
       expect(result.code, ChoreErrorCode.paywallMediaCap);
@@ -258,7 +292,10 @@ void main() {
 
   group('SupabaseErrorMapper.mapExpense', () {
     test('maps INVALID_AMOUNT to invalidAmount', () {
-      final error = _postgrestError('INVALID_AMOUNT', 'Amount must be positive');
+      final error = _postgrestError(
+        'INVALID_AMOUNT',
+        'Amount must be positive',
+      );
       final result = SupabaseErrorMapper.mapExpense(error);
 
       expect(result, isA<ExpenseException>());
@@ -266,28 +303,40 @@ void main() {
     });
 
     test('maps INVALID_DESCRIPTION to invalidDescription', () {
-      final error = _postgrestError('INVALID_DESCRIPTION', 'Description required');
+      final error = _postgrestError(
+        'INVALID_DESCRIPTION',
+        'Description required',
+      );
       final result = SupabaseErrorMapper.mapExpense(error);
 
       expect(result.code, ExpenseErrorCode.invalidDescription);
     });
 
     test('maps SPLIT_SUM_MISMATCH to splitSumMismatch', () {
-      final error = _postgrestError('SPLIT_SUM_MISMATCH', 'Splits do not sum to total');
+      final error = _postgrestError(
+        'SPLIT_SUM_MISMATCH',
+        'Splits do not sum to total',
+      );
       final result = SupabaseErrorMapper.mapExpense(error);
 
       expect(result.code, ExpenseErrorCode.splitSumMismatch);
     });
 
     test('maps EXPENSE_LOCKED_AFTER_PAYMENT to lockedAfterPayment', () {
-      final error = _postgrestError('EXPENSE_LOCKED_AFTER_PAYMENT', 'Cannot edit after payment');
+      final error = _postgrestError(
+        'EXPENSE_LOCKED_AFTER_PAYMENT',
+        'Cannot edit after payment',
+      );
       final result = SupabaseErrorMapper.mapExpense(error);
 
       expect(result.code, ExpenseErrorCode.lockedAfterPayment);
     });
 
     test('maps PAYWALL_LIMIT_ACTIVE_EXPENSES to paywallActiveExpensesCap', () {
-      final error = _postgrestError('PAYWALL_LIMIT_ACTIVE_EXPENSES', 'Expense limit');
+      final error = _postgrestError(
+        'PAYWALL_LIMIT_ACTIVE_EXPENSES',
+        'Expense limit',
+      );
       final result = SupabaseErrorMapper.mapExpense(error);
 
       expect(result.code, ExpenseErrorCode.paywallActiveExpensesCap);
@@ -318,7 +367,10 @@ void main() {
     });
 
     test('maps MOOD_ALREADY_SUBMITTED to moodAlreadySubmitted', () {
-      final error = _postgrestError('MOOD_ALREADY_SUBMITTED', 'Already submitted');
+      final error = _postgrestError(
+        'MOOD_ALREADY_SUBMITTED',
+        'Already submitted',
+      );
       final result = SupabaseErrorMapper.mapMoodSubmit(error);
 
       expect(result.code, MoodSubmitErrorCode.moodAlreadySubmitted);
@@ -386,14 +438,18 @@ void main() {
     });
 
     test('infers inactiveHome from message containing inactive', () {
-      final error = _postgrestPlainError('{"code": "UNKNOWN", "message": "Home is inactive"}');
+      final error = _postgrestPlainError(
+        '{"code": "UNKNOWN", "message": "Home is inactive"}',
+      );
       final result = SupabaseErrorMapper.mapInviteGetOrCreate(error);
 
       expect(result.code, InviteGetOrCreateErrorCode.inactiveHome);
     });
 
     test('infers inactiveHome from message containing not found', () {
-      final error = _postgrestPlainError('{"code": "UNKNOWN", "message": "Home not found"}');
+      final error = _postgrestPlainError(
+        '{"code": "UNKNOWN", "message": "Home not found"}',
+      );
       final result = SupabaseErrorMapper.mapInviteGetOrCreate(error);
 
       expect(result.code, InviteGetOrCreateErrorCode.inactiveHome);
@@ -417,7 +473,9 @@ void main() {
     });
 
     test('handles lowercase error codes', () {
-      final error = _postgrestPlainError('{"code": "invalid_code", "message": "Bad code"}');
+      final error = _postgrestPlainError(
+        '{"code": "invalid_code", "message": "Bad code"}',
+      );
       final result = SupabaseErrorMapper.mapJoin(error);
 
       expect(result.code, JoinErrorCode.invalidCode);
@@ -426,18 +484,33 @@ void main() {
 
   group('Exception toString', () {
     test('HomeJoinException formats correctly', () {
-      final exception = HomeJoinException(JoinErrorCode.invalidCode, 'Bad code');
-      expect(exception.toString(), 'HomeJoinException(JoinErrorCode.invalidCode): Bad code');
+      final exception = HomeJoinException(
+        JoinErrorCode.invalidCode,
+        'Bad code',
+      );
+      expect(
+        exception.toString(),
+        'HomeJoinException(JoinErrorCode.invalidCode): Bad code',
+      );
     });
 
     test('ChoreException formats correctly', () {
       final exception = ChoreException(ChoreErrorCode.notFound, 'Not found');
-      expect(exception.toString(), 'ChoreException(ChoreErrorCode.notFound): Not found');
+      expect(
+        exception.toString(),
+        'ChoreException(ChoreErrorCode.notFound): Not found',
+      );
     });
 
     test('ExpenseException formats correctly', () {
-      final exception = ExpenseException(ExpenseErrorCode.invalidAmount, 'Invalid');
-      expect(exception.toString(), 'ExpenseException(ExpenseErrorCode.invalidAmount): Invalid');
+      final exception = ExpenseException(
+        ExpenseErrorCode.invalidAmount,
+        'Invalid',
+      );
+      expect(
+        exception.toString(),
+        'ExpenseException(ExpenseErrorCode.invalidAmount): Invalid',
+      );
     });
   });
 }

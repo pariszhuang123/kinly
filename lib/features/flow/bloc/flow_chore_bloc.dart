@@ -151,9 +151,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     Emitter<FlowChoreState> emit,
   ) {
     if (!event.isRecurring) {
-      emit(
-        state.copyWith(form: state.form.copyWith(clearRecurrence: true)),
-      );
+      emit(state.copyWith(form: state.form.copyWith(clearRecurrence: true)));
       return;
     }
 
@@ -182,9 +180,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     FlowChoreRecurrenceUnitChanged event,
     Emitter<FlowChoreState> emit,
   ) {
-    emit(
-      state.copyWith(form: state.form.copyWith(recurrenceUnit: event.unit)),
-    );
+    emit(state.copyWith(form: state.form.copyWith(recurrenceUnit: event.unit)));
   }
 
   void _onNotesChanged(
@@ -291,11 +287,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       );
     } on ChoreException catch (error) {
       if (_handlePaywall(error, emit)) return;
-      _emitSubmissionError(
-        emit,
-        code: error.code,
-        message: error.message,
-      );
+      _emitSubmissionError(emit, code: error.code, message: error.message);
     } catch (error) {
       _emitSubmissionError(emit, message: error.toString());
     }
@@ -306,8 +298,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     final hasValidAssignee = !requiresAssignee || form.assigneeUserId != null;
     final hasValidDate = form.isStartDateInRange(DateTime.now());
     final hasValidHowTo = form.isHowToUrlValid;
-    final hasValidRecurrence =
-        !form.isRecurring || form.isRecurrenceValid;
+    final hasValidRecurrence = !form.isRecurring || form.isRecurrenceValid;
     return form.isTitleValid &&
         hasValidAssignee &&
         hasValidDate &&
@@ -358,8 +349,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       else
         PaywallTrigger.flowPhotosCap,
     };
-    final hasPhotoIntent =
-        state.form.expectationPhotoPath.trim().isNotEmpty;
+    final hasPhotoIntent = state.form.expectationPhotoPath.trim().isNotEmpty;
     if (error.code == ChoreErrorCode.paywallActiveCap && hasPhotoIntent) {
       triggers.add(PaywallTrigger.flowPhotosCap);
     }

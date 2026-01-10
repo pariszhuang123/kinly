@@ -79,4 +79,3 @@ class KinlySections extends ThemeExtension<KinlySections> {
     );
   }
 }
-

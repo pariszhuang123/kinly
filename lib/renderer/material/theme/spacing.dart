@@ -87,4 +87,3 @@ class Spacing extends ThemeExtension<Spacing> {
     );
   }
 }
-

@@ -52,15 +52,15 @@ class KinlySelectionCard extends StatelessWidget {
           onTap: onTap,
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
-          child: Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(spacing.lg),
-            decoration: BoxDecoration(
-              color: colors.card,
-              borderRadius: BorderRadius.circular(corners.xlarge),
-            ),
-            child: Row(
-              children: [
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(spacing.lg),
+              decoration: BoxDecoration(
+                color: colors.card,
+                borderRadius: BorderRadius.circular(corners.xlarge),
+              ),
+              child: Row(
+                children: [
                   Container(
                     height: 56,
                     width: 56,
@@ -97,7 +97,9 @@ class KinlySelectionCard extends StatelessWidget {
                   ),
                   Icon(
                     Icons.chevron_right_rounded,
-                    color: tokens.onSurface.withValues(alpha: opacities.alphaFaint),
+                    color: tokens.onSurface.withValues(
+                      alpha: opacities.alphaFaint,
+                    ),
                   ),
                 ],
               ),

@@ -11,7 +11,8 @@ import 'package:kinly/foundation/surfaces/today/widgets/today_empty_state_card.d
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/generated/l10n.dart';
 
-class _MockTodayBloc extends MockBloc<TodayEvent, TodayState> implements TodayBloc {}
+class _MockTodayBloc extends MockBloc<TodayEvent, TodayState>
+    implements TodayBloc {}
 
 class _FakeTodayEvent extends Fake implements TodayEvent {}
 
@@ -25,7 +26,9 @@ void main() {
 
   setUp(() {
     todayBloc = _MockTodayBloc();
-    when(() => todayBloc.stream).thenAnswer((_) => const Stream<TodayState>.empty());
+    when(
+      () => todayBloc.stream,
+    ).thenAnswer((_) => const Stream<TodayState>.empty());
   });
 
   Widget buildApp() {
@@ -47,7 +50,9 @@ void main() {
 
   testWidgets('shows error message when TodayState.failure', (tester) async {
     when(() => todayBloc.state).thenReturn(
-      const TodayState.failure(message: "Could not load today's chores. Please try again."),
+      const TodayState.failure(
+        message: "Could not load today's chores. Please try again.",
+      ),
     );
 
     await tester.pumpWidget(buildApp());
@@ -58,5 +63,3 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 }
-
-

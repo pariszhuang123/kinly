@@ -27,32 +27,22 @@ class KinlyChoiceChip extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
     final corners = theme.extension<Corners>();
-    final colors = theme.extension<KinlyColorTokens>() ??
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
     final opacities = theme.extension<KinlyOpacity>()!;
 
     final background =
-        selected
-            ? colors.primaryContainer
-            : colors.surfaceVariant;
-    final borderColor =
-        selected
-            ? colors.primary
-            : colors.outline;
-    final labelColor =
-        selected
-            ? colors.onPrimaryContainer
-            : colors.onSurface;
+        selected ? colors.primaryContainer : colors.surfaceVariant;
+    final borderColor = selected ? colors.primary : colors.outline;
+    final labelColor = selected ? colors.onPrimaryContainer : colors.onSurface;
 
     return ChoiceChip(
       label: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (leading != null) ...[
-            leading!,
-            SizedBox(width: spacing?.xs ?? 4),
-          ],
+          if (leading != null) ...[leading!, SizedBox(width: spacing?.xs ?? 4)],
           Text(
             label,
             style: (type?.labelSmall ?? theme.textTheme.labelSmall)?.copyWith(

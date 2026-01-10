@@ -27,7 +27,8 @@ class KinlyActionCard extends StatelessWidget {
     final spacing = theme.extension<Spacing>();
     final corners = theme.extension<Corners>();
     final elevations = theme.extension<Elevations>();
-    final colors = theme.extension<KinlyColorTokens>() ??
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
 
     final cardColor = background ?? colors.surfaceVariant;

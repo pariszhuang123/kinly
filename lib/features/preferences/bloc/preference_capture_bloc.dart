@@ -83,10 +83,7 @@ class PreferenceCaptureBloc
       return null;
     }
 
-    _logDraftEvent(
-      'form_draft_restored',
-      storedSchemaVersion: storedVersion,
-    );
+    _logDraftEvent('form_draft_restored', storedSchemaVersion: storedVersion);
     return PreferenceCaptureState(
       scenarios: _scenarios,
       currentIndex: currentIndex,
@@ -206,11 +203,7 @@ class PreferenceCaptureBloc
     Emitter<PreferenceCaptureState> emit,
   ) {
     if (state.status != PreferenceCaptureStatus.reflecting) return;
-    emit(
-      state.copyWith(
-        status: PreferenceCaptureStatus.success,
-      ),
-    );
+    emit(state.copyWith(status: PreferenceCaptureStatus.success));
   }
 
   Future<void> _clearDraftOnSubmit() async {

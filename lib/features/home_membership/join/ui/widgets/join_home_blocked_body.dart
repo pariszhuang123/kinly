@@ -44,7 +44,3 @@ class JoinHomeBlockedBody extends StatelessWidget {
     );
   }
 }
-
-
-
-

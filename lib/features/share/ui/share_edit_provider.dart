@@ -37,7 +37,9 @@ class ShareEditProvider extends StatelessWidget {
       future: expensesRepository.getForEdit(expenseId),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return const KinlyScaffold(body: Center(child: KinlyLoader(size: 32)));
+          return const KinlyScaffold(
+            body: Center(child: KinlyLoader(size: 32)),
+          );
         }
         if (snapshot.hasError || !snapshot.hasData) {
           final s = S.of(context);
@@ -50,15 +52,15 @@ class ShareEditProvider extends StatelessWidget {
           return KinlyScaffold(
             appBar: KinlyAppBar(title: Text(s.shareEditTitle)),
             body: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsetsDirectional.symmetric(
-                          horizontal: 24,
-                        ),
-                        child: Text(message, textAlign: TextAlign.center),
-                      ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 24,
+                    ),
+                    child: Text(message, textAlign: TextAlign.center),
+                  ),
                   const SizedBox(height: 16),
                   KinlyFilledButton.text(
                     fullWidth: true,
@@ -77,8 +79,9 @@ class ShareEditProvider extends StatelessWidget {
             detail.splits.map((split) => split.debtorUserId).toSet();
         final allPaid =
             detail.splits.isNotEmpty &&
-            detail.splits
-                .every((split) => split.status == ExpenseShareStatus.paid);
+            detail.splits.every(
+              (split) => split.status == ExpenseShareStatus.paid,
+            );
         final paidByOther = detail.splits.any(
           (split) =>
               split.status == ExpenseShareStatus.paid &&
@@ -145,7 +148,3 @@ ShareSplitMode? _splitModeFromExpense(ExpenseSplitType? type) {
       return null;
   }
 }
-
-
-
-

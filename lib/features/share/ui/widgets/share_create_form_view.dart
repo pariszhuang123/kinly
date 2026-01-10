@@ -383,7 +383,3 @@ void _handlePrimaryPressed({
   }
   blocContext.read<ShareCreateBloc>().add(const ShareCreateSubmitted());
 }
-
-
-
-

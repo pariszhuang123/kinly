@@ -60,10 +60,7 @@ void main() {
 
     // Ack phase
     expect(find.text(S.current.reflectiveAcknowledgementTitle), findsOneWidget);
-    expect(
-      find.text(S.current.reflectivePersonalSecondary),
-      findsNothing,
-    );
+    expect(find.text(S.current.reflectivePersonalSecondary), findsNothing);
 
     await tester.pump(const Duration(milliseconds: 950));
 

@@ -32,5 +32,3 @@ class ShareNavigationImpl implements ShareNavigation {
     );
   }
 }
-
-

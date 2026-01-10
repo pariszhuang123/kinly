@@ -104,14 +104,20 @@ class KinlyColorTokens extends ThemeExtension<KinlyColorTokens> {
       primary: lerpColor(primary, other.primary),
       onPrimary: lerpColor(onPrimary, other.onPrimary),
       primaryContainer: lerpColor(primaryContainer, other.primaryContainer),
-      onPrimaryContainer:
-          lerpColor(onPrimaryContainer, other.onPrimaryContainer),
+      onPrimaryContainer: lerpColor(
+        onPrimaryContainer,
+        other.onPrimaryContainer,
+      ),
       secondary: lerpColor(secondary, other.secondary),
       onSecondary: lerpColor(onSecondary, other.onSecondary),
-      secondaryContainer:
-          lerpColor(secondaryContainer, other.secondaryContainer),
-      onSecondaryContainer:
-          lerpColor(onSecondaryContainer, other.onSecondaryContainer),
+      secondaryContainer: lerpColor(
+        secondaryContainer,
+        other.secondaryContainer,
+      ),
+      onSecondaryContainer: lerpColor(
+        onSecondaryContainer,
+        other.onSecondaryContainer,
+      ),
       error: lerpColor(error, other.error),
       onError: lerpColor(onError, other.onError),
       surface: lerpColor(surface, other.surface),
@@ -127,4 +133,3 @@ class KinlyColorTokens extends ThemeExtension<KinlyColorTokens> {
     );
   }
 }
-

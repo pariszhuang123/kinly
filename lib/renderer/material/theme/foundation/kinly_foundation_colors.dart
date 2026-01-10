@@ -22,4 +22,3 @@ class KinlyFoundationColors {
   // Semantics
   static const Color error = Color(0xFFE53935);
 }
-

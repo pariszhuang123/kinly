@@ -6,9 +6,7 @@ import '../../tool/check_home_dynamics_contract.dart';
 
 void main() {
   test('flags vibe gating usage', () async {
-    final temp = await Directory.systemTemp.createTemp(
-      'kinly_home_dynamics',
-    );
+    final temp = await Directory.systemTemp.createTemp('kinly_home_dynamics');
     addTearDown(() => temp.deleteSync(recursive: true));
 
     final libDir = Directory('${temp.path}/lib')..createSync(recursive: true);
@@ -46,12 +44,13 @@ void main() {
 
     final libDir = Directory('${temp.path}/lib')..createSync(recursive: true);
     final file = File('${libDir.path}/prefs_enforce.dart');
-    file.writeAsStringSync(
-      'void enforce() { enforcePreferences(); }\n',
-    );
+    file.writeAsStringSync('void enforce() { enforcePreferences(); }\n');
 
     final violations = findHomeDynamicsViolations(rootPath: libDir.path);
-    expect(violations.map((v) => v.ruleId), contains('preferences-enforcement'));
+    expect(
+      violations.map((v) => v.ruleId),
+      contains('preferences-enforcement'),
+    );
   });
 
   test('flags auto rules from vibe usage', () async {

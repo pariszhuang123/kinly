@@ -59,28 +59,32 @@ class Motion extends ThemeExtension<Motion> {
 
     return Motion(
       durationFast: Duration(
-        milliseconds: lerpInt(
-          durationFast.inMilliseconds,
-          other.durationFast.inMilliseconds,
-        ).round(),
+        milliseconds:
+            lerpInt(
+              durationFast.inMilliseconds,
+              other.durationFast.inMilliseconds,
+            ).round(),
       ),
       durationMedium: Duration(
-        milliseconds: lerpInt(
-          durationMedium.inMilliseconds,
-          other.durationMedium.inMilliseconds,
-        ).round(),
+        milliseconds:
+            lerpInt(
+              durationMedium.inMilliseconds,
+              other.durationMedium.inMilliseconds,
+            ).round(),
       ),
       durationSlow: Duration(
-        milliseconds: lerpInt(
-          durationSlow.inMilliseconds,
-          other.durationSlow.inMilliseconds,
-        ).round(),
+        milliseconds:
+            lerpInt(
+              durationSlow.inMilliseconds,
+              other.durationSlow.inMilliseconds,
+            ).round(),
       ),
       durationSnappy: Duration(
-        milliseconds: lerpInt(
-          durationSnappy.inMilliseconds,
-          other.durationSnappy.inMilliseconds,
-        ).round(),
+        milliseconds:
+            lerpInt(
+              durationSnappy.inMilliseconds,
+              other.durationSnappy.inMilliseconds,
+            ).round(),
       ),
       easeStandard: lerpCurve(easeStandard, other.easeStandard),
       easeAccelerate: lerpCurve(easeAccelerate, other.easeAccelerate),
@@ -88,6 +92,4 @@ class Motion extends ThemeExtension<Motion> {
       easeEmotional: lerpCurve(easeEmotional, other.easeEmotional),
     );
   }
-
 }
-

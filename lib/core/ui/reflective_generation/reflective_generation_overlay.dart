@@ -187,9 +187,7 @@ class _ReflectiveGenerationOverlayState
               curve: Curves.easeOut,
               child: Text(
                 copy.secondary!,
-                style: body?.copyWith(
-                  color: onSurfaceVariant,
-                ),
+                style: body?.copyWith(color: onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ),

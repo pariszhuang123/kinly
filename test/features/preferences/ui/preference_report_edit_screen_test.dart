@@ -72,12 +72,12 @@ void main() {
 
   testWidgets('renders edit cards for each section', (tester) async {
     final cubit = _MockPreferenceReportCubit();
-    when(() => cubit.stream).thenAnswer(
-      (_) => const Stream<PreferenceReportState>.empty(),
-    );
-    when(() => cubit.state).thenReturn(
-      PreferenceReportState.ready(buildReport()),
-    );
+    when(
+      () => cubit.stream,
+    ).thenAnswer((_) => const Stream<PreferenceReportState>.empty());
+    when(
+      () => cubit.state,
+    ).thenReturn(PreferenceReportState.ready(buildReport()));
 
     await tester.pumpWidget(buildApp(cubit));
     await tester.pumpAndSettle();

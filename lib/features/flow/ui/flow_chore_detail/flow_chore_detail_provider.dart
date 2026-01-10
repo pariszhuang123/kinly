@@ -30,5 +30,3 @@ class FlowChoreDetailProvider extends StatelessWidget {
     );
   }
 }
-
-

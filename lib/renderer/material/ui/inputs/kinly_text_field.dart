@@ -52,7 +52,8 @@ class KinlyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<KinlyColorTokens>() ??
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final corners = theme.extension<Corners>();
     final spacing = theme.extension<Spacing>();
@@ -76,7 +77,8 @@ class KinlyTextField extends StatelessWidget {
       inputFormatters: inputFormatters,
       autocorrect: autocorrect,
       style: type?.bodyMedium ?? theme.textTheme.bodyMedium,
-      scrollPadding: scrollPadding ??
+      scrollPadding:
+          scrollPadding ??
           const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: InputDecoration(
         labelText: labelText,
@@ -112,9 +114,11 @@ class KinlyTextField extends StatelessWidget {
           borderRadius: borderRadius,
           borderSide: BorderSide(color: errorColor, width: 1.4),
         ),
-        labelStyle: type?.bodyMedium ??
+        labelStyle:
+            type?.bodyMedium ??
             theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
-        hintStyle: type?.bodyMedium ??
+        hintStyle:
+            type?.bodyMedium ??
             theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
       ),
     );

@@ -25,4 +25,3 @@ class JoinHomeSurfaceScope {
   final BuildContext context;
   final String initialCode;
 }
-

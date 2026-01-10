@@ -74,8 +74,7 @@ class KinlyBadge extends StatelessWidget {
 
     final horizontal = compact ? (spacing?.xs ?? 4) : (spacing?.sm ?? 8);
     final vertical = compact ? 4.0 : (spacing?.xs ?? 4);
-    final border =
-        borderColor != null ? Border.all(color: borderColor!) : null;
+    final border = borderColor != null ? Border.all(color: borderColor!) : null;
     final radius = corners?.pill ?? 999.0;
 
     return Semantics(
@@ -99,15 +98,13 @@ class KinlyBadge extends StatelessWidget {
               effectiveLabel,
               maxLines: maxLines,
               overflow: TextOverflow.ellipsis,
-              style:
-                  (textStyle ?? (type?.labelSmall ?? theme.textTheme.labelSmall))
-                      ?.copyWith(
-                        color: badgeColors.foreground,
-                        fontWeight:
-                            (textStyle?.fontWeight) ?? FontWeight.w700,
-                        letterSpacing:
-                            (textStyle?.letterSpacing) ?? 0.2,
-                      ),
+              style: (textStyle ??
+                      (type?.labelSmall ?? theme.textTheme.labelSmall))
+                  ?.copyWith(
+                    color: badgeColors.foreground,
+                    fontWeight: (textStyle?.fontWeight) ?? FontWeight.w700,
+                    letterSpacing: (textStyle?.letterSpacing) ?? 0.2,
+                  ),
             ),
           ),
         ),
@@ -120,7 +117,10 @@ class KinlyBadge extends StatelessWidget {
     KinlyOpacity opacities,
   ) {
     if (backgroundColor != null && foregroundColor != null) {
-      return _BadgeColors(foreground: foregroundColor!, background: backgroundColor!);
+      return _BadgeColors(
+        foreground: foregroundColor!,
+        background: backgroundColor!,
+      );
     }
     if (destructive) {
       return _BadgeColors(

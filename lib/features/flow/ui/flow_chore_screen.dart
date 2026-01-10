@@ -75,8 +75,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
     _titleController.text = form.title;
     _notesController.text = form.notes;
     _howToController.text = form.howToVideoUrl;
-    _recurrenceEveryController.text =
-        form.recurrenceEvery?.toString() ?? '';
+    _recurrenceEveryController.text = form.recurrenceEvery?.toString() ?? '';
     _hasHydratedControllers = true;
   }
 
@@ -149,7 +148,9 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
           if (state.submissionErrorTick > 0) {
             final snackText = _mapSubmissionError(context, state);
             final accent =
-                KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
+                KinlyThemeAccess.of(
+                  context,
+                ).extension<KinlySections>()?.flow.accent;
             KinlySnackBar.showError(context, snackText, accentColor: accent);
           }
         },
@@ -220,7 +221,8 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         isPermission
             ? s.flowChorePhotoPermissionDenied
             : s.flowChorePhotoUploadError;
-    final accent = KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
+    final accent =
+        KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
     final isPermanent = state.isCameraPermissionPermanentlyDenied;
     final actionLabel =
         isPermanent ? s.flowChorePhotoPermissionOpenSettings : null;
@@ -316,7 +318,3 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
     return state.submissionErrorMessage ?? s.flowChoreErrorGeneric;
   }
 }
-
-
-
-

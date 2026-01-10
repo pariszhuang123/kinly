@@ -68,8 +68,8 @@ void main(List<String> args) {
   var hasPlacementViolations = false;
   var hasFoundationViolations = false;
 
-  final files = _dartFilesUnder('lib').toList()
-    ..sort((a, b) => a.path.compareTo(b.path));
+  final files =
+      _dartFilesUnder('lib').toList()..sort((a, b) => a.path.compareTo(b.path));
 
   for (final file in files) {
     final foundationViolations = _checkFile(file, violations);
@@ -97,7 +97,8 @@ void main(List<String> args) {
 
   if (strict ||
       (contractsStrict && hasContractViolations) ||
-      (placementStrict && (hasPlacementViolations || hasFoundationViolations))) {
+      (placementStrict &&
+          (hasPlacementViolations || hasFoundationViolations))) {
     exitCode = 1;
   }
 }
@@ -165,8 +166,7 @@ bool _checkFile(File file, List<Violation> violations) {
       if (importPath == null) continue;
 
       final resolvedPath = _resolveToLibPath(file, importPath);
-      if (resolvedPath != null &&
-          resolvedPath.startsWith('lib/features/')) {
+      if (resolvedPath != null && resolvedPath.startsWith('lib/features/')) {
         violations.add(
           Violation(
             ruleId: 'foundation-imports-feature',
@@ -509,7 +509,11 @@ class _ContractsVisitor extends RecursiveAstVisitor<void> {
         final isStatic = member.isStatic;
         final isFinal = member.fields.isFinal || member.fields.isConst;
         if (!isStatic && !isFinal) {
-          _addViolation(member, 'DTO fields must be final', 'contracts-dto-field');
+          _addViolation(
+            member,
+            'DTO fields must be final',
+            'contracts-dto-field',
+          );
         }
       } else if (member is MethodDeclaration) {
         if (!_isAllowedDtoMethod(member)) {
@@ -547,12 +551,7 @@ class _ContractsVisitor extends RecursiveAstVisitor<void> {
   void _addViolation(AstNode node, String message, String ruleId) {
     final line = lineInfo.getLocation(node.offset).lineNumber;
     violations.add(
-      Violation(
-        ruleId: ruleId,
-        path: path,
-        line: line,
-        message: message,
-      ),
+      Violation(ruleId: ruleId, path: path, line: line, message: message),
     );
     hasViolations = true;
   }
@@ -633,12 +632,7 @@ class _PlacementVisitor extends RecursiveAstVisitor<void> {
   void _addViolation(AstNode node, String message, String ruleId) {
     final line = lineInfo.getLocation(node.offset).lineNumber;
     violations.add(
-      Violation(
-        ruleId: ruleId,
-        path: path,
-        line: line,
-        message: message,
-      ),
+      Violation(ruleId: ruleId, path: path, line: line, message: message),
     );
     hasViolations = true;
   }
@@ -667,8 +661,7 @@ void _printStrictSummary(List<Violation> violations) {
           files[v.path] = (files[v.path] ?? 0) + 1;
         }
         final sortedFiles =
-            files.entries.toList()
-              ..sort((a, b) => b.value.compareTo(a.value));
+            files.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
         for (final fileEntry in sortedFiles.take(3)) {
           stderr.writeln('    ${fileEntry.key}: ${fileEntry.value}');
         }

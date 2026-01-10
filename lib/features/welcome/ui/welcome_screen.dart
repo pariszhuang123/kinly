@@ -58,10 +58,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       listener: (context, state) {
         if (!mounted) return;
         if (state.isProfileDeactivated) {
-          KinlySnackBar.showError(
-            context,
-            s.profile_deactivated_message,
-          );
+          KinlySnackBar.showError(context, s.profile_deactivated_message);
         }
         final membershipReady =
             state.membershipStatus != AuthMembershipStatus.unknown;
@@ -111,14 +108,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       onConsentChanged: (value) => setState(() => _consented = value),
       onToggleConsent: () => setState(() => _consented = !_consented),
       onGoogleSignIn: () {
-        context.read<AuthBloc>().add(
-          const AuthSignInWithGoogleRequested(),
-        );
+        context.read<AuthBloc>().add(const AuthSignInWithGoogleRequested());
       },
       onAppleSignIn: () {
-        context.read<AuthBloc>().add(
-          const AuthSignInWithAppleRequested(),
-        );
+        context.read<AuthBloc>().add(const AuthSignInWithAppleRequested());
       },
       onOpenTerms: () => _open(_termsUri),
       onOpenPrivacy: () => _open(_privacyUri),
@@ -133,9 +126,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       appleButtonStyle: appleButtonStyle,
       actions: actions,
     );
-    final slots = WelcomeSurfaceSlots(
-      body: _buildWelcomeSections(scope),
-    );
+    final slots = WelcomeSurfaceSlots(body: _buildWelcomeSections(scope));
     return slots.body;
   }
 
@@ -146,12 +137,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children:
-          entries.map((entry) => entry.builder(scope)).toList(growable: false),
+      children: entries
+          .map((entry) => entry.builder(scope))
+          .toList(growable: false),
     );
   }
 }
-
-
-
-

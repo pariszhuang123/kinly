@@ -159,10 +159,17 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
                           builder: (context, section, _, palette) {
                             return _PreferenceReportSectionCard(
                               section: section,
-                              accent: palette.colorForSeed(section.sectionKey).accent,
+                              accent:
+                                  palette
+                                      .colorForSeed(section.sectionKey)
+                                      .accent,
                             );
                           },
-                          estimateItemHeight: (section, textTheme, spacingTokens) {
+                          estimateItemHeight: (
+                            section,
+                            textTheme,
+                            spacingTokens,
+                          ) {
                             final titleStyle = textTheme.titleMedium;
                             final bodyStyle = textTheme.bodyMedium;
                             final titleLines = _estimateLineCount(
@@ -179,7 +186,9 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
                             final lineHeightBody =
                                 (bodyStyle?.height ?? 1.2) *
                                 (bodyStyle?.fontSize ?? 14);
-                            return (spacingTokens.lg + spacingTokens.m + spacingTokens.lg) +
+                            return (spacingTokens.lg +
+                                    spacingTokens.m +
+                                    spacingTokens.lg) +
                                 lineHeightTitle * titleLines +
                                 spacingTokens.s +
                                 lineHeightBody * bodyLines +
@@ -241,10 +250,7 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
 }
 
 class _PreferenceReportSectionCard extends StatelessWidget {
-  const _PreferenceReportSectionCard({
-    required this.section,
-    this.accent,
-  });
+  const _PreferenceReportSectionCard({required this.section, this.accent});
 
   final PreferenceReportSection section;
   final Color? accent;
@@ -354,10 +360,7 @@ class _DirectionalBackButton extends StatelessWidget {
 }
 
 class _SubjectHeader extends StatelessWidget {
-  const _SubjectHeader({
-    required this.name,
-    this.avatarUrl,
-  });
+  const _SubjectHeader({required this.name, this.avatarUrl});
 
   final String name;
   final String? avatarUrl;
@@ -391,15 +394,10 @@ class _SubjectHeader extends StatelessWidget {
                   : Icon(
                     KinlyIcons.selfImprovementRounded,
                     color: colors.primary,
-                ),
+                  ),
         ),
         SizedBox(width: spacing?.sm ?? 8),
-        Expanded(
-          child: Text(
-            name,
-            style: theme.textTheme.titleMedium,
-          ),
-        ),
+        Expanded(child: Text(name, style: theme.textTheme.titleMedium)),
       ],
     );
   }

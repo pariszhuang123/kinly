@@ -50,4 +50,3 @@ class ShareCreatedListSurfaceScope {
   final S strings;
   final ShareCreatedListSurfaceActions actions;
 }
-

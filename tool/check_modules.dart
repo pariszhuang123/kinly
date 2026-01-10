@@ -181,17 +181,20 @@ void _checkFeatureDirs(
     return;
   }
 
-  final featureFolders = featureDir
-      .listSync()
-      .whereType<Directory>()
-      .map((d) => d.uri.pathSegments[d.uri.pathSegments.length - 2])
-      .toSet();
+  final featureFolders =
+      featureDir
+          .listSync()
+          .whereType<Directory>()
+          .map((d) => d.uri.pathSegments[d.uri.pathSegments.length - 2])
+          .toSet();
 
   final manifestNames = modules.map((m) => m.name).toSet();
 
   for (final folder in featureFolders) {
     if (!manifestNames.contains(folder)) {
-      errors.add('feature folder "lib/features/$folder" missing in modules.yml');
+      errors.add(
+        'feature folder "lib/features/$folder" missing in modules.yml',
+      );
     }
   }
 

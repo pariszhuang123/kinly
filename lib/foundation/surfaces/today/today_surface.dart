@@ -340,12 +340,9 @@ class _TodayScreenState extends State<TodayScreen>
         return _openMemberCapPaywall(context, homeId: homeId);
       },
       onMemberCapSecondary:
-          () => context.read<TodayBloc>().add(
-            const TodayMemberCapDismissed(),
-          ),
-      onPreferencePrompt: () => context.pushNamed(
-        AppRouteNames.preferenceOnboarding,
-      ),
+          () => context.read<TodayBloc>().add(const TodayMemberCapDismissed()),
+      onPreferencePrompt:
+          () => context.pushNamed(AppRouteNames.preferenceOnboarding),
       onInvitePrimary: (config) async {
         final shared = await _shareInvite(
           context,
@@ -361,7 +358,10 @@ class _TodayScreenState extends State<TodayScreen>
       onFlowTaskTap: (task) => _handleFlowTaskTap(context, task),
       onFlowSeeAllTap: (filter) => _openFlowList(context, filter),
       onShareOwedTap: (owed) {
-        logger.info('Tapped owed entry: ${owed.displayName}', tag: _shareLogTag);
+        logger.info(
+          'Tapped owed entry: ${owed.displayName}',
+          tag: _shareLogTag,
+        );
         _openShareOwedDetail(context, owed);
       },
       onSharePaidToMeTap: (entry) {
@@ -394,9 +394,7 @@ class _TodayScreenState extends State<TodayScreen>
       inviteConfig: inviteConfig,
       formatMemberCapNames: _formatMemberCapNames,
     );
-    final slots = TodaySurfaceSlots(
-      body: _buildTodayBody(scope),
-    );
+    final slots = TodaySurfaceSlots(body: _buildTodayBody(scope));
     return slots.body;
   }
 
@@ -408,10 +406,7 @@ class _TodayScreenState extends State<TodayScreen>
     );
   }
 
-  List<Widget> _buildTodaySections(
-    TodaySurfaceScope scope,
-    Spacing spacing,
-  ) {
+  List<Widget> _buildTodaySections(TodaySurfaceScope scope, Spacing spacing) {
     final entries = TodayRegistry.bodySections;
     final children = <Widget>[SizedBox(height: spacing.lg)];
 
@@ -457,7 +452,3 @@ class _TodayScreenState extends State<TodayScreen>
     );
   }
 }
-
-
-
-

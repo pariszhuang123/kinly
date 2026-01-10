@@ -155,4 +155,3 @@ class KinlyOpacity extends ThemeExtension<KinlyOpacity> {
     );
   }
 }
-

@@ -52,15 +52,16 @@ class _FlowChoreDetailScreenState extends State<FlowChoreDetailScreen> {
                   S.of(context).flowChoreDetailCompletionError;
 
               final accent =
-                  KinlyThemeAccess.of(context).extension<KinlySections>()?.flow.accent;
+                  KinlyThemeAccess.of(
+                    context,
+                  ).extension<KinlySections>()?.flow.accent;
               KinlySnackBar.showError(context, message, accentColor: accent);
             }
           },
           builder: (context, state) {
-            final currentUserId =
-                context.select<AuthBloc, String?>(
-                  (bloc) => bloc.state.userId,
-                );
+            final currentUserId = context.select<AuthBloc, String?>(
+              (bloc) => bloc.state.userId,
+            );
             return FlowChoreDetailView(
               state: state,
               onRetry:
@@ -83,7 +84,3 @@ class _FlowChoreDetailScreenState extends State<FlowChoreDetailScreen> {
     );
   }
 }
-
-
-
-

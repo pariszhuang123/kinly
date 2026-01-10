@@ -44,12 +44,7 @@ class GratitudeWallScreen extends StatelessWidget {
           },
         );
       },
-      onSharePressed:
-          () => context.read<GratitudeWallCubit>().logShareEvent(),
+      onSharePressed: () => context.read<GratitudeWallCubit>().logShareEvent(),
     );
   }
 }
-
-
-
-

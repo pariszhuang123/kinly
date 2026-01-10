@@ -15,9 +15,9 @@ void main() {
     double keyboardInset = 0,
   }) async {
     final view = tester.view;
-    final mediaQueryData = MediaQueryData.fromView(view).copyWith(
-      viewInsets: EdgeInsets.only(bottom: keyboardInset),
-    );
+    final mediaQueryData = MediaQueryData.fromView(
+      view,
+    ).copyWith(viewInsets: EdgeInsets.only(bottom: keyboardInset));
 
     await tester.pumpWidget(
       MediaQuery(
@@ -35,19 +35,21 @@ void main() {
               ],
             ),
             body: Builder(
-              builder: (context) => Center(
-                child: KinlyFilledButton.text(
-                  label: openLabel,
-                  onPressed: () => KinlyBottomSheet.show(
-                    context: context,
-                    title: 'Title',
-                    body: const SizedBox(
-                      height: 200,
-                      child: Center(child: Text(bodyText)),
+              builder:
+                  (context) => Center(
+                    child: KinlyFilledButton.text(
+                      label: openLabel,
+                      onPressed:
+                          () => KinlyBottomSheet.show(
+                            context: context,
+                            title: 'Title',
+                            body: const SizedBox(
+                              height: 200,
+                              child: Center(child: Text(bodyText)),
+                            ),
+                          ),
                     ),
                   ),
-                ),
-              ),
             ),
           ),
         ),
@@ -62,10 +64,13 @@ void main() {
   testWidgets('rests flush against the bottom navigation bar', (tester) async {
     await openSheet(tester);
 
-    final sheetMaterialFinder = find.descendant(
-      of: find.byType(KinlyBottomSheet),
-      matching: find.byType(Material),
-    ).first;
+    final sheetMaterialFinder =
+        find
+            .descendant(
+              of: find.byType(KinlyBottomSheet),
+              matching: find.byType(Material),
+            )
+            .first;
     final rect = tester.getRect(sheetMaterialFinder);
     final view = tester.view;
     final screenHeight = view.physicalSize.height / view.devicePixelRatio;
@@ -80,10 +85,13 @@ void main() {
 
     await openSheet(tester, keyboardInset: keyboardInset);
 
-    final sheetMaterialFinder = find.descendant(
-      of: find.byType(KinlyBottomSheet),
-      matching: find.byType(Material),
-    ).first;
+    final sheetMaterialFinder =
+        find
+            .descendant(
+              of: find.byType(KinlyBottomSheet),
+              matching: find.byType(Material),
+            )
+            .first;
     final rect = tester.getRect(sheetMaterialFinder);
     final view = tester.view;
     final screenHeight = view.physicalSize.height / view.devicePixelRatio;

@@ -123,10 +123,7 @@ class _TodayFlowSectionState extends State<TodayFlowSection> {
     return SectionContainer(
       title: s.todayFlowSectionTitle,
       colors: colors,
-      leading: SectionAssets.flow.build(
-        color: colors.icon,
-        size: flowIconSize,
-      ),
+      leading: SectionAssets.flow.build(color: colors.icon, size: flowIconSize),
       child: content,
     );
   }
@@ -240,7 +237,9 @@ class _TaskList extends StatelessWidget {
           KinlyListTile(
             title: task.title,
             semanticsLabel:
-                task.isNewToday ? '${task.title}, ${s.todayFlowBadgeNew}' : null,
+                task.isNewToday
+                    ? '${task.title}, ${s.todayFlowBadgeNew}'
+                    : null,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -249,11 +248,11 @@ class _TaskList extends StatelessWidget {
                     label: s.todayFlowBadgeNew,
                     accentColor: colors.accent,
                   ),
-                  Icon(
-                    KinlyIcons.chevronRightRounded,
-                    color: KinlyThemeAccess.of(context).colorScheme.onSurface.withValues(
-                      alpha: 0.7,
-                  ),
+                Icon(
+                  KinlyIcons.chevronRightRounded,
+                  color: KinlyThemeAccess.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ],
             ),
@@ -299,8 +298,3 @@ String _replaceCountPlaceholder(String text, String replacement) {
       ? text.replaceFirst(pattern, replacement)
       : '$text ($replacement)';
 }
-
-
-
-
-

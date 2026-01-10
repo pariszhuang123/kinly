@@ -20,10 +20,7 @@ class HubInviteRotated extends HubEvent {
 }
 
 class HubShareLogged extends HubEvent {
-  const HubShareLogged({
-    required this.feature,
-    required this.channel,
-  });
+  const HubShareLogged({required this.feature, required this.channel});
 
   final String feature;
   final String channel;

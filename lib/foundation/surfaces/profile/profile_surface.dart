@@ -67,11 +67,12 @@ class ProfileSettingsScreen extends StatelessWidget {
                     avatarUrl: state.user?.avatarUrl,
                     isOwner: state.isOwner,
                     isLoading: state.isLoadingUser,
-                    onAvatarTap: () => _openProfileIdentity(
-                      context,
-                      user: state.user,
-                      membership: state.membership,
-                    ),
+                    onAvatarTap:
+                        () => _openProfileIdentity(
+                          context,
+                          user: state.user,
+                          membership: state.membership,
+                        ),
                   ),
                   SizedBox(height: spacing.xl),
 
@@ -215,20 +216,10 @@ class ProfileSettingsScreen extends StatelessWidget {
     required ProfileSettingsUser? user,
     required CurrentMembership? membership,
   }) async {
-    await openProfileIdentity(
-      context,
-      user: user,
-      membership: membership,
-    );
+    await openProfileIdentity(context, user: user, membership: membership);
   }
 
   Future<void> _openInfoHub(BuildContext context) async {
     await openInfoHub(context);
   }
 }
-
-
-
-
-
-

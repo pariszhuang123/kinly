@@ -7,10 +7,7 @@ abstract class ProfileSettingsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-enum TransferFollowUp {
-  leave,
-  delete,
-}
+enum TransferFollowUp { leave, delete }
 
 class ProfileSettingsStarted extends ProfileSettingsEvent {
   const ProfileSettingsStarted();

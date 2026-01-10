@@ -16,12 +16,7 @@ KinlySelectableItem<String> _item(String value, String label) {
   return KinlySelectableItem<String>(
     value: value,
     label: label,
-    builder:
-        (_, __) => Container(
-          width: 40,
-          height: 40,
-          color: Colors.blue,
-        ),
+    builder: (_, __) => Container(width: 40, height: 40, color: Colors.blue),
   );
 }
 

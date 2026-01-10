@@ -13,7 +13,8 @@ class KinlySettingsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<KinlyColorTokens>() ??
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final opacities = theme.extension<KinlyOpacity>()!;
     final corners = theme.extension<Corners>()!;

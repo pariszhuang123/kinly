@@ -67,10 +67,11 @@ class HubScreen extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsetsDirectional.all(spacing.lg),
                     child: BlocConsumer<HubBloc, HubState>(
-                      listenWhen: (previous, current) =>
-                          previous.notice != current.notice &&
-                          current.notice != null &&
-                          !current.isFailure,
+                      listenWhen:
+                          (previous, current) =>
+                              previous.notice != current.notice &&
+                              current.notice != null &&
+                              !current.isFailure,
                       listener: (context, state) {
                         if (!context.mounted) return;
                         switch (state.notice) {
@@ -81,10 +82,7 @@ class HubScreen extends StatelessWidget {
                             );
                             return;
                           case HubNotice.rotateFailed:
-                            KinlySnackBar.showError(
-                              context,
-                              s.hubRotateError,
-                            );
+                            KinlySnackBar.showError(context, s.hubRotateError);
                             return;
                           case HubNotice.refreshFailed:
                             KinlySnackBar.showError(context, s.hubError);
@@ -149,7 +147,8 @@ class HubScreen extends StatelessWidget {
       onShareAppTap: () => _shareAppLink(context, state),
       onQrTap: () => _showQrSheet(context, state),
       onGratitudeTap: () => context.pushNamed(AppRouteNames.gratitudeWall),
-      onCopyCode: state.hasInvite ? () => _copyInviteCode(context, state) : null,
+      onCopyCode:
+          state.hasInvite ? () => _copyInviteCode(context, state) : null,
       onRotateInvite: state.isOwner ? () => _rotateInvite(context) : null,
     );
     final scope = HubSurfaceScope(
@@ -162,9 +161,7 @@ class HubScreen extends StatelessWidget {
       homeId: homeId,
     );
 
-    final slots = HubSurfaceSlots(
-      body: _buildHubBody(scope),
-    );
+    final slots = HubSurfaceSlots(body: _buildHubBody(scope));
     return slots.body;
   }
 
@@ -338,8 +335,8 @@ class _HubError extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(KinlyIcons.errorOutline, color: colorScheme.error),
+        children: [
+          Icon(KinlyIcons.errorOutline, color: colorScheme.error),
           const SizedBox(height: 8),
           Text(s.hubError, style: theme.textTheme.bodyMedium),
           const SizedBox(height: 12),
@@ -349,7 +346,3 @@ class _HubError extends StatelessWidget {
     );
   }
 }
-
-
-
-

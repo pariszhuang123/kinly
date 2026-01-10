@@ -242,7 +242,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
       state.copyWith(
         form: state.form.copyWith(
           recurrenceEvery: state.form.recurrenceEvery ?? 1,
-          recurrenceUnit: state.form.recurrenceUnit ?? ExpenseRecurrenceUnit.week,
+          recurrenceUnit:
+              state.form.recurrenceUnit ?? ExpenseRecurrenceUnit.week,
         ),
         hasUserEdits: true,
       ),

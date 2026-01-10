@@ -94,7 +94,8 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
     SharePaidToMeDetailRegistry.bootstrap();
     final s = S.of(context);
     final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
-    final backgroundColor = KinlyThemeAccess.of(context).scaffoldBackgroundColor;
+    final backgroundColor =
+        KinlyThemeAccess.of(context).scaffoldBackgroundColor;
 
     return KinlyScaffold(
       appBar: KinlyAppBar(title: Text(s.todayShareTabPaidToMe)),
@@ -115,7 +116,9 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
               if (_acknowledgeError != null) ...[
                 Text(
                   _acknowledgeError!,
-                  style: KinlyThemeAccess.of(context).textTheme.bodySmall?.copyWith(
+                  style: KinlyThemeAccess.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(
                     color: KinlyThemeAccess.of(context).colorScheme.error,
                   ),
                 ),
@@ -172,7 +175,3 @@ class _SharePaidToMeDetailScreenState extends State<SharePaidToMeDetailScreen> {
     );
   }
 }
-
-
-
-

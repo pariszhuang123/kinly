@@ -106,7 +106,3 @@ class HubQrCode extends StatelessWidget {
     );
   }
 }
-
-
-
-

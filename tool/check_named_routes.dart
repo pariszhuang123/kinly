@@ -1,29 +1,19 @@
 import 'dart:io';
 
-final _contextGo =
-    RegExp(r'\bcontext\.go\s*\(');
-final _contextPush =
-    RegExp(r'\bcontext\.push\s*\(');
-final _contextPushGeneric =
-    RegExp(r'\bcontext\.push\s*<[^>]+>\s*\(');
-final _contextGoNamed =
-    RegExp(r'\bcontext\.goNamed\s*\(');
-final _contextPushNamed =
-    RegExp(r'\bcontext\.pushNamed\s*\(');
-final _routerGo =
-    RegExp(r'\bGoRouter\.of\(\s*context\s*\)\.go\s*\(');
-final _routerPush =
-    RegExp(r'\bGoRouter\.of\(\s*context\s*\)\.push\s*\(');
-final _routerGoNamed =
-    RegExp(r'\bGoRouter\.of\(\s*context\s*\)\.goNamed\s*\(');
-final _routerPushNamed =
-    RegExp(r'\bGoRouter\.of\(\s*context\s*\)\.pushNamed\s*\(');
-final _navigatorPush =
-    RegExp(r'\bNavigator\.of\(\s*context\s*\)\.push\b');
-final _materialRoute =
-    RegExp(r'\bMaterialPageRoute\b');
-final _namedStringLiteral =
-    RegExp('\\b(goNamed|pushNamed)\\s*\\(\\s*[\'"]');
+final _contextGo = RegExp(r'\bcontext\.go\s*\(');
+final _contextPush = RegExp(r'\bcontext\.push\s*\(');
+final _contextPushGeneric = RegExp(r'\bcontext\.push\s*<[^>]+>\s*\(');
+final _contextGoNamed = RegExp(r'\bcontext\.goNamed\s*\(');
+final _contextPushNamed = RegExp(r'\bcontext\.pushNamed\s*\(');
+final _routerGo = RegExp(r'\bGoRouter\.of\(\s*context\s*\)\.go\s*\(');
+final _routerPush = RegExp(r'\bGoRouter\.of\(\s*context\s*\)\.push\s*\(');
+final _routerGoNamed = RegExp(r'\bGoRouter\.of\(\s*context\s*\)\.goNamed\s*\(');
+final _routerPushNamed = RegExp(
+  r'\bGoRouter\.of\(\s*context\s*\)\.pushNamed\s*\(',
+);
+final _navigatorPush = RegExp(r'\bNavigator\.of\(\s*context\s*\)\.push\b');
+final _materialRoute = RegExp(r'\bMaterialPageRoute\b');
+final _namedStringLiteral = RegExp('\\b(goNamed|pushNamed)\\s*\\(\\s*[\'"]');
 
 void main() {
   final violations = <String>[];

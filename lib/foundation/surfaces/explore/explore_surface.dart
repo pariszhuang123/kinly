@@ -77,9 +77,7 @@ class ExploreScreen extends StatelessWidget {
       strings: strings,
       actions: actions,
     );
-    final slots = ExploreSurfaceSlots(
-      body: _buildExploreContent(scope),
-    );
+    final slots = ExploreSurfaceSlots(body: _buildExploreContent(scope));
     return slots.body;
   }
 
@@ -113,10 +111,7 @@ class ExploreScreen extends StatelessWidget {
     return children;
   }
 
-  double _resolveSectionSpacing(
-    ExploreSectionSpacing spacing,
-    Spacing tokens,
-  ) {
+  double _resolveSectionSpacing(ExploreSectionSpacing spacing, Spacing tokens) {
     switch (spacing) {
       case ExploreSectionSpacing.none:
         return 0;
@@ -131,7 +126,3 @@ class ExploreScreen extends StatelessWidget {
     }
   }
 }
-
-
-
-

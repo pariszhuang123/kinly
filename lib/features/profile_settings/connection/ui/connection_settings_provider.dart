@@ -36,5 +36,3 @@ class ConnectionSettingsProvider extends StatelessWidget {
     );
   }
 }
-
-

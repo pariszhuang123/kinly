@@ -57,4 +57,3 @@ class FlowSurfaceScope {
   final S strings;
   final FlowSurfaceActions actions;
 }
-

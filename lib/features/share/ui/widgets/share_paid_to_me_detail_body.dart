@@ -36,16 +36,14 @@ class SharePaidToMeDetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = KinlyThemeAccess.of(context).scaffoldBackgroundColor;
+    final backgroundColor =
+        KinlyThemeAccess.of(context).scaffoldBackgroundColor;
     final bottomScrollPad = spacing.lg + spacing.xl + spacing.lg;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        KinlyMaterial(
-          color: backgroundColor,
-          child: _Header(entry: entry),
-        ),
+        KinlyMaterial(color: backgroundColor, child: _Header(entry: entry)),
         SizedBox(height: spacing.lg),
         Expanded(
           child: ClipRect(
@@ -69,7 +67,8 @@ class SharePaidToMeDetailBody extends StatelessWidget {
                           style: KinlyThemeAccess.of(
                             context,
                           ).textTheme.bodyMedium?.copyWith(
-                            color: KinlyThemeAccess.of(context).colorScheme.error,
+                            color:
+                                KinlyThemeAccess.of(context).colorScheme.error,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -87,9 +86,13 @@ class SharePaidToMeDetailBody extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final item = items[index];
                         final typography =
-                            KinlyThemeAccess.of(context).extension<KinlyTypography>();
+                            KinlyThemeAccess.of(
+                              context,
+                            ).extension<KinlyTypography>();
                         final colors =
-                            KinlyThemeAccess.of(context).extension<KinlyColorTokens>();
+                            KinlyThemeAccess.of(
+                              context,
+                            ).extension<KinlyColorTokens>();
                         final periodLabel = sharePeriodLabel(
                           recurrenceEvery: item.recurrenceEvery,
                           recurrenceUnit: item.recurrenceUnit,
@@ -103,15 +106,15 @@ class SharePaidToMeDetailBody extends StatelessWidget {
                           trailing: Text(
                             item.formattedAmount,
                             style: (typography?.titleSmall ??
-                                    KinlyThemeAccess.of(context).textTheme.titleSmall)
+                                    KinlyThemeAccess.of(
+                                      context,
+                                    ).textTheme.titleSmall)
                                 ?.copyWith(color: colors?.onSurface),
                           ),
                         );
                       },
                     ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(height: bottomScrollPad),
-                  ),
+                  SliverToBoxAdapter(child: SizedBox(height: bottomScrollPad)),
                 ],
               ),
             ),
@@ -130,11 +133,12 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
-    final colors = KinlyThemeAccess.of(context).extension<KinlySections>()?.share;
+    final colors =
+        KinlyThemeAccess.of(context).extension<KinlySections>()?.share;
     final hasUnseen = entry.unseenCount > 0;
-    final totalPaidFormatted =
-        NumberFormat.simpleCurrency(decimalDigits: 2)
-            .format(entry.totalPaidCents / 100.0);
+    final totalPaidFormatted = NumberFormat.simpleCurrency(
+      decimalDigits: 2,
+    ).format(entry.totalPaidCents / 100.0);
 
     return Row(
       children: [
@@ -173,7 +177,3 @@ class _Header extends StatelessWidget {
     );
   }
 }
-
-
-
-

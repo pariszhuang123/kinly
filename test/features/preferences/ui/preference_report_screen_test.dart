@@ -72,12 +72,12 @@ void main() {
 
   testWidgets('renders summary and sections for ready state', (tester) async {
     final cubit = _MockPreferenceReportCubit();
-    when(() => cubit.stream).thenAnswer(
-      (_) => const Stream<PreferenceReportState>.empty(),
-    );
-    when(() => cubit.state).thenReturn(
-      PreferenceReportState.ready(buildReport()),
-    );
+    when(
+      () => cubit.stream,
+    ).thenAnswer((_) => const Stream<PreferenceReportState>.empty());
+    when(
+      () => cubit.state,
+    ).thenReturn(PreferenceReportState.ready(buildReport()));
 
     await tester.pumpWidget(buildApp(cubit, const PreferenceReportScreen()));
     await tester.pumpAndSettle();
@@ -96,18 +96,15 @@ void main() {
 
   testWidgets('hides edit button when read-only', (tester) async {
     final cubit = _MockPreferenceReportCubit();
-    when(() => cubit.stream).thenAnswer(
-      (_) => const Stream<PreferenceReportState>.empty(),
-    );
-    when(() => cubit.state).thenReturn(
-      PreferenceReportState.ready(buildReport()),
-    );
+    when(
+      () => cubit.stream,
+    ).thenAnswer((_) => const Stream<PreferenceReportState>.empty());
+    when(
+      () => cubit.state,
+    ).thenReturn(PreferenceReportState.ready(buildReport()));
 
     await tester.pumpWidget(
-      buildApp(
-        cubit,
-        const PreferenceReportScreen(canEdit: false),
-      ),
+      buildApp(cubit, const PreferenceReportScreen(canEdit: false)),
     );
     await tester.pumpAndSettle();
 

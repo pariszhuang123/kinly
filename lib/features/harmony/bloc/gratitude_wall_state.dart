@@ -61,14 +61,14 @@ class GratitudeWallState extends Equatable {
 
   @override
   List<Object?> get props => [
-        posts,
-        isLoading,
-        isLoadingMore,
-        hasMore,
-        hasLoaded,
-        error,
-        cursorCreatedAt,
-        cursorId,
-        totalPosts,
-      ];
+    posts,
+    isLoading,
+    isLoadingMore,
+    hasMore,
+    hasLoaded,
+    error,
+    cursorCreatedAt,
+    cursorId,
+    totalPosts,
+  ];
 }

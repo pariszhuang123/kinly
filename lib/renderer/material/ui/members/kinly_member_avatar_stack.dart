@@ -71,8 +71,10 @@ class KinlyMemberAvatarStack extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(
                     color:
-                        Theme.of(context).extension<KinlyColorTokens>()?.onSurface
-                                .withValues(alpha: opacities.alphaXXS) ??
+                        Theme.of(context)
+                            .extension<KinlyColorTokens>()
+                            ?.onSurface
+                            .withValues(alpha: opacities.alphaXXS) ??
                         tokens.onSurface.withValues(alpha: opacities.alphaXXS),
                   ),
                 ),

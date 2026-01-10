@@ -31,11 +31,14 @@ void main() {
   testWidgets(
     'KinlySnackBar ensures accent contrast + readable text across variants',
     (tester) async {
-      final variants = <({
-        String name,
-        Color Function(KinlyColorTokens tokens) background,
-        void Function(BuildContext context, String message, Color accent) show,
-      })>[
+      final variants = <
+        ({
+          String name,
+          Color Function(KinlyColorTokens tokens) background,
+          void Function(BuildContext context, String message, Color accent)
+          show,
+        })
+      >[
         (
           name: 'success',
           background: (tokens) => tokens.success,
@@ -60,11 +63,8 @@ void main() {
           name: 'info',
           background: (tokens) => tokens.info,
           show:
-              (context, message, accent) => KinlySnackBar.showInfo(
-                context,
-                message,
-                accentColor: accent,
-              ),
+              (context, message, accent) =>
+                  KinlySnackBar.showInfo(context, message, accentColor: accent),
         ),
         (
           name: 'warning',
@@ -169,7 +169,8 @@ void main() {
           expect(border.side.color, effectiveAccent);
 
           final expectedTextColor =
-              ThemeData.estimateBrightnessForColor(background) == Brightness.dark
+              ThemeData.estimateBrightnessForColor(background) ==
+                      Brightness.dark
                   ? Colors.white
                   : Colors.black;
           final text = tester.widget<Text>(find.text(message));
@@ -178,5 +179,4 @@ void main() {
       }
     },
   );
-
 }

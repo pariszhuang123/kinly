@@ -35,7 +35,9 @@ void main() async {
           continue;
         }
         if (entity is! File || !entity.path.endsWith('.dart')) continue;
-        if (entity.path.replaceAll('\\', '/').endsWith('lib/core/theme/color_tokens.dart')) {
+        if (entity.path
+            .replaceAll('\\', '/')
+            .endsWith('lib/core/theme/color_tokens.dart')) {
           continue;
         }
         if (fileUsesToken(entity, token)) return true;

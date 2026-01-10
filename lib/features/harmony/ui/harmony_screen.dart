@@ -38,7 +38,9 @@ class HarmonyScreen extends StatelessWidget {
               previous.submitError != current.submitError,
       listener: (context, state) {
         final accent =
-            KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
+            KinlyThemeAccess.of(
+              context,
+            ).extension<KinlySections>()?.pulse.accent;
         if (state.submitSuccessTick > 0) {
           KinlySnackBar.showSuccess(
             context,
@@ -112,7 +114,9 @@ class HarmonySubmitButton extends StatelessWidget {
         void handler() {
           if (!hasMood || state.submitSuccessTick > 0) {
             final accent =
-                KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
+                KinlyThemeAccess.of(
+                  context,
+                ).extension<KinlySections>()?.pulse.accent;
             KinlySnackBar.showError(
               context,
               s.harmonyErrorSelectMood,
@@ -257,7 +261,3 @@ class _GratitudeToggle extends StatelessWidget {
     );
   }
 }
-
-
-
-

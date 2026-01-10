@@ -21,9 +21,7 @@ void main() {
         ],
         supportedLocales: S.delegate.supportedLocales,
         theme: buildKinlyTheme(Brightness.light),
-        home: Builder(
-          builder: (context) => SizedBox(key: probeKey),
-        ),
+        home: Builder(builder: (context) => SizedBox(key: probeKey)),
       ),
     );
 

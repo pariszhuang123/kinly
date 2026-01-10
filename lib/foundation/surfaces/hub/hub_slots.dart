@@ -58,4 +58,3 @@ class HubSurfaceScope {
   final HubSurfaceActions actions;
   final String homeId;
 }
-

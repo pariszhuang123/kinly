@@ -32,24 +32,24 @@ class KinlySelectableMemberAvatarRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return KinlySelectableItemRow<String>(
-      items:
-          members
-              .map(
-                (member) => KinlySelectableItem<String>(
-                  value: member.userId,
-                  label: member.username,
-                  semanticsLabel: member.username,
-                  key: ValueKey('selectable-member-${member.userId}'),
-                  builder: (context, _) => KinlyCircleAvatar(
+      items: members
+          .map(
+            (member) => KinlySelectableItem<String>(
+              value: member.userId,
+              label: member.username,
+              semanticsLabel: member.username,
+              key: ValueKey('selectable-member-${member.userId}'),
+              builder:
+                  (context, _) => KinlyCircleAvatar(
                     avatarUrl: member.avatarUrl,
                     isOwner: member.isOwner,
                     radius: avatarRadius,
                     fallbackInitial:
                         member.username.isNotEmpty ? member.username[0] : null,
                   ),
-                ),
-              )
-              .toList(growable: false),
+            ),
+          )
+          .toList(growable: false),
       selectedValues: selectedMemberIds,
       onToggle: onToggle,
       showLabels: showNames,

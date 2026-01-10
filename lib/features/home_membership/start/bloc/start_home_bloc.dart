@@ -7,11 +7,9 @@ part 'start_home_event.dart';
 part 'start_home_state.dart';
 
 class StartHomeBloc extends Bloc<StartHomeEvent, StartHomeState> {
-  StartHomeBloc(
-    this._homeRepository, {
-    void Function()? onProfileDeactivated,
-  }) : _onProfileDeactivated = onProfileDeactivated,
-       super(const StartHomeState()) {
+  StartHomeBloc(this._homeRepository, {void Function()? onProfileDeactivated})
+    : _onProfileDeactivated = onProfileDeactivated,
+      super(const StartHomeState()) {
     on<StartHomeCreateRequested>(_onCreateRequested);
   }
 

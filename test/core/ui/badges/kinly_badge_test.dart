@@ -69,7 +69,9 @@ void main() {
     expect(tester.takeException(), isA<AssertionError>());
   });
 
-  testWidgets('custom colors are applied and border is optional', (tester) async {
+  testWidgets('custom colors are applied and border is optional', (
+    tester,
+  ) async {
     const background = Color(0xFF112233);
     const foreground = Color(0xFFEECCAA);
     const border = Color(0xFF445566);

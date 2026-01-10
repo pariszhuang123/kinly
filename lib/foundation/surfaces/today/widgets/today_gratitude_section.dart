@@ -52,7 +52,3 @@ class TodayGratitudeSection extends StatelessWidget {
     );
   }
 }
-
-
-
-

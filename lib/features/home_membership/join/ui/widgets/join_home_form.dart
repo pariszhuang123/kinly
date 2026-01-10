@@ -139,7 +139,3 @@ class _JoinHomeFormState extends State<JoinHomeForm> {
     }
   }
 }
-
-
-
-

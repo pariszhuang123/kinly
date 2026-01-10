@@ -58,4 +58,3 @@ class WelcomeSurfaceScope {
   final Buttons appleButtonStyle;
   final WelcomeSurfaceActions actions;
 }
-

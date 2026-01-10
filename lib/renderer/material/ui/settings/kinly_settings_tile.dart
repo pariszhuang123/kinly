@@ -52,27 +52,28 @@ class KinlySettingsTile extends StatelessWidget {
       avatarBackground = primary.withValues(alpha: opacities.alphaSM);
     }
 
-    final titleStyle =
-        (type?.titleMedium ?? theme.textTheme.titleMedium)?.copyWith(
+    final titleStyle = (type?.titleMedium ?? theme.textTheme.titleMedium)
+        ?.copyWith(
           fontWeight: FontWeight.w600,
           color: destructive ? error : tokens.onSurface,
         );
 
-    final subtitleStyle =
-        (type?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
+    final subtitleStyle = (type?.bodyMedium ?? theme.textTheme.bodyMedium)
+        ?.copyWith(
           color: tokens.onSurface.withValues(alpha: opacities.alphaFaint),
         );
 
-    final trailingWidget = showProgress
-        ? SizedBox(
-            width: 20,
-            height: 20,
-            child: KinlyLoader(size: 18, color: leadingColor),
-          )
-        : Icon(
-            Icons.chevron_right,
-            color: tokens.onSurface.withValues(alpha: opacities.alphaFaint),
-          );
+    final trailingWidget =
+        showProgress
+            ? SizedBox(
+              width: 20,
+              height: 20,
+              child: KinlyLoader(size: 18, color: leadingColor),
+            )
+            : Icon(
+              Icons.chevron_right,
+              color: tokens.onSurface.withValues(alpha: opacities.alphaFaint),
+            );
 
     return ListTile(
       contentPadding: EdgeInsetsDirectional.fromSTEB(

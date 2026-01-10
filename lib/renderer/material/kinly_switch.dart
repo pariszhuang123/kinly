@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 
 class KinlySwitch extends StatelessWidget {
-  const KinlySwitch({
-    super.key,
-    required this.value,
-    required this.onChanged,
-  }) : _useAdaptive = false;
+  const KinlySwitch({super.key, required this.value, required this.onChanged})
+    : _useAdaptive = false;
 
   final bool value;
   final ValueChanged<bool>? onChanged;
@@ -15,11 +12,7 @@ class KinlySwitch extends StatelessWidget {
     required bool value,
     required ValueChanged<bool>? onChanged,
   }) {
-    return KinlySwitch._adaptive(
-      key: key,
-      value: value,
-      onChanged: onChanged,
-    );
+    return KinlySwitch._adaptive(key: key, value: value, onChanged: onChanged);
   }
 
   const KinlySwitch._adaptive({

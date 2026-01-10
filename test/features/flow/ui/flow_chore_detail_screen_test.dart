@@ -32,9 +32,7 @@ class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
 
 class _RouteHost extends StatefulWidget {
-  const _RouteHost({
-    required this.buildRoute,
-  });
+  const _RouteHost({required this.buildRoute});
 
   final Route<Object?> Function(BuildContext context) buildRoute;
 
@@ -49,9 +47,9 @@ class _RouteHostState extends State<_RouteHost> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final result = await Navigator.of(context).push<Object?>(
-        widget.buildRoute(context),
-      );
+      final result = await Navigator.of(
+        context,
+      ).push<Object?>(widget.buildRoute(context));
       if (!mounted) return;
       setState(() => poppedResult = result);
     });
@@ -92,7 +90,9 @@ void main() {
     stepsAdvanced: null,
   );
 
-  testWidgets('pops outcome when completion success state observed', (tester) async {
+  testWidgets('pops outcome when completion success state observed', (
+    tester,
+  ) async {
     final bloc = _MockFlowChoreDetailBloc();
     final details = ChoreDetails(
       chore: Chore(

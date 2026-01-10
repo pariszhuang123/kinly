@@ -84,13 +84,13 @@ class TodayState extends Equatable {
          hasShownNpsPrompt: hasShownNpsPrompt,
          notificationPromptTick: notificationPromptTick,
          hasShownNotificationPrompt: hasShownNotificationPrompt,
-        activeChoreCount: activeChoreCount,
-        shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: shouldPromptInviteShare,
-        shouldPromptPreferences: shouldPromptPreferences,
-        memberCapJoinRequests: memberCapJoinRequests,
-        memberCapJoinResolution: memberCapJoinResolution,
-      );
+         activeChoreCount: activeChoreCount,
+         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+         shouldPromptInviteShare: shouldPromptInviteShare,
+         shouldPromptPreferences: shouldPromptPreferences,
+         memberCapJoinRequests: memberCapJoinRequests,
+         memberCapJoinResolution: memberCapJoinResolution,
+       );
 
   const TodayState.loaded({
     required List<TodayFlowTask> activeTasks,
@@ -129,13 +129,13 @@ class TodayState extends Equatable {
          hasShownNpsPrompt: hasShownNpsPrompt,
          notificationPromptTick: notificationPromptTick,
          hasShownNotificationPrompt: hasShownNotificationPrompt,
-        activeChoreCount: activeChoreCount,
-        shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: shouldPromptInviteShare,
-        shouldPromptPreferences: shouldPromptPreferences,
-        memberCapJoinRequests: memberCapJoinRequests,
-        memberCapJoinResolution: memberCapJoinResolution,
-      );
+         activeChoreCount: activeChoreCount,
+         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+         shouldPromptInviteShare: shouldPromptInviteShare,
+         shouldPromptPreferences: shouldPromptPreferences,
+         memberCapJoinRequests: memberCapJoinRequests,
+         memberCapJoinResolution: memberCapJoinResolution,
+       );
 
   const TodayState.failure({
     TodayUserProfile? profile,
@@ -176,17 +176,19 @@ class TodayState extends Equatable {
          hasShownNpsPrompt: hasShownNpsPrompt,
          notificationPromptTick: notificationPromptTick,
          hasShownNotificationPrompt: hasShownNotificationPrompt,
-        activeChoreCount: activeChoreCount,
-        shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: shouldPromptInviteShare,
-        shouldPromptPreferences: shouldPromptPreferences,
-        memberCapJoinRequests: memberCapJoinRequests,
-        memberCapJoinResolution: memberCapJoinResolution,
-      );
+         activeChoreCount: activeChoreCount,
+         shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+         shouldPromptInviteShare: shouldPromptInviteShare,
+         shouldPromptPreferences: shouldPromptPreferences,
+         memberCapJoinRequests: memberCapJoinRequests,
+         memberCapJoinResolution: memberCapJoinResolution,
+       );
 
   bool get hasFlowContent => activeTasks.isNotEmpty || draftTasks.isNotEmpty;
   bool get hasShareContent =>
-      shareOwed.isNotEmpty || sharePaidToMe.isNotEmpty || shareDrafts.isNotEmpty;
+      shareOwed.isNotEmpty ||
+      sharePaidToMe.isNotEmpty ||
+      shareDrafts.isNotEmpty;
   bool get hasGratitudeUnread => gratitudeStatus?.hasUnread ?? false;
   bool get hasAnyTodayContent =>
       hasFlowContent || hasShareContent || hasGratitudeUnread;

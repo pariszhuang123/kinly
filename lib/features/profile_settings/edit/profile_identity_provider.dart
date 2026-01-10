@@ -37,5 +37,3 @@ class ProfileIdentityProvider extends StatelessWidget {
     );
   }
 }
-
-

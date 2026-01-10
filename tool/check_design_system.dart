@@ -30,8 +30,9 @@ final _allowlistPaths = <String>[
   '.dart_tool/',
 ];
 
-final _materialImportPattern =
-    RegExp("import\\s+[\"']package:flutter/material\\.dart[\"']");
+final _materialImportPattern = RegExp(
+  "import\\s+[\"']package:flutter/material\\.dart[\"']",
+);
 
 final _materialImportAllowlist = <String>[
   'lib/renderer/',
@@ -83,9 +84,7 @@ void main(List<String> args) {
 
   if (writeBaselinePath != null && writeBaselinePath.isNotEmpty) {
     final file = File(writeBaselinePath);
-    file.writeAsStringSync(
-      (allViolations.toSet().toList()..sort()).join('\n'),
-    );
+    file.writeAsStringSync((allViolations.toSet().toList()..sort()).join('\n'));
   }
 
   if (violations.isEmpty) {

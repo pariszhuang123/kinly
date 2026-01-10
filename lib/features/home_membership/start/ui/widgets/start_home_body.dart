@@ -53,7 +53,3 @@ class StartHomeBody extends StatelessWidget {
     );
   }
 }
-
-
-
-

@@ -31,14 +31,15 @@ void main() {
           routes: [
             GoRoute(
               path: 'edit',
-              builder: (_, __) => PreferenceReportSectionScreen(
-                args: const PreferenceReportSectionRouteArgs(
-                  sectionKey: 'section-1',
-                  title: 'Section 1',
-                  text: 'Initial text',
-                ),
-                repository: repository,
-              ),
+              builder:
+                  (_, __) => PreferenceReportSectionScreen(
+                    args: const PreferenceReportSectionRouteArgs(
+                      sectionKey: 'section-1',
+                      title: 'Section 1',
+                      text: 'Initial text',
+                    ),
+                    repository: repository,
+                  ),
             ),
           ],
         ),
@@ -58,9 +59,7 @@ void main() {
   }
 
   testWidgets('saves section edits and returns to host', (tester) async {
-    when(
-      () => repository.getTemplateResolution(),
-    ).thenAnswer(
+    when(() => repository.getTemplateResolution()).thenAnswer(
       (_) async => const PreferenceTemplateResolution(
         templateKey: 'personal_preferences_v1',
         requestedLocale: 'en-NZ',
@@ -81,7 +80,8 @@ void main() {
     await tester.enterText(find.byType(TextField), 'Updated text');
     await tester.tap(
       find.text(
-        S.of(tester.element(find.byType(PreferenceReportSectionScreen)))
+        S
+            .of(tester.element(find.byType(PreferenceReportSectionScreen)))
             .preferenceReportEditSectionDone,
       ),
     );

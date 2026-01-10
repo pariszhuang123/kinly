@@ -25,7 +25,7 @@ void main() {
 
   test('HomeCreationResult parses id from nested home object', () {
     final result = HomeCreationResult.fromJson({
-      'home': {'id': 'home-123'}
+      'home': {'id': 'home-123'},
     });
     expect(result.homeId, 'home-123');
   });

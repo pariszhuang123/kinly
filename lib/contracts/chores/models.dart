@@ -276,7 +276,9 @@ class ChoreCompletionResult {
       recurrenceUnit: ChoreRecurrenceUnitWire.fromWire(
         json['recurrence_unit'] ?? json['recurrenceUnit'],
       ),
-      previousNextOccurrence: parseDateToLocal(json['previous_next_occurrence']),
+      previousNextOccurrence: parseDateToLocal(
+        json['previous_next_occurrence'],
+      ),
       newNextOccurrence: parseDateToLocal(json['new_next_occurrence']),
       stepsAdvanced: (json['steps_advanced'] as num?)?.toInt(),
     );

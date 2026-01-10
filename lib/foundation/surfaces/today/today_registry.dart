@@ -30,7 +30,8 @@ class TodayRegistry {
   static final List<TodaySectionEntry> _entries = [];
   static bool _bootstrapped = false;
 
-  static List<TodaySectionEntry> get bodySections => List.unmodifiable(_entries);
+  static List<TodaySectionEntry> get bodySections =>
+      List.unmodifiable(_entries);
 
   static void register(TodaySectionEntry entry) {
     _entries.add(entry);
@@ -111,9 +112,8 @@ class TodayRegistry {
         order: 50,
         spacingAfter: TodaySectionSpacing.none,
         builder:
-            (scope) => TodayGratitudeSection(
-              onTap: scope.actions.onGratitudeTap,
-            ),
+            (scope) =>
+                TodayGratitudeSection(onTap: scope.actions.onGratitudeTap),
         isVisible: (scope) => scope.state.hasGratitudeUnread,
       ),
     );
@@ -174,5 +174,3 @@ Widget _buildPreferencesPrompt(TodaySurfaceScope scope) {
     onPrimary: scope.actions.onPreferencePrompt,
   );
 }
-
-

@@ -66,4 +66,3 @@ class Elevations extends ThemeExtension<Elevations> {
     );
   }
 }
-

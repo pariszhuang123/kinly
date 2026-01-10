@@ -15,16 +15,13 @@ void main() {
   );
 
   Widget wrapBadge() => MaterialApp(
-        theme: buildKinlyTheme(Brightness.light),
-        home: Scaffold(
-          body: Center(
-            child: KinlyExpandBadge(
-              isExpanded: true,
-              colors: sectionColors,
-            ),
-          ),
-        ),
-      );
+    theme: buildKinlyTheme(Brightness.light),
+    home: Scaffold(
+      body: Center(
+        child: KinlyExpandBadge(isExpanded: true, colors: sectionColors),
+      ),
+    ),
+  );
 
   testWidgets('uses section icon color and default background alpha', (
     tester,
@@ -33,19 +30,24 @@ void main() {
 
     final decorated = tester.widget<DecoratedBox>(find.byType(DecoratedBox));
     final decoration = decorated.decoration as BoxDecoration;
-    final controls = Theme.of(tester.element(find.byType(KinlyExpandBadge)))
-        .extension<KinlyControlColors>()!;
+    final controls =
+        Theme.of(
+          tester.element(find.byType(KinlyExpandBadge)),
+        ).extension<KinlyControlColors>()!;
     expect(decoration.color, controls.expandBadgeBg);
   });
 
-  testWidgets('uses token icon/color fallback when theme has no extension',
-      (tester) async {
+  testWidgets('uses token icon/color fallback when theme has no extension', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrapBadge());
 
     final decorated = tester.widget<DecoratedBox>(find.byType(DecoratedBox));
     final decoration = decorated.decoration as BoxDecoration;
-    final controls = Theme.of(tester.element(find.byType(KinlyExpandBadge)))
-        .extension<KinlyControlColors>()!;
+    final controls =
+        Theme.of(
+          tester.element(find.byType(KinlyExpandBadge)),
+        ).extension<KinlyControlColors>()!;
     expect(decoration.color, controls.expandBadgeBg);
   });
 }

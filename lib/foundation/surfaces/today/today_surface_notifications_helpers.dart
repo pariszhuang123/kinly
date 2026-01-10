@@ -98,4 +98,3 @@ Future<void> _maybePromptNotificationsImpl(
     );
   }
 }
-

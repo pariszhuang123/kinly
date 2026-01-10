@@ -71,12 +71,16 @@ class FlowChoreDetailView extends StatelessWidget {
         chore.assigneeUserId != null &&
         userId != null &&
         chore.assigneeUserId == userId;
-    final hideSchedule = isAssignedToCurrentUser && chore.state == ChoreState.active;
+    final hideSchedule =
+        isAssignedToCurrentUser && chore.state == ChoreState.active;
 
     final assigneeName = _resolveAssignee(context, details);
     final formattedDate = DateFormat.yMMMMd().format(chore.startDate);
-    final recurrenceLabel =
-        _recurrenceLabel(context, chore.recurrenceEvery, chore.recurrenceUnit);
+    final recurrenceLabel = _recurrenceLabel(
+      context,
+      chore.recurrenceEvery,
+      chore.recurrenceUnit,
+    );
 
     return Padding(
       padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
@@ -91,7 +95,8 @@ class FlowChoreDetailView extends StatelessWidget {
                     FlowChoreCoreInfoSection(
                       choreName: chore.name,
                       assigneeLabel: s.flowChoreAssigneeLabel,
-                      assigneeValue: assigneeName ?? s.flowChoreDetailUnassigned,
+                      assigneeValue:
+                          assigneeName ?? s.flowChoreDetailUnassigned,
                       startLabel: s.flowChoreStartLabel,
                       startValue: formattedDate,
                       recurrenceLabel: s.flowChoreRecurrenceLabel,
@@ -111,7 +116,8 @@ class FlowChoreDetailView extends StatelessWidget {
                       howToBody: howToBody,
                       onHowToTap:
                           normalizedHowToUrl != null
-                              ? () => _launchHowToUrl(context, normalizedHowToUrl)
+                              ? () =>
+                                  _launchHowToUrl(context, normalizedHowToUrl)
                               : null,
                       expectationPhotoLabel: s.flowChoreExpectationPhotoLabel,
                       expectationPhotoUrl: expectationPhotoUrl,
@@ -260,7 +266,3 @@ String? _resolveAssignee(BuildContext context, ChoreDetails details) {
 
   return summary.fullName ?? S.of(context).friendDefaultName;
 }
-
-
-
-

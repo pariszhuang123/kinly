@@ -21,9 +21,7 @@ class ShareOwedDetailSurfaceSlots {
 }
 
 class ShareOwedDetailSurfaceActions {
-  const ShareOwedDetailSurfaceActions({
-    required this.onMarkAllPaid,
-  });
+  const ShareOwedDetailSurfaceActions({required this.onMarkAllPaid});
 
   final Future<void> Function() onMarkAllPaid;
 }
@@ -49,4 +47,3 @@ class ShareOwedDetailSurfaceScope {
   final String? errorMessage;
   final ShareOwedDetailSurfaceActions actions;
 }
-

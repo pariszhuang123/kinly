@@ -30,7 +30,8 @@ class HarmonyState extends Equatable {
     MoodSubmitResult? lastResult,
   }) {
     return HarmonyState(
-      selectedMood: clearSelectedMood ? null : (selectedMood ?? this.selectedMood),
+      selectedMood:
+          clearSelectedMood ? null : (selectedMood ?? this.selectedMood),
       comment: comment ?? this.comment,
       addToWall: addToWall ?? this.addToWall,
       isSubmitting: isSubmitting ?? this.isSubmitting,
@@ -42,12 +43,12 @@ class HarmonyState extends Equatable {
 
   @override
   List<Object?> get props => [
-        selectedMood,
-        comment,
-        addToWall,
-        isSubmitting,
-        submitSuccessTick,
-        submitError,
-        lastResult,
-      ];
+    selectedMood,
+    comment,
+    addToWall,
+    isSubmitting,
+    submitSuccessTick,
+    submitError,
+    lastResult,
+  ];
 }

@@ -7,9 +7,6 @@ class KinlyDropdownMenuItem {
     required T value,
     required Widget child,
   }) {
-    return DropdownMenuItem<T>(
-      value: value,
-      child: child,
-    );
+    return DropdownMenuItem<T>(value: value, child: child);
   }
 }

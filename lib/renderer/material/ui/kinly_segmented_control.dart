@@ -24,19 +24,21 @@ class KinlySegmentedControl<T> extends StatelessWidget {
     final theme = Theme.of(context);
     final spacing = theme.extension<Spacing>();
     final corners = theme.extension<Corners>();
-    final colors = theme.extension<KinlyColorTokens>() ??
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
 
     return SegmentedButton<T>(
-      segments: segments.entries
-          .map(
-            (entry) => ButtonSegment<T>(
-              value: entry.key,
-              label: Text(entry.value),
-            ),
-          )
-          .toList(),
+      segments:
+          segments.entries
+              .map(
+                (entry) => ButtonSegment<T>(
+                  value: entry.key,
+                  label: Text(entry.value),
+                ),
+              )
+              .toList(),
       selected: {selected},
       onSelectionChanged: (values) {
         final value = values.first;
@@ -57,31 +59,25 @@ class KinlySegmentedControl<T> extends StatelessWidget {
             borderRadius: BorderRadius.circular(corners?.large ?? 16),
           ),
         ),
-        backgroundColor: WidgetStateProperty.resolveWith(
-          (states) {
-            if (states.contains(WidgetState.selected)) {
-              return colors.primaryContainer;
-            }
-            return colors.surfaceVariant;
-          },
-        ),
-        foregroundColor: WidgetStateProperty.resolveWith(
-          (states) {
-            if (states.contains(WidgetState.selected)) {
-              return colors.onPrimaryContainer;
-            }
-            return colors.onSurface;
-          },
-        ),
-        side: WidgetStateProperty.resolveWith(
-          (states) {
-            final color =
-                states.contains(WidgetState.selected)
-                    ? colors.primary
-                    : colors.outline;
-            return BorderSide(color: color);
-          },
-        ),
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return colors.primaryContainer;
+          }
+          return colors.surfaceVariant;
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return colors.onPrimaryContainer;
+          }
+          return colors.onSurface;
+        }),
+        side: WidgetStateProperty.resolveWith((states) {
+          final color =
+              states.contains(WidgetState.selected)
+                  ? colors.primary
+                  : colors.outline;
+          return BorderSide(color: color);
+        }),
       ),
     );
   }

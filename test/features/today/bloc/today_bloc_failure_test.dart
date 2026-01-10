@@ -14,7 +14,8 @@ import 'package:kinly/contracts/preferences/ports/preference_reports_repository.
 import 'package:kinly/contracts/mood/models.dart';
 import 'package:kinly/contracts/expenses/models.dart';
 import 'package:kinly/contracts/chores/models.dart';
-import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart' as onboarding;
+import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart'
+    as onboarding;
 import 'package:kinly/contracts/homes/models.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}
@@ -144,5 +145,3 @@ void main() {
         ],
   );
 }
-
-

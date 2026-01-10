@@ -118,7 +118,3 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     );
   }
 }
-
-
-
-

@@ -172,7 +172,8 @@ class KinlyControlColors extends ThemeExtension<KinlyControlColors> {
           filledDestructiveDisabledFg ?? this.filledDestructiveDisabledFg,
       outlinedBorder: outlinedBorder ?? this.outlinedBorder,
       outlinedFg: outlinedFg ?? this.outlinedFg,
-      outlinedDisabledBorder: outlinedDisabledBorder ?? this.outlinedDisabledBorder,
+      outlinedDisabledBorder:
+          outlinedDisabledBorder ?? this.outlinedDisabledBorder,
       outlinedDisabledFg: outlinedDisabledFg ?? this.outlinedDisabledFg,
       textFg: textFg ?? this.textFg,
       textDisabledFg: textDisabledFg ?? this.textDisabledFg,
@@ -227,8 +228,14 @@ class KinlyControlColors extends ThemeExtension<KinlyControlColors> {
       filledFg: lerpColor(filledFg, other.filledFg),
       filledDisabledBg: lerpColor(filledDisabledBg, other.filledDisabledBg),
       filledDisabledFg: lerpColor(filledDisabledFg, other.filledDisabledFg),
-      filledDestructiveBg: lerpColor(filledDestructiveBg, other.filledDestructiveBg),
-      filledDestructiveFg: lerpColor(filledDestructiveFg, other.filledDestructiveFg),
+      filledDestructiveBg: lerpColor(
+        filledDestructiveBg,
+        other.filledDestructiveBg,
+      ),
+      filledDestructiveFg: lerpColor(
+        filledDestructiveFg,
+        other.filledDestructiveFg,
+      ),
       filledDestructiveDisabledBg: lerpColor(
         filledDestructiveDisabledBg,
         other.filledDestructiveDisabledBg,
@@ -239,9 +246,14 @@ class KinlyControlColors extends ThemeExtension<KinlyControlColors> {
       ),
       outlinedBorder: lerpColor(outlinedBorder, other.outlinedBorder),
       outlinedFg: lerpColor(outlinedFg, other.outlinedFg),
-      outlinedDisabledBorder:
-          lerpColor(outlinedDisabledBorder, other.outlinedDisabledBorder),
-      outlinedDisabledFg: lerpColor(outlinedDisabledFg, other.outlinedDisabledFg),
+      outlinedDisabledBorder: lerpColor(
+        outlinedDisabledBorder,
+        other.outlinedDisabledBorder,
+      ),
+      outlinedDisabledFg: lerpColor(
+        outlinedDisabledFg,
+        other.outlinedDisabledFg,
+      ),
       textFg: lerpColor(textFg, other.textFg),
       textDisabledFg: lerpColor(textDisabledFg, other.textDisabledFg),
       fabBg: lerpColor(fabBg, other.fabBg),
@@ -251,28 +263,47 @@ class KinlyControlColors extends ThemeExtension<KinlyControlColors> {
       checkboxChecked: lerpColor(checkboxChecked, other.checkboxChecked),
       checkboxUnchecked: lerpColor(checkboxUnchecked, other.checkboxUnchecked),
       checkboxBorder: lerpColor(checkboxBorder, other.checkboxBorder),
-      selectionDisabledBg:
-          lerpColor(selectionDisabledBg, other.selectionDisabledBg),
-      selectionDisabledBorder:
-          lerpColor(selectionDisabledBorder, other.selectionDisabledBorder),
-      selectionDisabledFg:
-          lerpColor(selectionDisabledFg, other.selectionDisabledFg),
+      selectionDisabledBg: lerpColor(
+        selectionDisabledBg,
+        other.selectionDisabledBg,
+      ),
+      selectionDisabledBorder: lerpColor(
+        selectionDisabledBorder,
+        other.selectionDisabledBorder,
+      ),
+      selectionDisabledFg: lerpColor(
+        selectionDisabledFg,
+        other.selectionDisabledFg,
+      ),
       optionRowBg: lerpColor(optionRowBg, other.optionRowBg),
       optionRowFg: lerpColor(optionRowFg, other.optionRowFg),
-      optionRowSelectedBg: lerpColor(optionRowSelectedBg, other.optionRowSelectedBg),
-      optionRowSelectedFg: lerpColor(optionRowSelectedFg, other.optionRowSelectedFg),
+      optionRowSelectedBg: lerpColor(
+        optionRowSelectedBg,
+        other.optionRowSelectedBg,
+      ),
+      optionRowSelectedFg: lerpColor(
+        optionRowSelectedFg,
+        other.optionRowSelectedFg,
+      ),
       optionRowBorder: lerpColor(optionRowBorder, other.optionRowBorder),
       selectableItemBg: lerpColor(selectableItemBg, other.selectableItemBg),
-      selectableItemBorder: lerpColor(selectableItemBorder, other.selectableItemBorder),
+      selectableItemBorder: lerpColor(
+        selectableItemBorder,
+        other.selectableItemBorder,
+      ),
       selectableItemFg: lerpColor(selectableItemFg, other.selectableItemFg),
-      selectableItemBgSelected:
-          lerpColor(selectableItemBgSelected, other.selectableItemBgSelected),
+      selectableItemBgSelected: lerpColor(
+        selectableItemBgSelected,
+        other.selectableItemBgSelected,
+      ),
       selectableItemBorderSelected: lerpColor(
         selectableItemBorderSelected,
         other.selectableItemBorderSelected,
       ),
-      selectableItemFgSelected:
-          lerpColor(selectableItemFgSelected, other.selectableItemFgSelected),
+      selectableItemFgSelected: lerpColor(
+        selectableItemFgSelected,
+        other.selectableItemFgSelected,
+      ),
       loaderColor: lerpColor(loaderColor, other.loaderColor),
       badgeBg: lerpColor(badgeBg, other.badgeBg),
       badgeFg: lerpColor(badgeFg, other.badgeFg),
@@ -289,4 +320,3 @@ class KinlyControlColors extends ThemeExtension<KinlyControlColors> {
     );
   }
 }
-

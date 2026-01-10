@@ -465,4 +465,3 @@ Future<void> openInfoHub(BuildContext context) async {
 Color? _profileAccent(BuildContext context) {
   return KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
 }
-

@@ -190,19 +190,14 @@ void main() {
     });
 
     test('parses with id key fallback', () {
-      final json = {
-        'id': 'user-456',
-        'full_name': 'Bob',
-      };
+      final json = {'id': 'user-456', 'full_name': 'Bob'};
       final result = ChoreAssigneeSummary.fromJson(json);
 
       expect(result.userId, 'user-456');
     });
 
     test('defaults isOwner to false', () {
-      final json = {
-        'user_id': 'user-123',
-      };
+      final json = {'user_id': 'user-123'};
       final result = ChoreAssigneeSummary.fromJson(json);
 
       expect(result.isOwner, false);

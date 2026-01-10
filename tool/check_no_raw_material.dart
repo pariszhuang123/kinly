@@ -13,8 +13,14 @@ final _patterns = <_ForbiddenPattern>[
   _ForbiddenPattern('OutlinedButton', RegExp(r'\bOutlinedButton\s*\(')),
   _ForbiddenPattern('MaterialButton', RegExp(r'\bMaterialButton\s*\(')),
   _ForbiddenPattern('RawMaterialButton', RegExp(r'\bRawMaterialButton\s*\(')),
-  _ForbiddenPattern('FloatingActionButton', RegExp(r'\bFloatingActionButton\s*\(')),
-  _ForbiddenPattern('CircularProgressIndicator', RegExp(r'\bCircularProgressIndicator\s*\(')),
+  _ForbiddenPattern(
+    'FloatingActionButton',
+    RegExp(r'\bFloatingActionButton\s*\('),
+  ),
+  _ForbiddenPattern(
+    'CircularProgressIndicator',
+    RegExp(r'\bCircularProgressIndicator\s*\('),
+  ),
   _ForbiddenPattern('SnackBar', RegExp(r'\bSnackBar\s*\(')),
   _ForbiddenPattern('AlertDialog', RegExp(r'\bAlertDialog\s*\(')),
   _ForbiddenPattern('BottomSheet', RegExp(r'\bBottomSheet\s*\(')),

@@ -4,7 +4,9 @@ final _routeNameDecl = RegExp(r'static const ([a-zA-Z0-9_]+)\s*=');
 
 void main() {
   final violations = <String>[];
-  final appRouteNames = _loadAppRouteNames('lib/app/router/app_route_names.dart');
+  final appRouteNames = _loadAppRouteNames(
+    'lib/app/router/app_route_names.dart',
+  );
   if (appRouteNames.isEmpty) {
     stdout.writeln('Route name usage guardrails skipped (no AppRouteNames).');
     return;
@@ -15,7 +17,9 @@ void main() {
     ..._dartFilesUnder('lib/foundation'),
   ].where(
     (f) =>
-        f.path.contains('${Platform.pathSeparator}routes${Platform.pathSeparator}') &&
+        f.path.contains(
+          '${Platform.pathSeparator}routes${Platform.pathSeparator}',
+        ) &&
         f.path.endsWith('.dart'),
   );
 

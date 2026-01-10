@@ -61,9 +61,7 @@ class JoinHomeScreen extends StatelessWidget {
       context: context,
       initialCode: initialCode,
     );
-    final slots = JoinHomeSurfaceSlots(
-      body: _buildJoinHomeSections(scope),
-    );
+    final slots = JoinHomeSurfaceSlots(body: _buildJoinHomeSections(scope));
     return slots.body;
   }
 
@@ -74,12 +72,9 @@ class JoinHomeScreen extends StatelessWidget {
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children:
-          entries.map((entry) => entry.builder(scope)).toList(growable: false),
+      children: entries
+          .map((entry) => entry.builder(scope))
+          .toList(growable: false),
     );
   }
 }
-
-
-
-

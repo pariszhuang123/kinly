@@ -92,9 +92,11 @@ List<ScenarioHeadingViolation> validateScenarioHeadings({
 }
 
 void main(List<String> args) {
-  final taxonomyPath = _readArg(args, '--taxonomy-path=') ??
+  final taxonomyPath =
+      _readArg(args, '--taxonomy-path=') ??
       'docs/contracts/preference_taxonomy_v1.md';
-  final scenariosPath = _readArg(args, '--scenarios-path=') ??
+  final scenariosPath =
+      _readArg(args, '--scenarios-path=') ??
       'docs/contracts/preference_scenarios_v1.md';
 
   final violations = validateScenarioHeadings(

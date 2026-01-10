@@ -69,16 +69,11 @@ class FlowChoreForm {
           identical(assigneeUserId, _unset)
               ? this.assigneeUserId
               : assigneeUserId as String?,
-      startDate:
-          startDate != null ? dateOnly(startDate) : this.startDate,
+      startDate: startDate != null ? dateOnly(startDate) : this.startDate,
       recurrenceEvery:
-          clearRecurrence
-              ? null
-              : recurrenceEvery ?? this.recurrenceEvery,
+          clearRecurrence ? null : recurrenceEvery ?? this.recurrenceEvery,
       recurrenceUnit:
-          clearRecurrence
-              ? null
-              : recurrenceUnit ?? this.recurrenceUnit,
+          clearRecurrence ? null : recurrenceUnit ?? this.recurrenceUnit,
       notes: notes ?? this.notes,
       howToVideoUrl: howToVideoUrl ?? this.howToVideoUrl,
       expectationPhotoPath: expectationPhotoPath ?? this.expectationPhotoPath,
@@ -134,8 +129,7 @@ class FlowChoreForm {
     expectationPhotoPath,
   );
 
-  bool get isRecurring =>
-      recurrenceEvery != null && recurrenceUnit != null;
+  bool get isRecurring => recurrenceEvery != null && recurrenceUnit != null;
 
   bool get isRecurrenceValid =>
       !isRecurring || (recurrenceEvery != null && recurrenceEvery! >= 1);

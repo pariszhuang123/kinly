@@ -4,8 +4,6 @@ import 'package:kinly/features/home/home.dart';
 
 void installHomeDependencies(GetIt sl) {
   if (!sl.isRegistered<HomeRepository>()) {
-    sl.registerLazySingleton<HomeRepository>(
-      () => SupabaseHomeRepository(),
-    );
+    sl.registerLazySingleton<HomeRepository>(() => SupabaseHomeRepository());
   }
 }

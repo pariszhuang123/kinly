@@ -33,9 +33,7 @@ void main() {
     return;
   }
 
-  stdout.writeln(
-    'No-platform-logic guardrails failed (${violations.length}):',
-  );
+  stdout.writeln('No-platform-logic guardrails failed (${violations.length}):');
   for (final v in violations) {
     stdout.writeln(' - $v');
   }

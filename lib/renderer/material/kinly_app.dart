@@ -5,11 +5,7 @@ import '../../generated/l10n.dart';
 import 'theme/kinly_theme.dart';
 
 class KinlyApp extends StatelessWidget {
-  const KinlyApp({
-    super.key,
-    required this.routerConfig,
-    this.builder,
-  });
+  const KinlyApp({super.key, required this.routerConfig, this.builder});
 
   final RouterConfig<Object> routerConfig;
   final TransitionBuilder? builder;

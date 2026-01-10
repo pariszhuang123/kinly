@@ -48,4 +48,3 @@ class PaywallSurfaceScope {
   final List<String> orderedBenefits;
   final PaywallSurfaceActions actions;
 }
-

@@ -22,7 +22,9 @@ void main() {
 
     when(() => supabase.storage).thenReturn(storage);
     when(() => storage.from(any())).thenReturn(fileApi);
-    when(() => fileApi.getPublicUrl(any())).thenAnswer((invocation) => 'public://${invocation.positionalArguments.first}');
+    when(() => fileApi.getPublicUrl(any())).thenAnswer(
+      (invocation) => 'public://${invocation.positionalArguments.first}',
+    );
   });
 
   test('returns null for null or empty', () {

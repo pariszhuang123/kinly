@@ -86,7 +86,3 @@ class _FlowDetailRow extends StatelessWidget {
     );
   }
 }
-
-
-
-

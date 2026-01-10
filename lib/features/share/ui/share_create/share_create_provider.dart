@@ -31,5 +31,3 @@ class ShareCreateProvider extends StatelessWidget {
     );
   }
 }
-
-

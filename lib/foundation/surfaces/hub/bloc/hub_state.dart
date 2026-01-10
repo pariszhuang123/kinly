@@ -15,15 +15,15 @@ class HubState extends Equatable {
   });
 
   factory HubState.initial({required String appLink}) => HubState(
-        status: HubStatus.initial,
-        members: const [],
-        preferenceReports: const [],
-        currentUserId: '',
-        invite: null,
-        inviteLink: null,
-        appLink: appLink,
-        isOwner: false,
-      );
+    status: HubStatus.initial,
+    members: const [],
+    preferenceReports: const [],
+    currentUserId: '',
+    invite: null,
+    inviteLink: null,
+    appLink: appLink,
+    isOwner: false,
+  );
 
   final HubStatus status;
   final List<HomeMemberSummary> members;
@@ -73,15 +73,15 @@ class HubState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        members,
-        preferenceReports,
-        currentUserId,
-        invite,
-        inviteLink,
-        appLink,
-        isOwner,
-        isRefreshing,
-        notice,
-      ];
+    status,
+    members,
+    preferenceReports,
+    currentUserId,
+    invite,
+    inviteLink,
+    appLink,
+    isOwner,
+    isRefreshing,
+    notice,
+  ];
 }

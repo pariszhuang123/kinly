@@ -20,24 +20,24 @@ class _FakePreferenceReportsRepository implements PreferenceReportsRepository {
     this.shouldReturnNullReport = false,
     this.shouldThrow = false,
   }) : report = const PreferenceReport(
-          id: 'id',
-          subjectUserId: 'user-1',
-          templateKey: 'personal_preferences_v1',
-          locale: 'en',
-          publishedAt: null,
-          content: PreferenceReportContent(
-            summary: PreferenceReportSummary(title: 'title', subtitle: 'sub'),
-            sections: [
-              PreferenceReportSection(
-                sectionKey: 'section',
-                title: 'Section',
-                text: 'Body',
-              ),
-            ],
-          ),
-          lastEditedAt: null,
-          lastEditedBy: 'user-1',
-        );
+         id: 'id',
+         subjectUserId: 'user-1',
+         templateKey: 'personal_preferences_v1',
+         locale: 'en',
+         publishedAt: null,
+         content: PreferenceReportContent(
+           summary: PreferenceReportSummary(title: 'title', subtitle: 'sub'),
+           sections: [
+             PreferenceReportSection(
+               sectionKey: 'section',
+               title: 'Section',
+               text: 'Body',
+             ),
+           ],
+         ),
+         lastEditedAt: null,
+         lastEditedBy: 'user-1',
+       );
 
   final PreferenceReport report;
   final bool shouldReturnNullReport;
@@ -167,10 +167,11 @@ void main() {
         GoRoute(
           path: '/onboarding',
           name: AppRouteNames.preferenceOnboarding,
-          builder: (_, __) => BlocProvider.value(
-            value: bloc,
-            child: const PreferenceOnboardingScreen(),
-          ),
+          builder:
+              (_, __) => BlocProvider.value(
+                value: bloc,
+                child: const PreferenceOnboardingScreen(),
+              ),
         ),
         GoRoute(
           path: '/report',

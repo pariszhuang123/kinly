@@ -45,4 +45,3 @@ class ExploreSurfaceScope {
   final S strings;
   final ExploreSurfaceActions actions;
 }
-

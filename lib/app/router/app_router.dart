@@ -85,4 +85,3 @@ GoRouter createRouter({
     routes: _buildRoutes(authBloc),
   );
 }
-

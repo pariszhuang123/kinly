@@ -48,8 +48,7 @@ class ProfileErrorMapper {
       'FORBIDDEN': ProfileErrorCode.forbidden,
       'UNAUTHORIZED': ProfileErrorCode.unauthorized,
     };
-    final code =
-        codeMap[parsed.code] ?? ProfileErrorCode.unknown;
+    final code = codeMap[parsed.code] ?? ProfileErrorCode.unknown;
 
     return ProfileIdentityException(
       code,

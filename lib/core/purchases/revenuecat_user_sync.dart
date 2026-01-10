@@ -19,7 +19,10 @@ Future<void> syncRevenueCatUser(Logger logger, {String? userId}) async {
     }
 
     if (currentId == userId) {
-      logger.info('RevenueCat already logged in as $userId', tag: _logTagRevenueCatUser);
+      logger.info(
+        'RevenueCat already logged in as $userId',
+        tag: _logTagRevenueCatUser,
+      );
       return;
     }
 

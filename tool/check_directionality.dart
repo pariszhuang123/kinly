@@ -11,13 +11,22 @@ void main() {
   }
 
   final patterns = <_Lint>[
-    _Lint(RegExp(r'EdgeInsets\.fromLTRB'), 'Use EdgeInsetsDirectional.fromSTEB'),
-    _Lint(RegExp(r'EdgeInsets\.only\(\s*(left|right):'),
-        'Use EdgeInsetsDirectional.only(start/end)'),
-    _Lint(RegExp(r'Alignment\.centerLeft|Alignment\.centerRight'),
-        'Use AlignmentDirectional.centerStart/centerEnd'),
-    _Lint(RegExp(r'Positioned\(([^)]*\bleft:|[^)]*\bright:)'),
-        'Use PositionedDirectional'),
+    _Lint(
+      RegExp(r'EdgeInsets\.fromLTRB'),
+      'Use EdgeInsetsDirectional.fromSTEB',
+    ),
+    _Lint(
+      RegExp(r'EdgeInsets\.only\(\s*(left|right):'),
+      'Use EdgeInsetsDirectional.only(start/end)',
+    ),
+    _Lint(
+      RegExp(r'Alignment\.centerLeft|Alignment\.centerRight'),
+      'Use AlignmentDirectional.centerStart/centerEnd',
+    ),
+    _Lint(
+      RegExp(r'Positioned\(([^)]*\bleft:|[^)]*\bright:)'),
+      'Use PositionedDirectional',
+    ),
   ];
 
   final failures = <String>[];

@@ -24,5 +24,3 @@ class AuthSignOutButton extends StatelessWidget {
     );
   }
 }
-
-

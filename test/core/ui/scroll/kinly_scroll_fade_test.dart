@@ -5,8 +5,9 @@ import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/core/theme/opacity.dart';
 
 void main() {
-  testWidgets('renders child content through KinlyScrollFade',
-      (WidgetTester tester) async {
+  testWidgets('renders child content through KinlyScrollFade', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData.light().copyWith(
@@ -14,12 +15,7 @@ void main() {
         ),
         home: Scaffold(
           body: KinlyScrollFade(
-            child: ListView(
-              children: [
-                Text('row-1'),
-                Text('row-2'),
-              ],
-            ),
+            child: ListView(children: [Text('row-1'), Text('row-2')]),
           ),
         ),
       ),

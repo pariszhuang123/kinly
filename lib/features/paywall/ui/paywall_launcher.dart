@@ -66,5 +66,3 @@ class PaywallLauncherImpl implements PaywallLauncher {
     return result;
   }
 }
-
-

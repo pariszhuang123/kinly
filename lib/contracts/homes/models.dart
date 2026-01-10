@@ -64,7 +64,8 @@ class CurrentMembership {
       userId: json['user_id'] as String,
       homeId: json['home_id'] as String,
       role: json['role'] as String,
-      validFrom: parseTimestampToLocal(json['valid_from']) ??
+      validFrom:
+          parseTimestampToLocal(json['valid_from']) ??
           DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
     );
   }

@@ -18,21 +18,20 @@ class _StepResult {
 
 Future<void> main() async {
   final steps = <_CheckStep>[
-    const _CheckStep(
-      'contracts_extract',
-      'dart',
-      ['run', 'tool/contracts_extract.dart'],
-    ),
-    const _CheckStep(
-      'validate_registry',
-      'dart',
-      ['run', 'tool/validate_registry.dart', 'docs/contracts/registry.json'],
-    ),
-    const _CheckStep(
-      'registry_diff',
-      'git',
-      ['diff', '--exit-code', 'docs/contracts/registry.json'],
-    ),
+    const _CheckStep('contracts_extract', 'dart', [
+      'run',
+      'tool/contracts_extract.dart',
+    ]),
+    const _CheckStep('validate_registry', 'dart', [
+      'run',
+      'tool/validate_registry.dart',
+      'docs/contracts/registry.json',
+    ]),
+    const _CheckStep('registry_diff', 'git', [
+      'diff',
+      '--exit-code',
+      'docs/contracts/registry.json',
+    ]),
   ];
 
   for (final step in steps) {
@@ -60,12 +59,8 @@ Future<_StepResult> _runStep(_CheckStep step) async {
     runInShell: true,
   );
 
-  final stdoutFuture = process.stdout
-      .transform(utf8.decoder)
-      .join();
-  final stderrFuture = process.stderr
-      .transform(utf8.decoder)
-      .join();
+  final stdoutFuture = process.stdout.transform(utf8.decoder).join();
+  final stderrFuture = process.stderr.transform(utf8.decoder).join();
 
   final exitCode = await process.exitCode;
   final stdoutText = await stdoutFuture;

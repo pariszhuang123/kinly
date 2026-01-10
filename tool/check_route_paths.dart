@@ -6,10 +6,7 @@ void main() {
       _dartFilesUnder('lib').where((f) => !_isRoutesFile(f)).toList()
         ..sort((a, b) => a.path.compareTo(b.path));
   final files =
-      [
-        ..._dartFilesUnder('lib/features'),
-        ..._dartFilesUnder('lib/foundation'),
-      ]
+      [..._dartFilesUnder('lib/features'), ..._dartFilesUnder('lib/foundation')]
           .where(
             (f) =>
                 f.path.contains(

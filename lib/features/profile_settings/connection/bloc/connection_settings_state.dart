@@ -88,35 +88,37 @@ class ConnectionSettingsState extends Equatable {
       locale: locale ?? this.locale,
       timezone: timezone ?? this.timezone,
       platform: platform ?? this.platform,
-      deviceToken: identical(deviceToken, _copySentinel)
-          ? this.deviceToken
-          : deviceToken as String?,
+      deviceToken:
+          identical(deviceToken, _copySentinel)
+              ? this.deviceToken
+              : deviceToken as String?,
       pendingEnableAfterSettings:
           pendingEnableAfterSettings ?? this.pendingEnableAfterSettings,
       action: action ?? this.action,
-      actionMessage: identical(actionMessage, _copySentinel)
-          ? this.actionMessage
-          : actionMessage as String?,
+      actionMessage:
+          identical(actionMessage, _copySentinel)
+              ? this.actionMessage
+              : actionMessage as String?,
     );
   }
 
   @override
   List<Object?> get props => [
-        isLoading,
-        isSavingToggle,
-        isSavingTime,
-        wantsDaily,
-        preferredHour,
-        preferredMinute,
-        osPermission,
-        locale,
-        timezone,
-        platform,
-        deviceToken,
-        pendingEnableAfterSettings,
-        action,
-        actionMessage,
-      ];
+    isLoading,
+    isSavingToggle,
+    isSavingTime,
+    wantsDaily,
+    preferredHour,
+    preferredMinute,
+    osPermission,
+    locale,
+    timezone,
+    platform,
+    deviceToken,
+    pendingEnableAfterSettings,
+    action,
+    actionMessage,
+  ];
 }
 
 const _copySentinel = Object();

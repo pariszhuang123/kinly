@@ -187,9 +187,11 @@ List<TemplateViolation> checkPreferenceReportTemplate({
 }
 
 void main(List<String> args) {
-  final taxonomyPath = _readArg(args, '--taxonomy-path=') ??
+  final taxonomyPath =
+      _readArg(args, '--taxonomy-path=') ??
       'docs/contracts/preference_taxonomy_v1.md';
-  final reportPath = _readArg(args, '--report-path=') ??
+  final reportPath =
+      _readArg(args, '--report-path=') ??
       'docs/contracts/preference_reports_v1.md';
 
   final violations = checkPreferenceReportTemplate(

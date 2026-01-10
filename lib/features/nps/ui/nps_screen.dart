@@ -179,8 +179,3 @@ class NpsScreen extends StatelessWidget {
     return KinlySupport.buildEmailUri(context, KinlySupportIntent.nps);
   }
 }
-
-
-
-
-

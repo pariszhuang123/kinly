@@ -25,7 +25,10 @@ class TodayEmptyStateCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         KinlyListTile(
-          leading: Icon(KinlyIcons.selfImprovementRounded, color: colors.accent),
+          leading: Icon(
+            KinlyIcons.selfImprovementRounded,
+            color: colors.accent,
+          ),
           title: s.todayEmptyCardTitle,
           semanticsLabel: '${s.todayEmptyCardTitle}, ${s.todayEmptyCardBadge}',
           trailing: KinlyBadge(
@@ -45,7 +48,3 @@ class TodayEmptyStateCard extends StatelessWidget {
     );
   }
 }
-
-
-
-

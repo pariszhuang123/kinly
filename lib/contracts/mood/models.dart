@@ -67,14 +67,14 @@ class GratitudeWallPost extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        authorUserId,
-        authorUsername,
-        authorAvatarUrl,
-        mood,
-        message,
-        createdAt,
-      ];
+    id,
+    authorUserId,
+    authorUsername,
+    authorAvatarUrl,
+    mood,
+    message,
+    createdAt,
+  ];
 }
 
 class GratitudeWallPage extends Equatable {

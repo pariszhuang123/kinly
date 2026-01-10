@@ -98,5 +98,3 @@ class ShareCreateBody extends StatelessWidget {
     );
   }
 }
-
-

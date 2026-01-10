@@ -11,10 +11,7 @@ import 'package:kinly/features/preferences/ui/preference_report_section_route_ar
 import 'package:kinly/features/preferences/ui/preference_report_section_screen.dart';
 
 class PreferenceRouteContext {
-  const PreferenceRouteContext({
-    required this.homeId,
-    required this.userId,
-  });
+  const PreferenceRouteContext({required this.homeId, required this.userId});
 
   final String homeId;
   final String userId;
@@ -45,9 +42,13 @@ List<GoRoute> buildPreferenceRoutes({
         final membership = resolveContext();
         final extra = state.extra;
         final showConfetti =
-            extra is PreferenceReportNavigationArgs ? extra.showConfetti : extra == true;
+            extra is PreferenceReportNavigationArgs
+                ? extra.showConfetti
+                : extra == true;
         final initialReport =
-            extra is PreferenceReportNavigationArgs ? extra.initialReport : null;
+            extra is PreferenceReportNavigationArgs
+                ? extra.initialReport
+                : null;
         return PreferenceReportProvider(
           homeId: membership.homeId,
           subjectUserId: membership.userId,

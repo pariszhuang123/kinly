@@ -9,6 +9,7 @@ import 'package:kinly/features/harmony/harmony.dart';
 import 'package:kinly/features/home/home.dart';
 
 class _MockMoodRepository extends Mock implements MoodRepository {}
+
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
 void main() {
@@ -70,17 +71,22 @@ void main() {
       );
     },
     act: (cubit) => cubit.loadInitial(),
-    expect: () => [
-      const GratitudeWallState.initial().copyWith(isLoading: true, error: null),
-      isA<GratitudeWallState>()
-          .having((s) => s.isLoading, 'isLoading', false)
-          .having((s) => s.posts.length, 'posts length', 1)
-          .having((s) => s.totalPosts, 'totalPosts', 3)
-          .having((s) => s.hasLoaded, 'hasLoaded', true),
-    ],
+    expect:
+        () => [
+          const GratitudeWallState.initial().copyWith(
+            isLoading: true,
+            error: null,
+          ),
+          isA<GratitudeWallState>()
+              .having((s) => s.isLoading, 'isLoading', false)
+              .having((s) => s.posts.length, 'posts length', 1)
+              .having((s) => s.totalPosts, 'totalPosts', 3)
+              .having((s) => s.hasLoaded, 'hasLoaded', true),
+        ],
     verify: (_) {
-      verify(() => repo.listWall(homeId: 'home', limit: any(named: 'limit')))
-          .called(1);
+      verify(
+        () => repo.listWall(homeId: 'home', limit: any(named: 'limit')),
+      ).called(1);
       verify(() => repo.getWallStats('home')).called(1);
       verify(() => repo.markWallRead('home')).called(1);
     },

@@ -468,7 +468,7 @@ class ExpensePlan {
       createdByUserId: json['created_by_user_id'] as String,
       splitType:
           ExpenseSplitTypeWire.fromWire(json['split_type'] as String?) ??
-              ExpenseSplitType.equal,
+          ExpenseSplitType.equal,
       amountCents: (json['amount_cents'] as num?)?.toInt() ?? 0,
       description: json['description'] as String? ?? '',
       notes: json['notes'] as String?,

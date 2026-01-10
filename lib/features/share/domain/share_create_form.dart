@@ -150,5 +150,4 @@ class ShareCreateForm extends Equatable {
       startDate,
     ];
   }
-
 }

@@ -59,11 +59,14 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     style: OutlinedButton.styleFrom(
       minimumSize: const Size.fromHeight(44),
       foregroundColor:
-          brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.primary,
+          brightness == Brightness.dark
+              ? colorScheme.onSurface
+              : colorScheme.primary,
       side: BorderSide(
-        color: brightness == Brightness.dark
-            ? colorScheme.outline
-            : colorScheme.primary,
+        color:
+            brightness == Brightness.dark
+                ? colorScheme.outline
+                : colorScheme.primary,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: typographyTokens.labelMedium,
@@ -150,4 +153,3 @@ ThemeData buildKinlyTheme(Brightness brightness) {
     ],
   );
 }
-

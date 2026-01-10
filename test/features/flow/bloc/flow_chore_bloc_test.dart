@@ -209,11 +209,7 @@ void main() {
           isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', true),
           isA<FlowChoreState>().having((s) => s.isLoading, 'isLoading', false),
           isA<FlowChoreState>()
-              .having(
-                (s) => s.form.recurrenceEvery,
-                'recurrenceEvery',
-                1,
-              )
+              .having((s) => s.form.recurrenceEvery, 'recurrenceEvery', 1)
               .having(
                 (s) => s.form.recurrenceUnit,
                 'recurrenceUnit',
@@ -325,9 +321,7 @@ void main() {
           howToVideoUrl: any(named: 'howToVideoUrl'),
           expectationPhotoPath: any(named: 'expectationPhotoPath'),
         ),
-      ).thenThrow(
-        const ChoreException(ChoreErrorCode.paywallActiveCap, 'cap'),
-      );
+      ).thenThrow(const ChoreException(ChoreErrorCode.paywallActiveCap, 'cap'));
     },
     act: (bloc) {
       bloc
@@ -335,18 +329,20 @@ void main() {
         ..add(const FlowChorePhotoChanged('photo.jpg'))
         ..add(const FlowChoreSubmitted());
     },
-    expect: () => [
-      isA<FlowChoreState>(),
-      isA<FlowChoreState>(),
-      isA<FlowChoreState>(),
-      isA<FlowChoreState>().having(
-        (s) => s.paywallRequest?.triggers,
-        'triggers',
-        containsAll(
-          {PaywallTrigger.flowActiveCap, PaywallTrigger.flowPhotosCap},
-        ),
-      ),
-    ],
+    expect:
+        () => [
+          isA<FlowChoreState>(),
+          isA<FlowChoreState>(),
+          isA<FlowChoreState>(),
+          isA<FlowChoreState>().having(
+            (s) => s.paywallRequest?.triggers,
+            'triggers',
+            containsAll({
+              PaywallTrigger.flowActiveCap,
+              PaywallTrigger.flowPhotosCap,
+            }),
+          ),
+        ],
   );
 
   blocTest<FlowChoreBloc, FlowChoreState>(
@@ -365,9 +361,7 @@ void main() {
           howToVideoUrl: any(named: 'howToVideoUrl'),
           expectationPhotoPath: any(named: 'expectationPhotoPath'),
         ),
-      ).thenThrow(
-        const ChoreException(ChoreErrorCode.paywallMediaCap, 'cap'),
-      );
+      ).thenThrow(const ChoreException(ChoreErrorCode.paywallMediaCap, 'cap'));
     },
     act: (bloc) {
       bloc
@@ -375,16 +369,17 @@ void main() {
         ..add(const FlowChorePhotoChanged('photo.jpg'))
         ..add(const FlowChoreSubmitted());
     },
-    expect: () => [
-      isA<FlowChoreState>(),
-      isA<FlowChoreState>(),
-      isA<FlowChoreState>(),
-      isA<FlowChoreState>().having(
-        (s) => s.paywallRequest?.triggers,
-        'triggers',
-        contains(PaywallTrigger.flowPhotosCap),
-      ),
-    ],
+    expect:
+        () => [
+          isA<FlowChoreState>(),
+          isA<FlowChoreState>(),
+          isA<FlowChoreState>(),
+          isA<FlowChoreState>().having(
+            (s) => s.paywallRequest?.triggers,
+            'triggers',
+            contains(PaywallTrigger.flowPhotosCap),
+          ),
+        ],
   );
 
   blocTest<FlowChoreBloc, FlowChoreState>(

@@ -101,12 +101,12 @@ class HubRegistry {
           return KinlySelectionCard(
             colors: scope.sections.pulse,
             title: scope.strings.hubCardGratitudeWallTitle,
-              subtitle: scope.strings.hubCardGratitudeWallSubtitle,
-              icon: Icon(
-                KinlyIcons.favoriteRounded,
-                color: scope.sections.pulse.icon,
-                size: 28,
-              ),
+            subtitle: scope.strings.hubCardGratitudeWallSubtitle,
+            icon: Icon(
+              KinlyIcons.favoriteRounded,
+              color: scope.sections.pulse.icon,
+              size: 28,
+            ),
             onTap: scope.actions.onGratitudeTap,
           );
         },
@@ -114,5 +114,3 @@ class HubRegistry {
     );
   }
 }
-
-

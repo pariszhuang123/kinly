@@ -16,13 +16,24 @@ void main() {
     );
     final context = tester.element(find.byType(SizedBox));
 
-    final contact = KinlySupport.buildEmailUri(context, KinlySupportIntent.contact);
-    final reactivate = KinlySupport.buildEmailUri(context, KinlySupportIntent.reactivate);
+    final contact = KinlySupport.buildEmailUri(
+      context,
+      KinlySupportIntent.contact,
+    );
+    final reactivate = KinlySupport.buildEmailUri(
+      context,
+      KinlySupportIntent.reactivate,
+    );
     final nps = KinlySupport.buildEmailUri(context, KinlySupportIntent.nps);
 
-    expect(contact.queryParameters['subject'], S.of(context).profileContactEmailSubject);
-    expect(reactivate.queryParameters['subject'], S.of(context).profileContactEmailSubject);
+    expect(
+      contact.queryParameters['subject'],
+      S.of(context).profileContactEmailSubject,
+    );
+    expect(
+      reactivate.queryParameters['subject'],
+      S.of(context).profileContactEmailSubject,
+    );
     expect(nps.queryParameters['subject'], S.of(context).npsEmailSubject);
   });
 }
-

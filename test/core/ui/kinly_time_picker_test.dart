@@ -9,10 +9,7 @@ void main() {
   final controls = KinlyPalette.build(Brightness.light).controlColors;
 
   Widget buildApp(Widget child) {
-    return MaterialApp(
-      theme: ThemeData.light(),
-      home: child,
-    );
+    return MaterialApp(theme: ThemeData.light(), home: child);
   }
 
   testWidgets('showKinlyTimePicker applies Kinly colors', (tester) async {
@@ -50,7 +47,10 @@ void main() {
     expect(theme.timePickerTheme.dialHandColor, controls.pickerPrimary);
     expect(theme.timePickerTheme.hourMinuteColor, controls.pickerPrimary);
     expect(theme.timePickerTheme.hourMinuteTextColor, controls.pickerOnPrimary);
-    expect(theme.textButtonTheme.style?.foregroundColor?.resolve({}), controls.pickerPrimary);
+    expect(
+      theme.textButtonTheme.style?.foregroundColor?.resolve({}),
+      controls.pickerPrimary,
+    );
   });
 
   testWidgets('showKinlyDatePicker applies Kinly colors', (tester) async {
@@ -89,7 +89,13 @@ void main() {
     final theme = themeWidget.data;
 
     expect(theme.datePickerTheme.headerBackgroundColor, controls.pickerPrimary);
-    expect(theme.datePickerTheme.headerForegroundColor, controls.pickerOnPrimary);
-    expect(theme.textButtonTheme.style?.foregroundColor?.resolve({}), controls.pickerPrimary);
+    expect(
+      theme.datePickerTheme.headerForegroundColor,
+      controls.pickerOnPrimary,
+    );
+    expect(
+      theme.textButtonTheme.style?.foregroundColor?.resolve({}),
+      controls.pickerPrimary,
+    );
   });
 }

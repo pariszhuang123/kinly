@@ -51,4 +51,3 @@ int _tierRank(SurfaceTier tier) {
       return 2;
   }
 }
-

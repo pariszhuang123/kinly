@@ -65,10 +65,7 @@ class _PreferenceReportSectionScreenState
       }
     } catch (error) {
       if (!mounted) return;
-      KinlySnackBar.showError(
-        context,
-        S.of(context).preferenceReportEditError,
-      );
+      KinlySnackBar.showError(context, S.of(context).preferenceReportEditError);
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }

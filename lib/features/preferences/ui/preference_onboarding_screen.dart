@@ -97,8 +97,8 @@ class PreferenceOnboardingScreen extends StatelessWidget {
                       Expanded(
                         child: ListView.separated(
                           itemCount: scenario.options.length,
-                          separatorBuilder: (_, __) =>
-                              SizedBox(height: spacing?.m ?? 12),
+                          separatorBuilder:
+                              (_, __) => SizedBox(height: spacing?.m ?? 12),
                           itemBuilder: (context, index) {
                             final optionText = scenario.options[index](s);
                             final isSelected = selectedIndex == index;
@@ -109,12 +109,14 @@ class PreferenceOnboardingScreen extends StatelessWidget {
                                   isBusy
                                       ? null
                                       : () {
-                                        context.read<PreferenceCaptureBloc>().add(
-                                          PreferenceCaptureOptionSelected(
-                                            preferenceId: scenario.id,
-                                            optionIndex: index,
-                                          ),
-                                        );
+                                        context
+                                            .read<PreferenceCaptureBloc>()
+                                            .add(
+                                              PreferenceCaptureOptionSelected(
+                                                preferenceId: scenario.id,
+                                                optionIndex: index,
+                                              ),
+                                            );
                                       },
                             );
                           },
@@ -127,9 +129,9 @@ class PreferenceOnboardingScreen extends StatelessWidget {
                           label: s.preferenceOnboardingSubmit,
                           onPressed:
                               canSubmit
-                                  ? () => context.read<PreferenceCaptureBloc>().add(
-                                    const PreferenceCaptureSubmitted(),
-                                  )
+                                  ? () => context
+                                      .read<PreferenceCaptureBloc>()
+                                      .add(const PreferenceCaptureSubmitted())
                                   : null,
                         ),
                       ],
@@ -188,9 +190,10 @@ class _PreferenceOptionTile extends StatelessWidget {
           spacing?.m ?? 12,
         ),
         decoration: BoxDecoration(
-          color: isSelected
-              ? colors.primary.withValues(alpha: 0.08)
-              : colors.surfaceContainerHighest,
+          color:
+              isSelected
+                  ? colors.primary.withValues(alpha: 0.08)
+                  : colors.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected ? colors.primary : colors.outlineVariant,

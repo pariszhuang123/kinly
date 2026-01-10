@@ -52,9 +52,11 @@ class PreferenceReportContent {
         sectionsRaw is List
             ? sectionsRaw
                 .whereType<Map>()
-                .map((entry) => PreferenceReportSection.fromJson(
-                  entry.cast<String, dynamic>(),
-                ))
+                .map(
+                  (entry) => PreferenceReportSection.fromJson(
+                    entry.cast<String, dynamic>(),
+                  ),
+                )
                 .toList(growable: false)
             : const <PreferenceReportSection>[];
     return PreferenceReportContent(

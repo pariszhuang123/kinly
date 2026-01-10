@@ -42,5 +42,3 @@ class FlowListProvider extends StatelessWidget {
     );
   }
 }
-
-

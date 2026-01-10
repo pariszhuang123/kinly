@@ -158,7 +158,8 @@ class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
   Widget build(BuildContext context) {
     final strings = S.of(context);
     final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
-    final sectionColors = KinlyThemeAccess.of(context).extension<KinlySections>()!.share;
+    final sectionColors =
+        KinlyThemeAccess.of(context).extension<KinlySections>()!.share;
 
     return ListView.separated(
       padding: EdgeInsetsDirectional.only(top: spacing.sm),
@@ -323,7 +324,3 @@ String _formatCurrency(int amountCents) {
   final formatter = NumberFormat.simpleCurrency(decimalDigits: 2);
   return formatter.format(amountCents / 100.0);
 }
-
-
-
-

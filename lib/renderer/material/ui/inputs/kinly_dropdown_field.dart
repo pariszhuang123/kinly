@@ -28,7 +28,8 @@ class KinlyDropdownField<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<KinlyColorTokens>() ??
+    final colors =
+        theme.extension<KinlyColorTokens>() ??
         KinlyPalette.build(theme.brightness).colorTokens;
     final corners = theme.extension<Corners>();
     final spacing = theme.extension<Spacing>();
@@ -39,11 +40,10 @@ class KinlyDropdownField<T> extends StatelessWidget {
     final focusedColor = colors.primary;
     final errorColor = colors.error;
 
-    InputBorder outline(Color color, [double width = 1]) =>
-        OutlineInputBorder(
-          borderRadius: borderRadius,
-          borderSide: BorderSide(color: color, width: width),
-        );
+    InputBorder outline(Color color, [double width = 1]) => OutlineInputBorder(
+      borderRadius: borderRadius,
+      borderSide: BorderSide(color: color, width: width),
+    );
 
     return DropdownButtonFormField<T>(
       initialValue: value,
@@ -66,9 +66,11 @@ class KinlyDropdownField<T> extends StatelessWidget {
         focusedBorder: outline(focusedColor, 1.4),
         errorBorder: outline(errorColor),
         focusedErrorBorder: outline(errorColor, 1.4),
-        labelStyle: type?.bodyMedium ??
+        labelStyle:
+            type?.bodyMedium ??
             theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
-        hintStyle: type?.bodyMedium ??
+        hintStyle:
+            type?.bodyMedium ??
             theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
       ),
       style: type?.bodyMedium ?? theme.textTheme.bodyMedium,

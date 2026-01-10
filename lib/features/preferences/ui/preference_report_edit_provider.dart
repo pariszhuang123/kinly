@@ -21,13 +21,11 @@ class PreferenceReportEditProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create:
-          (_) =>
-              PreferenceReportCubit(
-                  repository: repository,
-                  homeId: homeId,
-                  subjectUserId: subjectUserId,
-                )
-                ..load(),
+          (_) => PreferenceReportCubit(
+            repository: repository,
+            homeId: homeId,
+            subjectUserId: subjectUserId,
+          )..load(),
       child: const PreferenceReportEditScreen(),
     );
   }

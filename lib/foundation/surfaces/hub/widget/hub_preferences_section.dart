@@ -42,11 +42,14 @@ class HubPreferencesSection extends StatelessWidget {
       for (final report in reportItems) report.subjectUserId: report,
     };
     final visibleMembers =
-        members.where((member) => reportByUser.containsKey(member.userId)).toList();
+        members
+            .where((member) => reportByUser.containsKey(member.userId))
+            .toList();
 
     if (visibleMembers.isEmpty) return const SizedBox.shrink();
 
-    final palette = sections?.share ??
+    final palette =
+        sections?.share ??
         sections?.pulse ??
         SectionColors(
           background: colors.surfaceContainerHighest,
@@ -110,7 +113,9 @@ class HubPreferencesListScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final member = members[index];
                 final displayName =
-                    member.username.isNotEmpty ? member.username : s.friendDefaultName;
+                    member.username.isNotEmpty
+                        ? member.username
+                        : s.friendDefaultName;
                 final avatar = member.avatarUrl ?? '';
 
                 return KinlyTapTarget(
@@ -118,10 +123,7 @@ class HubPreferencesListScreen extends StatelessWidget {
                     context.goNamed(
                       AppRouteNames.preferenceReportView,
                       pathParameters: {'subjectUserId': member.userId},
-                      extra: {
-                        'displayName': displayName,
-                        'avatarUrl': avatar,
-                      },
+                      extra: {'displayName': displayName, 'avatarUrl': avatar},
                     );
                   },
                   borderRadius: BorderRadius.circular(16),

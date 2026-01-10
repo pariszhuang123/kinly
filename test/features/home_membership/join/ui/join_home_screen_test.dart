@@ -89,9 +89,9 @@ void main() {
   });
 
   testWidgets('shows friendly error when code invalid', (tester) async {
-    when(() => homeRepository.join(any())).thenThrow(
-      HomeJoinException(JoinErrorCode.invalidCode, 'Invalid code'),
-    );
+    when(
+      () => homeRepository.join(any()),
+    ).thenThrow(HomeJoinException(JoinErrorCode.invalidCode, 'Invalid code'));
     when(() => authBloc.state).thenReturn(const AuthState());
 
     await tester.pumpWidget(buildApp(const JoinHomeScreen()));
@@ -107,7 +107,9 @@ void main() {
     verify(() => homeRepository.join('BADCODE')).called(1);
   });
 
-  testWidgets('success navigates to today and refreshes membership', (tester) async {
+  testWidgets('success navigates to today and refreshes membership', (
+    tester,
+  ) async {
     when(() => homeRepository.join(any())).thenAnswer(
       (_) async =>
           const HomeJoinResult(homeId: 'hid', outcome: JoinOutcome.success),
@@ -160,7 +162,9 @@ void main() {
 
     expect(find.text('today'), findsOneWidget);
     verify(() => homeRepository.join('OKCODE')).called(1);
-    verify(() => authBloc.add(const AuthMembershipRefreshRequested())).called(1);
+    verify(
+      () => authBloc.add(const AuthMembershipRefreshRequested()),
+    ).called(1);
   });
 
   testWidgets('blocked joins navigate to blocked screen', (tester) async {

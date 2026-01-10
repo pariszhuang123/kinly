@@ -84,8 +84,7 @@ class KinlyListTile extends StatelessWidget {
     );
 
     final semanticsText =
-        semanticsLabel ??
-        (subtitle == null ? title : '$title, $subtitle');
+        semanticsLabel ?? (subtitle == null ? title : '$title, $subtitle');
 
     final wrappedTile =
         onTap == null ? tile : Material(color: Colors.transparent, child: tile);

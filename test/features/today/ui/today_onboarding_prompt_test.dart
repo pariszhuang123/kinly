@@ -194,4 +194,3 @@ void main() {
     expect(permissionService.callCount, 1);
   });
 }
-

@@ -80,34 +80,37 @@ void main() {
       );
     });
 
-    test('authenticated with active membership redirects to today for welcome/start', () {
-      expect(
-        redirectForTest(
-          path: AppRoutes.welcome,
-          authStatus: AuthStatus.authenticated,
-          membershipStatus: AuthMembershipStatus.active,
-          appVersionStatus: AppVersionStatus.upToDate,
-        ),
-        AppRoutes.today,
-      );
-      expect(
-        redirectForTest(
-          path: AppRoutes.start,
-          authStatus: AuthStatus.authenticated,
-          membershipStatus: AuthMembershipStatus.active,
-          appVersionStatus: AppVersionStatus.upToDate,
-        ),
-        AppRoutes.today,
-      );
-      expect(
-        redirectForTest(
-          path: AppRoutes.today,
-          authStatus: AuthStatus.authenticated,
-          membershipStatus: AuthMembershipStatus.active,
-          appVersionStatus: AppVersionStatus.upToDate,
-        ),
-        isNull,
-      );
-    });
+    test(
+      'authenticated with active membership redirects to today for welcome/start',
+      () {
+        expect(
+          redirectForTest(
+            path: AppRoutes.welcome,
+            authStatus: AuthStatus.authenticated,
+            membershipStatus: AuthMembershipStatus.active,
+            appVersionStatus: AppVersionStatus.upToDate,
+          ),
+          AppRoutes.today,
+        );
+        expect(
+          redirectForTest(
+            path: AppRoutes.start,
+            authStatus: AuthStatus.authenticated,
+            membershipStatus: AuthMembershipStatus.active,
+            appVersionStatus: AppVersionStatus.upToDate,
+          ),
+          AppRoutes.today,
+        );
+        expect(
+          redirectForTest(
+            path: AppRoutes.today,
+            authStatus: AuthStatus.authenticated,
+            membershipStatus: AuthMembershipStatus.active,
+            appVersionStatus: AppVersionStatus.upToDate,
+          ),
+          isNull,
+        );
+      },
+    );
   });
 }

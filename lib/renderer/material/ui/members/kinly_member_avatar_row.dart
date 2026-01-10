@@ -38,18 +38,21 @@ class KinlyMemberAvatarRow extends StatelessWidget {
           .map(
             (member) => Semantics(
               label: member.username,
-              child: showNames
-                  ? _AvatarWithLabel(
-                      member: member,
-                      avatarRadius: avatarRadius,
-                    )
-                  : KinlyCircleAvatar(
-                      avatarUrl: member.avatarUrl,
-                      isOwner: member.isOwner,
-                      radius: avatarRadius,
-                      fallbackInitial:
-                          member.username.isNotEmpty ? member.username[0] : null,
-                    ),
+              child:
+                  showNames
+                      ? _AvatarWithLabel(
+                        member: member,
+                        avatarRadius: avatarRadius,
+                      )
+                      : KinlyCircleAvatar(
+                        avatarUrl: member.avatarUrl,
+                        isOwner: member.isOwner,
+                        radius: avatarRadius,
+                        fallbackInitial:
+                            member.username.isNotEmpty
+                                ? member.username[0]
+                                : null,
+                      ),
             ),
           )
           .toList(growable: false),
@@ -58,10 +61,7 @@ class KinlyMemberAvatarRow extends StatelessWidget {
 }
 
 class _AvatarWithLabel extends StatelessWidget {
-  const _AvatarWithLabel({
-    required this.member,
-    required this.avatarRadius,
-  });
+  const _AvatarWithLabel({required this.member, required this.avatarRadius});
 
   final HomeMemberSummary member;
   final double avatarRadius;

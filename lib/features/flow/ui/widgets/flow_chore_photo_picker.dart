@@ -73,9 +73,9 @@ class _ExpectationPhotoPicker extends StatelessWidget {
               decoration: BoxDecoration(
                 color: colorScheme.onSurface.withValues(
                   alpha:
-                      KinlyThemeAccess.of(context)
-                          .extension<KinlyOpacity>()!
-                          .alphaHalo,
+                      KinlyThemeAccess.of(
+                        context,
+                      ).extension<KinlyOpacity>()!.alphaHalo,
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -99,4 +99,3 @@ class _ExpectationPhotoPicker extends StatelessWidget {
     );
   }
 }
-

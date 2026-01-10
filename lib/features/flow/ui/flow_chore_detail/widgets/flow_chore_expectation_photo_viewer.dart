@@ -36,7 +36,8 @@ class FlowChoreExpectationPhotoViewerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final colors = theme.extension<KinlyColorTokens>();
-    final background = colors?.inverseSurface ?? theme.colorScheme.inverseSurface;
+    final background =
+        colors?.inverseSurface ?? theme.colorScheme.inverseSurface;
     final foreground =
         colors?.onInverseSurface ?? theme.colorScheme.onInverseSurface;
 
@@ -105,7 +106,3 @@ class _NetworkImageWithLoader extends StatelessWidget {
     );
   }
 }
-
-
-
-

@@ -249,5 +249,4 @@ class SupabaseHomeRepository implements HomeRepository {
         .where((member) => member.userId != userId)
         .toList(growable: false);
   }
-
 }

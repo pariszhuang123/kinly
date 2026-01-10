@@ -108,10 +108,7 @@ class _FlowListTile extends StatelessWidget {
                   Expanded(
                     child: Text(entry.name, style: theme.textTheme.titleMedium),
                   ),
-                  _AssigneeAvatar(
-                    entry: entry,
-                    ownerUserId: ownerUserId,
-                  ),
+                  _AssigneeAvatar(entry: entry, ownerUserId: ownerUserId),
                 ],
               ),
               SizedBox(height: spacing.sm),
@@ -150,10 +147,7 @@ class _FlowListTile extends StatelessWidget {
 }
 
 class _AssigneeAvatar extends StatelessWidget {
-  const _AssigneeAvatar({
-    required this.entry,
-    this.ownerUserId,
-  });
+  const _AssigneeAvatar({required this.entry, this.ownerUserId});
 
   final ChoreListEntry entry;
   final String? ownerUserId;
@@ -173,7 +167,3 @@ class _AssigneeAvatar extends StatelessWidget {
     );
   }
 }
-
-
-
-

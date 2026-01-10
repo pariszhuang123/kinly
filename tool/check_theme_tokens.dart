@@ -28,9 +28,10 @@ void main(List<String> args) {
       .where((f) => f.path.endsWith('.dart'))
       // Skip generated / tool / build outputs
       .where(
-        (f) => !f.path.contains(
-          RegExp(r'(/|\\\\)(build|\.dart_tool|tool)(/|\\\\)'),
-        ),
+        (f) =>
+            !f.path.contains(
+              RegExp(r'(/|\\\\)(build|\.dart_tool|tool)(/|\\\\)'),
+            ),
       );
 
   final errors = <String>[];
@@ -42,11 +43,15 @@ void main(List<String> args) {
       final line = content[i];
       for (final pattern in _themeExtensionPatterns) {
         if (pattern.hasMatch(line)) {
-          errors.add('${file.path}:${i + 1}: avoid null-aware access on required theme extensions');
+          errors.add(
+            '${file.path}:${i + 1}: avoid null-aware access on required theme extensions',
+          );
         }
       }
       if (_rawAlphaPattern.hasMatch(line)) {
-        errors.add('${file.path}:${i + 1}: avoid raw alpha literals; use KinlyOpacity tokens');
+        errors.add(
+          '${file.path}:${i + 1}: avoid raw alpha literals; use KinlyOpacity tokens',
+        );
       }
     }
   }

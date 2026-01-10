@@ -7,11 +7,9 @@ typedef TimezoneLoader = Future<String> Function();
 
 /// Resolves the device timezone to an IANA identifier with a safe fallback.
 class IanaTimezoneResolver {
-  IanaTimezoneResolver({
-    required Logger logger,
-    TimezoneLoader? loader,
-  })  : _logger = logger,
-        _loadTimezone = loader ?? _defaultLoader;
+  IanaTimezoneResolver({required Logger logger, TimezoneLoader? loader})
+    : _logger = logger,
+      _loadTimezone = loader ?? _defaultLoader;
 
   static Future<String> _defaultLoader() async {
     final info = await FlutterTimezone.getLocalTimezone();
@@ -49,15 +47,17 @@ class IanaTimezoneResolver {
     for (final c in candidates) {
       if (c == null || c.isEmpty) continue;
       if (_ianaRegex.hasMatch(c)) return c;
-      final match = RegExp(r'name:\s*([A-Za-z_]+(?:/[A-Za-z_]+)+|UTC)')
-          .firstMatch(c);
+      final match = RegExp(
+        r'name:\s*([A-Za-z_]+(?:/[A-Za-z_]+)+|UTC)',
+      ).firstMatch(c);
       if (match != null) return match.group(1);
     }
 
     // Last-resort parse from toString() if it contains name: ...
     if (direct != null) {
-      final match =
-          RegExp(r'name:\s*([A-Za-z_]+(?:/[A-Za-z_]+)+|UTC)').firstMatch(direct);
+      final match = RegExp(
+        r'name:\s*([A-Za-z_]+(?:/[A-Za-z_]+)+|UTC)',
+      ).firstMatch(direct);
       if (match != null) return match.group(1);
     }
     return null;
@@ -68,8 +68,10 @@ class IanaTimezoneResolver {
   static String? debugOverride;
 
   static const _logTag = 'Timezone';
-  static final _ianaRegex =
-      RegExp(r'^[A-Za-z_]+(?:/[A-Za-z_]+)+$|^UTC$', multiLine: false);
+  static final _ianaRegex = RegExp(
+    r'^[A-Za-z_]+(?:/[A-Za-z_]+)+$|^UTC$',
+    multiLine: false,
+  );
 
   final Logger _logger;
   final TimezoneLoader _loadTimezone;

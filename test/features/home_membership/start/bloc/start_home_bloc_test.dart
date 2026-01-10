@@ -18,19 +18,23 @@ void main() {
   blocTest<StartHomeBloc, StartHomeState>(
     'emits loading then success when create succeeds',
     build: () {
-      when(() => homeRepository.create()).thenAnswer(
-        (_) async => const HomeCreationResult(homeId: 'home-123'),
-      );
+      when(
+        () => homeRepository.create(),
+      ).thenAnswer((_) async => const HomeCreationResult(homeId: 'home-123'));
       return StartHomeBloc(homeRepository);
     },
     act: (bloc) => bloc.add(const StartHomeCreateRequested()),
-    expect: () => [
-      isA<StartHomeState>()
-          .having((s) => s.status, 'status', StartHomeStatus.loading)
-          .having((s) => s.errorMessage, 'errorMessage', isNull),
-      isA<StartHomeState>()
-          .having((s) => s.status, 'status', StartHomeStatus.success),
-    ],
+    expect:
+        () => [
+          isA<StartHomeState>()
+              .having((s) => s.status, 'status', StartHomeStatus.loading)
+              .having((s) => s.errorMessage, 'errorMessage', isNull),
+          isA<StartHomeState>().having(
+            (s) => s.status,
+            'status',
+            StartHomeStatus.success,
+          ),
+        ],
     verify: (_) => verify(() => homeRepository.create()).called(1),
   );
 
@@ -41,13 +45,17 @@ void main() {
       return StartHomeBloc(homeRepository);
     },
     act: (bloc) => bloc.add(const StartHomeCreateRequested()),
-    expect: () => [
-      isA<StartHomeState>()
-          .having((s) => s.status, 'status', StartHomeStatus.loading),
-      isA<StartHomeState>()
-          .having((s) => s.status, 'status', StartHomeStatus.failure)
-          .having((s) => s.errorMessage, 'errorMessage', 'Exception: boom'),
-    ],
+    expect:
+        () => [
+          isA<StartHomeState>().having(
+            (s) => s.status,
+            'status',
+            StartHomeStatus.loading,
+          ),
+          isA<StartHomeState>()
+              .having((s) => s.status, 'status', StartHomeStatus.failure)
+              .having((s) => s.errorMessage, 'errorMessage', 'Exception: boom'),
+        ],
     verify: (_) => verify(() => homeRepository.create()).called(1),
   );
 

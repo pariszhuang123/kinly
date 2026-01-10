@@ -1,6 +1,9 @@
 import 'dart:io';
 
-final _inviteJoinPattern = RegExp(r'(invite|invites|join)', caseSensitive: false);
+final _inviteJoinPattern = RegExp(
+  r'(invite|invites|join)',
+  caseSensitive: false,
+);
 final _httpPattern = RegExp(r'http[s]?:\/\/');
 
 void main() {
