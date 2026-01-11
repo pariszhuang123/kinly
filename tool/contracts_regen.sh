@@ -25,6 +25,7 @@ fi
 # ---------------------------
 # Helpers
 # ---------------------------
+
 read_toml_port() {
   # read_toml_port <section> <key> <fallback>
   local section="$1"
@@ -37,12 +38,17 @@ read_toml_port() {
   fi
 
   local v
-  v=$(awk -F'=' -v section="[$section]" -v key="$key" '
-    $0 ~ "^\\"section"\\" {in_sec=1; next}
-    $0 ~ "^\\[" {in_sec=0}
-    in_sec && $1 ~ "^[[:space:]]*"key"[[:space:]]*$" {
+  v=$(awk -F'=' -v section="$section" -v key="$key" '
+    # Enter section when we see: [api]
+    $0 ~ "^[[:space:]]*\\[" section "\\][[:space:]]*$" { in_sec=1; next }
+    # Any other [section] ends the current section
+    $0 ~ "^[[:space:]]*\\[[^]]+\\][[:space:]]*$" { in_sec=0 }
+
+    # Read key=value inside section
+    in_sec && $1 ~ "^[[:space:]]*" key "[[:space:]]*$" {
       val=$2
-      gsub(/[[:space:]]/,"",val)
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "", val) # trim
+      gsub(/^"|"$/, "", val)                       # strip optional quotes
       print val
       exit
     }
@@ -51,9 +57,46 @@ read_toml_port() {
   echo "${v:-$fallback}"
 }
 
-# Prefer explicit env override (nice for CI), else read TOML, else default
-API_PORT="${SUPABASE_LOCAL_API_PORT:-$(read_toml_port api port 54321)}"
-REST_URL="http://127.0.0.1:${API_PORT}/rest/v1/"
+read_rest_url_from_status() {
+  # Pull the REST base URL from `supabase status` output:
+  # e.g. "REST           http://127.0.0.1:15431/rest/v1"
+  supabase status 2>/dev/null | awk '
+    $1 == "REST" { print $3; exit }
+  '
+}
+
+# Prefer truth from `supabase status`, else explicit env override, else TOML, else default
+REST_URL_FROM_STATUS="$(read_rest_url_from_status || true)"
+
+if [[ -n "${REST_URL_FROM_STATUS:-}" ]]; then
+  # Ensure trailing slash
+  REST_URL="${REST_URL_FROM_STATUS%/}/"
+
+  # Derive API_PORT from REST_URL (best-effort)
+  # REST_URL looks like http://127.0.0.1:15431/rest/v1/
+  API_PORT="${REST_URL#*://}"     # 127.0.0.1:15431/rest/v1/
+  API_PORT="${API_PORT#*/}"       # (if URL had userinfo etc; defensive)
+  API_PORT="${REST_URL#*://}"     # reset to host:port/path
+  API_PORT="${API_PORT#*@}"       # strip userinfo if any (unlikely)
+  API_PORT="${API_PORT#*[}"       # ignore IPv6 bracket prefix if any (best-effort)
+  API_PORT="${REST_URL#*://}"     # host:port/rest/v1/
+  API_PORT="${API_PORT#*[}"       # best-effort for IPv6 (won't break IPv4)
+  API_PORT="${API_PORT#*://}"     # host:port/rest/v1/
+  API_PORT="${API_PORT#*[}"       # noop for IPv4
+  API_PORT="${API_PORT#*://}"     # host:port/rest/v1/
+  API_PORT="${API_PORT#*[}"       # noop for IPv4
+  API_PORT="${API_PORT#*://}"     # host:port/rest/v1/
+  API_PORT="${API_PORT#*[}"       # noop for IPv4
+  # Simple parse for common IPv4/localhost URLs:
+  API_PORT="${REST_URL#*://}"     # 127.0.0.1:15431/rest/v1/
+  API_PORT="${API_PORT#*/}"       # (not used; keep simple)
+  API_PORT="${REST_URL#*://}"     # 127.0.0.1:15431/rest/v1/
+  API_PORT="${API_PORT%%/*}"      # 127.0.0.1:15431
+  API_PORT="${API_PORT##*:}"      # 15431
+else
+  API_PORT="${SUPABASE_LOCAL_API_PORT:-$(read_toml_port api port 54321)}"
+  REST_URL="http://127.0.0.1:${API_PORT}/rest/v1/"
+fi
 
 echo "👉 Checking that Docker is available..."
 if ! command -v docker >/dev/null 2>&1; then
@@ -79,6 +122,18 @@ if "$RESET_DB"; then
 else
   echo "ℹ️  Skipping 'supabase db reset'."
   echo "    If you want a CLEAN DB matching CI exactly, re-run with: ./tool/contracts_regen.sh --reset"
+fi
+
+# Re-read REST_URL after start, because port can change / status only becomes available after start.
+REST_URL_FROM_STATUS="$(read_rest_url_from_status || true)"
+if [[ -n "${REST_URL_FROM_STATUS:-}" ]]; then
+  REST_URL="${REST_URL_FROM_STATUS%/}/"
+  API_PORT="${REST_URL#*://}"
+  API_PORT="${API_PORT%%/*}"
+  API_PORT="${API_PORT##*:}"
+else
+  API_PORT="${SUPABASE_LOCAL_API_PORT:-$(read_toml_port api port 54321)}"
+  REST_URL="http://127.0.0.1:${API_PORT}/rest/v1/"
 fi
 
 echo "👉 Dumping schema.sql (DDL only) via 'supabase db dump --local'..."

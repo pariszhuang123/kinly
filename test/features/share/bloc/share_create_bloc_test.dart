@@ -958,4 +958,449 @@ void main() {
           ),
         ],
   );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'emits load error when participants fail to load',
+    build: () => buildBloc(),
+    setUp: () {
+      when(
+        () => homeRepository.listActiveMembers(
+          any(),
+          excludeSelf: any(named: 'excludeSelf'),
+        ),
+      ).thenThrow(Exception('Network error'));
+    },
+    act: (bloc) => bloc.add(const ShareCreateParticipantsRequested()),
+    expect:
+        () => [
+          isA<ShareCreateState>().having((s) => s.isLoading, 'loading', true),
+          isA<ShareCreateState>()
+              .having((s) => s.isLoading, 'loading', false)
+              .having(
+                (s) => s.loadErrorMessage,
+                'error',
+                contains('Network error'),
+              ),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'updates notes field',
+    build: () => buildBloc(),
+    seed: seededState,
+    act: (bloc) => bloc.add(const ShareCreateNotesChanged('Payment for dinner')),
+    expect:
+        () => [
+          seededState().copyWith(
+            form: seededState().form.copyWith(notes: 'Payment for dinner'),
+            hasUserEdits: true,
+          ),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'updates start date',
+    build: () => buildBloc(),
+    seed: seededState,
+    act: (bloc) => bloc.add(ShareCreateStartDateChanged(DateTime(2024, 6, 15))),
+    expect:
+        () => [
+          seededState().copyWith(
+            form: seededState().form.copyWith(startDate: DateTime(2024, 6, 15)),
+            hasUserEdits: true,
+          ),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'updates recurrence unit',
+    build: () => buildBloc(),
+    seed: () {
+      return seededState(
+        form: ShareCreateForm.initial().copyWith(
+          description: 'Recurring',
+          amountInput: '10.00',
+          splitMode: ShareSplitMode.equal,
+          selectedParticipantIds: {'member_a', 'member_self'},
+          recurrenceEvery: 1,
+          recurrenceUnit: ExpenseRecurrenceUnit.week,
+        ),
+      );
+    },
+    act:
+        (bloc) => bloc.add(
+          const ShareCreateRecurrenceUnitChanged(ExpenseRecurrenceUnit.month),
+        ),
+    expect:
+        () => [
+          seededState(
+            form: ShareCreateForm.initial().copyWith(
+              description: 'Recurring',
+              amountInput: '10.00',
+              splitMode: ShareSplitMode.equal,
+              selectedParticipantIds: {'member_a', 'member_self'},
+              recurrenceEvery: 1,
+              recurrenceUnit: ExpenseRecurrenceUnit.month,
+            ),
+          ).copyWith(hasUserEdits: true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'emits deletion error when repository throws ExpenseException',
+    build: () => buildBloc(editingExpenseId: 'expense-draft'),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(description: 'Draft');
+      return seededState(
+        form: form,
+        isEditing: true,
+        editingExpenseId: 'expense-draft',
+      );
+    },
+    setUp: () {
+      when(() => expensesRepository.cancel(any())).thenThrow(
+        const ExpenseException(ExpenseErrorCode.notFound, 'Not found'),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateDeleted()),
+    expect:
+        () => [
+          isA<ShareCreateState>().having((s) => s.isDeleting, 'deleting', true),
+          isA<ShareCreateState>()
+              .having((s) => s.isDeleting, 'deleting', false)
+              .having(
+                (s) => s.deletionErrorMessage,
+                'error',
+                contains('Not found'),
+              )
+              .having((s) => s.deletionErrorTick, 'tick', 1),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'emits deletion error when repository throws generic error',
+    build: () => buildBloc(editingExpenseId: 'expense-draft'),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(description: 'Draft');
+      return seededState(
+        form: form,
+        isEditing: true,
+        editingExpenseId: 'expense-draft',
+      );
+    },
+    setUp: () {
+      when(() => expensesRepository.cancel(any()))
+          .thenThrow(Exception('Delete failed'));
+    },
+    act: (bloc) => bloc.add(const ShareCreateDeleted()),
+    expect:
+        () => [
+          isA<ShareCreateState>().having((s) => s.isDeleting, 'deleting', true),
+          isA<ShareCreateState>()
+              .having((s) => s.isDeleting, 'deleting', false)
+              .having(
+                (s) => s.deletionErrorMessage,
+                'error',
+                contains('Delete failed'),
+              ),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'does nothing on delete when not editing',
+    build: () => buildBloc(),
+    seed: seededState,
+    act: (bloc) => bloc.add(const ShareCreateDeleted()),
+    expect: () => <ShareCreateState>[],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'emits plan termination error when repository throws ExpenseException',
+    build: () => buildBloc(editingExpenseId: 'expense-plan'),
+    seed: () {
+      return seededState(
+        isEditing: true,
+        editingExpenseId: 'expense-plan',
+      ).copyWith(planId: 'plan-1', planStatus: 'active');
+    },
+    setUp: () {
+      when(() => expensesRepository.terminatePlan(any())).thenThrow(
+        const ExpenseException(
+          ExpenseErrorCode.notFound,
+          'Plan not found',
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreatePlanTerminationRequested()),
+    expect:
+        () => [
+          isA<ShareCreateState>().having(
+            (s) => s.isTerminatingPlan,
+            'terminating',
+            true,
+          ),
+          isA<ShareCreateState>()
+              .having((s) => s.isTerminatingPlan, 'terminating', false)
+              .having(
+                (s) => s.planTerminationErrorMessage,
+                'error',
+                contains('Plan not found'),
+              )
+              .having((s) => s.planTerminationErrorTick, 'tick', 1),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'emits plan termination error when repository throws generic error',
+    build: () => buildBloc(editingExpenseId: 'expense-plan'),
+    seed: () {
+      return seededState(
+        isEditing: true,
+        editingExpenseId: 'expense-plan',
+      ).copyWith(planId: 'plan-1', planStatus: 'active');
+    },
+    setUp: () {
+      when(() => expensesRepository.terminatePlan(any()))
+          .thenThrow(Exception('Terminate failed'));
+    },
+    act: (bloc) => bloc.add(const ShareCreatePlanTerminationRequested()),
+    expect:
+        () => [
+          isA<ShareCreateState>().having(
+            (s) => s.isTerminatingPlan,
+            'terminating',
+            true,
+          ),
+          isA<ShareCreateState>()
+              .having((s) => s.isTerminatingPlan, 'terminating', false)
+              .having(
+                (s) => s.planTerminationErrorMessage,
+                'error',
+                contains('Terminate failed'),
+              ),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'does nothing on plan termination when no planId',
+    build: () => buildBloc(editingExpenseId: 'expense-1'),
+    seed: () {
+      return seededState(isEditing: true, editingExpenseId: 'expense-1');
+    },
+    act: (bloc) => bloc.add(const ShareCreatePlanTerminationRequested()),
+    expect: () => <ShareCreateState>[],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'does not submit when canEdit is false',
+    build: () {
+      return ShareCreateBloc(
+        homeId: 'home-1',
+        expensesRepository: expensesRepository,
+        homeRepository: homeRepository,
+        editingExpenseId: 'expense-1',
+        canEdit: false,
+        editDisabledReason: 'Already paid',
+      );
+    },
+    seed: () {
+      return seededState(isEditing: true, editingExpenseId: 'expense-1')
+          .copyWith(canEdit: false, editDisabledReason: 'Already paid');
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () => <ShareCreateState>[],
+    verify: (_) {
+      verifyNever(
+        () => expensesRepository.edit(
+          expenseId: any(named: 'expenseId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      );
+    },
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'emits submission error when repository throws generic error',
+    build: () => buildBloc(),
+    seed: seededState,
+    setUp: () {
+      when(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      ).thenThrow(Exception('Unexpected error'));
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect:
+        () => [
+          isA<ShareCreateState>().having(
+            (s) => s.isSubmitting,
+            'submitting',
+            true,
+          ),
+          isA<ShareCreateState>()
+              .having((s) => s.isSubmitting, 'submitting', false)
+              .having(
+                (s) => s.submissionErrorCode,
+                'code',
+                ExpenseErrorCode.unknown,
+              )
+              .having(
+                (s) => s.submissionErrorMessage,
+                'message',
+                contains('Unexpected error'),
+              ),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'toggles participant selection',
+    build: () => buildBloc(),
+    seed: seededState,
+    act: (bloc) => bloc.add(
+      const ShareCreateParticipantToggled('member_a', false),
+    ),
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having(
+                (s) => s.form.selectedParticipantIds.contains('member_a'),
+                'member_a selected',
+                false,
+              )
+              .having((s) => s.hasUserEdits, 'hasUserEdits', true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'updates custom amount for participant',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Supplies',
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.custom,
+        selectedParticipantIds: {'member_a', 'member_b'},
+      );
+      return seededState(form: form);
+    },
+    act: (bloc) => bloc.add(
+      const ShareCreateCustomAmountChanged('member_a', '6.00'),
+    ),
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having(
+                (s) => s.form.customAmountInputs['member_a'],
+                'custom amount',
+                '6.00',
+              )
+              .having((s) => s.hasUserEdits, 'hasUserEdits', true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'selects all participants when switching to equal mode with empty selection',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Test',
+        amountInput: '20.00',
+        splitMode: null,
+        selectedParticipantIds: <String>{},
+      );
+      return seededState(form: form);
+    },
+    act:
+        (bloc) =>
+            bloc.add(const ShareCreateSplitModeChanged(ShareSplitMode.equal)),
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having((s) => s.form.splitMode, 'splitMode', ShareSplitMode.equal)
+              .having(
+                (s) => s.form.selectedParticipantIds.length,
+                'all selected',
+                3,
+              )
+              .having((s) => s.hasUserEdits, 'hasUserEdits', true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'clears recurrence fields when split mode is set to null',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Recurring',
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_a', 'member_self'},
+        recurrenceEvery: 2,
+        recurrenceUnit: ExpenseRecurrenceUnit.month,
+      );
+      return seededState(form: form);
+    },
+    act: (bloc) => bloc.add(const ShareCreateSplitModeChanged(null)),
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having((s) => s.form.recurrenceEvery, 'recurrenceEvery', isNull)
+              .having((s) => s.form.recurrenceUnit, 'recurrenceUnit', isNull)
+              .having((s) => s.hasUserEdits, 'hasUserEdits', true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'paywall resolved does not retry submission when status is not granted',
+    build: () => buildBloc(),
+    seed: () {
+      return seededState().copyWith(
+        paywallInFlightRequestId: 'req-123',
+      );
+    },
+    act:
+        (bloc) => bloc.add(
+          ShareCreatePaywallResolved(
+            PaywallGateOutcome(
+              requestId: 'req-123',
+              action: PaywallRetryAction.submit,
+              status: PaywallGateStatus.cancelled,
+            ),
+          ),
+        ),
+    verify: (_) {
+      verifyNever(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      );
+    },
+  );
 }

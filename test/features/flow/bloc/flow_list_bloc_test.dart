@@ -61,12 +61,13 @@ void main() {
     homeRepository = _MockHomeRepository();
 
     when(
-      () => homeRepository.listActiveMembers(any(), excludeSelf: any(named: 'excludeSelf')),
+      () => homeRepository.listActiveMembers(
+        any(),
+        excludeSelf: any(named: 'excludeSelf'),
+      ),
     ).thenAnswer((_) async => [ownerMember, regularMember]);
 
-    when(
-      () => choresRepository.listForHome(any()),
-    ).thenAnswer((_) async => []);
+    when(() => choresRepository.listForHome(any())).thenAnswer((_) async => []);
   });
 
   group('FlowListBloc', () {
@@ -95,20 +96,23 @@ void main() {
           return buildBloc();
         },
         act: (bloc) => bloc.add(const FlowListRequested()),
-        expect: () => [
-          isA<FlowListState>().having(
-            (s) => s.status,
-            'status',
-            FlowListStatus.loading,
-          ),
-          isA<FlowListState>()
-              .having((s) => s.status, 'status', FlowListStatus.success)
-              .having((s) => s.items.length, 'items.length', 2)
-              .having((s) => s.ownerUserId, 'ownerUserId', ownerUserId)
-              .having((s) => s.isRefreshing, 'isRefreshing', false),
-        ],
+        expect:
+            () => [
+              isA<FlowListState>().having(
+                (s) => s.status,
+                'status',
+                FlowListStatus.loading,
+              ),
+              isA<FlowListState>()
+                  .having((s) => s.status, 'status', FlowListStatus.success)
+                  .having((s) => s.items.length, 'items.length', 2)
+                  .having((s) => s.ownerUserId, 'ownerUserId', ownerUserId)
+                  .having((s) => s.isRefreshing, 'isRefreshing', false),
+            ],
         verify: (_) {
-          verify(() => homeRepository.listActiveMembers(homeId, excludeSelf: false)).called(1);
+          verify(
+            () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
+          ).called(1);
           verify(() => choresRepository.listForHome(homeId)).called(1);
         },
       );
@@ -129,61 +133,96 @@ void main() {
           return buildBloc();
         },
         act: (bloc) => bloc.add(const FlowListRequested()),
-        expect: () => [
-          isA<FlowListState>().having((s) => s.status, 'status', FlowListStatus.loading),
-          isA<FlowListState>()
-              .having((s) => s.status, 'status', FlowListStatus.success)
-              .having((s) => s.items.length, 'items.length', 2)
-              .having((s) => s.items.every((i) => i.id != '3'), 'excludes future', true),
-        ],
+        expect:
+            () => [
+              isA<FlowListState>().having(
+                (s) => s.status,
+                'status',
+                FlowListStatus.loading,
+              ),
+              isA<FlowListState>()
+                  .having((s) => s.status, 'status', FlowListStatus.success)
+                  .having((s) => s.items.length, 'items.length', 2)
+                  .having(
+                    (s) => s.items.every((i) => i.id != '3'),
+                    'excludes future',
+                    true,
+                  ),
+            ],
       );
 
       blocTest<FlowListBloc, FlowListState>(
         'emits failure on repository error',
         build: () {
-          when(() => choresRepository.listForHome(homeId))
-              .thenThrow(Exception('Network error'));
+          when(
+            () => choresRepository.listForHome(homeId),
+          ).thenThrow(Exception('Network error'));
           return buildBloc();
         },
         act: (bloc) => bloc.add(const FlowListRequested()),
-        expect: () => [
-          isA<FlowListState>().having((s) => s.status, 'status', FlowListStatus.loading),
-          isA<FlowListState>()
-              .having((s) => s.status, 'status', FlowListStatus.failure)
-              .having((s) => s.errorMessage, 'errorMessage', contains('Network error')),
-        ],
+        expect:
+            () => [
+              isA<FlowListState>().having(
+                (s) => s.status,
+                'status',
+                FlowListStatus.loading,
+              ),
+              isA<FlowListState>()
+                  .having((s) => s.status, 'status', FlowListStatus.failure)
+                  .having(
+                    (s) => s.errorMessage,
+                    'errorMessage',
+                    contains('Network error'),
+                  ),
+            ],
       );
 
       blocTest<FlowListBloc, FlowListState>(
         'handles empty members list gracefully',
         build: () {
           when(
-            () => homeRepository.listActiveMembers(any(), excludeSelf: any(named: 'excludeSelf')),
+            () => homeRepository.listActiveMembers(
+              any(),
+              excludeSelf: any(named: 'excludeSelf'),
+            ),
           ).thenAnswer((_) async => []);
           return buildBloc();
         },
         act: (bloc) => bloc.add(const FlowListRequested()),
-        expect: () => [
-          isA<FlowListState>().having((s) => s.status, 'status', FlowListStatus.loading),
-          isA<FlowListState>()
-              .having((s) => s.status, 'status', FlowListStatus.success)
-              .having((s) => s.ownerUserId, 'ownerUserId', isNull),
-        ],
+        expect:
+            () => [
+              isA<FlowListState>().having(
+                (s) => s.status,
+                'status',
+                FlowListStatus.loading,
+              ),
+              isA<FlowListState>()
+                  .having((s) => s.status, 'status', FlowListStatus.success)
+                  .having((s) => s.ownerUserId, 'ownerUserId', isNull),
+            ],
       );
 
       blocTest<FlowListBloc, FlowListState>(
         'finds owner when not first in list',
         build: () {
           when(
-            () => homeRepository.listActiveMembers(any(), excludeSelf: any(named: 'excludeSelf')),
+            () => homeRepository.listActiveMembers(
+              any(),
+              excludeSelf: any(named: 'excludeSelf'),
+            ),
           ).thenAnswer((_) async => [regularMember, ownerMember]);
           return buildBloc();
         },
         act: (bloc) => bloc.add(const FlowListRequested()),
-        expect: () => [
-          isA<FlowListState>(),
-          isA<FlowListState>().having((s) => s.ownerUserId, 'ownerUserId', ownerUserId),
-        ],
+        expect:
+            () => [
+              isA<FlowListState>(),
+              isA<FlowListState>().having(
+                (s) => s.ownerUserId,
+                'ownerUserId',
+                ownerUserId,
+              ),
+            ],
       );
     });
 
@@ -197,12 +236,17 @@ void main() {
           return buildBloc();
         },
         act: (bloc) => bloc.add(const FlowListRefreshed()),
-        expect: () => [
-          isA<FlowListState>().having((s) => s.isRefreshing, 'isRefreshing', true),
-          isA<FlowListState>()
-              .having((s) => s.status, 'status', FlowListStatus.success)
-              .having((s) => s.isRefreshing, 'isRefreshing', false),
-        ],
+        expect:
+            () => [
+              isA<FlowListState>().having(
+                (s) => s.isRefreshing,
+                'isRefreshing',
+                true,
+              ),
+              isA<FlowListState>()
+                  .having((s) => s.status, 'status', FlowListStatus.success)
+                  .having((s) => s.isRefreshing, 'isRefreshing', false),
+            ],
       );
 
       blocTest<FlowListBloc, FlowListState>(
@@ -210,28 +254,39 @@ void main() {
         build: buildBloc,
         seed: () => const FlowListState(isRefreshing: true),
         act: (bloc) => bloc.add(const FlowListRefreshed()),
-        expect: () => [
-          isA<FlowListState>()
-              .having((s) => s.status, 'status', FlowListStatus.success)
-              .having((s) => s.isRefreshing, 'isRefreshing', false),
-        ],
+        expect:
+            () => [
+              isA<FlowListState>()
+                  .having((s) => s.status, 'status', FlowListStatus.success)
+                  .having((s) => s.isRefreshing, 'isRefreshing', false),
+            ],
       );
 
       blocTest<FlowListBloc, FlowListState>(
         'emits failure on refresh error',
         build: () {
-          when(() => choresRepository.listForHome(homeId))
-              .thenThrow(Exception('Refresh failed'));
+          when(
+            () => choresRepository.listForHome(homeId),
+          ).thenThrow(Exception('Refresh failed'));
           return buildBloc();
         },
         act: (bloc) => bloc.add(const FlowListRefreshed()),
-        expect: () => [
-          isA<FlowListState>().having((s) => s.isRefreshing, 'isRefreshing', true),
-          isA<FlowListState>()
-              .having((s) => s.status, 'status', FlowListStatus.failure)
-              .having((s) => s.isRefreshing, 'isRefreshing', false)
-              .having((s) => s.errorMessage, 'errorMessage', contains('Refresh failed')),
-        ],
+        expect:
+            () => [
+              isA<FlowListState>().having(
+                (s) => s.isRefreshing,
+                'isRefreshing',
+                true,
+              ),
+              isA<FlowListState>()
+                  .having((s) => s.status, 'status', FlowListStatus.failure)
+                  .having((s) => s.isRefreshing, 'isRefreshing', false)
+                  .having(
+                    (s) => s.errorMessage,
+                    'errorMessage',
+                    contains('Refresh failed'),
+                  ),
+            ],
       );
     });
   });

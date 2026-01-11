@@ -14,16 +14,16 @@ void main() {
   const homeId = 'home-123';
 
   NpsCubit buildCubit() {
-    return NpsCubit(
-      homeId: homeId,
-      moodRepository: moodRepository,
-    );
+    return NpsCubit(homeId: homeId, moodRepository: moodRepository);
   }
 
   setUp(() {
     moodRepository = _MockMoodRepository();
     when(
-      () => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')),
+      () => moodRepository.submitNps(
+        homeId: any(named: 'homeId'),
+        score: any(named: 'score'),
+      ),
     ).thenAnswer((_) async {});
   });
 
@@ -42,18 +42,21 @@ void main() {
         'emits submitting then success on valid score',
         build: buildCubit,
         act: (cubit) => cubit.submitScore(8),
-        expect: () => [
-          isA<NpsState>()
-              .having((s) => s.isSubmitting, 'isSubmitting', true)
-              .having((s) => s.lastSubmittedScore, 'lastSubmittedScore', 8),
-          isA<NpsState>()
-              .having((s) => s.isSubmitting, 'isSubmitting', false)
-              .having((s) => s.submitSuccessTick, 'submitSuccessTick', 1)
-              .having((s) => s.submitError, 'submitError', isNull)
-              .having((s) => s.lastSubmittedScore, 'lastSubmittedScore', 8),
-        ],
+        expect:
+            () => [
+              isA<NpsState>()
+                  .having((s) => s.isSubmitting, 'isSubmitting', true)
+                  .having((s) => s.lastSubmittedScore, 'lastSubmittedScore', 8),
+              isA<NpsState>()
+                  .having((s) => s.isSubmitting, 'isSubmitting', false)
+                  .having((s) => s.submitSuccessTick, 'submitSuccessTick', 1)
+                  .having((s) => s.submitError, 'submitError', isNull)
+                  .having((s) => s.lastSubmittedScore, 'lastSubmittedScore', 8),
+            ],
         verify: (_) {
-          verify(() => moodRepository.submitNps(homeId: homeId, score: 8)).called(1);
+          verify(
+            () => moodRepository.submitNps(homeId: homeId, score: 8),
+          ).called(1);
         },
       );
 
@@ -63,7 +66,12 @@ void main() {
         act: (cubit) => cubit.submitScore(-1),
         expect: () => [],
         verify: (_) {
-          verifyNever(() => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')));
+          verifyNever(
+            () => moodRepository.submitNps(
+              homeId: any(named: 'homeId'),
+              score: any(named: 'score'),
+            ),
+          );
         },
       );
 
@@ -73,7 +81,12 @@ void main() {
         act: (cubit) => cubit.submitScore(11),
         expect: () => [],
         verify: (_) {
-          verifyNever(() => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')));
+          verifyNever(
+            () => moodRepository.submitNps(
+              homeId: any(named: 'homeId'),
+              score: any(named: 'score'),
+            ),
+          );
         },
       );
 
@@ -81,22 +94,36 @@ void main() {
         'accepts score 0 (minimum valid)',
         build: buildCubit,
         act: (cubit) => cubit.submitScore(0),
-        expect: () => [
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>()
-              .having((s) => s.isSubmitting, 'isSubmitting', false)
-              .having((s) => s.lastSubmittedScore, 'lastSubmittedScore', 0),
-        ],
+        expect:
+            () => [
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>()
+                  .having((s) => s.isSubmitting, 'isSubmitting', false)
+                  .having((s) => s.lastSubmittedScore, 'lastSubmittedScore', 0),
+            ],
       );
 
       blocTest<NpsCubit, NpsState>(
         'accepts score 10 (maximum valid)',
         build: buildCubit,
         act: (cubit) => cubit.submitScore(10),
-        expect: () => [
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>().having((s) => s.lastSubmittedScore, 'lastSubmittedScore', 10),
-        ],
+        expect:
+            () => [
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>().having(
+                (s) => s.lastSubmittedScore,
+                'lastSubmittedScore',
+                10,
+              ),
+            ],
       );
 
       blocTest<NpsCubit, NpsState>(
@@ -106,7 +133,12 @@ void main() {
         act: (cubit) => cubit.submitScore(5),
         expect: () => [],
         verify: (_) {
-          verifyNever(() => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')));
+          verifyNever(
+            () => moodRepository.submitNps(
+              homeId: any(named: 'homeId'),
+              score: any(named: 'score'),
+            ),
+          );
         },
       );
 
@@ -114,107 +146,211 @@ void main() {
         'emits error on invalidScore exception',
         build: () {
           when(
-            () => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')),
-          ).thenThrow(const NpsSubmitException(NpsSubmitErrorCode.invalidScore, 'Invalid'));
+            () => moodRepository.submitNps(
+              homeId: any(named: 'homeId'),
+              score: any(named: 'score'),
+            ),
+          ).thenThrow(
+            const NpsSubmitException(
+              NpsSubmitErrorCode.invalidScore,
+              'Invalid',
+            ),
+          );
           return buildCubit();
         },
         act: (cubit) => cubit.submitScore(5),
-        expect: () => [
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>()
-              .having((s) => s.isSubmitting, 'isSubmitting', false)
-              .having((s) => s.submitError, 'submitError', 'invalidScore'),
-        ],
+        expect:
+            () => [
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>()
+                  .having((s) => s.isSubmitting, 'isSubmitting', false)
+                  .having((s) => s.submitError, 'submitError', 'invalidScore'),
+            ],
       );
 
       blocTest<NpsCubit, NpsState>(
         'emits error on notEligible exception',
         build: () {
           when(
-            () => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')),
-          ).thenThrow(const NpsSubmitException(NpsSubmitErrorCode.notEligible, 'Not eligible'));
+            () => moodRepository.submitNps(
+              homeId: any(named: 'homeId'),
+              score: any(named: 'score'),
+            ),
+          ).thenThrow(
+            const NpsSubmitException(
+              NpsSubmitErrorCode.notEligible,
+              'Not eligible',
+            ),
+          );
           return buildCubit();
         },
         act: (cubit) => cubit.submitScore(5),
-        expect: () => [
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>().having((s) => s.submitError, 'submitError', 'notEligible'),
-        ],
+        expect:
+            () => [
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>().having(
+                (s) => s.submitError,
+                'submitError',
+                'notEligible',
+              ),
+            ],
       );
 
       blocTest<NpsCubit, NpsState>(
         'emits error on notRequired exception',
         build: () {
           when(
-            () => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')),
-          ).thenThrow(const NpsSubmitException(NpsSubmitErrorCode.notRequired, 'Not required'));
+            () => moodRepository.submitNps(
+              homeId: any(named: 'homeId'),
+              score: any(named: 'score'),
+            ),
+          ).thenThrow(
+            const NpsSubmitException(
+              NpsSubmitErrorCode.notRequired,
+              'Not required',
+            ),
+          );
           return buildCubit();
         },
         act: (cubit) => cubit.submitScore(5),
-        expect: () => [
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>().having((s) => s.submitError, 'submitError', 'notRequired'),
-        ],
+        expect:
+            () => [
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>().having(
+                (s) => s.submitError,
+                'submitError',
+                'notRequired',
+              ),
+            ],
       );
 
       blocTest<NpsCubit, NpsState>(
         'emits forbidden error on forbidden exception',
         build: () {
           when(
-            () => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')),
-          ).thenThrow(const NpsSubmitException(NpsSubmitErrorCode.forbidden, 'Forbidden'));
+            () => moodRepository.submitNps(
+              homeId: any(named: 'homeId'),
+              score: any(named: 'score'),
+            ),
+          ).thenThrow(
+            const NpsSubmitException(NpsSubmitErrorCode.forbidden, 'Forbidden'),
+          );
           return buildCubit();
         },
         act: (cubit) => cubit.submitScore(5),
-        expect: () => [
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>().having((s) => s.submitError, 'submitError', 'forbidden'),
-        ],
+        expect:
+            () => [
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>().having(
+                (s) => s.submitError,
+                'submitError',
+                'forbidden',
+              ),
+            ],
       );
 
       blocTest<NpsCubit, NpsState>(
         'emits forbidden error on unauthorized exception',
         build: () {
           when(
-            () => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')),
-          ).thenThrow(const NpsSubmitException(NpsSubmitErrorCode.unauthorized, 'Unauthorized'));
+            () => moodRepository.submitNps(
+              homeId: any(named: 'homeId'),
+              score: any(named: 'score'),
+            ),
+          ).thenThrow(
+            const NpsSubmitException(
+              NpsSubmitErrorCode.unauthorized,
+              'Unauthorized',
+            ),
+          );
           return buildCubit();
         },
         act: (cubit) => cubit.submitScore(5),
-        expect: () => [
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>().having((s) => s.submitError, 'submitError', 'forbidden'),
-        ],
+        expect:
+            () => [
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>().having(
+                (s) => s.submitError,
+                'submitError',
+                'forbidden',
+              ),
+            ],
       );
 
       blocTest<NpsCubit, NpsState>(
         'emits unknown error on unknown exception',
         build: () {
           when(
-            () => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')),
-          ).thenThrow(const NpsSubmitException(NpsSubmitErrorCode.unknown, 'Unknown'));
+            () => moodRepository.submitNps(
+              homeId: any(named: 'homeId'),
+              score: any(named: 'score'),
+            ),
+          ).thenThrow(
+            const NpsSubmitException(NpsSubmitErrorCode.unknown, 'Unknown'),
+          );
           return buildCubit();
         },
         act: (cubit) => cubit.submitScore(5),
-        expect: () => [
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>().having((s) => s.submitError, 'submitError', 'unknown'),
-        ],
+        expect:
+            () => [
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>().having(
+                (s) => s.submitError,
+                'submitError',
+                'unknown',
+              ),
+            ],
       );
 
       blocTest<NpsCubit, NpsState>(
         'emits unknown error on generic exception',
         build: () {
           when(
-            () => moodRepository.submitNps(homeId: any(named: 'homeId'), score: any(named: 'score')),
+            () => moodRepository.submitNps(
+              homeId: any(named: 'homeId'),
+              score: any(named: 'score'),
+            ),
           ).thenThrow(Exception('Network failure'));
           return buildCubit();
         },
         act: (cubit) => cubit.submitScore(5),
-        expect: () => [
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>().having((s) => s.submitError, 'submitError', 'unknown'),
-        ],
+        expect:
+            () => [
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>().having(
+                (s) => s.submitError,
+                'submitError',
+                'unknown',
+              ),
+            ],
       );
 
       blocTest<NpsCubit, NpsState>(
@@ -224,12 +360,29 @@ void main() {
           await cubit.submitScore(5);
           await cubit.submitScore(7);
         },
-        expect: () => [
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>().having((s) => s.submitSuccessTick, 'submitSuccessTick', 1),
-          isA<NpsState>().having((s) => s.isSubmitting, 'isSubmitting', true),
-          isA<NpsState>().having((s) => s.submitSuccessTick, 'submitSuccessTick', 2),
-        ],
+        expect:
+            () => [
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>().having(
+                (s) => s.submitSuccessTick,
+                'submitSuccessTick',
+                1,
+              ),
+              isA<NpsState>().having(
+                (s) => s.isSubmitting,
+                'isSubmitting',
+                true,
+              ),
+              isA<NpsState>().having(
+                (s) => s.submitSuccessTick,
+                'submitSuccessTick',
+                2,
+              ),
+            ],
       );
     });
   });
