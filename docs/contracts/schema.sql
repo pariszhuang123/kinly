@@ -1495,6 +1495,168 @@ $$;
 ALTER FUNCTION "public"."_home_usage_apply_delta"("p_home_id" "uuid", "p_deltas" "jsonb") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."_house_vibes_mark_out_of_date"("p_home_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_total int;
+  v_mapping_version text := 'v1';
+BEGIN
+  SELECT COUNT(*)
+    INTO v_total
+    FROM public.memberships m
+   WHERE m.home_id = p_home_id
+     AND m.is_current = true;
+
+  INSERT INTO public.house_vibes (
+    home_id,
+    mapping_version,
+    label_id,
+    confidence,
+    coverage_answered,
+    coverage_total,
+    axes,
+    computed_at,
+    out_of_date,
+    invalidated_at
+  )
+  VALUES (
+    p_home_id,
+    v_mapping_version,
+    'insufficient_data',
+    0,
+    0,
+    COALESCE(v_total, 0),
+    '{}'::jsonb,
+    now(),
+    true,
+    now()
+  )
+  ON CONFLICT (home_id) DO UPDATE
+    SET out_of_date       = true,
+        mapping_version   = EXCLUDED.mapping_version,
+        label_id          = EXCLUDED.label_id,
+        confidence        = EXCLUDED.confidence,
+        coverage_answered = EXCLUDED.coverage_answered,
+        coverage_total    = EXCLUDED.coverage_total,
+        axes              = EXCLUDED.axes,
+        computed_at       = EXCLUDED.computed_at,
+        invalidated_at    = EXCLUDED.invalidated_at;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_house_vibes_mark_out_of_date"("p_home_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."_house_vibes_mark_out_of_date_memberships"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_old_home uuid := null;
+  v_new_home uuid := null;
+  v_should_invalidate boolean := false;
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    v_new_home := NEW.home_id;
+
+    -- Only if inserted row is current.
+    IF NEW.valid_to IS NULL THEN
+      v_should_invalidate := true;
+    END IF;
+
+  ELSIF TG_OP = 'DELETE' THEN
+    v_old_home := OLD.home_id;
+
+    -- Only if deleted row was current.
+    IF OLD.valid_to IS NULL THEN
+      v_should_invalidate := true;
+    END IF;
+
+  ELSE
+    -- UPDATE
+    v_old_home := OLD.home_id;
+    v_new_home := NEW.home_id;
+
+    -- 1) current -> not current (leave/kick): valid_to NULL -> NOT NULL
+    IF OLD.valid_to IS NULL AND NEW.valid_to IS NOT NULL THEN
+      v_should_invalidate := true;
+    END IF;
+
+    -- 2) valid_from changed (rare, but affects validity window)
+    IF OLD.valid_from IS DISTINCT FROM NEW.valid_from THEN
+      v_should_invalidate := true;
+    END IF;
+
+    -- 3) role changed (owner transfer etc.) – only matters for current row
+    IF NEW.valid_to IS NULL AND OLD.role IS DISTINCT FROM NEW.role THEN
+      v_should_invalidate := true;
+    END IF;
+
+    -- 4) home_id changed (rare) – invalidate both homes
+    IF OLD.home_id IS DISTINCT FROM NEW.home_id THEN
+      v_should_invalidate := true;
+    END IF;
+  END IF;
+
+  IF v_should_invalidate THEN
+    IF v_old_home IS NOT NULL THEN
+      PERFORM public._house_vibes_mark_out_of_date(v_old_home);
+    END IF;
+
+    IF v_new_home IS NOT NULL AND v_new_home IS DISTINCT FROM v_old_home THEN
+      PERFORM public._house_vibes_mark_out_of_date(v_new_home);
+    END IF;
+  END IF;
+
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_house_vibes_mark_out_of_date_memberships"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."_house_vibes_mark_out_of_date_preferences"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_home_id uuid;
+  v_user_id uuid := null;
+BEGIN
+  IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+    v_user_id := NEW.user_id;
+  ELSIF TG_OP = 'DELETE' THEN
+    v_user_id := OLD.user_id;
+  END IF;
+
+  IF v_user_id IS NULL THEN
+    RETURN COALESCE(NEW, OLD);
+  END IF;
+
+  -- One current home per user is enforced by uq_memberships_user_one_current (provided).
+  SELECT m.home_id
+    INTO v_home_id
+    FROM public.memberships m
+   WHERE m.user_id = v_user_id
+     AND m.is_current = true
+   LIMIT 1;
+
+  IF v_home_id IS NOT NULL THEN
+    PERFORM public._house_vibes_mark_out_of_date(v_home_id);
+  END IF;
+
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."_house_vibes_mark_out_of_date_preferences"() OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."member_cap_join_requests" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "home_id" "uuid" NOT NULL,
@@ -6714,6 +6876,25 @@ $$;
 ALTER FUNCTION "public"."homes_transfer_owner"("p_home_id" "uuid", "p_new_owner_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."house_vibe_compute"("p_home_id" "uuid", "p_force" boolean DEFAULT false, "p_include_axes" boolean DEFAULT false) RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  -- TODO: implement aggregation + mapping per contracts:
+  -- - house_vibe_aggregation_contract_v1.md
+  -- - house_vibe_mapping_contract_v1.md
+  -- Must take advisory lock per (home_id, mapping_version).
+  -- Must join house_vibe_labels to return render-ready payload.
+  -- Should set out_of_date=false and invalidated_at=NULL when snapshot is refreshed.
+  RAISE EXCEPTION 'house_vibe_compute not yet implemented';
+END;
+$$;
+
+
+ALTER FUNCTION "public"."house_vibe_compute"("p_home_id" "uuid", "p_force" boolean, "p_include_axes" boolean) OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."invites" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "home_id" "uuid" NOT NULL,
@@ -8306,6 +8487,8 @@ DECLARE
   v_unresolved_nulls jsonb;
   v_unresolved jsonb;
 
+  v_sections jsonb;
+
   v_generated jsonb;
 BEGIN
   PERFORM public._assert_authenticated();
@@ -8429,11 +8612,52 @@ BEGIN
   INTO v_unresolved
   FROM jsonb_array_elements(v_unresolved_missing || v_unresolved_nulls) AS e(value);
 
+  -- Build personalized section text from resolved preferences by domain.
+  v_sections := v_template.body->'sections';
+
+  WITH section_items AS (
+    SELECT value AS section, ord
+    FROM jsonb_array_elements(v_sections) WITH ORDINALITY AS e(value, ord)
+  ),
+  resolved_texts AS (
+    SELECT
+      d.domain,
+      pr.preference_id,
+      (v_template.body->'preferences'->pr.preference_id->(pr.option_index::int)->>'text') AS text
+    FROM public.preference_responses pr
+    JOIN public.preference_taxonomy t USING (preference_id)
+    JOIN public.preference_taxonomy_defs d USING (preference_id)
+    WHERE pr.user_id = v_user
+      AND t.is_active = true
+  ),
+  per_domain AS (
+    SELECT
+      domain,
+      string_agg(text, ' ' ORDER BY preference_id) AS section_text
+    FROM resolved_texts
+    WHERE text IS NOT NULL AND btrim(text) <> ''
+    GROUP BY domain
+  )
+  SELECT COALESCE(
+    jsonb_agg(
+      CASE
+        WHEN pd.section_text IS NULL OR btrim(pd.section_text) = '' THEN section
+        ELSE jsonb_set(section, '{text}', to_jsonb(pd.section_text), true)
+      END
+      ORDER BY ord
+    ),
+    '[]'::jsonb
+  )
+  INTO v_sections
+  FROM section_items si
+  LEFT JOIN per_domain pd
+    ON pd.domain = (si.section->>'section_key');
+
   v_generated := jsonb_build_object(
     'template_key', p_template_key,
     'locale', p_locale,
     'summary', v_template.body->'summary',
-    'sections', v_template.body->'sections',
+    'sections', v_sections,
     'responses', v_responses,
     'resolved', v_resolved,
     'unresolved_pref_ids', v_unresolved
@@ -8712,12 +8936,15 @@ BEGIN
     )
   );
 
-  -- Validate each value is an integer 0..2
+  -- Validate each value is an integer 0..2 without unsafe casts.
   SELECT COALESCE(
     jsonb_agg(k) FILTER (WHERE NOT (
-      jsonb_typeof(p_answers->k) = 'number'
-      AND (p_answers->>k) ~ '^[0-9]+$'
-      AND ((p_answers->>k)::int BETWEEN 0 AND 2)
+      CASE
+        WHEN jsonb_typeof(p_answers->k) = 'number'
+          AND (p_answers->>k) ~ '^[0-9]+$'
+          THEN ((p_answers->>k)::int BETWEEN 0 AND 2)
+        ELSE false
+      END
     )),
     '[]'::jsonb
   )
@@ -9858,6 +10085,72 @@ COMMENT ON COLUMN "public"."homes"."deactivated_at" IS 'Timestamp when the home 
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."house_vibe_labels" (
+    "label_id" "text" NOT NULL,
+    "mapping_version" "text" NOT NULL,
+    "title_key" "text" NOT NULL,
+    "summary_key" "text" NOT NULL,
+    "image_key" "text" NOT NULL,
+    "ui" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."house_vibe_labels" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."house_vibe_mapping_effects" (
+    "mapping_version" "text" NOT NULL,
+    "preference_id" "text" NOT NULL,
+    "option_index" smallint NOT NULL,
+    "axis" "text" NOT NULL,
+    "delta" smallint NOT NULL,
+    "weight" numeric(4,2) NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "house_vibe_mapping_effects_axis_check" CHECK (("axis" = ANY (ARRAY['energy_level'::"text", 'structure_level'::"text", 'social_level'::"text", 'repair_style'::"text", 'noise_tolerance'::"text", 'cleanliness_rhythm'::"text"]))),
+    CONSTRAINT "house_vibe_mapping_effects_delta_check" CHECK (("delta" = ANY (ARRAY['-1'::integer, 0, 1]))),
+    CONSTRAINT "house_vibe_mapping_effects_option_index_check" CHECK ((("option_index" >= 0) AND ("option_index" <= 2))),
+    CONSTRAINT "house_vibe_mapping_effects_weight_check" CHECK ((("weight" >= 0.10) AND ("weight" <= 3.00)))
+);
+
+
+ALTER TABLE "public"."house_vibe_mapping_effects" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."house_vibe_versions" (
+    "mapping_version" "text" NOT NULL,
+    "min_side_count_small" integer DEFAULT 1 NOT NULL,
+    "min_side_count_large" integer DEFAULT 2 NOT NULL,
+    "status" "text" DEFAULT 'active'::"text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "house_vibe_versions_status_check" CHECK (("status" = ANY (ARRAY['draft'::"text", 'active'::"text"])))
+);
+
+
+ALTER TABLE "public"."house_vibe_versions" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."house_vibes" (
+    "home_id" "uuid" NOT NULL,
+    "mapping_version" "text" NOT NULL,
+    "label_id" "text" NOT NULL,
+    "confidence" numeric NOT NULL,
+    "coverage_answered" integer NOT NULL,
+    "coverage_total" integer NOT NULL,
+    "axes" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "computed_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "out_of_date" boolean DEFAULT false NOT NULL,
+    "invalidated_at" timestamp with time zone,
+    CONSTRAINT "chk_house_vibes_confidence_0_1" CHECK ((("confidence" >= (0)::numeric) AND ("confidence" <= (1)::numeric))),
+    CONSTRAINT "chk_house_vibes_coverage_nonneg" CHECK ((("coverage_answered" >= 0) AND ("coverage_total" >= 0))),
+    CONSTRAINT "chk_house_vibes_coverage_order" CHECK (("coverage_answered" <= "coverage_total"))
+);
+
+
+ALTER TABLE "public"."house_vibes" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."memberships" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -10210,7 +10503,7 @@ CREATE TABLE IF NOT EXISTS "public"."share_events" (
     "feature" "text" NOT NULL,
     "channel" "text" NOT NULL,
     CONSTRAINT "share_channel_valid" CHECK (("channel" = ANY (ARRAY['system_share'::"text", 'qr_code'::"text", 'copy_link'::"text", 'other'::"text", 'onboarding_dismiss'::"text"]))),
-    CONSTRAINT "share_feature_valid" CHECK (("feature" = ANY (ARRAY['invite_button'::"text", 'invite_housemate'::"text", 'gratitude_wall_house'::"text", 'gratitude_wall_personal'::"text", 'house_rules_detailed'::"text", 'house_rules_summary'::"text", 'preferences_detailed'::"text", 'preferences_summary'::"text", 'other'::"text"])))
+    CONSTRAINT "share_feature_valid" CHECK (("feature" = ANY (ARRAY['invite_button'::"text", 'invite_housemate'::"text", 'gratitude_wall_house'::"text", 'gratitude_wall_personal'::"text", 'house_rules_detailed'::"text", 'house_rules_summary'::"text", 'preferences_detailed'::"text", 'preferences_summary'::"text", 'house_vibe'::"text", 'other'::"text"])))
 );
 
 
@@ -10394,6 +10687,16 @@ ALTER TABLE ONLY "public"."homes"
 
 
 
+ALTER TABLE ONLY "public"."house_vibe_versions"
+    ADD CONSTRAINT "house_vibe_versions_pkey" PRIMARY KEY ("mapping_version");
+
+
+
+ALTER TABLE ONLY "public"."house_vibes"
+    ADD CONSTRAINT "house_vibes_pkey" PRIMARY KEY ("home_id");
+
+
+
 ALTER TABLE ONLY "public"."invites"
     ADD CONSTRAINT "invites_code_key" UNIQUE ("code");
 
@@ -10455,6 +10758,16 @@ ALTER TABLE ONLY "public"."gratitude_wall_reads"
 
 ALTER TABLE ONLY "public"."home_mood_feedback_counters"
     ADD CONSTRAINT "pk_home_mood_feedback_counters" PRIMARY KEY ("home_id", "user_id");
+
+
+
+ALTER TABLE ONLY "public"."house_vibe_labels"
+    ADD CONSTRAINT "pk_house_vibe_labels" PRIMARY KEY ("mapping_version", "label_id");
+
+
+
+ALTER TABLE ONLY "public"."house_vibe_mapping_effects"
+    ADD CONSTRAINT "pk_house_vibe_mapping_effects" PRIMARY KEY ("mapping_version", "preference_id", "option_index", "axis");
 
 
 
@@ -10560,6 +10873,14 @@ ALTER TABLE ONLY "public"."preference_reports"
 
 ALTER TABLE ONLY "public"."user_subscriptions"
     ADD CONSTRAINT "user_subscriptions_pkey" PRIMARY KEY ("id");
+
+
+
+CREATE INDEX "house_vibe_memberships_home_current_idx" ON "public"."memberships" USING "btree" ("home_id") WHERE ("is_current" = true);
+
+
+
+CREATE INDEX "house_vibe_memberships_user_current_idx" ON "public"."memberships" USING "btree" ("user_id") WHERE ("is_current" = true);
 
 
 
@@ -10743,6 +11064,18 @@ CREATE OR REPLACE TRIGGER "trg_home_mood_feedback_counters_inc" AFTER INSERT ON 
 
 
 
+CREATE OR REPLACE TRIGGER "trg_house_vibe_labels_touch_updated_at" BEFORE UPDATE ON "public"."house_vibe_labels" FOR EACH ROW EXECUTE FUNCTION "public"."_touch_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_house_vibes_memberships_out_of_date" AFTER INSERT OR DELETE OR UPDATE ON "public"."memberships" FOR EACH ROW EXECUTE FUNCTION "public"."_house_vibes_mark_out_of_date_memberships"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_house_vibes_preference_responses_out_of_date" AFTER INSERT OR DELETE OR UPDATE ON "public"."preference_responses" FOR EACH ROW EXECUTE FUNCTION "public"."_house_vibes_mark_out_of_date_preferences"();
+
+
+
 CREATE OR REPLACE TRIGGER "trg_preference_report_templates_touch" BEFORE UPDATE ON "public"."preference_report_templates" FOR EACH ROW EXECUTE FUNCTION "public"."_touch_updated_at"();
 
 
@@ -10853,6 +11186,11 @@ ALTER TABLE ONLY "public"."expenses"
 
 
 
+ALTER TABLE ONLY "public"."house_vibes"
+    ADD CONSTRAINT "fk_house_vibes_label_version" FOREIGN KEY ("mapping_version", "label_id") REFERENCES "public"."house_vibe_labels"("mapping_version", "label_id");
+
+
+
 ALTER TABLE ONLY "public"."notification_sends"
     ADD CONSTRAINT "fk_notification_sends_token_id" FOREIGN KEY ("token_id") REFERENCES "public"."device_tokens"("id") ON DELETE CASCADE;
 
@@ -10925,6 +11263,31 @@ ALTER TABLE ONLY "public"."home_usage_counters"
 
 ALTER TABLE ONLY "public"."homes"
     ADD CONSTRAINT "homes_owner_user_id_fkey" FOREIGN KEY ("owner_user_id") REFERENCES "public"."profiles"("id");
+
+
+
+ALTER TABLE ONLY "public"."house_vibe_labels"
+    ADD CONSTRAINT "house_vibe_labels_mapping_version_fkey" FOREIGN KEY ("mapping_version") REFERENCES "public"."house_vibe_versions"("mapping_version");
+
+
+
+ALTER TABLE ONLY "public"."house_vibe_mapping_effects"
+    ADD CONSTRAINT "house_vibe_mapping_effects_mapping_version_fkey" FOREIGN KEY ("mapping_version") REFERENCES "public"."house_vibe_versions"("mapping_version");
+
+
+
+ALTER TABLE ONLY "public"."house_vibe_mapping_effects"
+    ADD CONSTRAINT "house_vibe_mapping_effects_preference_id_fkey" FOREIGN KEY ("preference_id") REFERENCES "public"."preference_taxonomy"("preference_id");
+
+
+
+ALTER TABLE ONLY "public"."house_vibes"
+    ADD CONSTRAINT "house_vibes_home_id_fkey" FOREIGN KEY ("home_id") REFERENCES "public"."homes"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."house_vibes"
+    ADD CONSTRAINT "house_vibes_mapping_version_fkey" FOREIGN KEY ("mapping_version") REFERENCES "public"."house_vibe_versions"("mapping_version");
 
 
 
@@ -11117,6 +11480,18 @@ ALTER TABLE "public"."home_usage_counters" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."homes" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."house_vibe_labels" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."house_vibe_mapping_effects" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."house_vibe_versions" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."house_vibes" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."invites" ENABLE ROW LEVEL SECURITY;
@@ -11645,6 +12020,21 @@ GRANT ALL ON TABLE "public"."home_usage_counters" TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."_home_usage_apply_delta"("p_home_id" "uuid", "p_deltas" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."_home_usage_apply_delta"("p_home_id" "uuid", "p_deltas" "jsonb") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."_house_vibes_mark_out_of_date"("p_home_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."_house_vibes_mark_out_of_date"("p_home_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."_house_vibes_mark_out_of_date_memberships"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."_house_vibes_mark_out_of_date_memberships"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."_house_vibes_mark_out_of_date_preferences"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."_house_vibes_mark_out_of_date_preferences"() TO "service_role";
 
 
 
@@ -13256,6 +13646,12 @@ GRANT ALL ON FUNCTION "public"."homes_transfer_owner"("p_home_id" "uuid", "p_new
 
 
 
+REVOKE ALL ON FUNCTION "public"."house_vibe_compute"("p_home_id" "uuid", "p_force" boolean, "p_include_axes" boolean) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."house_vibe_compute"("p_home_id" "uuid", "p_force" boolean, "p_include_axes" boolean) TO "service_role";
+GRANT ALL ON FUNCTION "public"."house_vibe_compute"("p_home_id" "uuid", "p_force" boolean, "p_include_axes" boolean) TO "authenticated";
+
+
+
 GRANT ALL ON FUNCTION "public"."int2_dist"(smallint, smallint) TO "postgres";
 GRANT ALL ON FUNCTION "public"."int2_dist"(smallint, smallint) TO "anon";
 GRANT ALL ON FUNCTION "public"."int2_dist"(smallint, smallint) TO "authenticated";
@@ -13805,6 +14201,22 @@ GRANT ALL ON TABLE "public"."home_plan_limits" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."homes" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."house_vibe_labels" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."house_vibe_mapping_effects" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."house_vibe_versions" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."house_vibes" TO "service_role";
 
 
 
