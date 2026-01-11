@@ -28,10 +28,9 @@ class S {
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name =
-        (locale.countryCode?.isEmpty ?? false)
-            ? locale.languageCode
-            : locale.toString();
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -3758,6 +3757,16 @@ class S {
     );
   }
 
+  /// `View preferences`
+  String get preferenceReportViewTitle {
+    return Intl.message(
+      'View preferences',
+      name: 'preferenceReportViewTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Adjust the wording for this section.`
   String get preferenceReportEditSectionPrompt {
     return Intl.message(
@@ -4008,10 +4017,10 @@ class S {
     );
   }
 
-  /// `When do you usually feel most in sync with your sleep routine?`
+  /// `What's your sleep wake schedule like?`
   String get preferenceScenarioScheduleSleepTimingQuestion {
     return Intl.message(
-      'When do you usually feel most in sync with your sleep routine?',
+      'What\'s your sleep wake schedule like?',
       name: 'preferenceScenarioScheduleSleepTimingQuestion',
       desc: '',
       args: [],
@@ -4088,10 +4097,10 @@ class S {
     );
   }
 
-  /// `When something small is on your mind, how do you like to say it?`
+  /// `When someone bring something up to you, how would you prefer to receive it?`
   String get preferenceScenarioCommunicationDirectnessQuestion {
     return Intl.message(
-      'When something small is on your mind, how do you like to say it?',
+      'When someone bring something up to you, how would you prefer to receive it?',
       name: 'preferenceScenarioCommunicationDirectnessQuestion',
       desc: '',
       args: [],

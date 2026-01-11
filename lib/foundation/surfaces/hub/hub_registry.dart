@@ -88,6 +88,7 @@ class HubRegistry {
             (scope) => HubPreferencesSection(
               members: scope.state.members,
               reportItems: scope.state.preferenceReports,
+              currentUserId: scope.state.currentUserId,
             ),
       ),
     );

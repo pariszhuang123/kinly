@@ -1,5 +1,7 @@
 import 'dart:io';
 
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 /// Generates a testing pyramid report showing test distribution by type.
 ///
 /// Categories:

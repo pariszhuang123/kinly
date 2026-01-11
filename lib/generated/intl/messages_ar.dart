@@ -550,6 +550,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "preferenceReportTitle": MessageLookupByLibrary.simpleMessage(
       "Your preference report",
     ),
+    "preferenceReportViewTitle": MessageLookupByLibrary.simpleMessage(
+      "View preferences",
+    ),
     "preferenceScenarioCleanlinessSharedSpaceOption1":
         MessageLookupByLibrary.simpleMessage(
           "I feel best when things are kept fairly tidy",

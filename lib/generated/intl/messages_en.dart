@@ -577,6 +577,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "preferenceReportTitle": MessageLookupByLibrary.simpleMessage(
       "Your preference report",
     ),
+    "preferenceReportViewTitle": MessageLookupByLibrary.simpleMessage(
+      "View preferences",
+    ),
     "preferenceScenarioCleanlinessSharedSpaceOption1":
         MessageLookupByLibrary.simpleMessage(
           "I feel best when things are kept fairly tidy",
@@ -615,7 +618,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Directly and clearly"),
     "preferenceScenarioCommunicationDirectnessQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "When something small is on your mind, how do you like to say it?",
+          "When someone bring something up to you, how would you prefer to receive it?",
         ),
     "preferenceScenarioConflictResolutionOption1":
         MessageLookupByLibrary.simpleMessage("Taking time to cool off first"),
@@ -741,7 +744,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Later nights and mornings"),
     "preferenceScenarioScheduleSleepTimingQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "When do you usually feel most in sync with your sleep routine?",
+          "What\'s your sleep wake schedule like?",
         ),
     "preferenceScenarioSocialHostingOption1":
         MessageLookupByLibrary.simpleMessage(

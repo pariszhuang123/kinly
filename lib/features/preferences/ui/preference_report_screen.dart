@@ -119,114 +119,140 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
                   );
                 }
                 final report = state.report!;
-                return KinlyScrollFade(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsetsDirectional.fromSTEB(
-                      spacing?.lg ?? 16,
-                      spacing?.lg ?? 16,
-                      spacing?.lg ?? 16,
-                      spacing?.xl ?? 24,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: KinlyScrollFade(
+                        child: SingleChildScrollView(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                            spacing?.lg ?? 16,
+                            spacing?.lg ?? 16,
+                            spacing?.lg ?? 16,
+                            spacing?.lg ?? 16,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              if (!widget.canEdit) ...[
+                                Text(
+                                  s.preferenceReportReadOnlyNote,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                SizedBox(height: spacing?.m ?? 12),
+                              ],
+                              Text(
+                                report.content.summary.title,
+                                style: theme.textTheme.headlineSmall,
+                              ),
+                              SizedBox(height: spacing?.s ?? 8),
+                              _SubjectHeader(
+                                name: headerName,
+                                avatarUrl: widget.subjectAvatarUrl,
+                              ),
+                              SizedBox(height: spacing?.s ?? 8),
+                              Text(
+                                report.content.summary.subtitle,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                              SizedBox(height: spacing?.lg ?? 16),
+                              KinlyMasonryGrid(
+                                items: report.content.sections,
+                                builder: (context, section, _, palette) {
+                                  return _PreferenceReportSectionCard(
+                                    section: section,
+                                    accent:
+                                        palette
+                                            .colorForSeed(section.sectionKey)
+                                            .accent,
+                                  );
+                                },
+                                estimateItemHeight: (
+                                  section,
+                                  textTheme,
+                                  spacingTokens,
+                                ) {
+                                  final titleStyle = textTheme.titleMedium;
+                                  final bodyStyle = textTheme.bodyMedium;
+                                  final titleLines = _estimateLineCount(
+                                    section.title,
+                                    titleStyle?.fontSize ?? 16,
+                                  );
+                                  final bodyLines = _estimateLineCount(
+                                    section.text,
+                                    bodyStyle?.fontSize ?? 14,
+                                  );
+                                  final lineHeightTitle =
+                                      (titleStyle?.height ?? 1.2) *
+                                      (titleStyle?.fontSize ?? 16);
+                                  final lineHeightBody =
+                                      (bodyStyle?.height ?? 1.2) *
+                                      (bodyStyle?.fontSize ?? 14);
+                                  return (spacingTokens.lg +
+                                          spacingTokens.m +
+                                          spacingTokens.lg) +
+                                      lineHeightTitle * titleLines +
+                                      spacingTokens.s +
+                                      lineHeightBody * bodyLines +
+                                      spacingTokens.m;
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (!widget.canEdit) ...[
-                          Text(
-                            s.preferenceReportReadOnlyNote,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
+                    SafeArea(
+                      top: false,
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                          spacing?.lg ?? 16,
+                          spacing?.m ?? 12,
+                          spacing?.lg ?? 16,
+                          spacing?.xl ?? 24,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (widget.canEdit) ...[
+                              KinlyFilledButton.text(
+                                fullWidth: true,
+                                label: s.preferenceReportEditCta,
+                                onPressed: () async {
+                                  await context.pushNamed(
+                                    AppRouteNames.preferenceReportEdit,
+                                    extra: {
+                                      'displayName': headerName,
+                                      'avatarUrl': widget.subjectAvatarUrl,
+                                    },
+                                  );
+                                  if (context.mounted) {
+                                    await context
+                                        .read<PreferenceReportCubit>()
+                                        .refresh();
+                                  }
+                                },
+                              ),
+                              SizedBox(height: spacing?.m ?? 12),
+                            ],
+                            KinlyOutlinedButton.text(
+                              fullWidth: true,
+                              label: s.preferenceReportDoneCta,
+                              onPressed: () {
+                                if (widget.popOnDone && context.canPop()) {
+                                  context.pop();
+                                  return;
+                                }
+                                context.goNamed(AppRouteNames.today);
+                              },
                             ),
-                          ),
-                          SizedBox(height: spacing?.m ?? 12),
-                        ],
-                        Text(
-                          report.content.summary.title,
-                          style: theme.textTheme.headlineSmall,
+                          ],
                         ),
-                        SizedBox(height: spacing?.s ?? 8),
-                        _SubjectHeader(
-                          name: headerName,
-                          avatarUrl: widget.subjectAvatarUrl,
-                        ),
-                        SizedBox(height: spacing?.s ?? 8),
-                        Text(
-                          report.content.summary.subtitle,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        SizedBox(height: spacing?.lg ?? 16),
-                        KinlyMasonryGrid(
-                          items: report.content.sections,
-                          builder: (context, section, _, palette) {
-                            return _PreferenceReportSectionCard(
-                              section: section,
-                              accent:
-                                  palette
-                                      .colorForSeed(section.sectionKey)
-                                      .accent,
-                            );
-                          },
-                          estimateItemHeight: (
-                            section,
-                            textTheme,
-                            spacingTokens,
-                          ) {
-                            final titleStyle = textTheme.titleMedium;
-                            final bodyStyle = textTheme.bodyMedium;
-                            final titleLines = _estimateLineCount(
-                              section.title,
-                              titleStyle?.fontSize ?? 16,
-                            );
-                            final bodyLines = _estimateLineCount(
-                              section.text,
-                              bodyStyle?.fontSize ?? 14,
-                            );
-                            final lineHeightTitle =
-                                (titleStyle?.height ?? 1.2) *
-                                (titleStyle?.fontSize ?? 16);
-                            final lineHeightBody =
-                                (bodyStyle?.height ?? 1.2) *
-                                (bodyStyle?.fontSize ?? 14);
-                            return (spacingTokens.lg +
-                                    spacingTokens.m +
-                                    spacingTokens.lg) +
-                                lineHeightTitle * titleLines +
-                                spacingTokens.s +
-                                lineHeightBody * bodyLines +
-                                spacingTokens.m;
-                          },
-                        ),
-                        SizedBox(height: spacing?.lg ?? 16),
-                        if (widget.canEdit) ...[
-                          KinlyFilledButton.text(
-                            fullWidth: true,
-                            label: s.preferenceReportEditCta,
-                            onPressed: () async {
-                              await context.pushNamed(
-                                AppRouteNames.preferenceReportEdit,
-                              );
-                              if (context.mounted) {
-                                await context
-                                    .read<PreferenceReportCubit>()
-                                    .refresh();
-                              }
-                            },
-                          ),
-                          SizedBox(height: spacing?.m ?? 12),
-                        ],
-                        KinlyOutlinedButton.text(
-                          fullWidth: true,
-                          label: s.preferenceReportDoneCta,
-                          onPressed: () {
-                            if (widget.popOnDone && context.canPop()) {
-                              context.pop();
-                              return;
-                            }
-                            context.goNamed(AppRouteNames.today);
-                          },
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 );
               },
             ),
@@ -283,6 +309,50 @@ class _PreferenceReportSectionCard extends StatelessWidget {
           Text(section.text, style: theme.textTheme.bodyMedium),
         ],
       ),
+    );
+  }
+}
+
+class _SubjectHeader extends StatelessWidget {
+  const _SubjectHeader({required this.name, this.avatarUrl});
+
+  final String name;
+  final String? avatarUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    final colors = theme.colorScheme;
+    final spacing = theme.extension<Spacing>();
+    final hasAvatar = avatarUrl != null && avatarUrl!.isNotEmpty;
+
+    return Row(
+      children: [
+        Container(
+          height: 44,
+          width: 44,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: colors.primary.withValues(alpha: 0.16),
+            image:
+                hasAvatar
+                    ? DecorationImage(
+                      image: NetworkImage(avatarUrl!),
+                      fit: BoxFit.cover,
+                    )
+                    : null,
+          ),
+          child:
+              hasAvatar
+                  ? null
+                  : Icon(
+                    KinlyIcons.selfImprovementRounded,
+                    color: colors.primary,
+                  ),
+        ),
+        SizedBox(width: spacing?.sm ?? 8),
+        Expanded(child: Text(name, style: theme.textTheme.titleMedium)),
+      ],
     );
   }
 }
@@ -355,50 +425,6 @@ class _DirectionalBackButton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _SubjectHeader extends StatelessWidget {
-  const _SubjectHeader({required this.name, this.avatarUrl});
-
-  final String name;
-  final String? avatarUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final colors = theme.colorScheme;
-    final spacing = theme.extension<Spacing>();
-    final hasAvatar = avatarUrl != null && avatarUrl!.isNotEmpty;
-
-    return Row(
-      children: [
-        Container(
-          height: 44,
-          width: 44,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: colors.primary.withValues(alpha: 0.16),
-            image:
-                hasAvatar
-                    ? DecorationImage(
-                      image: NetworkImage(avatarUrl!),
-                      fit: BoxFit.cover,
-                    )
-                    : null,
-          ),
-          child:
-              hasAvatar
-                  ? null
-                  : Icon(
-                    KinlyIcons.selfImprovementRounded,
-                    color: colors.primary,
-                  ),
-        ),
-        SizedBox(width: spacing?.sm ?? 8),
-        Expanded(child: Text(name, style: theme.textTheme.titleMedium)),
-      ],
     );
   }
 }

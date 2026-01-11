@@ -11,43 +11,103 @@ import 'package:kinly/core/ui/kinly_scaffold.dart';
 import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
+import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/generated/l10n.dart';
 import '../bloc/preference_report_cubit.dart';
 import 'preference_report_section_route_args.dart';
 import 'package:kinly/contracts/preferences/models.dart';
 
 class PreferenceReportEditScreen extends StatelessWidget {
-  const PreferenceReportEditScreen({super.key});
+  const PreferenceReportEditScreen({
+    super.key,
+    this.subjectDisplayName,
+    this.subjectAvatarUrl,
+    this.canEdit = true,
+  });
+
+  final String? subjectDisplayName;
+  final String? subjectAvatarUrl;
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
     final s = S.of(context);
+    final headerName =
+        subjectDisplayName?.isNotEmpty == true
+            ? subjectDisplayName!
+            : s.friendDefaultName;
 
     return KinlyScaffold(
       appBar: KinlyAppBar(
-        title: Text(s.preferenceReportEditTitle),
+        title: Text(
+          canEdit
+              ? s.preferenceReportEditTitle
+              : s.preferenceReportViewTitle,
+        ),
         leading: _DirectionalBackButton(
           label: s.preferenceOnboardingBack,
-          onTap: () => context.pop(),
+          onTap: () => context.goNamed(AppRouteNames.hub),
         ),
       ),
-      body: SafeArea(
-        child: BlocBuilder<PreferenceReportCubit, PreferenceReportState>(
-          builder: (context, state) {
-            if (state.status == PreferenceReportStatus.loading) {
-              return const Center(child: KinlyLoader());
-            }
-            if (state.report == null) {
-              return Center(child: Text(s.preferenceReportEmptyTitle));
-            }
-            return _PreferenceEditGrid(
-              sections: state.report!.content.sections,
-              spacing: spacing,
-              onSectionTap: (section) => _handleSectionTap(context, section),
-            );
-          },
+      body: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
+          if (context.mounted) {
+            context.goNamed(AppRouteNames.hub);
+          }
+        },
+        child: SafeArea(
+          child: BlocBuilder<PreferenceReportCubit, PreferenceReportState>(
+            builder: (context, state) {
+              if (state.status == PreferenceReportStatus.loading) {
+                return const Center(child: KinlyLoader());
+              }
+              if (state.report == null) {
+                return Center(child: Text(s.preferenceReportEmptyTitle));
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(
+                      spacing?.lg ?? 16,
+                      spacing?.lg ?? 16,
+                      spacing?.lg ?? 16,
+                      spacing?.m ?? 12,
+                    ),
+                    child: _SubjectHeader(
+                      name: headerName,
+                      avatarUrl: subjectAvatarUrl,
+                    ),
+                  ),
+                  Expanded(
+                    child: KinlyScrollFade(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                          spacing?.lg ?? 16,
+                          0,
+                          spacing?.lg ?? 16,
+                          spacing?.xl ?? 24,
+                        ),
+                        child: _PreferenceEditGrid(
+                          sections: state.report!.content.sections,
+                          spacing: spacing,
+                          canEdit: canEdit,
+                          onSectionTap: (section) => _handleSectionTap(
+                            context,
+                            section,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -76,54 +136,52 @@ class _PreferenceEditGrid extends StatelessWidget {
   const _PreferenceEditGrid({
     required this.sections,
     required this.spacing,
+    required this.canEdit,
     required this.onSectionTap,
   });
 
   final List<PreferenceReportSection> sections;
   final Spacing? spacing;
+  final bool canEdit;
   final void Function(PreferenceReportSection section) onSectionTap;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(
-        spacing?.lg ?? 16,
-        spacing?.lg ?? 16,
-        spacing?.lg ?? 16,
-        spacing?.xl ?? 24,
-      ),
-      child: KinlyMasonryGrid(
-        items: sections,
+    return KinlyMasonryGrid(
+      items: sections,
         builder: (context, section, _, palette) {
           return _PreferenceEditCard(
             title: section.title,
             text: section.text,
-            onTap: () => onSectionTap(section),
+            onTap:
+                () {
+                  if (!canEdit) return;
+                  onSectionTap(section);
+                },
             accent: palette.colorForSeed(section.sectionKey).accent,
           );
         },
-        estimateItemHeight: (section, textTheme, spacingTokens) {
-          final titleStyle = textTheme.titleMedium;
-          final bodyStyle = textTheme.bodyMedium;
-          final titleLines = _estimateLineCount(
-            section.title,
-            titleStyle?.fontSize ?? 16,
-          );
-          final bodyLines = _estimateLineCount(
-            section.text,
-            bodyStyle?.fontSize ?? 14,
-          );
-          final lineHeightTitle =
-              (titleStyle?.height ?? 1.2) * (titleStyle?.fontSize ?? 16);
-          final lineHeightBody =
-              (bodyStyle?.height ?? 1.2) * (bodyStyle?.fontSize ?? 14);
-          return (spacingTokens.lg + spacingTokens.m + spacingTokens.lg) +
-              lineHeightTitle * titleLines +
-              spacingTokens.s +
-              lineHeightBody * bodyLines +
-              spacingTokens.m;
-        },
-      ),
+      estimateItemHeight: (section, textTheme, spacingTokens) {
+        final titleStyle = textTheme.titleMedium;
+        final bodyStyle = textTheme.bodyMedium;
+        final titleLines = _estimateLineCount(
+          section.title,
+          titleStyle?.fontSize ?? 16,
+        );
+        final bodyLines = _estimateLineCount(
+          section.text,
+          bodyStyle?.fontSize ?? 14,
+        );
+        final lineHeightTitle =
+            (titleStyle?.height ?? 1.2) * (titleStyle?.fontSize ?? 16);
+        final lineHeightBody =
+            (bodyStyle?.height ?? 1.2) * (bodyStyle?.fontSize ?? 14);
+        return (spacingTokens.lg + spacingTokens.m + spacingTokens.lg) +
+            lineHeightTitle * titleLines +
+            spacingTokens.s +
+            lineHeightBody * bodyLines +
+            spacingTokens.m;
+      },
     );
   }
 }
@@ -208,6 +266,50 @@ class _DirectionalBackButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SubjectHeader extends StatelessWidget {
+  const _SubjectHeader({required this.name, this.avatarUrl});
+
+  final String name;
+  final String? avatarUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    final colors = theme.colorScheme;
+    final spacing = theme.extension<Spacing>();
+    final hasAvatar = avatarUrl != null && avatarUrl!.isNotEmpty;
+
+    return Row(
+      children: [
+        Container(
+          height: 44,
+          width: 44,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: colors.primary.withValues(alpha: 0.16),
+            image:
+                hasAvatar
+                    ? DecorationImage(
+                      image: NetworkImage(avatarUrl!),
+                      fit: BoxFit.cover,
+                    )
+                    : null,
+          ),
+          child:
+              hasAvatar
+                  ? null
+                  : Icon(
+                    KinlyIcons.selfImprovementRounded,
+                    color: colors.primary,
+                  ),
+        ),
+        SizedBox(width: spacing?.sm ?? 8),
+        Expanded(child: Text(name, style: theme.textTheme.titleMedium)),
+      ],
     );
   }
 }

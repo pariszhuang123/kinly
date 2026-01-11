@@ -93,12 +93,32 @@ List<GoRoute> buildPreferenceRoutes({
     GoRoute(
       path: AppRoutePaths.preferenceReportEdit,
       name: AppRouteNames.preferenceReportEdit,
-      builder: (_, __) {
+      builder: (_, state) {
         final membership = resolveContext();
+        String? displayName;
+        String? avatarUrl;
+        bool canEdit = true;
+        String subjectUserId = membership.userId;
+        final extra = state.extra;
+        if (extra is Map) {
+          displayName = extra['displayName'] as String?;
+          avatarUrl = extra['avatarUrl'] as String?;
+          final override = extra['canEdit'] as bool?;
+          if (override == false) {
+            canEdit = false;
+          }
+          final subjectOverride = extra['subjectUserId'] as String?;
+          if (subjectOverride != null && subjectOverride.isNotEmpty) {
+            subjectUserId = subjectOverride;
+          }
+        }
         return PreferenceReportEditProvider(
           homeId: membership.homeId,
-          subjectUserId: membership.userId,
+          subjectUserId: subjectUserId,
           repository: sl<PreferenceReportsRepository>(),
+          subjectDisplayName: displayName,
+          subjectAvatarUrl: avatarUrl,
+          canEdit: canEdit,
         );
       },
     ),

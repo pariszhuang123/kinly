@@ -11,11 +11,17 @@ class PreferenceReportEditProvider extends StatelessWidget {
     required this.homeId,
     required this.subjectUserId,
     required this.repository,
+    this.subjectDisplayName,
+    this.subjectAvatarUrl,
+    this.canEdit = true,
   });
 
   final String homeId;
   final String subjectUserId;
   final PreferenceReportsRepository repository;
+  final String? subjectDisplayName;
+  final String? subjectAvatarUrl;
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,11 @@ class PreferenceReportEditProvider extends StatelessWidget {
             homeId: homeId,
             subjectUserId: subjectUserId,
           )..load(),
-      child: const PreferenceReportEditScreen(),
+      child: PreferenceReportEditScreen(
+        subjectDisplayName: subjectDisplayName,
+        subjectAvatarUrl: subjectAvatarUrl,
+        canEdit: canEdit,
+      ),
     );
   }
 }

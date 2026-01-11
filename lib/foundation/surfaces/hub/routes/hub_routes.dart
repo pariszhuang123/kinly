@@ -6,7 +6,7 @@ import 'package:kinly/contracts/preferences/ports/preference_reports_repository.
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/foundation/surfaces/hub/hub_provider.dart';
 import 'package:kinly/foundation/surfaces/hub/routes/hub_preferences_list_route_args.dart';
-import 'package:kinly/foundation/surfaces/hub/widget/hub_preferences_section.dart';
+import 'package:kinly/foundation/surfaces/hub/widget/hub_preferences_list_screen.dart';
 
 class HubRouteContext {
   const HubRouteContext({required this.homeId});
@@ -43,6 +43,7 @@ List<GoRoute> buildHubRoutes({
         return HubPreferencesListScreen(
           members: args.members,
           palette: args.palette,
+          currentUserId: args.currentUserId,
         );
       },
     ),

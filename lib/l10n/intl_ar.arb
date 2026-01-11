@@ -1157,6 +1157,7 @@
   "preferenceReportEditCta": "Edit",
   "preferenceReportDoneCta": "Done",
   "preferenceReportEditTitle": "Edit preferences",
+  "preferenceReportViewTitle": "View preferences",
   "preferenceReportEditSectionPrompt": "Adjust the wording for this section.",
   "preferenceReportEditSectionHint": "Write what feels right for you",
   "preferenceReportEditSectionDone": "Done",
