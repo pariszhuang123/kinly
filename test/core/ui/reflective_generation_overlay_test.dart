@@ -10,8 +10,8 @@ import 'package:kinly/generated/l10n.dart';
 Widget _buildOverlayApp({
   required ReflectiveGenerationMode mode,
   required VoidCallback onCompleted,
-  Duration ack = const Duration(milliseconds: 900),
-  Duration pause = const Duration(milliseconds: 700),
+  Duration ack = const Duration(milliseconds: 500),
+  Duration pause = const Duration(seconds: 2),
 }) {
   return MaterialApp(
     theme: buildKinlyTheme(Brightness.light),
@@ -53,8 +53,8 @@ void main() {
       _buildOverlayApp(
         mode: ReflectiveGenerationMode.personalPreferences,
         onCompleted: () => completed = true,
-        ack: const Duration(milliseconds: 900),
-        pause: const Duration(milliseconds: 700),
+        ack: const Duration(milliseconds: 500),
+        pause: const Duration(seconds: 2),
       ),
     );
 
@@ -62,13 +62,13 @@ void main() {
     expect(find.text(S.current.reflectiveAcknowledgementTitle), findsOneWidget);
     expect(find.text(S.current.reflectivePersonalSecondary), findsNothing);
 
-    await tester.pump(const Duration(milliseconds: 950));
+    await tester.pump(const Duration(milliseconds: 1200));
 
     // Pause phase with secondary visible
     expect(find.text(S.current.reflectivePersonalPrimary), findsOneWidget);
     expect(find.text(S.current.reflectivePersonalSecondary), findsOneWidget);
 
-    await tester.pump(const Duration(milliseconds: 900));
+    await tester.pump(const Duration(milliseconds: 1400));
     expect(completed, isTrue);
   });
 }
