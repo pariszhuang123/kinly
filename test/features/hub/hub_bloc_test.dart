@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/contracts/preferences/models.dart';
+import 'package:kinly/contracts/preferences/ports/house_vibe_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/features/home/home.dart';
@@ -14,12 +15,15 @@ class _MockHomeRepository extends Mock implements HomeRepository {}
 class _MockPreferenceReportsRepository extends Mock
     implements PreferenceReportsRepository {}
 
+class _MockHouseVibeRepository extends Mock implements HouseVibeRepository {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   const homeId = 'home-1';
   late HomeRepository homeRepository;
   late PreferenceReportsRepository preferenceReportsRepository;
+  late HouseVibeRepository houseVibeRepository;
 
   final membership = CurrentMembership(
     userId: 'user-1',
@@ -52,9 +56,24 @@ void main() {
     lastEditedAt: null,
   );
 
+  final houseVibe = HouseVibePayload(
+    homeId: homeId,
+    mappingVersion: 'v1',
+    labelId: 'default_home',
+    titleKey: 'vibe.default.title',
+    summaryKey: 'vibe.default.summary',
+    imageKey: 'vibe_default_v1',
+    ui: const {},
+    coverage: const HouseVibeCoverage(answered: 2, total: 2),
+  );
+
   setUp(() {
     homeRepository = _MockHomeRepository();
     preferenceReportsRepository = _MockPreferenceReportsRepository();
+    houseVibeRepository = _MockHouseVibeRepository();
+    when(
+      () => houseVibeRepository.getHomeVibe(homeId: homeId),
+    ).thenAnswer((_) async => houseVibe);
   });
 
   blocTest<HubBloc, HubState>(
@@ -94,6 +113,7 @@ void main() {
       return HubBloc(
         homeRepository: homeRepository,
         preferenceReportsRepository: preferenceReportsRepository,
+        houseVibeRepository: houseVibeRepository,
         homeId: homeId,
         logger: const DebugLogger(),
       );
@@ -156,6 +176,7 @@ void main() {
       return HubBloc(
         homeRepository: homeRepository,
         preferenceReportsRepository: preferenceReportsRepository,
+        houseVibeRepository: houseVibeRepository,
         homeId: homeId,
         logger: const DebugLogger(),
       );
@@ -204,6 +225,7 @@ void main() {
       return HubBloc(
         homeRepository: homeRepository,
         preferenceReportsRepository: preferenceReportsRepository,
+        houseVibeRepository: houseVibeRepository,
         homeId: homeId,
         logger: const DebugLogger(),
       );

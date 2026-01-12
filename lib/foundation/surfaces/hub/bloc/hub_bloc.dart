@@ -5,6 +5,7 @@ import 'package:kinly/core/config/app_config.dart';
 import 'package:kinly/core/platform/platform_info.dart';
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/contracts/preferences/models.dart';
+import 'package:kinly/contracts/preferences/ports/house_vibe_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/logging/logger.dart';
@@ -18,10 +19,12 @@ class HubBloc extends Bloc<HubEvent, HubState> {
   HubBloc({
     required HomeRepository homeRepository,
     required PreferenceReportsRepository preferenceReportsRepository,
+    required HouseVibeRepository houseVibeRepository,
     required String homeId,
     Logger? logger,
   }) : _homeRepository = homeRepository,
        _preferenceReportsRepository = preferenceReportsRepository,
+       _houseVibeRepository = houseVibeRepository,
        _homeId = homeId,
        _logger = logger ?? const DebugLogger(),
        super(HubState.initial(appLink: _resolveAppLink())) {
@@ -35,6 +38,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
 
   final HomeRepository _homeRepository;
   final PreferenceReportsRepository _preferenceReportsRepository;
+  final HouseVibeRepository _houseVibeRepository;
   final String _homeId;
   final Logger _logger;
 
@@ -157,6 +161,18 @@ class HubBloc extends Bloc<HubEvent, HubState> {
       );
     }
 
+    HouseVibePayload? houseVibe;
+    try {
+      houseVibe = await _houseVibeRepository.getHomeVibe(homeId: _homeId);
+    } catch (error, stack) {
+      _logger.warn(
+        'Failed to load house vibe',
+        error: error,
+        stackTrace: stack,
+        tag: 'Hub',
+      );
+    }
+
     HomeInvite? invite;
     String? inviteLink;
 
@@ -197,6 +213,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
         members: members,
         preferenceReports: preferenceReports,
         currentUserId: currentUserId ?? '',
+        houseVibe: houseVibe,
         invite: invite,
         inviteLink: inviteLink,
         isRefreshing: false,

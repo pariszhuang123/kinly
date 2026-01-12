@@ -1,7 +1,7 @@
 # Architecture Report
 
 - **Modules**: 57
-- **DI Registrations**: 11
+- **DI Registrations**: 12
 
 ## Modules List
 - app.di

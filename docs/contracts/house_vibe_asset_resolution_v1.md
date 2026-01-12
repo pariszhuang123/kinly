@@ -12,13 +12,13 @@ Define a deterministic, offline asset resolution rule for House Vibe illustratio
 ## Resolution Rule
 
 ```
-assets/house_vibes/{mapping_version}/{image_key}.png
+assets/house_vibes/{mapping_version}/{image_key}.webp
 ```
 
 Example:
 - `mapping_version = v1`
 - `image_key = vibe_social_v1`
-- Resolved asset: `assets/house_vibes/v1/vibe_social_v1.png`
+- Resolved asset: `assets/house_vibes/v1/vibe_social_v1.webp`
 
 ## Constraints
 
@@ -26,4 +26,5 @@ Example:
 - No network calls are allowed for vibe illustrations.
 - Backend never returns asset paths or URLs.
 - Client is responsible for resolving assets using the rule above and bundling them with the app.
+- Asset bundle must include `assets/house_vibes/` in `pubspec.yaml`.
 - Mapping version is explicit; switching versions requires new assets in the corresponding folder.

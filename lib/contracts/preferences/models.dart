@@ -178,3 +178,61 @@ class PreferenceTemplateResolution {
     );
   }
 }
+
+class HouseVibeCoverage {
+  const HouseVibeCoverage({required this.answered, required this.total});
+
+  final int answered;
+  final int total;
+
+  factory HouseVibeCoverage.fromJson(Map<String, dynamic> json) {
+    return HouseVibeCoverage(
+      answered: json['answered'] as int? ?? 0,
+      total: json['total'] as int? ?? 0,
+    );
+  }
+}
+
+class HouseVibePayload {
+  const HouseVibePayload({
+    required this.homeId,
+    required this.mappingVersion,
+    required this.labelId,
+    required this.titleKey,
+    required this.summaryKey,
+    required this.imageKey,
+    required this.ui,
+    required this.coverage,
+  });
+
+  final String homeId;
+  final String mappingVersion;
+  final String labelId;
+  final String titleKey;
+  final String summaryKey;
+  final String imageKey;
+  final Map<String, dynamic> ui;
+  final HouseVibeCoverage coverage;
+
+  factory HouseVibePayload.fromJson(Map<String, dynamic> json) {
+    final coverageRaw = json['coverage'];
+    final coverageMap =
+        coverageRaw is Map
+            ? coverageRaw.cast<String, dynamic>()
+            : const <String, dynamic>{};
+    final uiRaw = json['ui'];
+    final uiMap =
+        uiRaw is Map ? uiRaw.cast<String, dynamic>() : const <String, dynamic>{};
+
+    return HouseVibePayload(
+      homeId: json['home_id'] as String? ?? '',
+      mappingVersion: json['mapping_version'] as String? ?? '',
+      labelId: json['label_id'] as String? ?? '',
+      titleKey: json['title_key'] as String? ?? '',
+      summaryKey: json['summary_key'] as String? ?? '',
+      imageKey: json['image_key'] as String? ?? '',
+      ui: uiMap,
+      coverage: HouseVibeCoverage.fromJson(coverageMap),
+    );
+  }
+}

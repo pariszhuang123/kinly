@@ -33,6 +33,7 @@ void main() {
       members: members,
       preferenceReports: const [],
       currentUserId: 'owner-1',
+      houseVibe: null,
       invite: HomeInvite(
         id: 'invite-1',
         homeId: 'home-1',

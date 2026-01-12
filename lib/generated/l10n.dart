@@ -979,6 +979,221 @@ class S {
     );
   }
 
+  /// `Home Vibe`
+  String get homeVibeTitle {
+    return Intl.message('Home Vibe', name: 'homeVibeTitle', desc: '', args: []);
+  }
+
+  /// `Based on {answered} of {total} members`
+  String homeVibeCoverage(int answered, int total) {
+    return Intl.message(
+      'Based on $answered of $total members',
+      name: 'homeVibeCoverage',
+      desc: '',
+      args: [answered, total],
+    );
+  }
+
+  /// `House vibe`
+  String get houseVibeShareTitle {
+    return Intl.message(
+      'House vibe',
+      name: 'houseVibeShareTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sharing our Kinly house vibe. Download the app: {link}`
+  String houseVibeShareMessage(String link) {
+    return Intl.message(
+      'Sharing our Kinly house vibe. Download the app: $link',
+      name: 'houseVibeShareMessage',
+      desc: '',
+      args: [link],
+    );
+  }
+
+  /// `Couldn't share right now. Please try again.`
+  String get houseVibeShareError {
+    return Intl.message(
+      'Couldn\'t share right now. Please try again.',
+      name: 'houseVibeShareError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share vibe`
+  String get houseVibeShareCta {
+    return Intl.message(
+      'Share vibe',
+      name: 'houseVibeShareCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not enough data yet`
+  String get vibeInsufficientTitle {
+    return Intl.message(
+      'Not enough data yet',
+      name: 'vibeInsufficientTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finish preferences to see your home vibe.`
+  String get vibeInsufficientSummary {
+    return Intl.message(
+      'Finish preferences to see your home vibe.',
+      name: 'vibeInsufficientSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A mixed home`
+  String get vibeMixedTitle {
+    return Intl.message(
+      'A mixed home',
+      name: 'vibeMixedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your home shows a blend of comfort styles across members.`
+  String get vibeMixedSummary {
+    return Intl.message(
+      'Your home shows a blend of comfort styles across members.',
+      name: 'vibeMixedSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A balanced home`
+  String get vibeDefaultTitle {
+    return Intl.message(
+      'A balanced home',
+      name: 'vibeDefaultTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your home feels balanced and easy to share.`
+  String get vibeDefaultSummary {
+    return Intl.message(
+      'Your home feels balanced and easy to share.',
+      name: 'vibeDefaultSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Quiet care`
+  String get vibeQuietCareTitle {
+    return Intl.message(
+      'Quiet care',
+      name: 'vibeQuietCareTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This home often feels best with calmer energy and gentle rhythms.`
+  String get vibeQuietCareSummary {
+    return Intl.message(
+      'This home often feels best with calmer energy and gentle rhythms.',
+      name: 'vibeQuietCareSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Social energy`
+  String get vibeSocialTitle {
+    return Intl.message(
+      'Social energy',
+      name: 'vibeSocialTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This home tends to feel lively, with shared moments and together time.`
+  String get vibeSocialSummary {
+    return Intl.message(
+      'This home tends to feel lively, with shared moments and together time.',
+      name: 'vibeSocialSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Structured rhythm`
+  String get vibeStructuredTitle {
+    return Intl.message(
+      'Structured rhythm',
+      name: 'vibeStructuredTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This home often feels best with clear structure and steady routines.`
+  String get vibeStructuredSummary {
+    return Intl.message(
+      'This home often feels best with clear structure and steady routines.',
+      name: 'vibeStructuredSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Easygoing flow`
+  String get vibeEasygoingTitle {
+    return Intl.message(
+      'Easygoing flow',
+      name: 'vibeEasygoingTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This home tends to feel relaxed and flexible day to day.`
+  String get vibeEasygoingSummary {
+    return Intl.message(
+      'This home tends to feel relaxed and flexible day to day.',
+      name: 'vibeEasygoingSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Independent calm`
+  String get vibeIndependentTitle {
+    return Intl.message(
+      'Independent calm',
+      name: 'vibeIndependentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This home values personal space with gentle connection.`
+  String get vibeIndependentSummary {
+    return Intl.message(
+      'This home values personal space with gentle connection.',
+      name: 'vibeIndependentSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Couldn't load Hub. Please try again.`
   String get hubError {
     return Intl.message(

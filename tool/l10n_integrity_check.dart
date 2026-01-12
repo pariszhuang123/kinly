@@ -22,6 +22,10 @@ import 'dart:io';
 ///   - Injected localization instances:
 ///       class Foo { final S strings; ... }  // supports ANY variable name typed as S
 ///       class Foo { final S s; ... }        // still supported
+///   - Function/method parameters typed as S:
+///       String foo(S s, ...) { ... }
+///       String foo({required S s, S? t}) { ... }
+///
 /// How “unused keys” can be false positives:
 /// - The checker is regex-based; if your project uses a different accessor name
 ///   or injects S with a different variable name, the scanner must recognize it.
@@ -195,8 +199,8 @@ List<_Reference> _extractReferences(String content, String path) {
     }
   }
 
-  // 3) Injected/local fields of type S (widget composition):
-  //    Detect ANY variable/field name typed as S, not just `s`.
+  // 3) Injected/local fields/params of type S (widget composition + helper functions):
+  //    Detect ANY variable/field/parameter name typed as S (or S?).
   final injectedNames = _findTypedSNames(content);
   for (final name in injectedNames) {
     final injectedPattern = RegExp(
@@ -252,7 +256,7 @@ Set<String> _extractAliases(String content) {
 }
 
 Set<String> _findTypedSNames(String content) {
-  // Detect variable/field names typed as `S`.
+  // Detect variable/field/parameter names typed as `S` or `S?`.
   //
   // Matches common forms:
   // - final S s;
@@ -261,14 +265,16 @@ Set<String> _findTypedSNames(String content) {
   // - final S strings = ...
   // - S strings = ...
   // - final S titleStrings, subtitleStrings;  (comma-separated declarations)
+  // - foo(S s, ...)
+  // - foo({required S s, S? t})
   //
-  // We keep this fairly strict (type must be exactly `S`) to avoid treating random
+  // We keep this fairly strict (type must be exactly `S` or `S?`) to avoid treating random
   // `x.key` accesses as l10n.
   final names = <String>{};
 
-  // First match simple single-name declarations.
+  // 1) Fields/locals: single-name declarations.
   final singlePattern = RegExp(
-    r'(^|\s)(?:late\s+)?(?:final\s+)?S\s+([A-Za-z_]\w*)\s*(?=[;=,\)\n])',
+    r'(^|\s)(?:late\s+)?(?:final\s+)?S\??\s+([A-Za-z_]\w*)\s*(?=[;=,\)\n])',
     multiLine: true,
   );
   for (final m in singlePattern.allMatches(content)) {
@@ -276,10 +282,9 @@ Set<String> _findTypedSNames(String content) {
     if (name != null && name.isNotEmpty) names.add(name);
   }
 
-  // Then handle comma-separated declarations:
-  // e.g. "final S a, b, c;"
+  // 2) Fields/locals: comma-separated declarations: "final S a, b, c;"
   final multiPattern = RegExp(
-    r'(^|\s)(?:late\s+)?(?:final\s+)?S\s+([A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)+)\s*(?=[;=\)\n])',
+    r'(^|\s)(?:late\s+)?(?:final\s+)?S\??\s+([A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)+)\s*(?=[;=\)\n])',
     multiLine: true,
   );
   for (final m in multiPattern.allMatches(content)) {
@@ -289,6 +294,24 @@ Set<String> _findTypedSNames(String content) {
       final name = part.trim();
       if (name.isNotEmpty) names.add(name);
     }
+  }
+
+  // 3) Function/method parameters typed as S/S? (positional + named).
+  //
+  // Examples matched:
+  // - foo(S s, int x)
+  // - foo({required S s, int x})
+  // - foo({S? s})
+  // - foo(int x, S s)
+  //
+  // We only capture the identifier after S/S? and optional `required`.
+  final paramPattern = RegExp(
+    r'[\(\{,]\s*(?:required\s+)?S\??\s+([A-Za-z_]\w*)\b',
+    multiLine: true,
+  );
+  for (final m in paramPattern.allMatches(content)) {
+    final name = m.group(1);
+    if (name != null && name.isNotEmpty) names.add(name);
   }
 
   return names;

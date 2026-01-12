@@ -6,6 +6,7 @@ class HubState extends Equatable {
     required this.members,
     required this.preferenceReports,
     required this.currentUserId,
+    required this.houseVibe,
     required this.appLink,
     required this.isOwner,
     this.invite,
@@ -19,6 +20,7 @@ class HubState extends Equatable {
     members: const [],
     preferenceReports: const [],
     currentUserId: '',
+    houseVibe: null,
     invite: null,
     inviteLink: null,
     appLink: appLink,
@@ -29,6 +31,7 @@ class HubState extends Equatable {
   final List<HomeMemberSummary> members;
   final List<PreferenceReportListItem> preferenceReports;
   final String currentUserId;
+  final HouseVibePayload? houseVibe;
   final HomeInvite? invite;
   final String? inviteLink;
   final String appLink;
@@ -49,6 +52,7 @@ class HubState extends Equatable {
     List<HomeMemberSummary>? members,
     List<PreferenceReportListItem>? preferenceReports,
     String? currentUserId,
+    HouseVibePayload? houseVibe,
     HomeInvite? invite,
     bool clearInvite = false,
     String? inviteLink,
@@ -62,6 +66,7 @@ class HubState extends Equatable {
       members: members ?? this.members,
       preferenceReports: preferenceReports ?? this.preferenceReports,
       currentUserId: currentUserId ?? this.currentUserId,
+      houseVibe: houseVibe ?? this.houseVibe,
       invite: clearInvite ? null : (invite ?? this.invite),
       inviteLink: clearInvite ? null : (inviteLink ?? this.inviteLink),
       appLink: appLink ?? this.appLink,
@@ -77,6 +82,7 @@ class HubState extends Equatable {
     members,
     preferenceReports,
     currentUserId,
+    houseVibe,
     invite,
     inviteLink,
     appLink,

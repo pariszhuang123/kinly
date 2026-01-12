@@ -199,6 +199,8 @@ export type Database = {
           notes: string | null
           recurrence: Database["public"]["Enums"]["recurrence_interval"]
           recurrence_cursor: string | null
+          recurrence_every: number | null
+          recurrence_unit: string | null
           start_date: string
           state: Database["public"]["Enums"]["chore_state"]
           updated_at: string
@@ -216,6 +218,8 @@ export type Database = {
           notes?: string | null
           recurrence?: Database["public"]["Enums"]["recurrence_interval"]
           recurrence_cursor?: string | null
+          recurrence_every?: number | null
+          recurrence_unit?: string | null
           start_date?: string
           state?: Database["public"]["Enums"]["chore_state"]
           updated_at?: string
@@ -233,6 +237,8 @@ export type Database = {
           notes?: string | null
           recurrence?: Database["public"]["Enums"]["recurrence_interval"]
           recurrence_cursor?: string | null
+          recurrence_every?: number | null
+          recurrence_unit?: string | null
           start_date?: string
           state?: Database["public"]["Enums"]["chore_state"]
           updated_at?: string
@@ -348,7 +354,11 @@ export type Database = {
           id: string
           next_cycle_date: string
           notes: string | null
-          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_every: number
+          recurrence_interval:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit: string
           split_type: Database["public"]["Enums"]["expense_split_type"]
           start_date: string
           status: Database["public"]["Enums"]["expense_plan_status"]
@@ -364,7 +374,11 @@ export type Database = {
           id?: string
           next_cycle_date: string
           notes?: string | null
-          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_every: number
+          recurrence_interval?:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit: string
           split_type: Database["public"]["Enums"]["expense_split_type"]
           start_date: string
           status?: Database["public"]["Enums"]["expense_plan_status"]
@@ -380,7 +394,11 @@ export type Database = {
           id?: string
           next_cycle_date?: string
           notes?: string | null
-          recurrence_interval?: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_every?: number
+          recurrence_interval?:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit?: string
           split_type?: Database["public"]["Enums"]["expense_split_type"]
           start_date?: string
           status?: Database["public"]["Enums"]["expense_plan_status"]
@@ -457,7 +475,11 @@ export type Database = {
           id: string
           notes: string | null
           plan_id: string | null
-          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_every: number | null
+          recurrence_interval:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit: string | null
           split_type: Database["public"]["Enums"]["expense_split_type"] | null
           start_date: string
           status: Database["public"]["Enums"]["expense_status"]
@@ -473,7 +495,11 @@ export type Database = {
           id?: string
           notes?: string | null
           plan_id?: string | null
-          recurrence_interval?: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_every?: number | null
+          recurrence_interval?:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit?: string | null
           split_type?: Database["public"]["Enums"]["expense_split_type"] | null
           start_date: string
           status?: Database["public"]["Enums"]["expense_status"]
@@ -489,7 +515,11 @@ export type Database = {
           id?: string
           notes?: string | null
           plan_id?: string | null
-          recurrence_interval?: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_every?: number | null
+          recurrence_interval?:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit?: string | null
           split_type?: Database["public"]["Enums"]["expense_split_type"] | null
           start_date?: string
           status?: Database["public"]["Enums"]["expense_status"]
@@ -865,6 +895,184 @@ export type Database = {
           },
         ]
       }
+      house_vibe_labels: {
+        Row: {
+          image_key: string
+          is_active: boolean
+          label_id: string
+          mapping_version: string
+          summary_key: string
+          title_key: string
+          ui: Json
+          updated_at: string
+        }
+        Insert: {
+          image_key: string
+          is_active?: boolean
+          label_id: string
+          mapping_version: string
+          summary_key: string
+          title_key: string
+          ui?: Json
+          updated_at?: string
+        }
+        Update: {
+          image_key?: string
+          is_active?: boolean
+          label_id?: string
+          mapping_version?: string
+          summary_key?: string
+          title_key?: string
+          ui?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "house_vibe_labels_mapping_version_fkey"
+            columns: ["mapping_version"]
+            isOneToOne: false
+            referencedRelation: "house_vibe_versions"
+            referencedColumns: ["mapping_version"]
+          },
+        ]
+      }
+      house_vibe_mapping_effects: {
+        Row: {
+          axis: string
+          created_at: string
+          delta: number
+          mapping_version: string
+          option_index: number
+          preference_id: string
+          weight: number
+        }
+        Insert: {
+          axis: string
+          created_at?: string
+          delta: number
+          mapping_version: string
+          option_index: number
+          preference_id: string
+          weight: number
+        }
+        Update: {
+          axis?: string
+          created_at?: string
+          delta?: number
+          mapping_version?: string
+          option_index?: number
+          preference_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "house_vibe_mapping_effects_mapping_version_fkey"
+            columns: ["mapping_version"]
+            isOneToOne: false
+            referencedRelation: "house_vibe_versions"
+            referencedColumns: ["mapping_version"]
+          },
+          {
+            foreignKeyName: "house_vibe_mapping_effects_preference_id_fkey"
+            columns: ["preference_id"]
+            isOneToOne: false
+            referencedRelation: "preference_taxonomy"
+            referencedColumns: ["preference_id"]
+          },
+          {
+            foreignKeyName: "house_vibe_mapping_effects_preference_id_fkey"
+            columns: ["preference_id"]
+            isOneToOne: false
+            referencedRelation: "preference_taxonomy_active_defs"
+            referencedColumns: ["preference_id"]
+          },
+        ]
+      }
+      house_vibe_versions: {
+        Row: {
+          created_at: string
+          mapping_version: string
+          min_side_count_large: number
+          min_side_count_small: number
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          mapping_version: string
+          min_side_count_large?: number
+          min_side_count_small?: number
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          mapping_version?: string
+          min_side_count_large?: number
+          min_side_count_small?: number
+          status?: string
+        }
+        Relationships: []
+      }
+      house_vibes: {
+        Row: {
+          axes: Json
+          computed_at: string
+          confidence: number
+          coverage_answered: number
+          coverage_total: number
+          home_id: string
+          invalidated_at: string | null
+          label_id: string
+          mapping_version: string
+          out_of_date: boolean
+        }
+        Insert: {
+          axes?: Json
+          computed_at?: string
+          confidence: number
+          coverage_answered: number
+          coverage_total: number
+          home_id: string
+          invalidated_at?: string | null
+          label_id: string
+          mapping_version: string
+          out_of_date?: boolean
+        }
+        Update: {
+          axes?: Json
+          computed_at?: string
+          confidence?: number
+          coverage_answered?: number
+          coverage_total?: number
+          home_id?: string
+          invalidated_at?: string | null
+          label_id?: string
+          mapping_version?: string
+          out_of_date?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_house_vibes_label_version"
+            columns: ["mapping_version", "label_id"]
+            isOneToOne: false
+            referencedRelation: "house_vibe_labels"
+            referencedColumns: ["mapping_version", "label_id"]
+          },
+          {
+            foreignKeyName: "house_vibes_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "house_vibes_mapping_version_fkey"
+            columns: ["mapping_version"]
+            isOneToOne: false
+            referencedRelation: "house_vibe_versions"
+            referencedColumns: ["mapping_version"]
+          },
+        ]
+      }
       invites: {
         Row: {
           code: string
@@ -896,6 +1104,54 @@ export type Database = {
             columns: ["home_id"]
             isOneToOne: false
             referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_cap_join_requests: {
+        Row: {
+          created_at: string
+          home_id: string
+          id: string
+          joiner_user_id: string
+          resolution_notified_at: string | null
+          resolved_at: string | null
+          resolved_payload: Json | null
+          resolved_reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          home_id: string
+          id?: string
+          joiner_user_id: string
+          resolution_notified_at?: string | null
+          resolved_at?: string | null
+          resolved_payload?: Json | null
+          resolved_reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          home_id?: string
+          id?: string
+          joiner_user_id?: string
+          resolution_notified_at?: string | null
+          resolved_at?: string | null
+          resolved_payload?: Json | null
+          resolved_reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_cap_join_requests_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_cap_join_requests_joiner_user_id_fkey"
+            columns: ["joiner_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1015,6 +1271,7 @@ export type Database = {
           reserved_at: string | null
           sent_at: string | null
           status: string
+          token_id: string | null
           updated_at: string
           user_id: string
         }
@@ -1028,6 +1285,7 @@ export type Database = {
           reserved_at?: string | null
           sent_at?: string | null
           status: string
+          token_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -1041,10 +1299,18 @@ export type Database = {
           reserved_at?: string | null
           sent_at?: string | null
           status?: string
+          token_id?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_notification_sends_token_id"
+            columns: ["token_id"]
+            isOneToOne: false
+            referencedRelation: "device_tokens"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notification_sends_user_id_fkey"
             columns: ["user_id"]
@@ -1093,6 +1359,280 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      preference_report_acknowledgements: {
+        Row: {
+          acknowledged_at: string
+          id: string
+          report_id: string
+          viewer_user_id: string
+        }
+        Insert: {
+          acknowledged_at?: string
+          id?: string
+          report_id: string
+          viewer_user_id: string
+        }
+        Update: {
+          acknowledged_at?: string
+          id?: string
+          report_id?: string
+          viewer_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "preference_report_acknowledgements_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "preference_reports"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "preference_report_acknowledgements_viewer_user_id_fkey"
+            columns: ["viewer_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      preference_report_revisions: {
+        Row: {
+          change_summary: string | null
+          content: Json
+          edited_at: string
+          editor_user_id: string
+          id: string
+          report_id: string
+        }
+        Insert: {
+          change_summary?: string | null
+          content: Json
+          edited_at?: string
+          editor_user_id: string
+          id?: string
+          report_id: string
+        }
+        Update: {
+          change_summary?: string | null
+          content?: Json
+          edited_at?: string
+          editor_user_id?: string
+          id?: string
+          report_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "preference_report_revisions_editor_user_id_fkey"
+            columns: ["editor_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "preference_report_revisions_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "preference_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      preference_report_templates: {
+        Row: {
+          body: Json
+          created_at: string
+          id: string
+          locale: string
+          template_key: string
+          updated_at: string
+        }
+        Insert: {
+          body: Json
+          created_at?: string
+          id?: string
+          locale: string
+          template_key: string
+          updated_at?: string
+        }
+        Update: {
+          body?: Json
+          created_at?: string
+          id?: string
+          locale?: string
+          template_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      preference_reports: {
+        Row: {
+          generated_at: string
+          generated_content: Json
+          id: string
+          last_edited_at: string | null
+          last_edited_by: string | null
+          locale: string
+          published_at: string
+          published_content: Json
+          status: string
+          subject_user_id: string
+          template_key: string
+        }
+        Insert: {
+          generated_at?: string
+          generated_content: Json
+          id?: string
+          last_edited_at?: string | null
+          last_edited_by?: string | null
+          locale: string
+          published_at?: string
+          published_content: Json
+          status?: string
+          subject_user_id: string
+          template_key: string
+        }
+        Update: {
+          generated_at?: string
+          generated_content?: Json
+          id?: string
+          last_edited_at?: string | null
+          last_edited_by?: string | null
+          locale?: string
+          published_at?: string
+          published_content?: Json
+          status?: string
+          subject_user_id?: string
+          template_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "preference_reports_last_edited_by_fkey"
+            columns: ["last_edited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "preference_reports_subject_user_id_fkey"
+            columns: ["subject_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      preference_responses: {
+        Row: {
+          captured_at: string
+          option_index: number
+          preference_id: string
+          user_id: string
+        }
+        Insert: {
+          captured_at?: string
+          option_index: number
+          preference_id: string
+          user_id: string
+        }
+        Update: {
+          captured_at?: string
+          option_index?: number
+          preference_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "preference_responses_preference_id_fkey"
+            columns: ["preference_id"]
+            isOneToOne: false
+            referencedRelation: "preference_taxonomy"
+            referencedColumns: ["preference_id"]
+          },
+          {
+            foreignKeyName: "preference_responses_preference_id_fkey"
+            columns: ["preference_id"]
+            isOneToOne: false
+            referencedRelation: "preference_taxonomy_active_defs"
+            referencedColumns: ["preference_id"]
+          },
+          {
+            foreignKeyName: "preference_responses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      preference_taxonomy: {
+        Row: {
+          created_at: string
+          is_active: boolean
+          preference_id: string
+        }
+        Insert: {
+          created_at?: string
+          is_active?: boolean
+          preference_id: string
+        }
+        Update: {
+          created_at?: string
+          is_active?: boolean
+          preference_id?: string
+        }
+        Relationships: []
+      }
+      preference_taxonomy_defs: {
+        Row: {
+          aggregation: string
+          created_at: string
+          description: string
+          domain: string
+          label: string
+          preference_id: string
+          safety_notes: string[]
+          updated_at: string
+          value_keys: string[]
+        }
+        Insert: {
+          aggregation?: string
+          created_at?: string
+          description: string
+          domain: string
+          label?: string
+          preference_id: string
+          safety_notes?: string[]
+          updated_at?: string
+          value_keys: string[]
+        }
+        Update: {
+          aggregation?: string
+          created_at?: string
+          description?: string
+          domain?: string
+          label?: string
+          preference_id?: string
+          safety_notes?: string[]
+          updated_at?: string
+          value_keys?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "preference_taxonomy_defs_preference_id_fkey"
+            columns: ["preference_id"]
+            isOneToOne: true
+            referencedRelation: "preference_taxonomy"
+            referencedColumns: ["preference_id"]
+          },
+          {
+            foreignKeyName: "preference_taxonomy_defs_preference_id_fkey"
+            columns: ["preference_id"]
+            isOneToOne: true
+            referencedRelation: "preference_taxonomy_active_defs"
+            referencedColumns: ["preference_id"]
           },
         ]
       }
@@ -1419,12 +1959,34 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      preference_taxonomy_active_defs: {
+        Row: {
+          aggregation: string | null
+          description: string | null
+          domain: string | null
+          label: string | null
+          preference_id: string | null
+          safety_notes: string[] | null
+          value_keys: string[] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      _assert_active_profile: { Args: never; Returns: undefined }
       _assert_authenticated: { Args: never; Returns: undefined }
       _assert_home_active: { Args: { p_home_id: string }; Returns: undefined }
       _assert_home_member: { Args: { p_home_id: string }; Returns: undefined }
+      _assert_home_owner: { Args: { p_home_id: string }; Returns: undefined }
+      _chore_recurrence_to_every_unit: {
+        Args: {
+          p_recurrence: Database["public"]["Enums"]["recurrence_interval"]
+        }
+        Returns: {
+          recurrence_every: number
+          recurrence_unit: string
+        }[]
+      }
       _chores_base_for_home: {
         Args: { p_home_id: string }
         Returns: {
@@ -1457,7 +2019,11 @@ export type Database = {
           id: string
           notes: string | null
           plan_id: string | null
-          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_every: number | null
+          recurrence_interval:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit: string | null
           split_type: Database["public"]["Enums"]["expense_split_type"] | null
           start_date: string
           status: Database["public"]["Enums"]["expense_status"]
@@ -1475,6 +2041,10 @@ export type Database = {
           p_from: string
           p_interval: Database["public"]["Enums"]["recurrence_interval"]
         }
+        Returns: string
+      }
+      _expense_plan_next_cycle_date_v2: {
+        Args: { p_every: number; p_from: string; p_unit: string }
         Returns: string
       }
       _expense_plans_terminate_for_member_change: {
@@ -1527,6 +2097,42 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      _house_vibe_confidence_kind: {
+        Args: { p_label_id: string }
+        Returns: string
+      }
+      _house_vibes_mark_out_of_date: {
+        Args: { p_home_id: string }
+        Returns: undefined
+      }
+      _member_cap_enqueue_request: {
+        Args: { p_home_id: string; p_joiner_user_id: string }
+        Returns: {
+          created_at: string
+          home_id: string
+          id: string
+          joiner_user_id: string
+          resolution_notified_at: string | null
+          resolved_at: string | null
+          resolved_payload: Json | null
+          resolved_reason: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "member_cap_join_requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      _member_cap_resolve_requests: {
+        Args: {
+          p_home_id: string
+          p_payload?: Json
+          p_reason: string
+          p_request_ids?: string[]
+        }
+        Returns: undefined
       }
       _share_log_event_internal: {
         Args: {
@@ -1593,6 +2199,46 @@ export type Database = {
           notes: string | null
           recurrence: Database["public"]["Enums"]["recurrence_interval"]
           recurrence_cursor: string | null
+          recurrence_every: number | null
+          recurrence_unit: string | null
+          start_date: string
+          state: Database["public"]["Enums"]["chore_state"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "chores"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      chores_create_v2: {
+        Args: {
+          p_assignee_user_id?: string
+          p_expectation_photo_path?: string
+          p_home_id: string
+          p_how_to_video_url?: string
+          p_name: string
+          p_notes?: string
+          p_recurrence_every?: number
+          p_recurrence_unit?: string
+          p_start_date?: string
+        }
+        Returns: {
+          assignee_user_id: string | null
+          completed_at: string | null
+          created_at: string
+          created_by_user_id: string
+          expectation_photo_path: string | null
+          home_id: string
+          how_to_video_url: string | null
+          id: string
+          name: string
+          notes: string | null
+          recurrence: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_cursor: string | null
+          recurrence_every: number | null
+          recurrence_unit: string | null
           start_date: string
           state: Database["public"]["Enums"]["chore_state"]
           updated_at: string
@@ -1648,6 +2294,46 @@ export type Database = {
           notes: string | null
           recurrence: Database["public"]["Enums"]["recurrence_interval"]
           recurrence_cursor: string | null
+          recurrence_every: number | null
+          recurrence_unit: string | null
+          start_date: string
+          state: Database["public"]["Enums"]["chore_state"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "chores"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      chores_update_v2: {
+        Args: {
+          p_assignee_user_id: string
+          p_chore_id: string
+          p_expectation_photo_path?: string
+          p_how_to_video_url?: string
+          p_name: string
+          p_notes?: string
+          p_recurrence_every?: number
+          p_recurrence_unit?: string
+          p_start_date?: string
+        }
+        Returns: {
+          assignee_user_id: string | null
+          completed_at: string | null
+          created_at: string
+          created_by_user_id: string
+          expectation_photo_path: string | null
+          home_id: string
+          how_to_video_url: string | null
+          id: string
+          name: string
+          notes: string | null
+          recurrence: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_cursor: string | null
+          recurrence_every: number | null
+          recurrence_unit: string | null
           start_date: string
           state: Database["public"]["Enums"]["chore_state"]
           updated_at: string
@@ -1671,7 +2357,11 @@ export type Database = {
           id: string
           next_cycle_date: string
           notes: string | null
-          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_every: number
+          recurrence_interval:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit: string
           split_type: Database["public"]["Enums"]["expense_split_type"]
           start_date: string
           status: Database["public"]["Enums"]["expense_plan_status"]
@@ -1697,7 +2387,11 @@ export type Database = {
           id: string
           notes: string | null
           plan_id: string | null
-          recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+          recurrence_every: number | null
+          recurrence_interval:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit: string | null
           split_type: Database["public"]["Enums"]["expense_split_type"] | null
           start_date: string
           status: Database["public"]["Enums"]["expense_status"]
@@ -1731,7 +2425,11 @@ export type Database = {
               id: string
               notes: string | null
               plan_id: string | null
-              recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+              recurrence_every: number | null
+              recurrence_interval:
+                | Database["public"]["Enums"]["recurrence_interval"]
+                | null
+              recurrence_unit: string | null
               split_type:
                 | Database["public"]["Enums"]["expense_split_type"]
                 | null
@@ -1768,7 +2466,11 @@ export type Database = {
               id: string
               notes: string | null
               plan_id: string | null
-              recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+              recurrence_every: number | null
+              recurrence_interval:
+                | Database["public"]["Enums"]["recurrence_interval"]
+                | null
+              recurrence_unit: string | null
               split_type:
                 | Database["public"]["Enums"]["expense_split_type"]
                 | null
@@ -1783,6 +2485,46 @@ export type Database = {
               isSetofReturn: false
             }
           }
+      expenses_create_v2: {
+        Args: {
+          p_amount_cents?: number
+          p_description: string
+          p_home_id: string
+          p_member_ids?: string[]
+          p_notes?: string
+          p_recurrence_every?: number
+          p_recurrence_unit?: string
+          p_split_mode?: Database["public"]["Enums"]["expense_split_type"]
+          p_splits?: Json
+          p_start_date?: string
+        }
+        Returns: {
+          amount_cents: number | null
+          created_at: string
+          created_by_user_id: string
+          description: string
+          fully_paid_at: string | null
+          home_id: string
+          id: string
+          notes: string | null
+          plan_id: string | null
+          recurrence_every: number | null
+          recurrence_interval:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit: string | null
+          split_type: Database["public"]["Enums"]["expense_split_type"] | null
+          start_date: string
+          status: Database["public"]["Enums"]["expense_status"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "expenses"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       expenses_edit:
         | {
             Args: {
@@ -1804,7 +2546,11 @@ export type Database = {
               id: string
               notes: string | null
               plan_id: string | null
-              recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+              recurrence_every: number | null
+              recurrence_interval:
+                | Database["public"]["Enums"]["recurrence_interval"]
+                | null
+              recurrence_unit: string | null
               split_type:
                 | Database["public"]["Enums"]["expense_split_type"]
                 | null
@@ -1841,7 +2587,11 @@ export type Database = {
               id: string
               notes: string | null
               plan_id: string | null
-              recurrence_interval: Database["public"]["Enums"]["recurrence_interval"]
+              recurrence_every: number | null
+              recurrence_interval:
+                | Database["public"]["Enums"]["recurrence_interval"]
+                | null
+              recurrence_unit: string | null
               split_type:
                 | Database["public"]["Enums"]["expense_split_type"]
                 | null
@@ -1856,6 +2606,46 @@ export type Database = {
               isSetofReturn: false
             }
           }
+      expenses_edit_v2: {
+        Args: {
+          p_amount_cents: number
+          p_description: string
+          p_expense_id: string
+          p_member_ids?: string[]
+          p_notes?: string
+          p_recurrence_every?: number
+          p_recurrence_unit?: string
+          p_split_mode?: Database["public"]["Enums"]["expense_split_type"]
+          p_splits?: Json
+          p_start_date?: string
+        }
+        Returns: {
+          amount_cents: number | null
+          created_at: string
+          created_by_user_id: string
+          description: string
+          fully_paid_at: string | null
+          home_id: string
+          id: string
+          notes: string | null
+          plan_id: string | null
+          recurrence_every: number | null
+          recurrence_interval:
+            | Database["public"]["Enums"]["recurrence_interval"]
+            | null
+          recurrence_unit: string | null
+          split_type: Database["public"]["Enums"]["expense_split_type"] | null
+          start_date: string
+          status: Database["public"]["Enums"]["expense_status"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "expenses"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       expenses_get_created_by_me: { Args: { p_home_id: string }; Returns: Json }
       expenses_get_current_owed: { Args: { p_home_id: string }; Returns: Json }
       expenses_get_current_paid_to_me_by_debtor_details: {
@@ -1949,6 +2739,10 @@ export type Database = {
         Args: { p_home_id: string; p_new_owner_id: string }
         Returns: Json
       }
+      house_vibe_compute: {
+        Args: { p_force?: boolean; p_home_id: string; p_include_axes?: boolean }
+        Returns: Json
+      }
       invites_get_active: {
         Args: { p_home_id: string }
         Returns: {
@@ -1971,6 +2765,15 @@ export type Database = {
       is_home_owner: {
         Args: { p_home_id: string; p_user_id?: string }
         Returns: boolean
+      }
+      locale_base: { Args: { p_locale: string }; Returns: string }
+      member_cap_owner_dismiss: {
+        Args: { p_home_id: string }
+        Returns: undefined
+      }
+      member_cap_process_pending: {
+        Args: { p_home_id: string }
+        Returns: undefined
       }
       members_kick: {
         Args: { p_home_id: string; p_target_user_id: string }
@@ -2021,7 +2824,12 @@ export type Database = {
         Returns: undefined
       }
       notifications_reserve_send: {
-        Args: { p_job_run_id: string; p_local_date: string; p_user_id: string }
+        Args: {
+          p_job_run_id: string
+          p_local_date: string
+          p_token_id: string
+          p_user_id: string
+        }
         Returns: string
       }
       notifications_sync_client_state: {
@@ -2114,6 +2922,42 @@ export type Database = {
         Returns: boolean
       }
       paywall_status_get: { Args: { p_home_id: string }; Returns: Json }
+      preference_reports_acknowledge: {
+        Args: { p_report_id: string }
+        Returns: Json
+      }
+      preference_reports_edit_section_text: {
+        Args: {
+          p_change_summary?: string
+          p_locale: string
+          p_new_text: string
+          p_section_key: string
+          p_template_key: string
+        }
+        Returns: Json
+      }
+      preference_reports_generate: {
+        Args: { p_force?: boolean; p_locale: string; p_template_key: string }
+        Returns: Json
+      }
+      preference_reports_get_for_home: {
+        Args: {
+          p_home_id: string
+          p_locale: string
+          p_subject_user_id: string
+          p_template_key: string
+        }
+        Returns: Json
+      }
+      preference_reports_list_for_home: {
+        Args: { p_home_id: string; p_locale: string; p_template_key: string }
+        Returns: Json
+      }
+      preference_responses_submit: { Args: { p_answers: Json }; Returns: Json }
+      preference_templates_get_for_user: {
+        Args: { p_template_key?: string }
+        Returns: Json
+      }
       profile_identity_update: {
         Args: { p_avatar_id: string; p_username: string }
         Returns: {
@@ -2138,6 +2982,7 @@ export type Database = {
       today_flow_list: {
         Args: {
           p_home_id: string
+          p_local_date?: string
           p_state: Database["public"]["Enums"]["chore_state"]
         }
         Returns: {

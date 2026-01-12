@@ -10,6 +10,7 @@ import 'package:kinly/core/ui/kinly_selection_card.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/foundation/surfaces/hub/routes/hub_preferences_list_route_args.dart';
+import '../bloc/hub_bloc.dart';
 
 class HubPreferencesSection extends StatelessWidget {
   const HubPreferencesSection({
@@ -17,11 +18,15 @@ class HubPreferencesSection extends StatelessWidget {
     required this.members,
     required this.reportItems,
     required this.currentUserId,
+    required this.houseVibe,
+    required this.hubBloc,
   });
 
   final List<HomeMemberSummary> members;
   final List<PreferenceReportListItem> reportItems;
   final String currentUserId;
+  final HouseVibePayload? houseVibe;
+  final HubBloc hubBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +75,8 @@ class HubPreferencesSection extends StatelessWidget {
             members: visibleMembers,
             palette: palette,
             currentUserId: currentUserId,
+            houseVibe: houseVibe,
+            hubBloc: hubBloc,
           ),
         );
       },

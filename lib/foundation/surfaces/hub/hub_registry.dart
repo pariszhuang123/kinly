@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/ui/kinly_icons.dart';
 import '../../../core/ui/kinly_selection_card.dart';
+import 'bloc/hub_bloc.dart';
 import 'hub_slots.dart';
 import 'widget/hub_member_section.dart';
 import 'widget/hub_qr_section.dart';
@@ -89,6 +91,8 @@ class HubRegistry {
               members: scope.state.members,
               reportItems: scope.state.preferenceReports,
               currentUserId: scope.state.currentUserId,
+              houseVibe: scope.state.houseVibe,
+              hubBloc: scope.context.read<HubBloc>(),
             ),
       ),
     );

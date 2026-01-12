@@ -8,19 +8,38 @@ import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/ui/reflective_generation/enums/reflective_phase.dart';
 
+/// Kinly goal alignment (why these choices):
+/// - Calm + readable: pause is in seconds, not milliseconds.
+/// - Low-noise: short acknowledgement, then primary lands, then secondary fades in.
+/// - Never feels "stuck": bounded max pause, and completion always fires.
+/// - Deterministic timing: secondary reveal is scheduled *after* pause starts.
 class ReflectiveGenerationOverlay extends StatefulWidget {
   const ReflectiveGenerationOverlay({
     super.key,
     required this.mode,
     required this.onCompleted,
-    this.acknowledgementDuration = const Duration(milliseconds: 250),
-    this.pauseDuration = const Duration(milliseconds: 1150),
+
+    /// Short acknowledgement (e.g. "Got it") before the reflective pause copy.
+    /// Keep this brief so the UI feels responsive.
+    this.acknowledgementDuration = const Duration(milliseconds: 500),
+
+    /// The actual "pause" where users read the primary/secondary copy.
+    /// Defaults to seconds because it should be readable.
+    this.pauseDuration = const Duration(seconds: 4),
+
+    /// How long after the pause begins the secondary line should appear.
+    /// This ensures the primary has "landed" first.
+    this.secondaryAfterPauseDelay,
   });
 
   final ReflectiveGenerationMode mode;
   final VoidCallback onCompleted;
+
   final Duration acknowledgementDuration;
   final Duration pauseDuration;
+
+  /// If null, a Kinly-tuned delay is derived from pauseDuration (calm but not sluggish).
+  final Duration? secondaryAfterPauseDelay;
 
   @override
   State<ReflectiveGenerationOverlay> createState() =>
@@ -30,11 +49,24 @@ class ReflectiveGenerationOverlay extends StatefulWidget {
 class _ReflectiveGenerationOverlayState
     extends State<ReflectiveGenerationOverlay>
     with SingleTickerProviderStateMixin {
+  // Kinly-tuned guardrails.
+  static const Duration _minAck = Duration(milliseconds: 200);
+  static const Duration _maxAck = Duration(seconds: 2);
+  static const Duration _minPause = Duration(seconds: 2);
+  static const Duration _maxPause = Duration(seconds: 10);
+
+  // Breathing tuned to “calm”. (Your old 1200ms can feel twitchy for longer pauses.)
+  static const Duration _breathingPeriod = Duration(milliseconds: 1800);
+  static const double _breathingLower = 0.94;
+  static const double _breathingUpper = 1.0;
+
   late final AnimationController _breathingController;
   late final Animation<double> _breathingScale;
+
   Timer? _ackTimer;
   Timer? _completeTimer;
   Timer? _secondaryTimer;
+
   ReflectivePhase _phase = ReflectivePhase.acknowledge;
   bool _completed = false;
   bool _showSecondary = false;
@@ -45,45 +77,103 @@ class _ReflectiveGenerationOverlayState
   @override
   void initState() {
     super.initState();
+
     assert(
-      _totalDuration.inMilliseconds >= 600 &&
-          _totalDuration.inMilliseconds <= 1800,
-      'Reflective generation duration must be between 600ms and 1800ms.',
+      widget.acknowledgementDuration >= _minAck &&
+          widget.acknowledgementDuration <= _maxAck,
+      'Reflective acknowledgementDuration should be ${_minAck.inMilliseconds}ms–${_maxAck.inSeconds}s.',
     );
+    assert(
+      widget.pauseDuration >= _minPause && widget.pauseDuration <= _maxPause,
+      'Reflective pauseDuration should be ${_minPause.inSeconds}s–${_maxPause.inSeconds}s.',
+    );
+
     _breathingController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
-      lowerBound: 0.92,
-      upperBound: 1.0,
+      duration: _breathingPeriod,
+      lowerBound: _breathingLower,
+      upperBound: _breathingUpper,
     )..repeat(reverse: true);
+
     _breathingScale = CurvedAnimation(
       parent: _breathingController,
       curve: Curves.easeInOut,
     );
+
     _startTimers();
   }
 
   @override
+  void didUpdateWidget(covariant ReflectiveGenerationOverlay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final timingChanged =
+        oldWidget.acknowledgementDuration != widget.acknowledgementDuration ||
+        oldWidget.pauseDuration != widget.pauseDuration ||
+        oldWidget.secondaryAfterPauseDelay != widget.secondaryAfterPauseDelay;
+
+    final modeChanged = oldWidget.mode != widget.mode;
+
+    if (timingChanged || modeChanged) {
+      _reset();
+      _restartTimers();
+    }
+  }
+
+  @override
   void dispose() {
+    _cancelTimers();
+    _breathingController.dispose();
+    super.dispose();
+  }
+
+  void _reset() {
+    _completed = false;
+    _showSecondary = false;
+    _phase = ReflectivePhase.acknowledge;
+  }
+
+  void _restartTimers() {
+    _cancelTimers();
+    _startTimers();
+  }
+
+  void _cancelTimers() {
     _ackTimer?.cancel();
     _completeTimer?.cancel();
     _secondaryTimer?.cancel();
-    _breathingController.dispose();
-    super.dispose();
+    _ackTimer = null;
+    _completeTimer = null;
+    _secondaryTimer = null;
+  }
+
+  // Derived delay so the secondary appears after the primary lands.
+  // For Kinly: calm, readable, not sluggish.
+  Duration _derivedSecondaryAfterPauseDelay(Duration pause) {
+    // About ~20–25% into the pause, clamped to sensible bounds.
+    final ms = (pause.inMilliseconds * 0.22).round().clamp(650, 1100);
+    return Duration(milliseconds: ms);
   }
 
   void _startTimers() {
     _ackTimer = Timer(widget.acknowledgementDuration, () {
       if (!mounted || _completed) return;
+
       setState(() => _phase = ReflectivePhase.pause);
-    });
-    _secondaryTimer = Timer(
-      widget.acknowledgementDuration + const Duration(milliseconds: 320),
-      () {
+
+      // Secondary is scheduled *after* we enter pause phase,
+      // so primary has time to land first.
+      final afterPauseDelay =
+          widget.secondaryAfterPauseDelay ??
+          _derivedSecondaryAfterPauseDelay(widget.pauseDuration);
+
+      _secondaryTimer?.cancel();
+      _secondaryTimer = Timer(afterPauseDelay, () {
         if (!mounted || _completed) return;
         setState(() => _showSecondary = true);
-      },
-    );
+      });
+    });
+
     _completeTimer = Timer(_totalDuration, _complete);
   }
 
@@ -183,7 +273,7 @@ class _ReflectiveGenerationOverlayState
             SizedBox(height: spacing?.s ?? 8),
             AnimatedOpacity(
               opacity: _showSecondary ? 1 : 0,
-              duration: const Duration(milliseconds: 240),
+              duration: const Duration(milliseconds: 260),
               curve: Curves.easeOut,
               child: Text(
                 copy.secondary!,

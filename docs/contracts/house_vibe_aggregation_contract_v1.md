@@ -12,8 +12,8 @@ Aggregate member Personal Preferences into descriptive axes that reflect tendenc
 ## Inputs
 
 - Home membership: current members for an active home (`homes.is_active = true`).
+- Contributors: only current members whose published preferences include **all** preference_ids required by the active `mapping_version` (derived from `house_vibe_mapping_effects`, not hard-coded counts). Partial sets do not contribute.
 - Canonical preferences per member: see `house_vibe_canonical_preference_schema_v1.md`.
-  - Contribution gate: member counts only if they have a published, complete (all 14 answers) preference payload; partial answers do not contribute.
 - Mapping effects: (pref_id, option_index) → axis deltas + weights (versioned, v1).
 
 ## Axes (v1 identifiers)
@@ -44,52 +44,47 @@ Each valid selection may contribute to one or more axes:
 - `weight` is ≥ 0.1, ≤ 3.0. Use mapping defaults; do not invent weights client-side.
 - Mapping rows are versioned; v1 is fixed. Changes require a new mapping_version.
 
-## Aggregation Algorithm (deterministic)
+## Aggregation Algorithm (deterministic; contributors only)
 
 For each axis:
-1. Per-member assignment: sum that member’s (delta × weight) for the axis. If member_sum > 0 → counts positive; if member_sum < 0 → counts negative; else neutral. A member counts toward only one side. Track `positive_member_count` and `negative_member_count` from these assignments.
-2. Compute:
-   - `total_weight = positive_weight + negative_weight`
-   - `net = positive_weight - negative_weight`
-   - `score = (total_weight == 0) ? 0 : net / total_weight` (range [-1, 1], clamp if needed)
-3. Derive lean (precedence: mixed > balanced > leans):
-   - if `total_weight == 0` AND coverage insufficient: `lean = unknown`
-   - else if `positive_member_count >= MIN_SIDE_COUNT` AND `negative_member_count >= MIN_SIDE_COUNT` AND `abs(score) < 0.20`: `lean = mixed`
-   - else if `abs(score) < 0.15` OR (total_weight == 0 AND coverage is sufficient): `lean = balanced`
-   - else if `score > 0`: `lean = leans_high`
-   - else: `lean = leans_low`
-4. Confidence (0–1, rounded to 2 decimals):
-   - `member_ratio = coverage_answered / coverage_total` (0 if total=0)
-   - `strength = abs(score)` (apply `strength = max(strength, 0.15)` when `lean == balanced` and `total_weight > 0`)
-   - `confidence = round(min(1, member_ratio * (0.5 + strength/2)), 2)`
-   - Do not boost confidence for mixed; mixed confidence uses the same formula.
-5. Coverage:
-   - `member_count_total`: active members in the home
-   - `member_count_contributed`: members with published, complete preferences
-   - `coverage_answered`: same as `member_count_contributed`
-   - `coverage_total`: same as `member_count_total`
-6. Constants:
-   - `MIN_SIDE_COUNT` varies with home size:
-     - if `coverage_total <= 3`: require ≥1 member per side
-     - if `coverage_total >= 4`: require ≥2 members per side
+1. Per-contributor score: `member_score = SUM(delta * weight) / SUM(weight)` across that contributor’s rows for the axis (skip if SUM(weight)=0).
+2. Vote assignment per member:
+   - `high` if `member_score > 0.20`
+   - `low` if `member_score < -0.20`
+   - `neutral` otherwise
+3. Count votes: `high_n`, `low_n`, `neutral_n`, `contributed_n` (votes that are not null).
+4. `min_side_count` derives from `house_vibe_versions`: use `min_side_count_small` when total current members ≤ 3; otherwise `min_side_count_large`.
+5. Lean (precedence: mixed > leans > balanced):
+   - `mixed` if `high_n >= min_side_count` AND `low_n >= min_side_count`
+   - `leans_high` if `high_n >= min_side_count` AND `high_n > low_n`
+   - `leans_low` if `low_n >= min_side_count` AND `low_n > high_n`
+   - else `balanced`
+6. Confidence (0–1):
+   - coverage term: `contributed_n / contributor_total` (0 if none)
+   - imbalance term: `abs(high_n - low_n) / (high_n + low_n + neutral_n)` (0 if no votes)
+   - `confidence = min(1, max(0, coverage_term * imbalance_term))`
 
-Outputs per axis:
+Outputs per axis (when requested):
 ```json
 {
   "axis": "energy_level",
-  "lean": "leans_low|leans_high|balanced|mixed|unknown",
-  "score": -0.33,
+  "lean": "balanced|mixed|leans_low|leans_high",
+  "score": -0.33, // per-axis average score, rounded
   "confidence": 0.58,
-  "positive_weight": 2.0,
-  "negative_weight": 3.0,
-  "positive_member_count": 3,
-  "negative_member_count": 2
+  "counts": {
+    "high": 1,
+    "low": 1,
+    "neutral": 0,
+    "contributed": 2,
+    "contributors_total": 2,
+    "total_members": 3
+  }
 }
 ```
 
 ## Stability & Recompute Triggers
 
-- Aggregation uses only current members and their latest canonical preferences. Members with partial preferences (fewer than 14 answered) are excluded from coverage and weight.
+- Aggregation uses only current members and their latest canonical preferences. Members without a complete required set for the active mapping_version are excluded from coverage and weight.
 - Mark House Vibe snapshot `out_of_date = true` when:
   - membership changes (join/leave/transfer owner)
   - preference data updates or taxonomy_version changes

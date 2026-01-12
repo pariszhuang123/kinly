@@ -460,16 +460,12 @@ void main() {
       blocTest<TodayBloc, TodayState>(
         'reloads data on refresh',
         build: () {
-          var callCount = 0;
           when(
             () => choresRepository.listTodayFlow(
               homeId: any(named: 'homeId'),
               state: any(named: 'state'),
             ),
-          ).thenAnswer((_) async {
-            callCount++;
-            return [];
-          });
+          ).thenAnswer((_) async => []);
           return buildBloc();
         },
         act: (bloc) async {

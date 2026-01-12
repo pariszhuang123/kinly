@@ -5,10 +5,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/contracts/preferences/models.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/foundation/surfaces/hub/bloc/hub_bloc.dart';
 import 'package:kinly/foundation/surfaces/hub/widget/hub_preferences_section.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:mocktail/mocktail.dart';
+
+class _MockHubBloc extends Mock implements HubBloc {}
 
 void main() {
+  late HubBloc hubBloc;
+
   Widget wrap(Widget child) {
     return MaterialApp(
       theme: buildKinlyTheme(Brightness.light),
@@ -24,6 +30,7 @@ void main() {
   }
 
   testWidgets('renders member cards when reports exist', (tester) async {
+    hubBloc = _MockHubBloc();
     final members = [
       HomeMemberSummary(
         userId: 'user-1',
@@ -55,6 +62,8 @@ void main() {
           members: members,
           reportItems: reports,
           currentUserId: 'user-1',
+          houseVibe: null,
+          hubBloc: hubBloc,
         ),
       ),
     );

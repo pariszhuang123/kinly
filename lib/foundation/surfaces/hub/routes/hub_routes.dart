@@ -3,6 +3,7 @@ import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
+import 'package:kinly/contracts/preferences/ports/house_vibe_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/foundation/surfaces/hub/hub_provider.dart';
 import 'package:kinly/foundation/surfaces/hub/routes/hub_preferences_list_route_args.dart';
@@ -29,6 +30,7 @@ List<GoRoute> buildHubRoutes({
           homeId: membership.homeId,
           homeRepository: sl<HomeRepository>(),
           preferenceReportsRepository: sl<PreferenceReportsRepository>(),
+          houseVibeRepository: sl<HouseVibeRepository>(),
         );
       },
     ),
@@ -44,6 +46,8 @@ List<GoRoute> buildHubRoutes({
           members: args.members,
           palette: args.palette,
           currentUserId: args.currentUserId,
+          houseVibe: args.houseVibe,
+          hubBloc: args.hubBloc,
         );
       },
     ),

@@ -1236,5 +1236,47 @@
   "preferenceReportGenerationFailed": "We couldn’t finish your preference reflection. Head back and try again.",
   "@preferenceReportReadOnlyNote": {
     "surface": "body"
-  }
+  },
+  "homeVibeTitle": "Home Vibe",
+  "homeVibeCoverage": "Based on {answered} of {total} members",
+  "@homeVibeCoverage": {
+    "placeholders": {
+      "answered": {
+        "type": "int",
+        "example": "3"
+      },
+      "total": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "houseVibeShareTitle": "House vibe",
+  "houseVibeShareMessage": "Sharing our Kinly house vibe. Download the app: {link}",
+  "@houseVibeShareMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://kinly.app"
+      }
+    }
+  },
+  "houseVibeShareError": "Couldn't share right now. Please try again.",
+  "houseVibeShareCta": "Share vibe",
+  "vibeInsufficientTitle": "Not enough data yet",
+  "vibeInsufficientSummary": "Once everyone completes preferences, you'll see your home vibe.",
+  "vibeMixedTitle": "A mixed home",
+  "vibeMixedSummary": "Your home shows a blend of comfort styles across members.",
+  "vibeDefaultTitle": "A balanced home",
+  "vibeDefaultSummary": "Your home leans toward a balanced, easy-to-share vibe.",
+  "vibeQuietCareTitle": "Quiet care",
+  "vibeQuietCareSummary": "This home often feels best with calmer energy and gentle rhythms.",
+  "vibeSocialTitle": "Social energy",
+  "vibeSocialSummary": "This home tends to feel lively, with shared moments and together time.",
+  "vibeStructuredTitle": "Structured rhythm",
+  "vibeStructuredSummary": "This home often feels best with clear structure and steady routines.",
+  "vibeEasygoingTitle": "Easygoing flow",
+  "vibeEasygoingSummary": "This home tends to feel relaxed and flexible day to day.",
+  "vibeIndependentTitle": "Independent calm",
+  "vibeIndependentSummary": "This home leans toward personal space with thoughtful connection."
 }
