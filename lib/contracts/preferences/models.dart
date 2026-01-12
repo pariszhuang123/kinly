@@ -220,7 +220,13 @@ class HouseVibePayload {
         coverageRaw is Map
             ? coverageRaw.cast<String, dynamic>()
             : const <String, dynamic>{};
-    final uiRaw = json['ui'];
+    final presentationRaw = json['presentation'];
+    final presentationMap =
+        presentationRaw is Map
+            ? presentationRaw.cast<String, dynamic>()
+            : const <String, dynamic>{};
+
+    final uiRaw = json['ui'] ?? presentationMap['ui'];
     final uiMap =
         uiRaw is Map ? uiRaw.cast<String, dynamic>() : const <String, dynamic>{};
 
@@ -228,9 +234,18 @@ class HouseVibePayload {
       homeId: json['home_id'] as String? ?? '',
       mappingVersion: json['mapping_version'] as String? ?? '',
       labelId: json['label_id'] as String? ?? '',
-      titleKey: json['title_key'] as String? ?? '',
-      summaryKey: json['summary_key'] as String? ?? '',
-      imageKey: json['image_key'] as String? ?? '',
+      titleKey:
+          (json['title_key'] as String?) ??
+              (presentationMap['title_key'] as String?) ??
+              '',
+      summaryKey:
+          (json['summary_key'] as String?) ??
+              (presentationMap['summary_key'] as String?) ??
+              '',
+      imageKey:
+          (json['image_key'] as String?) ??
+              (presentationMap['image_key'] as String?) ??
+              '',
       ui: uiMap,
       coverage: HouseVibeCoverage.fromJson(coverageMap),
     );

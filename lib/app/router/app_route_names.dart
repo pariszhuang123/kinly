@@ -9,6 +9,7 @@ class AppRouteNames {
   static const today = 'today';
   static const hub = 'hub';
   static const hubPreferencesList = 'hubPreferencesList';
+  static const hubHouseVibeShare = 'hubHouseVibeShare';
   static const explore = 'explore';
   static const flow = 'flow';
   static const flowChoreCreate = 'flowChoreCreate';

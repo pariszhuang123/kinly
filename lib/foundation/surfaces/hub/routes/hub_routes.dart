@@ -6,6 +6,7 @@ import 'package:kinly/contracts/preferences/ports/preference_reports_repository.
 import 'package:kinly/contracts/preferences/ports/house_vibe_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/foundation/surfaces/hub/hub_provider.dart';
+import 'package:kinly/foundation/surfaces/hub/routes/hub_house_vibe_share_route_args.dart';
 import 'package:kinly/foundation/surfaces/hub/routes/hub_preferences_list_route_args.dart';
 import 'package:kinly/foundation/surfaces/hub/widget/hub_preferences_list_screen.dart';
 
@@ -47,6 +48,21 @@ List<GoRoute> buildHubRoutes({
           palette: args.palette,
           currentUserId: args.currentUserId,
           houseVibe: args.houseVibe,
+          hubBloc: args.hubBloc,
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutePaths.hubHouseVibeShare,
+      name: AppRouteNames.hubHouseVibeShare,
+      builder: (_, state) {
+        final args = state.extra as HubHouseVibeShareArgs?;
+        if (args == null) {
+          throw StateError('Hub house vibe share requires args.');
+        }
+        return HouseVibeShareScreen(
+          vibe: args.vibe,
+          palette: args.palette,
           hubBloc: args.hubBloc,
         );
       },

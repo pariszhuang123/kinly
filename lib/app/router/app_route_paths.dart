@@ -10,6 +10,7 @@ class AppRoutePaths {
   static const today = '/today';
   static const hub = '/hub';
   static const hubPreferencesList = '/hub/preferences';
+  static const hubHouseVibeShare = '/hub/house-vibe/share';
   static const explore = '/explore';
   static const flow = '/flow';
   static const flowChoreCreate = '/flow/chore/new';
