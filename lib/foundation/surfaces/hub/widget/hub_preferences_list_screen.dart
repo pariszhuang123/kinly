@@ -2,7 +2,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:kinly/app/router/app_route_names.dart';
@@ -51,6 +50,8 @@ class HubPreferencesListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
+    final sections = theme.extension<KinlySections>();
+    final resolvedPalette = sections?.share ?? palette;
     final s = S.of(context);
 
     return KinlyScaffold(
@@ -69,7 +70,7 @@ class HubPreferencesListScreen extends StatelessWidget {
               if (houseVibe != null) ...[
                 _HouseVibeSection(
                   vibe: houseVibe!,
-                  palette: palette,
+                  palette: resolvedPalette,
                   hubBloc: hubBloc,
                 ),
                 SizedBox(height: spacing.lg),
@@ -125,15 +126,17 @@ class HubPreferencesListScreen extends StatelessWidget {
                             child: Row(
                               children: [
                                 Container(
-                                  height: 48,
-                                  width: 48,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: palette.icon.withValues(alpha: 0.14),
-                                    image:
-                                        avatar.isNotEmpty
-                                            ? DecorationImage(
-                                              image: NetworkImage(avatar),
+                                    height: 48,
+                                    width: 48,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: resolvedPalette.icon.withValues(
+                                        alpha: 0.14,
+                                      ),
+                                      image:
+                                          avatar.isNotEmpty
+                                              ? DecorationImage(
+                                                image: NetworkImage(avatar),
                                               fit: BoxFit.cover,
                                             )
                                             : null,
@@ -142,7 +145,7 @@ class HubPreferencesListScreen extends StatelessWidget {
                                       avatar.isEmpty
                                           ? Icon(
                                             KinlyIcons.selfImprovementRounded,
-                                            color: palette.icon,
+                                            color: resolvedPalette.icon,
                                           )
                                           : null,
                                 ),
@@ -246,6 +249,8 @@ class _HouseVibeCard extends StatelessWidget {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
+    final sections = theme.extension<KinlySections>();
+    final resolvedPalette = sections?.share ?? palette;
 
     final vibeTitle = resolveHouseVibeTitle(s, vibe.titleKey);
     final vibeSummary = resolveHouseVibeSummary(s, vibe.summaryKey);
@@ -263,7 +268,7 @@ class _HouseVibeCard extends StatelessWidget {
 
     return SectionContainer(
       title: s.homeVibeTitle,
-      colors: palette,
+      colors: resolvedPalette,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -277,7 +282,7 @@ class _HouseVibeCard extends StatelessWidget {
                     Text(
                       vibeTitle,
                       style: theme.textTheme.titleLarge?.copyWith(
-                        color: palette.accent,
+                        color: resolvedPalette.accent,
                       ),
                     ),
                     if (vibeSummary.isNotEmpty) ...[
@@ -306,7 +311,7 @@ class _HouseVibeCard extends StatelessWidget {
                 height: 72,
                 width: 72,
                 decoration: BoxDecoration(
-                  color: palette.card,
+                  color: resolvedPalette.card,
                   borderRadius: BorderRadius.circular(18),
                 ),
                 padding: EdgeInsetsDirectional.all(spacing.xs),
@@ -322,7 +327,10 @@ class _HouseVibeCard extends StatelessWidget {
                         'mappingVersion=${vibe.mappingVersion} '
                         'imageKey=${vibe.imageKey} assetPath=$assetPath',
                       );
-                      return Icon(KinlyIcons.brokenImage, color: palette.icon);
+                      return Icon(
+                        KinlyIcons.brokenImage,
+                        color: resolvedPalette.icon,
+                      );
                     },
                   ),
                 ),
@@ -336,7 +344,7 @@ class _HouseVibeCard extends StatelessWidget {
               vertical: spacing.xs,
             ),
             decoration: BoxDecoration(
-              color: palette.card.withValues(alpha: 0.9),
+              color: resolvedPalette.card.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
@@ -439,62 +447,55 @@ class _HouseVibeShareScreenState extends State<HouseVibeShareScreen> {
       labelId: widget.vibe.labelId,
     );
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: resolvedPalette.background,
-        systemNavigationBarColor: resolvedPalette.background,
-        systemNavigationBarDividerColor: resolvedPalette.background,
-      ),
-      child: KinlyScaffold(
-        backgroundColor: resolvedPalette.background,
-        body: ColoredBox(
-          color: resolvedPalette.background,
-          child: RepaintBoundary(
-            key: _repaintKey,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                var width = constraints.maxWidth;
-                var height = width * (16 / 9);
-                if (height > constraints.maxHeight) {
-                  height = constraints.maxHeight;
-                  width = height * (9 / 16);
-                }
+    return KinlyScaffold(
+      backgroundColor: theme.colorScheme.surface,
+      body: ColoredBox(
+        color: theme.colorScheme.surface,
+        child: RepaintBoundary(
+          key: _repaintKey,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              var width = constraints.maxWidth;
+              var height = width * (16 / 9);
+              if (height > constraints.maxHeight) {
+                height = constraints.maxHeight;
+                width = height * (9 / 16);
+              }
 
-                return Center(
-                  child: SizedBox(
-                    width: width,
-                    height: height,
-                    child: ColoredBox(
-                      color: theme.colorScheme.surface,
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.all(spacing.xl),
-                        child: Column(
-                          children: [
-                            const Spacer(),
-                            _HouseVibeShareCard(
-                              vibe: widget.vibe,
-                              palette: resolvedPalette,
-                              assetPath: assetPath,
-                            ),
-                            const Spacer(),
-                          ],
-                        ),
+              return Center(
+                child: SizedBox(
+                  width: width,
+                  height: height,
+                  child: ColoredBox(
+                    color: theme.colorScheme.surface,
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.all(spacing.xl),
+                      child: Column(
+                        children: [
+                          const Spacer(),
+                          _HouseVibeShareCard(
+                            vibe: widget.vibe,
+                            palette: resolvedPalette,
+                            assetPath: assetPath,
+                          ),
+                          const Spacer(),
+                        ],
                       ),
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
-        floatingActionButton: IgnorePointer(
-          ignoring: _isSharing,
-          child: KinlyFab(
-            heroTag: 'house_vibe_share_fab',
-            tooltip: s.houseVibeShareCta,
-            icon: KinlyIcons.iosShareRounded,
-            onPressed: () => _share(context, assetPath),
-          ),
+      ),
+      floatingActionButton: IgnorePointer(
+        ignoring: _isSharing,
+        child: KinlyFab(
+          heroTag: 'house_vibe_share_fab',
+          tooltip: s.houseVibeShareCta,
+          icon: KinlyIcons.iosShareRounded,
+          onPressed: () => _share(context, assetPath),
         ),
       ),
     );
@@ -544,7 +545,7 @@ class _HouseVibeShareCard extends StatelessWidget {
             Text(
               vibeTitle,
               style: theme.textTheme.headlineSmall?.copyWith(
-                color: palette.accent,
+                color: resolvedPalette.accent,
               ),
               textAlign: TextAlign.center,
             ),
