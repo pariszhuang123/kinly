@@ -2,7 +2,7 @@ SET search_path = pgtap, public, auth, extensions;
 
 BEGIN;
 
-SELECT plan(6);
+SELECT plan(8);
 
 CREATE TEMP TABLE tmp_users (
   label   text PRIMARY KEY,
@@ -159,6 +159,80 @@ SELECT is(
   public.house_vibe_compute(current_setting('test.home_id')::uuid, false, false)->>'label_id',
   'insufficient_data',
   'incomplete contributor set falls back to insufficient_data'
+);
+
+-- Cozy social: energy high, noise low, social high -> cozy_social_home
+SET LOCAL ROLE service_role;
+SET LOCAL search_path = public, auth, extensions;
+DELETE FROM public.preference_responses
+WHERE user_id IN (current_setting('test.owner_id')::uuid, current_setting('test.member_id')::uuid);
+
+WITH data(preference_id, owner_opt, member_opt) AS (
+  VALUES
+    ('environment_noise_tolerance', 0, 0),
+    ('environment_light_preference', 2, 2),
+    ('schedule_quiet_hours_preference', 0, 0),
+    ('schedule_sleep_timing', 2, 2),
+    ('environment_scent_sensitivity', 2, 2),
+    ('communication_channel', 2, 2),
+    ('communication_directness', 2, 2),
+    ('cleanliness_shared_space_tolerance', 2, 2),
+    ('privacy_room_entry', 2, 2),
+    ('privacy_notifications', 2, 2),
+    ('social_hosting_frequency', 2, 2),
+    ('social_togetherness', 2, 2),
+    ('routine_planning_style', 2, 2),
+    ('conflict_resolution_style', 2, 2)
+)
+INSERT INTO public.preference_responses (user_id, preference_id, option_index, captured_at)
+SELECT current_setting('test.owner_id')::uuid, preference_id, owner_opt, now() FROM data
+UNION ALL
+SELECT current_setting('test.member_id')::uuid, preference_id, member_opt, now() FROM data;
+
+RESET ROLE;
+SET LOCAL search_path = pgtap, public, auth, extensions;
+
+SELECT is(
+  public.house_vibe_compute(current_setting('test.home_id')::uuid, false, false)->>'label_id',
+  'cozy_social_home',
+  'noise low + social high resolves to cozy_social_home'
+);
+
+-- Warm social: energy balanced, noise balanced, social high -> warm_social_home
+SET LOCAL ROLE service_role;
+SET LOCAL search_path = public, auth, extensions;
+DELETE FROM public.preference_responses
+WHERE user_id IN (current_setting('test.owner_id')::uuid, current_setting('test.member_id')::uuid);
+
+WITH data(preference_id, owner_opt, member_opt) AS (
+  VALUES
+    ('environment_noise_tolerance', 1, 1),
+    ('environment_light_preference', 1, 1),
+    ('schedule_quiet_hours_preference', 2, 2),
+    ('schedule_sleep_timing', 1, 1),
+    ('environment_scent_sensitivity', 2, 2),
+    ('communication_channel', 2, 2),
+    ('communication_directness', 2, 2),
+    ('cleanliness_shared_space_tolerance', 2, 2),
+    ('privacy_room_entry', 2, 2),
+    ('privacy_notifications', 2, 2),
+    ('social_hosting_frequency', 1, 1),
+    ('social_togetherness', 2, 2),
+    ('routine_planning_style', 2, 2),
+    ('conflict_resolution_style', 2, 2)
+)
+INSERT INTO public.preference_responses (user_id, preference_id, option_index, captured_at)
+SELECT current_setting('test.owner_id')::uuid, preference_id, owner_opt, now() FROM data
+UNION ALL
+SELECT current_setting('test.member_id')::uuid, preference_id, member_opt, now() FROM data;
+
+RESET ROLE;
+SET LOCAL search_path = pgtap, public, auth, extensions;
+
+SELECT is(
+  public.house_vibe_compute(current_setting('test.home_id')::uuid, false, false)->>'label_id',
+  'warm_social_home',
+  'social high with neutral energy resolves to warm_social_home'
 );
 
 SELECT * FROM finish();

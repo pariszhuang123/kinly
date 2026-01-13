@@ -6897,7 +6897,6 @@ CREATE OR REPLACE FUNCTION "public"."house_vibe_compute"("p_home_id" "uuid", "p_
 DECLARE
   v_mapping_version text;
   v_min_side int;
-
   v_required_n int;
 
   v_cached public.house_vibes%ROWTYPE;
@@ -6971,7 +6970,6 @@ BEGIN
 
   --------------------------------------------------------------------
   -- Return cached snapshot if not forcing and not out_of_date
-  -- Model B PK guarantees at most one row per (home_id, mapping_version)
   --------------------------------------------------------------------
   SELECT *
     INTO v_cached
@@ -7019,7 +7017,6 @@ BEGIN
 
   --------------------------------------------------------------------
   -- Total current members for this home
-  -- (If you ever add non-counting roles, filter them explicitly here.)
   --------------------------------------------------------------------
   SELECT COUNT(*)
     INTO v_total
@@ -7029,7 +7026,6 @@ BEGIN
 
   --------------------------------------------------------------------
   -- Determine "complete set" requirement for this mapping version
-  -- (Derived from mapping_effects; avoids hard-coded counts.)
   --------------------------------------------------------------------
   SELECT COUNT(DISTINCT me.preference_id)
     INTO v_required_n
@@ -7060,14 +7056,7 @@ BEGIN
   END IF;
 
   --------------------------------------------------------------------
-  -- Contributors + Axes (SINGLE PASS)
-  --
-  -- Fixes:
-  -- - "complete set" is defined ONLY against preferences required by this mapping_version
-  --   (users with extra prefs are not excluded)
-  -- - Axes computed from contributors only
-  -- - Axis confidence coverage term uses contributor denominator (not total members)
-  -- - Avoid scanning preference_responses twice
+  -- Contributors + Axes (single pass)
   --------------------------------------------------------------------
   WITH
   current_members AS (
@@ -7236,7 +7225,7 @@ BEGIN
   v_clean_conf := COALESCE((v_axes #>> '{cleanliness_rhythm,confidence}')::numeric, 0);
 
   --------------------------------------------------------------------
-  -- Deterministic resolution (v1: rely on coverage gates only)
+  -- Deterministic resolution
   --------------------------------------------------------------------
   IF v_total = 0
      OR v_contributed < 2
@@ -7268,26 +7257,30 @@ BEGIN
       v_best_score := -1;
       v_best_label := NULL;
 
-      -- quiet_care_home
-      IF (v_energy_lean = 'leans_low' OR v_noise_lean = 'leans_low')
-         AND NOT (v_social_lean = 'leans_high')
+      -- --------------------------------------------------------------
+      -- SOCIAL VARIANTS (close holes where social is high but energy/noise aren't)
+      -- --------------------------------------------------------------
+
+      -- cozy_social_home: social high + (energy low OR noise low)
+      IF v_social_lean = 'leans_high'
+         AND (v_energy_lean = 'leans_low' OR v_noise_lean = 'leans_low')
       THEN
         SELECT AVG(x)::numeric
           INTO v_candidate_score
         FROM (VALUES
+          (v_social_conf),
           (CASE WHEN v_energy_lean = 'leans_low' THEN v_energy_conf END),
-          (CASE WHEN v_noise_lean  = 'leans_low' THEN v_noise_conf END),
-          (CASE WHEN v_social_lean <> 'leans_high' THEN v_social_conf END)
+          (CASE WHEN v_noise_lean  = 'leans_low' THEN v_noise_conf END)
         ) t(x)
         WHERE x IS NOT NULL;
 
         IF v_candidate_score IS NOT NULL AND v_candidate_score > v_best_score THEN
           v_best_score := v_candidate_score;
-          v_best_label := 'quiet_care_home';
+          v_best_label := 'cozy_social_home';
         END IF;
       END IF;
 
-      -- social_home
+      -- social_home: social high + energy high
       IF v_social_lean = 'leans_high' AND v_energy_lean = 'leans_high' THEN
         v_candidate_score := (v_social_conf + v_energy_conf) / 2;
         IF v_candidate_score > v_best_score THEN
@@ -7295,6 +7288,21 @@ BEGIN
           v_best_label := 'social_home';
         END IF;
       END IF;
+
+      -- warm_social_home: social high + energy not high
+      IF v_social_lean = 'leans_high'
+         AND v_energy_lean <> 'leans_high'
+      THEN
+        v_candidate_score := v_social_conf;
+        IF v_candidate_score > v_best_score THEN
+          v_best_score := v_candidate_score;
+          v_best_label := 'warm_social_home';
+        END IF;
+      END IF;
+
+      -- --------------------------------------------------------------
+      -- STRUCTURE / EASE
+      -- --------------------------------------------------------------
 
       -- structured_home
       IF v_structure_lean = 'leans_high' AND v_clean_lean = 'leans_high' THEN
@@ -7316,6 +7324,10 @@ BEGIN
         END IF;
       END IF;
 
+      -- --------------------------------------------------------------
+      -- INDEPENDENCE / QUIET CARE
+      -- --------------------------------------------------------------
+
       -- independent_home
       IF v_social_lean = 'leans_low'
          AND (v_structure_lean = 'balanced' OR v_structure_lean = 'leans_high')
@@ -7327,24 +7339,72 @@ BEGIN
         END IF;
       END IF;
 
+      -- quiet_care_home: (energy low OR noise low) AND social not high
+      IF (v_energy_lean = 'leans_low' OR v_noise_lean = 'leans_low')
+         AND NOT (v_social_lean = 'leans_high')
+      THEN
+        SELECT AVG(x)::numeric
+          INTO v_candidate_score
+        FROM (VALUES
+          (CASE WHEN v_energy_lean = 'leans_low' THEN v_energy_conf END),
+          (CASE WHEN v_noise_lean  = 'leans_low' THEN v_noise_conf END),
+          (CASE WHEN v_social_lean <> 'leans_high' THEN v_social_conf END)
+        ) t(x)
+        WHERE x IS NOT NULL;
+
+        IF v_candidate_score IS NOT NULL AND v_candidate_score > v_best_score THEN
+          v_best_score := v_candidate_score;
+          v_best_label := 'quiet_care_home';
+        END IF;
+      END IF;
+
+      -- --------------------------------------------------------------
+      -- steady_home: social balanced + not structured/easygoing + action signals
+      -- (lets repair/clean contribute without dominating the whole taxonomy)
+      -- --------------------------------------------------------------
+      IF v_social_lean = 'balanced'
+         AND v_energy_lean <> 'leans_low'
+         AND v_noise_lean <> 'leans_low'
+         AND v_structure_lean <> 'leans_high'   -- avoids structured-like emphasis
+         AND v_structure_lean <> 'leans_low'    -- avoids easygoing via structure low
+         AND v_clean_lean <> 'leans_low'        -- avoids easygoing via clean low
+         AND (v_clean_lean = 'leans_high' OR v_repair_lean = 'leans_high')
+      THEN
+        SELECT AVG(x)::numeric
+          INTO v_candidate_score
+        FROM (VALUES
+          (v_social_conf),
+          (CASE WHEN v_clean_lean = 'leans_high' THEN v_clean_conf END),
+          (CASE WHEN v_repair_lean = 'leans_high' THEN v_repair_conf END)
+        ) t(x)
+        WHERE x IS NOT NULL;
+
+        IF v_candidate_score IS NOT NULL AND v_candidate_score > v_best_score THEN
+          v_best_score := v_candidate_score;
+          v_best_label := 'steady_home';
+        END IF;
+      END IF;
+
+      -- Finalize label
       IF v_best_label IS NULL THEN
         v_label_id := 'default_home';
         v_label_conf := CASE WHEN v_total = 0 THEN 0 ELSE v_ratio END;
       ELSE
         v_label_id := v_best_label;
 
-        IF v_label_id = 'quiet_care_home' THEN
-          SELECT LEAST(1, GREATEST(0, MIN(x)))::numeric
-            INTO v_label_conf
-          FROM (VALUES
-            (CASE WHEN v_energy_lean = 'leans_low' THEN v_energy_conf END),
-            (CASE WHEN v_noise_lean  = 'leans_low' THEN v_noise_conf END),
-            (CASE WHEN v_social_lean <> 'leans_high' THEN v_social_conf END)
-          ) t(x)
-          WHERE x IS NOT NULL;
+        -- Confidence per label (min/least of contributing axes)
+        IF v_label_id = 'cozy_social_home' THEN
+          v_label_conf := LEAST(
+            v_social_conf,
+            CASE WHEN v_energy_lean = 'leans_low' THEN v_energy_conf ELSE 1 END,
+            CASE WHEN v_noise_lean  = 'leans_low' THEN v_noise_conf  ELSE 1 END
+          );
 
         ELSIF v_label_id = 'social_home' THEN
           v_label_conf := LEAST(v_social_conf, v_energy_conf);
+
+        ELSIF v_label_id = 'warm_social_home' THEN
+          v_label_conf := v_social_conf;
 
         ELSIF v_label_id = 'structured_home' THEN
           v_label_conf := LEAST(v_structure_conf, v_clean_conf);
@@ -7354,6 +7414,26 @@ BEGIN
 
         ELSIF v_label_id = 'independent_home' THEN
           v_label_conf := LEAST(v_social_conf, v_structure_conf);
+
+        ELSIF v_label_id = 'quiet_care_home' THEN
+          SELECT LEAST(1, GREATEST(0, MIN(x)))::numeric
+            INTO v_label_conf
+          FROM (VALUES
+            (CASE WHEN v_energy_lean = 'leans_low' THEN v_energy_conf END),
+            (CASE WHEN v_noise_lean  = 'leans_low' THEN v_noise_conf END),
+            (CASE WHEN v_social_lean <> 'leans_high' THEN v_social_conf END)
+          ) t(x)
+          WHERE x IS NOT NULL;
+
+        ELSIF v_label_id = 'steady_home' THEN
+          SELECT LEAST(1, GREATEST(0, MIN(x)))::numeric
+            INTO v_label_conf
+          FROM (VALUES
+            (v_social_conf),
+            (CASE WHEN v_clean_lean = 'leans_high' THEN v_clean_conf END),
+            (CASE WHEN v_repair_lean = 'leans_high' THEN v_repair_conf END)
+          ) t(x)
+          WHERE x IS NOT NULL;
 
         ELSE
           v_label_id := 'default_home';
