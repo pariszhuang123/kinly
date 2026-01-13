@@ -68,6 +68,7 @@ Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directio
 3) Add widget tests (incl. RTL/golden where appropriate). Ensure a11y tests cover 48dp + semantics and reduce-motion where relevant.
 4) Update this doc with API and examples.
 5) Run `check_directionality` and `check_i18n` before landing.
+6) `check_core_ui_primitives_doc` guardrail fails if a new `lib/core/ui/**` primitive is missing here; add it or create a temporary allowlist entry with rationale/expiry in `tool/core_ui_primitives_allowlist.txt`.
 
 ## Known Gaps / Backlog
 - [List planned primitives or refactors here]

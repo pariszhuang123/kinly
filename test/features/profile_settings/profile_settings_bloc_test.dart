@@ -387,4 +387,86 @@ void main() {
       },
     );
   });
+
+  group('ProfileSettingsEvent props equality', () {
+    test('ProfileSettingsStarted equality', () {
+      expect(
+        const ProfileSettingsStarted(),
+        equals(const ProfileSettingsStarted()),
+      );
+      expect(const ProfileSettingsStarted().props, isEmpty);
+    });
+
+    test('ProfileSettingsLeaveRequested equality', () {
+      expect(
+        const ProfileSettingsLeaveRequested(),
+        equals(const ProfileSettingsLeaveRequested()),
+      );
+      expect(const ProfileSettingsLeaveRequested().props, isEmpty);
+    });
+
+    test('ProfileSettingsTransferOwnerRequested equality', () {
+      const e1 = ProfileSettingsTransferOwnerRequested('user-a');
+      const e2 = ProfileSettingsTransferOwnerRequested('user-a');
+      const e3 = ProfileSettingsTransferOwnerRequested('user-b');
+      const e4 = ProfileSettingsTransferOwnerRequested(
+        'user-a',
+        followUp: TransferFollowUp.delete,
+      );
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1, isNot(equals(e4)));
+      expect(e1.props, equals(['user-a', TransferFollowUp.leave]));
+      expect(e4.props, equals(['user-a', TransferFollowUp.delete]));
+    });
+
+    test('ProfileSettingsKickMemberRequested equality', () {
+      const e1 = ProfileSettingsKickMemberRequested('user-a');
+      const e2 = ProfileSettingsKickMemberRequested('user-a');
+      const e3 = ProfileSettingsKickMemberRequested('user-b');
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals(['user-a']));
+    });
+
+    test('ProfileSettingsDeleteRequested equality', () {
+      expect(
+        const ProfileSettingsDeleteRequested(),
+        equals(const ProfileSettingsDeleteRequested()),
+      );
+      expect(const ProfileSettingsDeleteRequested().props, isEmpty);
+    });
+
+    test('ProfileSettingsActionCleared equality', () {
+      expect(
+        const ProfileSettingsActionCleared(),
+        equals(const ProfileSettingsActionCleared()),
+      );
+      expect(const ProfileSettingsActionCleared().props, isEmpty);
+    });
+
+    test('ProfileSettingsUserUpdated equality', () {
+      const user1 = ProfileSettingsUser(
+        displayName: 'Avery',
+        avatarUrl: 'https://example.com/a.png',
+        avatarStoragePath: 'avatars/a.svg',
+      );
+      const user2 = ProfileSettingsUser(
+        displayName: 'Avery',
+        avatarUrl: 'https://example.com/a.png',
+        avatarStoragePath: 'avatars/a.svg',
+      );
+      const user3 = ProfileSettingsUser(
+        displayName: 'Taylor',
+        avatarUrl: 'https://example.com/t.png',
+        avatarStoragePath: 'avatars/t.svg',
+      );
+      const e1 = ProfileSettingsUserUpdated(user1);
+      const e2 = ProfileSettingsUserUpdated(user2);
+      const e3 = ProfileSettingsUserUpdated(user3);
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals([user1]));
+    });
+  });
 }

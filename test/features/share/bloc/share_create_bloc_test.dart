@@ -1403,4 +1403,166 @@ void main() {
       );
     },
   );
+
+  group('ShareCreateEvent props equality', () {
+    test('ShareCreateParticipantsRequested equality', () {
+      expect(
+        const ShareCreateParticipantsRequested(),
+        equals(const ShareCreateParticipantsRequested()),
+      );
+      expect(const ShareCreateParticipantsRequested().props, isEmpty);
+    });
+
+    test('ShareCreateDescriptionChanged equality', () {
+      const e1 = ShareCreateDescriptionChanged('A');
+      const e2 = ShareCreateDescriptionChanged('A');
+      const e3 = ShareCreateDescriptionChanged('B');
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals(['A']));
+    });
+
+    test('ShareCreateAmountChanged equality', () {
+      const e1 = ShareCreateAmountChanged('100');
+      const e2 = ShareCreateAmountChanged('100');
+      const e3 = ShareCreateAmountChanged('200');
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals(['100']));
+    });
+
+    test('ShareCreateSplitModeChanged equality', () {
+      const e1 = ShareCreateSplitModeChanged(ShareSplitMode.equal);
+      const e2 = ShareCreateSplitModeChanged(ShareSplitMode.equal);
+      const e3 = ShareCreateSplitModeChanged(ShareSplitMode.custom);
+      const e4 = ShareCreateSplitModeChanged(null);
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1, isNot(equals(e4)));
+      expect(e1.props, equals([ShareSplitMode.equal]));
+      expect(e4.props, equals([null]));
+    });
+
+    test('ShareCreateNotesChanged equality', () {
+      const e1 = ShareCreateNotesChanged('note');
+      const e2 = ShareCreateNotesChanged('note');
+      const e3 = ShareCreateNotesChanged('other');
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals(['note']));
+    });
+
+    test('ShareCreateStartDateChanged equality', () {
+      final date1 = DateTime(2024, 1, 15);
+      final date2 = DateTime(2024, 1, 15);
+      final date3 = DateTime(2024, 2, 20);
+      final e1 = ShareCreateStartDateChanged(date1);
+      final e2 = ShareCreateStartDateChanged(date2);
+      final e3 = ShareCreateStartDateChanged(date3);
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals([date1]));
+    });
+
+    test('ShareCreateRecurrenceToggled equality', () {
+      const e1 = ShareCreateRecurrenceToggled(true);
+      const e2 = ShareCreateRecurrenceToggled(true);
+      const e3 = ShareCreateRecurrenceToggled(false);
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals([true]));
+    });
+
+    test('ShareCreateRecurrenceEveryChanged equality', () {
+      const e1 = ShareCreateRecurrenceEveryChanged('2');
+      const e2 = ShareCreateRecurrenceEveryChanged('2');
+      const e3 = ShareCreateRecurrenceEveryChanged('3');
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals(['2']));
+    });
+
+    test('ShareCreateRecurrenceUnitChanged equality', () {
+      const e1 = ShareCreateRecurrenceUnitChanged(ExpenseRecurrenceUnit.week);
+      const e2 = ShareCreateRecurrenceUnitChanged(ExpenseRecurrenceUnit.week);
+      const e3 = ShareCreateRecurrenceUnitChanged(ExpenseRecurrenceUnit.month);
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals([ExpenseRecurrenceUnit.week]));
+    });
+
+    test('ShareCreateParticipantToggled equality', () {
+      const e1 = ShareCreateParticipantToggled('user-1', true);
+      const e2 = ShareCreateParticipantToggled('user-1', true);
+      const e3 = ShareCreateParticipantToggled('user-1', false);
+      const e4 = ShareCreateParticipantToggled('user-2', true);
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1, isNot(equals(e4)));
+      expect(e1.props, equals(['user-1', true]));
+    });
+
+    test('ShareCreateCustomAmountChanged equality', () {
+      const e1 = ShareCreateCustomAmountChanged('user-1', '50');
+      const e2 = ShareCreateCustomAmountChanged('user-1', '50');
+      const e3 = ShareCreateCustomAmountChanged('user-1', '75');
+      const e4 = ShareCreateCustomAmountChanged('user-2', '50');
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1, isNot(equals(e4)));
+      expect(e1.props, equals(['user-1', '50']));
+    });
+
+    test('ShareCreateSubmitted equality', () {
+      expect(
+        const ShareCreateSubmitted(),
+        equals(const ShareCreateSubmitted()),
+      );
+      expect(const ShareCreateSubmitted().props, isEmpty);
+    });
+
+    test('ShareCreateDeleted equality', () {
+      expect(
+        const ShareCreateDeleted(),
+        equals(const ShareCreateDeleted()),
+      );
+      expect(const ShareCreateDeleted().props, isEmpty);
+    });
+
+    test('ShareCreatePlanTerminationRequested equality', () {
+      expect(
+        const ShareCreatePlanTerminationRequested(),
+        equals(const ShareCreatePlanTerminationRequested()),
+      );
+      expect(const ShareCreatePlanTerminationRequested().props, isEmpty);
+    });
+
+    test('ShareCreatePaywallOpened equality', () {
+      const e1 = ShareCreatePaywallOpened('req-1');
+      const e2 = ShareCreatePaywallOpened('req-1');
+      const e3 = ShareCreatePaywallOpened('req-2');
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals(['req-1']));
+    });
+
+    test('ShareCreatePaywallResolved equality', () {
+      const outcome1 = PaywallGateOutcome(
+        requestId: 'req-1',
+        action: PaywallRetryAction.submit,
+        status: PaywallGateStatus.granted,
+      );
+      const outcome2 = PaywallGateOutcome(
+        requestId: 'req-2',
+        action: PaywallRetryAction.submit,
+        status: PaywallGateStatus.cancelled,
+      );
+      final e1 = ShareCreatePaywallResolved(outcome1);
+      final e2 = ShareCreatePaywallResolved(outcome1);
+      final e3 = ShareCreatePaywallResolved(outcome2);
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals([outcome1]));
+    });
+  });
 }

@@ -947,4 +947,69 @@ void main() {
       );
     });
   });
+
+  group('TodayEvent props equality', () {
+    test('TodayStarted equality', () {
+      expect(const TodayStarted(), equals(const TodayStarted()));
+      expect(const TodayStarted().props, isEmpty);
+    });
+
+    test('TodayRefreshed equality', () {
+      expect(const TodayRefreshed(), equals(const TodayRefreshed()));
+      expect(const TodayRefreshed().props, isEmpty);
+    });
+
+    test('TodayProfileUpdated equality', () {
+      final profile = UserProfile(
+        userId: 'user-1',
+        username: 'Test User',
+        avatarUrl: null,
+      );
+      final profile2 = UserProfile(
+        userId: 'user-2',
+        username: 'Other User',
+        avatarUrl: null,
+      );
+      final e1 = TodayProfileUpdated(profile);
+      final e2 = TodayProfileUpdated(profile);
+      final e3 = TodayProfileUpdated(profile2);
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals([profile]));
+    });
+
+    test('TodayFlatmateInviteDismissed equality', () {
+      expect(
+        const TodayFlatmateInviteDismissed(),
+        equals(const TodayFlatmateInviteDismissed()),
+      );
+      expect(const TodayFlatmateInviteDismissed().props, isEmpty);
+    });
+
+    test('TodayFlatmateInviteShareLogged equality', () {
+      const e1 = TodayFlatmateInviteShareLogged(channel: 'whatsapp');
+      const e2 = TodayFlatmateInviteShareLogged(channel: 'whatsapp');
+      const e3 = TodayFlatmateInviteShareLogged(channel: 'sms');
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals(['whatsapp']));
+    });
+
+    test('TodayInviteShareLogged equality', () {
+      const e1 = TodayInviteShareLogged(channel: 'whatsapp');
+      const e2 = TodayInviteShareLogged(channel: 'whatsapp');
+      const e3 = TodayInviteShareLogged(channel: 'sms');
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals(['whatsapp']));
+    });
+
+    test('TodayMemberCapDismissed equality', () {
+      expect(
+        const TodayMemberCapDismissed(),
+        equals(const TodayMemberCapDismissed()),
+      );
+      expect(const TodayMemberCapDismissed().props, isEmpty);
+    });
+  });
 }

@@ -99,6 +99,8 @@ graph LR
   core_media --> contracts_media
   core_notifications --> contracts_profile
   core_onboarding --> contracts_onboarding
+  core_ui --> contracts_preferences
+  core_ui --> core_logging
   core_ui --> core_theme
   core_ui --> generated
   features_flow --> app_router
@@ -178,6 +180,7 @@ graph LR
   foundation_surfaces --> core_theme
   foundation_surfaces --> core_ui
   foundation_surfaces --> generated
+  foundation_surfaces --> renderer
   renderer --> contracts_homes
   renderer --> contracts_paywall
   renderer --> contracts_share

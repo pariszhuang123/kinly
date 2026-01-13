@@ -144,6 +144,10 @@ Future<void> main() async {
       'tool/check_theme_tokens.dart',
     ]),
     const _Check('check_modules', 'dart', ['run', 'tool/check_modules.dart']),
+    const _Check('check_core_ui_primitives_doc', 'dart', [
+      'run',
+      'tool/check_core_ui_primitives_doc.dart',
+    ]),
 
     // --- Arch diagrams ---
     // Local dev: regenerate first so checks won't fail just because the diagram is stale.
