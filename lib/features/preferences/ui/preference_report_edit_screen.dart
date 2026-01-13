@@ -35,6 +35,8 @@ class PreferenceReportEditScreen extends StatelessWidget {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
     final preferenceColors = context.preferenceSection;
+    final surface = theme.colorScheme.surface;
+    final onSurface = theme.colorScheme.onSurface;
     final s = S.of(context);
     final headerName =
         subjectDisplayName?.isNotEmpty == true
@@ -51,10 +53,10 @@ class PreferenceReportEditScreen extends StatelessWidget {
           colors: preferenceColors,
           onTap: () => context.goNamed(AppRouteNames.hub),
         ),
-        backgroundColor: preferenceColors.background,
-        foregroundColor: preferenceColors.icon,
+        backgroundColor: surface,
+        foregroundColor: onSurface,
       ),
-      backgroundColor: preferenceColors.background,
+      backgroundColor: surface,
       body: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, _) {

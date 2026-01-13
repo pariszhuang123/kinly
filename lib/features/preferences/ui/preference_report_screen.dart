@@ -85,6 +85,8 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
     final sections = theme.extension<KinlySections>();
     final colors = theme.colorScheme;
     final preferenceColors = context.preferenceSection;
+    final surface = colors.surface;
+    final onSurface = colors.onSurface;
     final s = S.of(context);
     final headerName =
         widget.subjectDisplayName?.isNotEmpty == true
@@ -99,10 +101,10 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
           colors: preferenceColors,
           onTap: () => context.pop(),
         ),
-        backgroundColor: preferenceColors.background,
-        foregroundColor: preferenceColors.icon,
+        backgroundColor: surface,
+        foregroundColor: onSurface,
       ),
-      backgroundColor: preferenceColors.background,
+      backgroundColor: surface,
       body: Stack(
         children: [
           SafeArea(

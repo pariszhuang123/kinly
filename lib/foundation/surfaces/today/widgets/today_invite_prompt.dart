@@ -35,7 +35,6 @@ class TodayInvitePrompt extends StatelessWidget {
     final sectionColors = palette ?? context.preferenceSection;
     final cardColor = sectionColors.card;
     final accent = sectionColors.accent;
-    final iconColor = sectionColors.icon;
 
     return Container(
       width: double.infinity,

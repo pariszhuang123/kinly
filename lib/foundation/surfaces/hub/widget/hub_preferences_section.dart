@@ -51,7 +51,6 @@ class HubPreferencesSection extends StatelessWidget {
 
     final palette =
         sections?.preference ??
-        context.preferenceSection ??
         SectionColors(
           background: colors.surfaceContainerHighest,
           card: colors.surfaceContainerHigh,

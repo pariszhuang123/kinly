@@ -77,6 +77,8 @@ class _PreferenceReportSectionScreenState
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
     final preferenceColors = context.preferenceSection;
+    final surface = theme.colorScheme.surface;
+    final onSurface = theme.colorScheme.onSurface;
     final s = S.of(context);
 
     return KinlyScaffold(
@@ -87,10 +89,10 @@ class _PreferenceReportSectionScreenState
           colors: preferenceColors,
           onTap: () => context.pop(false),
         ),
-        backgroundColor: preferenceColors.background,
-        foregroundColor: preferenceColors.icon,
+        backgroundColor: surface,
+        foregroundColor: onSurface,
       ),
-      backgroundColor: preferenceColors.background,
+      backgroundColor: surface,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsetsDirectional.fromSTEB(
