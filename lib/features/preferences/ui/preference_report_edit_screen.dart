@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
@@ -33,6 +34,7 @@ class PreferenceReportEditScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
+    final preferenceColors = context.preferenceSection;
     final s = S.of(context);
     final headerName =
         subjectDisplayName?.isNotEmpty == true
@@ -42,15 +44,17 @@ class PreferenceReportEditScreen extends StatelessWidget {
     return KinlyScaffold(
       appBar: KinlyAppBar(
         title: Text(
-          canEdit
-              ? s.preferenceReportEditTitle
-              : s.preferenceReportViewTitle,
+          canEdit ? s.preferenceReportEditTitle : s.preferenceReportViewTitle,
         ),
         leading: _DirectionalBackButton(
           label: s.preferenceOnboardingBack,
+          colors: preferenceColors,
           onTap: () => context.goNamed(AppRouteNames.hub),
         ),
+        backgroundColor: preferenceColors.background,
+        foregroundColor: preferenceColors.icon,
       ),
+      backgroundColor: preferenceColors.background,
       body: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, _) {
@@ -96,10 +100,9 @@ class PreferenceReportEditScreen extends StatelessWidget {
                           sections: state.report!.content.sections,
                           spacing: spacing,
                           canEdit: canEdit,
-                          onSectionTap: (section) => _handleSectionTap(
-                            context,
-                            section,
-                          ),
+                          palette: preferenceColors,
+                          onSectionTap:
+                              (section) => _handleSectionTap(context, section),
                         ),
                       ),
                     ),
@@ -138,29 +141,31 @@ class _PreferenceEditGrid extends StatelessWidget {
     required this.spacing,
     required this.canEdit,
     required this.onSectionTap,
+    required this.palette,
   });
 
   final List<PreferenceReportSection> sections;
   final Spacing? spacing;
   final bool canEdit;
   final void Function(PreferenceReportSection section) onSectionTap;
+  final SectionColors palette;
 
   @override
   Widget build(BuildContext context) {
     return KinlyMasonryGrid(
       items: sections,
-        builder: (context, section, _, palette) {
-          return _PreferenceEditCard(
-            title: section.title,
-            text: section.text,
-            onTap:
-                () {
-                  if (!canEdit) return;
-                  onSectionTap(section);
-                },
-            accent: palette.colorForSeed(section.sectionKey).accent,
-          );
-        },
+      palette: KinlySectionPalette([palette]),
+      builder: (context, section, _, palette) {
+        return _PreferenceEditCard(
+          title: section.title,
+          text: section.text,
+          onTap: () {
+            if (!canEdit) return;
+            onSectionTap(section);
+          },
+          palette: palette.colorForSeed(section.sectionKey),
+        );
+      },
       estimateItemHeight: (section, textTheme, spacingTokens) {
         final titleStyle = textTheme.titleMedium;
         final bodyStyle = textTheme.bodyMedium;
@@ -191,19 +196,18 @@ class _PreferenceEditCard extends StatelessWidget {
     required this.title,
     required this.text,
     required this.onTap,
-    required this.accent,
+    required this.palette,
   });
 
   final String title;
   final String text;
   final VoidCallback onTap;
-  final Color accent;
+  final SectionColors palette;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
-    final colors = theme.colorScheme;
 
     return KinlyTapTarget(
       onTap: onTap,
@@ -216,9 +220,9 @@ class _PreferenceEditCard extends StatelessWidget {
           spacing?.m ?? 12,
         ),
         decoration: BoxDecoration(
-          color: colors.surfaceContainerHighest,
+          color: palette.card,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: accent.withValues(alpha: 0.35)),
+          border: Border.all(color: palette.accent.withValues(alpha: 0.35)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,15 +238,18 @@ class _PreferenceEditCard extends StatelessWidget {
 }
 
 class _DirectionalBackButton extends StatelessWidget {
-  const _DirectionalBackButton({required this.onTap, required this.label});
+  const _DirectionalBackButton({
+    required this.onTap,
+    required this.label,
+    required this.colors,
+  });
 
   final VoidCallback onTap;
   final String label;
+  final SectionColors colors;
 
   @override
   Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final colors = theme.colorScheme;
     final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Semantics(
@@ -258,10 +265,7 @@ class _DirectionalBackButton extends StatelessWidget {
             child: Transform.scale(
               scaleX: isRtl ? 1.0 : -1.0,
               scaleY: 1.0,
-              child: Icon(
-                KinlyIcons.chevronRightRounded,
-                color: colors.onSurface,
-              ),
+              child: Icon(KinlyIcons.chevronRightRounded, color: colors.icon),
             ),
           ),
         ),
@@ -279,8 +283,9 @@ class _SubjectHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
-    final colors = theme.colorScheme;
+    final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>();
+    final palette = context.preferenceSection;
     final hasAvatar = avatarUrl != null && avatarUrl!.isNotEmpty;
 
     return Row(
@@ -290,7 +295,7 @@ class _SubjectHeader extends StatelessWidget {
           width: 44,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: colors.primary.withValues(alpha: 0.16),
+            color: palette.accent.withValues(alpha: 0.16),
             image:
                 hasAvatar
                     ? DecorationImage(
@@ -304,11 +309,18 @@ class _SubjectHeader extends StatelessWidget {
                   ? null
                   : Icon(
                     KinlyIcons.selfImprovementRounded,
-                    color: colors.primary,
+                    color: palette.icon,
                   ),
         ),
         SizedBox(width: spacing?.sm ?? 8),
-        Expanded(child: Text(name, style: theme.textTheme.titleMedium)),
+        Expanded(
+          child: Text(
+            name,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: colorScheme.onSurface,
+            ),
+          ),
+        ),
       ],
     );
   }

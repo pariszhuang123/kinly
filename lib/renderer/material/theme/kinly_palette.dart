@@ -182,6 +182,7 @@ class _DerivedEngine {
       surface: surfaces.surface,
       primary: brand.primary,
       secondary: brand.secondary,
+      tertiary: brand.tertiary,
       accent: KinlyFoundationColors.brandAccent,
       outline: outline.outline,
       opacities: opacities,
@@ -256,6 +257,7 @@ class _DerivedEngine {
     required Color surface,
     required Color primary,
     required Color secondary,
+    required Color tertiary,
     required Color accent,
     required Color outline,
     required KinlyOpacity opacities,
@@ -285,11 +287,13 @@ class _DerivedEngine {
     }
 
     final emptyAccent = _mix(outline, surface, 0.4);
+    final preferenceAccent = _mix(primary, tertiary, isDark ? 0.24 : 0.32);
 
     return KinlySections(
       flow: buildSection(primary),
       share: buildSection(accent),
       pulse: buildSection(secondary),
+      preference: buildSection(preferenceAccent),
       empty: buildSection(emptyAccent),
     );
   }

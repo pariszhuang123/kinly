@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/buttons/kinly_outlined_button.dart';
@@ -14,6 +15,7 @@ class TodayInvitePrompt extends StatelessWidget {
     required this.onPrimary,
     this.secondaryLabel,
     this.onSecondary,
+    this.palette,
   });
 
   final String title;
@@ -22,19 +24,23 @@ class TodayInvitePrompt extends StatelessWidget {
   final String? secondaryLabel;
   final VoidCallback onPrimary;
   final VoidCallback? onSecondary;
+  final SectionColors? palette;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final colorScheme = theme.colorScheme;
     final secondaryTap = onSecondary;
     final secondaryText = secondaryLabel;
+    final sectionColors = palette ?? context.preferenceSection;
+    final cardColor = sectionColors.card;
+    final accent = sectionColors.accent;
+    final iconColor = sectionColors.icon;
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLow,
+        color: cardColor,
         borderRadius: BorderRadius.circular(16),
       ),
       padding: EdgeInsetsDirectional.fromSTEB(
@@ -61,6 +67,8 @@ class TodayInvitePrompt extends StatelessWidget {
                 child: KinlyFilledButton.text(
                   onPressed: onPrimary,
                   label: primaryLabel,
+                  backgroundColor: accent,
+                  foregroundColor: sectionColors.onAccent(),
                 ),
               ),
               if (secondaryText != null && secondaryTap != null) ...[
@@ -69,6 +77,8 @@ class TodayInvitePrompt extends StatelessWidget {
                   child: KinlyOutlinedButton.text(
                     onPressed: secondaryTap,
                     label: secondaryText,
+                    foregroundColor: accent,
+                    borderColor: accent,
                   ),
                 ),
               ],

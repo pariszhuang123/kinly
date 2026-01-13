@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
@@ -24,6 +25,7 @@ class PreferenceOnboardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
+    final preferenceColors = context.preferenceSection;
     final s = S.of(context);
 
     return BlocConsumer<PreferenceCaptureBloc, PreferenceCaptureState>(
@@ -65,6 +67,7 @@ class PreferenceOnboardingScreen extends StatelessWidget {
             title: Text(s.preferenceOnboardingTitle),
             leading: _DirectionalBackButton(
               label: s.preferenceOnboardingBack,
+              colors: preferenceColors,
               onTap:
                   state.currentIndex > 0
                       ? () => context.read<PreferenceCaptureBloc>().add(
@@ -72,7 +75,10 @@ class PreferenceOnboardingScreen extends StatelessWidget {
                       )
                       : () => context.pop(),
             ),
+            backgroundColor: preferenceColors.background,
+            foregroundColor: preferenceColors.icon,
           ),
+          backgroundColor: preferenceColors.background,
           body: Stack(
             children: [
               SafeArea(
@@ -105,6 +111,7 @@ class PreferenceOnboardingScreen extends StatelessWidget {
                             return _PreferenceOptionTile(
                               label: optionText,
                               isSelected: isSelected,
+                              colors: preferenceColors,
                               onTap:
                                   isBusy
                                       ? null
@@ -127,6 +134,11 @@ class PreferenceOnboardingScreen extends StatelessWidget {
                         KinlyFilledButton.text(
                           fullWidth: true,
                           label: s.preferenceOnboardingSubmit,
+                          backgroundColor: preferenceColors.accent,
+                          foregroundColor: preferenceColors.onAccent(),
+                          disabledBackgroundColor: preferenceColors.background,
+                          disabledForegroundColor: preferenceColors.icon
+                              .withValues(alpha: 0.4),
                           onPressed:
                               canSubmit
                                   ? () => context
@@ -164,18 +176,20 @@ class _PreferenceOptionTile extends StatelessWidget {
   const _PreferenceOptionTile({
     required this.label,
     required this.isSelected,
+    required this.colors,
     this.onTap,
   });
 
   final String label;
   final bool isSelected;
+  final SectionColors colors;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
-    final colors = theme.colorScheme;
+    final colorScheme = theme.colorScheme;
 
     return KinlyTapTarget(
       onTap: onTap,
@@ -190,20 +204,17 @@ class _PreferenceOptionTile extends StatelessWidget {
           spacing?.m ?? 12,
         ),
         decoration: BoxDecoration(
-          color:
-              isSelected
-                  ? colors.primary.withValues(alpha: 0.08)
-                  : colors.surfaceContainerHighest,
+          color: isSelected ? colors.card : colors.background,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? colors.primary : colors.outlineVariant,
+            color: isSelected ? colors.accent : colorScheme.outlineVariant,
             width: isSelected ? 1.6 : 1,
           ),
         ),
         child: Text(
           label,
           style: theme.textTheme.bodyLarge?.copyWith(
-            color: isSelected ? colors.primary : colors.onSurfaceVariant,
+            color: isSelected ? colors.accent : colorScheme.onSurfaceVariant,
           ),
         ),
       ),
@@ -212,15 +223,18 @@ class _PreferenceOptionTile extends StatelessWidget {
 }
 
 class _DirectionalBackButton extends StatelessWidget {
-  const _DirectionalBackButton({required this.onTap, required this.label});
+  const _DirectionalBackButton({
+    required this.onTap,
+    required this.label,
+    required this.colors,
+  });
 
   final VoidCallback onTap;
   final String label;
+  final SectionColors colors;
 
   @override
   Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final colors = theme.colorScheme;
     final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Semantics(
@@ -236,10 +250,7 @@ class _DirectionalBackButton extends StatelessWidget {
             child: Transform.scale(
               scaleX: isRtl ? 1.0 : -1.0,
               scaleY: 1.0,
-              child: Icon(
-                KinlyIcons.chevronRightRounded,
-                color: colors.onSurface,
-              ),
+              child: Icon(KinlyIcons.chevronRightRounded, color: colors.icon),
             ),
           ),
         ),

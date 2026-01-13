@@ -130,6 +130,10 @@ Future<void> main() async {
       'run',
       'tool/check_preference_report_templates.dart',
     ]),
+    const _Check('check_preference_sections', 'dart', [
+      'run',
+      'tool/check_preference_sections.dart',
+    ]),
     const _Check('check_home_dynamics_contract', 'dart', [
       'run',
       'tool/check_home_dynamics_contract.dart',

@@ -126,7 +126,12 @@ class KinlySectionPalette {
   factory KinlySectionPalette.fromTheme(ThemeData theme) {
     final sections = theme.extension<KinlySections>();
     final colors = <SectionColors>[
-      if (sections != null) ...[sections.flow, sections.share, sections.pulse],
+      if (sections != null) ...[
+        sections.flow,
+        sections.share,
+        sections.pulse,
+        sections.preference,
+      ],
     ];
     if (colors.isNotEmpty) return KinlySectionPalette(colors);
 
@@ -135,6 +140,7 @@ class KinlySectionPalette {
       derivedSections.flow,
       derivedSections.share,
       derivedSections.pulse,
+      derivedSections.preference,
     ]);
   }
 

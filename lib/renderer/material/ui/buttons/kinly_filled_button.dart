@@ -22,6 +22,11 @@ class KinlyFilledButton extends StatelessWidget {
     this.fullWidth = false,
     this.destructive = false,
     this.semanticsLabel,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.disabledBackgroundColor,
+    this.disabledForegroundColor,
+    this.overlayColor,
     super.key,
   });
 
@@ -34,6 +39,11 @@ class KinlyFilledButton extends StatelessWidget {
     bool fullWidth = false,
     bool destructive = false,
     String? semanticsLabel,
+    Color? backgroundColor,
+    Color? foregroundColor,
+    Color? disabledBackgroundColor,
+    Color? disabledForegroundColor,
+    Color? overlayColor,
     Key? key,
   }) {
     return KinlyFilledButton._(
@@ -44,6 +54,11 @@ class KinlyFilledButton extends StatelessWidget {
       fullWidth: fullWidth,
       destructive: destructive,
       semanticsLabel: semanticsLabel,
+      backgroundColor: backgroundColor,
+      foregroundColor: foregroundColor,
+      disabledBackgroundColor: disabledBackgroundColor,
+      disabledForegroundColor: disabledForegroundColor,
+      overlayColor: overlayColor,
       key: key,
     );
   }
@@ -56,6 +71,7 @@ class KinlyFilledButton extends StatelessWidget {
     bool compact = false,
     bool fullWidth = false,
     String? semanticsLabel,
+    Color? overlayColor,
     Key? key,
   }) {
     return KinlyFilledButton.icon(
@@ -66,6 +82,7 @@ class KinlyFilledButton extends StatelessWidget {
       fullWidth: fullWidth,
       destructive: true,
       semanticsLabel: semanticsLabel,
+      overlayColor: overlayColor,
       key: key,
     );
   }
@@ -78,6 +95,11 @@ class KinlyFilledButton extends StatelessWidget {
     bool fullWidth = false,
     bool destructive = false,
     String? semanticsLabel,
+    Color? backgroundColor,
+    Color? foregroundColor,
+    Color? disabledBackgroundColor,
+    Color? disabledForegroundColor,
+    Color? overlayColor,
     Key? key,
   }) {
     return KinlyFilledButton._(
@@ -88,6 +110,11 @@ class KinlyFilledButton extends StatelessWidget {
       fullWidth: fullWidth,
       destructive: destructive,
       semanticsLabel: semanticsLabel,
+      backgroundColor: backgroundColor,
+      foregroundColor: foregroundColor,
+      disabledBackgroundColor: disabledBackgroundColor,
+      disabledForegroundColor: disabledForegroundColor,
+      overlayColor: overlayColor,
       key: key,
     );
   }
@@ -99,6 +126,7 @@ class KinlyFilledButton extends StatelessWidget {
     bool compact = false,
     bool fullWidth = false,
     String? semanticsLabel,
+    Color? overlayColor,
     Key? key,
   }) {
     return KinlyFilledButton.text(
@@ -108,6 +136,7 @@ class KinlyFilledButton extends StatelessWidget {
       fullWidth: fullWidth,
       destructive: true,
       semanticsLabel: semanticsLabel,
+      overlayColor: overlayColor,
       key: key,
     );
   }
@@ -119,6 +148,11 @@ class KinlyFilledButton extends StatelessWidget {
   final bool fullWidth;
   final bool destructive;
   final String? semanticsLabel;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+  final Color? disabledBackgroundColor;
+  final Color? disabledForegroundColor;
+  final Color? overlayColor;
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +193,7 @@ class KinlyFilledButton extends StatelessWidget {
 
     final overlay = WidgetStateProperty.resolveWith<Color?>((states) {
       if (states.contains(WidgetState.pressed)) {
+        if (overlayColor != null) return overlayColor;
         final opacities = Theme.of(context).extension<KinlyOpacity>()!;
         return buttonColors.foreground.withValues(alpha: opacities.alphaSM);
       }
@@ -202,6 +237,28 @@ class KinlyFilledButton extends StatelessWidget {
     required bool destructive,
     required bool disabled,
   }) {
+    final hasOverrides =
+        backgroundColor != null ||
+        foregroundColor != null ||
+        disabledBackgroundColor != null ||
+        disabledForegroundColor != null;
+    if (!destructive && hasOverrides) {
+      return disabled
+          ? _ButtonColors(
+            background:
+                disabledBackgroundColor ??
+                backgroundColor ??
+                tokens.filledDisabledBg,
+            foreground:
+                disabledForegroundColor ??
+                foregroundColor ??
+                tokens.filledDisabledFg,
+          )
+          : _ButtonColors(
+            background: backgroundColor ?? tokens.filledBg,
+            foreground: foregroundColor ?? tokens.filledFg,
+          );
+    }
     if (destructive) {
       return disabled
           ? _ButtonColors(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/contracts/preferences/models.dart';
+import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/features/preferences/bloc/preference_report_cubit.dart';
 import 'preference_report_screen.dart';
 
@@ -32,6 +33,8 @@ class PreferenceReportProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Resolve preference palette early to align with the preference UI contract.
+    final _ = context.preferenceSection;
     return BlocProvider(
       create: (_) {
         final cubit = PreferenceReportCubit(

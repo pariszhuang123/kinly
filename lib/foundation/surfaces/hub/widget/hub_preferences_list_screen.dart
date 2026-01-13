@@ -45,11 +45,13 @@ class HubPreferencesListScreen extends StatelessWidget {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>();
-    final resolvedPalette = sections?.share ?? palette;
+    final resolvedPalette =
+        sections?.preference ?? context.preferenceSection ?? palette;
     final s = S.of(context);
 
     return KinlyScaffold(
       appBar: KinlyAppBar(title: Text(s.hubPreferencesTitle)),
+      backgroundColor: resolvedPalette.background,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsetsDirectional.fromSTEB(
@@ -110,7 +112,16 @@ class HubPreferencesListScreen extends StatelessWidget {
                             );
                           },
                           borderRadius: BorderRadius.circular(16),
-                          child: Padding(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: resolvedPalette.card,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: resolvedPalette.accent.withValues(
+                                  alpha: 0.12,
+                                ),
+                              ),
+                            ),
                             padding: EdgeInsetsDirectional.fromSTEB(
                               spacing.md,
                               spacing.sm,
@@ -120,17 +131,17 @@ class HubPreferencesListScreen extends StatelessWidget {
                             child: Row(
                               children: [
                                 Container(
-                                    height: 48,
-                                    width: 48,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: resolvedPalette.icon.withValues(
-                                        alpha: 0.14,
-                                      ),
-                                      image:
-                                          avatar.isNotEmpty
-                                              ? DecorationImage(
-                                                image: NetworkImage(avatar),
+                                  height: 48,
+                                  width: 48,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: resolvedPalette.icon.withValues(
+                                      alpha: 0.14,
+                                    ),
+                                    image:
+                                        avatar.isNotEmpty
+                                            ? DecorationImage(
+                                              image: NetworkImage(avatar),
                                               fit: BoxFit.cover,
                                             )
                                             : null,
@@ -152,7 +163,7 @@ class HubPreferencesListScreen extends StatelessWidget {
                                 ),
                                 Icon(
                                   KinlyIcons.chevronRightRounded,
-                                  color: theme.colorScheme.onSurfaceVariant,
+                                  color: resolvedPalette.icon,
                                 ),
                               ],
                             ),
@@ -238,8 +249,8 @@ class _HouseVibeShareScreenState extends State<HouseVibeShareScreen> {
   final GlobalKey _repaintKey = GlobalKey();
   bool _isSharing = false;
 
-  Future<void> _share(BuildContext context, HouseInfoCardData data) async {
-    if (_isSharing) return;
+  Future<void> _share(HouseInfoCardData data) async {
+    if (_isSharing || !mounted) return;
     setState(() => _isSharing = true);
     final s = S.of(context);
     try {
@@ -247,7 +258,9 @@ class _HouseVibeShareScreenState extends State<HouseVibeShareScreen> {
         const HubShareLogged(feature: 'house_vibe', channel: 'system_share'),
       );
       await precacheImage(AssetImage(data.assetPath), context);
+      if (!mounted) return;
       await WidgetsBinding.instance.endOfFrame;
+      if (!mounted) return;
 
       final shared = await SnapshotSharer.shareRepaintBoundary(
         context: context,
@@ -257,6 +270,7 @@ class _HouseVibeShareScreenState extends State<HouseVibeShareScreen> {
         subject: s.houseVibeShareTitle,
         messageBuilder: (appLink) => s.houseVibeShareMessage(appLink),
       );
+      if (!mounted) return;
       if (!shared && mounted) {
         KinlySnackBar.showError(context, s.houseVibeShareError);
       }
@@ -275,7 +289,8 @@ class _HouseVibeShareScreenState extends State<HouseVibeShareScreen> {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>();
-    final resolvedPalette = sections?.share ?? widget.palette;
+    final resolvedPalette =
+        sections?.preference ?? context.preferenceSection ?? widget.palette;
     final data = HouseInfoCardData.fromVibe(
       vibe: widget.vibe,
       palette: resolvedPalette,
@@ -285,9 +300,9 @@ class _HouseVibeShareScreenState extends State<HouseVibeShareScreen> {
     );
 
     return KinlyScaffold(
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: resolvedPalette.background,
       body: ColoredBox(
-        color: theme.colorScheme.surface,
+        color: resolvedPalette.background,
         child: RepaintBoundary(
           key: _repaintKey,
           child: LayoutBuilder(
@@ -328,7 +343,7 @@ class _HouseVibeShareScreenState extends State<HouseVibeShareScreen> {
           heroTag: 'house_vibe_share_fab',
           tooltip: s.houseVibeShareCta,
           icon: KinlyIcons.iosShareRounded,
-          onPressed: () => _share(context, data),
+          onPressed: () => _share(data),
         ),
       ),
     );

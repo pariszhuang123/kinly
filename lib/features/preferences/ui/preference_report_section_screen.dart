@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
+import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
@@ -75,6 +76,7 @@ class _PreferenceReportSectionScreenState
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
+    final preferenceColors = context.preferenceSection;
     final s = S.of(context);
 
     return KinlyScaffold(
@@ -82,9 +84,13 @@ class _PreferenceReportSectionScreenState
         title: Text(widget.args.title),
         leading: _DirectionalBackButton(
           label: s.preferenceOnboardingBack,
+          colors: preferenceColors,
           onTap: () => context.pop(false),
         ),
+        backgroundColor: preferenceColors.background,
+        foregroundColor: preferenceColors.icon,
       ),
+      backgroundColor: preferenceColors.background,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsetsDirectional.fromSTEB(
@@ -108,6 +114,8 @@ class _PreferenceReportSectionScreenState
               KinlyFilledButton.text(
                 fullWidth: true,
                 label: s.preferenceReportEditSectionDone,
+                backgroundColor: preferenceColors.accent,
+                foregroundColor: preferenceColors.onAccent(),
                 onPressed: _isSaving ? null : _save,
               ),
             ],
@@ -119,15 +127,18 @@ class _PreferenceReportSectionScreenState
 }
 
 class _DirectionalBackButton extends StatelessWidget {
-  const _DirectionalBackButton({required this.onTap, required this.label});
+  const _DirectionalBackButton({
+    required this.onTap,
+    required this.label,
+    required this.colors,
+  });
 
   final VoidCallback onTap;
   final String label;
+  final SectionColors colors;
 
   @override
   Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final colors = theme.colorScheme;
     final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Semantics(
@@ -143,10 +154,7 @@ class _DirectionalBackButton extends StatelessWidget {
             child: Transform.scale(
               scaleX: isRtl ? 1.0 : -1.0,
               scaleY: 1.0,
-              child: Icon(
-                KinlyIcons.chevronRightRounded,
-                color: colors.onSurface,
-              ),
+              child: Icon(KinlyIcons.chevronRightRounded, color: colors.icon),
             ),
           ),
         ),

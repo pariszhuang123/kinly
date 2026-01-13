@@ -22,6 +22,11 @@ class KinlyOutlinedButton extends StatelessWidget {
     this.compact = false,
     this.fullWidth = false,
     this.semanticsLabel,
+    this.foregroundColor,
+    this.borderColor,
+    this.disabledBorderColor,
+    this.disabledForegroundColor,
+    this.overlayColor,
     super.key,
   });
 
@@ -33,6 +38,11 @@ class KinlyOutlinedButton extends StatelessWidget {
     bool compact = false,
     bool fullWidth = false,
     String? semanticsLabel,
+    Color? foregroundColor,
+    Color? borderColor,
+    Color? disabledBorderColor,
+    Color? disabledForegroundColor,
+    Color? overlayColor,
     Key? key,
   }) {
     return KinlyOutlinedButton._(
@@ -42,6 +52,11 @@ class KinlyOutlinedButton extends StatelessWidget {
       compact: compact,
       fullWidth: fullWidth,
       semanticsLabel: semanticsLabel,
+      foregroundColor: foregroundColor,
+      borderColor: borderColor,
+      disabledBorderColor: disabledBorderColor,
+      disabledForegroundColor: disabledForegroundColor,
+      overlayColor: overlayColor,
       key: key,
     );
   }
@@ -53,6 +68,11 @@ class KinlyOutlinedButton extends StatelessWidget {
     bool compact = false,
     bool fullWidth = false,
     String? semanticsLabel,
+    Color? foregroundColor,
+    Color? borderColor,
+    Color? disabledBorderColor,
+    Color? disabledForegroundColor,
+    Color? overlayColor,
     Key? key,
   }) {
     return KinlyOutlinedButton._(
@@ -62,6 +82,11 @@ class KinlyOutlinedButton extends StatelessWidget {
       compact: compact,
       fullWidth: fullWidth,
       semanticsLabel: semanticsLabel,
+      foregroundColor: foregroundColor,
+      borderColor: borderColor,
+      disabledBorderColor: disabledBorderColor,
+      disabledForegroundColor: disabledForegroundColor,
+      overlayColor: overlayColor,
       key: key,
     );
   }
@@ -72,6 +97,11 @@ class KinlyOutlinedButton extends StatelessWidget {
   final bool compact;
   final bool fullWidth;
   final String? semanticsLabel;
+  final Color? foregroundColor;
+  final Color? borderColor;
+  final Color? disabledBorderColor;
+  final Color? disabledForegroundColor;
+  final Color? overlayColor;
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +121,13 @@ class KinlyOutlinedButton extends StatelessWidget {
 
     // ---- COLOR LOGIC (aligned with KinlyFilledButton) ----
     final Color foreground =
-        disabled ? controls.outlinedDisabledFg : controls.outlinedFg;
+        disabled
+            ? (disabledForegroundColor ?? controls.outlinedDisabledFg)
+            : (foregroundColor ?? controls.outlinedFg);
     final Color borderColor =
-        disabled ? controls.outlinedDisabledBorder : controls.outlinedBorder;
+        disabled
+            ? (disabledBorderColor ?? controls.outlinedDisabledBorder)
+            : (this.borderColor ?? controls.outlinedBorder);
 
     final double horizontal = compact ? spacing.sm : spacing.md;
     final double vertical = compact ? spacing.xs : spacing.sm;
@@ -127,6 +161,7 @@ class KinlyOutlinedButton extends StatelessWidget {
 
     final overlay = WidgetStateProperty.resolveWith<Color?>((states) {
       if (states.contains(WidgetState.pressed)) {
+        if (overlayColor != null) return overlayColor;
         final opacities = Theme.of(context).extension<KinlyOpacity>()!;
         return foreground.withValues(alpha: opacities.alphaXS);
       }

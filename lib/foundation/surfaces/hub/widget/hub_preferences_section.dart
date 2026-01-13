@@ -50,8 +50,8 @@ class HubPreferencesSection extends StatelessWidget {
     if (visibleMembers.isEmpty) return const SizedBox.shrink();
 
     final palette =
-        sections?.share ??
-        sections?.pulse ??
+        sections?.preference ??
+        context.preferenceSection ??
         SectionColors(
           background: colors.surfaceContainerHighest,
           card: colors.surfaceContainerHigh,

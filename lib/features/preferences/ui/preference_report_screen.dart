@@ -84,6 +84,7 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
     final spacing = theme.extension<Spacing>();
     final sections = theme.extension<KinlySections>();
     final colors = theme.colorScheme;
+    final preferenceColors = context.preferenceSection;
     final s = S.of(context);
     final headerName =
         widget.subjectDisplayName?.isNotEmpty == true
@@ -95,9 +96,13 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
         title: Text(s.preferenceReportTitle),
         leading: _DirectionalBackButton(
           label: s.preferenceOnboardingBack,
+          colors: preferenceColors,
           onTap: () => context.pop(),
         ),
+        backgroundColor: preferenceColors.background,
+        foregroundColor: preferenceColors.icon,
       ),
+      backgroundColor: preferenceColors.background,
       body: Stack(
         children: [
           SafeArea(
@@ -160,13 +165,13 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
                               SizedBox(height: spacing?.lg ?? 16),
                               KinlyMasonryGrid(
                                 items: report.content.sections,
+                                palette: KinlySectionPalette([
+                                  preferenceColors,
+                                ]),
                                 builder: (context, section, _, palette) {
                                   return _PreferenceReportSectionCard(
                                     section: section,
-                                    accent:
-                                        palette
-                                            .colorForSeed(section.sectionKey)
-                                            .accent,
+                                    palette: palette.colors.first,
                                   );
                                 },
                                 estimateItemHeight: (
@@ -220,6 +225,8 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
                               KinlyFilledButton.text(
                                 fullWidth: true,
                                 label: s.preferenceReportEditCta,
+                                backgroundColor: preferenceColors.accent,
+                                foregroundColor: preferenceColors.onAccent(),
                                 onPressed: () async {
                                   await context.pushNamed(
                                     AppRouteNames.preferenceReportEdit,
@@ -240,6 +247,8 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
                             KinlyOutlinedButton.text(
                               fullWidth: true,
                               label: s.preferenceReportDoneCta,
+                              foregroundColor: preferenceColors.accent,
+                              borderColor: preferenceColors.accent,
                               onPressed: () {
                                 if (widget.popOnDone && context.canPop()) {
                                   context.pop();
@@ -264,6 +273,7 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
                 colors: [
                   sections.flow.accent,
                   sections.share.accent,
+                  preferenceColors.accent,
                   colors.primary,
                   colors.secondary,
                 ],
@@ -276,16 +286,18 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
 }
 
 class _PreferenceReportSectionCard extends StatelessWidget {
-  const _PreferenceReportSectionCard({required this.section, this.accent});
+  const _PreferenceReportSectionCard({
+    required this.section,
+    required this.palette,
+  });
 
   final PreferenceReportSection section;
-  final Color? accent;
+  final SectionColors palette;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
-    final colors = theme.colorScheme;
 
     return Container(
       padding: EdgeInsetsDirectional.fromSTEB(
@@ -295,11 +307,9 @@ class _PreferenceReportSectionCard extends StatelessWidget {
         spacing?.m ?? 12,
       ),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerHighest,
+        color: palette.card,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: (accent ?? colors.outlineVariant).withValues(alpha: 0.25),
-        ),
+        border: Border.all(color: palette.accent.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,8 +332,8 @@ class _SubjectHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
-    final colors = theme.colorScheme;
     final spacing = theme.extension<Spacing>();
+    final palette = context.preferenceSection;
     final hasAvatar = avatarUrl != null && avatarUrl!.isNotEmpty;
 
     return Row(
@@ -333,7 +343,7 @@ class _SubjectHeader extends StatelessWidget {
           width: 44,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: colors.primary.withValues(alpha: 0.16),
+            color: palette.accent.withValues(alpha: 0.16),
             image:
                 hasAvatar
                     ? DecorationImage(
@@ -347,7 +357,7 @@ class _SubjectHeader extends StatelessWidget {
                   ? null
                   : Icon(
                     KinlyIcons.selfImprovementRounded,
-                    color: colors.primary,
+                    color: palette.icon,
                   ),
         ),
         SizedBox(width: spacing?.sm ?? 8),
@@ -367,6 +377,7 @@ class _PreferenceReportEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
+    final palette = context.preferenceSection;
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(
         spacing?.lg ?? 16,
@@ -384,6 +395,8 @@ class _PreferenceReportEmpty extends StatelessWidget {
           KinlyFilledButton.text(
             fullWidth: true,
             label: S.of(context).preferenceReportDoneCta,
+            backgroundColor: palette.accent,
+            foregroundColor: palette.onAccent(),
             onPressed: () => context.goNamed(AppRouteNames.today),
           ),
         ],
@@ -393,15 +406,18 @@ class _PreferenceReportEmpty extends StatelessWidget {
 }
 
 class _DirectionalBackButton extends StatelessWidget {
-  const _DirectionalBackButton({required this.onTap, required this.label});
+  const _DirectionalBackButton({
+    required this.onTap,
+    required this.label,
+    required this.colors,
+  });
 
   final VoidCallback onTap;
   final String label;
+  final SectionColors colors;
 
   @override
   Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final colors = theme.colorScheme;
     final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Semantics(
@@ -417,10 +433,7 @@ class _DirectionalBackButton extends StatelessWidget {
             child: Transform.scale(
               scaleX: isRtl ? 1.0 : -1.0,
               scaleY: 1.0,
-              child: Icon(
-                KinlyIcons.chevronRightRounded,
-                color: colors.onSurface,
-              ),
+              child: Icon(KinlyIcons.chevronRightRounded, color: colors.icon),
             ),
           ),
         ),

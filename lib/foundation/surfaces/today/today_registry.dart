@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'package:kinly/core/theme/kinly_sections.dart';
 import 'today_slots.dart';
 import 'widgets/today_flow_section/today_flow_section_container.dart';
 import 'widgets/today_gratitude_section.dart';
@@ -167,10 +168,12 @@ Widget _buildInvitePrompt(TodaySurfaceScope scope) {
 }
 
 Widget _buildPreferencesPrompt(TodaySurfaceScope scope) {
+  final palette = scope.context.preferenceSection;
   return TodayInvitePrompt(
     title: scope.strings.preferencePromptTitle,
     subtitle: scope.strings.preferencePromptSubtitle,
     primaryLabel: scope.strings.preferencePromptCta,
     onPrimary: scope.actions.onPreferencePrompt,
+    palette: palette,
   );
 }
