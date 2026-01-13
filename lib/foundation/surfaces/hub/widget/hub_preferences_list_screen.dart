@@ -47,6 +47,7 @@ class HubPreferencesListScreen extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>();
     final resolvedPalette = sections?.preference ?? palette;
+    final _ = context.preferenceSection;
     final surface = theme.colorScheme.surface;
     final onSurface = theme.colorScheme.onSurface;
     final s = S.of(context);
@@ -296,6 +297,7 @@ class _HouseVibeShareScreenState extends State<HouseVibeShareScreen> {
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>();
     final resolvedPalette = sections?.preference ?? widget.palette;
+    final _ = context.preferenceSection;
     final surface = theme.colorScheme.surface;
     final overlay =
         theme.brightness == Brightness.dark

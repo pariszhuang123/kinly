@@ -38,6 +38,7 @@ class HubPreferencesSection extends StatelessWidget {
     final sections = theme.extension<KinlySections>();
     final colors = theme.colorScheme;
     final s = S.of(context);
+    final _ = context.preferenceSection;
 
     final reportByUser = {
       for (final report in reportItems) report.subjectUserId: report,
