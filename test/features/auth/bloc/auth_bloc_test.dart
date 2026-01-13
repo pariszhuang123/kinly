@@ -406,4 +406,84 @@ void main() {
     verify:
         (_) => verify(() => homeRepository.getCurrentMembership()).called(3),
   );
+
+  group('AuthEvent props', () {
+    group('AuthSignInWithGoogleRequested', () {
+      test('props is empty', () {
+        const event = AuthSignInWithGoogleRequested();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = AuthSignInWithGoogleRequested();
+        const event2 = AuthSignInWithGoogleRequested();
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('AuthSignInWithAppleRequested', () {
+      test('props is empty', () {
+        const event = AuthSignInWithAppleRequested();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = AuthSignInWithAppleRequested();
+        const event2 = AuthSignInWithAppleRequested();
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('AuthSignOutRequested', () {
+      test('props is empty', () {
+        const event = AuthSignOutRequested();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = AuthSignOutRequested();
+        const event2 = AuthSignOutRequested();
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('AuthMembershipRefreshRequested', () {
+      test('props is empty', () {
+        const event = AuthMembershipRefreshRequested();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = AuthMembershipRefreshRequested();
+        const event2 = AuthMembershipRefreshRequested();
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('AuthErrorCleared', () {
+      test('props is empty', () {
+        const event = AuthErrorCleared();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = AuthErrorCleared();
+        const event2 = AuthErrorCleared();
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('AuthProfileDeactivatedDetected', () {
+      test('props is empty', () {
+        const event = AuthProfileDeactivatedDetected();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = AuthProfileDeactivatedDetected();
+        const event2 = AuthProfileDeactivatedDetected();
+        expect(event1, equals(event2));
+      });
+    });
+  });
 }

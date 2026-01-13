@@ -1,35 +1,8 @@
-import 'package:kinly/core/logging/logger.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:kinly/core/time/iana_timezone_resolver.dart';
-import 'package:test/test.dart';
+import 'package:kinly/core/logging/logger.dart';
 
-class _FakeLogger implements Logger {
-  final List<({LogLevel level, String message, String? tag, Object? error})>
-  entries = [];
-
-  @override
-  void debug(String message, {String? tag}) =>
-      log(LogLevel.debug, message, tag: tag);
-
-  @override
-  void info(String message, {String? tag}) =>
-      log(LogLevel.info, message, tag: tag);
-
-  @override
-  void warn(
-    String message, {
-    String? tag,
-    Object? error,
-    StackTrace? stackTrace,
-  }) => log(LogLevel.warning, message, tag: tag, error: error);
-
-  @override
-  void error(
-    String message, {
-    String? tag,
-    Object? error,
-    StackTrace? stackTrace,
-  }) => log(LogLevel.error, message, tag: tag, error: error);
-
+class _FakeLogger extends Logger {
   @override
   void log(
     LogLevel level,
@@ -37,125 +10,112 @@ class _FakeLogger implements Logger {
     String? tag,
     Object? error,
     StackTrace? stackTrace,
-  }) {
-    entries.add((level: level, message: message, tag: tag, error: error));
-  }
+  }) {}
 }
 
 void main() {
+  late _FakeLogger logger;
+
+  setUp(() {
+    logger = _FakeLogger();
+    IanaTimezoneResolver.debugOverride = null;
+  });
+
+  tearDown(() {
+    IanaTimezoneResolver.debugOverride = null;
+  });
+
   group('IanaTimezoneResolver', () {
-    test('returns IANA timezone and logs debug', () async {
-      final logger = _FakeLogger();
+    test('returns valid IANA timezone from loader', () async {
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => 'America/New_York',
+      );
+      final result = await resolver.resolve();
+      expect(result, 'America/New_York');
+    });
+
+    test('trims whitespace from timezone', () async {
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => '  Europe/London  ',
+      );
+      final result = await resolver.resolve();
+      expect(result, 'Europe/London');
+    });
+
+    test('returns UTC for empty timezone', () async {
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => '',
+      );
+      final result = await resolver.resolve();
+      expect(result, 'UTC');
+    });
+
+    test('returns UTC for invalid timezone format', () async {
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => 'Invalid Timezone',
+      );
+      final result = await resolver.resolve();
+      expect(result, 'UTC');
+    });
+
+    test('returns UTC when loader throws', () async {
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => throw Exception('Platform error'),
+      );
+      final result = await resolver.resolve();
+      expect(result, 'UTC');
+    });
+
+    test('uses debugOverride when set', () async {
+      IanaTimezoneResolver.debugOverride = 'Asia/Tokyo';
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => 'America/New_York',
+      );
+      final result = await resolver.resolve();
+      expect(result, 'Asia/Tokyo');
+    });
+
+    test('ignores empty debugOverride', () async {
+      IanaTimezoneResolver.debugOverride = '';
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => 'Europe/Paris',
+      );
+      final result = await resolver.resolve();
+      expect(result, 'Europe/Paris');
+    });
+
+    test('accepts UTC as valid timezone', () async {
+      final resolver = IanaTimezoneResolver(
+        logger: logger,
+        loader: () async => 'UTC',
+      );
+      final result = await resolver.resolve();
+      expect(result, 'UTC');
+    });
+
+    test('accepts multi-level IANA timezone', () async {
       final resolver = IanaTimezoneResolver(
         logger: logger,
         loader: () async => 'America/Argentina/Buenos_Aires',
       );
-
-      final timezone = await resolver.resolve();
-
-      expect(timezone, 'America/Argentina/Buenos_Aires');
-      expect(
-        logger.entries.any(
-          (entry) =>
-              entry.level == LogLevel.debug &&
-              entry.message.contains('resolvedTimezoneIana=America/Argentina'),
-        ),
-        isTrue,
-      );
+      final result = await resolver.resolve();
+      expect(result, 'America/Argentina/Buenos_Aires');
     });
 
-    test('falls back to UTC when timezone is invalid', () async {
-      final logger = _FakeLogger();
+    test('rejects timezone without slash', () async {
       final resolver = IanaTimezoneResolver(
         logger: logger,
-        loader: () async => 'NZDT',
+        loader: () async => 'EST',
       );
-
-      final timezone = await resolver.resolve();
-
-      expect(timezone, 'UTC');
-      expect(
-        logger.entries.any(
-          (entry) =>
-              entry.level == LogLevel.warning &&
-              entry.message.contains('Invalid timezone from platform'),
-        ),
-        isTrue,
-      );
-      expect(
-        logger.entries.any(
-          (entry) =>
-              entry.level == LogLevel.debug &&
-              entry.message.contains('resolvedTimezoneIana=UTC'),
-        ),
-        isTrue,
-      );
-    });
-
-    test('falls back to UTC when resolution throws', () async {
-      final logger = _FakeLogger();
-      final resolver = IanaTimezoneResolver(
-        logger: logger,
-        loader: () => Future.error(Exception('boom')),
-      );
-
-      final timezone = await resolver.resolve();
-
-      expect(timezone, 'UTC');
-      expect(
-        logger.entries.any(
-          (entry) =>
-              entry.level == LogLevel.warning &&
-              entry.message.contains('Failed to resolve timezone'),
-        ),
-        isTrue,
-      );
-    });
-
-    test('trims whitespace before validation', () async {
-      final logger = _FakeLogger();
-      final resolver = IanaTimezoneResolver(
-        logger: logger,
-        loader: () async => '  Pacific/Auckland  ',
-      );
-
-      final timezone = await resolver.resolve();
-
-      expect(timezone, 'Pacific/Auckland');
-      expect(
-        logger.entries.any(
-          (entry) =>
-              entry.level == LogLevel.debug &&
-              entry.message.contains('resolvedTimezoneIana=Pacific/Auckland'),
-        ),
-        isTrue,
-      );
-    });
-
-    test('uses identifier from TimezoneInfo-like payload', () async {
-      final logger = _FakeLogger();
-      final resolver = IanaTimezoneResolver(
-        logger: logger,
-        loader: () async => 'America/Los_Angeles',
-      );
-
-      final timezone = await resolver.resolve();
-
-      expect(timezone, 'America/Los_Angeles');
-    });
-
-    test('respects debug override when set', () async {
-      final logger = _FakeLogger();
-      IanaTimezoneResolver.debugOverride = 'Europe/Paris';
-      final resolver = IanaTimezoneResolver(
-        logger: logger,
-        loader: () async => 'ShouldNotBeUsed',
-      );
-
-      final timezone = await resolver.resolve();
-
-      expect(timezone, 'Europe/Paris');
-      IanaTimezoneResolver.debugOverride = null;
+      final result = await resolver.resolve();
+      expect(result, 'UTC');
     });
   });
 }

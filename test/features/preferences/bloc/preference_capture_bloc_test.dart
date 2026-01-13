@@ -332,6 +332,8 @@ void main() {
     expect(failureState.errorMessage, contains('boom'));
     expect(await HydratedBloc.storage.read(key), isNotNull);
   });
+
+  _eventPropsTests();
 }
 
 PreferenceReport _buildReport(String subjectUserId) {
@@ -365,3 +367,84 @@ String _scenarioTwoQuestion(S _) => 'Question 2';
 String _scenarioTwoOption1(S _) => 'Option 1';
 String _scenarioTwoOption2(S _) => 'Option 2';
 String _scenarioTwoOption3(S _) => 'Option 3';
+
+// ---------------------------------------------------------------------------
+// Event props tests
+// ---------------------------------------------------------------------------
+
+void _eventPropsTests() {
+  group('PreferenceCaptureEvent props', () {
+    group('PreferenceCaptureOptionSelected', () {
+      test('props contains preferenceId and optionIndex', () {
+        const event = PreferenceCaptureOptionSelected(
+          preferenceId: 'pref-1',
+          optionIndex: 2,
+        );
+        expect(event.props, ['pref-1', 2]);
+      });
+
+      test('two events with same props are equal', () {
+        const event1 = PreferenceCaptureOptionSelected(
+          preferenceId: 'pref-1',
+          optionIndex: 1,
+        );
+        const event2 = PreferenceCaptureOptionSelected(
+          preferenceId: 'pref-1',
+          optionIndex: 1,
+        );
+        expect(event1, equals(event2));
+      });
+
+      test('two events with different props are not equal', () {
+        const event1 = PreferenceCaptureOptionSelected(
+          preferenceId: 'pref-1',
+          optionIndex: 1,
+        );
+        const event2 = PreferenceCaptureOptionSelected(
+          preferenceId: 'pref-1',
+          optionIndex: 2,
+        );
+        expect(event1, isNot(equals(event2)));
+      });
+    });
+
+    group('PreferenceCapturePreviousRequested', () {
+      test('props is empty', () {
+        const event = PreferenceCapturePreviousRequested();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = PreferenceCapturePreviousRequested();
+        const event2 = PreferenceCapturePreviousRequested();
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('PreferenceCaptureSubmitted', () {
+      test('props is empty', () {
+        const event = PreferenceCaptureSubmitted();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = PreferenceCaptureSubmitted();
+        const event2 = PreferenceCaptureSubmitted();
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('PreferenceCaptureReflectionCompleted', () {
+      test('props is empty', () {
+        const event = PreferenceCaptureReflectionCompleted();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = PreferenceCaptureReflectionCompleted();
+        const event2 = PreferenceCaptureReflectionCompleted();
+        expect(event1, equals(event2));
+      });
+    });
+  });
+}

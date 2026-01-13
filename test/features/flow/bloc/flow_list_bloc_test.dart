@@ -316,4 +316,32 @@ void main() {
       expect(cleared.errorMessage, isNull);
     });
   });
+
+  group('FlowListEvent props', () {
+    group('FlowListRequested', () {
+      test('props is empty', () {
+        const event = FlowListRequested();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = FlowListRequested();
+        const event2 = FlowListRequested();
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('FlowListRefreshed', () {
+      test('props is empty', () {
+        const event = FlowListRefreshed();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = FlowListRefreshed();
+        const event2 = FlowListRefreshed();
+        expect(event1, equals(event2));
+      });
+    });
+  });
 }

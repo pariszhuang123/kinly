@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart' as flutter_test;
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_event_type.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/purchases/revenuecat_service.dart';
 import 'package:kinly/contracts/auth/ports/auth_repository.dart';
@@ -249,4 +250,77 @@ void main() {
               .having((s) => s.error, 'error', flutter_test.isNotNull),
         ],
   );
+
+  group('PaywallEvent props', () {
+    group('PaywallStarted', () {
+      test('props contains source and triggers', () {
+        final event = const PaywallStarted(
+          source: 'test_source',
+          triggers: {PaywallTrigger.flowActiveCap},
+        );
+        expect(event.props, ['test_source', {PaywallTrigger.flowActiveCap}]);
+      });
+
+      test('two events with same props are equal', () {
+        const event1 = PaywallStarted(source: 'a');
+        const event2 = PaywallStarted(source: 'a');
+        expect(event1, equals(event2));
+      });
+
+      test('two events with different props are not equal', () {
+        const event1 = PaywallStarted(source: 'a');
+        const event2 = PaywallStarted(source: 'b');
+        expect(event1, isNot(equals(event2)));
+      });
+    });
+
+    group('PaywallCtaPressed', () {
+      test('props contains locale, email, and source', () {
+        const event = PaywallCtaPressed(
+          locale: 'en',
+          email: 'test@example.com',
+          source: 'cta_test',
+        );
+        expect(event.props, ['en', 'test@example.com', 'cta_test']);
+      });
+
+      test('two events with same props are equal', () {
+        const event1 = PaywallCtaPressed(locale: 'en', email: 'a@b.com');
+        const event2 = PaywallCtaPressed(locale: 'en', email: 'a@b.com');
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('PaywallRestorePressed', () {
+      test('props contains source', () {
+        const event = PaywallRestorePressed(source: 'restore_test');
+        expect(event.props, ['restore_test']);
+      });
+
+      test('two events with same source are equal', () {
+        const event1 = PaywallRestorePressed(source: 'x');
+        const event2 = PaywallRestorePressed(source: 'x');
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('PaywallDismissed', () {
+      test('props contains source', () {
+        const event = PaywallDismissed(source: 'dismiss_test');
+        expect(event.props, ['dismiss_test']);
+      });
+
+      test('two events with same source are equal', () {
+        const event1 = PaywallDismissed(source: 'y');
+        const event2 = PaywallDismissed(source: 'y');
+        expect(event1, equals(event2));
+      });
+
+      test('two events with different source are not equal', () {
+        const event1 = PaywallDismissed(source: 'x');
+        const event2 = PaywallDismissed(source: 'y');
+        expect(event1, isNot(equals(event2)));
+      });
+    });
+  });
 }

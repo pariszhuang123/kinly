@@ -209,4 +209,51 @@ void main() {
         ],
     verify: (_) => verify(() => homeRepository.join('FORBID')).called(1),
   );
+
+  group('JoinHomeEvent props', () {
+    group('JoinHomeCodeChanged', () {
+      test('props contains code', () {
+        const event = JoinHomeCodeChanged('ABC123');
+        expect(event.props, ['ABC123']);
+      });
+
+      test('two events with same code are equal', () {
+        const event1 = JoinHomeCodeChanged('XYZ789');
+        const event2 = JoinHomeCodeChanged('XYZ789');
+        expect(event1, equals(event2));
+      });
+
+      test('two events with different code are not equal', () {
+        const event1 = JoinHomeCodeChanged('ABC');
+        const event2 = JoinHomeCodeChanged('DEF');
+        expect(event1, isNot(equals(event2)));
+      });
+    });
+
+    group('JoinHomeSubmitted', () {
+      test('props is empty', () {
+        const event = JoinHomeSubmitted();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = JoinHomeSubmitted();
+        const event2 = JoinHomeSubmitted();
+        expect(event1, equals(event2));
+      });
+    });
+
+    group('JoinHomeReset', () {
+      test('props is empty', () {
+        const event = JoinHomeReset();
+        expect(event.props, isEmpty);
+      });
+
+      test('two instances are equal', () {
+        const event1 = JoinHomeReset();
+        const event2 = JoinHomeReset();
+        expect(event1, equals(event2));
+      });
+    });
+  });
 }
