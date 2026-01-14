@@ -8217,6 +8217,195 @@ COMMENT ON FUNCTION "public"."mood_submit"("p_home_id" "uuid", "p_mood" "public"
 
 
 
+CREATE OR REPLACE FUNCTION "public"."mood_submit_v2"("p_home_id" "uuid", "p_mood" "public"."mood_scale", "p_comment" "text" DEFAULT NULL::"text", "p_public_wall" boolean DEFAULT false, "p_mentions" "uuid"[] DEFAULT NULL::"uuid"[]) RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user_id        uuid;
+  v_now            timestamptz := now();
+  v_iso_week       int;
+  v_iso_week_year  int;
+
+  v_entry_id       uuid;
+  v_comment_trim   text;
+
+  v_message        text;
+  v_post_id        uuid;
+  v_source_kind    text;
+
+  v_mentions_raw   uuid[] := COALESCE(p_mentions, ARRAY[]::uuid[]);
+  v_mentions_dedup uuid[] := ARRAY[]::uuid[];
+  v_mention_count  int := 0;
+
+  v_publish_requested boolean;
+BEGIN
+  PERFORM public._assert_authenticated();
+  v_user_id := auth.uid();
+
+  PERFORM public.api_assert(p_home_id IS NOT NULL, 'INVALID_HOME', 'Home id is required.', '22023');
+  PERFORM public.api_assert(p_mood IS NOT NULL, 'INVALID_MOOD', 'Mood is required.', '22023');
+
+  PERFORM public._assert_home_member(p_home_id);
+  PERFORM public._assert_home_active(p_home_id);
+
+  SELECT extract('week' FROM timezone('UTC', v_now))::int,
+         extract('isoyear' FROM timezone('UTC', v_now))::int
+    INTO v_iso_week, v_iso_week_year;
+
+  v_comment_trim := NULLIF(btrim(p_comment), '');
+
+  BEGIN
+    INSERT INTO public.home_mood_entries (
+      home_id, user_id, mood, comment, iso_week_year, iso_week
+    )
+    VALUES (
+      p_home_id,
+      v_user_id,
+      p_mood,
+      CASE WHEN v_comment_trim IS NULL THEN NULL ELSE left(v_comment_trim, 500) END,
+      v_iso_week_year,
+      v_iso_week
+    )
+    RETURNING id INTO v_entry_id;
+  EXCEPTION
+    WHEN unique_violation THEN
+      PERFORM public.api_assert(
+        FALSE,
+        'MOOD_ALREADY_SUBMITTED',
+        'Mood already submitted for this ISO week (across all homes).',
+        'P0001',
+        jsonb_build_object('isoWeek', v_iso_week, 'isoYear', v_iso_week_year)
+      );
+  END;
+
+  v_publish_requested :=
+    COALESCE(p_public_wall, FALSE)
+    OR COALESCE(array_length(v_mentions_raw, 1), 0) > 0;
+
+  IF NOT v_publish_requested THEN
+    RETURN jsonb_build_object(
+      'entry_id', v_entry_id,
+      'public_post_id', NULL,
+      'mention_count', 0
+    );
+  END IF;
+
+  IF p_mood NOT IN ('sunny','partially_sunny') THEN
+    PERFORM public.api_assert(
+      FALSE,
+      'NOT_POSITIVE_MOOD',
+      'Publishing gratitude is only available for Sunny or Partially Sunny weeks.',
+      '22023'
+    );
+  END IF;
+
+  v_message := NULLIF(btrim(COALESCE(v_comment_trim, '')), '');
+  IF v_message IS NOT NULL THEN
+    v_message := left(v_message, 500);
+  END IF;
+
+  PERFORM public.api_assert(
+    NOT EXISTS (SELECT 1 FROM unnest(v_mentions_raw) m WHERE m IS NULL),
+    'INVALID_MENTION_USER',
+    'Mention list cannot contain nulls.',
+    '22023'
+  );
+
+  v_mentions_dedup := COALESCE((
+    SELECT array_agg(m ORDER BY m)
+    FROM (SELECT DISTINCT m FROM unnest(v_mentions_raw) m) s(m)
+  ), ARRAY[]::uuid[]);
+
+  v_mention_count := COALESCE(array_length(v_mentions_dedup, 1), 0);
+
+  IF array_length(v_mentions_raw, 1) IS NOT NULL
+     AND array_length(v_mentions_raw, 1) <> v_mention_count THEN
+    PERFORM public.api_assert(FALSE, 'DUPLICATE_MENTIONS_NOT_ALLOWED', 'Mentions must be unique.', '22023');
+  END IF;
+
+  IF v_mention_count > 5 THEN
+    PERFORM public.api_assert(FALSE, 'MENTION_LIMIT_EXCEEDED', 'You can mention at most 5 people.', '22023');
+  END IF;
+
+  IF v_user_id = ANY (v_mentions_dedup) THEN
+    PERFORM public.api_assert(FALSE, 'SELF_MENTION_NOT_ALLOWED', 'You cannot mention yourself.', '22023');
+  END IF;
+
+  IF v_mention_count > 0 THEN
+    PERFORM public.api_assert(
+      NOT EXISTS (
+        SELECT 1
+        FROM unnest(v_mentions_dedup) m
+        LEFT JOIN public.profiles p ON p.id = m
+        LEFT JOIN public.memberships mem
+               ON mem.home_id = p_home_id
+              AND mem.user_id = m
+              AND mem.is_current = TRUE
+        WHERE p.id IS NULL OR mem.user_id IS NULL
+      ),
+      'MENTION_NOT_HOME_MEMBER',
+      'All mentions must be existing profiles and current members of the home.',
+      '22023'
+    );
+  END IF;
+
+  PERFORM pg_advisory_xact_lock(
+    hashtext('mood_submit_v2_publish'),
+    hashtext(v_entry_id::text)
+  );
+
+  -- Idempotent insert without ON CONFLICT requirement
+  IF COALESCE(p_public_wall, FALSE) THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM public.gratitude_wall_posts WHERE source_entry_id = v_entry_id
+    ) THEN
+      INSERT INTO public.gratitude_wall_posts (
+        home_id, author_user_id, mood, message, created_at, source_entry_id
+      )
+      SELECT p_home_id, v_user_id, p_mood, v_message, v_now, v_entry_id;
+    END IF;
+
+    SELECT id
+      INTO v_post_id
+      FROM public.gratitude_wall_posts
+     WHERE source_entry_id = v_entry_id
+     LIMIT 1;
+  END IF;
+
+  IF v_post_id IS NOT NULL AND v_mention_count > 0 THEN
+    INSERT INTO public.gratitude_wall_mentions (post_id, home_id, mentioned_user_id, created_at)
+    SELECT v_post_id, p_home_id, m, v_now
+    FROM unnest(v_mentions_dedup) m
+    ON CONFLICT DO NOTHING;
+  END IF;
+
+  IF v_mention_count > 0 THEN
+    v_source_kind := CASE WHEN v_post_id IS NULL THEN 'mention_only' ELSE 'home_post' END;
+
+    INSERT INTO public.gratitude_wall_personal_items (
+      recipient_user_id, home_id, author_user_id, mood, message,
+      source_kind, source_post_id, source_entry_id, created_at
+    )
+    SELECT
+      m, p_home_id, v_user_id, p_mood, v_message,
+      v_source_kind, v_post_id, v_entry_id, v_now
+    FROM unnest(v_mentions_dedup) m
+    ON CONFLICT (recipient_user_id, source_entry_id) DO NOTHING;
+  END IF;
+
+  RETURN jsonb_build_object(
+    'entry_id', v_entry_id,
+    'public_post_id', v_post_id,
+    'mention_count', v_mention_count
+  );
+END;
+$$;
+
+
+ALTER FUNCTION "public"."mood_submit_v2"("p_home_id" "uuid", "p_mood" "public"."mood_scale", "p_comment" "text", "p_public_wall" boolean, "p_mentions" "uuid"[]) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."notifications_daily_candidates"("p_limit" integer DEFAULT 200, "p_offset" integer DEFAULT 0) RETURNS TABLE("user_id" "uuid", "locale" "text", "timezone" "text", "token_id" "uuid", "token" "text", "local_date" "date")
     LANGUAGE "sql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -8887,6 +9076,164 @@ $$;
 
 
 ALTER FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."personal_gratitude_inbox_list_v1"("p_limit" integer DEFAULT 30, "p_before_at" timestamp with time zone DEFAULT NULL::timestamp with time zone, "p_before_id" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("id" "uuid", "created_at" timestamp with time zone, "home_id" "uuid", "mood" "public"."mood_scale", "message" "text", "source_kind" "text", "source_post_id" "uuid", "source_entry_id" "uuid", "author_user_id" "uuid", "author_username" "public"."citext", "author_avatar_id" "uuid", "author_avatar_path" "text")
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user_id uuid := auth.uid();
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  p_limit := GREATEST(1, LEAST(COALESCE(p_limit, 30), 100));
+
+  -- Enforce: both cursor parts must be provided together, or neither.
+  PERFORM public.api_assert(
+    (p_before_at IS NULL AND p_before_id IS NULL)
+    OR (p_before_at IS NOT NULL AND p_before_id IS NOT NULL),
+    'INVALID_PAGINATION_CURSOR',
+    'Pagination cursor requires both before_at and before_id, or neither.',
+    '22023',
+    jsonb_build_object('before_at', p_before_at, 'before_id', p_before_id)
+  );
+
+  RETURN QUERY
+  SELECT
+    i.id,
+    i.created_at,
+    i.home_id,
+    i.mood,
+    i.message,
+    i.source_kind,
+    i.source_post_id,
+    i.source_entry_id,
+
+    p.id           AS author_user_id,
+    p.username     AS author_username,
+    p.avatar_id    AS author_avatar_id,
+    a.storage_path AS author_avatar_path
+  FROM public.gratitude_wall_personal_items i
+  JOIN public.profiles p
+    ON p.id = i.author_user_id
+  JOIN public.avatars a
+    ON a.id = p.avatar_id
+  WHERE i.recipient_user_id = v_user_id
+    AND (
+      p_before_at IS NULL
+      OR i.created_at < p_before_at
+      OR (i.created_at = p_before_at AND i.id < p_before_id)
+    )
+  ORDER BY i.created_at DESC, i.id DESC
+  LIMIT p_limit;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."personal_gratitude_inbox_list_v1"("p_limit" integer, "p_before_at" timestamp with time zone, "p_before_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."personal_gratitude_inbox_list_v1"("p_limit" integer, "p_before_at" timestamp with time zone, "p_before_id" "uuid") IS 'Recipient personal gratitude inbox list (paged). Resolves author username + avatar storage_path at read time. Cursor requires both before_at and before_id.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."personal_gratitude_showcase_stats_v1"("p_exclude_self" boolean DEFAULT true) RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user_id uuid := auth.uid();
+  v_total   bigint;
+  v_authors bigint;
+  v_homes   bigint;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  SELECT
+    COUNT(*)::bigint,
+    COUNT(DISTINCT i.author_user_id)::bigint,
+    COUNT(DISTINCT i.home_id)::bigint
+  INTO v_total, v_authors, v_homes
+  FROM public.gratitude_wall_personal_items i
+  WHERE i.recipient_user_id = v_user_id
+    AND (NOT p_exclude_self OR i.author_user_id <> v_user_id);
+
+  RETURN jsonb_build_object(
+    'total_received',     COALESCE(v_total, 0),
+    'unique_individuals', COALESCE(v_authors, 0),
+    'unique_homes',       COALESCE(v_homes, 0)
+  );
+END;
+$$;
+
+
+ALTER FUNCTION "public"."personal_gratitude_showcase_stats_v1"("p_exclude_self" boolean) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."personal_gratitude_showcase_stats_v1"("p_exclude_self" boolean) IS 'Showcase stats for auth.uid() from personal gratitude inbox: total received items, unique authors, unique homes.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."personal_gratitude_wall_mark_read_v1"() RETURNS boolean
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user_id uuid := auth.uid();
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  INSERT INTO public.gratitude_wall_personal_reads (user_id, last_read_at)
+  VALUES (v_user_id, now())
+  ON CONFLICT (user_id)
+  DO UPDATE SET last_read_at = EXCLUDED.last_read_at;
+
+  RETURN TRUE;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."personal_gratitude_wall_mark_read_v1"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."personal_gratitude_wall_status_v1"() RETURNS TABLE("has_unread" boolean, "last_read_at" timestamp with time zone)
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+DECLARE
+  v_user_id           uuid := auth.uid();
+  v_latest_created_at timestamptz;
+BEGIN
+  PERFORM public._assert_authenticated();
+
+  SELECT r.last_read_at
+    INTO last_read_at
+  FROM public.gratitude_wall_personal_reads r
+  WHERE r.user_id = v_user_id
+  LIMIT 1;
+
+  SELECT i.created_at
+    INTO v_latest_created_at
+  FROM public.gratitude_wall_personal_items i
+  WHERE i.recipient_user_id = v_user_id
+    AND i.author_user_id <> v_user_id
+  ORDER BY i.created_at DESC, i.id DESC
+  LIMIT 1;
+
+  has_unread :=
+    CASE
+      WHEN v_latest_created_at IS NULL THEN FALSE
+      WHEN last_read_at IS NULL THEN TRUE
+      ELSE v_latest_created_at > last_read_at
+    END;
+
+  RETURN NEXT;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."personal_gratitude_wall_status_v1"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."preference_reports_acknowledge"("p_report_id" "uuid") RETURNS "jsonb"
@@ -10462,6 +10809,56 @@ COMMENT ON COLUMN "public"."expense_splits"."recipient_viewed_at" IS 'When the e
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."gratitude_wall_mentions" (
+    "post_id" "uuid" NOT NULL,
+    "home_id" "uuid" NOT NULL,
+    "mentioned_user_id" "uuid" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."gratitude_wall_mentions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."gratitude_wall_mentions" IS 'Mention edges for home gratitude wall posts. Display fields resolved at read time from profiles. home_id is stored as original context.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."gratitude_wall_personal_items" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "recipient_user_id" "uuid" NOT NULL,
+    "home_id" "uuid" NOT NULL,
+    "author_user_id" "uuid" NOT NULL,
+    "mood" "public"."mood_scale" NOT NULL,
+    "message" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "source_kind" "text" NOT NULL,
+    "source_post_id" "uuid",
+    "source_entry_id" "uuid" NOT NULL,
+    CONSTRAINT "gratitude_wall_personal_items_source_kind_check" CHECK (("source_kind" = ANY (ARRAY['home_post'::"text", 'mention_only'::"text"])))
+);
+
+
+ALTER TABLE "public"."gratitude_wall_personal_items" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."gratitude_wall_personal_items" IS 'Recipient-owned, immutable personal gratitude inbox items. Stable IDs only; resolve display fields at read time. First publish wins.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."gratitude_wall_personal_reads" (
+    "user_id" "uuid" NOT NULL,
+    "last_read_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."gratitude_wall_personal_reads" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."gratitude_wall_personal_reads" IS 'Recipient-only read cursor for the personal gratitude inbox.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."gratitude_wall_posts" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "home_id" "uuid" NOT NULL,
@@ -10469,6 +10866,7 @@ CREATE TABLE IF NOT EXISTS "public"."gratitude_wall_posts" (
     "mood" "public"."mood_scale" NOT NULL,
     "message" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "source_entry_id" "uuid",
     CONSTRAINT "chk_gratitude_wall_posts_message_len" CHECK ((("message" IS NULL) OR ("char_length"("message") <= 500)))
 );
 
@@ -10501,6 +10899,10 @@ COMMENT ON COLUMN "public"."gratitude_wall_posts"."message" IS 'User-supplied gr
 
 
 COMMENT ON COLUMN "public"."gratitude_wall_posts"."created_at" IS 'Timestamp when this gratitude post was created.';
+
+
+
+COMMENT ON COLUMN "public"."gratitude_wall_posts"."source_entry_id" IS 'Origin weekly entry (home_mood_entries.id) that produced this post. Nullable for legacy/manual posts.';
 
 
 
@@ -11278,6 +11680,16 @@ ALTER TABLE ONLY "public"."expenses"
 
 
 
+ALTER TABLE ONLY "public"."gratitude_wall_personal_items"
+    ADD CONSTRAINT "gratitude_wall_personal_items_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_personal_reads"
+    ADD CONSTRAINT "gratitude_wall_personal_reads_pkey" PRIMARY KEY ("user_id");
+
+
+
 ALTER TABLE ONLY "public"."gratitude_wall_posts"
     ADD CONSTRAINT "gratitude_wall_posts_pkey" PRIMARY KEY ("id");
 
@@ -11374,6 +11786,11 @@ ALTER TABLE ONLY "public"."expense_plan_debtors"
 
 ALTER TABLE ONLY "public"."expense_splits"
     ADD CONSTRAINT "pk_expense_splits" PRIMARY KEY ("expense_id", "debtor_user_id");
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_mentions"
+    ADD CONSTRAINT "pk_gratitude_wall_mentions" PRIMARY KEY ("post_id", "mentioned_user_id");
 
 
 
@@ -11482,6 +11899,11 @@ ALTER TABLE ONLY "public"."home_mood_entries"
 
 
 
+ALTER TABLE ONLY "public"."gratitude_wall_personal_items"
+    ADD CONSTRAINT "uq_personal_items_recipient_entry" UNIQUE ("recipient_user_id", "source_entry_id");
+
+
+
 ALTER TABLE ONLY "public"."preference_report_acknowledgements"
     ADD CONSTRAINT "uq_preference_report_ack" UNIQUE ("report_id", "viewer_user_id");
 
@@ -11582,6 +12004,14 @@ CREATE INDEX "idx_expenses_plan_id" ON "public"."expenses" USING "btree" ("plan_
 
 
 
+CREATE INDEX "idx_gratitude_wall_mentions_home_post" ON "public"."gratitude_wall_mentions" USING "btree" ("home_id", "post_id");
+
+
+
+CREATE INDEX "idx_gratitude_wall_mentions_user_created_desc" ON "public"."gratitude_wall_mentions" USING "btree" ("mentioned_user_id", "created_at" DESC);
+
+
+
 CREATE INDEX "idx_gratitude_wall_posts_home_created_desc" ON "public"."gratitude_wall_posts" USING "btree" ("home_id", "created_at" DESC, "id" DESC);
 
 
@@ -11606,6 +12036,18 @@ COMMENT ON INDEX "public"."idx_invites_code_active" IS 'Optimizes lookups for ac
 
 
 
+CREATE INDEX "idx_personal_items_recipient_author" ON "public"."gratitude_wall_personal_items" USING "btree" ("recipient_user_id", "author_user_id");
+
+
+
+CREATE INDEX "idx_personal_items_recipient_created_desc" ON "public"."gratitude_wall_personal_items" USING "btree" ("recipient_user_id", "created_at" DESC, "id" DESC);
+
+
+
+CREATE INDEX "idx_personal_items_recipient_home" ON "public"."gratitude_wall_personal_items" USING "btree" ("recipient_user_id", "home_id");
+
+
+
 CREATE INDEX "idx_preference_report_revisions_report" ON "public"."preference_report_revisions" USING "btree" ("report_id", "edited_at" DESC);
 
 
@@ -11619,6 +12061,10 @@ CREATE INDEX "idx_preference_reports_subject" ON "public"."preference_reports" U
 
 
 CREATE INDEX "idx_preference_taxonomy_defs_domain" ON "public"."preference_taxonomy_defs" USING "btree" ("domain");
+
+
+
+CREATE INDEX "memberships_home_user_current_idx" ON "public"."memberships" USING "btree" ("home_id", "user_id") WHERE ("is_current" = true);
 
 
 
@@ -11639,6 +12085,10 @@ CREATE INDEX "revenuecat_webhook_events_rc_event_idx" ON "public"."revenuecat_we
 
 
 CREATE UNIQUE INDEX "uq_app_version_is_current_true" ON "public"."app_version" USING "btree" ((true)) WHERE "is_current";
+
+
+
+CREATE UNIQUE INDEX "uq_gratitude_wall_posts_source_entry_id" ON "public"."gratitude_wall_posts" USING "btree" ("source_entry_id") WHERE ("source_entry_id" IS NOT NULL);
 
 
 
@@ -11830,6 +12280,51 @@ ALTER TABLE ONLY "public"."notification_sends"
 
 
 
+ALTER TABLE ONLY "public"."gratitude_wall_mentions"
+    ADD CONSTRAINT "gratitude_wall_mentions_home_id_fkey" FOREIGN KEY ("home_id") REFERENCES "public"."homes"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_mentions"
+    ADD CONSTRAINT "gratitude_wall_mentions_mentioned_user_id_fkey" FOREIGN KEY ("mentioned_user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_mentions"
+    ADD CONSTRAINT "gratitude_wall_mentions_post_id_fkey" FOREIGN KEY ("post_id") REFERENCES "public"."gratitude_wall_posts"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_personal_items"
+    ADD CONSTRAINT "gratitude_wall_personal_items_author_user_id_fkey" FOREIGN KEY ("author_user_id") REFERENCES "public"."profiles"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_personal_items"
+    ADD CONSTRAINT "gratitude_wall_personal_items_home_id_fkey" FOREIGN KEY ("home_id") REFERENCES "public"."homes"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_personal_items"
+    ADD CONSTRAINT "gratitude_wall_personal_items_recipient_user_id_fkey" FOREIGN KEY ("recipient_user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_personal_items"
+    ADD CONSTRAINT "gratitude_wall_personal_items_source_entry_id_fkey" FOREIGN KEY ("source_entry_id") REFERENCES "public"."home_mood_entries"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_personal_items"
+    ADD CONSTRAINT "gratitude_wall_personal_items_source_post_id_fkey" FOREIGN KEY ("source_post_id") REFERENCES "public"."gratitude_wall_posts"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_personal_reads"
+    ADD CONSTRAINT "gratitude_wall_personal_reads_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."gratitude_wall_posts"
     ADD CONSTRAINT "gratitude_wall_posts_author_user_id_fkey" FOREIGN KEY ("author_user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
@@ -11837,6 +12332,11 @@ ALTER TABLE ONLY "public"."gratitude_wall_posts"
 
 ALTER TABLE ONLY "public"."gratitude_wall_posts"
     ADD CONSTRAINT "gratitude_wall_posts_home_id_fkey" FOREIGN KEY ("home_id") REFERENCES "public"."homes"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."gratitude_wall_posts"
+    ADD CONSTRAINT "gratitude_wall_posts_source_entry_id_fkey" FOREIGN KEY ("source_entry_id") REFERENCES "public"."home_mood_entries"("id") ON DELETE SET NULL;
 
 
 
@@ -12087,6 +12587,15 @@ ALTER TABLE "public"."expense_splits" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."expenses" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."gratitude_wall_mentions" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."gratitude_wall_personal_items" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."gratitude_wall_personal_reads" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."gratitude_wall_posts" ENABLE ROW LEVEL SECURITY;
@@ -14399,6 +14908,12 @@ GRANT ALL ON FUNCTION "public"."mood_submit"("p_home_id" "uuid", "p_mood" "publi
 
 
 
+REVOKE ALL ON FUNCTION "public"."mood_submit_v2"("p_home_id" "uuid", "p_mood" "public"."mood_scale", "p_comment" "text", "p_public_wall" boolean, "p_mentions" "uuid"[]) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."mood_submit_v2"("p_home_id" "uuid", "p_mood" "public"."mood_scale", "p_comment" "text", "p_public_wall" boolean, "p_mentions" "uuid"[]) TO "service_role";
+GRANT ALL ON FUNCTION "public"."mood_submit_v2"("p_home_id" "uuid", "p_mood" "public"."mood_scale", "p_comment" "text", "p_public_wall" boolean, "p_mentions" "uuid"[]) TO "authenticated";
+
+
+
 REVOKE ALL ON FUNCTION "public"."notifications_daily_candidates"("p_limit" integer, "p_offset" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."notifications_daily_candidates"("p_limit" integer, "p_offset" integer) TO "anon";
 GRANT ALL ON FUNCTION "public"."notifications_daily_candidates"("p_limit" integer, "p_offset" integer) TO "authenticated";
@@ -14478,6 +14993,30 @@ GRANT ALL ON FUNCTION "public"."paywall_record_subscription"("p_idempotency_key"
 REVOKE ALL ON FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."paywall_status_get"("p_home_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."personal_gratitude_inbox_list_v1"("p_limit" integer, "p_before_at" timestamp with time zone, "p_before_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."personal_gratitude_inbox_list_v1"("p_limit" integer, "p_before_at" timestamp with time zone, "p_before_id" "uuid") TO "service_role";
+GRANT ALL ON FUNCTION "public"."personal_gratitude_inbox_list_v1"("p_limit" integer, "p_before_at" timestamp with time zone, "p_before_id" "uuid") TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."personal_gratitude_showcase_stats_v1"("p_exclude_self" boolean) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."personal_gratitude_showcase_stats_v1"("p_exclude_self" boolean) TO "service_role";
+GRANT ALL ON FUNCTION "public"."personal_gratitude_showcase_stats_v1"("p_exclude_self" boolean) TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."personal_gratitude_wall_mark_read_v1"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."personal_gratitude_wall_mark_read_v1"() TO "service_role";
+GRANT ALL ON FUNCTION "public"."personal_gratitude_wall_mark_read_v1"() TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."personal_gratitude_wall_status_v1"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."personal_gratitude_wall_status_v1"() TO "service_role";
+GRANT ALL ON FUNCTION "public"."personal_gratitude_wall_status_v1"() TO "authenticated";
 
 
 
@@ -14813,6 +15352,18 @@ GRANT ALL ON TABLE "public"."expense_plan_debtors" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."expense_splits" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."gratitude_wall_mentions" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."gratitude_wall_personal_items" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."gratitude_wall_personal_reads" TO "service_role";
 
 
 

@@ -18,6 +18,12 @@ String resolveHouseVibeTitle(S s, String key) {
       return s.vibeEasygoingTitle;
     case 'vibe.independent.title':
       return s.vibeIndependentTitle;
+    case 'vibe.warmSocial.title':
+      return s.vibeWarmSocialTitle;
+    case 'vibe.cozySocial.title':
+      return s.vibeCozySocialTitle;
+    case 'vibe.steady.title':
+      return s.vibeSteadyTitle;
   }
   return '';
 }
@@ -40,6 +46,12 @@ String resolveHouseVibeSummary(S s, String key) {
       return s.vibeEasygoingSummary;
     case 'vibe.independent.summary':
       return s.vibeIndependentSummary;
+    case 'vibe.warmSocial.summary':
+      return s.vibeWarmSocialSummary;
+    case 'vibe.cozySocial.summary':
+      return s.vibeCozySocialSummary;
+    case 'vibe.steady.summary':
+      return s.vibeSteadySummary;
   }
   return '';
 }

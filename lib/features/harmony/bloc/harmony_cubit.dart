@@ -3,19 +3,39 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kinly/contracts/mood/enums/mood_scale.dart';
 import 'package:kinly/contracts/mood/models.dart';
+import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import '../harmony.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 
 part 'harmony_state.dart';
 
 class HarmonyCubit extends Cubit<HarmonyState> {
-  HarmonyCubit({required String homeId, required MoodRepository moodRepository})
+  HarmonyCubit({
+    required String homeId,
+    required MoodRepository moodRepository,
+    required HomeRepository homeRepository,
+  })
     : _homeId = homeId,
       _moodRepository = moodRepository,
+      _homeRepository = homeRepository,
       super(const HarmonyState());
 
   final String _homeId;
   final MoodRepository _moodRepository;
+  final HomeRepository _homeRepository;
+
+  Future<void> loadMembers() async {
+    if (state.isLoadingMembers || state.members.isNotEmpty) return;
+    emit(state.copyWith(isLoadingMembers: true, membersLoadFailed: false));
+    try {
+      final members =
+          await _homeRepository.listActiveMembers(_homeId, excludeSelf: true);
+      emit(state.copyWith(isLoadingMembers: false, members: members));
+    } catch (_) {
+      emit(state.copyWith(isLoadingMembers: false, membersLoadFailed: true));
+    }
+  }
 
   void selectMood(MoodScale mood) {
     if (state.selectedMood == mood) return;
@@ -23,9 +43,14 @@ class HarmonyCubit extends Cubit<HarmonyState> {
     final wasEligible =
         _canShare(state.selectedMood) && _hasComment(state.comment);
     final isEligible = _canShare(mood) && _hasComment(state.comment);
+    final shouldClearMentions =
+        !_canShare(mood) && state.selectedMentions.isNotEmpty;
+
     emit(
       state.copyWith(
         selectedMood: mood,
+        selectedMentions:
+            shouldClearMentions ? <String>{} : state.selectedMentions,
         addToWall: _deriveAddToWall(
           mood: mood,
           comment: state.comment,
@@ -41,6 +66,7 @@ class HarmonyCubit extends Cubit<HarmonyState> {
     final wasEligible =
         _canShare(state.selectedMood) && _hasComment(state.comment);
     final isEligible = _canShare(state.selectedMood) && _hasComment(value);
+
     emit(
       state.copyWith(
         comment: value,
@@ -60,6 +86,18 @@ class HarmonyCubit extends Cubit<HarmonyState> {
     emit(state.copyWith(addToWall: value));
   }
 
+  void toggleMention(String userId) {
+    if (!_canShare(state.selectedMood)) return;
+    final selected = Set<String>.from(state.selectedMentions);
+    if (selected.contains(userId)) {
+      selected.remove(userId);
+    } else {
+      if (selected.length >= 5) return;
+      selected.add(userId);
+    }
+    emit(state.copyWith(selectedMentions: selected));
+  }
+
   Future<void> submit() async {
     final mood = state.selectedMood;
     if (mood == null || state.isSubmitting) return;
@@ -71,6 +109,9 @@ class HarmonyCubit extends Cubit<HarmonyState> {
         comment: state.comment,
         addToWall:
             state.addToWall && _canShare(mood) && _hasComment(state.comment),
+        mentions: _canShare(mood)
+            ? state.selectedMentions.toList(growable: false)
+            : const [],
       );
       emit(
         state.copyWith(
@@ -113,6 +154,18 @@ class HarmonyCubit extends Cubit<HarmonyState> {
       switch (error.code) {
         case MoodSubmitErrorCode.moodAlreadySubmitted:
           return 'moodAlreadySubmitted';
+        case MoodSubmitErrorCode.notPositiveMood:
+          return 'notPositiveMood';
+        case MoodSubmitErrorCode.mentionLimitExceeded:
+          return 'mentionLimitExceeded';
+        case MoodSubmitErrorCode.duplicateMentions:
+          return 'duplicateMentions';
+        case MoodSubmitErrorCode.selfMentionNotAllowed:
+          return 'selfMentionNotAllowed';
+        case MoodSubmitErrorCode.mentionNotHomeMember:
+          return 'mentionNotHomeMember';
+        case MoodSubmitErrorCode.invalidMentionUser:
+          return 'invalidMentionUser';
         case MoodSubmitErrorCode.forbidden:
         case MoodSubmitErrorCode.unauthorized:
           return 'forbidden';

@@ -212,7 +212,6 @@
   },
   "todayGratitudeSectionTitle": "جدار امتنان المنزل",
   "todayGratitudeUnreadBody": "هناك منشورات امتنان جديدة بانتظارك.",
-  "todayGratitudeOpenCta": "عرض الجدار",
   "shareOwedDetailTitle": "دفعة معلّقة",
   "shareOwedDetailEmpty": "أنت مُسدِّد بالكامل مع هذا الشخص.",
   "shareOwedDetailPaid": "تحديد كمدفوع",
@@ -681,9 +680,6 @@
   },
   "@todayGratitudeUnreadBody": {
     "surface": "subtitle"
-  },
-  "@todayGratitudeOpenCta": {
-    "surface": "button"
   },
   "@shareOwedDetailTitle": {
     "surface": "title"

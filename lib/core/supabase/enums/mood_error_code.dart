@@ -1,6 +1,12 @@
 enum MoodSubmitErrorCode {
   invalidHome,
   invalidMood,
+  notPositiveMood,
+  mentionLimitExceeded,
+  duplicateMentions,
+  selfMentionNotAllowed,
+  mentionNotHomeMember,
+  invalidMentionUser,
   moodAlreadySubmitted,
   unauthorized,
   forbidden,

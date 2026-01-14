@@ -26,6 +26,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(appName) => "Made with ${appName} - Together feels lighter";
 
+  static String m23(homeId) => "From home ${homeId}";
+
   static String m3(link) =>
       "Sharing a glimpse of our Kinly gratitude wall. Download the app: ${link}";
 
@@ -54,7 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(current, total) => "Question ${current} of ${total}";
 
-  static String m23(period) => "Applies to ${period}";
+  static String m24(period) => "Applies to ${period}";
 
   static String m14(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
@@ -288,7 +290,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "No gratitude posts yet",
     ),
+    "gratitudeWallErrorGeneric": MessageLookupByLibrary.simpleMessage(
+      "Unable to load gratitude right now.",
+    ),
     "gratitudeWallFooter": m2,
+    "gratitudeWallHouseTab": MessageLookupByLibrary.simpleMessage("House"),
+    "gratitudeWallPersonalMeta": m23,
+    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage(
+      "Personal",
+    ),
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("Try again"),
     "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage(
       "Share this wall",
@@ -986,7 +996,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
       "Enter each person\'s part. Make sure the total matches the amount above.",
     ),
-    "shareCreateCyclePeriod": m23,
+    "shareCreateCyclePeriod": m24,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
       "e.g. Grocery run",
     ),
@@ -1216,7 +1226,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "todayGratitudeOpenCta": MessageLookupByLibrary.simpleMessage("View wall"),
+    "todayGratitudeHouseCta": MessageLookupByLibrary.simpleMessage(
+      "House wall",
+    ),
+    "todayGratitudePersonalCta": MessageLookupByLibrary.simpleMessage(
+      "Personal wall",
+    ),
     "todayGratitudeSectionTitle": MessageLookupByLibrary.simpleMessage(
       "Home Gratitude wall",
     ),
@@ -1262,18 +1277,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To settle"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
     "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("Settled"),
+    "vibeCozySocialSummary": MessageLookupByLibrary.simpleMessage(
+      "Your home feels cozy and calm when people spend time together.",
+    ),
+    "vibeCozySocialTitle": MessageLookupByLibrary.simpleMessage("Cozy social"),
     "vibeDefaultSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels balanced and easy to share.",
+      "Your home feels easy to live in for everyone.",
     ),
     "vibeDefaultTitle": MessageLookupByLibrary.simpleMessage("A balanced home"),
     "vibeEasygoingSummary": MessageLookupByLibrary.simpleMessage(
-      "This home tends to feel relaxed and flexible day to day.",
+      "Your home feels relaxed and open to change day by day.",
     ),
     "vibeEasygoingTitle": MessageLookupByLibrary.simpleMessage(
       "Easygoing flow",
     ),
     "vibeIndependentSummary": MessageLookupByLibrary.simpleMessage(
-      "This home values personal space with gentle connection.",
+      "Your home supports space and quiet.",
     ),
     "vibeIndependentTitle": MessageLookupByLibrary.simpleMessage(
       "Independent calm",
@@ -1285,23 +1304,31 @@ class MessageLookup extends MessageLookupByLibrary {
       "Not enough data yet",
     ),
     "vibeMixedSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home shows a blend of comfort styles across members.",
+      "Your home shows a mix of comfort styles, influenced by how different people like to live.",
     ),
     "vibeMixedTitle": MessageLookupByLibrary.simpleMessage("A mixed home"),
     "vibeQuietCareSummary": MessageLookupByLibrary.simpleMessage(
-      "This home often feels best with calmer energy and gentle rhythms.",
+      "Your home feels calm, with gentle energy and softer rhythms.",
     ),
     "vibeQuietCareTitle": MessageLookupByLibrary.simpleMessage("Quiet care"),
     "vibeSocialSummary": MessageLookupByLibrary.simpleMessage(
-      "This home tends to feel lively, with shared moments and together time.",
+      "Your home feels active, with people together.",
     ),
     "vibeSocialTitle": MessageLookupByLibrary.simpleMessage("Social energy"),
+    "vibeSteadySummary": MessageLookupByLibrary.simpleMessage(
+      "Your home feels steady, with care shown through daily habits.",
+    ),
+    "vibeSteadyTitle": MessageLookupByLibrary.simpleMessage("Steady calm"),
     "vibeStructuredSummary": MessageLookupByLibrary.simpleMessage(
-      "This home often feels best with clear structure and steady routines.",
+      "Your home works best with clear routines and shared plans.",
     ),
     "vibeStructuredTitle": MessageLookupByLibrary.simpleMessage(
       "Structured rhythm",
     ),
+    "vibeWarmSocialSummary": MessageLookupByLibrary.simpleMessage(
+      "Your home feels warm and welcoming, with people often together.",
+    ),
+    "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage("Warm social"),
     "welcome_create": MessageLookupByLibrary.simpleMessage("Create a Home"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("Join a Home"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("Welcome to Kinly"),

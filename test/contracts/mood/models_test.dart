@@ -34,20 +34,26 @@ void main() {
   });
 
   group('MoodSubmitResult.fromJson', () {
-    test('parses with gratitude post', () {
-      final json = {'entry_id': 'entry-123', 'gratitude_post_id': 'post-456'};
+    test('parses with public post and mentions', () {
+      final json = {
+        'entry_id': 'entry-123',
+        'public_post_id': 'post-456',
+        'mention_count': 2,
+      };
       final result = MoodSubmitResult.fromJson(json);
 
       expect(result.entryId, 'entry-123');
-      expect(result.gratitudePostId, 'post-456');
+      expect(result.publicPostId, 'post-456');
+      expect(result.mentionCount, 2);
     });
 
-    test('parses without gratitude post', () {
+    test('parses without public post', () {
       final json = {'entry_id': 'entry-123', 'gratitude_post_id': null};
       final result = MoodSubmitResult.fromJson(json);
 
       expect(result.entryId, 'entry-123');
-      expect(result.gratitudePostId, isNull);
+      expect(result.publicPostId, isNull);
+      expect(result.mentionCount, 0);
     });
   });
 

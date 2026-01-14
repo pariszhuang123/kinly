@@ -13,6 +13,7 @@ import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
 import 'package:kinly/contracts/mood/models.dart';
+import 'package:kinly/contracts/mood/personal_wall_models.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
@@ -134,6 +135,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             npsPromptTick: prevNpsPromptTick,
             hasShownNpsPrompt: prevHasShownNps,
             gratitudeStatus: prevGratitudeStatus,
+            personalGratitudeStatus: state.personalGratitudeStatus,
             notificationPromptTick: prevNotificationPromptTick,
             hasShownNotificationPrompt: prevHasShownNotification,
             activeChoreCount: state.activeChoreCount,
@@ -158,22 +160,23 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       final npsPromptTick =
           shouldPromptNps ? prevNpsPromptTick + 1 : prevNpsPromptTick;
       final hasShownNpsPromptNext = npsRequired;
-      try {
-        final hints = await _onboardingRepository.getTodayHints();
-        activeChoreCount = hints.activeChoreCount;
-        hasShownNotificationPrompt =
-            prevHasShownNotification || hints.shouldPromptNotifications;
-        notificationPromptTick =
-            hints.shouldPromptNotifications && !prevHasShownNotification
-                ? prevNotificationPromptTick + 1
-                : prevNotificationPromptTick;
-        shouldPromptFlatmateInviteShare = hints.shouldPromptFlatmateInviteShare;
-        shouldPromptInviteShare = hints.shouldPromptInviteShare;
-        memberCapJoinRequests = hints.memberCapJoinRequests;
-        memberCapJoinResolution = hints.memberCapJoinResolution;
-      } catch (_) {
-        // Keep previous hints if the RPC fails; avoid blocking Today.
-      }
+      final hintsSnapshot = await _loadHintsSnapshot(
+        prevNotificationPromptTick: prevNotificationPromptTick,
+        prevHasShownNotification: prevHasShownNotification,
+        activeChoreCount: activeChoreCount,
+        shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: shouldPromptInviteShare,
+        memberCapJoinRequests: memberCapJoinRequests,
+        memberCapJoinResolution: memberCapJoinResolution,
+      );
+      activeChoreCount = hintsSnapshot.activeChoreCount;
+      hasShownNotificationPrompt = hintsSnapshot.hasShownNotificationPrompt;
+      notificationPromptTick = hintsSnapshot.notificationPromptTick;
+      shouldPromptFlatmateInviteShare =
+          hintsSnapshot.shouldPromptFlatmateInviteShare;
+      shouldPromptInviteShare = hintsSnapshot.shouldPromptInviteShare;
+      memberCapJoinRequests = hintsSnapshot.memberCapJoinRequests;
+      memberCapJoinResolution = hintsSnapshot.memberCapJoinResolution;
 
       final profileFuture = _profileRepository.getCurrentProfile();
       final draftsFuture = _choresRepository.listTodayFlow(
@@ -189,6 +192,14 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         excludeSelf: false,
       );
       final wallStatusFuture = _moodRepository.getWallStatus(_homeId);
+      late Future<PersonalGratitudeStatus> personalStatusFuture;
+      try {
+        personalStatusFuture = _moodRepository.getPersonalStatus();
+      } catch (_) {
+        personalStatusFuture = Future.value(
+          const PersonalGratitudeStatus(hasUnread: false, lastReadAt: null),
+        );
+      }
 
       final members = await membersFuture;
       String? ownerUserId;
@@ -232,6 +243,10 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         fallback: prevGratitudeStatus,
         currentUserId: profile?.userId,
       );
+      final personalStatus = await _resolvePersonalStatus(
+        personalStatusFuture,
+        currentUserId: profile?.userId,
+      );
       _logGratitudeStatus(wallStatus, profile?.userId);
 
       final draftTasks = drafts
@@ -250,6 +265,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shareDrafts: shareSnapshot.drafts,
           shareErrorMessage: shareSnapshot.errorMessage,
           gratitudeStatus: wallStatus,
+          personalGratitudeStatus: personalStatus,
           profile: profile,
           harmonyPromptTick: promptTick,
           hasShownHarmonyPrompt: hasShownPromptNext,
@@ -380,6 +396,51 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     }
   }
 
+  Future<_HintsSnapshot> _loadHintsSnapshot({
+    required int prevNotificationPromptTick,
+    required bool prevHasShownNotification,
+    required int activeChoreCount,
+    required bool shouldPromptFlatmateInviteShare,
+    required bool shouldPromptInviteShare,
+    required MemberCapJoinRequests? memberCapJoinRequests,
+    required MemberCapJoinResolution? memberCapJoinResolution,
+  }) async {
+    try {
+      final hints = await _onboardingRepository.getTodayHints();
+      final nextHasShownNotification =
+          hints.shouldPromptNotifications || prevHasShownNotification;
+      final nextNotificationPromptTick =
+          hints.shouldPromptNotifications && !prevHasShownNotification
+              ? prevNotificationPromptTick + 1
+              : prevNotificationPromptTick;
+      return _HintsSnapshot(
+        activeChoreCount: hints.activeChoreCount,
+        hasShownNotificationPrompt: nextHasShownNotification,
+        notificationPromptTick: nextNotificationPromptTick,
+        shouldPromptFlatmateInviteShare: hints.shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: hints.shouldPromptInviteShare,
+        memberCapJoinRequests: hints.memberCapJoinRequests,
+        memberCapJoinResolution: hints.memberCapJoinResolution,
+      );
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to load onboarding hints; keeping previous values',
+        error: error,
+        stackTrace: stackTrace,
+        tag: _onboardingLogTag,
+      );
+      return _HintsSnapshot(
+        activeChoreCount: activeChoreCount,
+        hasShownNotificationPrompt: prevHasShownNotification,
+        notificationPromptTick: prevNotificationPromptTick,
+        shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: shouldPromptInviteShare,
+        memberCapJoinRequests: memberCapJoinRequests,
+        memberCapJoinResolution: memberCapJoinResolution,
+      );
+    }
+  }
+
   Future<GratitudeWallStatus> _resolveGratitudeStatus(
     Future<GratitudeWallStatus> future, {
     GratitudeWallStatus? fallback,
@@ -408,6 +469,23 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     );
   }
 
+  Future<PersonalGratitudeStatus> _resolvePersonalStatus(
+    Future<PersonalGratitudeStatus> future, {
+    String? currentUserId,
+  }) async {
+    try {
+      return await future;
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to load personal gratitude status; defaulting to empty',
+        tag: _gratitudeLogTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return const PersonalGratitudeStatus(hasUnread: false, lastReadAt: null);
+    }
+  }
+
   TodayState _stateWithProfile(TodayState current, TodayUserProfile? profile) {
     if (current.isLoading) {
       return TodayState.loading(
@@ -420,6 +498,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         npsPromptTick: current.npsPromptTick,
         hasShownNpsPrompt: current.hasShownNpsPrompt,
         gratitudeStatus: current.gratitudeStatus,
+        personalGratitudeStatus: current.personalGratitudeStatus,
         notificationPromptTick: current.notificationPromptTick,
         hasShownNotificationPrompt: current.hasShownNotificationPrompt,
         activeChoreCount: current.activeChoreCount,
@@ -446,6 +525,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         npsPromptTick: current.npsPromptTick,
         hasShownNpsPrompt: current.hasShownNpsPrompt,
         gratitudeStatus: current.gratitudeStatus,
+        personalGratitudeStatus: current.personalGratitudeStatus,
         notificationPromptTick: current.notificationPromptTick,
         hasShownNotificationPrompt: current.hasShownNotificationPrompt,
         activeChoreCount: current.activeChoreCount,
@@ -786,6 +866,26 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     _profileUpdateSub.cancel();
     return super.close();
   }
+}
+
+class _HintsSnapshot {
+  const _HintsSnapshot({
+    required this.activeChoreCount,
+    required this.hasShownNotificationPrompt,
+    required this.notificationPromptTick,
+    required this.shouldPromptFlatmateInviteShare,
+    required this.shouldPromptInviteShare,
+    required this.memberCapJoinRequests,
+    required this.memberCapJoinResolution,
+  });
+
+  final int activeChoreCount;
+  final bool hasShownNotificationPrompt;
+  final int notificationPromptTick;
+  final bool shouldPromptFlatmateInviteShare;
+  final bool shouldPromptInviteShare;
+  final MemberCapJoinRequests? memberCapJoinRequests;
+  final MemberCapJoinResolution? memberCapJoinResolution;
 }
 
 class _ShareSnapshot {

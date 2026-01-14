@@ -549,7 +549,50 @@ export type Database = {
           },
         ]
       }
-      gratitude_wall_posts: {
+      gratitude_wall_mentions: {
+        Row: {
+          created_at: string
+          home_id: string
+          mentioned_user_id: string
+          post_id: string
+        }
+        Insert: {
+          created_at?: string
+          home_id: string
+          mentioned_user_id: string
+          post_id: string
+        }
+        Update: {
+          created_at?: string
+          home_id?: string
+          mentioned_user_id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gratitude_wall_mentions_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gratitude_wall_mentions_mentioned_user_id_fkey"
+            columns: ["mentioned_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gratitude_wall_mentions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "gratitude_wall_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gratitude_wall_personal_items: {
         Row: {
           author_user_id: string
           created_at: string
@@ -557,6 +600,10 @@ export type Database = {
           id: string
           message: string | null
           mood: Database["public"]["Enums"]["mood_scale"]
+          recipient_user_id: string
+          source_entry_id: string
+          source_kind: string
+          source_post_id: string | null
         }
         Insert: {
           author_user_id: string
@@ -565,6 +612,10 @@ export type Database = {
           id?: string
           message?: string | null
           mood: Database["public"]["Enums"]["mood_scale"]
+          recipient_user_id: string
+          source_entry_id: string
+          source_kind: string
+          source_post_id?: string | null
         }
         Update: {
           author_user_id?: string
@@ -573,6 +624,99 @@ export type Database = {
           id?: string
           message?: string | null
           mood?: Database["public"]["Enums"]["mood_scale"]
+          recipient_user_id?: string
+          source_entry_id?: string
+          source_kind?: string
+          source_post_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gratitude_wall_personal_items_author_user_id_fkey"
+            columns: ["author_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gratitude_wall_personal_items_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gratitude_wall_personal_items_recipient_user_id_fkey"
+            columns: ["recipient_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gratitude_wall_personal_items_source_entry_id_fkey"
+            columns: ["source_entry_id"]
+            isOneToOne: false
+            referencedRelation: "home_mood_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gratitude_wall_personal_items_source_post_id_fkey"
+            columns: ["source_post_id"]
+            isOneToOne: false
+            referencedRelation: "gratitude_wall_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gratitude_wall_personal_reads: {
+        Row: {
+          last_read_at: string
+          user_id: string
+        }
+        Insert: {
+          last_read_at?: string
+          user_id: string
+        }
+        Update: {
+          last_read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gratitude_wall_personal_reads_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gratitude_wall_posts: {
+        Row: {
+          author_user_id: string
+          created_at: string
+          home_id: string
+          id: string
+          message: string | null
+          mood: Database["public"]["Enums"]["mood_scale"]
+          source_entry_id: string | null
+        }
+        Insert: {
+          author_user_id: string
+          created_at?: string
+          home_id: string
+          id?: string
+          message?: string | null
+          mood: Database["public"]["Enums"]["mood_scale"]
+          source_entry_id?: string | null
+        }
+        Update: {
+          author_user_id?: string
+          created_at?: string
+          home_id?: string
+          id?: string
+          message?: string | null
+          mood?: Database["public"]["Enums"]["mood_scale"]
+          source_entry_id?: string | null
         }
         Relationships: [
           {
@@ -587,6 +731,13 @@ export type Database = {
             columns: ["home_id"]
             isOneToOne: false
             referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gratitude_wall_posts_source_entry_id_fkey"
+            columns: ["source_entry_id"]
+            isOneToOne: false
+            referencedRelation: "home_mood_entries"
             referencedColumns: ["id"]
           },
         ]
@@ -2804,6 +2955,16 @@ export type Database = {
           gratitude_post_id: string
         }[]
       }
+      mood_submit_v2: {
+        Args: {
+          p_comment?: string
+          p_home_id: string
+          p_mentions?: string[]
+          p_mood: Database["public"]["Enums"]["mood_scale"]
+          p_public_wall?: boolean
+        }
+        Returns: Json
+      }
       notifications_daily_candidates: {
         Args: { p_limit?: number; p_offset?: number }
         Returns: {
@@ -2922,6 +3083,35 @@ export type Database = {
         Returns: boolean
       }
       paywall_status_get: { Args: { p_home_id: string }; Returns: Json }
+      personal_gratitude_inbox_list_v1: {
+        Args: { p_before_at?: string; p_before_id?: string; p_limit?: number }
+        Returns: {
+          author_avatar_id: string
+          author_avatar_path: string
+          author_user_id: string
+          author_username: string
+          created_at: string
+          home_id: string
+          id: string
+          message: string
+          mood: Database["public"]["Enums"]["mood_scale"]
+          source_entry_id: string
+          source_kind: string
+          source_post_id: string
+        }[]
+      }
+      personal_gratitude_showcase_stats_v1: {
+        Args: { p_exclude_self?: boolean }
+        Returns: Json
+      }
+      personal_gratitude_wall_mark_read_v1: { Args: never; Returns: boolean }
+      personal_gratitude_wall_status_v1: {
+        Args: never
+        Returns: {
+          has_unread: boolean
+          last_read_at: string
+        }[]
+      }
       preference_reports_acknowledge: {
         Args: { p_report_id: string }
         Returns: Json

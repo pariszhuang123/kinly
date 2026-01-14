@@ -10,6 +10,7 @@ import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/kinly_comment_box.dart';
 import '../../../core/ui/toggles/kinly_toggle.dart';
 import '../../../core/ui/harmony/kinly_weather_selector_row.dart';
+import '../../../core/ui/members/kinly_member_avatar_chip.dart';
 import '../../../generated/l10n.dart';
 import '../bloc/harmony_cubit.dart';
 import 'package:go_router/go_router.dart';
@@ -73,6 +74,8 @@ class HarmonyScreen extends StatelessWidget {
                 _MoodSelector(),
                 SizedBox(height: spacing.l),
                 _CommentBox(),
+                SizedBox(height: spacing.m),
+                _MentionsPicker(),
                 SizedBox(height: spacing.m),
                 _GratitudeToggle(),
               ],
@@ -231,6 +234,64 @@ class _CommentBox extends StatelessWidget {
           maxLines: 4,
           maxLength: 500,
           onChanged: context.read<HarmonyCubit>().commentChanged,
+        );
+      },
+    );
+  }
+}
+
+class _MentionsPicker extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
+
+    return BlocBuilder<HarmonyCubit, HarmonyState>(
+      builder: (context, state) {
+        final canMention =
+            state.selectedMood == MoodScale.sunny ||
+            state.selectedMood == MoodScale.partiallySunny;
+        if (!canMention) return const SizedBox.shrink();
+
+        if (state.isLoadingMembers) {
+          return const Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: KinlyLoader(size: 20),
+          );
+        }
+
+        if (state.members.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              s.harmonyShareLabel,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: spacing.s),
+            Wrap(
+              spacing: spacing.s,
+              runSpacing: spacing.s,
+              children: state.members
+                  .map(
+                    (member) => KinlyMemberAvatarChip(
+                      displayName: member.username,
+                      avatarUrl: member.avatarUrl,
+                      isOwner: member.isOwner,
+                      isSelected:
+                          state.selectedMentions.contains(member.userId),
+                      onTap: () => context
+                          .read<HarmonyCubit>()
+                          .toggleMention(member.userId),
+                    ),
+                  )
+                  .toList(growable: false),
+            ),
+          ],
         );
       },
     );

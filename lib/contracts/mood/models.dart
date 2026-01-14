@@ -19,19 +19,27 @@ class MoodStatus extends Equatable {
 
 class MoodSubmitResult extends Equatable {
   final String entryId;
-  final String? gratitudePostId;
+  final String? publicPostId;
+  final int mentionCount;
 
-  const MoodSubmitResult({required this.entryId, this.gratitudePostId});
+  const MoodSubmitResult({
+    required this.entryId,
+    this.publicPostId,
+    this.mentionCount = 0,
+  });
 
   factory MoodSubmitResult.fromJson(Map<String, dynamic> json) {
     return MoodSubmitResult(
       entryId: json['entry_id'] as String,
-      gratitudePostId: json['gratitude_post_id'] as String?,
+      publicPostId:
+          (json['public_post_id'] as String?) ??
+          (json['gratitude_post_id'] as String?),
+      mentionCount: (json['mention_count'] as num?)?.toInt() ?? 0,
     );
   }
 
   @override
-  List<Object?> get props => [entryId, gratitudePostId];
+  List<Object?> get props => [entryId, publicPostId, mentionCount];
 }
 
 class GratitudeWallPost extends Equatable {

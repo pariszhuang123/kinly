@@ -10,6 +10,8 @@ import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/features/harmony/harmony.dart';
 import 'package:kinly/features/harmony/bloc/harmony_cubit.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/contracts/homes/ports/home_repository.dart';
+import 'package:kinly/contracts/homes/models.dart';
 
 class _FakeMoodRepository extends Fake implements MoodRepository {
   @override
@@ -21,8 +23,9 @@ class _FakeMoodRepository extends Fake implements MoodRepository {
     required MoodScale mood,
     String? comment,
     bool addToWall = false,
+    List<String> mentions = const [],
   }) async {
-    return const MoodSubmitResult(entryId: 'fake');
+    return const MoodSubmitResult(entryId: 'fake', mentionCount: 0);
   }
 
   @override
@@ -63,6 +66,85 @@ class _FakeMoodRepository extends Fake implements MoodRepository {
   Future<void> submitNps({required String homeId, required int score}) async {}
 }
 
+class _FakeHomeRepository extends Fake implements HomeRepository {
+  @override
+  Future<List<HomeMemberSummary>> listActiveMembers(
+    String homeId, {
+    bool excludeSelf = false,
+  }) async {
+    return [];
+  }
+
+  @override
+  Future<HomeCreationResult> create({String? name}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HomeInvite> getOrCreateInvite({required String homeId}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HomeInvite> revokeInvite({required String homeId}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HomeInvite> getActiveInvite(String homeId) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HomeJoinResult> join(String code) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HomeJoinResult> joinHome(String code) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> transferOwner({required String homeId, required String newOwnerId}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> kickMember({required String homeId, required String userId}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<LeaveResult> leave({required String homeId}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<CurrentMembership?> getCurrentMembership({bool excludeSelf = false}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<HomeInvite> rotateInvite(String homeId) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> logShareEvent({
+    required String homeId,
+    required String feature,
+    required String channel,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> dismissMemberCapJoinRequests({required String homeId}) {
+    throw UnimplementedError();
+  }
+}
+
 const _rtlSpacing = Spacing(
   xxs: 2,
   xs: 4,
@@ -89,6 +171,7 @@ void main() {
 
   group('HarmonyScreen RTL', () {
     final repo = _FakeMoodRepository();
+    final homeRepo = _FakeHomeRepository();
 
     Future<void> pumpRtlHarmony(WidgetTester tester) async {
       final binding = tester.binding;
@@ -119,7 +202,11 @@ void main() {
           supportedLocales: S.delegate.supportedLocales,
           theme: _rtlTheme,
           home: BlocProvider(
-            create: (_) => HarmonyCubit(homeId: 'home', moodRepository: repo),
+            create: (_) => HarmonyCubit(
+              homeId: 'home',
+              moodRepository: repo,
+              homeRepository: homeRepo,
+            ),
             child: const Directionality(
               // belt-and-suspenders: keep RTL even if locale plumbing changes
               textDirection: TextDirection.rtl,

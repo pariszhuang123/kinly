@@ -210,19 +210,25 @@
   "vibeInsufficientTitle": "Not enough data yet",
   "vibeInsufficientSummary": "Finish preferences to see your home vibe.",
   "vibeMixedTitle": "A mixed home",
-  "vibeMixedSummary": "Your home shows a blend of comfort styles across members.",
+  "vibeMixedSummary": "Your home shows a mix of comfort styles, influenced by how different people like to live.",
   "vibeDefaultTitle": "A balanced home",
-  "vibeDefaultSummary": "Your home feels balanced and easy to share.",
+  "vibeDefaultSummary": "Your home feels easy to live in for everyone.",
   "vibeQuietCareTitle": "Quiet care",
-  "vibeQuietCareSummary": "This home often feels best with calmer energy and gentle rhythms.",
+  "vibeQuietCareSummary": "Your home feels calm, with gentle energy and softer rhythms.",
   "vibeSocialTitle": "Social energy",
-  "vibeSocialSummary": "This home tends to feel lively, with shared moments and together time.",
+  "vibeSocialSummary": "Your home feels active, with people together.",
+  "vibeWarmSocialTitle": "Warm social",
+  "vibeWarmSocialSummary": "Your home feels warm and welcoming, with people often together.",
+  "vibeCozySocialTitle": "Cozy social",
+  "vibeCozySocialSummary": "Your home feels cozy and calm when people spend time together.",
+  "vibeSteadyTitle": "Steady calm",
+  "vibeSteadySummary": "Your home feels steady, with care shown through daily habits.",
   "vibeStructuredTitle": "Structured rhythm",
-  "vibeStructuredSummary": "This home often feels best with clear structure and steady routines.",
+  "vibeStructuredSummary": "Your home works best with clear routines and shared plans.",
   "vibeEasygoingTitle": "Easygoing flow",
-  "vibeEasygoingSummary": "This home tends to feel relaxed and flexible day to day.",
+  "vibeEasygoingSummary": "Your home feels relaxed and open to change day by day.",
   "vibeIndependentTitle": "Independent calm",
-  "vibeIndependentSummary": "This home values personal space with gentle connection.",
+  "vibeIndependentSummary": "Your home supports space and quiet.",
   "hubError": "Couldn't load Hub. Please try again.",
   "hubRetry": "Retry",
   "todayEmptyCardTitle": "All caught up today",
@@ -287,7 +293,6 @@
   },
   "todayGratitudeSectionTitle": "Home Gratitude wall",
   "todayGratitudeUnreadBody": "New gratitude posts are waiting for you.",
-  "todayGratitudeOpenCta": "View wall",
   "shareOwedDetailTitle": "To settle",
   "shareOwedDetailEmpty": "You're all caught up with this person.",
   "shareOwedDetailPaid": "Mark as settled",
@@ -553,8 +558,24 @@
   "harmonyErrorForbidden": "You are unable to submit feedback for this home.",
   "harmonyErrorUnknown": "Something went wrong. Please try again.",
   "harmonyErrorSelectMood": "Pick a mood before submitting.",
+  "todayGratitudeHouseCta": "House wall",
+  "todayGratitudePersonalCta": "Personal wall",
+  "gratitudeWallHouseTab": "House",
+  "gratitudeWallPersonalTab": "Personal",
+  "gratitudeWallPersonalMeta": "From home {homeId}",
+  "@gratitudeWallPersonalMeta": {
+    "surface": "subtitle",
+    "placeholders": {
+      "homeId": {
+        "type": "String",
+        "example": "home-123",
+        "description": "Identifier for the home where the mention was made."
+      }
+    }
+  },
   "gratitudeWallEmptyTitle": "No gratitude posts yet",
   "gratitudeWallEmptySubtitle": "This is where small thank-yous live.\n\nStart with one moment from this week.",
+  "gratitudeWallErrorGeneric": "Unable to load gratitude right now.",
   "gratitudeWallRetry": "Try again",
   "gratitudeWallShareCta": "Share this wall",
   "gratitudeWallShareTitle": "Gratitude wall",
@@ -761,9 +782,6 @@
   },
   "@todayGratitudeUnreadBody": {
     "surface": "subtitle"
-  },
-  "@todayGratitudeOpenCta": {
-    "surface": "button"
   },
   "@shareOwedDetailTitle": {
     "surface": "title"

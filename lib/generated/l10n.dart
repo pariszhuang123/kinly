@@ -1064,10 +1064,10 @@ class S {
     );
   }
 
-  /// `Your home shows a blend of comfort styles across members.`
+  /// `Your home shows a mix of comfort styles, influenced by how different people like to live.`
   String get vibeMixedSummary {
     return Intl.message(
-      'Your home shows a blend of comfort styles across members.',
+      'Your home shows a mix of comfort styles, influenced by how different people like to live.',
       name: 'vibeMixedSummary',
       desc: '',
       args: [],
@@ -1084,10 +1084,10 @@ class S {
     );
   }
 
-  /// `Your home feels balanced and easy to share.`
+  /// `Your home feels easy to live in for everyone.`
   String get vibeDefaultSummary {
     return Intl.message(
-      'Your home feels balanced and easy to share.',
+      'Your home feels easy to live in for everyone.',
       name: 'vibeDefaultSummary',
       desc: '',
       args: [],
@@ -1104,10 +1104,10 @@ class S {
     );
   }
 
-  /// `This home often feels best with calmer energy and gentle rhythms.`
+  /// `Your home feels calm, with gentle energy and softer rhythms.`
   String get vibeQuietCareSummary {
     return Intl.message(
-      'This home often feels best with calmer energy and gentle rhythms.',
+      'Your home feels calm, with gentle energy and softer rhythms.',
       name: 'vibeQuietCareSummary',
       desc: '',
       args: [],
@@ -1124,11 +1124,71 @@ class S {
     );
   }
 
-  /// `This home tends to feel lively, with shared moments and together time.`
+  /// `Your home feels active, with people together.`
   String get vibeSocialSummary {
     return Intl.message(
-      'This home tends to feel lively, with shared moments and together time.',
+      'Your home feels active, with people together.',
       name: 'vibeSocialSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Warm social`
+  String get vibeWarmSocialTitle {
+    return Intl.message(
+      'Warm social',
+      name: 'vibeWarmSocialTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your home feels warm and welcoming, with people often together.`
+  String get vibeWarmSocialSummary {
+    return Intl.message(
+      'Your home feels warm and welcoming, with people often together.',
+      name: 'vibeWarmSocialSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cozy social`
+  String get vibeCozySocialTitle {
+    return Intl.message(
+      'Cozy social',
+      name: 'vibeCozySocialTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your home feels cozy and calm when people spend time together.`
+  String get vibeCozySocialSummary {
+    return Intl.message(
+      'Your home feels cozy and calm when people spend time together.',
+      name: 'vibeCozySocialSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Steady calm`
+  String get vibeSteadyTitle {
+    return Intl.message(
+      'Steady calm',
+      name: 'vibeSteadyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your home feels steady, with care shown through daily habits.`
+  String get vibeSteadySummary {
+    return Intl.message(
+      'Your home feels steady, with care shown through daily habits.',
+      name: 'vibeSteadySummary',
       desc: '',
       args: [],
     );
@@ -1144,10 +1204,10 @@ class S {
     );
   }
 
-  /// `This home often feels best with clear structure and steady routines.`
+  /// `Your home works best with clear routines and shared plans.`
   String get vibeStructuredSummary {
     return Intl.message(
-      'This home often feels best with clear structure and steady routines.',
+      'Your home works best with clear routines and shared plans.',
       name: 'vibeStructuredSummary',
       desc: '',
       args: [],
@@ -1164,10 +1224,10 @@ class S {
     );
   }
 
-  /// `This home tends to feel relaxed and flexible day to day.`
+  /// `Your home feels relaxed and open to change day by day.`
   String get vibeEasygoingSummary {
     return Intl.message(
-      'This home tends to feel relaxed and flexible day to day.',
+      'Your home feels relaxed and open to change day by day.',
       name: 'vibeEasygoingSummary',
       desc: '',
       args: [],
@@ -1184,10 +1244,10 @@ class S {
     );
   }
 
-  /// `This home values personal space with gentle connection.`
+  /// `Your home supports space and quiet.`
   String get vibeIndependentSummary {
     return Intl.message(
-      'This home values personal space with gentle connection.',
+      'Your home supports space and quiet.',
       name: 'vibeIndependentSummary',
       desc: '',
       args: [],
@@ -1419,16 +1479,6 @@ class S {
     return Intl.message(
       'New gratitude posts are waiting for you.',
       name: 'todayGratitudeUnreadBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `View wall`
-  String get todayGratitudeOpenCta {
-    return Intl.message(
-      'View wall',
-      name: 'todayGratitudeOpenCta',
       desc: '',
       args: [],
     );
@@ -3639,6 +3689,56 @@ class S {
     );
   }
 
+  /// `House wall`
+  String get todayGratitudeHouseCta {
+    return Intl.message(
+      'House wall',
+      name: 'todayGratitudeHouseCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal wall`
+  String get todayGratitudePersonalCta {
+    return Intl.message(
+      'Personal wall',
+      name: 'todayGratitudePersonalCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `House`
+  String get gratitudeWallHouseTab {
+    return Intl.message(
+      'House',
+      name: 'gratitudeWallHouseTab',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal`
+  String get gratitudeWallPersonalTab {
+    return Intl.message(
+      'Personal',
+      name: 'gratitudeWallPersonalTab',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From home {homeId}`
+  String gratitudeWallPersonalMeta(String homeId) {
+    return Intl.message(
+      'From home $homeId',
+      name: 'gratitudeWallPersonalMeta',
+      desc: '',
+      args: [homeId],
+    );
+  }
+
   /// `No gratitude posts yet`
   String get gratitudeWallEmptyTitle {
     return Intl.message(
@@ -3654,6 +3754,16 @@ class S {
     return Intl.message(
       'This is where small thank-yous live.\n\nStart with one moment from this week.',
       name: 'gratitudeWallEmptySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to load gratitude right now.`
+  String get gratitudeWallErrorGeneric {
+    return Intl.message(
+      'Unable to load gratitude right now.',
+      name: 'gratitudeWallErrorGeneric',
       desc: '',
       args: [],
     );

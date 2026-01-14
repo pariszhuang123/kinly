@@ -113,9 +113,16 @@ class TodayRegistry {
         order: 50,
         spacingAfter: TodaySectionSpacing.none,
         builder:
+            (scope) => TodayGratitudeSection(
+              onHouseTap: scope.actions.onGratitudeTap,
+              onPersonalTap: scope.actions.onPersonalGratitudeTap,
+              showPersonal: scope.state.personalGratitudeStatus != null,
+              personalHasUnread: scope.state.hasPersonalGratitudeUnread,
+            ),
+        isVisible:
             (scope) =>
-                TodayGratitudeSection(onTap: scope.actions.onGratitudeTap),
-        isVisible: (scope) => scope.state.hasGratitudeUnread,
+                scope.state.hasGratitudeUnread ||
+                scope.state.hasPersonalGratitudeUnread,
       ),
     );
   }

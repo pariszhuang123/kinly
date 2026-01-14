@@ -3,14 +3,22 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/share/kinly_share_scaffold.dart';
-import '../../../../core/theme/spacing.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/gratitude_wall_cubit.dart';
-import 'gratitude_wall_content.dart';
-import '../../../../core/ui/kinly_theme_access.dart';
+import '../../bloc/personal_gratitude_cubit.dart';
+import 'gratitude_wall_body.dart';
 
-class GratitudeWallScreen extends StatelessWidget {
+enum GratitudeTab { house, personal }
+
+class GratitudeWallScreen extends StatefulWidget {
   const GratitudeWallScreen({super.key});
+
+  @override
+  State<GratitudeWallScreen> createState() => _GratitudeWallScreenState();
+}
+
+class _GratitudeWallScreenState extends State<GratitudeWallScreen> {
+  GratitudeTab _selected = GratitudeTab.house;
 
   @override
   Widget build(BuildContext context) {
@@ -23,28 +31,17 @@ class GratitudeWallScreen extends StatelessWidget {
       messageBuilder:
           (ctx, appLink) =>
               s.gratitudeWallShareMessage(appLink).replaceAll(r'\n', '\n'),
-      // This builds the content that will be captured & shared.
-      childBuilder: (ctx) {
-        final theme = KinlyThemeAccess.of(ctx);
-        final spacing = theme.extension<Spacing>()!;
-
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            final width = constraints.maxWidth;
-
-            return Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: width),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.all(spacing.lg),
-                  child: GratitudeWallContent(maxHeight: constraints.maxHeight),
-                ),
-              ),
-            );
-          },
-        );
+      childBuilder: (ctx) => GratitudeWallBody(
+        selected: _selected,
+        onSelect: (tab) => setState(() => _selected = tab),
+      ),
+      onSharePressed: () async {
+        if (_selected == GratitudeTab.personal) {
+          context.read<PersonalGratitudeCubit>().logShareEvent();
+        } else {
+          context.read<GratitudeWallCubit>().logShareEvent();
+        }
       },
-      onSharePressed: () => context.read<GratitudeWallCubit>().logShareEvent(),
     );
   }
 }

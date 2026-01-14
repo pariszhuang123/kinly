@@ -25,6 +25,7 @@ List<GoRoute> buildHarmonyRoutes({
         return HarmonyProvider(
           homeId: membership.homeId,
           moodRepository: sl<MoodRepository>(),
+          homeRepository: sl<HomeRepository>(),
           child: HarmonyPage(homeId: membership.homeId),
         );
       },

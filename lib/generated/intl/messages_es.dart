@@ -1217,7 +1217,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Activos"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
-    "todayGratitudeOpenCta": MessageLookupByLibrary.simpleMessage("Ver muro"),
     "todayGratitudeSectionTitle": MessageLookupByLibrary.simpleMessage(
       "Muro de gratitud del hogar",
     ),

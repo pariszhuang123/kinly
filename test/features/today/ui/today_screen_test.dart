@@ -38,6 +38,7 @@ import 'package:kinly/foundation/surfaces/today/widgets/today_empty_state_card.d
 import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
 import 'package:kinly/contracts/mood/models.dart';
+import 'package:kinly/contracts/mood/personal_wall_models.dart';
 
 class _MockTodayBloc extends MockBloc<TodayEvent, TodayState>
     implements TodayBloc {}
@@ -294,6 +295,8 @@ void main() {
         sharePaidToMe: const [],
         shareDrafts: const [],
         gratitudeStatus: const GratitudeWallStatus(hasUnread: true),
+        personalGratitudeStatus:
+            const PersonalGratitudeStatus(hasUnread: true, lastReadAt: null),
         shouldPromptInviteShare: true,
       ),
     );

@@ -227,7 +227,6 @@
   },
   "todayGratitudeSectionTitle": "Muro de gratitud del hogar",
   "todayGratitudeUnreadBody": "Hay nuevas publicaciones de gratitud esperándote.",
-  "todayGratitudeOpenCta": "Ver muro",
   "shareOwedDetailTitle": "Pago pendiente",
   "shareOwedDetailEmpty": "Estás al día con esta persona.",
   "shareOwedDetailPaid": "Marcar como pagado",
@@ -696,9 +695,6 @@
   },
   "@todayGratitudeUnreadBody": {
     "surface": "subtitle"
-  },
-  "@todayGratitudeOpenCta": {
-    "surface": "button"
   },
   "@shareOwedDetailTitle": {
     "surface": "title"

@@ -1,5 +1,6 @@
 import 'package:kinly/contracts/mood/enums/mood_scale.dart';
 import 'package:kinly/contracts/mood/models.dart';
+import 'package:kinly/contracts/mood/personal_wall_models.dart';
 
 abstract class MoodRepository {
   /// Returns true if the current user already submitted a mood for this ISO week.
@@ -11,6 +12,7 @@ abstract class MoodRepository {
     required MoodScale mood,
     String? comment,
     bool addToWall = false,
+    List<String> mentions = const [],
   });
 
   /// Paginated gratitude wall.
@@ -29,6 +31,22 @@ abstract class MoodRepository {
 
   /// Fetch unread status for the gratitude wall.
   Future<GratitudeWallStatus> getWallStatus(String homeId);
+
+  /// Personal gratitude wall status (cross-home).
+  Future<PersonalGratitudeStatus> getPersonalStatus();
+
+  /// Personal gratitude inbox list (paged, newest first).
+  Future<PersonalGratitudePage> listPersonalWall({
+    int limit,
+    DateTime? beforeAt,
+    String? beforeId,
+  });
+
+  /// Mark personal wall as read.
+  Future<void> markPersonalWallRead();
+
+  /// Showcase stats for personal wall.
+  Future<PersonalGratitudeStats> getPersonalStats({bool excludeSelf});
 
   /// Returns true if an NPS answer is currently required for the user/home.
   Future<bool> isNpsRequired(String homeId);

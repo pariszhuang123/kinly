@@ -9,6 +9,7 @@ class TodayState extends Equatable {
   final List<TodayShareDraft> shareDrafts;
   final String? shareErrorMessage;
   final GratitudeWallStatus? gratitudeStatus;
+  final PersonalGratitudeStatus? personalGratitudeStatus;
   final TodayUserProfile? profile;
   final String? message;
   final Object? error;
@@ -34,6 +35,7 @@ class TodayState extends Equatable {
     required this.shareDrafts,
     this.shareErrorMessage,
     this.gratitudeStatus,
+    this.personalGratitudeStatus,
     this.profile,
     this.message,
     this.error,
@@ -61,6 +63,7 @@ class TodayState extends Equatable {
     int npsPromptTick = 0,
     bool hasShownNpsPrompt = false,
     GratitudeWallStatus? gratitudeStatus,
+    PersonalGratitudeStatus? personalGratitudeStatus,
     int notificationPromptTick = 0,
     bool hasShownNotificationPrompt = false,
     int activeChoreCount = 0,
@@ -77,6 +80,7 @@ class TodayState extends Equatable {
          sharePaidToMe: sharePaidToMe,
          shareDrafts: shareDrafts,
          gratitudeStatus: gratitudeStatus,
+         personalGratitudeStatus: personalGratitudeStatus,
          profile: profile,
          harmonyPromptTick: harmonyPromptTick,
          hasShownHarmonyPrompt: hasShownHarmonyPrompt,
@@ -105,6 +109,7 @@ class TodayState extends Equatable {
     int npsPromptTick = 0,
     bool hasShownNpsPrompt = false,
     GratitudeWallStatus? gratitudeStatus,
+    PersonalGratitudeStatus? personalGratitudeStatus,
     int notificationPromptTick = 0,
     bool hasShownNotificationPrompt = false,
     int activeChoreCount = 0,
@@ -123,6 +128,7 @@ class TodayState extends Equatable {
          profile: profile,
          shareErrorMessage: shareErrorMessage,
          gratitudeStatus: gratitudeStatus,
+         personalGratitudeStatus: personalGratitudeStatus,
          harmonyPromptTick: harmonyPromptTick,
          hasShownHarmonyPrompt: hasShownHarmonyPrompt,
          npsPromptTick: npsPromptTick,
@@ -150,6 +156,7 @@ class TodayState extends Equatable {
     int npsPromptTick = 0,
     bool hasShownNpsPrompt = false,
     GratitudeWallStatus? gratitudeStatus,
+    PersonalGratitudeStatus? personalGratitudeStatus,
     int notificationPromptTick = 0,
     bool hasShownNotificationPrompt = false,
     int activeChoreCount = 0,
@@ -170,6 +177,7 @@ class TodayState extends Equatable {
          error: error,
          shareErrorMessage: shareErrorMessage,
          gratitudeStatus: gratitudeStatus,
+         personalGratitudeStatus: personalGratitudeStatus,
          harmonyPromptTick: harmonyPromptTick,
          hasShownHarmonyPrompt: hasShownHarmonyPrompt,
          npsPromptTick: npsPromptTick,
@@ -190,8 +198,13 @@ class TodayState extends Equatable {
       sharePaidToMe.isNotEmpty ||
       shareDrafts.isNotEmpty;
   bool get hasGratitudeUnread => gratitudeStatus?.hasUnread ?? false;
+  bool get hasPersonalGratitudeUnread =>
+      personalGratitudeStatus?.hasUnread ?? false;
   bool get hasAnyTodayContent =>
-      hasFlowContent || hasShareContent || hasGratitudeUnread;
+      hasFlowContent ||
+      hasShareContent ||
+      hasGratitudeUnread ||
+      hasPersonalGratitudeUnread;
   bool get isCaughtUp => !hasAnyTodayContent;
 
   @override
@@ -204,6 +217,7 @@ class TodayState extends Equatable {
     shareDrafts,
     shareErrorMessage,
     gratitudeStatus,
+    personalGratitudeStatus,
     profile,
     message,
     error,

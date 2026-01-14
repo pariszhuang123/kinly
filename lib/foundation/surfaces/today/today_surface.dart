@@ -383,6 +383,7 @@ class _TodayScreenState extends State<TodayScreen>
         _openShareCreatedList(context);
       },
       onGratitudeTap: () => _openGratitudeWall(context),
+      onPersonalGratitudeTap: () => _openGratitudeWall(context),
     );
     final scope = TodaySurfaceScope(
       context: context,

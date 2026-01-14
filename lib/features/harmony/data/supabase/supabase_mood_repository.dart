@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:kinly/contracts/mood/enums/mood_scale.dart';
 import 'package:kinly/contracts/mood/models.dart';
+import 'package:kinly/contracts/mood/personal_wall_models.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/core/time/timezone.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -42,15 +43,17 @@ class SupabaseMoodRepository implements MoodRepository {
     required MoodScale mood,
     String? comment,
     bool addToWall = false,
+    List<String> mentions = const [],
   }) async {
     try {
       final res = await _rpc(
-        'mood_submit',
+        'mood_submit_v2',
         params: {
           'p_home_id': homeId,
           'p_mood': mood.wireValue,
+          'p_public_wall': addToWall,
           if (comment != null) 'p_comment': comment,
-          'p_add_to_wall': addToWall,
+          if (mentions.isNotEmpty) 'p_mentions': mentions,
         },
       );
       if (res is Map<String, dynamic>) {
@@ -85,7 +88,7 @@ class SupabaseMoodRepository implements MoodRepository {
     DateTime? cursorCreatedAt,
     String? cursorId,
   }) async {
-    final res = await _client.rpc(
+    final res = await _rpc(
       'gratitude_wall_list',
       params: {
         'p_home_id': homeId,
@@ -124,7 +127,7 @@ class SupabaseMoodRepository implements MoodRepository {
 
   @override
   Future<GratitudeWallStats> getWallStats(String homeId) async {
-    final res = await _client.rpc(
+    final res = await _rpc(
       'gratitude_wall_stats',
       params: {'p_home_id': homeId},
     );
@@ -149,7 +152,7 @@ class SupabaseMoodRepository implements MoodRepository {
 
   @override
   Future<void> markWallRead(String homeId) async {
-    await _client.rpc(
+    await _rpc(
       'gratitude_wall_mark_read',
       params: {'p_home_id': homeId},
     );
@@ -157,7 +160,7 @@ class SupabaseMoodRepository implements MoodRepository {
 
   @override
   Future<GratitudeWallStatus> getWallStatus(String homeId) async {
-    final res = await _client.rpc(
+    final res = await _rpc(
       'gratitude_wall_status',
       params: {'p_home_id': homeId},
     );
@@ -174,6 +177,87 @@ class SupabaseMoodRepository implements MoodRepository {
     }
 
     return const GratitudeWallStatus(hasUnread: false);
+  }
+
+  @override
+  Future<PersonalGratitudeStatus> getPersonalStatus() async {
+    final res = await _rpc('personal_gratitude_wall_status_v1');
+    if (res is List && res.isNotEmpty) {
+      final row = (res.first as Map).cast<String, dynamic>();
+      return PersonalGratitudeStatus.fromJson(row);
+    }
+    if (res is Map<String, dynamic>) {
+      return PersonalGratitudeStatus.fromJson(res);
+    }
+    if (res is Map) {
+      return PersonalGratitudeStatus.fromJson(res.cast<String, dynamic>());
+    }
+    return const PersonalGratitudeStatus(hasUnread: false, lastReadAt: null);
+  }
+
+  @override
+  Future<PersonalGratitudePage> listPersonalWall({
+    int limit = 30,
+    DateTime? beforeAt,
+    String? beforeId,
+  }) async {
+    final res = await _rpc(
+      'personal_gratitude_inbox_list_v1',
+      params: {
+        'p_limit': limit,
+        if (beforeAt != null) 'p_before_at': toUtcIsoString(beforeAt),
+        if (beforeId != null) 'p_before_id': beforeId,
+      },
+    );
+    if (res is List) {
+      final items = res
+          .map(
+            (raw) => PersonalGratitudeItem.fromJson(
+              (raw as Map).cast<String, dynamic>(),
+            ),
+          )
+          .toList(growable: false);
+      DateTime? cursorAt;
+      String? cursorId;
+      if (items.isNotEmpty) {
+        final last = items.last;
+        cursorAt = last.createdAt;
+        cursorId = last.id;
+      }
+      return PersonalGratitudePage(
+        items: items,
+        cursorCreatedAt: cursorAt,
+        cursorId: cursorId,
+      );
+    }
+    throw const MoodSubmitException(
+      MoodSubmitErrorCode.unknown,
+      'Unexpected personal wall response.',
+    );
+  }
+
+  @override
+  Future<void> markPersonalWallRead() async {
+    await _rpc('personal_gratitude_wall_mark_read_v1');
+  }
+
+  @override
+  Future<PersonalGratitudeStats> getPersonalStats({bool excludeSelf = true}) async {
+    final res = await _rpc(
+      'personal_gratitude_showcase_stats_v1',
+      params: {'p_exclude_self': excludeSelf},
+    );
+    if (res is Map<String, dynamic>) {
+      return PersonalGratitudeStats.fromJson(res);
+    }
+    if (res is Map) {
+      return PersonalGratitudeStats.fromJson(res.cast<String, dynamic>());
+    }
+    return const PersonalGratitudeStats(
+      totalReceived: 0,
+      uniqueIndividuals: 0,
+      uniqueHomes: 0,
+    );
   }
 
   @override

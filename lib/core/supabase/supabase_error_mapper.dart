@@ -399,6 +399,12 @@ const _kickMap = <String, KickMemberErrorCode>{
 const _moodSubmitMap = <String, MoodSubmitErrorCode>{
   'INVALID_HOME': MoodSubmitErrorCode.invalidHome,
   'INVALID_MOOD': MoodSubmitErrorCode.invalidMood,
+  'NOT_POSITIVE_MOOD': MoodSubmitErrorCode.notPositiveMood,
+  'MENTION_LIMIT_EXCEEDED': MoodSubmitErrorCode.mentionLimitExceeded,
+  'DUPLICATE_MENTIONS_NOT_ALLOWED': MoodSubmitErrorCode.duplicateMentions,
+  'SELF_MENTION_NOT_ALLOWED': MoodSubmitErrorCode.selfMentionNotAllowed,
+  'MENTION_NOT_HOME_MEMBER': MoodSubmitErrorCode.mentionNotHomeMember,
+  'INVALID_MENTION_USER': MoodSubmitErrorCode.invalidMentionUser,
   'MOOD_ALREADY_SUBMITTED': MoodSubmitErrorCode.moodAlreadySubmitted,
   'FORBIDDEN': MoodSubmitErrorCode.forbidden,
   'UNAUTHORIZED': MoodSubmitErrorCode.unauthorized,
