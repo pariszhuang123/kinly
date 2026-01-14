@@ -1259,6 +1259,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vibeStructuredTitle": MessageLookupByLibrary.simpleMessage(
       "Structured rhythm",
     ),
+    "mentionFieldHint": MessageLookupByLibrary.simpleMessage("اكتب @ لذكر شخص"),
     "welcome_create": MessageLookupByLibrary.simpleMessage("إنشاء منزل"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("الانضمام إلى منزل"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("مرحبًا بك في Kinly"),

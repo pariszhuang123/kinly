@@ -339,6 +339,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
       "Compartir esto en el muro de gratitud",
     ),
+    "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
+      "Escribe @ para mencionar",
+    ),
     "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Enviar feedback"),
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
       "¡Gracias! Tu feedback se guardó.",

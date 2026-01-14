@@ -198,18 +198,22 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // No mood selected -> mentions hidden
-    expect(find.text('Member 0'), findsNothing);
+    // No mood selected -> mention suggestions disabled but field present
+    expect(find.byKey(const ValueKey('harmony_mentions_input')), findsOneWidget);
 
     await tester.tap(find.bySemanticsLabel('Sunny'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Member 0'), findsOneWidget);
+    expect(find.byKey(const ValueKey('harmony_mentions_input')), findsOneWidget);
 
     await tester.tap(find.bySemanticsLabel('Thunderstorm'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Member 0'), findsNothing);
+    // Field stays, but mentions disabled
+    final textField = tester.widget<TextField>(
+      find.byKey(const ValueKey('harmony_mentions_input')),
+    );
+    expect(textField.enabled, isTrue);
   });
 
   testWidgets('mentions capped at 5 selections', (tester) async {
@@ -237,8 +241,14 @@ void main() {
     await tester.tap(find.bySemanticsLabel('Sunny'));
     await tester.pumpAndSettle();
 
-    for (var i = 0; i < 6; i++) {
-      await tester.tap(find.bySemanticsLabel('Member $i').first);
+    for (var i = 0; i < 5; i++) {
+      await tester.enterText(
+        find.byKey(const ValueKey('harmony_mentions_input')),
+        '@',
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Member $i').first);
+      await tester.pumpAndSettle();
     }
 
     final context = tester.element(find.byType(HarmonyPage));

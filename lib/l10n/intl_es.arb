@@ -1274,5 +1274,6 @@
   "vibeEasygoingTitle": "Easygoing flow",
   "vibeEasygoingSummary": "This home tends to feel relaxed and flexible day to day.",
   "vibeIndependentTitle": "Independent calm",
-  "vibeIndependentSummary": "This home leans toward personal space with thoughtful connection."
+  "vibeIndependentSummary": "This home leans toward personal space with thoughtful connection.",
+  "mentionFieldHint": "Escribe @ para mencionar"
 }

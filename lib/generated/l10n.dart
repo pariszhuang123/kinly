@@ -1255,6 +1255,16 @@ class S {
     );
   }
 
+  /// `Type @ to mention`
+  String get mentionFieldHint {
+    return Intl.message(
+      'Type @ to mention',
+      name: 'mentionFieldHint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Couldn't load Hub. Please try again.`
   String get hubError {
     return Intl.message(

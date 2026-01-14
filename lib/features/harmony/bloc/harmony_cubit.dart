@@ -83,7 +83,7 @@ class HarmonyCubit extends Cubit<HarmonyState> {
   }
 
   void toggleAddToWall(bool value) {
-    if (!_canShare(state.selectedMood) || !_hasComment(state.comment)) return;
+    if (!_canShare(state.selectedMood)) return;
     emit(state.copyWith(addToWall: value));
   }
 
@@ -97,6 +97,12 @@ class HarmonyCubit extends Cubit<HarmonyState> {
       selected.add(userId);
     }
     emit(state.copyWith(selectedMentions: selected));
+  }
+
+  void setMentions(Set<String> userIds) {
+    if (!_canShare(state.selectedMood)) return;
+    final limited = userIds.take(5).toSet();
+    emit(state.copyWith(selectedMentions: limited));
   }
 
   Future<void> submit() async {

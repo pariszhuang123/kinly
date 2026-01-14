@@ -573,6 +573,7 @@
       }
     }
   },
+  "mentionFieldHint": "Type @ to mention",
   "gratitudeWallEmptyTitle": "No gratitude posts yet",
   "gratitudeWallEmptySubtitle": "This is where small thank-yous live.\n\nStart with one moment from this week.",
   "gratitudeWallErrorGeneric": "Unable to load gratitude right now.",
