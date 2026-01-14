@@ -282,11 +282,13 @@ class _MentionsPicker extends StatelessWidget {
                       displayName: member.username,
                       avatarUrl: member.avatarUrl,
                       isOwner: member.isOwner,
-                      isSelected:
-                          state.selectedMentions.contains(member.userId),
-                      onTap: () => context
-                          .read<HarmonyCubit>()
-                          .toggleMention(member.userId),
+                      isSelected: state.selectedMentions.contains(
+                        member.userId,
+                      ),
+                      onTap:
+                          () => context.read<HarmonyCubit>().toggleMention(
+                            member.userId,
+                          ),
                     ),
                   )
                   .toList(growable: false),

@@ -15,11 +15,10 @@ class HarmonyCubit extends Cubit<HarmonyState> {
     required String homeId,
     required MoodRepository moodRepository,
     required HomeRepository homeRepository,
-  })
-    : _homeId = homeId,
-      _moodRepository = moodRepository,
-      _homeRepository = homeRepository,
-      super(const HarmonyState());
+  }) : _homeId = homeId,
+       _moodRepository = moodRepository,
+       _homeRepository = homeRepository,
+       super(const HarmonyState());
 
   final String _homeId;
   final MoodRepository _moodRepository;
@@ -29,8 +28,10 @@ class HarmonyCubit extends Cubit<HarmonyState> {
     if (state.isLoadingMembers || state.members.isNotEmpty) return;
     emit(state.copyWith(isLoadingMembers: true, membersLoadFailed: false));
     try {
-      final members =
-          await _homeRepository.listActiveMembers(_homeId, excludeSelf: true);
+      final members = await _homeRepository.listActiveMembers(
+        _homeId,
+        excludeSelf: true,
+      );
       emit(state.copyWith(isLoadingMembers: false, members: members));
     } catch (_) {
       emit(state.copyWith(isLoadingMembers: false, membersLoadFailed: true));
@@ -109,9 +110,10 @@ class HarmonyCubit extends Cubit<HarmonyState> {
         comment: state.comment,
         addToWall:
             state.addToWall && _canShare(mood) && _hasComment(state.comment),
-        mentions: _canShare(mood)
-            ? state.selectedMentions.toList(growable: false)
-            : const [],
+        mentions:
+            _canShare(mood)
+                ? state.selectedMentions.toList(growable: false)
+                : const [],
       );
       emit(
         state.copyWith(

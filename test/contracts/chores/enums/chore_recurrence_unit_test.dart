@@ -23,7 +23,10 @@ void main() {
 
     group('fromWire', () {
       test('parses "day" to ChoreRecurrenceUnit.day', () {
-        expect(ChoreRecurrenceUnitWire.fromWire('day'), ChoreRecurrenceUnit.day);
+        expect(
+          ChoreRecurrenceUnitWire.fromWire('day'),
+          ChoreRecurrenceUnit.day,
+        );
       });
 
       test('parses "week" to ChoreRecurrenceUnit.week', () {

@@ -60,10 +60,7 @@ void main() {
       });
 
       test('throws ArgumentError for empty string', () {
-        expect(
-          () => MoodScale.fromWire(''),
-          throwsA(isA<ArgumentError>()),
-        );
+        expect(() => MoodScale.fromWire(''), throwsA(isA<ArgumentError>()));
       });
     });
 

@@ -87,11 +87,7 @@ void main() {
     });
 
     test('fromJson handles missing limits', () {
-      final json = {
-        'plan': 'free',
-        'expires_at': null,
-        'usage': usageJson,
-      };
+      final json = {'plan': 'free', 'expires_at': null, 'usage': usageJson};
       final status = PaywallStatus.fromJson(json);
       expect(status.limits, isEmpty);
     });
@@ -113,22 +109,24 @@ void main() {
       expect(status.isPremium, isTrue);
     });
 
-    test('isPremium returns true when plan is premium and expiresAt is null',
-        () {
-      final status = PaywallStatus(
-        plan: 'premium',
-        expiresAt: null,
-        usage: PaywallUsage(
-          activeChores: 0,
-          chorePhotos: 0,
-          activeMembers: 1,
-          activeExpenses: 0,
-          updatedAt: DateTime.now(),
-        ),
-        limits: const [],
-      );
-      expect(status.isPremium, isTrue);
-    });
+    test(
+      'isPremium returns true when plan is premium and expiresAt is null',
+      () {
+        final status = PaywallStatus(
+          plan: 'premium',
+          expiresAt: null,
+          usage: PaywallUsage(
+            activeChores: 0,
+            chorePhotos: 0,
+            activeMembers: 1,
+            activeExpenses: 0,
+            updatedAt: DateTime.now(),
+          ),
+          limits: const [],
+        );
+        expect(status.isPremium, isTrue);
+      },
+    );
 
     test('isPremium returns false when plan is not premium', () {
       final status = PaywallStatus(

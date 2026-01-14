@@ -57,10 +57,7 @@ class PersonalGratitudeWallContent extends StatelessWidget {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                KinlyCircleAvatar(
-                  avatarUrl: item.authorAvatarPath,
-                  radius: 20,
-                ),
+                KinlyCircleAvatar(avatarUrl: item.authorAvatarPath, radius: 20),
                 SizedBox(width: spacing.m),
                 Expanded(
                   child: Column(
@@ -74,10 +71,7 @@ class PersonalGratitudeWallContent extends StatelessWidget {
                       ),
                       if (item.message?.isNotEmpty == true) ...[
                         SizedBox(height: spacing.xs),
-                        Text(
-                          item.message!,
-                          style: theme.textTheme.bodyMedium,
-                        ),
+                        Text(item.message!, style: theme.textTheme.bodyMedium),
                       ],
                       SizedBox(height: spacing.xs),
                       Text(

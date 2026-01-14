@@ -15,11 +15,11 @@ class PersonalGratitudeCubit extends Cubit<PersonalGratitudeState> {
     required HomeRepository homeRepository,
     required String homeId,
     Logger? logger,
-  })  : _repo = moodRepository,
-        _homeRepository = homeRepository,
-        _homeId = homeId,
-        _logger = logger ?? const DebugLogger(),
-        super(const PersonalGratitudeState.initial());
+  }) : _repo = moodRepository,
+       _homeRepository = homeRepository,
+       _homeId = homeId,
+       _logger = logger ?? const DebugLogger(),
+       super(const PersonalGratitudeState.initial());
 
   final MoodRepository _repo;
   final HomeRepository _homeRepository;
@@ -39,7 +39,8 @@ class PersonalGratitudeCubit extends Cubit<PersonalGratitudeState> {
           items: page.items,
           cursorAt: page.cursorCreatedAt,
           cursorId: page.cursorId,
-          hasMore: page.items.isNotEmpty &&
+          hasMore:
+              page.items.isNotEmpty &&
               (stats.totalReceived > page.items.length),
           status: status,
           stats: stats,

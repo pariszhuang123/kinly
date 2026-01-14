@@ -15,10 +15,7 @@ void main() {
 
     group('fromWire', () {
       test('parses "equal" to ExpenseSplitType.equal', () {
-        expect(
-          ExpenseSplitTypeWire.fromWire('equal'),
-          ExpenseSplitType.equal,
-        );
+        expect(ExpenseSplitTypeWire.fromWire('equal'), ExpenseSplitType.equal);
       });
 
       test('parses "custom" to ExpenseSplitType.custom', () {
@@ -33,7 +30,10 @@ void main() {
       });
 
       test('returns default (equal) for unknown value', () {
-        expect(ExpenseSplitTypeWire.fromWire('unknown'), ExpenseSplitType.equal);
+        expect(
+          ExpenseSplitTypeWire.fromWire('unknown'),
+          ExpenseSplitType.equal,
+        );
       });
     });
 

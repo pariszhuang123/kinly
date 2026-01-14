@@ -495,9 +495,7 @@ void main() {
   blocTest<FlowChoreBloc, FlowChoreState>(
     'updates start date',
     build: () => buildBloc(),
-    act:
-        (bloc) =>
-            bloc.add(FlowChoreStartDateChanged(DateTime(2024, 6, 15))),
+    act: (bloc) => bloc.add(FlowChoreStartDateChanged(DateTime(2024, 6, 15))),
     expect:
         () => [
           isA<FlowChoreState>().having(
@@ -685,9 +683,9 @@ void main() {
   blocTest<FlowChoreBloc, FlowChoreState>(
     'deletes chore successfully',
     build: () {
-      when(() => choresRepository.cancel(any())).thenAnswer(
-        (_) async => sampleChore,
-      );
+      when(
+        () => choresRepository.cancel(any()),
+      ).thenAnswer((_) async => sampleChore);
       return FlowChoreBloc(
         homeId: 'home-1',
         choreId: 'chore-123',
@@ -1165,9 +1163,9 @@ void main() {
             isEditMode: false,
             initialStartDate: DateTime.now(),
           ).copyWith(
-            form: FlowChoreForm.initial(startDate: DateTime.now()).copyWith(
-              title: 'Valid chore',
-            ),
+            form: FlowChoreForm.initial(
+              startDate: DateTime.now(),
+            ).copyWith(title: 'Valid chore'),
             paywallInFlightRequestId: 'req-retry',
           ),
       act:
@@ -1300,9 +1298,9 @@ void main() {
     blocTest<FlowChoreBloc, FlowChoreState>(
       'emits error when delete throws generic exception',
       build: () {
-        when(() => choresRepository.cancel(any())).thenThrow(
-          Exception('Delete failed'),
-        );
+        when(
+          () => choresRepository.cancel(any()),
+        ).thenThrow(Exception('Delete failed'));
         return FlowChoreBloc(
           homeId: 'home-1',
           choreId: 'chore-123',

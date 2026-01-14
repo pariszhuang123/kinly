@@ -61,7 +61,8 @@ void main() {
   }) {
     final now = DateTime.now().toUtc();
     return GratitudeWallPage(
-      posts: posts ??
+      posts:
+          posts ??
           [
             GratitudeWallPost(
               id: 'p1',
@@ -116,19 +117,22 @@ void main() {
           return buildCubit();
         },
         act: (cubit) => cubit.loadInitial(),
-        expect: () => [
-          isA<GratitudeWallState>()
-              .having((s) => s.isLoading, 'isLoading', true)
-              .having((s) => s.error, 'error', isNull),
-          isA<GratitudeWallState>()
-              .having((s) => s.isLoading, 'isLoading', false)
-              .having((s) => s.posts.length, 'posts length', 1)
-              .having((s) => s.totalPosts, 'totalPosts', 3)
-              .having((s) => s.hasLoaded, 'hasLoaded', true)
-              .having((s) => s.hasMore, 'hasMore', true),
-        ],
+        expect:
+            () => [
+              isA<GratitudeWallState>()
+                  .having((s) => s.isLoading, 'isLoading', true)
+                  .having((s) => s.error, 'error', isNull),
+              isA<GratitudeWallState>()
+                  .having((s) => s.isLoading, 'isLoading', false)
+                  .having((s) => s.posts.length, 'posts length', 1)
+                  .having((s) => s.totalPosts, 'totalPosts', 3)
+                  .having((s) => s.hasLoaded, 'hasLoaded', true)
+                  .having((s) => s.hasMore, 'hasMore', true),
+            ],
         verify: (_) {
-          verify(() => repo.listWall(homeId: homeId, limit: any(named: 'limit'))).called(1);
+          verify(
+            () => repo.listWall(homeId: homeId, limit: any(named: 'limit')),
+          ).called(1);
           verify(() => repo.getWallStats(homeId)).called(1);
           verify(() => repo.markWallRead(homeId)).called(1);
         },
@@ -140,16 +144,19 @@ void main() {
           setupDefaultMocks();
           return buildCubit();
         },
-        seed: () => const GratitudeWallState.initial().copyWith(isLoading: true),
+        seed:
+            () => const GratitudeWallState.initial().copyWith(isLoading: true),
         act: (cubit) => cubit.loadInitial(),
         expect: () => [],
         verify: (_) {
-          verifyNever(() => repo.listWall(
-                homeId: any(named: 'homeId'),
-                limit: any(named: 'limit'),
-                cursorCreatedAt: any(named: 'cursorCreatedAt'),
-                cursorId: any(named: 'cursorId'),
-              ));
+          verifyNever(
+            () => repo.listWall(
+              homeId: any(named: 'homeId'),
+              limit: any(named: 'limit'),
+              cursorCreatedAt: any(named: 'cursorCreatedAt'),
+              cursorId: any(named: 'cursorId'),
+            ),
+          );
         },
       );
 
@@ -174,12 +181,17 @@ void main() {
           return buildCubit();
         },
         act: (cubit) => cubit.loadInitial(),
-        expect: () => [
-          isA<GratitudeWallState>().having((s) => s.isLoading, 'isLoading', true),
-          isA<GratitudeWallState>()
-              .having((s) => s.isLoading, 'isLoading', false)
-              .having((s) => s.error, 'error', contains('Network error')),
-        ],
+        expect:
+            () => [
+              isA<GratitudeWallState>().having(
+                (s) => s.isLoading,
+                'isLoading',
+                true,
+              ),
+              isA<GratitudeWallState>()
+                  .having((s) => s.isLoading, 'isLoading', false)
+                  .having((s) => s.error, 'error', contains('Network error')),
+            ],
       );
 
       blocTest<GratitudeWallCubit, GratitudeWallState>(
@@ -204,10 +216,15 @@ void main() {
           return buildCubit();
         },
         act: (cubit) => cubit.loadInitial(),
-        expect: () => [
-          isA<GratitudeWallState>(),
-          isA<GratitudeWallState>().having((s) => s.hasMore, 'hasMore', false),
-        ],
+        expect:
+            () => [
+              isA<GratitudeWallState>(),
+              isA<GratitudeWallState>().having(
+                (s) => s.hasMore,
+                'hasMore',
+                false,
+              ),
+            ],
       );
     });
 
@@ -262,13 +279,18 @@ void main() {
           );
         },
         act: (cubit) => cubit.loadMore(),
-        expect: () => [
-          isA<GratitudeWallState>().having((s) => s.isLoadingMore, 'isLoadingMore', true),
-          isA<GratitudeWallState>()
-              .having((s) => s.isLoadingMore, 'isLoadingMore', false)
-              .having((s) => s.posts.length, 'posts.length', 2)
-              .having((s) => s.hasLoaded, 'hasLoaded', true),
-        ],
+        expect:
+            () => [
+              isA<GratitudeWallState>().having(
+                (s) => s.isLoadingMore,
+                'isLoadingMore',
+                true,
+              ),
+              isA<GratitudeWallState>()
+                  .having((s) => s.isLoadingMore, 'isLoadingMore', false)
+                  .having((s) => s.posts.length, 'posts.length', 2)
+                  .having((s) => s.hasLoaded, 'hasLoaded', true),
+            ],
       );
 
       blocTest<GratitudeWallCubit, GratitudeWallState>(
@@ -277,7 +299,10 @@ void main() {
           setupDefaultMocks();
           return buildCubit();
         },
-        seed: () => const GratitudeWallState.initial().copyWith(isLoadingMore: true),
+        seed:
+            () => const GratitudeWallState.initial().copyWith(
+              isLoadingMore: true,
+            ),
         act: (cubit) => cubit.loadMore(),
         expect: () => [],
       );
@@ -308,12 +333,21 @@ void main() {
         },
         seed: () => const GratitudeWallState.initial().copyWith(hasMore: true),
         act: (cubit) => cubit.loadMore(),
-        expect: () => [
-          isA<GratitudeWallState>().having((s) => s.isLoadingMore, 'isLoadingMore', true),
-          isA<GratitudeWallState>()
-              .having((s) => s.isLoadingMore, 'isLoadingMore', false)
-              .having((s) => s.error, 'error', contains('Load more failed')),
-        ],
+        expect:
+            () => [
+              isA<GratitudeWallState>().having(
+                (s) => s.isLoadingMore,
+                'isLoadingMore',
+                true,
+              ),
+              isA<GratitudeWallState>()
+                  .having((s) => s.isLoadingMore, 'isLoadingMore', false)
+                  .having(
+                    (s) => s.error,
+                    'error',
+                    contains('Load more failed'),
+                  ),
+            ],
       );
 
       blocTest<GratitudeWallCubit, GratitudeWallState>(
@@ -366,10 +400,15 @@ void main() {
           );
         },
         act: (cubit) => cubit.loadMore(),
-        expect: () => [
-          isA<GratitudeWallState>(),
-          isA<GratitudeWallState>().having((s) => s.hasMore, 'hasMore', false),
-        ],
+        expect:
+            () => [
+              isA<GratitudeWallState>(),
+              isA<GratitudeWallState>().having(
+                (s) => s.hasMore,
+                'hasMore',
+                false,
+              ),
+            ],
       );
     });
 

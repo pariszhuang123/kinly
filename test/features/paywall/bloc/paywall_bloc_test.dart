@@ -258,7 +258,10 @@ void main() {
           source: 'test_source',
           triggers: {PaywallTrigger.flowActiveCap},
         );
-        expect(event.props, ['test_source', {PaywallTrigger.flowActiveCap}]);
+        expect(event.props, [
+          'test_source',
+          {PaywallTrigger.flowActiveCap},
+        ]);
       });
 
       test('two events with same props are equal', () {

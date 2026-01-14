@@ -31,10 +31,11 @@ class _GratitudeWallScreenState extends State<GratitudeWallScreen> {
       messageBuilder:
           (ctx, appLink) =>
               s.gratitudeWallShareMessage(appLink).replaceAll(r'\n', '\n'),
-      childBuilder: (ctx) => GratitudeWallBody(
-        selected: _selected,
-        onSelect: (tab) => setState(() => _selected = tab),
-      ),
+      childBuilder:
+          (ctx) => GratitudeWallBody(
+            selected: _selected,
+            onSelect: (tab) => setState(() => _selected = tab),
+          ),
       onSharePressed: () async {
         if (_selected == GratitudeTab.personal) {
           context.read<PersonalGratitudeCubit>().logShareEvent();

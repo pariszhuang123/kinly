@@ -49,9 +49,10 @@ class TodayGratitudeSection extends StatelessWidget {
                 _CTAChip(
                   label: s.todayGratitudePersonalCta,
                   onTap: onPersonalTap,
-                  icon: personalHasUnread
-                      ? KinlyIcons.notificationsActiveOutlined
-                      : KinlyIcons.arrowForwardRounded,
+                  icon:
+                      personalHasUnread
+                          ? KinlyIcons.notificationsActiveOutlined
+                          : KinlyIcons.arrowForwardRounded,
                   emphasize: personalHasUnread,
                 ),
             ],

@@ -5,9 +5,10 @@ String resolveHouseVibeAssetPath({
 }) {
   final resolvedKey =
       imageKey.isNotEmpty ? imageKey : _fallbackImageKeyForLabel(labelId);
-  final safeKey = (resolvedKey?.isNotEmpty ?? false)
-      ? resolvedKey
-      : _fallbackImageKeyForLabel('default_home');
+  final safeKey =
+      (resolvedKey?.isNotEmpty ?? false)
+          ? resolvedKey
+          : _fallbackImageKeyForLabel('default_home');
   return 'assets/house_vibes/$mappingVersion/$safeKey.webp';
 }
 

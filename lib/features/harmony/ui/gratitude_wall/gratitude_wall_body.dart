@@ -46,11 +46,14 @@ class GratitudeWallBody extends StatelessWidget {
                   ),
                   SizedBox(height: spacing.m),
                   Expanded(
-                    child: selected == GratitudeTab.house
-                        ? GratitudeWallContent(maxHeight: constraints.maxHeight)
-                        : PersonalGratitudeWallContent(
-                            maxHeight: constraints.maxHeight,
-                          ),
+                    child:
+                        selected == GratitudeTab.house
+                            ? GratitudeWallContent(
+                              maxHeight: constraints.maxHeight,
+                            )
+                            : PersonalGratitudeWallContent(
+                              maxHeight: constraints.maxHeight,
+                            ),
                   ),
                 ],
               ),

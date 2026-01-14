@@ -52,8 +52,9 @@ void main() {
   setUp(() {
     repository = _MockPreferenceReportsRepository();
 
-    when(() => repository.getTemplateResolution(templateKey: templateKey))
-        .thenAnswer((_) async => testResolution);
+    when(
+      () => repository.getTemplateResolution(templateKey: templateKey),
+    ).thenAnswer((_) async => testResolution);
 
     when(
       () => repository.getReportForHome(
@@ -64,8 +65,9 @@ void main() {
       ),
     ).thenAnswer((_) async => testReport);
 
-    when(() => repository.acknowledgeReport(reportId: any(named: 'reportId')))
-        .thenAnswer((_) async {});
+    when(
+      () => repository.acknowledgeReport(reportId: any(named: 'reportId')),
+    ).thenAnswer((_) async {});
 
     when(
       () => repository.editSectionText(
@@ -98,13 +100,21 @@ void main() {
         'emits loading then ready on success',
         build: buildCubit,
         act: (cubit) => cubit.load(),
-        expect: () => [
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.loading),
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.ready)
-              .having((s) => s.report, 'report', testReport),
-        ],
+        expect:
+            () => [
+              isA<PreferenceReportState>().having(
+                (s) => s.status,
+                'status',
+                PreferenceReportStatus.loading,
+              ),
+              isA<PreferenceReportState>()
+                  .having(
+                    (s) => s.status,
+                    'status',
+                    PreferenceReportStatus.ready,
+                  )
+                  .having((s) => s.report, 'report', testReport),
+            ],
         verify: (_) {
           verify(
             () => repository.getTemplateResolution(templateKey: templateKey),
@@ -134,45 +144,68 @@ void main() {
           return buildCubit();
         },
         act: (cubit) => cubit.load(),
-        expect: () => [
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.loading),
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.empty),
-        ],
+        expect:
+            () => [
+              isA<PreferenceReportState>().having(
+                (s) => s.status,
+                'status',
+                PreferenceReportStatus.loading,
+              ),
+              isA<PreferenceReportState>().having(
+                (s) => s.status,
+                'status',
+                PreferenceReportStatus.empty,
+              ),
+            ],
       );
 
       blocTest<PreferenceReportCubit, PreferenceReportState>(
         'emits failure on error',
         build: () {
-          when(() => repository.getTemplateResolution(templateKey: templateKey))
-              .thenThrow(Exception('Network error'));
+          when(
+            () => repository.getTemplateResolution(templateKey: templateKey),
+          ).thenThrow(Exception('Network error'));
           return buildCubit();
         },
         act: (cubit) => cubit.load(),
-        expect: () => [
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.loading),
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.failure)
-              .having(
-                (s) => s.errorMessage,
-                'errorMessage',
-                contains('Network error'),
+        expect:
+            () => [
+              isA<PreferenceReportState>().having(
+                (s) => s.status,
+                'status',
+                PreferenceReportStatus.loading,
               ),
-        ],
+              isA<PreferenceReportState>()
+                  .having(
+                    (s) => s.status,
+                    'status',
+                    PreferenceReportStatus.failure,
+                  )
+                  .having(
+                    (s) => s.errorMessage,
+                    'errorMessage',
+                    contains('Network error'),
+                  ),
+            ],
       );
 
       blocTest<PreferenceReportCubit, PreferenceReportState>(
         'acknowledges report when acknowledgeOnLoad is true',
         build: () => buildCubit(acknowledgeOnLoad: true),
         act: (cubit) => cubit.load(),
-        expect: () => [
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.loading),
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.ready),
-        ],
+        expect:
+            () => [
+              isA<PreferenceReportState>().having(
+                (s) => s.status,
+                'status',
+                PreferenceReportStatus.loading,
+              ),
+              isA<PreferenceReportState>().having(
+                (s) => s.status,
+                'status',
+                PreferenceReportStatus.ready,
+              ),
+            ],
         verify: (_) {
           verify(
             () => repository.acknowledgeReport(reportId: testReport.id),
@@ -186,7 +219,8 @@ void main() {
         act: (cubit) => cubit.load(),
         verify: (_) {
           verifyNever(
-            () => repository.acknowledgeReport(reportId: any(named: 'reportId')),
+            () =>
+                repository.acknowledgeReport(reportId: any(named: 'reportId')),
           );
         },
       );
@@ -197,12 +231,19 @@ void main() {
         'calls load',
         build: buildCubit,
         act: (cubit) => cubit.refresh(),
-        expect: () => [
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.loading),
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.ready),
-        ],
+        expect:
+            () => [
+              isA<PreferenceReportState>().having(
+                (s) => s.status,
+                'status',
+                PreferenceReportStatus.loading,
+              ),
+              isA<PreferenceReportState>().having(
+                (s) => s.status,
+                'status',
+                PreferenceReportStatus.ready,
+              ),
+            ],
         verify: (_) {
           verify(
             () => repository.getTemplateResolution(templateKey: templateKey),
@@ -222,12 +263,19 @@ void main() {
           );
           expect(result, isTrue);
         },
-        expect: () => [
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.loading),
-          isA<PreferenceReportState>()
-              .having((s) => s.status, 'status', PreferenceReportStatus.ready),
-        ],
+        expect:
+            () => [
+              isA<PreferenceReportState>().having(
+                (s) => s.status,
+                'status',
+                PreferenceReportStatus.loading,
+              ),
+              isA<PreferenceReportState>().having(
+                (s) => s.status,
+                'status',
+                PreferenceReportStatus.ready,
+              ),
+            ],
         verify: (_) {
           verify(
             () => repository.editSectionText(

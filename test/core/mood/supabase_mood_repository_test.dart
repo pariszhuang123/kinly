@@ -8,7 +8,11 @@ import 'package:kinly/features/harmony/data/supabase/supabase_mood_repository.da
 void main() {
   const homeId = 'home';
   const comment = 'note';
-  const expected = MoodSubmitResult(entryId: 'e1', publicPostId: 'g1', mentionCount: 1);
+  const expected = MoodSubmitResult(
+    entryId: 'e1',
+    publicPostId: 'g1',
+    mentionCount: 1,
+  );
 
   test('submit accepts list response from mood_submit_v2', () async {
     final repository = SupabaseMoodRepository(

@@ -988,7 +988,8 @@ void main() {
     'updates notes field',
     build: () => buildBloc(),
     seed: seededState,
-    act: (bloc) => bloc.add(const ShareCreateNotesChanged('Payment for dinner')),
+    act:
+        (bloc) => bloc.add(const ShareCreateNotesChanged('Payment for dinner')),
     expect:
         () => [
           seededState().copyWith(
@@ -1089,8 +1090,9 @@ void main() {
       );
     },
     setUp: () {
-      when(() => expensesRepository.cancel(any()))
-          .thenThrow(Exception('Delete failed'));
+      when(
+        () => expensesRepository.cancel(any()),
+      ).thenThrow(Exception('Delete failed'));
     },
     act: (bloc) => bloc.add(const ShareCreateDeleted()),
     expect:
@@ -1125,10 +1127,7 @@ void main() {
     },
     setUp: () {
       when(() => expensesRepository.terminatePlan(any())).thenThrow(
-        const ExpenseException(
-          ExpenseErrorCode.notFound,
-          'Plan not found',
-        ),
+        const ExpenseException(ExpenseErrorCode.notFound, 'Plan not found'),
       );
     },
     act: (bloc) => bloc.add(const ShareCreatePlanTerminationRequested()),
@@ -1160,8 +1159,9 @@ void main() {
       ).copyWith(planId: 'plan-1', planStatus: 'active');
     },
     setUp: () {
-      when(() => expensesRepository.terminatePlan(any()))
-          .thenThrow(Exception('Terminate failed'));
+      when(
+        () => expensesRepository.terminatePlan(any()),
+      ).thenThrow(Exception('Terminate failed'));
     },
     act: (bloc) => bloc.add(const ShareCreatePlanTerminationRequested()),
     expect:
@@ -1204,8 +1204,10 @@ void main() {
       );
     },
     seed: () {
-      return seededState(isEditing: true, editingExpenseId: 'expense-1')
-          .copyWith(canEdit: false, editDisabledReason: 'Already paid');
+      return seededState(
+        isEditing: true,
+        editingExpenseId: 'expense-1',
+      ).copyWith(canEdit: false, editDisabledReason: 'Already paid');
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
     expect: () => <ShareCreateState>[],
@@ -1274,9 +1276,9 @@ void main() {
     'toggles participant selection',
     build: () => buildBloc(),
     seed: seededState,
-    act: (bloc) => bloc.add(
-      const ShareCreateParticipantToggled('member_a', false),
-    ),
+    act:
+        (bloc) =>
+            bloc.add(const ShareCreateParticipantToggled('member_a', false)),
     expect:
         () => [
           isA<ShareCreateState>()
@@ -1301,9 +1303,9 @@ void main() {
       );
       return seededState(form: form);
     },
-    act: (bloc) => bloc.add(
-      const ShareCreateCustomAmountChanged('member_a', '6.00'),
-    ),
+    act:
+        (bloc) =>
+            bloc.add(const ShareCreateCustomAmountChanged('member_a', '6.00')),
     expect:
         () => [
           isA<ShareCreateState>()
@@ -1334,7 +1336,11 @@ void main() {
     expect:
         () => [
           isA<ShareCreateState>()
-              .having((s) => s.form.splitMode, 'splitMode', ShareSplitMode.equal)
+              .having(
+                (s) => s.form.splitMode,
+                'splitMode',
+                ShareSplitMode.equal,
+              )
               .having(
                 (s) => s.form.selectedParticipantIds.length,
                 'all selected',
@@ -1372,9 +1378,7 @@ void main() {
     'paywall resolved does not retry submission when status is not granted',
     build: () => buildBloc(),
     seed: () {
-      return seededState().copyWith(
-        paywallInFlightRequestId: 'req-123',
-      );
+      return seededState().copyWith(paywallInFlightRequestId: 'req-123');
     },
     act:
         (bloc) => bloc.add(
@@ -1522,10 +1526,7 @@ void main() {
     });
 
     test('ShareCreateDeleted equality', () {
-      expect(
-        const ShareCreateDeleted(),
-        equals(const ShareCreateDeleted()),
-      );
+      expect(const ShareCreateDeleted(), equals(const ShareCreateDeleted()));
       expect(const ShareCreateDeleted().props, isEmpty);
     });
 

@@ -26,16 +26,16 @@ class PersonalGratitudeState extends Equatable {
   });
 
   const PersonalGratitudeState.initial()
-      : isLoading = false,
-        isLoadingMore = false,
-        hasMore = false,
-        hasLoaded = false,
-        items = const [],
-        cursorAt = null,
-        cursorId = null,
-        status = null,
-        stats = null,
-        error = null;
+    : isLoading = false,
+      isLoadingMore = false,
+      hasMore = false,
+      hasLoaded = false,
+      items = const [],
+      cursorAt = null,
+      cursorId = null,
+      status = null,
+      stats = null,
+      error = null;
 
   PersonalGratitudeState copyWith({
     bool? isLoading,
@@ -65,15 +65,15 @@ class PersonalGratitudeState extends Equatable {
 
   @override
   List<Object?> get props => [
-        isLoading,
-        isLoadingMore,
-        hasMore,
-        hasLoaded,
-        items,
-        cursorAt,
-        cursorId,
-        status,
-        stats,
-        error,
-      ];
+    isLoading,
+    isLoadingMore,
+    hasMore,
+    hasLoaded,
+    items,
+    cursorAt,
+    cursorId,
+    status,
+    stats,
+    error,
+  ];
 }

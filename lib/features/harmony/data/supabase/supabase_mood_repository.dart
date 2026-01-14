@@ -152,10 +152,7 @@ class SupabaseMoodRepository implements MoodRepository {
 
   @override
   Future<void> markWallRead(String homeId) async {
-    await _rpc(
-      'gratitude_wall_mark_read',
-      params: {'p_home_id': homeId},
-    );
+    await _rpc('gratitude_wall_mark_read', params: {'p_home_id': homeId});
   }
 
   @override
@@ -242,7 +239,9 @@ class SupabaseMoodRepository implements MoodRepository {
   }
 
   @override
-  Future<PersonalGratitudeStats> getPersonalStats({bool excludeSelf = true}) async {
+  Future<PersonalGratitudeStats> getPersonalStats({
+    bool excludeSelf = true,
+  }) async {
     final res = await _rpc(
       'personal_gratitude_showcase_stats_v1',
       params: {'p_exclude_self': excludeSelf},

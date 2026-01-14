@@ -106,7 +106,10 @@ class _FakeHomeRepository extends Fake implements HomeRepository {
   }
 
   @override
-  Future<void> transferOwner({required String homeId, required String newOwnerId}) {
+  Future<void> transferOwner({
+    required String homeId,
+    required String newOwnerId,
+  }) {
     throw UnimplementedError();
   }
 
@@ -202,11 +205,12 @@ void main() {
           supportedLocales: S.delegate.supportedLocales,
           theme: _rtlTheme,
           home: BlocProvider(
-            create: (_) => HarmonyCubit(
-              homeId: 'home',
-              moodRepository: repo,
-              homeRepository: homeRepo,
-            ),
+            create:
+                (_) => HarmonyCubit(
+                  homeId: 'home',
+                  moodRepository: repo,
+                  homeRepository: homeRepo,
+                ),
             child: const Directionality(
               // belt-and-suspenders: keep RTL even if locale plumbing changes
               textDirection: TextDirection.rtl,

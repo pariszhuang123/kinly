@@ -117,7 +117,8 @@ class HouseInfoCard extends StatelessWidget {
                         ),
                       ),
                     ],
-                    if (showCoverage && (data.coverage?.isNotEmpty ?? false)) ...[
+                    if (showCoverage &&
+                        (data.coverage?.isNotEmpty ?? false)) ...[
                       SizedBox(height: spacing.sm),
                       Text(
                         data.coverage!,
@@ -182,10 +183,7 @@ class HouseInfoCard extends StatelessWidget {
 }
 
 class HouseInfoShareCard extends StatelessWidget {
-  const HouseInfoShareCard({
-    super.key,
-    required this.data,
-  });
+  const HouseInfoShareCard({super.key, required this.data});
 
   final HouseInfoCardData data;
 

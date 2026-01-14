@@ -295,8 +295,10 @@ void main() {
         sharePaidToMe: const [],
         shareDrafts: const [],
         gratitudeStatus: const GratitudeWallStatus(hasUnread: true),
-        personalGratitudeStatus:
-            const PersonalGratitudeStatus(hasUnread: true, lastReadAt: null),
+        personalGratitudeStatus: const PersonalGratitudeStatus(
+          hasUnread: true,
+          lastReadAt: null,
+        ),
         shouldPromptInviteShare: true,
       ),
     );

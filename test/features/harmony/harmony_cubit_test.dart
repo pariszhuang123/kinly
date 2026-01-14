@@ -10,6 +10,7 @@ import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 
 class _MockMoodRepository extends Mock implements MoodRepository {}
+
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
 void main() {
@@ -113,8 +114,7 @@ void main() {
           mentions: any(named: 'mentions'),
         ),
       ).thenAnswer(
-        (_) async =>
-            const MoodSubmitResult(entryId: 'e1', publicPostId: 'g1'),
+        (_) async => const MoodSubmitResult(entryId: 'e1', publicPostId: 'g1'),
       );
       return HarmonyCubit(
         homeId: 'home',

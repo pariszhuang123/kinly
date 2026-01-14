@@ -86,18 +86,12 @@ void main() {
     });
 
     test('fromModel sets isOwner true when matching ownerUserId', () {
-      final result = TodayShareOwed.fromModel(
-        owedGroup,
-        ownerUserId: 'user-a',
-      );
+      final result = TodayShareOwed.fromModel(owedGroup, ownerUserId: 'user-a');
       expect(result.isOwner, isTrue);
     });
 
     test('fromModel sets isOwner false when non-matching ownerUserId', () {
-      final result = TodayShareOwed.fromModel(
-        owedGroup,
-        ownerUserId: 'user-b',
-      );
+      final result = TodayShareOwed.fromModel(owedGroup, ownerUserId: 'user-b');
       expect(result.isOwner, isFalse);
     });
 

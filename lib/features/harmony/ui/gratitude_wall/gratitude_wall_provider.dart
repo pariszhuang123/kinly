@@ -24,18 +24,20 @@ class GratitudeWallProvider extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => GratitudeWallCubit(
-            homeId: homeId,
-            moodRepository: moodRepository,
-            homeRepository: homeRepository,
-          )..loadInitial(),
+          create:
+              (_) => GratitudeWallCubit(
+                homeId: homeId,
+                moodRepository: moodRepository,
+                homeRepository: homeRepository,
+              )..loadInitial(),
         ),
         BlocProvider(
-          create: (_) => PersonalGratitudeCubit(
-            moodRepository: moodRepository,
-            homeRepository: homeRepository,
-            homeId: homeId,
-          )..loadInitial(),
+          create:
+              (_) => PersonalGratitudeCubit(
+                moodRepository: moodRepository,
+                homeRepository: homeRepository,
+                homeId: homeId,
+              )..loadInitial(),
         ),
       ],
       child: const GratitudeWallScreen(),

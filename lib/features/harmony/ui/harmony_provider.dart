@@ -23,11 +23,12 @@ class HarmonyProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => HarmonyCubit(
-        homeId: homeId,
-        moodRepository: moodRepository,
-        homeRepository: homeRepository,
-      )..loadMembers(),
+      create:
+          (_) => HarmonyCubit(
+            homeId: homeId,
+            moodRepository: moodRepository,
+            homeRepository: homeRepository,
+          )..loadMembers(),
       child: child,
     );
   }
