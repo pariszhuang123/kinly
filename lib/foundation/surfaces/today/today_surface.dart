@@ -279,8 +279,10 @@ class _TodayScreenState extends State<TodayScreen>
   Future<void> _openShareCreatedList(BuildContext context) =>
       openShareCreatedListExt(context);
 
-  Future<void> _openGratitudeWall(BuildContext context) =>
-      openGratitudeWallExt(context);
+  Future<void> _openGratitudeWall(
+    BuildContext context, {
+    bool openPersonal = false,
+  }) => openGratitudeWallExt(context, openPersonal: openPersonal);
 
   Future<void> _openHarmonyPage(BuildContext context) =>
       openHarmonyPageExt(context);
@@ -383,7 +385,8 @@ class _TodayScreenState extends State<TodayScreen>
         _openShareCreatedList(context);
       },
       onGratitudeTap: () => _openGratitudeWall(context),
-      onPersonalGratitudeTap: () => _openGratitudeWall(context),
+      onPersonalGratitudeTap: () =>
+          _openGratitudeWall(context, openPersonal: true),
     );
     final scope = TodaySurfaceScope(
       context: context,

@@ -167,12 +167,7 @@ void main() {
     );
     when(() => cubit.loadMore()).thenAnswer((_) async {});
 
-    await tester.pumpWidget(
-      SizedBox(
-        height: 400,
-        child: _wrap(cubit.state, cubit),
-      ),
-    );
+    await tester.pumpWidget(_wrap(cubit.state, cubit));
     await tester.pump();
 
     await tester.drag(find.byType(PersonalGratitudeWallContent), const Offset(0, -500));

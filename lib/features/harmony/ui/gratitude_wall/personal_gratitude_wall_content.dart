@@ -10,11 +10,11 @@ import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/kinly_theme_access.dart';
 import '../../../../core/ui/kinly_empty_state.dart';
 import '../../../../core/ui/kinly_icons.dart';
-import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/kinly_masonry_grid.dart';
 import '../../../../core/ui/badges/kinly_badge.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/personal_gratitude_cubit.dart';
+import 'gratitude_wall_widgets.dart';
 
 class PersonalGratitudeWallContent extends StatelessWidget {
   const PersonalGratitudeWallContent({super.key, this.maxHeight});
@@ -27,7 +27,7 @@ class PersonalGratitudeWallContent extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
 
-    return BlocBuilder<PersonalGratitudeCubit, PersonalGratitudeState>(
+    final content = BlocBuilder<PersonalGratitudeCubit, PersonalGratitudeState>(
       builder: (context, state) {
         if (state.isLoading && state.items.isEmpty) {
           return const Center(child: KinlyLoader());
@@ -50,39 +50,40 @@ class PersonalGratitudeWallContent extends StatelessWidget {
           );
         }
 
-        final stats = state.stats ??
+        final stats =
+            state.stats ??
             const PersonalGratitudeStats(
               totalReceived: 0,
               uniqueIndividuals: 0,
               uniqueHomes: 0,
             );
 
-        return Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                theme.colorScheme.surface,
-                theme.colorScheme.surfaceContainerLowest,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+        return NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (notification.metrics.pixels >=
+                    notification.metrics.maxScrollExtent - 120 &&
+                state.hasMore &&
+                !state.isLoadingMore) {
+              context.read<PersonalGratitudeCubit>().loadMore();
+            }
+            return false;
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  theme.colorScheme.surface,
+                  theme.colorScheme.surfaceContainerLowest,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
-          ),
-          child: Padding(
-            padding: EdgeInsetsDirectional.all(spacing.lg),
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (notification) {
-                if (notification.metrics.pixels >=
-                        notification.metrics.maxScrollExtent - 120 &&
-                    state.hasMore &&
-                    !state.isLoadingMore) {
-                  context.read<PersonalGratitudeCubit>().loadMore();
-                }
-                return false;
-              },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            child: SingleChildScrollView(
+              padding: EdgeInsetsDirectional.all(spacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
                     s.gratitudeWallPersonalTitle,
                     style: theme.textTheme.titleLarge?.copyWith(
@@ -101,26 +102,23 @@ class PersonalGratitudeWallContent extends StatelessWidget {
                     homes: stats.uniqueHomes,
                   ),
                   SizedBox(height: spacing.lg),
-                  Expanded(
-                    child: KinlyMasonryGrid<PersonalGratitudeItem>(
-                      items: state.items,
-                      gap: spacing.md,
-                      estimateItemHeight:
-                          (item, textTheme, gridSpacing) =>
-                              _estimateHeight(
-                                item,
-                                spacing: gridSpacing,
-                                bodyStyle: textTheme.bodyMedium,
-                              ),
-                      builder: (context, item, index, palette) {
-                        return _PersonalGratitudeCard(
-                          item: item,
-                          palette: palette.colorForSeed(
-                            '${item.id}-${item.authorUserId}',
-                          ),
-                        );
-                      },
-                    ),
+                  KinlyMasonryGrid<PersonalGratitudeItem>(
+                    items: state.items,
+                    gap: spacing.md,
+                    estimateItemHeight:
+                        (item, textTheme, gridSpacing) => _estimateHeight(
+                          item,
+                          spacing: gridSpacing,
+                          bodyStyle: textTheme.bodyMedium,
+                        ),
+                    builder: (context, item, index, palette) {
+                      return _PersonalGratitudeCard(
+                        item: item,
+                        palette: palette.colorForSeed(
+                          '${item.id}-${item.authorUserId}',
+                        ),
+                      );
+                    },
                   ),
                   if (state.isLoadingMore)
                     Padding(
@@ -134,6 +132,12 @@ class PersonalGratitudeWallContent extends StatelessWidget {
         );
       },
     );
+
+    if (maxHeight != null) {
+      return SizedBox(height: maxHeight, child: content);
+    }
+
+    return content;
   }
 
   double _estimateHeight(
@@ -193,10 +197,7 @@ class _PersonalStatsRow extends StatelessWidget {
 }
 
 class _PersonalGratitudeCard extends StatelessWidget {
-  const _PersonalGratitudeCard({
-    required this.item,
-    required this.palette,
-  });
+  const _PersonalGratitudeCard({required this.item, required this.palette});
 
   final PersonalGratitudeItem item;
   final SectionColors palette;
@@ -242,49 +243,18 @@ class _PersonalGratitudeCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: palette.background.withValues(alpha: 0.25),
-                  shape: BoxShape.circle,
-                ),
-                padding: EdgeInsetsDirectional.all(spacing.xs),
-                child: KinlyCircleAvatar(
-                  avatarUrl: item.authorAvatarPath,
-                  radius: 20,
-                  fallbackInitial: _initial(item.authorUsername),
-                ),
-              ),
-              SizedBox(width: spacing.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.authorUsername,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: spacing.xs),
-                    KinlyBadge(
-                      label: weeksLabel,
-                      backgroundColor: badgeFill,
-                      foregroundColor: colorScheme.onSurfaceVariant,
-                      compact: true,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          GratitudeCardHeader(
+            username: item.authorUsername,
+            avatarUrl: item.authorAvatarPath,
+            weeksLabel: weeksLabel,
+            palette: palette,
+            initialBuilder: _initial,
           ),
           if (item.message?.isNotEmpty == true) ...[
             SizedBox(height: spacing.m),
             Text(
               item.message!,
-              style: theme.textTheme.bodyLarge?.copyWith(
+              style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),

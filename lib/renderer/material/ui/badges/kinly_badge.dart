@@ -98,6 +98,7 @@ class KinlyBadge extends StatelessWidget {
               effectiveLabel,
               maxLines: maxLines,
               overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
               style: (textStyle ??
                       (type?.labelSmall ?? theme.textTheme.labelSmall))
                   ?.copyWith(

@@ -13,6 +13,78 @@ import '../../../../core/ui/badges/kinly_badge.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../core/ui/kinly_theme_access.dart';
 
+class GratitudeCardHeader extends StatelessWidget {
+  const GratitudeCardHeader({
+    super.key,
+    required this.username,
+    required this.avatarUrl,
+    required this.weeksLabel,
+    required this.palette,
+    required this.initialBuilder,
+  });
+
+  final String username;
+  final String? avatarUrl;
+  final String weeksLabel;
+  final SectionColors palette;
+  final String Function(String value) initialBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final colorScheme = theme.colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: palette.background.withValues(alpha: 0.25),
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsetsDirectional.all(spacing.xs),
+              child: KinlyCircleAvatar(
+                avatarUrl: avatarUrl,
+                radius: 20,
+                fallbackInitial: initialBuilder(username),
+              ),
+            ),
+            SizedBox(width: spacing.sm),
+            Flexible(
+              child: KinlyBadge(
+                label: weeksLabel,
+                backgroundColor: palette.accent.withValues(alpha: 0.16),
+                foregroundColor: colorScheme.onSurfaceVariant,
+                borderColor: palette.accent.withValues(alpha: 0.35),
+                textStyle: theme.textTheme.labelSmall?.copyWith(
+                  letterSpacing: 0.1,
+                ),
+                maxLines: 2,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: spacing.xs),
+        Center(
+          child: Text(
+            username,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class GratitudeWallMasonryGrid extends StatelessWidget {
   const GratitudeWallMasonryGrid({super.key, required this.posts});
 
@@ -95,45 +167,14 @@ class GratitudeWallCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: palette.background.withValues(alpha: 0.25),
-                  shape: BoxShape.circle,
-                ),
-                padding: EdgeInsetsDirectional.all(spacing.xs),
-                child: KinlyCircleAvatar(
-                  avatarUrl: post.authorAvatarUrl,
-                  radius: 20,
-                  fallbackInitial: _initial(
-                    post.authorUsername ?? s.friendDefaultName,
-                  ),
-                ),
-              ),
-              SizedBox(width: spacing.sm),
-              Flexible(
-                child: KinlyBadge(
-                  label: normalizedWeeksLabel,
-                  backgroundColor: badgeFill,
-                  foregroundColor: colorScheme.onSurfaceVariant,
-                  borderColor: palette.accent.withValues(alpha: 0.35),
-                  textStyle: theme.textTheme.labelSmall?.copyWith(
-                    letterSpacing: 0.1,
-                  ),
-                  maxLines: 2,
-                ),
-              ),
-            ],
+          GratitudeCardHeader(
+            username: post.authorUsername ?? s.friendDefaultName,
+            avatarUrl: post.authorAvatarUrl,
+            weeksLabel: normalizedWeeksLabel,
+            palette: palette,
+            initialBuilder: _initial,
           ),
           SizedBox(height: spacing.sm),
-          Text(
-            post.authorUsername ?? s.friendDefaultName,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
           if (post.message != null && post.message!.isNotEmpty) ...[
             SizedBox(height: spacing.md),
             Text(
