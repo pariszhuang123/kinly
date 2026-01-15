@@ -28,10 +28,9 @@ class S {
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name =
-        (locale.countryCode?.isEmpty ?? false)
-            ? locale.languageCode
-            : locale.toString();
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -1255,16 +1254,6 @@ class S {
     );
   }
 
-  /// `Type @ to mention`
-  String get mentionFieldHint {
-    return Intl.message(
-      'Type @ to mention',
-      name: 'mentionFieldHint',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Couldn't load Hub. Please try again.`
   String get hubError {
     return Intl.message(
@@ -1475,10 +1464,10 @@ class S {
     );
   }
 
-  /// `Home Gratitude wall`
+  /// `Gratitude Wall`
   String get todayGratitudeSectionTitle {
     return Intl.message(
-      'Home Gratitude wall',
+      'Gratitude Wall',
       name: 'todayGratitudeSectionTitle',
       desc: '',
       args: [],
@@ -3740,13 +3729,63 @@ class S {
     );
   }
 
-  /// `From home {homeId}`
-  String gratitudeWallPersonalMeta(String homeId) {
+  /// `Your Personal Gratitude Wall`
+  String get gratitudeWallPersonalTitle {
     return Intl.message(
-      'From home $homeId',
-      name: 'gratitudeWallPersonalMeta',
+      'Your Personal Gratitude Wall',
+      name: 'gratitudeWallPersonalTitle',
       desc: '',
-      args: [homeId],
+      args: [],
+    );
+  }
+
+  /// `Your private space for kind messages.`
+  String get gratitudeWallPersonalSummary {
+    return Intl.message(
+      'Your private space for kind messages.',
+      name: 'gratitudeWallPersonalSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mentions`
+  String get gratitudeWallStatsMentions {
+    return Intl.message(
+      'Mentions',
+      name: 'gratitudeWallStatsMentions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `People`
+  String get gratitudeWallStatsPeople {
+    return Intl.message(
+      'People',
+      name: 'gratitudeWallStatsPeople',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Homes`
+  String get gratitudeWallStatsHomes {
+    return Intl.message(
+      'Homes',
+      name: 'gratitudeWallStatsHomes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type @ to mention`
+  String get mentionFieldHint {
+    return Intl.message(
+      'Type @ to mention',
+      name: 'mentionFieldHint',
+      desc: '',
+      args: [],
     );
   }
 
@@ -3800,10 +3839,10 @@ class S {
     );
   }
 
-  /// `Gratitude wall`
+  /// `House Gratitude wall`
   String get gratitudeWallShareTitle {
     return Intl.message(
-      'Gratitude wall',
+      'House Gratitude wall',
       name: 'gratitudeWallShareTitle',
       desc: '',
       args: [],

@@ -11,12 +11,14 @@ class GratitudeWallProvider extends StatelessWidget {
   final String homeId;
   final MoodRepository moodRepository;
   final HomeRepository homeRepository;
+  final GratitudeTab initialTab;
 
   const GratitudeWallProvider({
     super.key,
     required this.homeId,
     required this.moodRepository,
     required this.homeRepository,
+    this.initialTab = GratitudeTab.house,
   });
 
   @override
@@ -40,7 +42,7 @@ class GratitudeWallProvider extends StatelessWidget {
               )..loadInitial(),
         ),
       ],
-      child: const GratitudeWallScreen(),
+      child: GratitudeWallScreen(initialTab: initialTab),
     );
   }
 }

@@ -1,12 +1,18 @@
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:kinly/contracts/mood/personal_wall_models.dart';
+import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/kinly_theme_access.dart';
 import '../../../../core/ui/kinly_empty_state.dart';
 import '../../../../core/ui/kinly_icons.dart';
 import '../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../core/ui/kinly_masonry_grid.dart';
+import '../../../../core/ui/badges/kinly_badge.dart';
 import '../../../../generated/l10n.dart';
 import '../../bloc/personal_gratitude_cubit.dart';
 
@@ -44,48 +50,252 @@ class PersonalGratitudeWallContent extends StatelessWidget {
           );
         }
 
-        return ListView.separated(
-          shrinkWrap: true,
-          itemCount: state.items.length + (state.hasMore ? 1 : 0),
-          separatorBuilder: (_, __) => SizedBox(height: spacing.m),
-          itemBuilder: (context, index) {
-            if (index >= state.items.length) {
-              context.read<PersonalGratitudeCubit>().loadMore();
-              return const Center(child: KinlyLoader(size: 20));
-            }
-            final item = state.items[index];
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                KinlyCircleAvatar(avatarUrl: item.authorAvatarPath, radius: 20),
-                SizedBox(width: spacing.m),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.authorUsername,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      if (item.message?.isNotEmpty == true) ...[
-                        SizedBox(height: spacing.xs),
-                        Text(item.message!, style: theme.textTheme.bodyMedium),
-                      ],
-                      SizedBox(height: spacing.xs),
-                      Text(
-                        s.gratitudeWallPersonalMeta(item.homeId),
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+        final stats = state.stats ??
+            const PersonalGratitudeStats(
+              totalReceived: 0,
+              uniqueIndividuals: 0,
+              uniqueHomes: 0,
             );
-          },
+
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                theme.colorScheme.surface,
+                theme.colorScheme.surfaceContainerLowest,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsetsDirectional.all(spacing.lg),
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                if (notification.metrics.pixels >=
+                        notification.metrics.maxScrollExtent - 120 &&
+                    state.hasMore &&
+                    !state.isLoadingMore) {
+                  context.read<PersonalGratitudeCubit>().loadMore();
+                }
+                return false;
+              },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                  Text(
+                    s.gratitudeWallPersonalTitle,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: spacing.xs),
+                  Text(
+                    s.gratitudeWallPersonalSummary,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  SizedBox(height: spacing.m),
+                  _PersonalStatsRow(
+                    mentions: stats.totalReceived,
+                    people: stats.uniqueIndividuals,
+                    homes: stats.uniqueHomes,
+                  ),
+                  SizedBox(height: spacing.lg),
+                  Expanded(
+                    child: KinlyMasonryGrid<PersonalGratitudeItem>(
+                      items: state.items,
+                      gap: spacing.md,
+                      estimateItemHeight:
+                          (item, textTheme, gridSpacing) =>
+                              _estimateHeight(
+                                item,
+                                spacing: gridSpacing,
+                                bodyStyle: textTheme.bodyMedium,
+                              ),
+                      builder: (context, item, index, palette) {
+                        return _PersonalGratitudeCard(
+                          item: item,
+                          palette: palette.colorForSeed(
+                            '${item.id}-${item.authorUserId}',
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  if (state.isLoadingMore)
+                    Padding(
+                      padding: EdgeInsets.only(top: spacing.m),
+                      child: const Center(child: KinlyLoader(size: 20)),
+                    ),
+                ],
+              ),
+            ),
+          ),
         );
       },
     );
+  }
+
+  double _estimateHeight(
+    PersonalGratitudeItem item, {
+    required Spacing spacing,
+    required TextStyle? bodyStyle,
+  }) {
+    final base = 120.0;
+    final msgLength = (item.message?.length ?? 0);
+    final lineHeight = (bodyStyle?.height ?? 1.2) * 16;
+    final extra = math.min(120, msgLength * 0.5);
+    return base + lineHeight + extra;
+  }
+}
+
+class _PersonalStatsRow extends StatelessWidget {
+  const _PersonalStatsRow({
+    required this.mentions,
+    required this.people,
+    required this.homes,
+  });
+
+  final int mentions;
+  final int people;
+  final int homes;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
+    final s = S.of(context);
+
+    return Row(
+      children: [
+        Expanded(
+          child: KinlyBadge(
+            label: '${s.gratitudeWallStatsMentions}: $mentions',
+            compact: false,
+          ),
+        ),
+        SizedBox(width: spacing.sm),
+        Expanded(
+          child: KinlyBadge(
+            label: '${s.gratitudeWallStatsPeople}: $people',
+            compact: false,
+          ),
+        ),
+        SizedBox(width: spacing.sm),
+        Expanded(
+          child: KinlyBadge(
+            label: '${s.gratitudeWallStatsHomes}: $homes',
+            compact: false,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PersonalGratitudeCard extends StatelessWidget {
+  const _PersonalGratitudeCard({
+    required this.item,
+    required this.palette,
+  });
+
+  final PersonalGratitudeItem item;
+  final SectionColors palette;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final s = S.of(context);
+    final colorScheme = theme.colorScheme;
+    final createdLocal = item.createdAt.toLocal();
+    final now = DateTime.now();
+    final weeksAgo = math.max(0, now.difference(createdLocal).inDays ~/ 7);
+    final weeksLabel = s.gratitudeWallWeeksAgo(weeksAgo);
+
+    final cardFill = Color.alphaBlend(
+      palette.card.withValues(alpha: 0.6),
+      colorScheme.surface,
+    );
+    final badgeFill = palette.accent.withValues(alpha: 0.16);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardFill,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withValues(alpha: 0.08),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      padding: EdgeInsetsDirectional.fromSTEB(
+        spacing.lg,
+        spacing.lg,
+        spacing.lg,
+        spacing.xl,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: palette.background.withValues(alpha: 0.25),
+                  shape: BoxShape.circle,
+                ),
+                padding: EdgeInsetsDirectional.all(spacing.xs),
+                child: KinlyCircleAvatar(
+                  avatarUrl: item.authorAvatarPath,
+                  radius: 20,
+                  fallbackInitial: _initial(item.authorUsername),
+                ),
+              ),
+              SizedBox(width: spacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.authorUsername,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: spacing.xs),
+                    KinlyBadge(
+                      label: weeksLabel,
+                      backgroundColor: badgeFill,
+                      foregroundColor: colorScheme.onSurfaceVariant,
+                      compact: true,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (item.message?.isNotEmpty == true) ...[
+            SizedBox(height: spacing.m),
+            Text(
+              item.message!,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _initial(String value) {
+    if (value.isEmpty) return '';
+    return value.characters.first.toUpperCase();
   }
 }

@@ -26,8 +26,6 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(appName) => "Made with ${appName} - Together feels lighter";
 
-  static String m23(homeId) => "From home ${homeId}";
-
   static String m3(link) =>
       "Sharing a glimpse of our Kinly gratitude wall. Download the app: ${link}";
 
@@ -56,7 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(current, total) => "Question ${current} of ${total}";
 
-  static String m24(period) => "Applies to ${period}";
+  static String m23(period) => "Applies to ${period}";
 
   static String m14(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
@@ -295,9 +293,14 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "gratitudeWallFooter": m2,
     "gratitudeWallHouseTab": MessageLookupByLibrary.simpleMessage("House"),
-    "gratitudeWallPersonalMeta": m23,
+    "gratitudeWallPersonalSummary": MessageLookupByLibrary.simpleMessage(
+      "Your private space for kind messages.",
+    ),
     "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage(
       "Personal",
+    ),
+    "gratitudeWallPersonalTitle": MessageLookupByLibrary.simpleMessage(
+      "Your Personal Gratitude Wall",
     ),
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("Try again"),
     "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage(
@@ -308,8 +311,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "gratitudeWallShareMessage": m3,
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
-      "Gratitude wall",
+      "House Gratitude wall",
     ),
+    "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Homes"),
+    "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
+      "Mentions",
+    ),
+    "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage("People"),
     "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "Shared moments from your home.",
     ),
@@ -348,9 +356,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
       "Share this with the home",
-    ),
-    "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
-      "Type @ to mention",
     ),
     "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Send feedback"),
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
@@ -462,6 +467,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "Your shared home starts here.",
+    ),
+    "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
+      "Type @ to mention",
     ),
     "navExplore": MessageLookupByLibrary.simpleMessage("Explore"),
     "navHub": MessageLookupByLibrary.simpleMessage("Hub"),
@@ -999,7 +1007,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
       "Enter each person\'s part. Make sure the total matches the amount above.",
     ),
-    "shareCreateCyclePeriod": m24,
+    "shareCreateCyclePeriod": m23,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
       "e.g. Grocery run",
     ),
@@ -1236,7 +1244,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Personal wall",
     ),
     "todayGratitudeSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Home Gratitude wall",
+      "Gratitude Wall",
     ),
     "todayGratitudeUnreadBody": MessageLookupByLibrary.simpleMessage(
       "New gratitude posts are waiting for you.",

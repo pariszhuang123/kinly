@@ -1275,5 +1275,10 @@
   "vibeEasygoingSummary": "This home tends to feel relaxed and flexible day to day.",
   "vibeIndependentTitle": "Independent calm",
   "vibeIndependentSummary": "This home leans toward personal space with thoughtful connection.",
+  "gratitudeWallPersonalTitle": "Tu muro personal de gratitud",
+  "gratitudeWallPersonalSummary": "Una colección privada de las menciones que otros te han dedicado en todos tus hogares.",
+  "gratitudeWallStatsMentions": "Menciones",
+  "gratitudeWallStatsPeople": "Personas",
+  "gratitudeWallStatsHomes": "Hogares",
   "mentionFieldHint": "Escribe @ para mencionar"
 }

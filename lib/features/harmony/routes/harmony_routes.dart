@@ -4,6 +4,7 @@ import 'package:kinly/app/router/app_route_paths.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/features/harmony/harmony.dart';
+import 'package:kinly/features/harmony/ui/gratitude_wall/gratitude_wall_screen.dart';
 
 class HarmonyRouteContext {
   const HarmonyRouteContext({required this.homeId});
@@ -33,12 +34,18 @@ List<GoRoute> buildHarmonyRoutes({
     GoRoute(
       path: AppRoutePaths.gratitudeWall,
       name: AppRouteNames.gratitudeWall,
-      builder: (_, __) {
+      builder: (_, state) {
         final membership = resolveContext();
+        final tabParam = state.uri.queryParameters['tab'];
+        final initialTab =
+            tabParam == 'personal'
+                ? GratitudeTab.personal
+                : GratitudeTab.house;
         return GratitudeWallProvider(
           homeId: membership.homeId,
           moodRepository: sl<MoodRepository>(),
           homeRepository: sl<HomeRepository>(),
+          initialTab: initialTab,
         );
       },
     ),

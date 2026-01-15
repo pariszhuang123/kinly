@@ -266,6 +266,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "لا توجد منشورات امتنان بعد",
     ),
     "gratitudeWallFooter": m2,
+    "gratitudeWallPersonalSummary": MessageLookupByLibrary.simpleMessage(
+      "A private collection of the mentions others have shared with you across every home.",
+    ),
+    "gratitudeWallPersonalTitle": MessageLookupByLibrary.simpleMessage(
+      "Your Personal Gratitude Wall",
+    ),
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("حاول مرة أخرى"),
     "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage(
       "مشاركة هذا الجدار",
@@ -277,6 +283,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
       "جدار الامتنان",
     ),
+    "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Homes"),
+    "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
+      "Mentions",
+    ),
+    "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage("People"),
     "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "لحظات مشتركة من منزلك.",
     ),
@@ -425,6 +436,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "لم تنضم إلى أي منزل بعد.",
     ),
+    "mentionFieldHint": MessageLookupByLibrary.simpleMessage("اكتب @ لذكر شخص"),
     "navExplore": MessageLookupByLibrary.simpleMessage("استكشاف"),
     "navHub": MessageLookupByLibrary.simpleMessage("المركز"),
     "navToday": MessageLookupByLibrary.simpleMessage("اليوم"),
@@ -1259,7 +1271,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "vibeStructuredTitle": MessageLookupByLibrary.simpleMessage(
       "Structured rhythm",
     ),
-    "mentionFieldHint": MessageLookupByLibrary.simpleMessage("اكتب @ لذكر شخص"),
     "welcome_create": MessageLookupByLibrary.simpleMessage("إنشاء منزل"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("الانضمام إلى منزل"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("مرحبًا بك في Kinly"),

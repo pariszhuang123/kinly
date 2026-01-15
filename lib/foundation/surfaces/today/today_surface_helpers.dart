@@ -85,8 +85,14 @@ String _formatMemberCapNamesImpl(List<String> names) {
   return '$visible +$remaining more';
 }
 
-Future<void> _openGratitudeWallImpl(BuildContext context) async {
-  await context.pushNamed(AppRouteNames.gratitudeWall);
+Future<void> _openGratitudeWallImpl(
+  BuildContext context, {
+  bool openPersonal = false,
+}) async {
+  await context.pushNamed(
+    AppRouteNames.gratitudeWall,
+    queryParameters: openPersonal ? {'tab': 'personal'} : const {},
+  );
   if (context.mounted) {
     context.read<TodayBloc>().add(const TodayRefreshed());
   }
@@ -181,8 +187,11 @@ extension _TodayScreenStateActions on _TodayScreenState {
   Future<void> openShareCreatedListExt(BuildContext context) =>
       _openShareCreatedListImpl(context);
 
-  Future<void> openGratitudeWallExt(BuildContext context) =>
-      _openGratitudeWallImpl(context);
+Future<void> openGratitudeWallExt(
+  BuildContext context, {
+  bool openPersonal = false,
+}) =>
+    _openGratitudeWallImpl(context, openPersonal: openPersonal);
 
   Future<void> openHarmonyPageExt(BuildContext context) =>
       _openHarmonyPageImpl(context);

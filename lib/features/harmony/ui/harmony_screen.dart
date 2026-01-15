@@ -47,8 +47,11 @@ class HarmonyScreen extends StatelessWidget {
             s.harmonySubmitSuccess,
             accentColor: accent,
           );
-          // Close the Harmony page and return success to caller.
-          context.pop(true);
+          // Navigate to Today after successful submission.
+          context.goNamed(
+            'today',
+            pathParameters: {'homeId': homeId},
+          );
         } else if (state.submitError != null) {
           final message = _mapError(context, state.submitError!);
           KinlySnackBar.showError(context, message, accentColor: accent);
@@ -58,25 +61,20 @@ class HarmonyScreen extends StatelessWidget {
         builder: (context, state) {
           final theme = KinlyThemeAccess.of(context);
           final spacing = theme.extension<Spacing>()!;
-          final canPop = state.submitSuccessTick > 0;
-
-          return PopScope(
-            canPop: canPop,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (showHeader) ...[
-                  _HarmonyHeader(spacing: spacing),
-                  SizedBox(height: spacing.l),
-                ],
-                _MoodSelector(),
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (showHeader) ...[
+                _HarmonyHeader(spacing: spacing),
                 SizedBox(height: spacing.l),
-                _CommentBox(),
-                SizedBox(height: spacing.m),
-                _GratitudeToggle(),
               ],
-            ),
+              _MoodSelector(),
+              SizedBox(height: spacing.l),
+              _CommentBox(),
+              SizedBox(height: spacing.m),
+              _GratitudeToggle(),
+            ],
           );
         },
       ),

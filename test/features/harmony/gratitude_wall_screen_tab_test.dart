@@ -79,4 +79,50 @@ void main() {
     verify(() => personalCubit.logShareEvent()).called(1);
     verifyNever(() => houseCubit.logShareEvent());
   });
+
+  testWidgets('opens personal tab when initialTab is personal', (tester) async {
+    final houseCubit = _MockGratitudeWallCubit();
+    final personalCubit = _MockPersonalGratitudeCubit();
+    when(() => houseCubit.state).thenReturn(const GratitudeWallState.initial());
+    when(
+      () => personalCubit.state,
+    ).thenReturn(const PersonalGratitudeState.initial());
+    when(
+      () => houseCubit.stream,
+    ).thenAnswer((_) => const Stream<GratitudeWallState>.empty());
+    when(
+      () => personalCubit.stream,
+    ).thenAnswer((_) => const Stream<PersonalGratitudeState>.empty());
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData(useMaterial3: true).copyWith(
+          extensions: const <ThemeExtension<dynamic>>[
+            _testSpacing,
+            _testOpacity,
+          ],
+        ),
+        localizationsDelegates: const [S.delegate],
+        supportedLocales: S.delegate.supportedLocales,
+        home: MultiBlocProvider(
+          providers: [
+            BlocProvider<GratitudeWallCubit>.value(value: houseCubit),
+            BlocProvider<PersonalGratitudeCubit>.value(value: personalCubit),
+          ],
+          child: const GratitudeWallScreen(
+            initialTab: GratitudeTab.personal,
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.byType(GratitudeWallScreen));
+    final strings = S.of(context);
+    expect(
+      find.text(strings.gratitudeWallPersonalTab),
+      findsOneWidget,
+    );
+  });
 }

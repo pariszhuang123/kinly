@@ -11,14 +11,19 @@ import 'gratitude_wall_body.dart';
 enum GratitudeTab { house, personal }
 
 class GratitudeWallScreen extends StatefulWidget {
-  const GratitudeWallScreen({super.key});
+  const GratitudeWallScreen({
+    super.key,
+    this.initialTab = GratitudeTab.house,
+  });
+
+  final GratitudeTab initialTab;
 
   @override
   State<GratitudeWallScreen> createState() => _GratitudeWallScreenState();
 }
 
 class _GratitudeWallScreenState extends State<GratitudeWallScreen> {
-  GratitudeTab _selected = GratitudeTab.house;
+  late GratitudeTab _selected = widget.initialTab;
 
   @override
   Widget build(BuildContext context) {

@@ -287,6 +287,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Aún no hay publicaciones de gratitud",
     ),
     "gratitudeWallFooter": m2,
+    "gratitudeWallPersonalSummary": MessageLookupByLibrary.simpleMessage(
+      "Una colección privada de las menciones que otros te han dedicado en todos tus hogares.",
+    ),
+    "gratitudeWallPersonalTitle": MessageLookupByLibrary.simpleMessage(
+      "Tu muro personal de gratitud",
+    ),
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage(
       "Intentar de nuevo",
     ),
@@ -299,6 +305,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallShareMessage": m3,
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
       "Muro de gratitud",
+    ),
+    "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Hogares"),
+    "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
+      "Menciones",
+    ),
+    "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage(
+      "Personas",
     ),
     "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "Momentos compartidos de tu hogar.",
@@ -338,9 +351,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
       "Compartir esto en el muro de gratitud",
-    ),
-    "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
-      "Escribe @ para mencionar",
     ),
     "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Enviar feedback"),
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
@@ -462,6 +472,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "Aún no te has unido a un hogar.",
+    ),
+    "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
+      "Escribe @ para mencionar",
     ),
     "navExplore": MessageLookupByLibrary.simpleMessage("Explorar"),
     "navHub": MessageLookupByLibrary.simpleMessage("Hub"),

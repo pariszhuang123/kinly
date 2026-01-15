@@ -291,7 +291,7 @@
     },
     "surface": "subtitle"
   },
-  "todayGratitudeSectionTitle": "Home Gratitude wall",
+  "todayGratitudeSectionTitle": "Gratitude Wall",
   "todayGratitudeUnreadBody": "New gratitude posts are waiting for you.",
   "shareOwedDetailTitle": "To settle",
   "shareOwedDetailEmpty": "You're all caught up with this person.",
@@ -562,24 +562,18 @@
   "todayGratitudePersonalCta": "Personal wall",
   "gratitudeWallHouseTab": "House",
   "gratitudeWallPersonalTab": "Personal",
-  "gratitudeWallPersonalMeta": "From home {homeId}",
-  "@gratitudeWallPersonalMeta": {
-    "surface": "subtitle",
-    "placeholders": {
-      "homeId": {
-        "type": "String",
-        "example": "home-123",
-        "description": "Identifier for the home where the mention was made."
-      }
-    }
-  },
+  "gratitudeWallPersonalTitle": "Your Personal Gratitude Wall",
+  "gratitudeWallPersonalSummary": "Your private space for kind messages.",
+  "gratitudeWallStatsMentions": "Mentions",
+  "gratitudeWallStatsPeople": "People",
+  "gratitudeWallStatsHomes": "Homes",
   "mentionFieldHint": "Type @ to mention",
   "gratitudeWallEmptyTitle": "No gratitude posts yet",
   "gratitudeWallEmptySubtitle": "This is where small thank-yous live.\n\nStart with one moment from this week.",
   "gratitudeWallErrorGeneric": "Unable to load gratitude right now.",
   "gratitudeWallRetry": "Try again",
   "gratitudeWallShareCta": "Share this wall",
-  "gratitudeWallShareTitle": "Gratitude wall",
+  "gratitudeWallShareTitle": "House Gratitude wall",
   "gratitudeWallShareMessage": "Sharing a glimpse of our Kinly gratitude wall. Download the app: {link}",
   "@gratitudeWallShareMessage": {
     "placeholders": {
