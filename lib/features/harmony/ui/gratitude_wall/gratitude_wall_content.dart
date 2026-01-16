@@ -9,6 +9,7 @@ import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../bloc/gratitude_wall_cubit.dart';
 import 'gratitude_wall_widgets.dart';
 import '../../../../core/ui/kinly_theme_access.dart';
+import '../../../../generated/l10n.dart';
 
 class GratitudeWallContent extends StatelessWidget {
   const GratitudeWallContent({super.key, required this.maxHeight});
@@ -99,19 +100,14 @@ class GratitudeWallContent extends StatelessWidget {
     GratitudeWallState state,
     Spacing spacing,
   ) {
-    final totalCount = state.totalPosts ?? state.posts.length;
-    final hasMoreThanLoaded =
-        state.totalPosts != null && state.posts.length < state.totalPosts!;
-    final uniqueAuthors =
-        state.uniqueAuthors ?? state.posts.map((post) => post.authorUserId).toSet().length;
+    final s = S.of(context);
+    final timeLabel = s.gratitudeWallWeeksAgo(0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GratitudeWallHeader(
-          count: totalCount,
-          hasMore: hasMoreThanLoaded,
-          memberCount: uniqueAuthors,
+          timeLabel: timeLabel,
         ),
         SizedBox(height: spacing.lg),
         Expanded(

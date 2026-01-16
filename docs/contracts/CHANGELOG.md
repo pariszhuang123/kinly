@@ -2,6 +2,14 @@
 
 Tracks versioned contract changes and related ADRs.
 
+## v1 - Gratitude Wall (Shared + Personal)
+- Date: 2026-01-17
+- Scope: `docs/contracts/gratitude_wall_v1.md`
+- Changes:
+  - Document ambient, identity-suppressed gratitude wall guardrails for shared and personal surfaces.
+  - Add safety constraints on layout, metrics, sarcasm handling, and weekly ephemerality to avoid weaponisation.
+  - Note interop with mentions pipelines to strip identity and counts on shared surfaces.
+
 ## v2 - Chores Recurrence Every/Unit
 - Date: 2026-01-04
 - Scope: `docs/contracts/chores_v2.md`

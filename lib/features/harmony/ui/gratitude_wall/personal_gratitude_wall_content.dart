@@ -119,11 +119,12 @@ class PersonalGratitudeWallContent extends StatelessWidget {
                         palette: palette.colorForSeed(
                           '${item.id}-${item.authorUserId}',
                         ),
+                        subtitle: _weeksLabelForDate(item.createdAt, s),
+                        showIdentity: true,
                         messageStyle: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: theme.colorScheme.onSurface,
                         ),
-                        initialBuilder: _initial,
                       );
                     },
                   ),
@@ -203,7 +204,9 @@ class _PersonalStatsRow extends StatelessWidget {
   }
 }
 
-String _initial(String value) {
-  if (value.isEmpty) return '';
-  return value.characters.first.toUpperCase();
+String _weeksLabelForDate(DateTime createdAt, S s) {
+  final createdLocal = createdAt.toLocal();
+  final now = DateTime.now();
+  final weeksAgo = math.max(0, now.difference(createdLocal).inDays ~/ 7);
+  return s.gratitudeWallWeeksAgo(weeksAgo);
 }

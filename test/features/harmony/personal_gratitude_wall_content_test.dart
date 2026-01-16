@@ -10,6 +10,7 @@ import 'package:kinly/features/harmony/bloc/personal_gratitude_cubit.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/theme/opacity.dart';
+import 'package:kinly/core/ui/kinly_circle_avatar.dart';
 
 class _MockPersonalGratitudeCubit extends Mock implements PersonalGratitudeCubit {}
 
@@ -107,6 +108,9 @@ void main() {
     expect(find.textContaining('1'), findsWidgets);
     expect(find.text(sampleItem.authorUsername), findsOneWidget);
     expect(find.text(sampleItem.message!), findsOneWidget);
+    // Identity header is present for personal wall cards.
+    expect(find.byType(KinlyCircleAvatar), findsWidgets);
+    expect(find.textContaining('week'), findsWidgets);
   });
 
   testWidgets('shows empty state when no items', (tester) async {

@@ -3892,16 +3892,6 @@ class S {
     );
   }
 
-  /// `Home Gratitude wall {count, plural, one {(#)} other {(#)}}`
-  String gratitudeWallTitleCount(int count) {
-    return Intl.message(
-      'Home Gratitude wall ${Intl.plural(count, one: '(#)', other: '(#)')}',
-      name: 'gratitudeWallTitleCount',
-      desc: '',
-      args: [count],
-    );
-  }
-
   /// `How likely are you to recommend Kinly to a friend?`
   String get npsTitle {
     return Intl.message(

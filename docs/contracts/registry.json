@@ -545,6 +545,30 @@
         }
       ]
     },
+    "gratitude_wall": {
+      "latest": "v1",
+      "docs": "docs/contracts/gratitude_wall_v1.md",
+      "entities": {
+        "SharedGratitude": {
+          "fields": [
+            "text",
+            "sharedWith=home",
+            "timeContext=this_week"
+          ]
+        },
+        "PersonalGratitude": {
+          "fields": [
+            "text",
+            "sender",
+            "receiver",
+            "timeContext",
+            "softenedReflection?"
+          ]
+        }
+      },
+      "functions": {},
+      "rls": []
+    },
     "home_dynamics": {
       "latest": "v1",
       "docs": "docs/contracts/home_dynamics_v1.md",

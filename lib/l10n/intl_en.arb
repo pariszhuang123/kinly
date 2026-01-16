@@ -603,16 +603,6 @@
       }
     }
   },
-  "gratitudeWallTitleCount": "Home Gratitude wall {count, plural, one {(#)} other {(#)}}",
-  "@gratitudeWallTitleCount": {
-    "surface": "title",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "4"
-      }
-    }
-  },
   "npsTitle": "How likely are you to recommend Kinly to a friend?",
   "npsDescription": "Net Promoter Score helps us learn how we're doing. Pick a number from 0 (not likely) to 10 (extremely likely).",
   "npsScaleLowLabel": "0 Not likely",

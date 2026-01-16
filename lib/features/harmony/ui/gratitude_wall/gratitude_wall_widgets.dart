@@ -16,18 +16,20 @@ import '../../../../core/ui/kinly_theme_access.dart';
 class GratitudeCardHeader extends StatelessWidget {
   const GratitudeCardHeader({
     super.key,
-    required this.username,
-    required this.avatarUrl,
-    required this.weeksLabel,
     required this.palette,
-    required this.initialBuilder,
+    this.title,
+    this.subtitle,
+    this.username,
+    this.avatarUrl,
+    this.weeksLabel,
   });
 
-  final String username;
-  final String? avatarUrl;
-  final String weeksLabel;
   final SectionColors palette;
-  final String Function(String value) initialBuilder;
+  final String? title;
+  final String? subtitle;
+  final String? username;
+  final String? avatarUrl;
+  final String? weeksLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -35,50 +37,78 @@ class GratitudeCardHeader extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final colorScheme = theme.colorScheme;
 
+    final showIdentity = username != null && username!.isNotEmpty;
+    final identityWeeks = weeksLabel ?? subtitle ?? '';
+
+    if (showIdentity) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: palette.background.withValues(alpha: 0.25),
+                  shape: BoxShape.circle,
+                ),
+                padding: EdgeInsetsDirectional.all(spacing.xs),
+                child: KinlyCircleAvatar(
+                  avatarUrl: avatarUrl,
+                  radius: 20,
+                  fallbackInitial: _initial(username!),
+                ),
+              ),
+              SizedBox(width: spacing.sm),
+              Flexible(
+                child: KinlyBadge(
+                  label: identityWeeks,
+                  backgroundColor: palette.accent.withValues(alpha: 0.16),
+                  foregroundColor: colorScheme.onSurfaceVariant,
+                  borderColor: palette.accent.withValues(alpha: 0.35),
+                  textStyle: theme.textTheme.labelSmall?.copyWith(
+                    letterSpacing: 0.1,
+                  ),
+                  maxLines: 2,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: spacing.xs),
+          Center(
+            child: Text(
+              username!,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: palette.background.withValues(alpha: 0.25),
-                shape: BoxShape.circle,
-              ),
-              padding: EdgeInsetsDirectional.all(spacing.xs),
-              child: KinlyCircleAvatar(
-                avatarUrl: avatarUrl,
-                radius: 20,
-                fallbackInitial: initialBuilder(username),
-              ),
-            ),
-            SizedBox(width: spacing.sm),
-            Flexible(
-              child: KinlyBadge(
-                label: weeksLabel,
-                backgroundColor: palette.accent.withValues(alpha: 0.16),
-                foregroundColor: colorScheme.onSurfaceVariant,
-                borderColor: palette.accent.withValues(alpha: 0.35),
-                textStyle: theme.textTheme.labelSmall?.copyWith(
-                  letterSpacing: 0.1,
-                ),
-                maxLines: 2,
-              ),
-            ),
-          ],
+        KinlyBadge(
+          label: subtitle ?? '',
+          backgroundColor: palette.accent.withValues(alpha: 0.16),
+          foregroundColor: colorScheme.onSurfaceVariant,
+          borderColor: palette.accent.withValues(alpha: 0.35),
+          textStyle: theme.textTheme.labelSmall?.copyWith(letterSpacing: 0.1),
+          maxLines: 2,
         ),
         SizedBox(height: spacing.xs),
-        Center(
-          child: Text(
-            username,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
+        Text(
+          title ?? '',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w700,
           ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
@@ -88,22 +118,26 @@ class GratitudeCardHeader extends StatelessWidget {
 class GratitudeCard extends StatelessWidget {
   const GratitudeCard({
     super.key,
-    required this.username,
-    required this.avatarUrl,
-    required this.weeksLabel,
     required this.palette,
+    this.showHeader = true,
+    this.title,
+    this.subtitle,
+    this.username,
+    this.avatarUrl,
+    this.weeksLabel,
     this.message,
     this.messageStyle,
-    this.initialBuilder = _initial,
   });
 
-  final String username;
-  final String? avatarUrl;
-  final String weeksLabel;
   final SectionColors palette;
+  final String? title;
+  final String? subtitle;
+  final String? username;
+  final String? avatarUrl;
+  final String? weeksLabel;
   final String? message;
   final TextStyle? messageStyle;
-  final String Function(String value) initialBuilder;
+  final bool showHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -140,14 +174,17 @@ class GratitudeCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GratitudeCardHeader(
-            username: username,
-            avatarUrl: avatarUrl,
-            weeksLabel: weeksLabel,
-            palette: palette,
-            initialBuilder: initialBuilder,
-          ),
-          SizedBox(height: spacing.sm),
+          if (showHeader) ...[
+            GratitudeCardHeader(
+              palette: palette,
+              title: title,
+              subtitle: subtitle,
+              username: username,
+              avatarUrl: avatarUrl,
+              weeksLabel: weeksLabel,
+            ),
+            SizedBox(height: spacing.sm),
+          ],
           if (message != null && message!.isNotEmpty) ...[
             SizedBox(height: spacing.md),
             Text(
@@ -167,40 +204,44 @@ class GratitudeCard extends StatelessWidget {
 class GratitudeEntryCard extends StatelessWidget {
   const GratitudeEntryCard({
     super.key,
-    required this.username,
-    required this.avatarUrl,
     required this.createdAt,
     required this.palette,
     this.message,
     this.messageStyle,
-    this.fallbackUsername,
-    this.initialBuilder = _initial,
+    this.title,
+    this.subtitle,
+    this.username,
+    this.avatarUrl,
+    this.showIdentity = false,
+    this.showHeader = true,
   });
 
-  final String username;
-  final String? avatarUrl;
   final DateTime createdAt;
   final SectionColors palette;
   final String? message;
   final TextStyle? messageStyle;
-  final String? fallbackUsername;
-  final String Function(String value) initialBuilder;
+  final String? title;
+  final String? subtitle;
+  final String? username;
+  final String? avatarUrl;
+  final bool showIdentity;
+  final bool showHeader;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final displayName =
-        username.isNotEmpty ? username : (fallbackUsername ?? s.friendDefaultName);
     final weeksLabel = _weeksLabelForDate(createdAt, s);
 
     return GratitudeCard(
-      username: displayName,
-      avatarUrl: avatarUrl,
-      weeksLabel: weeksLabel,
+      title: title ?? s.gratitudeWallShareTitle,
+      subtitle: subtitle ?? '${s.gratitudeWallHouseTab} - $weeksLabel',
+      username: showIdentity ? (username ?? s.friendDefaultName) : null,
+      avatarUrl: showIdentity ? avatarUrl : null,
+      weeksLabel: showIdentity ? weeksLabel : null,
       palette: palette,
       message: message,
       messageStyle: messageStyle,
-      initialBuilder: initialBuilder,
+      showHeader: showHeader,
     );
   }
 }
@@ -223,7 +264,7 @@ class GratitudeWallMasonryGrid extends StatelessWidget {
       builder: (context, post, index, palette) {
         return GratitudeWallCard(
           post: post,
-          palette: palette.colorForSeed('${post.id}-${post.authorUserId}'),
+          palette: palette.colorForSeed(post.id),
         );
       },
     );
@@ -246,9 +287,6 @@ class GratitudeWallCard extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return GratitudeEntryCard(
-      username: post.authorUsername ?? S.of(context).friendDefaultName,
-      fallbackUsername: S.of(context).friendDefaultName,
-      avatarUrl: post.authorAvatarUrl,
       createdAt: post.createdAt,
       palette: palette,
       message: post.message,
@@ -257,7 +295,7 @@ class GratitudeWallCard extends StatelessWidget {
         height: 1.35,
         color: colorScheme.onSurface,
       ),
-      initialBuilder: _initial,
+      showHeader: false,
     );
   }
 }
@@ -325,74 +363,32 @@ class GratitudeWallErrorState extends StatelessWidget {
 }
 
 class GratitudeWallHeader extends StatelessWidget {
-  const GratitudeWallHeader({
-    super.key,
-    required this.count,
-    required this.hasMore,
-    required this.memberCount,
-  });
+  const GratitudeWallHeader({super.key, required this.timeLabel});
 
-  final int count;
-  final bool hasMore;
-  final int memberCount;
+  final String timeLabel;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final s = S.of(context);
     final spacing = theme.extension<Spacing>()!;
-
-    final countLabel = hasMore ? '$count+' : '$count';
-    final baseTitle = s.gratitudeWallTitleCount(count);
-    final title = _replaceCountPlaceholder(baseTitle, countLabel);
+    final colorScheme = theme.colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title,
+          '${s.gratitudeWallShareTitle} - ${s.gratitudeWallHouseTab}',
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
           ),
         ),
-        SizedBox(height: spacing.xs),
-        GratitudeWallStatsRow(
-          mentionsLabel: '${s.gratitudeWallStatsMentions}: $countLabel',
-          peopleLabel: '${s.gratitudeWallStatsPeople}: $memberCount',
-        ),
-      ],
-    );
-  }
-}
-
-class GratitudeWallStatsRow extends StatelessWidget {
-  const GratitudeWallStatsRow({
-    super.key,
-    required this.mentionsLabel,
-    required this.peopleLabel,
-  });
-
-  final String mentionsLabel;
-  final String peopleLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
-
-    return Row(
-      children: [
-        Expanded(
-          child: KinlyBadge(
-            label: mentionsLabel,
-            compact: false,
-          ),
-        ),
-        SizedBox(width: spacing.sm),
-        Expanded(
-          child: KinlyBadge(
-            label: peopleLabel,
-            compact: false,
-          ),
+        SizedBox(height: spacing.sm),
+        KinlyBadge(
+          label: timeLabel,
+          backgroundColor: colorScheme.surfaceContainerHighest,
+          foregroundColor: colorScheme.onSurfaceVariant,
+          compact: false,
         ),
       ],
     );
@@ -437,12 +433,6 @@ class PoweredByTagline extends StatelessWidget {
   }
 }
 
-String _initial(String value) {
-  final trimmed = value.trim();
-  if (trimmed.isEmpty) return '?';
-  return trimmed.substring(0, 1);
-}
-
 double _estimateHeight(
   GratitudeWallPost post, {
   required Spacing spacing,
@@ -454,6 +444,12 @@ double _estimateHeight(
       (textTheme.bodyLarge?.fontSize ?? 16);
   final estimatedLines = (messageLength / 26).ceil().clamp(1, 10).toDouble();
   return spacing.xl * 2.5 + estimatedLines * lineHeight;
+}
+
+String _initial(String value) {
+  final trimmed = value.trim();
+  if (trimmed.isEmpty) return '?';
+  return trimmed.substring(0, 1).toUpperCase();
 }
 
 String _replaceCountPlaceholder(
