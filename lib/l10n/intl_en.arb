@@ -154,7 +154,7 @@
     }
   },
   "hubShareAppTitle": "Get the Kinly app",
-  "hubShareAppBody": "Share Kinly so sharing feels lighter: {link}",
+  "hubShareAppBody": "Share Kinly so together feels lighter: {link}",
   "@hubShareAppBody": {
     "surface": "subtitle",
     "placeholders": {
@@ -564,7 +564,7 @@
   "gratitudeWallPersonalTab": "Personal",
   "gratitudeWallPersonalTitle": "Your Personal Gratitude Wall",
   "gratitudeWallPersonalSummary": "Your private space for kind messages.",
-  "gratitudeWallStatsMentions": "Mentions",
+  "gratitudeWallStatsMentions": "Thanks",
   "gratitudeWallStatsPeople": "People",
   "gratitudeWallStatsHomes": "Homes",
   "mentionFieldHint": "Type @ to mention",
@@ -573,7 +573,7 @@
   "gratitudeWallErrorGeneric": "Unable to load gratitude right now.",
   "gratitudeWallRetry": "Try again",
   "gratitudeWallShareCta": "Share this wall",
-  "gratitudeWallShareTitle": "House Gratitude wall",
+  "gratitudeWallShareTitle": "Gratitude wall",
   "gratitudeWallShareMessage": "Sharing a glimpse of our Kinly gratitude wall. Download the app: {link}",
   "@gratitudeWallShareMessage": {
     "placeholders": {
@@ -584,7 +584,6 @@
     }
   },
   "gratitudeWallShareError": "Couldn't share right now. Please try again.",
-  "gratitudeWallSubtitle": "Shared moments from your home.",
   "gratitudeWallFooter": "Made with {appName} - Together feels lighter",
   "gratitudeWallWeeksAgo": "{weeks, plural, =0{This week} one{# week ago} other{# weeks ago}}",
   "@gratitudeWallWeeksAgo": {
@@ -604,7 +603,7 @@
       }
     }
   },
-  "gratitudeWallTitleCount": "Gratitude wall {count, plural, one {(#)} other {(#)}}",
+  "gratitudeWallTitleCount": "Home Gratitude wall {count, plural, one {(#)} other {(#)}}",
   "@gratitudeWallTitleCount": {
     "surface": "title",
     "placeholders": {
@@ -1135,9 +1134,6 @@
   "@gratitudeWallShareError": {
     "surface": "error"
   },
-  "@gratitudeWallSubtitle": {
-    "surface": "subtitle"
-  },
   "@npsTitle": {
     "surface": "subtitle"
   },
@@ -1275,5 +1271,10 @@
   "preferenceReportGenerationFailed": "We couldn’t finish your preference reflection. Head back and try again.",
   "@preferenceReportReadOnlyNote": {
     "surface": "body"
-  }
+  },
+  "personalProfileTitle": "Your profile",
+  "personalProfilePreferences": "Personal preferences",
+  "personalProfileMentions": "Personal mentions",
+  "personalProfileLoadError": "We couldn't load your personal profile right now. Please try again.",
+  "personalMentionsTitle": "Personal mentions"
 }

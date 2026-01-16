@@ -9,7 +9,7 @@ part 'preference_report_state.dart';
 class PreferenceReportCubit extends Cubit<PreferenceReportState> {
   PreferenceReportCubit({
     required PreferenceReportsRepository repository,
-    required String homeId,
+    String? homeId,
     required String subjectUserId,
     String templateKey = 'personal_preferences_v1',
     PreferenceReport? initialReport,
@@ -26,7 +26,7 @@ class PreferenceReportCubit extends Cubit<PreferenceReportState> {
        );
 
   final PreferenceReportsRepository _repository;
-  final String _homeId;
+  final String? _homeId;
   final String _subjectUserId;
   final String _templateKey;
   final bool _acknowledgeOnLoad;
@@ -38,12 +38,19 @@ class PreferenceReportCubit extends Cubit<PreferenceReportState> {
         templateKey: _templateKey,
       );
       final resolvedLocale = resolution.resolvedLocale;
-      final report = await _repository.getReportForHome(
-        homeId: _homeId,
-        subjectUserId: _subjectUserId,
-        templateKey: _templateKey,
-        locale: resolvedLocale,
-      );
+      final homeId = _homeId;
+      final report =
+          homeId == null
+              ? await _repository.getPersonalReport(
+                templateKey: _templateKey,
+                locale: resolvedLocale,
+              )
+              : await _repository.getReportForHome(
+                homeId: homeId,
+                subjectUserId: _subjectUserId,
+                templateKey: _templateKey,
+                locale: resolvedLocale,
+              );
       if (report == null) {
         emit(const PreferenceReportState.empty());
         return;

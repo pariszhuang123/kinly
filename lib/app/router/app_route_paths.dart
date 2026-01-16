@@ -27,6 +27,7 @@ class AppRoutePaths {
   static const connectionSettings = '/settings/profile/connection';
   static const harmony = '/harmony';
   static const gratitudeWall = '/gratitude-wall';
+  static const personalMentions = '/personal/mentions';
   static const nps = '/nps';
   static const paywall = '/paywall';
   static const preferenceOnboarding = '/preferences/onboarding';

@@ -3139,6 +3139,10 @@ export type Database = {
         }
         Returns: Json
       }
+      preference_reports_get_personal_v1: {
+        Args: { p_locale?: string; p_template_key?: string }
+        Returns: Json
+      }
       preference_reports_list_for_home: {
         Args: { p_home_id: string; p_locale: string; p_template_key: string }
         Returns: Json
@@ -3188,6 +3192,16 @@ export type Database = {
         Returns: boolean
       }
       today_onboarding_hints: { Args: never; Returns: Json }
+      user_context_v1: {
+        Args: never
+        Returns: {
+          avatar_storage_path: string
+          has_personal_mentions: boolean
+          has_preference_report: boolean
+          show_avatar: boolean
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       chore_event_type: "create" | "activate" | "update" | "complete" | "cancel"

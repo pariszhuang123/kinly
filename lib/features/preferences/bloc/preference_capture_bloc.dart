@@ -18,7 +18,7 @@ class PreferenceCaptureBloc
     required PreferenceReportsRepository repository,
     required List<PreferenceScenarioDefinition> scenarios,
     required String userId,
-    required String homeId,
+    String? homeId,
     Logger? logger,
   }) : _repository = repository,
        _scenarios = scenarios,
@@ -41,7 +41,7 @@ class PreferenceCaptureBloc
   final PreferenceReportsRepository _repository;
   final List<PreferenceScenarioDefinition> _scenarios;
   final String _userId;
-  final String _homeId;
+  final String? _homeId;
   final Logger _logger;
   final String _storageKey;
   final String _scopeHash;
@@ -164,11 +164,17 @@ class PreferenceCaptureBloc
       await _repository.submitResponses(state.responses);
       final resolution = await _repository.getTemplateResolution();
       await _repository.generateReport(locale: resolution.resolvedLocale);
-      final report = await _repository.getReportForHome(
-        homeId: _homeId,
-        subjectUserId: _userId,
-        locale: resolution.resolvedLocale,
-      );
+      final homeId = _homeId;
+      final report =
+          homeId == null
+              ? await _repository.getPersonalReport(
+                locale: resolution.resolvedLocale,
+              )
+              : await _repository.getReportForHome(
+                homeId: homeId,
+                subjectUserId: _userId,
+                locale: resolution.resolvedLocale,
+              );
       if (report == null) {
         await _clearDraftOnSubmit();
         emit(

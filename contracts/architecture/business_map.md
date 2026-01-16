@@ -103,12 +103,15 @@ graph LR
   contracts_mood --> contracts_time
   contracts_share --> contracts_expenses
   core_account --> contracts_account
+  core_auth --> contracts_auth
   core_auth --> contracts_homes
   core_auth --> contracts_profile
   core_media --> contracts_media
   core_notifications --> contracts_profile
   core_onboarding --> contracts_onboarding
+  core_ui --> app_router
   core_ui --> contracts_preferences
+  core_ui --> core_auth
   core_ui --> core_logging
   core_ui --> core_theme
   core_ui --> generated
@@ -130,6 +133,7 @@ graph LR
   features_home --> contracts_homes
   features_home --> core_supabase
   features_home_membership --> app_router
+  features_home_membership --> contracts_auth
   features_home_membership --> contracts_homes
   features_nps --> app_router
   features_nps --> contracts_mood

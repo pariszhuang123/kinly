@@ -284,13 +284,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "جدار الامتنان",
     ),
     "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Homes"),
-    "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
-      "Mentions",
-    ),
+    "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage("شكر"),
     "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage("People"),
-    "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "لحظات مشتركة من منزلك.",
-    ),
     "gratitudeWallTitleCount": m4,
     "gratitudeWallWeeksAgo": m5,
     "greetingPartOfDay": m6,
@@ -518,6 +513,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
       "مزيد من الانسجام لمنزلك",
     ),
+    "personalMentionsTitle": MessageLookupByLibrary.simpleMessage(
+      "الإشارات الشخصية",
+    ),
+    "personalProfileLoadError": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل ملفك الشخصي الآن. حاول مرة أخرى.",
+    ),
+    "personalProfileMentions": MessageLookupByLibrary.simpleMessage(
+      "الإشارات الشخصية",
+    ),
+    "personalProfilePreferences": MessageLookupByLibrary.simpleMessage(
+      "تفضيلات شخصية",
+    ),
+    "personalProfileTitle": MessageLookupByLibrary.simpleMessage("ملفك الشخصي"),
     "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
     "preferenceOnboardingProgress": m13,
     "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage(

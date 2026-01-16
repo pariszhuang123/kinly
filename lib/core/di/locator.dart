@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import '../account/account.dart';
 import '../app_version/app_version.dart';
 import '../auth/auth.dart';
+import '../auth/supabase_user_context_repository.dart';
 import '../onboarding/onboarding.dart';
 import '../account/data/supabase/supabase_account_repository.dart';
 import '../app_version/supabase_app_version_repository.dart';
@@ -38,6 +39,9 @@ void setupDependencies() {
     ),
     () => _registerLazy<AuthRepository>(
       () => SupabaseAuthRepository(logger: sl<Logger>()),
+    ),
+    () => _registerLazy<UserContextRepository>(
+      () => SupabaseUserContextRepository(),
     ),
     () => _registerLazy<ProfileUpdateNotifier>(() => ProfileUpdateNotifier()),
     () => _registerLazy<AccountRepository>(() => SupabaseAccountRepository()),

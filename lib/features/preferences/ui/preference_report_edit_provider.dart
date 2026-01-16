@@ -9,7 +9,7 @@ import 'preference_report_edit_screen.dart';
 class PreferenceReportEditProvider extends StatelessWidget {
   const PreferenceReportEditProvider({
     super.key,
-    required this.homeId,
+    this.homeId,
     required this.subjectUserId,
     required this.repository,
     this.subjectDisplayName,
@@ -17,7 +17,7 @@ class PreferenceReportEditProvider extends StatelessWidget {
     this.canEdit = true,
   });
 
-  final String homeId;
+  final String? homeId;
   final String subjectUserId;
   final PreferenceReportsRepository repository;
   final String? subjectDisplayName;

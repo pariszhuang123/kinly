@@ -82,7 +82,10 @@ class HubScreen extends StatelessWidget {
                             );
                             return;
                           case HubNotice.rotateFailed:
-                            KinlySnackBar.showError(context, s.hubRotateError);
+                            KinlySnackBar.showError(
+                              context,
+                              s.hubRotateError,
+                            );
                             return;
                           case HubNotice.refreshFailed:
                             KinlySnackBar.showError(context, s.hubError);

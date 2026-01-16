@@ -23,7 +23,7 @@ abstract class MoodRepository {
     String? cursorId,
   });
 
-  /// Stats for gratitude wall (total + unread count).
+  /// Stats for gratitude wall (total + unread count + unique authors).
   Future<GratitudeWallStats> getWallStats(String homeId);
 
   /// Mark gratitude wall as read.

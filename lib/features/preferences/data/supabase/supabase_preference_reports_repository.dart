@@ -140,9 +140,39 @@ class SupabasePreferenceReportsRepository
     );
   }
 
+  @override
+  Future<PreferenceReport?> getPersonalReport({
+    String templateKey = 'personal_preferences_v1',
+    required String locale,
+  }) async {
+    final response = await _client.rpc(
+      'preference_reports_get_personal_v1',
+      params: {
+        'p_template_key': templateKey,
+        'p_locale': locale,
+      },
+    );
+    final payload = _coerceMap(response);
+    if (payload == null) {
+      throw StateError('Missing personal preference report response.');
+    }
+    final found = payload['found'] as bool? ?? false;
+    if (!found) return null;
+    final reportRaw = payload['report'];
+    if (reportRaw is! Map) {
+      throw StateError('Malformed personal preference report payload.');
+    }
+    return PreferenceReport.fromJson(reportRaw.cast<String, dynamic>());
+  }
+
   Map<String, dynamic>? _coerceMap(dynamic response) {
     if (response is Map<String, dynamic>) return response;
     if (response is Map) return response.cast<String, dynamic>();
+    if (response is List && response.isNotEmpty) {
+      final first = response.first;
+      if (first is Map<String, dynamic>) return first;
+      if (first is Map) return first.cast<String, dynamic>();
+    }
     return null;
   }
 }

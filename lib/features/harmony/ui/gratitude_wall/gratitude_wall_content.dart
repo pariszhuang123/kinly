@@ -102,11 +102,17 @@ class GratitudeWallContent extends StatelessWidget {
     final totalCount = state.totalPosts ?? state.posts.length;
     final hasMoreThanLoaded =
         state.totalPosts != null && state.posts.length < state.totalPosts!;
+    final uniqueAuthors =
+        state.uniqueAuthors ?? state.posts.map((post) => post.authorUserId).toSet().length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GratitudeWallHeader(count: totalCount, hasMore: hasMoreThanLoaded),
+        GratitudeWallHeader(
+          count: totalCount,
+          hasMore: hasMoreThanLoaded,
+          memberCount: uniqueAuthors,
+        ),
         SizedBox(height: spacing.lg),
         Expanded(
           child: NotificationListener<ScrollNotification>(

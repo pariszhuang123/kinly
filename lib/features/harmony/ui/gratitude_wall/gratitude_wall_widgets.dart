@@ -85,6 +85,126 @@ class GratitudeCardHeader extends StatelessWidget {
   }
 }
 
+class GratitudeCard extends StatelessWidget {
+  const GratitudeCard({
+    super.key,
+    required this.username,
+    required this.avatarUrl,
+    required this.weeksLabel,
+    required this.palette,
+    this.message,
+    this.messageStyle,
+    this.initialBuilder = _initial,
+  });
+
+  final String username;
+  final String? avatarUrl;
+  final String weeksLabel;
+  final SectionColors palette;
+  final String? message;
+  final TextStyle? messageStyle;
+  final String Function(String value) initialBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final colorScheme = theme.colorScheme;
+
+    final cardFill = Color.alphaBlend(
+      palette.card.withValues(alpha: 0.6),
+      colorScheme.surface,
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardFill,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withValues(alpha: 0.08),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      padding: EdgeInsetsDirectional.fromSTEB(
+        spacing.lg,
+        spacing.lg,
+        spacing.lg,
+        spacing.xl,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GratitudeCardHeader(
+            username: username,
+            avatarUrl: avatarUrl,
+            weeksLabel: weeksLabel,
+            palette: palette,
+            initialBuilder: initialBuilder,
+          ),
+          SizedBox(height: spacing.sm),
+          if (message != null && message!.isNotEmpty) ...[
+            SizedBox(height: spacing.md),
+            Text(
+              message!,
+              textAlign: TextAlign.start,
+              style: (messageStyle ?? theme.textTheme.bodyMedium)?.copyWith(
+                color: (messageStyle?.color) ?? colorScheme.onSurface,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class GratitudeEntryCard extends StatelessWidget {
+  const GratitudeEntryCard({
+    super.key,
+    required this.username,
+    required this.avatarUrl,
+    required this.createdAt,
+    required this.palette,
+    this.message,
+    this.messageStyle,
+    this.fallbackUsername,
+    this.initialBuilder = _initial,
+  });
+
+  final String username;
+  final String? avatarUrl;
+  final DateTime createdAt;
+  final SectionColors palette;
+  final String? message;
+  final TextStyle? messageStyle;
+  final String? fallbackUsername;
+  final String Function(String value) initialBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final displayName =
+        username.isNotEmpty ? username : (fallbackUsername ?? s.friendDefaultName);
+    final weeksLabel = _weeksLabelForDate(createdAt, s);
+
+    return GratitudeCard(
+      username: displayName,
+      avatarUrl: avatarUrl,
+      weeksLabel: weeksLabel,
+      palette: palette,
+      message: message,
+      messageStyle: messageStyle,
+      initialBuilder: initialBuilder,
+    );
+  }
+}
+
 class GratitudeWallMasonryGrid extends StatelessWidget {
   const GratitudeWallMasonryGrid({super.key, required this.posts});
 
@@ -123,79 +243,22 @@ class GratitudeWallCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
-    final s = S.of(context);
     final colorScheme = theme.colorScheme;
 
-    final createdLocal = post.createdAt.toLocal();
-    final now = DateTime.now();
-    final weeksAgo = math.max(0, now.difference(createdLocal).inDays ~/ 7);
-    final weeksLabel = s.gratitudeWallWeeksAgo(weeksAgo);
-    final normalizedWeeksLabel = _replaceCountPlaceholder(
-      weeksLabel,
-      weeksAgo.toString(),
-      appendIfNoMatch: false,
-    );
-
-    final cardFill = Color.alphaBlend(
-      palette.card.withValues(alpha: 0.6),
-      colorScheme.surface,
-    );
-    final badgeFill = palette.accent.withValues(alpha: 0.16);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: cardFill,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
+    return GratitudeEntryCard(
+      username: post.authorUsername ?? S.of(context).friendDefaultName,
+      fallbackUsername: S.of(context).friendDefaultName,
+      avatarUrl: post.authorAvatarUrl,
+      createdAt: post.createdAt,
+      palette: palette,
+      message: post.message,
+      messageStyle: theme.textTheme.bodyMedium?.copyWith(
+        letterSpacing: 0.1,
+        height: 1.35,
+        color: colorScheme.onSurface,
       ),
-      padding: EdgeInsetsDirectional.fromSTEB(
-        spacing.lg,
-        spacing.lg,
-        spacing.lg,
-        spacing.xl,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GratitudeCardHeader(
-            username: post.authorUsername ?? s.friendDefaultName,
-            avatarUrl: post.authorAvatarUrl,
-            weeksLabel: normalizedWeeksLabel,
-            palette: palette,
-            initialBuilder: _initial,
-          ),
-          SizedBox(height: spacing.sm),
-          if (post.message != null && post.message!.isNotEmpty) ...[
-            SizedBox(height: spacing.md),
-            Text(
-              post.message!,
-              textAlign: TextAlign.start,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                letterSpacing: 0.1,
-                height: 1.35,
-                color: colorScheme.onSurface,
-              ),
-            ),
-          ],
-        ],
-      ),
+      initialBuilder: _initial,
     );
-  }
-
-  String _initial(String value) {
-    final trimmed = value.trim();
-    if (trimmed.isEmpty) return '?';
-    return trimmed.substring(0, 1);
   }
 }
 
@@ -266,16 +329,17 @@ class GratitudeWallHeader extends StatelessWidget {
     super.key,
     required this.count,
     required this.hasMore,
+    required this.memberCount,
   });
 
   final int count;
   final bool hasMore;
+  final int memberCount;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final s = S.of(context);
-    final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
 
     final countLabel = hasMore ? '$count+' : '$count';
@@ -292,13 +356,44 @@ class GratitudeWallHeader extends StatelessWidget {
           ),
         ),
         SizedBox(height: spacing.xs),
-        Text(
-          s.gratitudeWallSubtitle,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurfaceVariant,
+        GratitudeWallStatsRow(
+          mentionsLabel: '${s.gratitudeWallStatsMentions}: $countLabel',
+          peopleLabel: '${s.gratitudeWallStatsPeople}: $memberCount',
+        ),
+      ],
+    );
+  }
+}
+
+class GratitudeWallStatsRow extends StatelessWidget {
+  const GratitudeWallStatsRow({
+    super.key,
+    required this.mentionsLabel,
+    required this.peopleLabel,
+  });
+
+  final String mentionsLabel;
+  final String peopleLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
+
+    return Row(
+      children: [
+        Expanded(
+          child: KinlyBadge(
+            label: mentionsLabel,
+            compact: false,
           ),
         ),
-        SizedBox(height: spacing.xs),
+        SizedBox(width: spacing.sm),
+        Expanded(
+          child: KinlyBadge(
+            label: peopleLabel,
+            compact: false,
+          ),
+        ),
       ],
     );
   }
@@ -342,6 +437,12 @@ class PoweredByTagline extends StatelessWidget {
   }
 }
 
+String _initial(String value) {
+  final trimmed = value.trim();
+  if (trimmed.isEmpty) return '?';
+  return trimmed.substring(0, 1);
+}
+
 double _estimateHeight(
   GratitudeWallPost post, {
   required Spacing spacing,
@@ -369,4 +470,15 @@ String _replaceCountPlaceholder(
   }
   // No placeholder and we don't want to append anything.
   return text;
+}
+
+String _weeksLabelForDate(DateTime createdAt, S s) {
+  final createdLocal = createdAt.toLocal();
+  final now = DateTime.now();
+  final weeksAgo = math.max(0, now.difference(createdLocal).inDays ~/ 7);
+  return _replaceCountPlaceholder(
+    s.gratitudeWallWeeksAgo(weeksAgo),
+    weeksAgo.toString(),
+    appendIfNoMatch: false,
+  );
 }

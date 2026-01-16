@@ -64,15 +64,17 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
         return HarmonyRouteContext(homeId: membership.homeId);
       },
     ),
+    ...buildPersonalRoutes(),
     ...buildPreferenceRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;
-        if (membership == null) {
-          throw StateError('Preferences are available after you join a home.');
+        final userId = authBloc.state.userId;
+        if (userId == null) {
+          throw StateError('Preferences are available after sign in.');
         }
         return PreferenceRouteContext(
-          homeId: membership.homeId,
-          userId: membership.userId,
+          homeId: membership?.homeId,
+          userId: userId,
         );
       },
     ),

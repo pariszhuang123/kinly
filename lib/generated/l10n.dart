@@ -799,10 +799,10 @@ class S {
     );
   }
 
-  /// `Share Kinly so sharing feels lighter: {link}`
+  /// `Share Kinly so together feels lighter: {link}`
   String hubShareAppBody(String link) {
     return Intl.message(
-      'Share Kinly so sharing feels lighter: $link',
+      'Share Kinly so together feels lighter: $link',
       name: 'hubShareAppBody',
       desc: '',
       args: [link],
@@ -3749,10 +3749,10 @@ class S {
     );
   }
 
-  /// `Mentions`
+  /// `Thanks`
   String get gratitudeWallStatsMentions {
     return Intl.message(
-      'Mentions',
+      'Thanks',
       name: 'gratitudeWallStatsMentions',
       desc: '',
       args: [],
@@ -3839,10 +3839,10 @@ class S {
     );
   }
 
-  /// `House Gratitude wall`
+  /// `Gratitude wall`
   String get gratitudeWallShareTitle {
     return Intl.message(
-      'House Gratitude wall',
+      'Gratitude wall',
       name: 'gratitudeWallShareTitle',
       desc: '',
       args: [],
@@ -3864,16 +3864,6 @@ class S {
     return Intl.message(
       'Couldn\'t share right now. Please try again.',
       name: 'gratitudeWallShareError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Shared moments from your home.`
-  String get gratitudeWallSubtitle {
-    return Intl.message(
-      'Shared moments from your home.',
-      name: 'gratitudeWallSubtitle',
       desc: '',
       args: [],
     );
@@ -3902,10 +3892,10 @@ class S {
     );
   }
 
-  /// `Gratitude wall {count, plural, one {(#)} other {(#)}}`
+  /// `Home Gratitude wall {count, plural, one {(#)} other {(#)}}`
   String gratitudeWallTitleCount(int count) {
     return Intl.message(
-      'Gratitude wall ${Intl.plural(count, one: '(#)', other: '(#)')}',
+      'Home Gratitude wall ${Intl.plural(count, one: '(#)', other: '(#)')}',
       name: 'gratitudeWallTitleCount',
       desc: '',
       args: [count],
@@ -4877,6 +4867,56 @@ class S {
     return Intl.message(
       'We couldn’t finish your preference reflection. Head back and try again.',
       name: 'preferenceReportGenerationFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your profile`
+  String get personalProfileTitle {
+    return Intl.message(
+      'Your profile',
+      name: 'personalProfileTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal preferences`
+  String get personalProfilePreferences {
+    return Intl.message(
+      'Personal preferences',
+      name: 'personalProfilePreferences',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal mentions`
+  String get personalProfileMentions {
+    return Intl.message(
+      'Personal mentions',
+      name: 'personalProfileMentions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't load your personal profile right now. Please try again.`
+  String get personalProfileLoadError {
+    return Intl.message(
+      'We couldn\'t load your personal profile right now. Please try again.',
+      name: 'personalProfileLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal mentions`
+  String get personalMentionsTitle {
+    return Intl.message(
+      'Personal mentions',
+      name: 'personalMentionsTitle',
       desc: '',
       args: [],
     );

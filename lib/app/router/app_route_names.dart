@@ -34,4 +34,5 @@ class AppRouteNames {
   static const preferenceReportView = 'preferenceReportView';
   static const preferenceReportEdit = 'preferenceReportEdit';
   static const preferenceReportSectionEdit = 'preferenceReportSectionEdit';
+  static const personalMentions = 'personalMentions';
 }

@@ -33,6 +33,8 @@ Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directio
 
 ## Avatars & Media
 - `KinlyCircleAvatar` (owner badge, fallback handling).
+- `personal_profile_sheet.dart` (`PersonalProfileSheet`): avatar-driven personal profile access; uses KinlyBottomSheet + KinlyCircleAvatar.
+- `enums/personal_profile_entry_source.dart`: enum to label entry provenance for personal profile navigation.
 - Avatar selection rows reveal display names on selection (identity confirmation).
 - Photo pickers/previews if shared.
 

@@ -103,6 +103,15 @@ class _FakePreferenceReportsRepository implements PreferenceReportsRepository {
 
   @override
   Future<void> acknowledgeReport({required String reportId}) async {}
+
+  @override
+  Future<PreferenceReport?> getPersonalReport({
+    String templateKey = 'personal_preferences_v1',
+    required String locale,
+  }) async {
+    if (shouldThrow) throw Exception('boom');
+    return shouldReturnNullReport ? null : report;
+  }
 }
 
 void main() {

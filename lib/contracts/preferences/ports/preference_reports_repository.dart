@@ -20,6 +20,11 @@ abstract class PreferenceReportsRepository {
     required String locale,
   });
 
+  Future<PreferenceReport?> getPersonalReport({
+    String templateKey = 'personal_preferences_v1',
+    required String locale,
+  });
+
   Future<List<PreferenceReportListItem>> listReportsForHome({
     required String homeId,
     String templateKey = 'personal_preferences_v1',

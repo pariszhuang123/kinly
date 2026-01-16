@@ -199,12 +199,18 @@ void main() {
     await tester.pumpAndSettle();
 
     // No mood selected -> mention suggestions disabled but field present
-    expect(find.byKey(const ValueKey('harmony_mentions_input')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('harmony_mentions_input')),
+      findsOneWidget,
+    );
 
     await tester.tap(find.bySemanticsLabel('Sunny'));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const ValueKey('harmony_mentions_input')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('harmony_mentions_input')),
+      findsOneWidget,
+    );
 
     await tester.tap(find.bySemanticsLabel('Thunderstorm'));
     await tester.pumpAndSettle();

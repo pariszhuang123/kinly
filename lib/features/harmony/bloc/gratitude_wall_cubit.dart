@@ -67,6 +67,8 @@ class GratitudeWallCubit extends Cubit<GratitudeWallState> {
       final merged = [...state.posts, ...page.posts];
       final totalPosts = state.totalPosts ?? merged.length;
       final hasMore = merged.length < totalPosts;
+      final uniqueAuthors =
+          merged.map((post) => post.authorUserId).toSet().length;
       emit(
         state.copyWith(
           isLoadingMore: false,
@@ -76,6 +78,7 @@ class GratitudeWallCubit extends Cubit<GratitudeWallState> {
           hasMore: hasMore,
           hasLoaded: true,
           totalPosts: totalPosts,
+          uniqueAuthors: uniqueAuthors,
         ),
       );
     } catch (e) {

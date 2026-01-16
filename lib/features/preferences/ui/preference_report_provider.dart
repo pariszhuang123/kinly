@@ -10,7 +10,7 @@ import 'preference_report_screen.dart';
 class PreferenceReportProvider extends StatelessWidget {
   const PreferenceReportProvider({
     super.key,
-    required this.homeId,
+    this.homeId,
     required this.subjectUserId,
     required this.repository,
     this.showConfetti = false,
@@ -21,7 +21,7 @@ class PreferenceReportProvider extends StatelessWidget {
     this.subjectAvatarUrl,
   });
 
-  final String homeId;
+  final String? homeId;
   final String subjectUserId;
   final PreferenceReportsRepository repository;
   final bool showConfetti;

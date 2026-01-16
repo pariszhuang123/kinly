@@ -13,6 +13,9 @@ import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/app/router/app_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/contracts/auth/models/user_context.dart';
+import 'package:kinly/contracts/auth/ports/user_context_repository.dart';
+import 'package:kinly/core/di/locator.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
@@ -24,6 +27,18 @@ class _FakeAuthEvent extends Fake implements AuthEvent {}
 
 class _FakeAuthState extends Fake implements AuthState {}
 
+class _FakeUserContextRepository implements UserContextRepository {
+  @override
+  Future<UserContext> fetch() async => const UserContext(
+        userId: 'user-ctx',
+        hasHome: false,
+        activeHomeId: null,
+        hasPreferenceReport: false,
+        hasPersonalMentions: false,
+        avatarUrl: null,
+      );
+}
+
 void main() {
   setUpAll(() {
     registerFallbackValue(_FakeAuthEvent());
@@ -32,6 +47,26 @@ void main() {
 
   late _MockAuthBloc authBloc;
   late _MockStartHomeBloc startHomeBloc;
+
+  setUp(() async {
+    await sl.reset();
+    sl.registerLazySingleton<UserContextRepository>(
+      () => _FakeUserContextRepository(),
+    );
+
+    authBloc = _MockAuthBloc();
+    startHomeBloc = _MockStartHomeBloc();
+    when(
+      () => authBloc.stream,
+    ).thenAnswer((_) => const Stream<AuthState>.empty());
+    when(
+      () => authBloc.state,
+    ).thenReturn(const AuthState(membershipStatus: AuthMembershipStatus.none));
+  });
+
+  tearDown(() async {
+    await sl.reset();
+  });
 
   Widget buildApp() {
     return MaterialApp(
@@ -52,17 +87,6 @@ void main() {
       ),
     );
   }
-
-  setUp(() {
-    authBloc = _MockAuthBloc();
-    startHomeBloc = _MockStartHomeBloc();
-    when(
-      () => authBloc.stream,
-    ).thenAnswer((_) => const Stream<AuthState>.empty());
-    when(
-      () => authBloc.state,
-    ).thenReturn(const AuthState(membershipStatus: AuthMembershipStatus.none));
-  });
 
   testWidgets('when start home succeeds, membership refresh is requested', (
     tester,

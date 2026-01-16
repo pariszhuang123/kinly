@@ -505,7 +505,6 @@
     }
   },
   "gratitudeWallShareError": "No se pudo compartir ahora mismo. Inténtalo de nuevo.",
-  "gratitudeWallSubtitle": "Momentos compartidos de tu hogar.",
   "gratitudeWallFooter": "Hecho con {appName} - Juntos se siente más ligero",
   "gratitudeWallWeeksAgo": "{weeks, plural, =0{Esta semana} one{hace # semana} other{hace # semanas}}",
   "@gratitudeWallWeeksAgo": {
@@ -1059,9 +1058,6 @@
   "@gratitudeWallShareError": {
     "surface": "error"
   },
-  "@gratitudeWallSubtitle": {
-    "surface": "subtitle"
-  },
   "@npsTitle": {
     "surface": "subtitle"
   },
@@ -1277,8 +1273,13 @@
   "vibeIndependentSummary": "This home leans toward personal space with thoughtful connection.",
   "gratitudeWallPersonalTitle": "Tu muro personal de gratitud",
   "gratitudeWallPersonalSummary": "Una colección privada de las menciones que otros te han dedicado en todos tus hogares.",
-  "gratitudeWallStatsMentions": "Menciones",
+  "gratitudeWallStatsMentions": "Agradecimientos",
   "gratitudeWallStatsPeople": "Personas",
   "gratitudeWallStatsHomes": "Hogares",
-  "mentionFieldHint": "Escribe @ para mencionar"
+  "mentionFieldHint": "Escribe @ para mencionar",
+  "personalProfileTitle": "Tu perfil",
+  "personalProfilePreferences": "Preferencias personales",
+  "personalProfileMentions": "Menciones personales",
+  "personalProfileLoadError": "No pudimos cargar tu perfil personal ahora. Inténtalo de nuevo.",
+  "personalMentionsTitle": "Menciones personales"
 }

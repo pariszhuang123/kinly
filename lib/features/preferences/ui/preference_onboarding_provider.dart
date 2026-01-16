@@ -14,12 +14,12 @@ class PreferenceOnboardingProvider extends StatelessWidget {
     super.key,
     required this.repository,
     required this.userId,
-    required this.homeId,
+    this.homeId,
   });
 
   final PreferenceReportsRepository repository;
   final String userId;
-  final String homeId;
+  final String? homeId;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +28,11 @@ class PreferenceOnboardingProvider extends StatelessWidget {
     return BlocProvider(
       create:
           (_) => PreferenceCaptureBloc(
-            repository: repository,
-            scenarios: preferenceScenarios(),
-            userId: userId,
-            homeId: homeId,
-            logger: sl<Logger>(),
+          repository: repository,
+          scenarios: preferenceScenarios(),
+          userId: userId,
+          homeId: homeId,
+          logger: sl<Logger>(),
           ),
       child: const PreferenceOnboardingScreen(),
     );

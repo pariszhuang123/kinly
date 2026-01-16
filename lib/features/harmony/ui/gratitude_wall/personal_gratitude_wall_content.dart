@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kinly/contracts/mood/personal_wall_models.dart';
-import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/kinly_theme_access.dart';
@@ -24,8 +23,8 @@ class PersonalGratitudeWallContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
+    final spacing = theme.extension<Spacing>()!;
 
     final content = BlocBuilder<PersonalGratitudeCubit, PersonalGratitudeState>(
       builder: (context, state) {
@@ -112,11 +111,19 @@ class PersonalGratitudeWallContent extends StatelessWidget {
                           bodyStyle: textTheme.bodyMedium,
                         ),
                     builder: (context, item, index, palette) {
-                      return _PersonalGratitudeCard(
-                        item: item,
+                      return GratitudeEntryCard(
+                        username: item.authorUsername,
+                        avatarUrl: item.authorAvatarPath,
+                        createdAt: item.createdAt,
+                        message: item.message,
                         palette: palette.colorForSeed(
                           '${item.id}-${item.authorUserId}',
                         ),
+                        messageStyle: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                        initialBuilder: _initial,
                       );
                     },
                   ),
@@ -196,76 +203,7 @@ class _PersonalStatsRow extends StatelessWidget {
   }
 }
 
-class _PersonalGratitudeCard extends StatelessWidget {
-  const _PersonalGratitudeCard({required this.item, required this.palette});
-
-  final PersonalGratitudeItem item;
-  final SectionColors palette;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
-    final s = S.of(context);
-    final colorScheme = theme.colorScheme;
-    final createdLocal = item.createdAt.toLocal();
-    final now = DateTime.now();
-    final weeksAgo = math.max(0, now.difference(createdLocal).inDays ~/ 7);
-    final weeksLabel = s.gratitudeWallWeeksAgo(weeksAgo);
-
-    final cardFill = Color.alphaBlend(
-      palette.card.withValues(alpha: 0.6),
-      colorScheme.surface,
-    );
-    final badgeFill = palette.accent.withValues(alpha: 0.16);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: cardFill,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      padding: EdgeInsetsDirectional.fromSTEB(
-        spacing.lg,
-        spacing.lg,
-        spacing.lg,
-        spacing.xl,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GratitudeCardHeader(
-            username: item.authorUsername,
-            avatarUrl: item.authorAvatarPath,
-            weeksLabel: weeksLabel,
-            palette: palette,
-            initialBuilder: _initial,
-          ),
-          if (item.message?.isNotEmpty == true) ...[
-            SizedBox(height: spacing.m),
-            Text(
-              item.message!,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  String _initial(String value) {
-    if (value.isEmpty) return '';
-    return value.characters.first.toUpperCase();
-  }
+String _initial(String value) {
+  if (value.isEmpty) return '';
+  return value.characters.first.toUpperCase();
 }

@@ -308,13 +308,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Hogares"),
     "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
-      "Menciones",
+      "Agradecimientos",
     ),
     "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage(
       "Personas",
-    ),
-    "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Momentos compartidos de tu hogar.",
     ),
     "gratitudeWallTitleCount": m4,
     "gratitudeWallWeeksAgo": m5,
@@ -559,6 +556,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
       "Trae más armonía a tu hogar",
     ),
+    "personalMentionsTitle": MessageLookupByLibrary.simpleMessage(
+      "Menciones personales",
+    ),
+    "personalProfileLoadError": MessageLookupByLibrary.simpleMessage(
+      "No pudimos cargar tu perfil personal ahora. Inténtalo de nuevo.",
+    ),
+    "personalProfileMentions": MessageLookupByLibrary.simpleMessage(
+      "Menciones personales",
+    ),
+    "personalProfilePreferences": MessageLookupByLibrary.simpleMessage(
+      "Preferencias personales",
+    ),
+    "personalProfileTitle": MessageLookupByLibrary.simpleMessage("Tu perfil"),
     "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
     "preferenceOnboardingProgress": m13,
     "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage(

@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sharing a glimpse of our Kinly gratitude wall. Download the app: ${link}";
 
   static String m4(count) =>
-      "Gratitude wall ${Intl.plural(count, one: '(#)', other: '(#)')}";
+      "Home Gratitude wall ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
   static String m5(weeks) =>
       "${Intl.plural(weeks, zero: 'This week', one: '# week ago', other: '# weeks ago')}";
@@ -43,7 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m8(link) =>
       "Sharing our Kinly house vibe. Download the app: ${link}";
 
-  static String m9(link) => "Share Kinly so sharing feels lighter: ${link}";
+  static String m9(link) => "Share Kinly so together feels lighter: ${link}";
 
   static String m10(code, link) =>
       "Welcome to our Kinly home! Enter this invite code: ${code}\n\nDownload the Kinly app: ${link}";
@@ -311,16 +311,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "gratitudeWallShareMessage": m3,
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
-      "House Gratitude wall",
+      "Gratitude wall",
     ),
     "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Homes"),
     "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
-      "Mentions",
+      "Thanks",
     ),
     "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage("People"),
-    "gratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Shared moments from your home.",
-    ),
     "gratitudeWallTitleCount": m4,
     "gratitudeWallWeeksAgo": m5,
     "greetingPartOfDay": m6,
@@ -553,6 +550,21 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
       "Bring more harmony to your home",
+    ),
+    "personalMentionsTitle": MessageLookupByLibrary.simpleMessage(
+      "Personal mentions",
+    ),
+    "personalProfileLoadError": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t load your personal profile right now. Please try again.",
+    ),
+    "personalProfileMentions": MessageLookupByLibrary.simpleMessage(
+      "Personal mentions",
+    ),
+    "personalProfilePreferences": MessageLookupByLibrary.simpleMessage(
+      "Personal preferences",
+    ),
+    "personalProfileTitle": MessageLookupByLibrary.simpleMessage(
+      "Your profile",
     ),
     "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
     "preferenceOnboardingProgress": m13,

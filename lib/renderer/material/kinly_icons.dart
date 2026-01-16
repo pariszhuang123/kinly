@@ -27,4 +27,6 @@ class KinlyIcons {
   static const close = Icons.close;
   static const closeRounded = Icons.close_rounded;
   static const checkRounded = Icons.check_rounded;
+  static const tuneRounded = Icons.tune_rounded;
+  static const personOutlineRounded = Icons.person_outline_rounded;
 }

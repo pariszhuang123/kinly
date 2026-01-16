@@ -16,7 +16,7 @@ class _MockPersonalGratitudeCubit extends Mock implements PersonalGratitudeCubit
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const _testSpacing = Spacing(
+  const testSpacing = Spacing(
     xxs: 2,
     xs: 4,
     s: 8,
@@ -27,9 +27,9 @@ void main() {
     xxxl: 40,
   );
 
-  ThemeData _theme() => ThemeData(useMaterial3: true).copyWith(
+  ThemeData buildTheme() => ThemeData(useMaterial3: true).copyWith(
         extensions: const <ThemeExtension<dynamic>>[
-          _testSpacing,
+          testSpacing,
           KinlyOpacity.defaults,
         ],
       );
@@ -67,9 +67,9 @@ void main() {
         error: null,
       );
 
-  Widget _wrap(PersonalGratitudeState state, PersonalGratitudeCubit cubit) {
+  Widget wrap(PersonalGratitudeState state, PersonalGratitudeCubit cubit) {
     return MaterialApp(
-      theme: _theme(),
+      theme: buildTheme(),
       localizationsDelegates: const [S.delegate],
       supportedLocales: S.delegate.supportedLocales,
       home: BlocProvider<PersonalGratitudeCubit>.value(
@@ -95,7 +95,7 @@ void main() {
       (_) => const Stream<PersonalGratitudeState>.empty(),
     );
 
-    await tester.pumpWidget(_wrap(cubit.state, cubit));
+    await tester.pumpWidget(wrap(cubit.state, cubit));
     await tester.pumpAndSettle();
 
     final strings = S.of(tester.element(find.byType(PersonalGratitudeWallContent)));
@@ -116,7 +116,7 @@ void main() {
       (_) => const Stream<PersonalGratitudeState>.empty(),
     );
 
-    await tester.pumpWidget(_wrap(cubit.state, cubit));
+    await tester.pumpWidget(wrap(cubit.state, cubit));
     await tester.pumpAndSettle();
 
     final strings = S.of(tester.element(find.byType(PersonalGratitudeWallContent)));
@@ -143,7 +143,7 @@ void main() {
       (_) => const Stream<PersonalGratitudeState>.empty(),
     );
 
-    await tester.pumpWidget(_wrap(cubit.state, cubit));
+    await tester.pumpWidget(wrap(cubit.state, cubit));
     await tester.pumpAndSettle();
 
     final strings = S.of(tester.element(find.byType(PersonalGratitudeWallContent)));
@@ -167,7 +167,7 @@ void main() {
     );
     when(() => cubit.loadMore()).thenAnswer((_) async {});
 
-    await tester.pumpWidget(_wrap(cubit.state, cubit));
+    await tester.pumpWidget(wrap(cubit.state, cubit));
     await tester.pump();
 
     await tester.drag(find.byType(PersonalGratitudeWallContent), const Offset(0, -500));

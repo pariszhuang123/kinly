@@ -12,8 +12,8 @@ part 'personal_gratitude_state.dart';
 class PersonalGratitudeCubit extends Cubit<PersonalGratitudeState> {
   PersonalGratitudeCubit({
     required MoodRepository moodRepository,
-    required HomeRepository homeRepository,
-    required String homeId,
+    HomeRepository? homeRepository,
+    String? homeId,
     Logger? logger,
   }) : _repo = moodRepository,
        _homeRepository = homeRepository,
@@ -22,9 +22,9 @@ class PersonalGratitudeCubit extends Cubit<PersonalGratitudeState> {
        super(const PersonalGratitudeState.initial());
 
   final MoodRepository _repo;
-  final HomeRepository _homeRepository;
+  final HomeRepository? _homeRepository;
   final Logger _logger;
-  final String _homeId;
+  final String? _homeId;
 
   Future<void> loadInitial() async {
     if (state.isLoading) return;
@@ -78,11 +78,14 @@ class PersonalGratitudeCubit extends Cubit<PersonalGratitudeState> {
   }
 
   Future<void> logShareEvent() async {
+    final repo = _homeRepository;
+    final homeId = _homeId;
+    if (repo == null || homeId == null) return;
     try {
-      await _homeRepository.logShareEvent(
+      await repo.logShareEvent(
         feature: 'gratitude_wall_personal',
         channel: 'system_share',
-        homeId: _homeId,
+        homeId: homeId,
       );
     } catch (error, stackTrace) {
       _logger.warn(

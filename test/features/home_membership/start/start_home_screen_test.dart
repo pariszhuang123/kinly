@@ -13,6 +13,9 @@ import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/core/theme/spacing.dart';
+import 'package:kinly/contracts/auth/models/user_context.dart';
+import 'package:kinly/contracts/auth/ports/user_context_repository.dart';
+import 'package:kinly/core/di/locator.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
@@ -100,6 +103,18 @@ class _FakeHomeRepository implements HomeRepository {
   }
 }
 
+class _FakeUserContextRepository implements UserContextRepository {
+  @override
+  Future<UserContext> fetch() async => const UserContext(
+        userId: 'user-ctx',
+        hasHome: false,
+        activeHomeId: null,
+        hasPreferenceReport: false,
+        hasPersonalMentions: false,
+        avatarUrl: null,
+      );
+}
+
 void main() {
   late _MockAuthBloc authBloc;
 
@@ -108,7 +123,12 @@ void main() {
     registerFallbackValue(const StartHomeCreateRequested());
   });
 
-  setUp(() {
+  setUp(() async {
+    await sl.reset();
+    sl.registerLazySingleton<UserContextRepository>(
+      () => _FakeUserContextRepository(),
+    );
+
     authBloc = _MockAuthBloc();
     final authState = const AuthState(
       status: AuthStatus.authenticated,
@@ -121,6 +141,10 @@ void main() {
       Stream<AuthState>.value(authState),
       initialState: authState,
     );
+  });
+
+  tearDown(() async {
+    await sl.reset();
   });
 
   Widget app(Widget child, StartHomeBloc startHomeBloc) {

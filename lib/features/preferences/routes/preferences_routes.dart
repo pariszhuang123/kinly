@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
@@ -11,9 +12,9 @@ import 'package:kinly/features/preferences/ui/preference_report_section_route_ar
 import 'package:kinly/features/preferences/ui/preference_report_section_screen.dart';
 
 class PreferenceRouteContext {
-  const PreferenceRouteContext({required this.homeId, required this.userId});
+  const PreferenceRouteContext({required this.userId, this.homeId});
 
-  final String homeId;
+  final String? homeId;
   final String userId;
 }
 
@@ -26,9 +27,14 @@ List<GoRoute> buildPreferenceRoutes({
     GoRoute(
       path: AppRoutePaths.preferenceOnboarding,
       name: AppRouteNames.preferenceOnboarding,
-      builder: (_, __) {
+      builder: (_, state) {
         final membership = resolveContext();
+        final entrySource = _entrySourceFromExtra(state.extra);
         return PreferenceOnboardingProvider(
+          key:
+              entrySource == null
+                  ? null
+                  : ValueKey('preference_onboarding_$entrySource'),
           repository: sl<PreferenceReportsRepository>(),
           userId: membership.userId,
           homeId: membership.homeId,
@@ -41,6 +47,7 @@ List<GoRoute> buildPreferenceRoutes({
       builder: (_, state) {
         final membership = resolveContext();
         final extra = state.extra;
+        final entrySource = _entrySourceFromExtra(extra);
         final showConfetti =
             extra is PreferenceReportNavigationArgs
                 ? extra.showConfetti
@@ -50,6 +57,10 @@ List<GoRoute> buildPreferenceRoutes({
                 ? extra.initialReport
                 : null;
         return PreferenceReportProvider(
+          key:
+              entrySource == null
+                  ? null
+                  : ValueKey('preference_report_$entrySource'),
           homeId: membership.homeId,
           subjectUserId: membership.userId,
           repository: sl<PreferenceReportsRepository>(),
@@ -71,6 +82,7 @@ List<GoRoute> buildPreferenceRoutes({
         String? avatarUrl;
         bool canEdit = subjectUserId == membership.userId;
         final extra = state.extra;
+        final entrySource = _entrySourceFromExtra(extra);
         if (extra is Map) {
           displayName = extra['displayName'] as String?;
           avatarUrl = extra['avatarUrl'] as String?;
@@ -80,6 +92,10 @@ List<GoRoute> buildPreferenceRoutes({
           }
         }
         return PreferenceReportProvider(
+          key:
+              entrySource == null
+                  ? null
+                  : ValueKey('preference_report_view_$entrySource'),
           homeId: membership.homeId,
           subjectUserId: subjectUserId,
           repository: sl<PreferenceReportsRepository>(),
@@ -100,6 +116,7 @@ List<GoRoute> buildPreferenceRoutes({
         bool canEdit = true;
         String subjectUserId = membership.userId;
         final extra = state.extra;
+        final entrySource = _entrySourceFromExtra(extra);
         if (extra is Map) {
           displayName = extra['displayName'] as String?;
           avatarUrl = extra['avatarUrl'] as String?;
@@ -113,6 +130,10 @@ List<GoRoute> buildPreferenceRoutes({
           }
         }
         return PreferenceReportEditProvider(
+          key:
+              entrySource == null
+                  ? null
+                  : ValueKey('preference_report_edit_$entrySource'),
           homeId: membership.homeId,
           subjectUserId: subjectUserId,
           repository: sl<PreferenceReportsRepository>(),
@@ -134,4 +155,12 @@ List<GoRoute> buildPreferenceRoutes({
       },
     ),
   ];
+}
+
+String? _entrySourceFromExtra(Object? extra) {
+  if (extra is Map && extra['entrySource'] is String) {
+    return extra['entrySource'] as String;
+  }
+  if (extra is String) return extra;
+  return null;
 }

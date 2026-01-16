@@ -274,6 +274,7 @@ void main() {
             hasMore: true,
             hasLoaded: true,
             totalPosts: 5,
+            uniqueAuthors: 2,
             cursorCreatedAt: now,
             cursorId: 'p1',
           );
@@ -395,6 +396,7 @@ void main() {
             hasMore: true,
             hasLoaded: true,
             totalPosts: 2,
+            uniqueAuthors: 1,
             cursorCreatedAt: now,
             cursorId: 'p1',
           );
@@ -468,6 +470,7 @@ void main() {
         hasMore: false,
         hasLoaded: true,
         totalPosts: 10,
+        uniqueAuthors: 0,
         cursorCreatedAt: now,
         cursorId: 'cursor',
         error: 'error',
