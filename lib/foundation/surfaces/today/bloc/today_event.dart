@@ -53,3 +53,18 @@ class TodayInviteShareLogged extends TodayEvent {
 class TodayMemberCapDismissed extends TodayEvent {
   const TodayMemberCapDismissed();
 }
+
+/// User opened the weekly house pulse card.
+class TodayHousePulseViewed extends TodayEvent {
+  const TodayHousePulseViewed();
+}
+
+/// User tapped share on the house pulse detail.
+class TodayHousePulseShareLogged extends TodayEvent {
+  const TodayHousePulseShareLogged({required this.channel});
+
+  final String channel;
+
+  @override
+  List<Object?> get props => [channel];
+}

@@ -7,6 +7,7 @@ class AppRouteNames {
   static const joinBlocked = 'joinBlocked';
   static const joinWithCode = 'joinWithCode';
   static const today = 'today';
+  static const todayHousePulse = 'todayHousePulse';
   static const hub = 'hub';
   static const hubPreferencesList = 'hubPreferencesList';
   static const hubHouseVibeShare = 'hubHouseVibeShare';

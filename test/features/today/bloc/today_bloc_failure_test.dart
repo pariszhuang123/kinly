@@ -17,6 +17,7 @@ import 'package:kinly/contracts/chores/models.dart';
 import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart'
     as onboarding;
 import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/contracts/mood/ports/house_pulse_repository.dart';
 
 class _MockChoresRepository extends Mock implements ChoresRepository {}
 
@@ -27,6 +28,8 @@ class _MockExpensesRepository extends Mock implements ExpensesRepository {}
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
 class _MockMoodRepository extends Mock implements MoodRepository {}
+
+class _MockHousePulseRepository extends Mock implements HousePulseRepository {}
 
 class _MockOnboardingRepository extends Mock implements OnboardingRepository {}
 
@@ -43,6 +46,7 @@ void main() {
   late _MockExpensesRepository expensesRepository;
   late _MockHomeRepository homeRepository;
   late _MockMoodRepository moodRepository;
+  late _MockHousePulseRepository housePulseRepository;
   late _MockOnboardingRepository onboardingRepository;
   late _MockPreferenceReportsRepository preferenceReportsRepository;
   late ProfileUpdateNotifier profileUpdateNotifier;
@@ -53,6 +57,7 @@ void main() {
     expensesRepository = _MockExpensesRepository();
     homeRepository = _MockHomeRepository();
     moodRepository = _MockMoodRepository();
+    housePulseRepository = _MockHousePulseRepository();
     onboardingRepository = _MockOnboardingRepository();
     preferenceReportsRepository = _MockPreferenceReportsRepository();
     profileUpdateNotifier = ProfileUpdateNotifier();
@@ -96,6 +101,9 @@ void main() {
       () => profileRepository.getCurrentProfile(),
     ).thenAnswer((_) async => null);
     when(
+      () => housePulseRepository.getWeeklyPulse(homeId: any(named: 'homeId')),
+    ).thenAnswer((_) async => null);
+    when(
       () => homeRepository.logShareEvent(
         feature: any(named: 'feature'),
         channel: any(named: 'channel'),
@@ -115,6 +123,7 @@ void main() {
       expensesRepository: expensesRepository,
       homeRepository: homeRepository,
       moodRepository: moodRepository,
+      housePulseRepository: housePulseRepository,
       onboardingRepository: onboardingRepository,
       preferenceReportsRepository: preferenceReportsRepository,
       homeId: 'home-1',

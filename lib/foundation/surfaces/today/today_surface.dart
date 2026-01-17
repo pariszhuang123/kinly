@@ -33,6 +33,7 @@ import 'package:kinly/contracts/flow/flow_chore_outcome.dart';
 import 'package:kinly/contracts/flow/enums/flow_list_filter.dart';
 import 'bloc/today_bloc.dart';
 import 'domain/models.dart';
+import 'routes/today_house_pulse_route_args.dart';
 import 'today_slots.dart';
 import 'today_registry.dart';
 import 'widgets/today_add_sheet.dart';
@@ -50,6 +51,7 @@ part 'today_surface_helpers.dart';
 part 'today_surface_flow_helpers.dart';
 part 'today_surface_share_helpers.dart';
 part 'today_surface_notifications_helpers.dart';
+part 'today_surface_pulse_helpers.dart';
 
 const _shareLogTag = 'TodayShare';
 
@@ -319,6 +321,7 @@ class _TodayScreenState extends State<TodayScreen>
     final hasFlow = state.hasFlowContent;
     final hasShare = state.hasShareContent;
     final hasGratitude = state.hasGratitudeUnread;
+    final hasHousePulse = state.hasHousePulseCard;
     final hasInvitePrompt =
         state.shouldPromptFlatmateInviteShare || state.shouldPromptInviteShare;
     final hasMemberCapPrompt =
@@ -329,6 +332,7 @@ class _TodayScreenState extends State<TodayScreen>
     if (!hasFlow &&
         !hasShare &&
         !hasGratitude &&
+        !hasHousePulse &&
         !hasInvitePrompt &&
         !hasMemberCapPrompt &&
         !hasPreferencePrompt) {
@@ -387,6 +391,7 @@ class _TodayScreenState extends State<TodayScreen>
       onGratitudeTap: () => _openGratitudeWall(context),
       onPersonalGratitudeTap: () =>
           _openGratitudeWall(context, openPersonal: true),
+      onHousePulseTap: () => _openHousePulseDetail(context),
     );
     final scope = TodaySurfaceScope(
       context: context,

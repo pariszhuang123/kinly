@@ -13,11 +13,14 @@ import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
 import 'package:kinly/contracts/mood/models.dart';
+import 'package:kinly/contracts/mood/house_pulse_models.dart';
+import 'package:kinly/contracts/mood/ports/house_pulse_repository.dart';
 import 'package:kinly/contracts/mood/personal_wall_models.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/notifications/profile_update_notifier.dart';
+import 'package:kinly/foundation/surfaces/today/domain/house_pulse_helpers.dart';
 import '../domain/models.dart'; // TodayFlowTask etc.
 
 part 'today_event.dart';
@@ -29,6 +32,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final ExpensesRepository _expensesRepository;
   final HomeRepository _homeRepository;
   final MoodRepository _moodRepository;
+  final HousePulseRepository _housePulseRepository;
   final OnboardingRepository _onboardingRepository;
   final PreferenceReportsRepository _preferenceReportsRepository;
   final ProfileUpdateNotifier _profileUpdateNotifier;
@@ -45,21 +49,23 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required ExpensesRepository expensesRepository,
     required HomeRepository homeRepository,
     required MoodRepository moodRepository,
+    required HousePulseRepository housePulseRepository,
     required OnboardingRepository onboardingRepository,
     required PreferenceReportsRepository preferenceReportsRepository,
     required String homeId,
     required ProfileUpdateNotifier profileUpdateNotifier,
     Logger? logger,
   }) : _choresRepository = choresRepository,
-       _profileRepository = profileRepository,
-       _expensesRepository = expensesRepository,
-       _homeRepository = homeRepository,
-       _moodRepository = moodRepository,
-       _onboardingRepository = onboardingRepository,
-       _preferenceReportsRepository = preferenceReportsRepository,
-       _profileUpdateNotifier = profileUpdateNotifier,
-       _logger = logger ?? const DebugLogger(),
-       _homeId = homeId,
+      _profileRepository = profileRepository,
+      _expensesRepository = expensesRepository,
+      _homeRepository = homeRepository,
+      _moodRepository = moodRepository,
+      _housePulseRepository = housePulseRepository,
+      _onboardingRepository = onboardingRepository,
+      _preferenceReportsRepository = preferenceReportsRepository,
+      _profileUpdateNotifier = profileUpdateNotifier,
+      _logger = logger ?? const DebugLogger(),
+      _homeId = homeId,
        super(const TodayState.loading()) {
     on<TodayStarted>(_onStarted);
     on<TodayRefreshed>(_onRefreshed);
@@ -68,6 +74,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     on<TodayFlatmateInviteShareLogged>(_onFlatmateInviteShareLogged);
     on<TodayInviteShareLogged>(_onInviteShareLogged);
     on<TodayMemberCapDismissed>(_onMemberCapDismissed);
+    on<TodayHousePulseViewed>(_onHousePulseViewed);
+    on<TodayHousePulseShareLogged>(_onHousePulseShareLogged);
 
     _profileUpdateSub = _profileUpdateNotifier.stream.listen(
       (profile) => add(TodayProfileUpdated(profile)),
@@ -107,6 +115,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     bool isRefresh = false,
   }) async {
     TodayUserProfile? profile = state.profile;
+    HousePulsePayload? housePulse = state.housePulse;
     final prevPromptTick = state.harmonyPromptTick;
     final prevHasShownHarmony = state.hasShownHarmonyPrompt;
     final prevNpsPromptTick = state.npsPromptTick;
@@ -145,6 +154,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
             shouldPromptPreferences: state.shouldPromptPreferences,
             memberCapJoinRequests: state.memberCapJoinRequests,
             memberCapJoinResolution: state.memberCapJoinResolution,
+            housePulse: state.housePulse,
           ),
         );
       }
@@ -178,6 +188,9 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       memberCapJoinRequests = hintsSnapshot.memberCapJoinRequests;
       memberCapJoinResolution = hintsSnapshot.memberCapJoinResolution;
 
+      final housePulseFuture = _housePulseRepository.getWeeklyPulse(
+        homeId: _homeId,
+      );
       final profileFuture = _profileRepository.getCurrentProfile();
       final draftsFuture = _choresRepository.listTodayFlow(
         homeId: _homeId,
@@ -249,6 +262,20 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       );
       _logGratitudeStatus(wallStatus, profile?.userId);
 
+      try {
+        final pulse = await housePulseFuture;
+        if (pulse != null) {
+          housePulse = pulse;
+        }
+      } catch (error, stackTrace) {
+        _logger.warn(
+          'Failed to load house pulse',
+          tag: 'TodayHousePulse',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+
       final draftTasks = drafts
           .map(_mapEntryToTodayTask)
           .toList(growable: false);
@@ -279,6 +306,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shouldPromptPreferences: shouldPromptPreferences,
           memberCapJoinRequests: memberCapJoinRequests,
           memberCapJoinResolution: memberCapJoinResolution,
+          housePulse: housePulse,
           // later: you can add today's expenses, gratitude items, etc.
         ),
       );
@@ -294,6 +322,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shareDrafts: state.shareDrafts,
           shareErrorMessage: state.shareErrorMessage,
           gratitudeStatus: prevGratitudeStatus,
+          personalGratitudeStatus: state.personalGratitudeStatus,
           harmonyPromptTick: prevPromptTick,
           hasShownHarmonyPrompt: prevHasShownHarmony,
           npsPromptTick: prevNpsPromptTick,
@@ -301,6 +330,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shouldPromptPreferences: state.shouldPromptPreferences,
           memberCapJoinRequests: memberCapJoinRequests,
           memberCapJoinResolution: memberCapJoinResolution,
+          housePulse: housePulse,
         ),
       );
       // optional: log error/stackTrace via your logger/Sentry here
@@ -508,6 +538,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         shouldPromptPreferences: current.shouldPromptPreferences,
         memberCapJoinRequests: current.memberCapJoinRequests,
         memberCapJoinResolution: current.memberCapJoinResolution,
+        housePulse: current.housePulse,
       );
     }
 
@@ -535,6 +566,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         shouldPromptPreferences: current.shouldPromptPreferences,
         memberCapJoinRequests: current.memberCapJoinRequests,
         memberCapJoinResolution: current.memberCapJoinResolution,
+        housePulse: current.housePulse,
       );
     }
 
@@ -559,6 +591,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       shouldPromptPreferences: current.shouldPromptPreferences,
       memberCapJoinRequests: current.memberCapJoinRequests,
       memberCapJoinResolution: current.memberCapJoinResolution,
+      housePulse: current.housePulse,
     );
   }
 
@@ -583,6 +616,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         shouldPromptPreferences: current.shouldPromptPreferences,
         memberCapJoinRequests: current.memberCapJoinRequests,
         memberCapJoinResolution: current.memberCapJoinResolution,
+        housePulse: current.housePulse,
       );
     }
 
@@ -609,6 +643,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         shouldPromptPreferences: current.shouldPromptPreferences,
         memberCapJoinRequests: current.memberCapJoinRequests,
         memberCapJoinResolution: current.memberCapJoinResolution,
+        housePulse: current.housePulse,
       );
     }
 
@@ -633,6 +668,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       shouldPromptPreferences: current.shouldPromptPreferences,
       memberCapJoinRequests: current.memberCapJoinRequests,
       memberCapJoinResolution: current.memberCapJoinResolution,
+      housePulse: current.housePulse,
     );
   }
 
@@ -655,6 +691,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         shouldPromptPreferences: current.shouldPromptPreferences,
         memberCapJoinRequests: current.memberCapJoinRequests,
         memberCapJoinResolution: current.memberCapJoinResolution,
+        housePulse: current.housePulse,
       );
     }
 
@@ -680,6 +717,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         shouldPromptPreferences: current.shouldPromptPreferences,
         memberCapJoinRequests: current.memberCapJoinRequests,
         memberCapJoinResolution: current.memberCapJoinResolution,
+        housePulse: current.housePulse,
       );
     }
 
@@ -704,6 +742,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       shouldPromptPreferences: current.shouldPromptPreferences,
       memberCapJoinRequests: current.memberCapJoinRequests,
       memberCapJoinResolution: current.memberCapJoinResolution,
+      housePulse: current.housePulse,
     );
   }
 
@@ -728,6 +767,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         shouldPromptPreferences: current.shouldPromptPreferences,
         memberCapJoinRequests: null,
         memberCapJoinResolution: current.memberCapJoinResolution,
+        housePulse: current.housePulse,
       );
     }
 
@@ -754,6 +794,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         shouldPromptPreferences: current.shouldPromptPreferences,
         memberCapJoinRequests: null,
         memberCapJoinResolution: current.memberCapJoinResolution,
+        housePulse: current.housePulse,
       );
     }
 
@@ -778,6 +819,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       shouldPromptPreferences: current.shouldPromptPreferences,
       memberCapJoinRequests: null,
       memberCapJoinResolution: current.memberCapJoinResolution,
+      housePulse: current.housePulse,
     );
   }
 
@@ -861,10 +903,133 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     emit(_stateWithoutMemberCapPrompt(state));
   }
 
+  Future<void> _onHousePulseViewed(
+    TodayHousePulseViewed event,
+    Emitter<TodayState> emit,
+  ) async {
+    final currentPulse = state.housePulse;
+    if (currentPulse == null) return;
+    try {
+      final seen = await _housePulseRepository.markSeen(homeId: _homeId);
+      final nextPulse = currentPulse.copyWith(seen: seen ?? currentPulse.seen);
+      emit(_stateWithHousePulse(state, nextPulse));
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to mark house pulse seen',
+        tag: 'TodayHousePulse',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<void> _onHousePulseShareLogged(
+    TodayHousePulseShareLogged event,
+    Emitter<TodayState> emit,
+  ) async {
+    try {
+      await _homeRepository.logShareEvent(
+        feature: 'house_pulse',
+        channel: event.channel,
+        homeId: _homeId,
+      );
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to log house pulse share',
+        tag: 'TodayHousePulse',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
   @override
   Future<void> close() {
     _profileUpdateSub.cancel();
     return super.close();
+  }
+
+  TodayState _stateWithHousePulse(
+    TodayState current,
+    HousePulsePayload? housePulse,
+  ) {
+    if (current.isLoading) {
+      return TodayState.loading(
+        profile: current.profile,
+        shareOwed: current.shareOwed,
+        sharePaidToMe: current.sharePaidToMe,
+        shareDrafts: current.shareDrafts,
+        gratitudeStatus: current.gratitudeStatus,
+        personalGratitudeStatus: current.personalGratitudeStatus,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+        activeChoreCount: current.activeChoreCount,
+        shouldPromptFlatmateInviteShare:
+            current.shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: current.shouldPromptInviteShare,
+        shouldPromptPreferences: current.shouldPromptPreferences,
+        memberCapJoinRequests: current.memberCapJoinRequests,
+        memberCapJoinResolution: current.memberCapJoinResolution,
+        housePulse: housePulse,
+      );
+    }
+
+    if (current.message != null || current.error != null) {
+      return TodayState.failure(
+        profile: current.profile,
+        message: current.message,
+        error: current.error,
+        shareOwed: current.shareOwed,
+        sharePaidToMe: current.sharePaidToMe,
+        shareDrafts: current.shareDrafts,
+        shareErrorMessage: current.shareErrorMessage,
+        gratitudeStatus: current.gratitudeStatus,
+        personalGratitudeStatus: current.personalGratitudeStatus,
+        harmonyPromptTick: current.harmonyPromptTick,
+        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+        npsPromptTick: current.npsPromptTick,
+        hasShownNpsPrompt: current.hasShownNpsPrompt,
+        notificationPromptTick: current.notificationPromptTick,
+        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+        activeChoreCount: current.activeChoreCount,
+        shouldPromptFlatmateInviteShare:
+            current.shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: current.shouldPromptInviteShare,
+        shouldPromptPreferences: current.shouldPromptPreferences,
+        memberCapJoinRequests: current.memberCapJoinRequests,
+        memberCapJoinResolution: current.memberCapJoinResolution,
+        housePulse: housePulse,
+      );
+    }
+
+    return TodayState.loaded(
+      activeTasks: current.activeTasks,
+      draftTasks: current.draftTasks,
+      shareOwed: current.shareOwed,
+      sharePaidToMe: current.sharePaidToMe,
+      shareDrafts: current.shareDrafts,
+      profile: current.profile,
+      shareErrorMessage: current.shareErrorMessage,
+      gratitudeStatus: current.gratitudeStatus,
+      personalGratitudeStatus: current.personalGratitudeStatus,
+      harmonyPromptTick: current.harmonyPromptTick,
+      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
+      npsPromptTick: current.npsPromptTick,
+      hasShownNpsPrompt: current.hasShownNpsPrompt,
+      notificationPromptTick: current.notificationPromptTick,
+      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
+      activeChoreCount: current.activeChoreCount,
+      shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
+      shouldPromptInviteShare: current.shouldPromptInviteShare,
+      shouldPromptPreferences: current.shouldPromptPreferences,
+      memberCapJoinRequests: current.memberCapJoinRequests,
+      memberCapJoinResolution: current.memberCapJoinResolution,
+      housePulse: housePulse,
+    );
   }
 }
 

@@ -1305,5 +1305,55 @@
   "gratitudeWallStatsMentions": "شكر",
   "gratitudeWallStatsPeople": "People",
   "gratitudeWallStatsHomes": "Homes",
-  "mentionFieldHint": "اكتب @ لذكر شخص"
+  "mentionFieldHint": "اكتب @ لذكر شخص",
+  "housePulseCardHeader": "Weekly house pulse",
+  "housePulseShareCta": "Share pulse",
+  "housePulseShareTitle": "Sharing our Kinly house pulse",
+  "housePulseShareMessage": "Sharing our Kinly house pulse. Download the app: {link}",
+  "@housePulseShareMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://kinly.app/download"
+      }
+    }
+  },
+  "housePulseShareError": "Couldn't share the pulse right now. Please try again.",
+  "housePulseNewBadge": "New this week",
+  "housePulseUpdatedOn": "Updated {date}",
+  "@housePulseUpdatedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Jan 5, 2026"
+      }
+    }
+  },
+  "housePulseReflections": "{count, plural, one {{count} reflection} other {{count} reflections}}",
+  "@housePulseReflections": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "pulseFormingTitle": "Still forming",
+  "pulseFormingSummary": "A few more check-ins help.",
+  "pulseSunnyCalmTitle": "Warm and easy",
+  "pulseSunnyCalmSummary": "Your home felt warm and easy this week.",
+  "pulseSunnyBumpyTitle": "Mostly good",
+  "pulseSunnyBumpySummary": "This week felt mostly good, with a few bumps.",
+  "pulsePartlySupportedTitle": "Okay with care",
+  "pulsePartlySupportedSummary": "Your home felt okay, with care showing through.",
+  "pulseCloudySteadyTitle": "Mixed and steady",
+  "pulseCloudySteadySummary": "This week felt mixed and steady.",
+  "pulseCloudyTenseTitle": "Mixed with tension",
+  "pulseCloudyTenseSummary": "This week felt mixed, with some tension.",
+  "pulseRainySupportedTitle": "Heavy but supported",
+  "pulseRainySupportedSummary": "This week felt heavier, but care was present.",
+  "pulseRainyUnsupportedTitle": "Heavy, support needed",
+  "pulseRainyUnsupportedSummary": "This week felt heavy. Support may help.",
+  "pulseThunderstormTitle": "Tense right now",
+  "pulseThunderstormSummary": "This week felt tense. Kindness matters right now."
 }

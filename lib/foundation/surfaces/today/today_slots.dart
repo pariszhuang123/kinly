@@ -50,6 +50,7 @@ class TodaySurfaceActions {
     required this.onShareSeeAllDraftsTap,
     required this.onGratitudeTap,
     required this.onPersonalGratitudeTap,
+    required this.onHousePulseTap,
   });
 
   final Future<void> Function() onMemberCapPrimary;
@@ -65,6 +66,7 @@ class TodaySurfaceActions {
   final void Function() onShareSeeAllDraftsTap;
   final void Function() onGratitudeTap;
   final void Function() onPersonalGratitudeTap;
+  final Future<void> Function() onHousePulseTap;
 }
 
 class TodaySurfaceScope {

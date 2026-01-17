@@ -8,6 +8,7 @@ class AppRoutePaths {
   static const joinWithCode = '/join/:code';
   static const infoHub = '/settings/profile/info-hub';
   static const today = '/today';
+  static const todayHousePulse = '/today/house-pulse';
   static const hub = '/hub';
   static const hubPreferencesList = '/hub/preferences';
   static const hubHouseVibeShare = '/hub/house-vibe/share';

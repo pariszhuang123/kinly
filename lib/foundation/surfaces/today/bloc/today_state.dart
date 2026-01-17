@@ -25,6 +25,7 @@ class TodayState extends Equatable {
   final bool shouldPromptPreferences;
   final MemberCapJoinRequests? memberCapJoinRequests;
   final MemberCapJoinResolution? memberCapJoinResolution;
+  final HousePulsePayload? housePulse;
 
   const TodayState._({
     required this.isLoading,
@@ -51,6 +52,7 @@ class TodayState extends Equatable {
     this.shouldPromptPreferences = false,
     this.memberCapJoinRequests,
     this.memberCapJoinResolution,
+    this.housePulse,
   });
 
   const TodayState.loading({
@@ -72,6 +74,7 @@ class TodayState extends Equatable {
     bool shouldPromptPreferences = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
+    HousePulsePayload? housePulse,
   }) : this._(
          isLoading: true,
          activeTasks: const [],
@@ -94,6 +97,7 @@ class TodayState extends Equatable {
          shouldPromptPreferences: shouldPromptPreferences,
          memberCapJoinRequests: memberCapJoinRequests,
          memberCapJoinResolution: memberCapJoinResolution,
+         housePulse: housePulse,
        );
 
   const TodayState.loaded({
@@ -118,6 +122,7 @@ class TodayState extends Equatable {
     bool shouldPromptPreferences = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
+    HousePulsePayload? housePulse,
   }) : this._(
          isLoading: false,
          activeTasks: activeTasks,
@@ -141,6 +146,7 @@ class TodayState extends Equatable {
          shouldPromptPreferences: shouldPromptPreferences,
          memberCapJoinRequests: memberCapJoinRequests,
          memberCapJoinResolution: memberCapJoinResolution,
+         housePulse: housePulse,
        );
 
   const TodayState.failure({
@@ -165,6 +171,7 @@ class TodayState extends Equatable {
     bool shouldPromptPreferences = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
+    HousePulsePayload? housePulse,
   }) : this._(
          isLoading: false,
          activeTasks: const [],
@@ -190,6 +197,7 @@ class TodayState extends Equatable {
          shouldPromptPreferences: shouldPromptPreferences,
          memberCapJoinRequests: memberCapJoinRequests,
          memberCapJoinResolution: memberCapJoinResolution,
+         housePulse: housePulse,
        );
 
   bool get hasFlowContent => activeTasks.isNotEmpty || draftTasks.isNotEmpty;
@@ -200,11 +208,13 @@ class TodayState extends Equatable {
   bool get hasGratitudeUnread => gratitudeStatus?.hasUnread ?? false;
   bool get hasPersonalGratitudeUnread =>
       personalGratitudeStatus?.hasUnread ?? false;
+  bool get hasHousePulseCard => hasUnseenHousePulse(housePulse);
   bool get hasAnyTodayContent =>
       hasFlowContent ||
       hasShareContent ||
       hasGratitudeUnread ||
-      hasPersonalGratitudeUnread;
+      hasPersonalGratitudeUnread ||
+      hasHousePulseCard;
   bool get isCaughtUp => !hasAnyTodayContent;
 
   @override
@@ -233,5 +243,6 @@ class TodayState extends Equatable {
     shouldPromptPreferences,
     memberCapJoinRequests,
     memberCapJoinResolution,
+    housePulse,
   ];
 }

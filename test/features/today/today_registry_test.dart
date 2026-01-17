@@ -13,6 +13,7 @@ void main() {
         'member_cap',
         'preferences',
         'invite',
+        'house_pulse',
         'flow',
         'share',
         'gratitude',

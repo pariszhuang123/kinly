@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'today_slots.dart';
 import 'widgets/today_flow_section/today_flow_section_container.dart';
+import 'widgets/today_house_pulse_card.dart';
 import 'widgets/today_gratitude_section.dart';
 import 'widgets/today_invite_prompt.dart';
 import 'widgets/today_share_section/today_share_section_container.dart';
@@ -75,6 +76,16 @@ class TodayRegistry {
         order: 20,
         builder: _buildInvitePrompt,
         isVisible: (scope) => scope.inviteConfig.showPrompt,
+      ),
+    );
+
+    register(
+      TodaySectionEntry(
+        id: 'house_pulse',
+        order: 25,
+        spacingAfter: TodaySectionSpacing.lg,
+        builder: _buildHousePulseCard,
+        isVisible: (scope) => scope.state.hasHousePulseCard,
       ),
     );
 
@@ -182,5 +193,16 @@ Widget _buildPreferencesPrompt(TodaySurfaceScope scope) {
     primaryLabel: scope.strings.preferencePromptCta,
     onPrimary: scope.actions.onPreferencePrompt,
     palette: palette,
+  );
+}
+
+Widget _buildHousePulseCard(TodaySurfaceScope scope) {
+  final colors = scope.sections.pulse;
+  final pulse = scope.state.housePulse;
+  if (pulse == null) return const SizedBox.shrink();
+  return TodayHousePulseCard(
+    pulse: pulse,
+    palette: colors,
+    onTap: scope.actions.onHousePulseTap,
   );
 }

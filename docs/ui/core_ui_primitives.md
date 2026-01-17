@@ -30,6 +30,7 @@ Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors, directio
 ## Feedback / Loading
 - `KinlyLoader` (sizes/patterns).
 - `KinlySnackBar` (standard success/error/info/warning snackbars; use instead of raw `SnackBar`; supports optional `accentColor` for section flavor while keeping semantic backgrounds).
+- `house_pulse_strings.dart` (resolves pulse label keys to localized title/summary via Kinly l10n).
 
 ## Avatars & Media
 - `KinlyCircleAvatar` (owner badge, fallback handling).

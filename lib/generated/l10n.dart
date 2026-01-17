@@ -4931,6 +4931,268 @@ class S {
       args: [],
     );
   }
+
+  /// `Weekly house pulse`
+  String get housePulseCardHeader {
+    return Intl.message(
+      'Weekly house pulse',
+      name: 'housePulseCardHeader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share pulse`
+  String get housePulseShareCta {
+    return Intl.message(
+      'Share pulse',
+      name: 'housePulseShareCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sharing our Kinly house pulse`
+  String get housePulseShareTitle {
+    return Intl.message(
+      'Sharing our Kinly house pulse',
+      name: 'housePulseShareTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sharing our Kinly house pulse. Download the app: {link}`
+  String housePulseShareMessage(Object link) {
+    return Intl.message(
+      'Sharing our Kinly house pulse. Download the app: $link',
+      name: 'housePulseShareMessage',
+      desc: '',
+      args: [link],
+    );
+  }
+
+  /// `Couldn't share the pulse right now. Please try again.`
+  String get housePulseShareError {
+    return Intl.message(
+      'Couldn\'t share the pulse right now. Please try again.',
+      name: 'housePulseShareError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New this week`
+  String get housePulseNewBadge {
+    return Intl.message(
+      'New this week',
+      name: 'housePulseNewBadge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Updated {date}`
+  String housePulseUpdatedOn(String date) {
+    return Intl.message(
+      'Updated $date',
+      name: 'housePulseUpdatedOn',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `{count, plural, one {{count} reflection} other {{count} reflections}}`
+  String housePulseReflections(int count) {
+    return Intl.plural(
+      count,
+      one: '$count reflection',
+      other: '$count reflections',
+      name: 'housePulseReflections',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Still forming`
+  String get pulseFormingTitle {
+    return Intl.message(
+      'Still forming',
+      name: 'pulseFormingTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A few more check-ins help.`
+  String get pulseFormingSummary {
+    return Intl.message(
+      'A few more check-ins help.',
+      name: 'pulseFormingSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Warm and easy`
+  String get pulseSunnyCalmTitle {
+    return Intl.message(
+      'Warm and easy',
+      name: 'pulseSunnyCalmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your home felt warm and easy this week.`
+  String get pulseSunnyCalmSummary {
+    return Intl.message(
+      'Your home felt warm and easy this week.',
+      name: 'pulseSunnyCalmSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mostly good`
+  String get pulseSunnyBumpyTitle {
+    return Intl.message(
+      'Mostly good',
+      name: 'pulseSunnyBumpyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This week felt mostly good, with a few bumps.`
+  String get pulseSunnyBumpySummary {
+    return Intl.message(
+      'This week felt mostly good, with a few bumps.',
+      name: 'pulseSunnyBumpySummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Okay with care`
+  String get pulsePartlySupportedTitle {
+    return Intl.message(
+      'Okay with care',
+      name: 'pulsePartlySupportedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your home felt okay, with care showing through.`
+  String get pulsePartlySupportedSummary {
+    return Intl.message(
+      'Your home felt okay, with care showing through.',
+      name: 'pulsePartlySupportedSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mixed and steady`
+  String get pulseCloudySteadyTitle {
+    return Intl.message(
+      'Mixed and steady',
+      name: 'pulseCloudySteadyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This week felt mixed and steady.`
+  String get pulseCloudySteadySummary {
+    return Intl.message(
+      'This week felt mixed and steady.',
+      name: 'pulseCloudySteadySummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mixed with tension`
+  String get pulseCloudyTenseTitle {
+    return Intl.message(
+      'Mixed with tension',
+      name: 'pulseCloudyTenseTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This week felt mixed, with some tension.`
+  String get pulseCloudyTenseSummary {
+    return Intl.message(
+      'This week felt mixed, with some tension.',
+      name: 'pulseCloudyTenseSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Heavy but supported`
+  String get pulseRainySupportedTitle {
+    return Intl.message(
+      'Heavy but supported',
+      name: 'pulseRainySupportedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This week felt heavier, but care was present.`
+  String get pulseRainySupportedSummary {
+    return Intl.message(
+      'This week felt heavier, but care was present.',
+      name: 'pulseRainySupportedSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Heavy, support needed`
+  String get pulseRainyUnsupportedTitle {
+    return Intl.message(
+      'Heavy, support needed',
+      name: 'pulseRainyUnsupportedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This week felt heavy. Support may help.`
+  String get pulseRainyUnsupportedSummary {
+    return Intl.message(
+      'This week felt heavy. Support may help.',
+      name: 'pulseRainyUnsupportedSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tense right now`
+  String get pulseThunderstormTitle {
+    return Intl.message(
+      'Tense right now',
+      name: 'pulseThunderstormTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This week felt tense. Kindness matters right now.`
+  String get pulseThunderstormSummary {
+    return Intl.message(
+      'This week felt tense. Kindness matters right now.',
+      name: 'pulseThunderstormSummary',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

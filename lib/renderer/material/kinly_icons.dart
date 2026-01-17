@@ -29,4 +29,10 @@ class KinlyIcons {
   static const checkRounded = Icons.check_rounded;
   static const tuneRounded = Icons.tune_rounded;
   static const personOutlineRounded = Icons.person_outline_rounded;
+  static const flashOnRounded = Icons.flash_on_rounded;
+  static const umbrella = Icons.umbrella;
+  static const wbSunnyRounded = Icons.wb_sunny_rounded;
+  static const wbCloudyRounded = Icons.wb_cloudy_rounded;
+  static const cloudQueueRounded = Icons.cloud_queue_rounded;
+  static const autoAwesomeRounded = Icons.auto_awesome_rounded;
 }

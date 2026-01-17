@@ -1300,5 +1300,55 @@
   "personalProfilePreferences": "Preferencias personales",
   "personalProfileMentions": "Menciones personales",
   "personalProfileLoadError": "No pudimos cargar tu perfil personal ahora. Inténtalo de nuevo.",
-  "personalMentionsTitle": "Menciones personales"
+  "personalMentionsTitle": "Menciones personales",
+  "housePulseCardHeader": "Pulso semanal del hogar",
+  "housePulseShareCta": "Compartir pulso",
+  "housePulseShareTitle": "Compartiendo el pulso de mi hogar en Kinly",
+  "housePulseShareMessage": "Compartiendo el pulso de mi hogar en Kinly. Descarga la app: {link}",
+  "@housePulseShareMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://kinly.app/descarga"
+      }
+    }
+  },
+  "housePulseShareError": "No se pudo compartir el pulso ahora. Intenta nuevamente.",
+  "housePulseNewBadge": "Nuevo esta semana",
+  "housePulseUpdatedOn": "Actualizado {date}",
+  "@housePulseUpdatedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "5 ene 2026"
+      }
+    }
+  },
+  "housePulseReflections": "{count, plural, one {{count} reflexión} other {{count} reflexiones}}",
+  "@housePulseReflections": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "pulseFormingTitle": "Aún formándose",
+  "pulseFormingSummary": "Unas cuantas respuestas más ayudan.",
+  "pulseSunnyCalmTitle": "Cálido y tranquilo",
+  "pulseSunnyCalmSummary": "Tu hogar se sintió cálido y fácil esta semana.",
+  "pulseSunnyBumpyTitle": "Mayormente bien",
+  "pulseSunnyBumpySummary": "Esta semana se sintió mayormente bien, con algunos baches.",
+  "pulsePartlySupportedTitle": "Bien con apoyo",
+  "pulsePartlySupportedSummary": "Tu hogar se sintió bien, con cuidado presente.",
+  "pulseCloudySteadyTitle": "Mezclado y estable",
+  "pulseCloudySteadySummary": "Esta semana se sintió mixta y estable.",
+  "pulseCloudyTenseTitle": "Mezclado con tensión",
+  "pulseCloudyTenseSummary": "Esta semana se sintió mixta, con algo de tensión.",
+  "pulseRainySupportedTitle": "Pesado pero apoyado",
+  "pulseRainySupportedSummary": "Esta semana se sintió más pesada, pero hubo cuidado.",
+  "pulseRainyUnsupportedTitle": "Pesado, se necesita apoyo",
+  "pulseRainyUnsupportedSummary": "Esta semana se sintió pesada. El apoyo puede ayudar.",
+  "pulseThunderstormTitle": "Tenso ahora",
+  "pulseThunderstormSummary": "Esta semana se sintió tensa. La amabilidad importa ahora."
 }

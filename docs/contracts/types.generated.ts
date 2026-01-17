@@ -1046,6 +1046,140 @@ export type Database = {
           },
         ]
       }
+      house_pulse_labels: {
+        Row: {
+          contract_version: string
+          image_key: string
+          is_active: boolean
+          pulse_state: Database["public"]["Enums"]["house_pulse_state"]
+          summary_key: string
+          title_key: string
+          ui: Json
+          updated_at: string
+        }
+        Insert: {
+          contract_version: string
+          image_key: string
+          is_active?: boolean
+          pulse_state: Database["public"]["Enums"]["house_pulse_state"]
+          summary_key: string
+          title_key: string
+          ui?: Json
+          updated_at?: string
+        }
+        Update: {
+          contract_version?: string
+          image_key?: string
+          is_active?: boolean
+          pulse_state?: Database["public"]["Enums"]["house_pulse_state"]
+          summary_key?: string
+          title_key?: string
+          ui?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      house_pulse_reads: {
+        Row: {
+          contract_version: string
+          home_id: string
+          iso_week: number
+          iso_week_year: number
+          last_seen_computed_at: string
+          last_seen_pulse_state: Database["public"]["Enums"]["house_pulse_state"]
+          seen_at: string
+          user_id: string
+        }
+        Insert: {
+          contract_version?: string
+          home_id: string
+          iso_week: number
+          iso_week_year: number
+          last_seen_computed_at: string
+          last_seen_pulse_state: Database["public"]["Enums"]["house_pulse_state"]
+          seen_at?: string
+          user_id: string
+        }
+        Update: {
+          contract_version?: string
+          home_id?: string
+          iso_week?: number
+          iso_week_year?: number
+          last_seen_computed_at?: string
+          last_seen_pulse_state?: Database["public"]["Enums"]["house_pulse_state"]
+          seen_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "house_pulse_reads_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "house_pulse_reads_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      house_pulse_weekly: {
+        Row: {
+          care_present: boolean
+          complexity_present: boolean
+          computed_at: string
+          contract_version: string
+          friction_present: boolean
+          home_id: string
+          iso_week: number
+          iso_week_year: number
+          member_count: number
+          pulse_state: Database["public"]["Enums"]["house_pulse_state"]
+          reflection_count: number
+          weather_display: Database["public"]["Enums"]["mood_scale"] | null
+        }
+        Insert: {
+          care_present: boolean
+          complexity_present?: boolean
+          computed_at?: string
+          contract_version?: string
+          friction_present: boolean
+          home_id: string
+          iso_week: number
+          iso_week_year: number
+          member_count: number
+          pulse_state: Database["public"]["Enums"]["house_pulse_state"]
+          reflection_count: number
+          weather_display?: Database["public"]["Enums"]["mood_scale"] | null
+        }
+        Update: {
+          care_present?: boolean
+          complexity_present?: boolean
+          computed_at?: string
+          contract_version?: string
+          friction_present?: boolean
+          home_id?: string
+          iso_week?: number
+          iso_week_year?: number
+          member_count?: number
+          pulse_state?: Database["public"]["Enums"]["house_pulse_state"]
+          reflection_count?: number
+          weather_display?: Database["public"]["Enums"]["mood_scale"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "house_pulse_weekly_home_id_fkey"
+            columns: ["home_id"]
+            isOneToOne: false
+            referencedRelation: "homes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       house_vibe_labels: {
         Row: {
           image_key: string
@@ -2890,6 +3024,81 @@ export type Database = {
         Args: { p_home_id: string; p_new_owner_id: string }
         Returns: Json
       }
+      house_pulse_compute_week: {
+        Args: {
+          p_contract_version?: string
+          p_home_id: string
+          p_iso_week?: number
+          p_iso_week_year?: number
+        }
+        Returns: {
+          care_present: boolean
+          complexity_present: boolean
+          computed_at: string
+          contract_version: string
+          friction_present: boolean
+          home_id: string
+          iso_week: number
+          iso_week_year: number
+          member_count: number
+          pulse_state: Database["public"]["Enums"]["house_pulse_state"]
+          reflection_count: number
+          weather_display: Database["public"]["Enums"]["mood_scale"] | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "house_pulse_weekly"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      house_pulse_label_get_v1: {
+        Args: {
+          p_contract_version?: string
+          p_pulse_state: Database["public"]["Enums"]["house_pulse_state"]
+        }
+        Returns: {
+          contract_version: string
+          image_key: string
+          pulse_state: Database["public"]["Enums"]["house_pulse_state"]
+          summary_key: string
+          title_key: string
+          ui: Json
+        }[]
+      }
+      house_pulse_mark_seen: {
+        Args: {
+          p_contract_version?: string
+          p_home_id: string
+          p_iso_week?: number
+          p_iso_week_year?: number
+        }
+        Returns: {
+          contract_version: string
+          home_id: string
+          iso_week: number
+          iso_week_year: number
+          last_seen_computed_at: string
+          last_seen_pulse_state: Database["public"]["Enums"]["house_pulse_state"]
+          seen_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "house_pulse_reads"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      house_pulse_weekly_get: {
+        Args: {
+          p_contract_version?: string
+          p_home_id: string
+          p_iso_week?: number
+          p_iso_week_year?: number
+        }
+        Returns: Json
+      }
       house_vibe_compute: {
         Args: { p_force?: boolean; p_home_id: string; p_include_axes?: boolean }
         Returns: Json
@@ -3196,6 +3405,7 @@ export type Database = {
         Args: never
         Returns: {
           avatar_storage_path: string
+          display_name: string
           has_personal_mentions: boolean
           has_preference_report: boolean
           show_avatar: boolean
@@ -3215,6 +3425,16 @@ export type Database = {
         | "chore_photos"
         | "active_members"
         | "active_expenses"
+      house_pulse_state:
+        | "forming"
+        | "sunny_calm"
+        | "sunny_bumpy"
+        | "partly_supported"
+        | "cloudy_steady"
+        | "cloudy_tense"
+        | "rainy_supported"
+        | "rainy_unsupported"
+        | "thunderstorm"
       mood_scale:
         | "sunny"
         | "partially_sunny"
@@ -3373,6 +3593,17 @@ export const Constants = {
         "chore_photos",
         "active_members",
         "active_expenses",
+      ],
+      house_pulse_state: [
+        "forming",
+        "sunny_calm",
+        "sunny_bumpy",
+        "partly_supported",
+        "cloudy_steady",
+        "cloudy_tense",
+        "rainy_supported",
+        "rainy_unsupported",
+        "thunderstorm",
       ],
       mood_scale: [
         "sunny",

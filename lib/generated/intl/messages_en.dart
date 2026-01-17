@@ -37,45 +37,53 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m6(answered, total) =>
       "Based on ${answered} of ${total} members";
 
-  static String m7(link) =>
+  static String m7(count) =>
+      "${Intl.plural(count, one: '${count} reflection', other: '${count} reflections')}";
+
+  static String m8(link) =>
+      "Sharing our Kinly house pulse. Download the app: ${link}";
+
+  static String m9(date) => "Updated ${date}";
+
+  static String m10(link) =>
       "Sharing our Kinly house vibe. Download the app: ${link}";
 
-  static String m8(link) => "Share Kinly so together feels lighter: ${link}";
+  static String m11(link) => "Share Kinly so together feels lighter: ${link}";
 
-  static String m9(code, link) =>
+  static String m12(code, link) =>
       "Welcome to our Kinly home! Enter this invite code: ${code}\n\nDownload the Kinly app: ${link}";
 
-  static String m10(code) => "You\'re in. Welcome home.";
+  static String m13(code) => "You\'re in. Welcome home.";
 
-  static String m11(price) => "${price} per month.";
+  static String m14(price) => "${price} per month.";
 
-  static String m12(current, total) => "Question ${current} of ${total}";
+  static String m15(current, total) => "Question ${current} of ${total}";
 
-  static String m23(period) => "Applies to ${period}";
+  static String m26(period) => "Applies to ${period}";
 
-  static String m13(paidAmount, totalAmount) =>
+  static String m16(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
 
-  static String m14(paid, total) => "${paid} of ${total} paid";
+  static String m17(paid, total) => "${paid} of ${total} paid";
 
-  static String m15(name) => "Hi ${name}";
+  static String m18(name) => "Hi ${name}";
 
-  static String m16(count) =>
+  static String m19(count) =>
       "See all ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m17(name) => "We could not complete ${name}\'s request.";
+  static String m20(name) => "We could not complete ${name}\'s request.";
 
-  static String m18(name) => "${name} joined your home.";
+  static String m21(name) => "${name} joined your home.";
 
-  static String m19(name) => "${name} joined another home.";
+  static String m22(name) => "${name} joined another home.";
 
-  static String m20(names) =>
+  static String m23(names) =>
       "${names} wants to join your home. Upgrade to support unlimited members.";
 
-  static String m21(count) =>
+  static String m24(count) =>
       "${Intl.plural(count, one: '${count} payment pending', other: '${count} to settle')}";
 
-  static String m22(count) =>
+  static String m25(count) =>
       "${Intl.plural(count, one: '${count} new payment to you', other: '${count} new payments to you')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -358,11 +366,25 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "homeVibeCoverage": m6,
     "homeVibeTitle": MessageLookupByLibrary.simpleMessage("Home Vibe"),
+    "housePulseCardHeader": MessageLookupByLibrary.simpleMessage(
+      "Weekly house pulse",
+    ),
+    "housePulseNewBadge": MessageLookupByLibrary.simpleMessage("New this week"),
+    "housePulseReflections": m7,
+    "housePulseShareCta": MessageLookupByLibrary.simpleMessage("Share pulse"),
+    "housePulseShareError": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t share the pulse right now. Please try again.",
+    ),
+    "housePulseShareMessage": m8,
+    "housePulseShareTitle": MessageLookupByLibrary.simpleMessage(
+      "Sharing our Kinly house pulse",
+    ),
+    "housePulseUpdatedOn": m9,
     "houseVibeShareCta": MessageLookupByLibrary.simpleMessage("Share vibe"),
     "houseVibeShareError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t share right now. Please try again.",
     ),
-    "houseVibeShareMessage": m7,
+    "houseVibeShareMessage": m10,
     "houseVibeShareTitle": MessageLookupByLibrary.simpleMessage("House vibe"),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "Read quick thank-yous and small moments of appreciation.",
@@ -397,12 +419,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "hubRotateInvite": MessageLookupByLibrary.simpleMessage("Rotate invite"),
     "hubRotateSuccess": MessageLookupByLibrary.simpleMessage("Invite rotated"),
-    "hubShareAppBody": m8,
+    "hubShareAppBody": m11,
     "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Share Kinly"),
     "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
       "Get the Kinly app",
     ),
-    "hubShareInviteBody": m9,
+    "hubShareInviteBody": m12,
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "Invite to my Kinly home",
     ),
@@ -436,7 +458,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage("Enter invite code"),
     "join_submit": MessageLookupByLibrary.simpleMessage("Join"),
-    "join_success": m10,
+    "join_success": m13,
     "join_title": MessageLookupByLibrary.simpleMessage("Join Home"),
     "login_consent_connector": MessageLookupByLibrary.simpleMessage(" & "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
@@ -523,7 +545,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
       "One home plan, no hidden tiers.",
     ),
-    "paywallPricePerMonth": m11,
+    "paywallPricePerMonth": m14,
     "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
       "Pricing not available right now.",
     ),
@@ -565,7 +587,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Your profile",
     ),
     "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
-    "preferenceOnboardingProgress": m12,
+    "preferenceOnboardingProgress": m15,
     "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
       "Save preferences",
     ),
@@ -979,6 +1001,56 @@ class MessageLookup extends MessageLookupByLibrary {
     "profile_deactivated_message": MessageLookupByLibrary.simpleMessage(
       "Your profile is deactivated. Please sign in with another email address.",
     ),
+    "pulseCloudySteadySummary": MessageLookupByLibrary.simpleMessage(
+      "This week felt mixed and steady.",
+    ),
+    "pulseCloudySteadyTitle": MessageLookupByLibrary.simpleMessage(
+      "Mixed and steady",
+    ),
+    "pulseCloudyTenseSummary": MessageLookupByLibrary.simpleMessage(
+      "This week felt mixed, with some tension.",
+    ),
+    "pulseCloudyTenseTitle": MessageLookupByLibrary.simpleMessage(
+      "Mixed with tension",
+    ),
+    "pulseFormingSummary": MessageLookupByLibrary.simpleMessage(
+      "A few more check-ins help.",
+    ),
+    "pulseFormingTitle": MessageLookupByLibrary.simpleMessage("Still forming"),
+    "pulsePartlySupportedSummary": MessageLookupByLibrary.simpleMessage(
+      "Your home felt okay, with care showing through.",
+    ),
+    "pulsePartlySupportedTitle": MessageLookupByLibrary.simpleMessage(
+      "Okay with care",
+    ),
+    "pulseRainySupportedSummary": MessageLookupByLibrary.simpleMessage(
+      "This week felt heavier, but care was present.",
+    ),
+    "pulseRainySupportedTitle": MessageLookupByLibrary.simpleMessage(
+      "Heavy but supported",
+    ),
+    "pulseRainyUnsupportedSummary": MessageLookupByLibrary.simpleMessage(
+      "This week felt heavy. Support may help.",
+    ),
+    "pulseRainyUnsupportedTitle": MessageLookupByLibrary.simpleMessage(
+      "Heavy, support needed",
+    ),
+    "pulseSunnyBumpySummary": MessageLookupByLibrary.simpleMessage(
+      "This week felt mostly good, with a few bumps.",
+    ),
+    "pulseSunnyBumpyTitle": MessageLookupByLibrary.simpleMessage("Mostly good"),
+    "pulseSunnyCalmSummary": MessageLookupByLibrary.simpleMessage(
+      "Your home felt warm and easy this week.",
+    ),
+    "pulseSunnyCalmTitle": MessageLookupByLibrary.simpleMessage(
+      "Warm and easy",
+    ),
+    "pulseThunderstormSummary": MessageLookupByLibrary.simpleMessage(
+      "This week felt tense. Kindness matters right now.",
+    ),
+    "pulseThunderstormTitle": MessageLookupByLibrary.simpleMessage(
+      "Tense right now",
+    ),
     "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
       "Create a flow",
     ),
@@ -1017,7 +1089,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
       "Enter each person\'s part. Make sure the total matches the amount above.",
     ),
-    "shareCreateCyclePeriod": m23,
+    "shareCreateCyclePeriod": m26,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
       "e.g. Grocery run",
     ),
@@ -1117,8 +1189,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
       "Choose a date within the allowed range.",
     ),
-    "shareCreatedListActiveAmount": m13,
-    "shareCreatedListActiveSubtitle": m14,
+    "shareCreatedListActiveAmount": m16,
+    "shareCreatedListActiveSubtitle": m17,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "Unassigned",
     ),
@@ -1222,7 +1294,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
       "What do you want to do next?",
     ),
-    "startReturningTitle": m15,
+    "startReturningTitle": m18,
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Flow"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Bill"),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
@@ -1245,7 +1317,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m16,
+    "todayFlowSeeAll": m19,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Here\'s what\'s flowing in your home today.",
     ),
@@ -1274,30 +1346,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "Upgrade home",
     ),
-    "todayMemberCapResolutionFailed": m17,
-    "todayMemberCapResolutionJoined": m18,
-    "todayMemberCapResolutionSuperseded": m19,
+    "todayMemberCapResolutionFailed": m20,
+    "todayMemberCapResolutionJoined": m21,
+    "todayMemberCapResolutionSuperseded": m22,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
       "Someone",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage(
       "Ignore",
     ),
-    "todayMemberCapSubtitle": m20,
+    "todayMemberCapSubtitle": m23,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
       "Your home is growing. Upgrade to welcome more people.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
       "Someone wants to join your home",
     ),
-    "todayShareActiveSubtitle": m21,
+    "todayShareActiveSubtitle": m24,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t refresh Share right now.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "Settled Amount",
     ),
-    "todaySharePaidUnseen": m22,
+    "todaySharePaidUnseen": m25,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Bill"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To settle"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),

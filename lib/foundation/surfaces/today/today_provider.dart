@@ -6,6 +6,7 @@ import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'package:kinly/contracts/mood/ports/mood_repository.dart';
+import 'package:kinly/contracts/mood/ports/house_pulse_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import '../../../contracts/onboarding/ports/onboarding_repository.dart';
 import '../../../core/notifications/profile_update_notifier.dart';
@@ -19,6 +20,7 @@ class TodayProvider extends StatelessWidget {
   final ExpensesRepository expensesRepository;
   final HomeRepository homeRepository;
   final MoodRepository moodRepository;
+  final HousePulseRepository housePulseRepository;
   final OnboardingRepository onboardingRepository;
   final PreferenceReportsRepository preferenceReportsRepository;
   final ProfileUpdateNotifier profileUpdateNotifier;
@@ -31,6 +33,7 @@ class TodayProvider extends StatelessWidget {
     required this.expensesRepository,
     required this.homeRepository,
     required this.moodRepository,
+    required this.housePulseRepository,
     required this.onboardingRepository,
     required this.preferenceReportsRepository,
     required this.profileUpdateNotifier,
@@ -46,6 +49,7 @@ class TodayProvider extends StatelessWidget {
             expensesRepository: expensesRepository,
             homeRepository: homeRepository,
             moodRepository: moodRepository,
+            housePulseRepository: housePulseRepository,
             onboardingRepository: onboardingRepository,
             preferenceReportsRepository: preferenceReportsRepository,
             homeId: homeId,
