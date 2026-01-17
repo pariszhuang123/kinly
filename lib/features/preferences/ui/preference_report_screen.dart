@@ -27,6 +27,7 @@ class PreferenceReportScreen extends StatefulWidget {
     this.showConfetti = false,
     this.canEdit = true,
     this.popOnDone = false,
+    this.showDoneCta = true,
     this.subjectDisplayName,
     this.subjectAvatarUrl,
   });
@@ -34,6 +35,7 @@ class PreferenceReportScreen extends StatefulWidget {
   final bool showConfetti;
   final bool canEdit;
   final bool popOnDone;
+  final bool showDoneCta;
   final String? subjectDisplayName;
   final String? subjectAvatarUrl;
 
@@ -246,19 +248,20 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
                               ),
                               SizedBox(height: spacing?.m ?? 12),
                             ],
-                            KinlyOutlinedButton.text(
-                              fullWidth: true,
-                              label: s.preferenceReportDoneCta,
-                              foregroundColor: preferenceColors.accent,
-                              borderColor: preferenceColors.accent,
-                              onPressed: () {
-                                if (widget.popOnDone && context.canPop()) {
-                                  context.pop();
-                                  return;
-                                }
-                                context.goNamed(AppRouteNames.today);
-                              },
-                            ),
+                            if (widget.showDoneCta)
+                              KinlyOutlinedButton.text(
+                                fullWidth: true,
+                                label: s.preferenceReportDoneCta,
+                                foregroundColor: preferenceColors.accent,
+                                borderColor: preferenceColors.accent,
+                                onPressed: () {
+                                  if (widget.popOnDone && context.canPop()) {
+                                    context.pop();
+                                    return;
+                                  }
+                                  context.goNamed(AppRouteNames.today);
+                                },
+                              ),
                           ],
                         ),
                       ),

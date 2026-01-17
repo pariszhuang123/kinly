@@ -137,7 +137,6 @@ jobs:
           FLOOR=65
           echo "Coverage: ${LINE_RATE}% (floor ${FLOOR}%)"
 
-          # Only emit a warning, do NOT fail the job
           if [ "${LINE_RATE%.*}" -lt "$FLOOR" ]; then
             echo "::warning::Coverage ${LINE_RATE}% is below floor ${FLOOR}%"
           else
@@ -151,7 +150,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Use Flutter SDK (includes Dart) so flutter_test "from sdk" resolves
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -306,7 +304,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Read [api].port from supabase/config.toml (fallback to Supabase default 54321)
           API_PORT=$(awk -F'=' '
             $0 ~ /^\[api\]/ {in_api=1; next}
             $0 ~ /^\[/ {in_api=0}
@@ -346,7 +343,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Read [db].port from supabase/config.toml (fallback to Supabase default 54322)
           DB_PORT=$(awk -F'=' '
             $0 ~ /^\[db\]/ {in_db=1; next}
             $0 ~ /^\[/ {in_db=0}
@@ -437,7 +433,7 @@ jobs:
       - name: Deploy notifications_daily (Dev)
         run: |
           supabase functions deploy notifications_daily \
-            --project-ref "$SUPABASE_PROJECT_ID" 
+            --project-ref "$SUPABASE_PROJECT_ID"
 
       - name: Smoke test notifications_daily (Dev)
         run: |
@@ -453,7 +449,7 @@ jobs:
         continue-on-error: true
         run: |
           supabase functions invoke revenuecat_webhook
-          
+
   android_dev_build:
     name: Android Dev (APK)
     needs: [lint_test, supabase_dev]
@@ -474,19 +470,13 @@ jobs:
           echo "Disk usage before cleanup:"
           df -h
 
-          # Big SDKs and tools we don't need for Flutter Android build
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /opt/hostedtoolcache/CodeQL
 
-          # Android emulator, system images, and (optionally) NDK
           sudo rm -rf /usr/local/lib/android/sdk/emulator
           sudo rm -rf /usr/local/lib/android/sdk/system-images
-          sudo rm -rf /usr/local/lib/android/sdk/ndk || true
 
-          # Unused hosted toolcaches (if not used elsewhere)
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
-          # docker images/containers
           docker system prune -af || true
 
           echo "Disk usage after cleanup:"
@@ -495,7 +485,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
       - uses: subosito/flutter-action@v2
         with:
@@ -513,14 +503,67 @@ jobs:
             ${{ runner.os }}-flutter-
             ${{ runner.os }}-gradle-
 
+      # ✅ NEW: Robust SDKMANAGER discovery + fixed SDK env
+      - name: Set Android SDK env + locate sdkmanager
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+          echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+
+          echo "SDK dir listing:"
+          ls -la /usr/local/lib/android/sdk || true
+          echo "cmdline-tools listing:"
+          ls -la /usr/local/lib/android/sdk/cmdline-tools || true
+
+          SDKMANAGER="$(find /usr/local/lib/android/sdk -name sdkmanager -type f | head -n 1 || true)"
+          if [ -z "$SDKMANAGER" ]; then
+            echo "::error::sdkmanager not found under /usr/local/lib/android/sdk"
+            exit 1
+          fi
+          echo "Found sdkmanager at: $SDKMANAGER"
+          echo "SDKMANAGER=$SDKMANAGER" >> $GITHUB_ENV
+
+      - name: Install Android NDK + CMake (pinned)
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$SDKMANAGER" --licenses >/dev/null <<<'y'
+          "$SDKMANAGER" \
+            "platform-tools" \
+            "cmake;3.22.1" \
+            "ndk;27.0.12077973"
+
+          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/27.0.12077973" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/27.0.12077973" >> $GITHUB_ENV
+
+      - name: Verify NDK clang exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "NDK home: $ANDROID_NDK_HOME"
+          ls -la "$ANDROID_NDK_HOME/toolchains/llvm/prebuilt" || true
+
+          if [ -x "$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/clang" ]; then
+            CLANG="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/clang"
+          elif [ -x "$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x64/bin/clang" ]; then
+            CLANG="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x64/bin/clang"
+          else
+            echo "::error::clang not found in NDK prebuilt bin"
+            find "$ANDROID_NDK_HOME/toolchains/llvm/prebuilt" -maxdepth 3 -type f -name clang -print || true
+            exit 1
+          fi
+
+          echo "Using clang: $CLANG"
+          "$CLANG" --version
+
       - name: Install dependencies
         run: flutter pub get
 
       - name: Decode dev google-services.json
         run: |
           mkdir -p android/app/src/dev
-          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" \
-            | base64 --decode > android/app/src/dev/google-services.json
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > android/app/src/dev/google-services.json
 
       - name: Flutter clean
         run: flutter clean
@@ -558,14 +601,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          echo "Proxy env (if any):"
           env | grep -i proxy || true
-          echo
-          echo "HEAD okio-jvm jar:"
           curl -I --retry 3 --retry-all-errors --connect-timeout 10 \
             https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/3.3.0/okio-jvm-3.3.0.jar || true
-          echo
-          echo "HEAD Maven Central root:"
           curl -I --retry 3 --retry-all-errors --connect-timeout 10 \
             https://repo.maven.apache.org/maven2/ || true
 
@@ -622,11 +660,10 @@ jobs:
       - name: Deploy notifications_daily (Prod)
         run: |
           supabase functions deploy notifications_daily \
-            --project-ref "$SUPABASE_PROJECT_ID" 
+            --project-ref "$SUPABASE_PROJECT_ID"
 
       - name: Smoke test notifications_daily (Prod)
-        run: |
-          supabase functions invoke notifications_daily
+        run: supabase functions invoke notifications_daily
 
       - name: Deploy revenuecat_webhook (Prod)
         run: |
@@ -636,9 +673,8 @@ jobs:
 
       - name: Smoke test revenuecat_webhook (Prod)
         continue-on-error: true
-        run: |
-          supabase functions invoke revenuecat_webhook
-          
+        run: supabase functions invoke revenuecat_webhook
+
   android_prod_release:
     name: Android Prod (AAB + Play)
     needs: [supabase_prod]
@@ -667,7 +703,6 @@ jobs:
       - name: Resolve Play upload flag
         shell: bash
         run: |
-          # Always upload to Play for main builds
           echo "DO_PLAY_UPLOAD=true" >> $GITHUB_ENV
 
       - name: Free disk space
@@ -675,17 +710,13 @@ jobs:
           echo "Disk usage before cleanup:"
           df -h
 
-          # Big SDKs and tools we don't need for Flutter Android build
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
           sudo rm -rf /opt/hostedtoolcache/CodeQL
 
-          # Android emulator, system images, and (optionally) NDK
           sudo rm -rf /usr/local/lib/android/sdk/emulator
           sudo rm -rf /usr/local/lib/android/sdk/system-images
-          sudo rm -rf /usr/local/lib/android/sdk/ndk || true
 
-          # docker images/containers
           docker system prune -af || true
 
           echo "Disk usage after cleanup:"
@@ -694,7 +725,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
       - uses: subosito/flutter-action@v2
         with:
@@ -712,14 +743,67 @@ jobs:
             ${{ runner.os }}-flutter-
             ${{ runner.os }}-gradle-
 
+      # ✅ NEW: Robust SDKMANAGER discovery + fixed SDK env
+      - name: Set Android SDK env + locate sdkmanager
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+          echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+
+          echo "SDK dir listing:"
+          ls -la /usr/local/lib/android/sdk || true
+          echo "cmdline-tools listing:"
+          ls -la /usr/local/lib/android/sdk/cmdline-tools || true
+
+          SDKMANAGER="$(find /usr/local/lib/android/sdk -name sdkmanager -type f | head -n 1 || true)"
+          if [ -z "$SDKMANAGER" ]; then
+            echo "::error::sdkmanager not found under /usr/local/lib/android/sdk"
+            exit 1
+          fi
+          echo "Found sdkmanager at: $SDKMANAGER"
+          echo "SDKMANAGER=$SDKMANAGER" >> $GITHUB_ENV
+
+      - name: Install Android NDK + CMake (pinned)
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$SDKMANAGER" --licenses >/dev/null <<<'y'
+          "$SDKMANAGER" \
+            "platform-tools" \
+            "cmake;3.22.1" \
+            "ndk;27.0.12077973"
+
+          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/27.0.12077973" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/27.0.12077973" >> $GITHUB_ENV
+
+      - name: Verify NDK clang exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "NDK home: $ANDROID_NDK_HOME"
+          ls -la "$ANDROID_NDK_HOME/toolchains/llvm/prebuilt" || true
+
+          if [ -x "$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/clang" ]; then
+            CLANG="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/clang"
+          elif [ -x "$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x64/bin/clang" ]; then
+            CLANG="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x64/bin/clang"
+          else
+            echo "::error::clang not found in NDK prebuilt bin"
+            find "$ANDROID_NDK_HOME/toolchains/llvm/prebuilt" -maxdepth 3 -type f -name clang -print || true
+            exit 1
+          fi
+
+          echo "Using clang: $CLANG"
+          "$CLANG" --version
+
       - name: Install dependencies
         run: flutter pub get
 
       - name: Decode prod google-services.json
         run: |
           mkdir -p android/app/src/prod
-          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" \
-            | base64 --decode > android/app/src/prod/google-services.json
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > android/app/src/prod/google-services.json
 
       - name: Flutter clean
         run: flutter clean
@@ -764,14 +848,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          echo "Proxy env (if any):"
           env | grep -i proxy || true
-          echo
-          echo "HEAD okio-jvm jar:"
           curl -I --retry 3 --retry-all-errors --connect-timeout 10 \
             https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/3.3.0/okio-jvm-3.3.0.jar || true
-          echo
-          echo "HEAD Maven Central root:"
           curl -I --retry 3 --retry-all-errors --connect-timeout 10 \
             https://repo.maven.apache.org/maven2/ || true
 

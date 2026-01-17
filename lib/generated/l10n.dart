@@ -69,6 +69,26 @@ class S {
     );
   }
 
+  /// `Hi {name}`
+  String startReturningTitle(String name) {
+    return Intl.message(
+      'Hi $name',
+      name: 'startReturningTitle',
+      desc: 'Greeting shown on the Start screen for returning users.',
+      args: [name],
+    );
+  }
+
+  /// `What do you want to do next?`
+  String get startReturningSubtitle {
+    return Intl.message(
+      'What do you want to do next?',
+      name: 'startReturningSubtitle',
+      desc: 'Follow-up prompt for returning users on the Start screen.',
+      args: [],
+    );
+  }
+
   /// `Welcome to Kinly`
   String get welcome_title {
     return Intl.message(

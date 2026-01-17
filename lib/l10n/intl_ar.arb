@@ -11,8 +11,27 @@
       }
     }
   },
+  "startReturningTitle": "Hi {name}",
+  "@startReturningTitle": {
+    "description": "Greeting shown on the Start screen for returning users.",
+    "surface": "title",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "startReturningSubtitle": "What do you want to do next?",
+  "@startReturningSubtitle": {
+    "description": "Follow-up prompt for returning users on the Start screen.",
+    "surface": "subtitle"
+  },
   "welcome_title": "مرحبًا بك في Kinly",
   "welcome_create": "إنشاء منزل",
+  "@welcome_create": {
+    "surface": "button"
+  },
   "welcome_join": "الانضمام إلى منزل",
   "create_subtitle": "سنُنشئ منزلك فورًا. يمكنك تغيير الاسم ودعوة الآخرين لاحقًا.",
   "create_failed_generic": "تعذّر إنشاء المنزل. حاول مرة أخرى.",

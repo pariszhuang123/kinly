@@ -33,6 +33,9 @@ class StartHomeSurfaceScope {
     required this.isCreating,
     required this.canPress,
     required this.actions,
+    this.personalizedTitle,
+    this.personalizedSubtitle,
+    this.isPersonalized = false,
   });
 
   final BuildContext context;
@@ -41,4 +44,7 @@ class StartHomeSurfaceScope {
   final bool isCreating;
   final bool canPress;
   final StartHomeSurfaceActions actions;
+  final String? personalizedTitle;
+  final String? personalizedSubtitle;
+  final bool isPersonalized;
 }

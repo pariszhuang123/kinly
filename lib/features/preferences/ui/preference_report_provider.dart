@@ -16,6 +16,7 @@ class PreferenceReportProvider extends StatelessWidget {
     this.showConfetti = false,
     this.canEdit = true,
     this.popOnDone = false,
+    this.showDoneCta = true,
     this.initialReport,
     this.subjectDisplayName,
     this.subjectAvatarUrl,
@@ -27,6 +28,7 @@ class PreferenceReportProvider extends StatelessWidget {
   final bool showConfetti;
   final bool canEdit;
   final bool popOnDone;
+  final bool showDoneCta;
   final PreferenceReport? initialReport;
   final String? subjectDisplayName;
   final String? subjectAvatarUrl;
@@ -53,6 +55,7 @@ class PreferenceReportProvider extends StatelessWidget {
         showConfetti: showConfetti,
         canEdit: canEdit,
         popOnDone: popOnDone,
+        showDoneCta: showDoneCta,
         subjectDisplayName: subjectDisplayName,
         subjectAvatarUrl: subjectAvatarUrl,
       ),

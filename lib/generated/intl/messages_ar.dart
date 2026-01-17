@@ -57,22 +57,24 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m14(paid, total) => "${paid} من ${total} مدفوعة";
 
-  static String m15(count) =>
+  static String m15(name) => "Hi ${name}";
+
+  static String m16(count) =>
       "عرض الكل ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m16(name) => "We could not complete ${name}\'s request.";
+  static String m17(name) => "We could not complete ${name}\'s request.";
 
-  static String m17(name) => "${name} joined your home.";
+  static String m18(name) => "${name} joined your home.";
 
-  static String m18(name) => "${name} joined another home.";
+  static String m19(name) => "${name} joined another home.";
 
-  static String m19(names) =>
+  static String m20(names) =>
       "${names} wants to join your home. Upgrade to support unlimited members.";
 
-  static String m20(count) =>
+  static String m21(count) =>
       "${Intl.plural(count, one: '${count} دفعة معلّقة', other: '${count} دفعات معلّقة')}";
 
-  static String m21(count) =>
+  static String m22(count) =>
       "${Intl.plural(count, one: '${count} new payment to you', other: '${count} new payments to you')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1162,6 +1164,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
       "Acknowledging...",
     ),
+    "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
+      "What do you want to do next?",
+    ),
+    "startReturningTitle": m15,
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("إضافة Flow"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("إضافة Share"),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage("أضف إلى منزلك"),
@@ -1182,7 +1188,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("جديد اليوم"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m15,
+    "todayFlowSeeAll": m16,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "إليك ما يجري في منزلك اليوم.",
     ),
@@ -1207,30 +1213,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "Upgrade home",
     ),
-    "todayMemberCapResolutionFailed": m16,
-    "todayMemberCapResolutionJoined": m17,
-    "todayMemberCapResolutionSuperseded": m18,
+    "todayMemberCapResolutionFailed": m17,
+    "todayMemberCapResolutionJoined": m18,
+    "todayMemberCapResolutionSuperseded": m19,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
       "Someone",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage(
       "Ignore",
     ),
-    "todayMemberCapSubtitle": m19,
+    "todayMemberCapSubtitle": m20,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
       "A member is requesting access. Upgrade to support unlimited members.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
       "Someone wants to join your home",
     ),
-    "todayShareActiveSubtitle": m20,
+    "todayShareActiveSubtitle": m21,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحديث Share الآن.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "Paid to you",
     ),
-    "todaySharePaidUnseen": m21,
+    "todaySharePaidUnseen": m22,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Share"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To pay"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("مسودات"),

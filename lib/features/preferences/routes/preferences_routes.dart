@@ -51,7 +51,19 @@ List<GoRoute> buildPreferenceRoutes({
         final showConfetti =
             extra is PreferenceReportNavigationArgs
                 ? extra.showConfetti
-                : extra == true;
+                : extra == true || (extra is Map && extra['showConfetti'] == true);
+        bool canEdit = true;
+        bool showDoneCta = true;
+        if (extra is Map) {
+          final canEditOverride = extra['canEdit'] as bool?;
+          if (canEditOverride != null) {
+            canEdit = canEditOverride;
+          }
+          final showDoneOverride = extra['showDoneCta'] as bool?;
+          if (showDoneOverride != null) {
+            showDoneCta = showDoneOverride;
+          }
+        }
         final initialReport =
             extra is PreferenceReportNavigationArgs
                 ? extra.initialReport
@@ -65,6 +77,8 @@ List<GoRoute> buildPreferenceRoutes({
           subjectUserId: membership.userId,
           repository: sl<PreferenceReportsRepository>(),
           showConfetti: showConfetti,
+          canEdit: canEdit,
+          showDoneCta: showDoneCta,
           initialReport: initialReport,
         );
       },

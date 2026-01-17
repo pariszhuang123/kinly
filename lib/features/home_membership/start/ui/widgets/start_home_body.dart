@@ -15,22 +15,29 @@ class StartHomeBody extends StatelessWidget {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
     final s = scope.strings;
+    final isPersonalized = scope.isPersonalized;
+    final title = scope.personalizedTitle ?? s.welcome_title;
+    final subtitle =
+        scope.personalizedSubtitle ?? scope.membershipMessage;
+    final crossAxisAlignment =
+        isPersonalized ? CrossAxisAlignment.start : CrossAxisAlignment.stretch;
+    final textAlign = isPersonalized ? TextAlign.start : TextAlign.center;
 
     return Padding(
       padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: crossAxisAlignment,
         children: [
           const Spacer(),
           Text(
-            s.welcome_title,
+            title,
             style: theme.textTheme.headlineMedium,
-            textAlign: TextAlign.center,
+            textAlign: textAlign,
           ),
           SizedBox(height: spacing?.m ?? 12),
           Text(
-            scope.membershipMessage,
-            textAlign: TextAlign.center,
+            subtitle,
+            textAlign: textAlign,
             style: theme.textTheme.bodyMedium,
           ),
           const Spacer(),

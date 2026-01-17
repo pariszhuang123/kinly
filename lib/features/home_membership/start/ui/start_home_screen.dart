@@ -20,9 +20,25 @@ import '../../../../core/ui/personal_profile_sheet.dart';
 import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/kinly_tap_target.dart';
 import '../../../../core/ui/enums/personal_profile_entry_source.dart';
+import '../../../../core/theme/spacing.dart';
 
 class StartHomeScreen extends StatelessWidget {
   const StartHomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create:
+          (_) =>
+              UserContextCubit(repository: sl<UserContextRepository>())
+                ..refresh(),
+      child: const _StartHomeView(),
+    );
+  }
+}
+
+class _StartHomeView extends StatelessWidget {
+  const _StartHomeView();
 
   @override
   Widget build(BuildContext context) {
@@ -34,78 +50,88 @@ class StartHomeScreen extends StatelessWidget {
     final isProfileDeactivated = context.select(
       (AuthBloc bloc) => bloc.state.isProfileDeactivated,
     );
+    final userContextState = context.watch<UserContextCubit>().state;
+    final userContext = userContextState.context;
     final membershipMessage = switch (membershipStatus) {
       AuthMembershipStatus.unknown => s.membership_status_checking,
       AuthMembershipStatus.none => s.membership_status_none,
       AuthMembershipStatus.active => s.membership_status_active,
     };
+    final hasAvatar = (userContext?.avatarUrl?.isNotEmpty ?? false);
+    final displayName =
+        (userContext?.displayName?.trim().isNotEmpty ?? false)
+            ? userContext!.displayName!.trim()
+            : null;
+    final personalizedTitle =
+        hasAvatar
+            ? s.startReturningTitle(displayName ?? s.friendDefaultName)
+            : null;
+    final personalizedSubtitle =
+        hasAvatar ? s.startReturningSubtitle : null;
 
-    return BlocProvider(
-      create:
-          (_) =>
-              UserContextCubit(repository: sl<UserContextRepository>())
-                ..refresh(),
-      child: AuthErrorListener(
-        child: KinlyScaffold(
-          appBar: KinlyAppBar(
-            title: Text(s.app_title, style: theme.textTheme.titleLarge),
-            actions: const [
-              _PersonalProfileAction(
-                entrySource: PersonalProfileEntrySource.start,
-              ),
-            ],
-          ),
-          body: SafeArea(
-            child: BlocConsumer<StartHomeBloc, StartHomeState>(
-              listener: (context, state) {
-                if (state.status == StartHomeStatus.failure) {
-                  KinlySnackBar.showError(
-                    context,
-                    state.errorMessage ?? s.create_failed_generic,
-                  );
-                }
-
-                if (state.status == StartHomeStatus.success) {
-                  // Refresh membership; router redirects handle navigation.
-                  context.read<AuthBloc>().add(
-                    const AuthMembershipRefreshRequested(),
-                  );
-                }
-              },
-              builder: (context, state) {
-                final isCreating =
-                    state.status == StartHomeStatus.loading ||
-                    state.status == StartHomeStatus.success;
-
-                final canManageHome =
-                    membershipStatus == AuthMembershipStatus.none &&
-                    !isProfileDeactivated;
-
-                final canPress = !isCreating && canManageHome;
-                StartHomeRegistry.bootstrap();
-
-                final actions = StartHomeSurfaceActions(
-                  onCreate: () {
-                    context.read<StartHomeBloc>().add(
-                      const StartHomeCreateRequested(),
-                    );
-                  },
-                  onJoin: () => context.goNamed(AppRouteNames.join),
-                );
-                final scope = StartHomeSurfaceScope(
-                  context: context,
-                  strings: s,
-                  membershipMessage: membershipMessage,
-                  isCreating: isCreating,
-                  canPress: canPress,
-                  actions: actions,
-                );
-                final slots = StartHomeSurfaceSlots(
-                  body: _buildStartHomeSections(scope),
-                );
-                return slots.body;
-              },
+    return AuthErrorListener(
+      child: KinlyScaffold(
+        appBar: KinlyAppBar(
+          title: Text(s.app_title, style: theme.textTheme.titleLarge),
+          actions: const [
+            _PersonalProfileAction(
+              entrySource: PersonalProfileEntrySource.start,
             ),
+          ],
+        ),
+        body: SafeArea(
+          child: BlocConsumer<StartHomeBloc, StartHomeState>(
+            listener: (context, state) {
+              if (state.status == StartHomeStatus.failure) {
+                KinlySnackBar.showError(
+                  context,
+                  state.errorMessage ?? s.create_failed_generic,
+                );
+              }
+
+              if (state.status == StartHomeStatus.success) {
+                // Refresh membership; router redirects handle navigation.
+                context.read<AuthBloc>().add(
+                  const AuthMembershipRefreshRequested(),
+                );
+              }
+            },
+            builder: (context, state) {
+              final isCreating =
+                  state.status == StartHomeStatus.loading ||
+                  state.status == StartHomeStatus.success;
+
+              final canManageHome =
+                  membershipStatus == AuthMembershipStatus.none &&
+                  !isProfileDeactivated;
+
+              final canPress = !isCreating && canManageHome;
+              StartHomeRegistry.bootstrap();
+
+              final actions = StartHomeSurfaceActions(
+                onCreate: () {
+                  context.read<StartHomeBloc>().add(
+                    const StartHomeCreateRequested(),
+                  );
+                },
+                onJoin: () => context.goNamed(AppRouteNames.join),
+              );
+              final scope = StartHomeSurfaceScope(
+                context: context,
+                strings: s,
+                membershipMessage: membershipMessage,
+                isCreating: isCreating,
+                canPress: canPress,
+                actions: actions,
+                personalizedTitle: personalizedTitle,
+                personalizedSubtitle: personalizedSubtitle,
+                isPersonalized: hasAvatar,
+              );
+              final slots = StartHomeSurfaceSlots(
+                body: _buildStartHomeSections(scope),
+              );
+              return _buildStartHomeLayout(context, slots);
+            },
           ),
         ),
       ),
@@ -124,6 +150,29 @@ class StartHomeScreen extends StatelessWidget {
           .toList(growable: false),
     );
   }
+
+  Widget _buildStartHomeLayout(
+    BuildContext context,
+    StartHomeSurfaceSlots slots,
+  ) {
+    if (slots.header == null) return slots.body;
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(
+            spacing?.lg ?? 16,
+            spacing?.lg ?? 16,
+            spacing?.lg ?? 16,
+            spacing?.m ?? 12,
+          ),
+          child: slots.header!,
+        ),
+        Expanded(child: slots.body),
+      ],
+    );
+  }
 }
 
 class _PersonalProfileAction extends StatelessWidget {
@@ -136,25 +185,38 @@ class _PersonalProfileAction extends StatelessWidget {
     return BlocBuilder<UserContextCubit, UserContextState>(
       builder: (context, state) {
         if (!state.hasArtifacts) return const SizedBox.shrink();
+        final theme = KinlyThemeAccess.of(context);
+        final spacing = theme.extension<Spacing>();
         final strings = S.of(context);
+        final displayName = state.context?.displayName?.trim();
         final fallbackInitial =
-            strings.personalProfileTitle.isNotEmpty
-                ? strings.personalProfileTitle.substring(0, 1).toUpperCase()
-                : 'Y';
+            displayName?.isNotEmpty == true
+                ? displayName!.substring(0, 1).toUpperCase()
+                : strings.personalProfileTitle.isNotEmpty
+                    ? strings.personalProfileTitle
+                        .substring(0, 1)
+                        .toUpperCase()
+                    : 'Y';
         return Semantics(
           label: strings.personalProfileTitle,
           button: true,
-          child: KinlyTapTarget(
-            onTap: () => showPersonalProfileSheet(
-              context: context,
-              userContextCubit: context.read<UserContextCubit>(),
-              entrySource: entrySource,
-            ),
-            borderRadius: BorderRadius.circular(20),
-            child: KinlyCircleAvatar(
-              avatarUrl: state.context?.avatarUrl,
-              radius: 20,
-              fallbackInitial: fallbackInitial,
+          child: Padding(
+            padding: EdgeInsetsDirectional.only(end: spacing?.md ?? 12),
+            child: KinlyTapTarget(
+              onTap: () => showPersonalProfileSheet(
+                context: context,
+                userContextCubit: context.read<UserContextCubit>(),
+                entrySource: entrySource,
+              ),
+              borderRadius: BorderRadius.circular(32),
+              child: Padding(
+                padding: EdgeInsetsDirectional.all((spacing?.xs ?? 4) / 2),
+                child: KinlyCircleAvatar(
+                  avatarUrl: state.context?.avatarUrl,
+                  radius: 30,
+                  fallbackInitial: fallbackInitial,
+                ),
+              ),
             ),
           ),
         );

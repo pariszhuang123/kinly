@@ -112,4 +112,26 @@ void main() {
     expect(find.text(s.preferenceReportReadOnlyNote), findsOneWidget);
     expect(find.text(s.preferenceReportEditCta), findsNothing);
   });
+
+  testWidgets('hides done button when showDoneCta is false', (tester) async {
+    final cubit = _MockPreferenceReportCubit();
+    when(
+      () => cubit.stream,
+    ).thenAnswer((_) => const Stream<PreferenceReportState>.empty());
+    when(
+      () => cubit.state,
+    ).thenReturn(PreferenceReportState.ready(buildReport()));
+
+    await tester.pumpWidget(
+      buildApp(
+        cubit,
+        const PreferenceReportScreen(showDoneCta: false),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final s = S.of(tester.element(find.byType(PreferenceReportScreen)));
+    expect(find.text(s.preferenceReportDoneCta), findsNothing);
+    expect(find.text(s.preferenceReportEditCta), findsOneWidget);
+  });
 }

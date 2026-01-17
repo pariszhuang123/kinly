@@ -20,6 +20,7 @@ class SupabaseUserContextRepository implements UserContextRepository {
       hasPreferenceReport: row['has_preference_report'] as bool? ?? false,
       hasPersonalMentions: row['has_personal_mentions'] as bool? ?? false,
       avatarUrl: row['avatar_storage_path'] as String?,
+      displayName: row['display_name'] as String?,
     );
   }
 

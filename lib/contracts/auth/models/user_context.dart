@@ -8,6 +8,7 @@ class UserContext extends Equatable {
     required this.hasPreferenceReport,
     required this.hasPersonalMentions,
     this.avatarUrl,
+    this.displayName,
   });
 
   final String userId;
@@ -16,6 +17,7 @@ class UserContext extends Equatable {
   final bool hasPreferenceReport;
   final bool hasPersonalMentions;
   final String? avatarUrl;
+  final String? displayName;
 
   @override
   List<Object?> get props => [
@@ -25,5 +27,6 @@ class UserContext extends Equatable {
     hasPreferenceReport,
     hasPersonalMentions,
     avatarUrl,
+    displayName,
   ];
 }

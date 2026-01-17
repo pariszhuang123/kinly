@@ -11,8 +11,27 @@
       }
     }
   },
+  "startReturningTitle": "Hi {name}",
+  "@startReturningTitle": {
+    "description": "Greeting shown on the Start screen for returning users.",
+    "surface": "title",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "startReturningSubtitle": "What do you want to do next?",
+  "@startReturningSubtitle": {
+    "description": "Follow-up prompt for returning users on the Start screen.",
+    "surface": "subtitle"
+  },
   "welcome_title": "Welcome to Kinly",
   "welcome_create": "Create a Home",
+  "@welcome_create": {
+    "surface": "button"
+  },
   "welcome_join": "Join a Home",
   "create_failed_generic": "Could not create the home. Try again.",
   "join_title": "Join Home",

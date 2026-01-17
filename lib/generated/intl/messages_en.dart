@@ -51,29 +51,31 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(current, total) => "Question ${current} of ${total}";
 
-  static String m22(period) => "Applies to ${period}";
+  static String m23(period) => "Applies to ${period}";
 
   static String m13(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
 
   static String m14(paid, total) => "${paid} of ${total} paid";
 
-  static String m15(count) =>
+  static String m15(name) => "Hi ${name}";
+
+  static String m16(count) =>
       "See all ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m16(name) => "We could not complete ${name}\'s request.";
+  static String m17(name) => "We could not complete ${name}\'s request.";
 
-  static String m17(name) => "${name} joined your home.";
+  static String m18(name) => "${name} joined your home.";
 
-  static String m18(name) => "${name} joined another home.";
+  static String m19(name) => "${name} joined another home.";
 
-  static String m19(names) =>
+  static String m20(names) =>
       "${names} wants to join your home. Upgrade to support unlimited members.";
 
-  static String m20(count) =>
+  static String m21(count) =>
       "${Intl.plural(count, one: '${count} payment pending', other: '${count} to settle')}";
 
-  static String m21(count) =>
+  static String m22(count) =>
       "${Intl.plural(count, one: '${count} new payment to you', other: '${count} new payments to you')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1015,7 +1017,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
       "Enter each person\'s part. Make sure the total matches the amount above.",
     ),
-    "shareCreateCyclePeriod": m22,
+    "shareCreateCyclePeriod": m23,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
       "e.g. Grocery run",
     ),
@@ -1217,6 +1219,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
       "Acknowledging...",
     ),
+    "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
+      "What do you want to do next?",
+    ),
+    "startReturningTitle": m15,
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Flow"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Bill"),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
@@ -1239,7 +1245,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
-    "todayFlowSeeAll": m15,
+    "todayFlowSeeAll": m16,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Here\'s what\'s flowing in your home today.",
     ),
@@ -1268,30 +1274,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "Upgrade home",
     ),
-    "todayMemberCapResolutionFailed": m16,
-    "todayMemberCapResolutionJoined": m17,
-    "todayMemberCapResolutionSuperseded": m18,
+    "todayMemberCapResolutionFailed": m17,
+    "todayMemberCapResolutionJoined": m18,
+    "todayMemberCapResolutionSuperseded": m19,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
       "Someone",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage(
       "Ignore",
     ),
-    "todayMemberCapSubtitle": m19,
+    "todayMemberCapSubtitle": m20,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
       "Your home is growing. Upgrade to welcome more people.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
       "Someone wants to join your home",
     ),
-    "todayShareActiveSubtitle": m20,
+    "todayShareActiveSubtitle": m21,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t refresh Share right now.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "Settled Amount",
     ),
-    "todaySharePaidUnseen": m21,
+    "todaySharePaidUnseen": m22,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Bill"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To settle"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),

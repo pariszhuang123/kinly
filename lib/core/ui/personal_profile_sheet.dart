@@ -63,7 +63,11 @@ void _openPreferences({
   required PersonalProfileEntrySource entrySource,
 }) {
   final router = GoRouter.of(context);
-  final extra = {'entrySource': entrySource.wireValue};
+  final extra = <String, Object?>{'entrySource': entrySource.wireValue};
+  if (entrySource == PersonalProfileEntrySource.start) {
+    extra['canEdit'] = false;
+    extra['showDoneCta'] = false;
+  }
   if (userContext.hasPreferenceReport) {
     router.pushNamed(AppRouteNames.preferenceReport, extra: extra);
   } else {

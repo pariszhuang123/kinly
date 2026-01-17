@@ -11,8 +11,27 @@
       }
     }
   },
+  "startReturningTitle": "Hi {name}",
+  "@startReturningTitle": {
+    "description": "Greeting shown on the Start screen for returning users.",
+    "surface": "title",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "startReturningSubtitle": "What do you want to do next?",
+  "@startReturningSubtitle": {
+    "description": "Follow-up prompt for returning users on the Start screen.",
+    "surface": "subtitle"
+  },
   "welcome_title": "Bienvenido a Kinly",
   "welcome_create": "Crear un hogar",
+  "@welcome_create": {
+    "surface": "button"
+  },
   "welcome_join": "Unirse a un hogar",
   "create_subtitle": "Crearemos tu hogar al instante. Podrás cambiarle el nombre e invitar a otros más tarde.",
   "create_failed_generic": "No se pudo crear el hogar. Inténtalo de nuevo.",
