@@ -14,6 +14,7 @@ import '../../../generated/l10n.dart';
 import '../bloc/harmony_cubit.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/ui/kinly_theme_access.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 
 /// Harmony content used by both the Harmony page and (legacy) bottom sheet.
 /// Assumes [HarmonyCubit] is already provided above in the tree.
@@ -48,10 +49,7 @@ class HarmonyScreen extends StatelessWidget {
             accentColor: accent,
           );
           // Navigate to Today after successful submission.
-          context.goNamed(
-            'today',
-            pathParameters: {'homeId': homeId},
-          );
+          context.goNamed(AppRouteNames.today);
         } else if (state.submitError != null) {
           final message = _mapError(context, state.submitError!);
           KinlySnackBar.showError(context, message, accentColor: accent);
