@@ -4963,7 +4963,7 @@ class S {
   }
 
   /// `Sharing our Kinly house pulse. Download the app: {link}`
-  String housePulseShareMessage(Object link) {
+  String housePulseShareMessage(String link) {
     return Intl.message(
       'Sharing our Kinly house pulse. Download the app: $link',
       name: 'housePulseShareMessage',

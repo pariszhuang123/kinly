@@ -41,6 +41,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   String get homeId => _homeId;
   static const _gratitudeLogTag = 'TodayGratitude';
   static const _onboardingLogTag = 'TodayOnboarding';
+  static const _housePulseLogTag = 'TodayHousePulse';
   late final StreamSubscription<UserProfile> _profileUpdateSub;
 
   TodayBloc({
@@ -267,10 +268,11 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         if (pulse != null) {
           housePulse = pulse;
         }
+        _logHousePulseLoaded(pulse);
       } catch (error, stackTrace) {
         _logger.warn(
           'Failed to load house pulse',
-          tag: 'TodayHousePulse',
+          tag: _housePulseLogTag,
           error: error,
           stackTrace: stackTrace,
         );
@@ -592,6 +594,24 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       memberCapJoinRequests: current.memberCapJoinRequests,
       memberCapJoinResolution: current.memberCapJoinResolution,
       housePulse: current.housePulse,
+    );
+  }
+
+  void _logHousePulseLoaded(HousePulsePayload? pulse) {
+    if (pulse == null) {
+      _logger.info(
+        'House pulse payload missing; no card will render',
+        tag: _housePulseLogTag,
+      );
+      return;
+    }
+    final seen = pulse.seen;
+    _logger.info(
+      'House pulse loaded state=${pulse.pulse.pulseState.wireValue} '
+      'computedAt=${pulse.pulse.computedAt.toIso8601String()} '
+      'seenAt=${seen?.seenAt.toIso8601String() ?? 'null'} '
+      'hasUnseen=${hasUnseenHousePulse(pulse)} homeId=$_homeId',
+      tag: _housePulseLogTag,
     );
   }
 

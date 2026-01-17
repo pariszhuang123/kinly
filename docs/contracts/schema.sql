@@ -6987,8 +6987,14 @@ BEGIN
 
   -- Resolve week (UTC ISO week/year) using v_now for consistency
   SELECT
-    COALESCE(p_iso_week, extract(isoweek FROM (v_now AT TIME ZONE 'UTC'))::int),
-    COALESCE(p_iso_week_year, extract(isoyear FROM (v_now AT TIME ZONE 'UTC'))::int)
+    COALESCE(
+      p_iso_week,
+      to_char((v_now AT TIME ZONE 'UTC')::date, 'IW')::int
+    ),
+    COALESCE(
+      p_iso_week_year,
+      to_char((v_now AT TIME ZONE 'UTC')::date, 'IYYY')::int
+    )
   INTO v_iso_week, v_iso_week_year;
 
   PERFORM public.api_assert(
@@ -7326,8 +7332,14 @@ BEGIN
   PERFORM public._assert_home_active(p_home_id);
 
   SELECT
-    COALESCE(p_iso_week, extract(isoweek FROM (v_now AT TIME ZONE 'UTC'))::int),
-    COALESCE(p_iso_week_year, extract(isoyear FROM (v_now AT TIME ZONE 'UTC'))::int)
+    COALESCE(
+      p_iso_week,
+      to_char((v_now AT TIME ZONE 'UTC')::date, 'IW')::int
+    ),
+    COALESCE(
+      p_iso_week_year,
+      to_char((v_now AT TIME ZONE 'UTC')::date, 'IYYY')::int
+    )
   INTO v_iso_week, v_iso_week_year;
 
   -- single-call friendly: get-or-compute payload (jsonb with pulse/label/seen)
@@ -7379,8 +7391,14 @@ BEGIN
   PERFORM public._assert_home_active(p_home_id);
 
   SELECT
-    COALESCE(p_iso_week, extract(isoweek FROM (v_now AT TIME ZONE 'UTC'))::int),
-    COALESCE(p_iso_week_year, extract(isoyear FROM (v_now AT TIME ZONE 'UTC'))::int)
+    COALESCE(
+      p_iso_week,
+      to_char((v_now AT TIME ZONE 'UTC')::date, 'IW')::int
+    ),
+    COALESCE(
+      p_iso_week_year,
+      to_char((v_now AT TIME ZONE 'UTC')::date, 'IYYY')::int
+    )
   INTO v_iso_week, v_iso_week_year;
 
   SELECT *
