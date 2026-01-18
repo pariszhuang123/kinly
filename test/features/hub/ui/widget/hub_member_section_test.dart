@@ -93,7 +93,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('JOIN123'), findsOneWidget);
-    expect(find.text('+1'), findsOneWidget);
+    expect(find.text('+3'), findsOneWidget);
     expect(find.byType(KinlyAddTileButton), findsOneWidget);
   });
 }

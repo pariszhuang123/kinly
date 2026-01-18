@@ -1299,7 +1299,6 @@
     }
   },
   "housePulseShareError": "Couldn't share the pulse right now. Please try again.",
-  "housePulseNewBadge": "New this week",
   "housePulseUpdatedOn": "Updated {date}",
   "@housePulseUpdatedOn": {
     "placeholders": {

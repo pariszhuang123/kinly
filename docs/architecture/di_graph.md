@@ -75,6 +75,7 @@ graph LR
   end
   app_di --> core_di
   app_router --> core_auth
+  app_router --> core_logging
   app_router --> features_flow
   app_router --> features_harmony
   app_router --> features_home_membership
@@ -101,6 +102,7 @@ graph LR
   core_notifications --> contracts_profile
   core_onboarding --> contracts_onboarding
   core_ui --> app_router
+  core_ui --> contracts_mood
   core_ui --> contracts_preferences
   core_ui --> core_auth
   core_ui --> core_logging

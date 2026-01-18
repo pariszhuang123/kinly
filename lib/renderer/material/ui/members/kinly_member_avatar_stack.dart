@@ -14,7 +14,7 @@ class KinlyMemberAvatarStack extends StatelessWidget {
     super.key,
     required this.members,
     this.accent,
-    this.maxVisible = 5,
+    this.maxVisible = 3,
     this.radius = 20,
   });
 

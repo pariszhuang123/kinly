@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/features/flow/routes/flow_routes.dart';
 import 'package:kinly/features/share/routes/share_routes.dart';
 import 'package:kinly/core/auth/bloc/auth_bloc.dart';
@@ -74,6 +76,7 @@ GoRouter createRouter({
   required AuthBloc authBloc,
   required AppVersionCubit appVersionCubit,
   required Listenable refreshListenable,
+  required Logger logger,
 }) {
   return GoRouter(
     initialLocation: AppRoutes.splash,
@@ -85,5 +88,15 @@ GoRouter createRouter({
           appVersionCubit: appVersionCubit,
         ),
     routes: _buildRoutes(authBloc),
+    errorBuilder: (context, state) {
+      logger.warn(
+        'Routing failed for "${state.uri}", redirecting to Today',
+        error: state.error,
+      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        GoRouter.of(context).goNamed(AppRouteNames.today);
+      });
+      return const SizedBox.shrink();
+    },
   );
 }

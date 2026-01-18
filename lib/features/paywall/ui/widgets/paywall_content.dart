@@ -335,7 +335,6 @@ class _PaywallHero extends StatelessWidget {
             KinlyMemberAvatarStack(
               members: members,
               accent: accent,
-              maxVisible: 5,
               radius: spacing.xl,
             ),
           ],

@@ -122,6 +122,7 @@ flutter:
     - assets/icons/weather/
     - assets/icons/feature/
     - assets/house_vibes/v1/
+    - assets/house_pulse_v1/
 
   fonts:
     - family: KinlyTestFont

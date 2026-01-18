@@ -7,6 +7,7 @@ import 'package:kinly/contracts/mood/enums/mood_scale.dart';
 import 'package:kinly/contracts/mood/house_pulse_models.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/spacing.dart';
+import 'package:kinly/core/ui/house_pulse_assets.dart';
 import 'package:kinly/core/ui/house_pulse_strings.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
@@ -39,8 +40,8 @@ class _TodayHousePulseDetailScreenState
     final s = S.of(context);
     try {
       context.read<TodayBloc>().add(
-            const TodayHousePulseShareLogged(channel: 'system_share'),
-          );
+        const TodayHousePulseShareLogged(channel: 'system_share'),
+      );
       await WidgetsBinding.instance.endOfFrame;
       if (!mounted) return;
       final shared = await SnapshotSharer.shareRepaintBoundary(
@@ -72,18 +73,24 @@ class _TodayHousePulseDetailScreenState
     final pulse = widget.pulse;
     final title = resolveHousePulseTitle(s, pulse.label.titleKey);
     final summary = resolveHousePulseSummary(s, pulse.label.summaryKey);
-    final updatedLabel =
-        s.housePulseUpdatedOn(DateFormat.yMMMd().format(pulse.pulse.computedAt));
-    final reflectionsLabel =
-        s.housePulseReflections(pulse.pulse.reflectionCount);
+    final updatedLabel = s.housePulseUpdatedOn(
+      DateFormat.yMMMd().format(pulse.pulse.computedAt),
+    );
+    final reflectionsLabel = s.housePulseReflections(
+      pulse.pulse.reflectionCount,
+    );
     final icon = _iconFor(pulse.pulse.pulseState, pulse.pulse.weatherDisplay);
+    final assetPath = resolveHousePulseAssetPath(
+      contractVersion: pulse.label.contractVersion,
+      imageKey: pulse.label.imageKey,
+      pulseState: pulse.pulse.pulseState,
+    );
 
     return KinlyScaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: KinlyAppBar(
         backgroundColor: theme.colorScheme.surface,
         foregroundColor: theme.colorScheme.onSurface,
-        title: Text(s.housePulseCardHeader),
       ),
       body: ColoredBox(
         color: theme.colorScheme.surface,
@@ -103,6 +110,7 @@ class _TodayHousePulseDetailScreenState
                     updatedLabel: updatedLabel,
                     reflectionsLabel: reflectionsLabel,
                     icon: icon,
+                    assetPath: assetPath,
                   ),
                 ),
               ),
@@ -133,6 +141,7 @@ class HousePulseShareCard extends StatelessWidget {
     required this.updatedLabel,
     required this.reflectionsLabel,
     required this.icon,
+    required this.assetPath,
   });
 
   final HousePulsePayload pulse;
@@ -142,6 +151,7 @@ class HousePulseShareCard extends StatelessWidget {
   final String updatedLabel;
   final String reflectionsLabel;
   final IconData icon;
+  final String assetPath;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +194,7 @@ class HousePulseShareCard extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: spacing.md),
-            _ShareGlyph(icon: icon, palette: palette),
+            _ShareGlyph(icon: icon, palette: palette, assetPath: assetPath),
             SizedBox(height: spacing.md),
             Text(
               summary,
@@ -198,18 +208,7 @@ class HousePulseShareCard extends StatelessWidget {
               alignment: WrapAlignment.center,
               spacing: spacing.md,
               runSpacing: spacing.xs,
-              children: [
-                _SharePill(label: updatedLabel, palette: palette),
-                _SharePill(label: reflectionsLabel, palette: palette),
-              ],
-            ),
-            SizedBox(height: spacing.md),
-            Text(
-              DateFormat("eeee, MMM d").format(pulse.pulse.computedAt),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
+              children: [_SharePill(label: updatedLabel, palette: palette)],
             ),
           ],
         ),
@@ -219,10 +218,15 @@ class HousePulseShareCard extends StatelessWidget {
 }
 
 class _ShareGlyph extends StatelessWidget {
-  const _ShareGlyph({required this.icon, required this.palette});
+  const _ShareGlyph({
+    required this.icon,
+    required this.palette,
+    required this.assetPath,
+  });
 
   final IconData icon;
   final SectionColors palette;
+  final String assetPath;
 
   @override
   Widget build(BuildContext context) {
@@ -241,10 +245,15 @@ class _ShareGlyph extends StatelessWidget {
           ),
         ],
       ),
-      child: Icon(
-        icon,
-        size: 48,
-        color: palette.accent,
+      child: ClipOval(
+        child: Image.asset(
+          assetPath,
+          width: 72,
+          height: 72,
+          fit: BoxFit.cover,
+          errorBuilder:
+              (_, __, ___) => Icon(icon, size: 48, color: palette.accent),
+        ),
       ),
     );
   }

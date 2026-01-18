@@ -154,6 +154,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       authBloc: _authBloc,
       appVersionCubit: _appVersionCubit,
       refreshListenable: _routerRefresh,
+      logger: _logger,
     );
     _authSub = _authBloc.stream.listen(
       (state) => unawaited(_handleAuthState(state)),

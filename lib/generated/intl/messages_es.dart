@@ -364,9 +364,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "housePulseCardHeader": MessageLookupByLibrary.simpleMessage(
       "Pulso semanal del hogar",
     ),
-    "housePulseNewBadge": MessageLookupByLibrary.simpleMessage(
-      "Nuevo esta semana",
-    ),
     "housePulseReflections": m7,
     "housePulseShareCta": MessageLookupByLibrary.simpleMessage(
       "Compartir pulso",

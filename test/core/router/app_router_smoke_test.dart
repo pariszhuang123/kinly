@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_router.dart';
 import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/version_gating/bloc/app_version_cubit.dart';
 import 'package:mocktail/mocktail.dart';
@@ -10,6 +11,17 @@ import 'package:mocktail/mocktail.dart';
 class _MockAuthBloc extends Mock implements AuthBloc {}
 
 class _MockAppVersionCubit extends Mock implements AppVersionCubit {}
+
+class _FakeLogger extends Logger {
+  @override
+  void log(
+    LogLevel level,
+    String message, {
+    String? tag,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {}
+}
 
 void main() {
   group('AppRouter', () {
@@ -38,6 +50,7 @@ void main() {
         authBloc: authBloc,
         appVersionCubit: appVersionCubit,
         refreshListenable: ValueNotifier(0),
+        logger: _FakeLogger(),
       );
 
       expect(router.namedLocation('today'), AppRoutes.today);
@@ -83,6 +96,7 @@ void main() {
         authBloc: authBloc,
         appVersionCubit: appVersionCubit,
         refreshListenable: ValueNotifier(0),
+        logger: _FakeLogger(),
       );
 
       final names = <String>[];

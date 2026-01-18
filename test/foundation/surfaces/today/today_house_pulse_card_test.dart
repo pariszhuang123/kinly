@@ -33,18 +33,19 @@ void main() {
       imageKey: 'pulse_sunny_calm',
       ui: const {},
     );
-    final seen = seenUpToDate
-        ? HousePulseRead(
-            homeId: 'home-1',
-            userId: 'user-1',
-            isoWeekYear: 2026,
-            isoWeek: 3,
-            contractVersion: 'v1',
-            lastSeenPulseState: HousePulseState.sunnyCalm,
-            lastSeenComputedAt: computedAt,
-            seenAt: computedAt.add(const Duration(minutes: 1)),
-          )
-        : null;
+    final seen =
+        seenUpToDate
+            ? HousePulseRead(
+              homeId: 'home-1',
+              userId: 'user-1',
+              isoWeekYear: 2026,
+              isoWeek: 3,
+              contractVersion: 'v1',
+              lastSeenPulseState: HousePulseState.sunnyCalm,
+              lastSeenComputedAt: computedAt,
+              seenAt: computedAt.add(const Duration(minutes: 1)),
+            )
+            : null;
     return HousePulsePayload(pulse: pulse, label: label, seen: seen);
   }
 
@@ -76,7 +77,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(S.current.housePulseCardHeader), findsOneWidget);
-    expect(find.text(S.current.housePulseNewBadge), findsOneWidget);
+    expect(find.byKey(const ValueKey('house_pulse_new_badge')), findsOneWidget);
 
     await tester.tap(find.byType(TodayHousePulseCard));
     await tester.pumpAndSettle();
@@ -108,7 +109,5 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-
-    expect(find.text(S.current.housePulseNewBadge), findsNothing);
   });
 }

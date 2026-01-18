@@ -95,7 +95,6 @@ class HubMembersSection extends StatelessWidget {
                   KinlyMemberAvatarStack(
                     members: members,
                     accent: colorScheme.primary,
-                    maxVisible: 5,
                     radius: _avatarRadius,
                   ),
                 ],

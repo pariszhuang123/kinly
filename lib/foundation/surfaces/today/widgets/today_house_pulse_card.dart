@@ -6,13 +6,13 @@ import 'package:kinly/contracts/mood/enums/mood_scale.dart';
 import 'package:kinly/contracts/mood/house_pulse_models.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/spacing.dart';
+import 'package:kinly/core/ui/house_pulse_assets.dart';
 import 'package:kinly/core/ui/house_pulse_strings.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
 import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/section_container.dart';
 import 'package:kinly/generated/l10n.dart';
-import 'package:kinly/foundation/surfaces/today/domain/house_pulse_helpers.dart';
 
 class TodayHousePulseCard extends StatelessWidget {
   const TodayHousePulseCard({
@@ -36,9 +36,12 @@ class TodayHousePulseCard extends StatelessWidget {
     final updatedLabel = s.housePulseUpdatedOn(
       DateFormat.yMMMd().format(pulse.pulse.computedAt),
     );
-    final reflectionsLabel =
-        s.housePulseReflections(pulse.pulse.reflectionCount);
     final icon = _iconFor(pulse.pulse.pulseState, pulse.pulse.weatherDisplay);
+    final assetPath = resolveHousePulseAssetPath(
+      contractVersion: pulse.label.contractVersion,
+      imageKey: pulse.label.imageKey,
+      pulseState: pulse.pulse.pulseState,
+    );
 
     return KinlyTapTarget(
       onTap: onTap,
@@ -46,14 +49,13 @@ class TodayHousePulseCard extends StatelessWidget {
       child: SectionContainer(
         title: s.housePulseCardHeader,
         colors: palette,
-        trailing: hasUnseenHousePulse(pulse) ? _NewBadge(palette: palette) : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _PulseGlyph(icon: icon, palette: palette),
+                _PulseGlyph(icon: icon, palette: palette, assetPath: assetPath),
                 SizedBox(width: spacing.md),
                 Expanded(
                   child: Column(
@@ -80,17 +82,13 @@ class TodayHousePulseCard extends StatelessWidget {
                         runSpacing: spacing.xs,
                         children: [
                           _InfoPill(label: updatedLabel, palette: palette),
-                          _InfoPill(label: reflectionsLabel, palette: palette),
                         ],
                       ),
                     ],
                   ),
                 ),
                 SizedBox(width: spacing.sm),
-                Icon(
-                  KinlyIcons.chevronRightRounded,
-                  color: palette.icon,
-                ),
+                Icon(KinlyIcons.chevronRightRounded, color: palette.icon),
               ],
             ),
           ],
@@ -101,10 +99,15 @@ class TodayHousePulseCard extends StatelessWidget {
 }
 
 class _PulseGlyph extends StatelessWidget {
-  const _PulseGlyph({required this.icon, required this.palette});
+  const _PulseGlyph({
+    required this.icon,
+    required this.palette,
+    required this.assetPath,
+  });
 
   final IconData icon;
   final SectionColors palette;
+  final String assetPath;
 
   @override
   Widget build(BuildContext context) {
@@ -117,38 +120,16 @@ class _PulseGlyph extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsetsDirectional.all(spacing.sm),
-        child: Icon(
-          icon,
-          color: palette.accent,
-          size: 32,
-        ),
-      ),
-    );
-  }
-}
-
-class _NewBadge extends StatelessWidget {
-  const _NewBadge({required this.palette});
-  final SectionColors palette;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
-    return Container(
-      padding: EdgeInsetsDirectional.symmetric(
-        horizontal: spacing.sm,
-        vertical: spacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: palette.accent.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        S.of(context).housePulseNewBadge,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: palette.accent,
-          fontWeight: FontWeight.w600,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Image.asset(
+            assetPath,
+            width: 48,
+            height: 48,
+            fit: BoxFit.cover,
+            errorBuilder:
+                (_, __, ___) => Icon(icon, color: palette.accent, size: 32),
+          ),
         ),
       ),
     );
@@ -166,6 +147,7 @@ class _InfoPill extends StatelessWidget {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     return Container(
+      key: const ValueKey('house_pulse_new_badge'),
       padding: EdgeInsetsDirectional.symmetric(
         horizontal: spacing.sm,
         vertical: spacing.xs,

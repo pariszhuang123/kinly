@@ -4982,16 +4982,6 @@ class S {
     );
   }
 
-  /// `New this week`
-  String get housePulseNewBadge {
-    return Intl.message(
-      'New this week',
-      name: 'housePulseNewBadge',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Updated {date}`
   String housePulseUpdatedOn(String date) {
     return Intl.message(
