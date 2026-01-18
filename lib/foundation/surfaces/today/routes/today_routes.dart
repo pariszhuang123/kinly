@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/flow/ports/chores_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/mood/ports/mood_repository.dart';
@@ -53,7 +54,7 @@ List<GoRoute> buildTodayRoutes({
       builder: (_, state) {
         final args = state.extra as TodayHousePulseRouteArgs?;
         if (args == null) {
-          throw StateError('Today house pulse requires args.');
+          return routeFallback('todayHousePulse');
         }
         return BlocProvider.value(
           value: args.todayBloc,

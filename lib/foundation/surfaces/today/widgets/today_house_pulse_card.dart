@@ -9,9 +9,9 @@ import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/house_pulse_assets.dart';
 import 'package:kinly/core/ui/house_pulse_strings.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
-import 'package:kinly/core/ui/kinly_tap_target.dart';
+import 'package:kinly/core/ui/kinly_section_card.dart';
+import 'package:kinly/core/ui/enums/kinly_section_card_visual_position.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
-import 'package:kinly/core/ui/section_container.dart';
 import 'package:kinly/generated/l10n.dart';
 
 class TodayHousePulseCard extends StatelessWidget {
@@ -28,9 +28,8 @@ class TodayHousePulseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
     final s = S.of(context);
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
     final title = resolveHousePulseTitle(s, pulse.label.titleKey);
     final summary = resolveHousePulseSummary(s, pulse.label.summaryKey);
     final updatedLabel = s.housePulseUpdatedOn(
@@ -43,57 +42,21 @@ class TodayHousePulseCard extends StatelessWidget {
       pulseState: pulse.pulse.pulseState,
     );
 
-    return KinlyTapTarget(
+    return KinlySectionCard(
+      header: s.housePulseCardHeader,
+      palette: palette,
+      title: title,
+      summary: summary,
+      summaryMaxLines: 3,
       onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
-      child: SectionContainer(
-        title: s.housePulseCardHeader,
-        colors: palette,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _PulseGlyph(icon: icon, palette: palette, assetPath: assetPath),
-                SizedBox(width: spacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: palette.accent,
-                        ),
-                      ),
-                      SizedBox(height: spacing.xs),
-                      Text(
-                        summary,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: spacing.sm),
-                      Wrap(
-                        spacing: spacing.sm,
-                        runSpacing: spacing.xs,
-                        children: [
-                          _InfoPill(label: updatedLabel, palette: palette),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: spacing.sm),
-                Icon(KinlyIcons.chevronRightRounded, color: palette.icon),
-              ],
-            ),
-          ],
-        ),
+      visualPosition: KinlySectionCardVisualPosition.left,
+      visual: _PulseGlyph(icon: icon, palette: palette, assetPath: assetPath),
+      tags: Wrap(
+        spacing: spacing.sm,
+        runSpacing: spacing.xs,
+        children: [_InfoPill(label: updatedLabel, palette: palette)],
       ),
+      trailing: Icon(KinlyIcons.chevronRightRounded, color: palette.icon),
     );
   }
 }

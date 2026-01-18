@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/features/paywall/ui/paywall_route_args.dart';
 import 'package:kinly/features/paywall/ui/paywall_screen.dart';
 
@@ -12,7 +13,7 @@ List<GoRoute> buildPaywallRoutes() {
       builder: (_, state) {
         final args = state.extra as PaywallRouteArgs?;
         if (args == null) {
-          throw StateError('Paywall requires args.');
+          return routeFallback('paywall');
         }
         return KinlyPaywallScreen(
           homeId: args.homeId,

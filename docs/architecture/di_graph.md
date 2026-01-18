@@ -75,6 +75,7 @@ graph LR
   end
   app_di --> core_di
   app_router --> core_auth
+  app_router --> core_di
   app_router --> core_logging
   app_router --> features_flow
   app_router --> features_harmony
@@ -108,6 +109,7 @@ graph LR
   core_ui --> core_logging
   core_ui --> core_theme
   core_ui --> generated
+  core_ui --> renderer
   features_flow --> app_router
   features_flow --> contracts_chores
   features_flow --> contracts_flow
@@ -190,4 +192,7 @@ graph LR
   renderer --> contracts_homes
   renderer --> contracts_paywall
   renderer --> contracts_share
+  renderer --> core_theme
+  renderer --> core_ui
+  renderer --> generated
 ```

@@ -10,67 +10,22 @@ import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/house_pulse_assets.dart';
 import 'package:kinly/core/ui/house_pulse_strings.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
-import 'package:kinly/core/ui/kinly_scaffold.dart';
-import 'package:kinly/renderer/material/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
-import 'package:kinly/core/ui/buttons/kinly_fab.dart';
-import 'package:kinly/core/ui/kinly_app_bar.dart';
 import 'package:kinly/generated/l10n.dart';
-import 'package:kinly/renderer/material/share/snapshot_sharer.dart';
+import 'package:kinly/renderer/material/share/kinly_story_share_scaffold.dart';
 import 'package:kinly/foundation/surfaces/today/bloc/today_bloc.dart';
+import 'package:kinly/renderer/material/share/kinly_share_card.dart';
 
-class TodayHousePulseDetailScreen extends StatefulWidget {
+class TodayHousePulseDetailScreen extends StatelessWidget {
   const TodayHousePulseDetailScreen({super.key, required this.pulse});
 
   final HousePulsePayload pulse;
 
   @override
-  State<TodayHousePulseDetailScreen> createState() =>
-      _TodayHousePulseDetailScreenState();
-}
-
-class _TodayHousePulseDetailScreenState
-    extends State<TodayHousePulseDetailScreen> {
-  final GlobalKey _repaintKey = GlobalKey();
-  bool _isSharing = false;
-
-  Future<void> _share() async {
-    if (_isSharing || !mounted) return;
-    setState(() => _isSharing = true);
-    final s = S.of(context);
-    try {
-      context.read<TodayBloc>().add(
-        const TodayHousePulseShareLogged(channel: 'system_share'),
-      );
-      await WidgetsBinding.instance.endOfFrame;
-      if (!mounted) return;
-      final shared = await SnapshotSharer.shareRepaintBoundary(
-        context: context,
-        repaintKey: _repaintKey,
-        fileNamePrefix: 'house_pulse',
-        logTag: 'house_pulse',
-        subject: s.housePulseShareTitle,
-        messageBuilder: (appLink) => s.housePulseShareMessage(appLink),
-      );
-      if (!shared && mounted) {
-        KinlySnackBar.showError(context, s.housePulseShareError);
-      }
-    } catch (_) {
-      if (mounted) {
-        KinlySnackBar.showError(context, s.housePulseShareError);
-      }
-    } finally {
-      if (mounted) setState(() => _isSharing = false);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>()!;
     final s = S.of(context);
-    final pulse = widget.pulse;
     final title = resolveHousePulseTitle(s, pulse.label.titleKey);
     final summary = resolveHousePulseSummary(s, pulse.label.summaryKey);
     final updatedLabel = s.housePulseUpdatedOn(
@@ -86,46 +41,27 @@ class _TodayHousePulseDetailScreenState
       pulseState: pulse.pulse.pulseState,
     );
 
-    return KinlyScaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: KinlyAppBar(
-        backgroundColor: theme.colorScheme.surface,
-        foregroundColor: theme.colorScheme.onSurface,
-      ),
-      body: ColoredBox(
-        color: theme.colorScheme.surface,
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsetsDirectional.all(spacing.lg),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 560),
-                child: RepaintBoundary(
-                  key: _repaintKey,
-                  child: HousePulseShareCard(
-                    pulse: pulse,
-                    palette: sections.pulse,
-                    title: title,
-                    summary: summary,
-                    updatedLabel: updatedLabel,
-                    reflectionsLabel: reflectionsLabel,
-                    icon: icon,
-                    assetPath: assetPath,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-      floatingActionButton: IgnorePointer(
-        ignoring: _isSharing,
-        child: KinlyFab(
-          heroTag: 'house_pulse_share_fab',
-          tooltip: s.housePulseShareCta,
-          icon: KinlyIcons.iosShareRounded,
-          onPressed: _share,
-        ),
+    return KinlyStoryShareScaffold(
+      fileNamePrefix: 'house_pulse',
+      logTag: 'house_pulse',
+      appBarTitle: null, // As requested
+      fabTooltip: s.housePulseShareCta,
+      subjectBuilder: (ctx) => s.housePulseShareTitle,
+      messageBuilder: (ctx, appLink) => s.housePulseShareMessage(appLink),
+      onSharePressed: () async {
+        context.read<TodayBloc>().add(
+          const TodayHousePulseShareLogged(channel: 'system_share'),
+        );
+      },
+      child: HousePulseShareCard(
+        pulse: pulse,
+        palette: sections.pulse,
+        title: title,
+        summary: summary,
+        updatedLabel: updatedLabel,
+        reflectionsLabel: reflectionsLabel,
+        icon: icon,
+        assetPath: assetPath,
       ),
     );
   }
@@ -155,63 +91,24 @@ class HousePulseShareCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
-    final s = S.of(context);
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: palette.card,
-        borderRadius: BorderRadius.circular(28),
-        gradient: LinearGradient(
-          colors: [
-            palette.card,
-            palette.card.withValues(alpha: 0.92),
-            palette.card.withValues(alpha: 0.86),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+    return KinlyShareCard(
+      header: S.of(context).housePulseCardHeader,
+      title: title,
+      summary: summary,
+      palette: palette,
+      useGradientBackground: true,
+      visualContent: _ShareGlyph(
+        icon: icon,
+        palette: palette,
+        assetPath: assetPath,
       ),
-      child: Padding(
-        padding: EdgeInsetsDirectional.all(spacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              s.housePulseCardHeader,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: spacing.sm),
-            Text(
-              title,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                color: palette.accent,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: spacing.md),
-            _ShareGlyph(icon: icon, palette: palette, assetPath: assetPath),
-            SizedBox(height: spacing.md),
-            Text(
-              summary,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: spacing.lg),
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: spacing.md,
-              runSpacing: spacing.xs,
-              children: [_SharePill(label: updatedLabel, palette: palette)],
-            ),
-          ],
-        ),
+      footerContent: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: spacing.md,
+        runSpacing: spacing.xs,
+        children: [_SharePill(label: updatedLabel, palette: palette)],
       ),
     );
   }

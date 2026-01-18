@@ -368,9 +368,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "housePulseShareCta": MessageLookupByLibrary.simpleMessage(
       "Compartir pulso",
     ),
-    "housePulseShareError": MessageLookupByLibrary.simpleMessage(
-      "No se pudo compartir el pulso ahora. Intenta nuevamente.",
-    ),
     "housePulseShareMessage": m8,
     "housePulseShareTitle": MessageLookupByLibrary.simpleMessage(
       "Compartiendo el pulso de mi hogar en Kinly",

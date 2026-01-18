@@ -8,8 +8,11 @@ import 'package:kinly/core/ui/house_vibe_assets.dart';
 import 'package:kinly/core/ui/house_vibe_strings.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
-import 'package:kinly/core/ui/section_container.dart';
 import 'package:kinly/generated/l10n.dart';
+
+import 'package:kinly/renderer/material/share/kinly_share_card.dart';
+import 'package:kinly/core/ui/kinly_section_card.dart';
+import 'package:kinly/core/ui/enums/kinly_section_card_visual_position.dart';
 
 class HouseInfoCardData {
   const HouseInfoCardData({
@@ -89,94 +92,35 @@ class HouseInfoCard extends StatelessWidget {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
 
-    return SectionContainer(
-      title: data.header,
-      colors: data.palette,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.title,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: data.palette.accent,
-                      ),
-                    ),
-                    if (data.summary.isNotEmpty) ...[
-                      SizedBox(height: spacing.xs),
-                      Text(
-                        data.summary,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
-                    if (showCoverage &&
-                        (data.coverage?.isNotEmpty ?? false)) ...[
-                      SizedBox(height: spacing.sm),
-                      Text(
-                        data.coverage!,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              SizedBox(width: spacing.md),
-              Container(
-                height: 72,
-                width: 72,
-                decoration: BoxDecoration(
-                  color: data.palette.card,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                padding: EdgeInsetsDirectional.all(spacing.xs),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
-                    data.assetPath,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) {
-                      data.logger?.warn(
-                        'house_info_asset_load_failed ${data.logContext} '
-                        'assetPath=${data.assetPath}',
-                      );
-                      return Icon(
-                        KinlyIcons.brokenImage,
-                        color: data.palette.icon,
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
+    return KinlySectionCard(
+      header: data.header,
+      palette: data.palette,
+      title: data.title,
+      summary: data.summary,
+      // Note: we purposely omit 'footer' ("Made with Kinly") and 'tags' (coverage) as requested.
+      visualPosition: KinlySectionCardVisualPosition.right,
+      visual: Container(
+        height: 72,
+        width: 72,
+        decoration: BoxDecoration(
+          color: data.palette.card,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        padding: EdgeInsetsDirectional.all(spacing.xs),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Image.asset(
+            data.assetPath,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) {
+              data.logger?.warn(
+                'house_info_asset_load_failed ${data.logContext} '
+                'assetPath=${data.assetPath}',
+              );
+              return Icon(KinlyIcons.brokenImage, color: data.palette.icon);
+            },
           ),
-          SizedBox(height: spacing.md),
-          Container(
-            padding: EdgeInsetsDirectional.symmetric(
-              horizontal: spacing.sm,
-              vertical: spacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: data.palette.card.withValues(alpha: 0.9),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              data.footer,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -192,79 +136,45 @@ class HouseInfoShareCard extends StatelessWidget {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: data.palette.card,
-        borderRadius: BorderRadius.circular(28),
+    return KinlyShareCard(
+      header: data.header,
+      title: data.title,
+      summary: data.summary,
+      palette: data.palette,
+      // HouseInfoCard uses solid background
+      useGradientBackground: false,
+      visualContent: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: AspectRatio(
+          aspectRatio: 4 / 3,
+          child: Image.asset(
+            data.assetPath,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) {
+              data.logger?.warn(
+                'house_info_asset_load_failed ${data.logContext} '
+                'assetPath=${data.assetPath}',
+              );
+              return Icon(KinlyIcons.brokenImage, color: data.palette.icon);
+            },
+          ),
+        ),
       ),
-      child: Padding(
-        padding: EdgeInsetsDirectional.all(spacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              data.header,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: spacing.sm),
-            Text(
-              data.title,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                color: data.palette.accent,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: spacing.md),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: AspectRatio(
-                aspectRatio: 4 / 3,
-                child: Image.asset(
-                  data.assetPath,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) {
-                    data.logger?.warn(
-                      'house_info_asset_load_failed ${data.logContext} '
-                      'assetPath=${data.assetPath}',
-                    );
-                    return Icon(
-                      KinlyIcons.brokenImage,
-                      color: data.palette.icon,
-                    );
-                  },
-                ),
-              ),
-            ),
-            SizedBox(height: spacing.md),
-            Text(
-              data.summary,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: spacing.lg),
-            Container(
-              padding: EdgeInsetsDirectional.symmetric(
-                horizontal: spacing.md,
-                vertical: spacing.xs,
-              ),
-              decoration: BoxDecoration(
-                color: data.palette.card,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Text(
-                data.footer,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
+      footerContent: Container(
+        padding: EdgeInsetsDirectional.symmetric(
+          horizontal: spacing.md,
+          vertical: spacing.xs,
+        ),
+        decoration: BoxDecoration(
+          color: data.palette.card,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Text(
+          data.footer,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );

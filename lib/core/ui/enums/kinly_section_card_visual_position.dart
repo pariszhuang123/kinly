@@ -1,0 +1,1 @@
+enum KinlySectionCardVisualPosition { left, right }

@@ -1298,7 +1298,6 @@
       }
     }
   },
-  "housePulseShareError": "Couldn't share the pulse right now. Please try again.",
   "housePulseUpdatedOn": "Updated {date}",
   "@housePulseUpdatedOn": {
     "placeholders": {

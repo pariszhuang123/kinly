@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/flow/ports/chores_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/core/di/locator.dart';
@@ -61,7 +62,7 @@ List<GoRoute> buildFlowRoutes({
       builder: (_, state) {
         final args = state.extra as FlowChorePhotoViewerArgs?;
         if (args == null) {
-          throw StateError('Flow chore photo viewer requires args.');
+          return routeFallback('flowChorePhoto');
         }
         return FlowChoreExpectationPhotoViewerPage(
           photoUrl: args.photoUrl,

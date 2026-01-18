@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/preferences/ui/preference_onboarding_provider.dart';
@@ -90,7 +91,7 @@ List<GoRoute> buildPreferenceRoutes({
         final membership = resolveContext();
         final subjectUserId = state.pathParameters['subjectUserId'];
         if (subjectUserId == null || subjectUserId.isEmpty) {
-          throw StateError('Preference report view requires subjectUserId.');
+          return routeFallback('preferenceReportView');
         }
         String? displayName;
         String? avatarUrl;
@@ -163,7 +164,7 @@ List<GoRoute> buildPreferenceRoutes({
       builder: (_, state) {
         final args = state.extra as PreferenceReportSectionRouteArgs?;
         if (args == null) {
-          throw StateError('Preference report section edit requires args.');
+          return routeFallback('preferenceReportSectionEdit');
         }
         return PreferenceReportSectionScreen(args: args);
       },

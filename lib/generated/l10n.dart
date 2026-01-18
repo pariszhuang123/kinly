@@ -4972,16 +4972,6 @@ class S {
     );
   }
 
-  /// `Couldn't share the pulse right now. Please try again.`
-  String get housePulseShareError {
-    return Intl.message(
-      'Couldn\'t share the pulse right now. Please try again.',
-      name: 'housePulseShareError',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Updated {date}`
   String housePulseUpdatedOn(String date) {
     return Intl.message(

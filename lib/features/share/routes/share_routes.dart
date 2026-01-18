@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/core/di/locator.dart';
@@ -71,7 +72,7 @@ List<GoRoute> buildShareRoutes({
       builder: (_, state) {
         final args = state.extra as ShareOwedDetailRouteArgs?;
         if (args == null) {
-          throw StateError('Share owed detail requires args.');
+          return routeFallback('shareOwedDetail');
         }
         return ShareOwedDetailScreen(
           owed: args.owed,
@@ -85,7 +86,7 @@ List<GoRoute> buildShareRoutes({
       builder: (_, state) {
         final args = state.extra as SharePaidToMeDetailRouteArgs?;
         if (args == null) {
-          throw StateError('Share paid-to-me detail requires args.');
+          return routeFallback('sharePaidToMeDetail');
         }
         return SharePaidToMeDetailScreen(
           entry: args.entry,

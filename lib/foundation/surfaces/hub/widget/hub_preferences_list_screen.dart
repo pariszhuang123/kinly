@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kinly/renderer/material/share/kinly_story_share_scaffold.dart';
 
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/homes/models.dart';
@@ -9,7 +10,6 @@ import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/spacing.dart';
-import 'package:kinly/core/ui/buttons/kinly_fab.dart';
 import 'package:kinly/core/ui/house/house_info_card.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
@@ -18,11 +18,8 @@ import 'package:kinly/core/ui/kinly_scrollbar.dart';
 import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
-import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/foundation/surfaces/hub/routes/hub_house_vibe_share_route_args.dart';
 import 'package:kinly/generated/l10n.dart';
-import 'package:kinly/renderer/material/share/snapshot_sharer.dart';
-import 'package:flutter/services.dart';
 import '../bloc/hub_bloc.dart';
 
 class HubPreferencesListScreen extends StatelessWidget {
@@ -236,7 +233,7 @@ class _HouseVibeSectionState extends State<_HouseVibeSection> {
   }
 }
 
-class HouseVibeShareScreen extends StatefulWidget {
+class HouseVibeShareScreen extends StatelessWidget {
   const HouseVibeShareScreen({
     super.key,
     required this.vibe,
@@ -249,131 +246,33 @@ class HouseVibeShareScreen extends StatefulWidget {
   final HubBloc hubBloc;
 
   @override
-  State<HouseVibeShareScreen> createState() => _HouseVibeShareScreenState();
-}
-
-class _HouseVibeShareScreenState extends State<HouseVibeShareScreen> {
-  final GlobalKey _repaintKey = GlobalKey();
-  bool _isSharing = false;
-
-  Future<void> _share(HouseInfoCardData data) async {
-    if (_isSharing || !mounted) return;
-    setState(() => _isSharing = true);
-    final s = S.of(context);
-    try {
-      widget.hubBloc.add(
-        const HubShareLogged(feature: 'house_vibe', channel: 'system_share'),
-      );
-      await precacheImage(AssetImage(data.assetPath), context);
-      if (!mounted) return;
-      await WidgetsBinding.instance.endOfFrame;
-      if (!mounted) return;
-
-      final shared = await SnapshotSharer.shareRepaintBoundary(
-        context: context,
-        repaintKey: _repaintKey,
-        fileNamePrefix: 'house_vibe',
-        logTag: 'house_vibe',
-        subject: s.houseVibeShareTitle,
-        messageBuilder: (appLink) => s.houseVibeShareMessage(appLink),
-      );
-      if (!mounted) return;
-      if (!shared && mounted) {
-        KinlySnackBar.showError(context, s.houseVibeShareError);
-      }
-    } catch (_) {
-      if (mounted) {
-        KinlySnackBar.showError(context, s.houseVibeShareError);
-      }
-    } finally {
-      if (mounted) setState(() => _isSharing = false);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>();
-    final resolvedPalette = sections?.preference ?? widget.palette;
-    final _ = context.preferenceSection;
-    final surface = theme.colorScheme.surface;
-    final overlay =
-        theme.brightness == Brightness.dark
-            ? SystemUiOverlayStyle.light.copyWith(
-              statusBarColor: surface,
-              systemNavigationBarColor: surface,
-              systemNavigationBarIconBrightness: Brightness.light,
-            )
-            : SystemUiOverlayStyle.dark.copyWith(
-              statusBarColor: surface,
-              systemNavigationBarColor: surface,
-              systemNavigationBarIconBrightness: Brightness.dark,
-            );
+    final resolvedPalette = sections?.preference ?? palette;
+
     final data = HouseInfoCardData.fromVibe(
-      vibe: widget.vibe,
+      vibe: vibe,
       palette: resolvedPalette,
       strings: s,
       includeCoverage: false,
       logger: sl.isRegistered<Logger>() ? sl<Logger>() : const DebugLogger(),
     );
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: overlay,
-      child: KinlyScaffold(
-        backgroundColor: surface,
-        appBar: KinlyAppBar(
-          backgroundColor: surface,
-          foregroundColor: theme.colorScheme.onSurface,
-          title: Text(s.houseVibeShareTitle),
-        ),
-        body: ColoredBox(
-          color: surface,
-          child: RepaintBoundary(
-            key: _repaintKey,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                var width = constraints.maxWidth;
-                var height = width * (16 / 9);
-                if (height > constraints.maxHeight) {
-                  height = constraints.maxHeight;
-                  width = height * (9 / 16);
-                }
-
-                return Center(
-                  child: SizedBox(
-                    width: width,
-                    height: height,
-                    child: ColoredBox(
-                      color: surface,
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.all(spacing.xl),
-                        child: Column(
-                          children: [
-                            const Spacer(),
-                            HouseInfoShareCard(data: data),
-                            const Spacer(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-        floatingActionButton: IgnorePointer(
-          ignoring: _isSharing,
-          child: KinlyFab(
-            heroTag: 'house_vibe_share_fab',
-            tooltip: s.houseVibeShareCta,
-            icon: KinlyIcons.iosShareRounded,
-            onPressed: () => _share(data),
-          ),
-        ),
-      ),
+    return KinlyStoryShareScaffold(
+      fileNamePrefix: 'house_vibe',
+      logTag: 'house_vibe',
+      appBarTitle: null, // As requested: remove title
+      fabTooltip: s.houseVibeShareCta,
+      subjectBuilder: (ctx) => s.houseVibeShareTitle,
+      messageBuilder: (ctx, appLink) => s.houseVibeShareMessage(appLink),
+      onSharePressed: () async {
+        hubBloc.add(
+          const HubShareLogged(feature: 'house_vibe', channel: 'system_share'),
+        );
+      },
+      child: HouseInfoShareCard(data: data),
     );
   }
 }
