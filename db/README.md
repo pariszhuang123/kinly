@@ -12,6 +12,10 @@ Version: v1.0
 
 This folder contains SQL migrations and RPC definitions for the Home-only MVP.
 
+Deprecation notice
+- Source of truth for schema/RLS/migrations now lives under `supabase/`. Do not add new changes here.
+- If you need DB history, consult the archived files below or move any missing artifacts into `supabase/` before editing.
+
 Conventions
 - Forward-only in Supabase: Production only applies `*.up.sql`. Do not rely on downs; author safe, incremental migrations.
 - File naming: `NNNN_name.up.sql` (no `down.sql` required).

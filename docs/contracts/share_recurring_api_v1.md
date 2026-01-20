@@ -1,18 +1,16 @@
 ---
 Domain: SHARE
-Capability: Recurring Expenses
+Capability: Recurring Expenses API
 Scope: backend
 Artifact-Type: contract
 Stability: stable
-Status: Approved
+Status: Draft
 Version: v1.1
 ---
 
-# Kinly Share — One-Off & Recurring Expenses (v1.1)
+# Kinly Share — One-Off & Recurring Expenses (API) v1.1
 
 Status: Updated (recurring folded into expenses_create/edit; bulk pay)
-Split note: API details now in `share_recurring_api_v1.md`; product/UX rules in `share_recurring_product_v1.md`. This file remains as the combined legacy view during migration.
-
 Applies to: expenses, expense_splits, expense_plans, expense_plan_debtors, paywall, cron
 
 ## 1. Purpose
@@ -21,7 +19,7 @@ Introduce recurring shared expenses while keeping one-off behavior stable, audit
 ## 2. Core Principles
 - Plans define intent; expenses record reality. Once active, expenses are immutable snapshots.
 - Draft is provisional (creator-only, quota-free); activation is a one-way door.
-- Assignment is the commitment trigger: activation requires amount + ≥2 distinct debtors.
+- Assignment is the commitment trigger: activation requires ≥2 distinct debtors.
 - Each cycle is independent; there is no global “settled plan.”
 - System generation is never blocked: cron always generates cycles; paywall blocks users, not cron.
 - Termination stops future cycles only; historical expenses remain payable.
@@ -130,7 +128,3 @@ Generated per expense (one-off or cycle).
 - Schedule: `0 3 * * *`
 - Command: `SELECT public.expense_plans_generate_due_cycles();`
 - Upsert-like behavior; re-running migration reschedules idempotently.
-
-## 11. Surface Expectations
-- Today and Explore behave as before; recurring cycles appear as regular active expenses with `planId` and `recurrenceInterval` set.
-- `expenses_get_for_edit` returns `editDisabledReason` of `ACTIVE_IMMUTABLE`, `RECURRING_CYCLE_IMMUTABLE`, or `CONVERTED_TO_PLAN` when edits are blocked.

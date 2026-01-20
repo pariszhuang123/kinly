@@ -156,6 +156,13 @@ Future<void> main() async {
       'run',
       'tool/check_doc_headers.dart',
     ]),
+    const _Check('check_doc_migration_map', 'python', [
+      'tool/check_doc_migration_map.py',
+    ]),
+    const _Check('check_doc_headers', 'dart', [
+      'run',
+      'tool/check_doc_headers.dart',
+    ]),
 
     // --- Arch diagrams ---
     // Local dev: regenerate first so checks won't fail just because the diagram is stale.

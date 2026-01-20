@@ -8,9 +8,7 @@ Status: Draft
 Version: v1.0
 ---
 
-# Paywall Gate Contract (Client)
-
-Note: Split into `paywall_gate_product_v1.md` (behavior) and `paywall_gate_copy_v1.md` (copy). Keep this file as the legacy combined view until migration completes.
+# Paywall Gate Contract (Product / Client Behavior)
 
 Scope: client-side paywall gating + deterministic retry.
 
@@ -21,7 +19,7 @@ Scope: client-side paywall gating + deterministic retry.
 
 ## Non-goals
 - No new backend tables or RLS changes.
-- No server-side “retry queue”.
+- No server-side retry queue.
 - No feature-specific callbacks for retry.
 
 ## Shared module
@@ -40,7 +38,7 @@ Requirements:
 - Push `KinlyPaywallScreen` and await result (forward `request.triggers` so benefits can be ordered by trigger).
 - If result indicates purchase success/restore:
   - call `await paywallRepository.refreshStatus(homeId)`
-  - optional backoff retry refresh: 250ms → 500ms → 1000ms (max 3)
+  - optional backoff retry refresh: 250ms + 500ms + 1000ms (max 3)
 - Return outcome with status.
 
 ## Feature BLoC integration (per feature)
