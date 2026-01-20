@@ -45,7 +45,12 @@ class JoinHomeRegistry {
       JoinHomeSectionEntry(
         id: 'form',
         order: 10,
-        builder: (scope) => JoinHomeForm(initialCode: scope.initialCode),
+        builder:
+            (scope) => Center(
+              child: SingleChildScrollView(
+                child: JoinHomeForm(initialCode: scope.initialCode),
+              ),
+            ),
       ),
     );
   }

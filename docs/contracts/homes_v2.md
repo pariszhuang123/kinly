@@ -1,3 +1,13 @@
+---
+Domain: HOME
+Capability: Homes & Membership Stints
+Scope: backend
+Artifact-Type: contract
+Stability: evolving
+Status: Draft
+Version: v2.0
+---
+
 # Kinly Contracts v2 — Home MVP (membership stints)
 
 Status: Draft for alignment with new SQL

@@ -1,3 +1,13 @@
+---
+Domain: Engineering System
+Capability: Architecture Guardrails
+Scope: platform
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.1
+---
+
 # Architecture Guardrails Contract v1.1 (Kinly)
 
 Status: Proposed  

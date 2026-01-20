@@ -1,3 +1,13 @@
+---
+Domain: HOME
+Capability: House Vibe Mapping Effects
+Scope: backend
+Artifact-Type: reference
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # House Vibe Mapping Effects v1 (pref_id → axes)
 # Instruction: Do not invent new behavior. If something is ambiguous, ask rather than assume.
 

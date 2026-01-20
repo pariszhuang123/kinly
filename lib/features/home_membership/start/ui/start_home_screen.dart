@@ -63,11 +63,11 @@ class _StartHomeView extends StatelessWidget {
             ? userContext!.displayName!.trim()
             : null;
     final personalizedTitle =
-        hasAvatar
+        (hasAvatar || displayName != null)
             ? s.startReturningTitle(displayName ?? s.friendDefaultName)
-            : null;
+            : s.welcome_title;
     final personalizedSubtitle =
-        hasAvatar ? s.startReturningSubtitle : null;
+        hasAvatar ? s.startReturningSubtitle : s.membership_status_none;
 
     return AuthErrorListener(
       child: KinlyScaffold(
@@ -193,21 +193,20 @@ class _PersonalProfileAction extends StatelessWidget {
             displayName?.isNotEmpty == true
                 ? displayName!.substring(0, 1).toUpperCase()
                 : strings.personalProfileTitle.isNotEmpty
-                    ? strings.personalProfileTitle
-                        .substring(0, 1)
-                        .toUpperCase()
-                    : 'Y';
+                ? strings.personalProfileTitle.substring(0, 1).toUpperCase()
+                : 'Y';
         return Semantics(
           label: strings.personalProfileTitle,
           button: true,
           child: Padding(
             padding: EdgeInsetsDirectional.only(end: spacing?.md ?? 12),
             child: KinlyTapTarget(
-              onTap: () => showPersonalProfileSheet(
-                context: context,
-                userContextCubit: context.read<UserContextCubit>(),
-                entrySource: entrySource,
-              ),
+              onTap:
+                  () => showPersonalProfileSheet(
+                    context: context,
+                    userContextCubit: context.read<UserContextCubit>(),
+                    entrySource: entrySource,
+                  ),
               borderRadius: BorderRadius.circular(32),
               child: Padding(
                 padding: EdgeInsetsDirectional.all((spacing?.xs ?? 4) / 2),

@@ -1,3 +1,13 @@
+---
+Domain: IDENTITY
+Capability: Users Auth & Lifecycle
+Scope: backend
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # Users Contracts v1 — Auth and Lifecycle
 
 Status: Draft for MVP (home-only)

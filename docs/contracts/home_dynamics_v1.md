@@ -1,3 +1,13 @@
+---
+Domain: HOME
+Capability: Home Preferences & Rules
+Scope: shared
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # Kinly Contract v1 - Home Preferences, Vibe, and Rules
 
 Status: Canonical rationale (non-breaking)

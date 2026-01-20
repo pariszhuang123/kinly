@@ -1,3 +1,13 @@
+---
+Domain: Engineering System
+Capability: Testing Guardrails
+Scope: platform
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # Testing — Unified Contract (v1)
 
 Scope: Kinly MVP (Flow, Share, Pulse/Gratitude, Home, Auth, Paywall). Applies to Flutter app, Supabase RPCs/migrations, and Edge Functions.

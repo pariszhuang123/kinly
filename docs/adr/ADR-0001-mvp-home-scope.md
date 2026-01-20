@@ -1,3 +1,13 @@
+---
+Domain: PLATFORM
+Capability: Home MVP Scope
+Scope: platform
+Artifact-Type: adr
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # ADR-0001: Home-only MVP Scope and Guardrails
 
 Status: Accepted

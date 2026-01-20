@@ -134,10 +134,10 @@ class S {
     return Intl.message('Join Home', name: 'join_title', desc: '', args: []);
   }
 
-  /// `Enter invite code`
+  /// `Enter invite code Eg. ABC123`
   String get join_hint {
     return Intl.message(
-      'Enter invite code',
+      'Enter invite code Eg. ABC123',
       name: 'join_hint',
       desc: '',
       args: [],

@@ -1,3 +1,13 @@
+---
+Domain: Engineering System
+Capability: Database Migrations
+Scope: backend
+Artifact-Type: guide
+Stability: evolving
+Status: Approved
+Version: v1.0
+---
+
 # Database Migrations & Workflow
 
 This folder contains SQL migrations and RPC definitions for the Home-only MVP.

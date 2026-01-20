@@ -15,20 +15,17 @@ class StartHomeBody extends StatelessWidget {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
     final s = scope.strings;
-    final isPersonalized = scope.isPersonalized;
+
     final title = scope.personalizedTitle ?? s.welcome_title;
-    final subtitle =
-        scope.personalizedSubtitle ?? scope.membershipMessage;
-    final crossAxisAlignment =
-        isPersonalized ? CrossAxisAlignment.start : CrossAxisAlignment.stretch;
-    final textAlign = isPersonalized ? TextAlign.start : TextAlign.center;
+    final subtitle = scope.personalizedSubtitle ?? scope.membershipMessage;
+    final textAlign = TextAlign.center;
 
     return Padding(
       padding: EdgeInsetsDirectional.all(spacing?.lg ?? 16),
       child: Column(
-        crossAxisAlignment: crossAxisAlignment,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Spacer(),
           Text(
             title,
             style: theme.textTheme.headlineMedium,
@@ -40,20 +37,28 @@ class StartHomeBody extends StatelessWidget {
             textAlign: textAlign,
             style: theme.textTheme.bodyMedium,
           ),
-          const Spacer(),
-          KinlyFilledButton.text(
-            fullWidth: true,
-            label:
-                scope.isCreating
-                    ? s.membership_status_checking
-                    : s.welcome_create,
-            onPressed: scope.canPress ? scope.actions.onCreate : null,
-          ),
-          SizedBox(height: spacing?.m ?? 12),
-          KinlyFilledButton.text(
-            fullWidth: true,
-            label: s.welcome_join,
-            onPressed: scope.canPress ? scope.actions.onJoin : null,
+          SizedBox(height: spacing?.xl ?? 32),
+          Row(
+            children: [
+              Expanded(
+                child: KinlyFilledButton.text(
+                  fullWidth: true,
+                  label:
+                      scope.isCreating
+                          ? s.membership_status_checking
+                          : s.welcome_create,
+                  onPressed: scope.canPress ? scope.actions.onCreate : null,
+                ),
+              ),
+              SizedBox(width: spacing?.m ?? 12),
+              Expanded(
+                child: KinlyFilledButton.text(
+                  fullWidth: true,
+                  label: s.welcome_join,
+                  onPressed: scope.canPress ? scope.actions.onJoin : null,
+                ),
+              ),
+            ],
           ),
         ],
       ),

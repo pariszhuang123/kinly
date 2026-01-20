@@ -1,3 +1,13 @@
+---
+Domain: Design System
+Capability: Core UI Primitives
+Scope: frontend
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # Kinly Core UI Primitives
 
 Purpose: Shared widgets under `lib/core/ui/**` to keep spacing, colors,

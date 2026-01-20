@@ -1,3 +1,13 @@
+---
+Domain: SHARE
+Capability: Recurring Expenses
+Scope: backend
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.1
+---
+
 # Kinly Share — One-Off & Recurring Expenses (v1.1)
 
 Status: Updated (recurring folded into expenses_create/edit; bulk pay)

@@ -1,3 +1,13 @@
+---
+Domain: Engineering System
+Capability: Complexity Budget
+Scope: platform
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # Complexity Budget Contract (v1)
 
 Scope: Dart sources (Flutter client). Goal: keep logic reviewable, testable, and safe to change by capping cyclomatic complexity (CC) and nudging extraction when branches grow.

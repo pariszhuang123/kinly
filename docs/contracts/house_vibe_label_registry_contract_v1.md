@@ -1,3 +1,13 @@
+---
+Domain: Design System
+Capability: House Vibe Label Registry
+Scope: frontend
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # House Vibe Label Registry Contract v1 (Presentation Metadata)
 # Instruction: Do not invent new behavior. If something is ambiguous, ask rather than assume.
 

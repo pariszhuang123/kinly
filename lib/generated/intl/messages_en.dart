@@ -452,7 +452,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t join this home. Please try again.",
     ),
-    "join_hint": MessageLookupByLibrary.simpleMessage("Enter invite code"),
+    "join_hint": MessageLookupByLibrary.simpleMessage(
+      "Enter invite code Eg. ABC123",
+    ),
     "join_submit": MessageLookupByLibrary.simpleMessage("Join"),
     "join_success": m13,
     "join_title": MessageLookupByLibrary.simpleMessage("Join Home"),

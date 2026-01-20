@@ -1,3 +1,13 @@
+---
+Domain: HOME
+Capability: Invites
+Scope: backend
+Artifact-Type: adr
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # ADR-0002: Permanent Invites (Until Revoked)
 
 Status: Accepted

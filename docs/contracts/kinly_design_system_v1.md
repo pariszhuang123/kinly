@@ -1,3 +1,13 @@
+---
+Domain: Design System
+Capability: Design System Foundations
+Scope: frontend
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 ## Kinly Design System Contract v1
 
 - Status: Proposed

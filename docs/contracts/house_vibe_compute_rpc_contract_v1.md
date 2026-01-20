@@ -1,3 +1,13 @@
+---
+Domain: HOME
+Capability: House Vibe Compute
+Scope: backend
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # House Vibe Compute RPC Contract v1
 # Instruction: Do not invent new behavior. If something is ambiguous, ask rather than assume.
 

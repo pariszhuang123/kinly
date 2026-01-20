@@ -35,7 +35,7 @@
   "welcome_join": "Join a Home",
   "create_failed_generic": "Could not create the home. Try again.",
   "join_title": "Join Home",
-  "join_hint": "Enter invite code",
+  "join_hint": "Enter invite code Eg. ABC123",
   "join_submit": "Join",
   "join_success": "You're in. Welcome home.",
   "@join_success": {

@@ -1,3 +1,13 @@
+---
+Domain: MONETIZATION
+Capability: Premium Paywall
+Scope: shared
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # Kinly Premium Paywall — Phase 1 Contract
 
 Scope: Paywall UI/flows, RevenueCat integration, Supabase sync, and telemetry for the home-only MVP.

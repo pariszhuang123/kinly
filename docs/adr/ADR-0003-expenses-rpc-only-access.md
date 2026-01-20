@@ -1,3 +1,13 @@
+---
+Domain: SHARE
+Capability: Expenses Access Control
+Scope: backend
+Artifact-Type: adr
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # ADR-0003: Expenses RPC-Only Access Guardrail
 
 Status: Accepted  

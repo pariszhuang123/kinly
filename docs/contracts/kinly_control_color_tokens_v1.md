@@ -1,3 +1,13 @@
+---
+Domain: Design System
+Capability: Control Color Tokens
+Scope: frontend
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 ## Kinly Control Color Tokens Contract v1.0
 
 - **Status:** Draft → Ready for Codex  

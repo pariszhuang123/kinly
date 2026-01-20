@@ -1,3 +1,13 @@
+---
+Domain: IDENTITY
+Capability: Auth & Account Lifecycle
+Scope: backend
+Artifact-Type: adr
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # ADR-0001: User Auth (OAuth-only) and Account Lifecycle
 
 Status: Accepted

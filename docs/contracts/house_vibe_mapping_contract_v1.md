@@ -1,3 +1,13 @@
+---
+Domain: HOME
+Capability: House Vibe Mapping
+Scope: shared
+Artifact-Type: contract
+Stability: stable
+Status: Approved
+Version: v1.0
+---
+
 # House Vibe Mapping Contract v1 (Axes → Label)
 # Instruction: Do not invent new behavior. If something is ambiguous, ask rather than assume.
 
