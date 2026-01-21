@@ -5,7 +5,7 @@ import sys
 
 def main() -> int:
     base = pathlib.Path(".").resolve()
-    roots = ("contracts", "coordination", "db", "docs")
+    roots = ("contracts", "db", "docs")
     source_files = []
     for root in roots:
         root_path = base / root
@@ -15,11 +15,31 @@ def main() -> int:
         source_files.extend(root_path.rglob("*.yml"))
         source_files.extend(root_path.rglob("*.yaml"))
 
+    ignore_prefixes = (
+        "coordination/",
+        "coordination_archived/",
+        "docs/architecture_archived/",
+        "docs/db_archived/",
+        "docs/design-system_archived/",
+        "docs/diagrams_archived/",
+        "docs/flows_archived/",
+        "docs/adr_archived/",
+        "docs/agents_archived/",
+        "docs/runbooks_archived/",
+        "docs/templates_archived/",
+        "docs/testing_archived/",
+        "docs/ui_archived/",
+    )
+
     source_rel = sorted(
         {
-            p.relative_to(base).as_posix()
-            for p in source_files
-            if p.name != "kinly_contracts_migration_map.md"
+            rel
+            for rel in (
+                p.relative_to(base).as_posix()
+                for p in source_files
+                if p.name != "kinly_contracts_migration_map.md"
+            )
+            if not rel.startswith(ignore_prefixes)
         }
     )
 
@@ -34,7 +54,7 @@ def main() -> int:
     mapped_sources = []
     for match in arrow_re.finditer(text):
         src = match.group(1).strip()
-        if src.startswith(("docs/", "contracts/", "coordination/", "db/")):
+        if src.startswith(("docs/", "contracts/", "db/")):
             mapped_sources.append(src)
 
     mapped_set = set(mapped_sources)

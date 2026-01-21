@@ -70,6 +70,9 @@ Non-destructive classification of kinly docs/contracts into kinly-contracts buck
 - docs/contracts/house_vibe_label_registry_contract_v1.md → contracts/design/copy/kinly/house_vibe_label_registry_contract_v1.md (presentation metadata)
 - docs/design-system/README.md → contracts/design/reference/kinly/design_system_readme.md
 - docs/design-system/components.md → contracts/design/reference/kinly/components.md
+- docs/contracts/architecture_guardrails_amendment_foundation_surfaces_v1.md → contracts/design/tokens/kinly/architecture_guardrails_amendment_foundation_surfaces_v1.md
+- docs/contracts/codex_i18n_hygiene.md → platform/engineering/codex_i18n_hygiene.md
+- docs/contracts/core_placement_rules_v1.md → contracts/product/kinly/shared/core_placement_rules_v1.md
 
 ## Bucket D — Architecture → architecture/**
 - docs/architecture/di_graph.md → architecture/di_graph.md (dependency graph)
@@ -121,11 +124,24 @@ Non-destructive classification of kinly docs/contracts into kinly-contracts buck
 - docs/adr/ADR-0001-user-auth-and-account-lifecycle.md → decisions/ADR-0001-user-auth-and-account-lifecycle.md
 - docs/adr/ADR-0002-invites-permanent-codes.md → decisions/ADR-0002-invites-permanent-codes.md
 - docs/adr/ADR-0003-expenses-rpc-only-access.md → decisions/ADR-0003-expenses-rpc-only-access.md
+- docs/adr_archived/ADR-0001-mvp-home-scope.md → decisions/archived/ADR-0001-mvp-home-scope.md
+- docs/adr_archived/ADR-0001-user-auth-and-account-lifecycle.md → decisions/archived/ADR-0001-user-auth-and-account-lifecycle.md
+- docs/adr_archived/ADR-0002-invites-permanent-codes.md → decisions/archived/ADR-0002-invites-permanent-codes.md
+- docs/adr_archived/ADR-0003-expenses-rpc-only-access.md → decisions/archived/ADR-0003-expenses-rpc-only-access.md
 
 ## Bucket F — Unclear / Mixed → _incoming/kinly/**
 - Currently empty after splitting paywall_gate and share_recurring. Use for any newly discovered mixed-scope files that cannot be cleanly classified in <10 seconds.
 
 ## Bucket G — Platform / Process / Guardrails → platform/**
+- coordination_archived/COORDINATION_GUIDE.md → platform/coordination/COORDINATION_GUIDE.md
+- coordination_archived/orchestration/agent_assignments.md → platform/coordination/orchestration/agent_assignments.md
+- coordination_archived/orchestration/integration_plan.md → platform/coordination/orchestration/integration_plan.md
+- coordination_archived/orchestration/progress_tracker.md → platform/coordination/orchestration/progress_tracker.md
+- coordination_archived/memory_bank/calibration_values.md → platform/coordination/memory_bank/calibration_values.md
+- coordination_archived/memory_bank/dependencies.md → platform/coordination/memory_bank/dependencies.md
+- coordination_archived/memory_bank/persona_paris.md → platform/coordination/memory_bank/persona_paris.md
+- coordination_archived/memory_bank/test_failures.md → platform/coordination/memory_bank/test_failures.md
+- coordination_archived/subtasks/README.md → platform/coordination/subtasks/README.md
 - coordination/COORDINATION_GUIDE.md → platform/coordination/COORDINATION_GUIDE.md
 - coordination/orchestration/agent_assignments.md → platform/coordination/orchestration/agent_assignments.md
 - coordination/orchestration/integration_plan.md → platform/coordination/orchestration/integration_plan.md
@@ -144,6 +160,15 @@ Non-destructive classification of kinly docs/contracts into kinly-contracts buck
 - docs/agents/release.md → platform/agents/release.md
 - docs/agents/supabase_db.md → platform/agents/supabase_db.md
 - docs/agents/test.md → platform/agents/test.md
+- docs/agents_archived/deep_linking.md → platform/archived/agents/deep_linking.md
+- docs/agents_archived/docs.md → platform/archived/agents/docs.md
+- docs/agents_archived/flutter_bloc.md → platform/archived/agents/flutter_bloc.md
+- docs/agents_archived/flutter_ui.md → platform/archived/agents/flutter_ui.md
+- docs/agents_archived/paris.md → platform/archived/agents/paris.md
+- docs/agents_archived/planner.md → platform/archived/agents/planner.md
+- docs/agents_archived/release.md → platform/archived/agents/release.md
+- docs/agents_archived/supabase_db.md → platform/archived/agents/supabase_db.md
+- docs/agents_archived/test.md → platform/archived/agents/test.md
 - docs/runbooks/ci_secrets.md → platform/runbooks/ci_secrets.md
 - docs/runbooks/smoke.md → platform/runbooks/smoke.md
 - docs/runbooks/smoke_addenda.md → platform/runbooks/smoke_addenda.md

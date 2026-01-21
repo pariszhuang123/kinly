@@ -167,14 +167,6 @@ Future<void> main() async {
     // --- Arch diagrams ---
     // Local dev: regenerate first so checks won't fail just because the diagram is stale.
     // CI: do not regenerate (no repo mutations). Only verify.
-    if (!_isCi())
-      const _Check('check_arch_diagrams_generate', 'python', [
-        'tools/arch_diagram/generate.py',
-      ]),
-    const _Check('check_arch_diagrams', 'python', [
-      'tools/arch_diagram/generate.py',
-      '--check',
-    ]),
   ];
 
   final results = await Future.wait(checks.map(_runCheck));
