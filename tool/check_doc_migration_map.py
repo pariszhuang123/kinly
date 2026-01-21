@@ -5,7 +5,8 @@ import sys
 
 def main() -> int:
     base = pathlib.Path(".").resolve()
-    roots = ("contracts", "db", "docs")
+    # Ignore the contracts submodule; migration is tracked in its own repo.
+    roots = ("db", "docs")
     source_files = []
     for root in roots:
         root_path = base / root
@@ -54,7 +55,7 @@ def main() -> int:
     mapped_sources = []
     for match in arrow_re.finditer(text):
         src = match.group(1).strip()
-        if src.startswith(("docs/", "contracts/", "db/")):
+        if src.startswith(("docs/", "db/")):
             mapped_sources.append(src)
 
     mapped_set = set(mapped_sources)

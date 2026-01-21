@@ -62,17 +62,18 @@ class _FakeSvgBundle extends CachingAssetBundle {
 
   @override
   Future<ByteData> load(String key) async {
-    return ByteData.view(Uint8List.fromList(_emptySvg.codeUnits).buffer);
+    if (key.toLowerCase().endsWith('.svg')) {
+      return ByteData.view(Uint8List.fromList(_emptySvg.codeUnits).buffer);
+    }
+    return rootBundle.load(key);
   }
 
   @override
   Future<String> loadString(String key, {bool cache = true}) async {
-    if (key.endsWith('Share.svg') ||
-        key.endsWith('Hub.svg') ||
-        key.endsWith('Home.svg')) {
+    if (key.toLowerCase().endsWith('.svg')) {
       return _emptySvg;
     }
-    throw FlutterError('Asset $key not mocked in tests');
+    return rootBundle.loadString(key, cache: cache);
   }
 }
 
@@ -522,7 +523,7 @@ void main() {
       ),
     );
 
-    await tester.pumpWidget(buildApp());
+    await tester.pumpWidget(buildApp(bundle: _FakeSvgBundle()));
     await tester.pumpAndSettle();
 
     final headerFinder = find.byType(TodayHeader);

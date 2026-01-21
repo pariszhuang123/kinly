@@ -156,12 +156,8 @@ Future<void> main() async {
       'run',
       'tool/check_doc_headers.dart',
     ]),
-    const _Check('check_doc_migration_map', 'python', [
-      'tool/check_doc_migration_map.py',
-    ]),
-    const _Check('check_doc_headers', 'dart', [
-      'run',
-      'tool/check_doc_headers.dart',
+    const _Check('guard_contracts_submodule_fresh', 'bash', [
+      'scripts/ci/guard_contracts_submodule_fresh.sh',
     ]),
 
     // --- Arch diagrams ---

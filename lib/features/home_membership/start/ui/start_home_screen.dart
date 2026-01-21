@@ -66,8 +66,11 @@ class _StartHomeView extends StatelessWidget {
         (hasAvatar || displayName != null)
             ? s.startReturningTitle(displayName ?? s.friendDefaultName)
             : s.welcome_title;
-    final personalizedSubtitle =
-        hasAvatar ? s.startReturningSubtitle : s.membership_status_none;
+    final personalizedSubtitle = hasAvatar
+        ? s.startReturningSubtitle
+        : membershipStatus == AuthMembershipStatus.none
+            ? s.membership_status_none
+            : null;
 
     return AuthErrorListener(
       child: KinlyScaffold(

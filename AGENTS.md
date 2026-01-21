@@ -16,6 +16,8 @@ dart analyze                   # Lint
 flutter test                   # Unit tests
 ```
 
+Contracts source of truth now lives in the `kinly-contracts` git submodule at `contracts/`. Do not edit generated copies in this repo; update the submodule pointer after changes to `kinly-contracts` (`git submodule update --remote --merge`).
+
 ### Naming Conventions
 
 | Element          | Pattern                    | Example                          |
@@ -27,14 +29,14 @@ flutter test                   # Unit tests
 
 ### Key Documentation
 
-| Need                        | File                                       |
-| --------------------------- | ------------------------------------------ |
-| Architecture layers         | `docs/architecture/di_graph.md`            |
-| Business capabilities       | `contracts/architecture/business_map.md`   |
-| Complexity budget           | `docs/engineering/complexity_budget_v1.md` |
-| Home dynamics contract      | `docs/contracts/home_dynamics_v1.md`       |
-| Form hydration contract     | `docs/contracts/form_hydration_v1.md`      |
-| UI primitives               | `docs/ui/core_ui_primitives.md`            |
+| Need                        | File (contracts submodule)                        |
+| --------------------------- | ------------------------------------------------- |
+| Architecture layers         | `contracts/docs/architecture/di_graph.md`         |
+| Business capabilities       | `contracts/architecture/business_map.md`          |
+| Complexity budget           | `contracts/architecture/complexity_budget_v1.md`  |
+| Home dynamics contract      | `contracts/docs/contracts/home_dynamics_v1.md`    |
+| Form hydration contract     | `contracts/docs/contracts/form_hydration_v1.md`   |
+| UI primitives               | `contracts/docs/ui/core_ui_primitives.md`         |
 
 ### Dependency Direction (Never Violate)
 
@@ -49,6 +51,7 @@ Before answering questions about features or architecture, you MUST:
 1. Read `contracts/architecture/business_map.md` to understand the Business
    Capabilities.
 2. Read `docs/architecture/di_graph.md` to understand the Physical Dependencies.
+3. If contracts change, open a PR in `kinly-contracts` and update the submodule ref here (no direct edits in this repo).
 
 **Interpretation Rules:**
 
