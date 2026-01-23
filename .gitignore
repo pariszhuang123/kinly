@@ -20,4 +20,4 @@ android/app/prod_keystore_base64.txt
 config/
 
 # Deno npm auto-install output for Supabase Edge Functions
-supabase/node_modules/
+supabase_archive/node_modules/

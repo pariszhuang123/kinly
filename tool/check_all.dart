@@ -74,14 +74,11 @@ Future<void> main() async {
       'run',
       'tool/check_shared_understanding_copy.dart',
     ]),
-    const _Check('contracts_extract', 'dart', [
-      'run',
-      'tool/contracts_extract.dart',
-    ]),
-    const _Check('check_contract_registry', 'dart', [
-      'run',
-      'tool/check_contract_registry.dart',
-    ]),
+
+    // ✅ Backend authority moved to kinly-backend:
+    // - contracts_extract (regenerates/publishes contract artifacts)
+    // - check_contract_registry (validates generated registry)
+    // These do not belong in the Flutter repo guardrails anymore.
     const _Check('check_agents_guardrails', 'dart', [
       'run',
       'tool/check_agents_guardrails.dart',
@@ -156,6 +153,9 @@ Future<void> main() async {
       'run',
       'tool/check_doc_headers.dart',
     ]),
+
+    // ✅ Frontend responsibility: ensure the contracts submodule pointer is fresh
+    // (consumption check, not generation).
     const _Check('guard_contracts_submodule_fresh', 'bash', [
       'scripts/ci/guard_contracts_submodule_fresh.sh',
     ]),
