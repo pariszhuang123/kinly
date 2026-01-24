@@ -9,11 +9,6 @@ class _Check {
   final List<String> args;
 }
 
-bool _isCi() {
-  final v = (Platform.environment['CI'] ?? '').toLowerCase().trim();
-  return v == 'true' || v == '1' || v == 'yes';
-}
-
 Future<void> main() async {
   final checks = <_Check>[
     const _Check('check_test_guard', 'bash', ['tool/check_test_guard.sh']),

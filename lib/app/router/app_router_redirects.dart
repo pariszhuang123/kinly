@@ -96,12 +96,14 @@ String? _authRedirect({
   required Uri uri,
   required AuthStatus status,
 }) {
+  final isPublicRoute =
+      path == AppRoutes.welcome || path == AppRoutes.demoAccess;
   if (status == AuthStatus.unknown) {
-    return path == AppRoutes.splash ? null : AppRoutes.splash;
+    return isPublicRoute ? null : AppRoutes.splash;
   }
   if (status != AuthStatus.authenticated) {
     _captureJoinCodeIfPresent(uri);
-    return path == AppRoutes.welcome ? null : AppRoutes.welcome;
+    return isPublicRoute ? null : AppRoutes.welcome;
   }
   return null;
 }

@@ -27,6 +27,7 @@ class WelcomeSurfaceActions {
     required this.onAppleSignIn,
     required this.onOpenTerms,
     required this.onOpenPrivacy,
+    required this.onLogoTap,
   });
 
   final ValueChanged<bool> onConsentChanged;
@@ -35,6 +36,7 @@ class WelcomeSurfaceActions {
   final VoidCallback onAppleSignIn;
   final VoidCallback onOpenTerms;
   final VoidCallback onOpenPrivacy;
+  final VoidCallback onLogoTap;
 }
 
 class WelcomeSurfaceScope {

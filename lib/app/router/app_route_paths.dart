@@ -2,6 +2,7 @@ class AppRoutePaths {
   static const splash = '/';
   static const forceUpdate = '/force-update';
   static const welcome = '/welcome';
+  static const demoAccess = '/demo-access';
   static const start = '/start';
   static const join = '/join';
   static const joinBlocked = '/join/blocked';

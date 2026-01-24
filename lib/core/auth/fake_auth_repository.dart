@@ -29,6 +29,15 @@ class FakeAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> signInWithPassword({
+    required String email,
+    required String password,
+  }) async {
+    _current = const AuthSession(userId: 'password-user');
+    _controller.add(_current);
+  }
+
+  @override
   Future<void> signOut() async {
     _current = null;
     _controller.add(null);

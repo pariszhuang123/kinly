@@ -2,6 +2,7 @@ class AppRouteNames {
   static const forceUpdate = 'forceUpdate';
   static const splash = 'splash';
   static const welcome = 'welcome';
+  static const demoAccess = 'demoAccess';
   static const start = 'start';
   static const join = 'join';
   static const joinBlocked = 'joinBlocked';

@@ -29,6 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_AuthSessionChanged>(_onSessionChanged);
     on<AuthSignInWithGoogleRequested>(_onGoogleSignInRequested);
     on<AuthSignInWithAppleRequested>(_onAppleSignInRequested);
+    on<DemoLoginRequested>(_onDemoLoginRequested);
     on<AuthSignOutRequested>(_onSignOutRequested);
     on<AuthMembershipRefreshRequested>(_onMembershipRefreshRequested);
     on<AuthErrorCleared>(_onErrorCleared);
@@ -97,6 +98,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     await _performAuthAction(emit, _authRepository.signInWithApple);
+  }
+
+  Future<void> _onDemoLoginRequested(
+    DemoLoginRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    await _performAuthAction(
+      emit,
+      () => _authRepository.signInWithPassword(
+        email: event.email,
+        password: event.password,
+      ),
+    );
   }
 
   Future<void> _onSignOutRequested(

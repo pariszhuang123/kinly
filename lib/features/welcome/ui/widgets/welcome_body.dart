@@ -5,10 +5,10 @@ import 'package:sign_in_button/sign_in_button.dart';
 import '../../../../core/theme/kinly_theme.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/toggles/kinly_checkbox.dart';
-import '../../../../core/ui/branding/kinly_logo.dart';
 import '../../../../core/ui/kinly_tap_target.dart';
 import '../welcome_surface_contract.dart';
 import '../../../../core/ui/kinly_theme_access.dart';
+import 'tappable_kinly_logo.dart';
 
 class WelcomeBody extends StatelessWidget {
   const WelcomeBody({super.key, required this.scope});
@@ -29,7 +29,7 @@ class WelcomeBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 24),
-          const KinlyLogo(),
+          TappableKinlyLogo(onTap: scope.actions.onLogoTap),
           const SizedBox(height: 8),
           Text(
             s.login_tagline,

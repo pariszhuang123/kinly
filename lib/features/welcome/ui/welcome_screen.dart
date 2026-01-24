@@ -25,6 +25,10 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   bool _consented = false;
+  int _logoTapCount = 0;
+
+  static const _requiredTaps = 7;
+  static const _revealThreshold = 3;
 
   static final Uri _termsUri = Uri.parse(
     'https://inky-twill-3ab.notion.site/Service-Term-2a9b40335c2d81a8b297d8c62951d5d1',
@@ -36,6 +40,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Future<void> _open(Uri uri) async {
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       // Optionally show a snackbar; keep silent for now
+    }
+  }
+
+  void _onLogoTap() {
+    setState(() {
+      _logoTapCount++;
+    });
+    if (_logoTapCount >= _requiredTaps) {
+      setState(() {
+        _logoTapCount = 0;
+      });
+      context.goNamed(AppRouteNames.demoAccess);
+      return;
+    }
+    if (_logoTapCount >= _revealThreshold) {
+      final s = S.of(context);
+      KinlySnackBar.showInfo(
+        context,
+        s.demoAccessTapHint(_logoTapCount),
+      );
     }
   }
 
@@ -115,6 +139,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       },
       onOpenTerms: () => _open(_termsUri),
       onOpenPrivacy: () => _open(_privacyUri),
+      onLogoTap: _onLogoTap,
     );
     final scope = WelcomeSurfaceScope(
       context: context,

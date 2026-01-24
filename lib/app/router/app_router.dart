@@ -33,6 +33,7 @@ class AppRoutes {
   static const splash = AppRoutePaths.splash;
   static const forceUpdate = AppRoutePaths.forceUpdate;
   static const welcome = AppRoutePaths.welcome;
+  static const demoAccess = AppRoutePaths.demoAccess;
   static const start = AppRoutePaths.start;
   static const join = AppRoutePaths.join;
   static const joinBlocked = AppRoutePaths.joinBlocked;

@@ -160,6 +160,17 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> signInWithPassword({
+    required String email,
+    required String password,
+  }) async {
+    if (kDebugMode) {
+      _logger.debug('PASSWORD_TAP', tag: _logTag);
+    }
+    await _client.auth.signInWithPassword(email: email, password: password);
+  }
+
+  @override
   Future<void> signOut() async {
     // Best effort: sign out of Google too (prevents silent reuse across envs).
     try {

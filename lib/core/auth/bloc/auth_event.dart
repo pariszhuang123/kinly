@@ -15,6 +15,16 @@ class AuthSignInWithAppleRequested extends AuthEvent {
   const AuthSignInWithAppleRequested();
 }
 
+class DemoLoginRequested extends AuthEvent {
+  const DemoLoginRequested({required this.email, required this.password});
+
+  final String email;
+  final String password;
+
+  @override
+  List<Object?> get props => [email, password];
+}
+
 class AuthSignOutRequested extends AuthEvent {
   const AuthSignOutRequested();
 }

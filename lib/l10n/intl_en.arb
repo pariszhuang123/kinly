@@ -570,7 +570,7 @@
   "harmonyMoodThunderstorm": "Thunderstorm",
   "harmonyCommentLabel": "Anything you’d like to share?",
   "harmonyCommentHint": "What’s been contributing to this feeling at home?",
-  "harmonyShareLabel": "Share this with the home",
+  "harmonyShareLabel": "Share this with your home",
   "harmonySubmitCta": "Send feedback",
   "harmonySubmitSuccess": "Thanks! Your feedback was saved.",
   "harmonyErrorAlreadySubmitted": "You've already shared your mood for this week.",
@@ -1333,5 +1333,40 @@
   "pulseRainyUnsupportedTitle": "Heavy, support needed",
   "pulseRainyUnsupportedSummary": "This week felt heavy. Support may help.",
   "pulseThunderstormTitle": "Tense right now",
-  "pulseThunderstormSummary": "This week felt tense. Kindness matters right now."
+  "pulseThunderstormSummary": "This week felt tense. Kindness matters right now.",
+  "demoAccess": "Demo Access",
+  "@demoAccess": {
+    "description": "Title for the demo access screen used by app store reviewers",
+    "surface": "title"
+  },
+  "demoAccessTapHint": "Demo access: {current} of 7 taps",
+  "@demoAccessTapHint": {
+    "description": "Progress indicator shown when tapping logo to reveal demo access",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "demoAccessEmail": "Email",
+  "@demoAccessEmail": {
+    "description": "Label for email input on demo access screen",
+    "surface": "label"
+  },
+  "demoAccessPassword": "Password",
+  "@demoAccessPassword": {
+    "description": "Label for password input on demo access screen",
+    "surface": "label"
+  },
+  "demoAccessSubmit": "Sign in",
+  "@demoAccessSubmit": {
+    "description": "Submit button label on demo access screen",
+    "surface": "button"
+  },
+  "demoAccessError": "Could not sign in. Please check your credentials.",
+  "@demoAccessError": {
+    "description": "Error message shown when demo login does not succeed",
+    "surface": "error"
+  }
 }

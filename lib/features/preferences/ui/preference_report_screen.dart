@@ -153,16 +153,6 @@ class _PreferenceReportScreenState extends State<PreferenceReportScreen> {
                                 SizedBox(height: spacing?.m ?? 12),
                               ],
                               Text(
-                                report.content.summary.title,
-                                style: theme.textTheme.headlineSmall,
-                              ),
-                              SizedBox(height: spacing?.s ?? 8),
-                              _SubjectHeader(
-                                name: headerName,
-                                avatarUrl: widget.subjectAvatarUrl,
-                              ),
-                              SizedBox(height: spacing?.s ?? 8),
-                              Text(
                                 report.content.summary.subtitle,
                                 style: theme.textTheme.bodyMedium,
                               ),
@@ -324,50 +314,6 @@ class _PreferenceReportSectionCard extends StatelessWidget {
           Text(section.text, style: theme.textTheme.bodyMedium),
         ],
       ),
-    );
-  }
-}
-
-class _SubjectHeader extends StatelessWidget {
-  const _SubjectHeader({required this.name, this.avatarUrl});
-
-  final String name;
-  final String? avatarUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>();
-    final palette = context.preferenceSection;
-    final hasAvatar = avatarUrl != null && avatarUrl!.isNotEmpty;
-
-    return Row(
-      children: [
-        Container(
-          height: 44,
-          width: 44,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: palette.accent.withValues(alpha: 0.16),
-            image:
-                hasAvatar
-                    ? DecorationImage(
-                      image: NetworkImage(avatarUrl!),
-                      fit: BoxFit.cover,
-                    )
-                    : null,
-          ),
-          child:
-              hasAvatar
-                  ? null
-                  : Icon(
-                    KinlyIcons.selfImprovementRounded,
-                    color: palette.icon,
-                  ),
-        ),
-        SizedBox(width: spacing?.sm ?? 8),
-        Expanded(child: Text(name, style: theme.textTheme.titleMedium)),
-      ],
     );
   }
 }

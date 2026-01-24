@@ -3639,10 +3639,10 @@ class S {
     );
   }
 
-  /// `Share this with the home`
+  /// `Share this with your home`
   String get harmonyShareLabel {
     return Intl.message(
-      'Share this with the home',
+      'Share this with your home',
       name: 'harmonyShareLabel',
       desc: '',
       args: [],
@@ -5170,6 +5170,66 @@ class S {
       'This week felt tense. Kindness matters right now.',
       name: 'pulseThunderstormSummary',
       desc: '',
+      args: [],
+    );
+  }
+
+  /// `Demo Access`
+  String get demoAccess {
+    return Intl.message(
+      'Demo Access',
+      name: 'demoAccess',
+      desc: 'Title for the demo access screen used by app store reviewers',
+      args: [],
+    );
+  }
+
+  /// `Demo access: {current} of 7 taps`
+  String demoAccessTapHint(int current) {
+    return Intl.message(
+      'Demo access: $current of 7 taps',
+      name: 'demoAccessTapHint',
+      desc: 'Progress indicator shown when tapping logo to reveal demo access',
+      args: [current],
+    );
+  }
+
+  /// `Email`
+  String get demoAccessEmail {
+    return Intl.message(
+      'Email',
+      name: 'demoAccessEmail',
+      desc: 'Label for email input on demo access screen',
+      args: [],
+    );
+  }
+
+  /// `Password`
+  String get demoAccessPassword {
+    return Intl.message(
+      'Password',
+      name: 'demoAccessPassword',
+      desc: 'Label for password input on demo access screen',
+      args: [],
+    );
+  }
+
+  /// `Sign in`
+  String get demoAccessSubmit {
+    return Intl.message(
+      'Sign in',
+      name: 'demoAccessSubmit',
+      desc: 'Submit button label on demo access screen',
+      args: [],
+    );
+  }
+
+  /// `Could not sign in. Please check your credentials.`
+  String get demoAccessError {
+    return Intl.message(
+      'Could not sign in. Please check your credentials.',
+      name: 'demoAccessError',
+      desc: 'Error message shown when demo login does not succeed',
       args: [],
     );
   }

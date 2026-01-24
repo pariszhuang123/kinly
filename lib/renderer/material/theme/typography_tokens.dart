@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Typography tokens for Kinly.
 @immutable
 class KinlyTypography extends ThemeExtension<KinlyTypography> {
+  static const fontFamily = 'NotoSansArabicVariable';
+
   const KinlyTypography({
     required this.displayLarge,
     required this.displayMedium,
@@ -33,31 +34,36 @@ class KinlyTypography extends ThemeExtension<KinlyTypography> {
   final TextStyle labelSmall;
 
   factory KinlyTypography.fromBrightness(Brightness brightness) {
-    // DM Sans for headings/titles, Inter for body/labels to match current Kinly feel.
     final baseColor =
         brightness == Brightness.dark ? Colors.white : Colors.black;
 
-    TextStyle dmSans(double size, FontWeight weight) => GoogleFonts.dmSans(
-      fontSize: size,
-      fontWeight: weight,
-      color: baseColor,
-    );
-    TextStyle inter(double size, FontWeight weight) =>
-        GoogleFonts.inter(fontSize: size, fontWeight: weight, color: baseColor);
+    TextStyle notoSansArabic(
+      double size,
+      FontWeight weight, {
+      FontStyle fontStyle = FontStyle.normal,
+    }) {
+      return TextStyle(
+        fontFamily: fontFamily,
+        fontSize: size,
+        fontWeight: weight,
+        fontStyle: fontStyle,
+        color: baseColor,
+      );
+    }
 
     return KinlyTypography(
-      displayLarge: dmSans(40, FontWeight.w700),
-      displayMedium: dmSans(32, FontWeight.w700),
-      headlineLarge: dmSans(28, FontWeight.w700),
-      headlineMedium: dmSans(24, FontWeight.w600),
-      titleLarge: dmSans(20, FontWeight.w600),
-      titleMedium: dmSans(18, FontWeight.w600),
-      titleSmall: dmSans(16, FontWeight.w600),
-      bodyLarge: inter(16, FontWeight.w400),
-      bodyMedium: inter(14, FontWeight.w400),
-      bodySmall: inter(12, FontWeight.w400),
-      labelMedium: inter(14, FontWeight.w600),
-      labelSmall: inter(12, FontWeight.w600),
+      displayLarge: notoSansArabic(40, FontWeight.w700),
+      displayMedium: notoSansArabic(32, FontWeight.w700),
+      headlineLarge: notoSansArabic(28, FontWeight.w700),
+      headlineMedium: notoSansArabic(24, FontWeight.w600),
+      titleLarge: notoSansArabic(20, FontWeight.w600),
+      titleMedium: notoSansArabic(18, FontWeight.w600),
+      titleSmall: notoSansArabic(16, FontWeight.w600),
+      bodyLarge: notoSansArabic(16, FontWeight.w400),
+      bodyMedium: notoSansArabic(14, FontWeight.w400),
+      bodySmall: notoSansArabic(12, FontWeight.w400),
+      labelMedium: notoSansArabic(14, FontWeight.w600),
+      labelSmall: notoSansArabic(12, FontWeight.w600),
     );
   }
 

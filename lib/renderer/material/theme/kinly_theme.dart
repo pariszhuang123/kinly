@@ -123,6 +123,7 @@ ThemeData buildKinlyTheme(Brightness brightness) {
   return ThemeData(
     colorScheme: colorScheme,
     useMaterial3: true,
+    fontFamily: KinlyTypography.fontFamily,
     visualDensity: VisualDensity.standard,
     textTheme: textTheme,
     appBarTheme: AppBarTheme(

@@ -125,9 +125,18 @@ flutter:
     - assets/house_pulse_v1/
 
   fonts:
-    - family: KinlyTestFont
+    - family: NotoSansArabicVariable
       fonts:
-        - asset: assets/fonts/NotoSansArabic-Regular.ttf
+        - asset: assets/fonts/NotoSansArabic-VariableFont.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansArabic-VariableFont.ttf
+          weight: 700
+        - asset: assets/fonts/NotoSansArabic-VariableFont.ttf
+          style: italic
+          weight: 400
+        - asset: assets/fonts/NotoSansArabic-VariableFont.ttf
+          style: italic
+          weight: 700
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

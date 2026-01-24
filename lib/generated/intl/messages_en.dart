@@ -24,6 +24,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m1(time) => "Scheduled for ${time}";
 
+  static String m26(current) => "Demo access: ${current} of 7 taps";
+
   static String m2(appName) => "Made with ${appName} - Together feels lighter";
 
   static String m3(link) =>
@@ -59,7 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m15(current, total) => "Question ${current} of ${total}";
 
-  static String m26(period) => "Applies to ${period}";
+  static String m27(period) => "Applies to ${period}";
 
   static String m16(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
@@ -122,6 +124,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
       "Could not create the home. Try again.",
     ),
+    "demoAccess": MessageLookupByLibrary.simpleMessage("Demo Access"),
+    "demoAccessEmail": MessageLookupByLibrary.simpleMessage("Email"),
+    "demoAccessError": MessageLookupByLibrary.simpleMessage(
+      "Could not sign in. Please check your credentials.",
+    ),
+    "demoAccessPassword": MessageLookupByLibrary.simpleMessage("Password"),
+    "demoAccessSubmit": MessageLookupByLibrary.simpleMessage("Sign in"),
+    "demoAccessTapHint": m26,
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "See what needs doing — and who’s taking care of it.",
     ),
@@ -358,7 +368,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "How\'s your home feeling this week?",
     ),
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
-      "Share this with the home",
+      "Share this with your home",
     ),
     "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Send feedback"),
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
@@ -1087,7 +1097,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
       "Enter each person\'s part. Make sure the total matches the amount above.",
     ),
-    "shareCreateCyclePeriod": m26,
+    "shareCreateCyclePeriod": m27,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
       "e.g. Grocery run",
     ),

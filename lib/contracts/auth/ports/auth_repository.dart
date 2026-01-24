@@ -10,5 +10,9 @@ abstract class AuthRepository {
   AuthSession? get current;
   Future<void> signInWithGoogle();
   Future<void> signInWithApple();
+  Future<void> signInWithPassword({
+    required String email,
+    required String password,
+  });
   Future<void> signOut();
 }
