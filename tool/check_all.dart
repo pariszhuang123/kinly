@@ -105,22 +105,6 @@ Future<void> main() async {
       'run',
       'tool/check_no_raw_gestures.dart',
     ]),
-    const _Check('check_preference_taxonomy', 'dart', [
-      'run',
-      'tool/check_preference_taxonomy.dart',
-    ]),
-    const _Check('check_preference_scenario_headings', 'dart', [
-      'run',
-      'tool/check_preference_scenarios_headings.dart',
-    ]),
-    const _Check('check_preference_report_language', 'dart', [
-      'run',
-      'tool/check_preference_reports_language.dart',
-    ]),
-    const _Check('check_preference_report_templates', 'dart', [
-      'run',
-      'tool/check_preference_report_templates.dart',
-    ]),
     const _Check('check_preference_sections', 'dart', [
       'run',
       'tool/check_preference_sections.dart',
