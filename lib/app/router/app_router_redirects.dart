@@ -98,8 +98,9 @@ String? _authRedirect({
 }) {
   final isPublicRoute =
       path == AppRoutes.welcome || path == AppRoutes.demoAccess;
+  final isAllowedWhenUnknown = isPublicRoute || path == AppRoutes.splash;
   if (status == AuthStatus.unknown) {
-    return isPublicRoute ? null : AppRoutes.splash;
+    return isAllowedWhenUnknown ? null : AppRoutes.splash;
   }
   if (status != AuthStatus.authenticated) {
     _captureJoinCodeIfPresent(uri);

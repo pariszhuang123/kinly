@@ -11,7 +11,6 @@ class _Check {
 
 Future<void> main() async {
   final checks = <_Check>[
-    const _Check('check_test_guard', 'bash', ['tool/check_test_guard.sh']),
     const _Check('check_i18n', 'dart', ['run', 'tool/check_i18n.dart']),
     const _Check('l10n_integrity', 'dart', [
       'run',

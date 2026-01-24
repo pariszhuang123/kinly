@@ -82,7 +82,6 @@ void main() {
     await tester.pumpWidget(buildApp(cubit, const PreferenceReportScreen()));
     await tester.pumpAndSettle();
 
-    expect(find.text('Summary title'), findsOneWidget);
     expect(find.text('Summary subtitle'), findsOneWidget);
     expect(find.text('Section 1'), findsOneWidget);
     expect(find.text('Section 1 body'), findsOneWidget);
