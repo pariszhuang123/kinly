@@ -132,6 +132,7 @@ class _KinlyMentionTextFieldState extends State<KinlyMentionTextField> {
                   ),
                   onChanged: _handleTextChanged,
                   maxLines: widget.maxLines,
+                  onTapOutside: (_) => _focusNode.unfocus(),
                 ),
                 if (selected.isNotEmpty) ...[
                   SizedBox(height: spacing?.xs ?? 4),
@@ -249,7 +250,16 @@ class _KinlyMentionTextFieldState extends State<KinlyMentionTextField> {
     if (widget.selectedIds.length >= widget.maxSelections) return;
     final next = {...widget.selectedIds, id};
     widget.onSelectedChanged(next);
-    _controller.clear();
+
+    final text = _controller.text;
+    final lastAt = text.lastIndexOf('@');
+    if (lastAt != -1) {
+      final newText = text.substring(0, lastAt);
+      _controller.text = newText;
+      _controller.selection = TextSelection.collapsed(offset: newText.length);
+      widget.onTextChanged?.call(newText);
+    }
+
     setState(() {
       _hasActiveTrigger = false;
       _query = '';

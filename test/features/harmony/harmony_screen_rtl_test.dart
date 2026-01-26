@@ -234,7 +234,6 @@ void main() {
 
       // Localized copy exists
       expect(find.text(strings.harmonyQuestion), findsOneWidget);
-      expect(find.text(strings.harmonySubmitCta), findsOneWidget);
 
       // Mood options are exposed via semantics (stable + meaningful)
       expect(find.bySemanticsLabel(strings.harmonyMoodSunny), findsOneWidget);
@@ -248,6 +247,12 @@ void main() {
         find.bySemanticsLabel(strings.harmonyMoodThunderstorm),
         findsOneWidget,
       );
+
+      // Select a mood to reveal submit button
+      await tester.tap(find.bySemanticsLabel(strings.harmonyMoodSunny));
+      await tester.pumpAndSettle();
+
+      expect(find.text(strings.harmonySubmitCta), findsOneWidget);
 
       // Optional: sanity check key UI exists (non-pixel)
       expect(find.byType(HarmonyPage), findsOneWidget);

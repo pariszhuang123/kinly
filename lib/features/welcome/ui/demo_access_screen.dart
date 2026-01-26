@@ -54,66 +54,83 @@ class _DemoAccessScreenState extends State<DemoAccessScreen> {
     final spacing = theme.extension<Spacing>()!;
     final isLoading = context.select((AuthBloc bloc) => bloc.state.isLoading);
 
-    return BlocListener<AuthBloc, AuthState>(
-      listenWhen: (previous, current) =>
-          previous.status != current.status ||
-          previous.membershipStatus != current.membershipStatus ||
-          previous.errorMessage != current.errorMessage,
-      listener: (context, state) {
-        if (!mounted) return;
-        if (state.errorMessage != null) {
-          KinlySnackBar.showError(context, s.demoAccessError);
-          context.read<AuthBloc>().add(const AuthErrorCleared());
-          return;
-        }
-        final membershipReady =
-            state.membershipStatus != AuthMembershipStatus.unknown;
-        if (state.status == AuthStatus.authenticated && membershipReady) {
-          final nextRouteName =
-              state.membershipStatus == AuthMembershipStatus.active
-                  ? AppRouteNames.today
-                  : AppRouteNames.start;
-          context.goNamed(nextRouteName);
-        }
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.keyX):
+            () => context.goNamed(AppRouteNames.welcome),
       },
-      child: KinlyScaffold(
-        appBar: KinlyAppBar(
-          title: Text(s.demoAccess),
-          leading: KinlyIconButton(
-            icon: KinlyIcons.close,
-            onPressed: () => context.pop(),
-          ),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsetsDirectional.all(spacing.xl),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                KinlyTextField(
-                  controller: _emailController,
-                  labelText: s.demoAccessEmail,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  enabled: !isLoading,
-                  onChanged: (_) => setState(() {}),
+      child: Focus(
+        autofocus: true,
+        child: PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, _) {
+            if (didPop) return;
+            context.goNamed(AppRouteNames.welcome);
+          },
+          child: BlocListener<AuthBloc, AuthState>(
+            listenWhen:
+                (previous, current) =>
+                    previous.status != current.status ||
+                    previous.membershipStatus != current.membershipStatus ||
+                    previous.errorMessage != current.errorMessage,
+            listener: (context, state) {
+              if (!mounted) return;
+              if (state.errorMessage != null) {
+                KinlySnackBar.showError(context, s.demoAccessError);
+                context.read<AuthBloc>().add(const AuthErrorCleared());
+                return;
+              }
+              final membershipReady =
+                  state.membershipStatus != AuthMembershipStatus.unknown;
+              if (state.status == AuthStatus.authenticated && membershipReady) {
+                final nextRouteName =
+                    state.membershipStatus == AuthMembershipStatus.active
+                        ? AppRouteNames.today
+                        : AppRouteNames.start;
+                context.goNamed(nextRouteName);
+              }
+            },
+            child: KinlyScaffold(
+              appBar: KinlyAppBar(
+                title: Text(s.demoAccess),
+                leading: KinlyIconButton(
+                  icon: KinlyIcons.close,
+                  onPressed: () => context.goNamed(AppRouteNames.welcome),
                 ),
-                SizedBox(height: spacing.l),
-                KinlyTextField(
-                  controller: _passwordController,
-                  labelText: s.demoAccessPassword,
-                  obscureText: true,
-                  textInputAction: TextInputAction.done,
-                  enabled: !isLoading,
-                  onChanged: (_) => setState(() {}),
+              ),
+              body: SafeArea(
+                child: Padding(
+                  padding: EdgeInsetsDirectional.all(spacing.xl),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      KinlyTextField(
+                        controller: _emailController,
+                        labelText: s.demoAccessEmail,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        enabled: !isLoading,
+                        onChanged: (_) => setState(() {}),
+                      ),
+                      SizedBox(height: spacing.l),
+                      KinlyTextField(
+                        controller: _passwordController,
+                        labelText: s.demoAccessPassword,
+                        obscureText: true,
+                        textInputAction: TextInputAction.done,
+                        enabled: !isLoading,
+                        onChanged: (_) => setState(() {}),
+                      ),
+                      SizedBox(height: spacing.xl),
+                      KinlyFilledButton.text(
+                        onPressed: _canSubmit && !isLoading ? _onSubmit : null,
+                        label: isLoading ? '...' : s.demoAccessSubmit,
+                        fullWidth: true,
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(height: spacing.xl),
-                KinlyFilledButton.text(
-                  onPressed: _canSubmit && !isLoading ? _onSubmit : null,
-                  label: isLoading ? '...' : s.demoAccessSubmit,
-                  fullWidth: true,
-                ),
-              ],
+              ),
             ),
           ),
         ),

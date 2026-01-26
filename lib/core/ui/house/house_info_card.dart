@@ -9,6 +9,13 @@ import 'package:kinly/core/ui/house_vibe_strings.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:intl/intl.dart';
+
+import 'package:kinly/contracts/mood/house_pulse_models.dart';
+import 'package:kinly/contracts/mood/enums/house_pulse_state.dart';
+
+import 'package:kinly/core/ui/house_pulse_assets.dart';
+import 'package:kinly/core/ui/house_pulse_strings.dart';
 
 import 'package:kinly/renderer/material/share/kinly_share_card.dart';
 import 'package:kinly/core/ui/kinly_section_card.dart';
@@ -25,6 +32,7 @@ class HouseInfoCardData {
     this.coverage,
     this.logger,
     this.logContext,
+    this.fallbackIcon,
   });
 
   final String header;
@@ -36,6 +44,7 @@ class HouseInfoCardData {
   final String? coverage;
   final Logger? logger;
   final String? logContext;
+  final IconData? fallbackIcon;
 
   factory HouseInfoCardData.fromVibe({
     required HouseVibePayload vibe,
@@ -73,6 +82,56 @@ class HouseInfoCardData {
       logContext:
           'homeId=${vibe.homeId} labelId=${vibe.labelId} '
           'mappingVersion=${vibe.mappingVersion} imageKey=${vibe.imageKey}',
+    );
+  }
+
+  factory HouseInfoCardData.fromPulse({
+    required HousePulsePayload pulse,
+    required SectionColors palette,
+    required S strings,
+    Logger? logger,
+  }) {
+    final assetPath = resolveHousePulseAssetPath(
+      contractVersion: pulse.label.contractVersion,
+      imageKey: pulse.label.imageKey,
+      pulseState: pulse.pulse.pulseState,
+    );
+
+    final updatedLabel = strings.housePulseUpdatedOn(
+      DateFormat.yMMMd().format(pulse.pulse.computedAt),
+    );
+
+    IconData icon;
+    switch (pulse.pulse.pulseState) {
+      case HousePulseState.thunderstorm:
+        icon = KinlyIcons.flashOnRounded;
+      case HousePulseState.rainySupported:
+      case HousePulseState.rainyUnsupported:
+        icon = KinlyIcons.umbrella;
+      case HousePulseState.sunnyCalm:
+      case HousePulseState.sunnyBumpy:
+        icon = KinlyIcons.wbSunnyRounded;
+      case HousePulseState.partlySupported:
+        icon = KinlyIcons.wbCloudyRounded;
+      case HousePulseState.cloudySteady:
+      case HousePulseState.cloudyTense:
+        icon = KinlyIcons.cloudQueueRounded;
+      case HousePulseState.forming:
+        icon = KinlyIcons.autoAwesomeRounded;
+    }
+
+    return HouseInfoCardData(
+      header: strings.housePulseCardHeader,
+      title: resolveHousePulseTitle(strings, pulse.label.titleKey),
+      summary: resolveHousePulseSummary(strings, pulse.label.summaryKey),
+      footer: updatedLabel,
+      assetPath: assetPath,
+      palette: palette,
+      logger: logger,
+      fallbackIcon: icon,
+      logContext:
+          'imageKey=${pulse.label.imageKey} '
+          'state=${pulse.pulse.pulseState}',
     );
   }
 }
@@ -117,7 +176,10 @@ class HouseInfoCard extends StatelessWidget {
                 'house_info_asset_load_failed ${data.logContext} '
                 'assetPath=${data.assetPath}',
               );
-              return Icon(KinlyIcons.brokenImage, color: data.palette.icon);
+              return Icon(
+                data.fallbackIcon ?? KinlyIcons.brokenImage,
+                color: data.palette.icon,
+              );
             },
           ),
         ),
@@ -155,7 +217,10 @@ class HouseInfoShareCard extends StatelessWidget {
                 'house_info_asset_load_failed ${data.logContext} '
                 'assetPath=${data.assetPath}',
               );
-              return Icon(KinlyIcons.brokenImage, color: data.palette.icon);
+              return Icon(
+                data.fallbackIcon ?? KinlyIcons.brokenImage,
+                color: data.palette.icon,
+              );
             },
           ),
         ),

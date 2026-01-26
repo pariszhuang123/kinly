@@ -3699,16 +3699,6 @@ class S {
     );
   }
 
-  /// `Pick a mood before submitting.`
-  String get harmonyErrorSelectMood {
-    return Intl.message(
-      'Pick a mood before submitting.',
-      name: 'harmonyErrorSelectMood',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `House wall`
   String get todayGratitudeHouseCta {
     return Intl.message(
@@ -4979,18 +4969,6 @@ class S {
       name: 'housePulseUpdatedOn',
       desc: '',
       args: [date],
-    );
-  }
-
-  /// `{count, plural, one {{count} reflection} other {{count} reflections}}`
-  String housePulseReflections(int count) {
-    return Intl.plural(
-      count,
-      one: '$count reflection',
-      other: '$count reflections',
-      name: 'housePulseReflections',
-      desc: '',
-      args: [count],
     );
   }
 

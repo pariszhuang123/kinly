@@ -576,7 +576,6 @@
   "harmonyErrorAlreadySubmitted": "You've already shared your mood for this week.",
   "harmonyErrorForbidden": "You are unable to submit feedback for this home.",
   "harmonyErrorUnknown": "Something went wrong. Please try again.",
-  "harmonyErrorSelectMood": "Pick a mood before submitting.",
   "todayGratitudeHouseCta": "House wall",
   "todayGratitudePersonalCta": "Personal wall",
   "gratitudeWallHouseTab": "House",
@@ -1122,9 +1121,6 @@
   "@harmonyErrorUnknown": {
     "surface": "error"
   },
-  "@harmonyErrorSelectMood": {
-    "surface": "error"
-  },
   "@gratitudeWallEmptyTitle": {
     "surface": "title"
   },
@@ -1304,15 +1300,6 @@
       "date": {
         "type": "String",
         "example": "Jan 5, 2026"
-      }
-    }
-  },
-  "housePulseReflections": "{count, plural, one {{count} reflection} other {{count} reflections}}",
-  "@housePulseReflections": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "3"
       }
     }
   },

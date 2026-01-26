@@ -198,15 +198,16 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // No mood selected -> mention suggestions disabled but field present
+    // No mood selected -> comment box is hidden
     expect(
       find.byKey(const ValueKey('harmony_mentions_input')),
-      findsOneWidget,
+      findsNothing,
     );
 
     await tester.tap(find.bySemanticsLabel('Sunny'));
     await tester.pumpAndSettle();
 
+    // After selecting a mood, comment box appears
     expect(
       find.byKey(const ValueKey('harmony_mentions_input')),
       findsOneWidget,

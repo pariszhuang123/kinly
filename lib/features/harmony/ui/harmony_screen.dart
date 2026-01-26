@@ -68,10 +68,15 @@ class HarmonyScreen extends StatelessWidget {
                 SizedBox(height: spacing.l),
               ],
               _MoodSelector(),
-              SizedBox(height: spacing.l),
-              _CommentBox(),
-              SizedBox(height: spacing.m),
-              _GratitudeToggle(),
+              if (state.selectedMood != null) ...[
+                SizedBox(height: spacing.l),
+                _CommentBox(),
+              ],
+              if (state.selectedMood == MoodScale.sunny ||
+                  state.selectedMood == MoodScale.partiallySunny) ...[
+                SizedBox(height: spacing.m),
+                _GratitudeToggle(),
+              ],
             ],
           );
         },
@@ -104,22 +109,14 @@ class HarmonySubmitButton extends StatelessWidget {
     return BlocBuilder<HarmonyCubit, HarmonyState>(
       builder: (context, state) {
         final hasMood = state.selectedMood != null;
+        if (!hasMood) {
+          return const SizedBox.shrink();
+        }
+
         final canSubmit =
-            hasMood && !state.isSubmitting && state.submitSuccessTick == 0;
+            !state.isSubmitting && state.submitSuccessTick == 0;
 
         void handler() {
-          if (!hasMood || state.submitSuccessTick > 0) {
-            final accent =
-                KinlyThemeAccess.of(
-                  context,
-                ).extension<KinlySections>()?.pulse.accent;
-            KinlySnackBar.showError(
-              context,
-              s.harmonyErrorSelectMood,
-              accentColor: accent,
-            );
-            return;
-          }
           context.read<HarmonyCubit>().submit();
         }
 
@@ -264,8 +261,9 @@ class _GratitudeToggle extends StatelessWidget {
     return BlocBuilder<HarmonyCubit, HarmonyState>(
       builder: (context, state) {
         final canShare =
-            state.selectedMood == MoodScale.sunny ||
-            state.selectedMood == MoodScale.partiallySunny;
+            (state.selectedMood == MoodScale.sunny ||
+                state.selectedMood == MoodScale.partiallySunny) &&
+            state.comment.trim().isNotEmpty;
 
         return KinlyToggle(
           value: state.addToWall,

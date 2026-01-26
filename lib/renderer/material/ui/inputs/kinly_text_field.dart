@@ -77,6 +77,7 @@ class KinlyTextField extends StatelessWidget {
       inputFormatters: inputFormatters,
       autocorrect: autocorrect,
       style: type?.bodyMedium ?? theme.textTheme.bodyMedium,
+      onTapOutside: (_) => FocusScope.of(context).unfocus(),
       scrollPadding:
           scrollPadding ??
           const EdgeInsets.symmetric(horizontal: 20, vertical: 20),

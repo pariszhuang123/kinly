@@ -15,9 +15,11 @@ class HarmonyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
 
-    return KinlyScaffold(
-      // No AppBar → gives full control of header layout
-      body: SafeArea(
+    return PopScope(
+      canPop: false,
+      child: KinlyScaffold(
+        // No AppBar → gives full control of header layout
+        body: SafeArea(
         child: Padding(
           padding: EdgeInsetsDirectional.all(spacing.lg),
           child: Column(
@@ -43,6 +45,7 @@ class HarmonyPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }
