@@ -25,8 +25,8 @@ void main() {
       );
       expect(
         manifest,
-        contains('android:pathPrefix="/kinly"'),
-        reason: 'path scope must match canonical /kinly prefix (contract R4)',
+        contains('android:pathPrefix="/kinly/join"'),
+        reason: 'path scope must match canonical /kinly/join prefix (join flow)',
       );
     });
 

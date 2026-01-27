@@ -51,7 +51,7 @@
                 <data
                     android:scheme="https"
                     android:host="${deeplinkHost}"
-                    android:pathPrefix="/kinly/join/" />
+                    android:pathPrefix="/kinly/join" />
             </intent-filter>
 
         </activity>
