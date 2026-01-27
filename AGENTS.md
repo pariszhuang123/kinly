@@ -9,6 +9,9 @@ Definition of Done (DoD) for the Home‑only MVP of Kinly.
 
 ### Commands (Run Before Every Commit)
 
+> These commands define the engineering standard.
+> **AI agents MUST NOT execute them** (see *AI Agent Execution Rules*).
+
 ```bash
 dart run tool/check_all.dart   # All guardrails (single source of truth)
 dart format .                  # Format
@@ -43,6 +46,54 @@ Contracts source of truth now lives in the `kinly-contracts` git submodule at `c
 ```
 UI → BLoC → Repository → Supabase (RPC only)
 ```
+### AI Agent Execution Rules (Normative)
+
+This section defines hard constraints for AI-based agents (Codex, ChatGPT,
+Copilot, etc.) operating in this repository.
+
+❌ Forbidden for AI Agents
+
+AI agents MUST NOT execute Flutter or Dart toolchain commands, including but not
+limited to:
+
+- dart format
+- dart analyze
+- dart run
+- flutter test
+- flutter pub run
+- flutter build
+- any Flutter or Dart SDK invocation
+
+Reason:
+AI execution environments do not reliably support the Flutter SDK and may crash,
+hang, or produce invalid results.
+
+✅ AI Responsibilities (Still Mandatory)
+
+Despite execution restrictions, AI agents MUST:
+
+- write Dart code that conforms to formatting conventions
+- respect lint and analysis rules
+- produce code that would pass flutter test
+- obey all architectural, dependency, and contract constraints
+- follow the Definition of Done (DoD)
+
+Validation is enforced by:
+
+- human developers locally
+- CI pipelines (single source of enforcement)
+
+AI agents must assume tooling will be run later — not skipped.
+
+⚖️ Responsibility Split
+
+Layer              | Responsibility
+-------------------|----------------------------------------------
+AI Agents          | Code intent, structure, correctness, contracts
+Human Developers   | Local validation and debugging
+CI                 | Final enforcement of format, lint, tests, build
+
+This separation is intentional and must not be bypassed.
 
 ## 🧠 Architecture & Business Understanding (Mandatory)
 
