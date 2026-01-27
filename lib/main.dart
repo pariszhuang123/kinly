@@ -11,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
@@ -21,6 +22,7 @@ import 'app/di/compose.dart';
 import 'core/purchases/revenuecat_initializer.dart';
 import 'core/purchases/revenuecat_user_sync.dart';
 import 'app/router/app_router.dart';
+import 'app/router/app_route_names.dart';
 import 'app/router/go_router_refresh_stream.dart';
 import 'core/network/connectivity_monitor.dart';
 import 'core/supabase/supabase_init.dart';
@@ -41,6 +43,8 @@ import 'core/ui/kinly_loader.dart';
 import 'core/time/iana_timezone_resolver.dart';
 import 'core/ui/kinly_scaffold.dart';
 import 'renderer/material/kinly_app.dart';
+import 'core/links/join_intent_coordinator.dart';
+import 'core/links/enums/join_intent_navigator.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -112,9 +116,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late final AppVersionCubit _appVersionCubit;
   late final ConnectivityCubit _connectivityCubit;
   late final GoRouterRefreshStream _routerRefresh;
-  late final RouterConfig<Object> _router;
+  late final GoRouter _router;
   late final Logger _logger;
   late final IanaTimezoneResolver _timezoneResolver;
+  JoinIntentCoordinator? _joinIntentCoordinator;
   StreamSubscription<AuthState>? _authSub;
   NotificationTokenBootstrap? _tokenBootstrap;
   bool _requestedInitialNotificationPermission = false;
@@ -130,6 +135,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _logger = _resolveLogger();
     _timezoneResolver = sl<IanaTimezoneResolver>();
+    _joinIntentCoordinator = sl.isRegistered<JoinIntentCoordinator>()
+        ? sl<JoinIntentCoordinator>()
+        : null;
     final authRepo = sl<AuthRepository>();
     final homeRepo = sl<HomeRepository>();
     final profileRepo = sl<ProfileRepository>();
@@ -256,6 +264,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final currentUserId = state.userId;
     final currentHomeId = state.membership?.homeId;
     if (!state.isAuthenticated) {
+      await _joinIntentCoordinator?.clear();
       await _clearFormDraftsOnLogout(
         previousUserId: previousUserId,
         previousHomeId: previousHomeId,
@@ -287,6 +296,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     await syncRevenueCatUser(_logger, userId: state.userId);
     await _refreshNotificationPreferencesFromOs();
     await _startNotificationTokenSync();
+
+    if (_joinIntentCoordinator != null) {
+      final joinResult = await _joinIntentCoordinator!.handleAuthState(
+        authStatus: state.status,
+        membershipStatus: state.membershipStatus,
+        userId: state.userId,
+      );
+      await _applyJoinNavigation(joinResult);
+    }
   }
 
   Future<void> _clearFormDraftsOnLogout({
@@ -298,6 +316,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
     if (previousHomeId != null) {
       await FormDraftStorage.clearHouseRulesDraft(previousHomeId);
+    }
+  }
+
+  Future<void> _applyJoinNavigation(JoinIntentResult result) async {
+    switch (result.navigation) {
+      case JoinIntentNavigation.none:
+        return;
+      case JoinIntentNavigation.welcome:
+        _router.goNamed(AppRouteNames.welcome);
+        return;
+      case JoinIntentNavigation.start:
+        _router.goNamed(AppRouteNames.start);
+        return;
+      case JoinIntentNavigation.today:
+        _router.goNamed(AppRouteNames.today);
+        return;
+      case JoinIntentNavigation.blocked:
+        _router.goNamed(AppRouteNames.joinBlocked);
+        return;
     }
   }
 

@@ -55,15 +55,6 @@ String? _redirectCore({
   return _membershipRedirect(path, membershipStatus);
 }
 
-void _captureJoinCodeIfPresent(Uri uri) {
-  final segments = uri.pathSegments;
-  final isJoin = segments.isNotEmpty && segments.first == 'join';
-  final hasCode = segments.length >= 2;
-  if (isJoin && hasCode) {
-    NavigationIntents.setPendingJoinCode(segments[1]);
-  }
-}
-
 String? _redirectForNoMembership(String path) {
   if (path == AppRoutes.today) return AppRoutes.start;
   if (path == AppRoutes.splash || path == AppRoutes.welcome) {
@@ -99,13 +90,14 @@ String? _authRedirect({
   final isPublicRoute =
       path == AppRoutes.welcome || path == AppRoutes.demoAccess;
   final isAllowedWhenUnknown = isPublicRoute || path == AppRoutes.splash;
+  NavigationIntents.captureInvite(uri);
   if (status == AuthStatus.unknown) {
     return isAllowedWhenUnknown ? null : AppRoutes.splash;
   }
   if (status != AuthStatus.authenticated) {
-    _captureJoinCodeIfPresent(uri);
     return isPublicRoute ? null : AppRoutes.welcome;
   }
+  NavigationIntents.captureInvite(uri);
   return null;
 }
 
