@@ -3902,60 +3902,60 @@ class S {
     );
   }
 
-  /// `How likely are you to recommend Kinly to a friend?`
+  /// `Has Kinly been helpful for your home so far?`
   String get npsTitle {
     return Intl.message(
-      'How likely are you to recommend Kinly to a friend?',
+      'Has Kinly been helpful for your home so far?',
       name: 'npsTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Net Promoter Score helps us learn how we're doing. Pick a number from 0 (not likely) to 10 (extremely likely).`
+  /// `Choose a number from 0 (not helpful) to 10 (extremely helpful).`
   String get npsDescription {
     return Intl.message(
-      'Net Promoter Score helps us learn how we\'re doing. Pick a number from 0 (not likely) to 10 (extremely likely).',
+      'Choose a number from 0 (not helpful) to 10 (extremely helpful).',
       name: 'npsDescription',
       desc: '',
       args: [],
     );
   }
 
-  /// `0 Not likely`
+  /// `0 Not Helpful`
   String get npsScaleLowLabel {
     return Intl.message(
-      '0 Not likely',
+      '0 Not Helpful',
       name: 'npsScaleLowLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `10 Extremely likely`
+  /// `10 Extremely helpful`
   String get npsScaleHighLabel {
     return Intl.message(
-      '10 Extremely likely',
+      '10 Extremely helpful',
       name: 'npsScaleHighLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `You need to pick a score to continue.`
+  /// `Please choose a score to continue.`
   String get npsCannotSkip {
     return Intl.message(
-      'You need to pick a score to continue.',
+      'Please choose a score to continue.',
       name: 'npsCannotSkip',
       desc: '',
       args: [],
     );
   }
 
-  /// `This feedback isn't needed right now.`
+  /// `You don’t need to share feedback right now.`
   String get npsSubmitErrorNotRequired {
     return Intl.message(
-      'This feedback isn\'t needed right now.',
+      'You don’t need to share feedback right now.',
       name: 'npsSubmitErrorNotRequired',
       desc: '',
       args: [],
@@ -4002,10 +4002,10 @@ class S {
     );
   }
 
-  /// `What can we improve?`
+  /// `What could Kinly do better for your home?`
   String get npsEmailSubject {
     return Intl.message(
-      'What can we improve?',
+      'What could Kinly do better for your home?',
       name: 'npsEmailSubject',
       desc: '',
       args: [],

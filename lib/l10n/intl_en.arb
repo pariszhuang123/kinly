@@ -621,17 +621,17 @@
       }
     }
   },
-  "npsTitle": "How likely are you to recommend Kinly to a friend?",
-  "npsDescription": "Net Promoter Score helps us learn how we're doing. Pick a number from 0 (not likely) to 10 (extremely likely).",
-  "npsScaleLowLabel": "0 Not likely",
-  "npsScaleHighLabel": "10 Extremely likely",
-  "npsCannotSkip": "You need to pick a score to continue.",
-  "npsSubmitErrorNotRequired": "This feedback isn't needed right now.",
+  "npsTitle": "Has Kinly been helpful for your home so far?",
+  "npsDescription": "Choose a number from 0 (not helpful) to 10 (extremely helpful).",
+  "npsScaleLowLabel": "0 Not Helpful",
+  "npsScaleHighLabel": "10 Extremely helpful",
+  "npsCannotSkip": "Please choose a score to continue.",
+  "npsSubmitErrorNotRequired": "You don’t need to share feedback right now.",
   "npsSubmitErrorInvalidScore": "Please pick a score between 0 and 10.",
   "npsSubmitErrorForbidden": "You're not allowed to submit feedback right now.",
   "npsSubmitErrorGeneric": "Couldn't send your feedback. Please try again.",
   "npsLaunchError": "Couldn't open the next step.",
-  "npsEmailSubject": "What can we improve?",
+  "npsEmailSubject": "What could Kinly do better for your home?",
   "@app_title": {
     "surface": "title"
   },

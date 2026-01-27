@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:typed_data';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,6 +11,7 @@ import 'package:kinly/generated/l10n.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  final fakeSvg = _FakeSvgAssetBundle();
 
   testWidgets('renders share tabs and shows paid entry', (tester) async {
     final owed = TodayShareOwed(
@@ -36,25 +39,28 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        theme: buildKinlyTheme(Brightness.light),
-        home: Scaffold(
-          body: TodayShareSection(
-            owed: [owed],
-            paidToMe: [paid],
-            drafts: const [],
-            errorMessage: null,
-            onOwedTap: (_) {},
-            onPaidToMeTap: (_) {},
-            onDraftTap: (_) {},
-            onSeeAllDraftsTap: () {},
+      DefaultAssetBundle(
+        bundle: fakeSvg,
+        child: MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          theme: buildKinlyTheme(Brightness.light),
+          home: Scaffold(
+            body: TodayShareSection(
+              owed: [owed],
+              paidToMe: [paid],
+              drafts: const [],
+              errorMessage: null,
+              onOwedTap: (_) {},
+              onPaidToMeTap: (_) {},
+              onDraftTap: (_) {},
+              onSeeAllDraftsTap: () {},
+            ),
           ),
         ),
       ),
@@ -85,27 +91,30 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        theme: buildKinlyTheme(Brightness.light),
-        home: Scaffold(
-          body: TodayShareSection(
-            owed: const [],
-            paidToMe: [paid],
-            drafts: const [],
-            errorMessage: null,
-            onOwedTap: (_) {},
-            onPaidToMeTap: (_) {
-              tapped = true;
-            },
-            onDraftTap: (_) {},
-            onSeeAllDraftsTap: () {},
+      DefaultAssetBundle(
+        bundle: fakeSvg,
+        child: MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          theme: buildKinlyTheme(Brightness.light),
+          home: Scaffold(
+            body: TodayShareSection(
+              owed: const [],
+              paidToMe: [paid],
+              drafts: const [],
+              errorMessage: null,
+              onOwedTap: (_) {},
+              onPaidToMeTap: (_) {
+                tapped = true;
+              },
+              onDraftTap: (_) {},
+              onSeeAllDraftsTap: () {},
+            ),
           ),
         ),
       ),
@@ -114,4 +123,18 @@ void main() {
     await tester.tap(find.text('Taylor'));
     expect(tapped, isTrue);
   });
+}
+
+class _FakeSvgAssetBundle extends CachingAssetBundle {
+  static const _svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><path d="M0 0h1v1H0z"/></svg>';
+
+  @override
+  Future<ByteData> load(String key) async {
+    final bytes = Uint8List.fromList(_svg.codeUnits);
+    return ByteData.view(bytes.buffer);
+  }
+
+  @override
+  Future<String> loadString(String key, {bool cache = true}) async => _svg;
 }

@@ -8,5 +8,10 @@
 	</array>
 	<key>aps-environment</key>
 	<string>$(APS_ENVIRONMENT)</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:go.makinglifeeasie.com</string>
+		<string>applinks:dev.go.makinglifeeasie.com</string>
+	</array>
 </dict>
 </plist>

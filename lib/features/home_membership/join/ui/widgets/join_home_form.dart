@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -57,6 +58,7 @@ class _JoinHomeFormState extends State<JoinHomeForm> {
                 KinlyTextField(
                   controller: _controller,
                   labelText: s.join_hint,
+                  inputFormatters: [_UpperCaseTextFormatter()],
                   onChanged:
                       (value) => context.read<JoinHomeBloc>().add(
                         JoinHomeCodeChanged(value),
@@ -137,5 +139,15 @@ class _JoinHomeFormState extends State<JoinHomeForm> {
       case null:
         return state.errorMessage ?? s.join_failed_generic;
     }
+  }
+}
+
+class _UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return newValue.copyWith(text: newValue.text.toUpperCase());
   }
 }

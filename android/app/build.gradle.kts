@@ -47,7 +47,7 @@ android {
         versionName = flutter.versionName
 
         // Default placeholders (can be overridden by productFlavors)
-        manifestPlaceholders["deeplinkHost"] = "dev.example.com"
+        manifestPlaceholders["deeplinkHost"] = "dev.go.makinglifeeasie.com"
         manifestPlaceholders["appName"] = "Kinly (Dev)"
         manifestPlaceholders["supabaseScheme"] = "io.supabase.flutter"
         manifestPlaceholders["supabaseHost"] = "callback"
@@ -93,13 +93,13 @@ android {
             // Explicit app id is clearer and matches previous app
             applicationId = "com.makinglifeeasie.kinly.dev"
             versionNameSuffix = "-dev"
-            manifestPlaceholders["deeplinkHost"] = "dev.example.com"
+            manifestPlaceholders["deeplinkHost"] = "dev.go.makinglifeeasie.com"
             manifestPlaceholders["appName"] = "Kinly (Dev)"
         }
         create("prod") {
             dimension = "env"
             applicationId = "com.makinglifeeasie.kinly"
-            manifestPlaceholders["deeplinkHost"] = "example.com"
+            manifestPlaceholders["deeplinkHost"] = "go.makinglifeeasie.com"
             manifestPlaceholders["appName"] = "Kinly"
         }
     }
