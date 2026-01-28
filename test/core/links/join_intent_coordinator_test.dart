@@ -110,17 +110,17 @@ void main() {
       );
       await coordinator.capture(Uri.parse('kinly://join?code=abc234'));
 
-    final result = await coordinator.handleAuthState(
-      authStatus: AuthStatus.authenticated,
-      membershipStatus: AuthMembershipStatus.none,
-      userId: 'u1',
-    );
+      final result = await coordinator.handleAuthState(
+        authStatus: AuthStatus.authenticated,
+        membershipStatus: AuthMembershipStatus.none,
+        userId: 'u1',
+      );
 
-    verify(() => homeRepository.joinHome('ABC234')).called(1);
-    expect(result.navigation, JoinIntentNavigation.today);
-    expect(await storage.load(), isNull);
-  },
-);
+      verify(() => homeRepository.joinHome('ABC234')).called(1);
+      expect(result.navigation, JoinIntentNavigation.today);
+      expect(await storage.load(), isNull);
+    },
+  );
 
   test('blocked outcome routes to blocked and clears intent', () async {
     when(() => homeRepository.joinHome(any())).thenAnswer(
@@ -140,5 +140,41 @@ void main() {
 
     expect(result.navigation, JoinIntentNavigation.blocked);
     expect(await storage.load(), isNull);
+  });
+
+  test('captureInstallReferrer stores a valid code with source', () async {
+    final stored = await coordinator.captureInstallReferrer(
+      'kinly_invite_code=ab23cd&src=web_join',
+    );
+
+    expect(stored, isTrue);
+    final loaded = await storage.load();
+    expect(loaded?.inviteCode, 'AB23CD');
+    expect(loaded?.source, 'android_install_referrer');
+  });
+
+  test('install referrer does not override higher-precedence deep link', () async {
+    await coordinator.capture(Uri.parse('https://go.makinglifeeasie.com/kinly/join/zz99yy'));
+
+    final stored = await coordinator.captureInstallReferrer(
+      'kinly_invite_code=ab23cd',
+    );
+
+    expect(stored, isFalse);
+    final loaded = await storage.load();
+    expect(loaded?.inviteCode, 'ZZ99YY');
+  });
+
+  test('manual entry parses raw code and respects precedence', () async {
+    final stored = await coordinator.captureManualEntry('ab23cd');
+    expect(stored, isTrue);
+    expect((await storage.load())?.source, 'ios_manual_confirm');
+
+    final override = await coordinator.captureInstallReferrer(
+      'kinly_invite_code=cd34ef',
+    );
+    expect(override, isTrue);
+    expect((await storage.load())?.inviteCode, 'CD34EF');
+    expect((await storage.load())?.source, 'android_install_referrer');
   });
 }

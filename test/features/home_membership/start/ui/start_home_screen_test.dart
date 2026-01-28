@@ -13,12 +13,16 @@ import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/contracts/auth/models/user_context.dart';
 import 'package:kinly/contracts/auth/ports/user_context_repository.dart';
 import 'package:kinly/core/di/locator.dart';
+import 'package:kinly/core/links/join_intent_coordinator.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
 
 class _MockStartHomeBloc extends MockBloc<StartHomeEvent, StartHomeState>
     implements StartHomeBloc {}
+
+class _MockJoinIntentCoordinator extends Mock
+    implements JoinIntentCoordinator {}
 
 class _FakeAuthEvent extends Fake implements AuthEvent {}
 
@@ -46,6 +50,7 @@ void main() {
 
   late _MockAuthBloc authBloc;
   late _MockStartHomeBloc startHomeBloc;
+  late _MockJoinIntentCoordinator joinCoordinator;
 
   setUp(() async {
     await sl.reset();
@@ -63,6 +68,9 @@ void main() {
       () => startHomeBloc.stream,
     ).thenAnswer((_) => const Stream<StartHomeState>.empty());
     when(() => startHomeBloc.state).thenReturn(const StartHomeState());
+
+    joinCoordinator = _MockJoinIntentCoordinator();
+    sl.registerLazySingleton<JoinIntentCoordinator>(() => joinCoordinator);
   });
 
   tearDown(() async {
@@ -151,5 +159,18 @@ void main() {
     );
     expect(createButton.onPressed, isNotNull);
     expect(joinButton.onPressed, isNotNull);
+  });
+
+  testWidgets('manual invite CTA is hidden on start screen', (tester) async {
+    when(() => authBloc.state).thenReturn(
+      const AuthState(membershipStatus: AuthMembershipStatus.none),
+    );
+
+    await tester.pumpWidget(buildApp());
+    await tester.pump();
+
+    final s = S.of(tester.element(find.byType(StartHomeScreen)));
+    expect(find.text(s.manual_invite_cta), findsNothing);
+    verifyNever(() => joinCoordinator.captureManualEntry(any()));
   });
 }

@@ -19,10 +19,15 @@ class StartHomeSurfaceSlots {
 }
 
 class StartHomeSurfaceActions {
-  const StartHomeSurfaceActions({required this.onCreate, required this.onJoin});
+  const StartHomeSurfaceActions({
+    required this.onCreate,
+    required this.onJoin,
+    this.onManualInvite,
+  });
 
   final VoidCallback onCreate;
   final VoidCallback onJoin;
+  final VoidCallback? onManualInvite;
 }
 
 class StartHomeSurfaceScope {
@@ -36,6 +41,7 @@ class StartHomeSurfaceScope {
     this.personalizedTitle,
     this.personalizedSubtitle,
     this.isPersonalized = false,
+    this.supportsManualInvite = false,
   });
 
   final BuildContext context;
@@ -47,4 +53,5 @@ class StartHomeSurfaceScope {
   final String? personalizedTitle;
   final String? personalizedSubtitle;
   final bool isPersonalized;
+  final bool supportsManualInvite;
 }

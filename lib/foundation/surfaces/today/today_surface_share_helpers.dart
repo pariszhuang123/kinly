@@ -148,7 +148,7 @@ String _buildInviteLinkImpl(HomeInvite invite) {
   final host =
       AppConfig.inviteHost.isNotEmpty
           ? AppConfig.inviteHost
-          : AppConfig.deeplinkHost;
+          : 'go.makinglifeeasie.com';
   final uri = Uri(
     scheme: 'https',
     host: host,

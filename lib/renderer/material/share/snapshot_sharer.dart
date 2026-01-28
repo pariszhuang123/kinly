@@ -92,18 +92,18 @@ class SnapshotSharer {
   }
 
   static String _resolveAppLink() {
-    if (Platform.isIOS && AppConfig.iosStoreUrl.isNotEmpty) {
-      return AppConfig.iosStoreUrl;
-    }
-    if (Platform.isAndroid && AppConfig.androidStoreUrl.isNotEmpty) {
-      return AppConfig.androidStoreUrl;
-    }
-    if (AppConfig.androidStoreUrl.isNotEmpty) {
-      return AppConfig.androidStoreUrl;
-    }
-    if (AppConfig.iosStoreUrl.isNotEmpty) {
-      return AppConfig.iosStoreUrl;
-    }
-    return 'https://kinly.app';
+    final host =
+        AppConfig.inviteHost.isNotEmpty
+            ? AppConfig.inviteHost
+            : (AppConfig.deeplinkHost.isNotEmpty
+                ? AppConfig.deeplinkHost
+                : 'go.makinglifeeasie.com');
+    if (host.isEmpty) return 'https://go.makinglifeeasie.com/kinly';
+    final uri = Uri(
+      scheme: 'https',
+      host: host,
+      pathSegments: const ['kinly'],
+    );
+    return uri.toString();
   }
 }

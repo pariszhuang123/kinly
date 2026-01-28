@@ -28,6 +28,7 @@ class WelcomeSurfaceActions {
     required this.onOpenTerms,
     required this.onOpenPrivacy,
     required this.onLogoTap,
+    this.onManualInvite,
   });
 
   final ValueChanged<bool> onConsentChanged;
@@ -37,6 +38,7 @@ class WelcomeSurfaceActions {
   final VoidCallback onOpenTerms;
   final VoidCallback onOpenPrivacy;
   final VoidCallback onLogoTap;
+  final VoidCallback? onManualInvite;
 }
 
 class WelcomeSurfaceScope {
@@ -49,6 +51,7 @@ class WelcomeSurfaceScope {
     required this.googleButtonStyle,
     required this.appleButtonStyle,
     required this.actions,
+    this.supportsManualInvite = false,
   });
 
   final BuildContext context;
@@ -56,6 +59,7 @@ class WelcomeSurfaceScope {
   final bool consented;
   final bool busy;
   final bool supportsApple;
+  final bool supportsManualInvite;
   final Buttons googleButtonStyle;
   final Buttons appleButtonStyle;
   final WelcomeSurfaceActions actions;

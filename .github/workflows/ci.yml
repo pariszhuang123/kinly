@@ -402,12 +402,9 @@ jobs:
             --dart-define-from-file=env/dev.json \
             --build-number=$BUILD_NUMBER
 
-      - name: Upload dev APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-dev-debug.apk
-          path: build/app/outputs/flutter-apk/app-dev-debug.apk
-          retention-days: 3
+      # NOTE:
+      # Removed "Upload dev APK" artifact step because you don't use APK artifacts in CI.
+      # Keeping this job as a build-sanity check, but it no longer archives anything.
 
   android_prod_release:
     name: Android Prod (AAB + Play)

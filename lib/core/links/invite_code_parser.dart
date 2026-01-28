@@ -5,6 +5,8 @@ class InviteCodeParser {
 
   static final _regex = RegExp(r'^[A-HJ-NP-Z2-9]{6}$', caseSensitive: false);
 
+  bool isValid(String code) => _regex.hasMatch(code.trim().toUpperCase());
+
   /// Extracts and validates an invite code + source from the given URI.
   /// Returns `null` when no valid invite code is present.
   PendingJoinIntent? parse(Uri uri) {

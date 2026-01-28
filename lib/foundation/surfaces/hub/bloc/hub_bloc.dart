@@ -225,21 +225,24 @@ class HubBloc extends Bloc<HubEvent, HubState> {
 }
 
 String _resolveAppLink() {
-  if (PlatformInfo.isIOS && AppConfig.iosStoreUrl.isNotEmpty) {
-    return AppConfig.iosStoreUrl;
-  }
-  if (PlatformInfo.isAndroid && AppConfig.androidStoreUrl.isNotEmpty) {
-    return AppConfig.androidStoreUrl;
-  }
-  if (AppConfig.androidStoreUrl.isNotEmpty) return AppConfig.androidStoreUrl;
-  return AppConfig.iosStoreUrl;
+  final host =
+      AppConfig.inviteHost.isNotEmpty
+          ? AppConfig.inviteHost
+          : 'go.makinglifeeasie.com';
+  if (host.isEmpty) return 'https://go.makinglifeeasie.com/kinly';
+  final uri = Uri(
+    scheme: 'https',
+    host: host,
+    pathSegments: const ['kinly'],
+  );
+  return uri.toString();
 }
 
 String _buildInviteLink(HomeInvite invite) {
   final host =
       AppConfig.inviteHost.isNotEmpty
           ? AppConfig.inviteHost
-          : AppConfig.deeplinkHost;
+          : 'go.makinglifeeasie.com';
   final uri = Uri(
     scheme: 'https',
     host: host,

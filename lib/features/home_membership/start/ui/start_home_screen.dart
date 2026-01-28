@@ -21,6 +21,10 @@ import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/kinly_tap_target.dart';
 import '../../../../core/ui/enums/personal_profile_entry_source.dart';
 import '../../../../core/theme/spacing.dart';
+import '../../../../core/links/join_intent_coordinator.dart';
+import '../../../../core/ui/inputs/kinly_text_field.dart';
+import '../../../../core/ui/buttons/kinly_filled_button.dart';
+import '../../../../renderer/material/ui/bottom_sheet/kinly_bottom_sheet.dart';
 
 class StartHomeScreen extends StatelessWidget {
   const StartHomeScreen({super.key});
@@ -66,9 +70,10 @@ class _StartHomeView extends StatelessWidget {
         (hasAvatar || displayName != null)
             ? s.startReturningTitle(displayName ?? s.friendDefaultName)
             : s.welcome_title;
-    final personalizedSubtitle = hasAvatar
-        ? s.startReturningSubtitle
-        : membershipStatus == AuthMembershipStatus.none
+    final personalizedSubtitle =
+        hasAvatar
+            ? s.startReturningSubtitle
+            : membershipStatus == AuthMembershipStatus.none
             ? s.membership_status_none
             : null;
 
@@ -110,7 +115,6 @@ class _StartHomeView extends StatelessWidget {
 
               final canPress = !isCreating && canManageHome;
               StartHomeRegistry.bootstrap();
-
               final actions = StartHomeSurfaceActions(
                 onCreate: () {
                   context.read<StartHomeBloc>().add(
@@ -129,6 +133,7 @@ class _StartHomeView extends StatelessWidget {
                 personalizedTitle: personalizedTitle,
                 personalizedSubtitle: personalizedSubtitle,
                 isPersonalized: hasAvatar,
+                supportsManualInvite: false,
               );
               final slots = StartHomeSurfaceSlots(
                 body: _buildStartHomeSections(scope),
@@ -176,6 +181,7 @@ class _StartHomeView extends StatelessWidget {
       ],
     );
   }
+
 }
 
 class _PersonalProfileAction extends StatelessWidget {

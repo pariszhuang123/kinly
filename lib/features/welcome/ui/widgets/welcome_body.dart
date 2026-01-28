@@ -22,6 +22,8 @@ class WelcomeBody extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final linkColors = theme.extension<KinlyLinkColors>()!;
     final canPressGoogle = scope.consented && !scope.busy;
+    final showManualInvite =
+        scope.supportsManualInvite && scope.actions.onManualInvite != null;
 
     return Padding(
       padding: EdgeInsetsDirectional.all(spacing.xl),
@@ -107,6 +109,21 @@ class WelcomeBody extends StatelessWidget {
                   ),
                 );
               },
+            ),
+          ],
+          if (showManualInvite) ...[
+            const SizedBox(height: 12),
+            Center(
+              child: KinlyTapTarget(
+                onTap: scope.actions.onManualInvite!,
+                borderRadius: BorderRadius.circular(4),
+                child: Text(
+                  s.manual_invite_cta,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
             ),
           ],
           const SizedBox(height: 24),

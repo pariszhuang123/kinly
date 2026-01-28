@@ -5,169 +5,155 @@
   "@bootstrap_initializing": {
     "surface": "subtitle",
     "placeholders": {
-      "env": {
-        "type": "String",
-        "example": "prod"
-      }
+      "env": { "type": "String", "example": "prod" }
     }
   },
-  "startReturningTitle": "Hi {name}",
+  "startReturningTitle": "Hola {name}",
   "@startReturningTitle": {
-    "description": "Greeting shown on the Start screen for returning users.",
+    "description": "Saludo que se muestra en la pantalla de Inicio para usuarios que regresan.",
     "surface": "title",
     "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Alex"
-      }
+      "name": { "type": "String", "example": "Alex" }
     }
   },
-  "startReturningSubtitle": "What do you want to do next?",
+  "startReturningSubtitle": "¿Qué quieres hacer ahora?",
   "@startReturningSubtitle": {
-    "description": "Follow-up prompt for returning users on the Start screen.",
+    "description": "Pregunta de seguimiento para usuarios que regresan en la pantalla de Inicio.",
     "surface": "subtitle"
   },
   "welcome_title": "Bienvenido a Kinly",
   "welcome_create": "Crear un hogar",
-  "@welcome_create": {
-    "surface": "button"
-  },
-  "welcome_join": "Unirse a un hogar",
-  "create_subtitle": "Crearemos tu hogar al instante. Podrás cambiarle el nombre e invitar a otros más tarde.",
+  "@welcome_create": { "surface": "button" },
+  "welcome_join": "Unirme a un hogar",
   "create_failed_generic": "No se pudo crear el hogar. Inténtalo de nuevo.",
   "join_title": "Unirse a un hogar",
-  "join_hint": "Introduce el código de invitación",
-  "join_submit": "Unirse",
-  "join_success": "Te uniste con el código: {code}",
+  "join_hint": "Ingresa el código de invitación, p. ej.: ABC123",
+  "join_submit": "Unirme",
+  "join_success": "Ya estás dentro. Bienvenido a casa.",
   "@join_success": {
-    "description": "Snackbar message displayed when the user joins successfully",
+    "description": "Mensaje tipo snackbar que se muestra cuando el usuario se une correctamente",
     "surface": "success_message",
     "placeholders": {
-      "code": {
-        "type": "String",
-        "example": "ABCD123"
-      }
+      "code": { "type": "String", "example": "ABCD123" }
     }
   },
   "join_failed_generic": "No pudimos unirte a este hogar. Inténtalo de nuevo.",
   "join_error_invalid_code": "Ese código de invitación no parece correcto.",
-  "join_error_inactive_invite": "Esta invitación ya no está activa. Pídele al dueño un nuevo código.",
-  "join_error_already_in_other_home": "Ya estás en otro hogar. Sal de él antes de unirte a uno nuevo.",
-  "join_error_paywall_limit": "Este hogar ha alcanzado su límite de miembros. Pídele al dueño que actualice el plan o elimine a un miembro.",
+  "join_error_inactive_invite": "Esa invitación ya no está activa. Pídele al propietario un nuevo código.",
+  "join_error_already_in_other_home": "Deja tu hogar actual para unirte a uno nuevo",
+  "join_error_paywall_limit": "Este hogar ha alcanzado su límite de miembros. Pídele al propietario que actualice el plan o quite a un miembro.",
+  "manual_invite_cta": "¿Tienes un enlace de invitación?",
+  "manual_invite_placeholder": "Pega el enlace o el código de invitación",
+  "manual_invite_saved": "Invitación guardada. Continúa para iniciar sesión.",
   "paywallTitle": "Trae más armonía a tu hogar",
-  "paywallSubtitle": "Actualiza tu hogar por menos del 0,5% de tu renta.",
-  "paywallPriceCaption": "Un solo plan para el hogar, sin niveles ocultos.",
-  "paywallPricePerMonth": "{price} al mes para todo tu hogar.",
+  "paywallSubtitle": "Tu mejora a nivel de hogar por menos del 0.5% de tu alquiler.",
+  "paywallPriceCaption": "Un plan por hogar, sin niveles ocultos.",
+  "paywallPricePerMonth": "{price} al mes.",
   "@paywallPricePerMonth": {
     "surface": "paywall_subtitle",
     "placeholders": {
-      "price": {
-        "type": "String",
-        "example": "$7.99"
-      }
+      "price": { "type": "String", "example": "$7.99" }
     }
   },
-  "paywallPriceUnavailable": "Los precios no están disponibles en este momento.",
-  "paywallBulletMembers": "Miembros del hogar ilimitados",
-  "paywallBulletFlows": "Flows ilimitados",
-  "paywallBulletPhotos": "Fotos ilimitadas en Flow",
+  "paywallPriceUnavailable": "El precio no está disponible en este momento.",
+  "paywallBulletMembers": "Miembros ilimitados del hogar",
+  "paywallBulletFlows": "Flujos ilimitados",
+  "paywallBulletPhotos": "Fotos ilimitadas de flujos",
   "paywallBulletShares": "Gastos compartidos ilimitados",
   "paywallPrimaryCta": "Actualizar a Kinly Premium",
-  "paywallSecondaryCta": "Continuar con hogar gratis",
-  "paywallPurchaseFailed": "La compra no se completó. Puedes intentarlo de nuevo cuando quieras.",
+  "paywallSecondaryCta": "Mantener el plan gratuito",
+  "paywallPurchaseFailed": "Compra no completada: puedes intentarlo de nuevo en cualquier momento.",
   "paywallPurchaseSuccess": "Ahora tienes Kinly Premium.",
   "paywallRestoreCta": "Restaurar compras",
   "paywallErrorTitle": "No se pudo cargar el paywall.",
   "paywallRetryLabel": "Reintentar",
-  "join_error_unauthorized": "Inicia sesiA3n para unirte a este hogar.",
+  "join_error_unauthorized": "Inicia sesión para unirte a este hogar.",
   "join_error_forbidden": "No tienes permiso para unirte a este hogar.",
-  "join_blocked_title": "This home isn't accepting new members right now",
-  "join_blocked_body": "We've notified the home owner.",
-  "join_blocked_cta": "Done",
-  "todayMemberCapTitle": "Someone wants to join your home",
-  "todayMemberCapSubtitle": "{names} wants to join your home. Upgrade to support unlimited members.",
-  "todayMemberCapSubtitleGeneric": "A member is requesting access. Upgrade to support unlimited members.",
-  "todayMemberCapPrimaryCta": "Upgrade home",
-  "todayMemberCapSecondaryCta": "Ignore",
-  "todayMemberCapResolutionJoined": "{name} joined your home.",
-  "todayMemberCapResolutionSuperseded": "{name} joined another home.",
-  "todayMemberCapResolutionFailed": "We could not complete {name}'s request.",
-  "todayMemberCapResolutionUnknownName": "Someone",
+  "join_blocked_title": "Este hogar no está aceptando nuevos miembros en este momento",
+  "join_blocked_body": "Hemos notificado al propietario del hogar.",
+  "join_blocked_cta": "Listo",
+  "todayMemberCapTitle": "Alguien quiere unirse a tu hogar",
+  "todayMemberCapSubtitle": "{names} quiere unirse a tu hogar. Actualiza para admitir miembros ilimitados.",
+  "@todayMemberCapSubtitle": {
+    "surface": "subtitle",
+    "placeholders": {
+      "names": { "type": "String", "example": "Alex, Sam" }
+    }
+  },
+  "todayMemberCapSubtitleGeneric": "Tu hogar está creciendo. Actualiza para dar la bienvenida a más personas.",
+  "todayMemberCapPrimaryCta": "Actualizar hogar",
+  "todayMemberCapSecondaryCta": "Ignorar",
+  "todayMemberCapResolutionJoined": "{name} se unió a tu hogar.",
+  "@todayMemberCapResolutionJoined": {
+    "placeholders": {
+      "name": { "type": "String", "example": "Alex" }
+    }
+  },
+  "todayMemberCapResolutionSuperseded": "{name} se unió a otro hogar.",
+  "@todayMemberCapResolutionSuperseded": {
+    "placeholders": {
+      "name": { "type": "String", "example": "Alex" }
+    }
+  },
+  "todayMemberCapResolutionFailed": "No pudimos completar la solicitud de {name}.",
+  "@todayMemberCapResolutionFailed": {
+    "placeholders": {
+      "name": { "type": "String", "example": "Alex" }
+    }
+  },
+  "todayMemberCapResolutionUnknownName": "Alguien",
   "quick_add_title": "Añadir rápido",
-  "quick_add_flow_title": "Flow",
-  "quick_add_flow_subtitle": "Añadir un Flow",
-  "quick_add_share_title": "Share",
-  "quick_add_share_subtitle": "Registrar un Share",
+  "quick_add_flow_title": "Flujo",
+  "quick_add_flow_subtitle": "Crear un flujo",
+  "quick_add_share_title": "Cuenta",
+  "quick_add_share_subtitle": "Añadir una cuenta",
   "todayAddSheetTitle": "Añadir a tu hogar",
-  "todayAddSheetFlow": "Añadir Flow",
-  "todayAddSheetShare": "Añadir Share",
+  "todayAddSheetFlow": "Añadir flujo",
+  "todayAddSheetShare": "Añadir cuenta",
   "login_tagline": "Juntos se siente más ligero",
   "login_with_google": "Continuar con Google",
   "login_with_apple": "Continuar con Apple",
   "login_consent_prefix": "He leído y acepto los ",
-  "login_consent_connector": " y ",
+  "login_consent_connector": " y la ",
   "login_terms": "Términos del servicio",
   "login_privacy": "Política de privacidad",
   "logout": "Cerrar sesión",
-  "membership_status_checking": "Comprobando el estado de la membresía…",
-  "membership_status_none": "Aún no te has unido a un hogar.",
-  "membership_status_active": "Ya formas parte de un hogar.",
+  "membership_status_checking": "Conectándote con tu hogar…",
+  "membership_status_none": "Tu hogar compartido comienza aquí.",
+  "membership_status_active": "Estás conectado a un hogar.",
   "authMembershipLoadFailed": "No pudimos actualizar tu membresía del hogar. Inténtalo de nuevo.",
   "offline_title": "Estás sin conexión",
-  "offline_body": "Kinly necesita una conexión a internet. Revisa tu señal e inténtalo de nuevo.",
+  "offline_body": "Kinly necesita conexión a internet. Revisa tu señal e inténtalo de nuevo.",
   "offline_retry": "Intentar de nuevo",
-  "force_update_title": "Actualización requerida",
+  "force_update_title": "Se necesita actualización",
   "force_update_body": "Esta versión de Kinly ya no es compatible. Instala la versión más reciente para continuar.",
-  "force_update_notes_label": "Novedades",
   "force_update_button": "Actualizar Kinly",
-  "force_update_version_details": "Tu versión: {client}\nÚltima versión: {current}",
-  "@force_update_version_details": {
-    "placeholders": {
-      "client": {
-        "type": "String",
-        "example": "1.2.0"
-      },
-      "current": {
-        "type": "String",
-        "example": "1.3.5"
-      }
-    }
-  },
   "navToday": "Hoy",
   "navExplore": "Explorar",
-  "navHub": "Hub",
+  "navHub": "Centro",
   "hubMembersEmpty": "Aún no hay miembros activos.",
   "hubInviteCta": "Invitar",
   "hubInviteUnavailable": "No se pudo cargar la invitación. Inténtalo de nuevo.",
   "hubShareInviteTitle": "Invitar a mi hogar de Kinly",
-  "hubShareInviteBody": "¡Bienvenido a nuestro hogar de Kinly! Introduce este código de invitación: {code}\n\nDescarga la app de Kinly: {link}",
+  "hubShareInviteBody": "¡Bienvenido a nuestro hogar de Kinly! Ingresa este código de invitación: {code}\n\nDescarga la app de Kinly: {link}",
   "@hubShareInviteBody": {
     "surface": "subtitle",
     "placeholders": {
-      "code": {
-        "type": "String",
-        "example": "ABCD123"
-      },
-      "link": {
-        "type": "String",
-        "example": "https://kinly.app/download"
-      }
+      "code": { "type": "String", "example": "ABCD123" },
+      "link": { "type": "String", "example": "https://go.makinglifeeasie.com/kinly" }
     }
   },
-  "hubShareAppTitle": "Consigue la app de Kinly",
-  "hubShareAppBody": "Comparte Kinly para que compartir se sienta más ligero: {link}",
+  "hubShareAppTitle": "Obtén la app de Kinly",
+  "hubShareAppBody": "Comparte Kinly para que juntos se sienta más ligero: {link}",
   "@hubShareAppBody": {
     "surface": "subtitle",
     "placeholders": {
-      "link": {
-        "type": "String",
-        "example": "https://kinly.app/download"
-      }
+      "link": { "type": "String", "example": "https://go.makinglifeeasie.com/kinly" }
     }
   },
   "hubShareAppCta": "Compartir Kinly",
-  "todayFlatmateInviteTitle": "Invita a tu compañero de piso",
-  "todayFlatmateInviteSubtitle": "Comparte tu invitación para poder dividir las tareas juntos.",
+  "todayFlatmateInviteTitle": "Trae tu hogar a Kinly",
+  "todayFlatmateInviteSubtitle": "Invítalos para que puedan mantenerse alineados y compartir la carga.",
   "todayInviteFriendsTitle": "Invita a amigos a Kinly",
   "todayInviteFriendsSubtitle": "Comparte Kinly con un amigo para que también pueda traer más armonía a su hogar.",
   "todayInviteShareCta": "Compartir invitación",
@@ -176,122 +162,147 @@
   "hubRotateInvite": "Rotar invitación",
   "hubRotateSuccess": "Invitación rotada",
   "hubRotateError": "No se pudo rotar la invitación. Inténtalo de nuevo.",
-  "hubQrTitle": "Comparte la app",
+  "hubQrTitle": "Compartir la app",
   "hubQrSubtitle": "Escanea para descargar Kinly",
   "hubCardGratitudeWallTitle": "Muro de gratitud",
   "hubCardGratitudeWallSubtitle": "Lee agradecimientos rápidos y pequeños momentos de aprecio.",
   "hubPreferencesTitle": "Preferencias personales",
   "hubPreferencesSubtitle": "Cómo vive cada persona la convivencia.",
-  "hubError": "No se pudo cargar el Hub. Inténtalo de nuevo.",
+  "homeVibeTitle": "Vibra del hogar",
+  "homeVibeCoverage": "Basado en {answered} de {total} miembros",
+  "@homeVibeCoverage": {
+    "placeholders": {
+      "answered": { "type": "int", "example": "3" },
+      "total": { "type": "int", "example": "5" }
+    }
+  },
+  "houseVibeShareTitle": "Vibra del hogar",
+  "houseVibeShareMessage": "Compartiendo la vibra de nuestra casa en Kinly. Descarga la app: {link}",
+  "@houseVibeShareMessage": {
+    "placeholders": {
+      "link": { "type": "String", "example": "https://go.makinglifeeasie.com/kinly" }
+    }
+  },
+  "houseVibeShareError": "No se pudo compartir en este momento. Inténtalo de nuevo.",
+  "houseVibeShareCta": "Compartir vibra",
+  "vibeInsufficientTitle": "Aún no hay datos suficientes",
+  "vibeInsufficientSummary": "Termina las preferencias para ver la vibra de tu hogar.",
+  "vibeMixedTitle": "Un hogar mixto",
+  "vibeMixedSummary": "Tu hogar muestra una mezcla de estilos de comodidad, influida por cómo a cada persona le gusta vivir.",
+  "vibeDefaultTitle": "Un hogar equilibrado",
+  "vibeDefaultSummary": "Tu hogar se siente fácil de vivir para todos.",
+  "vibeQuietCareTitle": "Cuidado silencioso",
+  "vibeQuietCareSummary": "Tu hogar se siente tranquilo, con energía suave y ritmos más calmados.",
+  "vibeSocialTitle": "Energía social",
+  "vibeSocialSummary": "Tu hogar se siente activo, con gente compartiendo tiempo.",
+  "vibeWarmSocialTitle": "Social y cálido",
+  "vibeWarmSocialSummary": "Tu hogar se siente cálido y acogedor, con gente a menudo junta.",
+  "vibeCozySocialTitle": "Social y acogedor",
+  "vibeCozySocialSummary": "Tu hogar se siente acogedor y calmado cuando la gente pasa tiempo junta.",
+  "vibeSteadyTitle": "Calma constante",
+  "vibeSteadySummary": "Tu hogar se siente estable, con el cuidado expresándose a través de hábitos diarios.",
+  "vibeStructuredTitle": "Ritmo con estructura",
+  "vibeStructuredSummary": "Tu hogar funciona mejor con rutinas claras y planes compartidos.",
+  "vibeEasygoingTitle": "Flujo relajado",
+  "vibeEasygoingSummary": "Tu hogar se siente relajado y abierto a cambios día a día.",
+  "vibeIndependentTitle": "Calma independiente",
+  "vibeIndependentSummary": "Tu hogar respeta el espacio y la tranquilidad.",
+  "hubError": "No se pudo cargar el Centro. Inténtalo de nuevo.",
   "hubRetry": "Reintentar",
   "todayEmptyCardTitle": "Todo al día por hoy",
   "todayEmptyCardBadge": "Tómate un respiro",
-  "todayEmptyBody": "Disfruta de la calma: Kinly te avisará cuando algo necesite tu atención.",
+  "todayEmptyBody": "Disfruta la calma: Kinly te avisará cuando algo necesite tu atención.",
   "friendDefaultName": "amigo",
-  "greetingPartOfDay": "Buen{partOfDay}, {name}",
+  "greetingPartOfDay": "Buen {partOfDay}, {name}",
   "@greetingPartOfDay": {
     "surface": "title",
     "placeholders": {
-      "partOfDay": {
-        "type": "String",
-        "example": "as tardes"
-      },
-      "name": {
-        "type": "String",
-        "example": "Alex"
-      }
+      "partOfDay": { "type": "String", "example": "morning" },
+      "name": { "type": "String", "example": "Alex" }
     }
   },
-  "todayFlowSubtitle": "Esto es lo que fluye hoy en tu hogar.",
-  "todayFlowSectionTitle": "Flow",
+  "todayFlowSubtitle": "Esto es lo que está fluyendo en tu hogar hoy.",
+  "todayFlowSectionTitle": "Flujo",
   "todayFlowTabActive": "Activos",
   "todayFlowTabDrafts": "Borradores",
-  "todayFlowSeeAll": "Ver todo {count, plural, one {(#)} other {(#)}}",
+  "todayFlowSeeAll": "Ver todo: {count, plural, one {(#)} other {(#)}}",
   "@todayFlowSeeAll": {
     "surface": "subtitle",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "3"
-      }
-    }
+    "placeholders": { "count": { "type": "int", "example": "3" } }
   },
   "todayFlowBadgeNew": "nuevo hoy",
-  "todayShareSectionTitle": "Share",
-  "todayShareTabActive": "Por pagar",
+  "todayShareSectionTitle": "Cuenta",
+  "todayShareTabActive": "Por saldar",
   "todayShareTabDrafts": "Borradores",
-  "todayShareTabPaidToMe": "Pagado a mí",
-  "todaySharePaidSubtitle": "Pagado a ti",
-  "todaySharePaidUnseen": "{count, plural, one {{count} pago nuevo para ti} other {{count} pagos nuevos para ti}}",
+  "todayShareTabPaidToMe": "Saldadas",
+  "todaySharePaidSubtitle": "Monto saldado",
+  "todaySharePaidUnseen": "{count, plural, one {{count} nuevo pago hacia ti} other {{count} nuevos pagos hacia ti}}",
   "@todaySharePaidUnseen": {
-    "description": "Subtítulo para pagos recibidos con elementos sin ver.",
+    "description": "Subtítulo que se muestra para entradas pagadas-a-mí cuando hay elementos no vistos.",
     "surface": "subtitle",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "2"
-      }
-    }
+    "placeholders": { "count": { "type": "int", "example": "2" } }
   },
   "todayShareError": "No pudimos actualizar Share en este momento.",
-  "todayShareActiveSubtitle": "{count, plural, one {{count} pago pendiente} other {{count} pagos pendientes}}",
+  "todayShareActiveSubtitle": "{count, plural, one {{count} pago pendiente} other {{count} por saldar}}",
   "@todayShareActiveSubtitle": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "2"
-      }
-    },
+    "placeholders": { "count": { "type": "int", "example": "2" } },
     "surface": "subtitle"
   },
-  "todayGratitudeSectionTitle": "Muro de gratitud del hogar",
+  "todayGratitudeSectionTitle": "Muro de gratitud",
   "todayGratitudeUnreadBody": "Hay nuevas publicaciones de gratitud esperándote.",
-  "shareOwedDetailTitle": "Pago pendiente",
-  "shareOwedDetailEmpty": "Estás al día con esta persona.",
-  "shareOwedDetailPaid": "Marcar como pagado",
-  "shareOwedDetailSuccess": "Pago registrado.",
-  "shareOwedDetailError": "No pudimos marcar ese share como pagado. Inténtalo de nuevo.",
-  "sharePaidDetailAcknowledge": "Reconocer pagos",
-  "sharePaidDetailAcknowledging": "Marcando...",
-  "sharePaidDetailAcknowledgeError": "No pudimos reconocer estos pagos.",
-  "shareEditTitle": "Editar Share",
+  "shareOwedDetailTitle": "Por saldar",
+  "shareOwedDetailEmpty": "Ya estás al día con esta persona.",
+  "shareOwedDetailPaid": "Marcar como saldado",
+  "shareOwedDetailSuccess": "Saldado.",
+  "shareOwedDetailError": "No pudimos marcar esa cuenta como saldada. Inténtalo de nuevo.",
+  "sharePaidDetailAcknowledge": "Confirmar recepción",
+  "sharePaidDetailAcknowledging": "Confirmando…",
+  "sharePaidDetailAcknowledgeError": "No pudimos confirmar la recepción de las cuentas.",
+  "shareEditTitle": "Editar cuenta",
   "shareEditSubmit": "Actualizar",
-  "shareEditSuccess": "Share actualizado.",
+  "shareEditSuccess": "Cuenta actualizada.",
   "shareEditLoadError": "No pudimos cargar ese borrador.",
-  "shareEditNotAllowed": "Está bloqueado hasta que asignes el share a alguien.",
-  "shareEditSplitsLocked": "Las divisiones están bloqueadas porque alguien ya pagó. Aun así puedes actualizar la descripción y las notas.",
+  "shareEditNotAllowed": "Esto queda bloqueado hasta que alguien tome esta cuenta.",
+  "shareEditSplitsLocked": "Los repartos están bloqueados porque alguien ya pagó. Aun así, puedes actualizar la descripción y las notas.",
   "shareEditClose": "Cerrar",
   "shareEditDeleteButton": "Eliminar",
   "shareEditDeleteConfirmTitle": "¿Eliminar?",
   "shareEditDeleteConfirmMessage": "Esto elimina el borrador para todos.",
   "shareEditDeleteConfirm": "Eliminar",
   "shareEditDeleteError": "No se pudo eliminar. Inténtalo de nuevo.",
-  "shareEditDeleteSuccess": "Share eliminado.",
-  "shareEditDisabledConverted": "Este gasto se convirtió en un plan y no se puede editar.",
-  "shareEditDisabledRecurringCycle": "Los ciclos recurrentes no se editan aquí.",
-  "shareEditDisabledActive": "Los gastos activos no se pueden editar.",
-  "shareEditDisabledGeneric": "No puedes editar este gasto ahora mismo.",
-  "shareCreateTitle": "Crear",
+  "shareEditDeleteSuccess": "Cuenta eliminada.",
+  "shareEditTerminateSuccess": "Plan terminado.",
+  "shareEditTerminatePlan": "Terminar plan",
+  "shareEditTerminatePlanBusy": "Terminando…",
+  "shareEditTerminatePlanTitle": "¿Terminar el plan recurrente?",
+  "shareEditTerminatePlanMessage": "Esto detiene los ciclos futuros de la cuenta.",
+  "shareEditTerminatePlanConfirm": "Terminar plan",
+  "shareEditTerminateError": "No se pudo terminar el plan. Inténtalo de nuevo.",
+  "shareEditDisabledConverted": "Esta cuenta ahora es un plan y la edición está desactivada.",
+  "shareEditDisabledRecurringCycle": "Los ciclos recurrentes están bloqueados para editarse aquí.",
+  "shareEditDisabledActive": "Las cuentas activas están bloqueadas para edits.",
+  "shareEditDisabledGeneric": "La edición de esta cuenta no está disponible en este momento.",
+  "shareCreateTitle": "Crear cuenta",
   "shareCreateDescriptionLabel": "Descripción",
-  "shareCreateDescriptionHint": "p. ej., compra del súper",
-  "shareCreateAmountLabel": "Importe",
+  "shareCreateDescriptionHint": "p. ej.: Compra de supermercado",
+  "shareCreateAmountLabel": "Monto",
   "shareCreateAmountHint": "0.00",
-  "shareCreateSplitLabel": "Tipo de reparto",
-  "shareCreateSplitEqual": "Repartir automáticamente",
-  "shareCreateSplitCustom": "Reparto personalizado",
+  "shareCreateSplitLabel": "¿Cómo queremos dividir esto?",
+  "shareCreateSplitEqual": "Dividir por igual",
+  "shareCreateSplitCustom": "Elegir montos",
   "shareCreateParticipantsEmpty": "Necesitas al menos dos miembros del hogar para compartir.",
-  "shareCreateNotesLabel": "Notas",
+  "shareCreateNotesLabel": "Contexto",
   "shareCreateNotesHint": "Contexto opcional que todos pueden ver",
-  "shareCreateCustomHelper": "Introduce la parte de cada persona. Asegúrate de que el total coincida con el importe de arriba.",
-  "shareCreateCustomAmountLabel": "Importe",
-  "shareCreateStartLabel": "¿Cuándo aplica?",
+  "shareCreateCustomHelper": "Ingresa la parte de cada persona. Asegúrate de que el total coincida con el monto de arriba.",
+  "shareCreateCustomAmountLabel": "Monto",
+  "shareCreateStartLabel": "¿Cuándo aplica esto?",
+  "shareCreateCyclePeriod": "Aplica a {period}",
+  "@shareCreateCyclePeriod": {
+    "placeholders": {
+      "period": { "type": "String", "example": "Jan 5 - Jan 11, 2026" }
+    }
+  },
   "shareCreateRecurrenceLabel": "Repetir",
-  "shareCreateRecurrenceNone": "Una vez",
-  "shareCreateRecurrenceWeekly": "Semanal",
-  "shareCreateRecurrenceEvery2Weeks": "Cada 2 semanas",
-  "shareCreateRecurrenceMonthly": "Mensual",
-  "shareCreateRecurrenceEvery2Months": "Cada 2 meses",
-  "shareCreateRecurrenceAnnual": "Anual",
   "shareCreateRecurrenceToggleLabel": "Recurrente",
   "shareCreateRecurrenceEveryLabel": "Cada",
   "shareCreateRecurrenceUnitDay": "Día",
@@ -299,13 +310,13 @@
   "shareCreateRecurrenceUnitMonth": "Mes",
   "shareCreateRecurrenceUnitYear": "Año",
   "shareCreateSubmit": "Crear",
-  "shareCreateValidationDescription": "Introduce una descripción.",
-  "shareCreateValidationAmount": "Introduce un importe válido mayor que cero.",
-  "shareCreateValidationEqualParticipants": "Selecciona al menos dos personas para dividir el importe.",
-  "shareCreateValidationCustomParticipants": "El reparto personalizado necesita al menos dos personas.",
-  "shareCreateValidationCustomAmounts": "Introduce un importe válido para cada persona seleccionada.",
-  "shareCreateValidationCustomSum": "Asegúrate de que el reparto personalizado sume el importe de arriba.",
-  "shareCreateValidationCustomSinglePayer": "Reparte el importe entre al menos dos personas cuando uses un reparto personalizado.",
+  "shareCreateValidationDescription": "Ingresa una descripción.",
+  "shareCreateValidationAmount": "Ingresa un monto válido mayor que cero.",
+  "shareCreateValidationEqualParticipants": "Selecciona al menos dos personas para dividir el monto.",
+  "shareCreateValidationCustomParticipants": "La división personalizada necesita al menos dos personas.",
+  "shareCreateValidationCustomAmounts": "Ingresa un monto válido para cada persona seleccionada.",
+  "shareCreateValidationCustomSum": "Asegúrate de que la división personalizada sume el monto de arriba.",
+  "shareCreateValidationCustomSinglePayer": "Reparte el monto entre al menos dos personas al usar una división personalizada.",
   "shareCreateValidationRecurrence": "Elige con qué frecuencia se repite.",
   "shareCreateValidationRecurrenceSplit": "Elige cómo dividir antes de configurar una repetición.",
   "shareCreateValidationStartDate": "Elige una fecha de inicio.",
@@ -314,152 +325,133 @@
   "shareCreateLoadError": "No pudimos cargar los miembros de tu hogar.",
   "shareCreateRetry": "Intentar de nuevo",
   "shareCreateErrorGeneric": "No se pudo crear. Inténtalo de nuevo.",
-  "shareCreateErrorPaywallActiveCap": "Has alcanzado el límite gratuito de 10 shares activos o en borrador. Cierra o cancela uno para continuar.",
-  "shareCreateErrorForbidden": "No tienes permiso para crear esto ahora mismo.",
-  "shareCreateSuccess": "Share creado.",
-  "flowChoreCreateTitle": "Añadir Flow",
-  "flowChoreEditTitle": "Editar Flow",
-  "flowChoreNameLabel": "Nombre del Flow",
-  "flowChoreNameHint": "Dale a tu flow un título corto y claro",
-  "flowChoreValidationName": "Ponle un nombre al flow.",
-  "flowChoreAssigneeLabel": "Asignar a",
-  "flowChoreValidationAssignee": "Elige a alguien para asignar este flow.",
-  "flowChoreStartLabel": "Fecha del Flow",
-  "flowChoreValidationDate": "Elige una fecha de hasta un año a partir de hoy.",
-  "flowChoreRecurrenceLabel": "Frecuencia de repetición",
-  "flowChoreRecurrenceNone": "Una vez",
-  "flowChoreRecurrenceDaily": "Diario",
-  "flowChoreRecurrenceWeekly": "Semanal",
-  "flowChoreRecurrenceEvery2Weeks": "Cada 2 semanas",
-  "flowChoreRecurrenceMonthly": "Mensual",
-  "flowChoreRecurrenceEvery2Months": "Cada 2 meses",
-  "flowChoreRecurrenceAnnual": "Anual",
-  "flowChoreNotesLabel": "Notas",
-  "flowChoreNotesHint": "Añade contexto o recordatorios opcionales",
-  "flowChoreHowToLabel": "Enlace de instrucciones",
-  "flowChoreHowToHint": "Pega un enlace a un vídeo o documento (opcional)",
-  "flowChoreValidationHowToUrl": "Introduce un enlace válido que empiece por http o https.",
+  "shareCreateErrorPaywallActiveCap": "Llegaste al límite gratuito de cuentas activas. Actualiza para tener más espacio.",
+  "shareCreateErrorForbidden": "No tienes permiso para crear esto en este momento.",
+  "shareCreateSuccess": "Cuenta creada.",
+  "flowChoreCreateTitle": "Añadir flujo",
+  "flowChoreEditTitle": "Editar flujo",
+  "flowChoreNameLabel": "¿Qué hay que hacer?",
+  "flowChoreNameHint": "p. ej.: Noche de basura, limpiar el refrigerador, regar plantas",
+  "flowChoreValidationName": "Ponle un nombre al flujo.",
+  "flowChoreAssigneeLabel": "¿Quién se encarga?",
+  "flowChoreValidationAssignee": "Elige a alguien, o déjalo abierto para cualquiera.",
+  "flowChoreStartLabel": "¿Cuándo aparece esto? ",
+  "flowChoreValidationDate": "Elige una fecha hasta un año a partir de hoy.",
+  "flowChoreRecurrenceLabel": "¿Con qué frecuencia aparece esto?",
+  "flowChoreRecurrenceNone": "Una sola vez",
+  "flowChoreNotesLabel": "Por qué importa",
+  "flowChoreNotesHint": "Cualquier cosa que ayude a otros a hacerlo fácilmente",
+  "flowChoreHowToLabel": "Cómo hacerlo (opcional)",
+  "flowChoreHowToHint": "Agrega un enlace si hay una forma específica de hacerlo",
+  "flowChoreValidationHowToUrl": "Ingresa un enlace válido que empiece con http o https.",
   "flowChoreHowToLaunchError": "No pudimos abrir ese enlace. Inténtalo de nuevo.",
-  "flowChorePhotoLabel": "Foto de referencia",
-  "flowChorePhotoPlaceholder": "Añade una foto para mostrar cómo se ve “bien hecho”",
-  "flowChorePhotoPermissionDenied": "Se requiere permiso de cámara para tomar una foto.",
+  "flowChorePhotoLabel": "Cómo se ve bien hecho",
+  "flowChorePhotoPlaceholder": "Una foto puede ayudar a que todos estén alineados",
+  "flowChorePhotoPermissionDenied": "Permite el acceso a la cámara para tomar una foto.",
   "flowChorePhotoPermissionOpenSettings": "Abrir ajustes",
   "flowChorePhotoUploadError": "No se pudo subir la foto. Inténtalo de nuevo.",
   "flowChorePhotoLoadError": "No se pudo cargar la foto",
-  "flowChoreSubmitCreate": "Añadir flow",
-  "flowChoreSubmitUpdate": "Guardar flow",
-  "flowChoreDeleteButton": "Eliminar flow",
-  "flowChoreDeleteDialogTitle": "¿Eliminar este flow?",
-  "flowChoreDeleteDialogMessage": "Esto elimina el flow para todos en tu hogar.",
+  "flowChoreSubmitCreate": "Crear flujo",
+  "flowChoreSubmitUpdate": "Guardar cambios",
+  "flowChoreDeleteButton": "Eliminar flujo",
+  "flowChoreDeleteDialogTitle": "¿Eliminar este flujo?",
+  "flowChoreDeleteDialogMessage": "Esto elimina el flujo para todos en tu hogar.",
   "flowChoreDeleteConfirm": "Eliminar",
-  "flowChoreLoadError": "No pudimos cargar este flow. Inténtalo de nuevo.",
+  "flowChoreLoadError": "No pudimos cargar este flujo. Inténtalo de nuevo.",
   "flowChoreRetry": "Reintentar",
-  "flowChoreErrorPaywallActiveCap": "Has alcanzado el límite gratuito de flows activos. Actualiza para añadir más.",
-  "flowChoreErrorPaywallMediaCap": "Has alcanzado el límite gratuito de fotos de referencia. Elimina una o actualiza el plan.",
-  "flowChoreErrorAssigneeNotMember": "Ese miembro no se puede asignar en este momento.",
-  "flowChoreErrorForbidden": "No tienes permiso para cambiar este flow.",
+  "flowChoreErrorPaywallActiveCap": "Llegaste al límite gratuito de flujos activos. Actualiza para tener más espacio.",
+  "flowChoreErrorPaywallMediaCap": "Llegaste al límite gratuito de fotos de flujos. Actualiza para tener más espacio.",
+  "flowChoreErrorAssigneeNotMember": "Ese miembro no forma parte de este hogar en este momento.",
+  "flowChoreErrorForbidden": "No tienes permiso para cambiar este flujo.",
   "flowChoreErrorInvalidPhoto": "Esa ruta de foto no es válida para este hogar.",
   "flowChoreErrorInvalidStart": "Elige una fecha de inicio válida.",
-  "flowChoreErrorInvalidState": "Este flow no se puede actualizar ahora mismo.",
-  "flowChoreErrorGeneric": "No se pudo guardar el flow. Inténtalo de nuevo.",
-  "flowChoreDetailTitle": "Detalles del Flow",
+  "flowChoreErrorInvalidState": "Este flujo no se puede actualizar en este momento.",
+  "flowChoreErrorGeneric": "No se pudo guardar el flujo. Inténtalo de nuevo.",
+  "flowChoreDetailTitle": "Detalles del flujo",
   "flowChoreDetailUnassigned": "Sin asignar",
-  "flowChoreDetailNoNotes": "Aún no hay notas.",
-  "flowChoreDetailNoHowTo": "No se proporcionó un enlace de instrucciones.",
-  "flowChoreDetailCompleteButton": "Completar flow",
-  "flowChoreCreateSuccess": "Flow creado.",
-  "flowChoreUpdateSuccess": "Flow actualizado.",
-  "flowChoreDetailCompletionSuccess": "Flow completado.",
-  "flowChoreDetailCompletionError": "No pudimos completar el flow. Inténtalo de nuevo.",
-  "flowChoreDetailMoreInfoTitle": "Más detalles",
+  "flowChoreDetailNoNotes": "No se proporcionó contexto.",
+  "flowChoreDetailNoHowTo": "No se proporcionaron enlaces de guía.",
+  "flowChoreDetailCompleteButton": "Marcar como completado",
+  "flowChoreCreateSuccess": "Flujo creado.",
+  "flowChoreUpdateSuccess": "Flujo actualizado.",
+  "flowChoreDetailCompletionSuccess": "Flujo completado.",
+  "flowChoreDetailCompletionError": "No se pudo completar el flujo. Inténtalo de nuevo.",
+  "flowChoreDetailMoreInfoTitle": "Contexto útil",
   "flowChoreExpectationPhotoLabel": "Foto de referencia",
-  "flowListEmptyTitle": "Aún no hay nada en Flow",
-  "flowListEmptySubtitle": "Añade tu primera rutina para que todos sepan qué hacer.",
+  "flowListEmptyTitle": "Aún no hay nada aquí",
+  "flowListEmptySubtitle": "Los flujos mantienen a todos alineados.",
   "flowListDraftLabel": "Borrador",
-  "flowListOverdueLabel": "Vencido",
-  "flowListError": "No pudimos cargar Flow. Desliza para actualizar.",
-  "exploreIntroTitle": "Descubre lo que viene",
-  "exploreIntroSubtitle": "Explora más maneras de hacer que tu hogar se sienta más ligero.",
-  "exploreFlowSubtitle": "Revisa cada Flow y mantén los flows en movimiento",
-  "exploreShareSubtitle": "Ve cada Share que has creado y haz seguimiento de los cobros.",
-  "shareCreatedListTitle": "Tu share",
-  "shareCreatedListEmptyTitle": "Aún no hay shares",
-  "shareCreatedListEmptySubtitle": "Crea un Share para verlo aquí.",
-  "shareCreatedListError": "No pudimos cargar tu share. Desliza para actualizar.",
+  "flowListOverdueLabel": "Necesita atención",
+  "flowListError": "No pudimos cargar los flujos. Desliza para actualizar.",
+  "exploreIntroSubtitle": "Explora más formas de mantener tu hogar más ligero.",
+  "exploreFlowSubtitle": "Mira qué hay que hacer y quién se encarga.",
+  "exploreShareSubtitle": "Mira cada cuenta que has creado y haz seguimiento de cobros.",
+  "shareCreatedListTitle": "Tus cuentas",
+  "shareCreatedListEmptyTitle": "Aún no hay cuentas",
+  "shareCreatedListEmptySubtitle": "Las cuentas mantienen el dinero claro entre personas, sin recordatorios incómodos.",
+  "shareCreatedListError": "No pudimos cargar tus cuentas. Desliza para actualizar.",
   "shareCreatedListRetry": "Intentar de nuevo",
-  "shareCreatedListActiveSubtitle": "{paid} de {total} pagados",
+  "shareCreatedListActiveSubtitle": "{paid} de {total} pagadas",
   "@shareCreatedListActiveSubtitle": {
     "placeholders": {
-      "paid": {
-        "type": "int",
-        "example": "2"
-      },
-      "total": {
-        "type": "int",
-        "example": "4"
-      }
+      "paid": { "type": "int", "example": "2" },
+      "total": { "type": "int", "example": "4" }
     },
     "surface": "subtitle"
   },
-  "shareCreatedListActiveAmount": "{paidAmount} de {totalAmount} cobrados",
+  "shareCreatedListActiveAmount": "{paidAmount} de {totalAmount} recaudado",
   "@shareCreatedListActiveAmount": {
     "placeholders": {
-      "paidAmount": {
-        "type": "String",
-        "example": "$20.00"
-      },
-      "totalAmount": {
-        "type": "String",
-        "example": "$40.00"
-      }
+      "paidAmount": { "type": "String", "example": "$20.00" },
+      "totalAmount": { "type": "String", "example": "$40.00" }
     }
   },
-  "shareCreatedListDraftSubtitle": "Divídelo para asignar a cada persona antes de publicarlo.",
+  "shareCreatedListDraftSubtitle": "Divídelo para que todos sepan su parte antes de publicarlo.",
   "shareCreatedListDraftBadge": "Sin asignar",
-  "shareCreatedListPaidBadge": "Saldado",
+  "shareCreatedListPaidBadge": "Pagado",
   "profileSettingsTitle": "Perfil y hogar",
-  "profileSettingsSubtitle": "Gestiona las preferencias de tu cuenta y el acceso al hogar.",
+  "profileSettingsSubtitle": "Administra las preferencias de tu cuenta y el acceso al hogar.",
   "profileIdentityTitle": "Editar perfil",
   "profileIdentitySubtitle": "Elige un nombre de usuario y un avatar para tu hogar.",
   "profileIdentityUsernameLabel": "Nombre de usuario",
   "profileIdentityUsernameHint": "letras, números, . o _",
-  "profileIdentityUsernameEmptyError": "Introduce un nombre de usuario para continuar.",
-  "profileIdentityUsernameFormatError": "Usa 3-30 letras minúsculas o números. Puedes incluir puntos o guiones bajos en el medio.",
+  "profileIdentityUsernameEmptyError": "Ingresa un nombre de usuario para continuar.",
+  "profileIdentityUsernameFormatError": "Usa 3–30 letras minúsculas o números. Puedes incluir puntos o guiones bajos en el medio.",
   "profileIdentityUsernameTakenError": "Ese nombre de usuario ya está en uso. Prueba con otro.",
   "profileIdentityAvatarSectionTitle": "Elige un avatar",
   "profileIdentityAvatarSectionDescription": "Cada avatar es único dentro de tu hogar.",
-  "profileIdentityAvatarEmpty": "No hay avatares disponibles ahora mismo. Inténtalo más tarde.",
-  "profileIdentityLoadError": "No pudimos cargar tu perfil ahora mismo.",
+  "profileIdentityAvatarEmpty": "No hay avatares disponibles en este momento. Inténtalo de nuevo pronto.",
+  "profileIdentityLoadError": "No pudimos cargar tu perfil en este momento.",
   "profileIdentityRetry": "Reintentar",
   "profileIdentitySaveButton": "Guardar cambios",
   "profileIdentitySuccessMessage": "Perfil actualizado.",
   "profileIdentityUsernamePreviewFallback": "tu nombre de usuario",
-  "profileLeaveHomeTitle": "Salir del hogar",
-  "profileLeaveHomeSubtitle": "Salir de este hogar significa dejar tu espacio compartido en Kinly.",
+  "profileLeaveHomeTitle": "Dejar el hogar",
+  "profileLeaveHomeSubtitle": "Dejar este hogar significa salir de tu espacio compartido en Kinly.",
   "profileLeaveEligibilityLoading": "Comprobando los miembros del hogar...",
   "profileLeaveEligibilityError": "No pudimos cargar los miembros de tu hogar. Inténtalo de nuevo.",
-  "profileLeaveOwnerSoloMessage": "Eres el último miembro. Si te vas, este hogar se desactivará para todos.",
-  "profileLeaveOwnerNoEligibleMembers": "Nadie más puede asumir la propiedad ahora mismo. Inténtalo más tarde.",
+  "profileLeaveOwnerSoloMessage": "Eres el último miembro. Al salir se desactivará este hogar.",
+  "profileLeaveOwnerNoEligibleMembers": "Nadie más puede asumir la propiedad en este momento. Inténtalo de nuevo más tarde.",
   "profileLeaveTransferSheetTitle": "Transferir propiedad",
-  "profileLeaveTransferSheetSubtitle": "Selecciona quién será el nuevo dueño antes de irte.",
+  "profileLeaveTransferSheetSubtitle": "Selecciona quién será el nuevo propietario antes de irte.",
   "profileKickMemberTitle": "Eliminar a un miembro",
-  "profileKickMemberSubtitle": "Elige quién perderá acceso a este hogar.",
+  "profileKickMemberSubtitle": "Elige quién perderá el acceso a este hogar.",
   "profileKickSheetTitle": "Eliminar a un miembro",
-  "profileKickSheetSubtitle": "Selecciona un miembro para eliminar. Perderá acceso de inmediato.",
+  "profileKickSheetSubtitle": "Selecciona a un miembro para eliminarlo. Perderá el acceso de inmediato.",
   "profileKickActionConfirm": "Eliminar miembro",
-  "profileKickNoMembers": "Ahora mismo no hay otros miembros para eliminar.",
-  "profileKickOwnerOnly": "Solo el dueño del hogar puede eliminar miembros.",
+  "profileKickNoMembers": "No hay otros miembros para eliminar en este momento.",
+  "profileKickOwnerOnly": "Solo el propietario del hogar puede eliminar miembros.",
   "profileKickSuccessMessage": "Ya no tiene acceso a este hogar.",
   "profileLeaveTransferSuccessMessage": "Propiedad transferida. Finalizando tu salida...",
-  "profileInfoHubTitle": "Info Hub",
-  "profileInfoHubSubtitle": "Abrir el hub de Notion de Kinly dentro de la app.",
-  "profileInfoHubLoadError": "No se pudo cargar el Info Hub. Revisa tu conexión.",
+  "profileInfoHubTitle": "Centro de información",
+  "profileInfoHubSubtitle": "Abre el hub de Kinly en Notion dentro de la app.",
+  "profileInfoHubLoadError": "No se pudo cargar el Centro de información. Revisa tu conexión.",
   "profileContactUsTitle": "Contáctanos",
-  "profileContactUsSubtitle": "Enviar email a support@makinglifeeasie.com",
+  "profileContactUsSubtitle": "Envía un correo a support@makinglifeeasie.com",
   "profileConnectionSettingsTitle": "Ajustes de conexión",
-  "profileConnectionSettingsSubtitle": "Gestiona notificaciones y recordatorios.",
+  "profileConnectionSettingsSubtitle": "Administra notificaciones y recordatorios.",
   "connectionSettingsTitle": "Ajustes de conexión",
-  "connectionSettingsSubtitle": "Controla los recordatorios diarios y la hora de notificación.",
+  "connectionSettingsSubtitle": "Controla los recordatorios diarios y el horario de notificaciones.",
   "connectionSettingsGenericError": "No se pudieron actualizar los ajustes de conexión. Inténtalo de nuevo.",
   "connectionNotificationsToggleTitle": "Notificaciones diarias",
   "connectionNotificationsToggleSubtitleOn": "Recibe un recordatorio al día.",
@@ -468,29 +460,24 @@
   "connectionNotificationsTimeLabel": "Hora del recordatorio",
   "connectionNotificationsTimeSubtitle": "Programado para {time}",
   "@connectionNotificationsTimeSubtitle": {
-    "placeholders": {
-      "time": {
-        "type": "String",
-        "example": "8:00 AM"
-      }
-    },
+    "placeholders": { "time": { "type": "String", "example": "8:00 AM" } },
     "surface": "subtitle"
   },
   "profileContactEmailSubject": "Contáctanos",
-  "profile_deactivated_message": "Your profile is deactivated. Please sign in with another email address.",
+  "profile_deactivated_message": "Tu perfil está desactivado. Inicia sesión con otra dirección de correo.",
   "profileContactLaunchError": "No pudimos abrir tu app de correo. Inténtalo de nuevo.",
   "profileLogoutTitle": "Cerrar sesión",
   "profileLogoutSubtitle": "Cerrar sesión de Kinly en este dispositivo.",
   "profileDeleteAccountTitle": "Eliminar cuenta",
   "profileDeleteAccountSubtitle": "Elimina tu cuenta de Kinly y los datos de tu perfil.",
-  "profileConfirmLeaveTitle": "¿Salir de este hogar?",
-  "profileConfirmLeaveMessage": "Perderás acceso a Flow, el historial y las invitaciones.",
+  "profileConfirmLeaveTitle": "¿Dejar este hogar?",
+  "profileConfirmLeaveMessage": "Perderás acceso a Flow, al historial y a las invitaciones.",
   "profileConfirmDeleteTitle": "¿Eliminar tu cuenta?",
-  "profileConfirmDeleteMessage": "Esto elimina tu cuenta y cierra sesión. No podrás deshacerlo.",
+  "profileConfirmDeleteMessage": "Esto elimina tu cuenta y cerrará tu sesión. No podrás deshacerlo.",
   "profileActionConfirmDelete": "Eliminar cuenta",
-  "profileActionConfirm": "Salir del hogar",
-  "profileLeaveSuccessMessage": "Saliste de tu hogar.",
-  "profileDeleteSuccessMessage": "Tu cuenta se eliminará en breve. Cerraremos tu sesión.",
+  "profileActionConfirm": "Dejar el hogar",
+  "profileLeaveSuccessMessage": "Dejaste tu hogar.",
+  "profileDeleteSuccessMessage": "Tu cuenta se eliminará pronto. Cerraremos tu sesión.",
   "profileGenericError": "Algo salió mal. Inténtalo de nuevo.",
   "profileMissingHomeError": "No pudimos encontrar tu hogar actual. Inténtalo de nuevo.",
   "harmonyQuestion": "¿Cómo se siente tu hogar esta semana?",
@@ -499,856 +486,394 @@
   "harmonyMoodCloudy": "Nublado",
   "harmonyMoodRainy": "Lluvioso",
   "harmonyMoodThunderstorm": "Tormenta eléctrica",
-  "harmonyCommentLabel": "Añadir una nota (opcional)",
-  "harmonyCommentHint": "¿Qué hace que el hogar se sienta así?",
-  "harmonyShareLabel": "Compartir esto en el muro de gratitud",
-  "harmonyShareSubtitle": "Visible para tu hogar cuando el ánimo es soleado o parcialmente soleado.",
-  "harmonySubmitCta": "Enviar feedback",
-  "harmonySubmitSuccess": "¡Gracias! Tu feedback se guardó.",
-  "harmonyErrorAlreadySubmitted": "Ya compartiste tu ánimo de esta semana.",
-  "harmonyErrorForbidden": "No puedes enviar feedback para este hogar.",
+  "harmonyCommentLabel": "¿Algo que te gustaría compartir?",
+  "harmonyCommentHint": "¿Qué ha estado contribuyendo a este sentir en casa?",
+  "harmonyShareLabel": "Compártelo con tu hogar",
+  "harmonySubmitCta": "Enviar comentarios",
+  "harmonySubmitSuccess": "¡Gracias! Tus comentarios se guardaron.",
+  "harmonyErrorAlreadySubmitted": "Ya compartiste tu estado de ánimo para esta semana.",
+  "harmonyErrorForbidden": "No puedes enviar comentarios para este hogar.",
   "harmonyErrorUnknown": "Algo salió mal. Inténtalo de nuevo.",
-  "harmonyErrorSelectMood": "Elige un ánimo antes de enviar.",
-  "gratitudeWallEmptyTitle": "Aún no hay publicaciones de gratitud",
-  "gratitudeWallEmptySubtitle": "Comparte un momento soleado para empezar a llenar el muro.",
-  "gratitudeWallRetry": "Intentar de nuevo",
-  "gratitudeWallShareCta": "Compartir este muro",
-  "gratitudeWallShareTitle": "Muro de gratitud",
-  "gratitudeWallShareMessage": "Compartiendo un vistazo de nuestro muro de gratitud de Kinly. Descarga la app: {link}",
-  "@gratitudeWallShareMessage": {
-    "placeholders": {
-      "link": {
-        "type": "String",
-        "example": "https://kinly.app/download"
-      }
-    }
-  },
-  "gratitudeWallShareError": "No se pudo compartir ahora mismo. Inténtalo de nuevo.",
-  "gratitudeWallFooter": "Hecho con {appName} - Juntos se siente más ligero",
-  "gratitudeWallWeeksAgo": "{weeks, plural, =0{Esta semana} one{hace # semana} other{hace # semanas}}",
-  "@gratitudeWallWeeksAgo": {
-    "surface": "subtitle",
-    "placeholders": {
-      "weeks": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
-  "@gratitudeWallFooter": {
-    "placeholders": {
-      "appName": {
-        "type": "String",
-        "example": "Kinly"
-      }
-    }
-  },
-  "gratitudeWallTitleCount": "Muro de gratitud {count, plural, one {(#)} other {(#)}}",
-  "@gratitudeWallTitleCount": {
-    "surface": "title",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "4"
-      }
-    }
-  },
-  "npsTitle": "¿Qué tan probable es que recomiendes Kinly a un amigo?",
-  "npsDescription": "El Net Promoter Score nos ayuda a saber cómo lo estamos haciendo. Elige un número de 0 (nada probable) a 10 (extremadamente probable).",
-  "npsScaleLowLabel": "0 Nada probable",
-  "npsScaleHighLabel": "10 Extremadamente probable",
-  "npsCannotSkip": "Necesitas elegir una puntuación para continuar.",
-  "npsSubmitErrorNotRequired": "Este feedback no es necesario ahora mismo.",
-  "npsSubmitErrorInvalidScore": "Elige una puntuación entre 0 y 10.",
-  "npsSubmitErrorForbidden": "No tienes permiso para enviar feedback ahora mismo.",
-  "npsSubmitErrorGeneric": "No se pudo enviar tu feedback. Inténtalo de nuevo.",
-  "npsLaunchError": "No se pudo abrir el siguiente paso.",
-  "npsEmailSubject": "¿Qué podemos mejorar?",
-  "@app_title": {
-    "surface": "title"
-  },
-  "@welcome_title": {
-    "surface": "title"
-  },
-  "@create_subtitle": {
-    "surface": "subtitle"
-  },
-  "@join_title": {
-    "surface": "title"
-  },
-  "@join_submit": {
-    "surface": "button"
-  },
-  "@paywallTitle": {
-    "surface": "title_hero"
-  },
-  "@paywallSubtitle": {
-    "surface": "subtitle"
-  },
-  "@paywallPrimaryCta": {
-    "surface": "button"
-  },
-  "@paywallSecondaryCta": {
-    "surface": "button"
-  },
-  "@paywallPurchaseSuccess": {
-    "surface": "success_message"
-  },
-  "@paywallRestoreCta": {
-    "surface": "button"
-  },
-  "@paywallErrorTitle": {
-    "surface": "title"
-  },
-  "@quick_add_title": {
-    "surface": "title"
-  },
-  "@quick_add_flow_title": {
-    "surface": "title"
-  },
-  "@quick_add_flow_subtitle": {
-    "surface": "subtitle"
-  },
-  "@quick_add_share_title": {
-    "surface": "title"
-  },
-  "@quick_add_share_subtitle": {
-    "surface": "subtitle"
-  },
-  "@todayAddSheetTitle": {
-    "surface": "title"
-  },
-  "@offline_title": {
-    "surface": "title"
-  },
-  "@offline_body": {
-    "surface": "subtitle"
-  },
-  "@offline_retry": {
-    "surface": "button"
-  },
-  "@force_update_title": {
-    "surface": "title"
-  },
-  "@force_update_body": {
-    "surface": "subtitle"
-  },
-  "@force_update_button": {
-    "surface": "button"
-  },
-  "@hubMembersEmpty": {
-    "surface": "empty_body"
-  },
-  "@hubInviteCta": {
-    "surface": "button"
-  },
-  "@hubShareInviteTitle": {
-    "surface": "title"
-  },
-  "@hubShareAppTitle": {
-    "surface": "title"
-  },
-  "@hubShareAppCta": {
-    "surface": "button"
-  },
-  "@todayFlatmateInviteTitle": {
-    "surface": "title"
-  },
-  "@todayFlatmateInviteSubtitle": {
-    "surface": "subtitle"
-  },
-  "@todayInviteFriendsTitle": {
-    "surface": "title"
-  },
-  "@todayInviteFriendsSubtitle": {
-    "surface": "subtitle"
-  },
-  "@todayInviteShareCta": {
-    "surface": "button"
-  },
-  "@hubRotateSuccess": {
-    "surface": "success_message"
-  },
-  "@hubRotateError": {
-    "surface": "error"
-  },
-  "@hubQrTitle": {
-    "surface": "title"
-  },
-  "@hubQrSubtitle": {
-    "surface": "subtitle"
-  },
-  "@hubCardGratitudeWallTitle": {
-    "surface": "title"
-  },
-  "@hubCardGratitudeWallSubtitle": {
-    "surface": "subtitle"
-  },
-  "@hubError": {
-    "surface": "error"
-  },
-  "@hubRetry": {
-    "surface": "button"
-  },
-  "@todayEmptyCardTitle": {
-    "surface": "title"
-  },
-  "@todayEmptyBody": {
-    "surface": "subtitle"
-  },
-  "@todayFlowSubtitle": {
-    "surface": "subtitle"
-  },
-  "@todayFlowSectionTitle": {
-    "surface": "title"
-  },
-  "@todayShareSectionTitle": {
-    "surface": "title"
-  },
-  "@todayShareError": {
-    "surface": "error"
-  },
-  "@todayGratitudeSectionTitle": {
-    "surface": "title"
-  },
-  "@todayGratitudeUnreadBody": {
-    "surface": "subtitle"
-  },
-  "@shareOwedDetailTitle": {
-    "surface": "title"
-  },
-  "@shareOwedDetailEmpty": {
-    "surface": "empty_body"
-  },
-  "@shareOwedDetailSuccess": {
-    "surface": "success_message"
-  },
-  "@shareOwedDetailError": {
-    "surface": "error"
-  },
-  "@shareEditTitle": {
-    "surface": "title"
-  },
-  "@shareEditSubmit": {
-    "surface": "button"
-  },
-  "@shareEditSuccess": {
-    "surface": "success_message"
-  },
-  "@shareEditLoadError": {
-    "surface": "error"
-  },
-  "@shareEditClose": {
-    "surface": "button"
-  },
-  "@shareEditDeleteButton": {
-    "surface": "button"
-  },
-  "@shareEditDeleteConfirmTitle": {
-    "surface": "title"
-  },
-  "@shareEditDeleteError": {
-    "surface": "error"
-  },
-  "@shareEditDeleteSuccess": {
-    "surface": "success_message"
-  },
-  "@shareCreateTitle": {
-    "surface": "title"
-  },
-  "@shareCreateParticipantsEmpty": {
-    "surface": "empty_body"
-  },
-  "@shareCreateSubmit": {
-    "surface": "button"
-  },
-  "@shareCreateLoadError": {
-    "surface": "error"
-  },
-  "@shareCreateRetry": {
-    "surface": "button"
-  },
-  "@shareCreateErrorGeneric": {
-    "surface": "error"
-  },
-  "@shareCreateErrorPaywallActiveCap": {
-    "surface": "error"
-  },
-  "@shareCreateErrorForbidden": {
-    "surface": "error"
-  },
-  "@shareCreateSuccess": {
-    "surface": "success_message"
-  },
-  "@flowChoreCreateTitle": {
-    "surface": "title"
-  },
-  "@flowChoreEditTitle": {
-    "surface": "title"
-  },
-  "@flowChoreHowToLaunchError": {
-    "surface": "error"
-  },
-  "@flowChorePhotoUploadError": {
-    "surface": "error"
-  },
-  "@flowChorePhotoLoadError": {
-    "surface": "error"
-  },
-  "@flowChoreDeleteButton": {
-    "surface": "button"
-  },
-  "@flowChoreDeleteDialogTitle": {
-    "surface": "dialog_title"
-  },
-  "@flowChoreDeleteDialogMessage": {
-    "surface": "dialog_body"
-  },
-  "@flowChoreLoadError": {
-    "surface": "error"
-  },
-  "@flowChoreRetry": {
-    "surface": "button"
-  },
-  "@flowChoreErrorPaywallActiveCap": {
-    "surface": "error"
-  },
-  "@flowChoreErrorPaywallMediaCap": {
-    "surface": "error"
-  },
-  "@flowChoreErrorAssigneeNotMember": {
-    "surface": "error"
-  },
-  "@flowChoreErrorForbidden": {
-    "surface": "error"
-  },
-  "@flowChoreErrorInvalidPhoto": {
-    "surface": "error"
-  },
-  "@flowChoreErrorInvalidStart": {
-    "surface": "error"
-  },
-  "@flowChoreErrorInvalidState": {
-    "surface": "error"
-  },
-  "@flowChoreErrorGeneric": {
-    "surface": "error"
-  },
-  "@flowChoreDetailTitle": {
-    "surface": "title"
-  },
-  "@flowChoreDetailCompleteButton": {
-    "surface": "button"
-  },
-  "@flowChoreCreateSuccess": {
-    "surface": "snackbar"
-  },
-  "@flowChoreUpdateSuccess": {
-    "surface": "snackbar"
-  },
-  "@flowChoreDetailCompletionSuccess": {
-    "surface": "snackbar"
-  },
-  "@flowChoreDetailCompletionError": {
-    "surface": "error"
-  },
-  "@flowChoreDetailMoreInfoTitle": {
-    "surface": "title"
-  },
-  "@flowListEmptyTitle": {
-    "surface": "title"
-  },
-  "@flowListEmptySubtitle": {
-    "surface": "subtitle"
-  },
-  "@flowListError": {
-    "surface": "error"
-  },
-  "@exploreIntroTitle": {
-    "surface": "title"
-  },
-  "@exploreIntroSubtitle": {
-    "surface": "subtitle"
-  },
-  "@exploreFlowSubtitle": {
-    "surface": "subtitle"
-  },
-  "@exploreShareSubtitle": {
-    "surface": "subtitle"
-  },
-  "@shareCreatedListTitle": {
-    "surface": "title"
-  },
-  "@shareCreatedListEmptyTitle": {
-    "surface": "title"
-  },
-  "@shareCreatedListEmptySubtitle": {
-    "surface": "subtitle"
-  },
-  "@shareCreatedListError": {
-    "surface": "error"
-  },
-  "@shareCreatedListRetry": {
-    "surface": "button"
-  },
-  "@shareCreatedListDraftSubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileSettingsTitle": {
-    "surface": "title"
-  },
-  "@profileSettingsSubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileIdentityTitle": {
-    "surface": "title"
-  },
-  "@profileIdentitySubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileIdentityUsernameEmptyError": {
-    "surface": "error"
-  },
-  "@profileIdentityUsernameFormatError": {
-    "surface": "error"
-  },
-  "@profileIdentityUsernameTakenError": {
-    "surface": "error"
-  },
-  "@profileIdentityAvatarSectionTitle": {
-    "surface": "title"
-  },
-  "@profileIdentityAvatarEmpty": {
-    "surface": "empty_body"
-  },
-  "@profileIdentityLoadError": {
-    "surface": "error"
-  },
-  "@profileIdentityRetry": {
-    "surface": "button"
-  },
-  "@profileIdentitySaveButton": {
-    "surface": "button"
-  },
-  "@profileIdentitySuccessMessage": {
-    "surface": "success_message"
-  },
-  "@profileLeaveHomeTitle": {
-    "surface": "title"
-  },
-  "@profileLeaveHomeSubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileLeaveEligibilityError": {
-    "surface": "error"
-  },
-  "@profileLeaveTransferSheetTitle": {
-    "surface": "title"
-  },
-  "@profileLeaveTransferSheetSubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileKickMemberTitle": {
-    "surface": "title"
-  },
-  "@profileKickMemberSubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileKickSheetTitle": {
-    "surface": "title"
-  },
-  "@profileKickSheetSubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileKickSuccessMessage": {
-    "surface": "success_message"
-  },
-  "@profileLeaveTransferSuccessMessage": {
-    "surface": "success_message"
-  },
-  "@profileInfoHubTitle": {
-    "surface": "title"
-  },
-  "@profileInfoHubSubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileInfoHubLoadError": {
-    "surface": "error"
-  },
-  "@profileContactUsTitle": {
-    "surface": "title"
-  },
-  "@profileContactUsSubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileConnectionSettingsTitle": {
-    "surface": "title"
-  },
-  "@profileConnectionSettingsSubtitle": {
-    "surface": "subtitle"
-  },
-  "@connectionSettingsTitle": {
-    "surface": "title"
-  },
-  "@connectionSettingsSubtitle": {
-    "surface": "subtitle"
-  },
-  "@connectionSettingsGenericError": {
-    "surface": "error"
-  },
-  "@connectionNotificationsToggleTitle": {
-    "surface": "title"
-  },
-  "@connectionNotificationsToggleSubtitleOn": {
-    "surface": "notification_title"
-  },
-  "@connectionNotificationsToggleSubtitleOff": {
-    "surface": "notification_title"
-  },
-  "@profileContactLaunchError": {
-    "surface": "error"
-  },
-  "@profileLogoutTitle": {
-    "surface": "title"
-  },
-  "@profileLogoutSubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileDeleteAccountTitle": {
-    "surface": "title"
-  },
-  "@profileDeleteAccountSubtitle": {
-    "surface": "subtitle"
-  },
-  "@profileConfirmLeaveTitle": {
-    "surface": "title"
-  },
-  "@profileConfirmDeleteTitle": {
-    "surface": "title"
-  },
-  "@profileLeaveSuccessMessage": {
-    "surface": "success_message"
-  },
-  "@profileDeleteSuccessMessage": {
-    "surface": "success_message"
-  },
-  "@profileGenericError": {
-    "surface": "error"
-  },
-  "@profileMissingHomeError": {
-    "surface": "error"
-  },
-  "@harmonyShareSubtitle": {
-    "surface": "subtitle"
-  },
-  "@harmonySubmitCta": {
-    "surface": "button"
-  },
-  "@harmonySubmitSuccess": {
-    "surface": "success_message"
-  },
-  "@harmonyErrorAlreadySubmitted": {
-    "surface": "error"
-  },
-  "@harmonyErrorForbidden": {
-    "surface": "error"
-  },
-  "@harmonyErrorUnknown": {
-    "surface": "error"
-  },
-  "@harmonyErrorSelectMood": {
-    "surface": "error"
-  },
-  "@gratitudeWallEmptyTitle": {
-    "surface": "title"
-  },
-  "@gratitudeWallEmptySubtitle": {
-    "surface": "subtitle"
-  },
-  "@gratitudeWallRetry": {
-    "surface": "button"
-  },
-  "@gratitudeWallShareCta": {
-    "surface": "button"
-  },
-  "@gratitudeWallShareTitle": {
-    "surface": "title"
-  },
-  "@gratitudeWallShareError": {
-    "surface": "error"
-  },
-  "@npsTitle": {
-    "surface": "subtitle"
-  },
-  "@npsSubmitErrorNotRequired": {
-    "surface": "error"
-  },
-  "@npsSubmitErrorInvalidScore": {
-    "surface": "error"
-  },
-  "@npsSubmitErrorForbidden": {
-    "surface": "error"
-  },
-  "@npsSubmitErrorGeneric": {
-    "surface": "error"
-  },
-  "@npsLaunchError": {
-    "surface": "error"
-  },
-  "@join_error_invalid_code": {
-    "surface": "error"
-  },
-  "@join_error_inactive_invite": {
-    "surface": "error"
-  },
-  "@join_error_already_in_other_home": {
-    "surface": "error"
-  },
-  "@join_error_paywall_limit": {
-    "surface": "error"
-  },
-  "@join_error_unauthorized": {
-    "surface": "error"
-  },
-  "@join_error_forbidden": {
-    "surface": "error"
-  },
-  "@todayMemberCapSubtitle": {
-    "surface": "subtitle",
-    "placeholders": {
-      "names": {
-        "type": "String",
-        "example": "Alex, Sam"
-      }
-    }
-  },
-  "@todayMemberCapResolutionJoined": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Alex"
-      }
-    }
-  },
-  "@todayMemberCapResolutionSuperseded": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Alex"
-      }
-    }
-  },
-  "@todayMemberCapResolutionFailed": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Alex"
-      }
-    }
-  },
-  "preferencePromptTitle": "Share your preferences",
-  "preferencePromptSubtitle": "Set up your personal preferences so your home can learn how you like things.",
-  "preferencePromptCta": "Start preferences",
-  "preferenceOnboardingTitle": "Personal preferences",
-  "preferenceOnboardingBack": "Back",
-  "preferenceOnboardingSubmit": "Save preferences",
-  "preferenceOnboardingProgress": "Question {current} of {total}",
-  "@preferenceOnboardingProgress": {
-    "description": "Progress for preference onboarding",
-    "placeholders": {
-      "current": {
-        "type": "int",
-        "example": "3"
-      },
-      "total": {
-        "type": "int",
-        "example": "10"
-      }
-    }
-  },
-  "preferenceReportTitle": "Your preference report",
-  "preferenceReportEditCta": "Edit",
-  "preferenceReportDoneCta": "Done",
-  "preferenceReportEditTitle": "Edit preferences",
-  "preferenceReportEditSectionPrompt": "Adjust the wording for this section.",
-  "preferenceReportEditSectionHint": "Write what feels right for you",
-  "preferenceReportEditSectionDone": "Done",
-  "preferenceReportEmptyTitle": "Preference report not ready",
-  "preferenceReportEmptyBody": "Complete your preferences to generate your report.",
-  "preferenceReportErrorTitle": "Could not load report",
-  "preferenceReportErrorBody": "Please try again.",
-  "preferenceReportEditError": "We couldn't save that update.",
-  "preferenceReportReadOnlyNote": "Estas preferencias ayudan a entender lo que les resulta cómodo.",
-  "preferenceScenarioEnvironmentNoiseQuestion": "How ok are you with background noise in shared spaces?",
-  "preferenceScenarioEnvironmentNoiseOption1": "I'm most comfortable when things are generally quiet",
-  "preferenceScenarioEnvironmentNoiseOption2": "A moderate level of everyday noise feels fine",
-  "preferenceScenarioEnvironmentNoiseOption3": "Noise doesn't bother me much - lively spaces are okay",
-  "preferenceScenarioEnvironmentLightQuestion": "In shared areas, what kind of lighting do you tend to feel most comfortable with?",
-  "preferenceScenarioEnvironmentLightOption1": "Softer or dimmer lighting",
-  "preferenceScenarioEnvironmentLightOption2": "Balanced, natural lighting",
-  "preferenceScenarioEnvironmentLightOption3": "Bright, well-lit spaces",
-  "preferenceScenarioEnvironmentScentQuestion": "How do strong scents (candles, cooking, cleaners) feel to you?",
-  "preferenceScenarioEnvironmentScentOption1": "I'm quite sensitive to strong scents",
-  "preferenceScenarioEnvironmentScentOption2": "I'm mostly neutral",
-  "preferenceScenarioEnvironmentScentOption3": "Strong scents don't really bother me",
-  "preferenceScenarioScheduleQuietHoursQuestion": "As the day winds down, what usually feels okay to you at home?",
-  "preferenceScenarioScheduleQuietHoursOption1": "Evenings tend to be quieter for me",
-  "preferenceScenarioScheduleQuietHoursOption2": "It depends - some nights are quieter than others",
-  "preferenceScenarioScheduleQuietHoursOption3": "Nighttime activity doesn't usually bother me",
-  "preferenceScenarioScheduleSleepTimingQuestion": "When do you usually feel most in sync with your sleep routine?",
-  "preferenceScenarioScheduleSleepTimingOption1": "Earlier nights and mornings",
-  "preferenceScenarioScheduleSleepTimingOption2": "Somewhere in the middle",
-  "preferenceScenarioScheduleSleepTimingOption3": "Later nights and mornings",
-  "preferenceScenarioCommunicationChannelQuestion": "When you need to coordinate at home, what works best for you?",
-  "preferenceScenarioCommunicationChannelOption1": "Messaging or text",
-  "preferenceScenarioCommunicationChannelOption2": "Talking in person when it comes up",
-  "preferenceScenarioCommunicationChannelOption3": "A quick call feels easiest",
-  "preferenceScenarioCommunicationDirectnessQuestion": "When something small is on your mind, how do you like to say it?",
-  "preferenceScenarioCommunicationDirectnessOption1": "Gently, with context or easing in",
-  "preferenceScenarioCommunicationDirectnessOption2": "A mix - it depends on the situation",
-  "preferenceScenarioCommunicationDirectnessOption3": "Directly and clearly",
-  "preferenceScenarioCleanlinessSharedSpaceQuestion": "In shared spaces, how tidy feels good to you?",
-  "preferenceScenarioCleanlinessSharedSpaceOption1": "I feel best when things are kept fairly tidy",
-  "preferenceScenarioCleanlinessSharedSpaceOption2": "Some clutter is okay day-to-day",
-  "preferenceScenarioCleanlinessSharedSpaceOption3": "I'm relaxed about mess in shared areas",
-  "preferenceScenarioPrivacyRoomEntryQuestion": "About entering each other's rooms, what feels right to you?",
-  "preferenceScenarioPrivacyRoomEntryOption1": "I prefer people to ask or knock first",
-  "preferenceScenarioPrivacyRoomEntryOption2": "Asking is nice, but flexibility is okay",
-  "preferenceScenarioPrivacyRoomEntryOption3": "I'm generally comfortable with open access",
-  "preferenceScenarioPrivacyNotificationsQuestion": "How do you feel about messages at night?",
-  "preferenceScenarioPrivacyNotificationsOption1": "I prefer not to be contacted after quiet hours",
-  "preferenceScenarioPrivacyNotificationsOption2": "Limited or important messages are okay",
-  "preferenceScenarioPrivacyNotificationsOption3": "I'm fine being contacted anytime",
-  "preferenceScenarioSocialHostingQuestion": "How do you generally feel about guests coming over to the home?",
-  "preferenceScenarioSocialHostingOption1": "I'm most comfortable with guests being rare",
-  "preferenceScenarioSocialHostingOption2": "Occasional guests feel fine",
-  "preferenceScenarioSocialHostingOption3": "Frequent guests are okay with me",
-  "preferenceScenarioSocialTogethernessQuestion": "At home, what balance usually feels best for you?",
-  "preferenceScenarioSocialTogethernessOption1": "Mostly doing my own thing",
-  "preferenceScenarioSocialTogethernessOption2": "A mix of shared time and solo time",
-  "preferenceScenarioSocialTogethernessOption3": "Spending time together often",
-  "preferenceScenarioRoutinePlanningQuestion": "When it comes to daily life at home, what feels most natural to you?",
-  "preferenceScenarioRoutinePlanningOption1": "Having plans and structure helps me",
-  "preferenceScenarioRoutinePlanningOption2": "A mix of planning and spontaneity",
-  "preferenceScenarioRoutinePlanningOption3": "Going with the flow feels best",
-  "preferenceScenarioConflictResolutionQuestion": "If something feels a bit off between people at home, what usually helps you most?",
-  "preferenceScenarioConflictResolutionOption1": "Taking time to cool off first",
-  "preferenceScenarioConflictResolutionOption2": "Gently checking in at the right moment",
-  "preferenceScenarioConflictResolutionOption3": "Talking it through sooner rather than later",
-  "reflectiveAcknowledgementTitle": "Got it.",
-  "reflectiveClose": "Skip for now",
-  "reflectivePersonalPrimary": "Reflecting what you shared.",
-  "reflectivePersonalSecondary": "So others can understand what feels comfortable to you.",
-  "reflectiveHousePrimary": "Putting the home’s expectations into words.",
-  "reflectiveHouseSecondary": "So everyone knows what to expect.",
-  "reflectiveGenericPrimary": "Putting this together with care.",
-  "reflectiveGenericSecondary": "A quiet moment before we show it.",
-  "preferenceReportGenerationMissing": "We couldn’t finish your preference reflection. Please try again soon.",
-  "preferenceReportGenerationFailed": "We couldn’t finish your preference reflection. Head back and try again.",
-  "@preferenceReportReadOnlyNote": {
-    "surface": "body"
-  },
-  "homeVibeTitle": "Home Vibe",
-  "homeVibeCoverage": "Based on {answered} of {total} members",
-  "@homeVibeCoverage": {
-    "placeholders": {
-      "answered": {
-        "type": "int",
-        "example": "3"
-      },
-      "total": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
-  "houseVibeShareTitle": "House vibe",
-  "houseVibeShareMessage": "Sharing our Kinly house vibe. Download the app: {link}",
-  "@houseVibeShareMessage": {
-    "placeholders": {
-      "link": {
-        "type": "String",
-        "example": "https://kinly.app"
-      }
-    }
-  },
-  "houseVibeShareError": "Couldn't share right now. Please try again.",
-  "houseVibeShareCta": "Share vibe",
-  "vibeInsufficientTitle": "Not enough data yet",
-  "vibeInsufficientSummary": "Once everyone completes preferences, you'll see your home vibe.",
-  "vibeMixedTitle": "A mixed home",
-  "vibeMixedSummary": "Your home shows a blend of comfort styles across members.",
-  "vibeDefaultTitle": "A balanced home",
-  "vibeDefaultSummary": "Your home leans toward a balanced, easy-to-share vibe.",
-  "vibeQuietCareTitle": "Quiet care",
-  "vibeQuietCareSummary": "This home often feels best with calmer energy and gentle rhythms.",
-  "vibeSocialTitle": "Social energy",
-  "vibeSocialSummary": "This home tends to feel lively, with shared moments and together time.",
-  "vibeStructuredTitle": "Structured rhythm",
-  "vibeStructuredSummary": "This home often feels best with clear structure and steady routines.",
-  "vibeEasygoingTitle": "Easygoing flow",
-  "vibeEasygoingSummary": "This home tends to feel relaxed and flexible day to day.",
-  "vibeIndependentTitle": "Independent calm",
-  "vibeIndependentSummary": "This home leans toward personal space with thoughtful connection.",
+  "todayGratitudeHouseCta": "Muro del hogar",
+  "todayGratitudePersonalCta": "Muro personal",
+  "gratitudeWallHouseTab": "Hogar",
+  "gratitudeWallPersonalTab": "Personal",
   "gratitudeWallPersonalTitle": "Tu muro personal de gratitud",
-  "gratitudeWallPersonalSummary": "Una colección privada de las menciones que otros te han dedicado en todos tus hogares.",
-  "gratitudeWallStatsMentions": "Agradecimientos",
+  "gratitudeWallPersonalSummary": "Tu espacio privado para mensajes amables.",
+  "gratitudeWallStatsMentions": "Gracias",
   "gratitudeWallStatsPeople": "Personas",
   "gratitudeWallStatsHomes": "Hogares",
   "mentionFieldHint": "Escribe @ para mencionar",
+  "gratitudeWallEmptyTitle": "Aún no hay publicaciones de gratitud",
+  "gratitudeWallEmptySubtitle": "Aquí viven los pequeños agradecimientos.\n\nEmpieza con un momento de esta semana.",
+  "gratitudeWallErrorGeneric": "No se pudo cargar la gratitud en este momento.",
+  "gratitudeWallRetry": "Intentar de nuevo",
+  "gratitudeWallShareCta": "Compartir este muro",
+  "gratitudeWallShareTitle": "Muro de gratitud",
+  "gratitudeWallShareMessage": "Compartiendo un vistazo de nuestro muro de gratitud en Kinly. Descarga la app: {link}",
+  "@gratitudeWallShareMessage": {
+    "placeholders": { "link": { "type": "String", "example": "https://go.makinglifeeasie.com/kinly" } }
+  },
+  "gratitudeWallShareError": "No se pudo compartir en este momento. Inténtalo de nuevo.",
+  "gratitudeWallFooter": "Hecho con {appName} - Juntos se siente más ligero",
+  "gratitudeWallWeeksAgo": "{weeks, plural, =0{Esta semana} one{Hace # semana} other{Hace # semanas}}",
+  "@gratitudeWallWeeksAgo": {
+    "surface": "subtitle",
+    "placeholders": { "weeks": { "type": "int", "example": "3" } }
+  },
+  "@gratitudeWallFooter": {
+    "placeholders": { "appName": { "type": "String", "example": "Kinly" } }
+  },
+  "npsTitle": "¿Kinly ha sido útil para tu hogar hasta ahora?",
+  "npsDescription": "Elige un número del 0 (nada útil) al 10 (extremadamente útil).",
+  "npsScaleLowLabel": "0 Nada útil",
+  "npsScaleHighLabel": "10 Extremadamente útil",
+  "npsCannotSkip": "Elige una puntuación para continuar.",
+  "npsSubmitErrorNotRequired": "No necesitas compartir comentarios en este momento.",
+  "npsSubmitErrorInvalidScore": "Elige una puntuación entre 0 y 10.",
+  "npsSubmitErrorForbidden": "No tienes permiso para enviar comentarios en este momento.",
+  "npsSubmitErrorGeneric": "No se pudieron enviar tus comentarios. Inténtalo de nuevo.",
+  "npsLaunchError": "No se pudo abrir el siguiente paso.",
+  "npsEmailSubject": "¿Qué podría hacer Kinly mejor para tu hogar?",
+  "@app_title": { "surface": "title" },
+  "@welcome_title": { "surface": "title" },
+  "@join_title": { "surface": "title" },
+  "@join_submit": { "surface": "button" },
+  "@paywallTitle": { "surface": "title_hero" },
+  "@paywallSubtitle": { "surface": "subtitle" },
+  "@paywallPrimaryCta": { "surface": "button" },
+  "@paywallSecondaryCta": { "surface": "button" },
+  "@paywallPurchaseSuccess": { "surface": "success_message" },
+  "@paywallRestoreCta": { "surface": "button" },
+  "@paywallErrorTitle": { "surface": "title" },
+  "@quick_add_title": { "surface": "title" },
+  "@quick_add_flow_title": { "surface": "title" },
+  "@quick_add_flow_subtitle": { "surface": "subtitle" },
+  "@quick_add_share_title": { "surface": "title" },
+  "@quick_add_share_subtitle": { "surface": "subtitle" },
+  "@todayAddSheetTitle": { "surface": "title" },
+  "@offline_title": { "surface": "title" },
+  "@offline_body": { "surface": "subtitle" },
+  "@offline_retry": { "surface": "button" },
+  "@force_update_title": { "surface": "title" },
+  "@force_update_body": { "surface": "subtitle" },
+  "@force_update_button": { "surface": "button" },
+  "@hubMembersEmpty": { "surface": "empty_body" },
+  "@hubInviteCta": { "surface": "button" },
+  "@hubShareInviteTitle": { "surface": "title" },
+  "@hubShareAppTitle": { "surface": "title" },
+  "@hubShareAppCta": { "surface": "button" },
+  "@todayFlatmateInviteTitle": { "surface": "title" },
+  "@todayFlatmateInviteSubtitle": { "surface": "subtitle" },
+  "@todayInviteFriendsTitle": { "surface": "title" },
+  "@todayInviteFriendsSubtitle": { "surface": "subtitle" },
+  "@todayInviteShareCta": { "surface": "button" },
+  "@hubRotateSuccess": { "surface": "success_message" },
+  "@hubRotateError": { "surface": "error" },
+  "@hubQrTitle": { "surface": "title" },
+  "@hubQrSubtitle": { "surface": "subtitle" },
+  "@hubCardGratitudeWallTitle": { "surface": "title" },
+  "@hubCardGratitudeWallSubtitle": { "surface": "subtitle" },
+  "@hubPreferencesTitle": { "surface": "title" },
+  "@hubPreferencesSubtitle": { "surface": "subtitle" },
+  "@hubError": { "surface": "error" },
+  "@hubRetry": { "surface": "button" },
+  "@todayEmptyCardTitle": { "surface": "title" },
+  "@todayEmptyBody": { "surface": "subtitle" },
+  "@todayFlowSubtitle": { "surface": "subtitle" },
+  "@todayFlowSectionTitle": { "surface": "title" },
+  "@todayShareSectionTitle": { "surface": "title" },
+  "@todayShareError": { "surface": "error" },
+  "@todayGratitudeSectionTitle": { "surface": "title" },
+  "@todayGratitudeUnreadBody": { "surface": "subtitle" },
+  "@shareOwedDetailTitle": { "surface": "title" },
+  "@shareOwedDetailEmpty": { "surface": "empty_body" },
+  "@shareOwedDetailSuccess": { "surface": "success_message" },
+  "@shareOwedDetailError": { "surface": "error" },
+  "@shareEditTitle": { "surface": "title" },
+  "@shareEditSubmit": { "surface": "button" },
+  "@shareEditSuccess": { "surface": "success_message" },
+  "@shareEditLoadError": { "surface": "error" },
+  "@shareEditClose": { "surface": "button" },
+  "@shareEditDeleteButton": { "surface": "button" },
+  "@shareEditDeleteConfirmTitle": { "surface": "title" },
+  "@shareEditDeleteError": { "surface": "error" },
+  "@shareEditDeleteSuccess": { "surface": "success_message" },
+  "@shareCreateTitle": { "surface": "title" },
+  "@shareCreateParticipantsEmpty": { "surface": "empty_body" },
+  "@shareCreateSubmit": { "surface": "button" },
+  "@shareCreateLoadError": { "surface": "error" },
+  "@shareCreateRetry": { "surface": "button" },
+  "@shareCreateErrorGeneric": { "surface": "error" },
+  "@shareCreateErrorPaywallActiveCap": { "surface": "error" },
+  "@shareCreateErrorForbidden": { "surface": "error" },
+  "@shareCreateSuccess": { "surface": "success_message" },
+  "@flowChoreCreateTitle": { "surface": "title" },
+  "@flowChoreEditTitle": { "surface": "title" },
+  "@flowChoreHowToLaunchError": { "surface": "error" },
+  "@flowChorePhotoUploadError": { "surface": "error" },
+  "@flowChorePhotoLoadError": { "surface": "error" },
+  "@flowChoreDeleteButton": { "surface": "button" },
+  "@flowChoreDeleteDialogTitle": { "surface": "dialog_title" },
+  "@flowChoreDeleteDialogMessage": { "surface": "dialog_body" },
+  "@flowChoreLoadError": { "surface": "error" },
+  "@flowChoreRetry": { "surface": "button" },
+  "@flowChoreErrorPaywallActiveCap": { "surface": "error" },
+  "@flowChoreErrorPaywallMediaCap": { "surface": "error" },
+  "@flowChoreErrorAssigneeNotMember": { "surface": "error" },
+  "@flowChoreErrorForbidden": { "surface": "error" },
+  "@flowChoreErrorInvalidPhoto": { "surface": "error" },
+  "@flowChoreErrorInvalidStart": { "surface": "error" },
+  "@flowChoreErrorInvalidState": { "surface": "error" },
+  "@flowChoreErrorGeneric": { "surface": "error" },
+  "@flowChoreDetailTitle": { "surface": "title" },
+  "@flowChoreDetailCompleteButton": { "surface": "button" },
+  "@flowChoreCreateSuccess": { "surface": "snackbar" },
+  "@flowChoreUpdateSuccess": { "surface": "snackbar" },
+  "@flowChoreDetailCompletionSuccess": { "surface": "snackbar" },
+  "@flowChoreDetailCompletionError": { "surface": "error" },
+  "@flowChoreDetailMoreInfoTitle": { "surface": "title" },
+  "@flowListEmptyTitle": { "surface": "title" },
+  "@flowListEmptySubtitle": { "surface": "subtitle" },
+  "@flowListError": { "surface": "error" },
+  "@exploreIntroSubtitle": { "surface": "subtitle" },
+  "@exploreFlowSubtitle": { "surface": "subtitle" },
+  "@exploreShareSubtitle": { "surface": "subtitle" },
+  "@shareCreatedListTitle": { "surface": "title" },
+  "@shareCreatedListEmptyTitle": { "surface": "title" },
+  "@shareCreatedListEmptySubtitle": { "surface": "subtitle" },
+  "@shareCreatedListError": { "surface": "error" },
+  "@shareCreatedListRetry": { "surface": "button" },
+  "@shareCreatedListDraftSubtitle": { "surface": "subtitle" },
+  "@profileSettingsTitle": { "surface": "title" },
+  "@profileSettingsSubtitle": { "surface": "subtitle" },
+  "@profileIdentityTitle": { "surface": "title" },
+  "@profileIdentitySubtitle": { "surface": "subtitle" },
+  "@profileIdentityUsernameEmptyError": { "surface": "error" },
+  "@profileIdentityUsernameFormatError": { "surface": "error" },
+  "@profileIdentityUsernameTakenError": { "surface": "error" },
+  "@profileIdentityAvatarSectionTitle": { "surface": "title" },
+  "@profileIdentityAvatarEmpty": { "surface": "empty_body" },
+  "@profileIdentityLoadError": { "surface": "error" },
+  "@profileIdentityRetry": { "surface": "button" },
+  "@profileIdentitySaveButton": { "surface": "button" },
+  "@profileIdentitySuccessMessage": { "surface": "success_message" },
+  "@profileLeaveHomeTitle": { "surface": "title" },
+  "@profileLeaveHomeSubtitle": { "surface": "subtitle" },
+  "@profileLeaveEligibilityError": { "surface": "error" },
+  "@profileLeaveTransferSheetTitle": { "surface": "title" },
+  "@profileLeaveTransferSheetSubtitle": { "surface": "subtitle" },
+  "@profileKickMemberTitle": { "surface": "title" },
+  "@profileKickMemberSubtitle": { "surface": "subtitle" },
+  "@profileKickSheetTitle": { "surface": "title" },
+  "@profileKickSheetSubtitle": { "surface": "subtitle" },
+  "@profileKickSuccessMessage": { "surface": "success_message" },
+  "@profileLeaveTransferSuccessMessage": { "surface": "success_message" },
+  "@profileInfoHubTitle": { "surface": "title" },
+  "@profileInfoHubSubtitle": { "surface": "subtitle" },
+  "@profileInfoHubLoadError": { "surface": "error" },
+  "@profileContactUsTitle": { "surface": "title" },
+  "@profileContactUsSubtitle": { "surface": "subtitle" },
+  "@profileConnectionSettingsTitle": { "surface": "title" },
+  "@profileConnectionSettingsSubtitle": { "surface": "subtitle" },
+  "@connectionSettingsTitle": { "surface": "title" },
+  "@connectionSettingsSubtitle": { "surface": "subtitle" },
+  "@connectionSettingsGenericError": { "surface": "error" },
+  "@connectionNotificationsToggleTitle": { "surface": "title" },
+  "@connectionNotificationsToggleSubtitleOn": { "surface": "notification_title" },
+  "@connectionNotificationsToggleSubtitleOff": { "surface": "notification_title" },
+  "@profileContactLaunchError": { "surface": "error" },
+  "@profileLogoutTitle": { "surface": "title" },
+  "@profileLogoutSubtitle": { "surface": "subtitle" },
+  "@profileDeleteAccountTitle": { "surface": "title" },
+  "@profileDeleteAccountSubtitle": { "surface": "subtitle" },
+  "@profileConfirmLeaveTitle": { "surface": "title" },
+  "@profileConfirmDeleteTitle": { "surface": "title" },
+  "@profileLeaveSuccessMessage": { "surface": "success_message" },
+  "@profileDeleteSuccessMessage": { "surface": "success_message" },
+  "@profileGenericError": { "surface": "error" },
+  "@profileMissingHomeError": { "surface": "error" },
+  "@harmonySubmitCta": { "surface": "button" },
+  "@harmonySubmitSuccess": { "surface": "success_message" },
+  "@harmonyErrorAlreadySubmitted": { "surface": "error" },
+  "@harmonyErrorForbidden": { "surface": "error" },
+  "@harmonyErrorUnknown": { "surface": "error" },
+  "@gratitudeWallEmptyTitle": { "surface": "title" },
+  "@gratitudeWallEmptySubtitle": { "surface": "subtitle" },
+  "@gratitudeWallRetry": { "surface": "button" },
+  "@gratitudeWallShareCta": { "surface": "button" },
+  "@gratitudeWallShareTitle": { "surface": "title" },
+  "@gratitudeWallShareError": { "surface": "error" },
+  "@npsTitle": { "surface": "subtitle" },
+  "@npsSubmitErrorNotRequired": { "surface": "error" },
+  "@npsSubmitErrorInvalidScore": { "surface": "error" },
+  "@npsSubmitErrorForbidden": { "surface": "error" },
+  "@npsSubmitErrorGeneric": { "surface": "error" },
+  "@npsLaunchError": { "surface": "error" },
+  "@join_error_invalid_code": { "surface": "error" },
+  "@join_error_inactive_invite": { "surface": "error" },
+  "@join_error_already_in_other_home": { "surface": "error" },
+  "@join_error_paywall_limit": { "surface": "error" },
+  "@join_error_unauthorized": { "surface": "error" },
+  "@join_error_forbidden": { "surface": "error" },
+  "preferencePromptTitle": "Comparte tus preferencias",
+  "preferencePromptSubtitle": "Configura tus preferencias personales para que tu hogar aprenda cómo te gustan las cosas.",
+  "preferencePromptCta": "Empezar preferencias",
+  "preferenceOnboardingTitle": "Preferencias personales",
+  "preferenceOnboardingBack": "Atrás",
+  "preferenceOnboardingSubmit": "Guardar preferencias",
+  "preferenceOnboardingProgress": "Pregunta {current} de {total}",
+  "@preferenceOnboardingProgress": {
+    "description": "Progreso para la incorporación de preferencias",
+    "placeholders": {
+      "current": { "type": "int", "example": "3" },
+      "total": { "type": "int", "example": "10" }
+    }
+  },
+  "preferenceReportTitle": "Tu informe de preferencias",
+  "preferenceReportEditCta": "Editar",
+  "preferenceReportDoneCta": "Listo",
+  "preferenceReportEditTitle": "Editar preferencias",
+  "preferenceReportViewTitle": "Ver preferencias",
+  "preferenceReportEditSectionPrompt": "Ajusta el texto de esta sección.",
+  "preferenceReportEditSectionHint": "Escribe lo que te resulte natural",
+  "preferenceReportEditSectionDone": "Listo",
+  "preferenceReportEmptyTitle": "El informe de preferencias no está listo",
+  "preferenceReportEmptyBody": "Completa tus preferencias para generar tu informe.",
+  "preferenceReportErrorTitle": "No se pudo cargar el informe",
+  "preferenceReportErrorBody": "Inténtalo de nuevo.",
+  "preferenceReportEditError": "No pudimos guardar esa actualización.",
+  "preferenceReportReadOnlyNote": "Esto muestra lo que les resulta cómodo a ellos.",
+  "preferenceScenarioEnvironmentNoiseQuestion": "¿Qué tan bien llevas el ruido de fondo en espacios compartidos?",
+  "preferenceScenarioEnvironmentNoiseOption1": "Me siento más cómodo cuando en general hay silencio",
+  "preferenceScenarioEnvironmentNoiseOption2": "Un nivel moderado de ruido cotidiano me parece bien",
+  "preferenceScenarioEnvironmentNoiseOption3": "El ruido no me molesta mucho; los espacios animados están bien",
+  "preferenceScenarioEnvironmentLightQuestion": "En áreas compartidas, ¿qué tipo de iluminación te hace sentir más cómodo?",
+  "preferenceScenarioEnvironmentLightOption1": "Iluminación más suave o tenue",
+  "preferenceScenarioEnvironmentLightOption2": "Iluminación equilibrada y natural",
+  "preferenceScenarioEnvironmentLightOption3": "Espacios brillantes y bien iluminados",
+  "preferenceScenarioEnvironmentScentQuestion": "¿Cómo te sientan los aromas fuertes (velas, cocina, limpiadores)?",
+  "preferenceScenarioEnvironmentScentOption1": "Soy bastante sensible a los aromas fuertes",
+  "preferenceScenarioEnvironmentScentOption2": "Soy mayormente neutral",
+  "preferenceScenarioEnvironmentScentOption3": "Los aromas fuertes no me molestan mucho",
+  "preferenceScenarioScheduleQuietHoursQuestion": "Al terminar el día, ¿qué suele estar bien para ti en casa?",
+  "preferenceScenarioScheduleQuietHoursOption1": "Las tardes suelen ser más tranquilas para mí",
+  "preferenceScenarioScheduleQuietHoursOption2": "Depende: algunas noches son más tranquilas que otras",
+  "preferenceScenarioScheduleQuietHoursOption3": "La actividad nocturna no suele molestarme",
+  "preferenceScenarioScheduleSleepTimingQuestion": "¿Cómo es tu horario de sueño y despertar?",
+  "preferenceScenarioScheduleSleepTimingOption1": "Me acuesto y me levanto más temprano",
+  "preferenceScenarioScheduleSleepTimingOption2": "En un punto intermedio",
+  "preferenceScenarioScheduleSleepTimingOption3": "Me acuesto y me levanto más tarde",
+  "preferenceScenarioCommunicationChannelQuestion": "Cuando necesitas coordinar en casa, ¿qué te funciona mejor?",
+  "preferenceScenarioCommunicationChannelOption1": "Mensajería o texto",
+  "preferenceScenarioCommunicationChannelOption2": "Hablar en persona cuando surja",
+  "preferenceScenarioCommunicationChannelOption3": "Una llamada rápida se siente más fácil",
+  "preferenceScenarioCommunicationDirectnessQuestion": "Cuando alguien te comenta algo, ¿cómo prefieres recibirlo?",
+  "preferenceScenarioCommunicationDirectnessOption1": "Con suavidad, con contexto o entrando poco a poco",
+  "preferenceScenarioCommunicationDirectnessOption2": "Una mezcla: depende de la situación",
+  "preferenceScenarioCommunicationDirectnessOption3": "De forma directa y clara",
+  "preferenceScenarioCleanlinessSharedSpaceQuestion": "En espacios compartidos, ¿qué tan ordenado te hace sentir bien?",
+  "preferenceScenarioCleanlinessSharedSpaceOption1": "Me siento mejor cuando las cosas se mantienen bastante ordenadas",
+  "preferenceScenarioCleanlinessSharedSpaceOption2": "Un poco de desorden está bien en el día a día",
+  "preferenceScenarioCleanlinessSharedSpaceOption3": "Me relajo con el desorden en áreas compartidas",
+  "preferenceScenarioPrivacyRoomEntryQuestion": "Sobre entrar en las habitaciones de los demás, ¿qué te parece bien?",
+  "preferenceScenarioPrivacyRoomEntryOption1": "Prefiero que me pidan permiso o toquen antes",
+  "preferenceScenarioPrivacyRoomEntryOption2": "Pedir permiso es agradable, pero la flexibilidad está bien",
+  "preferenceScenarioPrivacyRoomEntryOption3": "En general me siento cómodo con el acceso abierto",
+  "preferenceScenarioPrivacyNotificationsQuestion": "¿Cómo te sientes con los mensajes por la noche?",
+  "preferenceScenarioPrivacyNotificationsOption1": "Prefiero que no me contacten después de las horas de silencio",
+  "preferenceScenarioPrivacyNotificationsOption2": "Mensajes limitados o importantes están bien",
+  "preferenceScenarioPrivacyNotificationsOption3": "Me parece bien que me contacten en cualquier momento",
+  "preferenceScenarioSocialHostingQuestion": "En general, ¿cómo te sientes con que haya visitas en casa?",
+  "preferenceScenarioSocialHostingOption1": "Me siento más cómodo si las visitas son raras",
+  "preferenceScenarioSocialHostingOption2": "Visitas ocasionales me parecen bien",
+  "preferenceScenarioSocialHostingOption3": "Visitas frecuentes me parecen bien",
+  "preferenceScenarioSocialTogethernessQuestion": "En casa, ¿qué equilibrio suele sentirse mejor para ti?",
+  "preferenceScenarioSocialTogethernessOption1": "Más bien estar a mi aire",
+  "preferenceScenarioSocialTogethernessOption2": "Una mezcla de tiempo compartido y tiempo a solas",
+  "preferenceScenarioSocialTogethernessOption3": "Pasar tiempo juntos a menudo",
+  "preferenceScenarioRoutinePlanningQuestion": "En la vida diaria en casa, ¿qué se siente más natural para ti?",
+  "preferenceScenarioRoutinePlanningOption1": "Tener planes y estructura me ayuda",
+  "preferenceScenarioRoutinePlanningOption2": "Una mezcla de planificación y espontaneidad",
+  "preferenceScenarioRoutinePlanningOption3": "Ir con el flujo se siente mejor",
+  "preferenceScenarioConflictResolutionQuestion": "Si algo se siente un poco raro entre personas en casa, ¿qué suele ayudarte más?",
+  "preferenceScenarioConflictResolutionOption1": "Tomarme tiempo para calmarme primero",
+  "preferenceScenarioConflictResolutionOption2": "Hacer un check-in suave en el momento adecuado",
+  "preferenceScenarioConflictResolutionOption3": "Hablarlo antes que después",
+  "reflectiveAcknowledgementTitle": "Entendido.",
+  "reflectivePersonalPrimary": "Reflejando lo que compartiste.",
+  "reflectivePersonalSecondary": "Para que otros entiendan qué te resulta cómodo.",
+  "reflectiveHousePrimary": "Poniendo en palabras las expectativas del hogar.",
+  "reflectiveHouseSecondary": "Para que todos sepan qué esperar.",
+  "reflectiveGenericPrimary": "Armando esto con cuidado.",
+  "reflectiveGenericSecondary": "Un momento tranquilo antes de mostrártelo.",
+  "preferenceReportGenerationMissing": "No pudimos completar tu reflexión de preferencias. Inténtalo de nuevo pronto.",
+  "preferenceReportGenerationFailed": "No pudimos completar tu reflexión de preferencias. Vuelve y vuelve a intentarlo.",
+  "@preferenceReportReadOnlyNote": { "surface": "body" },
   "personalProfileTitle": "Tu perfil",
   "personalProfilePreferences": "Preferencias personales",
   "personalProfileMentions": "Menciones personales",
-  "personalProfileLoadError": "No pudimos cargar tu perfil personal ahora. Inténtalo de nuevo.",
+  "personalProfileLoadError": "No pudimos cargar tu perfil personal en este momento. Inténtalo de nuevo.",
   "personalMentionsTitle": "Menciones personales",
   "housePulseCardHeader": "Pulso semanal del hogar",
   "housePulseShareCta": "Compartir pulso",
-  "housePulseShareTitle": "Compartiendo el pulso de mi hogar en Kinly",
-  "housePulseShareMessage": "Compartiendo el pulso de mi hogar en Kinly. Descarga la app: {link}",
+  "housePulseShareTitle": "Compartiendo nuestro pulso del hogar en Kinly",
+  "housePulseShareMessage": "Compartiendo nuestro pulso del hogar en Kinly. Descarga la app: {link}",
   "@housePulseShareMessage": {
-    "placeholders": {
-      "link": {
-        "type": "String",
-        "example": "https://kinly.app/descarga"
-      }
-    }
+    "placeholders": { "link": { "type": "String", "example": "https://go.makinglifeeasie.com/kinly" } }
   },
-  "housePulseShareError": "No se pudo compartir el pulso ahora. Intenta nuevamente.",
-  "housePulseNewBadge": "Nuevo esta semana",
-  "housePulseUpdatedOn": "Actualizado {date}",
+  "housePulseUpdatedOn": "Actualizado el {date}",
   "@housePulseUpdatedOn": {
-    "placeholders": {
-      "date": {
-        "type": "String",
-        "example": "5 ene 2026"
-      }
-    }
+    "placeholders": { "date": { "type": "String", "example": "Jan 5, 2026" } }
   },
-  "housePulseReflections": "{count, plural, one {{count} reflexión} other {{count} reflexiones}}",
-  "@housePulseReflections": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
-  "pulseFormingTitle": "Aún formándose",
-  "pulseFormingSummary": "Unas cuantas respuestas más ayudan.",
+  "pulseFormingTitle": "Aún en formación",
+  "pulseFormingSummary": "Unos cuantos check-ins más ayudan.",
   "pulseSunnyCalmTitle": "Cálido y tranquilo",
-  "pulseSunnyCalmSummary": "Tu hogar se sintió cálido y fácil esta semana.",
+  "pulseSunnyCalmSummary": "Tu hogar se sintió cálido y tranquilo esta semana.",
   "pulseSunnyBumpyTitle": "Mayormente bien",
   "pulseSunnyBumpySummary": "Esta semana se sintió mayormente bien, con algunos baches.",
-  "pulsePartlySupportedTitle": "Bien con apoyo",
+  "pulsePartlySupportedTitle": "Bien con cuidado",
   "pulsePartlySupportedSummary": "Tu hogar se sintió bien, con cuidado presente.",
-  "pulseCloudySteadyTitle": "Mezclado y estable",
+  "pulseCloudySteadyTitle": "Mixto y estable",
   "pulseCloudySteadySummary": "Esta semana se sintió mixta y estable.",
-  "pulseCloudyTenseTitle": "Mezclado con tensión",
+  "pulseCloudyTenseTitle": "Mixto con tensión",
   "pulseCloudyTenseSummary": "Esta semana se sintió mixta, con algo de tensión.",
-  "pulseRainySupportedTitle": "Pesado pero apoyado",
-  "pulseRainySupportedSummary": "Esta semana se sintió más pesada, pero hubo cuidado.",
+  "pulseRainySupportedTitle": "Pesado pero con apoyo",
+  "pulseRainySupportedSummary": "Esta semana se sintió más pesada, pero hubo cuidado presente.",
   "pulseRainyUnsupportedTitle": "Pesado, se necesita apoyo",
-  "pulseRainyUnsupportedSummary": "Esta semana se sintió pesada. El apoyo puede ayudar.",
-  "pulseThunderstormTitle": "Tenso ahora",
-  "pulseThunderstormSummary": "Esta semana se sintió tensa. La amabilidad importa ahora."
+  "pulseRainyUnsupportedSummary": "Esta semana se sintió pesada. Puede ayudar tener apoyo.",
+  "pulseThunderstormTitle": "Tenso en este momento",
+  "pulseThunderstormSummary": "Esta semana se sintió tensa. La amabilidad importa ahora mismo.",
+  "demoAccess": "Acceso de demostración",
+  "@demoAccess": {
+    "description": "Título para la pantalla de acceso de demostración usada por revisores de la tienda de apps",
+    "surface": "title"
+  },
+  "demoAccessTapHint": "Acceso de demo: {current} de 7 toques",
+  "@demoAccessTapHint": {
+    "description": "Indicador de progreso que se muestra al tocar el logo para revelar el acceso de demo",
+    "placeholders": {
+      "current": { "type": "int", "example": "3" }
+    }
+  },
+  "demoAccessEmail": "Correo electrónico",
+  "@demoAccessEmail": {
+    "description": "Etiqueta para el campo de correo en la pantalla de acceso de demo",
+    "surface": "label"
+  },
+  "demoAccessPassword": "Contraseña",
+  "@demoAccessPassword": {
+    "description": "Etiqueta para el campo de contraseña en la pantalla de acceso de demo",
+    "surface": "label"
+  },
+  "demoAccessSubmit": "Iniciar sesión",
+  "@demoAccessSubmit": {
+    "description": "Etiqueta del botón de envío en la pantalla de acceso de demo",
+    "surface": "button"
+  },
+  "demoAccessError": "No se pudo iniciar sesión. Revisa tus credenciales.",
+  "@demoAccessError": {
+    "description": "Mensaje de error cuando el inicio de sesión de demo no tiene éxito",
+    "surface": "error"
+  }
 }

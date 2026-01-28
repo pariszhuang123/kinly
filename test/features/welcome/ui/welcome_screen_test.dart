@@ -15,6 +15,9 @@ import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kinly/app/router/app_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/core/links/join_intent_coordinator.dart';
+import 'package:kinly/core/di/locator.dart';
+import 'package:kinly/features/welcome/ui/welcome_surface_registry.dart';
 
 class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
     implements AuthBloc {}
@@ -22,6 +25,9 @@ class _MockAuthBloc extends MockBloc<AuthEvent, AuthState>
 class _FakeAuthEvent extends Fake implements AuthEvent {}
 
 class _FakeAuthState extends Fake implements AuthState {}
+
+class _MockJoinIntentCoordinator extends Mock
+    implements JoinIntentCoordinator {}
 
 void main() {
   setUpAll(() {
@@ -31,8 +37,14 @@ void main() {
 
   late _MockAuthBloc authBloc;
   late StreamController<AuthState> authStateController;
+  late _MockJoinIntentCoordinator joinCoordinator;
 
-  setUp(() {
+  setUp(() async {
+    await sl.reset();
+    WelcomeRegistry.clearForTest();
+    joinCoordinator = _MockJoinIntentCoordinator();
+    sl.registerLazySingleton<JoinIntentCoordinator>(() => joinCoordinator);
+
     authBloc = _MockAuthBloc();
     authStateController = StreamController<AuthState>.broadcast();
     when(() => authBloc.stream).thenAnswer((_) => authStateController.stream);
@@ -40,6 +52,7 @@ void main() {
   });
 
   tearDown(() async {
+    await sl.reset();
     await authStateController.close();
   });
 
@@ -252,5 +265,27 @@ void main() {
 
     await tester.tap(googleButton, warnIfMissed: false);
     verifyNever(() => authBloc.add(const AuthSignInWithGoogleRequested()));
+  });
+
+  testWidgets('manual invite CTA is hidden on welcome screen', (tester) async {
+    when(() => authBloc.state).thenReturn(const AuthState());
+
+    final router = GoRouter(
+      initialLocation: AppRoutes.welcome,
+      routes: [
+        GoRoute(
+          path: AppRoutes.welcome,
+          name: AppRouteNames.welcome,
+          builder: (_, __) => const WelcomeScreen(),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(buildRouterApp(router));
+    await tester.pumpAndSettle();
+
+    final s = S.of(tester.element(find.byType(WelcomeScreen)));
+    expect(find.text(s.manual_invite_cta), findsNothing);
+    verifyNever(() => joinCoordinator.captureManualEntry(any()));
   });
 }

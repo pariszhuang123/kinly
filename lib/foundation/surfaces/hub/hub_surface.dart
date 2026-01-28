@@ -233,9 +233,9 @@ class HubScreen extends StatelessWidget {
       return;
     }
 
-    final appLink =
-        state.appLink.isNotEmpty ? state.appLink : 'https://kinly.app';
-    final raw = s.hubShareInviteBody(state.inviteCode, appLink);
+    final inviteLink =
+        state.inviteLink?.isNotEmpty == true ? state.inviteLink! : state.appLink;
+    final raw = s.hubShareInviteBody(state.inviteCode, inviteLink);
     final message = raw.replaceAll(r'\n', '\n');
 
     context.read<HubBloc>().add(
@@ -294,7 +294,7 @@ class HubScreen extends StatelessWidget {
     final s = S.of(context);
 
     final appLink =
-        state.appLink.isNotEmpty ? state.appLink : 'https://kinly.app';
+        state.appLink.isNotEmpty ? state.appLink : 'https://go.makinglifeeasie.com/kinly';
 
     context.read<HubBloc>().add(
       const HubShareLogged(feature: 'invite_button', channel: 'qr_code'),

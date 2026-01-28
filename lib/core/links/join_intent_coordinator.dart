@@ -7,6 +7,7 @@ import 'package:kinly/core/logging/logger.dart';
 
 import 'invite_code_parser.dart';
 import 'pending_join_intent_storage.dart';
+import 'pending_join_intent.dart';
 import 'enums/join_intent_navigator.dart';
 
 class JoinIntentResult {
@@ -42,13 +43,58 @@ class JoinIntentCoordinator {
       await _storage.clear();
       return false;
     }
-    final existing = await _storage.load();
-    if (existing != null && existing.inviteCode == parsed.inviteCode) {
-      // dedupe duplicate deliveries
-      return true;
+
+    final intent = parsed.copyWith(
+      source: parsed.source ?? 'web_join',
+      receivedAt: DateTime.now().toUtc(),
+    );
+    return _storeIntent(intent);
+  }
+
+  /// Parse install referrer (Android Play Store deferred deep link).
+  /// Accepts `kinly_invite_code` or `kinly_invite` keys.
+  Future<bool> captureInstallReferrer(String? referrer) async {
+    if (referrer == null || referrer.trim().isEmpty) return false;
+    Map<String, String> params;
+    try {
+      params = Uri.splitQueryString(referrer);
+    } catch (_) {
+      return false;
     }
-    await _storage.save(parsed);
-    return true;
+
+    final code = params['kinly_invite_code'] ?? params['kinly_invite'];
+    if (code == null || !_parser.isValid(code)) return false;
+
+    final intent = PendingJoinIntent(
+      inviteCode: code.trim().toUpperCase(),
+      receivedAt: DateTime.now().toUtc(),
+      source: 'android_install_referrer',
+    );
+    return _storeIntent(intent);
+  }
+
+  /// Manual confirm path (iOS fallback). Accepts raw invite code or full URL.
+  Future<bool> captureManualEntry(String input) async {
+    final trimmed = input.trim();
+    if (trimmed.isEmpty) return false;
+
+    Uri? uri = Uri.tryParse(trimmed);
+    if (uri == null || (uri.scheme.isEmpty && !trimmed.contains('/'))) {
+      uri = Uri(
+        scheme: 'kinly',
+        host: 'manual',
+        queryParameters: {'code': trimmed},
+      );
+    }
+
+    final parsed = _parser.parse(uri);
+    if (parsed == null) return false;
+
+    final intent = parsed.copyWith(
+      source: 'ios_manual_confirm',
+      receivedAt: DateTime.now().toUtc(),
+    );
+    return _storeIntent(intent);
   }
 
   Future<void> clear() => _storage.clear();
@@ -120,6 +166,39 @@ class JoinIntentCoordinator {
       return JoinIntentResult(navigation: destination);
     } finally {
       _resolving = false;
+    }
+  }
+
+  Future<bool> _storeIntent(PendingJoinIntent intent) async {
+    final normalized = intent.copyWith(
+      inviteCode: intent.inviteCode.trim().toUpperCase(),
+      receivedAt: intent.receivedAt.toUtc(),
+      source: intent.source ?? 'web_join',
+    );
+
+    final existing = await _storage.load();
+    if (existing != null) {
+      if (existing.inviteCode == normalized.inviteCode) {
+        return true;
+      }
+      if (_priorityForSource(existing.source) >
+          _priorityForSource(normalized.source)) {
+        return false;
+      }
+    }
+
+    await _storage.save(normalized);
+    return true;
+  }
+
+  int _priorityForSource(String? source) {
+    switch (source) {
+      case 'android_install_referrer':
+        return 2;
+      case 'ios_manual_confirm':
+        return 1;
+      default:
+        return 3; // platform-delivered deep link or web_join
     }
   }
 }

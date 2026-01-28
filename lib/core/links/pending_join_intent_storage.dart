@@ -11,6 +11,7 @@ class PendingJoinIntentStorage {
        _key = key;
 
   static const _defaultKey = 'pending_join_intent';
+  static const _deferredCheckedKey = 'pending_join_deferred_checked';
 
   final FlutterSecureStorage _storage;
   final String _key;
@@ -31,4 +32,13 @@ class PendingJoinIntentStorage {
   }
 
   Future<void> clear() => _storage.delete(key: _key);
+
+  Future<bool> wasDeferredChecked() async {
+    final flag = await _storage.read(key: _deferredCheckedKey);
+    return flag == 'true';
+  }
+
+  Future<void> markDeferredChecked() async {
+    await _storage.write(key: _deferredCheckedKey, value: 'true');
+  }
 }

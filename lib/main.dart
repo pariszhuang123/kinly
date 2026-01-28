@@ -14,6 +14,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:play_install_referrer/play_install_referrer.dart';
 
 import 'core/config/app_config.dart';
 import 'core/di/locator.dart';
@@ -45,6 +46,7 @@ import 'core/ui/kinly_scaffold.dart';
 import 'renderer/material/kinly_app.dart';
 import 'core/links/join_intent_coordinator.dart';
 import 'core/links/enums/join_intent_navigator.dart';
+import 'core/links/pending_join_intent_storage.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -168,6 +170,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       (state) => unawaited(_handleAuthState(state)),
     );
     unawaited(_handleAuthState(_authBloc.state));
+    if (Platform.isAndroid) {
+      unawaited(_checkDeferredInstallReferrer());
+    }
     unawaited(_startVersionCheck());
     unawaited(_requestNotificationPermissionIfNeeded());
   }
@@ -304,6 +309,37 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         userId: state.userId,
       );
       await _applyJoinNavigation(joinResult);
+    }
+  }
+
+  Future<void> _checkDeferredInstallReferrer() async {
+    if (_joinIntentCoordinator == null) return;
+    final storage = sl<PendingJoinIntentStorage>();
+    if (await storage.wasDeferredChecked()) return;
+
+    try {
+      final response = await PlayInstallReferrer.installReferrer;
+      await storage.markDeferredChecked();
+      final referrer = response.installReferrer;
+      if (referrer == null || referrer.isEmpty) {
+        return;
+      }
+      final stored =
+          await _joinIntentCoordinator!.captureInstallReferrer(referrer);
+      if (!stored) {
+        _logger.debug(
+          'Deferred invite ignored (invalid or lower precedence)',
+          tag: _logTag,
+        );
+      }
+    } catch (error, stackTrace) {
+      await storage.markDeferredChecked();
+      _logger.warn(
+        'Install referrer lookup failed: $error',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 

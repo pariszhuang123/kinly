@@ -28,7 +28,7 @@ class HubQrSection extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final spacing = theme.extension<Spacing>()!;
     final appLink =
-        state.appLink.isNotEmpty ? state.appLink : 'https://kinly.app';
+        state.appLink.isNotEmpty ? state.appLink : 'https://go.makinglifeeasie.com/kinly';
 
     return Container(
       width: double.infinity,

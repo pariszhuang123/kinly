@@ -13,13 +13,13 @@ void main() {
     }
 
     test('parses path-based invite and normalizes to uppercase', () {
-    final intent = parse(
-      Uri.parse('https://go.makinglifeeasie.com/kinly/join/ab23cd'),
-    );
+      final intent = parse(
+        Uri.parse('https://go.makinglifeeasie.com/kinly/join/ab23cd'),
+      );
 
-    expect(intent.inviteCode, 'AB23CD');
-    expect(intent.source, isNull);
-  });
+      expect(intent.inviteCode, 'AB23CD');
+      expect(intent.source, isNull);
+    });
 
     test('rejects invalid length', () {
       final result = parser.parse(

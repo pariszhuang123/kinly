@@ -1,7 +1,7 @@
 {
   "@@locale": "ar",
   "app_title": "كينلي",
-  "bootstrap_initializing": "بدء تشغيل Kinly ({env})",
+  "bootstrap_initializing": "جارٍ تشغيل كينلي ({env})",
   "@bootstrap_initializing": {
     "surface": "subtitle",
     "placeholders": {
@@ -11,7 +11,7 @@
       }
     }
   },
-  "startReturningTitle": "Hi {name}",
+  "startReturningTitle": "مرحبًا {name}",
   "@startReturningTitle": {
     "description": "Greeting shown on the Start screen for returning users.",
     "surface": "title",
@@ -22,23 +22,22 @@
       }
     }
   },
-  "startReturningSubtitle": "What do you want to do next?",
+  "startReturningSubtitle": "ماذا تريد أن تفعل بعد ذلك؟",
   "@startReturningSubtitle": {
     "description": "Follow-up prompt for returning users on the Start screen.",
     "surface": "subtitle"
   },
-  "welcome_title": "مرحبًا بك في Kinly",
+  "welcome_title": "مرحبًا بك في كينلي",
   "welcome_create": "إنشاء منزل",
   "@welcome_create": {
     "surface": "button"
   },
   "welcome_join": "الانضمام إلى منزل",
-  "create_subtitle": "سنُنشئ منزلك فورًا. يمكنك تغيير الاسم ودعوة الآخرين لاحقًا.",
   "create_failed_generic": "تعذّر إنشاء المنزل. حاول مرة أخرى.",
-  "join_title": "الانضمام إلى منزل",
-  "join_hint": "أدخل رمز الدعوة",
-  "join_submit": "انضمام",
-  "join_success": "تم الانضمام باستخدام الرمز: {code}",
+  "join_title": "الانضمام إلى المنزل",
+  "join_hint": "أدخل رمز الدعوة مثل ABC123",
+  "join_submit": "انضم",
+  "join_success": "تم الأمر. أهلاً بك في المنزل.",
   "@join_success": {
     "description": "Snackbar message displayed when the user joins successfully",
     "surface": "success_message",
@@ -49,15 +48,18 @@
       }
     }
   },
-  "join_failed_generic": "لم نتمكن من الانضمام إلى هذا المنزل. يرجى المحاولة مرة أخرى.",
-  "join_error_invalid_code": "رمز الدعوة يبدو غير صحيح.",
+  "join_failed_generic": "لم نتمكن من ضمّك إلى هذا المنزل. يرجى المحاولة مرة أخرى.",
+  "join_error_invalid_code": "رمز الدعوة هذا لا يبدو صحيحًا.",
   "join_error_inactive_invite": "هذه الدعوة لم تعد نشطة. اطلب من المالك رمزًا جديدًا.",
-  "join_error_already_in_other_home": "أنت بالفعل في منزل آخر. غادره قبل الانضمام إلى منزل جديد.",
-  "join_error_paywall_limit": "وصل هذا المنزل إلى الحد الأقصى للأعضاء. اطلب من المالك الترقية أو إزالة عضو.",
-  "paywallTitle": "مزيد من الانسجام لمنزلك",
-  "paywallSubtitle": "ترقية على مستوى المنزل بأقل من 0.5% من الإيجار.",
-  "paywallPriceCaption": "خطة واحدة للمنزل، بدون مستويات مخفية.",
-  "paywallPricePerMonth": "{price} شهريًا لمنزلك بالكامل.",
+  "join_error_already_in_other_home": "غادر منزلك الحالي للانضمام إلى منزل جديد",
+  "join_error_paywall_limit": "وصل هذا المنزل إلى حد الأعضاء. اطلب من المالك الترقية أو إزالة عضو.",
+  "manual_invite_cta": "هل لديك رابط دعوة؟",
+  "manual_invite_placeholder": "الصق رابط الدعوة أو الرمز",
+  "manual_invite_saved": "تم حفظ الدعوة. تابع لتسجيل الدخول.",
+  "paywallTitle": "اجعل منزلك أكثر انسجامًا",
+  "paywallSubtitle": "ترقية على مستوى المنزل بأقل من 0.5% من إيجارك.",
+  "paywallPriceCaption": "خطة واحدة للمنزل، دون مستويات مخفية.",
+  "paywallPricePerMonth": "{price} شهريًا.",
   "@paywallPricePerMonth": {
     "surface": "paywall_subtitle",
     "placeholders": {
@@ -68,79 +70,98 @@
     }
   },
   "paywallPriceUnavailable": "التسعير غير متاح الآن.",
-  "paywallBulletMembers": "أعضاء غير محدودين للمنزل",
-  "paywallBulletFlows": "Flows غير محدودة",
-  "paywallBulletPhotos": "صور Flow غير محدودة",
+  "paywallBulletMembers": "أعضاء منزل غير محدودين",
+  "paywallBulletFlows": "تدفّقات غير محدودة",
+  "paywallBulletPhotos": "صور تدفّق غير محدودة",
   "paywallBulletShares": "مصاريف مشتركة غير محدودة",
-  "paywallPrimaryCta": "الترقية إلى Kinly Premium",
-  "paywallSecondaryCta": "المتابعة مع المنزل المجاني",
-  "paywallPurchaseFailed": "لم تكتمل عملية الشراء — يمكنك المحاولة لاحقًا.",
-  "paywallPurchaseSuccess": "أنت الآن على Kinly Premium.",
+  "paywallPrimaryCta": "الترقية إلى كينلي بريميوم",
+  "paywallSecondaryCta": "البقاء على الخطة المجانية",
+  "paywallPurchaseFailed": "لم تكتمل عملية الشراء — يمكنك المحاولة مرة أخرى في أي وقت.",
+  "paywallPurchaseSuccess": "أنت الآن على كينلي بريميوم.",
   "paywallRestoreCta": "استعادة المشتريات",
   "paywallErrorTitle": "تعذّر تحميل صفحة الترقية.",
   "paywallRetryLabel": "إعادة المحاولة",
-  "join_error_unauthorized": "Please sign in to join this home.",
-  "join_error_forbidden": "You do not have permission to join this home.",
-  "join_blocked_title": "This home isn't accepting new members right now",
-  "join_blocked_body": "We've notified the home owner.",
-  "join_blocked_cta": "Done",
-  "todayMemberCapTitle": "Someone wants to join your home",
-  "todayMemberCapSubtitle": "{names} wants to join your home. Upgrade to support unlimited members.",
-  "todayMemberCapSubtitleGeneric": "A member is requesting access. Upgrade to support unlimited members.",
-  "todayMemberCapPrimaryCta": "Upgrade home",
-  "todayMemberCapSecondaryCta": "Ignore",
-  "todayMemberCapResolutionJoined": "{name} joined your home.",
-  "todayMemberCapResolutionSuperseded": "{name} joined another home.",
-  "todayMemberCapResolutionFailed": "We could not complete {name}'s request.",
-  "todayMemberCapResolutionUnknownName": "Someone",
-  "quick_add_title": "إضافة سريعة",
-  "quick_add_flow_title": "Flow",
-  "quick_add_flow_subtitle": "إضافة Flow",
-  "quick_add_share_title": "Share",
-  "quick_add_share_subtitle": "تسجيل Share",
-  "todayAddSheetTitle": "أضف إلى منزلك",
-  "todayAddSheetFlow": "إضافة Flow",
-  "todayAddSheetShare": "إضافة Share",
-  "login_tagline": "معًا يصبح كل شيء أخف",
-  "login_with_google": "المتابعة باستخدام Google",
-  "login_with_apple": "المتابعة باستخدام Apple",
-  "login_consent_prefix": "لقد قرأت ووافقت على ",
-  "login_consent_connector": " و",
-  "login_terms": "شروط الخدمة",
-  "login_privacy": "سياسة الخصوصية",
-  "logout": "تسجيل الخروج",
-  "membership_status_checking": "جارٍ التحقق من حالة العضوية…",
-  "membership_status_none": "لم تنضم إلى أي منزل بعد.",
-  "membership_status_active": "أنت بالفعل ضمن منزل.",
-  "authMembershipLoadFailed": "لم نتمكن من تحديث عضوية منزلك. حاول مرة أخرى.",
-  "offline_title": "أنت غير متصل",
-  "offline_body": "يحتاج Kinly إلى اتصال بالإنترنت. تحقّق من الشبكة وحاول مرة أخرى.",
-  "offline_retry": "حاول مرة أخرى",
-  "force_update_title": "التحديث مطلوب",
-  "force_update_body": "لم تعد هذه النسخة من Kinly مدعومة. يرجى تثبيت أحدث إصدار للمتابعة.",
-  "force_update_notes_label": "ما الجديد",
-  "force_update_button": "تحديث Kinly",
-  "force_update_version_details": "إصدارك: {client}\nأحدث إصدار: {current}",
-  "@force_update_version_details": {
+  "join_error_unauthorized": "يرجى تسجيل الدخول للانضمام إلى هذا المنزل.",
+  "join_error_forbidden": "ليس لديك إذن للانضمام إلى هذا المنزل.",
+  "join_blocked_title": "هذا المنزل لا يقبل أعضاءً جددًا الآن",
+  "join_blocked_body": "لقد أبلغنا مالك المنزل.",
+  "join_blocked_cta": "تم",
+  "todayMemberCapTitle": "هناك شخص يريد الانضمام إلى منزلك",
+  "todayMemberCapSubtitle": "{names} يريد الانضمام إلى منزلك. قم بالترقية لدعم أعضاء غير محدودين.",
+  "@todayMemberCapSubtitle": {
+    "surface": "subtitle",
     "placeholders": {
-      "client": {
+      "names": {
         "type": "String",
-        "example": "1.2.0"
-      },
-      "current": {
-        "type": "String",
-        "example": "1.3.5"
+        "example": "Alex, Sam"
       }
     }
   },
+  "todayMemberCapSubtitleGeneric": "منزلك يكبر. قم بالترقية للترحيب بالمزيد من الأشخاص.",
+  "todayMemberCapPrimaryCta": "ترقية المنزل",
+  "todayMemberCapSecondaryCta": "تجاهل",
+  "todayMemberCapResolutionJoined": "انضم {name} إلى منزلك.",
+  "@todayMemberCapResolutionJoined": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionSuperseded": "انضم {name} إلى منزل آخر.",
+  "@todayMemberCapResolutionSuperseded": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionFailed": "لم نتمكن من إكمال طلب {name}.",
+  "@todayMemberCapResolutionFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionUnknownName": "شخص ما",
+  "quick_add_title": "إضافة سريعة",
+  "quick_add_flow_title": "تدفّق",
+  "quick_add_flow_subtitle": "إنشاء تدفّق",
+  "quick_add_share_title": "فاتورة",
+  "quick_add_share_subtitle": "إضافة فاتورة",
+  "todayAddSheetTitle": "أضف إلى منزلك",
+  "todayAddSheetFlow": "إضافة تدفّق",
+  "todayAddSheetShare": "إضافة فاتورة",
+  "login_tagline": "معًا يصبح الأمر أخف",
+  "login_with_google": "المتابعة باستخدام Google",
+  "login_with_apple": "المتابعة باستخدام Apple",
+  "login_consent_prefix": "لقد قرأت وأوافق على ",
+  "login_consent_connector": " و ",
+  "login_terms": "شروط الخدمة",
+  "login_privacy": "سياسة الخصوصية",
+  "logout": "تسجيل الخروج",
+  "membership_status_checking": "جارٍ ربطك بمنزلك…",
+  "membership_status_none": "منزلك المشترك يبدأ هنا.",
+  "membership_status_active": "أنت متصل بمنزل.",
+  "authMembershipLoadFailed": "لم نتمكن من تحديث عضويتك في المنزل. يرجى المحاولة مرة أخرى.",
+  "offline_title": "أنت غير متصل",
+  "offline_body": "يحتاج كينلي إلى اتصال بالإنترنت. تحقّق من الإشارة وحاول مرة أخرى.",
+  "offline_retry": "حاول مرة أخرى",
+  "force_update_title": "يلزم تحديث",
+  "force_update_body": "لم يعد هذا الإصدار من كينلي مدعومًا. يرجى تثبيت أحدث إصدار للمتابعة.",
+  "force_update_button": "تحديث كينلي",
   "navToday": "اليوم",
   "navExplore": "استكشاف",
   "navHub": "المركز",
   "hubMembersEmpty": "لا يوجد أعضاء نشطون بعد.",
   "hubInviteCta": "دعوة",
-  "hubInviteUnavailable": "تعذّر تحميل الدعوة. حاول مرة أخرى.",
-  "hubShareInviteTitle": "دعوة إلى منزلي على Kinly",
-  "hubShareInviteBody": "مرحبًا بك في منزلنا على Kinly! أدخل رمز الدعوة التالي: {code}\n\nحمّل تطبيق Kinly: {link}",
+  "hubInviteUnavailable": "تعذّر تحميل الدعوة. يرجى المحاولة مرة أخرى.",
+  "hubShareInviteTitle": "دعوة إلى منزلي على كينلي",
+  "hubShareInviteBody": "مرحبًا بك في منزلنا على كينلي! أدخل رمز الدعوة هذا: {code}\n\nحمّل تطبيق كينلي: {link}",
   "@hubShareInviteBody": {
     "surface": "subtitle",
     "placeholders": {
@@ -154,8 +175,8 @@
       }
     }
   },
-  "hubShareAppTitle": "احصل على تطبيق Kinly",
-  "hubShareAppBody": "شارك Kinly ليصبح التشارك أخف: {link}",
+  "hubShareAppTitle": "احصل على تطبيق كينلي",
+  "hubShareAppBody": "شارك كينلي ليصبح الشعور معًا أخف: {link}",
   "@hubShareAppBody": {
     "surface": "subtitle",
     "placeholders": {
@@ -165,28 +186,78 @@
       }
     }
   },
-  "hubShareAppCta": "مشاركة Kinly",
-  "todayFlatmateInviteTitle": "ادعُ شريك السكن",
-  "todayFlatmateInviteSubtitle": "شارك دعوتك لتقسيم المهام المنزلية معًا.",
-  "todayInviteFriendsTitle": "ادعُ أصدقاء إلى Kinly",
-  "todayInviteFriendsSubtitle": "شارك Kinly مع صديق ليضيف انسجامًا أكبر إلى منزله أيضًا.",
+  "hubShareAppCta": "مشاركة كينلي",
+  "todayFlatmateInviteTitle": "أدخل منزلك إلى كينلي",
+  "todayFlatmateInviteSubtitle": "ادعُهم كي تبقوا متوافقين وتتقاسموا الحمل.",
+  "todayInviteFriendsTitle": "ادعُ الأصدقاء إلى كينلي",
+  "todayInviteFriendsSubtitle": "شارك كينلي مع صديق ليجلب مزيدًا من الانسجام إلى منزله أيضًا.",
   "todayInviteShareCta": "مشاركة الدعوة",
   "todayInviteNotNow": "ليس الآن",
   "hubCodeCopied": "تم نسخ رمز الدعوة",
-  "hubRotateInvite": "تدوير الدعوة",
-  "hubRotateSuccess": "تم تدوير الدعوة",
-  "hubRotateError": "تعذّر تدوير الدعوة. حاول مرة أخرى.",
+  "hubRotateInvite": "تغيير رمز الدعوة",
+  "hubRotateSuccess": "تم تغيير رمز الدعوة",
+  "hubRotateError": "تعذّر تغيير رمز الدعوة. حاول مرة أخرى.",
   "hubQrTitle": "مشاركة التطبيق",
-  "hubQrSubtitle": "امسح لتحميل Kinly",
+  "hubQrSubtitle": "امسح لتنزيل كينلي",
   "hubCardGratitudeWallTitle": "جدار الامتنان",
-  "hubCardGratitudeWallSubtitle": "اقرأ شكرًا سريعًا ولحظات صغيرة من التقدير.",
-  "hubError": "تعذّر تحميل المركز. حاول مرة أخرى.",
+  "hubCardGratitudeWallSubtitle": "اقرأ شكرًا سريعًا ولحظات تقدير صغيرة.",
+  "hubPreferencesTitle": "التفضيلات الشخصية",
+  "hubPreferencesSubtitle": "كيف يختبر كل شخص السكن المشترك.",
+  "homeVibeTitle": "طابع المنزل",
+  "homeVibeCoverage": "استنادًا إلى {answered} من أصل {total} أعضاء",
+  "@homeVibeCoverage": {
+    "placeholders": {
+      "answered": {
+        "type": "int",
+        "example": "3"
+      },
+      "total": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "houseVibeShareTitle": "طابع المنزل",
+  "houseVibeShareMessage": "مشاركة طابع منزلنا في كينلي. حمّل التطبيق: {link}",
+  "@houseVibeShareMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://kinly.app"
+      }
+    }
+  },
+  "houseVibeShareError": "تعذّر المشاركة الآن. يرجى المحاولة مرة أخرى.",
+  "houseVibeShareCta": "مشاركة الطابع",
+  "vibeInsufficientTitle": "لا توجد بيانات كافية بعد",
+  "vibeInsufficientSummary": "أكمل التفضيلات لرؤية طابع منزلك.",
+  "vibeMixedTitle": "منزل بطابع مختلط",
+  "vibeMixedSummary": "يُظهر منزلك مزيجًا من أساليب الراحة، متأثرًا بكيف يحب الناس المختلفون العيش.",
+  "vibeDefaultTitle": "منزل متوازن",
+  "vibeDefaultSummary": "يبدو منزلك سهل العيش للجميع.",
+  "vibeQuietCareTitle": "عناية هادئة",
+  "vibeQuietCareSummary": "منزلك هادئ، بطاقة لطيفة وإيقاع أهدأ.",
+  "vibeSocialTitle": "طاقة اجتماعية",
+  "vibeSocialSummary": "منزلك نشِط، والناس معًا.",
+  "vibeWarmSocialTitle": "اجتماعي دافئ",
+  "vibeWarmSocialSummary": "منزلك دافئ ومرحِّب، والناس غالبًا معًا.",
+  "vibeCozySocialTitle": "اجتماعي دافئ ومريح",
+  "vibeCozySocialSummary": "منزلك مريح وهادئ عندما يقضي الناس وقتًا معًا.",
+  "vibeSteadyTitle": "هدوء ثابت",
+  "vibeSteadySummary": "منزلك ثابت، ويظهر الاهتمام عبر العادات اليومية.",
+  "vibeStructuredTitle": "إيقاع منظّم",
+  "vibeStructuredSummary": "منزلك يعمل أفضل مع روتين واضح وخطط مشتركة.",
+  "vibeEasygoingTitle": "تدفّق مرن",
+  "vibeEasygoingSummary": "منزلك مرتاح ومنفتح على التغيير يومًا بيوم.",
+  "vibeIndependentTitle": "هدوء مستقل",
+  "vibeIndependentSummary": "منزلك يدعم المساحة والهدوء.",
+  "hubError": "تعذّر تحميل المركز. يرجى المحاولة مرة أخرى.",
   "hubRetry": "إعادة المحاولة",
-  "todayEmptyCardTitle": "كل شيء مُنجز اليوم",
-  "todayEmptyCardBadge": "استراحة قصيرة",
-  "todayEmptyBody": "استمتع بالهدوء — سيخبرك Kinly عندما يحتاج شيء إلى انتباهك.",
+  "todayEmptyCardTitle": "لقد أنهيت كل شيء اليوم",
+  "todayEmptyCardBadge": "خذ نفسًا",
+  "todayEmptyBody": "استمتع بالهدوء — سيُخبرك كينلي عندما يحتاج شيء إلى انتباهك.",
   "friendDefaultName": "صديق",
-  "greetingPartOfDay": "صباح/مساء {partOfDay}، {name}",
+  "greetingPartOfDay": "{partOfDay} سعيد، {name}",
   "@greetingPartOfDay": {
     "surface": "title",
     "placeholders": {
@@ -201,7 +272,7 @@
     }
   },
   "todayFlowSubtitle": "إليك ما يجري في منزلك اليوم.",
-  "todayFlowSectionTitle": "Flow",
+  "todayFlowSectionTitle": "التدفّق",
   "todayFlowTabActive": "نشط",
   "todayFlowTabDrafts": "مسودات",
   "todayFlowSeeAll": "عرض الكل {count, plural, one {(#)} other {(#)}}",
@@ -215,11 +286,24 @@
     }
   },
   "todayFlowBadgeNew": "جديد اليوم",
-  "todayShareSectionTitle": "Share",
-  "todayShareTabActive": "To pay",
+  "todayShareSectionTitle": "فاتورة",
+  "todayShareTabActive": "للتسوية",
   "todayShareTabDrafts": "مسودات",
-  "todayShareError": "تعذّر تحديث Share الآن.",
-  "todayShareActiveSubtitle": "{count, plural, one {{count} دفعة معلّقة} other {{count} دفعات معلّقة}}",
+  "todayShareTabPaidToMe": "تمت التسوية",
+  "todaySharePaidSubtitle": "المبلغ المُسوّى",
+  "todaySharePaidUnseen": "{count, plural, one {{count} دفعة جديدة لك} other {{count} دفعات جديدة لك}}",
+  "@todaySharePaidUnseen": {
+    "description": "Subtitle shown for paid-to-me entries when there are unseen items.",
+    "surface": "subtitle",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "todayShareError": "لم نتمكن من تحديث قسم المشاركة الآن.",
+  "todayShareActiveSubtitle": "{count, plural, one {{count} دفعة معلّقة} other {{count} للتسوية}}",
   "@todayShareActiveSubtitle": {
     "placeholders": {
       "count": {
@@ -229,54 +313,64 @@
     },
     "surface": "subtitle"
   },
-  "todayGratitudeSectionTitle": "جدار امتنان المنزل",
+  "todayGratitudeSectionTitle": "جدار الامتنان",
   "todayGratitudeUnreadBody": "هناك منشورات امتنان جديدة بانتظارك.",
-  "shareOwedDetailTitle": "دفعة معلّقة",
-  "shareOwedDetailEmpty": "أنت مُسدِّد بالكامل مع هذا الشخص.",
-  "shareOwedDetailPaid": "تحديد كمدفوع",
-  "shareOwedDetailSuccess": "تم تسجيل الدفع.",
-  "shareOwedDetailError": "تعذّر وضع علامة مدفوع. حاول مرة أخرى.",
-  "sharePaidDetailAcknowledge": "Acknowledge payments",
-  "sharePaidDetailAcknowledging": "Acknowledging...",
-  "sharePaidDetailAcknowledgeError": "We couldn't acknowledge these payments.",
-  "shareEditTitle": "تعديل Share",
+  "shareOwedDetailTitle": "للتسوية",
+  "shareOwedDetailEmpty": "لقد أنهيت كل شيء مع هذا الشخص.",
+  "shareOwedDetailPaid": "وضع علامة تمت التسوية",
+  "shareOwedDetailSuccess": "تمت التسوية.",
+  "shareOwedDetailError": "لم نتمكن من وضع علامة على هذه الفاتورة كمُسددة. حاول مرة أخرى.",
+  "sharePaidDetailAcknowledge": "تأكيد الاستلام",
+  "sharePaidDetailAcknowledging": "جارٍ التأكيد...",
+  "sharePaidDetailAcknowledgeError": "لم نتمكن من تأكيد استلام الفواتير.",
+  "shareEditTitle": "تعديل الفاتورة",
   "shareEditSubmit": "تحديث",
-  "shareEditSuccess": "تم تحديث Share.",
-  "shareEditLoadError": "تعذّر تحميل هذه المسودة.",
-  "shareEditNotAllowed": "هذا مقفل حتى تُسند الـ Share إلى شخص.",
-  "shareEditSplitsLocked": "التقسيمات مقفلة لأن شخصًا ما دفع بالفعل. لا يزال بإمكانك تحديث الوصف والملاحظات.",
+  "shareEditSuccess": "تم تحديث الفاتورة.",
+  "shareEditLoadError": "لم نتمكن من تحميل هذه المسودة.",
+  "shareEditNotAllowed": "ستبقى مقفلة حتى يأخذها أحد.",
+  "shareEditSplitsLocked": "التقسيمات مقفلة لأن أحدهم دفع بالفعل. ما زلت تستطيع تحديث الوصف والملاحظات.",
   "shareEditClose": "إغلاق",
   "shareEditDeleteButton": "حذف",
   "shareEditDeleteConfirmTitle": "حذف؟",
-  "shareEditDeleteConfirmMessage": "سيؤدي هذا إلى إزالة المسودة للجميع.",
+  "shareEditDeleteConfirmMessage": "سيزيل هذا المسودة للجميع.",
   "shareEditDeleteConfirm": "حذف",
   "shareEditDeleteError": "تعذّر الحذف. حاول مرة أخرى.",
-  "shareEditDeleteSuccess": "تم حذف Share.",
-  "shareEditDisabledConverted": "تم تحويل هذه النفقة إلى خطة ولا يمكن تعديلها.",
-  "shareEditDisabledRecurringCycle": "لا يمكن تعديل الدورات المتكررة هنا.",
-  "shareEditDisabledActive": "لا يمكن تعديل النفقات النشطة.",
-  "shareEditDisabledGeneric": "لا يمكنك تعديل هذه النفقة الآن.",
-  "shareCreateTitle": "إنشاء",
+  "shareEditDeleteSuccess": "تم حذف الفاتورة.",
+  "shareEditTerminateSuccess": "تم إنهاء الخطة.",
+  "shareEditTerminatePlan": "إنهاء الخطة",
+  "shareEditTerminatePlanBusy": "جارٍ الإنهاء...",
+  "shareEditTerminatePlanTitle": "إنهاء الخطة المتكررة؟",
+  "shareEditTerminatePlanMessage": "سيوقف هذا دورات الفواتير المستقبلية.",
+  "shareEditTerminatePlanConfirm": "إنهاء الخطة",
+  "shareEditTerminateError": "تعذّر إنهاء الخطة. حاول مرة أخرى.",
+  "shareEditDisabledConverted": "هذه الفاتورة أصبحت خطة، والتحرير متوقف.",
+  "shareEditDisabledRecurringCycle": "الدورات المتكررة مقفلة عن التحرير هنا.",
+  "shareEditDisabledActive": "الفواتير النشطة مقفلة عن التحرير.",
+  "shareEditDisabledGeneric": "تحرير هذه الفاتورة غير متاح الآن.",
+  "shareCreateTitle": "إنشاء فاتورة",
   "shareCreateDescriptionLabel": "الوصف",
-  "shareCreateDescriptionHint": "مثال: مشتريات بقالة",
+  "shareCreateDescriptionHint": "مثلاً: مشتريات البقالة",
   "shareCreateAmountLabel": "المبلغ",
   "shareCreateAmountHint": "0.00",
-  "shareCreateSplitLabel": "نوع التقسيم",
-  "shareCreateSplitEqual": "تقسيم تلقائي",
-  "shareCreateSplitCustom": "تقسيم مخصص",
+  "shareCreateSplitLabel": "كيف نريد تقسيم هذه الفاتورة؟",
+  "shareCreateSplitEqual": "تقسيم بالتساوي",
+  "shareCreateSplitCustom": "تحديد المبالغ",
   "shareCreateParticipantsEmpty": "تحتاج إلى عضوين على الأقل في المنزل للمشاركة.",
-  "shareCreateNotesLabel": "ملاحظات",
+  "shareCreateNotesLabel": "سياق",
   "shareCreateNotesHint": "سياق اختياري يراه الجميع",
-  "shareCreateCustomHelper": "أدخل حصة كل شخص. تأكد أن المجموع يطابق المبلغ أعلاه.",
+  "shareCreateCustomHelper": "أدخل نصيب كل شخص. تأكد أن الإجمالي يطابق المبلغ أعلاه.",
   "shareCreateCustomAmountLabel": "المبلغ",
   "shareCreateStartLabel": "متى ينطبق هذا؟",
-  "shareCreateRecurrenceLabel": "التكرار",
-  "shareCreateRecurrenceNone": "مرة واحدة",
-  "shareCreateRecurrenceWeekly": "أسبوعي",
-  "shareCreateRecurrenceEvery2Weeks": "كل أسبوعين",
-  "shareCreateRecurrenceMonthly": "شهري",
-  "shareCreateRecurrenceEvery2Months": "كل شهرين",
-  "shareCreateRecurrenceAnnual": "سنوي",
+  "shareCreateCyclePeriod": "ينطبق على {period}",
+  "@shareCreateCyclePeriod": {
+    "placeholders": {
+      "period": {
+        "type": "String",
+        "example": "Jan 5 - Jan 11, 2026"
+      }
+    }
+  },
+  "shareCreateRecurrenceLabel": "تكرار",
   "shareCreateRecurrenceToggleLabel": "متكرر",
   "shareCreateRecurrenceEveryLabel": "كل",
   "shareCreateRecurrenceUnitDay": "يوم",
@@ -290,87 +384,80 @@
   "shareCreateValidationCustomParticipants": "التقسيم المخصص يحتاج إلى شخصين على الأقل.",
   "shareCreateValidationCustomAmounts": "أدخل مبلغًا صالحًا لكل شخص محدد.",
   "shareCreateValidationCustomSum": "تأكد أن التقسيم المخصص يساوي المبلغ أعلاه.",
-  "shareCreateValidationCustomSinglePayer": "قسّم المبلغ بين شخصين على الأقل عند استخدام التقسيم المخصص.",
-  "shareCreateValidationRecurrence": "اختر عدد مرات التكرار.",
+  "shareCreateValidationCustomSinglePayer": "قسّم المبلغ بين شخصين على الأقل عند استخدام تقسيم مخصص.",
+  "shareCreateValidationRecurrence": "اختر وتيرة التكرار.",
   "shareCreateValidationRecurrenceSplit": "اختر طريقة التقسيم قبل ضبط التكرار.",
-  "shareCreateValidationStartDate": "اختر تاريخ البدء.",
+  "shareCreateValidationStartDate": "اختر تاريخ بدء.",
   "shareCreateValidationStartDateRange": "اختر تاريخًا ضمن النطاق المسموح.",
-  "shareCreateErrorRecurrenceDraft": "لا يمكن تكرار المسودات حتى تضيف تقسيمًا.",
-  "shareCreateLoadError": "تعذّر تحميل أعضاء المنزل.",
+  "shareCreateErrorRecurrenceDraft": "لا يمكن للمسودات أن تتكرر حتى تضيف تقسيمًا.",
+  "shareCreateLoadError": "لم نتمكن من تحميل أفراد منزلك.",
   "shareCreateRetry": "حاول مرة أخرى",
   "shareCreateErrorGeneric": "تعذّر الإنشاء. حاول مرة أخرى.",
-  "shareCreateErrorPaywallActiveCap": "لقد وصلت إلى الحد المجاني وهو 10 مشاركات نشطة أو مسودات. أغلق واحدة أو ألغِها للمتابعة.",
-  "shareCreateErrorForbidden": "ليست لديك صلاحية الإنشاء الآن.",
-  "shareCreateSuccess": "تم إنشاء Share.",
-  "flowChoreCreateTitle": "إضافة Flow",
-  "flowChoreEditTitle": "تعديل Flow",
-  "flowChoreNameLabel": "اسم Flow",
-  "flowChoreNameHint": "امنح Flow عنوانًا قصيرًا وواضحًا",
-  "flowChoreValidationName": "أدخل اسمًا لـ Flow.",
-  "flowChoreAssigneeLabel": "إسناد إلى",
-  "flowChoreValidationAssignee": "اختر شخصًا لإسناد هذا الـ Flow إليه.",
-  "flowChoreStartLabel": "تاريخ الـ Flow",
-  "flowChoreValidationDate": "اختر تاريخًا خلال سنة من اليوم.",
-  "flowChoreRecurrenceLabel": "تكرار",
+  "shareCreateErrorPaywallActiveCap": "لقد وصلت إلى الحد المجاني للفواتير النشطة. قم بالترقية لمساحة أكبر.",
+  "shareCreateErrorForbidden": "ليس لديك إذن للإنشاء الآن.",
+  "shareCreateSuccess": "تم إنشاء الفاتورة.",
+  "flowChoreCreateTitle": "إضافة تدفّق",
+  "flowChoreEditTitle": "تعديل التدفّق",
+  "flowChoreNameLabel": "ما الذي يجب إنجازه؟",
+  "flowChoreNameHint": "مثل: إخراج القمامة، تنظيف الثلاجة، سقي النباتات",
+  "flowChoreValidationName": "امنح التدفّق اسمًا.",
+  "flowChoreAssigneeLabel": "من سيتولى هذا؟",
+  "flowChoreValidationAssignee": "اختر شخصًا، أو اتركه متاحًا لأي شخص.",
+  "flowChoreStartLabel": "متى يحدث هذا؟",
+  "flowChoreValidationDate": "اختر تاريخًا حتى سنة من اليوم.",
+  "flowChoreRecurrenceLabel": "كم مرة يحدث هذا؟",
   "flowChoreRecurrenceNone": "مرة واحدة",
-  "flowChoreRecurrenceDaily": "يوميًا",
-  "flowChoreRecurrenceWeekly": "أسبوعيًا",
-  "flowChoreRecurrenceEvery2Weeks": "كل أسبوعين",
-  "flowChoreRecurrenceMonthly": "شهريًا",
-  "flowChoreRecurrenceEvery2Months": "كل شهرين",
-  "flowChoreRecurrenceAnnual": "سنويًا",
-  "flowChoreNotesLabel": "ملاحظات",
-  "flowChoreNotesHint": "أضف سياقًا أو تذكيرات اختيارية",
-  "flowChoreHowToLabel": "رابط إرشادي",
-  "flowChoreHowToHint": "ألصق رابط فيديو أو مستند (اختياري)",
+  "flowChoreNotesLabel": "لماذا هذا مهم",
+  "flowChoreNotesHint": "أي شيء يساعد الآخرين على إنجازه بسهولة",
+  "flowChoreHowToLabel": "طريقة التنفيذ (اختياري)",
+  "flowChoreHowToHint": "أضف رابطًا إذا كانت هناك طريقة محددة",
   "flowChoreValidationHowToUrl": "أدخل رابطًا صالحًا يبدأ بـ http أو https.",
-  "flowChoreHowToLaunchError": "تعذّر فتح الرابط. حاول مرة أخرى.",
-  "flowChorePhotoLabel": "صورة للتوقع",
-  "flowChorePhotoPlaceholder": "أضف صورة لتوضيح ما الذي يبدو رائعًا",
-  "flowChorePhotoPermissionDenied": "إذن الكاميرا مطلوب لالتقاط صورة.",
+  "flowChoreHowToLaunchError": "لم نتمكن من فتح الرابط. حاول مرة أخرى.",
+  "flowChorePhotoLabel": "كيف يبدو “الجيد”",
+  "flowChorePhotoPlaceholder": "قد تساعد الصورة الجميع على البقاء على نفس الصفحة",
+  "flowChorePhotoPermissionDenied": "اسمح بالوصول إلى الكاميرا لالتقاط صورة.",
   "flowChorePhotoPermissionOpenSettings": "فتح الإعدادات",
   "flowChorePhotoUploadError": "تعذّر رفع الصورة. حاول مرة أخرى.",
   "flowChorePhotoLoadError": "تعذّر تحميل الصورة",
-  "flowChoreSubmitCreate": "إضافة Flow",
-  "flowChoreSubmitUpdate": "حفظ Flow",
-  "flowChoreDeleteButton": "حذف Flow",
-  "flowChoreDeleteDialogTitle": "حذف هذا الـ Flow؟",
-  "flowChoreDeleteDialogMessage": "سيؤدي هذا إلى إزالة الـ Flow للجميع في منزلك.",
+  "flowChoreSubmitCreate": "إنشاء تدفّق",
+  "flowChoreSubmitUpdate": "حفظ التغييرات",
+  "flowChoreDeleteButton": "حذف التدفّق",
+  "flowChoreDeleteDialogTitle": "حذف هذا التدفّق؟",
+  "flowChoreDeleteDialogMessage": "سيزيل هذا التدفّق للجميع في منزلك.",
   "flowChoreDeleteConfirm": "حذف",
-  "flowChoreLoadError": "تعذّر تحميل هذا الـ Flow. حاول مرة أخرى.",
+  "flowChoreLoadError": "لم نتمكن من تحميل هذا التدفّق. يرجى المحاولة مرة أخرى.",
   "flowChoreRetry": "إعادة المحاولة",
-  "flowChoreErrorPaywallActiveCap": "لقد وصلت إلى الحد المجاني للـ Flows النشطة. قم بالترقية لإضافة المزيد.",
-  "flowChoreErrorPaywallMediaCap": "لقد وصلت إلى الحد المجاني لصور التوقع. احذف واحدة أو قم بالترقية.",
-  "flowChoreErrorAssigneeNotMember": "هذا العضو غير قابل للإسناد الآن.",
-  "flowChoreErrorForbidden": "ليست لديك صلاحية تغيير هذا الـ Flow.",
+  "flowChoreErrorPaywallActiveCap": "لقد وصلت إلى الحد المجاني للتدفّقات النشطة. قم بالترقية لمساحة أكبر.",
+  "flowChoreErrorPaywallMediaCap": "لقد وصلت إلى الحد المجاني لصور التدفّق. قم بالترقية لمساحة أكبر.",
+  "flowChoreErrorAssigneeNotMember": "هذا العضو ليس ضمن هذا المنزل الآن.",
+  "flowChoreErrorForbidden": "ليس لديك إذن لتغيير هذا التدفّق.",
   "flowChoreErrorInvalidPhoto": "مسار الصورة غير صالح لهذا المنزل.",
   "flowChoreErrorInvalidStart": "اختر تاريخ بدء صالحًا.",
-  "flowChoreErrorInvalidState": "هذا الـ Flow غير قابل للتحديث الآن.",
-  "flowChoreErrorGeneric": "تعذّر حفظ الـ Flow. حاول مرة أخرى.",
-  "flowChoreDetailTitle": "تفاصيل Flow",
-  "flowChoreDetailUnassigned": "غير مُسند",
-  "flowChoreDetailNoNotes": "لا توجد ملاحظات بعد.",
-  "flowChoreDetailNoHowTo": "لا يوجد رابط إرشادي.",
-  "flowChoreDetailCompleteButton": "إكمال Flow",
-  "flowChoreCreateSuccess": "تم إنشاء الـFlow.",
-  "flowChoreUpdateSuccess": "تم تحديث الـFlow.",
-  "flowChoreDetailCompletionSuccess": "اكتمل الـFlow.",
-  "flowChoreDetailCompletionError": "تعذّر إكمال الـ Flow. حاول مرة أخرى.",
-  "flowChoreDetailMoreInfoTitle": "مزيد من التفاصيل",
-  "flowChoreExpectationPhotoLabel": "صورة للتوقع",
-  "flowListEmptyTitle": "لا يوجد شيء في Flow بعد",
-  "flowListEmptySubtitle": "أضف أول روتين ليعرف الجميع ما الذي يجب فعله.",
+  "flowChoreErrorInvalidState": "لا يمكن تحديث هذا التدفّق الآن.",
+  "flowChoreErrorGeneric": "تعذّر حفظ التدفّق. يرجى المحاولة مرة أخرى.",
+  "flowChoreDetailTitle": "تفاصيل التدفّق",
+  "flowChoreDetailUnassigned": "غير مكلّف",
+  "flowChoreDetailNoNotes": "لا يوجد سياق.",
+  "flowChoreDetailNoHowTo": "لا توجد روابط إرشادية.",
+  "flowChoreDetailCompleteButton": "وضع علامة مكتمل",
+  "flowChoreCreateSuccess": "تم إنشاء التدفّق.",
+  "flowChoreUpdateSuccess": "تم تحديث التدفّق.",
+  "flowChoreDetailCompletionSuccess": "تم إكمال التدفّق.",
+  "flowChoreDetailCompletionError": "تعذّر إكمال التدفّق. يرجى المحاولة مرة أخرى.",
+  "flowChoreDetailMoreInfoTitle": "سياق مفيد",
+  "flowChoreExpectationPhotoLabel": "صورة مرجعية",
+  "flowListEmptyTitle": "لا يوجد شيء هنا بعد",
+  "flowListEmptySubtitle": "التدفّقات تُبقي الجميع على نفس الصفحة.",
   "flowListDraftLabel": "مسودة",
-  "flowListOverdueLabel": "متأخر",
-  "flowListError": "تعذّر تحميل Flow. اسحب للتحديث.",
-  "exploreIntroTitle": "اكتشف ما التالي",
-  "exploreIntroSubtitle": "استكشف طرقًا أكثر لجعل منزلك أخف.",
-  "exploreFlowSubtitle": "راجع كل Flow وحافظ على استمرارها",
-  "exploreShareSubtitle": "شاهد كل Share أنشأتها وتابع التحصيل.",
-  "shareCreatedListTitle": "Share الخاصة بك",
-  "shareCreatedListEmptyTitle": "لا توجد مشاركات بعد",
-  "shareCreatedListEmptySubtitle": "أنشئ Share لتظهر هنا.",
-  "shareCreatedListError": "تعذّر تحميل Shares الخاصة بك. اسحب للتحديث.",
+  "flowListOverdueLabel": "بحاجة إلى انتباه",
+  "flowListError": "لم نتمكن من تحميل التدفّقات. اسحب للتحديث.",
+  "exploreIntroSubtitle": "استكشف طرقًا أكثر لتبقى أجواء منزلك أخف.",
+  "exploreFlowSubtitle": "اعرف ما الذي يحتاج إلى إنجاز — ومن يتولى ذلك.",
+  "exploreShareSubtitle": "اعرض كل فاتورة أنشأتها وتتبع التحصيل.",
+  "shareCreatedListTitle": "فواتيرك",
+  "shareCreatedListEmptyTitle": "لا توجد فواتير بعد",
+  "shareCreatedListEmptySubtitle": "الفواتير تُوضّح المال بين الناس — دون تذكيرات محرجة.",
+  "shareCreatedListError": "لم نتمكن من تحميل فواتيرك. اسحب للتحديث.",
   "shareCreatedListRetry": "حاول مرة أخرى",
   "shareCreatedListActiveSubtitle": "{paid} من {total} مدفوعة",
   "@shareCreatedListActiveSubtitle": {
@@ -399,57 +486,57 @@
       }
     }
   },
-  "shareCreatedListDraftSubtitle": "قسّمها لإسناد حصة كل شخص قبل النشر.",
-  "shareCreatedListDraftBadge": "غير مُسند",
-  "shareCreatedListPaidBadge": "مُسدَّد بالكامل",
+  "shareCreatedListDraftSubtitle": "قسّمها حتى يعرف الجميع نصيبه قبل النشر.",
+  "shareCreatedListDraftBadge": "غير مكلّف",
+  "shareCreatedListPaidBadge": "تم السداد",
   "profileSettingsTitle": "الملف الشخصي والمنزل",
-  "profileSettingsSubtitle": "إدارة تفضيلات الحساب والوصول إلى المنزل.",
+  "profileSettingsSubtitle": "إدارة تفضيلات حسابك ووصول المنزل.",
   "profileIdentityTitle": "تعديل الملف الشخصي",
-  "profileIdentitySubtitle": "اختر اسم مستخدم وصورة رمزية داخل منزلك.",
+  "profileIdentitySubtitle": "اختر اسم مستخدم وصورة رمزية لمنزلك.",
   "profileIdentityUsernameLabel": "اسم المستخدم",
   "profileIdentityUsernameHint": "حروف، أرقام، . أو _",
   "profileIdentityUsernameEmptyError": "أدخل اسم مستخدم للمتابعة.",
-  "profileIdentityUsernameFormatError": "استخدم 3-30 حرفًا/رقمًا صغيرًا. يمكنك استخدام النقاط أو الشرطات السفلية في الوسط.",
-  "profileIdentityUsernameTakenError": "هذا الاسم مستخدم. جرّب اسمًا آخر.",
+  "profileIdentityUsernameFormatError": "استخدم 3-30 حرفًا أو رقمًا صغيرًا. يمكنك إضافة نقاط أو شرطات سفلية في الوسط.",
+  "profileIdentityUsernameTakenError": "اسم المستخدم هذا محجوز. جرّب اسمًا آخر.",
   "profileIdentityAvatarSectionTitle": "اختر صورة رمزية",
   "profileIdentityAvatarSectionDescription": "كل صورة رمزية فريدة داخل منزلك.",
   "profileIdentityAvatarEmpty": "لا توجد صور رمزية متاحة الآن. حاول لاحقًا.",
-  "profileIdentityLoadError": "تعذّر تحميل ملفك الشخصي الآن.",
+  "profileIdentityLoadError": "لم نتمكن من تحميل ملفك الشخصي الآن.",
   "profileIdentityRetry": "إعادة المحاولة",
   "profileIdentitySaveButton": "حفظ التغييرات",
   "profileIdentitySuccessMessage": "تم تحديث الملف الشخصي.",
   "profileIdentityUsernamePreviewFallback": "اسم المستخدم الخاص بك",
   "profileLeaveHomeTitle": "مغادرة المنزل",
-  "profileLeaveHomeSubtitle": "مغادرة هذا المنزل تعني الخروج من مساحة Kinly المشتركة.",
-  "profileLeaveEligibilityLoading": "جارٍ التحقق من أعضاء المنزل…",
-  "profileLeaveEligibilityError": "تعذّر تحميل أعضاء المنزل. حاول مرة أخرى.",
-  "profileLeaveOwnerSoloMessage": "أنت العضو الأخير. المغادرة ستؤدي إلى تعطيل هذا المنزل للجميع.",
-  "profileLeaveOwnerNoEligibleMembers": "لا يمكن لأي شخص آخر تولّي الملكية الآن. حاول لاحقًا.",
+  "profileLeaveHomeSubtitle": "مغادرة هذا المنزل تعني الخروج من مساحة كينلي المشتركة.",
+  "profileLeaveEligibilityLoading": "جارٍ التحقق من أعضاء المنزل...",
+  "profileLeaveEligibilityError": "لم نتمكن من تحميل أعضاء منزلك. حاول مرة أخرى.",
+  "profileLeaveOwnerSoloMessage": "أنت آخر عضو. المغادرة ستعطّل هذا المنزل.",
+  "profileLeaveOwnerNoEligibleMembers": "لا يمكن لأي شخص آخر تولي الملكية الآن. حاول لاحقًا.",
   "profileLeaveTransferSheetTitle": "نقل الملكية",
-  "profileLeaveTransferSheetSubtitle": "اختر من سيصبح المالك الجديد قبل مغادرتك.",
+  "profileLeaveTransferSheetSubtitle": "اختر من سيصبح المالك الجديد قبل أن تغادر.",
   "profileKickMemberTitle": "إزالة عضو",
   "profileKickMemberSubtitle": "اختر من سيفقد الوصول إلى هذا المنزل.",
   "profileKickSheetTitle": "إزالة عضو",
   "profileKickSheetSubtitle": "اختر عضوًا لإزالته. سيفقد الوصول فورًا.",
   "profileKickActionConfirm": "إزالة العضو",
   "profileKickNoMembers": "لا يوجد أعضاء آخرون لإزالتهم الآن.",
-  "profileKickOwnerOnly": "فقط مالك المنزل يمكنه إزالة الأعضاء.",
+  "profileKickOwnerOnly": "مالك المنزل فقط يمكنه إزالة الأعضاء.",
   "profileKickSuccessMessage": "لم يعد لديه وصول إلى هذا المنزل.",
-  "profileLeaveTransferSuccessMessage": "تم نقل الملكية. جارٍ إكمال المغادرة…",
+  "profileLeaveTransferSuccessMessage": "تم نقل الملكية. جارٍ إنهاء مغادرتك...",
   "profileInfoHubTitle": "مركز المعلومات",
-  "profileInfoHubSubtitle": "افتح مركز Kinly على Notion داخل التطبيق.",
-  "profileInfoHubLoadError": "تعذّر تحميل مركز المعلومات. تحقّق من اتصالك.",
+  "profileInfoHubSubtitle": "افتح مركز كينلي على Notion داخل التطبيق.",
+  "profileInfoHubLoadError": "تعذّر تحميل مركز المعلومات. تحقّق من الاتصال.",
   "profileContactUsTitle": "تواصل معنا",
-  "profileContactUsSubtitle": "راسل support@makinglifeeasie.com",
+  "profileContactUsSubtitle": "أرسل بريدًا إلى support@makinglifeeasie.com",
   "profileConnectionSettingsTitle": "إعدادات الاتصال",
-  "profileConnectionSettingsSubtitle": "إدارة الإشعارات والتذكيرات.",
+  "profileConnectionSettingsSubtitle": "إدارة الإشعارات وتذكيراتك.",
   "connectionSettingsTitle": "إعدادات الاتصال",
-  "connectionSettingsSubtitle": "تحكم في التذكيرات اليومية ووقت الإشعارات.",
-  "connectionSettingsGenericError": "تعذّر تحديث الإعدادات. حاول مرة أخرى.",
+  "connectionSettingsSubtitle": "تحكّم بتذكير الإشعارات اليومية وتوقيتها.",
+  "connectionSettingsGenericError": "تعذّر تحديث إعدادات الاتصال. حاول مرة أخرى.",
   "connectionNotificationsToggleTitle": "إشعارات يومية",
-  "connectionNotificationsToggleSubtitleOn": "تلقي تذكير واحد كل يوم.",
-  "connectionNotificationsToggleSubtitleOff": "فعّل تذكيرات حول منزلك.",
-  "connectionNotificationsPermissionBlocked": "فعّل الإشعارات من إعدادات الهاتف لاستخدام هذه الميزة.",
+  "connectionNotificationsToggleSubtitleOn": "احصل على تذكير واحد كل يوم.",
+  "connectionNotificationsToggleSubtitleOff": "فعّل التذكيرات بشأن منزلك.",
+  "connectionNotificationsPermissionBlocked": "فعّل الإشعارات من إعدادات هاتفك لاستخدام هذا.",
   "connectionNotificationsTimeLabel": "وقت التذكير",
   "connectionNotificationsTimeSubtitle": "مجدول عند {time}",
   "@connectionNotificationsTimeSubtitle": {
@@ -462,44 +549,53 @@
     "surface": "subtitle"
   },
   "profileContactEmailSubject": "تواصل معنا",
-  "profile_deactivated_message": "Your profile is deactivated. Please sign in with another email address.",
-  "profileContactLaunchError": "تعذّر فتح تطبيق البريد. حاول مرة أخرى.",
+  "profile_deactivated_message": "تم إلغاء تنشيط ملفك الشخصي. يرجى تسجيل الدخول باستخدام بريد إلكتروني آخر.",
+  "profileContactLaunchError": "لم نتمكن من فتح تطبيق البريد. حاول مرة أخرى.",
   "profileLogoutTitle": "تسجيل الخروج",
-  "profileLogoutSubtitle": "تسجيل الخروج من Kinly على هذا الجهاز.",
+  "profileLogoutSubtitle": "تسجيل الخروج من كينلي على هذا الجهاز.",
   "profileDeleteAccountTitle": "حذف الحساب",
-  "profileDeleteAccountSubtitle": "إزالة حساب Kinly وبيانات الملف الشخصي.",
+  "profileDeleteAccountSubtitle": "إزالة حساب كينلي وبيانات ملفك الشخصي.",
   "profileConfirmLeaveTitle": "مغادرة هذا المنزل؟",
-  "profileConfirmLeaveMessage": "ستفقد الوصول إلى Flow والسجل والدعوات.",
+  "profileConfirmLeaveMessage": "ستفقد الوصول إلى التدفّق والسجل والدعوات.",
   "profileConfirmDeleteTitle": "حذف حسابك؟",
-  "profileConfirmDeleteMessage": "سيؤدي هذا إلى حذف حسابك وتسجيل خروجك. لا يمكنك التراجع عن ذلك.",
+  "profileConfirmDeleteMessage": "سيزيل هذا حسابك ويسجّلك خروجًا. لا يمكنك التراجع.",
   "profileActionConfirmDelete": "حذف الحساب",
   "profileActionConfirm": "مغادرة المنزل",
-  "profileLeaveSuccessMessage": "لقد غادرت منزلك.",
-  "profileDeleteSuccessMessage": "سيُحذف حسابك قريبًا. سنقوم بتسجيل خروجك.",
-  "profileGenericError": "حدث خطأ ما. حاول مرة أخرى.",
-  "profileMissingHomeError": "تعذّر العثور على منزلك الحالي. حاول مرة أخرى.",
+  "profileLeaveSuccessMessage": "غادرت منزلك.",
+  "profileDeleteSuccessMessage": "سيتم حذف حسابك قريبًا. سنسجّلك خروجًا.",
+  "profileGenericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+  "profileMissingHomeError": "لم نتمكن من العثور على منزلك الحالي. حاول مرة أخرى.",
   "harmonyQuestion": "كيف يشعر منزلك هذا الأسبوع؟",
   "harmonyMoodSunny": "مشمس",
-  "harmonyMoodPartiallySunny": "مشمس جزئيًا",
+  "harmonyMoodPartiallySunny": "غائم جزئيًا",
   "harmonyMoodCloudy": "غائم",
   "harmonyMoodRainy": "ممطر",
   "harmonyMoodThunderstorm": "عاصفة رعدية",
-  "harmonyCommentLabel": "أضف ملاحظة (اختياري)",
-  "harmonyCommentHint": "ما الذي يجعل المنزل يشعر بهذا الشكل؟",
-  "harmonyShareLabel": "شارك هذا على جدار الامتنان",
-  "harmonyShareSubtitle": "مرئي لمنزلك عندما تكون الحالة مشمسة أو مشمسة جزئيًا.",
+  "harmonyCommentLabel": "هل تود مشاركة شيء؟",
+  "harmonyCommentHint": "ما الذي ساهم في هذا الشعور في المنزل؟",
+  "harmonyShareLabel": "شارك هذا مع منزلك",
   "harmonySubmitCta": "إرسال الملاحظات",
   "harmonySubmitSuccess": "شكرًا! تم حفظ ملاحظاتك.",
   "harmonyErrorAlreadySubmitted": "لقد شاركت حالتك لهذا الأسبوع بالفعل.",
   "harmonyErrorForbidden": "لا يمكنك إرسال الملاحظات لهذا المنزل.",
-  "harmonyErrorUnknown": "حدث خطأ ما. حاول مرة أخرى.",
-  "harmonyErrorSelectMood": "اختر حالة قبل الإرسال.",
+  "harmonyErrorUnknown": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+  "todayGratitudeHouseCta": "جدار المنزل",
+  "todayGratitudePersonalCta": "الجدار الشخصي",
+  "gratitudeWallHouseTab": "المنزل",
+  "gratitudeWallPersonalTab": "شخصي",
+  "gratitudeWallPersonalTitle": "جدار الامتنان الشخصي",
+  "gratitudeWallPersonalSummary": "مساحتك الخاصة للرسائل اللطيفة.",
+  "gratitudeWallStatsMentions": "شكرًا",
+  "gratitudeWallStatsPeople": "أشخاص",
+  "gratitudeWallStatsHomes": "منازل",
+  "mentionFieldHint": "اكتب @ للإشارة",
   "gratitudeWallEmptyTitle": "لا توجد منشورات امتنان بعد",
-  "gratitudeWallEmptySubtitle": "شارك لحظة جميلة لبدء ملء الجدار.",
+  "gratitudeWallEmptySubtitle": "هنا تعيش الشكرات الصغيرة.\n\nابدأ بلحظة واحدة من هذا الأسبوع.",
+  "gratitudeWallErrorGeneric": "تعذّر تحميل الامتنان الآن.",
   "gratitudeWallRetry": "حاول مرة أخرى",
   "gratitudeWallShareCta": "مشاركة هذا الجدار",
   "gratitudeWallShareTitle": "جدار الامتنان",
-  "gratitudeWallShareMessage": "مشاركة لمحة من جدار الامتنان لدينا على Kinly. حمّل التطبيق: {link}",
+  "gratitudeWallShareMessage": "مشاركة لمحة من جدار امتنان كينلي لدينا. حمّل التطبيق: {link}",
   "@gratitudeWallShareMessage": {
     "placeholders": {
       "link": {
@@ -508,10 +604,9 @@
       }
     }
   },
-  "gratitudeWallShareError": "تعذّرت المشاركة الآن. حاول مرة أخرى.",
-  "gratitudeWallSubtitle": "لحظات مشتركة من منزلك.",
-  "gratitudeWallFooter": "صُنع باستخدام {appName} - معًا يصبح كل شيء أخف",
-  "gratitudeWallWeeksAgo": "{weeks, plural, =0{هذا الأسبوع} one{قبل أسبوع واحد} other{قبل # أسابيع}}",
+  "gratitudeWallShareError": "تعذّرت المشاركة الآن. يرجى المحاولة مرة أخرى.",
+  "gratitudeWallFooter": "صُنع باستخدام {appName} - معًا يصبح الأمر أخف",
+  "gratitudeWallWeeksAgo": "{weeks, plural, =0{هذا الأسبوع} one{قبل أسبوع (#)} other{قبل (#) أسابيع}}",
   "@gratitudeWallWeeksAgo": {
     "surface": "subtitle",
     "placeholders": {
@@ -529,35 +624,22 @@
       }
     }
   },
-  "gratitudeWallTitleCount": "جدار الامتنان {count, plural, one {(#)} other {(#)}}",
-  "@gratitudeWallTitleCount": {
-    "surface": "title",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "4"
-      }
-    }
-  },
-  "npsTitle": "ما مدى احتمالية أن توصي بـ Kinly لصديق؟",
-  "npsDescription": "يساعدنا مؤشر صافي المروجين (NPS) على فهم أدائنا. اختر رقمًا من 0 (غير محتمل) إلى 10 (محتمل جدًا).",
-  "npsScaleLowLabel": "0 غير محتمل",
-  "npsScaleHighLabel": "10 محتمل جدًا",
-  "npsCannotSkip": "يجب اختيار تقييم للمتابعة.",
-  "npsSubmitErrorNotRequired": "هذه الملاحظات غير مطلوبة الآن.",
+  "npsTitle": "هل كان كينلي مفيدًا لمنزلك حتى الآن؟",
+  "npsDescription": "اختر رقمًا من 0 (غير مفيد) إلى 10 (مفيد جدًا).",
+  "npsScaleLowLabel": "0 غير مفيد",
+  "npsScaleHighLabel": "10 مفيد جدًا",
+  "npsCannotSkip": "يرجى اختيار تقييم للمتابعة.",
+  "npsSubmitErrorNotRequired": "لا تحتاج إلى مشاركة ملاحظات الآن.",
   "npsSubmitErrorInvalidScore": "يرجى اختيار رقم بين 0 و10.",
-  "npsSubmitErrorForbidden": "غير مسموح لك بإرسال الملاحظات الآن.",
-  "npsSubmitErrorGeneric": "تعذّر إرسال ملاحظاتك. حاول مرة أخرى.",
+  "npsSubmitErrorForbidden": "لا يُسمح لك بإرسال الملاحظات الآن.",
+  "npsSubmitErrorGeneric": "تعذّر إرسال ملاحظاتك. يرجى المحاولة مرة أخرى.",
   "npsLaunchError": "تعذّر فتح الخطوة التالية.",
-  "npsEmailSubject": "ما الذي يمكننا تحسينه؟",
+  "npsEmailSubject": "ما الذي يمكن أن يفعله كينلي بشكل أفضل لمنزلك؟",
   "@app_title": {
     "surface": "title"
   },
   "@welcome_title": {
     "surface": "title"
-  },
-  "@create_subtitle": {
-    "surface": "subtitle"
   },
   "@join_title": {
     "surface": "title"
@@ -668,6 +750,12 @@
     "surface": "title"
   },
   "@hubCardGratitudeWallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubPreferencesTitle": {
+    "surface": "title"
+  },
+  "@hubPreferencesSubtitle": {
     "surface": "subtitle"
   },
   "@hubError": {
@@ -850,9 +938,6 @@
   "@flowListError": {
     "surface": "error"
   },
-  "@exploreIntroTitle": {
-    "surface": "title"
-  },
   "@exploreIntroSubtitle": {
     "surface": "subtitle"
   },
@@ -1024,9 +1109,6 @@
   "@profileMissingHomeError": {
     "surface": "error"
   },
-  "@harmonyShareSubtitle": {
-    "surface": "subtitle"
-  },
   "@harmonySubmitCta": {
     "surface": "button"
   },
@@ -1040,9 +1122,6 @@
     "surface": "error"
   },
   "@harmonyErrorUnknown": {
-    "surface": "error"
-  },
-  "@harmonyErrorSelectMood": {
     "surface": "error"
   },
   "@gratitudeWallEmptyTitle": {
@@ -1062,9 +1141,6 @@
   },
   "@gratitudeWallShareError": {
     "surface": "error"
-  },
-  "@gratitudeWallSubtitle": {
-    "surface": "subtitle"
   },
   "@npsTitle": {
     "surface": "subtitle"
@@ -1102,59 +1178,13 @@
   "@join_error_forbidden": {
     "surface": "error"
   },
-  "todayShareTabPaidToMe": "Paid to me",
-  "todaySharePaidSubtitle": "Paid to you",
-  "todaySharePaidUnseen": "{count, plural, one {{count} new payment to you} other {{count} new payments to you}}",
-  "@todaySharePaidUnseen": {
-    "description": "Subtitle for paid-to-me entries with unseen items (placeholder locale).",
-    "surface": "subtitle",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "2"
-      }
-    }
-  },
-  "@todayMemberCapSubtitle": {
-    "surface": "subtitle",
-    "placeholders": {
-      "names": {
-        "type": "String",
-        "example": "Alex, Sam"
-      }
-    }
-  },
-  "@todayMemberCapResolutionJoined": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Alex"
-      }
-    }
-  },
-  "@todayMemberCapResolutionSuperseded": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Alex"
-      }
-    }
-  },
-  "@todayMemberCapResolutionFailed": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Alex"
-      }
-    }
-  },
-  "preferencePromptTitle": "Share your preferences",
-  "preferencePromptSubtitle": "Set up your personal preferences so your home can learn how you like things.",
-  "preferencePromptCta": "Start preferences",
-  "preferenceOnboardingTitle": "Personal preferences",
-  "preferenceOnboardingBack": "Back",
-  "preferenceOnboardingSubmit": "Save preferences",
-  "preferenceOnboardingProgress": "Question {current} of {total}",
+  "preferencePromptTitle": "شارك تفضيلاتك",
+  "preferencePromptSubtitle": "أعد إعداد تفضيلاتك الشخصية حتى يتعلم منزلك كيف تحب الأمور.",
+  "preferencePromptCta": "بدء التفضيلات",
+  "preferenceOnboardingTitle": "التفضيلات الشخصية",
+  "preferenceOnboardingBack": "رجوع",
+  "preferenceOnboardingSubmit": "حفظ التفضيلات",
+  "preferenceOnboardingProgress": "السؤال {current} من {total}",
   "@preferenceOnboardingProgress": {
     "description": "Progress for preference onboarding",
     "placeholders": {
@@ -1168,148 +1198,97 @@
       }
     }
   },
-  "preferenceReportTitle": "Your preference report",
-  "preferenceReportEditCta": "Edit",
-  "preferenceReportDoneCta": "Done",
-  "preferenceReportEditTitle": "Edit preferences",
-  "preferenceReportViewTitle": "View preferences",
-  "preferenceReportEditSectionPrompt": "Adjust the wording for this section.",
-  "preferenceReportEditSectionHint": "Write what feels right for you",
-  "preferenceReportEditSectionDone": "Done",
-  "preferenceReportEmptyTitle": "Preference report not ready",
-  "preferenceReportEmptyBody": "Complete your preferences to generate your report.",
-  "preferenceReportErrorTitle": "Could not load report",
-  "preferenceReportErrorBody": "Please try again.",
-  "preferenceReportEditError": "We couldn't save that update.",
-  "preferenceScenarioEnvironmentNoiseQuestion": "How ok are you with background noise in shared spaces?",
-  "preferenceScenarioEnvironmentNoiseOption1": "I'm most comfortable when things are generally quiet",
-  "preferenceScenarioEnvironmentNoiseOption2": "A moderate level of everyday noise feels fine",
-  "preferenceScenarioEnvironmentNoiseOption3": "Noise doesn't bother me much - lively spaces are okay",
-  "preferenceScenarioEnvironmentLightQuestion": "In shared areas, what kind of lighting do you tend to feel most comfortable with?",
-  "preferenceScenarioEnvironmentLightOption1": "Softer or dimmer lighting",
-  "preferenceScenarioEnvironmentLightOption2": "Balanced, natural lighting",
-  "preferenceScenarioEnvironmentLightOption3": "Bright, well-lit spaces",
-  "preferenceScenarioEnvironmentScentQuestion": "How do strong scents (candles, cooking, cleaners) feel to you?",
-  "preferenceScenarioEnvironmentScentOption1": "I'm quite sensitive to strong scents",
-  "preferenceScenarioEnvironmentScentOption2": "I'm mostly neutral",
-  "preferenceScenarioEnvironmentScentOption3": "Strong scents don't really bother me",
-  "preferenceScenarioScheduleQuietHoursQuestion": "As the day winds down, what usually feels okay to you at home?",
-  "preferenceScenarioScheduleQuietHoursOption1": "Evenings tend to be quieter for me",
-  "preferenceScenarioScheduleQuietHoursOption2": "It depends - some nights are quieter than others",
-  "preferenceScenarioScheduleQuietHoursOption3": "Nighttime activity doesn't usually bother me",
-  "preferenceScenarioScheduleSleepTimingQuestion": "When do you usually feel most in sync with your sleep routine?",
-  "preferenceScenarioScheduleSleepTimingOption1": "Earlier nights and mornings",
-  "preferenceScenarioScheduleSleepTimingOption2": "Somewhere in the middle",
-  "preferenceScenarioScheduleSleepTimingOption3": "Later nights and mornings",
-  "preferenceScenarioCommunicationChannelQuestion": "When you need to coordinate at home, what works best for you?",
-  "preferenceScenarioCommunicationChannelOption1": "Messaging or text",
-  "preferenceScenarioCommunicationChannelOption2": "Talking in person when it comes up",
-  "preferenceScenarioCommunicationChannelOption3": "A quick call feels easiest",
-  "preferenceScenarioCommunicationDirectnessQuestion": "When something small is on your mind, how do you like to say it?",
-  "preferenceScenarioCommunicationDirectnessOption1": "Gently, with context or easing in",
-  "preferenceScenarioCommunicationDirectnessOption2": "A mix - it depends on the situation",
-  "preferenceScenarioCommunicationDirectnessOption3": "Directly and clearly",
-  "preferenceScenarioCleanlinessSharedSpaceQuestion": "In shared spaces, how tidy feels good to you?",
-  "preferenceScenarioCleanlinessSharedSpaceOption1": "I feel best when things are kept fairly tidy",
-  "preferenceScenarioCleanlinessSharedSpaceOption2": "Some clutter is okay day-to-day",
-  "preferenceScenarioCleanlinessSharedSpaceOption3": "I'm relaxed about mess in shared areas",
-  "preferenceScenarioPrivacyRoomEntryQuestion": "About entering each other's rooms, what feels right to you?",
-  "preferenceScenarioPrivacyRoomEntryOption1": "I prefer people to ask or knock first",
-  "preferenceScenarioPrivacyRoomEntryOption2": "Asking is nice, but flexibility is okay",
-  "preferenceScenarioPrivacyRoomEntryOption3": "I'm generally comfortable with open access",
-  "preferenceScenarioPrivacyNotificationsQuestion": "How do you feel about messages at night?",
-  "preferenceScenarioPrivacyNotificationsOption1": "I prefer not to be contacted after quiet hours",
-  "preferenceScenarioPrivacyNotificationsOption2": "Limited or important messages are okay",
-  "preferenceScenarioPrivacyNotificationsOption3": "I'm fine being contacted anytime",
-  "preferenceScenarioSocialHostingQuestion": "How do you generally feel about guests coming over to the home?",
-  "preferenceScenarioSocialHostingOption1": "I'm most comfortable with guests being rare",
-  "preferenceScenarioSocialHostingOption2": "Occasional guests feel fine",
-  "preferenceScenarioSocialHostingOption3": "Frequent guests are okay with me",
-  "preferenceScenarioSocialTogethernessQuestion": "At home, what balance usually feels best for you?",
-  "preferenceScenarioSocialTogethernessOption1": "Mostly doing my own thing",
-  "preferenceScenarioSocialTogethernessOption2": "A mix of shared time and solo time",
-  "preferenceScenarioSocialTogethernessOption3": "Spending time together often",
-  "preferenceScenarioRoutinePlanningQuestion": "When it comes to daily life at home, what feels most natural to you?",
-  "preferenceScenarioRoutinePlanningOption1": "Having plans and structure helps me",
-  "preferenceScenarioRoutinePlanningOption2": "A mix of planning and spontaneity",
-  "preferenceScenarioRoutinePlanningOption3": "Going with the flow feels best",
-  "preferenceScenarioConflictResolutionQuestion": "If something feels a bit off between people at home, what usually helps you most?",
-  "preferenceScenarioConflictResolutionOption1": "Taking time to cool off first",
-  "preferenceScenarioConflictResolutionOption2": "Gently checking in at the right moment",
-  "preferenceScenarioConflictResolutionOption3": "Talking it through sooner rather than later",
-  "reflectiveAcknowledgementTitle": "Got it.",
-  "reflectiveClose": "Skip for now",
-  "reflectivePersonalPrimary": "Reflecting what you shared.",
-  "reflectivePersonalSecondary": "So others can understand what feels comfortable to you.",
-  "reflectiveHousePrimary": "Putting the home’s expectations into words.",
-  "reflectiveHouseSecondary": "So everyone knows what to expect.",
-  "reflectiveGenericPrimary": "Putting this together with care.",
-  "reflectiveGenericSecondary": "A quiet moment before we show it.",
-  "preferenceReportGenerationMissing": "We couldn’t finish your preference reflection. Please try again soon.",
-  "preferenceReportGenerationFailed": "We couldn’t finish your preference reflection. Head back and try again.",
-  "hubPreferencesTitle": "Personal preferences",
-  "hubPreferencesSubtitle": "How each person experiences shared living.",
-  "preferenceReportReadOnlyNote": "These preferences help others understand what feels comfortable for them.",
+  "preferenceReportTitle": "تقرير تفضيلاتك",
+  "preferenceReportEditCta": "تعديل",
+  "preferenceReportDoneCta": "تم",
+  "preferenceReportEditTitle": "تعديل التفضيلات",
+  "preferenceReportViewTitle": "عرض التفضيلات",
+  "preferenceReportEditSectionPrompt": "عدّل صياغة هذا القسم.",
+  "preferenceReportEditSectionHint": "اكتب ما يبدو مناسبًا لك",
+  "preferenceReportEditSectionDone": "تم",
+  "preferenceReportEmptyTitle": "تقرير التفضيلات غير جاهز",
+  "preferenceReportEmptyBody": "أكمل تفضيلاتك لتوليد التقرير.",
+  "preferenceReportErrorTitle": "تعذّر تحميل التقرير",
+  "preferenceReportErrorBody": "يرجى المحاولة مرة أخرى.",
+  "preferenceReportEditError": "لم نتمكن من حفظ هذا التحديث.",
+  "preferenceReportReadOnlyNote": "هذا يوضح ما يشعرون أنه مريح لهم.",
+  "preferenceScenarioEnvironmentNoiseQuestion": "ما مدى تقبّلك للضجيج الخلفي في المساحات المشتركة؟",
+  "preferenceScenarioEnvironmentNoiseOption1": "أشعر براحة أكبر عندما تكون الأمور هادئة عمومًا",
+  "preferenceScenarioEnvironmentNoiseOption2": "مستوى معتدل من ضجيج الحياة اليومية مناسب",
+  "preferenceScenarioEnvironmentNoiseOption3": "الضجيج لا يزعجني كثيرًا — المساحات الحيوية مناسبة",
+  "preferenceScenarioEnvironmentLightQuestion": "في المناطق المشتركة، أي نوع من الإضاءة يجعلك تشعر براحة أكبر؟",
+  "preferenceScenarioEnvironmentLightOption1": "إضاءة أهدأ أو أخفت",
+  "preferenceScenarioEnvironmentLightOption2": "إضاءة متوازنة وطبيعية",
+  "preferenceScenarioEnvironmentLightOption3": "إضاءة ساطعة وجيدة",
+  "preferenceScenarioEnvironmentScentQuestion": "كيف تشعر تجاه الروائح القوية (الشموع، الطبخ، المنظفات)؟",
+  "preferenceScenarioEnvironmentScentOption1": "أنا حساس جدًا للروائح القوية",
+  "preferenceScenarioEnvironmentScentOption2": "أنا محايد غالبًا",
+  "preferenceScenarioEnvironmentScentOption3": "الروائح القوية لا تزعجني كثيرًا",
+  "preferenceScenarioScheduleQuietHoursQuestion": "عندما يهدأ اليوم، ما الذي يكون مناسبًا لك عادةً في المنزل؟",
+  "preferenceScenarioScheduleQuietHoursOption1": "أمسياتي تميل لأن تكون أكثر هدوءًا",
+  "preferenceScenarioScheduleQuietHoursOption2": "الأمر يعتمد — بعض الليالي أهدأ من غيرها",
+  "preferenceScenarioScheduleQuietHoursOption3": "النشاط ليلًا لا يزعجني عادةً",
+  "preferenceScenarioScheduleSleepTimingQuestion": "كيف هو جدول نومك واستيقاظك؟",
+  "preferenceScenarioScheduleSleepTimingOption1": "أنام وأستيقظ مبكرًا",
+  "preferenceScenarioScheduleSleepTimingOption2": "في المنتصف تقريبًا",
+  "preferenceScenarioScheduleSleepTimingOption3": "أنام وأستيقظ متأخرًا",
+  "preferenceScenarioCommunicationChannelQuestion": "عندما تحتاج إلى تنسيق في المنزل، ما الأنسب لك؟",
+  "preferenceScenarioCommunicationChannelOption1": "الرسائل أو النص",
+  "preferenceScenarioCommunicationChannelOption2": "الحديث وجهًا لوجه عندما يحين الوقت",
+  "preferenceScenarioCommunicationChannelOption3": "مكالمة سريعة هي الأسهل",
+  "preferenceScenarioCommunicationDirectnessQuestion": "عندما يطرح عليك شخص ما أمرًا، كيف تفضّل أن يصلك؟",
+  "preferenceScenarioCommunicationDirectnessOption1": "بلطف، مع سياق أو تمهيد",
+  "preferenceScenarioCommunicationDirectnessOption2": "مزيج — يعتمد على الموقف",
+  "preferenceScenarioCommunicationDirectnessOption3": "مباشرة وبوضوح",
+  "preferenceScenarioCleanlinessSharedSpaceQuestion": "في المساحات المشتركة، ما مدى الترتيب الذي يجعلك مرتاحًا؟",
+  "preferenceScenarioCleanlinessSharedSpaceOption1": "أشعر بأفضل حال عندما يكون المكان مرتبًا إلى حد كبير",
+  "preferenceScenarioCleanlinessSharedSpaceOption2": "بعض الفوضى مقبول يوميًا",
+  "preferenceScenarioCleanlinessSharedSpaceOption3": "أنا مرتاح مع الفوضى في المساحات المشتركة",
+  "preferenceScenarioPrivacyRoomEntryQuestion": "بخصوص دخول غرف بعضكم، ما الذي يبدو مناسبًا لك؟",
+  "preferenceScenarioPrivacyRoomEntryOption1": "أفضل أن يطلبوا الإذن أو يطرقوا أولًا",
+  "preferenceScenarioPrivacyRoomEntryOption2": "الطلب لطيف، لكن المرونة مقبولة",
+  "preferenceScenarioPrivacyRoomEntryOption3": "أنا عمومًا مرتاح مع الوصول المفتوح",
+  "preferenceScenarioPrivacyNotificationsQuestion": "كيف تشعر تجاه الرسائل ليلًا؟",
+  "preferenceScenarioPrivacyNotificationsOption1": "أفضل عدم التواصل بعد ساعات الهدوء",
+  "preferenceScenarioPrivacyNotificationsOption2": "الرسائل المحدودة أو المهمة مقبولة",
+  "preferenceScenarioPrivacyNotificationsOption3": "لا مانع لدي بالتواصل في أي وقت",
+  "preferenceScenarioSocialHostingQuestion": "كيف تشعر عمومًا تجاه استضافة الضيوف في المنزل؟",
+  "preferenceScenarioSocialHostingOption1": "أشعر براحة أكبر عندما يكون الضيوف نادرين",
+  "preferenceScenarioSocialHostingOption2": "الضيوف أحيانًا مناسبون",
+  "preferenceScenarioSocialHostingOption3": "الضيوف بشكل متكرر مناسبون لي",
+  "preferenceScenarioSocialTogethernessQuestion": "في المنزل، ما التوازن الأنسب لك عادةً؟",
+  "preferenceScenarioSocialTogethernessOption1": "في الغالب أفعل أموري وحدي",
+  "preferenceScenarioSocialTogethernessOption2": "مزيج من الوقت المشترك والوقت الخاص",
+  "preferenceScenarioSocialTogethernessOption3": "قضاء وقت معًا غالبًا",
+  "preferenceScenarioRoutinePlanningQuestion": "عندما يتعلق الأمر بالحياة اليومية في المنزل، ما الذي يبدو طبيعيًا لك؟",
+  "preferenceScenarioRoutinePlanningOption1": "وجود خطط وهيكل يساعدني",
+  "preferenceScenarioRoutinePlanningOption2": "مزيج من التخطيط والعفوية",
+  "preferenceScenarioRoutinePlanningOption3": "السير مع التدفق هو الأفضل",
+  "preferenceScenarioConflictResolutionQuestion": "إذا بدا أن شيئًا ما غير مريح بين الناس في المنزل، ما الذي يساعدك عادةً أكثر؟",
+  "preferenceScenarioConflictResolutionOption1": "أخذ وقت للهدوء أولًا",
+  "preferenceScenarioConflictResolutionOption2": "التواصل بلطف في الوقت المناسب",
+  "preferenceScenarioConflictResolutionOption3": "التحدث عنه أقرب ما يمكن بدلًا من التأجيل",
+  "reflectiveAcknowledgementTitle": "حسنًا.",
+  "reflectivePersonalPrimary": "نعكس ما شاركته.",
+  "reflectivePersonalSecondary": "كي يفهم الآخرون ما الذي يجعلك مرتاحًا.",
+  "reflectiveHousePrimary": "نضع توقعات المنزل في كلمات.",
+  "reflectiveHouseSecondary": "كي يعرف الجميع ما الذي يتوقعونه.",
+  "reflectiveGenericPrimary": "نجمع هذا بعناية.",
+  "reflectiveGenericSecondary": "لحظة هادئة قبل أن نعرضه.",
+  "preferenceReportGenerationMissing": "لم نتمكن من إكمال انعكاس تفضيلاتك. يرجى المحاولة مرة أخرى قريبًا.",
+  "preferenceReportGenerationFailed": "لم نتمكن من إكمال انعكاس تفضيلاتك. ارجع وحاول مرة أخرى.",
   "@preferenceReportReadOnlyNote": {
     "surface": "body"
   },
-  "homeVibeTitle": "Home Vibe",
-  "homeVibeCoverage": "Based on {answered} of {total} members",
-  "@homeVibeCoverage": {
-    "placeholders": {
-      "answered": {
-        "type": "int",
-        "example": "3"
-      },
-      "total": {
-        "type": "int",
-        "example": "5"
-      }
-    }
-  },
-  "houseVibeShareTitle": "House vibe",
-  "houseVibeShareMessage": "Sharing our Kinly house vibe. Download the app: {link}",
-  "@houseVibeShareMessage": {
-    "placeholders": {
-      "link": {
-        "type": "String",
-        "example": "https://kinly.app"
-      }
-    }
-  },
-  "houseVibeShareError": "Couldn't share right now. Please try again.",
-  "houseVibeShareCta": "Share vibe",
-  "vibeInsufficientTitle": "Not enough data yet",
-  "vibeInsufficientSummary": "Once everyone completes preferences, you'll see your home vibe.",
-  "vibeMixedTitle": "A mixed home",
-  "vibeMixedSummary": "Your home shows a blend of comfort styles across members.",
-  "vibeDefaultTitle": "A balanced home",
-  "vibeDefaultSummary": "Your home leans toward a balanced, easy-to-share vibe.",
-  "vibeQuietCareTitle": "Quiet care",
-  "vibeQuietCareSummary": "This home often feels best with calmer energy and gentle rhythms.",
-  "vibeSocialTitle": "Social energy",
-  "vibeSocialSummary": "This home tends to feel lively, with shared moments and together time.",
-  "vibeStructuredTitle": "Structured rhythm",
-  "vibeStructuredSummary": "This home often feels best with clear structure and steady routines.",
-  "vibeEasygoingTitle": "Easygoing flow",
-  "vibeEasygoingSummary": "This home tends to feel relaxed and flexible day to day.",
-  "vibeIndependentTitle": "Independent calm",
-  "vibeIndependentSummary": "This home leans toward personal space with thoughtful connection.",
   "personalProfileTitle": "ملفك الشخصي",
-  "personalProfilePreferences": "تفضيلات شخصية",
+  "personalProfilePreferences": "التفضيلات الشخصية",
   "personalProfileMentions": "الإشارات الشخصية",
-  "personalProfileLoadError": "تعذّر تحميل ملفك الشخصي الآن. حاول مرة أخرى.",
+  "personalProfileLoadError": "لم نتمكن من تحميل ملفك الشخصي الآن. يرجى المحاولة مرة أخرى.",
   "personalMentionsTitle": "الإشارات الشخصية",
-  "gratitudeWallPersonalTitle": "Your Personal Gratitude Wall",
-  "gratitudeWallPersonalSummary": "A private collection of the mentions others have shared with you across every home.",
-  "gratitudeWallStatsMentions": "شكر",
-  "gratitudeWallStatsPeople": "People",
-  "gratitudeWallStatsHomes": "Homes",
-  "mentionFieldHint": "اكتب @ لذكر شخص",
-  "housePulseCardHeader": "Weekly house pulse",
-  "housePulseShareCta": "Share pulse",
-  "housePulseShareTitle": "Sharing our Kinly house pulse",
-  "housePulseShareMessage": "Sharing our Kinly house pulse. Download the app: {link}",
+  "housePulseCardHeader": "نبض المنزل الأسبوعي",
+  "housePulseShareCta": "مشاركة النبض",
+  "housePulseShareTitle": "مشاركة نبض منزلنا في كينلي",
+  "housePulseShareMessage": "مشاركة نبض منزلنا في كينلي. حمّل التطبيق: {link}",
   "@housePulseShareMessage": {
     "placeholders": {
       "link": {
@@ -1318,9 +1297,7 @@
       }
     }
   },
-  "housePulseShareError": "Couldn't share the pulse right now. Please try again.",
-  "housePulseNewBadge": "New this week",
-  "housePulseUpdatedOn": "Updated {date}",
+  "housePulseUpdatedOn": "تم التحديث في {date}",
   "@housePulseUpdatedOn": {
     "placeholders": {
       "date": {
@@ -1329,31 +1306,57 @@
       }
     }
   },
-  "housePulseReflections": "{count, plural, one {{count} reflection} other {{count} reflections}}",
-  "@housePulseReflections": {
+  "pulseFormingTitle": "لا يزال يتكوّن",
+  "pulseFormingSummary": "بضع عمليات تسجيل إضافية تساعد.",
+  "pulseSunnyCalmTitle": "دافئ وسهل",
+  "pulseSunnyCalmSummary": "منزلك كان دافئًا وسهلًا هذا الأسبوع.",
+  "pulseSunnyBumpyTitle": "جيد غالبًا",
+  "pulseSunnyBumpySummary": "هذا الأسبوع كان جيدًا في الغالب، مع بعض التعثرات.",
+  "pulsePartlySupportedTitle": "لا بأس مع عناية",
+  "pulsePartlySupportedSummary": "منزلك كان لا بأس به، مع ظهور العناية.",
+  "pulseCloudySteadyTitle": "مختلط وثابت",
+  "pulseCloudySteadySummary": "هذا الأسبوع كان مختلطًا وثابتًا.",
+  "pulseCloudyTenseTitle": "مختلط مع توتر",
+  "pulseCloudyTenseSummary": "هذا الأسبوع كان مختلطًا، مع بعض التوتر.",
+  "pulseRainySupportedTitle": "ثقيل لكن مع دعم",
+  "pulseRainySupportedSummary": "هذا الأسبوع كان أثقل، لكن العناية كانت حاضرة.",
+  "pulseRainyUnsupportedTitle": "ثقيل، يحتاج دعمًا",
+  "pulseRainyUnsupportedSummary": "هذا الأسبوع كان ثقيلًا. قد يساعد الدعم.",
+  "pulseThunderstormTitle": "متوتر الآن",
+  "pulseThunderstormSummary": "هذا الأسبوع كان متوترًا. اللطف مهم الآن.",
+  "demoAccess": "وصول تجريبي",
+  "@demoAccess": {
+    "description": "Title for the demo access screen used by app store reviewers",
+    "surface": "title"
+  },
+  "demoAccessTapHint": "وصول تجريبي: {current} من 7 نقرات",
+  "@demoAccessTapHint": {
+    "description": "Progress indicator shown when tapping logo to reveal demo access",
     "placeholders": {
-      "count": {
+      "current": {
         "type": "int",
         "example": "3"
       }
     }
   },
-  "pulseFormingTitle": "Still forming",
-  "pulseFormingSummary": "A few more check-ins help.",
-  "pulseSunnyCalmTitle": "Warm and easy",
-  "pulseSunnyCalmSummary": "Your home felt warm and easy this week.",
-  "pulseSunnyBumpyTitle": "Mostly good",
-  "pulseSunnyBumpySummary": "This week felt mostly good, with a few bumps.",
-  "pulsePartlySupportedTitle": "Okay with care",
-  "pulsePartlySupportedSummary": "Your home felt okay, with care showing through.",
-  "pulseCloudySteadyTitle": "Mixed and steady",
-  "pulseCloudySteadySummary": "This week felt mixed and steady.",
-  "pulseCloudyTenseTitle": "Mixed with tension",
-  "pulseCloudyTenseSummary": "This week felt mixed, with some tension.",
-  "pulseRainySupportedTitle": "Heavy but supported",
-  "pulseRainySupportedSummary": "This week felt heavier, but care was present.",
-  "pulseRainyUnsupportedTitle": "Heavy, support needed",
-  "pulseRainyUnsupportedSummary": "This week felt heavy. Support may help.",
-  "pulseThunderstormTitle": "Tense right now",
-  "pulseThunderstormSummary": "This week felt tense. Kindness matters right now."
+  "demoAccessEmail": "البريد الإلكتروني",
+  "@demoAccessEmail": {
+    "description": "Label for email input on demo access screen",
+    "surface": "label"
+  },
+  "demoAccessPassword": "كلمة المرور",
+  "@demoAccessPassword": {
+    "description": "Label for password input on demo access screen",
+    "surface": "label"
+  },
+  "demoAccessSubmit": "تسجيل الدخول",
+  "@demoAccessSubmit": {
+    "description": "Submit button label on demo access screen",
+    "surface": "button"
+  },
+  "demoAccessError": "تعذّر تسجيل الدخول. يرجى التحقق من بيانات الاعتماد.",
+  "@demoAccessError": {
+    "description": "Error message shown when demo login does not succeed",
+    "surface": "error"
+  }
 }
