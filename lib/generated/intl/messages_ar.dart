@@ -474,15 +474,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "المتابعة باستخدام Google",
     ),
     "logout": MessageLookupByLibrary.simpleMessage("تسجيل الخروج"),
-    "manual_invite_cta": MessageLookupByLibrary.simpleMessage(
-      "هل لديك رابط دعوة؟",
-    ),
-    "manual_invite_placeholder": MessageLookupByLibrary.simpleMessage(
-      "الصق رابط الدعوة أو الرمز",
-    ),
-    "manual_invite_saved": MessageLookupByLibrary.simpleMessage(
-      "تم حفظ الدعوة. تابع لتسجيل الدخول.",
-    ),
     "membership_status_active": MessageLookupByLibrary.simpleMessage(
       "أنت متصل بمنزل.",
     ),

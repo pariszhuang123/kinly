@@ -266,26 +266,4 @@ void main() {
     await tester.tap(googleButton, warnIfMissed: false);
     verifyNever(() => authBloc.add(const AuthSignInWithGoogleRequested()));
   });
-
-  testWidgets('manual invite CTA is hidden on welcome screen', (tester) async {
-    when(() => authBloc.state).thenReturn(const AuthState());
-
-    final router = GoRouter(
-      initialLocation: AppRoutes.welcome,
-      routes: [
-        GoRoute(
-          path: AppRoutes.welcome,
-          name: AppRouteNames.welcome,
-          builder: (_, __) => const WelcomeScreen(),
-        ),
-      ],
-    );
-
-    await tester.pumpWidget(buildRouterApp(router));
-    await tester.pumpAndSettle();
-
-    final s = S.of(tester.element(find.byType(WelcomeScreen)));
-    expect(find.text(s.manual_invite_cta), findsNothing);
-    verifyNever(() => joinCoordinator.captureManualEntry(any()));
-  });
 }

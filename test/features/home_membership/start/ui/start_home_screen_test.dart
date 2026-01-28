@@ -31,13 +31,13 @@ class _FakeAuthState extends Fake implements AuthState {}
 class _FakeUserContextRepository implements UserContextRepository {
   @override
   Future<UserContext> fetch() async => const UserContext(
-        userId: 'user-ctx',
-        hasHome: false,
-        activeHomeId: null,
-        hasPreferenceReport: false,
-        hasPersonalMentions: false,
-        avatarUrl: null,
-      );
+    userId: 'user-ctx',
+    hasHome: false,
+    activeHomeId: null,
+    hasPreferenceReport: false,
+    hasPersonalMentions: false,
+    avatarUrl: null,
+  );
 }
 
 void main() {
@@ -159,18 +159,5 @@ void main() {
     );
     expect(createButton.onPressed, isNotNull);
     expect(joinButton.onPressed, isNotNull);
-  });
-
-  testWidgets('manual invite CTA is hidden on start screen', (tester) async {
-    when(() => authBloc.state).thenReturn(
-      const AuthState(membershipStatus: AuthMembershipStatus.none),
-    );
-
-    await tester.pumpWidget(buildApp());
-    await tester.pump();
-
-    final s = S.of(tester.element(find.byType(StartHomeScreen)));
-    expect(find.text(s.manual_invite_cta), findsNothing);
-    verifyNever(() => joinCoordinator.captureManualEntry(any()));
   });
 }

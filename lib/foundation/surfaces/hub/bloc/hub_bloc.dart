@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kinly/core/config/app_config.dart';
-import 'package:kinly/core/platform/platform_info.dart';
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/contracts/preferences/models.dart';
 import 'package:kinly/contracts/preferences/ports/house_vibe_repository.dart';
@@ -230,11 +229,7 @@ String _resolveAppLink() {
           ? AppConfig.inviteHost
           : 'go.makinglifeeasie.com';
   if (host.isEmpty) return 'https://go.makinglifeeasie.com/kinly';
-  final uri = Uri(
-    scheme: 'https',
-    host: host,
-    pathSegments: const ['kinly'],
-  );
+  final uri = Uri(scheme: 'https', host: host, pathSegments: const ['kinly']);
   return uri.toString();
 }
 

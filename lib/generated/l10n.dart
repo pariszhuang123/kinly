@@ -209,36 +209,6 @@ class S {
     );
   }
 
-  /// `Have an invite link?`
-  String get manual_invite_cta {
-    return Intl.message(
-      'Have an invite link?',
-      name: 'manual_invite_cta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Paste invite link or code`
-  String get manual_invite_placeholder {
-    return Intl.message(
-      'Paste invite link or code',
-      name: 'manual_invite_placeholder',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Invite saved. Continue to sign in.`
-  String get manual_invite_saved {
-    return Intl.message(
-      'Invite saved. Continue to sign in.',
-      name: 'manual_invite_saved',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Bring more harmony to your home`
   String get paywallTitle {
     return Intl.message(

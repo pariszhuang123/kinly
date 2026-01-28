@@ -477,15 +477,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Continue with Google",
     ),
     "logout": MessageLookupByLibrary.simpleMessage("Sign out"),
-    "manual_invite_cta": MessageLookupByLibrary.simpleMessage(
-      "Have an invite link?",
-    ),
-    "manual_invite_placeholder": MessageLookupByLibrary.simpleMessage(
-      "Paste invite link or code",
-    ),
-    "manual_invite_saved": MessageLookupByLibrary.simpleMessage(
-      "Invite saved. Continue to sign in.",
-    ),
     "membership_status_active": MessageLookupByLibrary.simpleMessage(
       "You\'re connected to a home.",
     ),

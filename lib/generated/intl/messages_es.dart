@@ -511,15 +511,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Continuar con Google",
     ),
     "logout": MessageLookupByLibrary.simpleMessage("Cerrar sesión"),
-    "manual_invite_cta": MessageLookupByLibrary.simpleMessage(
-      "¿Tienes un enlace de invitación?",
-    ),
-    "manual_invite_placeholder": MessageLookupByLibrary.simpleMessage(
-      "Pega el enlace o el código de invitación",
-    ),
-    "manual_invite_saved": MessageLookupByLibrary.simpleMessage(
-      "Invitación guardada. Continúa para iniciar sesión.",
-    ),
     "membership_status_active": MessageLookupByLibrary.simpleMessage(
       "Estás conectado a un hogar.",
     ),

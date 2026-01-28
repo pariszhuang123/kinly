@@ -14,11 +14,6 @@ import 'welcome_surface_contract.dart';
 import 'welcome_surface_registry.dart';
 import '../../../core/ui/kinly_scaffold.dart';
 import '../../../core/ui/kinly_theme_access.dart';
-import '../../../core/ui/inputs/kinly_text_field.dart';
-import '../../../core/ui/buttons/kinly_filled_button.dart';
-import '../../../core/links/join_intent_coordinator.dart';
-import '../../../core/di/locator.dart';
-import '../../../renderer/material/ui/bottom_sheet/kinly_bottom_sheet.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -61,44 +56,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     if (_logoTapCount >= _revealThreshold) {
       final s = S.of(context);
       KinlySnackBar.showInfo(context, s.demoAccessTapHint(_logoTapCount));
-    }
-  }
-
-  Future<void> _onManualInvite(BuildContext context) async {
-    if (!sl.isRegistered<JoinIntentCoordinator>()) return;
-    final coordinator = sl<JoinIntentCoordinator>();
-    final s = S.of(context);
-    final controller = TextEditingController();
-
-    final input = await KinlyBottomSheet.show<String>(
-      context: context,
-      title: s.manual_invite_cta,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          KinlyTextField(
-            controller: controller,
-            labelText: s.manual_invite_placeholder,
-          ),
-        ],
-      ),
-      footer: [
-        KinlyFilledButton.text(
-          fullWidth: true,
-          label: s.join_submit,
-          onPressed: () => Navigator.of(context).pop(controller.text.trim()),
-        ),
-      ],
-    );
-
-    if (!mounted || !context.mounted) return;
-    if (input == null || input.isEmpty) return;
-    final stored = await coordinator.captureManualEntry(input);
-    if (!mounted || !context.mounted) return;
-    if (stored) {
-      KinlySnackBar.showSuccess(context, s.manual_invite_saved);
-    } else {
-      KinlySnackBar.showError(context, s.join_error_invalid_code);
     }
   }
 
