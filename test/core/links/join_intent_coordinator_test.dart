@@ -75,6 +75,10 @@ void main() {
     );
   });
 
+  tearDown(() {
+    coordinator.dispose();
+  });
+
   test('capture saves a valid invite code', () async {
     final saved = await coordinator.capture(
       Uri.parse('https://go.makinglifeeasie.com/kinly/join/ab23cd'),
@@ -176,5 +180,22 @@ void main() {
     expect(override, isTrue);
     expect((await storage.load())?.inviteCode, 'CD34EF');
     expect((await storage.load())?.source, 'android_install_referrer');
+  });
+
+  test('onIntentCaptured fires when a valid invite is captured', () async {
+    var eventCount = 0;
+    final sub = coordinator.onIntentCaptured.listen((_) => eventCount++);
+
+    await coordinator.capture(
+      Uri.parse('https://go.makinglifeeasie.com/kinly/join/ab23cd'),
+    );
+    await Future<void>.delayed(Duration.zero);
+    expect(eventCount, 1);
+
+    await coordinator.capture(Uri.parse('kinly://join?code=invalid!'));
+    await Future<void>.delayed(Duration.zero);
+    expect(eventCount, 1);
+
+    await sub.cancel();
   });
 }

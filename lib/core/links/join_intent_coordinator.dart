@@ -36,6 +36,16 @@ class JoinIntentCoordinator {
 
   bool _resolving = false;
 
+  final _intentCapturedController = StreamController<void>.broadcast();
+
+  /// Fires when a new invite intent is captured and stored.
+  /// Subscribers should call [handleAuthState] to resolve the intent.
+  Stream<void> get onIntentCaptured => _intentCapturedController.stream;
+
+  void dispose() {
+    _intentCapturedController.close();
+  }
+
   /// Parse + validate + persist the intent. Returns true if stored.
   Future<bool> capture(Uri uri) async {
     final parsed = _parser.parse(uri);
@@ -48,7 +58,11 @@ class JoinIntentCoordinator {
       source: parsed.source ?? 'web_join',
       receivedAt: DateTime.now().toUtc(),
     );
-    return _storeIntent(intent);
+    final stored = await _storeIntent(intent);
+    if (stored) {
+      _intentCapturedController.add(null);
+    }
+    return stored;
   }
 
   /// Parse install referrer (Android Play Store deferred deep link).

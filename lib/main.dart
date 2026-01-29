@@ -123,6 +123,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late final IanaTimezoneResolver _timezoneResolver;
   JoinIntentCoordinator? _joinIntentCoordinator;
   StreamSubscription<AuthState>? _authSub;
+  StreamSubscription<void>? _intentCapturedSub;
   NotificationTokenBootstrap? _tokenBootstrap;
   bool _requestedInitialNotificationPermission = false;
   String? _lastAuthUserId;
@@ -168,6 +169,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
     _authSub = _authBloc.stream.listen(
       (state) => unawaited(_handleAuthState(state)),
+    );
+    _intentCapturedSub = _joinIntentCoordinator?.onIntentCaptured.listen(
+      (_) => unawaited(_handleAuthState(_authBloc.state)),
     );
     unawaited(_initializeJoinIntentAndAuth());
     unawaited(_startVersionCheck());
@@ -228,6 +232,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _authSub = null;
     if (authSub != null) {
       unawaited(authSub.cancel());
+    }
+    final intentSub = _intentCapturedSub;
+    _intentCapturedSub = null;
+    if (intentSub != null) {
+      unawaited(intentSub.cancel());
     }
     _authBloc.close();
     _appVersionCubit.close();

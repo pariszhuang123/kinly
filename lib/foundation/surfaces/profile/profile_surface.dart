@@ -261,11 +261,10 @@ class _PlanButton extends StatelessWidget {
             top: spacing.m,
             bottom: spacing.m,
           ),
-          child: KinlyOutlinedButton.icon(
+          child: KinlyOutlinedButton.text(
             compact: true,
             onPressed: () => openPlanAction(context, state.planStatus),
             label: label,
-            icon: KinlyIcons.chevronRightRounded,
           ),
         );
       },

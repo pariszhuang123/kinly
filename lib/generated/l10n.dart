@@ -754,14 +754,14 @@ class S {
     return Intl.message('Today', name: 'navToday', desc: '', args: []);
   }
 
-  /// `Explore`
+  /// `Manage`
   String get navExplore {
-    return Intl.message('Explore', name: 'navExplore', desc: '', args: []);
+    return Intl.message('Manage', name: 'navExplore', desc: '', args: []);
   }
 
-  /// `Hub`
+  /// `Home Hub`
   String get navHub {
-    return Intl.message('Hub', name: 'navHub', desc: '', args: []);
+    return Intl.message('Home Hub', name: 'navHub', desc: '', args: []);
   }
 
   /// `No active members yet.`
@@ -1274,10 +1274,10 @@ class S {
     );
   }
 
-  /// `Couldn't load Hub. Please try again.`
+  /// `Couldn't load Home Hub. Please try again.`
   String get hubError {
     return Intl.message(
-      'Couldn\'t load Hub. Please try again.',
+      'Couldn\'t load Home Hub. Please try again.',
       name: 'hubError',
       desc: '',
       args: [],
@@ -2769,20 +2769,20 @@ class S {
     );
   }
 
-  /// `Explore more ways to keep your home feeling lighter.`
+  /// `Edit, assign, or remove things — anytime.`
   String get exploreIntroSubtitle {
     return Intl.message(
-      'Explore more ways to keep your home feeling lighter.',
+      'Edit, assign, or remove things — anytime.',
       name: 'exploreIntroSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `See what needs doing — and who’s taking care of it.`
+  /// `See what needs doing — and who's taking care of it.`
   String get exploreFlowSubtitle {
     return Intl.message(
-      'See what needs doing — and who’s taking care of it.',
+      'See what needs doing — and who\'s taking care of it.',
       name: 'exploreFlowSubtitle',
       desc: '',
       args: [],

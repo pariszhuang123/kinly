@@ -131,10 +131,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "demoAccessSubmit": MessageLookupByLibrary.simpleMessage("Sign in"),
     "demoAccessTapHint": m2,
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "See what needs doing — and who’s taking care of it.",
+      "See what needs doing — and who\'s taking care of it.",
     ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Explore more ways to keep your home feeling lighter.",
+      "Edit, assign, or remove things — anytime.",
     ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
       "See every Bill you\'ve created and track collections.",
@@ -394,7 +394,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "hubCodeCopied": MessageLookupByLibrary.simpleMessage("Invite code copied"),
     "hubError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load Hub. Please try again.",
+      "Couldn\'t load Home Hub. Please try again.",
     ),
     "hubInviteCta": MessageLookupByLibrary.simpleMessage("Invite"),
     "hubInviteUnavailable": MessageLookupByLibrary.simpleMessage(
@@ -490,8 +490,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
       "Type @ to mention",
     ),
-    "navExplore": MessageLookupByLibrary.simpleMessage("Explore"),
-    "navHub": MessageLookupByLibrary.simpleMessage("Hub"),
+    "navExplore": MessageLookupByLibrary.simpleMessage("Manage"),
+    "navHub": MessageLookupByLibrary.simpleMessage("Home Hub"),
     "navToday": MessageLookupByLibrary.simpleMessage("Today"),
     "npsCannotSkip": MessageLookupByLibrary.simpleMessage(
       "Please choose a score to continue.",
