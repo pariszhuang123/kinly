@@ -99,4 +99,7 @@ class FakeHomeRepository implements HomeRepository {
   Future<CurrentMembership?> getCurrentMembership({
     bool excludeSelf = false,
   }) async => excludeSelf ? null : currentMembership;
+
+  @override
+  Future<PlanStatus> getPlanStatus() async => PlanStatus.free;
 }

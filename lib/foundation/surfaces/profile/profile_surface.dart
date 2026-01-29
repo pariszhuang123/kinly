@@ -10,8 +10,10 @@ import 'package:kinly/core/notifications/profile_update_notifier.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
+import 'package:kinly/core/ui/buttons/kinly_outlined_button.dart';
 import 'package:kinly/core/ui/dialogs/kinly_dialogs.dart';
 import 'package:kinly/core/ui/kinly_bottom_sheet.dart';
+import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/core/ui/members/kinly_member_avatar_chip.dart';
 import 'package:kinly/core/ui/profile/kinly_profile_header.dart';
 import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
@@ -46,7 +48,10 @@ class ProfileSettingsScreen extends StatelessWidget {
     final s = S.of(context);
 
     return KinlyScaffold(
-      appBar: KinlyAppBar(title: Text(s.profileSettingsTitle)),
+      appBar: KinlyAppBar(
+        title: Text(s.profileSettingsTitle),
+        actions: [const _PlanButton()],
+      ),
       body: BlocListener<ProfileSettingsBloc, ProfileSettingsState>(
         listenWhen: (previous, current) => previous.action != current.action,
         listener: _handleAction,
@@ -221,5 +226,49 @@ class ProfileSettingsScreen extends StatelessWidget {
 
   Future<void> _openInfoHub(BuildContext context) async {
     await openInfoHub(context);
+  }
+}
+
+class _PlanButton extends StatelessWidget {
+  const _PlanButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
+
+    return BlocBuilder<ProfileSettingsBloc, ProfileSettingsState>(
+      buildWhen:
+          (previous, current) =>
+              previous.planStatus != current.planStatus ||
+              previous.planStatusLoading != current.planStatusLoading,
+      builder: (context, state) {
+        if (state.planStatusLoading) {
+          return Center(
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(end: spacing.lg),
+              child: KinlyLoader(size: spacing.xl),
+            ),
+          );
+        }
+
+        final s = S.of(context);
+        final isPremium = state.planStatus.isPremium;
+        final label = isPremium ? s.planPremiumLabel : s.planFreeLabel;
+
+        return Padding(
+          padding: EdgeInsetsDirectional.only(
+            end: spacing.m,
+            top: spacing.m,
+            bottom: spacing.m,
+          ),
+          child: KinlyOutlinedButton.icon(
+            compact: true,
+            onPressed: () => openPlanAction(context, state.planStatus),
+            label: label,
+            icon: KinlyIcons.chevronRightRounded,
+          ),
+        );
+      },
+    );
   }
 }

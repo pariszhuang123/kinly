@@ -53,6 +53,8 @@ class ProfileSettingsState extends Equatable {
     required this.actionMessage,
     required this.membership,
     required this.activeMembers,
+    required this.planStatus,
+    required this.planStatusLoading,
   });
 
   factory ProfileSettingsState.initial({ProfileSettingsUser? user}) {
@@ -69,6 +71,8 @@ class ProfileSettingsState extends Equatable {
       actionMessage: null,
       membership: null,
       activeMembers: const <HomeMemberSummary>[],
+      planStatus: PlanStatus.unknown,
+      planStatusLoading: false,
     );
   }
 
@@ -83,7 +87,10 @@ class ProfileSettingsState extends Equatable {
   final ProfileSettingsAction action;
   final String? actionMessage;
   final CurrentMembership? membership;
+
   final List<HomeMemberSummary> activeMembers;
+  final PlanStatus planStatus;
+  final bool planStatusLoading;
 
   ProfileSettingsState copyWith({
     ProfileSettingsUser? user,
@@ -97,7 +104,10 @@ class ProfileSettingsState extends Equatable {
     ProfileSettingsAction? action,
     Object? actionMessage = _unset,
     Object? membership = _unset,
+
     Object? activeMembers = _unset,
+    PlanStatus? planStatus,
+    bool? planStatusLoading,
   }) {
     return ProfileSettingsState(
       user: user ?? this.user,
@@ -127,6 +137,8 @@ class ProfileSettingsState extends Equatable {
               : List<HomeMemberSummary>.unmodifiable(
                 activeMembers as List<HomeMemberSummary>,
               ),
+      planStatus: planStatus ?? this.planStatus,
+      planStatusLoading: planStatusLoading ?? this.planStatusLoading,
     );
   }
 
@@ -146,6 +158,8 @@ class ProfileSettingsState extends Equatable {
     actionMessage,
     membership,
     activeMembers,
+    planStatus,
+    planStatusLoading,
   ];
 
   bool get isOwner => (membership?.role.toLowerCase() ?? 'member') == 'owner';

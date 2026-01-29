@@ -169,10 +169,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _authSub = _authBloc.stream.listen(
       (state) => unawaited(_handleAuthState(state)),
     );
-    unawaited(_handleAuthState(_authBloc.state));
-    if (Platform.isAndroid) {
-      unawaited(_checkDeferredInstallReferrer());
-    }
+    unawaited(_initializeJoinIntentAndAuth());
     unawaited(_startVersionCheck());
     unawaited(_requestNotificationPermissionIfNeeded());
   }
@@ -310,6 +307,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       );
       await _applyJoinNavigation(joinResult);
     }
+  }
+
+  Future<void> _initializeJoinIntentAndAuth() async {
+    if (Platform.isAndroid) {
+      await _checkDeferredInstallReferrer();
+    }
+    await _handleAuthState(_authBloc.state);
   }
 
   Future<void> _checkDeferredInstallReferrer() async {

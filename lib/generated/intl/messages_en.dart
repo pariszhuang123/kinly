@@ -92,6 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "We couldn\'t refresh your home membership. Please try again.",
     ),
     "bootstrap_initializing": m0,
+    "close": MessageLookupByLibrary.simpleMessage("Close"),
     "connectionNotificationsPermissionBlocked":
         MessageLookupByLibrary.simpleMessage(
           "Turn on notifications in your phone settings to use this.",
@@ -587,6 +588,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "personalProfileTitle": MessageLookupByLibrary.simpleMessage(
       "Your profile",
     ),
+    "planFreeLabel": MessageLookupByLibrary.simpleMessage("Free"),
+    "planPremiumActiveBody": MessageLookupByLibrary.simpleMessage(
+      "Enjoy unlimited access to all features.",
+    ),
+    "planPremiumActiveTitle": MessageLookupByLibrary.simpleMessage(
+      "You\'re on Premium",
+    ),
+    "planPremiumLabel": MessageLookupByLibrary.simpleMessage("Premium"),
     "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
     "preferenceOnboardingProgress": m15,
     "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
@@ -996,9 +1005,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
       "Manage your account preferences and home access.",
     ),
-    "profileSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "Profile & home",
-    ),
+    "profileSettingsTitle": MessageLookupByLibrary.simpleMessage("Profile"),
     "profile_deactivated_message": MessageLookupByLibrary.simpleMessage(
       "Your profile is deactivated. Please sign in with another email address.",
     ),

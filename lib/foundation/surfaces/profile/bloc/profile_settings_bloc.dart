@@ -50,6 +50,22 @@ class ProfileSettingsBloc
     );
     await _loadProfile(emit);
     await _loadLeaveEligibility(emit);
+    await _loadPlanStatus(emit);
+  }
+
+  Future<void> _loadPlanStatus(Emitter<ProfileSettingsState> emit) async {
+    emit(state.copyWith(planStatusLoading: true));
+    try {
+      final plan = await _homeRepository.getPlanStatus();
+      emit(state.copyWith(planStatus: plan, planStatusLoading: false));
+    } catch (_) {
+      emit(
+        state.copyWith(
+          planStatus: PlanStatus.unknown,
+          planStatusLoading: false,
+        ),
+      );
+    }
   }
 
   Future<void> _loadProfile(Emitter<ProfileSettingsState> emit) async {

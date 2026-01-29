@@ -136,6 +136,9 @@ class _StubHomeRepository extends Fake implements HomeRepository {
   Future<void> dismissMemberCapJoinRequests({required String homeId}) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<PlanStatus> getPlanStatus() async => PlanStatus.free;
 }
 
 const _testSpacing = Spacing(
@@ -199,10 +202,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // No mood selected -> comment box is hidden
-    expect(
-      find.byKey(const ValueKey('harmony_mentions_input')),
-      findsNothing,
-    );
+    expect(find.byKey(const ValueKey('harmony_mentions_input')), findsNothing);
 
     await tester.tap(find.bySemanticsLabel('Sunny'));
     await tester.pumpAndSettle();

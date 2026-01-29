@@ -2899,10 +2899,10 @@ class S {
     );
   }
 
-  /// `Profile & home`
+  /// `Profile`
   String get profileSettingsTitle {
     return Intl.message(
-      'Profile & home',
+      'Profile',
       name: 'profileSettingsTitle',
       desc: '',
       args: [],
@@ -5210,6 +5210,46 @@ class S {
       desc: 'Error message shown when demo login does not succeed',
       args: [],
     );
+  }
+
+  /// `Free`
+  String get planFreeLabel {
+    return Intl.message('Free', name: 'planFreeLabel', desc: '', args: []);
+  }
+
+  /// `Premium`
+  String get planPremiumLabel {
+    return Intl.message(
+      'Premium',
+      name: 'planPremiumLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You're on Premium`
+  String get planPremiumActiveTitle {
+    return Intl.message(
+      'You\'re on Premium',
+      name: 'planPremiumActiveTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enjoy unlimited access to all features.`
+  String get planPremiumActiveBody {
+    return Intl.message(
+      'Enjoy unlimited access to all features.',
+      name: 'planPremiumActiveBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get close {
+    return Intl.message('Close', name: 'close', desc: '', args: []);
   }
 }
 

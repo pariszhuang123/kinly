@@ -74,6 +74,9 @@ void main() {
         when(
           () => homeRepository.listActiveMembers(any()),
         ).thenAnswer((_) async => const <HomeMemberSummary>[]);
+        when(
+          () => homeRepository.getPlanStatus(),
+        ).thenAnswer((_) async => PlanStatus.free);
         return buildBloc();
       },
       act: (bloc) => bloc.add(const ProfileSettingsStarted()),
@@ -98,12 +101,21 @@ void main() {
           membership: currentMembership,
           activeMembers: const <HomeMemberSummary>[],
         );
-        return [loading, loaded, leaveReady];
+        final planLoading = leaveReady.copyWith(
+          planStatusLoading: true,
+          planStatus: PlanStatus.unknown,
+        );
+        final planReady = planLoading.copyWith(
+          planStatusLoading: false,
+          planStatus: PlanStatus.free,
+        );
+        return [loading, loaded, leaveReady, planLoading, planReady];
       },
       verify: (_) {
         verify(() => profileRepository.getCurrentProfile()).called(1);
         verify(() => homeRepository.getCurrentMembership()).called(1);
         verify(() => homeRepository.listActiveMembers(any())).called(1);
+        verify(() => homeRepository.getPlanStatus()).called(1);
       },
     );
 

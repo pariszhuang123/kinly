@@ -101,18 +101,21 @@ class _FakeHomeRepository implements HomeRepository {
   Future<void> dismissMemberCapJoinRequests({required String homeId}) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<PlanStatus> getPlanStatus() async => PlanStatus.free;
 }
 
 class _FakeUserContextRepository implements UserContextRepository {
   @override
   Future<UserContext> fetch() async => const UserContext(
-        userId: 'user-ctx',
-        hasHome: false,
-        activeHomeId: null,
-        hasPreferenceReport: false,
-        hasPersonalMentions: false,
-        avatarUrl: null,
-      );
+    userId: 'user-ctx',
+    hasHome: false,
+    activeHomeId: null,
+    hasPreferenceReport: false,
+    hasPersonalMentions: false,
+    avatarUrl: null,
+  );
 }
 
 void main() {

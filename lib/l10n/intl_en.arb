@@ -486,7 +486,7 @@
   "shareCreatedListDraftSubtitle": "Split it so everyone knows their part before publishing.",
   "shareCreatedListDraftBadge": "Unassigned",
   "shareCreatedListPaidBadge": "Paid off",
-  "profileSettingsTitle": "Profile & home",
+  "profileSettingsTitle": "Profile",
   "profileSettingsSubtitle": "Manage your account preferences and home access.",
   "profileIdentityTitle": "Edit profile",
   "profileIdentitySubtitle": "Pick a username and avatar for your home.",
@@ -1355,5 +1355,16 @@
   "@demoAccessError": {
     "description": "Error message shown when demo login does not succeed",
     "surface": "error"
+  },
+  "planFreeLabel": "Free",
+  "planPremiumLabel": "Premium",
+  "planPremiumActiveTitle": "You're on Premium",
+  "planPremiumActiveBody": "Enjoy unlimited access to all features.",
+  "close": "Close",
+  "@planFreeLabel": {
+    "surface": "button"
+  },
+  "@planPremiumLabel": {
+    "surface": "button"
   }
 }

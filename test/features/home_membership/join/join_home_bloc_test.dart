@@ -88,6 +88,9 @@ class _FakeHomeRepository implements HomeRepository {
   Future<void> dismissMemberCapJoinRequests({required String homeId}) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<PlanStatus> getPlanStatus() async => PlanStatus.free;
 }
 
 void main() {

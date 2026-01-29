@@ -38,4 +38,6 @@ abstract class HomeRepository {
   });
 
   Future<void> dismissMemberCapJoinRequests({required String homeId});
+
+  Future<PlanStatus> getPlanStatus();
 }

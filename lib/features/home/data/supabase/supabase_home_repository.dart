@@ -249,4 +249,15 @@ class SupabaseHomeRepository implements HomeRepository {
         .where((member) => member.userId != userId)
         .toList(growable: false);
   }
+
+  @override
+  Future<PlanStatus> getPlanStatus() async {
+    try {
+      final response = await _client.rpc('get_plan_status');
+      final map = (response as Map).cast<String, dynamic>();
+      return PlanStatus.fromString(map['plan'] as String?);
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

@@ -465,3 +465,37 @@ Future<void> openInfoHub(BuildContext context) async {
 Color? _profileAccent(BuildContext context) {
   return KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
 }
+
+Future<void> openPlanAction(BuildContext context, PlanStatus status) async {
+  final s = S.of(context);
+  if (status.isFree) {
+    await context.pushNamed(AppRouteNames.paywall);
+    // Refresh plan when coming back? Contract says: "after purchase/restore completes"
+    // The Bloc should probably listen to purchase events or handle route return.
+    // For now, refreshing on return is a good implicit behavior.
+    if (!context.mounted) return;
+    final bloc = context.read<ProfileSettingsBloc>();
+    bloc.add(const ProfileSettingsStarted());
+  } else if (status.isPremium) {
+    await KinlyBottomSheet.show(
+      context: context,
+      title: s.planPremiumActiveTitle,
+      body: Text(
+        s.planPremiumActiveBody,
+        textAlign: TextAlign.center,
+        style: KinlyThemeAccess.of(context).textTheme.bodyMedium?.copyWith(
+          color: KinlyThemeAccess.of(context)
+              .colorScheme
+              .onSurface
+              .withValues(alpha: 0.7),
+        ),
+      ),
+      footer: [
+        KinlyFilledButton.text(
+          onPressed: () => Navigator.of(context).pop(),
+          label: s.close,
+        ),
+      ],
+    );
+  }
+}

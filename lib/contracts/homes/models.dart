@@ -5,6 +5,7 @@ import 'enums/join_outcome.dart';
 
 export 'enums/leave_outcome.dart';
 export 'enums/join_outcome.dart';
+export 'enums/plan_status.dart';
 
 class LeaveResult {
   final LeaveOutcome outcome;
