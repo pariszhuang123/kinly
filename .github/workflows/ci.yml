@@ -367,7 +367,7 @@ jobs:
             "ENV": "dev",
             "SUPABASE_URL": "${{ env.SUPABASE_URL }}",
             "SUPABASE_ANON_KEY": "${{ env.SUPABASE_ANON_KEY }}",
-            "DEEPLINK_HOST": "dev.example.com",
+            "DEEPLINK_HOST": "go.makinglifeeasie.com",
             "WEB_CLIENT_ID": "${{ env.WEB_CLIENT_ID }}",
             "IOS_CLIENT_ID": "${{ env.IOS_CLIENT_ID }}"
           }
@@ -545,7 +545,7 @@ jobs:
             "ENV": "prod",
             "SUPABASE_URL": "${{ env.SUPABASE_URL }}",
             "SUPABASE_ANON_KEY": "${{ env.SUPABASE_ANON_KEY }}",
-            "DEEPLINK_HOST": "example.com",
+            "DEEPLINK_HOST": "go.makinglifeeasie.com",
             "WEB_CLIENT_ID": "${{ env.WEB_CLIENT_ID }}",
             "IOS_CLIENT_ID": "${{ env.IOS_CLIENT_ID }}",
             "IOS_STORE_URL": "${{ env.IOS_STORE_URL }}",

@@ -2,7 +2,7 @@
   "ENV": "dev",
   "SUPABASE_URL": "https://your-dev-project.supabase.co",
   "SUPABASE_ANON_KEY": "dev-anon-key",
-  "DEEPLINK_HOST": "dev.example.com",
+  "DEEPLINK_HOST": "go.makinglifeeasie.com",
   "WEB_CLIENT_ID": "optional-google-web-client-id",
   "IOS_CLIENT_ID": "optional-google-ios-client-id",
   "IOS_STORE_URL": "https://apps.apple.com/nz/app/coffee-pool/id6737482186",

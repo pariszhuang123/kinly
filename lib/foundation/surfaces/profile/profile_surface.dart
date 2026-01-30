@@ -21,6 +21,9 @@ import 'package:kinly/core/ui/settings/kinly_settings_card.dart';
 import 'package:kinly/core/ui/settings/kinly_settings_tile.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/core/ui/support/kinly_support.dart';
+import 'package:kinly/core/ui/paywall/paywall_sources.dart';
+import 'package:kinly/core/ui/paywall/paywall_strings.dart';
+import 'package:kinly/core/ui/paywall/ports/paywall_launcher.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'bloc/profile_settings_bloc.dart';
@@ -256,14 +259,9 @@ class _PlanButton extends StatelessWidget {
         final label = isPremium ? s.planPremiumLabel : s.planFreeLabel;
 
         return Padding(
-          padding: EdgeInsetsDirectional.only(
-            end: spacing.m,
-            top: spacing.m,
-            bottom: spacing.m,
-          ),
+          padding: EdgeInsetsDirectional.only(end: spacing.m),
           child: KinlyOutlinedButton.text(
-            compact: true,
-            onPressed: () => openPlanAction(context, state.planStatus),
+            onPressed: () => openPlanAction(context, state),
             label: label,
           ),
         );

@@ -5212,9 +5212,14 @@ class S {
     );
   }
 
-  /// `Free`
+  /// `Upgrade to Premium`
   String get planFreeLabel {
-    return Intl.message('Free', name: 'planFreeLabel', desc: '', args: []);
+    return Intl.message(
+      'Upgrade to Premium',
+      name: 'planFreeLabel',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Premium`

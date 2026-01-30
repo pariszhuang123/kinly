@@ -158,6 +158,9 @@ String _buildInviteLinkImpl(HomeInvite invite) {
 }
 
 @visibleForTesting
+String buildInviteLinkForTest(HomeInvite invite) => _buildInviteLinkImpl(invite);
+
+@visibleForTesting
 Future<bool> shareInviteForTest(
   BuildContext context, {
   required bool isFlatmate,

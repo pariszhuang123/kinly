@@ -588,7 +588,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "personalProfileTitle": MessageLookupByLibrary.simpleMessage(
       "Your profile",
     ),
-    "planFreeLabel": MessageLookupByLibrary.simpleMessage("Free"),
+    "planFreeLabel": MessageLookupByLibrary.simpleMessage("Upgrade to Premium"),
     "planPremiumActiveBody": MessageLookupByLibrary.simpleMessage(
       "Enjoy unlimited access to all features.",
     ),

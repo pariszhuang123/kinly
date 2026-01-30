@@ -5,4 +5,5 @@ class PaywallSources {
   static const flowEditChore = 'flow.edit_chore';
   static const shareCreateExpense = 'share.create_expense';
   static const membersCap = 'members.cap';
+  static const profilePlan = 'profile.plan';
 }

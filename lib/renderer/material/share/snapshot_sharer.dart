@@ -91,6 +91,9 @@ class SnapshotSharer {
     }
   }
 
+  @visibleForTesting
+  static String resolveAppLinkForTest() => _resolveAppLink();
+
   static String _resolveAppLink() {
     final host =
         AppConfig.inviteHost.isNotEmpty

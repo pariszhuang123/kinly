@@ -1356,7 +1356,7 @@
     "description": "Error message shown when demo login does not succeed",
     "surface": "error"
   },
-  "planFreeLabel": "Free",
+  "planFreeLabel": "Upgrade to Premium",
   "planPremiumLabel": "Premium",
   "planPremiumActiveTitle": "You're on Premium",
   "planPremiumActiveBody": "Enjoy unlimited access to all features.",

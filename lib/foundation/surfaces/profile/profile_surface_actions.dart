@@ -466,13 +466,41 @@ Color? _profileAccent(BuildContext context) {
   return KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
 }
 
-Future<void> openPlanAction(BuildContext context, PlanStatus status) async {
+Future<void> openPlanAction(
+  BuildContext context,
+  ProfileSettingsState state,
+) async {
   final s = S.of(context);
+  final status = state.planStatus;
+  final homeId = state.membership?.homeId;
+
   if (status.isFree) {
-    await context.pushNamed(AppRouteNames.paywall);
-    // Refresh plan when coming back? Contract says: "after purchase/restore completes"
-    // The Bloc should probably listen to purchase events or handle route return.
-    // For now, refreshing on return is a good implicit behavior.
+    if (homeId == null) return;
+    final launcher = sl<PaywallLauncher>();
+    await launcher.showPaywall(
+      context: context,
+      homeId: homeId,
+      source: PaywallSources.profilePlan,
+      strings: PaywallStrings(
+        title: s.paywallTitle,
+        subtitle: s.paywallSubtitle,
+        bulletMembers: s.paywallBulletMembers,
+        bulletFlows: s.paywallBulletFlows,
+        bulletPhotos: s.paywallBulletPhotos,
+        bulletShares: s.paywallBulletShares,
+        unlimitedLabel: s.paywallSubtitle,
+        priceCaption: s.paywallPriceCaption,
+        priceUnavailableLabel: s.paywallPriceUnavailable,
+        priceFormatter: s.paywallPricePerMonth,
+        primaryCta: s.paywallPrimaryCta,
+        secondaryCta: s.paywallSecondaryCta,
+        purchaseFailed: s.paywallPurchaseFailed,
+        purchaseSuccess: s.paywallPurchaseSuccess,
+        restoreCta: s.paywallRestoreCta,
+        errorTitle: s.paywallErrorTitle,
+        retryLabel: s.paywallRetryLabel,
+      ),
+    );
     if (!context.mounted) return;
     final bloc = context.read<ProfileSettingsBloc>();
     bloc.add(const ProfileSettingsStarted());
