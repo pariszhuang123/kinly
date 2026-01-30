@@ -448,7 +448,7 @@
   "flowListDraftLabel": "Draft",
   "flowListOverdueLabel": "Needs attention",
   "flowListError": "We couldn't load flows. Pull to refresh.",
-  "exploreIntroSubtitle": "Edit, assign, or remove things — anytime.",
+  "exploreIntroSubtitle": "Update status and details to keep shared things clear.",
   "exploreFlowSubtitle": "See what needs doing — and who's taking care of it.",
   "exploreShareSubtitle": "See every Bill you've created and track collections.",
   "shareCreatedListTitle": "Your bills",

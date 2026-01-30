@@ -134,7 +134,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "See what needs doing — and who\'s taking care of it.",
     ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Edit, assign, or remove things — anytime.",
+      "Update status and details to keep shared things clear.",
     ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
       "See every Bill you\'ve created and track collections.",

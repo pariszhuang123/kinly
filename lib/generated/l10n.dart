@@ -2769,10 +2769,10 @@ class S {
     );
   }
 
-  /// `Edit, assign, or remove things — anytime.`
+  /// `Update status and details to keep shared things clear.`
   String get exploreIntroSubtitle {
     return Intl.message(
-      'Edit, assign, or remove things — anytime.',
+      'Update status and details to keep shared things clear.',
       name: 'exploreIntroSubtitle',
       desc: '',
       args: [],
