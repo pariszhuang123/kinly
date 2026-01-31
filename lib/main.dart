@@ -14,7 +14,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
-import 'package:play_install_referrer/play_install_referrer.dart';
+import 'package:app_links/app_links.dart';
 
 import 'core/config/app_config.dart';
 import 'core/di/locator.dart';
@@ -47,6 +47,7 @@ import 'renderer/material/kinly_app.dart';
 import 'core/links/join_intent_coordinator.dart';
 import 'core/links/enums/join_intent_navigator.dart';
 import 'core/links/pending_join_intent_storage.dart';
+import 'app/join_intent_bootstrap.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -125,6 +126,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   StreamSubscription<AuthState>? _authSub;
   StreamSubscription<void>? _intentCapturedSub;
   NotificationTokenBootstrap? _tokenBootstrap;
+  JoinIntentBootstrap? _joinBootstrap;
   bool _requestedInitialNotificationPermission = false;
   String? _lastAuthUserId;
   String? _lastHomeId;
@@ -172,6 +174,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
     _intentCapturedSub = _joinIntentCoordinator?.onIntentCaptured.listen(
       (_) => unawaited(_handleAuthState(_authBloc.state)),
+    );
+    _joinBootstrap = JoinIntentBootstrap(
+      coordinator: _joinIntentCoordinator,
+      logger: _logger,
     );
     unawaited(_initializeJoinIntentAndAuth());
     unawaited(_startVersionCheck());
@@ -238,6 +244,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (intentSub != null) {
       unawaited(intentSub.cancel());
     }
+    unawaited(_joinBootstrap?.dispose());
     _authBloc.close();
     _appVersionCubit.close();
     _connectivityCubit.close();
@@ -319,41 +326,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> _initializeJoinIntentAndAuth() async {
-    if (Platform.isAndroid) {
-      await _checkDeferredInstallReferrer();
-    }
+    await _joinBootstrap?.init();
     await _handleAuthState(_authBloc.state);
-  }
-
-  Future<void> _checkDeferredInstallReferrer() async {
-    if (_joinIntentCoordinator == null) return;
-    final storage = sl<PendingJoinIntentStorage>();
-    if (await storage.wasDeferredChecked()) return;
-
-    try {
-      final response = await PlayInstallReferrer.installReferrer;
-      await storage.markDeferredChecked();
-      final referrer = response.installReferrer;
-      if (referrer == null || referrer.isEmpty) {
-        return;
-      }
-      final stored =
-          await _joinIntentCoordinator!.captureInstallReferrer(referrer);
-      if (!stored) {
-        _logger.debug(
-          'Deferred invite ignored (invalid or lower precedence)',
-          tag: _logTag,
-        );
-      }
-    } catch (error, stackTrace) {
-      await storage.markDeferredChecked();
-      _logger.warn(
-        'Install referrer lookup failed: $error',
-        tag: _logTag,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
   }
 
   Future<void> _clearFormDraftsOnLogout({
