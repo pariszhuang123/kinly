@@ -14,7 +14,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
-import 'package:app_links/app_links.dart';
 
 import 'core/config/app_config.dart';
 import 'core/di/locator.dart';
@@ -46,7 +45,6 @@ import 'core/ui/kinly_scaffold.dart';
 import 'renderer/material/kinly_app.dart';
 import 'core/links/join_intent_coordinator.dart';
 import 'core/links/enums/join_intent_navigator.dart';
-import 'core/links/pending_join_intent_storage.dart';
 import 'app/join_intent_bootstrap.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -140,9 +138,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _logger = _resolveLogger();
     _timezoneResolver = sl<IanaTimezoneResolver>();
-    _joinIntentCoordinator = sl.isRegistered<JoinIntentCoordinator>()
-        ? sl<JoinIntentCoordinator>()
-        : null;
+    _joinIntentCoordinator =
+        sl.isRegistered<JoinIntentCoordinator>()
+            ? sl<JoinIntentCoordinator>()
+            : null;
     final authRepo = sl<AuthRepository>();
     final homeRepo = sl<HomeRepository>();
     final profileRepo = sl<ProfileRepository>();

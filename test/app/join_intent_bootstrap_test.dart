@@ -50,7 +50,6 @@ void main() {
     when(() => coordinator.capture(any())).thenAnswer((_) async => true);
 
     final bootstrap = JoinIntentBootstrap(coordinator: coordinator, logger: logger);
-    // inject mocked AppLinks via factory override
     await bootstrap.initWith(appLinks: appLinks);
 
     verify(() => coordinator.capture(initial)).called(1);
@@ -71,4 +70,20 @@ void main() {
     verifyNever(() => logger.warn(any(), tag: any(named: 'tag'), error: any(named: 'error'), stackTrace: any(named: 'stackTrace')));
   });
 
+  test('dispose cancels deep link subscription gracefully', () async {
+    final streamController = StreamController<Uri>();
+    when(() => appLinks.getInitialLink()).thenAnswer((_) async => null);
+    when(() => appLinks.uriLinkStream).thenAnswer((_) => streamController.stream);
+    when(() => coordinator.capture(any())).thenAnswer((_) async => true);
+
+    final bootstrap = JoinIntentBootstrap(coordinator: coordinator, logger: logger);
+    await bootstrap.initWith(appLinks: appLinks);
+    await bootstrap.dispose();
+
+    streamController.add(Uri.parse('https://go.makinglifeeasie.com/kinly/join/NOCAP'));
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+    verifyNever(() => coordinator.capture(Uri.parse('https://go.makinglifeeasie.com/kinly/join/NOCAP')));
+
+    await streamController.close();
+  });
 }
