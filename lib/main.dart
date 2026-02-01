@@ -281,7 +281,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final currentUserId = state.userId;
     final currentHomeId = state.membership?.homeId;
     if (!state.isAuthenticated) {
-      await _joinIntentCoordinator?.clear();
+      if (previousUserId != null) {
+        await _joinIntentCoordinator?.clear();
+      }
       await _clearFormDraftsOnLogout(
         previousUserId: previousUserId,
         previousHomeId: previousHomeId,

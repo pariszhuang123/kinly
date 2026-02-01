@@ -157,17 +157,22 @@ void main() {
     expect(loaded?.source, 'android_install_referrer');
   });
 
-  test('install referrer does not override higher-precedence deep link', () async {
-    await coordinator.capture(Uri.parse('https://go.makinglifeeasie.com/kinly/join/zz99yy'));
+  test(
+    'install referrer does not override higher-precedence deep link',
+    () async {
+      await coordinator.capture(
+        Uri.parse('https://go.makinglifeeasie.com/kinly/join/zz99yy'),
+      );
 
-    final stored = await coordinator.captureInstallReferrer(
-      'kinly_invite_code=ab23cd',
-    );
+      final stored = await coordinator.captureInstallReferrer(
+        'kinly_invite_code=ab23cd',
+      );
 
-    expect(stored, isFalse);
-    final loaded = await storage.load();
-    expect(loaded?.inviteCode, 'ZZ99YY');
-  });
+      expect(stored, isFalse);
+      final loaded = await storage.load();
+      expect(loaded?.inviteCode, 'ZZ99YY');
+    },
+  );
 
   test('manual entry parses raw code and respects precedence', () async {
     final stored = await coordinator.captureManualEntry('ab23cd');
@@ -197,5 +202,20 @@ void main() {
     expect(eventCount, 1);
 
     await sub.cancel();
+  });
+
+  test('unauthenticated state does not clear pending intent', () async {
+    await coordinator.capture(Uri.parse('kinly://join?code=abc234'));
+
+    final result = await coordinator.handleAuthState(
+      authStatus: AuthStatus.unauthenticated,
+      membershipStatus: AuthMembershipStatus.unknown,
+      userId: null,
+    );
+
+    expect(result.navigation, JoinIntentNavigation.none);
+    final loaded = await storage.load();
+    expect(loaded, isNotNull);
+    expect(loaded?.inviteCode, 'ABC234');
   });
 }

@@ -122,7 +122,6 @@ class JoinIntentCoordinator {
     required String? userId,
   }) async {
     if (authStatus != AuthStatus.authenticated) {
-      await _storage.clear();
       return const JoinIntentResult(navigation: JoinIntentNavigation.none);
     }
 

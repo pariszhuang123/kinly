@@ -5,6 +5,7 @@ import '../../../generated/l10n.dart';
 import '../ui/snackbars/kinly_snackbar.dart';
 import '../ui/buttons/kinly_fab.dart';
 import '../kinly_scaffold.dart';
+import '../kinly_app_bar.dart';
 
 /// A reusable Kinly-standard scaffold for any shareable screen.
 ///
@@ -80,7 +81,7 @@ class KinlyShareScaffold extends StatelessWidget {
         final s = S.of(ctx);
 
         return KinlyScaffold(
-          appBar: AppBar(
+          appBar: KinlyAppBar(
             title: appBarTitle != null ? Text(appBarTitle!) : null,
             centerTitle: centerTitle,
           ),

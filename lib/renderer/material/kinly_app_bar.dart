@@ -32,7 +32,7 @@ class KinlyAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: title,
       leading: leading,
       actions: actions,
-      centerTitle: centerTitle,
+      centerTitle: centerTitle ?? false,
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
       surfaceTintColor: surfaceTintColor,
