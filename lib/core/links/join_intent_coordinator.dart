@@ -4,6 +4,7 @@ import 'package:kinly/contracts/homes/enums/join_outcome.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/core/auth/enums/auth_status.dart';
 import 'package:kinly/core/logging/logger.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'invite_code_parser.dart';
 import 'pending_join_intent_storage.dart';
@@ -50,6 +51,11 @@ class JoinIntentCoordinator {
   Future<bool> capture(Uri uri) async {
     final parsed = _parser.parse(uri);
     if (parsed == null) {
+      _addBreadcrumb(
+        message: 'Invite link parse failed',
+        data: {'source': 'uri', 'stored': false},
+        level: SentryLevel.warning,
+      );
       await _storage.clear();
       return false;
     }
@@ -59,6 +65,10 @@ class JoinIntentCoordinator {
       receivedAt: DateTime.now().toUtc(),
     );
     final stored = await _storeIntent(intent);
+    _addBreadcrumb(
+      message: 'Invite link parsed',
+      data: {'source': 'uri', 'stored': stored},
+    );
     if (stored) {
       _intentCapturedController.add(null);
     }
@@ -68,29 +78,58 @@ class JoinIntentCoordinator {
   /// Parse install referrer (Android Play Store deferred deep link).
   /// Accepts `kinly_invite_code` or `kinly_invite` keys.
   Future<bool> captureInstallReferrer(String? referrer) async {
-    if (referrer == null || referrer.trim().isEmpty) return false;
+    if (referrer == null || referrer.trim().isEmpty) {
+      _addBreadcrumb(
+        message: 'Install referrer missing',
+        data: {'source': 'install_referrer', 'stored': false},
+      );
+      return false;
+    }
     Map<String, String> params;
     try {
       params = Uri.splitQueryString(referrer);
     } catch (_) {
+      _addBreadcrumb(
+        message: 'Install referrer parse failed',
+        data: {'source': 'install_referrer', 'stored': false},
+        level: SentryLevel.warning,
+      );
       return false;
     }
 
     final code = params['kinly_invite_code'] ?? params['kinly_invite'];
-    if (code == null || !_parser.isValid(code)) return false;
+    if (code == null || !_parser.isValid(code)) {
+      _addBreadcrumb(
+        message: 'Install referrer invalid invite',
+        data: {'source': 'install_referrer', 'stored': false},
+        level: SentryLevel.warning,
+      );
+      return false;
+    }
 
     final intent = PendingJoinIntent(
       inviteCode: code.trim().toUpperCase(),
       receivedAt: DateTime.now().toUtc(),
       source: 'android_install_referrer',
     );
-    return _storeIntent(intent);
+    final stored = await _storeIntent(intent);
+    _addBreadcrumb(
+      message: 'Install referrer stored',
+      data: {'source': 'install_referrer', 'stored': stored},
+    );
+    return stored;
   }
 
   /// Manual confirm path (iOS fallback). Accepts raw invite code or full URL.
   Future<bool> captureManualEntry(String input) async {
     final trimmed = input.trim();
-    if (trimmed.isEmpty) return false;
+    if (trimmed.isEmpty) {
+      _addBreadcrumb(
+        message: 'Manual invite missing',
+        data: {'source': 'manual_entry', 'stored': false},
+      );
+      return false;
+    }
 
     Uri? uri = Uri.tryParse(trimmed);
     if (uri == null || (uri.scheme.isEmpty && !trimmed.contains('/'))) {
@@ -102,13 +141,25 @@ class JoinIntentCoordinator {
     }
 
     final parsed = _parser.parse(uri);
-    if (parsed == null) return false;
+    if (parsed == null) {
+      _addBreadcrumb(
+        message: 'Manual invite parse failed',
+        data: {'source': 'manual_entry', 'stored': false},
+        level: SentryLevel.warning,
+      );
+      return false;
+    }
 
     final intent = parsed.copyWith(
       source: 'ios_manual_confirm',
       receivedAt: DateTime.now().toUtc(),
     );
-    return _storeIntent(intent);
+    final stored = await _storeIntent(intent);
+    _addBreadcrumb(
+      message: 'Manual invite stored',
+      data: {'source': 'manual_entry', 'stored': stored},
+    );
+    return stored;
   }
 
   Future<void> clear() => _storage.clear();
@@ -192,16 +243,44 @@ class JoinIntentCoordinator {
     final existing = await _storage.load();
     if (existing != null) {
       if (existing.inviteCode == normalized.inviteCode) {
+        _addBreadcrumb(
+          message: 'Invite intent deduped',
+          data: {'source': normalized.source ?? 'unknown', 'stored': true},
+        );
         return true;
       }
       if (_priorityForSource(existing.source) >
           _priorityForSource(normalized.source)) {
+        _addBreadcrumb(
+          message: 'Invite intent skipped by precedence',
+          data: {'source': normalized.source ?? 'unknown', 'stored': false},
+        );
         return false;
       }
     }
 
     await _storage.save(normalized);
+    _addBreadcrumb(
+      message: 'Invite intent stored',
+      data: {'source': normalized.source ?? 'unknown', 'stored': true},
+    );
     return true;
+  }
+
+  void _addBreadcrumb({
+    required String message,
+    Map<String, Object?>? data,
+    SentryLevel level = SentryLevel.info,
+  }) {
+    if (!Sentry.isEnabled) return;
+    Sentry.addBreadcrumb(
+      Breadcrumb(
+        category: 'join_intent',
+        message: message,
+        level: level,
+        data: data,
+      ),
+    );
   }
 
   int _priorityForSource(String? source) {

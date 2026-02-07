@@ -10,6 +10,11 @@ class AppRoutePaths {
   static const infoHub = '/settings/profile/info-hub';
   static const today = '/today';
   static const todayHousePulse = '/today/house-pulse';
+  static const todayShoppingList = '/today/shopping';
+  static const todayShoppingCreate = '/today/shopping/new';
+  static const todayShoppingEdit = '/today/shopping/:itemId/edit';
+  static const todayShoppingDetail = '/today/shopping/:itemId/detail';
+  static const todayShoppingPhoto = '/today/shopping/photo';
   static const hub = '/hub';
   static const hubPreferencesList = '/hub/preferences';
   static const hubHouseVibeShare = '/hub/house-vibe/share';

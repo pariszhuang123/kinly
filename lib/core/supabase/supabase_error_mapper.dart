@@ -7,12 +7,14 @@ import 'enums/expense_error_code.dart';
 import 'enums/home_error_codes.dart';
 import 'enums/mood_error_code.dart';
 import 'enums/nps_submit_error_code.dart';
+import 'enums/shopping_list_error_code.dart';
 
 export 'enums/chore_error_code.dart';
 export 'enums/expense_error_code.dart';
 export 'enums/home_error_codes.dart';
 export 'enums/mood_error_code.dart';
 export 'enums/nps_submit_error_code.dart';
+export 'enums/shopping_list_error_code.dart';
 
 class HomeJoinException implements Exception {
   final JoinErrorCode code;
@@ -270,6 +272,23 @@ class SupabaseErrorMapper {
     }
     return ExpenseException(ExpenseErrorCode.unknown, error.toString());
   }
+
+  /// Maps shopping list RPC errors into [ShoppingListException].
+  static ShoppingListException mapShoppingList(Object error) {
+    if (error is AuthException) {
+      return ShoppingListException(
+        ShoppingListErrorCode.unauthorized,
+        error.message,
+      );
+    }
+    if (error is PostgrestException) {
+      final parsed = _parseErrorJson(error.message);
+      final code =
+          _shoppingListCodeMap[parsed.code] ?? ShoppingListErrorCode.unknown;
+      return ShoppingListException(code, parsed.message, details: parsed.details);
+    }
+    return ShoppingListException(ShoppingListErrorCode.unknown, error.toString());
+  }
 }
 
 class _Parsed {
@@ -336,6 +355,19 @@ const _expenseCodeMap = <String, ExpenseErrorCode>{
   'PAYWALL_LIMIT_ACTIVE_EXPENSES': ExpenseErrorCode.paywallActiveExpensesCap,
   'FORBIDDEN': ExpenseErrorCode.forbidden,
   'UNAUTHORIZED': ExpenseErrorCode.unauthorized,
+};
+
+const _shoppingListCodeMap = <String, ShoppingListErrorCode>{
+  'INVALID_NAME': ShoppingListErrorCode.invalidName,
+  'INVALID_REFERENCE_PHOTO_PATH': ShoppingListErrorCode.invalidReferencePhotoPath,
+  'PHOTO_DELETE_NOT_ALLOWED': ShoppingListErrorCode.photoDeleteNotAllowed,
+  'NOT_HOME_MEMBER': ShoppingListErrorCode.notHomeMember,
+  'ITEM_NOT_FOUND': ShoppingListErrorCode.itemNotFound,
+  'INVALID_EXPENSE': ShoppingListErrorCode.invalidExpense,
+  'PAYWALL_LIMIT_SHOPPING_ITEM_PHOTOS':
+      ShoppingListErrorCode.paywallShoppingItemPhotosCap,
+  'FORBIDDEN': ShoppingListErrorCode.forbidden,
+  'UNAUTHORIZED': ShoppingListErrorCode.unauthorized,
 };
 
 const _joinCodeMap = <String, JoinErrorCode>{
@@ -405,6 +437,14 @@ const _moodSubmitMap = <String, MoodSubmitErrorCode>{
   'SELF_MENTION_NOT_ALLOWED': MoodSubmitErrorCode.selfMentionNotAllowed,
   'MENTION_NOT_HOME_MEMBER': MoodSubmitErrorCode.mentionNotHomeMember,
   'INVALID_MENTION_USER': MoodSubmitErrorCode.invalidMentionUser,
+  'COMMENT_REQUIRED_FOR_MENTION':
+      MoodSubmitErrorCode.commentRequiredForMention,
+  'SINGLE_MENTION_REQUIRED': MoodSubmitErrorCode.singleMentionRequired,
+  'COMMENT_REQUIRED_FOR_PUBLIC_WALL':
+      MoodSubmitErrorCode.commentRequiredForPublicWall,
+  'COMPLAINT_TOO_SHORT': MoodSubmitErrorCode.complaintTooShort,
+  'COMPLAINT_TOO_BRIEF': MoodSubmitErrorCode.complaintTooBrief,
+  'COMPLAINT_NEEDS_SENTENCE': MoodSubmitErrorCode.complaintNeedsSentence,
   'MOOD_ALREADY_SUBMITTED': MoodSubmitErrorCode.moodAlreadySubmitted,
   'FORBIDDEN': MoodSubmitErrorCode.forbidden,
   'UNAUTHORIZED': MoodSubmitErrorCode.unauthorized,
@@ -491,4 +531,15 @@ class ExpenseException implements Exception {
 
   @override
   String toString() => 'ExpenseException($code): $message';
+}
+
+class ShoppingListException implements Exception {
+  final ShoppingListErrorCode code;
+  final String message;
+  final Map<String, dynamic>? details;
+
+  const ShoppingListException(this.code, this.message, {this.details});
+
+  @override
+  String toString() => 'ShoppingListException($code): $message';
 }

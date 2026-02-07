@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import 'package:kinly/contracts/homes/shopping_models.dart';
+
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../generated/l10n.dart';
@@ -24,10 +26,12 @@ class ExploreSurfaceActions {
   const ExploreSurfaceActions({
     required this.onFlowTap,
     required this.onShareTap,
+    required this.onShoppingItemTap,
   });
 
   final VoidCallback onFlowTap;
   final VoidCallback onShareTap;
+  final Future<void> Function(ShoppingListItem item) onShoppingItemTap;
 }
 
 class ExploreSurfaceScope {

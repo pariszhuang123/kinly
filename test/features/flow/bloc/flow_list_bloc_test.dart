@@ -118,7 +118,7 @@ void main() {
       );
 
       blocTest<FlowListBloc, FlowListState>(
-        'filters out future chores',
+        'includes future chores from repository',
         build: () {
           final today = DateTime.now();
           final tomorrow = today.add(const Duration(days: 1));
@@ -142,10 +142,10 @@ void main() {
               ),
               isA<FlowListState>()
                   .having((s) => s.status, 'status', FlowListStatus.success)
-                  .having((s) => s.items.length, 'items.length', 2)
+                  .having((s) => s.items.length, 'items.length', 3)
                   .having(
-                    (s) => s.items.every((i) => i.id != '3'),
-                    'excludes future',
+                    (s) => s.items.any((i) => i.id == '3'),
+                    'includes future',
                     true,
                   ),
             ],

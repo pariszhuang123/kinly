@@ -169,7 +169,7 @@ void main() {
       );
 
       blocTest<HarmonyCubit, HarmonyState>(
-        'clears mentions when switching to non-shareable mood',
+        'trims mentions to one when switching to negative mood',
         build: buildCubit,
         seed:
             () => const HarmonyState(
@@ -186,7 +186,11 @@ void main() {
                     'selectedMood',
                     MoodScale.rainy,
                   )
-                  .having((s) => s.selectedMentions, 'selectedMentions', isEmpty)
+                  .having(
+                    (s) => s.selectedMentions.length,
+                    'selectedMentions.length',
+                    1,
+                  )
                   .having((s) => s.addToWall, 'addToWall', false),
             ],
       );
@@ -395,13 +399,7 @@ void main() {
         expect: () => [],
       );
 
-      blocTest<HarmonyCubit, HarmonyState>(
-        'does nothing when mood is not shareable',
-        build: buildCubit,
-        seed: () => const HarmonyState(selectedMood: MoodScale.cloudy),
-        act: (cubit) => cubit.toggleMention('user-1'),
-        expect: () => [],
-      );
+      // Negative moods allow one mention (rewrite flow).
     });
 
     group('setMentions', () {
@@ -435,13 +433,7 @@ void main() {
             ],
       );
 
-      blocTest<HarmonyCubit, HarmonyState>(
-        'does nothing when mood is not shareable',
-        build: buildCubit,
-        seed: () => const HarmonyState(selectedMood: MoodScale.thunderstorm),
-        act: (cubit) => cubit.setMentions({'u1', 'u2'}),
-        expect: () => [],
-      );
+      // Negative moods allow one mention (rewrite flow); limit enforced in cubit.
     });
 
     group('submit', () {

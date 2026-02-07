@@ -1,24 +1,27 @@
 // lib/features/today/presentation/pages/widgets/today_add_sheet.dart
 import 'package:flutter/widgets.dart';
 
-import '../../../../../core/theme/spacing.dart';
-import '../../../../../core/theme/kinly_sections.dart';
-import '../../../../../core/theme/section_assets.dart';
-import '../../../../../generated/l10n.dart';
-import '../../../../../core/ui/kinly_bottom_sheet.dart';
-import '../../../../../core/ui/kinly_list_tile.dart';
-import '../../../../core/ui/kinly_theme_access.dart';
+import 'package:kinly/core/theme/kinly_sections.dart';
+import 'package:kinly/core/theme/section_assets.dart';
+import 'package:kinly/core/theme/spacing.dart';
+import 'package:kinly/core/ui/kinly_bottom_sheet.dart';
+import 'package:kinly/core/ui/kinly_list_tile.dart';
+import 'package:kinly/core/ui/kinly_theme_access.dart';
+import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/renderer/material/kinly_icons.dart';
 
 class TodayAddSheet extends StatelessWidget {
   final KinlySections sections;
   final Future<void> Function() onAddFlow;
   final Future<void> Function() onAddShare;
+  final Future<void> Function() onAddShopping;
 
   const TodayAddSheet({
     super.key,
     required this.sections,
     required this.onAddFlow,
     required this.onAddShare,
+    required this.onAddShopping,
   });
 
   static Future<void> show(
@@ -26,6 +29,7 @@ class TodayAddSheet extends StatelessWidget {
     KinlySections sections, {
     required Future<void> Function() onAddFlow,
     required Future<void> Function() onAddShare,
+    required Future<void> Function() onAddShopping,
   }) {
     return KinlyBottomSheet.show(
       context: context,
@@ -36,6 +40,7 @@ class TodayAddSheet extends StatelessWidget {
         sections: sections,
         onAddFlow: onAddFlow,
         onAddShare: onAddShare,
+        onAddShopping: onAddShopping,
       ),
     );
   }
@@ -76,6 +81,19 @@ class TodayAddSheet extends StatelessWidget {
           onTap: () async {
             Navigator.of(context).pop();
             await onAddShare();
+          },
+        ),
+        SizedBox(height: spacing.md),
+        KinlyListTile(
+          leading: Icon(
+            KinlyIcons.shoppingBasketOutlined,
+            size: iconSize,
+            color: flowColors.icon,
+          ),
+          title: s.todayAddSheetShopping,
+          onTap: () async {
+            Navigator.of(context).pop();
+            await onAddShopping();
           },
         ),
       ],

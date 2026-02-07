@@ -1,9 +1,14 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:kinly/contracts/homes/shopping_models.dart';
 import '../../../core/theme/section_assets.dart';
+import '../../../core/ui/kinly_list_tile.dart';
 import '../../../core/ui/kinly_selection_card.dart';
+import '../today/shopping/bloc/shopping_list_bloc.dart';
 import 'explore_slots.dart';
 import '../../../core/ui/kinly_theme_access.dart';
+import '../../../renderer/material/kinly_icons.dart';
 
 typedef ExploreSectionBuilder = Widget Function(ExploreSurfaceScope scope);
 
@@ -105,5 +110,62 @@ class ExploreRegistry {
         },
       ),
     );
+
+    register(
+      ExploreSectionEntry(
+        id: 'shopping_items',
+        order: 40,
+        spacingAfter: ExploreSectionSpacing.lg,
+        builder: (scope) {
+          return BlocBuilder<ShoppingListBloc, ShoppingListState>(
+            builder: (context, state) {
+              final items = state.pendingItems;
+              if (state.isLoading) {
+                return const SizedBox.shrink();
+              }
+              if (items.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return _buildShoppingSection(scope, items);
+            },
+          );
+        },
+      ),
+    );
   }
+
+  static Widget _buildShoppingSection(
+    ExploreSurfaceScope scope,
+    List<ShoppingListItem> items,
+  ) {
+    final children = <Widget>[
+      Text(
+        scope.strings.exploreShoppingSectionTitle,
+        style: KinlyThemeAccess.of(scope.context).textTheme.titleMedium,
+      ),
+      SizedBox(height: scope.spacing.sm),
+    ];
+    for (final item in items) {
+      children.add(
+        Padding(
+          padding: EdgeInsetsDirectional.only(bottom: scope.spacing.sm),
+          child: KinlyListTile(
+            leading: const Icon(KinlyIcons.shoppingBasketOutlined),
+            title: item.name,
+            subtitle:
+                _hasText(item.quantity)
+                    ? item.quantity
+                    : scope.strings.exploreShoppingItemSubtitle,
+            onTap: () => scope.actions.onShoppingItemTap(item),
+          ),
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
+  }
+
+  static bool _hasText(String? value) => (value ?? '').trim().isNotEmpty;
 }

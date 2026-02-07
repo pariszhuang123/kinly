@@ -22,6 +22,7 @@ import '../../../core/ui/kinly_loader.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../contracts/homes/ports/home_repository.dart';
+import '../../../contracts/homes/ports/shopping_list_repository.dart';
 import 'package:kinly/core/ui/paywall/paywall_strings.dart';
 import 'package:kinly/core/ui/paywall/ports/paywall_launcher.dart';
 import '../../../core/ui/navigation/share_navigation.dart';
@@ -34,11 +35,13 @@ import 'package:kinly/contracts/flow/enums/flow_list_filter.dart';
 import 'bloc/today_bloc.dart';
 import 'domain/models.dart';
 import 'routes/today_house_pulse_route_args.dart';
+import 'routes/today_shopping_route_args.dart';
 import 'today_slots.dart';
 import 'today_registry.dart';
 import 'widgets/today_add_sheet.dart';
 import 'widgets/today_empty_state_card.dart';
 import 'widgets/today_header/today_header_container.dart';
+import 'widgets/today_shopping_list_card.dart';
 import '../../../contracts/share/share_edit_outcome.dart';
 import '../../../contracts/share/share_edit_route_args.dart';
 import 'package:kinly/core/ui/paywall/paywall_sources.dart';
@@ -52,6 +55,7 @@ part 'today_surface_flow_helpers.dart';
 part 'today_surface_share_helpers.dart';
 part 'today_surface_notifications_helpers.dart';
 part 'today_surface_pulse_helpers.dart';
+part 'today_surface_content_helpers.dart';
 
 const _shareLogTag = 'TodayShare';
 
@@ -69,6 +73,7 @@ class _TodayScreenState extends State<TodayScreen>
   late final ConfettiController _confettiController;
   TodayState? _lastNonLoadingState;
   bool _hasPendingTodayItems = false;
+  int _shoppingCount = 0;
 
   @override
   void initState() {
@@ -76,6 +81,7 @@ class _TodayScreenState extends State<TodayScreen>
     _confettiController = ConfettiController(
       duration: const Duration(seconds: 3),
     );
+    _refreshShoppingCount();
   }
 
   @override
@@ -222,6 +228,7 @@ class _TodayScreenState extends State<TodayScreen>
                 sections,
                 onAddFlow: () => _openFlowChore(context),
                 onAddShare: () => _openShareCreate(context),
+                onAddShopping: () => _openShoppingCreate(context),
               );
             },
             heroTag: 'today_fab',
@@ -262,6 +269,26 @@ class _TodayScreenState extends State<TodayScreen>
 
   Future<void> _openShareCreate(BuildContext context) =>
       openShareCreateExt(context);
+
+  Future<void> _openShoppingList(BuildContext context) {
+    final homeId = context.read<TodayBloc>().homeId;
+    final actor = context.read<TodayBloc>().state.profile;
+    return context
+        .pushNamed(
+      AppRouteNames.todayShoppingList,
+      extra: TodayShoppingRouteArgs(homeId: homeId, actor: actor),
+    ).then((_) => _refreshShoppingCount());
+  }
+
+  Future<void> _openShoppingCreate(BuildContext context) {
+    final homeId = context.read<TodayBloc>().homeId;
+    final actor = context.read<TodayBloc>().state.profile;
+    return context
+        .pushNamed(
+      AppRouteNames.todayShoppingCreate,
+      extra: TodayShoppingRouteArgs(homeId: homeId, actor: actor),
+    ).then((_) => _refreshShoppingCount());
+  }
 
   Future<void> _openShareOwedDetail(
     BuildContext context,
@@ -313,151 +340,12 @@ class _TodayScreenState extends State<TodayScreen>
     Spacing spacing,
     S s,
     Logger logger,
-  ) {
-    if (state.isLoading) {
-      return const Center(child: KinlyLoader());
-    }
+  ) => _buildTodayContentImpl(this, context, state, spacing, s, logger);
 
-    final hasFlow = state.hasFlowContent;
-    final hasShare = state.hasShareContent;
-    final hasGratitude = state.hasGratitudeUnread;
-    final hasHousePulse = state.hasHousePulseCard;
-    final hasInvitePrompt =
-        state.shouldPromptFlatmateInviteShare || state.shouldPromptInviteShare;
-    final hasMemberCapPrompt =
-        (state.memberCapJoinRequests?.pendingCount ?? 0) > 0 &&
-        state.profile?.isOwner == true;
-    final hasPreferencePrompt = state.shouldPromptPreferences;
-
-    if (!hasFlow &&
-        !hasShare &&
-        !hasGratitude &&
-        !hasHousePulse &&
-        !hasInvitePrompt &&
-        !hasMemberCapPrompt &&
-        !hasPreferencePrompt) {
-      return const TodayEmptyStateCard();
-    }
-
-    final inviteConfig = _inviteConfig(state);
-    final actions = TodaySurfaceActions(
-      onMemberCapPrimary: () {
-        final homeId = context.read<TodayBloc>().homeId;
-        return _openMemberCapPaywall(context, homeId: homeId);
-      },
-      onMemberCapSecondary:
-          () => context.read<TodayBloc>().add(const TodayMemberCapDismissed()),
-      onPreferencePrompt:
-          () => context.pushNamed(AppRouteNames.preferenceOnboarding),
-      onInvitePrimary: (config) async {
-        final shared = await _shareInvite(
-          context,
-          isFlatmate: config.isFlatmate,
-        );
-        if (!context.mounted || !shared) return;
-        context.read<TodayBloc>().add(config.logEvent);
-      },
-      onInviteSecondary:
-          () => context.read<TodayBloc>().add(
-            const TodayFlatmateInviteDismissed(),
-          ),
-      onFlowTaskTap: (task) => _handleFlowTaskTap(context, task),
-      onFlowSeeAllTap: (filter) => _openFlowList(context, filter),
-      onShareOwedTap: (owed) {
-        logger.info(
-          'Tapped owed entry: ${owed.displayName}',
-          tag: _shareLogTag,
-        );
-        _openShareOwedDetail(context, owed);
-      },
-      onSharePaidToMeTap: (entry) {
-        logger.info(
-          'Tapped paid-to-me entry: ${entry.debtorUsername}',
-          tag: _shareLogTag,
-        );
-        _openSharePaidToMeDetail(context, entry);
-      },
-      onShareDraftTap: (draft) {
-        logger.info(
-          'Tapped draft share: ${draft.expenseId}',
-          tag: _shareLogTag,
-        );
-        _openShareDraftEdit(context, draft);
-      },
-      onShareSeeAllDraftsTap: () {
-        logger.info('Tapped see all share drafts', tag: _shareLogTag);
-        _openShareCreatedList(context);
-      },
-      onGratitudeTap: () => _openGratitudeWall(context),
-      onPersonalGratitudeTap: () =>
-          _openGratitudeWall(context, openPersonal: true),
-      onHousePulseTap: () => _openHousePulseDetail(context),
-    );
-    final scope = TodaySurfaceScope(
-      context: context,
-      state: state,
-      spacing: spacing,
-      sections: KinlyThemeAccess.of(context).extension<KinlySections>()!,
-      strings: s,
-      actions: actions,
-      inviteConfig: inviteConfig,
-      formatMemberCapNames: _formatMemberCapNames,
-    );
-    final slots = TodaySurfaceSlots(body: _buildTodayBody(scope));
-    return slots.body;
+  void _setShoppingCount(int value) {
+    if (!mounted) return;
+    setState(() => _shoppingCount = value);
   }
 
-  Widget _buildTodayBody(TodaySurfaceScope scope) {
-    final spacing = scope.spacing;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: _buildTodaySections(scope, spacing),
-    );
-  }
-
-  List<Widget> _buildTodaySections(TodaySurfaceScope scope, Spacing spacing) {
-    final entries = TodayRegistry.bodySections;
-    final children = <Widget>[SizedBox(height: spacing.lg)];
-
-    for (final entry in entries) {
-      if (entry.isVisible != null && !entry.isVisible!(scope)) {
-        continue;
-      }
-      children.add(entry.builder(scope));
-      final gap = _resolveSectionSpacing(entry.spacingAfter, spacing);
-      if (gap > 0) {
-        children.add(SizedBox(height: gap));
-      }
-    }
-
-    return children;
-  }
-
-  double _resolveSectionSpacing(TodaySectionSpacing spacing, Spacing tokens) {
-    switch (spacing) {
-      case TodaySectionSpacing.none:
-        return 0;
-      case TodaySectionSpacing.sm:
-        return tokens.sm;
-      case TodaySectionSpacing.md:
-        return tokens.md;
-      case TodaySectionSpacing.lg:
-        return tokens.lg;
-      case TodaySectionSpacing.xl:
-        return tokens.xl;
-    }
-  }
-
-  TodayInviteConfig _inviteConfig(TodayState state) {
-    final isFlatmate = state.shouldPromptFlatmateInviteShare;
-    final shouldShowGeneric = !isFlatmate && state.shouldPromptInviteShare;
-    return TodayInviteConfig(
-      showPrompt: isFlatmate || shouldShowGeneric,
-      isFlatmate: isFlatmate,
-      logEvent:
-          isFlatmate
-              ? const TodayFlatmateInviteShareLogged(channel: 'system_share')
-              : const TodayInviteShareLogged(channel: 'system_share'),
-    );
-  }
+  Future<void> _refreshShoppingCount() => _refreshShoppingCountImpl(this);
 }

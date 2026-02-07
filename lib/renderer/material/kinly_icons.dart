@@ -8,6 +8,9 @@ class KinlyIcons {
   static const favoriteRounded = Icons.favorite_rounded;
   static const iosShareRounded = Icons.ios_share_rounded;
   static const menuBookOutlined = Icons.menu_book_outlined;
+  static const notesOutlined = Icons.notes_outlined;
+  static const shoppingBasketOutlined = Icons.shopping_basket_outlined;
+  static const exposurePlus1Outlined = Icons.exposure_plus_1_outlined;
   static const supportAgentOutlined = Icons.support_agent_outlined;
   static const notificationsActiveOutlined =
       Icons.notifications_active_outlined;

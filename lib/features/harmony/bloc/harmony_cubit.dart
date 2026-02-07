@@ -42,16 +42,17 @@ class HarmonyCubit extends Cubit<HarmonyState> {
     if (state.selectedMood == mood) return;
 
     final wasEligible =
-        _canShare(state.selectedMood) && _hasComment(state.comment);
-    final isEligible = _canShare(mood) && _hasComment(state.comment);
+        _isPositiveMood(state.selectedMood) && _hasComment(state.comment);
+    final isEligible = _isPositiveMood(mood) && _hasComment(state.comment);
     final shouldClearMentions =
-        !_canShare(mood) && state.selectedMentions.isNotEmpty;
+        !_canMention(mood) && state.selectedMentions.isNotEmpty;
 
     emit(
       state.copyWith(
         selectedMood: mood,
-        selectedMentions:
-            shouldClearMentions ? <String>{} : state.selectedMentions,
+        selectedMentions: shouldClearMentions
+            ? <String>{}
+            : _trimMentionsForMood(state.selectedMentions, mood),
         addToWall: _deriveAddToWall(
           mood: mood,
           comment: state.comment,
@@ -65,8 +66,9 @@ class HarmonyCubit extends Cubit<HarmonyState> {
 
   void commentChanged(String value) {
     final wasEligible =
-        _canShare(state.selectedMood) && _hasComment(state.comment);
-    final isEligible = _canShare(state.selectedMood) && _hasComment(value);
+        _isPositiveMood(state.selectedMood) && _hasComment(state.comment);
+    final isEligible =
+        _isPositiveMood(state.selectedMood) && _hasComment(value);
 
     emit(
       state.copyWith(
@@ -83,25 +85,25 @@ class HarmonyCubit extends Cubit<HarmonyState> {
   }
 
   void toggleAddToWall(bool value) {
-    if (!_canShare(state.selectedMood)) return;
+    if (!_isPositiveMood(state.selectedMood)) return;
     emit(state.copyWith(addToWall: value));
   }
 
   void toggleMention(String userId) {
-    if (!_canShare(state.selectedMood)) return;
+    if (!_canMention(state.selectedMood)) return;
     final selected = Set<String>.from(state.selectedMentions);
     if (selected.contains(userId)) {
       selected.remove(userId);
     } else {
-      if (selected.length >= 5) return;
+      if (selected.length >= _mentionLimit(state.selectedMood)) return;
       selected.add(userId);
     }
     emit(state.copyWith(selectedMentions: selected));
   }
 
   void setMentions(Set<String> userIds) {
-    if (!_canShare(state.selectedMood)) return;
-    final limited = userIds.take(5).toSet();
+    if (!_canMention(state.selectedMood)) return;
+    final limited = userIds.take(_mentionLimit(state.selectedMood)).toSet();
     emit(state.copyWith(selectedMentions: limited));
   }
 
@@ -115,11 +117,12 @@ class HarmonyCubit extends Cubit<HarmonyState> {
         mood: mood,
         comment: state.comment,
         addToWall:
-            state.addToWall && _canShare(mood) && _hasComment(state.comment),
-        mentions:
-            _canShare(mood)
-                ? state.selectedMentions.toList(growable: false)
-                : const [],
+            state.addToWall &&
+            _isPositiveMood(mood) &&
+            _hasComment(state.comment),
+        mentions: _canMention(mood)
+            ? state.selectedMentions.toList(growable: false)
+            : const [],
       );
       emit(
         state.copyWith(
@@ -133,11 +136,31 @@ class HarmonyCubit extends Cubit<HarmonyState> {
     }
   }
 
-  bool _canShare(MoodScale? mood) =>
+  bool _isPositiveMood(MoodScale? mood) =>
       mood == MoodScale.sunny || mood == MoodScale.partiallySunny;
+
+  bool _canMention(MoodScale? mood) =>
+      _isPositiveMood(mood) ||
+      mood == MoodScale.rainy ||
+      mood == MoodScale.thunderstorm;
+
+  int _mentionLimit(MoodScale? mood) =>
+      _isPositiveMood(mood)
+          ? 5
+          : (mood == MoodScale.rainy || mood == MoodScale.thunderstorm ? 1 : 0);
 
   bool _hasComment(String? comment) =>
       comment != null && comment.trim().isNotEmpty;
+
+  Set<String> _trimMentionsForMood(
+    Set<String> mentions,
+    MoodScale? mood,
+  ) {
+    final limit = _mentionLimit(mood);
+    if (limit == 0 || mentions.length <= limit) return mentions;
+    final ordered = mentions.toList(growable: false)..sort();
+    return ordered.take(limit).toSet();
+  }
 
   bool _deriveAddToWall({
     required MoodScale? mood,
@@ -146,7 +169,7 @@ class HarmonyCubit extends Cubit<HarmonyState> {
     required bool wasEligible,
     required bool isEligible,
   }) {
-    final canShare = _canShare(mood);
+    final canShare = _isPositiveMood(mood);
     final hasComment = _hasComment(comment);
     if (!canShare || !hasComment) return false;
     if (isEligible && !wasEligible) {
@@ -158,32 +181,28 @@ class HarmonyCubit extends Cubit<HarmonyState> {
   }
 
   String _mapError(Object error) {
-    if (error is MoodSubmitException) {
-      switch (error.code) {
-        case MoodSubmitErrorCode.moodAlreadySubmitted:
-          return 'moodAlreadySubmitted';
-        case MoodSubmitErrorCode.notPositiveMood:
-          return 'notPositiveMood';
-        case MoodSubmitErrorCode.mentionLimitExceeded:
-          return 'mentionLimitExceeded';
-        case MoodSubmitErrorCode.duplicateMentions:
-          return 'duplicateMentions';
-        case MoodSubmitErrorCode.selfMentionNotAllowed:
-          return 'selfMentionNotAllowed';
-        case MoodSubmitErrorCode.mentionNotHomeMember:
-          return 'mentionNotHomeMember';
-        case MoodSubmitErrorCode.invalidMentionUser:
-          return 'invalidMentionUser';
-        case MoodSubmitErrorCode.forbidden:
-        case MoodSubmitErrorCode.unauthorized:
-          return 'forbidden';
-        case MoodSubmitErrorCode.invalidHome:
-        case MoodSubmitErrorCode.invalidMood:
-          return 'unknown';
-        case MoodSubmitErrorCode.unknown:
-          return 'unknown';
-      }
-    }
-    return 'unknown';
+    if (error is! MoodSubmitException) return 'unknown';
+    return _moodSubmitErrorKeys[error.code] ?? 'unknown';
   }
 }
+
+const Map<MoodSubmitErrorCode, String> _moodSubmitErrorKeys = {
+  MoodSubmitErrorCode.moodAlreadySubmitted: 'moodAlreadySubmitted',
+  MoodSubmitErrorCode.notPositiveMood: 'notPositiveMood',
+  MoodSubmitErrorCode.mentionLimitExceeded: 'mentionLimitExceeded',
+  MoodSubmitErrorCode.duplicateMentions: 'duplicateMentions',
+  MoodSubmitErrorCode.selfMentionNotAllowed: 'selfMentionNotAllowed',
+  MoodSubmitErrorCode.mentionNotHomeMember: 'mentionNotHomeMember',
+  MoodSubmitErrorCode.invalidMentionUser: 'invalidMentionUser',
+  MoodSubmitErrorCode.commentRequiredForMention: 'commentRequiredForMention',
+  MoodSubmitErrorCode.singleMentionRequired: 'singleMentionRequired',
+  MoodSubmitErrorCode.commentRequiredForPublicWall: 'commentRequiredForPublicWall',
+  MoodSubmitErrorCode.complaintTooShort: 'complaintTooShort',
+  MoodSubmitErrorCode.complaintTooBrief: 'complaintTooBrief',
+  MoodSubmitErrorCode.complaintNeedsSentence: 'complaintNeedsSentence',
+  MoodSubmitErrorCode.forbidden: 'forbidden',
+  MoodSubmitErrorCode.unauthorized: 'forbidden',
+  MoodSubmitErrorCode.invalidHome: 'unknown',
+  MoodSubmitErrorCode.invalidMood: 'unknown',
+  MoodSubmitErrorCode.unknown: 'unknown',
+};

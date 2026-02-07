@@ -88,7 +88,10 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
         if (membership == null) {
           throw StateError('Explore requires an active membership.');
         }
-        return const ExploreRouteContext();
+        return ExploreRouteContext(
+          homeId: membership.homeId,
+          userId: membership.userId,
+        );
       },
     ),
     ...buildHubRoutes(

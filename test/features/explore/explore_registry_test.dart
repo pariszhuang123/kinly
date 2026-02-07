@@ -7,6 +7,6 @@ void main() {
     ExploreRegistry.bootstrap();
 
     final ids = ExploreRegistry.bodySections.map((e) => e.id).toList();
-    expect(ids, equals(['intro', 'flow_tile', 'share_tile']));
+    expect(ids, equals(['intro', 'flow_tile', 'share_tile', 'shopping_items']));
   });
 }

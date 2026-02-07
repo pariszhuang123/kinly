@@ -124,7 +124,7 @@ class _KinlyMentionTextFieldState extends State<KinlyMentionTextField> {
                   key: widget.inputKey,
                   controller: _controller,
                   focusNode: _focusNode,
-                  enabled: widget.enabled && canSelectMore,
+                  enabled: widget.enabled,
                   decoration: InputDecoration(
                     hintText: resolvedHint,
                     border: InputBorder.none,

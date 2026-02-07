@@ -9,6 +9,11 @@ class AppRouteNames {
   static const joinWithCode = 'joinWithCode';
   static const today = 'today';
   static const todayHousePulse = 'todayHousePulse';
+  static const todayShoppingList = 'todayShoppingList';
+  static const todayShoppingCreate = 'todayShoppingCreate';
+  static const todayShoppingEdit = 'todayShoppingEdit';
+  static const todayShoppingDetail = 'todayShoppingDetail';
+  static const todayShoppingPhoto = 'todayShoppingPhoto';
   static const hub = 'hub';
   static const hubPreferencesList = 'hubPreferencesList';
   static const hubHouseVibeShare = 'hubHouseVibeShare';

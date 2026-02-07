@@ -63,9 +63,7 @@ class FlowListBloc extends Bloc<FlowListEvent, FlowListState> {
               orElse: () => members.first,
             )).userId;
       }
-      final entries = _filterDueTodayOrEarlier(
-        await _choresRepository.listForHome(_homeId),
-      );
+      final entries = await _choresRepository.listForHome(_homeId);
       emit(
         state.copyWith(
           status: FlowListStatus.success,
@@ -85,21 +83,5 @@ class FlowListBloc extends Bloc<FlowListEvent, FlowListState> {
         ),
       );
     }
-  }
-
-  List<ChoreListEntry> _filterDueTodayOrEarlier(List<ChoreListEntry> entries) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    return entries
-        .where((entry) {
-          final entryDate = DateTime(
-            entry.startDate.year,
-            entry.startDate.month,
-            entry.startDate.day,
-          );
-          return !entryDate.isAfter(today);
-        })
-        .toList(growable: false);
   }
 }

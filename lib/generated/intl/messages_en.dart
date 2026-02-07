@@ -65,6 +65,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m18(paid, total) => "${paid} of ${total} paid";
 
+  static String m27(count) =>
+      "${Intl.plural(count, one: '${count} item to check', other: '${count} items to check')}";
+
+  static String m28(count) => "Completed (${count})";
+
   static String m19(name) => "Hi ${name}";
 
   static String m20(count) =>
@@ -138,6 +143,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
       "See every Bill you\'ve created and track collections.",
+    ),
+    "exploreShoppingItemSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Tap to edit or delete",
+    ),
+    "exploreShoppingSectionTitle": MessageLookupByLibrary.simpleMessage(
+      "Shopping items to manage",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
       "Who\'s handling this?",
@@ -344,8 +355,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
       "You\'ve already shared your mood for this week.",
     ),
+    "harmonyErrorCommentRequiredForMention":
+        MessageLookupByLibrary.simpleMessage(
+          "Add a comment to share a mention.",
+        ),
+    "harmonyErrorCommentRequiredForPublicWall":
+        MessageLookupByLibrary.simpleMessage(
+          "Add a comment to post on the gratitude wall.",
+        ),
+    "harmonyErrorComplaintNeedsSentence": MessageLookupByLibrary.simpleMessage(
+      "Add a full sentence (use a period or newline).",
+    ),
+    "harmonyErrorComplaintTooBrief": MessageLookupByLibrary.simpleMessage(
+      "Write at least a short sentence (6+ words).",
+    ),
+    "harmonyErrorComplaintTooShort": MessageLookupByLibrary.simpleMessage(
+      "Add more detail so your housemate can understand.",
+    ),
     "harmonyErrorForbidden": MessageLookupByLibrary.simpleMessage(
       "You are unable to submit feedback for this home.",
+    ),
+    "harmonyErrorSingleMentionRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose exactly one person for this note.",
     ),
     "harmonyErrorUnknown": MessageLookupByLibrary.simpleMessage(
       "Something went wrong. Please try again.",
@@ -1299,12 +1330,95 @@ class MessageLookup extends MessageLookupByLibrary {
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
       "Acknowledging...",
     ),
+    "shoppingAmountHint": MessageLookupByLibrary.simpleMessage(
+      "e.g. 2 cartons",
+    ),
+    "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage(
+      "Amount (optional)",
+    ),
+    "shoppingArchiveConfirmBody": MessageLookupByLibrary.simpleMessage(
+      "Ready to archive your completed shopping items.",
+    ),
+    "shoppingArchiveConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "You bought these items?",
+    ),
+    "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage(
+      "Archive completed items",
+    ),
+    "shoppingArchiveSharePromptBody": MessageLookupByLibrary.simpleMessage(
+      "Do you want to create a draft Share expense from these items?",
+    ),
+    "shoppingArchiveSharePromptTitle": MessageLookupByLibrary.simpleMessage(
+      "Trigger Share spend?",
+    ),
+    "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage(
+      "Yes, create draft",
+    ),
+    "shoppingArchiveSuccess": MessageLookupByLibrary.simpleMessage(
+      "Completed items archived.",
+    ),
+    "shoppingCardSubtitle": m27,
+    "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
+    "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
+      "Add notes for your home",
+    ),
+    "shoppingContextLabel": MessageLookupByLibrary.simpleMessage(
+      "Context (optional)",
+    ),
+    "shoppingCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "Add shopping item",
+    ),
+    "shoppingDelete": MessageLookupByLibrary.simpleMessage("Delete item"),
+    "shoppingDeleteConfirmBody": MessageLookupByLibrary.simpleMessage(
+      "This removes the item from your shared shopping list.",
+    ),
+    "shoppingDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete this item?",
+    ),
+    "shoppingDetailTitle": MessageLookupByLibrary.simpleMessage(
+      "Shopping item",
+    ),
+    "shoppingEditTitle": MessageLookupByLibrary.simpleMessage(
+      "Shopping item details",
+    ),
+    "shoppingEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "No shopping items yet.",
+    ),
+    "shoppingFieldEmpty": MessageLookupByLibrary.simpleMessage("None"),
+    "shoppingListTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
+    "shoppingMarkCompleteCta": MessageLookupByLibrary.simpleMessage(
+      "Mark as completed",
+    ),
+    "shoppingNameHint": MessageLookupByLibrary.simpleMessage("e.g. Milk"),
+    "shoppingNameLabel": MessageLookupByLibrary.simpleMessage("Name"),
+    "shoppingPhotoLabel": MessageLookupByLibrary.simpleMessage(
+      "Reference photo (optional)",
+    ),
+    "shoppingPhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
+      "Add a photo to help with shopping",
+    ),
+    "shoppingPhotoReplaceLabel": MessageLookupByLibrary.simpleMessage(
+      "Replace reference photo",
+    ),
+    "shoppingShareDraftTriggered": MessageLookupByLibrary.simpleMessage(
+      "Draft Share expense triggered.",
+    ),
+    "shoppingSubmitAdd": MessageLookupByLibrary.simpleMessage("Add item"),
+    "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage("Edit item"),
+    "shoppingTabCompleted": m28,
+    "shoppingTabPending": MessageLookupByLibrary.simpleMessage("To buy"),
+    "shoppingValidationName": MessageLookupByLibrary.simpleMessage(
+      "Please enter an item name.",
+    ),
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
       "What do you want to do next?",
     ),
     "startReturningTitle": m19,
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Flow"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Bill"),
+    "todayAddSheetShopping": MessageLookupByLibrary.simpleMessage(
+      "Add Shopping Item",
+    ),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Add to your home",
     ),
@@ -1434,8 +1548,39 @@ class MessageLookup extends MessageLookupByLibrary {
       "Your home feels warm and welcoming, with people often together.",
     ),
     "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage("Warm social"),
+    "weeklyRewriteConsent": MessageLookupByLibrary.simpleMessage(
+      "I understand this won’t be sent as written.",
+    ),
+    "weeklyRewriteCta": MessageLookupByLibrary.simpleMessage(
+      "Rewrite with Kinly",
+    ),
+    "weeklyRewriteErrorGeneric": MessageLookupByLibrary.simpleMessage(
+      "Something went wrong. Your message wasn’t shared.",
+    ),
+    "weeklyRewriteHeader": MessageLookupByLibrary.simpleMessage(
+      "Share with care",
+    ),
+    "weeklyRewriteHelperPrimary": MessageLookupByLibrary.simpleMessage(
+      "This won’t be shared as written.",
+    ),
+    "weeklyRewriteHelperSecondary": MessageLookupByLibrary.simpleMessage(
+      "Kinly rewrites this to help it land more calmly.",
+    ),
+    "weeklyRewriteMessageLabel": MessageLookupByLibrary.simpleMessage(
+      "What happened?",
+    ),
+    "weeklyRewriteNoRecipients": MessageLookupByLibrary.simpleMessage(
+      "No one is eligible to receive this right now.",
+    ),
+    "weeklyRewriteRecipientLabel": MessageLookupByLibrary.simpleMessage(
+      "Share with one person",
+    ),
+    "weeklyRewriteSubmit": MessageLookupByLibrary.simpleMessage("Send calmly"),
+    "weeklyRewriteSuccess": MessageLookupByLibrary.simpleMessage(
+      "Shared. We’ll show you the calmer version after it’s sent.",
+    ),
     "welcome_create": MessageLookupByLibrary.simpleMessage("Create a Home"),
-    "welcome_join": MessageLookupByLibrary.simpleMessage("Join a Home"),
+    "welcome_join": MessageLookupByLibrary.simpleMessage("Join your Home"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("Welcome to Kinly"),
   };
 }

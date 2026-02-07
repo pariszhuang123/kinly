@@ -91,6 +91,18 @@ class HarmonyScreen extends StatelessWidget {
         return s.harmonyErrorAlreadySubmitted;
       case 'forbidden':
         return s.harmonyErrorForbidden;
+      case 'commentRequiredForMention':
+        return s.harmonyErrorCommentRequiredForMention;
+      case 'singleMentionRequired':
+        return s.harmonyErrorSingleMentionRequired;
+      case 'commentRequiredForPublicWall':
+        return s.harmonyErrorCommentRequiredForPublicWall;
+      case 'complaintTooShort':
+        return s.harmonyErrorComplaintTooShort;
+      case 'complaintTooBrief':
+        return s.harmonyErrorComplaintTooBrief;
+      case 'complaintNeedsSentence':
+        return s.harmonyErrorComplaintNeedsSentence;
       default:
         return s.harmonyErrorUnknown;
     }
@@ -108,13 +120,21 @@ class HarmonySubmitButton extends StatelessWidget {
 
     return BlocBuilder<HarmonyCubit, HarmonyState>(
       builder: (context, state) {
-        final hasMood = state.selectedMood != null;
-        if (!hasMood) {
+        final mood = state.selectedMood;
+        if (mood == null) {
           return const SizedBox.shrink();
         }
 
+        final isNegative =
+            mood == MoodScale.rainy || mood == MoodScale.thunderstorm;
+        final negativeReady =
+            isNegative &&
+            state.comment.trim().isNotEmpty &&
+            state.selectedMentions.length == 1;
         final canSubmit =
-            !state.isSubmitting && state.submitSuccessTick == 0;
+            !state.isSubmitting &&
+            state.submitSuccessTick == 0 &&
+            (!isNegative || negativeReady);
 
         void handler() {
           context.read<HarmonyCubit>().submit();
@@ -124,7 +144,7 @@ class HarmonySubmitButton extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             KinlyFilledButton.text(
-              label: s.harmonySubmitCta,
+              label: isNegative ? s.weeklyRewriteCta : s.harmonySubmitCta,
               onPressed: canSubmit ? handler : null,
               fullWidth: true,
             ),
@@ -218,9 +238,14 @@ class _CommentBox extends StatelessWidget {
 
     return BlocBuilder<HarmonyCubit, HarmonyState>(
       builder: (context, state) {
+        final mood = state.selectedMood;
+        final isPositive =
+            mood == MoodScale.sunny || mood == MoodScale.partiallySunny;
+        final isNegative =
+            mood == MoodScale.rainy || mood == MoodScale.thunderstorm;
         final canMention =
-            state.selectedMood == MoodScale.sunny ||
-            state.selectedMood == MoodScale.partiallySunny;
+            (isPositive || isNegative) && state.members.isNotEmpty;
+        final mentionLimit = isPositive ? 5 : (isNegative ? 1 : 0);
         final options = state.members
             .map(
               (member) => KinlyMentionOption(
@@ -233,9 +258,9 @@ class _CommentBox extends StatelessWidget {
 
         return KinlyMentionTextField(
           mentionables: options,
-          mentionsEnabled: canMention && state.members.isNotEmpty,
+          mentionsEnabled: canMention,
           selectedIds: state.selectedMentions,
-          maxSelections: 5,
+          maxSelections: mentionLimit,
           label: s.harmonyCommentLabel,
           inputKey: const ValueKey('harmony_mentions_input'),
           hintText:

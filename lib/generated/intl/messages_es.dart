@@ -67,6 +67,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m18(paid, total) => "${paid} de ${total} pagadas";
 
+  static String m27(count) =>
+      "${Intl.plural(count, one: '${count} artículo por revisar', other: '${count} artículos por revisar')}";
+
+  static String m28(count) => "Completados (${count})";
+
   static String m19(name) => "Hola ${name}";
 
   static String m20(count) =>
@@ -143,6 +148,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
       "Mira cada cuenta que has creado y haz seguimiento de cobros.",
+    ),
+    "exploreShoppingItemSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Toca para editar o eliminar",
+    ),
+    "exploreShoppingSectionTitle": MessageLookupByLibrary.simpleMessage(
+      "Artículos de compra para gestionar",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
       "¿Quién se encarga?",
@@ -1356,12 +1367,103 @@ class MessageLookup extends MessageLookupByLibrary {
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
       "Confirmando…",
     ),
+    "shoppingAmountHint": MessageLookupByLibrary.simpleMessage(
+      "p. ej.: 2 cartones",
+    ),
+    "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage(
+      "Cantidad (opcional)",
+    ),
+    "shoppingArchiveConfirmBody": MessageLookupByLibrary.simpleMessage(
+      "¿Listo para archivar tus artículos completados?",
+    ),
+    "shoppingArchiveConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "¿Ya compraste estos artículos?",
+    ),
+    "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage(
+      "Archivar completados",
+    ),
+    "shoppingArchiveSharePromptBody": MessageLookupByLibrary.simpleMessage(
+      "¿Quieres crear un borrador de gasto de Share con estos artículos?",
+    ),
+    "shoppingArchiveSharePromptTitle": MessageLookupByLibrary.simpleMessage(
+      "¿Activar gasto de Share?",
+    ),
+    "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage(
+      "Sí, crear borrador",
+    ),
+    "shoppingArchiveSuccess": MessageLookupByLibrary.simpleMessage(
+      "Artículos completados archivados.",
+    ),
+    "shoppingCardSubtitle": m27,
+    "shoppingCardTitle": MessageLookupByLibrary.simpleMessage(
+      "Lista de compras",
+    ),
+    "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
+      "Añade notas para tu hogar",
+    ),
+    "shoppingContextLabel": MessageLookupByLibrary.simpleMessage(
+      "Contexto (opcional)",
+    ),
+    "shoppingCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "Añadir artículo",
+    ),
+    "shoppingDelete": MessageLookupByLibrary.simpleMessage("Eliminar artículo"),
+    "shoppingDeleteConfirmBody": MessageLookupByLibrary.simpleMessage(
+      "Esto elimina el artículo de la lista compartida.",
+    ),
+    "shoppingDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "¿Eliminar este artículo?",
+    ),
+    "shoppingDetailTitle": MessageLookupByLibrary.simpleMessage(
+      "Artículo de compra",
+    ),
+    "shoppingEditTitle": MessageLookupByLibrary.simpleMessage(
+      "Detalle del artículo",
+    ),
+    "shoppingEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "Aún no hay artículos.",
+    ),
+    "shoppingFieldEmpty": MessageLookupByLibrary.simpleMessage("Ninguno"),
+    "shoppingListTitle": MessageLookupByLibrary.simpleMessage(
+      "Lista de compras",
+    ),
+    "shoppingMarkCompleteCta": MessageLookupByLibrary.simpleMessage(
+      "Marcar como completado",
+    ),
+    "shoppingNameHint": MessageLookupByLibrary.simpleMessage("p. ej.: Leche"),
+    "shoppingNameLabel": MessageLookupByLibrary.simpleMessage("Nombre"),
+    "shoppingPhotoLabel": MessageLookupByLibrary.simpleMessage(
+      "Foto de referencia (opcional)",
+    ),
+    "shoppingPhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
+      "Añade una foto para ayudar con la compra",
+    ),
+    "shoppingPhotoReplaceLabel": MessageLookupByLibrary.simpleMessage(
+      "Reemplazar foto de referencia",
+    ),
+    "shoppingShareDraftTriggered": MessageLookupByLibrary.simpleMessage(
+      "Se activó el borrador de Share.",
+    ),
+    "shoppingSubmitAdd": MessageLookupByLibrary.simpleMessage(
+      "Añadir artículo",
+    ),
+    "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage(
+      "Editar artículo",
+    ),
+    "shoppingTabCompleted": m28,
+    "shoppingTabPending": MessageLookupByLibrary.simpleMessage("Por comprar"),
+    "shoppingValidationName": MessageLookupByLibrary.simpleMessage(
+      "Ingresa el nombre del artículo.",
+    ),
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
       "¿Qué quieres hacer ahora?",
     ),
     "startReturningTitle": m19,
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Añadir flujo"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Añadir cuenta"),
+    "todayAddSheetShopping": MessageLookupByLibrary.simpleMessage(
+      "Añadir compra",
+    ),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Añadir a tu hogar",
     ),
