@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
@@ -46,6 +47,8 @@ import 'renderer/material/kinly_app.dart';
 import 'core/links/join_intent_coordinator.dart';
 import 'core/links/enums/join_intent_navigator.dart';
 import 'app/join_intent_bootstrap.dart';
+
+part 'main_lifecycle_helpers.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -113,6 +116,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  final String _appSessionId = DateTime.now()
+      .toUtc()
+      .microsecondsSinceEpoch
+      .toString();
   late final AuthBloc _authBloc;
   late final AppVersionCubit _appVersionCubit;
   late final ConnectivityCubit _connectivityCubit;
@@ -137,6 +144,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _logger = _resolveLogger();
+    _logger.info('App session started. id=$_appSessionId', tag: _logTag);
+    _installGlobalErrorLogging();
     _timezoneResolver = sl<IanaTimezoneResolver>();
     _joinIntentCoordinator =
         sl.isRegistered<JoinIntentCoordinator>()
@@ -190,6 +199,28 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     const fallback = DebugLogger();
     sl.registerSingleton<Logger>(fallback);
     return fallback;
+  }
+
+  void _installGlobalErrorLogging() {
+    FlutterError.onError = (details) {
+      _logger.error(
+        'Flutter framework error: ${details.exceptionAsString()}',
+        tag: _logTag,
+        error: details.exception,
+        stackTrace: details.stack,
+      );
+      FlutterError.presentError(details);
+    };
+
+    PlatformDispatcher.instance.onError = (error, stackTrace) {
+      _logger.error(
+        'Unhandled platform error: $error',
+        tag: _logTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return true;
+    };
   }
 
   Future<void> _startVersionCheck() async {
@@ -252,6 +283,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    _logger.debug(
+      'Lifecycle state changed to $state (session=$_appSessionId)',
+      tag: _logTag,
+    );
     if (state == AppLifecycleState.resumed) {
       unawaited(_refreshNotificationPreferencesFromOs());
     }
@@ -276,54 +311,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> _handleAuthState(AuthState state) async {
-    final previousUserId = _lastAuthUserId;
-    final previousHomeId = _lastHomeId;
-    final currentUserId = state.userId;
-    final currentHomeId = state.membership?.homeId;
-    if (!state.isAuthenticated) {
-      if (previousUserId != null) {
-        await _joinIntentCoordinator?.clear();
-      }
-      await _clearFormDraftsOnLogout(
-        previousUserId: previousUserId,
-        previousHomeId: previousHomeId,
-      );
-      _lastAuthUserId = null;
-      _lastHomeId = null;
-      await syncRevenueCatUser(_logger, userId: null);
-      await _stopNotificationTokenSync();
-      return;
-    }
-
-    if (previousUserId != null &&
-        currentUserId != null &&
-        currentUserId != previousUserId) {
-      await FormDraftStorage.clearPersonalPreferencesDraft(previousUserId);
-    }
-    if (previousHomeId != null && previousHomeId != currentHomeId) {
-      await FormDraftStorage.clearHouseRulesDraft(previousHomeId);
-      _logger.info(
-        'form_draft_cleared_on_home_change form=house_rules '
-        'scope=${FormDraftStorage.hashScope(previousHomeId)} '
-        'schemaVersion=${FormDraftStorage.schemaVersionV1}',
-        tag: _draftLogTag,
-      );
-    }
-    _lastAuthUserId = currentUserId;
-    _lastHomeId = currentHomeId;
-
-    await syncRevenueCatUser(_logger, userId: state.userId);
-    await _refreshNotificationPreferencesFromOs();
-    await _startNotificationTokenSync();
-
-    if (_joinIntentCoordinator != null) {
-      final joinResult = await _joinIntentCoordinator!.handleAuthState(
-        authStatus: state.status,
-        membershipStatus: state.membershipStatus,
-        userId: state.userId,
-      );
-      await _applyJoinNavigation(joinResult);
-    }
+    await _handleAuthStateImpl(this, state);
   }
 
   Future<void> _initializeJoinIntentAndAuth() async {
@@ -344,23 +332,43 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> _applyJoinNavigation(JoinIntentResult result) async {
-    switch (result.navigation) {
+    await _applyJoinNavigationImpl(this, result);
+  }
+
+  bool _shouldApplyJoinNavigation({
+    required JoinIntentNavigation navigation,
+    required String currentPath,
+  }) {
+    if (navigation == JoinIntentNavigation.none) {
+      return true;
+    }
+    if (_isJoinBootstrapPath(currentPath)) {
+      return true;
+    }
+    switch (navigation) {
       case JoinIntentNavigation.none:
-        return;
+        return true;
       case JoinIntentNavigation.welcome:
-        _router.goNamed(AppRouteNames.welcome);
-        return;
+        return currentPath == AppRoutes.welcome;
       case JoinIntentNavigation.start:
-        _router.goNamed(AppRouteNames.start);
-        return;
+        return currentPath == AppRoutes.start;
       case JoinIntentNavigation.today:
-        _router.goNamed(AppRouteNames.today);
-        return;
+        return currentPath == AppRoutes.today;
       case JoinIntentNavigation.blocked:
-        _router.goNamed(AppRouteNames.joinBlocked);
-        return;
+        return currentPath == AppRoutes.joinBlocked || _isJoinPath(currentPath);
     }
   }
+
+  bool _isJoinBootstrapPath(String path) =>
+      path == AppRoutes.splash ||
+      path == AppRoutes.welcome ||
+      path == AppRoutes.start ||
+      path == AppRoutes.join ||
+      path == AppRoutes.joinBlocked ||
+      _isJoinPath(path);
+
+  bool _isJoinPath(String path) =>
+      path == AppRoutes.join || path.startsWith('${AppRoutes.join}/');
 
   Future<void> _startNotificationTokenSync() async {
     if (_tokenBootstrap != null) return;
@@ -429,81 +437,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> _refreshNotificationPreferencesFromOs() async {
-    if (!_authBloc.state.isAuthenticated) return;
-    if (!sl.isRegistered<NotificationsRepository>() ||
-        !sl.isRegistered<NotificationSyncState>()) {
-      _logger.debug(
-        'Skipping notification prefs refresh; dependencies not registered',
-        tag: _logTag,
-      );
-      return;
-    }
-
-    final notificationsRepo = sl<NotificationsRepository>();
-    final syncState = sl<NotificationSyncState>();
-
-    final osPermission = await _readOsPermission();
-    final locale =
-        WidgetsBinding.instance.platformDispatcher.locale.toLanguageTag();
-    final timezone = await _timezoneResolver.resolve();
-    final platformName = defaultTargetPlatform.name;
-    String? deviceToken;
-    try {
-      final canReadToken = await _canReadFcmToken(osPermission);
-      if (canReadToken) {
-        deviceToken = await FirebaseMessaging.instance.getToken();
-      } else {
-        _logger.debug(
-          'Skipping FCM token read; APNS token not yet available',
-          tag: _logTag,
-        );
-      }
-    } catch (error, stackTrace) {
-      if (_isApnsTokenMissing(error)) {
-        _logger.debug(
-          'Skipping FCM token read; APNS token not yet available ($error)',
-          tag: _logTag,
-        );
-      } else {
-        _logger.warn(
-          'Failed to read FCM token during prefs refresh: $error',
-          tag: _logTag,
-          error: error,
-          stackTrace: stackTrace,
-        );
-      }
-      deviceToken = null;
-    }
-
-    try {
-      final prefs = await notificationsRepo.fetchPreferences(
-        timezone: timezone,
-        locale: locale,
-        osPermission: osPermission,
-        deviceToken: deviceToken,
-        platform: platformName,
-      );
-
-      syncState.setPayload(
-        NotificationSyncPayload(
-          wantsDaily: prefs.wantsDaily,
-          preferredHour: prefs.preferredHour,
-          preferredMinute: prefs.preferredMinute,
-          timezone: timezone,
-          locale: locale,
-          osPermission:
-              prefs.osPermission.isNotEmpty ? prefs.osPermission : osPermission,
-          platform: platformName,
-        ),
-      );
-    } catch (error, stackTrace) {
-      _logger.warn(
-        'Failed to refresh notification preferences from OS: $error',
-        tag: _logTag,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
+    await _refreshNotificationPreferencesFromOsImpl(this);
   }
 
   Future<String> _readOsPermission() async {

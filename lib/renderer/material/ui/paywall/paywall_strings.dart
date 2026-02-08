@@ -4,6 +4,7 @@ class PaywallStrings {
   final String bulletMembers;
   final String bulletFlows;
   final String bulletPhotos;
+  final String bulletShoppingPhotos;
   final String bulletShares;
   final String unlimitedLabel;
   final String? priceCaption;
@@ -24,6 +25,7 @@ class PaywallStrings {
     required this.bulletMembers,
     required this.bulletFlows,
     required this.bulletPhotos,
+    required this.bulletShoppingPhotos,
     required this.bulletShares,
     required this.unlimitedLabel,
     this.priceCaption,

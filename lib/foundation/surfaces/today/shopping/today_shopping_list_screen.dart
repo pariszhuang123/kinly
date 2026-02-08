@@ -19,7 +19,6 @@ import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/renderer/material/kinly_icons.dart';
 
 import '../domain/models.dart';
-import '../routes/today_shopping_item_detail_route_args.dart';
 import 'bloc/shopping_list_bloc.dart';
 
 enum _ShoppingTab {
@@ -110,7 +109,7 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
               items: activeItems,
               onTapItem:
                   _selectedTab == _ShoppingTab.pending
-                      ? (item) => _openDetail(context, state, item)
+                      ? (item) => _openDetail(context, item)
                       : null,
             );
 
@@ -159,21 +158,12 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
 
   Future<void> _openDetail(
     BuildContext context,
-    ShoppingListState state,
     ShoppingListItem item,
   ) async {
-    final photoUrl = state.photoUrlsByItemId[item.id] ?? '';
     await context.pushNamed(
       AppRouteNames.todayShoppingDetail,
       pathParameters: {'itemId': item.id},
-      extra: TodayShoppingItemDetailRouteArgs(
-        item: item,
-        photoUrl: photoUrl,
-        onMarkComplete:
-            () async => context.read<ShoppingListBloc>().add(
-              ToggleShoppingItemEvent(itemId: item.id, isCompleted: true),
-            ),
-      ),
+      queryParameters: {'homeId': widget.homeId},
     );
     if (!context.mounted) return;
     context.read<ShoppingListBloc>().add(const LoadShoppingListEvent(keepCurrent: true));

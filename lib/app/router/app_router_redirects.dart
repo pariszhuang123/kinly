@@ -4,9 +4,10 @@ String? _redirect({
   required GoRouterState state,
   required AuthBloc authBloc,
   required AppVersionCubit appVersionCubit,
+  required Logger logger,
 }) {
   final authState = authBloc.state;
-  return _redirectCore(
+  final redirectTarget = _redirectCore(
     path: state.uri.path,
     uri: state.uri,
     authStatus: authState.status,
@@ -14,6 +15,16 @@ String? _redirect({
     isProfileDeactivated: authState.isProfileDeactivated,
     appVersionStatus: appVersionCubit.state.status,
   );
+  if (redirectTarget != null && redirectTarget != state.uri.path) {
+    logger.info(
+      'Router redirect: from=${state.uri} to=$redirectTarget '
+      'auth=${authState.status} membership=${authState.membershipStatus} '
+      'deactivated=${authState.isProfileDeactivated} '
+      'version=${appVersionCubit.state.status}',
+      tag: 'Router',
+    );
+  }
+  return redirectTarget;
 }
 
 @visibleForTesting

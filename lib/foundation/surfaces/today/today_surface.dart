@@ -276,6 +276,7 @@ class _TodayScreenState extends State<TodayScreen>
     return context
         .pushNamed(
       AppRouteNames.todayShoppingList,
+      queryParameters: {'homeId': homeId},
       extra: TodayShoppingRouteArgs(homeId: homeId, actor: actor),
     ).then((_) => _refreshShoppingCount());
   }
@@ -286,6 +287,7 @@ class _TodayScreenState extends State<TodayScreen>
     return context
         .pushNamed(
       AppRouteNames.todayShoppingCreate,
+      queryParameters: {'homeId': homeId},
       extra: TodayShoppingRouteArgs(homeId: homeId, actor: actor),
     ).then((_) => _refreshShoppingCount());
   }

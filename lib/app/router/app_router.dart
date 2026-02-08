@@ -87,17 +87,123 @@ GoRouter createRouter({
           state: state,
           authBloc: authBloc,
           appVersionCubit: appVersionCubit,
+          logger: logger,
         ),
     routes: _buildRoutes(authBloc),
     errorBuilder: (context, state) {
-      logger.warn(
-        'Routing failed for "${state.uri}", redirecting to Today',
-        error: state.error,
+      final error = state.error;
+      logger.error(
+        'Routing failed; attempting recovery. '
+        'uri=${state.uri} '
+        'name=${state.name} '
+        'pathParams=${state.pathParameters} '
+        'query=${state.uri.queryParameters} '
+        'extraType=${state.extra?.runtimeType} '
+        'scheme=${state.uri.scheme}',
+        error: error,
       );
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        GoRouter.of(context).goNamed(AppRouteNames.today);
-      });
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _recoverFromRoutingFailure(
+          context: context,
+          state: state,
+          logger: logger,
+        ),
+      );
       return const SizedBox.shrink();
     },
   );
+}
+
+void _recoverFromRoutingFailure({
+  required BuildContext context,
+  required GoRouterState state,
+  required Logger logger,
+}) {
+  final router = GoRouter.of(context);
+  final path = state.uri.path;
+  final query = state.uri.queryParameters;
+  if (path.startsWith(AppRoutePaths.todayShoppingList)) {
+    _redirectToShoppingList(router: router, query: query, uri: state.uri, logger: logger);
+    return;
+  }
+  if (path.startsWith(AppRoutePaths.flow)) {
+    _redirectToFlowList(router: router, query: query, uri: state.uri, logger: logger);
+    return;
+  }
+  if (router.canPop()) {
+    logger.warn(
+      'Routing failure recovered by popping route. uri=${state.uri}',
+      tag: 'Router',
+    );
+    router.pop();
+    return;
+  }
+  logger.warn(
+    'Routing failure has no back stack; redirecting to Today. '
+    'uri=${state.uri}',
+    tag: 'Router',
+  );
+  router.goNamed(AppRouteNames.today);
+}
+
+void _redirectToShoppingList({
+  required GoRouter router,
+  required Map<String, String> query,
+  required Uri uri,
+  required Logger logger,
+}) {
+  final homeId = query['homeId'];
+  logger.warn(
+    'Routing failure has no back stack; redirecting to Shopping list. '
+    'uri=$uri',
+    tag: 'Router',
+  );
+  if (homeId != null && homeId.isNotEmpty) {
+    router.goNamed(
+      AppRouteNames.todayShoppingList,
+      queryParameters: {'homeId': homeId},
+    );
+    return;
+  }
+  router.goNamed(AppRouteNames.todayShoppingList);
+}
+
+void _redirectToFlowList({
+  required GoRouter router,
+  required Map<String, String> query,
+  required Uri uri,
+  required Logger logger,
+}) {
+  final flowQuery = _buildFlowQuery(query);
+  logger.warn(
+    'Routing failure has no back stack; redirecting to Flow list. '
+    'uri=$uri',
+    tag: 'Router',
+  );
+  if (flowQuery.isEmpty) {
+    router.goNamed(AppRouteNames.flow);
+    return;
+  }
+  router.goNamed(AppRouteNames.flow, queryParameters: flowQuery);
+}
+
+Map<String, String> _buildFlowQuery(Map<String, String> query) {
+  final flowQuery = <String, String>{};
+  final homeId = query['homeId'];
+  final userId = query['userId'];
+  final filter = query['filter'];
+  final scope = query['scope'];
+  if (homeId != null && homeId.isNotEmpty) {
+    flowQuery['homeId'] = homeId;
+  }
+  if (userId != null && userId.isNotEmpty) {
+    flowQuery['userId'] = userId;
+  }
+  if (filter != null && filter.isNotEmpty) {
+    flowQuery['filter'] = filter;
+  }
+  if (scope != null && scope.isNotEmpty) {
+    flowQuery['scope'] = scope;
+  }
+  return flowQuery;
 }

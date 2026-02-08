@@ -38,6 +38,8 @@ abstract class ShoppingListRepository {
 
   Future<String?> captureAndUploadPhoto({required String homeId});
 
+  Future<String?> recoverPendingPhotoUpload({required String homeId});
+
   String? toPublicPhotoUrl(String? storagePath);
 
   bool isPhotoLimitError(Object error);

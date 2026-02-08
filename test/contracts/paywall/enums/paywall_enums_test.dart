@@ -59,8 +59,8 @@ void main() {
   });
 
   group('PaywallTrigger', () {
-    test('has 4 values', () {
-      expect(PaywallTrigger.values.length, 4);
+    test('has 5 values', () {
+      expect(PaywallTrigger.values.length, 5);
     });
 
     test('flowActiveCap is a value', () {
@@ -69,6 +69,10 @@ void main() {
 
     test('flowPhotosCap is a value', () {
       expect(PaywallTrigger.values, contains(PaywallTrigger.flowPhotosCap));
+    });
+
+    test('shoppingPhotosCap is a value', () {
+      expect(PaywallTrigger.values, contains(PaywallTrigger.shoppingPhotosCap));
     });
 
     test('expenseActiveCap is a value', () {

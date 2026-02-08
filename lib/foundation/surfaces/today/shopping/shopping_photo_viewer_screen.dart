@@ -10,10 +10,12 @@ class ShoppingPhotoViewerScreen extends StatelessWidget {
     super.key,
     required this.photoUrl,
     required this.title,
+    required this.heroTag,
   });
 
   final String photoUrl;
   final String title;
+  final Object heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +23,24 @@ class ShoppingPhotoViewerScreen extends StatelessWidget {
       appBar: KinlyAppBar(title: Text(title)),
       body: SafeArea(
         child: SizedBox.expand(
-          child: InteractiveViewer(
-            minScale: 1,
-            maxScale: 4,
-            clipBehavior: Clip.none,
-            child: Image.network(
-              photoUrl,
-              fit: BoxFit.contain,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return const Center(child: KinlyLoader(size: 32));
-              },
-              errorBuilder:
-                  (context, error, stackTrace) =>
-                      const Center(child: Icon(KinlyIcons.brokenImage, size: 48)),
+          child: Hero(
+            tag: heroTag,
+            child: InteractiveViewer(
+              minScale: 1,
+              maxScale: 4,
+              clipBehavior: Clip.none,
+              child: Image.network(
+                photoUrl,
+                fit: BoxFit.contain,
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return const Center(child: KinlyLoader(size: 32));
+                },
+                errorBuilder:
+                    (context, error, stackTrace) => const Center(
+                      child: Icon(KinlyIcons.brokenImage, size: 48),
+                    ),
+              ),
             ),
           ),
         ),

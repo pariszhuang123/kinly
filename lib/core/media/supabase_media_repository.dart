@@ -16,12 +16,14 @@ class SupabaseMediaRepository implements MediaRepository {
   Future<MediaUploadResult> uploadExpectationPhoto({
     required String homeId,
     String? choreId, // optional: reserved for future path scoping
+    String rootSegment = 'flow',
     String featureSegment = 'expectations',
     required Uint8List bytes,
   }) async {
     // Build a path that only depends on the home, timestamp, and randomness
     final objectPath = _buildObjectPath(
       homeId: homeId,
+      rootSegment: rootSegment,
       featureSegment: featureSegment,
     );
 
@@ -47,12 +49,14 @@ class SupabaseMediaRepository implements MediaRepository {
 
   String _buildObjectPath({
     required String homeId,
+    required String rootSegment,
     required String featureSegment,
   }) {
     final safeHomeId = homeId.replaceAll('/', '_');
+    final safeRoot = _sanitizeSegment(rootSegment);
     final safeFeature = _sanitizeFeature(featureSegment);
     final timestamp = DateTime.now().toUtc().millisecondsSinceEpoch;
-    return 'flow/$safeFeature/$safeHomeId/$timestamp-${_randomSuffix()}.jpg';
+    return '$safeRoot/$safeFeature/$safeHomeId/$timestamp-${_randomSuffix()}.jpg';
   }
 
   String _randomSuffix() {
@@ -61,6 +65,10 @@ class SupabaseMediaRepository implements MediaRepository {
   }
 
   String _sanitizeFeature(String value) {
+    return _sanitizeSegment(value);
+  }
+
+  String _sanitizeSegment(String value) {
     final sanitized = value.toLowerCase().replaceAll(
       RegExp(r'[^a-z0-9_-]'),
       '',

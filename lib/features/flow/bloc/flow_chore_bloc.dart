@@ -8,6 +8,8 @@ import '../../../core/media/supabase_media_repository.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_retry_action.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_gate_status.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
+import 'package:kinly/core/logging/debug_logger.dart';
+import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/ui/paywall/paywall_gate.dart';
 import 'package:kinly/core/ui/paywall/paywall_sources.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
@@ -25,6 +27,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     required ChoresRepository choresRepository,
     required HomeRepository homeRepository,
     ExpectationPhotoService? expectationPhotoService,
+    Logger? logger,
   }) : _homeId = homeId,
        _choreId = choreId,
        _choresRepository = choresRepository,
@@ -32,6 +35,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
        _expectationPhotoService =
            expectationPhotoService ??
            ExpectationPhotoService(mediaRepository: SupabaseMediaRepository()),
+       _logger = logger ?? const DebugLogger(),
        _uuid = const Uuid(),
        super(
          FlowChoreState.initial(
@@ -50,6 +54,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     on<FlowChoreHowToChanged>(_onHowToChanged);
     on<FlowChorePhotoChanged>(_onPhotoChanged);
     on<FlowChorePhotoCaptureRequested>(_onPhotoCaptureRequested);
+    on<FlowChorePhotoRecoveryRequested>(_onPhotoRecoveryRequested);
     on<FlowChoreSubmitted>(_onSubmitted);
     on<FlowChoreDeleted>(_onDeleted);
     on<FlowChorePaywallOpened>(_onPaywallOpened);
@@ -61,6 +66,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
   final ChoresRepository _choresRepository;
   final HomeRepository _homeRepository;
   final ExpectationPhotoService _expectationPhotoService;
+  final Logger _logger;
   final Uuid _uuid;
 
   Future<void> _onStarted(
@@ -213,6 +219,10 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     Emitter<FlowChoreState> emit,
   ) async {
     if (state.isUploadingPhoto) return;
+    _logger.info(
+      'Flow photo capture started. homeId=$_homeId choreId=$_choreId',
+      tag: 'FlowPhoto',
+    );
     emit(
       state.copyWith(
         isUploadingPhoto: true,
@@ -225,6 +235,13 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       final upload = await _expectationPhotoService.captureAndUpload(
         homeId: _homeId,
         choreId: _choreId,
+        rootSegment: 'flow',
+        featureSegment: 'expectations',
+      );
+      _logger.info(
+        'Flow photo capture succeeded. homeId=$_homeId choreId=$_choreId '
+        'storagePath=${upload.storagePath}',
+        tag: 'FlowPhoto',
       );
       emit(
         state.copyWith(
@@ -234,6 +251,12 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
         ),
       );
     } on CameraPermissionException catch (error) {
+      _logger.warn(
+        'Flow photo capture permission denied. homeId=$_homeId choreId=$_choreId '
+        'permanentlyDenied=${error.permanentlyDenied}',
+        tag: 'FlowPhoto',
+        error: error,
+      );
       emit(
         state.copyWith(
           isUploadingPhoto: false,
@@ -243,7 +266,57 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
         ),
       );
     } on CameraCaptureCancelled {
+      _logger.info(
+        'Flow photo capture cancelled. homeId=$_homeId choreId=$_choreId',
+        tag: 'FlowPhoto',
+      );
       emit(state.copyWith(isUploadingPhoto: false));
+    } catch (error) {
+      _logger.error(
+        'Flow photo capture failed. homeId=$_homeId choreId=$_choreId',
+        tag: 'FlowPhoto',
+        error: error,
+      );
+      emit(
+        state.copyWith(
+          isUploadingPhoto: false,
+          photoErrorMessage: error.toString(),
+          photoErrorTick: state.photoErrorTick + 1,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onPhotoRecoveryRequested(
+    FlowChorePhotoRecoveryRequested event,
+    Emitter<FlowChoreState> emit,
+  ) async {
+    if (state.isUploadingPhoto) return;
+    emit(
+      state.copyWith(
+        isUploadingPhoto: true,
+        clearPhotoError: true,
+        isCameraPermissionPermanentlyDenied: false,
+      ),
+    );
+    try {
+      final upload = await _expectationPhotoService.recoverLostAndUploadIfPending(
+        homeId: _homeId,
+        choreId: _choreId,
+        rootSegment: 'flow',
+        featureSegment: 'expectations',
+      );
+      if (upload == null) {
+        emit(state.copyWith(isUploadingPhoto: false));
+        return;
+      }
+      emit(
+        state.copyWith(
+          isUploadingPhoto: false,
+          form: state.form.copyWith(expectationPhotoPath: upload.storagePath),
+          clearPhotoError: true,
+        ),
+      );
     } catch (error) {
       emit(
         state.copyWith(

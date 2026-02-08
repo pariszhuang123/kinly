@@ -29,7 +29,9 @@ class FlowChoreProvider extends StatelessWidget {
             choreId: choreId,
             choresRepository: choresRepository,
             homeRepository: homeRepository,
-          )..add(const FlowChoreStarted()),
+          )
+            ..add(const FlowChoreStarted())
+            ..add(const FlowChorePhotoRecoveryRequested()),
       child: FlowChoreScreen(homeId: homeId),
     );
   }

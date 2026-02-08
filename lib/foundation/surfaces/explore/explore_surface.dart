@@ -73,7 +73,10 @@ class ExploreScreen extends StatelessWidget {
     S strings,
   ) {
     final actions = ExploreSurfaceActions(
-      onFlowTap: () => context.pushNamed(AppRouteNames.flow),
+      onFlowTap: () => context.pushNamed(
+        AppRouteNames.flow,
+        queryParameters: {'homeId': homeId},
+      ),
       onShareTap: () => context.pushNamed(AppRouteNames.shareCreatedList),
       onShoppingItemTap: (item) => _openShoppingItemEditor(context, item),
     );
@@ -95,6 +98,7 @@ class ExploreScreen extends StatelessWidget {
     await context.pushNamed(
       AppRouteNames.todayShoppingEdit,
       pathParameters: {'itemId': item.id},
+      queryParameters: {'homeId': homeId},
       extra: TodayShoppingRouteArgs(
         homeId: homeId,
         item: item,

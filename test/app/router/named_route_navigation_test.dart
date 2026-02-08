@@ -134,6 +134,7 @@ void main() {
                             bulletMembers: 'Members',
                             bulletFlows: 'Flows',
                             bulletPhotos: 'Photos',
+                            bulletShoppingPhotos: 'Shopping photos',
                             bulletShares: 'Shares',
                             unlimitedLabel: 'Unlimited',
                             priceCaption: 'Price',

@@ -119,6 +119,7 @@ Future<void> _openMemberCapPaywallImpl(
       bulletMembers: s.paywallBulletMembers,
       bulletFlows: s.paywallBulletFlows,
       bulletPhotos: s.paywallBulletPhotos,
+      bulletShoppingPhotos: s.paywallBulletShoppingPhotos,
       bulletShares: s.paywallBulletShares,
       unlimitedLabel: s.paywallSubtitle,
       priceCaption: s.paywallPriceCaption,

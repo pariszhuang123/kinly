@@ -580,7 +580,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Miembros ilimitados del hogar",
     ),
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
-      "Fotos ilimitadas de flujos",
+      "Fotos de flujos ilimitadas",
+    ),
+    "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
+      "Fotos de listas de compras ilimitadas",
     ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "Gastos compartidos ilimitados",

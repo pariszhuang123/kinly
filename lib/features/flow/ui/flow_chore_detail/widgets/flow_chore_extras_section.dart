@@ -8,7 +8,6 @@ import '../../../../../core/theme/kinly_palette.dart';
 import '../../../../../app/router/app_route_names.dart';
 import '../../../../../core/ui/kinly_tap_target.dart';
 import '../../../../../core/ui/kinly_icons.dart';
-import 'flow_chore_expectation_photo_viewer.dart';
 import '../../../../../core/ui/kinly_theme_access.dart';
 
 class FlowChoreExtrasSection extends StatelessWidget {
@@ -181,11 +180,11 @@ class _ExpectationPhotoSection extends StatelessWidget {
           onTap:
               () => context.pushNamed(
                 AppRouteNames.flowChorePhoto,
-                extra: FlowChorePhotoViewerArgs(
-                  photoUrl: photoUrl,
-                  heroTag: heroTag,
-                  title: title,
-                ),
+                queryParameters: {
+                  'photoUrl': photoUrl,
+                  'heroTag': heroTag,
+                  'title': title,
+                },
               ),
           borderRadius: BorderRadius.circular(12),
           child: Hero(

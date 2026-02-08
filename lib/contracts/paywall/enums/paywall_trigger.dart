@@ -3,6 +3,7 @@
 enum PaywallTrigger {
   flowActiveCap,
   flowPhotosCap,
+  shoppingPhotosCap,
   expenseActiveCap,
   membersCap,
 }

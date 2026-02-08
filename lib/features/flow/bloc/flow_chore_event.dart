@@ -87,6 +87,10 @@ class FlowChorePhotoCaptureRequested extends FlowChoreEvent {
   const FlowChorePhotoCaptureRequested();
 }
 
+class FlowChorePhotoRecoveryRequested extends FlowChoreEvent {
+  const FlowChorePhotoRecoveryRequested();
+}
+
 class FlowChoreSubmitted extends FlowChoreEvent {
   const FlowChoreSubmitted();
 }

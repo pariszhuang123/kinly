@@ -20,6 +20,7 @@ abstract class MediaRepository {
   Future<MediaUploadResult> uploadExpectationPhoto({
     required String homeId,
     String? choreId,
+    String rootSegment = 'flow',
     String featureSegment = 'expectations',
     required Uint8List bytes,
   });

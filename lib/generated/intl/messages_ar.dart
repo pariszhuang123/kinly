@@ -530,6 +530,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
       "صور تدفّق غير محدودة",
     ),
+    "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
+      "صور قائمة تسوّق غير محدودة",
+    ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "مصاريف مشتركة غير محدودة",
     ),

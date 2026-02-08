@@ -3,18 +3,22 @@ import 'package:kinly/contracts/homes/shopping_models.dart';
 import 'package:kinly/contracts/homes/shopping_photo_capture.dart';
 import 'package:kinly/core/media/expectation_photo_service.dart';
 import 'package:kinly/core/media/supabase_media_repository.dart';
+import 'package:kinly/core/logging/debug_logger.dart';
+import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/supabase/storage_path_resolver.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseShoppingListRepository implements ShoppingListRepository {
-  SupabaseShoppingListRepository({SupabaseClient? client})
+  SupabaseShoppingListRepository({SupabaseClient? client, Logger? logger})
     : _client = client ?? Supabase.instance.client,
+      _logger = logger ?? const DebugLogger(),
       _photoService = ExpectationPhotoService(
         mediaRepository: SupabaseMediaRepository(),
       );
 
   final SupabaseClient _client;
+  final Logger _logger;
   final ExpectationPhotoService _photoService;
 
   @override
@@ -176,18 +180,84 @@ class SupabaseShoppingListRepository implements ShoppingListRepository {
 
   @override
   Future<String?> captureAndUploadPhoto({required String homeId}) async {
+    _logger.info(
+      'Repository photo upload started. homeId=$homeId',
+      tag: 'ShoppingPhoto',
+    );
     try {
-      final upload = await _photoService.captureAndUpload(homeId: homeId);
+      final upload = await _photoService.captureAndUpload(
+        homeId: homeId,
+        rootSegment: 'shopping',
+        featureSegment: 'item',
+      );
+      _logger.info(
+        'Repository photo upload succeeded. homeId=$homeId '
+        'storagePath=${upload.storagePath}',
+        tag: 'ShoppingPhoto',
+      );
       return _withHouseholdsPrefix(upload.storagePath);
     } on CameraPermissionException catch (error) {
+      _logger.warn(
+        'Repository photo upload permission denied. homeId=$homeId '
+        'permanentlyDenied=${error.permanentlyDenied}',
+        tag: 'ShoppingPhoto',
+        error: error,
+      );
       throw ShoppingPhotoCaptureException(
         kind: ShoppingPhotoCaptureErrorKind.permission,
         message: 'permission',
         permanentlyDenied: error.permanentlyDenied,
       );
     } on CameraCaptureCancelled {
+      _logger.info(
+        'Repository photo upload cancelled by user. homeId=$homeId',
+        tag: 'ShoppingPhoto',
+      );
       return null;
     } catch (error) {
+      _logger.error(
+        'Repository photo upload failed. homeId=$homeId',
+        tag: 'ShoppingPhoto',
+        error: error,
+      );
+      throw ShoppingPhotoCaptureException(
+        kind: ShoppingPhotoCaptureErrorKind.upload,
+        message: error.toString(),
+      );
+    }
+  }
+
+  @override
+  Future<String?> recoverPendingPhotoUpload({required String homeId}) async {
+    _logger.info(
+      'Repository pending photo recovery started. homeId=$homeId',
+      tag: 'ShoppingPhoto',
+    );
+    try {
+      final upload = await _photoService.recoverLostAndUploadIfPending(
+        homeId: homeId,
+        rootSegment: 'shopping',
+        featureSegment: 'item',
+      );
+      if (upload == null) {
+        _logger.info(
+          'Repository pending photo recovery found nothing. homeId=$homeId',
+          tag: 'ShoppingPhoto',
+        );
+        return null;
+      }
+      _logger.info(
+        'Repository pending photo recovery succeeded. homeId=$homeId '
+        'storagePath=${upload.storagePath}',
+        tag: 'ShoppingPhoto',
+      );
+      return _withHouseholdsPrefix(upload.storagePath);
+    } catch (error) {
+      _logger.error(
+        'Repository pending photo recovery failed. homeId=$homeId',
+        tag: 'ShoppingPhoto',
+        error: error,
+      );
       throw ShoppingPhotoCaptureException(
         kind: ShoppingPhotoCaptureErrorKind.upload,
         message: error.toString(),

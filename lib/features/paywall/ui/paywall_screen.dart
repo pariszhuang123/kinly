@@ -154,11 +154,12 @@ class KinlyPaywallScreen extends StatelessWidget {
   }
 }
 
-enum _PaywallBenefitGroup { flow, flowPhotos, expenses, members }
+enum _PaywallBenefitGroup { flow, flowPhotos, shoppingPhotos, expenses, members }
 
 const _groupPriority = [
   _PaywallBenefitGroup.flow,
   _PaywallBenefitGroup.flowPhotos,
+  _PaywallBenefitGroup.shoppingPhotos,
   _PaywallBenefitGroup.expenses,
   _PaywallBenefitGroup.members,
 ];
@@ -179,6 +180,9 @@ List<_PaywallBenefitGroup> _resolvePrimaryGroups(Set<PaywallTrigger> triggers) {
         break;
       case PaywallTrigger.flowPhotosCap:
         groups.add(_PaywallBenefitGroup.flowPhotos);
+        break;
+      case PaywallTrigger.shoppingPhotosCap:
+        groups.add(_PaywallBenefitGroup.shoppingPhotos);
         break;
       case PaywallTrigger.expenseActiveCap:
         groups.add(_PaywallBenefitGroup.expenses);
@@ -212,6 +216,7 @@ List<String> orderPaywallBenefits({
   final benefits = <_Benefit>[
     _Benefit(_PaywallBenefitGroup.flow, strings.bulletFlows),
     _Benefit(_PaywallBenefitGroup.flowPhotos, strings.bulletPhotos),
+    _Benefit(_PaywallBenefitGroup.shoppingPhotos, strings.bulletShoppingPhotos),
     _Benefit(_PaywallBenefitGroup.expenses, strings.bulletShares),
     _Benefit(_PaywallBenefitGroup.members, strings.bulletMembers),
   ];

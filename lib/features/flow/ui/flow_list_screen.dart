@@ -24,11 +24,13 @@ import '../../../core/ui/kinly_theme_access.dart';
 class FlowListScreen extends StatelessWidget {
   const FlowListScreen({
     super.key,
+    this.homeId,
     this.filter = FlowListFilter.all,
     this.currentUserId,
     this.showOnlyCurrentUser = false,
   });
 
+  final String? homeId;
   final FlowListFilter filter;
   final String? currentUserId;
   final bool showOnlyCurrentUser;
@@ -82,7 +84,7 @@ class FlowListScreen extends StatelessWidget {
     ChoreListEntry? entry,
   ) async {
     if (entry == null) {
-      final result = await context.pushNamed(AppRouteNames.flowChoreCreate);
+      final result = await _pushFlowCreate(context);
       if (!context.mounted) return;
       if (result is FlowChoreOutcome) {
         _showOutcomeSnackbar(context, result);
@@ -92,10 +94,7 @@ class FlowListScreen extends StatelessWidget {
     }
 
     if (filter == FlowListFilter.active) {
-      final result = await context.pushNamed(
-        AppRouteNames.flowChoreDetail,
-        pathParameters: {'choreId': entry.id},
-      );
+      final result = await _pushFlowDetail(context, choreId: entry.id);
       if (!context.mounted) return;
       if (result is FlowChoreOutcome) {
         _showOutcomeSnackbar(context, result);
@@ -104,10 +103,7 @@ class FlowListScreen extends StatelessWidget {
       return;
     }
 
-    final result = await context.pushNamed(
-      AppRouteNames.flowChoreEdit,
-      pathParameters: {'choreId': entry.id},
-    );
+    final result = await _pushFlowEdit(context, choreId: entry.id);
     if (!context.mounted) return;
     if (result is FlowChoreOutcome) {
       _showOutcomeSnackbar(context, result);
@@ -222,6 +218,63 @@ class FlowListScreen extends StatelessWidget {
       case FlowListFilter.all:
         return items;
     }
+  }
+
+  Map<String, dynamic> _flowQueryParamsOrEmpty() {
+    final value = homeId?.trim();
+    if (value == null || value.isEmpty) {
+      return const <String, dynamic>{};
+    }
+    return <String, dynamic>{'homeId': value};
+  }
+
+  Future<Object?> _pushFlowCreate(BuildContext context) {
+    final query = _flowQueryParamsOrEmpty();
+    if (query.isEmpty) {
+      return context.pushNamed(AppRouteNames.flowChoreCreate);
+    }
+    return context.pushNamed(
+      AppRouteNames.flowChoreCreate,
+      queryParameters: query,
+    );
+  }
+
+  Future<Object?> _pushFlowDetail(
+    BuildContext context, {
+    required String choreId,
+  }) {
+    final query = _flowQueryParamsOrEmpty();
+    final pathParameters = <String, String>{'choreId': choreId};
+    if (query.isEmpty) {
+      return context.pushNamed(
+        AppRouteNames.flowChoreDetail,
+        pathParameters: pathParameters,
+      );
+    }
+    return context.pushNamed(
+      AppRouteNames.flowChoreDetail,
+      pathParameters: pathParameters,
+      queryParameters: query,
+    );
+  }
+
+  Future<Object?> _pushFlowEdit(
+    BuildContext context, {
+    required String choreId,
+  }) {
+    final query = _flowQueryParamsOrEmpty();
+    final pathParameters = <String, String>{'choreId': choreId};
+    if (query.isEmpty) {
+      return context.pushNamed(
+        AppRouteNames.flowChoreEdit,
+        pathParameters: pathParameters,
+      );
+    }
+    return context.pushNamed(
+      AppRouteNames.flowChoreEdit,
+      pathParameters: pathParameters,
+      queryParameters: query,
+    );
   }
 }
 

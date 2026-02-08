@@ -8,6 +8,8 @@ import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'package:kinly/core/auth/enums/auth_status.dart';
+import 'package:kinly/core/logging/debug_logger.dart';
+import 'package:kinly/core/logging/logger.dart';
 import '../auth.dart';
 
 export 'package:kinly/core/auth/enums/auth_status.dart';
@@ -22,9 +24,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required AuthRepository authRepository,
     required HomeRepository homeRepository,
     ProfileRepository? profileRepository,
+    Logger? logger,
   }) : _authRepository = authRepository,
        _homeRepository = homeRepository,
        _profileRepository = profileRepository,
+       _logger = logger ?? const DebugLogger(),
        super(const AuthState()) {
     on<_AuthSessionChanged>(_onSessionChanged);
     on<AuthSignInWithGoogleRequested>(_onGoogleSignInRequested);
@@ -44,6 +48,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
   final HomeRepository _homeRepository;
   final ProfileRepository? _profileRepository;
+  final Logger _logger;
   late final StreamSubscription<AuthSession?> _sessionSub;
   static const _retryDelay = Duration(milliseconds: 800);
   static const _maxAttempts = 2;
@@ -55,6 +60,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     final session = event.session;
+    _logger.info(
+      'Auth session changed. hasSession=${session != null} '
+      'incomingUserId=${session?.userId} currentUserId=${state.userId} '
+      'membershipStatus=${state.membershipStatus}',
+      tag: 'Auth',
+    );
     if (session == null) {
       emit(
         state.copyWith(
@@ -67,6 +78,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           isProfileDeactivated: false,
         ),
       );
+      return;
+    }
+
+    final isSameAuthenticatedUser =
+        state.status == AuthStatus.authenticated && state.userId == session.userId;
+    if (isSameAuthenticatedUser) {
+      emit(
+        state.copyWith(
+          status: AuthStatus.authenticated,
+          userId: session.userId,
+          isLoading: false,
+          errorMessage: null,
+          isProfileDeactivated: false,
+        ),
+      );
+      final deactivated = await _checkProfileActive();
+      if (deactivated) return;
+      await _refreshMembership(emit, setUnknownWhileLoading: false);
       return;
     }
 
@@ -83,7 +112,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
     final deactivated = await _checkProfileActive();
     if (deactivated) return;
-    await _refreshMembership(emit);
+    await _refreshMembership(emit, setUnknownWhileLoading: true);
   }
 
   Future<void> _onGoogleSignInRequested(
@@ -151,17 +180,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     if (!state.isAuthenticated) return;
-    await _refreshMembership(emit);
+    await _refreshMembership(emit, setUnknownWhileLoading: true);
   }
 
-  Future<void> _refreshMembership(Emitter<AuthState> emit) async {
+  Future<void> _refreshMembership(
+    Emitter<AuthState> emit, {
+    required bool setUnknownWhileLoading,
+  }) async {
     final previousMembership = state.membership;
+    final currentStatus = state.membershipStatus;
     final fallbackStatus =
-        state.membershipStatus == AuthMembershipStatus.active ||
-                previousMembership != null
-            ? AuthMembershipStatus.active
-            : AuthMembershipStatus.unknown;
-    emit(state.copyWith(membershipStatus: AuthMembershipStatus.unknown));
+        setUnknownWhileLoading
+            ? AuthMembershipStatus.unknown
+            : currentStatus == AuthMembershipStatus.active ||
+                    previousMembership != null
+                ? AuthMembershipStatus.active
+                : currentStatus;
+    if (setUnknownWhileLoading) {
+      emit(state.copyWith(membershipStatus: AuthMembershipStatus.unknown));
+    }
     try {
       var membership = await _fetchMembershipWithRetry();
       if (membership == null &&
@@ -180,6 +217,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           isProfileDeactivated: false,
         ),
       );
+      _logger.info(
+        'Membership refresh complete. status=${membership == null ? AuthMembershipStatus.none : AuthMembershipStatus.active} '
+        'homeId=${membership?.homeId}',
+        tag: 'Auth',
+      );
     } catch (error) {
       emit(
         state.copyWith(
@@ -187,6 +229,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           membership: previousMembership,
           errorMessage: membershipLoadFailedKey,
         ),
+      );
+      _logger.warn(
+        'Membership refresh failed; preserving fallback state. '
+        'fallbackStatus=$fallbackStatus hasPreviousMembership=${previousMembership != null}',
+        tag: 'Auth',
+        error: error,
       );
     }
   }

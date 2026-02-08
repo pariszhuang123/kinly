@@ -15,11 +15,10 @@ import 'package:kinly/contracts/preferences/ports/preference_reports_repository.
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/notifications/profile_update_notifier.dart';
 import 'package:kinly/foundation/surfaces/today/routes/today_house_pulse_route_args.dart';
-import 'package:kinly/foundation/surfaces/today/routes/today_shopping_item_detail_route_args.dart';
 import 'package:kinly/foundation/surfaces/today/routes/today_shopping_photo_route_args.dart';
 import 'package:kinly/foundation/surfaces/today/routes/today_shopping_route_args.dart';
 import 'package:kinly/foundation/surfaces/today/shopping/shopping_photo_viewer_screen.dart';
-import 'package:kinly/foundation/surfaces/today/shopping/today_shopping_item_detail_screen.dart';
+import 'package:kinly/foundation/surfaces/today/shopping/today_shopping_item_detail_provider.dart';
 import 'package:kinly/foundation/surfaces/today/shopping/today_shopping_item_provider.dart';
 import 'package:kinly/foundation/surfaces/today/shopping/today_shopping_list_provider.dart';
 import 'package:kinly/foundation/surfaces/today/today_provider.dart';
@@ -62,7 +61,11 @@ List<GoRoute> buildTodayRoutes({
       builder: (_, state) {
         final args = state.extra as TodayHousePulseRouteArgs?;
         if (args == null) {
-          return routeFallback('todayHousePulse');
+          return routeFallback(
+            'todayHousePulse',
+            state: state,
+            reason: 'TodayHousePulseRouteArgs missing in state.extra',
+          );
         }
         return BlocProvider.value(
           value: args.todayBloc,
@@ -74,10 +77,13 @@ List<GoRoute> buildTodayRoutes({
       path: AppRoutePaths.todayShoppingList,
       name: AppRouteNames.todayShoppingList,
       builder: (_, state) {
-        final membership = resolveContext();
         final args = state.extra as TodayShoppingRouteArgs?;
+        final homeId =
+            args?.homeId ??
+            state.uri.queryParameters['homeId'] ??
+            resolveContext().homeId;
         return TodayShoppingListProvider(
-          homeId: args?.homeId ?? membership.homeId,
+          homeId: homeId,
           shoppingListRepository: sl<ShoppingListRepository>(),
           expensesRepository: sl<ExpensesRepository>(),
           actor: args?.actor,
@@ -88,10 +94,13 @@ List<GoRoute> buildTodayRoutes({
       path: AppRoutePaths.todayShoppingCreate,
       name: AppRouteNames.todayShoppingCreate,
       builder: (_, state) {
-        final membership = resolveContext();
         final args = state.extra as TodayShoppingRouteArgs?;
+        final homeId =
+            args?.homeId ??
+            state.uri.queryParameters['homeId'] ??
+            resolveContext().homeId;
         return TodayShoppingItemProvider(
-          homeId: args?.homeId ?? membership.homeId,
+          homeId: homeId,
           shoppingListRepository: sl<ShoppingListRepository>(),
           item: args?.item,
         );
@@ -101,14 +110,23 @@ List<GoRoute> buildTodayRoutes({
       path: AppRoutePaths.todayShoppingEdit,
       name: AppRouteNames.todayShoppingEdit,
       builder: (_, state) {
-        final membership = resolveContext();
         final args = state.extra as TodayShoppingRouteArgs?;
-        if (args?.item == null) {
-          return routeFallback('todayShoppingEdit');
+        final homeId =
+            args?.homeId ??
+            state.uri.queryParameters['homeId'] ??
+            resolveContext().homeId;
+        final itemId = state.pathParameters['itemId'];
+        if (itemId == null || itemId.isEmpty) {
+          return routeFallback(
+            'todayShoppingEdit',
+            state: state,
+            reason: 'itemId path parameter missing',
+          );
         }
         return TodayShoppingItemProvider(
-          homeId: args?.homeId ?? membership.homeId,
+          homeId: homeId,
           shoppingListRepository: sl<ShoppingListRepository>(),
+          editItemId: itemId,
           item: args?.item,
         );
       },
@@ -117,14 +135,20 @@ List<GoRoute> buildTodayRoutes({
       path: AppRoutePaths.todayShoppingDetail,
       name: AppRouteNames.todayShoppingDetail,
       builder: (_, state) {
-        final args = state.extra as TodayShoppingItemDetailRouteArgs?;
-        if (args == null) {
-          return routeFallback('todayShoppingDetail');
+        final homeId =
+            state.uri.queryParameters['homeId'] ?? resolveContext().homeId;
+        final itemId = state.pathParameters['itemId'];
+        if (itemId == null || itemId.isEmpty) {
+          return routeFallback(
+            'todayShoppingDetail',
+            state: state,
+            reason: 'itemId path parameter missing',
+          );
         }
-        return TodayShoppingItemDetailScreen(
-          item: args.item,
-          photoUrl: args.photoUrl,
-          onMarkComplete: args.onMarkComplete,
+        return TodayShoppingItemDetailProvider(
+          homeId: homeId,
+          itemId: itemId,
+          shoppingListRepository: sl<ShoppingListRepository>(),
         );
       },
     ),
@@ -133,12 +157,24 @@ List<GoRoute> buildTodayRoutes({
       name: AppRouteNames.todayShoppingPhoto,
       builder: (_, state) {
         final args = state.extra as TodayShoppingPhotoRouteArgs?;
-        if (args == null) {
-          return routeFallback('todayShoppingPhoto');
+        final photoUrl = args?.photoUrl ?? state.uri.queryParameters['photoUrl'];
+        if (photoUrl == null || photoUrl.isEmpty) {
+          return routeFallback(
+            'todayShoppingPhoto',
+            state: state,
+            reason: 'photoUrl missing from extra and query',
+          );
         }
         return ShoppingPhotoViewerScreen(
-          photoUrl: args.photoUrl,
-          title: args.title,
+          photoUrl: photoUrl,
+          title:
+              args?.title ??
+              state.uri.queryParameters['title'] ??
+              'Photo',
+          heroTag:
+              args?.heroTag ??
+              state.uri.queryParameters['heroTag'] ??
+              'shopping-photo-${photoUrl.hashCode}',
         );
       },
     ),

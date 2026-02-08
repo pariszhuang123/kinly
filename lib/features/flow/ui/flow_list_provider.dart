@@ -35,6 +35,7 @@ class FlowListProvider extends StatelessWidget {
             homeRepository: homeRepository,
           )..add(const FlowListRequested()),
       child: FlowListScreen(
+        homeId: homeId,
         filter: filter,
         currentUserId: currentUserId,
         showOnlyCurrentUser: showOnlyCurrentUser,

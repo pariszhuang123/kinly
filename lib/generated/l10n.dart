@@ -289,6 +289,16 @@ class S {
     );
   }
 
+  /// `Unlimited shopping list photos`
+  String get paywallBulletShoppingPhotos {
+    return Intl.message(
+      'Unlimited shopping list photos',
+      name: 'paywallBulletShoppingPhotos',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Unlimited shared expenses`
   String get paywallBulletShares {
     return Intl.message(

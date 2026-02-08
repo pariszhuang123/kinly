@@ -10,7 +10,6 @@ import 'package:kinly/core/ui/kinly_scaffold.dart';
 import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/generated/l10n.dart';
-import '../routes/today_shopping_photo_route_args.dart';
 
 class TodayShoppingItemDetailScreen extends StatelessWidget {
   const TodayShoppingItemDetailScreen({
@@ -31,6 +30,7 @@ class TodayShoppingItemDetailScreen extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final resolvedPhotoUrl = photoUrl;
     final hasPhoto = resolvedPhotoUrl.isNotEmpty;
+    final heroTag = 'shopping-photo-${resolvedPhotoUrl.hashCode}';
 
     return KinlyScaffold(
       appBar: KinlyAppBar(title: Text(s.shoppingDetailTitle)),
@@ -62,15 +62,22 @@ class TodayShoppingItemDetailScreen extends StatelessWidget {
                   onTap: () {
                     context.pushNamed(
                       AppRouteNames.todayShoppingPhoto,
-                      extra: TodayShoppingPhotoRouteArgs(
-                        photoUrl: resolvedPhotoUrl,
-                        title: s.shoppingDetailTitle,
-                      ),
+                      queryParameters: {
+                        'photoUrl': resolvedPhotoUrl,
+                        'title': s.shoppingDetailTitle,
+                        'heroTag': heroTag,
+                      },
                     );
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.network(resolvedPhotoUrl, height: 180, fit: BoxFit.cover),
+                    child: Hero(
+                      tag: heroTag,
+                      child: AspectRatio(
+                        aspectRatio: 4 / 3,
+                        child: Image.network(resolvedPhotoUrl, fit: BoxFit.cover),
+                      ),
+                    ),
                   ),
                 ),
               const Spacer(),

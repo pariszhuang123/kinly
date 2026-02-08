@@ -23,23 +23,32 @@ typedef FlowRouteContextResolver = FlowRouteContext Function();
 List<GoRoute> buildFlowRoutes({
   required FlowRouteContextResolver resolveContext,
 }) {
+  String resolveHomeId(GoRouterState state) {
+    return state.uri.queryParameters['homeId'] ?? resolveContext().homeId;
+  }
+
+  String resolveUserId(GoRouterState state) {
+    return state.uri.queryParameters['userId'] ?? resolveContext().userId;
+  }
+
   return [
     GoRoute(
       path: AppRoutePaths.flow,
       name: AppRouteNames.flow,
       builder: (_, state) {
-        final membership = resolveContext();
+        final homeId = resolveHomeId(state);
+        final userId = resolveUserId(state);
         final filter = FlowListFilter.fromQueryParam(
           state.uri.queryParameters['filter'],
         );
         final scope = state.uri.queryParameters['scope'];
         final showOnlyMine = scope == 'mine';
         return FlowListProvider(
-          homeId: membership.homeId,
+          homeId: homeId,
           choresRepository: sl<ChoresRepository>(),
           homeRepository: sl<HomeRepository>(),
           filter: filter,
-          currentUserId: membership.userId,
+          currentUserId: userId,
           showOnlyCurrentUser: showOnlyMine,
         );
       },
@@ -47,10 +56,10 @@ List<GoRoute> buildFlowRoutes({
     GoRoute(
       path: AppRoutePaths.flowChoreCreate,
       name: AppRouteNames.flowChoreCreate,
-      builder: (_, __) {
-        final membership = resolveContext();
+      builder: (_, state) {
+        final homeId = resolveHomeId(state);
         return FlowChoreProvider(
-          homeId: membership.homeId,
+          homeId: homeId,
           choresRepository: sl<ChoresRepository>(),
           homeRepository: sl<HomeRepository>(),
         );
@@ -61,13 +70,23 @@ List<GoRoute> buildFlowRoutes({
       name: AppRouteNames.flowChorePhoto,
       builder: (_, state) {
         final args = state.extra as FlowChorePhotoViewerArgs?;
-        if (args == null) {
-          return routeFallback('flowChorePhoto');
+        final photoUrl = args?.photoUrl ?? state.uri.queryParameters['photoUrl'];
+        if (photoUrl == null || photoUrl.isEmpty) {
+          return routeFallback(
+            'flowChorePhoto',
+            state: state,
+            reason: 'photoUrl missing from extra and query',
+          );
         }
+        final title = args?.title ?? state.uri.queryParameters['title'];
+        final heroTag =
+            args?.heroTag ??
+            state.uri.queryParameters['heroTag'] ??
+            'flow-chore-photo-${photoUrl.hashCode}';
         return FlowChoreExpectationPhotoViewerPage(
-          photoUrl: args.photoUrl,
-          heroTag: args.heroTag,
-          title: args.title,
+          photoUrl: photoUrl,
+          heroTag: heroTag,
+          title: title,
         );
       },
     ),
@@ -75,10 +94,10 @@ List<GoRoute> buildFlowRoutes({
       path: AppRoutePaths.flowChoreEdit,
       name: AppRouteNames.flowChoreEdit,
       builder: (_, state) {
-        final membership = resolveContext();
+        final homeId = resolveHomeId(state);
         final choreId = state.pathParameters['choreId']!;
         return FlowChoreProvider(
-          homeId: membership.homeId,
+          homeId: homeId,
           choresRepository: sl<ChoresRepository>(),
           homeRepository: sl<HomeRepository>(),
           choreId: choreId,
@@ -89,10 +108,10 @@ List<GoRoute> buildFlowRoutes({
       path: AppRoutePaths.flowChoreDetail,
       name: AppRouteNames.flowChoreDetail,
       builder: (_, state) {
-        final membership = resolveContext();
+        final homeId = resolveHomeId(state);
         final choreId = state.pathParameters['choreId']!;
         return FlowChoreDetailProvider(
-          homeId: membership.homeId,
+          homeId: homeId,
           choreId: choreId,
           choresRepository: sl<ChoresRepository>(),
         );

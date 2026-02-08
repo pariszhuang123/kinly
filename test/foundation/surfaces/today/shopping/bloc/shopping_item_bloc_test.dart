@@ -7,6 +7,7 @@ import 'package:kinly/contracts/homes/shopping_models.dart';
 import 'package:kinly/contracts/homes/shopping_photo_capture.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_gate_status.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_retry_action.dart';
+import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
 import 'package:kinly/core/ui/paywall/paywall_gate.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/foundation/surfaces/today/shopping/bloc/shopping_item_bloc.dart';
@@ -301,7 +302,12 @@ void main() {
                   'paywallAction',
                   PaywallRetryAction.submit,
                 )
-                .having((s) => s.paywallRequest, 'paywallRequest', isNotNull),
+                .having((s) => s.paywallRequest, 'paywallRequest', isNotNull)
+                .having(
+                  (s) => s.paywallRequest?.triggers,
+                  'paywallTriggers',
+                  const {PaywallTrigger.shoppingPhotosCap},
+                ),
             isA<ShoppingItemState>().having(
               (s) => s.isSubmitting,
               'isSubmitting',

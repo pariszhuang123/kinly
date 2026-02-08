@@ -8,6 +8,8 @@ import 'package:kinly/contracts/homes/shopping_photo_capture.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_gate_status.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_retry_action.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
+import 'package:kinly/core/logging/debug_logger.dart';
+import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/ui/paywall/paywall_gate.dart';
 import 'package:kinly/core/ui/paywall/paywall_sources.dart';
 
@@ -19,23 +21,26 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
     required String homeId,
     ShoppingListItem? item,
     required ShoppingListRepository shoppingListRepository,
+    Logger? logger,
   }) : _homeId = homeId,
        _item = item,
        _shoppingListRepository = shoppingListRepository,
+       _logger = logger ?? const DebugLogger(),
        _uuid = const Uuid(),
        super(
          ShoppingItemState.initial(
            item: item,
-            isEditing: item != null,
-            referencePhotoUrl: shoppingListRepository.toPublicPhotoUrl(
-              item?.referencePhotoPath,
-            ),
+           isEditing: item != null,
+           referencePhotoUrl: shoppingListRepository.toPublicPhotoUrl(
+             item?.referencePhotoPath,
+           ),
          ),
        ) {
     on<ShoppingItemNameChangedEvent>(_onShoppingItemNameChanged);
     on<ShoppingItemQuantityChangedEvent>(_onShoppingItemQuantityChanged);
     on<ShoppingItemDetailsChangedEvent>(_onShoppingItemDetailsChanged);
     on<ShoppingItemPhotoCaptureRequestedEvent>(_onShoppingItemPhotoCaptureRequested);
+    on<ShoppingItemPhotoRecoveryRequestedEvent>(_onShoppingItemPhotoRecoveryRequested);
     on<SubmitShoppingItemEvent>(_onSubmitShoppingItem);
     on<DeleteShoppingItemEvent>(_onDeleteShoppingItem);
     on<ShoppingItemPaywallOpenedEvent>(_onShoppingItemPaywallOpened);
@@ -45,6 +50,7 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
   final String _homeId;
   final ShoppingListItem? _item;
   final ShoppingListRepository _shoppingListRepository;
+  final Logger _logger;
   final Uuid _uuid;
 
   void _onShoppingItemNameChanged(
@@ -73,9 +79,92 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
     Emitter<ShoppingItemState> emit,
   ) async {
     if (state.isUploadingPhoto) return;
+    _logger.info(
+      'Shopping photo capture started. homeId=$_homeId itemId=${_item?.id}',
+      tag: 'ShoppingPhoto',
+    );
     emit(state.copyWith(isUploadingPhoto: true, clearPhotoError: true));
     try {
       final path = await _shoppingListRepository.captureAndUploadPhoto(homeId: _homeId);
+      if (path == null) {
+        _logger.info(
+          'Shopping photo capture cancelled. homeId=$_homeId itemId=${_item?.id}',
+          tag: 'ShoppingPhoto',
+        );
+        emit(state.copyWith(isUploadingPhoto: false));
+        return;
+      }
+      _logger.info(
+        'Shopping photo capture succeeded. homeId=$_homeId itemId=${_item?.id} '
+        'storagePath=$path',
+        tag: 'ShoppingPhoto',
+      );
+      emit(
+        state.copyWith(
+          isUploadingPhoto: false,
+          referencePhotoPath: path,
+          referencePhotoUrl: _shoppingListRepository.toPublicPhotoUrl(path),
+          hasPhotoChanged: true,
+          clearPhotoError: true,
+        ),
+      );
+    } on ShoppingPhotoCaptureException catch (error) {
+      if (error.kind != ShoppingPhotoCaptureErrorKind.permission) {
+        _logger.error(
+          'Shopping photo upload failed. homeId=$_homeId itemId=${_item?.id}',
+          tag: 'ShoppingPhoto',
+          error: error,
+        );
+        emit(
+          state.copyWith(
+            isUploadingPhoto: false,
+            photoErrorMessage: error.message,
+            photoErrorTick: state.photoErrorTick + 1,
+          ),
+        );
+        return;
+      }
+      _logger.warn(
+        'Shopping photo permission denied. homeId=$_homeId itemId=${_item?.id} '
+        'permanentlyDenied=${error.permanentlyDenied}',
+        tag: 'ShoppingPhoto',
+        error: error,
+      );
+      emit(
+        state.copyWith(
+          isUploadingPhoto: false,
+          photoErrorMessage: 'permission',
+          photoErrorTick: state.photoErrorTick + 1,
+          cameraPermissionPermanentlyDenied: error.permanentlyDenied,
+        ),
+      );
+    } catch (error) {
+      _logger.error(
+        'Shopping photo capture failed unexpectedly. homeId=$_homeId '
+        'itemId=${_item?.id}',
+        tag: 'ShoppingPhoto',
+        error: error,
+      );
+      emit(
+        state.copyWith(
+          isUploadingPhoto: false,
+          photoErrorMessage: error.toString(),
+          photoErrorTick: state.photoErrorTick + 1,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onShoppingItemPhotoRecoveryRequested(
+    ShoppingItemPhotoRecoveryRequestedEvent event,
+    Emitter<ShoppingItemState> emit,
+  ) async {
+    if (state.isUploadingPhoto) return;
+    emit(state.copyWith(isUploadingPhoto: true, clearPhotoError: true));
+    try {
+      final path = await _shoppingListRepository.recoverPendingPhotoUpload(
+        homeId: _homeId,
+      );
       if (path == null) {
         emit(state.copyWith(isUploadingPhoto: false));
         return;
@@ -90,22 +179,11 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
         ),
       );
     } on ShoppingPhotoCaptureException catch (error) {
-      if (error.kind != ShoppingPhotoCaptureErrorKind.permission) {
-        emit(
-          state.copyWith(
-            isUploadingPhoto: false,
-            photoErrorMessage: error.message,
-            photoErrorTick: state.photoErrorTick + 1,
-          ),
-        );
-        return;
-      }
       emit(
         state.copyWith(
           isUploadingPhoto: false,
-          photoErrorMessage: 'permission',
+          photoErrorMessage: error.message,
           photoErrorTick: state.photoErrorTick + 1,
-          cameraPermissionPermanentlyDenied: error.permanentlyDenied,
         ),
       );
     } catch (error) {
@@ -189,7 +267,7 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
               source: PaywallSources.shoppingPhotoCap,
               action: PaywallRetryAction.submit,
               tick: tick,
-              triggers: const {PaywallTrigger.flowPhotosCap},
+              triggers: const {PaywallTrigger.shoppingPhotosCap},
             ),
             paywallInFlightRequestId: null,
           ),

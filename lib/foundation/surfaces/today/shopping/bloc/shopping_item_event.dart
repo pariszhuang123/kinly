@@ -38,6 +38,10 @@ class ShoppingItemPhotoCaptureRequestedEvent extends ShoppingItemEvent {
   const ShoppingItemPhotoCaptureRequestedEvent();
 }
 
+class ShoppingItemPhotoRecoveryRequestedEvent extends ShoppingItemEvent {
+  const ShoppingItemPhotoRecoveryRequestedEvent();
+}
+
 class SubmitShoppingItemEvent extends ShoppingItemEvent {
   const SubmitShoppingItemEvent();
 }
