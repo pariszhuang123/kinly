@@ -276,7 +276,11 @@ class _TodayScreenState extends State<TodayScreen>
         .pushNamed(
       AppRouteNames.todayShoppingList,
       queryParameters: {'homeId': homeId},
-      extra: TodayShoppingRouteArgs(homeId: homeId, actor: actor),
+      extra: TodayShoppingRouteArgs(
+        homeId: homeId,
+        actor: actor,
+        listMode: TodayShoppingListMode.purchase,
+      ),
     ).then((_) => _refreshShoppingCount());
   }
 

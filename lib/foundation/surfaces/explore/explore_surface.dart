@@ -7,6 +7,7 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/ui/home_bottom_nav.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../generated/l10n.dart';
+import '../today/routes/today_shopping_route_args.dart';
 import 'explore_registry.dart';
 import 'explore_slots.dart';
 import '../../../core/ui/kinly_scaffold.dart';
@@ -77,6 +78,10 @@ class ExploreScreen extends StatelessWidget {
       onShoppingTap: () => context.pushNamed(
         AppRouteNames.todayShoppingList,
         queryParameters: {'homeId': homeId},
+        extra: TodayShoppingRouteArgs(
+          homeId: homeId,
+          listMode: TodayShoppingListMode.manage,
+        ),
       ),
     );
     final scope = ExploreSurfaceScope(

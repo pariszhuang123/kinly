@@ -417,8 +417,7 @@ void main() {
           () => expensesRepository.create(
             homeId: homeId,
             description: 'Grocery spend',
-            notes:
-                'Auto-generated from shopping\n\n- Milk (2 cartons)\n- Eggs',
+            notes: '- Milk (2 cartons)\n- Eggs',
             startDate: any(named: 'startDate'),
           ),
         ).called(1);

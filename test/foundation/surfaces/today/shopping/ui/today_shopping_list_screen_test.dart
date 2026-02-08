@@ -8,6 +8,7 @@ import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/foundation/surfaces/today/shopping/bloc/shopping_list_bloc.dart';
+import 'package:kinly/foundation/surfaces/today/routes/today_shopping_route_args.dart';
 import 'package:kinly/foundation/surfaces/today/shopping/today_shopping_list_screen.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/renderer/material/kinly_icons.dart';
@@ -46,7 +47,10 @@ void main() {
     );
   }
 
-  Widget _buildRouterApp(ShoppingListState state) {
+  Widget buildRouterApp(
+    ShoppingListState state, {
+    TodayShoppingListMode mode = TodayShoppingListMode.purchase,
+  }) {
     when(() => bloc.state).thenReturn(state);
     whenListen(
       bloc,
@@ -62,7 +66,7 @@ void main() {
           builder:
               (_, __) => BlocProvider<ShoppingListBloc>.value(
                 value: bloc,
-                child: const TodayShoppingListScreen(homeId: 'home-1'),
+                child: TodayShoppingListScreen(homeId: 'home-1', mode: mode),
               ),
         ),
         GoRoute(
@@ -71,6 +75,19 @@ void main() {
           builder:
               (_, state) => Scaffold(
                 body: Text('edit:${state.pathParameters['itemId']}'),
+              ),
+        ),
+        GoRoute(
+          path: '/shopping/new',
+          name: AppRouteNames.todayShoppingCreate,
+          builder: (_, __) => const Scaffold(body: Text('create')),
+        ),
+        GoRoute(
+          path: '/shopping/:itemId/detail',
+          name: AppRouteNames.todayShoppingDetail,
+          builder:
+              (_, state) => Scaffold(
+                body: Text('detail:${state.pathParameters['itemId']}'),
               ),
         ),
       ],
@@ -90,7 +107,7 @@ void main() {
     );
   }
 
-  S _strings(WidgetTester tester) {
+  S strings(WidgetTester tester) {
     final context = tester.element(find.byType(TodayShoppingListScreen));
     return S.of(context);
   }
@@ -118,7 +135,9 @@ void main() {
       myCompletedCount: 0,
     );
 
-    await tester.pumpWidget(_buildRouterApp(state));
+    await tester.pumpWidget(
+      buildRouterApp(state, mode: TodayShoppingListMode.manage),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('2 cartons'), findsOneWidget);
@@ -129,7 +148,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('edit:salt'), findsOneWidget);
 
-    await tester.pumpWidget(_buildRouterApp(state));
+    await tester.pumpWidget(
+      buildRouterApp(state, mode: TodayShoppingListMode.manage),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Milk'));
@@ -145,12 +166,33 @@ void main() {
       myCompletedCount: 0,
     );
 
-    await tester.pumpWidget(_buildRouterApp(state));
+    await tester.pumpWidget(buildRouterApp(state));
     await tester.pumpAndSettle();
 
-    final s = _strings(tester);
+    final s = strings(tester);
     expect(find.text('${s.shoppingTabPending} (1)'), findsNothing);
     expect(find.text('${s.shoppingArchiveCta} (0)'), findsNothing);
+  });
+
+  testWidgets('shows add fab in manage mode and opens create screen', (
+    tester,
+  ) async {
+    final state = ShoppingListState.loaded(
+      pendingItems: [item(id: 'milk', name: 'Milk', isCompleted: false)],
+      completedItems: const [],
+      photoUrlsByItemId: const {},
+      myCompletedCount: 0,
+    );
+
+    await tester.pumpWidget(
+      buildRouterApp(state, mode: TodayShoppingListMode.manage),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.add), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+    expect(find.text('create'), findsOneWidget);
   });
 
   testWidgets('hides tabs when only completed items exist', (tester) async {
@@ -161,10 +203,10 @@ void main() {
       myCompletedCount: 1,
     );
 
-    await tester.pumpWidget(_buildRouterApp(state));
+    await tester.pumpWidget(buildRouterApp(state));
     await tester.pumpAndSettle();
 
-    final s = _strings(tester);
+    final s = strings(tester);
     expect(find.text('${s.shoppingTabPending} (0)'), findsNothing);
     expect(find.text('${s.shoppingArchiveCta} (1)'), findsNothing);
   });
@@ -179,10 +221,10 @@ void main() {
         myCompletedCount: 1,
       );
 
-      await tester.pumpWidget(_buildRouterApp(state));
+      await tester.pumpWidget(buildRouterApp(state));
       await tester.pumpAndSettle();
 
-      final s = _strings(tester);
+      final s = strings(tester);
       expect(find.text('${s.shoppingTabPending} (1)'), findsOneWidget);
       expect(find.text('${s.shoppingArchiveCta} (1)'), findsOneWidget);
     },

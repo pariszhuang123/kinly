@@ -5,6 +5,7 @@ import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 
 import '../domain/models.dart';
+import '../routes/today_shopping_route_args.dart';
 import 'bloc/shopping_list_bloc.dart';
 import 'today_shopping_list_screen.dart';
 
@@ -14,12 +15,14 @@ class TodayShoppingListProvider extends StatelessWidget {
     required this.homeId,
     required this.shoppingListRepository,
     required this.expensesRepository,
+    this.mode = TodayShoppingListMode.purchase,
     this.actor,
   });
 
   final String homeId;
   final ShoppingListRepository shoppingListRepository;
   final ExpensesRepository expensesRepository;
+  final TodayShoppingListMode mode;
   final TodayUserProfile? actor;
 
   @override
@@ -32,7 +35,7 @@ class TodayShoppingListProvider extends StatelessWidget {
             shoppingListRepository: shoppingListRepository,
             expensesRepository: expensesRepository,
           )..add(const LoadShoppingListEvent()),
-      child: TodayShoppingListScreen(homeId: homeId, actor: actor),
+      child: TodayShoppingListScreen(homeId: homeId, actor: actor, mode: mode),
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/dialogs/kinly_dialogs.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
+import 'package:kinly/core/ui/buttons/kinly_fab.dart';
 import 'package:kinly/core/ui/kinly_list_tile.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
@@ -29,10 +30,16 @@ enum _ShoppingTab {
 }
 
 class TodayShoppingListScreen extends StatefulWidget {
-  const TodayShoppingListScreen({super.key, required this.homeId, this.actor});
+  const TodayShoppingListScreen({
+    super.key,
+    required this.homeId,
+    this.actor,
+    this.mode = TodayShoppingListMode.purchase,
+  });
 
   final String homeId;
   final TodayUserProfile? actor;
+  final TodayShoppingListMode mode;
 
   @override
   State<TodayShoppingListScreen> createState() => _TodayShoppingListScreenState();
@@ -66,17 +73,30 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
         }
       },
       builder: (context, state) {
+        final isManageMode = widget.mode == TodayShoppingListMode.manage;
         final hasPendingItems = state.pendingItems.isNotEmpty;
         final hasCompletedItems = state.completedItems.isNotEmpty;
-        final showTabBar = hasPendingItems && hasCompletedItems;
+        final showTabBar = !isManageMode && hasPendingItems && hasCompletedItems;
         _syncSelectedTab(
           hasPendingItems: hasPendingItems,
           hasCompletedItems: hasCompletedItems,
         );
         return KinlyScaffold(
           appBar: KinlyAppBar(title: Text(s.shoppingListTitle)),
+          floatingActionButton:
+              isManageMode
+                  ? KinlyFab(
+                    onPressed: () => _openCreate(context),
+                    heroTag: 'shopping_manage_fab',
+                  )
+                  : null,
           body: SafeArea(
-            child: _buildBody(context, state, showTabBar),
+            child: _buildBody(
+              context,
+              state,
+              showTabBar: showTabBar,
+              isManageMode: isManageMode,
+            ),
           ),
         );
       },
@@ -99,8 +119,10 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
   Widget _buildBody(
     BuildContext context,
     ShoppingListState state,
-    bool showTabBar,
-  ) {
+    {
+    required bool showTabBar,
+    required bool isManageMode,
+  }) {
     final s = S.of(context);
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
@@ -111,30 +133,38 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
       return Center(child: Text(state.errorMessage!));
     }
 
-    final activeItems =
-        showTabBar
-            ? (_selectedTab == _ShoppingTab.completed
-                ? state.completedItems
-                : state.pendingItems)
-            : (state.pendingItems.isNotEmpty
-                ? state.pendingItems
-                : state.completedItems);
+    final activeItems = _resolveActiveItems(
+      state,
+      showTabBar: showTabBar,
+      isManageMode: isManageMode,
+    );
 
     final list =
         activeItems.isEmpty
             ? Center(child: Text(s.shoppingEmptyTitle))
             : _ShoppingItemsList(
               items: activeItems,
-              onToggleItem: (item, isCompleted) {
-                if (item.isCompleted == isCompleted) return;
-                context.read<ShoppingListBloc>().add(
-                  ToggleShoppingItemEvent(
-                    itemId: item.id,
-                    isCompleted: isCompleted,
-                  ),
-                );
-              },
-              onTapItem: (item) => _openEditor(context, item),
+              showCheckbox: !isManageMode,
+              onToggleItem:
+                  isManageMode
+                      ? null
+                      : (item, isCompleted) {
+                        if (item.isCompleted == isCompleted) return;
+                        context.read<ShoppingListBloc>().add(
+                          ToggleShoppingItemEvent(
+                            itemId: item.id,
+                            isCompleted: isCompleted,
+                          ),
+                        );
+                      },
+              onTapItem:
+                  isManageMode
+                      ? (item) => _openEditor(context, item)
+                      : (item) => _openDetail(context, item),
+              canTapItem:
+                  isManageMode
+                      ? null
+                      : (item) => _hasTapDetail(item),
             );
 
     return Column(
@@ -162,7 +192,7 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
             ),
           ),
         Expanded(child: list),
-        if (state.completedItems.isNotEmpty)
+        if (!isManageMode && state.completedItems.isNotEmpty)
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(
               spacing.lg,
@@ -180,6 +210,39 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
     );
   }
 
+  List<ShoppingListItem> _resolveActiveItems(
+    ShoppingListState state, {
+    required bool showTabBar,
+    required bool isManageMode,
+  }) {
+    if (isManageMode) {
+      return state.pendingItems;
+    }
+
+    return showTabBar
+        ? (_selectedTab == _ShoppingTab.completed
+            ? state.completedItems
+            : state.pendingItems)
+        : (state.pendingItems.isNotEmpty ? state.pendingItems : state.completedItems);
+  }
+
+  bool _hasTapDetail(ShoppingListItem item) =>
+      (item.details ?? '').trim().isNotEmpty ||
+      (item.referencePhotoPath ?? '').trim().isNotEmpty;
+
+  Future<void> _openDetail(
+    BuildContext context,
+    ShoppingListItem item,
+  ) async {
+    await context.pushNamed(
+      AppRouteNames.todayShoppingDetail,
+      pathParameters: {'itemId': item.id},
+      queryParameters: {'homeId': widget.homeId},
+    );
+    if (!context.mounted) return;
+    context.read<ShoppingListBloc>().add(const LoadShoppingListEvent(keepCurrent: true));
+  }
+
   Future<void> _openEditor(
     BuildContext context,
     ShoppingListItem item,
@@ -193,6 +256,16 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
         actor: widget.actor,
         item: item,
       ),
+    );
+    if (!context.mounted) return;
+    context.read<ShoppingListBloc>().add(const LoadShoppingListEvent(keepCurrent: true));
+  }
+
+  Future<void> _openCreate(BuildContext context) async {
+    await context.pushNamed(
+      AppRouteNames.todayShoppingCreate,
+      queryParameters: {'homeId': widget.homeId},
+      extra: TodayShoppingRouteArgs(homeId: widget.homeId, actor: widget.actor),
     );
     if (!context.mounted) return;
     context.read<ShoppingListBloc>().add(const LoadShoppingListEvent(keepCurrent: true));
@@ -216,13 +289,17 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
 class _ShoppingItemsList extends StatelessWidget {
   const _ShoppingItemsList({
     required this.items,
+    required this.showCheckbox,
     required this.onToggleItem,
     required this.onTapItem,
+    required this.canTapItem,
   });
 
   final List<ShoppingListItem> items;
-  final void Function(ShoppingListItem item, bool isCompleted) onToggleItem;
+  final bool showCheckbox;
+  final void Function(ShoppingListItem item, bool isCompleted)? onToggleItem;
   final void Function(ShoppingListItem item)? onTapItem;
+  final bool Function(ShoppingListItem item)? canTapItem;
 
   static bool _hasText(String? value) => (value ?? '').trim().isNotEmpty;
 
@@ -238,7 +315,7 @@ class _ShoppingItemsList extends StatelessWidget {
         final item = items[index];
         final hasDetails = _hasText(item.details);
         final hasPhoto = _hasText(item.referencePhotoPath);
-        final canOpenEditor = onTapItem != null;
+        final canOpen = onTapItem != null && (canTapItem?.call(item) ?? true);
 
         final trailingChildren = <Widget>[
           if (hasDetails) ...[
@@ -249,15 +326,19 @@ class _ShoppingItemsList extends StatelessWidget {
             const Icon(KinlyIcons.photoCameraOutlined, size: 18),
             SizedBox(width: spacing.xs),
           ],
-          if (canOpenEditor) const Icon(KinlyIcons.chevronRight, size: 18),
+          if (canOpen) const Icon(KinlyIcons.chevronRight, size: 18),
         ];
 
         return KinlyListTile(
-          leading: KinlyCheckbox(
-            value: item.isCompleted,
-            borderWidth: 1.8,
-            onChanged: (isCompleted) => onToggleItem(item, isCompleted),
-          ),
+          leading:
+              showCheckbox
+                  ? KinlyCheckbox(
+                    value: item.isCompleted,
+                    borderWidth: 1.8,
+                    onChanged:
+                        (isCompleted) => onToggleItem?.call(item, isCompleted),
+                  )
+                  : const Icon(KinlyIcons.shoppingBasketOutlined),
           title: item.name,
           subtitle: _hasText(item.quantity) ? item.quantity!.trim() : null,
           trailing:
@@ -267,7 +348,7 @@ class _ShoppingItemsList extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: trailingChildren,
                   ),
-          onTap: canOpenEditor ? () => onTapItem!(item) : null,
+          onTap: canOpen ? () => onTapItem!(item) : null,
         );
       },
     );

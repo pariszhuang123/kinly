@@ -179,14 +179,14 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
       itemLines.add(_hasText(quantity) ? '- $name ($quantity)' : '- $name');
     }
 
-    final seedNotes = seed.defaultNotes.trim();
-    if (itemLines.isEmpty) {
-      return seedNotes.isEmpty ? null : seedNotes;
-    }
-    final itemized = itemLines.join('\n');
-    if (seedNotes.isEmpty) {
-      return itemized;
-    }
-    return '$seedNotes\n\n$itemized';
+    final seededBulletLines = seed.defaultNotes
+        .split('\n')
+        .map((line) => line.trim())
+        .where(_hasText)
+        .where((line) => line.startsWith('-'))
+        .toList(growable: false);
+    final combined = <String>[...seededBulletLines, ...itemLines];
+    if (combined.isEmpty) return null;
+    return combined.join('\n');
   }
 }
