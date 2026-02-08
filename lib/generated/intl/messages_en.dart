@@ -68,8 +68,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m27(count) =>
       "${Intl.plural(count, one: '${count} item to check', other: '${count} items to check')}";
 
-  static String m28(count) => "Completed (${count})";
-
   static String m19(name) => "Hi ${name}";
 
   static String m20(count) =>
@@ -136,7 +134,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "demoAccessSubmit": MessageLookupByLibrary.simpleMessage("Sign in"),
     "demoAccessTapHint": m2,
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "See what needs doing — and who\'s taking care of it.",
+      "See what needs doing â€” and who\'s taking care of it.",
     ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
       "Update status and details to keep shared things clear.",
@@ -144,11 +142,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
       "See every Bill you\'ve created and track collections.",
     ),
-    "exploreShoppingItemSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Tap to edit or delete",
-    ),
     "exploreShoppingSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Shopping items to manage",
+      "Shopping list",
+    ),
+    "exploreShoppingSubtitle": MessageLookupByLibrary.simpleMessage(
+      "View and manage your shared shopping items.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
       "Who\'s handling this?",
@@ -302,6 +300,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage(
       "Needs attention",
     ),
+    "flowListTabCurrent": MessageLookupByLibrary.simpleMessage("Current"),
+    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("Upcoming"),
     "force_update_body": MessageLookupByLibrary.simpleMessage(
       "This version of Kinly is no longer supported. Please install the newest release to continue.",
     ),
@@ -347,10 +347,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallWeeksAgo": m5,
     "greetingPartOfDay": m6,
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
-      "What’s been contributing to this feeling at home?",
+      "Whatâ€™s been contributing to this feeling at home?",
     ),
     "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
-      "Anything you’d like to share?",
+      "Anything youâ€™d like to share?",
     ),
     "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
       "You\'ve already shared your mood for this week.",
@@ -460,11 +460,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Invite to my Kinly home",
     ),
     "join_blocked_body": MessageLookupByLibrary.simpleMessage(
-      "We’ve notified the home owner.",
+      "Weâ€™ve notified the home owner.",
     ),
     "join_blocked_cta": MessageLookupByLibrary.simpleMessage("Done"),
     "join_blocked_title": MessageLookupByLibrary.simpleMessage(
-      "This home isn’t accepting new members right now",
+      "This home isnâ€™t accepting new members right now",
     ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
       "Leave your current home to join a new one",
@@ -513,7 +513,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "You\'re connected to a home.",
     ),
     "membership_status_checking": MessageLookupByLibrary.simpleMessage(
-      "Connecting you to your home…",
+      "Connecting you to your homeâ€¦",
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "Your shared home starts here.",
@@ -550,7 +550,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please pick a score between 0 and 10.",
     ),
     "npsSubmitErrorNotRequired": MessageLookupByLibrary.simpleMessage(
-      "You don’t need to share feedback right now.",
+      "You donâ€™t need to share feedback right now.",
     ),
     "npsTitle": MessageLookupByLibrary.simpleMessage(
       "Has Kinly been helpful for your home so far?",
@@ -569,11 +569,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
       "Unlimited flow photos",
     ),
-    "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
-      "Unlimited shopping list photos",
-    ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "Unlimited shared expenses",
+    ),
+    "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
+      "Unlimited shopping list photos",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "Unable to load paywall.",
@@ -677,10 +677,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Could not load report",
     ),
     "preferenceReportGenerationFailed": MessageLookupByLibrary.simpleMessage(
-      "We couldn’t finish your preference reflection. Head back and try again.",
+      "We couldnâ€™t finish your preference reflection. Head back and try again.",
     ),
     "preferenceReportGenerationMissing": MessageLookupByLibrary.simpleMessage(
-      "We couldn’t finish your preference reflection. Please try again soon.",
+      "We couldnâ€™t finish your preference reflection. Please try again soon.",
     ),
     "preferenceReportReadOnlyNote": MessageLookupByLibrary.simpleMessage(
       "This shows what feels comfortable for them.",
@@ -1112,7 +1112,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "A quiet moment before we show it.",
     ),
     "reflectiveHousePrimary": MessageLookupByLibrary.simpleMessage(
-      "Putting the home’s expectations into words.",
+      "Putting the homeâ€™s expectations into words.",
     ),
     "reflectiveHouseSecondary": MessageLookupByLibrary.simpleMessage(
       "So everyone knows what to expect.",
@@ -1148,7 +1148,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "You\'re at the free limit of active bills. Upgrade for more space.",
     ),
     "shareCreateErrorRecurrenceDraft": MessageLookupByLibrary.simpleMessage(
-      "Drafts can’t repeat until you add a split.",
+      "Drafts canâ€™t repeat until you add a split.",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load your household members.",
@@ -1240,7 +1240,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Split it so everyone knows their part before publishing.",
     ),
     "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Bills keep money clear between people — without awkward reminders.",
+      "Bills keep money clear between people â€” without awkward reminders.",
     ),
     "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "No bills yet",
@@ -1336,38 +1336,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "shoppingAmountHint": MessageLookupByLibrary.simpleMessage(
       "e.g. 2 cartons",
     ),
-    "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage(
-      "Amount (optional)",
-    ),
-    "shoppingArchiveConfirmBody": MessageLookupByLibrary.simpleMessage(
-      "Ready to archive your completed shopping items.",
-    ),
-    "shoppingArchiveConfirmTitle": MessageLookupByLibrary.simpleMessage(
-      "You bought these items?",
-    ),
-    "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage(
-      "Archive completed items",
-    ),
+    "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage("How many"),
+    "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage("Items bought"),
     "shoppingArchiveSharePromptBody": MessageLookupByLibrary.simpleMessage(
-      "Do you want to create a draft Share expense from these items?",
+      "Do you want to create a draft bill from these items?",
     ),
     "shoppingArchiveSharePromptTitle": MessageLookupByLibrary.simpleMessage(
-      "Trigger Share spend?",
+      "Create bill?",
     ),
-    "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage(
-      "Yes, create draft",
-    ),
-    "shoppingArchiveSuccess": MessageLookupByLibrary.simpleMessage(
-      "Completed items archived.",
-    ),
+    "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("Yes"),
     "shoppingCardSubtitle": m27,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
     "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
-      "Add notes for your home",
+      "Anything helpful (brand, size, etc.)",
     ),
-    "shoppingContextLabel": MessageLookupByLibrary.simpleMessage(
-      "Context (optional)",
-    ),
+    "shoppingContextLabel": MessageLookupByLibrary.simpleMessage("Notes"),
     "shoppingCreateTitle": MessageLookupByLibrary.simpleMessage(
       "Add shopping item",
     ),
@@ -1385,30 +1368,23 @@ class MessageLookup extends MessageLookupByLibrary {
       "Shopping item details",
     ),
     "shoppingEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No shopping items yet.",
+      "No shopping items to buy.",
     ),
-    "shoppingFieldEmpty": MessageLookupByLibrary.simpleMessage("None"),
     "shoppingListTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
     "shoppingMarkCompleteCta": MessageLookupByLibrary.simpleMessage(
       "Mark as completed",
     ),
     "shoppingNameHint": MessageLookupByLibrary.simpleMessage("e.g. Milk"),
     "shoppingNameLabel": MessageLookupByLibrary.simpleMessage("Name"),
-    "shoppingPhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "Reference photo (optional)",
-    ),
+    "shoppingPhotoLabel": MessageLookupByLibrary.simpleMessage("Add a photo"),
     "shoppingPhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
       "Add a photo to help with shopping",
     ),
     "shoppingPhotoReplaceLabel": MessageLookupByLibrary.simpleMessage(
-      "Replace reference photo",
-    ),
-    "shoppingShareDraftTriggered": MessageLookupByLibrary.simpleMessage(
-      "Draft Share expense triggered.",
+      "Help someone to know what to buy",
     ),
     "shoppingSubmitAdd": MessageLookupByLibrary.simpleMessage("Add item"),
-    "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage("Edit item"),
-    "shoppingTabCompleted": m28,
+    "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage("Save changes"),
     "shoppingTabPending": MessageLookupByLibrary.simpleMessage("To buy"),
     "shoppingValidationName": MessageLookupByLibrary.simpleMessage(
       "Please enter an item name.",
@@ -1551,36 +1527,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Your home feels warm and welcoming, with people often together.",
     ),
     "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage("Warm social"),
-    "weeklyRewriteConsent": MessageLookupByLibrary.simpleMessage(
-      "I understand this won’t be sent as written.",
-    ),
     "weeklyRewriteCta": MessageLookupByLibrary.simpleMessage(
       "Rewrite with Kinly",
-    ),
-    "weeklyRewriteErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Something went wrong. Your message wasn’t shared.",
-    ),
-    "weeklyRewriteHeader": MessageLookupByLibrary.simpleMessage(
-      "Share with care",
-    ),
-    "weeklyRewriteHelperPrimary": MessageLookupByLibrary.simpleMessage(
-      "This won’t be shared as written.",
-    ),
-    "weeklyRewriteHelperSecondary": MessageLookupByLibrary.simpleMessage(
-      "Kinly rewrites this to help it land more calmly.",
-    ),
-    "weeklyRewriteMessageLabel": MessageLookupByLibrary.simpleMessage(
-      "What happened?",
-    ),
-    "weeklyRewriteNoRecipients": MessageLookupByLibrary.simpleMessage(
-      "No one is eligible to receive this right now.",
-    ),
-    "weeklyRewriteRecipientLabel": MessageLookupByLibrary.simpleMessage(
-      "Share with one person",
-    ),
-    "weeklyRewriteSubmit": MessageLookupByLibrary.simpleMessage("Send calmly"),
-    "weeklyRewriteSuccess": MessageLookupByLibrary.simpleMessage(
-      "Shared. We’ll show you the calmer version after it’s sent.",
     ),
     "welcome_create": MessageLookupByLibrary.simpleMessage("Create a Home"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("Join your Home"),

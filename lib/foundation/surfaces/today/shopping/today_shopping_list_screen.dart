@@ -15,10 +15,12 @@ import 'package:kinly/core/ui/kinly_scaffold.dart';
 import 'package:kinly/core/ui/kinly_tab_bar.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
+import 'package:kinly/core/ui/toggles/kinly_checkbox.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/renderer/material/kinly_icons.dart';
 
 import '../domain/models.dart';
+import '../routes/today_shopping_route_args.dart';
 import 'bloc/shopping_list_bloc.dart';
 
 enum _ShoppingTab {
@@ -64,20 +66,32 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
         }
       },
       builder: (context, state) {
-        final showCompletedTab = state.completedItems.isNotEmpty;
-        _syncSelectedTab(showCompletedTab);
+        final hasPendingItems = state.pendingItems.isNotEmpty;
+        final hasCompletedItems = state.completedItems.isNotEmpty;
+        final showTabBar = hasPendingItems && hasCompletedItems;
+        _syncSelectedTab(
+          hasPendingItems: hasPendingItems,
+          hasCompletedItems: hasCompletedItems,
+        );
         return KinlyScaffold(
           appBar: KinlyAppBar(title: Text(s.shoppingListTitle)),
           body: SafeArea(
-            child: _buildBody(context, state, showCompletedTab),
+            child: _buildBody(context, state, showTabBar),
           ),
         );
       },
     );
   }
 
-  void _syncSelectedTab(bool showCompletedTab) {
-    if (!showCompletedTab && _selectedTab == _ShoppingTab.completed) {
+  void _syncSelectedTab({
+    required bool hasPendingItems,
+    required bool hasCompletedItems,
+  }) {
+    if (!hasPendingItems && hasCompletedItems) {
+      _selectedTab = _ShoppingTab.completed;
+      return;
+    }
+    if (hasPendingItems && !hasCompletedItems) {
       _selectedTab = _ShoppingTab.pending;
     }
   }
@@ -85,7 +99,7 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
   Widget _buildBody(
     BuildContext context,
     ShoppingListState state,
-    bool showCompletedTab,
+    bool showTabBar,
   ) {
     final s = S.of(context);
     final theme = KinlyThemeAccess.of(context);
@@ -98,24 +112,34 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
     }
 
     final activeItems =
-        _selectedTab == _ShoppingTab.completed
-            ? state.completedItems
-            : state.pendingItems;
+        showTabBar
+            ? (_selectedTab == _ShoppingTab.completed
+                ? state.completedItems
+                : state.pendingItems)
+            : (state.pendingItems.isNotEmpty
+                ? state.pendingItems
+                : state.completedItems);
 
     final list =
         activeItems.isEmpty
             ? Center(child: Text(s.shoppingEmptyTitle))
             : _ShoppingItemsList(
               items: activeItems,
-              onTapItem:
-                  _selectedTab == _ShoppingTab.pending
-                      ? (item) => _openDetail(context, item)
-                      : null,
+              onToggleItem: (item, isCompleted) {
+                if (item.isCompleted == isCompleted) return;
+                context.read<ShoppingListBloc>().add(
+                  ToggleShoppingItemEvent(
+                    itemId: item.id,
+                    isCompleted: isCompleted,
+                  ),
+                );
+              },
+              onTapItem: (item) => _openEditor(context, item),
             );
 
     return Column(
       children: [
-        if (showCompletedTab)
+        if (showTabBar)
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(
               spacing.lg,
@@ -125,10 +149,10 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
             ),
             child: KinlyTabBar<_ShoppingTab>(
               tabs: <_ShoppingTab, String>{
-                _ShoppingTab.pending: s.shoppingTabPending,
-                _ShoppingTab.completed: s.shoppingTabCompleted(
-                  state.completedItems.length,
-                ),
+                _ShoppingTab.pending:
+                    '${s.shoppingTabPending} (${state.pendingItems.length})',
+                _ShoppingTab.completed:
+                    '${s.shoppingArchiveCta} (${state.completedItems.length})',
               },
               selected: _selectedTab,
               onChanged: (value) {
@@ -138,7 +162,7 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
             ),
           ),
         Expanded(child: list),
-        if (state.myCompletedCount > 0)
+        if (state.completedItems.isNotEmpty)
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(
               spacing.lg,
@@ -156,14 +180,19 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
     );
   }
 
-  Future<void> _openDetail(
+  Future<void> _openEditor(
     BuildContext context,
     ShoppingListItem item,
   ) async {
     await context.pushNamed(
-      AppRouteNames.todayShoppingDetail,
+      AppRouteNames.todayShoppingEdit,
       pathParameters: {'itemId': item.id},
       queryParameters: {'homeId': widget.homeId},
+      extra: TodayShoppingRouteArgs(
+        homeId: widget.homeId,
+        actor: widget.actor,
+        item: item,
+      ),
     );
     if (!context.mounted) return;
     context.read<ShoppingListBloc>().add(const LoadShoppingListEvent(keepCurrent: true));
@@ -171,20 +200,11 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
 
   Future<void> _archiveCompleted(BuildContext context) async {
     final s = S.of(context);
-    final shouldArchive = await showKinlyConfirmDialog(
-      context,
-      title: s.shoppingArchiveConfirmTitle,
-      message: s.shoppingArchiveConfirmBody,
-      confirmLabel: s.shoppingArchiveCta,
-    );
-    if (!context.mounted || shouldArchive != true) return;
-
     final triggerShare = await showKinlyConfirmDialog(
       context,
       title: s.shoppingArchiveSharePromptTitle,
       message: s.shoppingArchiveSharePromptBody,
       confirmLabel: s.shoppingArchiveShareYes,
-      cancelLabel: s.todayInviteNotNow,
     );
     if (!context.mounted) return;
     context.read<ShoppingListBloc>().add(
@@ -196,10 +216,12 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
 class _ShoppingItemsList extends StatelessWidget {
   const _ShoppingItemsList({
     required this.items,
+    required this.onToggleItem,
     required this.onTapItem,
   });
 
   final List<ShoppingListItem> items;
+  final void Function(ShoppingListItem item, bool isCompleted) onToggleItem;
   final void Function(ShoppingListItem item)? onTapItem;
 
   static bool _hasText(String? value) => (value ?? '').trim().isNotEmpty;
@@ -214,25 +236,38 @@ class _ShoppingItemsList extends StatelessWidget {
       separatorBuilder: (_, __) => SizedBox(height: spacing.sm),
       itemBuilder: (context, index) {
         final item = items[index];
+        final hasDetails = _hasText(item.details);
+        final hasPhoto = _hasText(item.referencePhotoPath);
+        final canOpenEditor = onTapItem != null;
+
+        final trailingChildren = <Widget>[
+          if (hasDetails) ...[
+            const Icon(KinlyIcons.notesOutlined, size: 18),
+            SizedBox(width: spacing.xs),
+          ],
+          if (hasPhoto) ...[
+            const Icon(KinlyIcons.photoCameraOutlined, size: 18),
+            SizedBox(width: spacing.xs),
+          ],
+          if (canOpenEditor) const Icon(KinlyIcons.chevronRight, size: 18),
+        ];
+
         return KinlyListTile(
-          leading: const Icon(KinlyIcons.shoppingBasketOutlined),
-          title: item.name,
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (_hasText(item.quantity)) ...[
-                const Icon(KinlyIcons.exposurePlus1Outlined, size: 18),
-                SizedBox(width: spacing.xs),
-              ],
-              if (_hasText(item.details)) ...[
-                const Icon(KinlyIcons.notesOutlined, size: 18),
-                SizedBox(width: spacing.xs),
-              ],
-              if (_hasText(item.referencePhotoPath))
-                const Icon(KinlyIcons.photoCameraOutlined, size: 18),
-            ],
+          leading: KinlyCheckbox(
+            value: item.isCompleted,
+            borderWidth: 1.8,
+            onChanged: (isCompleted) => onToggleItem(item, isCompleted),
           ),
-          onTap: onTapItem == null ? null : () => onTapItem!(item),
+          title: item.name,
+          subtitle: _hasText(item.quantity) ? item.quantity!.trim() : null,
+          trailing:
+              trailingChildren.isEmpty
+                  ? null
+                  : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: trailingChildren,
+                  ),
+          onTap: canOpenEditor ? () => onTapItem!(item) : null,
         );
       },
     );

@@ -47,6 +47,7 @@ class KinlySections extends ThemeExtension<KinlySections> {
   final SectionColors share;
   final SectionColors pulse;
   final SectionColors preference;
+  final SectionColors shopping;
   final SectionColors empty;
 
   const KinlySections({
@@ -54,6 +55,7 @@ class KinlySections extends ThemeExtension<KinlySections> {
     required this.share,
     required this.pulse,
     required this.preference,
+    required this.shopping,
     required this.empty,
   });
 
@@ -63,6 +65,7 @@ class KinlySections extends ThemeExtension<KinlySections> {
     SectionColors? share,
     SectionColors? pulse,
     SectionColors? preference,
+    SectionColors? shopping,
     SectionColors? empty,
   }) {
     return KinlySections(
@@ -70,6 +73,7 @@ class KinlySections extends ThemeExtension<KinlySections> {
       share: share ?? this.share,
       pulse: pulse ?? this.pulse,
       preference: preference ?? this.preference,
+      shopping: shopping ?? this.shopping,
       empty: empty ?? this.empty,
     );
   }
@@ -82,6 +86,7 @@ class KinlySections extends ThemeExtension<KinlySections> {
       share: SectionColors.lerp(share, other.share, t),
       pulse: SectionColors.lerp(pulse, other.pulse, t),
       preference: SectionColors.lerp(preference, other.preference, t),
+      shopping: SectionColors.lerp(shopping, other.shopping, t),
       empty: SectionColors.lerp(empty, other.empty, t),
     );
   }

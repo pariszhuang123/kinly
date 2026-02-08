@@ -288,12 +288,14 @@ class _DerivedEngine {
 
     final emptyAccent = _mix(outline, surface, 0.4);
     final preferenceAccent = _mix(primary, tertiary, isDark ? 0.24 : 0.32);
+    final shoppingAccent = _mix(secondary, tertiary, isDark ? 0.36 : 0.44);
 
     return KinlySections(
       flow: buildSection(primary),
       share: buildSection(accent),
       pulse: buildSection(secondary),
       preference: buildSection(preferenceAccent),
+      shopping: buildSection(shoppingAccent),
       empty: buildSection(emptyAccent),
     );
   }

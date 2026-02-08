@@ -122,6 +122,10 @@ void _recoverFromRoutingFailure({
   final router = GoRouter.of(context);
   final path = state.uri.path;
   final query = state.uri.queryParameters;
+  if (_isJoinPath(path)) {
+    _redirectToJoinWithCode(router: router, uri: state.uri, logger: logger);
+    return;
+  }
   if (path.startsWith(AppRoutePaths.todayShoppingList)) {
     _redirectToShoppingList(router: router, query: query, uri: state.uri, logger: logger);
     return;
@@ -145,6 +149,38 @@ void _recoverFromRoutingFailure({
   );
   router.goNamed(AppRouteNames.today);
 }
+
+void _redirectToJoinWithCode({
+  required GoRouter router,
+  required Uri uri,
+  required Logger logger,
+}) {
+  final segments = uri.pathSegments;
+  final normalizedSegments =
+      segments.map((segment) => segment.trim().toLowerCase()).toList();
+  final joinIndex = normalizedSegments.indexOf('join');
+  final code =
+      (joinIndex >= 0 && joinIndex < segments.length - 1)
+          ? segments[joinIndex + 1]
+          : null;
+  logger.warn(
+    'Routing failure recovered by redirecting to Join. '
+    'uri=$uri',
+    tag: 'Router',
+  );
+  if (code != null && code.trim().isNotEmpty) {
+    router.goNamed(
+      AppRouteNames.joinWithCode,
+      pathParameters: {'code': code},
+    );
+    return;
+  }
+  router.goNamed(AppRouteNames.join);
+}
+
+bool _isJoinPath(String path) =>
+    path.toLowerCase().startsWith('${AppRoutePaths.join}/') ||
+    path.toLowerCase().startsWith('/kinly/join/');
 
 void _redirectToShoppingList({
   required GoRouter router,

@@ -1,16 +1,12 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/app_route_names.dart';
-import '../../../contracts/homes/shopping_models.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/home_bottom_nav.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../generated/l10n.dart';
-import '../today/shopping/bloc/shopping_list_bloc.dart';
-import '../today/routes/today_shopping_route_args.dart';
 import 'explore_registry.dart';
 import 'explore_slots.dart';
 import '../../../core/ui/kinly_scaffold.dart';
@@ -78,7 +74,10 @@ class ExploreScreen extends StatelessWidget {
         queryParameters: {'homeId': homeId},
       ),
       onShareTap: () => context.pushNamed(AppRouteNames.shareCreatedList),
-      onShoppingItemTap: (item) => _openShoppingItemEditor(context, item),
+      onShoppingTap: () => context.pushNamed(
+        AppRouteNames.todayShoppingList,
+        queryParameters: {'homeId': homeId},
+      ),
     );
     final scope = ExploreSurfaceScope(
       context: context,
@@ -89,23 +88,6 @@ class ExploreScreen extends StatelessWidget {
     );
     final slots = ExploreSurfaceSlots(body: _buildExploreContent(scope));
     return slots.body;
-  }
-
-  Future<void> _openShoppingItemEditor(
-    BuildContext context,
-    ShoppingListItem item,
-  ) async {
-    await context.pushNamed(
-      AppRouteNames.todayShoppingEdit,
-      pathParameters: {'itemId': item.id},
-      queryParameters: {'homeId': homeId},
-      extra: TodayShoppingRouteArgs(
-        homeId: homeId,
-        item: item,
-      ),
-    );
-    if (!context.mounted) return;
-    context.read<ShoppingListBloc>().add(const LoadShoppingListEvent(keepCurrent: true));
   }
 
   Widget _buildExploreContent(ExploreSurfaceScope scope) {

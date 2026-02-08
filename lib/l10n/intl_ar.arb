@@ -451,6 +451,8 @@
   "flowListEmptySubtitle": "التدفّقات تُبقي الجميع على نفس الصفحة.",
   "flowListDraftLabel": "مسودة",
   "flowListOverdueLabel": "بحاجة إلى انتباه",
+  "flowListTabCurrent": "الحالية",
+  "flowListTabFuture": "القادمة",
   "flowListError": "لم نتمكن من تحميل التدفّقات. اسحب للتحديث.",
   "exploreIntroSubtitle": "استكشف طرقًا أكثر لتبقى أجواء منزلك أخف.",
   "exploreFlowSubtitle": "اعرف ما الذي يحتاج إلى إنجاز — ومن يتولى ذلك.",
@@ -935,6 +937,12 @@
   },
   "@flowListEmptySubtitle": {
     "surface": "subtitle"
+  },
+  "@flowListTabCurrent": {
+    "surface": "tab"
+  },
+  "@flowListTabFuture": {
+    "surface": "tab"
   },
   "@flowListError": {
     "surface": "error"

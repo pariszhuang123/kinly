@@ -11,10 +11,12 @@ class KinlyCheckbox extends StatelessWidget {
     super.key,
     required this.value,
     required this.onChanged,
+    this.borderWidth = 1.0,
   });
 
   final bool value;
   final ValueChanged<bool> onChanged;
+  final double borderWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class KinlyCheckbox extends StatelessWidget {
       onChanged: (checked) => onChanged(checked ?? false),
       activeColor: controls.checkboxChecked,
       checkColor: controls.selectableItemFgSelected,
-      side: BorderSide(color: controls.checkboxBorder),
+      side: BorderSide(color: controls.checkboxBorder, width: borderWidth),
       visualDensity: const VisualDensity(horizontal: -2, vertical: -3),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );

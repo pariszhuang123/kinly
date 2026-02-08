@@ -7,6 +7,7 @@ import 'widgets/today_house_pulse_card.dart';
 import 'widgets/today_gratitude_section.dart';
 import 'widgets/today_invite_prompt.dart';
 import 'widgets/today_share_section/today_share_section_container.dart';
+import 'widgets/today_shopping_list_card.dart';
 
 typedef TodaySectionBuilder = Widget Function(TodaySurfaceScope scope);
 
@@ -115,6 +116,21 @@ class TodayRegistry {
               onSeeAllDraftsTap: scope.actions.onShareSeeAllDraftsTap,
             ),
         isVisible: (scope) => scope.state.hasShareContent,
+      ),
+    );
+
+    register(
+      TodaySectionEntry(
+        id: 'shopping',
+        order: 45,
+        spacingAfter: TodaySectionSpacing.lg,
+        builder:
+            (scope) => TodayShoppingListCard(
+              onTap: scope.actions.onShoppingTap,
+              count: scope.shoppingCount,
+              colors: scope.sections.shopping,
+            ),
+        isVisible: (scope) => scope.shoppingCount > 0,
       ),
     );
 

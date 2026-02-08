@@ -127,6 +127,12 @@ void main() {
                 icon: Colors.blueGrey,
                 accent: Colors.teal,
               ),
+              shopping: SectionColors(
+                background: Colors.white,
+                card: Colors.white,
+                icon: Colors.blueGrey,
+                accent: Colors.blue,
+              ),
               empty: const SectionColors(
                 background: Colors.white,
                 card: Colors.white,
@@ -229,6 +235,12 @@ void main() {
                 card: Colors.white,
                 icon: Colors.blueGrey,
                 accent: Colors.teal,
+              ),
+              shopping: SectionColors(
+                background: Colors.white,
+                card: Colors.white,
+                icon: Colors.blueGrey,
+                accent: Colors.blue,
               ),
               empty: const SectionColors(
                 background: Colors.white,

@@ -89,6 +89,16 @@ void main() {
     expect(loaded?.inviteCode, 'AB23CD');
   });
 
+  test('invalid capture does not clear an existing pending invite', () async {
+    await coordinator.capture(Uri.parse('kinly://join?code=abc234'));
+
+    final saved = await coordinator.capture(Uri.parse('https://example.com/today'));
+
+    expect(saved, isFalse);
+    final loaded = await storage.load();
+    expect(loaded?.inviteCode, 'ABC234');
+  });
+
   test(
     'authenticated with active membership skips RPC and clears intent',
     () async {

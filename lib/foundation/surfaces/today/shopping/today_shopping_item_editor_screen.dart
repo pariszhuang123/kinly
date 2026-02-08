@@ -195,25 +195,24 @@ class _TodayShoppingItemEditorScreenState
                       ),
                     ),
                     SizedBox(height: spacing.lg),
-                    KinlyFilledButton.text(
-                      onPressed:
-                          state.isSubmitting
-                              ? null
-                              : () => context.read<ShoppingItemBloc>().add(
-                                const SubmitShoppingItemEvent(),
-                              ),
-                      label: submitLabel,
-                      fullWidth: true,
-                    ),
-                    if (isEditing && canDelete) ...[
-                      SizedBox(height: spacing.md),
+                    if (isEditing && canDelete)
                       KinlyFilledButton.destructiveText(
                         onPressed:
                             state.isSubmitting ? null : () => _confirmDelete(context),
                         label: s.shoppingDelete,
                         fullWidth: true,
+                      )
+                    else
+                      KinlyFilledButton.text(
+                        onPressed:
+                            state.isSubmitting
+                                ? null
+                                : () => context.read<ShoppingItemBloc>().add(
+                                  const SubmitShoppingItemEvent(),
+                                ),
+                        label: submitLabel,
+                        fullWidth: true,
                       ),
-                    ],
                   ],
                 ),
               ),

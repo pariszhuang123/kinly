@@ -16,6 +16,7 @@ void main() {
         'house_pulse',
         'flow',
         'share',
+        'shopping',
         'gratitude',
       ]),
     );

@@ -29,5 +29,12 @@ List<GoRoute> buildHomeMembershipRoutes() {
           (context, state) =>
               JoinHomeScreen(initialCode: state.pathParameters['code']),
     ),
+    GoRoute(
+      path: AppRoutePaths.webJoinWithCode,
+      name: AppRouteNames.webJoinWithCode,
+      builder:
+          (context, state) =>
+              JoinHomeScreen(initialCode: state.pathParameters['code']),
+    ),
   ];
 }

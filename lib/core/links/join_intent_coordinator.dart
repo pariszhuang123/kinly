@@ -56,7 +56,6 @@ class JoinIntentCoordinator {
         data: {'source': 'uri', 'stored': false},
         level: SentryLevel.warning,
       );
-      await _storage.clear();
       return false;
     }
 

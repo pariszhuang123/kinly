@@ -1,4 +1,4 @@
-﻿{
+{
   "@@locale": "en",
   "app_title": "Kinly",
   "bootstrap_initializing": "Starting Kinly ({env})",
@@ -147,42 +147,30 @@
   },
   "shoppingListTitle": "Shopping list",
   "shoppingDetailTitle": "Shopping item",
-  "shoppingFieldEmpty": "None",
   "shoppingMarkCompleteCta": "Mark as completed",
   "shoppingTabPending": "To buy",
-  "shoppingTabCompleted": "{count, plural, one {# completed} other {# completed}}",
-  "@shoppingTabCompleted": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
-  "shoppingEmptyTitle": "No shopping items yet.",
+  "shoppingEmptyTitle": "No shopping items to buy.",
   "shoppingCreateTitle": "Add shopping item",
   "shoppingEditTitle": "Shopping item details",
   "shoppingNameLabel": "Name",
   "shoppingNameHint": "e.g. Milk",
-  "shoppingAmountLabel": "Amount (optional)",
+  "shoppingAmountLabel": "How many",
   "shoppingAmountHint": "e.g. 2 cartons",
-  "shoppingContextLabel": "Context (optional)",
-  "shoppingContextHint": "Add notes for your home",
-  "shoppingPhotoLabel": "Reference photo (optional)",
-  "shoppingPhotoReplaceLabel": "Replace reference photo",
+  "shoppingContextLabel": "Notes",
+  "shoppingContextHint": "Anything helpful (brand, size, etc.)",
+  "shoppingPhotoLabel": "Add a photo",
+  "shoppingPhotoReplaceLabel": "Help someone to know what to buy",
   "shoppingPhotoPlaceholder": "Add a photo to help with shopping",
   "shoppingValidationName": "Please enter an item name.",
   "shoppingSubmitAdd": "Add item",
-  "shoppingSubmitEdit": "Edit item",
+  "shoppingSubmitEdit": "Save changes",
   "shoppingDelete": "Delete item",
   "shoppingDeleteConfirmTitle": "Delete this item?",
   "shoppingDeleteConfirmBody": "This removes the item from your shared shopping list.",
-  "shoppingArchiveCta": "Archive completed items",
-  "shoppingArchiveConfirmTitle": "You bought these items?",
-  "shoppingArchiveConfirmBody": "Ready to archive your completed shopping items.",
-  "shoppingArchiveSharePromptTitle": "Trigger Share spend?",
-  "shoppingArchiveSharePromptBody": "Do you want to create a draft Share expense from these items?",
-  "shoppingArchiveShareYes": "Yes, create draft",
+  "shoppingArchiveCta": "Items bought",
+  "shoppingArchiveSharePromptTitle": "Create bill?",
+  "shoppingArchiveSharePromptBody": "Do you want to create a draft bill from these items?",
+  "shoppingArchiveShareYes": "Yes",
   "login_tagline": "Together feels lighter",
   "login_with_google": "Continue with Google",
   "login_with_apple": "Continue with Apple",
@@ -497,12 +485,14 @@
   "flowListEmptySubtitle": "Flows keep everyone aligned.",
   "flowListDraftLabel": "Draft",
   "flowListOverdueLabel": "Needs attention",
+  "flowListTabCurrent": "Current",
+  "flowListTabFuture": "Upcoming",
   "flowListError": "We couldn't load flows. Pull to refresh.",
   "exploreIntroSubtitle": "Update status and details to keep shared things clear.",
   "exploreFlowSubtitle": "See what needs doing â€” and who's taking care of it.",
   "exploreShareSubtitle": "See every Bill you've created and track collections.",
-  "exploreShoppingSectionTitle": "Shopping items to manage",
-  "exploreShoppingItemSubtitle": "Tap to edit or delete",
+  "exploreShoppingSectionTitle": "Shopping list",
+  "exploreShoppingSubtitle": "View and manage your shared shopping items.",
   "shareCreatedListTitle": "Your bills",
   "shareCreatedListEmptyTitle": "No bills yet",
   "shareCreatedListEmptySubtitle": "Bills keep money clear between people â€” without awkward reminders.",
@@ -983,6 +973,12 @@
   },
   "@flowListEmptySubtitle": {
     "surface": "subtitle"
+  },
+  "@flowListTabCurrent": {
+    "surface": "tab"
+  },
+  "@flowListTabFuture": {
+    "surface": "tab"
   },
   "@flowListError": {
     "surface": "error"

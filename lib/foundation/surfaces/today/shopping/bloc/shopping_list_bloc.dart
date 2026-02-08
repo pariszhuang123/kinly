@@ -29,6 +29,8 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
   final ShoppingListRepository _shoppingListRepository;
   final ExpensesRepository _expensesRepository;
 
+  static bool _hasText(String? value) => (value ?? '').trim().isNotEmpty;
+
   Future<void> _onLoadShoppingList(
     LoadShoppingListEvent event,
     Emitter<ShoppingListState> emit,
@@ -99,7 +101,7 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
           description: seed.defaultDescription.isEmpty
               ? 'Shopping spend'
               : seed.defaultDescription,
-          notes: seed.defaultNotes.isEmpty ? null : seed.defaultNotes,
+          notes: _buildShoppingExpenseNotes(seed: seed, items: mine),
           startDate: DateTime.now(),
         );
         await _shoppingListRepository.linkItemsToExpenseForUser(
@@ -160,5 +162,31 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
     } catch (error) {
       emit(ShoppingListState.failure(errorMessage: error.toString()));
     }
+  }
+
+  String? _buildShoppingExpenseNotes({
+    required ShoppingExpenseDraftSeed seed,
+    required List<ShoppingListItem> items,
+  }) {
+    final byId = <String, ShoppingListItem>{for (final item in items) item.id: item};
+    final itemLines = <String>[];
+    for (final itemId in seed.itemIds) {
+      final item = byId[itemId];
+      if (item == null) continue;
+      final name = item.name.trim();
+      if (name.isEmpty) continue;
+      final quantity = item.quantity?.trim() ?? '';
+      itemLines.add(_hasText(quantity) ? '- $name ($quantity)' : '- $name');
+    }
+
+    final seedNotes = seed.defaultNotes.trim();
+    if (itemLines.isEmpty) {
+      return seedNotes.isEmpty ? null : seedNotes;
+    }
+    final itemized = itemLines.join('\n');
+    if (seedNotes.isEmpty) {
+      return itemized;
+    }
+    return '$seedNotes\n\n$itemized';
   }
 }

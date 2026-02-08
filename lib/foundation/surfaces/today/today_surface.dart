@@ -41,7 +41,6 @@ import 'today_registry.dart';
 import 'widgets/today_add_sheet.dart';
 import 'widgets/today_empty_state_card.dart';
 import 'widgets/today_header/today_header_container.dart';
-import 'widgets/today_shopping_list_card.dart';
 import '../../../contracts/share/share_edit_outcome.dart';
 import '../../../contracts/share/share_edit_route_args.dart';
 import 'package:kinly/core/ui/paywall/paywall_sources.dart';

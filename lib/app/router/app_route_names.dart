@@ -7,6 +7,7 @@ class AppRouteNames {
   static const join = 'join';
   static const joinBlocked = 'joinBlocked';
   static const joinWithCode = 'joinWithCode';
+  static const webJoinWithCode = 'webJoinWithCode';
   static const today = 'today';
   static const todayHousePulse = 'todayHousePulse';
   static const todayShoppingList = 'todayShoppingList';

@@ -101,15 +101,32 @@ String? _authRedirect({
   final isPublicRoute =
       path == AppRoutes.welcome || path == AppRoutes.demoAccess;
   final isAllowedWhenUnknown = isPublicRoute || path == AppRoutes.splash;
-  NavigationIntents.captureInvite(uri);
+  if (_looksLikeInviteIntent(uri)) {
+    NavigationIntents.captureInvite(uri);
+  }
   if (status == AuthStatus.unknown) {
     return isAllowedWhenUnknown ? null : AppRoutes.splash;
   }
   if (status != AuthStatus.authenticated) {
     return isPublicRoute ? null : AppRoutes.welcome;
   }
-  NavigationIntents.captureInvite(uri);
   return null;
+}
+
+bool _looksLikeInviteIntent(Uri uri) {
+  final aliases = {'invite_code', 'inviteCode', 'invite_id', 'code'};
+  for (final entry in uri.queryParameters.entries) {
+    final key = entry.key.trim();
+    if (aliases.contains(key) && entry.value.trim().isNotEmpty) {
+      return true;
+    }
+  }
+
+  final segments =
+      uri.pathSegments.map((segment) => segment.trim().toLowerCase()).toList();
+  if (segments.isEmpty) return false;
+  final joinIndex = segments.indexOf('join');
+  return joinIndex >= 0 && joinIndex < segments.length - 1;
 }
 
 String? _membershipRedirect(String path, AuthMembershipStatus status) {

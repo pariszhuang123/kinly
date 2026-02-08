@@ -291,6 +291,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage(
       "بحاجة إلى انتباه",
     ),
+    "flowListTabCurrent": MessageLookupByLibrary.simpleMessage("الحالية"),
+    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("القادمة"),
     "force_update_body": MessageLookupByLibrary.simpleMessage(
       "لم يعد هذا الإصدار من كينلي مدعومًا. يرجى تثبيت أحدث إصدار للمتابعة.",
     ),
@@ -530,11 +532,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
       "صور تدفّق غير محدودة",
     ),
-    "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
-      "صور قائمة تسوّق غير محدودة",
-    ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "مصاريف مشتركة غير محدودة",
+    ),
+    "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
+      "صور قائمة تسوّق غير محدودة",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل صفحة الترقية.",

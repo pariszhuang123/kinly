@@ -394,20 +394,20 @@ class S {
     );
   }
 
-  /// `This home isn’t accepting new members right now`
+  /// `This home isnâ€™t accepting new members right now`
   String get join_blocked_title {
     return Intl.message(
-      'This home isn’t accepting new members right now',
+      'This home isnâ€™t accepting new members right now',
       name: 'join_blocked_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `We’ve notified the home owner.`
+  /// `Weâ€™ve notified the home owner.`
   String get join_blocked_body {
     return Intl.message(
-      'We’ve notified the home owner.',
+      'Weâ€™ve notified the home owner.',
       name: 'join_blocked_body',
       desc: '',
       args: [],
@@ -641,11 +641,6 @@ class S {
     );
   }
 
-  /// `None`
-  String get shoppingFieldEmpty {
-    return Intl.message('None', name: 'shoppingFieldEmpty', desc: '', args: []);
-  }
-
   /// `Mark as completed`
   String get shoppingMarkCompleteCta {
     return Intl.message(
@@ -666,20 +661,10 @@ class S {
     );
   }
 
-  /// `Completed ({count})`
-  String shoppingTabCompleted(int count) {
-    return Intl.message(
-      'Completed ($count)',
-      name: 'shoppingTabCompleted',
-      desc: '',
-      args: [count],
-    );
-  }
-
-  /// `No shopping items yet.`
+  /// `No shopping items to buy.`
   String get shoppingEmptyTitle {
     return Intl.message(
-      'No shopping items yet.',
+      'No shopping items to buy.',
       name: 'shoppingEmptyTitle',
       desc: '',
       args: [],
@@ -721,10 +706,10 @@ class S {
     );
   }
 
-  /// `Amount (optional)`
+  /// `How many`
   String get shoppingAmountLabel {
     return Intl.message(
-      'Amount (optional)',
+      'How many',
       name: 'shoppingAmountLabel',
       desc: '',
       args: [],
@@ -741,40 +726,40 @@ class S {
     );
   }
 
-  /// `Context (optional)`
+  /// `Notes`
   String get shoppingContextLabel {
     return Intl.message(
-      'Context (optional)',
+      'Notes',
       name: 'shoppingContextLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add notes for your home`
+  /// `Anything helpful (brand, size, etc.)`
   String get shoppingContextHint {
     return Intl.message(
-      'Add notes for your home',
+      'Anything helpful (brand, size, etc.)',
       name: 'shoppingContextHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `Reference photo (optional)`
+  /// `Add a photo`
   String get shoppingPhotoLabel {
     return Intl.message(
-      'Reference photo (optional)',
+      'Add a photo',
       name: 'shoppingPhotoLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Replace reference photo`
+  /// `Help someone to know what to buy`
   String get shoppingPhotoReplaceLabel {
     return Intl.message(
-      'Replace reference photo',
+      'Help someone to know what to buy',
       name: 'shoppingPhotoReplaceLabel',
       desc: '',
       args: [],
@@ -811,10 +796,10 @@ class S {
     );
   }
 
-  /// `Edit item`
+  /// `Save changes`
   String get shoppingSubmitEdit {
     return Intl.message(
-      'Edit item',
+      'Save changes',
       name: 'shoppingSubmitEdit',
       desc: '',
       args: [],
@@ -851,81 +836,41 @@ class S {
     );
   }
 
-  /// `Archive completed items`
+  /// `Items bought`
   String get shoppingArchiveCta {
     return Intl.message(
-      'Archive completed items',
+      'Items bought',
       name: 'shoppingArchiveCta',
       desc: '',
       args: [],
     );
   }
 
-  /// `You bought these items?`
-  String get shoppingArchiveConfirmTitle {
-    return Intl.message(
-      'You bought these items?',
-      name: 'shoppingArchiveConfirmTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ready to archive your completed shopping items.`
-  String get shoppingArchiveConfirmBody {
-    return Intl.message(
-      'Ready to archive your completed shopping items.',
-      name: 'shoppingArchiveConfirmBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Trigger Share spend?`
+  /// `Create bill?`
   String get shoppingArchiveSharePromptTitle {
     return Intl.message(
-      'Trigger Share spend?',
+      'Create bill?',
       name: 'shoppingArchiveSharePromptTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Do you want to create a draft Share expense from these items?`
+  /// `Do you want to create a draft bill from these items?`
   String get shoppingArchiveSharePromptBody {
     return Intl.message(
-      'Do you want to create a draft Share expense from these items?',
+      'Do you want to create a draft bill from these items?',
       name: 'shoppingArchiveSharePromptBody',
       desc: '',
       args: [],
     );
   }
 
-  /// `Yes, create draft`
+  /// `Yes`
   String get shoppingArchiveShareYes {
     return Intl.message(
-      'Yes, create draft',
+      'Yes',
       name: 'shoppingArchiveShareYes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Completed items archived.`
-  String get shoppingArchiveSuccess {
-    return Intl.message(
-      'Completed items archived.',
-      name: 'shoppingArchiveSuccess',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Draft Share expense triggered.`
-  String get shoppingShareDraftTriggered {
-    return Intl.message(
-      'Draft Share expense triggered.',
-      name: 'shoppingShareDraftTriggered',
       desc: '',
       args: [],
     );
@@ -1006,10 +951,10 @@ class S {
     return Intl.message('Sign out', name: 'logout', desc: '', args: []);
   }
 
-  /// `Connecting you to your home…`
+  /// `Connecting you to your homeâ€¦`
   String get membership_status_checking {
     return Intl.message(
-      'Connecting you to your home…',
+      'Connecting you to your homeâ€¦',
       name: 'membership_status_checking',
       desc: '',
       args: [],
@@ -2506,10 +2451,10 @@ class S {
     );
   }
 
-  /// `Drafts can’t repeat until you add a split.`
+  /// `Drafts canâ€™t repeat until you add a split.`
   String get shareCreateErrorRecurrenceDraft {
     return Intl.message(
-      'Drafts can’t repeat until you add a split.',
+      'Drafts canâ€™t repeat until you add a split.',
       name: 'shareCreateErrorRecurrenceDraft',
       desc: '',
       args: [],
@@ -3111,6 +3056,26 @@ class S {
     );
   }
 
+  /// `Current`
+  String get flowListTabCurrent {
+    return Intl.message(
+      'Current',
+      name: 'flowListTabCurrent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upcoming`
+  String get flowListTabFuture {
+    return Intl.message(
+      'Upcoming',
+      name: 'flowListTabFuture',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `We couldn't load flows. Pull to refresh.`
   String get flowListError {
     return Intl.message(
@@ -3131,10 +3096,10 @@ class S {
     );
   }
 
-  /// `See what needs doing — and who's taking care of it.`
+  /// `See what needs doing â€” and who's taking care of it.`
   String get exploreFlowSubtitle {
     return Intl.message(
-      'See what needs doing — and who\'s taking care of it.',
+      'See what needs doing â€” and who\'s taking care of it.',
       name: 'exploreFlowSubtitle',
       desc: '',
       args: [],
@@ -3151,21 +3116,21 @@ class S {
     );
   }
 
-  /// `Shopping items to manage`
+  /// `Shopping list`
   String get exploreShoppingSectionTitle {
     return Intl.message(
-      'Shopping items to manage',
+      'Shopping list',
       name: 'exploreShoppingSectionTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Tap to edit or delete`
-  String get exploreShoppingItemSubtitle {
+  /// `View and manage your shared shopping items.`
+  String get exploreShoppingSubtitle {
     return Intl.message(
-      'Tap to edit or delete',
-      name: 'exploreShoppingItemSubtitle',
+      'View and manage your shared shopping items.',
+      name: 'exploreShoppingSubtitle',
       desc: '',
       args: [],
     );
@@ -3191,10 +3156,10 @@ class S {
     );
   }
 
-  /// `Bills keep money clear between people — without awkward reminders.`
+  /// `Bills keep money clear between people â€” without awkward reminders.`
   String get shareCreatedListEmptySubtitle {
     return Intl.message(
-      'Bills keep money clear between people — without awkward reminders.',
+      'Bills keep money clear between people â€” without awkward reminders.',
       name: 'shareCreatedListEmptySubtitle',
       desc: '',
       args: [],
@@ -3991,20 +3956,20 @@ class S {
     );
   }
 
-  /// `Anything you’d like to share?`
+  /// `Anything youâ€™d like to share?`
   String get harmonyCommentLabel {
     return Intl.message(
-      'Anything you’d like to share?',
+      'Anything youâ€™d like to share?',
       name: 'harmonyCommentLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `What’s been contributing to this feeling at home?`
+  /// `Whatâ€™s been contributing to this feeling at home?`
   String get harmonyCommentHint {
     return Intl.message(
-      'What’s been contributing to this feeling at home?',
+      'Whatâ€™s been contributing to this feeling at home?',
       name: 'harmonyCommentHint',
       desc: '',
       args: [],
@@ -4324,10 +4289,10 @@ class S {
     );
   }
 
-  /// `You don’t need to share feedback right now.`
+  /// `You donâ€™t need to share feedback right now.`
   String get npsSubmitErrorNotRequired {
     return Intl.message(
-      'You don’t need to share feedback right now.',
+      'You donâ€™t need to share feedback right now.',
       name: 'npsSubmitErrorNotRequired',
       desc: '',
       args: [],
@@ -5184,10 +5149,10 @@ class S {
     );
   }
 
-  /// `Putting the home’s expectations into words.`
+  /// `Putting the homeâ€™s expectations into words.`
   String get reflectiveHousePrimary {
     return Intl.message(
-      'Putting the home’s expectations into words.',
+      'Putting the homeâ€™s expectations into words.',
       name: 'reflectiveHousePrimary',
       desc: '',
       args: [],
@@ -5224,20 +5189,20 @@ class S {
     );
   }
 
-  /// `We couldn’t finish your preference reflection. Please try again soon.`
+  /// `We couldnâ€™t finish your preference reflection. Please try again soon.`
   String get preferenceReportGenerationMissing {
     return Intl.message(
-      'We couldn’t finish your preference reflection. Please try again soon.',
+      'We couldnâ€™t finish your preference reflection. Please try again soon.',
       name: 'preferenceReportGenerationMissing',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn’t finish your preference reflection. Head back and try again.`
+  /// `We couldnâ€™t finish your preference reflection. Head back and try again.`
   String get preferenceReportGenerationFailed {
     return Intl.message(
-      'We couldn’t finish your preference reflection. Head back and try again.',
+      'We couldnâ€™t finish your preference reflection. Head back and try again.',
       name: 'preferenceReportGenerationFailed',
       desc: '',
       args: [],
@@ -5524,111 +5489,11 @@ class S {
     );
   }
 
-  /// `Share with care`
-  String get weeklyRewriteHeader {
-    return Intl.message(
-      'Share with care',
-      name: 'weeklyRewriteHeader',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `This won’t be shared as written.`
-  String get weeklyRewriteHelperPrimary {
-    return Intl.message(
-      'This won’t be shared as written.',
-      name: 'weeklyRewriteHelperPrimary',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Kinly rewrites this to help it land more calmly.`
-  String get weeklyRewriteHelperSecondary {
-    return Intl.message(
-      'Kinly rewrites this to help it land more calmly.',
-      name: 'weeklyRewriteHelperSecondary',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Share with one person`
-  String get weeklyRewriteRecipientLabel {
-    return Intl.message(
-      'Share with one person',
-      name: 'weeklyRewriteRecipientLabel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `What happened?`
-  String get weeklyRewriteMessageLabel {
-    return Intl.message(
-      'What happened?',
-      name: 'weeklyRewriteMessageLabel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `I understand this won’t be sent as written.`
-  String get weeklyRewriteConsent {
-    return Intl.message(
-      'I understand this won’t be sent as written.',
-      name: 'weeklyRewriteConsent',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Rewrite with Kinly`
   String get weeklyRewriteCta {
     return Intl.message(
       'Rewrite with Kinly',
       name: 'weeklyRewriteCta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Send calmly`
-  String get weeklyRewriteSubmit {
-    return Intl.message(
-      'Send calmly',
-      name: 'weeklyRewriteSubmit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Shared. We’ll show you the calmer version after it’s sent.`
-  String get weeklyRewriteSuccess {
-    return Intl.message(
-      'Shared. We’ll show you the calmer version after it’s sent.',
-      name: 'weeklyRewriteSuccess',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No one is eligible to receive this right now.`
-  String get weeklyRewriteNoRecipients {
-    return Intl.message(
-      'No one is eligible to receive this right now.',
-      name: 'weeklyRewriteNoRecipients',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Something went wrong. Your message wasn’t shared.`
-  String get weeklyRewriteErrorGeneric {
-    return Intl.message(
-      'Something went wrong. Your message wasn’t shared.',
-      name: 'weeklyRewriteErrorGeneric',
       desc: '',
       args: [],
     );

@@ -7,6 +7,7 @@ class AppRoutePaths {
   static const join = '/join';
   static const joinBlocked = '/join/blocked';
   static const joinWithCode = '/join/:code';
+  static const webJoinWithCode = '/kinly/join/:code';
   static const infoHub = '/settings/profile/info-hub';
   static const today = '/today';
   static const todayHousePulse = '/today/house-pulse';

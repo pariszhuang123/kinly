@@ -1,18 +1,22 @@
 import 'package:flutter/widgets.dart';
 
+import 'package:kinly/core/theme/kinly_sections.dart';
+import 'package:kinly/core/theme/section_assets.dart';
 import 'package:kinly/core/ui/kinly_list_tile.dart';
+import 'package:kinly/core/ui/section_container.dart';
 import 'package:kinly/generated/l10n.dart';
-import 'package:kinly/renderer/material/kinly_icons.dart';
 
 class TodayShoppingListCard extends StatelessWidget {
   const TodayShoppingListCard({
     super.key,
     required this.onTap,
     required this.count,
+    required this.colors,
   });
 
   final VoidCallback onTap;
   final int count;
+  final SectionColors colors;
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +25,19 @@ class TodayShoppingListCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return KinlyListTile(
-      leading: const Icon(KinlyIcons.shoppingBasketOutlined),
+    const iconSize = 28.0;
+
+    return SectionContainer(
       title: s.shoppingCardTitle,
-      subtitle: s.shoppingCardSubtitle(count),
-      trailing: const Icon(KinlyIcons.chevronRight),
-      onTap: onTap,
+      colors: colors,
+      leading: SectionAssets.shopping.build(
+        color: colors.icon,
+        size: iconSize,
+      ),
+      child: KinlyListTile(
+        title: s.shoppingCardSubtitle(count),
+        onTap: onTap,
+      ),
     );
   }
 }

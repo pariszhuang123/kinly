@@ -70,8 +70,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m27(count) =>
       "${Intl.plural(count, one: '${count} artículo por revisar', other: '${count} artículos por revisar')}";
 
-  static String m28(count) => "Completados (${count})";
-
   static String m19(name) => "Hola ${name}";
 
   static String m20(count) =>
@@ -149,11 +147,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
       "Mira cada cuenta que has creado y haz seguimiento de cobros.",
     ),
-    "exploreShoppingItemSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Toca para editar o eliminar",
-    ),
     "exploreShoppingSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Artículos de compra para gestionar",
+      "Lista de compras",
+    ),
+    "exploreShoppingSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Ver y gestionar los artículos de compra compartidos.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
       "¿Quién se encarga?",
@@ -311,6 +309,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage(
       "Necesita atención",
     ),
+    "flowListTabCurrent": MessageLookupByLibrary.simpleMessage("Actual"),
+    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("Próximos"),
     "force_update_body": MessageLookupByLibrary.simpleMessage(
       "Esta versión de Kinly ya no es compatible. Instala la versión más reciente para continuar.",
     ),
@@ -582,11 +582,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
       "Fotos de flujos ilimitadas",
     ),
-    "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
-      "Fotos de listas de compras ilimitadas",
-    ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "Gastos compartidos ilimitados",
+    ),
+    "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
+      "Fotos de listas de compras ilimitadas",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "No se pudo cargar el paywall.",
@@ -1376,12 +1376,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage(
       "Cantidad (opcional)",
     ),
-    "shoppingArchiveConfirmBody": MessageLookupByLibrary.simpleMessage(
-      "¿Listo para archivar tus artículos completados?",
-    ),
-    "shoppingArchiveConfirmTitle": MessageLookupByLibrary.simpleMessage(
-      "¿Ya compraste estos artículos?",
-    ),
     "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage(
       "Archivar completados",
     ),
@@ -1393,9 +1387,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage(
       "Sí, crear borrador",
-    ),
-    "shoppingArchiveSuccess": MessageLookupByLibrary.simpleMessage(
-      "Artículos completados archivados.",
     ),
     "shoppingCardSubtitle": m27,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage(
@@ -1426,7 +1417,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "shoppingEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Aún no hay artículos.",
     ),
-    "shoppingFieldEmpty": MessageLookupByLibrary.simpleMessage("Ninguno"),
     "shoppingListTitle": MessageLookupByLibrary.simpleMessage(
       "Lista de compras",
     ),
@@ -1444,16 +1434,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "shoppingPhotoReplaceLabel": MessageLookupByLibrary.simpleMessage(
       "Reemplazar foto de referencia",
     ),
-    "shoppingShareDraftTriggered": MessageLookupByLibrary.simpleMessage(
-      "Se activó el borrador de Share.",
-    ),
     "shoppingSubmitAdd": MessageLookupByLibrary.simpleMessage(
       "Añadir artículo",
     ),
     "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage(
       "Editar artículo",
     ),
-    "shoppingTabCompleted": m28,
     "shoppingTabPending": MessageLookupByLibrary.simpleMessage("Por comprar"),
     "shoppingValidationName": MessageLookupByLibrary.simpleMessage(
       "Ingresa el nombre del artículo.",

@@ -79,6 +79,7 @@ Widget _buildTodayContentImpl(
     onPersonalGratitudeTap:
         () => stateful._openGratitudeWall(context, openPersonal: true),
     onHousePulseTap: () => _openHousePulseDetail(context),
+    onShoppingTap: () => stateful._openShoppingList(context),
   );
 
   final scope = TodaySurfaceScope(
@@ -90,24 +91,10 @@ Widget _buildTodayContentImpl(
     actions: actions,
     inviteConfig: inviteConfig,
     formatMemberCapNames: stateful._formatMemberCapNames,
+    shoppingCount: stateful._shoppingCount,
   );
   final body = _buildTodayBodyImpl(scope);
-  return TodaySurfaceSlots(
-    body:
-        hasShopping
-            ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TodayShoppingListCard(
-                  onTap: () => stateful._openShoppingList(context),
-                  count: stateful._shoppingCount,
-                ),
-                SizedBox(height: spacing.lg),
-                body,
-              ],
-            )
-            : body,
-  ).body;
+  return TodaySurfaceSlots(body: body).body;
 }
 
 Widget _buildTodayBodyImpl(TodaySurfaceScope scope) {

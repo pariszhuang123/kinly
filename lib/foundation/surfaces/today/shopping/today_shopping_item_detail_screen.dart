@@ -23,6 +23,8 @@ class TodayShoppingItemDetailScreen extends StatelessWidget {
   final String photoUrl;
   final Future<void> Function() onMarkComplete;
 
+  static bool _hasText(String? value) => (value ?? '').trim().isNotEmpty;
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -30,7 +32,67 @@ class TodayShoppingItemDetailScreen extends StatelessWidget {
     final spacing = theme.extension<Spacing>()!;
     final resolvedPhotoUrl = photoUrl;
     final hasPhoto = resolvedPhotoUrl.isNotEmpty;
+    final hasQuantity = _hasText(item.quantity);
+    final hasDetails = _hasText(item.details);
     final heroTag = 'shopping-photo-${resolvedPhotoUrl.hashCode}';
+
+    final detailSections = <Widget>[
+      _ReadOnlyField(label: s.shoppingNameLabel, value: item.name),
+    ];
+
+    if (hasQuantity) {
+      detailSections
+        ..add(SizedBox(height: spacing.md))
+        ..add(
+          _ReadOnlyField(
+            label: s.shoppingAmountLabel,
+            value: item.quantity!.trim(),
+          ),
+        );
+    }
+
+    if (hasDetails) {
+      detailSections
+        ..add(SizedBox(height: spacing.md))
+        ..add(
+          _ReadOnlyField(
+            label: s.shoppingContextLabel,
+            value: item.details!.trim(),
+            maxLines: 6,
+          ),
+        );
+    }
+
+    if (hasPhoto) {
+      detailSections
+        ..add(SizedBox(height: spacing.md))
+        ..add(Text(s.shoppingPhotoLabel, style: theme.textTheme.titleSmall))
+        ..add(SizedBox(height: spacing.sm))
+        ..add(
+          KinlyTapTarget(
+            onTap: () {
+              context.pushNamed(
+                AppRouteNames.todayShoppingPhoto,
+                queryParameters: {
+                  'photoUrl': resolvedPhotoUrl,
+                  'title': s.shoppingDetailTitle,
+                  'heroTag': heroTag,
+                },
+              );
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Hero(
+                tag: heroTag,
+                child: AspectRatio(
+                  aspectRatio: 4 / 3,
+                  child: Image.network(resolvedPhotoUrl, fit: BoxFit.cover),
+                ),
+              ),
+            ),
+          ),
+        );
+    }
 
     return KinlyScaffold(
       appBar: KinlyAppBar(title: Text(s.shoppingDetailTitle)),
@@ -40,56 +102,18 @@ class TodayShoppingItemDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _ReadOnlyField(label: s.shoppingNameLabel, value: item.name),
-              SizedBox(height: spacing.md),
-              _ReadOnlyField(
-                label: s.shoppingAmountLabel,
-                value: item.quantity ?? s.shoppingFieldEmpty,
-              ),
-              SizedBox(height: spacing.md),
-              _ReadOnlyField(
-                label: s.shoppingContextLabel,
-                value: item.details ?? s.shoppingFieldEmpty,
-                maxLines: 6,
-              ),
-              SizedBox(height: spacing.md),
-              Text(s.shoppingPhotoLabel, style: theme.textTheme.titleSmall),
-              SizedBox(height: spacing.sm),
-              if (!hasPhoto)
-                Text(s.shoppingFieldEmpty)
-              else
-                KinlyTapTarget(
-                  onTap: () {
-                    context.pushNamed(
-                      AppRouteNames.todayShoppingPhoto,
-                      queryParameters: {
-                        'photoUrl': resolvedPhotoUrl,
-                        'title': s.shoppingDetailTitle,
-                        'heroTag': heroTag,
-                      },
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Hero(
-                      tag: heroTag,
-                      child: AspectRatio(
-                        aspectRatio: 4 / 3,
-                        child: Image.network(resolvedPhotoUrl, fit: BoxFit.cover),
-                      ),
-                    ),
-                  ),
-                ),
+              ...detailSections,
               const Spacer(),
-              KinlyFilledButton.text(
-                onPressed: () async {
-                  await onMarkComplete();
-                  if (!context.mounted) return;
-                  context.pop();
-                },
-                label: s.shoppingMarkCompleteCta,
-                fullWidth: true,
-              ),
+              if (!item.isCompleted)
+                KinlyFilledButton.text(
+                  onPressed: () async {
+                    await onMarkComplete();
+                    if (!context.mounted) return;
+                    context.pop();
+                  },
+                  label: s.shoppingMarkCompleteCta,
+                  fullWidth: true,
+                ),
             ],
           ),
         ),

@@ -46,6 +46,9 @@ class SectionAssets {
   // ❤️ Pulse / Gratitude → Material filled heart icon
   static const pulse = SectionAsset.icon(Icons.favorite_rounded);
 
+  // 🛒 Shopping → Material basket icon
+  static const shopping = SectionAsset.icon(Icons.shopping_basket_outlined);
+
   // 🟦 Hub → Still SVG asset
   static const hub = SectionAsset.asset('assets/icons/feature/Hub.svg');
 }

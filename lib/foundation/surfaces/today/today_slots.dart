@@ -51,6 +51,7 @@ class TodaySurfaceActions {
     required this.onGratitudeTap,
     required this.onPersonalGratitudeTap,
     required this.onHousePulseTap,
+    required this.onShoppingTap,
   });
 
   final Future<void> Function() onMemberCapPrimary;
@@ -67,6 +68,7 @@ class TodaySurfaceActions {
   final void Function() onGratitudeTap;
   final void Function() onPersonalGratitudeTap;
   final Future<void> Function() onHousePulseTap;
+  final VoidCallback onShoppingTap;
 }
 
 class TodaySurfaceScope {
@@ -79,6 +81,7 @@ class TodaySurfaceScope {
     required this.actions,
     required this.inviteConfig,
     required this.formatMemberCapNames,
+    required this.shoppingCount,
   });
 
   final BuildContext context;
@@ -89,4 +92,5 @@ class TodaySurfaceScope {
   final TodaySurfaceActions actions;
   final TodayInviteConfig inviteConfig;
   final String Function(List<String> names) formatMemberCapNames;
+  final int shoppingCount;
 }

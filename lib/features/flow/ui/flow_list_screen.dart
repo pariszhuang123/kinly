@@ -8,6 +8,7 @@ import '../../../app/router/app_route_names.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/kinly_tab_bar.dart';
 import '../../../core/ui/buttons/kinly_fab.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
@@ -21,7 +22,9 @@ import '../../../core/ui/kinly_scaffold.dart';
 import '../../../core/ui/kinly_app_bar.dart';
 import '../../../core/ui/kinly_theme_access.dart';
 
-class FlowListScreen extends StatelessWidget {
+enum _FlowTimeTab { current, future }
+
+class FlowListScreen extends StatefulWidget {
   const FlowListScreen({
     super.key,
     this.homeId,
@@ -34,6 +37,13 @@ class FlowListScreen extends StatelessWidget {
   final FlowListFilter filter;
   final String? currentUserId;
   final bool showOnlyCurrentUser;
+
+  @override
+  State<FlowListScreen> createState() => _FlowListScreenState();
+}
+
+class _FlowListScreenState extends State<FlowListScreen> {
+  _FlowTimeTab _selectedTab = _FlowTimeTab.current;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +103,7 @@ class FlowListScreen extends StatelessWidget {
       return;
     }
 
-    if (filter == FlowListFilter.active) {
+    if (widget.filter == FlowListFilter.active) {
       final result = await _pushFlowDetail(context, choreId: entry.id);
       if (!context.mounted) return;
       if (result is FlowChoreOutcome) {
@@ -127,31 +137,112 @@ class FlowListScreen extends StatelessWidget {
       );
     }
     if (state.status == FlowListStatus.success) {
-      final filteredItems = _filteredItems(state.items);
-      if (filteredItems.isEmpty) {
-        return _FlowListEmpty(onAddTap: () => _openChoreEntry(context, null));
-      }
-      final actions = FlowSurfaceActions(
-        onAddTap: () => _openChoreEntry(context, null),
-        onItemTap: (entry) => _openChoreEntry(context, entry),
-        onRefresh: () => _handleRefresh(context),
-        onRetry:
-            () => context.read<FlowListBloc>().add(const FlowListRequested()),
-      );
-      final scope = FlowSurfaceScope(
-        context: context,
-        state: state,
-        items: filteredItems,
-        ownerUserId: state.ownerUserId,
-        spacing: spacing,
-        sections: sections,
-        strings: s,
-        actions: actions,
-      );
-      final slots = FlowSurfaceSlots(body: _buildFlowBody(scope));
-      return slots.body;
+      return _buildSuccessContent(context, state, s, spacing, sections);
     }
     return const SizedBox.shrink();
+  }
+
+  Widget _buildSuccessContent(
+    BuildContext context,
+    FlowListState state,
+    S s,
+    Spacing spacing,
+    KinlySections sections,
+  ) {
+    final filteredItems = _filteredItems(state.items);
+    if (filteredItems.isEmpty) {
+      return _FlowListEmpty(onAddTap: () => _openChoreEntry(context, null));
+    }
+
+    final (currentItems, futureItems) = _partitionByDate(filteredItems);
+
+    final hasCurrent = currentItems.isNotEmpty;
+    final hasFuture = futureItems.isNotEmpty;
+    final showTabs = hasCurrent && hasFuture;
+
+    _adjustSelectedTab(showTabs, hasCurrent, hasFuture);
+
+    final visibleItems =
+        showTabs
+            ? (_selectedTab == _FlowTimeTab.current
+                ? currentItems
+                : futureItems)
+            : filteredItems;
+
+    final actions = FlowSurfaceActions(
+      onAddTap: () => _openChoreEntry(context, null),
+      onItemTap: (entry) => _openChoreEntry(context, entry),
+      onRefresh: () => _handleRefresh(context),
+      onRetry:
+          () => context.read<FlowListBloc>().add(const FlowListRequested()),
+    );
+    final scope = FlowSurfaceScope(
+      context: context,
+      state: state,
+      items: visibleItems,
+      ownerUserId: state.ownerUserId,
+      spacing: spacing,
+      sections: sections,
+      strings: s,
+      actions: actions,
+    );
+
+    final body = _buildFlowBody(scope);
+
+    if (!showTabs) {
+      return body;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        KinlyTabBar<_FlowTimeTab>(
+          tabs: {
+            _FlowTimeTab.current: s.flowListTabCurrent,
+            _FlowTimeTab.future: s.flowListTabFuture,
+          },
+          selected: _selectedTab,
+          onChanged: (tab) {
+            if (tab == null) return;
+            setState(() => _selectedTab = tab);
+          },
+        ),
+        SizedBox(height: spacing.md),
+        Expanded(child: body),
+      ],
+    );
+  }
+
+  (List<ChoreListEntry>, List<ChoreListEntry>) _partitionByDate(
+    List<ChoreListEntry> items,
+  ) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final currentItems = <ChoreListEntry>[];
+    final futureItems = <ChoreListEntry>[];
+    for (final item in items) {
+      final entryDate = DateTime(
+        item.startDate.toLocal().year,
+        item.startDate.toLocal().month,
+        item.startDate.toLocal().day,
+      );
+      if (entryDate.isAfter(today)) {
+        futureItems.add(item);
+      } else {
+        currentItems.add(item);
+      }
+    }
+    return (currentItems, futureItems);
+  }
+
+  void _adjustSelectedTab(bool showTabs, bool hasCurrent, bool hasFuture) {
+    if (showTabs && !hasCurrent && _selectedTab == _FlowTimeTab.current) {
+      _selectedTab = _FlowTimeTab.future;
+    } else if (showTabs &&
+        !hasFuture &&
+        _selectedTab == _FlowTimeTab.future) {
+      _selectedTab = _FlowTimeTab.current;
+    }
   }
 
   Widget _buildFlowBody(FlowSurfaceScope scope) {
@@ -198,15 +289,17 @@ class FlowListScreen extends StatelessWidget {
 
   List<ChoreListEntry> _filteredItems(List<ChoreListEntry> items) {
     final scopedItems =
-        showOnlyCurrentUser &&
-                currentUserId != null &&
-                filter == FlowListFilter.active
+        widget.showOnlyCurrentUser &&
+                widget.currentUserId != null &&
+                widget.filter == FlowListFilter.active
             ? items
-                .where((entry) => entry.assigneeUserId == currentUserId)
+                .where(
+                  (entry) => entry.assigneeUserId == widget.currentUserId,
+                )
                 .toList(growable: false)
             : items;
 
-    switch (filter) {
+    switch (widget.filter) {
       case FlowListFilter.active:
         return scopedItems
             .where((entry) => entry.assigneeUserId != null)
@@ -221,7 +314,7 @@ class FlowListScreen extends StatelessWidget {
   }
 
   Map<String, dynamic> _flowQueryParamsOrEmpty() {
-    final value = homeId?.trim();
+    final value = widget.homeId?.trim();
     if (value == null || value.isEmpty) {
       return const <String, dynamic>{};
     }

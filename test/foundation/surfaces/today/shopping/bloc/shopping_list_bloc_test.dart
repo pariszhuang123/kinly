@@ -23,6 +23,9 @@ void main() {
     required String id,
     required bool isCompleted,
     required DateTime updatedAt,
+    String? name,
+    String? quantity,
+    String? details,
     String? completedByUserId,
     String? photoPath,
     DateTime? archivedAt,
@@ -30,9 +33,9 @@ void main() {
     return ShoppingListItem(
       id: id,
       homeId: homeId,
-      name: 'item-$id',
-      quantity: null,
-      details: null,
+      name: name ?? 'item-$id',
+      quantity: quantity,
+      details: details,
       referencePhotoPath: photoPath,
       isCompleted: isCompleted,
       completedByUserId: completedByUserId,
@@ -336,14 +339,8 @@ void main() {
         verify(
           () => expensesRepository.create(
             homeId: homeId,
-            amountCents: null,
             description: 'Shopping spend',
-            notes: null,
-            splitType: null,
-            memberIds: null,
-            customSplits: null,
-            recurrenceEvery: null,
-            recurrenceUnit: null,
+            notes: '- item-mine-1',
             startDate: any(named: 'startDate'),
           ),
         ).called(1);
@@ -363,6 +360,69 @@ void main() {
             .having((s) => s.linkedExpenseId, 'linkedExpenseId', 'expense-1')
             .having((s) => s.linkedExpenseTick, 'linkedExpenseTick', 1),
       ],
+    );
+
+    blocTest<ShoppingListBloc, ShoppingListState>(
+      'formats share draft notes with quantity per item and skips empty quantity brackets',
+      build: () {
+        when(
+          () => shoppingListRepository.prepareExpenseForUser(homeId: homeId),
+        ).thenAnswer(
+          (_) async => const ShoppingExpenseDraftSeed(
+            defaultDescription: 'Grocery spend',
+            defaultNotes: 'Auto-generated from shopping',
+            itemIds: ['mine-1', 'mine-2'],
+            itemCount: 2,
+          ),
+        );
+        when(
+          () => shoppingListRepository.getForHome(homeId: homeId),
+        ).thenAnswer(
+          (_) async => const ShoppingListSnapshot(
+            listId: 'list-1',
+            itemsUnarchivedCount: 0,
+            itemsUncompletedCount: 0,
+            items: [],
+          ),
+        );
+        return buildBloc();
+      },
+      seed: () => ShoppingListState.loaded(
+        pendingItems: const [],
+        completedItems: [
+          item(
+            id: 'mine-1',
+            name: 'Milk',
+            quantity: '2 cartons',
+            isCompleted: true,
+            completedByUserId: currentUserId,
+            updatedAt: DateTime(2026, 2, 1, 10),
+          ),
+          item(
+            id: 'mine-2',
+            name: 'Eggs',
+            quantity: '  ',
+            isCompleted: true,
+            completedByUserId: currentUserId,
+            updatedAt: DateTime(2026, 2, 1, 9),
+          ),
+        ],
+        photoUrlsByItemId: const {},
+        myCompletedCount: 2,
+      ),
+      act: (bloc) =>
+          bloc.add(const ArchiveMyCompletedShoppingItemsEvent(triggerShareSpend: true)),
+      verify: (_) {
+        verify(
+          () => expensesRepository.create(
+            homeId: homeId,
+            description: 'Grocery spend',
+            notes:
+                'Auto-generated from shopping\n\n- Milk (2 cartons)\n- Eggs',
+            startDate: any(named: 'startDate'),
+          ),
+        ).called(1);
+      },
     );
   });
 }
