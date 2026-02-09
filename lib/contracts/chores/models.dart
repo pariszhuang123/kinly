@@ -184,10 +184,12 @@ class ChoreAssigneeSummary {
   });
 
   factory ChoreAssigneeSummary.fromJson(Map<String, dynamic> json) {
+    final username = json['username'] as String?;
+    final fullName = json['full_name'] as String?;
     return ChoreAssigneeSummary(
       // Supports both "user_id" and "id" just in case.
       userId: (json['user_id'] ?? json['id']) as String,
-      fullName: json['full_name'] as String?,
+      fullName: username ?? fullName,
       avatarStoragePath: json['avatar_storage_path'] as String?,
       isOwner: json['is_owner'] as bool? ?? false,
     );

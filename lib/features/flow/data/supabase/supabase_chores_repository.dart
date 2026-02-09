@@ -213,7 +213,7 @@ class SupabaseChoresRepository implements ChoresRepository {
   Future<List<ChoreAssigneeSummary>> listAssigneesForHome(String homeId) async {
     try {
       final response = await _client.rpc(
-        'home_assignees_list',
+        'home_assignees_list_v2',
         params: {'p_home_id': homeId},
       );
       if (response is List) {

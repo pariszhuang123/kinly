@@ -134,7 +134,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "demoAccessSubmit": MessageLookupByLibrary.simpleMessage("Sign in"),
     "demoAccessTapHint": m2,
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "See what needs doing â€” and who\'s taking care of it.",
+      "See what needs doing and who\'s taking care of it.",
     ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
       "Update status and details to keep shared things clear.",
@@ -1240,7 +1240,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Split it so everyone knows their part before publishing.",
     ),
     "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Bills keep money clear between people â€” without awkward reminders.",
+      "Bills keep money clear, with no awkward reminders.",
     ),
     "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "No bills yet",

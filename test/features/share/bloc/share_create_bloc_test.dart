@@ -1319,6 +1319,164 @@ void main() {
   );
 
   blocTest<ShareCreateBloc, ShareCreateState>(
+    'auto-selects participant when custom amount is entered',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Supplies',
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.custom,
+        selectedParticipantIds: <String>{},
+      );
+      return seededState(form: form);
+    },
+    act:
+        (bloc) =>
+            bloc.add(const ShareCreateCustomAmountChanged('member_a', '6.00')),
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having(
+                (s) => s.form.customAmountInputs['member_a'],
+                'custom amount',
+                '6.00',
+              )
+              .having(
+                (s) => s.form.selectedParticipantIds.contains('member_a'),
+                'member_a auto-selected',
+                true,
+              )
+              .having((s) => s.hasUserEdits, 'hasUserEdits', true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'auto-deselects participant when custom amount is blanked',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Supplies',
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.custom,
+        selectedParticipantIds: {'member_a', 'member_b'},
+        customAmountInputs: {'member_a': '6.00', 'member_b': '4.00'},
+      );
+      return seededState(form: form);
+    },
+    act:
+        (bloc) =>
+            bloc.add(const ShareCreateCustomAmountChanged('member_a', '')),
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having(
+                (s) => s.form.selectedParticipantIds.contains('member_a'),
+                'member_a auto-deselected',
+                false,
+              )
+              .having(
+                (s) => s.form.selectedParticipantIds.contains('member_b'),
+                'member_b still selected',
+                true,
+              )
+              .having((s) => s.hasUserEdits, 'hasUserEdits', true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'auto-deselects participant when custom amount is set to zero',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Supplies',
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.custom,
+        selectedParticipantIds: {'member_a', 'member_b'},
+        customAmountInputs: {'member_a': '6.00', 'member_b': '4.00'},
+      );
+      return seededState(form: form);
+    },
+    act:
+        (bloc) =>
+            bloc.add(const ShareCreateCustomAmountChanged('member_a', '0')),
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having(
+                (s) => s.form.selectedParticipantIds.contains('member_a'),
+                'member_a auto-deselected',
+                false,
+              )
+              .having((s) => s.hasUserEdits, 'hasUserEdits', true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'clears selection when switching to custom mode with blank amounts',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Test',
+        amountInput: '20.00',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_a', 'member_b', 'member_self'},
+      );
+      return seededState(form: form);
+    },
+    act:
+        (bloc) =>
+            bloc.add(const ShareCreateSplitModeChanged(ShareSplitMode.custom)),
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having(
+                (s) => s.form.splitMode,
+                'splitMode',
+                ShareSplitMode.custom,
+              )
+              .having(
+                (s) => s.form.selectedParticipantIds.isEmpty,
+                'no one selected',
+                true,
+              )
+              .having((s) => s.hasUserEdits, 'hasUserEdits', true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'keeps participants with amounts when switching to custom mode',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Test',
+        amountInput: '20.00',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_a', 'member_b', 'member_self'},
+        customAmountInputs: {'member_a': '10.00'},
+      );
+      return seededState(form: form);
+    },
+    act:
+        (bloc) =>
+            bloc.add(const ShareCreateSplitModeChanged(ShareSplitMode.custom)),
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having(
+                (s) => s.form.splitMode,
+                'splitMode',
+                ShareSplitMode.custom,
+              )
+              .having(
+                (s) => s.form.selectedParticipantIds,
+                'only member_a selected',
+                {'member_a'},
+              )
+              .having((s) => s.hasUserEdits, 'hasUserEdits', true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
     'selects all participants when switching to equal mode with empty selection',
     build: () => buildBloc(),
     seed: () {

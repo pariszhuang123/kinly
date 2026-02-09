@@ -3096,10 +3096,10 @@ class S {
     );
   }
 
-  /// `See what needs doing â€” and who's taking care of it.`
+  /// `See what needs doing and who's taking care of it.`
   String get exploreFlowSubtitle {
     return Intl.message(
-      'See what needs doing â€” and who\'s taking care of it.',
+      'See what needs doing and who\'s taking care of it.',
       name: 'exploreFlowSubtitle',
       desc: '',
       args: [],
@@ -3156,10 +3156,10 @@ class S {
     );
   }
 
-  /// `Bills keep money clear between people â€” without awkward reminders.`
+  /// `Bills keep money clear, with no awkward reminders.`
   String get shareCreatedListEmptySubtitle {
     return Intl.message(
-      'Bills keep money clear between people â€” without awkward reminders.',
+      'Bills keep money clear, with no awkward reminders.',
       name: 'shareCreatedListEmptySubtitle',
       desc: '',
       args: [],

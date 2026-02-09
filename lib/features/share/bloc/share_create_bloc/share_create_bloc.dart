@@ -169,12 +169,24 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     );
 
     final isSwitchingToEqual = event.mode == ShareSplitMode.equal;
+    final isSwitchingToCustom = event.mode == ShareSplitMode.custom;
     final hasNoSelection = nextForm.selectedParticipantIds.isEmpty;
     if (isSwitchingToEqual && hasNoSelection && state.participants.isNotEmpty) {
       nextForm = nextForm.copyWith(
         selectedParticipantIds: LinkedHashSet<String>.from(
           state.participants.map((p) => p.userId),
         ),
+      );
+    } else if (isSwitchingToCustom) {
+      final idsWithAmount = nextForm.customAmountInputs.entries
+          .where((e) {
+            final cents = ShareCreateForm.parseCurrency(e.value);
+            return cents != null && cents > 0;
+          })
+          .map((e) => e.key)
+          .toSet();
+      nextForm = nextForm.copyWith(
+        selectedParticipantIds: LinkedHashSet<String>.from(idsWithAmount),
       );
     }
 
@@ -205,7 +217,20 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     ShareCreateCustomAmountChanged event,
     Emitter<ShareCreateState> emit,
   ) {
-    final updated = state.form.updateCustomAmount(event.userId, event.amount);
+    var updated = state.form.updateCustomAmount(event.userId, event.amount);
+
+    final cents = ShareCreateForm.parseCurrency(event.amount);
+    final shouldSelect = cents != null && cents > 0;
+    final isCurrentlySelected = updated.selectedParticipantIds.contains(
+      event.userId,
+    );
+
+    if (shouldSelect && !isCurrentlySelected) {
+      updated = updated.updateSelection(event.userId, true);
+    } else if (!shouldSelect && isCurrentlySelected) {
+      updated = updated.updateSelection(event.userId, false);
+    }
+
     emit(state.copyWith(form: updated, hasUserEdits: true));
   }
 

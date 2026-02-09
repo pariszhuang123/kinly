@@ -57,7 +57,7 @@ class _ParticipantsSection extends StatelessWidget {
               controller: controller,
               selected: isSelected,
               canToggle: !locked,
-              canEditAmount: !locked && isSelected,
+              canEditAmount: !locked,
               onToggled:
                   locked
                       ? null
