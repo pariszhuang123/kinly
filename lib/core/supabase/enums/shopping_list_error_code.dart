@@ -5,6 +5,7 @@ enum ShoppingListErrorCode {
   photoDeleteNotAllowed,
   notHomeMember,
   itemNotFound,
+  itemAlreadyCompletedByOther,
   invalidExpense,
   paywallShoppingItemPhotosCap,
   unauthorized,

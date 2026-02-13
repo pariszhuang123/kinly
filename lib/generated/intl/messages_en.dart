@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m3(appName) => "Made with ${appName} - Together feels lighter";
 
   static String m4(link) =>
-      "Sharing a glimpse of our Kinly gratitude wall. Download the app: ${link}";
+      "A few shoutouts from our Kinly home. Download the app: ${link}";
 
   static String m5(weeks) =>
       "${Intl.plural(weeks, zero: 'This week', one: '# week ago', other: '# weeks ago')}";
@@ -152,9 +152,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Who\'s handling this?",
     ),
     "flowChoreCreateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Flow created.",
+      "Task created.",
     ),
-    "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("Add Flow"),
+    "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("Add Task"),
     "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage(
       "Delete flow",
     ),
@@ -169,10 +169,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Mark complete",
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t complete the flow. Please try again.",
+      "Couldn\'t complete this task. Please try again.",
     ),
     "flowChoreDetailCompletionSuccess": MessageLookupByLibrary.simpleMessage(
-      "Flow completed.",
+      "Task completed.",
     ),
     "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
       "Helpful context",
@@ -184,12 +184,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "No context provided.",
     ),
     "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
-      "Flow details",
+      "Task details",
     ),
     "flowChoreDetailUnassigned": MessageLookupByLibrary.simpleMessage(
       "Unassigned",
     ),
-    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Edit Flow"),
+    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Edit Task"),
     "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
       "That member isn\'t part of this home right now.",
     ),
@@ -197,7 +197,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "You don\'t have permission to change this flow.",
     ),
     "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t save the flow. Please try again.",
+      "Couldn\'t save this flow. Please try again.",
     ),
     "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
       "That photo path isn\'t valid for this home.",
@@ -206,7 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Pick a valid start date.",
     ),
     "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
-      "This flow isn\'t updateable right now.",
+      "This flow is not available to update right now.",
     ),
     "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
       "You\'re at the free limit for active flows. Upgrade for more space.",
@@ -227,7 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "We couldn\'t open that link. Try again.",
     ),
     "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load this flow. Please try again.",
+      "We couldn\'t load this task. Please try again.",
     ),
     "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
       "Eg. Bin night, clean the fridge, water plants",
@@ -273,10 +273,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Save changes",
     ),
     "flowChoreUpdateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Flow updated.",
+      "Task updated.",
     ),
     "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
-      "Choose someone, or leave it open for anyone.",
+      "Choose someone.",
     ),
     "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
       "Pick a date up to a year from today.",
@@ -285,17 +285,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enter a valid link that starts with http or https.",
     ),
     "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
-      "Give the flow a name.",
+      "Name this task.",
     ),
     "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("Draft"),
     "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Flows keep everyone aligned.",
+      "Tasks to keep everyone aligned.",
     ),
     "flowListEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Nothing here yet",
     ),
     "flowListError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load flows. Pull to refresh.",
+      "We couldn\'t load tasks. Pull to refresh.",
     ),
     "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage(
       "Needs attention",
@@ -309,74 +309,70 @@ class MessageLookup extends MessageLookupByLibrary {
     "force_update_title": MessageLookupByLibrary.simpleMessage("Update needed"),
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("friend"),
     "gratitudeWallEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "This is where small thank-yous live.\n\nStart with one moment from this week.",
+      "Quick thanks live here.\n\nAdd one from this week.",
     ),
     "gratitudeWallEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No gratitude posts yet",
+      "No shoutouts yet",
     ),
     "gratitudeWallErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Unable to load gratitude right now.",
+      "Unable to load shoutouts right now.",
     ),
     "gratitudeWallFooter": m3,
     "gratitudeWallHouseTab": MessageLookupByLibrary.simpleMessage("House"),
     "gratitudeWallPersonalSummary": MessageLookupByLibrary.simpleMessage(
-      "Your private space for kind messages.",
+      "A private place to save quick thanks.",
     ),
-    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage(
-      "Personal",
-    ),
+    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage("Mine"),
     "gratitudeWallPersonalTitle": MessageLookupByLibrary.simpleMessage(
-      "Your Personal Gratitude Wall",
+      "My Shoutouts",
     ),
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("Try again"),
-    "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage(
-      "Share this wall",
-    ),
+    "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage("Share"),
     "gratitudeWallShareError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t share right now. Please try again.",
     ),
     "gratitudeWallShareMessage": m4,
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
-      "Gratitude wall",
+      "House shoutouts",
     ),
     "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Homes"),
     "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
-      "Thanks",
+      "Shoutouts",
     ),
     "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage("People"),
     "gratitudeWallWeeksAgo": m5,
     "greetingPartOfDay": m6,
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
-      "Whatâ€™s been contributing to this feeling at home?",
+      "Add context if helpful",
     ),
     "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
-      "Anything youâ€™d like to share?",
+      "Optional note",
     ),
     "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
-      "You\'ve already shared your mood for this week.",
+      "You\'ve already submitted this week.",
     ),
     "harmonyErrorCommentRequiredForMention":
         MessageLookupByLibrary.simpleMessage(
-          "Add a comment to share a mention.",
+          "Add a short note to send this mention.",
         ),
     "harmonyErrorCommentRequiredForPublicWall":
         MessageLookupByLibrary.simpleMessage(
-          "Add a comment to post on the gratitude wall.",
+          "Add a short note to post this shoutout.",
         ),
     "harmonyErrorComplaintNeedsSentence": MessageLookupByLibrary.simpleMessage(
-      "Add a full sentence (use a period or newline).",
+      "Add a clear sentence so it\'s easier to understand.",
     ),
     "harmonyErrorComplaintTooBrief": MessageLookupByLibrary.simpleMessage(
-      "Write at least a short sentence (6+ words).",
+      "Write a short sentence so it\'s easier to understand.",
     ),
     "harmonyErrorComplaintTooShort": MessageLookupByLibrary.simpleMessage(
-      "Add more detail so your housemate can understand.",
+      "Add a little more detail so it\'s clear.",
     ),
     "harmonyErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "You are unable to submit feedback for this home.",
+      "Submitting for this home is unavailable.",
     ),
     "harmonyErrorSingleMentionRequired": MessageLookupByLibrary.simpleMessage(
-      "Choose exactly one person for this note.",
+      "Choose one person for this note.",
     ),
     "harmonyErrorUnknown": MessageLookupByLibrary.simpleMessage(
       "Something went wrong. Please try again.",
@@ -391,15 +387,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Thunderstorm",
     ),
     "harmonyQuestion": MessageLookupByLibrary.simpleMessage(
-      "How\'s your home feeling this week?",
+      "Anything to appreciate or adjust this week?",
     ),
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
-      "Share this with your home",
+      "Visible to everyone in the home",
     ),
-    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Send feedback"),
-    "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
-      "Thanks! Your feedback was saved.",
-    ),
+    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Save"),
+    "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage("Saved"),
     "homeVibeCoverage": m7,
     "homeVibeTitle": MessageLookupByLibrary.simpleMessage("Home Vibe"),
     "housePulseCardHeader": MessageLookupByLibrary.simpleMessage(
@@ -418,10 +412,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "houseVibeShareMessage": m10,
     "houseVibeShareTitle": MessageLookupByLibrary.simpleMessage("House vibe"),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Read quick thank-yous and small moments of appreciation.",
+      "Quick thanks from your home.",
     ),
     "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
-      "Gratitude Wall",
+      "Shoutouts",
     ),
     "hubCodeCopied": MessageLookupByLibrary.simpleMessage("Invite code copied"),
     "hubError": MessageLookupByLibrary.simpleMessage(
@@ -435,7 +429,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "No active members yet.",
     ),
     "hubPreferencesSubtitle": MessageLookupByLibrary.simpleMessage(
-      "How each person experiences shared living.",
+      "How each person prefers shared living to work.",
     ),
     "hubPreferencesTitle": MessageLookupByLibrary.simpleMessage(
       "Personal preferences",
@@ -519,7 +513,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Your shared home starts here.",
     ),
     "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
-      "Type @ to mention",
+      "Type @ to mention someone",
     ),
     "navExplore": MessageLookupByLibrary.simpleMessage("Manage"),
     "navHub": MessageLookupByLibrary.simpleMessage("Home Hub"),
@@ -528,32 +522,32 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please choose a score to continue.",
     ),
     "npsDescription": MessageLookupByLibrary.simpleMessage(
-      "Choose a number from 0 (not helpful) to 10 (extremely helpful).",
+      "0 means not at all. 10 means it\'s made a real difference.",
     ),
     "npsEmailSubject": MessageLookupByLibrary.simpleMessage(
-      "What could Kinly do better for your home?",
+      "How could Kinly better support your home?",
     ),
     "npsLaunchError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t open the next step.",
     ),
     "npsScaleHighLabel": MessageLookupByLibrary.simpleMessage(
-      "10 Extremely helpful",
+      "10 Made a real difference",
     ),
-    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 Not Helpful"),
+    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 Not at all"),
     "npsSubmitErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "You\'re not allowed to submit feedback right now.",
+      "Feedback is unavailable right now.",
     ),
     "npsSubmitErrorGeneric": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t send your feedback. Please try again.",
     ),
     "npsSubmitErrorInvalidScore": MessageLookupByLibrary.simpleMessage(
-      "Please pick a score between 0 and 10.",
+      "Please pick a number between 0 and 10.",
     ),
     "npsSubmitErrorNotRequired": MessageLookupByLibrary.simpleMessage(
-      "You donâ€™t need to share feedback right now.",
+      "You don\'t need to share feedback right now.",
     ),
     "npsTitle": MessageLookupByLibrary.simpleMessage(
-      "Has Kinly been helpful for your home so far?",
+      "Has Kinly helped your home run more smoothly?",
     ),
     "offline_body": MessageLookupByLibrary.simpleMessage(
       "Kinly needs an internet connection. Check your signal and try again.",
@@ -561,13 +555,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "offline_retry": MessageLookupByLibrary.simpleMessage("Try again"),
     "offline_title": MessageLookupByLibrary.simpleMessage("You\'re offline"),
     "paywallBulletFlows": MessageLookupByLibrary.simpleMessage(
-      "Unlimited flows",
+      "Unlimited tasks",
     ),
     "paywallBulletMembers": MessageLookupByLibrary.simpleMessage(
       "Unlimited home members",
     ),
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
-      "Unlimited flow photos",
+      "Unlimited task photos",
     ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "Unlimited shared expenses",
@@ -602,10 +596,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Stay on free plan",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Your home-level upgrade for less than 0.5% of your rent.",
+      "Costs less than 0.5% of your rent.",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
-      "Bring more harmony to your home",
+      "Keep your home running smoothly",
     ),
     "personalMentionsTitle": MessageLookupByLibrary.simpleMessage(
       "Personal mentions",
@@ -677,10 +671,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Could not load report",
     ),
     "preferenceReportGenerationFailed": MessageLookupByLibrary.simpleMessage(
-      "We couldnâ€™t finish your preference reflection. Head back and try again.",
+      "We couldn\'t finish your preference reflection. Head back and try again.",
     ),
     "preferenceReportGenerationMissing": MessageLookupByLibrary.simpleMessage(
-      "We couldnâ€™t finish your preference reflection. Please try again soon.",
+      "We couldn\'t finish your preference reflection. Please try again soon.",
     ),
     "preferenceReportReadOnlyNote": MessageLookupByLibrary.simpleMessage(
       "This shows what feels comfortable for them.",
@@ -703,7 +697,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioCleanlinessSharedSpaceQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "In shared spaces, how tidy feels good to you?",
+          "In shared spaces, what level of tidiness works for you?",
         ),
     "preferenceScenarioCommunicationChannelOption1":
         MessageLookupByLibrary.simpleMessage("Messaging or text"),
@@ -743,7 +737,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioConflictResolutionQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "If something feels a bit off between people at home, what usually helps you most?",
+          "If something needs addressing at home, what helps most?",
         ),
     "preferenceScenarioEnvironmentLightOption1":
         MessageLookupByLibrary.simpleMessage("Softer or dimmer lighting"),
@@ -753,7 +747,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Bright, well-lit spaces"),
     "preferenceScenarioEnvironmentLightQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "In shared areas, what kind of lighting do you tend to feel most comfortable with?",
+          "In shared areas, what lighting do you prefer?",
         ),
     "preferenceScenarioEnvironmentNoiseOption1":
         MessageLookupByLibrary.simpleMessage(
@@ -769,7 +763,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioEnvironmentNoiseQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "How ok are you with background noise in shared spaces?",
+          "How comfortable are you with background noise in shared spaces?",
         ),
     "preferenceScenarioEnvironmentScentOption1":
         MessageLookupByLibrary.simpleMessage(
@@ -783,7 +777,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioEnvironmentScentQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "How do strong scents (candles, cooking, cleaners) feel to you?",
+          "How comfortable are you with strong scents (candles, cooking, cleaners)?",
         ),
     "preferenceScenarioPrivacyNotificationsOption1":
         MessageLookupByLibrary.simpleMessage(
@@ -815,7 +809,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioPrivacyRoomEntryQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "About entering each other\'s rooms, what feels right to you?",
+          "Before entering someone\'s room, what feels right to you?",
         ),
     "preferenceScenarioRoutinePlanningOption1":
         MessageLookupByLibrary.simpleMessage(
@@ -845,7 +839,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioScheduleQuietHoursQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "As the day winds down, what usually feels okay to you at home?",
+          "In the evenings, what usually works best for you?",
         ),
     "preferenceScenarioScheduleSleepTimingOption1":
         MessageLookupByLibrary.simpleMessage("Earlier nights and mornings"),
@@ -855,7 +849,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Later nights and mornings"),
     "preferenceScenarioScheduleSleepTimingQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "What\'s your sleep wake schedule like?",
+          "Are you more of an early bird or a night owl?",
         ),
     "preferenceScenarioSocialHostingOption1":
         MessageLookupByLibrary.simpleMessage(
@@ -869,7 +863,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioSocialHostingQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "How do you generally feel about guests coming over to the home?",
+          "How do you feel about guests coming over to the home?",
         ),
     "preferenceScenarioSocialTogethernessOption1":
         MessageLookupByLibrary.simpleMessage("Mostly doing my own thing"),
@@ -881,7 +875,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Spending time together often"),
     "preferenceScenarioSocialTogethernessQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "At home, what balance usually feels best for you?",
+          "At home, what balance works best for you?",
         ),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage("Leave Home"),
     "profileActionConfirmDelete": MessageLookupByLibrary.simpleMessage(
@@ -894,7 +888,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Delete your account?",
     ),
     "profileConfirmLeaveMessage": MessageLookupByLibrary.simpleMessage(
-      "You\'ll lose access to Flow, history, and invites.",
+      "You\'ll lose access to tasks, history, and invites.",
     ),
     "profileConfirmLeaveTitle": MessageLookupByLibrary.simpleMessage(
       "Leave this home?",
@@ -1044,59 +1038,59 @@ class MessageLookup extends MessageLookupByLibrary {
       "Your profile is deactivated. Please sign in with another email address.",
     ),
     "pulseCloudySteadySummary": MessageLookupByLibrary.simpleMessage(
-      "This week felt mixed and steady.",
+      "A mix of smooth moments and small friction.",
     ),
-    "pulseCloudySteadyTitle": MessageLookupByLibrary.simpleMessage(
-      "Mixed and steady",
-    ),
+    "pulseCloudySteadyTitle": MessageLookupByLibrary.simpleMessage("Mixed"),
     "pulseCloudyTenseSummary": MessageLookupByLibrary.simpleMessage(
-      "This week felt mixed, with some tension.",
+      "Some tension surfaced this week.",
     ),
     "pulseCloudyTenseTitle": MessageLookupByLibrary.simpleMessage(
-      "Mixed with tension",
+      "Needs attention",
     ),
     "pulseFormingSummary": MessageLookupByLibrary.simpleMessage(
-      "A few more check-ins help.",
+      "A few more check-ins will give a clearer picture.",
     ),
     "pulseFormingTitle": MessageLookupByLibrary.simpleMessage("Still forming"),
     "pulsePartlySupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home felt okay, with care showing through.",
+      "Overall steady, with some areas to improve.",
     ),
     "pulsePartlySupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Okay with care",
+      "Okay overall",
     ),
     "pulseRainySupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "This week felt heavier, but care was present.",
+      "It may be time for a small reset.",
     ),
     "pulseRainySupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Heavy but supported",
+      "Reset recommended",
     ),
     "pulseRainyUnsupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "This week felt heavy. Support may help.",
+      "There\'s noticeable friction right now.",
     ),
     "pulseRainyUnsupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Heavy, support needed",
+      "Reset needed",
     ),
     "pulseSunnyBumpySummary": MessageLookupByLibrary.simpleMessage(
-      "This week felt mostly good, with a few bumps.",
+      "Mostly smooth, with a few small bumps.",
     ),
-    "pulseSunnyBumpyTitle": MessageLookupByLibrary.simpleMessage("Mostly good"),
+    "pulseSunnyBumpyTitle": MessageLookupByLibrary.simpleMessage(
+      "Mostly smooth",
+    ),
     "pulseSunnyCalmSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home felt warm and easy this week.",
+      "Things felt smooth this week.",
     ),
     "pulseSunnyCalmTitle": MessageLookupByLibrary.simpleMessage(
-      "Warm and easy",
+      "Running smoothly",
     ),
     "pulseThunderstormSummary": MessageLookupByLibrary.simpleMessage(
-      "This week felt tense. Kindness matters right now.",
+      "Tension is high. A quick reset can help.",
     ),
     "pulseThunderstormTitle": MessageLookupByLibrary.simpleMessage(
-      "Tense right now",
+      "Tension high",
     ),
     "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Create a flow",
+      "Create a task",
     ),
-    "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Flow"),
+    "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Task"),
     "quick_add_share_subtitle": MessageLookupByLibrary.simpleMessage(
       "Add a bill",
     ),
@@ -1112,7 +1106,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "A quiet moment before we show it.",
     ),
     "reflectiveHousePrimary": MessageLookupByLibrary.simpleMessage(
-      "Putting the homeâ€™s expectations into words.",
+      "Putting the home\'s expectations into words.",
     ),
     "reflectiveHouseSecondary": MessageLookupByLibrary.simpleMessage(
       "So everyone knows what to expect.",
@@ -1370,6 +1364,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "shoppingEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "No shopping items to buy.",
     ),
+    "shoppingErrorItemAlreadyCompletedByOther":
+        MessageLookupByLibrary.simpleMessage(
+          "Someone else already checked off this item.",
+        ),
     "shoppingListTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
     "shoppingMarkCompleteCta": MessageLookupByLibrary.simpleMessage(
       "Mark as completed",
@@ -1393,7 +1391,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "What do you want to do next?",
     ),
     "startReturningTitle": m19,
-    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Flow"),
+    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Task"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Bill"),
     "todayAddSheetShopping": MessageLookupByLibrary.simpleMessage(
       "Add Shopping Item",
@@ -1411,24 +1409,24 @@ class MessageLookup extends MessageLookupByLibrary {
       "All caught up today",
     ),
     "todayFlatmateInviteSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Invite them so you can stay aligned and share the load.",
+      "Stay aligned and share responsibilities.",
     ),
     "todayFlatmateInviteTitle": MessageLookupByLibrary.simpleMessage(
-      "Bring your home into Kinly",
+      "Invite your flatmates",
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
-    "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flow"),
+    "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Tasks"),
     "todayFlowSeeAll": m20,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Here\'s what\'s flowing in your home today.",
+      "Here’s what needs attention today.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
     "todayGratitudeHouseCta": MessageLookupByLibrary.simpleMessage(
-      "House wall",
+      "House shoutouts",
     ),
     "todayGratitudePersonalCta": MessageLookupByLibrary.simpleMessage(
-      "Personal wall",
+      "My shoutouts",
     ),
     "todayGratitudeSectionTitle": MessageLookupByLibrary.simpleMessage(
       "Gratitude Wall",
@@ -1437,7 +1435,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "New gratitude posts are waiting for you.",
     ),
     "todayInviteFriendsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Share Kinly with a friend so they can bring more harmony to their home too.",
+      "Share Kinly so they can make shared living easier.",
     ),
     "todayInviteFriendsTitle": MessageLookupByLibrary.simpleMessage(
       "Invite friends to Kinly",
@@ -1528,7 +1526,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage("Warm social"),
     "weeklyRewriteCta": MessageLookupByLibrary.simpleMessage(
-      "Rewrite with Kinly",
+      "Send calmly with Kinly",
     ),
     "welcome_create": MessageLookupByLibrary.simpleMessage("Create a Home"),
     "welcome_join": MessageLookupByLibrary.simpleMessage("Join your Home"),

@@ -15,19 +15,29 @@ class KinlyConfettiOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.sizeOf(context);
+
     return IgnorePointer(
-      child: Align(
-        alignment: alignment,
-        child: ConfettiWidget(
-          confettiController: confettiController,
-          blastDirectionality: BlastDirectionality.explosive,
-          shouldLoop: false,
-          emissionFrequency: 0.01,
-          maxBlastForce: 4,
-          minBlastForce: 2,
-          numberOfParticles: 6,
-          gravity: 0.12,
-          colors: colors,
+      child: SizedBox.expand(
+        child: Align(
+          alignment: alignment,
+          child: SizedBox(
+            width: screenSize.width,
+            height: screenSize.height,
+            child: ConfettiWidget(
+              confettiController: confettiController,
+              blastDirectionality: BlastDirectionality.explosive,
+              shouldLoop: false,
+              emissionFrequency: 0.01,
+              maxBlastForce: 4,
+              minBlastForce: 2,
+              numberOfParticles: 6,
+              gravity: 0.12,
+              colors: colors,
+              canvas: screenSize,
+              child: const SizedBox.expand(),
+            ),
+          ),
         ),
       ),
     );

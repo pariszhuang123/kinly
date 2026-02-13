@@ -43,4 +43,6 @@ abstract class ShoppingListRepository {
   String? toPublicPhotoUrl(String? storagePath);
 
   bool isPhotoLimitError(Object error);
+
+  bool isItemCompletedByOtherError(Object error);
 }

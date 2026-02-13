@@ -172,6 +172,26 @@ void main() {
     },
   );
 
+  testWidgets('listener triggers prompt when notification tick increments', (
+    tester,
+  ) async {
+    when(() => todayBloc.state).thenReturn(loadedState(notificationTick: 0));
+    whenListen(
+      todayBloc,
+      Stream.fromIterable([
+        loadedState(notificationTick: 0),
+        loadedState(notificationTick: 1),
+      ]),
+      initialState: loadedState(notificationTick: 0),
+    );
+
+    await tester.pumpWidget(buildApp());
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    expect(permissionService.callCount, 1);
+  });
+
   testWidgets('passes resolver timezone to notification sync', (tester) async {
     await tester.pumpWidget(buildApp());
     final dynamic state = tester.state(find.byType(TodayScreen));

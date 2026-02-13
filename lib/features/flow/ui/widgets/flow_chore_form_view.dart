@@ -326,11 +326,10 @@ class _AssigneeSelector extends StatelessWidget {
         .map(
           (assignee) => HomeMemberSummary(
             userId: assignee.userId,
-            username: assignee.fullName ?? '',
-            role: assignee.isOwner ? 'owner' : 'member',
+            username: assignee.fullName ?? assignee.username ?? assignee.email ?? '',
+            role: 'member',
             validFrom: DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
             avatarUrl: assignee.avatarStoragePath,
-            isOwner: assignee.isOwner,
           ),
         )
         .toList(growable: false);

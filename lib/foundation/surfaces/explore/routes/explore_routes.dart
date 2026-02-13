@@ -1,6 +1,8 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/app/router/home_tab_navigation.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,17 +26,39 @@ List<GoRoute> buildExploreRoutes({
     GoRoute(
       path: AppRoutePaths.explore,
       name: AppRouteNames.explore,
-      builder: (_, __) {
+      pageBuilder: (_, state) {
         final route = resolveContext();
-        return BlocProvider(
-          create:
-              (_) => ShoppingListBloc(
-                homeId: route.homeId,
-                currentUserId: route.userId,
-                shoppingListRepository: sl<ShoppingListRepository>(),
-                expensesRepository: sl<ExpensesRepository>(),
-              )..add(const LoadShoppingListEvent()),
-          child: ExploreScreen(homeId: route.homeId),
+        final navExtra = homeTabNavExtraFrom(state.extra);
+        final begin = homeTabEntryOffset(
+          targetIndex: homeTabIndexExplore,
+          navExtra: navExtra,
+        );
+        return CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: BlocProvider(
+            create:
+                (_) => ShoppingListBloc(
+                  homeId: route.homeId,
+                  currentUserId: route.userId,
+                  shoppingListRepository: sl<ShoppingListRepository>(),
+                  expensesRepository: sl<ExpensesRepository>(),
+                )..add(const LoadShoppingListEvent()),
+            child: ExploreScreen(homeId: route.homeId),
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (begin == Offset.zero) {
+              return child;
+            }
+            return SlideTransition(
+              position: animation.drive(
+                Tween<Offset>(
+                  begin: begin,
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeOutCubic)),
+              ),
+              child: child,
+            );
+          },
         );
       },
     ),

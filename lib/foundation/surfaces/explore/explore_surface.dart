@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/app_route_names.dart';
+import '../../../app/router/home_tab_navigation.dart';
+import '../../../app/router/home_tab_swipe_region.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/home_bottom_nav.dart';
@@ -28,36 +30,56 @@ class ExploreScreen extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return PopScope(
-      // ❗ Prevent Explore from being popped via back button / gesture
+      // Prevent Explore from being popped via back button / gesture.
       canPop: false,
-      child: KinlyScaffold(
-        backgroundColor: colorScheme.surface,
-        appBar: KinlyAppBar(
-          title: Text(s.navExplore),
-          // Just in case, no back arrow on Explore root tab
-          automaticallyImplyLeading: false,
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsetsDirectional.all(spacing.lg),
-            child: _buildExploreBody(context, theme, spacing, s),
+      child: HomeTabSwipeRegion(
+        onSwipeLeft: () {
+          context.goNamed(
+            AppRouteNames.hub,
+            extra: const HomeTabNavExtra(fromIndex: homeTabIndexExplore),
+          );
+        },
+        onSwipeRight: () {
+          context.goNamed(
+            AppRouteNames.today,
+            extra: const HomeTabNavExtra(fromIndex: homeTabIndexExplore),
+          );
+        },
+        child: KinlyScaffold(
+          backgroundColor: colorScheme.surface,
+          appBar: KinlyAppBar(
+            title: Text(s.navExplore),
+            // Root tab: no back arrow.
+            automaticallyImplyLeading: false,
           ),
-        ),
-        bottomNavigationBar: HomeBottomNav(
-          currentIndex: 1,
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                context.goNamed(AppRouteNames.today);
-                break;
-              case 1:
-                // Already on Explore
-                break;
-              case 2:
-                context.goNamed(AppRouteNames.hub);
-                break;
-            }
-          },
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsetsDirectional.all(spacing.lg),
+              child: _buildExploreBody(context, theme, spacing, s),
+            ),
+          ),
+          bottomNavigationBar: HomeBottomNav(
+            currentIndex: 1,
+            onTap: (index) {
+              switch (index) {
+                case 0:
+                  context.goNamed(
+                    AppRouteNames.today,
+                    extra: const HomeTabNavExtra(fromIndex: homeTabIndexExplore),
+                  );
+                  break;
+                case 1:
+                  // Already on Explore.
+                  break;
+                case 2:
+                  context.goNamed(
+                    AppRouteNames.hub,
+                    extra: const HomeTabNavExtra(fromIndex: homeTabIndexExplore),
+                  );
+                  break;
+              }
+            },
+          ),
         ),
       ),
     );

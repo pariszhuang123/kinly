@@ -35,6 +35,7 @@ import 'features/home/home.dart';
 import 'contracts/profile/ports/profile_repository.dart';
 import 'core/notifications/notifications.dart';
 import 'core/notifications/authorization_status_mapper.dart';
+import 'core/notifications/startup_notification_permission_requester.dart';
 import 'features/auth/bloc/auth_bloc.dart';
 import 'features/offline/bloc/connectivity_cubit.dart';
 import 'features/offline/ui/connectivity_gate.dart';
@@ -132,6 +133,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   StreamSubscription<void>? _intentCapturedSub;
   NotificationTokenBootstrap? _tokenBootstrap;
   JoinIntentBootstrap? _joinBootstrap;
+  late final StartupNotificationPermissionRequester
+      _startupNotificationPermissionRequester;
   bool _requestedInitialNotificationPermission = false;
   String? _lastAuthUserId;
   String? _lastHomeId;
@@ -145,6 +148,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _logger = _resolveLogger();
     _logger.info('App session started. id=$_appSessionId', tag: _logTag);
+    _startupNotificationPermissionRequester =
+        StartupNotificationPermissionRequester(logger: _logger, tag: _logTag);
     _installGlobalErrorLogging();
     _timezoneResolver = sl<IanaTimezoneResolver>();
     _joinIntentCoordinator =
@@ -401,31 +406,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<void> _requestNotificationPermissionIfNeeded() async {
     if (_requestedInitialNotificationPermission) return;
     _requestedInitialNotificationPermission = true;
-    if (!Platform.isIOS) return;
     try {
-      final settings = await FirebaseMessaging.instance.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-        announcement: false,
-        provisional: false,
-      );
-      _logger.info(
-        'iOS notification permission status: ${settings.authorizationStatus.name}',
-        tag: _logTag,
-      );
-      final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-      _logger.info(
-        'APNs token after request: ${apnsToken ?? 'null'}',
-        tag: _logTag,
-      );
-      if (apnsToken != null && apnsToken.isNotEmpty) {
-        final fcmToken = await FirebaseMessaging.instance.getToken();
-        _logger.info(
-          'FCM token after request: ${fcmToken ?? 'null'}',
-          tag: _logTag,
-        );
-      }
+      await _startupNotificationPermissionRequester.requestIfSupported();
     } catch (error, stackTrace) {
       _logger.warn(
         'Notification permission request failed: $error',
@@ -434,6 +416,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         stackTrace: stackTrace,
       );
     }
+    await _refreshNotificationPreferencesFromOs();
   }
 
   Future<void> _refreshNotificationPreferencesFromOs() async {

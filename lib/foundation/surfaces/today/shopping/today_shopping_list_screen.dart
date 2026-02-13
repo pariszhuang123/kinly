@@ -58,7 +58,8 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
               prev.linkedExpenseTick != curr.linkedExpenseTick,
       listener: (context, state) async {
         if (state.messageTick > 0 && state.message != null) {
-          KinlySnackBar.showInfo(context, state.message!);
+          final resolved = _resolveErrorMessage(context, state);
+          KinlySnackBar.showError(context, resolved);
         }
         if (state.linkedExpenseTick > 0 && state.linkedExpenseId != null) {
           await context.pushNamed(
@@ -269,6 +270,13 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
     );
     if (!context.mounted) return;
     context.read<ShoppingListBloc>().add(const LoadShoppingListEvent(keepCurrent: true));
+  }
+
+  String _resolveErrorMessage(BuildContext context, ShoppingListState state) {
+    if (state.message == shoppingErrorItemCompletedByOther) {
+      return S.of(context).shoppingErrorItemAlreadyCompletedByOther;
+    }
+    return state.message!;
   }
 
   Future<void> _archiveCompleted(BuildContext context) async {

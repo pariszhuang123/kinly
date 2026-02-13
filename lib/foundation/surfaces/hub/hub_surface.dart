@@ -6,6 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../app/router/app_route_names.dart';
+import '../../../app/router/home_tab_navigation.dart';
+import '../../../app/router/home_tab_swipe_region.dart';
+import '../../../app/share/share_position_origin.dart';
 import '../../../core/theme/app_sizes.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
@@ -44,87 +47,101 @@ class HubScreen extends StatelessWidget {
 
     return PopScope(
       canPop: false,
-      child: KinlyScaffold(
-        backgroundColor: colorScheme.surface,
-        appBar: KinlyAppBar(
+      child: HomeTabSwipeRegion(
+        onSwipeRight: () {
+          context.goNamed(
+            AppRouteNames.explore,
+            extra: const HomeTabNavExtra(fromIndex: homeTabIndexHub),
+          );
+        },
+        child: KinlyScaffold(
           backgroundColor: colorScheme.surface,
-          title: Text(s.navHub),
-          automaticallyImplyLeading: false,
-        ),
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final maxWidth = sizes?.maxContentWidth ?? 640.0;
-              final width =
-                  constraints.maxWidth < maxWidth
-                      ? constraints.maxWidth
-                      : maxWidth;
+          appBar: KinlyAppBar(
+            backgroundColor: colorScheme.surface,
+            title: Text(s.navHub),
+            automaticallyImplyLeading: false,
+          ),
+          body: SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final maxWidth = sizes?.maxContentWidth ?? 640.0;
+                final width =
+                    constraints.maxWidth < maxWidth
+                        ? constraints.maxWidth
+                        : maxWidth;
 
-              return Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: width),
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.all(spacing.lg),
-                    child: BlocConsumer<HubBloc, HubState>(
-                      listenWhen:
-                          (previous, current) =>
-                              previous.notice != current.notice &&
-                              current.notice != null &&
-                              !current.isFailure,
-                      listener: (context, state) {
-                        if (!context.mounted) return;
-                        switch (state.notice) {
-                          case HubNotice.rotateSuccess:
-                            KinlySnackBar.showSuccess(
-                              context,
-                              s.hubRotateSuccess,
-                            );
-                            return;
-                          case HubNotice.rotateFailed:
-                            KinlySnackBar.showError(
-                              context,
-                              s.hubRotateError,
-                            );
-                            return;
-                          case HubNotice.refreshFailed:
-                            KinlySnackBar.showError(context, s.hubError);
-                            return;
-                          case HubNotice.loadFailed:
-                          case null:
-                            return;
-                        }
-                      },
-                      builder: (context, state) {
-                        return _buildHubContent(
-                          context: context,
-                          state: state,
-                          spacing: spacing,
-                          sections: sections,
-                          strings: s,
-                        );
-                      },
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: width),
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.all(spacing.lg),
+                      child: BlocConsumer<HubBloc, HubState>(
+                        listenWhen:
+                            (previous, current) =>
+                                previous.notice != current.notice &&
+                                current.notice != null &&
+                                !current.isFailure,
+                        listener: (context, state) {
+                          if (!context.mounted) return;
+                          switch (state.notice) {
+                            case HubNotice.rotateSuccess:
+                              KinlySnackBar.showSuccess(
+                                context,
+                                s.hubRotateSuccess,
+                              );
+                              return;
+                            case HubNotice.rotateFailed:
+                              KinlySnackBar.showError(
+                                context,
+                                s.hubRotateError,
+                              );
+                              return;
+                            case HubNotice.refreshFailed:
+                              KinlySnackBar.showError(context, s.hubError);
+                              return;
+                            case HubNotice.loadFailed:
+                            case null:
+                              return;
+                          }
+                        },
+                        builder: (context, state) {
+                          return _buildHubContent(
+                            context: context,
+                            state: state,
+                            spacing: spacing,
+                            sections: sections,
+                            strings: s,
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              );
+                );
+              },
+            ),
+          ),
+          bottomNavigationBar: HomeBottomNav(
+            currentIndex: 2,
+            onTap: (index) {
+              switch (index) {
+                case 0:
+                  context.goNamed(
+                    AppRouteNames.today,
+                    extra: const HomeTabNavExtra(fromIndex: homeTabIndexHub),
+                  );
+                  break;
+                case 1:
+                  context.goNamed(
+                    AppRouteNames.explore,
+                    extra: const HomeTabNavExtra(fromIndex: homeTabIndexHub),
+                  );
+                  break;
+                case 2:
+                  break;
+              }
             },
           ),
-        ),
-        bottomNavigationBar: HomeBottomNav(
-          currentIndex: 2,
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                context.goNamed(AppRouteNames.today);
-                break;
-              case 1:
-                context.goNamed(AppRouteNames.explore);
-                break;
-              case 2:
-                break;
-            }
-          },
         ),
       ),
     );
@@ -245,7 +262,16 @@ class HubScreen extends StatelessWidget {
       ),
     );
 
-    await Share.share(message, subject: s.hubShareInviteTitle);
+    try {
+      await Share.share(
+        message,
+        subject: s.hubShareInviteTitle,
+        sharePositionOrigin: sharePositionOriginForContext(context),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      KinlySnackBar.showError(context, s.hubInviteUnavailable);
+    }
   }
 
   Future<void> _shareAppLink(BuildContext context, HubState state) async {
@@ -263,7 +289,16 @@ class HubScreen extends StatelessWidget {
       const HubShareLogged(feature: 'invite_button', channel: 'system_share'),
     );
 
-    await Share.share(message, subject: s.hubShareAppTitle);
+    try {
+      await Share.share(
+        message,
+        subject: s.hubShareAppTitle,
+        sharePositionOrigin: sharePositionOriginForContext(context),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      KinlySnackBar.showError(context, s.hubInviteUnavailable);
+    }
   }
 
   Future<void> _copyInviteCode(BuildContext context, HubState state) async {

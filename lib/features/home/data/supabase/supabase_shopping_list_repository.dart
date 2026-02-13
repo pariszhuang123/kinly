@@ -276,6 +276,12 @@ class SupabaseShoppingListRepository implements ShoppingListRepository {
         error.code == ShoppingListErrorCode.paywallShoppingItemPhotosCap;
   }
 
+  @override
+  bool isItemCompletedByOtherError(Object error) {
+    return error is ShoppingListException &&
+        error.code == ShoppingListErrorCode.itemAlreadyCompletedByOther;
+  }
+
   Map<String, dynamic>? _coerceMap(dynamic value) {
     if (value is Map<String, dynamic>) return value;
     if (value is Map) return value.cast<String, dynamic>();

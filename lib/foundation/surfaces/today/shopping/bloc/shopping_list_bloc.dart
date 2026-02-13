@@ -4,9 +4,10 @@ import 'package:equatable/equatable.dart';
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
-
 part 'shopping_list_event.dart';
 part 'shopping_list_state.dart';
+
+const shoppingErrorItemCompletedByOther = 'ITEM_ALREADY_COMPLETED_BY_OTHER';
 
 class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
   ShoppingListBloc({
@@ -49,6 +50,16 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
       );
       await _load(emit, keepCurrent: true);
     } catch (error) {
+      if (_shoppingListRepository.isItemCompletedByOtherError(error)) {
+        await _load(emit, keepCurrent: true);
+        emit(
+          state.copyWith(
+            message: shoppingErrorItemCompletedByOther,
+            messageTick: state.messageTick + 1,
+          ),
+        );
+        return;
+      }
       emit(state.copyWith(message: error.toString(), messageTick: state.messageTick + 1));
     }
   }

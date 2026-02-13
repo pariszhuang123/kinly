@@ -92,7 +92,6 @@ class _Violation {
 
 final _discouragedPatterns = <String, RegExp>{
   'assign': RegExp(r'\bassign\w*', caseSensitive: false),
-  'task': RegExp(r'\btask\w*\b', caseSensitive: false),
   'chore': RegExp(r'\bchore\w*\b', caseSensitive: false),
   'due': RegExp(r'\bdue\b|\boverdue\b', caseSensitive: false),
   'require': RegExp(r'\brequir\w*\b|\bmust\b', caseSensitive: false),

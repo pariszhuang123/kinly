@@ -6,11 +6,13 @@ import 'package:share_plus/share_plus.dart';
 import 'package:confetti/confetti.dart';
 
 import '../../../core/di/locator.dart';
+import '../../../app/router/home_tab_swipe_region.dart';
 import '../../../core/logging/debug_logger.dart';
 import '../../../core/logging/logger.dart';
 import '../../../core/notifications/device_token_provider.dart';
 import '../../../core/notifications/notification_permission_service.dart';
 import '../../../app/router/app_route_names.dart';
+import '../../../app/router/home_tab_navigation.dart';
 import '../../../core/theme/app_sizes.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/spacing.dart';
@@ -48,6 +50,7 @@ import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
 import '../../../core/ui/kinly_scaffold.dart';
 import '../../../core/ui/kinly_theme_access.dart';
 import '../../../core/ui/kinly_fab_location.dart';
+import '../../../app/share/share_position_origin.dart';
 
 part 'today_surface_helpers.dart';
 part 'today_surface_flow_helpers.dart';
@@ -146,107 +149,126 @@ class _TodayScreenState extends State<TodayScreen>
       ],
       child: PopScope(
         canPop: false,
-        child: KinlyScaffold(
-          backgroundColor: colorScheme.surface,
-          body: Stack(
-            children: [
-              SafeArea(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final maxWidth = sizes?.maxContentWidth ?? 640.0;
+        child: HomeTabSwipeRegion(
+          onSwipeLeft: () {
+            context.goNamed(
+              AppRouteNames.explore,
+              extra: const HomeTabNavExtra(fromIndex: homeTabIndexToday),
+            );
+          },
+          child: KinlyScaffold(
+            backgroundColor: colorScheme.surface,
+            body: Stack(
+              children: [
+                SafeArea(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final maxWidth = sizes?.maxContentWidth ?? 640.0;
 
-                    return Align(
-                      alignment: Alignment.topCenter,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth:
-                              constraints.maxWidth < maxWidth
-                                  ? constraints.maxWidth
-                                  : maxWidth,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                spacing.lg,
-                                spacing.lg,
-                                spacing.lg,
-                                0,
+                      return Align(
+                        alignment: Alignment.topCenter,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth:
+                                constraints.maxWidth < maxWidth
+                                    ? constraints.maxWidth
+                                    : maxWidth,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                  spacing.lg,
+                                  spacing.lg,
+                                  spacing.lg,
+                                  0,
+                                ),
+                                child: TodayHeaderContainer(
+                                  partOfDay: partOfDay,
+                                ),
                               ),
-                              child: TodayHeaderContainer(partOfDay: partOfDay),
-                            ),
-                            SizedBox(height: spacing.xl),
-                            Expanded(
-                              child: KinlyScrollFade(
-                                child: SingleChildScrollView(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                    spacing.lg,
-                                    spacing.lg,
-                                    spacing.lg,
-                                    spacing.xl * 2, // bottom spacing for FAB
-                                  ),
-                                  child: BlocBuilder<TodayBloc, TodayState>(
-                                    builder: (context, state) {
-                                      return _buildTodayContent(
-                                        context,
-                                        state,
-                                        spacing,
-                                        s,
-                                        logger,
-                                      );
-                                    },
+                              SizedBox(height: spacing.xl),
+                              Expanded(
+                                child: KinlyScrollFade(
+                                  child: SingleChildScrollView(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                      spacing.lg,
+                                      spacing.lg,
+                                      spacing.lg,
+                                      spacing.xl *
+                                          2, // bottom spacing for FAB
+                                    ),
+                                    child: BlocBuilder<TodayBloc, TodayState>(
+                                      builder: (context, state) {
+                                        return _buildTodayContent(
+                                          context,
+                                          state,
+                                          spacing,
+                                          s,
+                                          logger,
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
+                      );
+                    },
+                  ),
+                ),
+                Positioned.fill(
+                  child: KinlyConfettiOverlay(
+                    confettiController: _confettiController,
+                    colors: [
+                      sections.flow.accent,
+                      sections.share.accent,
+                      colorScheme.primary,
+                      colorScheme.secondary,
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            floatingActionButton: KinlyFab(
+              onPressed: () async {
+                await TodayAddSheet.show(
+                  context,
+                  sections,
+                  onAddFlow: () => _openFlowChore(context),
+                  onAddShare: () => _openShareCreate(context),
+                  onAddShopping: () => _openShoppingCreate(context),
+                );
+              },
+              heroTag: 'today_fab',
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+            bottomNavigationBar: HomeBottomNav(
+              currentIndex: 0,
+              onTap: (index) {
+                switch (index) {
+                  case 0:
+                    break;
+                  case 1:
+                    context.goNamed(
+                      AppRouteNames.explore,
+                      extra:
+                          const HomeTabNavExtra(fromIndex: homeTabIndexToday),
                     );
-                  },
-                ),
-              ),
-              Positioned.fill(
-                child: KinlyConfettiOverlay(
-                  confettiController: _confettiController,
-                  colors: [
-                    sections.flow.accent,
-                    sections.share.accent,
-                    colorScheme.primary,
-                    colorScheme.secondary,
-                  ],
-                ),
-              ),
-            ],
-          ),
-          floatingActionButton: KinlyFab(
-            onPressed: () async {
-              await TodayAddSheet.show(
-                context,
-                sections,
-                onAddFlow: () => _openFlowChore(context),
-                onAddShare: () => _openShareCreate(context),
-                onAddShopping: () => _openShoppingCreate(context),
-              );
-            },
-            heroTag: 'today_fab',
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          bottomNavigationBar: HomeBottomNav(
-            currentIndex: 0,
-            onTap: (index) {
-              switch (index) {
-                case 0:
-                  break;
-                case 1:
-                  context.goNamed(AppRouteNames.explore);
-                  break;
-                case 2:
-                  context.goNamed(AppRouteNames.hub);
-                  break;
-              }
-            },
+                    break;
+                  case 2:
+                    context.goNamed(
+                      AppRouteNames.hub,
+                      extra:
+                          const HomeTabNavExtra(fromIndex: homeTabIndexToday),
+                    );
+                    break;
+                }
+              },
+            ),
           ),
         ),
       ),

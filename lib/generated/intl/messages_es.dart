@@ -1417,6 +1417,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "shoppingEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Aún no hay artículos.",
     ),
+    "shoppingErrorItemAlreadyCompletedByOther":
+        MessageLookupByLibrary.simpleMessage(
+          "Alguien más ya marcó este artículo.",
+        ),
     "shoppingListTitle": MessageLookupByLibrary.simpleMessage(
       "Lista de compras",
     ),

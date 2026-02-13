@@ -264,5 +264,5 @@ String? _resolveAssignee(BuildContext context, ChoreDetails details) {
     orElse: () => ChoreAssigneeSummary(userId: userId),
   );
 
-  return summary.fullName ?? S.of(context).friendDefaultName;
+  return summary.fullName ?? summary.username ?? summary.email ?? S.of(context).friendDefaultName;
 }

@@ -172,39 +172,41 @@ class TodayFlowEntry {
 /// - chores_get_for_home "assignees" array.
 class ChoreAssigneeSummary {
   final String userId;
+  final String? username;
   final String? fullName;
+  final String? email;
   final String? avatarStoragePath;
-  final bool isOwner;
 
   const ChoreAssigneeSummary({
     required this.userId,
+    this.username,
     this.fullName,
+    this.email,
     this.avatarStoragePath,
-    this.isOwner = false,
   });
 
   factory ChoreAssigneeSummary.fromJson(Map<String, dynamic> json) {
-    final username = json['username'] as String?;
-    final fullName = json['full_name'] as String?;
     return ChoreAssigneeSummary(
-      // Supports both "user_id" and "id" just in case.
       userId: (json['user_id'] ?? json['id']) as String,
-      fullName: username ?? fullName,
+      username: json['username'] as String?,
+      fullName: json['full_name'] as String?,
+      email: json['email'] as String?,
       avatarStoragePath: json['avatar_storage_path'] as String?,
-      isOwner: json['is_owner'] as bool? ?? false,
     );
   }
 
   ChoreAssigneeSummary copyWith({
+    String? username,
     String? fullName,
+    String? email,
     String? avatarStoragePath,
-    bool? isOwner,
   }) {
     return ChoreAssigneeSummary(
       userId: userId,
+      username: username ?? this.username,
       fullName: fullName ?? this.fullName,
+      email: email ?? this.email,
       avatarStoragePath: avatarStoragePath ?? this.avatarStoragePath,
-      isOwner: isOwner ?? this.isOwner,
     );
   }
 }

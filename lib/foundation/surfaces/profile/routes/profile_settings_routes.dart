@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
@@ -24,15 +25,29 @@ List<GoRoute> buildProfileSettingsRoutes({
     GoRoute(
       path: AppRoutePaths.profileSettings,
       name: AppRouteNames.profileSettings,
-      builder: (_, state) {
+      pageBuilder: (_, state) {
         final args = state.extra as ProfileSettingsRouteArgs?;
         final homeId = args?.homeId ?? resolveContext().homeId;
-        return ProfileSettingsProvider(
-          homeId: homeId,
-          initialDisplayName: args?.displayName,
-          initialAvatarUrl: args?.avatarUrl,
-          onMembershipRefresh: onMembershipRefresh,
-          onSignOut: onSignOut,
+        return CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: ProfileSettingsProvider(
+            homeId: homeId,
+            initialDisplayName: args?.displayName,
+            initialAvatarUrl: args?.avatarUrl,
+            onMembershipRefresh: onMembershipRefresh,
+            onSignOut: onSignOut,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(
+                Tween<Offset>(
+                  begin: const Offset(1, -1),
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeOutCubic)),
+              ),
+              child: child,
+            );
+          },
         );
       },
     ),

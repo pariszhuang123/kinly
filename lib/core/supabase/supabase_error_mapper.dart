@@ -363,6 +363,8 @@ const _shoppingListCodeMap = <String, ShoppingListErrorCode>{
   'PHOTO_DELETE_NOT_ALLOWED': ShoppingListErrorCode.photoDeleteNotAllowed,
   'NOT_HOME_MEMBER': ShoppingListErrorCode.notHomeMember,
   'ITEM_NOT_FOUND': ShoppingListErrorCode.itemNotFound,
+  'ITEM_ALREADY_COMPLETED_BY_OTHER':
+      ShoppingListErrorCode.itemAlreadyCompletedByOther,
   'INVALID_EXPENSE': ShoppingListErrorCode.invalidExpense,
   'PAYWALL_LIMIT_SHOPPING_ITEM_PHOTOS':
       ShoppingListErrorCode.paywallShoppingItemPhotosCap,

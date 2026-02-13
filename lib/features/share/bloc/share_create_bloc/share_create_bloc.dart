@@ -19,6 +19,7 @@ import '../../domain/share_split_mode.dart';
 
 part 'share_create_event.dart';
 part 'share_create_state.dart';
+part 'share_create_validation.dart';
 
 class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   ShareCreateBloc({
@@ -571,28 +572,6 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
       startDate: form.startDate,
       amountLocked: amountLocked,
     );
-  }
-
-  bool _hasBasicValidity(_ValidationContext ctx) {
-    final recurrencePairOk =
-        (ctx.recurrenceEvery == null && ctx.recurrenceUnit == null) ||
-        (ctx.recurrenceEvery != null && ctx.recurrenceUnit != null);
-    final recurrenceEveryOk =
-        ctx.recurrenceEvery == null || ctx.recurrenceEvery! >= 1;
-    final recurrenceOk =
-        (ctx.splitMode != null || ctx.recurrenceEvery == null) &&
-        recurrencePairOk &&
-        recurrenceEveryOk;
-    final hasEditInputs =
-        ctx.isEditing
-            ? ctx.amountLocked ||
-                (ctx.splitMode != null && ctx.editingExpenseId != null)
-            : true;
-
-    return ctx.descriptionValid &&
-        (!ctx.requiresAmount || ctx.amountValid) &&
-        recurrenceOk &&
-        hasEditInputs;
   }
 
   _SplitDecision? _buildSplitDecision(

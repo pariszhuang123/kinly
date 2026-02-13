@@ -177,16 +177,18 @@ void main() {
     test('parses with user_id key', () {
       final json = {
         'user_id': 'user-123',
+        'username': 'alice_k',
         'full_name': 'Alice',
+        'email': 'alice@example.com',
         'avatar_storage_path': 'avatars/alice.png',
-        'is_owner': true,
       };
       final result = ChoreAssigneeSummary.fromJson(json);
 
       expect(result.userId, 'user-123');
+      expect(result.username, 'alice_k');
       expect(result.fullName, 'Alice');
+      expect(result.email, 'alice@example.com');
       expect(result.avatarStoragePath, 'avatars/alice.png');
-      expect(result.isOwner, true);
     });
 
     test('parses with id key fallback', () {
@@ -196,11 +198,26 @@ void main() {
       expect(result.userId, 'user-456');
     });
 
-    test('defaults isOwner to false', () {
-      final json = {'user_id': 'user-123'};
+    test('parses all fields from v2 RPC response', () {
+      final json = {
+        'user_id': 'u1',
+        'full_name': 'Alice',
+        'username': 'alice_k',
+        'email': 'a@b.com',
+      };
       final result = ChoreAssigneeSummary.fromJson(json);
 
-      expect(result.isOwner, false);
+      expect(result.fullName, 'Alice');
+      expect(result.username, 'alice_k');
+      expect(result.email, 'a@b.com');
+    });
+
+    test('nullable fields default to null', () {
+      final result = ChoreAssigneeSummary.fromJson({'user_id': 'u4'});
+
+      expect(result.fullName, isNull);
+      expect(result.username, isNull);
+      expect(result.email, isNull);
     });
   });
 

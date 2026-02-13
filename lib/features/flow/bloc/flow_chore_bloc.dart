@@ -76,27 +76,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     emit(state.copyWith(isLoading: true, clearLoadError: true));
     try {
       final membership = await _homeRepository.getCurrentMembership();
-      final members = await _homeRepository.listActiveMembers(
-        _homeId,
-        excludeSelf: false,
-      );
-      final ownerUserId =
-          members.isNotEmpty
-              ? members
-                  .firstWhere(
-                    (member) => member.isOwner,
-                    orElse: () => members.first,
-                  )
-                  .userId
-              : null;
       final assignees = await _choresRepository.listAssigneesForHome(_homeId);
-      final assigneesWithOwner = assignees
-          .map(
-            (assignee) => assignee.copyWith(
-              isOwner: ownerUserId != null && assignee.userId == ownerUserId,
-            ),
-          )
-          .toList(growable: false);
       FlowChoreForm form = state.form;
       ChoreState? choreState = _choreId == null ? ChoreState.draft : null;
 
@@ -112,7 +92,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       emit(
         state.copyWith(
           isLoading: false,
-          assignees: assigneesWithOwner,
+          assignees: assignees,
           form: form,
           referenceForm: form,
           clearLoadError: true,

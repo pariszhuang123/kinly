@@ -148,6 +148,7 @@
   "shoppingDelete": "Eliminar artículo",
   "shoppingDeleteConfirmTitle": "¿Eliminar este artículo?",
   "shoppingDeleteConfirmBody": "Esto elimina el artículo de la lista compartida.",
+  "shoppingErrorItemAlreadyCompletedByOther": "Alguien más ya marcó este artículo.",
   "shoppingArchiveCta": "Archivar completados",
   "shoppingArchiveConfirmTitle": "¿Ya compraste estos artículos?",
   "shoppingArchiveConfirmBody": "¿Listo para archivar tus artículos completados?",

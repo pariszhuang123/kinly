@@ -124,10 +124,16 @@ Future<bool> _shareInviteImpl(
       return false;
     }
 
+    if (!context.mounted) return false;
+    final shareOrigin = sharePositionOriginForContext(context);
     final appLink = _buildInviteLinkImpl(invite);
     final raw = l10n.hubShareInviteBody(invite.code, appLink);
     final message = raw.replaceAll(r'\n', '\n');
-    await Share.share(message, subject: l10n.hubShareInviteTitle);
+    await Share.share(
+      message,
+      subject: l10n.hubShareInviteTitle,
+      sharePositionOrigin: shareOrigin,
+    );
     if (!context.mounted) return false;
     return true;
   } catch (error, stack) {

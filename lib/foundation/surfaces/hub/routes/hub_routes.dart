@@ -1,6 +1,8 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/app/router/home_tab_navigation.dart';
 import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
@@ -26,13 +28,35 @@ List<GoRoute> buildHubRoutes({
     GoRoute(
       path: AppRoutePaths.hub,
       name: AppRouteNames.hub,
-      builder: (_, __) {
+      pageBuilder: (_, state) {
         final membership = resolveContext();
-        return HubProvider(
-          homeId: membership.homeId,
-          homeRepository: sl<HomeRepository>(),
-          preferenceReportsRepository: sl<PreferenceReportsRepository>(),
-          houseVibeRepository: sl<HouseVibeRepository>(),
+        final navExtra = homeTabNavExtraFrom(state.extra);
+        final begin = homeTabEntryOffset(
+          targetIndex: homeTabIndexHub,
+          navExtra: navExtra,
+        );
+        return CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: HubProvider(
+            homeId: membership.homeId,
+            homeRepository: sl<HomeRepository>(),
+            preferenceReportsRepository: sl<PreferenceReportsRepository>(),
+            houseVibeRepository: sl<HouseVibeRepository>(),
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (begin == Offset.zero) {
+              return child;
+            }
+            return SlideTransition(
+              position: animation.drive(
+                Tween<Offset>(
+                  begin: begin,
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeOutCubic)),
+              ),
+              child: child,
+            );
+          },
         );
       },
     ),

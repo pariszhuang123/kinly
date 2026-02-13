@@ -119,6 +119,9 @@ void main() {
       ),
     ).thenAnswer((_) async => 1);
     when(
+      () => shoppingListRepository.isItemCompletedByOtherError(any()),
+    ).thenReturn(false);
+    when(
       () => expensesRepository.create(
         homeId: any(named: 'homeId'),
         amountCents: any(named: 'amountCents'),
@@ -422,6 +425,83 @@ void main() {
           ),
         ).called(1);
       },
+    );
+
+    blocTest<ShoppingListBloc, ShoppingListState>(
+      'toggle emits sentinel message and reloads list when item completed by other',
+      build: () {
+        final error = Exception('completed by other');
+        when(
+          () => shoppingListRepository.updateItem(
+            itemId: any(named: 'itemId'),
+            isCompleted: any(named: 'isCompleted'),
+          ),
+        ).thenThrow(error);
+        when(
+          () => shoppingListRepository.isItemCompletedByOtherError(error),
+        ).thenReturn(true);
+        return buildBloc();
+      },
+      seed: () => ShoppingListState.loaded(
+        pendingItems: [
+          item(
+            id: 'item-1',
+            isCompleted: false,
+            updatedAt: DateTime(2026, 2, 1, 10),
+          ),
+        ],
+        completedItems: const [],
+        photoUrlsByItemId: const {},
+        myCompletedCount: 0,
+      ),
+      act: (bloc) => bloc.add(
+        const ToggleShoppingItemEvent(itemId: 'item-1', isCompleted: true),
+      ),
+      expect: () => [
+        isA<ShoppingListState>()
+            .having((s) => s.isLoading, 'isLoading', false),
+        isA<ShoppingListState>()
+            .having((s) => s.message, 'message', shoppingErrorItemCompletedByOther)
+            .having((s) => s.messageTick, 'messageTick', 1),
+      ],
+      verify: (_) {
+        verify(
+          () => shoppingListRepository.getForHome(homeId: homeId),
+        ).called(1);
+      },
+    );
+
+    blocTest<ShoppingListBloc, ShoppingListState>(
+      'toggle emits generic message for non-completed-by-other errors',
+      build: () {
+        when(
+          () => shoppingListRepository.updateItem(
+            itemId: any(named: 'itemId'),
+            isCompleted: any(named: 'isCompleted'),
+          ),
+        ).thenThrow(Exception('network error'));
+        return buildBloc();
+      },
+      seed: () => ShoppingListState.loaded(
+        pendingItems: [
+          item(
+            id: 'item-1',
+            isCompleted: false,
+            updatedAt: DateTime(2026, 2, 1, 10),
+          ),
+        ],
+        completedItems: const [],
+        photoUrlsByItemId: const {},
+        myCompletedCount: 0,
+      ),
+      act: (bloc) => bloc.add(
+        const ToggleShoppingItemEvent(itemId: 'item-1', isCompleted: true),
+      ),
+      expect: () => [
+        isA<ShoppingListState>()
+            .having((s) => s.messageTick, 'messageTick', 1)
+            .having((s) => s.message, 'message', contains('network error')),
+      ],
     );
   });
 }

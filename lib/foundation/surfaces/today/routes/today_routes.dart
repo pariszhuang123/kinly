@@ -1,7 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/app/router/home_tab_navigation.dart';
 import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/flow/ports/chores_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
@@ -39,19 +41,41 @@ List<GoRoute> buildTodayRoutes({
     GoRoute(
       path: AppRoutePaths.today,
       name: AppRouteNames.today,
-      builder: (_, __) {
+      pageBuilder: (_, state) {
         final membership = resolveContext();
-        return TodayProvider(
-          homeId: membership.homeId,
-          choresRepository: sl<ChoresRepository>(),
-          profileRepository: sl<ProfileRepository>(),
-          expensesRepository: sl<ExpensesRepository>(),
-          homeRepository: sl<HomeRepository>(),
-          moodRepository: sl<MoodRepository>(),
-          housePulseRepository: sl<HousePulseRepository>(),
-          onboardingRepository: sl<OnboardingRepository>(),
-          preferenceReportsRepository: sl<PreferenceReportsRepository>(),
-          profileUpdateNotifier: sl<ProfileUpdateNotifier>(),
+        final navExtra = homeTabNavExtraFrom(state.extra);
+        final begin = homeTabEntryOffset(
+          targetIndex: homeTabIndexToday,
+          navExtra: navExtra,
+        );
+        return CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: TodayProvider(
+            homeId: membership.homeId,
+            choresRepository: sl<ChoresRepository>(),
+            profileRepository: sl<ProfileRepository>(),
+            expensesRepository: sl<ExpensesRepository>(),
+            homeRepository: sl<HomeRepository>(),
+            moodRepository: sl<MoodRepository>(),
+            housePulseRepository: sl<HousePulseRepository>(),
+            onboardingRepository: sl<OnboardingRepository>(),
+            preferenceReportsRepository: sl<PreferenceReportsRepository>(),
+            profileUpdateNotifier: sl<ProfileUpdateNotifier>(),
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (begin == Offset.zero) {
+              return child;
+            }
+            return SlideTransition(
+              position: animation.drive(
+                Tween<Offset>(
+                  begin: begin,
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeOutCubic)),
+              ),
+              child: child,
+            );
+          },
         );
       },
     ),
