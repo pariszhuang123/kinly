@@ -11,6 +11,7 @@ import '../../../core/config/app_config.dart';
 import '../../../core/di/locator.dart';
 import '../../../core/logging/debug_logger.dart';
 import '../../../core/logging/logger.dart';
+import '../../../core/share/share_position_origin.dart';
 
 /// Generic sharer for any RepaintBoundary-based surface.
 ///
@@ -71,11 +72,13 @@ class SnapshotSharer {
 
       final appLink = _resolveAppLink();
       final message = messageBuilder(appLink);
+      final shareOrigin = sharePositionOriginForContext(context);
 
       await Share.shareXFiles(
         [XFile(file.path)],
         subject: subject,
         text: message,
+        sharePositionOrigin: shareOrigin,
       );
 
       logger.info('Shared snapshot image', tag: logTag);
