@@ -147,5 +147,90 @@ void main() {
         expect(find.text(s.shareEditSubmit), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'switches from Delete to Update after first edit',
+      (tester) async {
+        final pristine = ShareCreateState.initial(
+          isEditing: true,
+          editingExpenseId: 'expense-1',
+          isAmountLocked: true,
+          canEdit: true,
+        ).copyWith(
+          paidByOther: false,
+          allPaid: false,
+          hasUserEdits: false,
+        );
+        final edited = pristine.copyWith(hasUserEdits: true);
+
+        await tester.pumpWidget(
+          buildSubject(state: pristine, allowDelete: true),
+        );
+        await tester.pumpAndSettle();
+
+        final s = S.of(tester.element(find.byType(ShareCreateActionBar)));
+        expect(find.text(s.shareEditDeleteButton), findsOneWidget);
+        expect(find.text(s.shareEditSubmit), findsNothing);
+
+        await tester.pumpWidget(
+          buildSubject(state: edited, allowDelete: true),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text(s.shareEditDeleteButton), findsNothing);
+        expect(find.text(s.shareEditSubmit), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'keeps Update when hasUserEdits remains true in session',
+      (tester) async {
+        final edited = ShareCreateState.initial(
+          isEditing: true,
+          editingExpenseId: 'expense-1',
+          isAmountLocked: true,
+          canEdit: true,
+        ).copyWith(
+          paidByOther: false,
+          allPaid: false,
+          hasUserEdits: true,
+        );
+
+        await tester.pumpWidget(
+          buildSubject(state: edited, allowDelete: true),
+        );
+        await tester.pumpAndSettle();
+
+        final s = S.of(tester.element(find.byType(ShareCreateActionBar)));
+        expect(find.text(s.shareEditDeleteButton), findsNothing);
+        expect(find.text(s.shareEditSubmit), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'never shows Delete when edit is fully disabled',
+      (tester) async {
+        final disabled = ShareCreateState.initial(
+          isEditing: true,
+          editingExpenseId: 'expense-1',
+          isAmountLocked: true,
+          canEdit: false,
+          editDisabledReason: 'RECURRING_CYCLE_IMMUTABLE',
+        ).copyWith(
+          hasUserEdits: false,
+          paidByOther: false,
+          allPaid: false,
+        );
+
+        await tester.pumpWidget(
+          buildSubject(state: disabled, allowDelete: true),
+        );
+        await tester.pumpAndSettle();
+
+        final s = S.of(tester.element(find.byType(ShareCreateActionBar)));
+        expect(find.text(s.shareEditDeleteButton), findsNothing);
+        expect(find.text(s.shareEditSubmit), findsOneWidget);
+      },
+    );
   });
 }

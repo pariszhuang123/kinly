@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 
 import '../../../contracts/expenses/models.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';

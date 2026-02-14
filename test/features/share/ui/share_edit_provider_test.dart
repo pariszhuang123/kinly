@@ -70,6 +70,23 @@ void main() {
       expect(result.editDisabledReason, 'RECURRING_CYCLE_IMMUTABLE');
     });
 
+    test('keeps server recurring disabled reason when provided', () {
+      final detail = buildDetail(
+        status: ExpenseStatus.active,
+        planId: 'plan-1',
+        recurrenceEvery: 2,
+        recurrenceUnit: ExpenseRecurrenceUnit.week,
+        canEdit: true,
+        editDisabledReason: 'CONVERTED_TO_PLAN',
+      );
+
+      final result = resolveShareEditConstraints(detail);
+
+      expect(result.canEdit, isFalse);
+      expect(result.amountLocked, isTrue);
+      expect(result.editDisabledReason, 'CONVERTED_TO_PLAN');
+    });
+
     test('keeps server constraints for non-active records', () {
       final detail = buildDetail(
         status: ExpenseStatus.draft,

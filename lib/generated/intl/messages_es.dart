@@ -22,20 +22,20 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(env) => "Iniciando Kinly (${env})";
 
-  static String m1(time) => "Programado para ${time}";
+  static String m1(time) => "Programado para las ${time}";
 
-  static String m2(current) => "Acceso de demo: ${current} de 7 toques";
+  static String m2(current) => "Acceso demo: ${current} de 7 toques";
 
   static String m3(appName) =>
       "Hecho con ${appName} - Juntos se siente más ligero";
 
   static String m4(link) =>
-      "Compartiendo un vistazo de nuestro muro de gratitud en Kinly. Descarga la app: ${link}";
+      "Unos cuantos agradecimientos de nuestro hogar en Kinly. Descarga la app: ${link}";
 
   static String m5(weeks) =>
-      "${Intl.plural(weeks, zero: 'Esta semana', one: 'Hace # semana', other: 'Hace # semanas')}";
+      "${Intl.plural(weeks, zero: 'Esta semana', one: 'hace # semana', other: 'hace # semanas')}";
 
-  static String m6(partOfDay, name) => "Buen ${partOfDay}, ${name}";
+  static String m6(partOfDay, name) => "Buen${partOfDay}, ${name}";
 
   static String m7(answered, total) =>
       "Basado en ${answered} de ${total} miembros";
@@ -46,13 +46,13 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m9(date) => "Actualizado el ${date}";
 
   static String m10(link) =>
-      "Compartiendo la vibra de nuestra casa en Kinly. Descarga la app: ${link}";
+      "Compartiendo nuestra vibra de casa en Kinly. Descarga la app: ${link}";
 
   static String m11(link) =>
       "Comparte Kinly para que juntos se sienta más ligero: ${link}";
 
   static String m12(code, link) =>
-      "¡Bienvenido a nuestro hogar de Kinly! Ingresa este código de invitación: ${code}\n\nDescarga la app de Kinly: ${link}";
+      "¡Bienvenido a nuestro hogar de Kinly! Introduce este código de invitación: ${code}\n\nDescarga la app de Kinly: ${link}";
 
   static String m13(code) => "Ya estás dentro. Bienvenido a casa.";
 
@@ -67,28 +67,28 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m18(paid, total) => "${paid} de ${total} pagadas";
 
-  static String m27(count) =>
-      "${Intl.plural(count, one: '${count} artículo por revisar', other: '${count} artículos por revisar')}";
+  static String m19(count) =>
+      "${Intl.plural(count, one: '${count} artículo por marcar', other: '${count} artículos por marcar')}";
 
-  static String m19(name) => "Hola ${name}";
+  static String m20(name) => "Hola ${name}";
 
-  static String m20(count) =>
-      "Ver todo: ${Intl.plural(count, one: '(#)', other: '(#)')}";
+  static String m21(count) =>
+      "Ver todo ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m21(name) => "No pudimos completar la solicitud de ${name}.";
+  static String m22(name) => "No pudimos completar la solicitud de ${name}.";
 
-  static String m22(name) => "${name} se unió a tu hogar.";
+  static String m23(name) => "${name} se unió a tu hogar.";
 
-  static String m23(name) => "${name} se unió a otro hogar.";
+  static String m24(name) => "${name} se unió a otro hogar.";
 
-  static String m24(names) =>
-      "${names} quiere unirse a tu hogar. Actualiza para admitir miembros ilimitados.";
-
-  static String m25(count) =>
-      "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} por saldar')}";
+  static String m25(names) =>
+      "${names} quiere unirse a tu hogar. Mejora el plan para admitir miembros ilimitados.";
 
   static String m26(count) =>
-      "${Intl.plural(count, one: '${count} nuevo pago hacia ti', other: '${count} nuevos pagos hacia ti')}";
+      "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} por saldar')}";
+
+  static String m27(count) =>
+      "${Intl.plural(count, one: '${count} nuevo pago para ti', other: '${count} nuevos pagos para ti')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -97,6 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "No pudimos actualizar tu membresía del hogar. Inténtalo de nuevo.",
     ),
     "bootstrap_initializing": m0,
+    "close": MessageLookupByLibrary.simpleMessage("Cerrar"),
     "connectionNotificationsPermissionBlocked":
         MessageLookupByLibrary.simpleMessage(
           "Activa las notificaciones en los ajustes de tu teléfono para usar esto.",
@@ -118,7 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "No se pudieron actualizar los ajustes de conexión. Inténtalo de nuevo.",
     ),
     "connectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Controla los recordatorios diarios y el horario de notificaciones.",
+      "Controla los recordatorios diarios y el horario de notificación.",
     ),
     "connectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
       "Ajustes de conexión",
@@ -129,9 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "demoAccess": MessageLookupByLibrary.simpleMessage(
       "Acceso de demostración",
     ),
-    "demoAccessEmail": MessageLookupByLibrary.simpleMessage(
-      "Correo electrónico",
-    ),
+    "demoAccessEmail": MessageLookupByLibrary.simpleMessage("Correo"),
     "demoAccessError": MessageLookupByLibrary.simpleMessage(
       "No se pudo iniciar sesión. Revisa tus credenciales.",
     ),
@@ -142,25 +141,25 @@ class MessageLookup extends MessageLookupByLibrary {
       "Mira qué hay que hacer y quién se encarga.",
     ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Explora más formas de mantener tu hogar más ligero.",
+      "Actualiza el estado y los detalles para mantener lo compartido claro.",
     ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Mira cada cuenta que has creado y haz seguimiento de cobros.",
+      "Ver cada factura que has creado y seguir los cobros.",
     ),
     "exploreShoppingSectionTitle": MessageLookupByLibrary.simpleMessage(
       "Lista de compras",
     ),
     "exploreShoppingSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Ver y gestionar los artículos de compra compartidos.",
+      "Ver y gestionar tus artículos compartidos.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
       "¿Quién se encarga?",
     ),
     "flowChoreCreateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Flujo creado.",
+      "Tarea creada.",
     ),
     "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage(
-      "Añadir flujo",
+      "Añadir tarea",
     ),
     "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage(
       "Eliminar flujo",
@@ -173,38 +172,38 @@ class MessageLookup extends MessageLookupByLibrary {
       "¿Eliminar este flujo?",
     ),
     "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
-      "Marcar como completado",
+      "Marcar como completada",
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
-      "No se pudo completar el flujo. Inténtalo de nuevo.",
+      "No se pudo completar esta tarea. Inténtalo de nuevo.",
     ),
     "flowChoreDetailCompletionSuccess": MessageLookupByLibrary.simpleMessage(
-      "Flujo completado.",
+      "Tarea completada.",
     ),
     "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
       "Contexto útil",
     ),
     "flowChoreDetailNoHowTo": MessageLookupByLibrary.simpleMessage(
-      "No se proporcionaron enlaces de guía.",
+      "No se proporcionaron enlaces guía.",
     ),
     "flowChoreDetailNoNotes": MessageLookupByLibrary.simpleMessage(
       "No se proporcionó contexto.",
     ),
     "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
-      "Detalles del flujo",
+      "Detalles de la tarea",
     ),
     "flowChoreDetailUnassigned": MessageLookupByLibrary.simpleMessage(
       "Sin asignar",
     ),
-    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Editar flujo"),
+    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Editar tarea"),
     "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
-      "Ese miembro no forma parte de este hogar en este momento.",
+      "Ese miembro no forma parte de este hogar ahora mismo.",
     ),
     "flowChoreErrorForbidden": MessageLookupByLibrary.simpleMessage(
       "No tienes permiso para cambiar este flujo.",
     ),
     "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "No se pudo guardar el flujo. Inténtalo de nuevo.",
+      "No se pudo guardar este flujo. Inténtalo de nuevo.",
     ),
     "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
       "Esa ruta de foto no es válida para este hogar.",
@@ -213,19 +212,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "Elige una fecha de inicio válida.",
     ),
     "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
-      "Este flujo no se puede actualizar en este momento.",
+      "Este flujo no está disponible para actualizarse ahora mismo.",
     ),
     "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "Llegaste al límite gratuito de flujos activos. Actualiza para tener más espacio.",
+      "Has alcanzado el límite gratuito de flujos activos. Mejora el plan para tener más espacio.",
     ),
     "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
-      "Llegaste al límite gratuito de fotos de flujos. Actualiza para tener más espacio.",
+      "Has alcanzado el límite gratuito de fotos de flujos. Mejora el plan para tener más espacio.",
     ),
     "flowChoreExpectationPhotoLabel": MessageLookupByLibrary.simpleMessage(
       "Foto de referencia",
     ),
     "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
-      "Agrega un enlace si hay una forma específica de hacerlo",
+      "Añade un enlace si hay una forma específica de hacerlo",
     ),
     "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage(
       "Cómo hacerlo (opcional)",
@@ -234,10 +233,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "No pudimos abrir ese enlace. Inténtalo de nuevo.",
     ),
     "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
-      "No pudimos cargar este flujo. Inténtalo de nuevo.",
+      "No pudimos cargar esta tarea. Inténtalo de nuevo.",
     ),
     "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
-      "p. ej.: Noche de basura, limpiar el refrigerador, regar plantas",
+      "p. ej. Noche de sacar la basura, limpiar la nevera, regar plantas",
     ),
     "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage(
       "¿Qué hay que hacer?",
@@ -249,7 +248,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Por qué importa",
     ),
     "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "Cómo se ve bien hecho",
+      "Qué es lo ideal",
     ),
     "flowChorePhotoLoadError": MessageLookupByLibrary.simpleMessage(
       "No se pudo cargar la foto",
@@ -282,35 +281,35 @@ class MessageLookup extends MessageLookupByLibrary {
       "Guardar cambios",
     ),
     "flowChoreUpdateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Flujo actualizado.",
+      "Tarea actualizada.",
     ),
     "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
-      "Elige a alguien, o déjalo abierto para cualquiera.",
+      "Elige a alguien.",
     ),
     "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
-      "Elige una fecha hasta un año a partir de hoy.",
+      "Elige una fecha de aquí a un año como máximo.",
     ),
     "flowChoreValidationHowToUrl": MessageLookupByLibrary.simpleMessage(
-      "Ingresa un enlace válido que empiece con http o https.",
+      "Introduce un enlace válido que empiece por http o https.",
     ),
     "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
-      "Ponle un nombre al flujo.",
+      "Ponle un nombre a esta tarea.",
     ),
     "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("Borrador"),
     "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Los flujos mantienen a todos alineados.",
+      "Tareas para que todos estén alineados.",
     ),
     "flowListEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Aún no hay nada aquí",
     ),
     "flowListError": MessageLookupByLibrary.simpleMessage(
-      "No pudimos cargar los flujos. Desliza para actualizar.",
+      "No pudimos cargar las tareas. Desliza para actualizar.",
     ),
     "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage(
       "Necesita atención",
     ),
     "flowListTabCurrent": MessageLookupByLibrary.simpleMessage("Actual"),
-    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("Próximos"),
+    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("Próximas"),
     "force_update_body": MessageLookupByLibrary.simpleMessage(
       "Esta versión de Kinly ya no es compatible. Instala la versión más reciente para continuar.",
     ),
@@ -318,45 +317,41 @@ class MessageLookup extends MessageLookupByLibrary {
       "Actualizar Kinly",
     ),
     "force_update_title": MessageLookupByLibrary.simpleMessage(
-      "Se necesita actualización",
+      "Se necesita una actualización",
     ),
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("amigo"),
     "gratitudeWallEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Aquí viven los pequeños agradecimientos.\n\nEmpieza con un momento de esta semana.",
+      "Aquí van los agradecimientos rápidos.\n\nAñade uno de esta semana.",
     ),
     "gratitudeWallEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "Aún no hay publicaciones de gratitud",
+      "Aún no hay agradecimientos",
     ),
     "gratitudeWallErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "No se pudo cargar la gratitud en este momento.",
+      "No se pudieron cargar los agradecimientos ahora mismo.",
     ),
     "gratitudeWallFooter": m3,
     "gratitudeWallHouseTab": MessageLookupByLibrary.simpleMessage("Hogar"),
     "gratitudeWallPersonalSummary": MessageLookupByLibrary.simpleMessage(
-      "Tu espacio privado para mensajes amables.",
+      "Un lugar privado para guardar agradecimientos rápidos.",
     ),
-    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage(
-      "Personal",
-    ),
+    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage("Míos"),
     "gratitudeWallPersonalTitle": MessageLookupByLibrary.simpleMessage(
-      "Tu muro personal de gratitud",
+      "Mis agradecimientos",
     ),
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage(
       "Intentar de nuevo",
     ),
-    "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage(
-      "Compartir este muro",
-    ),
+    "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage("Compartir"),
     "gratitudeWallShareError": MessageLookupByLibrary.simpleMessage(
       "No se pudo compartir en este momento. Inténtalo de nuevo.",
     ),
     "gratitudeWallShareMessage": m4,
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
-      "Muro de gratitud",
+      "Agradecimientos del hogar",
     ),
     "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Hogares"),
     "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
-      "Gracias",
+      "Agradecimientos",
     ),
     "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage(
       "Personas",
@@ -364,16 +359,36 @@ class MessageLookup extends MessageLookupByLibrary {
     "gratitudeWallWeeksAgo": m5,
     "greetingPartOfDay": m6,
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
-      "¿Qué ha estado contribuyendo a este sentir en casa?",
+      "Añade contexto si ayuda",
     ),
     "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
-      "¿Algo que te gustaría compartir?",
+      "Nota opcional",
     ),
     "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
-      "Ya compartiste tu estado de ánimo para esta semana.",
+      "Ya enviaste tu respuesta esta semana.",
+    ),
+    "harmonyErrorCommentRequiredForMention":
+        MessageLookupByLibrary.simpleMessage(
+          "Añade una nota breve para enviar esta mención.",
+        ),
+    "harmonyErrorCommentRequiredForPublicWall":
+        MessageLookupByLibrary.simpleMessage(
+          "Añade una nota breve para publicar este agradecimiento.",
+        ),
+    "harmonyErrorComplaintNeedsSentence": MessageLookupByLibrary.simpleMessage(
+      "Añade una frase clara para que sea más fácil de entender.",
+    ),
+    "harmonyErrorComplaintTooBrief": MessageLookupByLibrary.simpleMessage(
+      "Escribe una frase corta para que sea más fácil de entender.",
+    ),
+    "harmonyErrorComplaintTooShort": MessageLookupByLibrary.simpleMessage(
+      "Añade un poco más de detalle para que quede claro.",
     ),
     "harmonyErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "No puedes enviar comentarios para este hogar.",
+      "El envío para este hogar no está disponible.",
+    ),
+    "harmonyErrorSingleMentionRequired": MessageLookupByLibrary.simpleMessage(
+      "Elige a una persona para esta nota.",
     ),
     "harmonyErrorUnknown": MessageLookupByLibrary.simpleMessage(
       "Algo salió mal. Inténtalo de nuevo.",
@@ -388,17 +403,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Tormenta eléctrica",
     ),
     "harmonyQuestion": MessageLookupByLibrary.simpleMessage(
-      "¿Cómo se siente tu hogar esta semana?",
+      "¿Algo que agradecer o ajustar esta semana?",
     ),
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
-      "Compártelo con tu hogar",
+      "Visible para todos en el hogar",
     ),
-    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage(
-      "Enviar comentarios",
-    ),
-    "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
-      "¡Gracias! Tus comentarios se guardaron.",
-    ),
+    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Guardar"),
+    "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage("Guardado"),
     "homeVibeCoverage": m7,
     "homeVibeTitle": MessageLookupByLibrary.simpleMessage("Vibra del hogar"),
     "housePulseCardHeader": MessageLookupByLibrary.simpleMessage(
@@ -420,19 +431,19 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "houseVibeShareMessage": m10,
     "houseVibeShareTitle": MessageLookupByLibrary.simpleMessage(
-      "Vibra del hogar",
+      "Vibra de la casa",
     ),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Lee agradecimientos rápidos y pequeños momentos de aprecio.",
+      "Gracias rápidos de tu hogar.",
     ),
     "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
-      "Muro de gratitud",
+      "Agradecimientos",
     ),
     "hubCodeCopied": MessageLookupByLibrary.simpleMessage(
       "Código de invitación copiado",
     ),
     "hubError": MessageLookupByLibrary.simpleMessage(
-      "No se pudo cargar el Centro. Inténtalo de nuevo.",
+      "No se pudo cargar el Centro del hogar. Inténtalo de nuevo.",
     ),
     "hubInviteCta": MessageLookupByLibrary.simpleMessage("Invitar"),
     "hubInviteUnavailable": MessageLookupByLibrary.simpleMessage(
@@ -442,7 +453,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Aún no hay miembros activos.",
     ),
     "hubPreferencesSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Cómo vive cada persona la convivencia.",
+      "Cómo prefiere cada persona que funcione la convivencia.",
     ),
     "hubPreferencesTitle": MessageLookupByLibrary.simpleMessage(
       "Preferencias personales",
@@ -462,33 +473,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubShareAppBody": m11,
     "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Compartir Kinly"),
     "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
-      "Obtén la app de Kinly",
+      "Consigue la app de Kinly",
     ),
     "hubShareInviteBody": m12,
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "Invitar a mi hogar de Kinly",
     ),
     "join_blocked_body": MessageLookupByLibrary.simpleMessage(
-      "Hemos notificado al propietario del hogar.",
+      "Hemos notificado al dueño del hogar.",
     ),
     "join_blocked_cta": MessageLookupByLibrary.simpleMessage("Listo"),
     "join_blocked_title": MessageLookupByLibrary.simpleMessage(
       "Este hogar no está aceptando nuevos miembros en este momento",
     ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
-      "Deja tu hogar actual para unirte a uno nuevo",
+      "Sal de tu hogar actual para unirte a uno nuevo",
     ),
     "join_error_forbidden": MessageLookupByLibrary.simpleMessage(
       "No tienes permiso para unirte a este hogar.",
     ),
     "join_error_inactive_invite": MessageLookupByLibrary.simpleMessage(
-      "Esa invitación ya no está activa. Pídele al propietario un nuevo código.",
+      "Esa invitación ya no está activa. Pídele al dueño un nuevo código.",
     ),
     "join_error_invalid_code": MessageLookupByLibrary.simpleMessage(
       "Ese código de invitación no parece correcto.",
     ),
     "join_error_paywall_limit": MessageLookupByLibrary.simpleMessage(
-      "Este hogar ha alcanzado su límite de miembros. Pídele al propietario que actualice el plan o quite a un miembro.",
+      "Este hogar alcanzó su límite de miembros. Pídele al dueño que actualice el plan o elimine a un miembro.",
     ),
     "join_error_unauthorized": MessageLookupByLibrary.simpleMessage(
       "Inicia sesión para unirte a este hogar.",
@@ -497,12 +508,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "No pudimos unirte a este hogar. Inténtalo de nuevo.",
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage(
-      "Ingresa el código de invitación, p. ej.: ABC123",
+      "Introduce el código de invitación, p. ej. ABC123",
     ),
-    "join_submit": MessageLookupByLibrary.simpleMessage("Unirme"),
+    "join_submit": MessageLookupByLibrary.simpleMessage("Unirse"),
     "join_success": m13,
-    "join_title": MessageLookupByLibrary.simpleMessage("Unirse a un hogar"),
-    "login_consent_connector": MessageLookupByLibrary.simpleMessage(" y la "),
+    "join_title": MessageLookupByLibrary.simpleMessage("Unirse al hogar"),
+    "login_consent_connector": MessageLookupByLibrary.simpleMessage(" y "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
       "He leído y acepto los ",
     ),
@@ -529,44 +540,44 @@ class MessageLookup extends MessageLookupByLibrary {
       "Conectándote con tu hogar…",
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
-      "Tu hogar compartido comienza aquí.",
+      "Tu hogar compartido empieza aquí.",
     ),
     "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
-      "Escribe @ para mencionar",
+      "Escribe @ para mencionar a alguien",
     ),
-    "navExplore": MessageLookupByLibrary.simpleMessage("Explorar"),
-    "navHub": MessageLookupByLibrary.simpleMessage("Centro"),
+    "navExplore": MessageLookupByLibrary.simpleMessage("Gestionar"),
+    "navHub": MessageLookupByLibrary.simpleMessage("Centro del hogar"),
     "navToday": MessageLookupByLibrary.simpleMessage("Hoy"),
     "npsCannotSkip": MessageLookupByLibrary.simpleMessage(
       "Elige una puntuación para continuar.",
     ),
     "npsDescription": MessageLookupByLibrary.simpleMessage(
-      "Elige un número del 0 (nada útil) al 10 (extremadamente útil).",
+      "0 significa nada. 10 significa que marcó una diferencia real.",
     ),
     "npsEmailSubject": MessageLookupByLibrary.simpleMessage(
-      "¿Qué podría hacer Kinly mejor para tu hogar?",
+      "¿Cómo podría Kinly apoyar mejor a tu hogar?",
     ),
     "npsLaunchError": MessageLookupByLibrary.simpleMessage(
       "No se pudo abrir el siguiente paso.",
     ),
     "npsScaleHighLabel": MessageLookupByLibrary.simpleMessage(
-      "10 Extremadamente útil",
+      "10 Marcó una diferencia real",
     ),
-    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 Nada útil"),
+    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 Nada"),
     "npsSubmitErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "No tienes permiso para enviar comentarios en este momento.",
+      "Los comentarios no están disponibles ahora mismo.",
     ),
     "npsSubmitErrorGeneric": MessageLookupByLibrary.simpleMessage(
       "No se pudieron enviar tus comentarios. Inténtalo de nuevo.",
     ),
     "npsSubmitErrorInvalidScore": MessageLookupByLibrary.simpleMessage(
-      "Elige una puntuación entre 0 y 10.",
+      "Elige un número entre 0 y 10.",
     ),
     "npsSubmitErrorNotRequired": MessageLookupByLibrary.simpleMessage(
-      "No necesitas compartir comentarios en este momento.",
+      "No necesitas compartir comentarios ahora mismo.",
     ),
     "npsTitle": MessageLookupByLibrary.simpleMessage(
-      "¿Kinly ha sido útil para tu hogar hasta ahora?",
+      "¿Kinly ha ayudado a que tu hogar funcione más fluidamente?",
     ),
     "offline_body": MessageLookupByLibrary.simpleMessage(
       "Kinly necesita conexión a internet. Revisa tu señal e inténtalo de nuevo.",
@@ -574,35 +585,35 @@ class MessageLookup extends MessageLookupByLibrary {
     "offline_retry": MessageLookupByLibrary.simpleMessage("Intentar de nuevo"),
     "offline_title": MessageLookupByLibrary.simpleMessage("Estás sin conexión"),
     "paywallBulletFlows": MessageLookupByLibrary.simpleMessage(
-      "Flujos ilimitados",
+      "Tareas ilimitadas",
     ),
     "paywallBulletMembers": MessageLookupByLibrary.simpleMessage(
-      "Miembros ilimitados del hogar",
+      "Miembros ilimitados en el hogar",
     ),
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
-      "Fotos de flujos ilimitadas",
+      "Fotos de tareas ilimitadas",
     ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "Gastos compartidos ilimitados",
     ),
     "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
-      "Fotos de listas de compras ilimitadas",
+      "Fotos de la lista de compras ilimitadas",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "No se pudo cargar el paywall.",
     ),
     "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
-      "Un plan por hogar, sin niveles ocultos.",
+      "Un plan para el hogar, sin niveles ocultos.",
     ),
     "paywallPricePerMonth": m14,
     "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
       "El precio no está disponible en este momento.",
     ),
     "paywallPrimaryCta": MessageLookupByLibrary.simpleMessage(
-      "Actualizar a Kinly Premium",
+      "Mejorar a Kinly Premium",
     ),
     "paywallPurchaseFailed": MessageLookupByLibrary.simpleMessage(
-      "Compra no completada: puedes intentarlo de nuevo en cualquier momento.",
+      "La compra no se completó; puedes intentarlo de nuevo cuando quieras.",
     ),
     "paywallPurchaseSuccess": MessageLookupByLibrary.simpleMessage(
       "Ahora tienes Kinly Premium.",
@@ -612,19 +623,19 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "paywallRetryLabel": MessageLookupByLibrary.simpleMessage("Reintentar"),
     "paywallSecondaryCta": MessageLookupByLibrary.simpleMessage(
-      "Mantener el plan gratuito",
+      "Seguir con el plan gratuito",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Tu mejora a nivel de hogar por menos del 0.5% de tu alquiler.",
+      "Cuesta menos del 0,5% de tu alquiler.",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
-      "Trae más armonía a tu hogar",
+      "Mantén tu hogar funcionando sin problemas",
     ),
     "personalMentionsTitle": MessageLookupByLibrary.simpleMessage(
       "Menciones personales",
     ),
     "personalProfileLoadError": MessageLookupByLibrary.simpleMessage(
-      "No pudimos cargar tu perfil personal en este momento. Inténtalo de nuevo.",
+      "No pudimos cargar tu perfil personal ahora mismo. Inténtalo de nuevo.",
     ),
     "personalProfileMentions": MessageLookupByLibrary.simpleMessage(
       "Menciones personales",
@@ -633,6 +644,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "Preferencias personales",
     ),
     "personalProfileTitle": MessageLookupByLibrary.simpleMessage("Tu perfil"),
+    "planFreeLabel": MessageLookupByLibrary.simpleMessage("Mejorar a Premium"),
+    "planPremiumActiveBody": MessageLookupByLibrary.simpleMessage(
+      "Disfruta acceso ilimitado a todas las funciones.",
+    ),
+    "planPremiumActiveTitle": MessageLookupByLibrary.simpleMessage(
+      "Tienes Premium",
+    ),
+    "planPremiumLabel": MessageLookupByLibrary.simpleMessage("Premium"),
     "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("Atrás"),
     "preferenceOnboardingProgress": m15,
     "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
@@ -659,10 +678,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Listo",
     ),
     "preferenceReportEditSectionHint": MessageLookupByLibrary.simpleMessage(
-      "Escribe lo que te resulte natural",
+      "Escribe lo que te parezca correcto",
     ),
     "preferenceReportEditSectionPrompt": MessageLookupByLibrary.simpleMessage(
-      "Ajusta el texto de esta sección.",
+      "Ajusta la redacción de esta sección.",
     ),
     "preferenceReportEditTitle": MessageLookupByLibrary.simpleMessage(
       "Editar preferencias",
@@ -680,13 +699,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "No se pudo cargar el informe",
     ),
     "preferenceReportGenerationFailed": MessageLookupByLibrary.simpleMessage(
-      "No pudimos completar tu reflexión de preferencias. Vuelve y vuelve a intentarlo.",
+      "No pudimos terminar tu reflexión de preferencias. Vuelve atrás e inténtalo de nuevo.",
     ),
     "preferenceReportGenerationMissing": MessageLookupByLibrary.simpleMessage(
-      "No pudimos completar tu reflexión de preferencias. Inténtalo de nuevo pronto.",
+      "No pudimos terminar tu reflexión de preferencias. Inténtalo de nuevo pronto.",
     ),
     "preferenceReportReadOnlyNote": MessageLookupByLibrary.simpleMessage(
-      "Esto muestra lo que les resulta cómodo a ellos.",
+      "Esto muestra lo que les resulta cómodo.",
     ),
     "preferenceReportTitle": MessageLookupByLibrary.simpleMessage(
       "Tu informe de preferencias",
@@ -708,23 +727,23 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioCleanlinessSharedSpaceQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "En espacios compartidos, ¿qué tan ordenado te hace sentir bien?",
+          "En espacios compartidos, ¿qué nivel de orden te funciona?",
         ),
     "preferenceScenarioCommunicationChannelOption1":
-        MessageLookupByLibrary.simpleMessage("Mensajería o texto"),
+        MessageLookupByLibrary.simpleMessage("Mensajes o texto"),
     "preferenceScenarioCommunicationChannelOption2":
-        MessageLookupByLibrary.simpleMessage("Hablar en persona cuando surja"),
+        MessageLookupByLibrary.simpleMessage("Hablar en persona cuando surge"),
     "preferenceScenarioCommunicationChannelOption3":
         MessageLookupByLibrary.simpleMessage(
-          "Una llamada rápida se siente más fácil",
+          "Una llamada rápida es lo más fácil",
         ),
     "preferenceScenarioCommunicationChannelQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "Cuando necesitas coordinar en casa, ¿qué te funciona mejor?",
+          "Cuando necesitas coordinar en casa, ¿qué te resulta más fácil?",
         ),
     "preferenceScenarioCommunicationDirectnessOption1":
         MessageLookupByLibrary.simpleMessage(
-          "Con suavidad, con contexto o entrando poco a poco",
+          "Con suavidad, con contexto o poco a poco",
         ),
     "preferenceScenarioCommunicationDirectnessOption2":
         MessageLookupByLibrary.simpleMessage(
@@ -738,17 +757,19 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioConflictResolutionOption1":
         MessageLookupByLibrary.simpleMessage(
-          "Tomarme tiempo para calmarme primero",
+          "Tomarme un tiempo para calmarme primero",
         ),
     "preferenceScenarioConflictResolutionOption2":
         MessageLookupByLibrary.simpleMessage(
-          "Hacer un check-in suave en el momento adecuado",
+          "Hablarlo con suavidad en el momento adecuado",
         ),
     "preferenceScenarioConflictResolutionOption3":
-        MessageLookupByLibrary.simpleMessage("Hablarlo antes que después"),
+        MessageLookupByLibrary.simpleMessage(
+          "Hablarlo antes, en lugar de dejarlo para más tarde",
+        ),
     "preferenceScenarioConflictResolutionQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "Si algo se siente un poco raro entre personas en casa, ¿qué suele ayudarte más?",
+          "Si hay algo que abordar en casa, ¿qué ayuda más?",
         ),
     "preferenceScenarioEnvironmentLightOption1":
         MessageLookupByLibrary.simpleMessage("Iluminación más suave o tenue"),
@@ -758,15 +779,15 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioEnvironmentLightOption3":
         MessageLookupByLibrary.simpleMessage(
-          "Espacios brillantes y bien iluminados",
+          "Iluminación brillante y bien iluminada",
         ),
     "preferenceScenarioEnvironmentLightQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "En áreas compartidas, ¿qué tipo de iluminación te hace sentir más cómodo?",
+          "En áreas compartidas, ¿qué iluminación prefieres?",
         ),
     "preferenceScenarioEnvironmentNoiseOption1":
         MessageLookupByLibrary.simpleMessage(
-          "Me siento más cómodo cuando en general hay silencio",
+          "Me siento mejor cuando, por lo general, todo está tranquilo",
         ),
     "preferenceScenarioEnvironmentNoiseOption2":
         MessageLookupByLibrary.simpleMessage(
@@ -774,29 +795,31 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioEnvironmentNoiseOption3":
         MessageLookupByLibrary.simpleMessage(
-          "El ruido no me molesta mucho; los espacios animados están bien",
+          "El ruido no me molesta mucho: los espacios animados están bien",
         ),
     "preferenceScenarioEnvironmentNoiseQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "¿Qué tan bien llevas el ruido de fondo en espacios compartidos?",
+          "¿Qué tan cómodo te sientes con el ruido de fondo en espacios compartidos?",
         ),
     "preferenceScenarioEnvironmentScentOption1":
         MessageLookupByLibrary.simpleMessage(
           "Soy bastante sensible a los aromas fuertes",
         ),
     "preferenceScenarioEnvironmentScentOption2":
-        MessageLookupByLibrary.simpleMessage("Soy mayormente neutral"),
+        MessageLookupByLibrary.simpleMessage(
+          "En general me resulta indiferente",
+        ),
     "preferenceScenarioEnvironmentScentOption3":
         MessageLookupByLibrary.simpleMessage(
-          "Los aromas fuertes no me molestan mucho",
+          "Los aromas fuertes no suelen molestarme",
         ),
     "preferenceScenarioEnvironmentScentQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "¿Cómo te sientan los aromas fuertes (velas, cocina, limpiadores)?",
+          "¿Qué tan cómodo te sientes con aromas fuertes (velas, comida, limpiadores)?",
         ),
     "preferenceScenarioPrivacyNotificationsOption1":
         MessageLookupByLibrary.simpleMessage(
-          "Prefiero que no me contacten después de las horas de silencio",
+          "Prefiero que no me contacten después de las horas de descanso",
         ),
     "preferenceScenarioPrivacyNotificationsOption2":
         MessageLookupByLibrary.simpleMessage(
@@ -808,23 +831,23 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioPrivacyNotificationsQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "¿Cómo te sientes con los mensajes por la noche?",
+          "¿Qué piensas de los mensajes por la noche?",
         ),
     "preferenceScenarioPrivacyRoomEntryOption1":
         MessageLookupByLibrary.simpleMessage(
-          "Prefiero que me pidan permiso o toquen antes",
+          "Prefiero que me pidan permiso o llamen antes de entrar",
         ),
     "preferenceScenarioPrivacyRoomEntryOption2":
         MessageLookupByLibrary.simpleMessage(
-          "Pedir permiso es agradable, pero la flexibilidad está bien",
+          "Pedir permiso está bien, pero cierta flexibilidad está bien",
         ),
     "preferenceScenarioPrivacyRoomEntryOption3":
         MessageLookupByLibrary.simpleMessage(
-          "En general me siento cómodo con el acceso abierto",
+          "En general me siento cómodo con acceso abierto",
         ),
     "preferenceScenarioPrivacyRoomEntryQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "Sobre entrar en las habitaciones de los demás, ¿qué te parece bien?",
+          "Antes de entrar en la habitación de alguien, ¿qué te parece correcto?",
         ),
     "preferenceScenarioRoutinePlanningOption1":
         MessageLookupByLibrary.simpleMessage(
@@ -835,14 +858,16 @@ class MessageLookup extends MessageLookupByLibrary {
           "Una mezcla de planificación y espontaneidad",
         ),
     "preferenceScenarioRoutinePlanningOption3":
-        MessageLookupByLibrary.simpleMessage("Ir con el flujo se siente mejor"),
+        MessageLookupByLibrary.simpleMessage(
+          "Dejar que las cosas fluyan me sienta mejor",
+        ),
     "preferenceScenarioRoutinePlanningQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "En la vida diaria en casa, ¿qué se siente más natural para ti?",
+          "En la vida diaria en casa, ¿qué te parece más natural?",
         ),
     "preferenceScenarioScheduleQuietHoursOption1":
         MessageLookupByLibrary.simpleMessage(
-          "Las tardes suelen ser más tranquilas para mí",
+          "Las noches suelen ser más tranquilas para mí",
         ),
     "preferenceScenarioScheduleQuietHoursOption2":
         MessageLookupByLibrary.simpleMessage(
@@ -854,40 +879,38 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "preferenceScenarioScheduleQuietHoursQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "Al terminar el día, ¿qué suele estar bien para ti en casa?",
+          "Por las noches, ¿qué suele funcionarte mejor?",
         ),
     "preferenceScenarioScheduleSleepTimingOption1":
         MessageLookupByLibrary.simpleMessage(
-          "Me acuesto y me levanto más temprano",
+          "Me acuesto y me levanto temprano",
         ),
     "preferenceScenarioScheduleSleepTimingOption2":
         MessageLookupByLibrary.simpleMessage("En un punto intermedio"),
     "preferenceScenarioScheduleSleepTimingOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "Me acuesto y me levanto más tarde",
-        ),
+        MessageLookupByLibrary.simpleMessage("Me acuesto y me levanto tarde"),
     "preferenceScenarioScheduleSleepTimingQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "¿Cómo es tu horario de sueño y despertar?",
+          "¿Eres más madrugador o noctámbulo?",
         ),
     "preferenceScenarioSocialHostingOption1":
         MessageLookupByLibrary.simpleMessage(
-          "Me siento más cómodo si las visitas son raras",
+          "Me siento más cómodo si los invitados son raros",
         ),
     "preferenceScenarioSocialHostingOption2":
         MessageLookupByLibrary.simpleMessage(
-          "Visitas ocasionales me parecen bien",
+          "Invitados ocasionales me parecen bien",
         ),
     "preferenceScenarioSocialHostingOption3":
         MessageLookupByLibrary.simpleMessage(
-          "Visitas frecuentes me parecen bien",
+          "Invitados frecuentes están bien para mí",
         ),
     "preferenceScenarioSocialHostingQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "En general, ¿cómo te sientes con que haya visitas en casa?",
+          "¿Cómo te sientes con que haya invitados en casa?",
         ),
     "preferenceScenarioSocialTogethernessOption1":
-        MessageLookupByLibrary.simpleMessage("Más bien estar a mi aire"),
+        MessageLookupByLibrary.simpleMessage("Mayormente a lo mío"),
     "preferenceScenarioSocialTogethernessOption2":
         MessageLookupByLibrary.simpleMessage(
           "Una mezcla de tiempo compartido y tiempo a solas",
@@ -896,28 +919,28 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Pasar tiempo juntos a menudo"),
     "preferenceScenarioSocialTogethernessQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "En casa, ¿qué equilibrio suele sentirse mejor para ti?",
+          "En casa, ¿qué equilibrio te funciona mejor?",
         ),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage(
-      "Dejar el hogar",
+      "Salir del hogar",
     ),
     "profileActionConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "Eliminar cuenta",
     ),
     "profileConfirmDeleteMessage": MessageLookupByLibrary.simpleMessage(
-      "Esto elimina tu cuenta y cerrará tu sesión. No podrás deshacerlo.",
+      "Esto elimina tu cuenta y cierra tu sesión. No podrás deshacerlo.",
     ),
     "profileConfirmDeleteTitle": MessageLookupByLibrary.simpleMessage(
       "¿Eliminar tu cuenta?",
     ),
     "profileConfirmLeaveMessage": MessageLookupByLibrary.simpleMessage(
-      "Perderás acceso a Flow, al historial y a las invitaciones.",
+      "Perderás acceso a tareas, historial e invitaciones.",
     ),
     "profileConfirmLeaveTitle": MessageLookupByLibrary.simpleMessage(
-      "¿Dejar este hogar?",
+      "¿Salir de este hogar?",
     ),
     "profileConnectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Administra notificaciones y recordatorios.",
+      "Gestiona notificaciones y recordatorios.",
     ),
     "profileConnectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
       "Ajustes de conexión",
@@ -929,7 +952,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "No pudimos abrir tu app de correo. Inténtalo de nuevo.",
     ),
     "profileContactUsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Envía un correo a support@makinglifeeasie.com",
+      "Envía un email a support@makinglifeeasie.com",
     ),
     "profileContactUsTitle": MessageLookupByLibrary.simpleMessage(
       "Contáctanos",
@@ -941,13 +964,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Eliminar cuenta",
     ),
     "profileDeleteSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "Tu cuenta se eliminará pronto. Cerraremos tu sesión.",
+      "Tu cuenta se eliminará en breve. Cerraremos tu sesión.",
     ),
     "profileGenericError": MessageLookupByLibrary.simpleMessage(
       "Algo salió mal. Inténtalo de nuevo.",
     ),
     "profileIdentityAvatarEmpty": MessageLookupByLibrary.simpleMessage(
-      "No hay avatares disponibles en este momento. Inténtalo de nuevo pronto.",
+      "No hay avatares disponibles ahora mismo. Inténtalo más tarde.",
     ),
     "profileIdentityAvatarSectionDescription":
         MessageLookupByLibrary.simpleMessage(
@@ -957,7 +980,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Elige un avatar",
     ),
     "profileIdentityLoadError": MessageLookupByLibrary.simpleMessage(
-      "No pudimos cargar tu perfil en este momento.",
+      "No pudimos cargar tu perfil ahora mismo.",
     ),
     "profileIdentityRetry": MessageLookupByLibrary.simpleMessage("Reintentar"),
     "profileIdentitySaveButton": MessageLookupByLibrary.simpleMessage(
@@ -973,10 +996,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Editar perfil",
     ),
     "profileIdentityUsernameEmptyError": MessageLookupByLibrary.simpleMessage(
-      "Ingresa un nombre de usuario para continuar.",
+      "Introduce un nombre de usuario para continuar.",
     ),
     "profileIdentityUsernameFormatError": MessageLookupByLibrary.simpleMessage(
-      "Usa 3–30 letras minúsculas o números. Puedes incluir puntos o guiones bajos en el medio.",
+      "Usa 3-30 letras minúsculas o números. Puedes incluir puntos o guiones bajos en el medio.",
     ),
     "profileIdentityUsernameHint": MessageLookupByLibrary.simpleMessage(
       "letras, números, . o _",
@@ -987,13 +1010,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileIdentityUsernamePreviewFallback":
         MessageLookupByLibrary.simpleMessage("tu nombre de usuario"),
     "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
-      "Ese nombre de usuario ya está en uso. Prueba con otro.",
+      "Ese nombre de usuario ya está en uso. Prueba otro.",
     ),
     "profileInfoHubLoadError": MessageLookupByLibrary.simpleMessage(
       "No se pudo cargar el Centro de información. Revisa tu conexión.",
     ),
     "profileInfoHubSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Abre el hub de Kinly en Notion dentro de la app.",
+      "Abre el hub de Notion de Kinly dentro de la app.",
     ),
     "profileInfoHubTitle": MessageLookupByLibrary.simpleMessage(
       "Centro de información",
@@ -1008,13 +1031,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Eliminar a un miembro",
     ),
     "profileKickNoMembers": MessageLookupByLibrary.simpleMessage(
-      "No hay otros miembros para eliminar en este momento.",
+      "No hay otros miembros para eliminar ahora mismo.",
     ),
     "profileKickOwnerOnly": MessageLookupByLibrary.simpleMessage(
-      "Solo el propietario del hogar puede eliminar miembros.",
+      "Solo el dueño del hogar puede eliminar miembros.",
     ),
     "profileKickSheetSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Selecciona a un miembro para eliminarlo. Perderá el acceso de inmediato.",
+      "Selecciona un miembro para eliminar. Perderá el acceso de inmediato.",
     ),
     "profileKickSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Eliminar a un miembro",
@@ -1026,119 +1049,113 @@ class MessageLookup extends MessageLookupByLibrary {
       "No pudimos cargar los miembros de tu hogar. Inténtalo de nuevo.",
     ),
     "profileLeaveEligibilityLoading": MessageLookupByLibrary.simpleMessage(
-      "Comprobando los miembros del hogar...",
+      "Comprobando los miembros de tu hogar...",
     ),
     "profileLeaveHomeSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Dejar este hogar significa salir de tu espacio compartido en Kinly.",
+      "Salir de este hogar significa dejar tu espacio compartido en Kinly.",
     ),
     "profileLeaveHomeTitle": MessageLookupByLibrary.simpleMessage(
-      "Dejar el hogar",
+      "Salir del hogar",
     ),
     "profileLeaveOwnerNoEligibleMembers": MessageLookupByLibrary.simpleMessage(
-      "Nadie más puede asumir la propiedad en este momento. Inténtalo de nuevo más tarde.",
+      "Nadie más puede asumir la propiedad ahora mismo. Inténtalo más tarde.",
     ),
     "profileLeaveOwnerSoloMessage": MessageLookupByLibrary.simpleMessage(
       "Eres el último miembro. Al salir se desactivará este hogar.",
     ),
     "profileLeaveSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "Dejaste tu hogar.",
+      "Saliste de tu hogar.",
     ),
     "profileLeaveTransferSheetSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Selecciona quién será el nuevo propietario antes de irte.",
+      "Selecciona quién será el nuevo dueño antes de salir.",
     ),
     "profileLeaveTransferSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Transferir propiedad",
     ),
     "profileLeaveTransferSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "Propiedad transferida. Finalizando tu salida...",
+      "Propiedad transferida. Terminando tu salida...",
     ),
     "profileLogoutSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Cerrar sesión de Kinly en este dispositivo.",
+      "Cierra sesión de Kinly en este dispositivo.",
     ),
     "profileLogoutTitle": MessageLookupByLibrary.simpleMessage("Cerrar sesión"),
     "profileMissingHomeError": MessageLookupByLibrary.simpleMessage(
       "No pudimos encontrar tu hogar actual. Inténtalo de nuevo.",
     ),
     "profileSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Administra las preferencias de tu cuenta y el acceso al hogar.",
+      "Gestiona las preferencias de tu cuenta y el acceso al hogar.",
     ),
-    "profileSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "Perfil y hogar",
-    ),
+    "profileSettingsTitle": MessageLookupByLibrary.simpleMessage("Perfil"),
     "profile_deactivated_message": MessageLookupByLibrary.simpleMessage(
       "Tu perfil está desactivado. Inicia sesión con otra dirección de correo.",
     ),
     "pulseCloudySteadySummary": MessageLookupByLibrary.simpleMessage(
-      "Esta semana se sintió mixta y estable.",
+      "Una mezcla de momentos fluidos y pequeñas fricciones.",
     ),
-    "pulseCloudySteadyTitle": MessageLookupByLibrary.simpleMessage(
-      "Mixto y estable",
-    ),
+    "pulseCloudySteadyTitle": MessageLookupByLibrary.simpleMessage("Mixto"),
     "pulseCloudyTenseSummary": MessageLookupByLibrary.simpleMessage(
-      "Esta semana se sintió mixta, con algo de tensión.",
+      "Esta semana surgió algo de tensión.",
     ),
     "pulseCloudyTenseTitle": MessageLookupByLibrary.simpleMessage(
-      "Mixto con tensión",
+      "Necesita atención",
     ),
     "pulseFormingSummary": MessageLookupByLibrary.simpleMessage(
-      "Unos cuantos check-ins más ayudan.",
+      "Unas cuantas respuestas más darán una imagen más clara.",
     ),
     "pulseFormingTitle": MessageLookupByLibrary.simpleMessage(
       "Aún en formación",
     ),
     "pulsePartlySupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "Tu hogar se sintió bien, con cuidado presente.",
+      "En general estable, con algunas áreas por mejorar.",
     ),
     "pulsePartlySupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Bien con cuidado",
+      "Bien en general",
     ),
     "pulseRainySupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "Esta semana se sintió más pesada, pero hubo cuidado presente.",
+      "Puede ser el momento de un pequeño reinicio.",
     ),
     "pulseRainySupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Pesado pero con apoyo",
+      "Se recomienda reinicio",
     ),
     "pulseRainyUnsupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "Esta semana se sintió pesada. Puede ayudar tener apoyo.",
+      "Hay fricción notable ahora mismo.",
     ),
     "pulseRainyUnsupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Pesado, se necesita apoyo",
+      "Se necesita reinicio",
     ),
     "pulseSunnyBumpySummary": MessageLookupByLibrary.simpleMessage(
-      "Esta semana se sintió mayormente bien, con algunos baches.",
+      "Casi todo bien, con unos pequeños tropiezos.",
     ),
     "pulseSunnyBumpyTitle": MessageLookupByLibrary.simpleMessage(
-      "Mayormente bien",
+      "Casi todo bien",
     ),
     "pulseSunnyCalmSummary": MessageLookupByLibrary.simpleMessage(
-      "Tu hogar se sintió cálido y tranquilo esta semana.",
+      "Esta semana las cosas fueron fluidas.",
     ),
-    "pulseSunnyCalmTitle": MessageLookupByLibrary.simpleMessage(
-      "Cálido y tranquilo",
-    ),
+    "pulseSunnyCalmTitle": MessageLookupByLibrary.simpleMessage("Todo va bien"),
     "pulseThunderstormSummary": MessageLookupByLibrary.simpleMessage(
-      "Esta semana se sintió tensa. La amabilidad importa ahora mismo.",
+      "La tensión es alta. Un reinicio rápido puede ayudar.",
     ),
     "pulseThunderstormTitle": MessageLookupByLibrary.simpleMessage(
-      "Tenso en este momento",
+      "Tensión alta",
     ),
     "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Crear un flujo",
+      "Crear una tarea",
     ),
-    "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Flujo"),
+    "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Tarea"),
     "quick_add_share_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Añadir una cuenta",
+      "Añadir una factura",
     ),
-    "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Cuenta"),
+    "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Factura"),
     "quick_add_title": MessageLookupByLibrary.simpleMessage("Añadir rápido"),
     "reflectiveAcknowledgementTitle": MessageLookupByLibrary.simpleMessage(
       "Entendido.",
     ),
     "reflectiveGenericPrimary": MessageLookupByLibrary.simpleMessage(
-      "Armando esto con cuidado.",
+      "Preparando esto con cuidado.",
     ),
     "reflectiveGenericSecondary": MessageLookupByLibrary.simpleMessage(
-      "Un momento tranquilo antes de mostrártelo.",
+      "Un momento de calma antes de mostrarlo.",
     ),
     "reflectiveHousePrimary": MessageLookupByLibrary.simpleMessage(
       "Poniendo en palabras las expectativas del hogar.",
@@ -1153,37 +1170,37 @@ class MessageLookup extends MessageLookupByLibrary {
       "Para que otros entiendan qué te resulta cómodo.",
     ),
     "shareCreateAmountHint": MessageLookupByLibrary.simpleMessage("0.00"),
-    "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("Monto"),
+    "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("Importe"),
     "shareCreateCustomAmountLabel": MessageLookupByLibrary.simpleMessage(
-      "Monto",
+      "Importe",
     ),
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
-      "Ingresa la parte de cada persona. Asegúrate de que el total coincida con el monto de arriba.",
+      "Introduce la parte de cada persona. Asegúrate de que el total coincida con el importe de arriba.",
     ),
     "shareCreateCyclePeriod": m16,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
-      "p. ej.: Compra de supermercado",
+      "p. ej. Compra del súper",
     ),
     "shareCreateDescriptionLabel": MessageLookupByLibrary.simpleMessage(
       "Descripción",
     ),
     "shareCreateErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "No tienes permiso para crear esto en este momento.",
+      "No tienes permiso para crear esto ahora mismo.",
     ),
     "shareCreateErrorGeneric": MessageLookupByLibrary.simpleMessage(
       "No se pudo crear. Inténtalo de nuevo.",
     ),
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "Llegaste al límite gratuito de cuentas activas. Actualiza para tener más espacio.",
+      "Has alcanzado el límite gratuito de facturas activas. Mejora el plan para tener más espacio.",
     ),
     "shareCreateErrorRecurrenceDraft": MessageLookupByLibrary.simpleMessage(
-      "Los borradores no pueden repetirse hasta que agregues una división.",
+      "Los borradores no pueden repetirse hasta que añadas un reparto.",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar los miembros de tu hogar.",
     ),
     "shareCreateNotesHint": MessageLookupByLibrary.simpleMessage(
-      "Contexto opcional que todos pueden ver",
+      "Contexto opcional visible para todos",
     ),
     "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("Contexto"),
     "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
@@ -1212,51 +1229,51 @@ class MessageLookup extends MessageLookupByLibrary {
       "Intentar de nuevo",
     ),
     "shareCreateSplitCustom": MessageLookupByLibrary.simpleMessage(
-      "Elegir montos",
+      "Elegir importes",
     ),
     "shareCreateSplitEqual": MessageLookupByLibrary.simpleMessage(
-      "Dividir por igual",
+      "Repartir por igual",
     ),
     "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage(
-      "¿Cómo queremos dividir esto?",
+      "¿Cómo queremos repartirlo?",
     ),
     "shareCreateStartLabel": MessageLookupByLibrary.simpleMessage(
       "¿Cuándo aplica esto?",
     ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Crear"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Cuenta creada.",
+      "Factura creada.",
     ),
-    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Crear cuenta"),
+    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Crear factura"),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
-      "Ingresa un monto válido mayor que cero.",
+      "Introduce un importe válido mayor que cero.",
     ),
     "shareCreateValidationCustomAmounts": MessageLookupByLibrary.simpleMessage(
-      "Ingresa un monto válido para cada persona seleccionada.",
+      "Introduce un importe válido para cada persona seleccionada.",
     ),
     "shareCreateValidationCustomParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "La división personalizada necesita al menos dos personas.",
+          "El reparto personalizado necesita al menos dos personas.",
         ),
     "shareCreateValidationCustomSinglePayer": MessageLookupByLibrary.simpleMessage(
-      "Reparte el monto entre al menos dos personas al usar una división personalizada.",
+      "Reparte el importe entre al menos dos personas cuando uses un reparto personalizado.",
     ),
     "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
-      "Asegúrate de que la división personalizada sume el monto de arriba.",
+      "Asegúrate de que el reparto personalizado sume el importe de arriba.",
     ),
     "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
-      "Ingresa una descripción.",
+      "Introduce una descripción.",
     ),
     "shareCreateValidationEqualParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "Selecciona al menos dos personas para dividir el monto.",
+          "Selecciona al menos dos personas para repartir el importe.",
         ),
     "shareCreateValidationRecurrence": MessageLookupByLibrary.simpleMessage(
       "Elige con qué frecuencia se repite.",
     ),
     "shareCreateValidationRecurrenceSplit":
         MessageLookupByLibrary.simpleMessage(
-          "Elige cómo dividir antes de configurar una repetición.",
+          "Elige cómo repartir antes de configurar la repetición.",
         ),
     "shareCreateValidationStartDate": MessageLookupByLibrary.simpleMessage(
       "Elige una fecha de inicio.",
@@ -1270,23 +1287,23 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sin asignar",
     ),
     "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Divídelo para que todos sepan su parte antes de publicarlo.",
+      "Repártelo para que todos sepan su parte antes de publicarlo.",
     ),
     "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Las cuentas mantienen el dinero claro entre personas, sin recordatorios incómodos.",
+      "Las facturas mantienen el dinero claro, sin recordatorios incómodos.",
     ),
     "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "Aún no hay cuentas",
+      "Aún no hay facturas",
     ),
     "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
-      "No pudimos cargar tus cuentas. Desliza para actualizar.",
+      "No pudimos cargar tus facturas. Desliza para actualizar.",
     ),
     "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage("Pagado"),
     "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage(
       "Intentar de nuevo",
     ),
     "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage(
-      "Tus cuentas",
+      "Tus facturas",
     ),
     "shareEditClose": MessageLookupByLibrary.simpleMessage("Cerrar"),
     "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("Eliminar"),
@@ -1301,60 +1318,60 @@ class MessageLookup extends MessageLookupByLibrary {
       "No se pudo eliminar. Inténtalo de nuevo.",
     ),
     "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
-      "Cuenta eliminada.",
+      "Factura eliminada.",
     ),
     "shareEditDisabledActive": MessageLookupByLibrary.simpleMessage(
-      "Las cuentas activas están bloqueadas para edits.",
+      "Las facturas activas están bloqueadas para edición.",
     ),
     "shareEditDisabledConverted": MessageLookupByLibrary.simpleMessage(
-      "Esta cuenta ahora es un plan y la edición está desactivada.",
+      "Esta factura ahora es un plan y no se puede editar.",
     ),
     "shareEditDisabledGeneric": MessageLookupByLibrary.simpleMessage(
-      "La edición de esta cuenta no está disponible en este momento.",
+      "Editar esta factura no está disponible en este momento.",
     ),
     "shareEditDisabledRecurringCycle": MessageLookupByLibrary.simpleMessage(
-      "Los ciclos recurrentes están bloqueados para editarse aquí.",
+      "Los ciclos recurrentes están bloqueados para edición aquí.",
     ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
       "No pudimos cargar ese borrador.",
     ),
     "shareEditNotAllowed": MessageLookupByLibrary.simpleMessage(
-      "Esto queda bloqueado hasta que alguien tome esta cuenta.",
+      "Esto queda bloqueado hasta que alguien tome esta factura.",
     ),
     "shareEditSplitsLocked": MessageLookupByLibrary.simpleMessage(
-      "Los repartos están bloqueados porque alguien ya pagó. Aun así, puedes actualizar la descripción y las notas.",
+      "Los repartos están bloqueados porque alguien ya pagó. Aún puedes actualizar la descripción y las notas.",
     ),
     "shareEditSubmit": MessageLookupByLibrary.simpleMessage("Actualizar"),
     "shareEditSuccess": MessageLookupByLibrary.simpleMessage(
-      "Cuenta actualizada.",
+      "Factura actualizada.",
     ),
     "shareEditTerminateError": MessageLookupByLibrary.simpleMessage(
-      "No se pudo terminar el plan. Inténtalo de nuevo.",
+      "No se pudo finalizar el plan. Inténtalo de nuevo.",
     ),
     "shareEditTerminatePlan": MessageLookupByLibrary.simpleMessage(
-      "Terminar plan",
+      "Finalizar plan",
     ),
     "shareEditTerminatePlanBusy": MessageLookupByLibrary.simpleMessage(
-      "Terminando…",
+      "Finalizando…",
     ),
     "shareEditTerminatePlanConfirm": MessageLookupByLibrary.simpleMessage(
-      "Terminar plan",
+      "Finalizar plan",
     ),
     "shareEditTerminatePlanMessage": MessageLookupByLibrary.simpleMessage(
-      "Esto detiene los ciclos futuros de la cuenta.",
+      "Esto detiene los futuros ciclos de facturación.",
     ),
     "shareEditTerminatePlanTitle": MessageLookupByLibrary.simpleMessage(
-      "¿Terminar el plan recurrente?",
+      "¿Finalizar plan recurrente?",
     ),
     "shareEditTerminateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Plan terminado.",
+      "Plan finalizado.",
     ),
-    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Editar cuenta"),
+    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Editar factura"),
     "shareOwedDetailEmpty": MessageLookupByLibrary.simpleMessage(
-      "Ya estás al día con esta persona.",
+      "Estás al día con esta persona.",
     ),
     "shareOwedDetailError": MessageLookupByLibrary.simpleMessage(
-      "No pudimos marcar esa cuenta como saldada. Inténtalo de nuevo.",
+      "No pudimos marcar esa factura como saldada. Inténtalo de nuevo.",
     ),
     "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage(
       "Marcar como saldado",
@@ -1365,45 +1382,39 @@ class MessageLookup extends MessageLookupByLibrary {
       "Confirmar recepción",
     ),
     "sharePaidDetailAcknowledgeError": MessageLookupByLibrary.simpleMessage(
-      "No pudimos confirmar la recepción de las cuentas.",
+      "No pudimos confirmar la recepción de las facturas.",
     ),
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
       "Confirmando…",
     ),
     "shoppingAmountHint": MessageLookupByLibrary.simpleMessage(
-      "p. ej.: 2 cartones",
+      "p. ej. 2 cartones",
     ),
-    "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage(
-      "Cantidad (opcional)",
-    ),
+    "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage("Cuántos"),
     "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage(
-      "Archivar completados",
+      "Artículos comprados",
     ),
     "shoppingArchiveSharePromptBody": MessageLookupByLibrary.simpleMessage(
-      "¿Quieres crear un borrador de gasto de Share con estos artículos?",
+      "¿Quieres crear una factura en borrador a partir de estos artículos?",
     ),
     "shoppingArchiveSharePromptTitle": MessageLookupByLibrary.simpleMessage(
-      "¿Activar gasto de Share?",
+      "¿Crear factura?",
     ),
-    "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage(
-      "Sí, crear borrador",
-    ),
-    "shoppingCardSubtitle": m27,
+    "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("Sí"),
+    "shoppingCardSubtitle": m19,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage(
       "Lista de compras",
     ),
     "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
-      "Añade notas para tu hogar",
+      "Cualquier detalle útil (marca, tamaño, etc.)",
     ),
-    "shoppingContextLabel": MessageLookupByLibrary.simpleMessage(
-      "Contexto (opcional)",
-    ),
+    "shoppingContextLabel": MessageLookupByLibrary.simpleMessage("Notas"),
     "shoppingCreateTitle": MessageLookupByLibrary.simpleMessage(
       "Añadir artículo",
     ),
     "shoppingDelete": MessageLookupByLibrary.simpleMessage("Eliminar artículo"),
     "shoppingDeleteConfirmBody": MessageLookupByLibrary.simpleMessage(
-      "Esto elimina el artículo de la lista compartida.",
+      "Esto elimina el artículo de tu lista de compras compartida.",
     ),
     "shoppingDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
       "¿Eliminar este artículo?",
@@ -1412,14 +1423,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "Artículo de compra",
     ),
     "shoppingEditTitle": MessageLookupByLibrary.simpleMessage(
-      "Detalle del artículo",
+      "Detalles del artículo",
     ),
     "shoppingEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "Aún no hay artículos.",
+      "No hay artículos por comprar.",
     ),
     "shoppingErrorItemAlreadyCompletedByOther":
         MessageLookupByLibrary.simpleMessage(
-          "Alguien más ya marcó este artículo.",
+          "Otra persona ya marcó este artículo.",
         ),
     "shoppingListTitle": MessageLookupByLibrary.simpleMessage(
       "Lista de compras",
@@ -1427,35 +1438,37 @@ class MessageLookup extends MessageLookupByLibrary {
     "shoppingMarkCompleteCta": MessageLookupByLibrary.simpleMessage(
       "Marcar como completado",
     ),
-    "shoppingNameHint": MessageLookupByLibrary.simpleMessage("p. ej.: Leche"),
+    "shoppingNameHint": MessageLookupByLibrary.simpleMessage("p. ej. Leche"),
     "shoppingNameLabel": MessageLookupByLibrary.simpleMessage("Nombre"),
     "shoppingPhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "Foto de referencia (opcional)",
+      "Añadir una foto",
     ),
     "shoppingPhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
       "Añade una foto para ayudar con la compra",
     ),
     "shoppingPhotoReplaceLabel": MessageLookupByLibrary.simpleMessage(
-      "Reemplazar foto de referencia",
+      "Ayuda a alguien a saber qué comprar",
     ),
     "shoppingSubmitAdd": MessageLookupByLibrary.simpleMessage(
       "Añadir artículo",
     ),
     "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage(
-      "Editar artículo",
+      "Guardar cambios",
     ),
     "shoppingTabPending": MessageLookupByLibrary.simpleMessage("Por comprar"),
     "shoppingValidationName": MessageLookupByLibrary.simpleMessage(
-      "Ingresa el nombre del artículo.",
+      "Introduce el nombre del artículo.",
     ),
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
-      "¿Qué quieres hacer ahora?",
+      "¿Qué quieres hacer a continuación?",
     ),
-    "startReturningTitle": m19,
-    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Añadir flujo"),
-    "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Añadir cuenta"),
+    "startReturningTitle": m20,
+    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Añadir tarea"),
+    "todayAddSheetShare": MessageLookupByLibrary.simpleMessage(
+      "Añadir factura",
+    ),
     "todayAddSheetShopping": MessageLookupByLibrary.simpleMessage(
-      "Añadir compra",
+      "Añadir artículo de compra",
     ),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Añadir a tu hogar",
@@ -1470,77 +1483,77 @@ class MessageLookup extends MessageLookupByLibrary {
       "Todo al día por hoy",
     ),
     "todayFlatmateInviteSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Invítalos para que puedan mantenerse alineados y compartir la carga.",
+      "Manténganse alineados y compartan responsabilidades.",
     ),
     "todayFlatmateInviteTitle": MessageLookupByLibrary.simpleMessage(
-      "Trae tu hogar a Kinly",
+      "Invita a tus compañeros de piso",
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
-    "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Flujo"),
-    "todayFlowSeeAll": m20,
+    "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Tareas"),
+    "todayFlowSeeAll": m21,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Esto es lo que está fluyendo en tu hogar hoy.",
+      "Esto es lo que necesita atención hoy.",
     ),
-    "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Activos"),
+    "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Activas"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
     "todayGratitudeHouseCta": MessageLookupByLibrary.simpleMessage(
-      "Muro del hogar",
+      "Agradecimientos del hogar",
     ),
     "todayGratitudePersonalCta": MessageLookupByLibrary.simpleMessage(
-      "Muro personal",
+      "Mis agradecimientos",
     ),
     "todayGratitudeSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Muro de gratitud",
+      "Muro de agradecimientos",
     ),
     "todayGratitudeUnreadBody": MessageLookupByLibrary.simpleMessage(
-      "Hay nuevas publicaciones de gratitud esperándote.",
+      "Hay nuevos agradecimientos esperándote.",
     ),
     "todayInviteFriendsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Comparte Kinly con un amigo para que también pueda traer más armonía a su hogar.",
+      "Comparte Kinly para que puedan hacer la vida compartida más fácil.",
     ),
     "todayInviteFriendsTitle": MessageLookupByLibrary.simpleMessage(
-      "Invita a amigos a Kinly",
+      "Invita a tus amigos a Kinly",
     ),
     "todayInviteNotNow": MessageLookupByLibrary.simpleMessage("Ahora no"),
     "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
       "Compartir invitación",
     ),
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
-      "Actualizar hogar",
+      "Mejorar el hogar",
     ),
-    "todayMemberCapResolutionFailed": m21,
-    "todayMemberCapResolutionJoined": m22,
-    "todayMemberCapResolutionSuperseded": m23,
+    "todayMemberCapResolutionFailed": m22,
+    "todayMemberCapResolutionJoined": m23,
+    "todayMemberCapResolutionSuperseded": m24,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
       "Alguien",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage(
       "Ignorar",
     ),
-    "todayMemberCapSubtitle": m24,
+    "todayMemberCapSubtitle": m25,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
-      "Tu hogar está creciendo. Actualiza para dar la bienvenida a más personas.",
+      "Tu hogar está creciendo. Mejora el plan para dar la bienvenida a más personas.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
       "Alguien quiere unirse a tu hogar",
     ),
-    "todayShareActiveSubtitle": m25,
+    "todayShareActiveSubtitle": m26,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "No pudimos actualizar Share en este momento.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Monto saldado",
+      "Importe saldado",
     ),
-    "todaySharePaidUnseen": m26,
-    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Cuenta"),
+    "todaySharePaidUnseen": m27,
+    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Factura"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Por saldar"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),
-    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("Saldadas"),
+    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("Saldado"),
     "vibeCozySocialSummary": MessageLookupByLibrary.simpleMessage(
       "Tu hogar se siente acogedor y calmado cuando la gente pasa tiempo junta.",
     ),
     "vibeCozySocialTitle": MessageLookupByLibrary.simpleMessage(
-      "Social y acogedor",
+      "Social acogedor",
     ),
     "vibeDefaultSummary": MessageLookupByLibrary.simpleMessage(
       "Tu hogar se siente fácil de vivir para todos.",
@@ -1549,55 +1562,58 @@ class MessageLookup extends MessageLookupByLibrary {
       "Un hogar equilibrado",
     ),
     "vibeEasygoingSummary": MessageLookupByLibrary.simpleMessage(
-      "Tu hogar se siente relajado y abierto a cambios día a día.",
+      "Tu hogar se siente relajado y abierto a cambiar día a día.",
     ),
     "vibeEasygoingTitle": MessageLookupByLibrary.simpleMessage(
       "Flujo relajado",
     ),
     "vibeIndependentSummary": MessageLookupByLibrary.simpleMessage(
-      "Tu hogar respeta el espacio y la tranquilidad.",
+      "Tu hogar apoya el espacio y la tranquilidad.",
     ),
     "vibeIndependentTitle": MessageLookupByLibrary.simpleMessage(
       "Calma independiente",
     ),
     "vibeInsufficientSummary": MessageLookupByLibrary.simpleMessage(
-      "Termina las preferencias para ver la vibra de tu hogar.",
+      "Completa las preferencias para ver la vibra del hogar.",
     ),
     "vibeInsufficientTitle": MessageLookupByLibrary.simpleMessage(
-      "Aún no hay datos suficientes",
+      "Aún no hay suficientes datos",
     ),
     "vibeMixedSummary": MessageLookupByLibrary.simpleMessage(
-      "Tu hogar muestra una mezcla de estilos de comodidad, influida por cómo a cada persona le gusta vivir.",
+      "Tu hogar muestra una mezcla de estilos de comodidad, influida por cómo le gusta vivir a cada persona.",
     ),
     "vibeMixedTitle": MessageLookupByLibrary.simpleMessage("Un hogar mixto"),
     "vibeQuietCareSummary": MessageLookupByLibrary.simpleMessage(
-      "Tu hogar se siente tranquilo, con energía suave y ritmos más calmados.",
+      "Tu hogar se siente calmado, con energía suave y ritmos tranquilos.",
     ),
     "vibeQuietCareTitle": MessageLookupByLibrary.simpleMessage(
-      "Cuidado silencioso",
+      "Cuidado tranquilo",
     ),
     "vibeSocialSummary": MessageLookupByLibrary.simpleMessage(
-      "Tu hogar se siente activo, con gente compartiendo tiempo.",
+      "Tu hogar se siente activo, con gente en compañía.",
     ),
     "vibeSocialTitle": MessageLookupByLibrary.simpleMessage("Energía social"),
     "vibeSteadySummary": MessageLookupByLibrary.simpleMessage(
-      "Tu hogar se siente estable, con el cuidado expresándose a través de hábitos diarios.",
+      "Tu hogar se siente estable, con cuidado mostrado a través de hábitos diarios.",
     ),
     "vibeSteadyTitle": MessageLookupByLibrary.simpleMessage("Calma constante"),
     "vibeStructuredSummary": MessageLookupByLibrary.simpleMessage(
       "Tu hogar funciona mejor con rutinas claras y planes compartidos.",
     ),
     "vibeStructuredTitle": MessageLookupByLibrary.simpleMessage(
-      "Ritmo con estructura",
+      "Ritmo estructurado",
     ),
     "vibeWarmSocialSummary": MessageLookupByLibrary.simpleMessage(
       "Tu hogar se siente cálido y acogedor, con gente a menudo junta.",
     ),
     "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage(
-      "Social y cálido",
+      "Social cálido",
+    ),
+    "weeklyRewriteCta": MessageLookupByLibrary.simpleMessage(
+      "Enviar con calma con Kinly",
     ),
     "welcome_create": MessageLookupByLibrary.simpleMessage("Crear un hogar"),
-    "welcome_join": MessageLookupByLibrary.simpleMessage("Unirme a un hogar"),
+    "welcome_join": MessageLookupByLibrary.simpleMessage("Unirte a tu hogar"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("Bienvenido a Kinly"),
   };
 }
