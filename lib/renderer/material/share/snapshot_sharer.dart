@@ -51,6 +51,7 @@ class SnapshotSharer {
       }
 
       final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+      final shareOrigin = sharePositionOriginForContext(context);
       final image = await boundary.toImage(pixelRatio: pixelRatio);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
@@ -72,7 +73,6 @@ class SnapshotSharer {
 
       final appLink = _resolveAppLink();
       final message = messageBuilder(appLink);
-      final shareOrigin = sharePositionOriginForContext(context);
 
       await Share.shareXFiles(
         [XFile(file.path)],

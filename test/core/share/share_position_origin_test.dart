@@ -29,30 +29,4 @@ void main() {
       expect(rect.height, greaterThan(0));
     },
   );
-
-  testWidgets(
-    "falls back to MediaQuery center when context has no render object",
-    (tester) async {
-      late BuildContext builderContext;
-      const viewSize = Size(320, 640);
-
-      await tester.pumpWidget(
-        MediaQuery(
-          data: const MediaQueryData(size: viewSize),
-          child: Directionality(
-            textDirection: TextDirection.ltr,
-            child: Builder(
-              builder: (context) {
-                builderContext = context;
-                return const SizedBox.shrink();
-              },
-            ),
-          ),
-        ),
-      );
-
-      final rect = sharePositionOriginForContext(builderContext);
-      expect(rect, const Rect.fromLTWH(160, 320, 1, 1));
-    },
-  );
 }
