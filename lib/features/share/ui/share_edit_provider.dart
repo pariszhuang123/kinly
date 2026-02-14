@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meta/meta.dart';
 
 import '../../../contracts/expenses/models.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
@@ -106,7 +107,7 @@ class ShareEditProvider extends StatelessWidget {
           recurrenceEvery: expense.recurrenceEvery,
           recurrenceUnit: expense.recurrenceUnit,
         );
-        final canEdit = detail.canEdit;
+        final constraints = resolveShareEditConstraints(detail);
         return BlocProvider(
           create:
               (_) => ShareCreateBloc(
@@ -117,20 +118,67 @@ class ShareEditProvider extends StatelessWidget {
                 planId: expense.planId,
                 initialForm: initialForm,
                 editingExpenseId: expense.id,
-                amountLocked: detail.amountLocked,
+                amountLocked: constraints.amountLocked,
                 allPaid: allPaid,
                 paidByOther: paidByOther,
-                canEdit: canEdit,
-                editDisabledReason: detail.editDisabledReason,
+                canEdit: constraints.canEdit,
+                editDisabledReason: constraints.editDisabledReason,
               )..add(const ShareCreateParticipantsRequested()),
           child: ShareCreateScreen(
             homeId: homeId,
-            allowDelete: allowDelete && canEdit,
+            allowDelete: allowDelete && constraints.canEdit,
           ),
         );
       },
     );
   }
+}
+
+class ShareEditConstraints {
+  const ShareEditConstraints({
+    required this.canEdit,
+    required this.amountLocked,
+    required this.editDisabledReason,
+  });
+
+  final bool canEdit;
+  final bool amountLocked;
+  final String? editDisabledReason;
+}
+
+@visibleForTesting
+ShareEditConstraints resolveShareEditConstraints(ExpenseForEdit detail) {
+  final expense = detail.expense;
+  final isActive = expense.status == ExpenseStatus.active;
+  final isRecurring =
+      expense.planId != null ||
+      expense.recurrenceEvery != null ||
+      expense.recurrenceUnit != null;
+  final isActiveRecurring = isActive && isRecurring;
+  final isActiveOneOff = isActive && !isRecurring;
+
+  if (isActiveRecurring) {
+    return ShareEditConstraints(
+      canEdit: false,
+      amountLocked: true,
+      editDisabledReason:
+          detail.editDisabledReason ?? 'RECURRING_CYCLE_IMMUTABLE',
+    );
+  }
+
+  if (isActiveOneOff) {
+    return const ShareEditConstraints(
+      canEdit: true,
+      amountLocked: true,
+      editDisabledReason: null,
+    );
+  }
+
+  return ShareEditConstraints(
+    canEdit: detail.canEdit,
+    amountLocked: detail.amountLocked,
+    editDisabledReason: detail.editDisabledReason,
+  );
 }
 
 String _formatAmount(int amountCents) {

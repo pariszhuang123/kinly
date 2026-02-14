@@ -253,6 +253,40 @@ void main() {
     expect: () => [emptySeed.copyWith(showValidationErrors: true)],
   );
 
+  late ShareCreateState createLockedSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'create mode still requires amount when split mode is set',
+    build: () => buildBloc(isAmountLocked: true),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'New bill',
+        amountInput: '',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_a', 'member_b'},
+      );
+      createLockedSeed = seededState(form: form, isAmountLocked: true);
+      return createLockedSeed;
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () => [createLockedSeed.copyWith(showValidationErrors: true)],
+    verify: (_) {
+      verifyNever(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any<int?>(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      );
+    },
+  );
+
   blocTest<ShareCreateBloc, ShareCreateState>(
     'defaults recurrence when toggled on',
     build: () => buildBloc(),

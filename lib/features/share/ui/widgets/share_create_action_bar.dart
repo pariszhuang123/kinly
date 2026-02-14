@@ -86,12 +86,10 @@ class _ActionBarViewModel {
     required bool allowDelete,
   }) {
     final editingDisabled = _isEditingDisabled(state);
-    final locked = _isLocked(state, editingDisabled);
     final fullyPaid = state.allPaid;
     final canDelete = _canDelete(
       state,
       allowDelete: allowDelete,
-      locked: locked,
       fullyPaid: fullyPaid,
       editingDisabled: editingDisabled,
     );
@@ -121,17 +119,13 @@ class _ActionBarViewModel {
 bool _isEditingDisabled(ShareCreateState state) =>
     state.isEditing && !state.canEdit;
 
-bool _isLocked(ShareCreateState state, bool editingDisabled) =>
-    state.isAmountLocked || editingDisabled;
-
 bool _canDelete(
   ShareCreateState state, {
   required bool allowDelete,
-  required bool locked,
   required bool fullyPaid,
   required bool editingDisabled,
 }) {
-  final deleteBlocked = state.paidByOther || locked || fullyPaid;
+  final deleteBlocked = state.paidByOther || fullyPaid;
   final isPristineEdit = state.isEditing && !state.hasUserEdits;
   return allowDelete && isPristineEdit && !deleteBlocked && !editingDisabled;
 }

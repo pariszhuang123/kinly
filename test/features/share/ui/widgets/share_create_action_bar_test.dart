@@ -23,6 +23,7 @@ void main() {
     required ShareCreateState state,
     bool showTerminatePlan = false,
     bool isTerminatingPlan = false,
+    bool allowDelete = false,
   }) {
     return MaterialApp(
       theme: ThemeData(extensions: const [spacing]),
@@ -36,7 +37,7 @@ void main() {
       home: Scaffold(
         body: ShareCreateActionBar(
           state: state,
-          allowDelete: false,
+          allowDelete: allowDelete,
           onDeleteRequested: () {},
           onSubmit: () {},
           showTerminatePlan: showTerminatePlan,
@@ -95,6 +96,55 @@ void main() {
         final s = S.of(tester.element(find.byType(ShareCreateActionBar)));
         expect(find.text(s.shareEditTerminatePlanBusy), findsOneWidget);
         expect(find.text(s.shareCreateSubmit), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'shows Delete for pristine amount-locked edit when no one else has paid',
+      (tester) async {
+        final state = ShareCreateState.initial(
+          isEditing: true,
+          editingExpenseId: 'expense-1',
+          isAmountLocked: true,
+          canEdit: true,
+        ).copyWith(
+          allPaid: false,
+          paidByOther: false,
+          hasUserEdits: false,
+        );
+
+        await tester.pumpWidget(
+          buildSubject(state: state, allowDelete: true),
+        );
+        await tester.pumpAndSettle();
+
+        final s = S.of(tester.element(find.byType(ShareCreateActionBar)));
+        expect(find.text(s.shareEditDeleteButton), findsOneWidget);
+        expect(find.text(s.shareEditSubmit), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'keeps Update when another member has already paid',
+      (tester) async {
+        final state = ShareCreateState.initial(
+          isEditing: true,
+          editingExpenseId: 'expense-1',
+          isAmountLocked: true,
+          canEdit: true,
+        ).copyWith(
+          paidByOther: true,
+          hasUserEdits: false,
+        );
+
+        await tester.pumpWidget(
+          buildSubject(state: state, allowDelete: true),
+        );
+        await tester.pumpAndSettle();
+
+        final s = S.of(tester.element(find.byType(ShareCreateActionBar)));
+        expect(find.text(s.shareEditDeleteButton), findsNothing);
+        expect(find.text(s.shareEditSubmit), findsOneWidget);
       },
     );
   });

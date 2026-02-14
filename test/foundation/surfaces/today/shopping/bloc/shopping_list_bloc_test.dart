@@ -161,7 +161,7 @@ void main() {
     });
 
     blocTest<ShoppingListBloc, ShoppingListState>(
-      'loads, filters archived, sorts lists, and computes myCompletedCount',
+      'loads, filters archived, preserves RPC order, and computes myCompletedCount',
       build: () {
         final now = DateTime(2026, 2, 1, 12);
         when(
@@ -215,12 +215,12 @@ void main() {
             .having(
               (s) => s.pendingItems.map((i) => i.id).toList(),
               'pending order',
-              ['pending-new', 'pending-old'],
+              ['pending-old', 'pending-new'],
             )
             .having(
               (s) => s.completedItems.map((i) => i.id).toList(),
               'completed order',
-              ['done-other', 'done-mine'],
+              ['done-mine', 'done-other'],
             )
             .having((s) => s.myCompletedCount, 'myCompletedCount', 1)
             .having(

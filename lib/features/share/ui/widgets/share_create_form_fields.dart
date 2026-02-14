@@ -9,11 +9,13 @@ class _DescriptionField extends StatelessWidget {
     required this.controller,
     required this.state,
     required this.showValidation,
+    required this.enabled,
   });
 
   final TextEditingController controller;
   final ShareCreateState state;
   final bool showValidation;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +23,7 @@ class _DescriptionField extends StatelessWidget {
 
     return KinlyTextField(
       controller: controller,
+      enabled: enabled,
       labelText: s.shareCreateDescriptionLabel,
       hintText: s.shareCreateDescriptionHint,
       errorText:
@@ -313,9 +316,10 @@ class _EmptyParticipantsText extends StatelessWidget {
 }
 
 class _NotesField extends StatelessWidget {
-  const _NotesField({required this.controller});
+  const _NotesField({required this.controller, required this.enabled});
 
   final TextEditingController controller;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -323,6 +327,7 @@ class _NotesField extends StatelessWidget {
 
     return KinlyTextField(
       controller: controller,
+      enabled: enabled,
       minLines: 3,
       maxLines: 4,
       labelText: s.shareCreateNotesLabel,

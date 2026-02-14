@@ -5,9 +5,11 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:kinly/contracts/expenses/enums/expense_recurrence_unit.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
+import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/features/share/bloc/share_create_bloc/share_create_bloc.dart';
 import 'package:kinly/features/share/domain/share_create_form.dart';
+import 'package:kinly/features/share/domain/share_split_mode.dart';
 import 'package:kinly/features/share/ui/widgets/share_create_form_view.dart';
 import 'package:kinly/generated/l10n.dart';
 
@@ -35,6 +37,7 @@ void main() {
               xxl: 32,
               xxxl: 40,
             ),
+            KinlyOpacity.defaults,
             KinlySections(
               flow: SectionColors(
                 background: Colors.white,
@@ -91,6 +94,22 @@ void main() {
       );
     }
 
+    Future<TextField> fieldByLabel(WidgetTester tester, String label) async {
+      final finder = find.byWidgetPredicate(
+        (widget) =>
+            widget is TextField && widget.decoration?.labelText == label,
+      );
+      if (finder.evaluate().isEmpty) {
+        await tester.scrollUntilVisible(
+          finder,
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+      }
+      expect(finder, findsOneWidget);
+      return tester.widget<TextField>(finder);
+    }
+
     testWidgets('shows cycle period helper for recurring expenses', (
       tester,
     ) async {
@@ -141,6 +160,90 @@ void main() {
 
       await tester.pumpWidget(buildFormView(recurringState));
       expect(find.text('Every'), findsOneWidget);
+    });
+
+    testWidgets(
+      'disables description and context when editing is disabled',
+      (tester) async {
+        final state = ShareCreateState.initial(
+          isEditing: true,
+          editingExpenseId: 'expense-1',
+          canEdit: false,
+          editDisabledReason: 'RECURRING_CYCLE_IMMUTABLE',
+        ).copyWith(
+          isLoading: false,
+          participants: const [],
+        );
+
+        await tester.pumpWidget(buildFormView(state));
+
+        final s = S.of(tester.element(find.byType(ShareCreateFormView)));
+        expect(
+          (await fieldByLabel(tester, s.shareCreateDescriptionLabel)).enabled,
+          isFalse,
+        );
+        expect(
+          (await fieldByLabel(tester, s.shareCreateNotesLabel)).enabled,
+          isFalse,
+        );
+      },
+    );
+
+    testWidgets(
+      'keeps description and context editable for amount-locked edits',
+      (tester) async {
+        final form = ShareCreateForm.initial().copyWith(
+          splitMode: ShareSplitMode.equal,
+          selectedParticipantIds: {'member_a', 'member_b'},
+        );
+        final state = ShareCreateState.initial(
+          isEditing: true,
+          editingExpenseId: 'expense-1',
+          isAmountLocked: true,
+          canEdit: true,
+        ).copyWith(
+          isLoading: false,
+          participants: const [],
+          form: form,
+        );
+
+        await tester.pumpWidget(buildFormView(state));
+
+        final s = S.of(tester.element(find.byType(ShareCreateFormView)));
+        expect(
+          (await fieldByLabel(tester, s.shareCreateDescriptionLabel)).enabled,
+          isTrue,
+        );
+        expect(
+          (await fieldByLabel(tester, s.shareCreateNotesLabel)).enabled,
+          isTrue,
+        );
+        expect(
+          (await fieldByLabel(tester, s.shareCreateAmountLabel)).enabled,
+          isFalse,
+        );
+      },
+    );
+
+    testWidgets('keeps all fields editable in create mode', (tester) async {
+      final state = ShareCreateState.initial(
+        isEditing: false,
+        isAmountLocked: true,
+        canEdit: false,
+      ).copyWith(
+        isLoading: false,
+        participants: const [],
+      );
+
+      await tester.pumpWidget(buildFormView(state));
+
+      final s = S.of(tester.element(find.byType(ShareCreateFormView)));
+      expect(
+        (await fieldByLabel(tester, s.shareCreateDescriptionLabel)).enabled,
+        isTrue,
+      );
+      expect((await fieldByLabel(tester, s.shareCreateNotesLabel)).enabled, isTrue);
+      expect((await fieldByLabel(tester, s.shareCreateAmountLabel)).enabled, isTrue);
     });
   });
 }

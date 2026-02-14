@@ -111,6 +111,7 @@ class ShareCreateFormView extends StatelessWidget {
           controller: descriptionController,
           state: state,
           showValidation: viewState.showValidation,
+          enabled: !viewState.editingDisabled,
         ),
         SizedBox(height: spacing.lg),
         _AmountField(
@@ -154,7 +155,10 @@ class ShareCreateFormView extends StatelessWidget {
             customControllers: customControllers,
           ),
         SizedBox(height: spacing.lg),
-        _NotesField(controller: notesController),
+        _NotesField(
+          controller: notesController,
+          enabled: !viewState.editingDisabled,
+        ),
         SizedBox(height: spacing.xl),
         if (showPrimaryActions && !viewState.hidePrimary)
           _PrimaryActionButton(
@@ -281,7 +285,6 @@ class _FormViewState {
     final canDelete = _canDelete(
       state,
       allowDelete: allowDelete,
-      locked: locked,
       fullyPaid: fullyPaid,
       editingDisabled: editingDisabled,
     );
@@ -320,7 +323,7 @@ class _FormViewState {
       state.isEditing && !state.canEdit;
 
   static bool _isLocked(ShareCreateState state, bool editingDisabled) =>
-      state.isAmountLocked || editingDisabled;
+      state.isEditing && (state.isAmountLocked || editingDisabled);
 
   static bool _needsSplit(
     ShareCreateState state, {
@@ -344,12 +347,11 @@ class _FormViewState {
   static bool _canDelete(
     ShareCreateState state, {
     required bool allowDelete,
-    required bool locked,
     required bool fullyPaid,
     required bool editingDisabled,
   }) {
     final isPristineEdit = state.isEditing && !state.hasUserEdits;
-    final deleteBlocked = state.paidByOther || locked || fullyPaid;
+    final deleteBlocked = state.paidByOther || fullyPaid;
     return allowDelete && isPristineEdit && !deleteBlocked && !editingDisabled;
   }
 

@@ -553,7 +553,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     final amountCents = form.amountCents;
     final amountValid = amountCents != null && amountCents > 0;
     final isEditing = currentState.isEditing;
-    final amountLocked = currentState.isAmountLocked;
+    final amountLocked = isEditing && currentState.isAmountLocked;
     final splitMode = form.splitMode;
     final requiresAmount = isEditing ? !amountLocked : splitMode != null;
 

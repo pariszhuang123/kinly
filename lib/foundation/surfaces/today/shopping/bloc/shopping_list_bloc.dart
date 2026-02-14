@@ -148,10 +148,8 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
       final items = snapshot.items.where((item) => item.archivedAt == null).toList(
         growable: false,
       );
-      final pending = items.where((item) => !item.isCompleted).toList(growable: false)
-        ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-      final completed = items.where((item) => item.isCompleted).toList(growable: false)
-        ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      final pending = items.where((item) => !item.isCompleted).toList(growable: false);
+      final completed = items.where((item) => item.isCompleted).toList(growable: false);
       final photoUrlsByItemId = <String, String>{
         for (final item in items)
           item.id: _shoppingListRepository.toPublicPhotoUrl(item.referencePhotoPath) ?? '',
