@@ -64,9 +64,13 @@ class _SnapshotShareSurfaceState extends State<SnapshotShareSurface> {
 
   @override
   Widget build(BuildContext context) {
+    final captureBackground = Theme.of(context).colorScheme.surface;
     final capturedChild = RepaintBoundary(
       key: _repaintKey,
-      child: widget.capturedChildBuilder(context),
+      child: ColoredBox(
+        color: captureBackground,
+        child: widget.capturedChildBuilder(context),
+      ),
     );
 
     return widget.builder(

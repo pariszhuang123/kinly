@@ -99,10 +99,10 @@ class SnapshotSharer {
 
   static String _resolveAppLink() {
     final host =
-        AppConfig.inviteHost.isNotEmpty
-            ? AppConfig.inviteHost
-            : (AppConfig.deeplinkHost.isNotEmpty
-                ? AppConfig.deeplinkHost
+        AppConfig.deeplinkHost.isNotEmpty
+            ? AppConfig.deeplinkHost
+            : (AppConfig.inviteHost.isNotEmpty
+                ? AppConfig.inviteHost
                 : 'go.makinglifeeasie.com');
     if (host.isEmpty) return 'https://go.makinglifeeasie.com/kinly';
     final uri = Uri(
