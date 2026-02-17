@@ -17,6 +17,7 @@ import 'package:kinly/contracts/mood/house_pulse_models.dart';
 import 'package:kinly/contracts/mood/ports/house_pulse_repository.dart';
 import 'package:kinly/contracts/mood/personal_wall_models.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
+import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/notifications/profile_update_notifier.dart';
@@ -25,6 +26,7 @@ import '../domain/models.dart'; // TodayFlowTask etc.
 
 part 'today_event.dart';
 part 'today_state.dart';
+part 'today_state_mutations.dart';
 
 class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final ChoresRepository _choresRepository;
@@ -35,6 +37,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final HousePulseRepository _housePulseRepository;
   final OnboardingRepository _onboardingRepository;
   final PreferenceReportsRepository _preferenceReportsRepository;
+  final HouseNormsRepository? _houseNormsRepository;
   final ProfileUpdateNotifier _profileUpdateNotifier;
   final Logger _logger;
   final String _homeId;
@@ -53,6 +56,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required HousePulseRepository housePulseRepository,
     required OnboardingRepository onboardingRepository,
     required PreferenceReportsRepository preferenceReportsRepository,
+    HouseNormsRepository? houseNormsRepository,
     required String homeId,
     required ProfileUpdateNotifier profileUpdateNotifier,
     Logger? logger,
@@ -64,10 +68,11 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       _housePulseRepository = housePulseRepository,
       _onboardingRepository = onboardingRepository,
       _preferenceReportsRepository = preferenceReportsRepository,
+      _houseNormsRepository = houseNormsRepository,
       _profileUpdateNotifier = profileUpdateNotifier,
       _logger = logger ?? const DebugLogger(),
       _homeId = homeId,
-       super(const TodayState.loading()) {
+      super(const TodayState.loading()) {
     on<TodayStarted>(_onStarted);
     on<TodayRefreshed>(_onRefreshed);
     on<TodayProfileUpdated>(_onProfileUpdated);
@@ -108,7 +113,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       avatarUrl: event.profile.avatarUrl,
       isOwner: previous?.isOwner ?? false,
     );
-    emit(_stateWithProfile(state, resolvedProfile));
+    emit(_todayStateWithProfile(state, resolvedProfile));
   }
 
   Future<void> _loadToday(
@@ -129,36 +134,23 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     var shouldPromptFlatmateInviteShare = state.shouldPromptFlatmateInviteShare;
     var shouldPromptInviteShare = state.shouldPromptInviteShare;
     var shouldPromptPreferences = state.shouldPromptPreferences;
+    var shouldPromptHouseNorms = state.shouldPromptHouseNorms;
     var activeChoreCount = state.activeChoreCount;
     var memberCapJoinRequests = state.memberCapJoinRequests;
     var memberCapJoinResolution = state.memberCapJoinResolution;
     try {
-      if (!isRefresh) {
-        emit(
-          TodayState.loading(
-            profile: profile,
-            shareOwed: state.shareOwed,
-            sharePaidToMe: state.sharePaidToMe,
-            shareDrafts: state.shareDrafts,
-            harmonyPromptTick: prevPromptTick,
-            hasShownHarmonyPrompt: prevHasShownHarmony,
-            npsPromptTick: prevNpsPromptTick,
-            hasShownNpsPrompt: prevHasShownNps,
-            gratitudeStatus: prevGratitudeStatus,
-            personalGratitudeStatus: state.personalGratitudeStatus,
-            notificationPromptTick: prevNotificationPromptTick,
-            hasShownNotificationPrompt: prevHasShownNotification,
-            activeChoreCount: state.activeChoreCount,
-            shouldPromptFlatmateInviteShare:
-                state.shouldPromptFlatmateInviteShare,
-            shouldPromptInviteShare: state.shouldPromptInviteShare,
-            shouldPromptPreferences: state.shouldPromptPreferences,
-            memberCapJoinRequests: state.memberCapJoinRequests,
-            memberCapJoinResolution: state.memberCapJoinResolution,
-            housePulse: state.housePulse,
-          ),
-        );
-      }
+      _emitLoadingIfNeeded(
+        emit: emit,
+        isRefresh: isRefresh,
+        profile: profile,
+        prevPromptTick: prevPromptTick,
+        prevHasShownHarmony: prevHasShownHarmony,
+        prevNpsPromptTick: prevNpsPromptTick,
+        prevHasShownNps: prevHasShownNps,
+        prevGratitudeStatus: prevGratitudeStatus,
+        prevNotificationPromptTick: prevNotificationPromptTick,
+        prevHasShownNotification: prevHasShownNotification,
+      );
 
       final hasSubmittedMood = await _moodRepository.isSubmittedThisWeek(
         _homeId,
@@ -206,14 +198,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         excludeSelf: false,
       );
       final wallStatusFuture = _moodRepository.getWallStatus(_homeId);
-      late Future<PersonalGratitudeStatus> personalStatusFuture;
-      try {
-        personalStatusFuture = _moodRepository.getPersonalStatus();
-      } catch (_) {
-        personalStatusFuture = Future.value(
-          const PersonalGratitudeStatus(hasUnread: false, lastReadAt: null),
-        );
-      }
+      final personalStatusFuture = _loadPersonalStatusFuture();
 
       final members = await membersFuture;
       String? ownerUserId;
@@ -232,20 +217,13 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         fallback: profile,
         ownerUserId: ownerUserId,
       );
-      if (profile != null) {
-        try {
-          final resolution =
-              await _preferenceReportsRepository.getTemplateResolution();
-          final report = await _preferenceReportsRepository.getReportForHome(
-            homeId: _homeId,
-            subjectUserId: profile.userId,
-            locale: resolution.resolvedLocale,
-          );
-          shouldPromptPreferences = report == null;
-        } catch (_) {
-          // Ignore preference prompt errors; keep Today usable.
-        }
-      }
+      final promptSnapshot = await _resolvePromptSnapshot(
+        profile: profile,
+        fallbackShouldPromptPreferences: shouldPromptPreferences,
+        fallbackShouldPromptHouseNorms: shouldPromptHouseNorms,
+      );
+      shouldPromptPreferences = promptSnapshot.shouldPromptPreferences;
+      shouldPromptHouseNorms = promptSnapshot.shouldPromptHouseNorms;
       final drafts = await draftsFuture;
       final active = await activeFuture;
       final shareSnapshot = await _loadShareSnapshot(
@@ -262,21 +240,10 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         currentUserId: profile?.userId,
       );
       _logGratitudeStatus(wallStatus, profile?.userId);
-
-      try {
-        final pulse = await housePulseFuture;
-        if (pulse != null) {
-          housePulse = pulse;
-        }
-        _logHousePulseLoaded(pulse);
-      } catch (error, stackTrace) {
-        _logger.warn(
-          'Failed to load house pulse',
-          tag: _housePulseLogTag,
-          error: error,
-          stackTrace: stackTrace,
-        );
-      }
+      housePulse = await _resolveHousePulseSnapshot(
+        future: housePulseFuture,
+        fallback: housePulse,
+      );
 
       final draftTasks = drafts
           .map(_mapEntryToTodayTask)
@@ -306,6 +273,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
           shouldPromptInviteShare: shouldPromptInviteShare,
           shouldPromptPreferences: shouldPromptPreferences,
+          shouldPromptHouseNorms: shouldPromptHouseNorms,
           memberCapJoinRequests: memberCapJoinRequests,
           memberCapJoinResolution: memberCapJoinResolution,
           housePulse: housePulse,
@@ -330,12 +298,42 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           npsPromptTick: prevNpsPromptTick,
           hasShownNpsPrompt: prevHasShownNps,
           shouldPromptPreferences: state.shouldPromptPreferences,
+          shouldPromptHouseNorms: state.shouldPromptHouseNorms,
           memberCapJoinRequests: memberCapJoinRequests,
           memberCapJoinResolution: memberCapJoinResolution,
           housePulse: housePulse,
         ),
       );
       // optional: log error/stackTrace via your logger/Sentry here
+    }
+  }
+
+  Future<PersonalGratitudeStatus> _loadPersonalStatusFuture() {
+    try {
+      return _moodRepository.getPersonalStatus();
+    } catch (_) {
+      return Future.value(
+        const PersonalGratitudeStatus(hasUnread: false, lastReadAt: null),
+      );
+    }
+  }
+
+  Future<HousePulsePayload?> _resolveHousePulseSnapshot({
+    required Future<HousePulsePayload?> future,
+    required HousePulsePayload? fallback,
+  }) async {
+    try {
+      final pulse = await future;
+      _logHousePulseLoaded(pulse);
+      return pulse ?? fallback;
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to load house pulse',
+        tag: _housePulseLogTag,
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return fallback;
     }
   }
 
@@ -354,6 +352,99 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         isOwner: ownerUserId != null && profile.userId == ownerUserId,
       );
     } catch (_) {
+      return fallback;
+    }
+  }
+
+  void _emitLoadingIfNeeded({
+    required Emitter<TodayState> emit,
+    required bool isRefresh,
+    required TodayUserProfile? profile,
+    required int prevPromptTick,
+    required bool prevHasShownHarmony,
+    required int prevNpsPromptTick,
+    required bool prevHasShownNps,
+    required GratitudeWallStatus? prevGratitudeStatus,
+    required int prevNotificationPromptTick,
+    required bool prevHasShownNotification,
+  }) {
+    if (isRefresh) return;
+    emit(
+      TodayState.loading(
+        profile: profile,
+        shareOwed: state.shareOwed,
+        sharePaidToMe: state.sharePaidToMe,
+        shareDrafts: state.shareDrafts,
+        harmonyPromptTick: prevPromptTick,
+        hasShownHarmonyPrompt: prevHasShownHarmony,
+        npsPromptTick: prevNpsPromptTick,
+        hasShownNpsPrompt: prevHasShownNps,
+        gratitudeStatus: prevGratitudeStatus,
+        personalGratitudeStatus: state.personalGratitudeStatus,
+        notificationPromptTick: prevNotificationPromptTick,
+        hasShownNotificationPrompt: prevHasShownNotification,
+        activeChoreCount: state.activeChoreCount,
+        shouldPromptFlatmateInviteShare: state.shouldPromptFlatmateInviteShare,
+        shouldPromptInviteShare: state.shouldPromptInviteShare,
+        shouldPromptPreferences: state.shouldPromptPreferences,
+        shouldPromptHouseNorms: state.shouldPromptHouseNorms,
+        memberCapJoinRequests: state.memberCapJoinRequests,
+        memberCapJoinResolution: state.memberCapJoinResolution,
+        housePulse: state.housePulse,
+      ),
+    );
+  }
+
+  Future<_PromptSnapshot> _resolvePromptSnapshot({
+    required TodayUserProfile? profile,
+    required bool fallbackShouldPromptPreferences,
+    required bool fallbackShouldPromptHouseNorms,
+  }) async {
+    if (profile == null) {
+      return _PromptSnapshot(
+        shouldPromptPreferences: fallbackShouldPromptPreferences,
+        shouldPromptHouseNorms: fallbackShouldPromptHouseNorms,
+      );
+    }
+
+    try {
+      final resolution = await _preferenceReportsRepository.getTemplateResolution();
+      final report = await _preferenceReportsRepository.getReportForHome(
+        homeId: _homeId,
+        subjectUserId: profile.userId,
+        locale: resolution.resolvedLocale,
+      );
+      return _PromptSnapshot(
+        shouldPromptPreferences: report == null,
+        shouldPromptHouseNorms: await _resolveHouseNormPrompt(
+          profile: profile,
+          locale: resolution.resolvedLocale,
+          fallback: fallbackShouldPromptHouseNorms,
+        ),
+      );
+    } catch (_) {
+      // Ignore preference prompt errors; keep Today usable.
+      return _PromptSnapshot(
+        shouldPromptPreferences: fallbackShouldPromptPreferences,
+        shouldPromptHouseNorms: fallbackShouldPromptHouseNorms,
+      );
+    }
+  }
+
+  Future<bool> _resolveHouseNormPrompt({
+    required TodayUserProfile profile,
+    required String locale,
+    required bool fallback,
+  }) async {
+    if (!profile.isOwner) return false;
+    try {
+      final houseNorms = await _houseNormsRepository?.getForHome(
+        homeId: _homeId,
+        locale: locale,
+      );
+      return houseNorms == null;
+    } catch (_) {
+      // Ignore house norms prompt errors; keep Today usable.
       return fallback;
     }
   }
@@ -518,85 +609,6 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     }
   }
 
-  TodayState _stateWithProfile(TodayState current, TodayUserProfile? profile) {
-    if (current.isLoading) {
-      return TodayState.loading(
-        profile: profile,
-        shareOwed: current.shareOwed,
-        sharePaidToMe: current.sharePaidToMe,
-        shareDrafts: current.shareDrafts,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        gratitudeStatus: current.gratitudeStatus,
-        personalGratitudeStatus: current.personalGratitudeStatus,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-        shouldPromptPreferences: current.shouldPromptPreferences,
-        memberCapJoinRequests: current.memberCapJoinRequests,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-        housePulse: current.housePulse,
-      );
-    }
-
-    if (current.message != null || current.error != null) {
-      return TodayState.failure(
-        profile: profile,
-        message: current.message,
-        error: current.error,
-        shareOwed: current.shareOwed,
-        sharePaidToMe: current.sharePaidToMe,
-        shareDrafts: current.shareDrafts,
-        shareErrorMessage: current.shareErrorMessage,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        gratitudeStatus: current.gratitudeStatus,
-        personalGratitudeStatus: current.personalGratitudeStatus,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-        shouldPromptPreferences: current.shouldPromptPreferences,
-        memberCapJoinRequests: current.memberCapJoinRequests,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-        housePulse: current.housePulse,
-      );
-    }
-
-    return TodayState.loaded(
-      activeTasks: current.activeTasks,
-      draftTasks: current.draftTasks,
-      shareOwed: current.shareOwed,
-      sharePaidToMe: current.sharePaidToMe,
-      shareDrafts: current.shareDrafts,
-      profile: profile,
-      shareErrorMessage: current.shareErrorMessage,
-      harmonyPromptTick: current.harmonyPromptTick,
-      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-      npsPromptTick: current.npsPromptTick,
-      hasShownNpsPrompt: current.hasShownNpsPrompt,
-      gratitudeStatus: current.gratitudeStatus,
-      notificationPromptTick: current.notificationPromptTick,
-      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-      activeChoreCount: current.activeChoreCount,
-      shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
-      shouldPromptInviteShare: current.shouldPromptInviteShare,
-      shouldPromptPreferences: current.shouldPromptPreferences,
-      memberCapJoinRequests: current.memberCapJoinRequests,
-      memberCapJoinResolution: current.memberCapJoinResolution,
-      housePulse: current.housePulse,
-    );
-  }
-
   void _logHousePulseLoaded(HousePulsePayload? pulse) {
     if (pulse == null) {
       _logger.info(
@@ -612,234 +624,6 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       'seenAt=${seen?.seenAt.toIso8601String() ?? 'null'} '
       'hasUnseen=${hasUnseenHousePulse(pulse)} homeId=$_homeId',
       tag: _housePulseLogTag,
-    );
-  }
-
-  TodayState _stateWithoutInvitePrompt(TodayState current) {
-    if (current.isLoading) {
-      return TodayState.loading(
-        profile: current.profile,
-        shareOwed: current.shareOwed,
-        sharePaidToMe: current.sharePaidToMe,
-        shareDrafts: current.shareDrafts,
-        gratitudeStatus: current.gratitudeStatus,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: false,
-        shouldPromptPreferences: current.shouldPromptPreferences,
-        memberCapJoinRequests: current.memberCapJoinRequests,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-        housePulse: current.housePulse,
-      );
-    }
-
-    if (current.message != null || current.error != null) {
-      return TodayState.failure(
-        profile: current.profile,
-        message: current.message,
-        error: current.error,
-        shareOwed: current.shareOwed,
-        sharePaidToMe: current.sharePaidToMe,
-        shareDrafts: current.shareDrafts,
-        shareErrorMessage: current.shareErrorMessage,
-        gratitudeStatus: current.gratitudeStatus,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: false,
-        shouldPromptPreferences: current.shouldPromptPreferences,
-        memberCapJoinRequests: current.memberCapJoinRequests,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-        housePulse: current.housePulse,
-      );
-    }
-
-    return TodayState.loaded(
-      activeTasks: current.activeTasks,
-      draftTasks: current.draftTasks,
-      shareOwed: current.shareOwed,
-      sharePaidToMe: current.sharePaidToMe,
-      shareDrafts: current.shareDrafts,
-      profile: current.profile,
-      shareErrorMessage: current.shareErrorMessage,
-      gratitudeStatus: current.gratitudeStatus,
-      harmonyPromptTick: current.harmonyPromptTick,
-      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-      npsPromptTick: current.npsPromptTick,
-      hasShownNpsPrompt: current.hasShownNpsPrompt,
-      notificationPromptTick: current.notificationPromptTick,
-      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-      activeChoreCount: current.activeChoreCount,
-      shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
-      shouldPromptInviteShare: false,
-      shouldPromptPreferences: current.shouldPromptPreferences,
-      memberCapJoinRequests: current.memberCapJoinRequests,
-      memberCapJoinResolution: current.memberCapJoinResolution,
-      housePulse: current.housePulse,
-    );
-  }
-
-  TodayState _stateWithoutFlatmatePrompt(TodayState current) {
-    if (current.isLoading) {
-      return TodayState.loading(
-        profile: current.profile,
-        shareOwed: current.shareOwed,
-        shareDrafts: current.shareDrafts,
-        gratitudeStatus: current.gratitudeStatus,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare: false,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-        shouldPromptPreferences: current.shouldPromptPreferences,
-        memberCapJoinRequests: current.memberCapJoinRequests,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-        housePulse: current.housePulse,
-      );
-    }
-
-    if (current.message != null || current.error != null) {
-      return TodayState.failure(
-        profile: current.profile,
-        message: current.message,
-        error: current.error,
-        shareOwed: current.shareOwed,
-        sharePaidToMe: current.sharePaidToMe,
-        shareDrafts: current.shareDrafts,
-        shareErrorMessage: current.shareErrorMessage,
-        gratitudeStatus: current.gratitudeStatus,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare: false,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-        shouldPromptPreferences: current.shouldPromptPreferences,
-        memberCapJoinRequests: current.memberCapJoinRequests,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-        housePulse: current.housePulse,
-      );
-    }
-
-    return TodayState.loaded(
-      activeTasks: current.activeTasks,
-      draftTasks: current.draftTasks,
-      shareOwed: current.shareOwed,
-      sharePaidToMe: current.sharePaidToMe,
-      shareDrafts: current.shareDrafts,
-      profile: current.profile,
-      shareErrorMessage: current.shareErrorMessage,
-      gratitudeStatus: current.gratitudeStatus,
-      harmonyPromptTick: current.harmonyPromptTick,
-      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-      npsPromptTick: current.npsPromptTick,
-      hasShownNpsPrompt: current.hasShownNpsPrompt,
-      notificationPromptTick: current.notificationPromptTick,
-      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-      activeChoreCount: current.activeChoreCount,
-      shouldPromptFlatmateInviteShare: false,
-      shouldPromptInviteShare: current.shouldPromptInviteShare,
-      shouldPromptPreferences: current.shouldPromptPreferences,
-      memberCapJoinRequests: current.memberCapJoinRequests,
-      memberCapJoinResolution: current.memberCapJoinResolution,
-      housePulse: current.housePulse,
-    );
-  }
-
-  TodayState _stateWithoutMemberCapPrompt(TodayState current) {
-    if (current.isLoading) {
-      return TodayState.loading(
-        profile: current.profile,
-        shareOwed: current.shareOwed,
-        sharePaidToMe: current.sharePaidToMe,
-        shareDrafts: current.shareDrafts,
-        gratitudeStatus: current.gratitudeStatus,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-        shouldPromptPreferences: current.shouldPromptPreferences,
-        memberCapJoinRequests: null,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-        housePulse: current.housePulse,
-      );
-    }
-
-    if (current.message != null || current.error != null) {
-      return TodayState.failure(
-        profile: current.profile,
-        message: current.message,
-        error: current.error,
-        shareOwed: current.shareOwed,
-        sharePaidToMe: current.sharePaidToMe,
-        shareDrafts: current.shareDrafts,
-        shareErrorMessage: current.shareErrorMessage,
-        gratitudeStatus: current.gratitudeStatus,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-        shouldPromptPreferences: current.shouldPromptPreferences,
-        memberCapJoinRequests: null,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-        housePulse: current.housePulse,
-      );
-    }
-
-    return TodayState.loaded(
-      activeTasks: current.activeTasks,
-      draftTasks: current.draftTasks,
-      shareOwed: current.shareOwed,
-      sharePaidToMe: current.sharePaidToMe,
-      shareDrafts: current.shareDrafts,
-      profile: current.profile,
-      shareErrorMessage: current.shareErrorMessage,
-      gratitudeStatus: current.gratitudeStatus,
-      harmonyPromptTick: current.harmonyPromptTick,
-      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-      npsPromptTick: current.npsPromptTick,
-      hasShownNpsPrompt: current.hasShownNpsPrompt,
-      notificationPromptTick: current.notificationPromptTick,
-      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-      activeChoreCount: current.activeChoreCount,
-      shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
-      shouldPromptInviteShare: current.shouldPromptInviteShare,
-      shouldPromptPreferences: current.shouldPromptPreferences,
-      memberCapJoinRequests: null,
-      memberCapJoinResolution: current.memberCapJoinResolution,
-      housePulse: current.housePulse,
     );
   }
 
@@ -861,7 +645,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         tag: _onboardingLogTag,
       );
     }
-    emit(_stateWithoutFlatmatePrompt(state));
+    emit(_todayStateWithoutFlatmatePrompt(state));
   }
 
   Future<void> _onFlatmateInviteShareLogged(
@@ -882,7 +666,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         tag: _onboardingLogTag,
       );
     }
-    emit(_stateWithoutFlatmatePrompt(state));
+    emit(_todayStateWithoutFlatmatePrompt(state));
   }
 
   Future<void> _onInviteShareLogged(
@@ -903,7 +687,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         tag: _onboardingLogTag,
       );
     }
-    emit(_stateWithoutInvitePrompt(state));
+    emit(_todayStateWithoutInvitePrompt(state));
   }
 
   Future<void> _onMemberCapDismissed(
@@ -920,7 +704,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         tag: _onboardingLogTag,
       );
     }
-    emit(_stateWithoutMemberCapPrompt(state));
+    emit(_todayStateWithoutMemberCapPrompt(state));
   }
 
   Future<void> _onHousePulseViewed(
@@ -932,7 +716,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     try {
       final seen = await _housePulseRepository.markSeen(homeId: _homeId);
       final nextPulse = currentPulse.copyWith(seen: seen ?? currentPulse.seen);
-      emit(_stateWithHousePulse(state, nextPulse));
+      emit(_todayStateWithHousePulse(state, nextPulse));
     } catch (error, stackTrace) {
       _logger.warn(
         'Failed to mark house pulse seen',
@@ -968,89 +752,6 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     _profileUpdateSub.cancel();
     return super.close();
   }
-
-  TodayState _stateWithHousePulse(
-    TodayState current,
-    HousePulsePayload? housePulse,
-  ) {
-    if (current.isLoading) {
-      return TodayState.loading(
-        profile: current.profile,
-        shareOwed: current.shareOwed,
-        sharePaidToMe: current.sharePaidToMe,
-        shareDrafts: current.shareDrafts,
-        gratitudeStatus: current.gratitudeStatus,
-        personalGratitudeStatus: current.personalGratitudeStatus,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-        shouldPromptPreferences: current.shouldPromptPreferences,
-        memberCapJoinRequests: current.memberCapJoinRequests,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-        housePulse: housePulse,
-      );
-    }
-
-    if (current.message != null || current.error != null) {
-      return TodayState.failure(
-        profile: current.profile,
-        message: current.message,
-        error: current.error,
-        shareOwed: current.shareOwed,
-        sharePaidToMe: current.sharePaidToMe,
-        shareDrafts: current.shareDrafts,
-        shareErrorMessage: current.shareErrorMessage,
-        gratitudeStatus: current.gratitudeStatus,
-        personalGratitudeStatus: current.personalGratitudeStatus,
-        harmonyPromptTick: current.harmonyPromptTick,
-        hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-        npsPromptTick: current.npsPromptTick,
-        hasShownNpsPrompt: current.hasShownNpsPrompt,
-        notificationPromptTick: current.notificationPromptTick,
-        hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-        activeChoreCount: current.activeChoreCount,
-        shouldPromptFlatmateInviteShare:
-            current.shouldPromptFlatmateInviteShare,
-        shouldPromptInviteShare: current.shouldPromptInviteShare,
-        shouldPromptPreferences: current.shouldPromptPreferences,
-        memberCapJoinRequests: current.memberCapJoinRequests,
-        memberCapJoinResolution: current.memberCapJoinResolution,
-        housePulse: housePulse,
-      );
-    }
-
-    return TodayState.loaded(
-      activeTasks: current.activeTasks,
-      draftTasks: current.draftTasks,
-      shareOwed: current.shareOwed,
-      sharePaidToMe: current.sharePaidToMe,
-      shareDrafts: current.shareDrafts,
-      profile: current.profile,
-      shareErrorMessage: current.shareErrorMessage,
-      gratitudeStatus: current.gratitudeStatus,
-      personalGratitudeStatus: current.personalGratitudeStatus,
-      harmonyPromptTick: current.harmonyPromptTick,
-      hasShownHarmonyPrompt: current.hasShownHarmonyPrompt,
-      npsPromptTick: current.npsPromptTick,
-      hasShownNpsPrompt: current.hasShownNpsPrompt,
-      notificationPromptTick: current.notificationPromptTick,
-      hasShownNotificationPrompt: current.hasShownNotificationPrompt,
-      activeChoreCount: current.activeChoreCount,
-      shouldPromptFlatmateInviteShare: current.shouldPromptFlatmateInviteShare,
-      shouldPromptInviteShare: current.shouldPromptInviteShare,
-      shouldPromptPreferences: current.shouldPromptPreferences,
-      memberCapJoinRequests: current.memberCapJoinRequests,
-      memberCapJoinResolution: current.memberCapJoinResolution,
-      housePulse: housePulse,
-    );
-  }
 }
 
 class _HintsSnapshot {
@@ -1085,4 +786,14 @@ class _ShareSnapshot {
   final List<TodaySharePaidToMe> paidToMe;
   final List<TodayShareDraft> drafts;
   final String? errorMessage;
+}
+
+class _PromptSnapshot {
+  const _PromptSnapshot({
+    required this.shouldPromptPreferences,
+    required this.shouldPromptHouseNorms,
+  });
+
+  final bool shouldPromptPreferences;
+  final bool shouldPromptHouseNorms;
 }

@@ -42,5 +42,9 @@ class AppRouteNames {
   static const preferenceReportView = 'preferenceReportView';
   static const preferenceReportEdit = 'preferenceReportEdit';
   static const preferenceReportSectionEdit = 'preferenceReportSectionEdit';
+  static const houseNormsOnboarding = 'houseNormsOnboarding';
+  static const houseNormsReport = 'houseNormsReport';
+  static const houseNormsEdit = 'houseNormsEdit';
+  static const houseNormsSectionEdit = 'houseNormsSectionEdit';
   static const personalMentions = 'personalMentions';
 }

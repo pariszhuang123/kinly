@@ -23,6 +23,7 @@ class TodayState extends Equatable {
   final bool shouldPromptFlatmateInviteShare;
   final bool shouldPromptInviteShare;
   final bool shouldPromptPreferences;
+  final bool shouldPromptHouseNorms;
   final MemberCapJoinRequests? memberCapJoinRequests;
   final MemberCapJoinResolution? memberCapJoinResolution;
   final HousePulsePayload? housePulse;
@@ -50,6 +51,7 @@ class TodayState extends Equatable {
     this.shouldPromptFlatmateInviteShare = false,
     this.shouldPromptInviteShare = false,
     this.shouldPromptPreferences = false,
+    this.shouldPromptHouseNorms = false,
     this.memberCapJoinRequests,
     this.memberCapJoinResolution,
     this.housePulse,
@@ -72,6 +74,7 @@ class TodayState extends Equatable {
     bool shouldPromptFlatmateInviteShare = false,
     bool shouldPromptInviteShare = false,
     bool shouldPromptPreferences = false,
+    bool shouldPromptHouseNorms = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
     HousePulsePayload? housePulse,
@@ -95,6 +98,7 @@ class TodayState extends Equatable {
          shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
          shouldPromptInviteShare: shouldPromptInviteShare,
          shouldPromptPreferences: shouldPromptPreferences,
+         shouldPromptHouseNorms: shouldPromptHouseNorms,
          memberCapJoinRequests: memberCapJoinRequests,
          memberCapJoinResolution: memberCapJoinResolution,
          housePulse: housePulse,
@@ -120,6 +124,7 @@ class TodayState extends Equatable {
     bool shouldPromptFlatmateInviteShare = false,
     bool shouldPromptInviteShare = false,
     bool shouldPromptPreferences = false,
+    bool shouldPromptHouseNorms = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
     HousePulsePayload? housePulse,
@@ -144,6 +149,7 @@ class TodayState extends Equatable {
          shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
          shouldPromptInviteShare: shouldPromptInviteShare,
          shouldPromptPreferences: shouldPromptPreferences,
+         shouldPromptHouseNorms: shouldPromptHouseNorms,
          memberCapJoinRequests: memberCapJoinRequests,
          memberCapJoinResolution: memberCapJoinResolution,
          housePulse: housePulse,
@@ -169,6 +175,7 @@ class TodayState extends Equatable {
     bool shouldPromptFlatmateInviteShare = false,
     bool shouldPromptInviteShare = false,
     bool shouldPromptPreferences = false,
+    bool shouldPromptHouseNorms = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
     HousePulsePayload? housePulse,
@@ -195,6 +202,7 @@ class TodayState extends Equatable {
          shouldPromptFlatmateInviteShare: shouldPromptFlatmateInviteShare,
          shouldPromptInviteShare: shouldPromptInviteShare,
          shouldPromptPreferences: shouldPromptPreferences,
+         shouldPromptHouseNorms: shouldPromptHouseNorms,
          memberCapJoinRequests: memberCapJoinRequests,
          memberCapJoinResolution: memberCapJoinResolution,
          housePulse: housePulse,
@@ -241,6 +249,7 @@ class TodayState extends Equatable {
     shouldPromptFlatmateInviteShare,
     shouldPromptInviteShare,
     shouldPromptPreferences,
+    shouldPromptHouseNorms,
     memberCapJoinRequests,
     memberCapJoinResolution,
     housePulse,

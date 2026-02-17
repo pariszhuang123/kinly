@@ -166,6 +166,7 @@ class HubScreen extends StatelessWidget {
       onInviteTap: () => _shareInvite(context, state),
       onShareAppTap: () => _shareAppLink(context, state),
       onQrTap: () => _showQrSheet(context, state),
+      onHouseNormsTap: () => context.pushNamed(AppRouteNames.houseNormsReport),
       onGratitudeTap: () => context.pushNamed(AppRouteNames.gratitudeWall),
       onCopyCode:
           state.hasInvite ? () => _copyInviteCode(context, state) : null,

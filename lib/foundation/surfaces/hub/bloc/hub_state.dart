@@ -7,6 +7,7 @@ class HubState extends Equatable {
     required this.preferenceReports,
     required this.currentUserId,
     required this.houseVibe,
+    required this.houseNorms,
     required this.appLink,
     required this.isOwner,
     this.invite,
@@ -21,6 +22,7 @@ class HubState extends Equatable {
     preferenceReports: const [],
     currentUserId: '',
     houseVibe: null,
+    houseNorms: null,
     invite: null,
     inviteLink: null,
     appLink: appLink,
@@ -32,6 +34,7 @@ class HubState extends Equatable {
   final List<PreferenceReportListItem> preferenceReports;
   final String currentUserId;
   final HouseVibePayload? houseVibe;
+  final HouseNormDocument? houseNorms;
   final HomeInvite? invite;
   final String? inviteLink;
   final String appLink;
@@ -45,6 +48,7 @@ class HubState extends Equatable {
   bool get hasInvite => invite != null && (inviteLink?.isNotEmpty ?? false);
   bool get hasMembers => members.isNotEmpty;
   bool get hasPreferenceReports => preferenceReports.isNotEmpty;
+  bool get hasHouseNorms => houseNorms != null;
   String get inviteCode => invite?.code ?? '';
 
   HubState copyWith({
@@ -53,6 +57,7 @@ class HubState extends Equatable {
     List<PreferenceReportListItem>? preferenceReports,
     String? currentUserId,
     HouseVibePayload? houseVibe,
+    HouseNormDocument? houseNorms,
     HomeInvite? invite,
     bool clearInvite = false,
     String? inviteLink,
@@ -67,6 +72,7 @@ class HubState extends Equatable {
       preferenceReports: preferenceReports ?? this.preferenceReports,
       currentUserId: currentUserId ?? this.currentUserId,
       houseVibe: houseVibe ?? this.houseVibe,
+      houseNorms: houseNorms ?? this.houseNorms,
       invite: clearInvite ? null : (invite ?? this.invite),
       inviteLink: clearInvite ? null : (inviteLink ?? this.inviteLink),
       appLink: appLink ?? this.appLink,
@@ -83,6 +89,7 @@ class HubState extends Equatable {
     preferenceReports,
     currentUserId,
     houseVibe,
+    houseNorms,
     invite,
     inviteLink,
     appLink,

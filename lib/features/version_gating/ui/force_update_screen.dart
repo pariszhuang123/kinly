@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/config/app_config.dart';
-import '../../../core/platform/platform_info.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
@@ -58,18 +57,10 @@ class ForceUpdateScreen extends StatelessWidget {
   }
 
   Future<void> _launchStore() async {
-    final url = _storeUrl;
+    final url = resolveKinlyPublicAppLink();
     final uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch store URL');
     }
-  }
-
-  String get _storeUrl {
-    if (PlatformInfo.isIOS) return AppConfig.iosStoreUrl;
-    if (PlatformInfo.isAndroid) return AppConfig.androidStoreUrl;
-    return AppConfig.androidStoreUrl.isNotEmpty
-        ? AppConfig.androidStoreUrl
-        : AppConfig.iosStoreUrl;
   }
 }

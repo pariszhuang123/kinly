@@ -333,6 +333,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
     if (previousHomeId != null) {
       await FormDraftStorage.clearHouseRulesDraft(previousHomeId);
+      await FormDraftStorage.clearHouseNormsDraft(previousHomeId);
     }
   }
 

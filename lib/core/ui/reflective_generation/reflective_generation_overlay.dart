@@ -302,6 +302,11 @@ class _ReflectiveGenerationOverlayState
           primary: strings.reflectiveHousePrimary,
           secondary: strings.reflectiveHouseSecondary,
         );
+      case ReflectiveGenerationMode.houseNorms:
+        return _ReflectiveCopy(
+          primary: strings.reflectiveHouseNormsPrimary,
+          secondary: strings.reflectiveHouseNormsSecondary,
+        );
       case ReflectiveGenerationMode.generic:
         return _ReflectiveCopy(
           primary: strings.reflectiveGenericPrimary,

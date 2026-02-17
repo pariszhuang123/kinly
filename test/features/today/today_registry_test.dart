@@ -12,6 +12,7 @@ void main() {
       equals([
         'member_cap',
         'preferences',
+        'house_norms',
         'invite',
         'house_pulse',
         'flow',

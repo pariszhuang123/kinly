@@ -22,6 +22,7 @@ import 'package:kinly/foundation/surfaces/profile/routes/profile_routes.dart';
 import 'package:kinly/features/version_gating/routes/version_gating_routes.dart';
 import 'package:kinly/features/welcome/routes/welcome_routes.dart';
 import 'package:kinly/features/preferences/routes/preferences_routes.dart';
+import 'package:kinly/features/house_norms/routes/house_norm_routes.dart';
 import 'package:kinly/features/harmony/routes/personal_routes.dart';
 
 import 'navigation_intents.dart';
@@ -63,6 +64,10 @@ class AppRoutes {
   static const preferenceReportEdit = AppRoutePaths.preferenceReportEdit;
   static const preferenceReportSectionEdit =
       AppRoutePaths.preferenceReportSectionEdit;
+  static const houseNormsOnboarding = AppRoutePaths.houseNormsOnboarding;
+  static const houseNormsReport = AppRoutePaths.houseNormsReport;
+  static const houseNormsEdit = AppRoutePaths.houseNormsEdit;
+  static const houseNormsSectionEdit = AppRoutePaths.houseNormsSectionEdit;
   static const personalMentions = AppRoutePaths.personalMentions;
 
   static String flowChoreEditPath(String choreId) =>

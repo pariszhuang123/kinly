@@ -34,6 +34,7 @@ void main() {
       preferenceReports: const [],
       currentUserId: 'owner-1',
       houseVibe: null,
+      houseNorms: null,
       invite: HomeInvite(
         id: 'invite-1',
         homeId: 'home-1',

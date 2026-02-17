@@ -436,6 +436,42 @@ modules:
       plan_gate: false
     notes: Personal preference capture and report editing.
 
+  - name: house_norms
+    owner_role: Planner
+    status: feature
+    killable: false
+    kill_switch_flag: null
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["hub", "today"]
+    public_api:
+      dart: null
+    data:
+      tables_owned: []
+      cross_module_refs: []
+    rpcs:
+      owner:
+        - house_norms_get_for_home
+        - house_norms_generate_for_home
+        - house_norms_edit_section_text
+        - house_norms_publish_for_home
+        - house_norms_get_public_by_home_public_id
+      orchestration: []
+    entrypoints:
+      routes:
+        - /house-norms/onboarding
+        - /house-norms/report
+        - /house-norms/edit
+        - /house-norms/edit/:sectionKey
+      deep_links: []
+      navigation_tiles:
+        - house_norms_prompt
+        - house_norms_hub_slot
+    test_matrix:
+      feature_flag_off: false
+      plan_gate: false
+    notes: Owner-authored house norms onboarding/report/edit and publish controls.
+
   - name: nps
     owner_role: Planner
     status: feature

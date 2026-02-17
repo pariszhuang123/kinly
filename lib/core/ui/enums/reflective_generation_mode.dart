@@ -1,1 +1,6 @@
-enum ReflectiveGenerationMode { personalPreferences, houseRules, generic }
+enum ReflectiveGenerationMode {
+  personalPreferences,
+  houseRules,
+  houseNorms,
+  generic,
+}

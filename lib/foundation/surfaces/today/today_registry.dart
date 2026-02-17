@@ -73,6 +73,15 @@ class TodayRegistry {
 
     register(
       TodaySectionEntry(
+        id: 'house_norms',
+        order: 16,
+        builder: _buildHouseNormsPrompt,
+        isVisible: (scope) => scope.state.shouldPromptHouseNorms,
+      ),
+    );
+
+    register(
+      TodaySectionEntry(
         id: 'invite',
         order: 20,
         builder: _buildInvitePrompt,
@@ -208,6 +217,17 @@ Widget _buildPreferencesPrompt(TodaySurfaceScope scope) {
     subtitle: scope.strings.preferencePromptSubtitle,
     primaryLabel: scope.strings.preferencePromptCta,
     onPrimary: scope.actions.onPreferencePrompt,
+    palette: palette,
+  );
+}
+
+Widget _buildHouseNormsPrompt(TodaySurfaceScope scope) {
+  final palette = scope.context.preferenceSection;
+  return TodayInvitePrompt(
+    title: scope.strings.houseNormPromptTitle,
+    subtitle: scope.strings.houseNormPromptSubtitle,
+    primaryLabel: scope.strings.houseNormPromptCta,
+    onPrimary: scope.actions.onHouseNormsPrompt,
     palette: palette,
   );
 }

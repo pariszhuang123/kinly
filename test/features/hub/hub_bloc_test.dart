@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/contracts/house_norms/models.dart';
+import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 import 'package:kinly/contracts/preferences/models.dart';
 import 'package:kinly/contracts/preferences/ports/house_vibe_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
@@ -17,6 +19,8 @@ class _MockPreferenceReportsRepository extends Mock
 
 class _MockHouseVibeRepository extends Mock implements HouseVibeRepository {}
 
+class _MockHouseNormsRepository extends Mock implements HouseNormsRepository {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -24,6 +28,7 @@ void main() {
   late HomeRepository homeRepository;
   late PreferenceReportsRepository preferenceReportsRepository;
   late HouseVibeRepository houseVibeRepository;
+  late HouseNormsRepository houseNormsRepository;
 
   final membership = CurrentMembership(
     userId: 'user-1',
@@ -71,9 +76,16 @@ void main() {
     homeRepository = _MockHomeRepository();
     preferenceReportsRepository = _MockPreferenceReportsRepository();
     houseVibeRepository = _MockHouseVibeRepository();
+    houseNormsRepository = _MockHouseNormsRepository();
     when(
       () => houseVibeRepository.getHomeVibe(homeId: homeId),
     ).thenAnswer((_) async => houseVibe);
+    when(
+      () => houseNormsRepository.getForHome(
+        homeId: any(named: 'homeId'),
+        locale: any(named: 'locale'),
+      ),
+    ).thenAnswer((_) async => null);
   });
 
   blocTest<HubBloc, HubState>(
@@ -114,6 +126,7 @@ void main() {
         homeRepository: homeRepository,
         preferenceReportsRepository: preferenceReportsRepository,
         houseVibeRepository: houseVibeRepository,
+        houseNormsRepository: houseNormsRepository,
         homeId: homeId,
         logger: const DebugLogger(),
       );
@@ -177,6 +190,7 @@ void main() {
         homeRepository: homeRepository,
         preferenceReportsRepository: preferenceReportsRepository,
         houseVibeRepository: houseVibeRepository,
+        houseNormsRepository: houseNormsRepository,
         homeId: homeId,
         logger: const DebugLogger(),
       );
@@ -185,6 +199,58 @@ void main() {
         () => [
           isA<HubState>().having((s) => s.status, 'status', HubStatus.loading),
           isA<HubState>().having((s) => s.status, 'status', HubStatus.failure),
+        ],
+  );
+
+  blocTest<HubBloc, HubState>(
+    'loads house norms when document exists',
+    build: () {
+      when(
+        () => homeRepository.getCurrentMembership(),
+      ).thenAnswer((_) async => membership);
+      when(
+        () => homeRepository.listActiveMembers(homeId, excludeSelf: false),
+      ).thenAnswer((_) async => [member]);
+      when(
+        () => homeRepository.getActiveInvite(homeId),
+      ).thenAnswer((_) async => invite);
+      when(
+        () => preferenceReportsRepository.getTemplateResolution(
+          templateKey: any(named: 'templateKey'),
+        ),
+      ).thenAnswer(
+        (_) async => const PreferenceTemplateResolution(
+          templateKey: 'personal_preferences_v1',
+          requestedLocale: 'en-NZ',
+          resolvedLocale: 'en',
+        ),
+      );
+      when(
+        () => preferenceReportsRepository.listReportsForHome(
+          homeId: homeId,
+          templateKey: any(named: 'templateKey'),
+          locale: 'en',
+        ),
+      ).thenAnswer((_) async => const []);
+      when(
+        () => houseNormsRepository.getForHome(homeId: homeId, locale: 'en'),
+      ).thenAnswer((_) async => _buildHouseNormDocument(homeId));
+
+      return HubBloc(
+        homeRepository: homeRepository,
+        preferenceReportsRepository: preferenceReportsRepository,
+        houseVibeRepository: houseVibeRepository,
+        houseNormsRepository: houseNormsRepository,
+        homeId: homeId,
+        logger: const DebugLogger(),
+      );
+    },
+    expect:
+        () => [
+          isA<HubState>().having((s) => s.status, 'status', HubStatus.loading),
+          isA<HubState>()
+              .having((s) => s.status, 'status', HubStatus.success)
+              .having((s) => s.hasHouseNorms, 'hasHouseNorms', true),
         ],
   );
 
@@ -226,6 +292,7 @@ void main() {
         homeRepository: homeRepository,
         preferenceReportsRepository: preferenceReportsRepository,
         houseVibeRepository: houseVibeRepository,
+        houseNormsRepository: houseNormsRepository,
         homeId: homeId,
         logger: const DebugLogger(),
       );
@@ -238,5 +305,42 @@ void main() {
               .having((s) => s.members.length, 'members', 1)
               .having((s) => s.invite, 'invite', isNull),
         ],
+  );
+}
+
+HouseNormDocument _buildHouseNormDocument(String homeId) {
+  return HouseNormDocument(
+    homeId: homeId,
+    templateKey: 'house_norms_v1',
+    status: 'published',
+    inputs: const {},
+    draftContent: null,
+    draftUpdatedAt: null,
+    publishedContent: const HouseNormContent(
+      summary: HouseNormSummary(
+        title: 'House norms',
+        subtitle: 'Shared defaults',
+        framing: 'A shared starting point.',
+      ),
+      context: 'Context',
+      sections: [
+        HouseNormSection(
+          sectionKey: 'norms_rhythm_quiet',
+          title: 'Rhythm',
+          text: 'We usually wind down.',
+        ),
+      ],
+    ),
+    publishedAt: DateTime.utc(2026, 1, 1),
+    publishedVersion: 'v1',
+    isPublished: true,
+    hasUnpublishedChanges: false,
+    lastEditedAt: null,
+    lastEditedBy: null,
+    homePublicId: 'home-public',
+    publicUrl: 'https://go.makinglifeeasie.com/norms/home-public',
+    showPublishButton: false,
+    showRepublishButton: false,
+    showPublicUrl: true,
   );
 }

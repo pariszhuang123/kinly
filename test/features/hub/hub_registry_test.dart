@@ -7,6 +7,9 @@ void main() {
     HubRegistry.bootstrap();
 
     final ids = HubRegistry.bodySections.map((e) => e.id).toList();
-    expect(ids, equals(['members', 'qr', 'preferences', 'gratitude']));
+    expect(
+      ids,
+      equals(['members', 'qr', 'preferences', 'house_norms', 'gratitude']),
+    );
   });
 }

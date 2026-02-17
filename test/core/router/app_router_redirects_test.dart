@@ -68,6 +68,39 @@ void main() {
       );
     });
 
+    test('force update route stays reachable while auth is unknown', () {
+      expect(
+        redirectForTest(
+          path: AppRoutes.splash,
+          authStatus: AuthStatus.unknown,
+          membershipStatus: AuthMembershipStatus.unknown,
+          appVersionStatus: AppVersionStatus.hardBlocked,
+        ),
+        AppRoutes.forceUpdate,
+      );
+      expect(
+        redirectForTest(
+          path: AppRoutes.forceUpdate,
+          authStatus: AuthStatus.unknown,
+          membershipStatus: AuthMembershipStatus.unknown,
+          appVersionStatus: AppVersionStatus.hardBlocked,
+        ),
+        isNull,
+      );
+    });
+
+    test('force update route stays reachable when unauthenticated', () {
+      expect(
+        redirectForTest(
+          path: AppRoutes.forceUpdate,
+          authStatus: AuthStatus.unauthenticated,
+          membershipStatus: AuthMembershipStatus.none,
+          appVersionStatus: AppVersionStatus.hardBlocked,
+        ),
+        isNull,
+      );
+    });
+
     test('authenticated without active membership redirects to start', () {
       expect(
         redirectForTest(

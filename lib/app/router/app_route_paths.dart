@@ -44,4 +44,8 @@ class AppRoutePaths {
   static const preferenceReportEdit = '/preferences/report/edit';
   static const preferenceReportSectionEdit =
       '/preferences/report/edit/:sectionKey';
+  static const houseNormsOnboarding = '/house-norms/onboarding';
+  static const houseNormsReport = '/house-norms/report';
+  static const houseNormsEdit = '/house-norms/edit';
+  static const houseNormsSectionEdit = '/house-norms/edit/:sectionKey';
 }

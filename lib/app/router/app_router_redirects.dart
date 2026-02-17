@@ -98,8 +98,11 @@ String? _authRedirect({
   required Uri uri,
   required AuthStatus status,
 }) {
+  final isForceUpdateRoute = path == AppRoutes.forceUpdate;
   final isPublicRoute =
-      path == AppRoutes.welcome || path == AppRoutes.demoAccess;
+      path == AppRoutes.welcome ||
+      path == AppRoutes.demoAccess ||
+      isForceUpdateRoute;
   final isAllowedWhenUnknown = isPublicRoute || path == AppRoutes.splash;
   if (_looksLikeInviteIntent(uri)) {
     NavigationIntents.captureInvite(uri);

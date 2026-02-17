@@ -13,6 +13,9 @@ import 'package:kinly/contracts/mood/models.dart';
 import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'package:kinly/contracts/mood/ports/house_pulse_repository.dart';
 import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
+import 'package:kinly/contracts/house_norms/models.dart';
+import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
+import 'package:kinly/contracts/preferences/models.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/contracts/profile/models.dart';
 import 'package:kinly/contracts/profile/ports/profile_repository.dart';
@@ -36,6 +39,8 @@ class _MockOnboardingRepository extends Mock implements OnboardingRepository {}
 class _MockPreferenceReportsRepository extends Mock
     implements PreferenceReportsRepository {}
 
+class _MockHouseNormsRepository extends Mock implements HouseNormsRepository {}
+
 void main() {
   setUpAll(() {
     registerFallbackValue(ChoreState.active);
@@ -49,6 +54,7 @@ void main() {
   late _MockHousePulseRepository housePulseRepository;
   late _MockOnboardingRepository onboardingRepository;
   late _MockPreferenceReportsRepository preferenceReportsRepository;
+  late _MockHouseNormsRepository houseNormsRepository;
   late ProfileUpdateNotifier profileUpdateNotifier;
 
   const homeId = 'home-1';
@@ -98,6 +104,7 @@ void main() {
     housePulseRepository = _MockHousePulseRepository();
     onboardingRepository = _MockOnboardingRepository();
     preferenceReportsRepository = _MockPreferenceReportsRepository();
+    houseNormsRepository = _MockHouseNormsRepository();
     profileUpdateNotifier = ProfileUpdateNotifier();
 
     when(
@@ -143,6 +150,31 @@ void main() {
       () => profileRepository.getCurrentProfile(),
     ).thenAnswer((_) async => null);
     when(
+      () => preferenceReportsRepository.getTemplateResolution(
+        templateKey: any(named: 'templateKey'),
+      ),
+    ).thenAnswer(
+      (_) async => const PreferenceTemplateResolution(
+        templateKey: 'personal_preferences_v1',
+        requestedLocale: 'en',
+        resolvedLocale: 'en',
+      ),
+    );
+    when(
+      () => preferenceReportsRepository.getReportForHome(
+        homeId: any(named: 'homeId'),
+        subjectUserId: any(named: 'subjectUserId'),
+        templateKey: any(named: 'templateKey'),
+        locale: any(named: 'locale'),
+      ),
+    ).thenAnswer((_) async => null);
+    when(
+      () => houseNormsRepository.getForHome(
+        homeId: any(named: 'homeId'),
+        locale: any(named: 'locale'),
+      ),
+    ).thenAnswer((_) async => _buildHouseNormDocument());
+    when(
       () => housePulseRepository.getWeeklyPulse(homeId: any(named: 'homeId')),
     ).thenAnswer((_) async => null);
     when(
@@ -173,6 +205,7 @@ void main() {
       housePulseRepository: housePulseRepository,
       onboardingRepository: onboardingRepository,
       preferenceReportsRepository: preferenceReportsRepository,
+      houseNormsRepository: houseNormsRepository,
       homeId: homeId,
       profileUpdateNotifier: profileUpdateNotifier,
     );
@@ -269,6 +302,38 @@ void main() {
       );
 
       blocTest<TodayBloc, TodayState>(
+        'sets shouldPromptHouseNorms when owner has no house norms document',
+        build: () {
+          when(
+            () => profileRepository.getCurrentProfile(),
+          ).thenAnswer((_) async => testProfile);
+          when(
+            () => homeRepository.listActiveMembers(
+              any(),
+              excludeSelf: any(named: 'excludeSelf'),
+            ),
+          ).thenAnswer((_) async => [ownerMember, regularMember]);
+          when(
+            () => houseNormsRepository.getForHome(
+              homeId: any(named: 'homeId'),
+              locale: any(named: 'locale'),
+            ),
+          ).thenAnswer((_) async => null);
+          return buildBloc();
+        },
+        wait: const Duration(milliseconds: 50),
+        expect:
+            () => [
+              isA<TodayState>(),
+              isA<TodayState>().having(
+                (s) => s.shouldPromptHouseNorms,
+                'shouldPromptHouseNorms',
+                true,
+              ),
+            ],
+      );
+
+      blocTest<TodayBloc, TodayState>(
         'resolves profile with isOwner=false when user is not owner',
         build: () {
           when(() => profileRepository.getCurrentProfile()).thenAnswer(
@@ -289,6 +354,38 @@ void main() {
               isA<TodayState>()
                   .having((s) => s.profile?.userId, 'userId', memberUserId)
                   .having((s) => s.profile?.isOwner, 'isOwner', false),
+            ],
+      );
+
+      blocTest<TodayBloc, TodayState>(
+        'keeps shouldPromptHouseNorms false for non-owner',
+        build: () {
+          when(() => profileRepository.getCurrentProfile()).thenAnswer(
+            (_) async => UserProfile(userId: memberUserId, username: 'Member'),
+          );
+          when(
+            () => homeRepository.listActiveMembers(
+              any(),
+              excludeSelf: any(named: 'excludeSelf'),
+            ),
+          ).thenAnswer((_) async => [ownerMember, regularMember]);
+          when(
+            () => houseNormsRepository.getForHome(
+              homeId: any(named: 'homeId'),
+              locale: any(named: 'locale'),
+            ),
+          ).thenAnswer((_) async => null);
+          return buildBloc();
+        },
+        wait: const Duration(milliseconds: 50),
+        expect:
+            () => [
+              isA<TodayState>(),
+              isA<TodayState>().having(
+                (s) => s.shouldPromptHouseNorms,
+                'shouldPromptHouseNorms',
+                false,
+              ),
             ],
       );
 
@@ -1021,4 +1118,41 @@ void main() {
       expect(const TodayMemberCapDismissed().props, isEmpty);
     });
   });
+}
+
+HouseNormDocument _buildHouseNormDocument() {
+  return HouseNormDocument(
+    homeId: 'home-1',
+    templateKey: 'house_norms_v1',
+    status: 'published',
+    inputs: const {},
+    draftContent: null,
+    draftUpdatedAt: null,
+    publishedContent: const HouseNormContent(
+      summary: HouseNormSummary(
+        title: 'House norms',
+        subtitle: 'Shared defaults',
+        framing: 'A shared starting point.',
+      ),
+      context: 'Context',
+      sections: [
+        HouseNormSection(
+          sectionKey: 'norms_rhythm_quiet',
+          title: 'Rhythm',
+          text: 'We try to wind down.',
+        ),
+      ],
+    ),
+    publishedAt: DateTime.utc(2026, 1, 1),
+    publishedVersion: 'v1',
+    isPublished: true,
+    hasUnpublishedChanges: false,
+    lastEditedAt: null,
+    lastEditedBy: null,
+    homePublicId: 'home_public_1',
+    publicUrl: 'https://go.makinglifeeasie.com/norms/home_public_1',
+    showPublishButton: false,
+    showRepublishButton: false,
+    showPublicUrl: true,
+  );
 }

@@ -29,12 +29,20 @@ class AppConfig {
     if (supabaseUrl.isEmpty) missing.add('SUPABASE_URL');
     if (supabaseAnonKey.isEmpty) missing.add('SUPABASE_ANON_KEY');
     if (deeplinkHost.isEmpty) missing.add('DEEPLINK_HOST');
-    if (iosStoreUrl.isEmpty) missing.add('IOS_STORE_URL');
-    if (androidStoreUrl.isEmpty) missing.add('ANDROID_STORE_URL');
     if (revenuecatIosKey.isEmpty) missing.add('REVENUECAT_IOS_KEY');
     if (revenuecatAndroidKey.isEmpty) missing.add('REVENUECAT_ANDROID_KEY');
     if (missing.isNotEmpty) {
       throw StateError('Missing dart-define(s): ${missing.join(', ')}');
     }
   }
+}
+
+String resolveKinlyPublicAppLink() {
+  final host =
+      AppConfig.inviteHost.isNotEmpty
+          ? AppConfig.inviteHost
+          : 'go.makinglifeeasie.com';
+  if (host.isEmpty) return 'https://go.makinglifeeasie.com/kinly';
+  final uri = Uri(scheme: 'https', host: host, pathSegments: const ['kinly']);
+  return uri.toString();
 }

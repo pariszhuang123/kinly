@@ -7,6 +7,7 @@ import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/contracts/preferences/ports/house_vibe_repository.dart';
+import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/foundation/surfaces/hub/hub_provider.dart';
 import 'package:kinly/foundation/surfaces/hub/routes/hub_house_vibe_share_route_args.dart';
@@ -42,6 +43,10 @@ List<GoRoute> buildHubRoutes({
             homeRepository: sl<HomeRepository>(),
             preferenceReportsRepository: sl<PreferenceReportsRepository>(),
             houseVibeRepository: sl<HouseVibeRepository>(),
+            houseNormsRepository:
+                sl.isRegistered<HouseNormsRepository>()
+                    ? sl<HouseNormsRepository>()
+                    : null,
           ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             if (begin == Offset.zero) {

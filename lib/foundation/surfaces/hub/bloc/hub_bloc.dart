@@ -6,6 +6,8 @@ import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/contracts/preferences/models.dart';
 import 'package:kinly/contracts/preferences/ports/house_vibe_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
+import 'package:kinly/contracts/house_norms/models.dart';
+import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
@@ -19,11 +21,13 @@ class HubBloc extends Bloc<HubEvent, HubState> {
     required HomeRepository homeRepository,
     required PreferenceReportsRepository preferenceReportsRepository,
     required HouseVibeRepository houseVibeRepository,
+    HouseNormsRepository? houseNormsRepository,
     required String homeId,
     Logger? logger,
   }) : _homeRepository = homeRepository,
        _preferenceReportsRepository = preferenceReportsRepository,
        _houseVibeRepository = houseVibeRepository,
+       _houseNormsRepository = houseNormsRepository,
        _homeId = homeId,
        _logger = logger ?? const DebugLogger(),
        super(HubState.initial(appLink: _resolveAppLink())) {
@@ -38,6 +42,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
   final HomeRepository _homeRepository;
   final PreferenceReportsRepository _preferenceReportsRepository;
   final HouseVibeRepository _houseVibeRepository;
+  final HouseNormsRepository? _houseNormsRepository;
   final String _homeId;
   final Logger _logger;
 
@@ -143,13 +148,15 @@ class HubBloc extends Bloc<HubEvent, HubState> {
     }
 
     List<PreferenceReportListItem> preferenceReports = const [];
+    var resolvedLocale = 'en';
     try {
       final resolution = await _preferenceReportsRepository
           .getTemplateResolution(templateKey: 'personal_preferences_v1');
+      resolvedLocale = resolution.resolvedLocale;
       preferenceReports = await _preferenceReportsRepository.listReportsForHome(
         homeId: _homeId,
         templateKey: 'personal_preferences_v1',
-        locale: resolution.resolvedLocale,
+        locale: resolvedLocale,
       );
     } catch (error, stack) {
       _logger.warn(
@@ -174,6 +181,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
 
     HomeInvite? invite;
     String? inviteLink;
+    HouseNormDocument? houseNorms;
 
     // First try to fetch an existing invite (allowed for any active member).
     try {
@@ -197,6 +205,20 @@ class HubBloc extends Bloc<HubEvent, HubState> {
 
     final isOwner = (currentRole ?? '') == 'owner';
 
+    try {
+      houseNorms = await _houseNormsRepository?.getForHome(
+        homeId: _homeId,
+        locale: resolvedLocale,
+      );
+    } catch (error, stack) {
+      _logger.warn(
+        'Failed to load house norms for hub',
+        error: error,
+        stackTrace: stack,
+        tag: 'Hub',
+      );
+    }
+
     final previousCode = previousInviteCode ?? state.invite?.code;
     final nextCode = invite?.code;
     final hasRotateChange =
@@ -215,6 +237,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
         houseVibe: houseVibe,
         invite: invite,
         inviteLink: inviteLink,
+        houseNorms: houseNorms,
         isRefreshing: false,
         isOwner: isOwner,
         notice: notice,

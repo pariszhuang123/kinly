@@ -5124,6 +5124,656 @@ class S {
     );
   }
 
+  /// `Create house norms`
+  String get houseNormPromptTitle {
+    return Intl.message(
+      'Create house norms',
+      name: 'houseNormPromptTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write a shared starting point for how your home tends to work.`
+  String get houseNormPromptSubtitle {
+    return Intl.message(
+      'Write a shared starting point for how your home tends to work.',
+      name: 'houseNormPromptSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create house norms`
+  String get houseNormPromptCta {
+    return Intl.message(
+      'Create house norms',
+      name: 'houseNormPromptCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `House norms`
+  String get houseNormOnboardingTitle {
+    return Intl.message(
+      'House norms',
+      name: 'houseNormOnboardingTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get houseNormOnboardingBack {
+    return Intl.message(
+      'Back',
+      name: 'houseNormOnboardingBack',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate house norms`
+  String get houseNormOnboardingSubmit {
+    return Intl.message(
+      'Generate house norms',
+      name: 'houseNormOnboardingSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Question {current} of {total}`
+  String houseNormOnboardingProgress(int current, int total) {
+    return Intl.message(
+      'Question $current of $total',
+      name: 'houseNormOnboardingProgress',
+      desc: 'Progress for house norms onboarding',
+      args: [current, total],
+    );
+  }
+
+  /// `We couldn't generate house norms right now. Please try again.`
+  String get houseNormGenerationFailed {
+    return Intl.message(
+      'We couldn\'t generate house norms right now. Please try again.',
+      name: 'houseNormGenerationFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `House norms`
+  String get houseNormReportTitle {
+    return Intl.message(
+      'House norms',
+      name: 'houseNormReportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit house norms`
+  String get houseNormEditCta {
+    return Intl.message(
+      'Edit house norms',
+      name: 'houseNormEditCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get houseNormDoneCta {
+    return Intl.message(
+      'Done',
+      name: 'houseNormDoneCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit house norms`
+  String get houseNormEditTitle {
+    return Intl.message(
+      'Edit house norms',
+      name: 'houseNormEditTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View house norms`
+  String get houseNormViewTitle {
+    return Intl.message(
+      'View house norms',
+      name: 'houseNormViewTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `House norms not ready`
+  String get houseNormReportEmptyTitle {
+    return Intl.message(
+      'House norms not ready',
+      name: 'houseNormReportEmptyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generate house norms to see your shared starting point.`
+  String get houseNormReportEmptyBody {
+    return Intl.message(
+      'Generate house norms to see your shared starting point.',
+      name: 'houseNormReportEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load house norms`
+  String get houseNormReportErrorTitle {
+    return Intl.message(
+      'Could not load house norms',
+      name: 'houseNormReportErrorTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please try again.`
+  String get houseNormReportErrorBody {
+    return Intl.message(
+      'Please try again.',
+      name: 'houseNormReportErrorBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Publish to web`
+  String get houseNormPublishCta {
+    return Intl.message(
+      'Publish to web',
+      name: 'houseNormPublishCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Republish`
+  String get houseNormRepublishCta {
+    return Intl.message(
+      'Republish',
+      name: 'houseNormRepublishCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `House norms published.`
+  String get houseNormPublishSuccess {
+    return Intl.message(
+      'House norms published.',
+      name: 'houseNormPublishSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't publish right now.`
+  String get houseNormPublishFailed {
+    return Intl.message(
+      'We couldn\'t publish right now.',
+      name: 'houseNormPublishFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy URL`
+  String get houseNormCopyUrlCta {
+    return Intl.message(
+      'Copy URL',
+      name: 'houseNormCopyUrlCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share URL`
+  String get houseNormShareUrlCta {
+    return Intl.message(
+      'Share URL',
+      name: 'houseNormShareUrlCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `House norms URL copied.`
+  String get houseNormUrlCopied {
+    return Intl.message(
+      'House norms URL copied.',
+      name: 'houseNormUrlCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Our house norms`
+  String get houseNormShareSubject {
+    return Intl.message(
+      'Our house norms',
+      name: 'houseNormShareSubject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Summary framing`
+  String get houseNormSummaryFramingLabel {
+    return Intl.message(
+      'Summary framing',
+      name: 'houseNormSummaryFramingLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adjust this section`
+  String get houseNormSectionEditLabel {
+    return Intl.message(
+      'Adjust this section',
+      name: 'houseNormSectionEditLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get houseNormSectionSaveCta {
+    return Intl.message(
+      'Save',
+      name: 'houseNormSectionSaveCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please add text before saving.`
+  String get houseNormSectionEmptyError {
+    return Intl.message(
+      'Please add text before saving.',
+      name: 'houseNormSectionEmptyError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Section updated.`
+  String get houseNormSectionSaveSuccess {
+    return Intl.message(
+      'Section updated.',
+      name: 'houseNormSectionSaveSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We couldn't save that update.`
+  String get houseNormSectionSaveFailed {
+    return Intl.message(
+      'We couldn\'t save that update.',
+      name: 'houseNormSectionSaveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `House norms`
+  String get hubHouseNormsTitle {
+    return Intl.message(
+      'House norms',
+      name: 'hubHouseNormsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A shared starting point for how this home tends to work.`
+  String get hubHouseNormsSubtitle {
+    return Intl.message(
+      'A shared starting point for how this home tends to work.',
+      name: 'hubHouseNormsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you renting or owning this house?`
+  String get houseNormScenarioPropertyContextQuestion {
+    return Intl.message(
+      'Are you renting or owning this house?',
+      name: 'houseNormScenarioPropertyContextQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We own this home`
+  String get houseNormScenarioPropertyContextOption1 {
+    return Intl.message(
+      'We own this home',
+      name: 'houseNormScenarioPropertyContextOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We rent this whole home`
+  String get houseNormScenarioPropertyContextOption2 {
+    return Intl.message(
+      'We rent this whole home',
+      name: 'houseNormScenarioPropertyContextOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We rent rooms in a shared home`
+  String get houseNormScenarioPropertyContextOption3 {
+    return Intl.message(
+      'We rent rooms in a shared home',
+      name: 'houseNormScenarioPropertyContextOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Who's sharing this home together?`
+  String get houseNormScenarioRelationshipModelQuestion {
+    return Intl.message(
+      'Who\'s sharing this home together?',
+      name: 'houseNormScenarioRelationshipModelQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Housemates`
+  String get houseNormScenarioRelationshipModelOption1 {
+    return Intl.message(
+      'Housemates',
+      name: 'houseNormScenarioRelationshipModelOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Family`
+  String get houseNormScenarioRelationshipModelOption2 {
+    return Intl.message(
+      'Family',
+      name: 'houseNormScenarioRelationshipModelOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Family and housemates`
+  String get houseNormScenarioRelationshipModelOption3 {
+    return Intl.message(
+      'Family and housemates',
+      name: 'houseNormScenarioRelationshipModelOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It is nighttime, and someone is still active at home. What usually feels okay?`
+  String get houseNormScenarioRhythmQuestion {
+    return Intl.message(
+      'It is nighttime, and someone is still active at home. What usually feels okay?',
+      name: 'houseNormScenarioRhythmQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Things wind down so the home can rest`
+  String get houseNormScenarioRhythmOption1 {
+    return Intl.message(
+      'Things wind down so the home can rest',
+      name: 'houseNormScenarioRhythmOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It depends - some nights are quieter than others`
+  String get houseNormScenarioRhythmOption2 {
+    return Intl.message(
+      'It depends - some nights are quieter than others',
+      name: 'houseNormScenarioRhythmOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Everyone keeps doing their thing`
+  String get houseNormScenarioRhythmOption3 {
+    return Intl.message(
+      'Everyone keeps doing their thing',
+      name: 'houseNormScenarioRhythmOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You walk into the kitchen at the end of the day. What feels most comfortable?`
+  String get houseNormScenarioSharedSpacesQuestion {
+    return Intl.message(
+      'You walk into the kitchen at the end of the day. What feels most comfortable?',
+      name: 'houseNormScenarioSharedSpacesQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mostly clear and ready to use`
+  String get houseNormScenarioSharedSpacesOption1 {
+    return Intl.message(
+      'Mostly clear and ready to use',
+      name: 'houseNormScenarioSharedSpacesOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lived-in, but reset later`
+  String get houseNormScenarioSharedSpacesOption2 {
+    return Intl.message(
+      'Lived-in, but reset later',
+      name: 'houseNormScenarioSharedSpacesOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A bit messy is fine - it's a shared home`
+  String get houseNormScenarioSharedSpacesOption3 {
+    return Intl.message(
+      'A bit messy is fine - it\'s a shared home',
+      name: 'houseNormScenarioSharedSpacesOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A friend or partner wants to come over. What usually feels right?`
+  String get houseNormScenarioGuestsQuestion {
+    return Intl.message(
+      'A friend or partner wants to come over. What usually feels right?',
+      name: 'houseNormScenarioGuestsQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It's planned and talked about first`
+  String get houseNormScenarioGuestsOption1 {
+    return Intl.message(
+      'It\'s planned and talked about first',
+      name: 'houseNormScenarioGuestsOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A heads-up is enough`
+  String get houseNormScenarioGuestsOption2 {
+    return Intl.message(
+      'A heads-up is enough',
+      name: 'houseNormScenarioGuestsOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `That's part of daily life here`
+  String get houseNormScenarioGuestsOption3 {
+    return Intl.message(
+      'That\'s part of daily life here',
+      name: 'houseNormScenarioGuestsOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something small needs doing around the house. What tends to happen?`
+  String get houseNormScenarioResponsibilityQuestion {
+    return Intl.message(
+      'Something small needs doing around the house. What tends to happen?',
+      name: 'houseNormScenarioResponsibilityQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We usually have clear agreements`
+  String get houseNormScenarioResponsibilityOption1 {
+    return Intl.message(
+      'We usually have clear agreements',
+      name: 'houseNormScenarioResponsibilityOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Someone takes care of it when they notice`
+  String get houseNormScenarioResponsibilityOption2 {
+    return Intl.message(
+      'Someone takes care of it when they notice',
+      name: 'houseNormScenarioResponsibilityOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Everyone mostly looks after their own things`
+  String get houseNormScenarioResponsibilityOption3 {
+    return Intl.message(
+      'Everyone mostly looks after their own things',
+      name: 'houseNormScenarioResponsibilityOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something feels a bit off between people. What helps most?`
+  String get houseNormScenarioRepairQuestion {
+    return Intl.message(
+      'Something feels a bit off between people. What helps most?',
+      name: 'houseNormScenarioRepairQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Talking it through sooner rather than later`
+  String get houseNormScenarioRepairOption1 {
+    return Intl.message(
+      'Talking it through sooner rather than later',
+      name: 'houseNormScenarioRepairOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checking in gently when the moment feels right`
+  String get houseNormScenarioRepairOption2 {
+    return Intl.message(
+      'Checking in gently when the moment feels right',
+      name: 'houseNormScenarioRepairOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Letting small things pass unless they build up`
+  String get houseNormScenarioRepairOption3 {
+    return Intl.message(
+      'Letting small things pass unless they build up',
+      name: 'houseNormScenarioRepairOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On a good day, this home feels most like...`
+  String get houseNormScenarioHomeIdentityQuestion {
+    return Intl.message(
+      'On a good day, this home feels most like...',
+      name: 'houseNormScenarioHomeIdentityQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A calm place to recharge`
+  String get houseNormScenarioHomeIdentityOption1 {
+    return Intl.message(
+      'A calm place to recharge',
+      name: 'houseNormScenarioHomeIdentityOption1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A balance of quiet time and togetherness`
+  String get houseNormScenarioHomeIdentityOption2 {
+    return Intl.message(
+      'A balance of quiet time and togetherness',
+      name: 'houseNormScenarioHomeIdentityOption2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A lively place where people come and go`
+  String get houseNormScenarioHomeIdentityOption3 {
+    return Intl.message(
+      'A lively place where people come and go',
+      name: 'houseNormScenarioHomeIdentityOption3',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Got it.`
   String get reflectiveAcknowledgementTitle {
     return Intl.message(
@@ -5169,6 +5819,26 @@ class S {
     return Intl.message(
       'So everyone knows what to expect.',
       name: 'reflectiveHouseSecondary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reflecting what this home shared.`
+  String get reflectiveHouseNormsPrimary {
+    return Intl.message(
+      'Reflecting what this home shared.',
+      name: 'reflectiveHouseNormsPrimary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A shared reference, not a rulebook.`
+  String get reflectiveHouseNormsSecondary {
+    return Intl.message(
+      'A shared reference, not a rulebook.',
+      name: 'reflectiveHouseNormsSecondary',
       desc: '',
       args: [],
     );

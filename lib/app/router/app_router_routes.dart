@@ -78,6 +78,20 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
         );
       },
     ),
+    ...buildHouseNormRoutes(
+      resolveContext: () {
+        final membership = authBloc.state.membership;
+        final userId = authBloc.state.userId;
+        if (membership == null || userId == null) {
+          throw StateError('House norms require an active membership.');
+        }
+        return HouseNormRouteContext(
+          homeId: membership.homeId,
+          userId: userId,
+          isOwner: membership.role.toLowerCase() == 'owner',
+        );
+      },
+    ),
     ...buildPaywallRoutes(),
     ...buildSplashRoutes(),
     ...buildVersionGatingRoutes(),

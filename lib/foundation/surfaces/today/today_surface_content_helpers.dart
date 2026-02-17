@@ -23,6 +23,7 @@ Widget _buildTodayContentImpl(
       (state.memberCapJoinRequests?.pendingCount ?? 0) > 0 &&
       state.profile?.isOwner == true;
   final hasPreferencePrompt = state.shouldPromptPreferences;
+  final hasHouseNormsPrompt = state.shouldPromptHouseNorms;
 
   if (!hasFlow &&
       !hasShare &&
@@ -31,7 +32,8 @@ Widget _buildTodayContentImpl(
       !hasInvitePrompt &&
       !hasShopping &&
       !hasMemberCapPrompt &&
-      !hasPreferencePrompt) {
+      !hasPreferencePrompt &&
+      !hasHouseNormsPrompt) {
     return const TodayEmptyStateCard();
   }
 
@@ -44,6 +46,8 @@ Widget _buildTodayContentImpl(
     onMemberCapSecondary:
         () => context.read<TodayBloc>().add(const TodayMemberCapDismissed()),
     onPreferencePrompt: () => context.pushNamed(AppRouteNames.preferenceOnboarding),
+    onHouseNormsPrompt:
+        () => context.pushNamed(AppRouteNames.houseNormsOnboarding),
     onInvitePrimary: (config) async {
       final shared = await stateful._shareInvite(
         context,

@@ -92,6 +92,8 @@ dev_dependencies:
   intl_utils: ^2.8.7
   flutter_launcher_icons: ^0.13.1
   firebase_messaging_platform_interface: ^4.5.15
+  plugin_platform_interface: ^2.1.8
+  url_launcher_platform_interface: ^2.3.2
   yaml: ^3.1.2
   sentry_dart_plugin: ^3.0.0
 

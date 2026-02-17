@@ -172,8 +172,7 @@ class NpsScreen extends StatelessWidget {
     }
 
     if (PlatformInfo.isAndroid && score >= 9) {
-      if (AppConfig.androidStoreUrl.isEmpty) return null;
-      return Uri.parse(AppConfig.androidStoreUrl);
+      return Uri.parse(resolveKinlyPublicAppLink());
     }
 
     return KinlySupport.buildEmailUri(context, KinlySupportIntent.nps);

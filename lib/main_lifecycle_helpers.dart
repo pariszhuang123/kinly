@@ -33,8 +33,15 @@ Future<void> _handleAuthStateImpl(_MyAppState self, AuthState state) async {
   }
   if (previousHomeId != null && previousHomeId != currentHomeId) {
     await FormDraftStorage.clearHouseRulesDraft(previousHomeId);
+    await FormDraftStorage.clearHouseNormsDraft(previousHomeId);
     self._logger.info(
       'form_draft_cleared_on_home_change form=house_rules '
+      'scope=${FormDraftStorage.hashScope(previousHomeId)} '
+      'schemaVersion=${FormDraftStorage.schemaVersionV1}',
+      tag: _MyAppState._draftLogTag,
+    );
+    self._logger.info(
+      'form_draft_cleared_on_home_change form=house_norms '
       'scope=${FormDraftStorage.hashScope(previousHomeId)} '
       'schemaVersion=${FormDraftStorage.schemaVersionV1}',
       tag: _MyAppState._draftLogTag,
@@ -105,6 +112,17 @@ Future<void> _applyJoinNavigationImpl(
 
 Future<void> _refreshNotificationPreferencesFromOsImpl(_MyAppState self) async {
   if (!self._authBloc.state.isAuthenticated) return;
+  final lifecycleState = WidgetsBinding.instance.lifecycleState;
+  if (shouldSkipNotificationPrefsRefresh(
+    mounted: self.mounted,
+    lifecycleState: lifecycleState,
+  )) {
+    self._logger.debug(
+      'Skipping notification prefs refresh; app lifecycle is $lifecycleState',
+      tag: _MyAppState._logTag,
+    );
+    return;
+  }
   if (!sl.isRegistered<NotificationsRepository>() ||
       !sl.isRegistered<NotificationSyncState>()) {
     self._logger.debug(
@@ -125,12 +143,19 @@ Future<void> _refreshNotificationPreferencesFromOsImpl(_MyAppState self) async {
   final deviceToken = await _readDeviceTokenForSync(self, osPermission);
 
   try {
-    final prefs = await notificationsRepo.fetchPreferences(
-      timezone: timezone,
-      locale: locale,
-      osPermission: osPermission,
-      deviceToken: deviceToken,
-      platform: platformName,
+    Future<NotificationPreferences> fetchPreferences() {
+      return notificationsRepo.fetchPreferences(
+        timezone: timezone,
+        locale: locale,
+        osPermission: osPermission,
+        deviceToken: deviceToken,
+        platform: platformName,
+      );
+    }
+
+    final prefs = await _fetchNotificationPreferencesWithTransientRetry(
+      self: self,
+      fetchPreferences: fetchPreferences,
     );
 
     syncState.setPayload(
@@ -152,6 +177,46 @@ Future<void> _refreshNotificationPreferencesFromOsImpl(_MyAppState self) async {
       error: error,
       stackTrace: stackTrace,
     );
+  }
+}
+
+Future<NotificationPreferences>
+_fetchNotificationPreferencesWithTransientRetry({
+  required _MyAppState self,
+  required Future<NotificationPreferences> Function() fetchPreferences,
+}) async {
+  try {
+    return await fetchPreferences();
+  } catch (error, stackTrace) {
+    if (!isRetryableNotificationPrefsRefreshError(error)) {
+      rethrow;
+    }
+    if (shouldSkipNotificationPrefsRefresh(
+      mounted: self.mounted,
+      lifecycleState: WidgetsBinding.instance.lifecycleState,
+    )) {
+      rethrow;
+    }
+
+    self._logger.info(
+      'Retrying notification prefs refresh after transient transport failure',
+      tag: _MyAppState._logTag,
+    );
+
+    await Future<void>.delayed(notificationPrefsRefreshRetryDelay);
+
+    if (shouldSkipNotificationPrefsRefresh(
+      mounted: self.mounted,
+      lifecycleState: WidgetsBinding.instance.lifecycleState,
+    )) {
+      self._logger.debug(
+        'Skipping notification prefs retry; app lifecycle changed',
+        tag: _MyAppState._logTag,
+      );
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+
+    return fetchPreferences();
   }
 }
 
