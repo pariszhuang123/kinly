@@ -30,12 +30,14 @@ class HouseNormSummary {
   final String? subtitleKey;
 
   factory HouseNormSummary.fromJson(Map<String, dynamic> json) {
+    final titleKey = json['title_key'] as String?;
+    final subtitleKey = json['subtitle_key'] as String?;
     return HouseNormSummary(
       title: json['title'] as String? ?? '',
       subtitle: json['subtitle'] as String? ?? '',
       framing: json['framing'] as String? ?? '',
-      titleKey: json['title_key'] as String?,
-      subtitleKey: json['subtitle_key'] as String?,
+      titleKey: titleKey,
+      subtitleKey: subtitleKey,
     );
   }
 }
@@ -53,16 +55,21 @@ class HouseNormSection {
   final String text;
   final String? titleKey;
 
-  factory HouseNormSection.fromJson(Map<String, dynamic> json) {
+  factory HouseNormSection.fromJson(
+    Map<String, dynamic> json, {
+    String? fallbackSectionKey,
+  }) {
+    final titleKey = json['title_key'] as String?;
     return HouseNormSection(
       sectionKey:
           json['section_key'] as String? ??
           json['id'] as String? ??
           json['key'] as String? ??
+          fallbackSectionKey ??
           '',
       title: json['title'] as String? ?? '',
       text: json['text'] as String? ?? '',
-      titleKey: json['title_key'] as String?,
+      titleKey: titleKey,
     );
   }
 }
@@ -92,17 +99,27 @@ class HouseNormContent {
             ? (contextRaw['line'] as String? ?? contextRaw['text'] as String? ?? '')
             : '';
     final sectionsRaw = json['sections'];
-    final sections =
-        sectionsRaw is List
-            ? sectionsRaw
-                .whereType<Map>()
-                .map((entry) => HouseNormSection.fromJson(entry.cast<String, dynamic>()))
-                .toList(growable: false)
-            : const <HouseNormSection>[];
+    final sections = <HouseNormSection>[
+      if (sectionsRaw is List)
+        ...sectionsRaw.whereType<Map>().map(
+          (entry) => HouseNormSection.fromJson(entry.cast<String, dynamic>()),
+        ),
+      if (sectionsRaw is Map)
+        ...sectionsRaw.entries
+            .where((entry) {
+              return entry.key is String && entry.value is Map;
+            })
+            .map(
+              (entry) => HouseNormSection.fromJson(
+                (entry.value as Map).cast<String, dynamic>(),
+                fallbackSectionKey: entry.key as String,
+              ),
+            ),
+    ];
     return HouseNormContent(
       summary: HouseNormSummary.fromJson(summaryMap),
       context: contextValue,
-      sections: sections,
+      sections: List<HouseNormSection>.unmodifiable(sections),
     );
   }
 }

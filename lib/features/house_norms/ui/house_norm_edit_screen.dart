@@ -14,6 +14,7 @@ import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/features/house_norms/bloc/house_norm_report_cubit.dart';
+import 'package:kinly/features/house_norms/domain/house_norm_content_localization.dart';
 import 'package:kinly/features/house_norms/domain/house_norm_document_view.dart';
 import 'package:kinly/features/house_norms/ui/house_norm_section_route_args.dart';
 import 'package:kinly/generated/l10n.dart';
@@ -63,7 +64,7 @@ class HouseNormEditScreen extends StatelessWidget {
               ...content.sections.map(
                 (section) => _EditableNormSection(
                   sectionKey: section.sectionKey,
-                  title: section.title,
+                  title: localizeHouseNormSectionTitle(s, section),
                   text: section.text,
                 ),
               ),

@@ -69,6 +69,49 @@ void main() {
       );
     });
 
+    test('parses section object map payloads keyed by section id', () {
+      final document = HouseNormDocument.fromJson(
+        homeId: 'home-1',
+        json: const {
+          'status': 'published',
+          'published_content': {
+            'summary': {
+              'title_key': 'house_norms_title',
+              'subtitle_key': 'house_norms_subtitle',
+              'framing': 'We aim for calm and workable shared life.',
+            },
+            'context': {
+              'line': 'This home is shared by family.',
+            },
+            'sections': {
+              'norms_shared_spaces': {
+                'title_key': 'house_norms_section_shared_spaces_title',
+                'text': 'We reset shared spaces when it makes sense.',
+              },
+              'norms_repair_style': {
+                'title_key': 'house_norms_section_repair_style_title',
+                'text': 'We try to talk sooner rather than later.',
+              },
+            },
+          },
+        },
+      );
+
+      final content = resolveHouseNormDisplayContent(document);
+      expect(content, isNotNull);
+      expect(content!.sections, hasLength(2));
+      expect(content.sections.first.sectionKey, 'norms_shared_spaces');
+      expect(content.sections.first.title, isEmpty);
+      expect(
+        content.sections.first.titleKey,
+        'house_norms_section_shared_spaces_title',
+      );
+      expect(
+        content.sections.first.text,
+        'We reset shared spaces when it makes sense.',
+      );
+    });
+
     test('display content falls back to published then draft', () {
       final publishedOnly = HouseNormDocument(
         homeId: 'home-1',

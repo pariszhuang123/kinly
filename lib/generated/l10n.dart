@@ -2121,10 +2121,10 @@ class S {
     );
   }
 
-  /// `Create Bill`
+  /// `Add Bill`
   String get shareCreateTitle {
     return Intl.message(
-      'Create Bill',
+      'Add Bill',
       name: 'shareCreateTitle',
       desc: '',
       args: [],
@@ -2781,10 +2781,10 @@ class S {
     );
   }
 
-  /// `Delete flow`
+  /// `Delete Task`
   String get flowChoreDeleteButton {
     return Intl.message(
-      'Delete flow',
+      'Delete Task',
       name: 'flowChoreDeleteButton',
       desc: '',
       args: [],
@@ -5214,24 +5214,9 @@ class S {
     );
   }
 
-  /// `Edit house norms`
-  String get houseNormEditCta {
-    return Intl.message(
-      'Edit house norms',
-      name: 'houseNormEditCta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Done`
   String get houseNormDoneCta {
-    return Intl.message(
-      'Done',
-      name: 'houseNormDoneCta',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Done', name: 'houseNormDoneCta', desc: '', args: []);
   }
 
   /// `Edit house norms`
@@ -5374,11 +5359,101 @@ class S {
     );
   }
 
+  /// `House norms`
+  String get houseNormSummaryTitle {
+    return Intl.message(
+      'House norms',
+      name: 'houseNormSummaryTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A shared starting point - not a rulebook.`
+  String get houseNormSummarySubtitle {
+    return Intl.message(
+      'A shared starting point - not a rulebook.',
+      name: 'houseNormSummarySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Summary framing`
   String get houseNormSummaryFramingLabel {
     return Intl.message(
       'Summary framing',
       name: 'houseNormSummaryFramingLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rhythm and quiet`
+  String get houseNormSectionRhythmQuietTitle {
+    return Intl.message(
+      'Rhythm and quiet',
+      name: 'houseNormSectionRhythmQuietTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared spaces`
+  String get houseNormSectionSharedSpacesTitle {
+    return Intl.message(
+      'Shared spaces',
+      name: 'houseNormSectionSharedSpacesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Guests and social flow`
+  String get houseNormSectionGuestsSocialTitle {
+    return Intl.message(
+      'Guests and social flow',
+      name: 'houseNormSectionGuestsSocialTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Responsibility flow`
+  String get houseNormSectionResponsibilityFlowTitle {
+    return Intl.message(
+      'Responsibility flow',
+      name: 'houseNormSectionResponsibilityFlowTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Repair style`
+  String get houseNormSectionRepairStyleTitle {
+    return Intl.message(
+      'Repair style',
+      name: 'houseNormSectionRepairStyleTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home identity`
+  String get houseNormSectionHomeIdentityTitle {
+    return Intl.message(
+      'Home identity',
+      name: 'houseNormSectionHomeIdentityTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Section`
+  String get houseNormSectionFallbackTitle {
+    return Intl.message(
+      'Section',
+      name: 'houseNormSectionFallbackTitle',
       desc: '',
       args: [],
     );

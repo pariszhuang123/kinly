@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m7(answered, total) =>
       "Based on ${answered} of ${total} members";
 
+  static String m28(current, total) => "Question ${current} of ${total}";
+
   static String m8(link) =>
       "Sharing our Kinly house pulse. Download the app: ${link}";
 
@@ -156,7 +158,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("Add Task"),
     "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage(
-      "Delete flow",
+      "Delete Task",
     ),
     "flowChoreDeleteConfirm": MessageLookupByLibrary.simpleMessage("Delete"),
     "flowChoreDeleteDialogMessage": MessageLookupByLibrary.simpleMessage(
@@ -396,6 +398,203 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage("Saved"),
     "homeVibeCoverage": m7,
     "homeVibeTitle": MessageLookupByLibrary.simpleMessage("Home Vibe"),
+    "houseNormCopyUrlCta": MessageLookupByLibrary.simpleMessage("Copy URL"),
+    "houseNormDoneCta": MessageLookupByLibrary.simpleMessage("Done"),
+    "houseNormEditTitle": MessageLookupByLibrary.simpleMessage(
+      "Edit house norms",
+    ),
+    "houseNormGenerationFailed": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t generate house norms right now. Please try again.",
+    ),
+    "houseNormOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
+    "houseNormOnboardingProgress": m28,
+    "houseNormOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
+      "Generate house norms",
+    ),
+    "houseNormOnboardingTitle": MessageLookupByLibrary.simpleMessage(
+      "House norms",
+    ),
+    "houseNormPromptCta": MessageLookupByLibrary.simpleMessage(
+      "Create house norms",
+    ),
+    "houseNormPromptSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Write a shared starting point for how your home tends to work.",
+    ),
+    "houseNormPromptTitle": MessageLookupByLibrary.simpleMessage(
+      "Create house norms",
+    ),
+    "houseNormPublishCta": MessageLookupByLibrary.simpleMessage(
+      "Publish to web",
+    ),
+    "houseNormPublishFailed": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t publish right now.",
+    ),
+    "houseNormPublishSuccess": MessageLookupByLibrary.simpleMessage(
+      "House norms published.",
+    ),
+    "houseNormReportEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Generate house norms to see your shared starting point.",
+    ),
+    "houseNormReportEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "House norms not ready",
+    ),
+    "houseNormReportErrorBody": MessageLookupByLibrary.simpleMessage(
+      "Please try again.",
+    ),
+    "houseNormReportErrorTitle": MessageLookupByLibrary.simpleMessage(
+      "Could not load house norms",
+    ),
+    "houseNormReportTitle": MessageLookupByLibrary.simpleMessage("House norms"),
+    "houseNormRepublishCta": MessageLookupByLibrary.simpleMessage("Republish"),
+    "houseNormScenarioGuestsOption1": MessageLookupByLibrary.simpleMessage(
+      "It\'s planned and talked about first",
+    ),
+    "houseNormScenarioGuestsOption2": MessageLookupByLibrary.simpleMessage(
+      "A heads-up is enough",
+    ),
+    "houseNormScenarioGuestsOption3": MessageLookupByLibrary.simpleMessage(
+      "That\'s part of daily life here",
+    ),
+    "houseNormScenarioGuestsQuestion": MessageLookupByLibrary.simpleMessage(
+      "A friend or partner wants to come over. What usually feels right?",
+    ),
+    "houseNormScenarioHomeIdentityOption1":
+        MessageLookupByLibrary.simpleMessage("A calm place to recharge"),
+    "houseNormScenarioHomeIdentityOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "A balance of quiet time and togetherness",
+        ),
+    "houseNormScenarioHomeIdentityOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "A lively place where people come and go",
+        ),
+    "houseNormScenarioHomeIdentityQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "On a good day, this home feels most like...",
+        ),
+    "houseNormScenarioPropertyContextOption1":
+        MessageLookupByLibrary.simpleMessage("We own this home"),
+    "houseNormScenarioPropertyContextOption2":
+        MessageLookupByLibrary.simpleMessage("We rent this whole home"),
+    "houseNormScenarioPropertyContextOption3":
+        MessageLookupByLibrary.simpleMessage("We rent rooms in a shared home"),
+    "houseNormScenarioPropertyContextQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "Are you renting or owning this house?",
+        ),
+    "houseNormScenarioRelationshipModelOption1":
+        MessageLookupByLibrary.simpleMessage("Housemates"),
+    "houseNormScenarioRelationshipModelOption2":
+        MessageLookupByLibrary.simpleMessage("Family"),
+    "houseNormScenarioRelationshipModelOption3":
+        MessageLookupByLibrary.simpleMessage("Family and housemates"),
+    "houseNormScenarioRelationshipModelQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "Who\'s sharing this home together?",
+        ),
+    "houseNormScenarioRepairOption1": MessageLookupByLibrary.simpleMessage(
+      "Talking it through sooner rather than later",
+    ),
+    "houseNormScenarioRepairOption2": MessageLookupByLibrary.simpleMessage(
+      "Checking in gently when the moment feels right",
+    ),
+    "houseNormScenarioRepairOption3": MessageLookupByLibrary.simpleMessage(
+      "Letting small things pass unless they build up",
+    ),
+    "houseNormScenarioRepairQuestion": MessageLookupByLibrary.simpleMessage(
+      "Something feels a bit off between people. What helps most?",
+    ),
+    "houseNormScenarioResponsibilityOption1":
+        MessageLookupByLibrary.simpleMessage(
+          "We usually have clear agreements",
+        ),
+    "houseNormScenarioResponsibilityOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "Someone takes care of it when they notice",
+        ),
+    "houseNormScenarioResponsibilityOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "Everyone mostly looks after their own things",
+        ),
+    "houseNormScenarioResponsibilityQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "Something small needs doing around the house. What tends to happen?",
+        ),
+    "houseNormScenarioRhythmOption1": MessageLookupByLibrary.simpleMessage(
+      "Things wind down so the home can rest",
+    ),
+    "houseNormScenarioRhythmOption2": MessageLookupByLibrary.simpleMessage(
+      "It depends - some nights are quieter than others",
+    ),
+    "houseNormScenarioRhythmOption3": MessageLookupByLibrary.simpleMessage(
+      "Everyone keeps doing their thing",
+    ),
+    "houseNormScenarioRhythmQuestion": MessageLookupByLibrary.simpleMessage(
+      "It is nighttime, and someone is still active at home. What usually feels okay?",
+    ),
+    "houseNormScenarioSharedSpacesOption1":
+        MessageLookupByLibrary.simpleMessage("Mostly clear and ready to use"),
+    "houseNormScenarioSharedSpacesOption2":
+        MessageLookupByLibrary.simpleMessage("Lived-in, but reset later"),
+    "houseNormScenarioSharedSpacesOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "A bit messy is fine - it\'s a shared home",
+        ),
+    "houseNormScenarioSharedSpacesQuestion": MessageLookupByLibrary.simpleMessage(
+      "You walk into the kitchen at the end of the day. What feels most comfortable?",
+    ),
+    "houseNormSectionEditLabel": MessageLookupByLibrary.simpleMessage(
+      "Adjust this section",
+    ),
+    "houseNormSectionEmptyError": MessageLookupByLibrary.simpleMessage(
+      "Please add text before saving.",
+    ),
+    "houseNormSectionFallbackTitle": MessageLookupByLibrary.simpleMessage(
+      "Section",
+    ),
+    "houseNormSectionGuestsSocialTitle": MessageLookupByLibrary.simpleMessage(
+      "Guests and social flow",
+    ),
+    "houseNormSectionHomeIdentityTitle": MessageLookupByLibrary.simpleMessage(
+      "Home identity",
+    ),
+    "houseNormSectionRepairStyleTitle": MessageLookupByLibrary.simpleMessage(
+      "Repair style",
+    ),
+    "houseNormSectionResponsibilityFlowTitle":
+        MessageLookupByLibrary.simpleMessage("Responsibility flow"),
+    "houseNormSectionRhythmQuietTitle": MessageLookupByLibrary.simpleMessage(
+      "Rhythm and quiet",
+    ),
+    "houseNormSectionSaveCta": MessageLookupByLibrary.simpleMessage("Save"),
+    "houseNormSectionSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t save that update.",
+    ),
+    "houseNormSectionSaveSuccess": MessageLookupByLibrary.simpleMessage(
+      "Section updated.",
+    ),
+    "houseNormSectionSharedSpacesTitle": MessageLookupByLibrary.simpleMessage(
+      "Shared spaces",
+    ),
+    "houseNormShareSubject": MessageLookupByLibrary.simpleMessage(
+      "Our house norms",
+    ),
+    "houseNormShareUrlCta": MessageLookupByLibrary.simpleMessage("Share URL"),
+    "houseNormSummaryFramingLabel": MessageLookupByLibrary.simpleMessage(
+      "Summary framing",
+    ),
+    "houseNormSummarySubtitle": MessageLookupByLibrary.simpleMessage(
+      "A shared starting point - not a rulebook.",
+    ),
+    "houseNormSummaryTitle": MessageLookupByLibrary.simpleMessage(
+      "House norms",
+    ),
+    "houseNormUrlCopied": MessageLookupByLibrary.simpleMessage(
+      "House norms URL copied.",
+    ),
+    "houseNormViewTitle": MessageLookupByLibrary.simpleMessage(
+      "View house norms",
+    ),
     "housePulseCardHeader": MessageLookupByLibrary.simpleMessage(
       "Weekly house pulse",
     ),
@@ -421,6 +620,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t load Home Hub. Please try again.",
     ),
+    "hubHouseNormsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "A shared starting point for how this home tends to work.",
+    ),
+    "hubHouseNormsTitle": MessageLookupByLibrary.simpleMessage("House norms"),
     "hubInviteCta": MessageLookupByLibrary.simpleMessage("Invite"),
     "hubInviteUnavailable": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t load invite. Please try again.",
@@ -1105,6 +1308,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "reflectiveGenericSecondary": MessageLookupByLibrary.simpleMessage(
       "A quiet moment before we show it.",
     ),
+    "reflectiveHouseNormsPrimary": MessageLookupByLibrary.simpleMessage(
+      "Reflecting what this home shared.",
+    ),
+    "reflectiveHouseNormsSecondary": MessageLookupByLibrary.simpleMessage(
+      "A shared reference, not a rulebook.",
+    ),
     "reflectiveHousePrimary": MessageLookupByLibrary.simpleMessage(
       "Putting the home\'s expectations into words.",
     ),
@@ -1188,7 +1397,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Create"),
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Bill created."),
-    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Create Bill"),
+    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Add Bill"),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
       "Enter a valid amount greater than zero.",
     ),

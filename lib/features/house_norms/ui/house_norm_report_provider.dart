@@ -45,6 +45,7 @@ class HouseNormReportProvider extends StatelessWidget {
         return cubit;
       },
       child: HouseNormReportScreen(
+        isOwner: isOwner,
         showConfetti: showConfetti,
         showDoneCta: showDoneCta,
         popOnDone: popOnDone,

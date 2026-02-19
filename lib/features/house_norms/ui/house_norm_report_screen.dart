@@ -23,17 +23,21 @@ import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/contracts/house_norms/models.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/features/house_norms/bloc/house_norm_report_cubit.dart';
+import 'package:kinly/features/house_norms/domain/house_norm_content_localization.dart';
 import 'package:kinly/features/house_norms/domain/house_norm_document_view.dart';
+import 'package:kinly/features/house_norms/ui/house_norm_section_route_args.dart';
 import 'package:kinly/generated/l10n.dart';
 
 class HouseNormReportScreen extends StatefulWidget {
   const HouseNormReportScreen({
     super.key,
+    required this.isOwner,
     this.showConfetti = false,
     this.showDoneCta = true,
     this.popOnDone = false,
   });
 
+  final bool isOwner;
   final bool showConfetti;
   final bool showDoneCta;
   final bool popOnDone;
@@ -87,7 +91,7 @@ class _HouseNormReportScreenState extends State<HouseNormReportScreen> {
 
     return KinlyScaffold(
       appBar: KinlyAppBar(
-        title: Text(s.houseNormReportTitle),
+        title: Text(widget.isOwner ? s.houseNormEditTitle : s.houseNormReportTitle),
         leading: _DirectionalBackButton(
           label: s.houseNormOnboardingBack,
           colors: palette,
@@ -211,7 +215,11 @@ class _HouseNormReadyBody extends StatelessWidget {
                 spacing?.lg ?? 16,
                 spacing?.lg ?? 16,
               ),
-              child: _HouseNormContentView(content: content, palette: palette),
+              child: _HouseNormContentView(
+                content: content,
+                palette: palette,
+                canEdit: state.isOwner,
+              ),
             ),
           ),
         ),
@@ -229,8 +237,7 @@ class _HouseNormReadyBody extends StatelessWidget {
               children: [
                 if (state.isOwner)
                   _HouseNormOwnerActions(state: state, document: document, palette: palette),
-                if (state.isOwner && showDoneCta) SizedBox(height: spacing?.m ?? 12),
-                if (showDoneCta)
+                if (!state.isOwner && showDoneCta)
                   KinlyOutlinedButton.text(
                     fullWidth: true,
                     label: strings.houseNormDoneCta,
@@ -254,26 +261,34 @@ class _HouseNormReadyBody extends StatelessWidget {
 }
 
 class _HouseNormContentView extends StatelessWidget {
-  const _HouseNormContentView({required this.content, required this.palette});
+  const _HouseNormContentView({
+    required this.content,
+    required this.palette,
+    required this.canEdit,
+  });
 
   final HouseNormContent content;
   final SectionColors palette;
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
     final colors = theme.colorScheme;
+    final s = S.of(context);
+    final summaryTitle = localizeHouseNormSummaryTitle(s, content.summary);
+    final summarySubtitle = localizeHouseNormSummarySubtitle(s, content.summary);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (content.summary.title.isNotEmpty)
-          Text(content.summary.title, style: theme.textTheme.headlineSmall),
-        if (content.summary.subtitle.isNotEmpty) ...[
+        if (summaryTitle.isNotEmpty)
+          Text(summaryTitle, style: theme.textTheme.headlineSmall),
+        if (summarySubtitle.isNotEmpty) ...[
           SizedBox(height: spacing?.s ?? 8),
           Text(
-            content.summary.subtitle,
+            summarySubtitle,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: colors.onSurfaceVariant,
             ),
@@ -283,34 +298,48 @@ class _HouseNormContentView extends StatelessWidget {
           Padding(
             padding: EdgeInsetsDirectional.only(
               top:
-                  content.summary.title.isNotEmpty ||
-                          content.summary.subtitle.isNotEmpty
+                  summaryTitle.isNotEmpty || summarySubtitle.isNotEmpty
                       ? spacing?.m ?? 12
                       : 0,
             ),
-            child: Text(
-              content.summary.framing,
-              style: theme.textTheme.bodyMedium,
-            ),
+            child:
+                canEdit
+                    ? _HouseNormSectionCard(
+                      title: s.houseNormSummaryFramingLabel,
+                      text: content.summary.framing,
+                      palette: palette,
+                      onTap:
+                          () => _openSectionEditor(
+                            context,
+                            sectionKey: 'summary_framing',
+                            title: s.houseNormSummaryFramingLabel,
+                            text: content.summary.framing,
+                          ),
+                    )
+                    : Text(
+                      content.summary.framing,
+                      style: theme.textTheme.bodyMedium,
+                    ),
           ),
-        if (content.context.isNotEmpty) ...[
-          SizedBox(height: spacing?.m ?? 12),
-          Text(
-            content.context,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: colors.onSurfaceVariant,
-            ),
-          ),
-        ],
         SizedBox(height: spacing?.lg ?? 16),
         KinlyMasonryGrid(
           items: content.sections,
           palette: KinlySectionPalette([palette]),
           builder: (context, section, _, itemPalette) {
+            final sectionTitle = localizeHouseNormSectionTitle(s, section);
             return _HouseNormSectionCard(
-              title: section.title,
+              title: sectionTitle,
               text: section.text,
               palette: itemPalette.colorForSeed(section.sectionKey),
+              onTap:
+                  canEdit
+                      ? () => _openSectionEditor(
+                        context,
+                        sectionKey: section.sectionKey,
+                        title: sectionTitle,
+                        text: section.text,
+                      )
+                      : null,
             );
           },
           estimateItemHeight: (section, textTheme, spacingTokens) {
@@ -379,14 +408,6 @@ class _HouseNormOwnerActions extends StatelessWidget {
             foregroundColor: palette.onAccent(),
             onPressed: state.isBusy ? null : () => _publish(context, strings),
           ),
-        SizedBox(height: spacing?.m ?? 12),
-        KinlyOutlinedButton.text(
-          fullWidth: true,
-          label: strings.houseNormEditCta,
-          foregroundColor: palette.accent,
-          borderColor: palette.accent,
-          onPressed: () => _openEdit(context),
-        ),
       ],
     );
   }
@@ -399,13 +420,6 @@ class _HouseNormOwnerActions extends StatelessWidget {
       return;
     }
     KinlySnackBar.showError(context, strings.houseNormPublishFailed);
-  }
-
-  Future<void> _openEdit(BuildContext context) async {
-    await context.pushNamed(AppRouteNames.houseNormsEdit);
-    if (context.mounted) {
-      await context.read<HouseNormReportCubit>().refresh();
-    }
   }
 }
 
@@ -467,18 +481,20 @@ class _HouseNormSectionCard extends StatelessWidget {
     required this.title,
     required this.text,
     required this.palette,
+    this.onTap,
   });
 
   final String title;
   final String text;
   final SectionColors palette;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
 
-    return Container(
+    final card = Container(
       padding: EdgeInsetsDirectional.fromSTEB(
         spacing?.lg ?? 16,
         spacing?.m ?? 12,
@@ -498,6 +514,16 @@ class _HouseNormSectionCard extends StatelessWidget {
           Text(text, style: theme.textTheme.bodyMedium),
         ],
       ),
+    );
+
+    if (onTap == null) {
+      return card;
+    }
+
+    return KinlyTapTarget(
+      onTap: onTap!,
+      borderRadius: BorderRadius.circular(16),
+      child: card,
     );
   }
 }
@@ -575,6 +601,28 @@ class _DirectionalBackButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future<void> _openSectionEditor(
+  BuildContext context, {
+  required String sectionKey,
+  required String title,
+  required String text,
+}) async {
+  final reportCubit = context.read<HouseNormReportCubit>();
+  final updated = await context.pushNamed(
+    AppRouteNames.houseNormsSectionEdit,
+    pathParameters: {'sectionKey': sectionKey},
+    extra: HouseNormSectionRouteArgs(
+      sectionKey: sectionKey,
+      title: title,
+      text: text,
+      reportCubit: reportCubit,
+    ),
+  );
+  if (context.mounted && updated == true) {
+    await reportCubit.refresh();
   }
 }
 
