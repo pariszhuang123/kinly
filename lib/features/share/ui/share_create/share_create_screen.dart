@@ -11,8 +11,10 @@ import 'package:kinly/core/ui/paywall/paywall_gate_listener.dart';
 import 'package:kinly/core/ui/paywall/paywall_strings.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
 import '../../domain/share_create_form.dart';
+import '../../domain/share_split_mode.dart';
 import '../share_edit_outcome.dart';
 import '../widgets/share_create_body.dart';
+import 'share_split_mismatch_message.dart';
 import 'share_create_surface_contract.dart';
 import 'share_create_surface_registry.dart';
 import '../../../../core/ui/kinly_scaffold.dart';
@@ -234,6 +236,30 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
     final s = S.of(context);
     final code = state.submissionErrorCode;
     if (code == null) return s.shareCreateErrorGeneric;
+    if (code == ExpenseErrorCode.splitSumMismatch) {
+      return buildShareCreateSplitMismatchMessage(strings: s, state: state);
+    }
+    if (code == ExpenseErrorCode.splitMembersRequired ||
+        code == ExpenseErrorCode.invalidSplit) {
+      if (state.form.splitMode == ShareSplitMode.custom) {
+        final summary = state.evaluateCustomSplit();
+        if (summary.hasSinglePayer) {
+          return s.shareCreateValidationCustomSinglePayer;
+        }
+        if (summary.hasInsufficientParticipants) {
+          return s.shareCreateValidationCustomParticipants;
+        }
+        if (state.submissionErrorMessage != null &&
+            state.submissionErrorMessage!.trim().isNotEmpty) {
+          return state.submissionErrorMessage!;
+        }
+        return s.shareCreateValidationCustomParticipants;
+      }
+      if (state.hasEqualSinglePayer) {
+        return s.shareCreateValidationCustomSinglePayer;
+      }
+      return s.shareCreateValidationEqualParticipants;
+    }
 
     final messageByCode = <ExpenseErrorCode, String>{
       ExpenseErrorCode.invalidAmount: s.shareCreateValidationAmount,
@@ -246,10 +272,6 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
           s.shareCreateValidationStartDateRange,
       ExpenseErrorCode.paywallActiveExpensesCap:
           s.shareCreateErrorPaywallActiveCap,
-      ExpenseErrorCode.splitMembersRequired:
-          s.shareCreateValidationEqualParticipants,
-      ExpenseErrorCode.invalidSplit: s.shareCreateValidationEqualParticipants,
-      ExpenseErrorCode.splitSumMismatch: s.shareCreateValidationCustomSum,
       ExpenseErrorCode.forbidden: s.shareCreateErrorForbidden,
       ExpenseErrorCode.notHomeMember: s.shareCreateErrorForbidden,
       ExpenseErrorCode.notCreator: s.shareCreateErrorForbidden,

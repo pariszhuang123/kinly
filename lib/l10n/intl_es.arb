@@ -416,11 +416,28 @@
   "shareCreateSubmit": "Crear",
   "shareCreateValidationDescription": "Introduce una descripción.",
   "shareCreateValidationAmount": "Introduce un importe válido mayor que cero.",
-  "shareCreateValidationEqualParticipants": "Selecciona al menos dos personas para repartir el importe.",
-  "shareCreateValidationCustomParticipants": "El reparto personalizado necesita al menos dos personas.",
+  "shareCreateValidationEqualParticipants": "Selecciona al menos una persona para repartir el importe.",
+  "shareCreateValidationCustomParticipants": "Selecciona al menos una persona para esta factura.",
   "shareCreateValidationCustomAmounts": "Introduce un importe válido para cada persona seleccionada.",
   "shareCreateValidationCustomSum": "Asegúrate de que el reparto personalizado sume el importe de arriba.",
-  "shareCreateValidationCustomSinglePayer": "Reparte el importe entre al menos dos personas cuando uses un reparto personalizado.",
+  "shareCreateValidationCustomSumBreakdown": "El reparto personalizado no coincide. Total: {total}. Incluido: {included}. Diferencia: {difference}.",
+  "@shareCreateValidationCustomSumBreakdown": {
+    "placeholders": {
+      "total": {
+        "type": "String",
+        "example": "$120.00"
+      },
+      "included": {
+        "type": "String",
+        "example": "$100.00"
+      },
+      "difference": {
+        "type": "String",
+        "example": "+$20.00"
+      }
+    }
+  },
+  "shareCreateValidationCustomSinglePayer": "No puedes incluir solo a ti en esta factura. Añade al menos otra persona.",
   "shareCreateValidationRecurrence": "Elige con qué frecuencia se repite.",
   "shareCreateValidationRecurrenceSplit": "Elige cómo repartir antes de configurar la repetición.",
   "shareCreateValidationStartDate": "Elige una fecha de inicio.",

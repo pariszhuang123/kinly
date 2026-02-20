@@ -9,6 +9,7 @@ import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/features/share/bloc/share_create_bloc/share_create_bloc.dart';
 import 'package:kinly/features/share/domain/share_create_form.dart';
+import 'package:kinly/features/share/domain/share_participant.dart';
 import 'package:kinly/features/share/domain/share_split_mode.dart';
 import 'package:kinly/features/share/ui/widgets/share_create_form_view.dart';
 import 'package:kinly/generated/l10n.dart';
@@ -21,7 +22,10 @@ void main() {
   });
 
   group('ShareCreateFormView', () {
-    Widget buildFormView(ShareCreateState state) {
+    Widget buildFormView(
+      ShareCreateState state, {
+      Map<String, TextEditingController>? customControllers,
+    }) {
       return MaterialApp(
         localizationsDelegates: const [S.delegate],
         supportedLocales: S.delegate.supportedLocales,
@@ -86,7 +90,8 @@ void main() {
             amountController: TextEditingController(),
             notesController: TextEditingController(),
             recurrenceEveryController: TextEditingController(),
-            customControllers: <String, TextEditingController>{},
+            customControllers:
+                customControllers ?? <String, TextEditingController>{},
             allowDelete: false,
             onDeleteRequested: null,
           ),
@@ -244,6 +249,131 @@ void main() {
       );
       expect((await fieldByLabel(tester, s.shareCreateNotesLabel)).enabled, isTrue);
       expect((await fieldByLabel(tester, s.shareCreateAmountLabel)).enabled, isTrue);
+    });
+
+    testWidgets('shows custom split mismatch breakdown with positive difference', (
+      tester,
+    ) async {
+      final form = ShareCreateForm.initial().copyWith(
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.custom,
+        selectedParticipantIds: {'member_a', 'member_b'},
+        customAmountInputs: const {'member_a': '4.00', 'member_b': '3.00'},
+      );
+      final state = ShareCreateState.initial().copyWith(
+        isLoading: false,
+        showValidationErrors: true,
+        participants: const [
+          ShareParticipant(userId: 'member_a', displayName: 'Alice'),
+          ShareParticipant(userId: 'member_b', displayName: 'Bob'),
+        ],
+        form: form,
+      );
+
+      await tester.pumpWidget(
+        buildFormView(
+          state,
+          customControllers: {
+            'member_a': TextEditingController(text: '4.00'),
+            'member_b': TextEditingController(text: '3.00'),
+          },
+        ),
+      );
+
+      expect(find.textContaining('Total: \$10.00'), findsOneWidget);
+      expect(find.textContaining('Included: \$7.00'), findsOneWidget);
+      expect(find.textContaining('Difference: +\$3.00'), findsOneWidget);
+    });
+
+    testWidgets('shows custom split mismatch breakdown with negative difference', (
+      tester,
+    ) async {
+      final form = ShareCreateForm.initial().copyWith(
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.custom,
+        selectedParticipantIds: {'member_a', 'member_b'},
+        customAmountInputs: const {'member_a': '6.00', 'member_b': '6.00'},
+      );
+      final state = ShareCreateState.initial().copyWith(
+        isLoading: false,
+        showValidationErrors: true,
+        participants: const [
+          ShareParticipant(userId: 'member_a', displayName: 'Alice'),
+          ShareParticipant(userId: 'member_b', displayName: 'Bob'),
+        ],
+        form: form,
+      );
+
+      await tester.pumpWidget(
+        buildFormView(
+          state,
+          customControllers: {
+            'member_a': TextEditingController(text: '6.00'),
+            'member_b': TextEditingController(text: '6.00'),
+          },
+        ),
+      );
+
+      expect(find.textContaining('Total: \$10.00'), findsOneWidget);
+      expect(find.textContaining('Included: \$12.00'), findsOneWidget);
+      expect(find.textContaining('Difference: -\$2.00'), findsOneWidget);
+    });
+
+    testWidgets('shows creator-only validation for custom split', (
+      tester,
+    ) async {
+      final form = ShareCreateForm.initial().copyWith(
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.custom,
+        selectedParticipantIds: {'member_self'},
+        customAmountInputs: const {'member_self': '10.00'},
+      );
+      final state = ShareCreateState.initial().copyWith(
+        isLoading: false,
+        showValidationErrors: true,
+        currentUserId: 'member_self',
+        participants: const [
+          ShareParticipant(userId: 'member_self', displayName: 'Taylor'),
+        ],
+        form: form,
+      );
+
+      await tester.pumpWidget(
+        buildFormView(
+          state,
+          customControllers: {
+            'member_self': TextEditingController(text: '10.00'),
+          },
+        ),
+      );
+
+      final s = S.of(tester.element(find.byType(ShareCreateFormView)));
+      expect(find.text(s.shareCreateValidationCustomSinglePayer), findsOneWidget);
+    });
+
+    testWidgets('shows creator-only validation for equal split', (
+      tester,
+    ) async {
+      final form = ShareCreateForm.initial().copyWith(
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_self'},
+      );
+      final state = ShareCreateState.initial().copyWith(
+        isLoading: false,
+        showValidationErrors: true,
+        currentUserId: 'member_self',
+        participants: const [
+          ShareParticipant(userId: 'member_a', displayName: 'Alice'),
+          ShareParticipant(userId: 'member_self', displayName: 'Taylor'),
+        ],
+        form: form,
+      );
+
+      await tester.pumpWidget(buildFormView(state));
+
+      final s = S.of(tester.element(find.byType(ShareCreateFormView)));
+      expect(find.text(s.shareCreateValidationCustomSinglePayer), findsOneWidget);
     });
   });
 }

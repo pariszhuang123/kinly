@@ -138,11 +138,13 @@ class _ParticipantsSection extends StatelessWidget {
         if (!locked &&
             showValidation &&
             splitMode == ShareSplitMode.equal &&
-            !state.hasEqualSelection)
+            (!state.hasEqualSelection || state.hasEqualSinglePayer))
           Padding(
             padding: EdgeInsets.only(top: spacing.xs),
             child: Text(
-              s.shareCreateValidationEqualParticipants,
+              state.hasEqualSinglePayer
+                  ? s.shareCreateValidationCustomSinglePayer
+                  : s.shareCreateValidationEqualParticipants,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: _validationColor(theme),
               ),
@@ -166,11 +168,11 @@ class _ParticipantsSection extends StatelessWidget {
     if (summary.hasInsufficientParticipants) {
       return s.shareCreateValidationCustomParticipants;
     }
-    if (!summary.sumMatchesTotal) {
-      return s.shareCreateValidationCustomSum;
-    }
     if (summary.hasSinglePayer) {
       return s.shareCreateValidationCustomSinglePayer;
+    }
+    if (!summary.sumMatchesTotal) {
+      return buildShareCreateSplitMismatchMessage(strings: s, state: state);
     }
     return null;
   }

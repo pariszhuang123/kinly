@@ -39,7 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m7(answered, total) =>
       "Based on ${answered} of ${total} members";
 
-  static String m28(current, total) => "Question ${current} of ${total}";
+  static String m29(current, total) => "Question ${current} of ${total}";
 
   static String m8(link) =>
       "Sharing our Kinly house pulse. Download the app: ${link}";
@@ -62,32 +62,35 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m16(period) => "Applies to ${period}";
 
-  static String m17(paidAmount, totalAmount) =>
+  static String m17(total, included, difference) =>
+      "Custom split does not match. Total: ${total}. Included: ${included}. Difference: ${difference}.";
+
+  static String m18(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
 
-  static String m18(paid, total) => "${paid} of ${total} paid";
+  static String m19(paid, total) => "${paid} of ${total} paid";
 
-  static String m19(count) =>
+  static String m20(count) =>
       "${Intl.plural(count, one: '${count} item to check', other: '${count} items to check')}";
 
-  static String m20(name) => "Hi ${name}";
+  static String m21(name) => "Hi ${name}";
 
-  static String m21(count) =>
+  static String m22(count) =>
       "See all ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m22(name) => "We could not complete ${name}\'s request.";
+  static String m23(name) => "We could not complete ${name}\'s request.";
 
-  static String m23(name) => "${name} joined your home.";
+  static String m24(name) => "${name} joined your home.";
 
-  static String m24(name) => "${name} joined another home.";
+  static String m25(name) => "${name} joined another home.";
 
-  static String m25(names) =>
+  static String m26(names) =>
       "${names} wants to join your home. Upgrade to support unlimited members.";
 
-  static String m26(count) =>
+  static String m27(count) =>
       "${Intl.plural(count, one: '${count} payment pending', other: '${count} to settle')}";
 
-  static String m27(count) =>
+  static String m28(count) =>
       "${Intl.plural(count, one: '${count} new payment to you', other: '${count} new payments to you')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -407,7 +410,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "We couldn\'t generate house norms right now. Please try again.",
     ),
     "houseNormOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
-    "houseNormOnboardingProgress": m28,
+    "houseNormOnboardingProgress": m29,
     "houseNormOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
       "Generate house norms",
     ),
@@ -1406,20 +1409,21 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateValidationCustomParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "Custom split needs at least two people.",
+          "Select at least one person for this bill.",
         ),
     "shareCreateValidationCustomSinglePayer": MessageLookupByLibrary.simpleMessage(
-      "Share the amount between at least two people when using a custom split.",
+      "You cannot include only yourself in this bill. Add at least one other person.",
     ),
     "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
       "Make sure the custom split adds up to the amount above.",
     ),
+    "shareCreateValidationCustomSumBreakdown": m17,
     "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
       "Enter a description.",
     ),
     "shareCreateValidationEqualParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "Select at least two people to split the amount.",
+          "Select at least one person to split the amount.",
         ),
     "shareCreateValidationRecurrence": MessageLookupByLibrary.simpleMessage(
       "Choose how often this repeats.",
@@ -1434,8 +1438,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
       "Choose a date within the allowed range.",
     ),
-    "shareCreatedListActiveAmount": m17,
-    "shareCreatedListActiveSubtitle": m18,
+    "shareCreatedListActiveAmount": m18,
+    "shareCreatedListActiveSubtitle": m19,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "Unassigned",
     ),
@@ -1548,7 +1552,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Create bill?",
     ),
     "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("Yes"),
-    "shoppingCardSubtitle": m19,
+    "shoppingCardSubtitle": m20,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
     "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
       "Anything helpful (brand, size, etc.)",
@@ -1599,7 +1603,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
       "What do you want to do next?",
     ),
-    "startReturningTitle": m20,
+    "startReturningTitle": m21,
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Task"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Bill"),
     "todayAddSheetShopping": MessageLookupByLibrary.simpleMessage(
@@ -1625,7 +1629,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Tasks"),
-    "todayFlowSeeAll": m21,
+    "todayFlowSeeAll": m22,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Here’s what needs attention today.",
     ),
@@ -1654,30 +1658,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "Upgrade home",
     ),
-    "todayMemberCapResolutionFailed": m22,
-    "todayMemberCapResolutionJoined": m23,
-    "todayMemberCapResolutionSuperseded": m24,
+    "todayMemberCapResolutionFailed": m23,
+    "todayMemberCapResolutionJoined": m24,
+    "todayMemberCapResolutionSuperseded": m25,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
       "Someone",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage(
       "Ignore",
     ),
-    "todayMemberCapSubtitle": m25,
+    "todayMemberCapSubtitle": m26,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
       "Your home is growing. Upgrade to welcome more people.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
       "Someone wants to join your home",
     ),
-    "todayShareActiveSubtitle": m26,
+    "todayShareActiveSubtitle": m27,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t refresh Share right now.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "Settled Amount",
     ),
-    "todaySharePaidUnseen": m27,
+    "todaySharePaidUnseen": m28,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Bill"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To settle"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),

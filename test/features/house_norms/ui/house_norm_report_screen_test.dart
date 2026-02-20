@@ -83,7 +83,7 @@ void main() {
 
     expect(find.text(strings.houseNormRepublishCta), findsOneWidget);
     expect(find.text(strings.houseNormCopyUrlCta), findsOneWidget);
-    expect(find.text(strings.houseNormEditCta), findsOneWidget);
+    expect(find.text(strings.houseNormEditTitle), findsOneWidget);
   });
 
   testWidgets('non-owner does not see owner controls', (tester) async {
@@ -103,7 +103,7 @@ void main() {
     expect(find.text(strings.houseNormRepublishCta), findsNothing);
     expect(find.text(strings.houseNormPublishCta), findsNothing);
     expect(find.text(strings.houseNormCopyUrlCta), findsNothing);
-    expect(find.text(strings.houseNormEditCta), findsNothing);
+    expect(find.text(strings.houseNormEditTitle), findsNothing);
   });
 }
 

@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
-import 'package:kinly/contracts/share/share_edit_route_args.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/dialogs/kinly_dialogs.dart';
@@ -62,21 +61,14 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
           KinlySnackBar.showError(context, resolved);
         }
         if (state.linkedExpenseTick > 0 && state.linkedExpenseId != null) {
-          await context.pushNamed(
-            AppRouteNames.shareDraftEdit,
-            pathParameters: {'expenseId': state.linkedExpenseId!},
-            extra: const ShareEditRouteArgs(allowDelete: true),
-          );
-          if (!context.mounted) return;
-          context.read<ShoppingListBloc>().add(
-            const LoadShoppingListEvent(keepCurrent: true),
-          );
+          context.goNamed(AppRouteNames.today);
         }
       },
       builder: (context, state) {
         final isManageMode = widget.mode == TodayShoppingListMode.manage;
         final hasPendingItems = state.pendingItems.isNotEmpty;
         final hasCompletedItems = state.completedItems.isNotEmpty;
+        final showAddFab = isManageMode || !hasCompletedItems;
         final showTabBar = !isManageMode && hasPendingItems && hasCompletedItems;
         _syncSelectedTab(
           hasPendingItems: hasPendingItems,
@@ -85,10 +77,13 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
         return KinlyScaffold(
           appBar: KinlyAppBar(title: Text(s.shoppingListTitle)),
           floatingActionButton:
-              isManageMode
+              showAddFab
                   ? KinlyFab(
                     onPressed: () => _openCreate(context),
-                    heroTag: 'shopping_manage_fab',
+                    heroTag:
+                        isManageMode
+                            ? 'shopping_manage_fab'
+                            : 'shopping_purchase_fab',
                   )
                   : null,
           body: SafeArea(
@@ -287,9 +282,9 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
       message: s.shoppingArchiveSharePromptBody,
       confirmLabel: s.shoppingArchiveShareYes,
     );
-    if (!context.mounted) return;
+    if (!context.mounted || triggerShare == null) return;
     context.read<ShoppingListBloc>().add(
-      ArchiveMyCompletedShoppingItemsEvent(triggerShareSpend: triggerShare == true),
+      ArchiveMyCompletedShoppingItemsEvent(triggerShareSpend: triggerShare),
     );
   }
 }

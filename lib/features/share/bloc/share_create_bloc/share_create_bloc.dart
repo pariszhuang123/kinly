@@ -96,6 +96,15 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
             ),
           )
           .toList(growable: false);
+      var currentUserId = state.currentUserId;
+      if (currentUserId == null) {
+        try {
+          currentUserId =
+              (await _homeRepository.getCurrentMembership())?.userId;
+        } catch (_) {
+          // Membership lookup is best-effort for local validation only.
+        }
+      }
 
       final availableIds = participants.map((p) => p.userId).toList();
       Set<String> nextSelection =
@@ -120,6 +129,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
         state.copyWith(
           isLoading: false,
           participants: participants,
+          currentUserId: currentUserId,
           form: state.form.copyWith(
             selectedParticipantIds: nextSelection,
             customAmountInputs: filteredAmounts,
@@ -588,7 +598,12 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
 
     if (ctx.splitMode == ShareSplitMode.equal) {
       final selection = currentState.equalSelectionIds;
-      if (selection.length < 2) return null;
+      if (selection.isEmpty) return null;
+      if (currentState.currentUserId != null &&
+          selection.length == 1 &&
+          selection.contains(currentState.currentUserId)) {
+        return null;
+      }
       return _SplitDecision(
         splitType: ExpenseSplitType.equal,
         memberIds: selection.toList(growable: false),

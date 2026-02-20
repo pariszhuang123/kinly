@@ -4,6 +4,7 @@ class ShareCreateState extends Equatable {
   ShareCreateState({
     required this.form,
     required List<ShareParticipant> participants,
+    required this.currentUserId,
     required this.isLoading,
     required this.isSubmitting,
     required this.isTerminatingPlan,
@@ -51,6 +52,7 @@ class ShareCreateState extends Equatable {
     return ShareCreateState(
       form: form ?? ShareCreateForm.initial(),
       participants: const [],
+      currentUserId: null,
       isLoading: true,
       isSubmitting: false,
       isTerminatingPlan: false,
@@ -86,6 +88,7 @@ class ShareCreateState extends Equatable {
 
   final ShareCreateForm form;
   final List<ShareParticipant> participants;
+  final String? currentUserId;
   final bool isLoading;
   final bool isSubmitting;
   final bool isTerminatingPlan;
@@ -123,6 +126,7 @@ class ShareCreateState extends Equatable {
   ShareCreateState copyWith({
     ShareCreateForm? form,
     List<ShareParticipant>? participants,
+    String? currentUserId,
     bool? isLoading,
     bool? isSubmitting,
     bool? isTerminatingPlan,
@@ -162,6 +166,7 @@ class ShareCreateState extends Equatable {
     return ShareCreateState(
       form: form ?? this.form,
       participants: participants ?? this.participants,
+      currentUserId: currentUserId ?? this.currentUserId,
       isLoading: isLoading ?? this.isLoading,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isTerminatingPlan: isTerminatingPlan ?? this.isTerminatingPlan,
@@ -219,7 +224,12 @@ class ShareCreateState extends Equatable {
     return form.selectedParticipantIds;
   }
 
-  bool get hasEqualSelection => equalSelectionIds.length >= 2;
+  bool get hasEqualSelection => equalSelectionIds.isNotEmpty;
+
+  bool get hasEqualSinglePayer =>
+      currentUserId != null &&
+      equalSelectionIds.length == 1 &&
+      equalSelectionIds.first == currentUserId;
 
   /// Builds a summary of the custom split state for validation + RPC input.
   ShareCustomSplitSummary evaluateCustomSplit() {
@@ -238,16 +248,16 @@ class ShareCreateState extends Equatable {
       entries.add(ShareCustomSplitEntry(userId: userId, amountCents: cents));
     }
 
-    final hasInsufficientParticipants = entries.length < 2;
+    final hasInsufficientParticipants = entries.isEmpty;
     final int sum = entries.fold<int>(
       0,
       (sum, entry) => sum + entry.amountCents,
     );
     final bool sumMatchesTotal = total != null && sum == total;
     final bool hasSinglePayer =
-        total != null &&
+        currentUserId != null &&
         entries.length == 1 &&
-        entries.first.amountCents == total;
+        entries.first.userId == currentUserId;
 
     return ShareCustomSplitSummary(
       entries: entries,
@@ -263,6 +273,7 @@ class ShareCreateState extends Equatable {
   List<Object?> get props => [
     form,
     participants,
+    currentUserId,
     isLoading,
     isSubmitting,
     isTerminatingPlan,

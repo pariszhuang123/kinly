@@ -2371,20 +2371,20 @@ class S {
     );
   }
 
-  /// `Select at least two people to split the amount.`
+  /// `Select at least one person to split the amount.`
   String get shareCreateValidationEqualParticipants {
     return Intl.message(
-      'Select at least two people to split the amount.',
+      'Select at least one person to split the amount.',
       name: 'shareCreateValidationEqualParticipants',
       desc: '',
       args: [],
     );
   }
 
-  /// `Custom split needs at least two people.`
+  /// `Select at least one person for this bill.`
   String get shareCreateValidationCustomParticipants {
     return Intl.message(
-      'Custom split needs at least two people.',
+      'Select at least one person for this bill.',
       name: 'shareCreateValidationCustomParticipants',
       desc: '',
       args: [],
@@ -2411,10 +2411,24 @@ class S {
     );
   }
 
-  /// `Share the amount between at least two people when using a custom split.`
+  /// `Custom split does not match. Total: {total}. Included: {included}. Difference: {difference}.`
+  String shareCreateValidationCustomSumBreakdown(
+    String total,
+    String included,
+    String difference,
+  ) {
+    return Intl.message(
+      'Custom split does not match. Total: $total. Included: $included. Difference: $difference.',
+      name: 'shareCreateValidationCustomSumBreakdown',
+      desc: '',
+      args: [total, included, difference],
+    );
+  }
+
+  /// `You cannot include only yourself in this bill. Add at least one other person.`
   String get shareCreateValidationCustomSinglePayer {
     return Intl.message(
-      'Share the amount between at least two people when using a custom split.',
+      'You cannot include only yourself in this bill. Add at least one other person.',
       name: 'shareCreateValidationCustomSinglePayer',
       desc: '',
       args: [],

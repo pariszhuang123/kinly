@@ -416,11 +416,28 @@
   "shareCreateSubmit": "Create",
   "shareCreateValidationDescription": "Enter a description.",
   "shareCreateValidationAmount": "Enter a valid amount greater than zero.",
-  "shareCreateValidationEqualParticipants": "Select at least two people to split the amount.",
-  "shareCreateValidationCustomParticipants": "Custom split needs at least two people.",
+  "shareCreateValidationEqualParticipants": "Select at least one person to split the amount.",
+  "shareCreateValidationCustomParticipants": "Select at least one person for this bill.",
   "shareCreateValidationCustomAmounts": "Enter a valid amount for each selected person.",
   "shareCreateValidationCustomSum": "Make sure the custom split adds up to the amount above.",
-  "shareCreateValidationCustomSinglePayer": "Share the amount between at least two people when using a custom split.",
+  "shareCreateValidationCustomSumBreakdown": "Custom split does not match. Total: {total}. Included: {included}. Difference: {difference}.",
+  "@shareCreateValidationCustomSumBreakdown": {
+    "placeholders": {
+      "total": {
+        "type": "String",
+        "example": "$120.00"
+      },
+      "included": {
+        "type": "String",
+        "example": "$100.00"
+      },
+      "difference": {
+        "type": "String",
+        "example": "+$20.00"
+      }
+    }
+  },
+  "shareCreateValidationCustomSinglePayer": "You're the only person selected for this bill. Add at least one other person.",
   "shareCreateValidationRecurrence": "Choose how often this repeats.",
   "shareCreateValidationRecurrenceSplit": "Pick how to split before setting a repeat.",
   "shareCreateValidationStartDate": "Choose a start date.",

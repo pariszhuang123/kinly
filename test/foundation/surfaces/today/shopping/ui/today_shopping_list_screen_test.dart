@@ -50,11 +50,12 @@ void main() {
   Widget buildRouterApp(
     ShoppingListState state, {
     TodayShoppingListMode mode = TodayShoppingListMode.purchase,
+    List<ShoppingListState>? emittedStates,
   }) {
     when(() => bloc.state).thenReturn(state);
     whenListen(
       bloc,
-      Stream<ShoppingListState>.fromIterable([state]),
+      Stream<ShoppingListState>.fromIterable(emittedStates ?? [state]),
       initialState: state,
     );
 
@@ -68,6 +69,11 @@ void main() {
                 value: bloc,
                 child: TodayShoppingListScreen(homeId: 'home-1', mode: mode),
               ),
+        ),
+        GoRoute(
+          path: '/today',
+          name: AppRouteNames.today,
+          builder: (_, __) => const Scaffold(body: Text('today-screen')),
         ),
         GoRoute(
           path: '/shopping/:itemId/edit',
@@ -195,6 +201,25 @@ void main() {
     expect(find.text('create'), findsOneWidget);
   });
 
+  testWidgets('shows add fab in purchase mode when no items are completed', (
+    tester,
+  ) async {
+    final state = ShoppingListState.loaded(
+      pendingItems: [item(id: 'milk', name: 'Milk', isCompleted: false)],
+      completedItems: const [],
+      photoUrlsByItemId: const {},
+      myCompletedCount: 0,
+    );
+
+    await tester.pumpWidget(buildRouterApp(state));
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.add), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+    expect(find.text('create'), findsOneWidget);
+  });
+
   testWidgets('hides tabs when only completed items exist', (tester) async {
     final state = ShoppingListState.loaded(
       pendingItems: const [],
@@ -209,6 +234,7 @@ void main() {
     final s = strings(tester);
     expect(find.text('${s.shoppingTabPending} (0)'), findsNothing);
     expect(find.text('${s.shoppingArchiveCta} (1)'), findsNothing);
+    expect(find.byIcon(Icons.add), findsNothing);
   });
 
   testWidgets(
@@ -227,6 +253,68 @@ void main() {
       final s = strings(tester);
       expect(find.text('${s.shoppingTabPending} (1)'), findsOneWidget);
       expect(find.text('${s.shoppingArchiveCta} (1)'), findsOneWidget);
+      expect(find.byIcon(Icons.add), findsNothing);
     },
   );
+
+  testWidgets(
+    'dismissing archive confirm dialog does not dispatch archive event',
+    (tester) async {
+      final state = ShoppingListState.loaded(
+        pendingItems: const [],
+        completedItems: [item(id: 'milk', name: 'Milk', isCompleted: true)],
+        photoUrlsByItemId: const {},
+        myCompletedCount: 1,
+      );
+
+      await tester.pumpWidget(buildRouterApp(state));
+      await tester.pumpAndSettle();
+
+      final s = strings(tester);
+      await tester.tap(find.text(s.shoppingArchiveCta));
+      await tester.pumpAndSettle();
+      expect(find.text(s.shoppingArchiveSharePromptTitle), findsOneWidget);
+
+      await tester.tapAt(const Offset(8, 8));
+      await tester.pumpAndSettle();
+      expect(find.text(s.shoppingArchiveSharePromptTitle), findsNothing);
+
+      verifyNever(
+        () => bloc.add(
+          const ArchiveMyCompletedShoppingItemsEvent(triggerShareSpend: true),
+        ),
+      );
+      verifyNever(
+        () => bloc.add(
+          const ArchiveMyCompletedShoppingItemsEvent(triggerShareSpend: false),
+        ),
+      );
+    },
+  );
+
+  testWidgets('navigates to today when share draft is linked', (tester) async {
+    final initial = ShoppingListState.loaded(
+      pendingItems: const [],
+      completedItems: [item(id: 'milk', name: 'Milk', isCompleted: true)],
+      photoUrlsByItemId: const {},
+      myCompletedCount: 1,
+      linkedExpenseId: null,
+      linkedExpenseTick: 0,
+    );
+    final linked = ShoppingListState.loaded(
+      pendingItems: const [],
+      completedItems: [item(id: 'milk', name: 'Milk', isCompleted: true)],
+      photoUrlsByItemId: const {},
+      myCompletedCount: 1,
+      linkedExpenseId: 'expense-1',
+      linkedExpenseTick: 1,
+    );
+
+    await tester.pumpWidget(
+      buildRouterApp(initial, emittedStates: [linked]),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('today-screen'), findsOneWidget);
+  });
 }

@@ -416,11 +416,28 @@
   "shareCreateSubmit": "إنشاء",
   "shareCreateValidationDescription": "أدخل وصفًا.",
   "shareCreateValidationAmount": "أدخل مبلغًا صالحًا أكبر من صفر.",
-  "shareCreateValidationEqualParticipants": "اختر شخصين على الأقل لتقسيم المبلغ.",
-  "shareCreateValidationCustomParticipants": "يحتاج التقسيم المخصص إلى شخصين على الأقل.",
+  "shareCreateValidationEqualParticipants": "اختر شخصًا واحدًا على الأقل لتقسيم المبلغ.",
+  "shareCreateValidationCustomParticipants": "اختر شخصًا واحدًا على الأقل لهذه الفاتورة.",
   "shareCreateValidationCustomAmounts": "أدخل مبلغًا صالحًا لكل شخص محدد.",
   "shareCreateValidationCustomSum": "تأكد أن التقسيم المخصص يساوي المبلغ أعلاه.",
-  "shareCreateValidationCustomSinglePayer": "قسّم المبلغ بين شخصين على الأقل عند استخدام التقسيم المخصص.",
+  "shareCreateValidationCustomSumBreakdown": "التقسيم المخصص غير متطابق. الإجمالي: {total}. المُضمَّن: {included}. الفرق: {difference}.",
+  "@shareCreateValidationCustomSumBreakdown": {
+    "placeholders": {
+      "total": {
+        "type": "String",
+        "example": "$120.00"
+      },
+      "included": {
+        "type": "String",
+        "example": "$100.00"
+      },
+      "difference": {
+        "type": "String",
+        "example": "+$20.00"
+      }
+    }
+  },
+  "shareCreateValidationCustomSinglePayer": "لا يمكنك تضمين نفسك فقط في هذه الفاتورة. أضف شخصًا آخر على الأقل.",
   "shareCreateValidationRecurrence": "اختر وتيرة التكرار.",
   "shareCreateValidationRecurrenceSplit": "اختر طريقة التقسيم قبل تحديد التكرار.",
   "shareCreateValidationStartDate": "اختر تاريخ بدء.",

@@ -477,6 +477,125 @@ void main() {
   );
 
   late ShareCreateState customSeed;
+  late ShareCreateState equalSingleDebtorSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'allows submitting equal split with one non-creator debtor',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Utilities',
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_a'},
+      );
+      equalSingleDebtorSeed = seededState(form: form).copyWith(
+        currentUserId: 'member_self',
+      );
+      return equalSingleDebtorSeed;
+    },
+    setUp: () {
+      when(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      ).thenAnswer(
+        (_) async => Expense(
+          id: 'expense-1',
+          homeId: 'home-1',
+          createdByUserId: 'member_self',
+          status: ExpenseStatus.active,
+          splitType: ExpenseSplitType.equal,
+          amountCents: 1000,
+          description: 'Utilities',
+          notes: null,
+          createdAt: DateTime.now().toUtc(),
+          updatedAt: DateTime.now().toUtc(),
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: DateTime(2024, 1, 1),
+          planId: null,
+          fullyPaidAt: null,
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () {
+      final submitting = equalSingleDebtorSeed.copyWith(
+        isSubmitting: true,
+        showValidationErrors: true,
+        clearSubmissionError: true,
+        clearSuccess: true,
+      );
+      final success = submitting.copyWith(
+        isSubmitting: false,
+        showValidationErrors: false,
+        successExpenseId: 'expense-1',
+      );
+      return [submitting, success];
+    },
+    verify: (_) {
+      verify(
+        () => expensesRepository.create(
+          homeId: 'home-1',
+          amountCents: 1000,
+          description: 'Utilities',
+          notes: null,
+          splitType: ExpenseSplitType.equal,
+          memberIds: ['member_a'],
+          customSplits: null,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: any(named: 'startDate'),
+        ),
+      ).called(1);
+    },
+  );
+
+  late ShareCreateState equalCreatorOnlySeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'prevents submitting equal split when only creator is selected',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Utilities',
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_self'},
+      );
+      equalCreatorOnlySeed = seededState(form: form).copyWith(
+        currentUserId: 'member_self',
+      );
+      return equalCreatorOnlySeed;
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () => [equalCreatorOnlySeed.copyWith(showValidationErrors: true)],
+    verify: (_) {
+      verifyNever(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any<int?>(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      );
+    },
+  );
+
   blocTest<ShareCreateBloc, ShareCreateState>(
     'prevents submitting when custom split sum mismatches',
     build: () => buildBloc(),
@@ -493,6 +612,131 @@ void main() {
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
     expect: () => [customSeed.copyWith(showValidationErrors: true)],
+    verify: (_) {
+      verifyNever(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any<int?>(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      );
+    },
+  );
+
+  late ShareCreateState singleDebtorSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'allows submitting custom split with one non-creator debtor',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Utilities',
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.custom,
+        selectedParticipantIds: {'member_a'},
+        customAmountInputs: const {'member_a': '10.00'},
+      );
+      singleDebtorSeed = seededState(form: form).copyWith(
+        currentUserId: 'member_self',
+      );
+      return singleDebtorSeed;
+    },
+    setUp: () {
+      when(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      ).thenAnswer(
+        (_) async => Expense(
+          id: 'expense-1',
+          homeId: 'home-1',
+          createdByUserId: 'member_self',
+          status: ExpenseStatus.active,
+          splitType: ExpenseSplitType.custom,
+          amountCents: 1000,
+          description: 'Utilities',
+          notes: null,
+          createdAt: DateTime.now().toUtc(),
+          updatedAt: DateTime.now().toUtc(),
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: DateTime(2024, 1, 1),
+          planId: null,
+          fullyPaidAt: null,
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () {
+      final submitting = singleDebtorSeed.copyWith(
+        isSubmitting: true,
+        showValidationErrors: true,
+        clearSubmissionError: true,
+        clearSuccess: true,
+      );
+      final success = submitting.copyWith(
+        isSubmitting: false,
+        showValidationErrors: false,
+        successExpenseId: 'expense-1',
+      );
+      return [submitting, success];
+    },
+    verify: (_) {
+      final capture = verify(
+        () => expensesRepository.create(
+          homeId: 'home-1',
+          amountCents: 1000,
+          description: 'Utilities',
+          notes: null,
+          splitType: ExpenseSplitType.custom,
+          memberIds: null,
+          customSplits: captureAny(named: 'customSplits'),
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: any(named: 'startDate'),
+        ),
+      ).captured;
+      final splits = capture.single as List<ExpenseCustomSplitInput>;
+      expect(splits.length, 1);
+      expect(splits.first.userId, 'member_a');
+      expect(splits.first.amountCents, 1000);
+    },
+  );
+
+  late ShareCreateState creatorOnlySeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'prevents submitting custom split when only creator is selected',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Utilities',
+        amountInput: '10.00',
+        splitMode: ShareSplitMode.custom,
+        selectedParticipantIds: {'member_self'},
+        customAmountInputs: const {'member_self': '10.00'},
+      );
+      creatorOnlySeed = seededState(form: form).copyWith(
+        currentUserId: 'member_self',
+      );
+      return creatorOnlySeed;
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () => [creatorOnlySeed.copyWith(showValidationErrors: true)],
     verify: (_) {
       verifyNever(
         () => expensesRepository.create(

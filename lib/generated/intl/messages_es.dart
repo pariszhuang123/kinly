@@ -62,32 +62,35 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m16(period) => "Aplica a ${period}";
 
-  static String m17(paidAmount, totalAmount) =>
+  static String m17(total, included, difference) =>
+      "El reparto personalizado no coincide. Total: ${total}. Incluido: ${included}. Diferencia: ${difference}.";
+
+  static String m18(paidAmount, totalAmount) =>
       "${paidAmount} de ${totalAmount} recaudado";
 
-  static String m18(paid, total) => "${paid} de ${total} pagadas";
+  static String m19(paid, total) => "${paid} de ${total} pagadas";
 
-  static String m19(count) =>
+  static String m20(count) =>
       "${Intl.plural(count, one: '${count} artículo por marcar', other: '${count} artículos por marcar')}";
 
-  static String m20(name) => "Hola ${name}";
+  static String m21(name) => "Hola ${name}";
 
-  static String m21(count) =>
+  static String m22(count) =>
       "Ver todo ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m22(name) => "No pudimos completar la solicitud de ${name}.";
+  static String m23(name) => "No pudimos completar la solicitud de ${name}.";
 
-  static String m23(name) => "${name} se unió a tu hogar.";
+  static String m24(name) => "${name} se unió a tu hogar.";
 
-  static String m24(name) => "${name} se unió a otro hogar.";
+  static String m25(name) => "${name} se unió a otro hogar.";
 
-  static String m25(names) =>
+  static String m26(names) =>
       "${names} quiere unirse a tu hogar. Mejora el plan para admitir miembros ilimitados.";
 
-  static String m26(count) =>
+  static String m27(count) =>
       "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} por saldar')}";
 
-  static String m27(count) =>
+  static String m28(count) =>
       "${Intl.plural(count, one: '${count} nuevo pago para ti', other: '${count} nuevos pagos para ti')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1253,20 +1256,21 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateValidationCustomParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "El reparto personalizado necesita al menos dos personas.",
+          "Selecciona al menos una persona para esta factura.",
         ),
     "shareCreateValidationCustomSinglePayer": MessageLookupByLibrary.simpleMessage(
-      "Reparte el importe entre al menos dos personas cuando uses un reparto personalizado.",
+      "No puedes incluir solo a ti en esta factura. Añade al menos otra persona.",
     ),
     "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
       "Asegúrate de que el reparto personalizado sume el importe de arriba.",
     ),
+    "shareCreateValidationCustomSumBreakdown": m17,
     "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
       "Introduce una descripción.",
     ),
     "shareCreateValidationEqualParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "Selecciona al menos dos personas para repartir el importe.",
+          "Selecciona al menos una persona para repartir el importe.",
         ),
     "shareCreateValidationRecurrence": MessageLookupByLibrary.simpleMessage(
       "Elige con qué frecuencia se repite.",
@@ -1281,8 +1285,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
       "Elige una fecha dentro del rango permitido.",
     ),
-    "shareCreatedListActiveAmount": m17,
-    "shareCreatedListActiveSubtitle": m18,
+    "shareCreatedListActiveAmount": m18,
+    "shareCreatedListActiveSubtitle": m19,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "Sin asignar",
     ),
@@ -1401,7 +1405,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "¿Crear factura?",
     ),
     "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("Sí"),
-    "shoppingCardSubtitle": m19,
+    "shoppingCardSubtitle": m20,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage(
       "Lista de compras",
     ),
@@ -1462,7 +1466,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
       "¿Qué quieres hacer a continuación?",
     ),
-    "startReturningTitle": m20,
+    "startReturningTitle": m21,
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Añadir tarea"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage(
       "Añadir factura",
@@ -1490,7 +1494,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("nuevo hoy"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Tareas"),
-    "todayFlowSeeAll": m21,
+    "todayFlowSeeAll": m22,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "Esto es lo que necesita atención hoy.",
     ),
@@ -1521,30 +1525,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "Mejorar el hogar",
     ),
-    "todayMemberCapResolutionFailed": m22,
-    "todayMemberCapResolutionJoined": m23,
-    "todayMemberCapResolutionSuperseded": m24,
+    "todayMemberCapResolutionFailed": m23,
+    "todayMemberCapResolutionJoined": m24,
+    "todayMemberCapResolutionSuperseded": m25,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
       "Alguien",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage(
       "Ignorar",
     ),
-    "todayMemberCapSubtitle": m25,
+    "todayMemberCapSubtitle": m26,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
       "Tu hogar está creciendo. Mejora el plan para dar la bienvenida a más personas.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
       "Alguien quiere unirse a tu hogar",
     ),
-    "todayShareActiveSubtitle": m26,
+    "todayShareActiveSubtitle": m27,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "No pudimos actualizar Share en este momento.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "Importe saldado",
     ),
-    "todaySharePaidUnseen": m27,
+    "todaySharePaidUnseen": m28,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Factura"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("Por saldar"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Borradores"),

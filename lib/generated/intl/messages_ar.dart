@@ -60,32 +60,35 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m16(period) => "ينطبق على ${period}";
 
-  static String m17(paidAmount, totalAmount) =>
+  static String m17(total, included, difference) =>
+      "التقسيم المخصص غير متطابق. الإجمالي: ${total}. المُضمَّن: ${included}. الفرق: ${difference}.";
+
+  static String m18(paidAmount, totalAmount) =>
       "تم تحصيل ${paidAmount} من ${totalAmount}";
 
-  static String m18(paid, total) => "تم دفع ${paid} من ${total}";
+  static String m19(paid, total) => "تم دفع ${paid} من ${total}";
 
-  static String m19(count) =>
+  static String m20(count) =>
       "${Intl.plural(count, one: '${count} عنصر للتأشير', other: '${count} عناصر للتأشير')}";
 
-  static String m20(name) => "مرحبًا ${name}";
+  static String m21(name) => "مرحبًا ${name}";
 
-  static String m21(count) =>
+  static String m22(count) =>
       "عرض الكل ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m22(name) => "لم نتمكن من إكمال طلب ${name}.";
+  static String m23(name) => "لم نتمكن من إكمال طلب ${name}.";
 
-  static String m23(name) => "انضم ${name} إلى منزلك.";
+  static String m24(name) => "انضم ${name} إلى منزلك.";
 
-  static String m24(name) => "انضم ${name} إلى منزل آخر.";
+  static String m25(name) => "انضم ${name} إلى منزل آخر.";
 
-  static String m25(names) =>
+  static String m26(names) =>
       "${names} يريد الانضمام إلى منزلك. قم بالترقية لدعم عدد غير محدود من الأعضاء.";
 
-  static String m26(count) =>
+  static String m27(count) =>
       "${Intl.plural(count, one: '${count} دفعة معلّقة', other: '${count} للتسوية')}";
 
-  static String m27(count) =>
+  static String m28(count) =>
       "${Intl.plural(count, one: '${count} دفعة جديدة لك', other: '${count} دفعات جديدة لك')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1169,21 +1172,22 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateValidationCustomParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "يحتاج التقسيم المخصص إلى شخصين على الأقل.",
+          "اختر شخصًا واحدًا على الأقل لهذه الفاتورة.",
         ),
     "shareCreateValidationCustomSinglePayer":
         MessageLookupByLibrary.simpleMessage(
-          "قسّم المبلغ بين شخصين على الأقل عند استخدام التقسيم المخصص.",
+          "لا يمكنك تضمين نفسك فقط في هذه الفاتورة. أضف شخصًا آخر على الأقل.",
         ),
     "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
       "تأكد أن التقسيم المخصص يساوي المبلغ أعلاه.",
     ),
+    "shareCreateValidationCustomSumBreakdown": m17,
     "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
       "أدخل وصفًا.",
     ),
     "shareCreateValidationEqualParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "اختر شخصين على الأقل لتقسيم المبلغ.",
+          "اختر شخصًا واحدًا على الأقل لتقسيم المبلغ.",
         ),
     "shareCreateValidationRecurrence": MessageLookupByLibrary.simpleMessage(
       "اختر وتيرة التكرار.",
@@ -1198,8 +1202,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
       "اختر تاريخًا ضمن النطاق المسموح.",
     ),
-    "shareCreatedListActiveAmount": m17,
-    "shareCreatedListActiveSubtitle": m18,
+    "shareCreatedListActiveAmount": m18,
+    "shareCreatedListActiveSubtitle": m19,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "غير مُسندة",
     ),
@@ -1314,7 +1318,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "إنشاء فاتورة؟",
     ),
     "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("نعم"),
-    "shoppingCardSubtitle": m19,
+    "shoppingCardSubtitle": m20,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("قائمة التسوّق"),
     "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
       "أي شيء مفيد (العلامة، الحجم، إلخ)",
@@ -1363,7 +1367,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
       "ماذا تريد أن تفعل بعد ذلك؟",
     ),
-    "startReturningTitle": m20,
+    "startReturningTitle": m21,
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("إضافة مهمة"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("إضافة فاتورة"),
     "todayAddSheetShopping": MessageLookupByLibrary.simpleMessage(
@@ -1387,7 +1391,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("جديد اليوم"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("المهام"),
-    "todayFlowSeeAll": m21,
+    "todayFlowSeeAll": m22,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "إليك ما يحتاج إلى انتباه اليوم.",
     ),
@@ -1418,28 +1422,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "ترقية المنزل",
     ),
-    "todayMemberCapResolutionFailed": m22,
-    "todayMemberCapResolutionJoined": m23,
-    "todayMemberCapResolutionSuperseded": m24,
+    "todayMemberCapResolutionFailed": m23,
+    "todayMemberCapResolutionJoined": m24,
+    "todayMemberCapResolutionSuperseded": m25,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
       "شخص ما",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage("تجاهل"),
-    "todayMemberCapSubtitle": m25,
+    "todayMemberCapSubtitle": m26,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
       "منزلك يكبر. قم بالترقية للترحيب بالمزيد من الأشخاص.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
       "يريد شخص ما الانضمام إلى منزلك",
     ),
-    "todayShareActiveSubtitle": m26,
+    "todayShareActiveSubtitle": m27,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحديث قسم الفواتير الآن.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "المبلغ المُسَوّى",
     ),
-    "todaySharePaidUnseen": m27,
+    "todaySharePaidUnseen": m28,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("فاتورة"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("للتسوية"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("مسودات"),
