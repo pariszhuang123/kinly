@@ -30,6 +30,7 @@ class Expense {
     required this.startDate,
     this.planId,
     this.fullyPaidAt,
+    this.evidencePhotoPath,
   });
 
   final String id;
@@ -47,6 +48,7 @@ class Expense {
   final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
   final DateTime? fullyPaidAt;
+  final String? evidencePhotoPath;
 
   factory Expense.fromJson(Map<String, dynamic> json) {
     final id = json['id'] ?? json['expenseId'];
@@ -62,6 +64,8 @@ class Expense {
     final startDateRaw = json['startDate'] ?? json['start_date'];
     final planId = json['planId'] ?? json['plan_id'];
     final fullyPaidRaw = json['fullyPaidAt'] ?? json['fully_paid_at'];
+    final evidencePhotoPath =
+        json['evidencePhotoPath'] ?? json['evidence_photo_path'];
 
     return Expense(
       id: id as String,
@@ -82,6 +86,7 @@ class Expense {
           parseTimestampToLocal(startDateRaw) ??
           parseTimestampToLocal(json['created_at'])!,
       fullyPaidAt: parseTimestampToLocal(fullyPaidRaw),
+      evidencePhotoPath: evidencePhotoPath as String?,
     );
   }
 }
@@ -169,6 +174,7 @@ class ExpenseOwedItem {
     required this.recurrenceUnit,
     required this.startDate,
     this.notes,
+    this.evidencePhotoPath,
   });
 
   final String expenseId;
@@ -178,10 +184,13 @@ class ExpenseOwedItem {
   final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
   final String? notes;
+  final String? evidencePhotoPath;
 
   factory ExpenseOwedItem.fromJson(Map<String, dynamic> json) {
     final recurrence = _parseRecurrence(json);
     final startDateRaw = json['startDate'] ?? json['start_date'];
+    final evidencePhotoPath =
+        json['evidencePhotoPath'] ?? json['evidence_photo_path'];
 
     return ExpenseOwedItem(
       expenseId: json['expenseId'] as String,
@@ -194,6 +203,7 @@ class ExpenseOwedItem {
           parseTimestampToLocal(startDateRaw) ??
           DateTime.now(),
       notes: json['notes'] as String?,
+      evidencePhotoPath: evidencePhotoPath as String?,
     );
   }
 }
@@ -255,6 +265,7 @@ class ExpenseCreatedSummary {
     this.planId,
     this.splitType,
     this.fullyPaidAt,
+    this.evidencePhotoPath,
   });
 
   final String expenseId;
@@ -274,11 +285,14 @@ class ExpenseCreatedSummary {
   final int? recurrenceEvery;
   final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
+  final String? evidencePhotoPath;
 
   factory ExpenseCreatedSummary.fromJson(Map<String, dynamic> json) {
     final recurrence = _parseRecurrence(json);
     final startDateRaw = json['startDate'] ?? json['start_date'];
     final planId = json['planId'] ?? json['plan_id'];
+    final evidencePhotoPath =
+        json['evidencePhotoPath'] ?? json['evidence_photo_path'];
 
     return ExpenseCreatedSummary(
       expenseId: json['expenseId'] as String,
@@ -301,6 +315,7 @@ class ExpenseCreatedSummary {
           parseDateToLocal(startDateRaw) ??
           parseTimestampToLocal(startDateRaw) ??
           parseTimestampToLocal(json['createdAt'])!,
+      evidencePhotoPath: evidencePhotoPath as String?,
     );
   }
 }
@@ -391,6 +406,7 @@ class ExpensePaidToMeItem {
     this.debtorAvatarUrl,
     this.isOwner = false,
     this.notes,
+    this.evidencePhotoPath,
   });
 
   final String expenseId;
@@ -404,10 +420,13 @@ class ExpensePaidToMeItem {
   final String? debtorAvatarUrl;
   final bool isOwner;
   final String? notes;
+  final String? evidencePhotoPath;
 
   factory ExpensePaidToMeItem.fromJson(Map<String, dynamic> json) {
     final recurrence = _parseRecurrence(json);
     final startDateRaw = json['startDate'] ?? json['start_date'];
+    final evidencePhotoPath =
+        json['evidencePhotoPath'] ?? json['evidence_photo_path'];
 
     return ExpensePaidToMeItem(
       expenseId: json['expenseId'] as String,
@@ -424,6 +443,7 @@ class ExpensePaidToMeItem {
       debtorAvatarUrl: json['debtorAvatarUrl'] as String?,
       isOwner: json['isOwner'] as bool? ?? false,
       notes: json['notes'] as String?,
+      evidencePhotoPath: evidencePhotoPath as String?,
     );
   }
 }
@@ -442,6 +462,7 @@ class ExpensePlan {
     required this.startDate,
     required this.status,
     this.terminatedAt,
+    this.evidencePhotoPath,
   });
 
   final String id;
@@ -456,11 +477,14 @@ class ExpensePlan {
   final DateTime startDate;
   final String status;
   final DateTime? terminatedAt;
+  final String? evidencePhotoPath;
 
   factory ExpensePlan.fromJson(Map<String, dynamic> json) {
     final recurrence = _parseRecurrence(json);
     final startDateRaw = json['startDate'] ?? json['start_date'];
     final terminatedRaw = json['terminatedAt'] ?? json['terminated_at'];
+    final evidencePhotoPath =
+        json['evidencePhotoPath'] ?? json['evidence_photo_path'];
 
     return ExpensePlan(
       id: json['id'] as String,
@@ -480,6 +504,7 @@ class ExpensePlan {
           DateTime.now(),
       status: json['status'] as String? ?? '',
       terminatedAt: parseTimestampToLocal(terminatedRaw),
+      evidencePhotoPath: evidencePhotoPath as String?,
     );
   }
 }

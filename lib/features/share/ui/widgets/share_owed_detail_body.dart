@@ -1,17 +1,18 @@
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/theme/kinly_sections.dart';
+import '../../../../app/router/app_route_names.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../core/ui/kinly_icons.dart';
+import '../../../../core/ui/kinly_list_tile.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
-import '../../../../core/ui/selector/kinly_expand_badge.dart';
-import '../../../../core/ui/kinly_tap_target.dart';
-import '../../../../core/ui/kinly_material.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../contracts/share/models.dart';
+import '../share_detail_route_args.dart';
 import '../share_period_label.dart';
 import '../../../../core/ui/kinly_theme_access.dart';
 
@@ -129,46 +130,26 @@ class _ShareOwedEmptyState extends StatelessWidget {
   }
 }
 
-class _ShareOwedItemsList extends StatefulWidget {
+class _ShareOwedItemsList extends StatelessWidget {
   const _ShareOwedItemsList({required this.items});
 
   final List<TodayShareOwedItem> items;
-
-  @override
-  State<_ShareOwedItemsList> createState() => _ShareOwedItemsListState();
-}
-
-class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
-  final Set<String> _expanded = <String>{};
-
-  bool _hasNotes(TodayShareOwedItem item) =>
-      (item.notes?.trim().isNotEmpty ?? false);
-
-  void _toggle(String expenseId) {
-    setState(() {
-      if (_expanded.contains(expenseId)) {
-        _expanded.remove(expenseId);
-      } else {
-        _expanded.add(expenseId);
-      }
-    });
-  }
+  bool _hasText(String? value) => (value ?? '').trim().isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
     final strings = S.of(context);
     final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
-    final sectionColors =
-        KinlyThemeAccess.of(context).extension<KinlySections>()!.share;
 
     return ListView.separated(
       padding: EdgeInsetsDirectional.only(top: spacing.sm),
-      itemCount: widget.items.length,
+      itemCount: items.length,
       separatorBuilder: (_, __) => SizedBox(height: spacing.sm),
       itemBuilder: (context, index) {
-        final item = widget.items[index];
-        final hasNotes = _hasNotes(item);
-        final isExpanded = _expanded.contains(item.expenseId);
+        final item = items[index];
+        final hasNotes = _hasText(item.notes);
+        final hasPhoto = _hasText(item.evidencePhotoPath);
+        final canOpen = hasNotes || hasPhoto;
         final periodLabel = sharePeriodLabel(
           recurrenceEvery: item.recurrenceEvery,
           recurrenceUnit: item.recurrenceUnit,
@@ -179,11 +160,15 @@ class _ShareOwedItemsListState extends State<_ShareOwedItemsList> {
           description: item.description,
           periodLabel: periodLabel,
           amountLabel: _formatCurrency(item.amountCents),
-          notes: item.notes,
           hasNotes: hasNotes,
-          isExpanded: isExpanded,
-          onToggle: hasNotes ? () => _toggle(item.expenseId) : null,
-          colors: sectionColors,
+          hasPhoto: hasPhoto,
+          onTap:
+              canOpen
+                  ? () => context.pushNamed(
+                    AppRouteNames.shareOwedItemDetail,
+                    extra: ShareOwedItemDetailRouteArgs(item: item),
+                  )
+                  : null,
         );
       },
     );
@@ -228,94 +213,51 @@ class _DetailRow extends StatelessWidget {
     required this.description,
     required this.periodLabel,
     required this.amountLabel,
+    required this.hasPhoto,
     required this.hasNotes,
-    required this.isExpanded,
-    required this.colors,
-    this.notes,
-    this.onToggle,
+    required this.onTap,
   });
 
   final String description;
   final String periodLabel;
   final String amountLabel;
-  final String? notes;
+  final bool hasPhoto;
   final bool hasNotes;
-  final bool isExpanded;
-  final SectionColors colors;
-  final VoidCallback? onToggle;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final noteText = notes?.trim();
+    final canOpen = onTap != null;
 
-    final content = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (hasNotes)
-              KinlyExpandBadge(isExpanded: isExpanded, colors: colors)
-            else
-              const SizedBox(width: 32),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(description, style: theme.textTheme.bodyMedium),
+    return KinlyListTile(
+      title: description,
+      subtitle: periodLabel,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            amountLabel,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
             ),
-            const SizedBox(width: 12),
-            Text(
-              amountLabel,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+          ),
+          if (hasNotes) ...[
+            SizedBox(width: spacing.xs),
+            const Icon(KinlyIcons.notesOutlined, size: 18),
           ],
-        ),
-        SizedBox(height: spacing.xs),
-        Text(
-          periodLabel,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        if (hasNotes)
-          AnimatedSize(
-            duration: const Duration(milliseconds: 180),
-            curve: Curves.easeInOut,
-            child:
-                isExpanded
-                    ? Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        start: 32,
-                        top: 8,
-                        end: 12,
-                      ),
-                      child: Text(
-                        noteText ?? '',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    )
-                    : const SizedBox.shrink(),
-          ),
-      ],
-    );
-
-    return KinlyMaterial(
-      borderRadius: BorderRadius.circular(16),
-      color: theme.colorScheme.surfaceContainerHighest,
-      child: KinlyTapTarget(
-        onTap: onToggle,
-        borderRadius: BorderRadius.circular(16),
-        alignment: AlignmentDirectional.centerStart,
-        child: Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 14),
-          child: content,
-        ),
+          if (hasPhoto) ...[
+            SizedBox(width: spacing.xs),
+            const Icon(KinlyIcons.photoCameraOutlined, size: 18),
+          ],
+          if (canOpen) ...[
+            SizedBox(width: spacing.xs),
+            const Icon(KinlyIcons.chevronRight, size: 18),
+          ],
+        ],
       ),
+      onTap: onTap,
     );
   }
 }

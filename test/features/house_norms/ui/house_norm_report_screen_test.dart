@@ -65,9 +65,9 @@ void main() {
     );
   }
 
-  testWidgets('owner sees public url and republish controls when out_of_date', (
-    tester,
-  ) async {
+  testWidgets(
+    'owner sees public url and edit controls when out_of_date',
+    (tester) async {
     await tester.pumpWidget(
       buildApp(
         isOwner: true,
@@ -81,7 +81,7 @@ void main() {
     await tester.pumpAndSettle();
     final strings = S.of(tester.element(find.byType(HouseNormReportProvider)));
 
-    expect(find.text(strings.houseNormRepublishCta), findsOneWidget);
+    expect(find.text(strings.houseNormRepublishCta), findsNothing);
     expect(find.text(strings.houseNormCopyUrlCta), findsOneWidget);
     expect(find.text(strings.houseNormEditTitle), findsOneWidget);
   });

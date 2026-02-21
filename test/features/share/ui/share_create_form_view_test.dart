@@ -25,6 +25,7 @@ void main() {
     Widget buildFormView(
       ShareCreateState state, {
       Map<String, TextEditingController>? customControllers,
+      String? evidencePhotoUrl,
     }) {
       return MaterialApp(
         localizationsDelegates: const [S.delegate],
@@ -92,6 +93,9 @@ void main() {
             recurrenceEveryController: TextEditingController(),
             customControllers:
                 customControllers ?? <String, TextEditingController>{},
+            evidencePhotoUrl: evidencePhotoUrl,
+            isUploadingEvidencePhoto: false,
+            onEvidencePhotoCapture: () {},
             allowDelete: false,
             onDeleteRequested: null,
           ),
@@ -113,6 +117,14 @@ void main() {
       }
       expect(finder, findsOneWidget);
       return tester.widget<TextField>(finder);
+    }
+
+    Future<void> expandOptionalSection(WidgetTester tester) async {
+      final s = S.of(tester.element(find.byType(ShareCreateFormView)));
+      final titleFinder = find.text(s.flowChoreDetailMoreInfoTitle);
+      if (titleFinder.evaluate().isEmpty) return;
+      await tester.tap(titleFinder.first);
+      await tester.pumpAndSettle();
     }
 
     testWidgets('shows cycle period helper for recurring expenses', (
@@ -187,6 +199,7 @@ void main() {
           (await fieldByLabel(tester, s.shareCreateDescriptionLabel)).enabled,
           isFalse,
         );
+        await expandOptionalSection(tester);
         expect(
           (await fieldByLabel(tester, s.shareCreateNotesLabel)).enabled,
           isFalse,
@@ -219,6 +232,7 @@ void main() {
           (await fieldByLabel(tester, s.shareCreateDescriptionLabel)).enabled,
           isTrue,
         );
+        await expandOptionalSection(tester);
         expect(
           (await fieldByLabel(tester, s.shareCreateNotesLabel)).enabled,
           isTrue,
@@ -247,6 +261,7 @@ void main() {
         (await fieldByLabel(tester, s.shareCreateDescriptionLabel)).enabled,
         isTrue,
       );
+      await expandOptionalSection(tester);
       expect((await fieldByLabel(tester, s.shareCreateNotesLabel)).enabled, isTrue);
       expect((await fieldByLabel(tester, s.shareCreateAmountLabel)).enabled, isTrue);
     });
@@ -374,6 +389,32 @@ void main() {
 
       final s = S.of(tester.element(find.byType(ShareCreateFormView)));
       expect(find.text(s.shareCreateValidationCustomSinglePayer), findsOneWidget);
+    });
+
+    testWidgets('does not render a delete control for evidence photo', (
+      tester,
+    ) async {
+      final form = ShareCreateForm.initial().copyWith(
+        evidencePhotoPath: 'households/home-1/share/expenses/photo.jpg',
+      );
+      final state = ShareCreateState.initial(
+        isEditing: true,
+        editingExpenseId: 'expense-1',
+      ).copyWith(
+        isLoading: false,
+        participants: const [],
+        form: form,
+      );
+
+      await tester.pumpWidget(
+        buildFormView(
+          state,
+          evidencePhotoUrl: 'https://example.com/photo.jpg',
+        ),
+      );
+
+      final s = S.of(tester.element(find.byType(ShareCreateFormView)));
+      expect(find.text(s.shareEditDeleteButton), findsNothing);
     });
   });
 }

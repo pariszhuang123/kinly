@@ -12,6 +12,7 @@ void main() {
       recurrenceUnit: ExpenseRecurrenceUnit.month,
       startDate: DateTime.utc(2024, 6, 1),
       notes: 'Weekly shop',
+      evidencePhotoPath: 'households/home-1/share/expenses/exp-1.jpg',
     );
 
     test('fromModel maps all fields', () {
@@ -23,6 +24,10 @@ void main() {
       expect(result.recurrenceUnit, ExpenseRecurrenceUnit.month);
       expect(result.startDate, DateTime.utc(2024, 6, 1));
       expect(result.notes, 'Weekly shop');
+      expect(
+        result.evidencePhotoPath,
+        'households/home-1/share/expenses/exp-1.jpg',
+      );
     });
 
     test('fromModel handles null optional fields', () {
@@ -34,16 +39,18 @@ void main() {
         recurrenceUnit: null,
         startDate: DateTime.utc(2024, 6, 1),
         notes: null,
+        evidencePhotoPath: null,
       );
       final result = TodayShareOwedItem.fromModel(itemWithNulls);
       expect(result.recurrenceEvery, isNull);
       expect(result.recurrenceUnit, isNull);
       expect(result.notes, isNull);
+      expect(result.evidencePhotoPath, isNull);
     });
 
     test('props contains all fields', () {
       final item = TodayShareOwedItem.fromModel(expenseOwedItem);
-      expect(item.props, hasLength(7));
+      expect(item.props, hasLength(8));
       expect(item.props, contains('exp-1'));
       expect(item.props, contains('Groceries'));
       expect(item.props, contains(2500));
@@ -65,6 +72,7 @@ void main() {
       recurrenceUnit: null,
       startDate: DateTime.utc(2024, 6, 1),
       notes: null,
+      evidencePhotoPath: null,
     );
 
     final owedGroup = ExpenseOwedGroup(

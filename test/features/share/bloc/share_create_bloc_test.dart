@@ -904,6 +904,114 @@ void main() {
     },
   );
 
+  late ShareCreateState editEvidenceClearAttemptSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'does not send an empty evidence photo path when editing',
+    build:
+        () => buildBloc(
+          editingExpenseId: 'expense-with-photo',
+          initialForm: ShareCreateForm.initial().copyWith(
+            evidencePhotoPath: 'households/home-1/share/expenses/original.jpg',
+          ),
+        ),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Draft expense',
+        amountInput: '30.00',
+        splitMode: ShareSplitMode.equal,
+        selectedParticipantIds: {'member_a', 'member_b'},
+        evidencePhotoPath: '',
+      );
+      editEvidenceClearAttemptSeed = seededState(
+        form: form,
+        isEditing: true,
+        editingExpenseId: 'expense-with-photo',
+      );
+      return editEvidenceClearAttemptSeed;
+    },
+    setUp: () {
+      when(
+        () => expensesRepository.edit(
+          expenseId: any(named: 'expenseId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      ).thenAnswer(
+        (_) async => Expense(
+          id: 'expense-with-photo',
+          homeId: 'home-1',
+          createdByUserId: 'user-1',
+          status: ExpenseStatus.active,
+          splitType: ExpenseSplitType.equal,
+          amountCents: 3000,
+          description: 'Draft expense',
+          notes: null,
+          evidencePhotoPath: 'households/home-1/share/expenses/original.jpg',
+          createdAt: DateTime.now().toUtc(),
+          updatedAt: DateTime.now().toUtc(),
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: DateTime(2024, 1, 1),
+          planId: null,
+          fullyPaidAt: null,
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () {
+      final submitting = editEvidenceClearAttemptSeed.copyWith(
+        isSubmitting: true,
+        showValidationErrors: true,
+        clearSubmissionError: true,
+        clearSuccess: true,
+      );
+      final success = submitting.copyWith(
+        isSubmitting: false,
+        showValidationErrors: false,
+        successExpenseId: 'expense-with-photo',
+      );
+      return [submitting, success];
+    },
+    verify: (_) {
+      verify(
+        () => expensesRepository.edit(
+          expenseId: 'expense-with-photo',
+          amountCents: 3000,
+          description: 'Draft expense',
+          notes: null,
+          splitType: ExpenseSplitType.equal,
+          memberIds: ['member_a', 'member_b'],
+          customSplits: null,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: any(named: 'startDate'),
+        ),
+      ).called(1);
+      verifyNever(
+        () => expensesRepository.edit(
+          expenseId: 'expense-with-photo',
+          amountCents: 3000,
+          description: 'Draft expense',
+          notes: null,
+          evidencePhotoPath: any(named: 'evidencePhotoPath'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      );
+    },
+  );
+
   late ShareCreateState deleteSeed;
   blocTest<ShareCreateBloc, ShareCreateState>(
     'deletes draft via repository when requested',
@@ -1141,7 +1249,53 @@ void main() {
               .having(
                 (s) => s.paywallRequest?.triggers,
                 'triggers',
-                contains(PaywallTrigger.expenseActiveCap),
+                equals(const {PaywallTrigger.expenseActiveCap}),
+              ),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'emits paywall gate request on expense photo cap error',
+    build: () => buildBloc(),
+    seed: seededState,
+    setUp: () {
+      when(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      ).thenThrow(
+        ExpenseException(ExpenseErrorCode.paywallExpensePhotosCap, 'cap'),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect:
+        () => [
+          isA<ShareCreateState>().having(
+            (s) => s.isSubmitting,
+            'isSubmitting',
+            true,
+          ),
+          isA<ShareCreateState>()
+              .having((s) => s.paywallRequestTick, 'paywallRequestTick', 1)
+              .having(
+                (s) => s.paywallRequest?.action,
+                'action',
+                PaywallRetryAction.submit,
+              )
+              .having((s) => s.paywallRequest?.homeId, 'homeId', 'home-1')
+              .having(
+                (s) => s.paywallRequest?.triggers,
+                'triggers',
+                equals(const {PaywallTrigger.expensePhotosCap}),
               ),
         ],
   );

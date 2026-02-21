@@ -5,8 +5,12 @@ import 'package:intl/intl.dart';
 
 import '../../../../../core/theme/kinly_sections.dart';
 import '../../../../../core/theme/spacing.dart';
+import '../../../../../core/theme/opacity.dart';
 import '../../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../../core/ui/kinly_expansion_tile.dart';
+import '../../../../../core/ui/kinly_icons.dart';
 import '../../../../../core/ui/kinly_loader.dart';
+import '../../../../../core/ui/kinly_tap_target.dart';
 import '../../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../../core/ui/inputs/kinly_dropdown_field.dart';
@@ -18,6 +22,7 @@ import '../../../../../core/ui/members/kinly_selectable_member_avatar_row.dart';
 import '../../../../../core/ui/feedback/kinly_info_banner.dart';
 import '../../../../../core/ui/enums/kinly_banner_type.dart';
 import '../../../../../core/ui/toggles/kinly_checkbox.dart';
+import '../../../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/theme/color_tokens.dart';
 import '../../../../../contracts/homes/models.dart';
@@ -42,6 +47,9 @@ class ShareCreateFormView extends StatelessWidget {
     required this.notesController,
     required this.recurrenceEveryController,
     required this.customControllers,
+    required this.evidencePhotoUrl,
+    required this.isUploadingEvidencePhoto,
+    required this.onEvidencePhotoCapture,
     required this.allowDelete,
     required this.onDeleteRequested,
     this.showTerminatePlan = false,
@@ -57,6 +65,9 @@ class ShareCreateFormView extends StatelessWidget {
   final TextEditingController notesController;
   final TextEditingController recurrenceEveryController;
   final Map<String, TextEditingController> customControllers;
+  final String? evidencePhotoUrl;
+  final bool isUploadingEvidencePhoto;
+  final VoidCallback onEvidencePhotoCapture;
 
   /// Whether delete is allowed at all for this screen.
   final bool allowDelete;
@@ -92,6 +103,9 @@ class ShareCreateFormView extends StatelessWidget {
       allowDelete: allowDelete,
     );
     final periodLabel = _formattedPeriod();
+    final expandOptional =
+        state.form.notes.trim().isNotEmpty ||
+        state.form.evidencePhotoPath.trim().isNotEmpty;
 
     return ListView(
       padding: EdgeInsetsDirectional.only(bottom: spacing.lg),
@@ -156,9 +170,17 @@ class ShareCreateFormView extends StatelessWidget {
             customControllers: customControllers,
           ),
         SizedBox(height: spacing.lg),
-        _NotesField(
-          controller: notesController,
-          enabled: !viewState.editingDisabled,
+        _OptionalDetailsExpansion(
+          spacing: spacing,
+          title: s.flowChoreDetailMoreInfoTitle,
+          notesController: notesController,
+          notesEnabled: !viewState.editingDisabled,
+          isUploadingEvidencePhoto: isUploadingEvidencePhoto,
+          evidencePhotoUrl: evidencePhotoUrl,
+          evidencePhotoEnabled: !viewState.locked,
+          onEvidencePhotoCapture: onEvidencePhotoCapture,
+          shareColors: shareColors,
+          initiallyExpanded: expandOptional,
         ),
         SizedBox(height: spacing.xl),
         if (showPrimaryActions && !viewState.hidePrimary)

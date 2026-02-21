@@ -12,6 +12,7 @@ class ShoppingListState extends Equatable {
     this.messageTick = 0,
     this.linkedExpenseId,
     this.linkedExpenseTick = 0,
+    this.archivedTick = 0,
   });
 
   const ShoppingListState.loading()
@@ -32,6 +33,7 @@ class ShoppingListState extends Equatable {
     int messageTick = 0,
     String? linkedExpenseId,
     int linkedExpenseTick = 0,
+    int archivedTick = 0,
   }) : this._(
          isLoading: false,
          pendingItems: pendingItems,
@@ -42,7 +44,8 @@ class ShoppingListState extends Equatable {
          messageTick: messageTick,
          linkedExpenseId: linkedExpenseId,
          linkedExpenseTick: linkedExpenseTick,
-       );
+         archivedTick: archivedTick,
+         );
 
   const ShoppingListState.failure({required String errorMessage})
     : this._(
@@ -64,12 +67,14 @@ class ShoppingListState extends Equatable {
   final int messageTick;
   final String? linkedExpenseId;
   final int linkedExpenseTick;
+  final int archivedTick;
 
   ShoppingListState copyWith({
     String? message,
     int? messageTick,
     String? linkedExpenseId,
     int? linkedExpenseTick,
+    int? archivedTick,
   }) {
     return ShoppingListState._(
       isLoading: isLoading,
@@ -82,6 +87,7 @@ class ShoppingListState extends Equatable {
       messageTick: messageTick ?? this.messageTick,
       linkedExpenseId: linkedExpenseId ?? this.linkedExpenseId,
       linkedExpenseTick: linkedExpenseTick ?? this.linkedExpenseTick,
+      archivedTick: archivedTick ?? this.archivedTick,
     );
   }
 
@@ -97,5 +103,6 @@ class ShoppingListState extends Equatable {
     messageTick,
     linkedExpenseId,
     linkedExpenseTick,
+    archivedTick,
   ];
 }

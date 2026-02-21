@@ -28,6 +28,7 @@ class ShareCreateSurfaceActions {
     required this.onDeleteRequested,
     required this.onTerminatePlan,
     required this.onPaywallOpened,
+    required this.onEvidencePhotoCapture,
   });
 
   final VoidCallback onRetry;
@@ -35,6 +36,7 @@ class ShareCreateSurfaceActions {
   final VoidCallback? onDeleteRequested;
   final VoidCallback onTerminatePlan;
   final VoidCallback? onPaywallOpened;
+  final VoidCallback onEvidencePhotoCapture;
 }
 
 class ShareCreateSurfaceScope {
@@ -52,6 +54,8 @@ class ShareCreateSurfaceScope {
     required this.notesController,
     required this.recurrenceEveryController,
     required this.customControllers,
+    required this.evidencePhotoUrl,
+    required this.isUploadingEvidencePhoto,
   });
 
   final BuildContext context;
@@ -67,4 +71,6 @@ class ShareCreateSurfaceScope {
   final TextEditingController notesController;
   final TextEditingController recurrenceEveryController;
   final Map<String, TextEditingController> customControllers;
+  final String? evidencePhotoUrl;
+  final bool isUploadingEvidencePhoto;
 }

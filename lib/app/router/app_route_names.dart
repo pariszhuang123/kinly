@@ -28,7 +28,10 @@ class AppRouteNames {
   static const shareDraftEdit = 'shareDraftEdit';
   static const shareCreatedList = 'shareCreatedList';
   static const shareOwedDetail = 'shareOwedDetail';
+  static const shareOwedItemDetail = 'shareOwedItemDetail';
   static const sharePaidToMeDetail = 'sharePaidToMeDetail';
+  static const sharePaidItemDetail = 'sharePaidItemDetail';
+  static const sharePhoto = 'sharePhoto';
   static const profileSettings = 'profileSettings';
   static const profileIdentity = 'profileIdentity';
   static const connectionSettings = 'connectionSettings';

@@ -11,6 +11,7 @@ class TodayShareOwedItem extends Equatable {
     required this.recurrenceUnit,
     required this.startDate,
     this.notes,
+    this.evidencePhotoPath,
   });
 
   final String expenseId;
@@ -20,6 +21,7 @@ class TodayShareOwedItem extends Equatable {
   final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
   final String? notes;
+  final String? evidencePhotoPath;
 
   factory TodayShareOwedItem.fromModel(ExpenseOwedItem model) {
     return TodayShareOwedItem(
@@ -30,6 +32,7 @@ class TodayShareOwedItem extends Equatable {
       recurrenceUnit: model.recurrenceUnit,
       startDate: model.startDate,
       notes: model.notes,
+      evidencePhotoPath: model.evidencePhotoPath,
     );
   }
 
@@ -42,6 +45,7 @@ class TodayShareOwedItem extends Equatable {
     recurrenceUnit,
     startDate,
     notes,
+    evidencePhotoPath,
   ];
 }
 

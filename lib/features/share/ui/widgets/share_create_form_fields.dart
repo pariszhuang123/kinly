@@ -340,6 +340,213 @@ class _NotesField extends StatelessWidget {
   }
 }
 
+class _OptionalDetailsExpansion extends StatefulWidget {
+  const _OptionalDetailsExpansion({
+    required this.spacing,
+    required this.title,
+    required this.notesController,
+    required this.notesEnabled,
+    required this.isUploadingEvidencePhoto,
+    required this.evidencePhotoUrl,
+    required this.evidencePhotoEnabled,
+    required this.onEvidencePhotoCapture,
+    required this.shareColors,
+    this.initiallyExpanded = false,
+  });
+
+  final Spacing spacing;
+  final String title;
+  final TextEditingController notesController;
+  final bool notesEnabled;
+  final bool isUploadingEvidencePhoto;
+  final String? evidencePhotoUrl;
+  final bool evidencePhotoEnabled;
+  final VoidCallback onEvidencePhotoCapture;
+  final SectionColors? shareColors;
+  final bool initiallyExpanded;
+
+  @override
+  State<_OptionalDetailsExpansion> createState() =>
+      _OptionalDetailsExpansionState();
+}
+
+class _OptionalDetailsExpansionState extends State<_OptionalDetailsExpansion> {
+  late bool _isExpanded;
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded = widget.initiallyExpanded;
+  }
+
+  @override
+  void didUpdateWidget(covariant _OptionalDetailsExpansion oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initiallyExpanded && !_isExpanded) {
+      _isExpanded = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    final colorScheme = theme.colorScheme;
+    final colors =
+        widget.shareColors ??
+        SectionColors(
+          background: colorScheme.surfaceContainerHigh,
+          card: colorScheme.surfaceContainerHigh,
+          icon: colorScheme.onSurfaceVariant,
+          accent: colorScheme.primary,
+        );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.card,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: KinlyExpansionTile(
+        initiallyExpanded: _isExpanded,
+        onExpansionChanged:
+            (expanded) => setState(() {
+              _isExpanded = expanded;
+            }),
+        trailing: KinlyExpandBadge(isExpanded: _isExpanded, colors: colors),
+        title: Text(widget.title, style: theme.textTheme.titleMedium),
+        childrenPadding: EdgeInsetsDirectional.fromSTEB(
+          16,
+          0,
+          16,
+          widget.spacing.md,
+        ),
+        children: [
+          SizedBox(height: widget.spacing.md),
+          _NotesField(
+            controller: widget.notesController,
+            enabled: widget.notesEnabled,
+          ),
+          SizedBox(height: widget.spacing.lg),
+          _EvidencePhotoPicker(
+            spacing: widget.spacing,
+            isUploading: widget.isUploadingEvidencePhoto,
+            photoUrl: widget.evidencePhotoUrl,
+            enabled: widget.evidencePhotoEnabled,
+            onCapture: widget.onEvidencePhotoCapture,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EvidencePhotoPicker extends StatelessWidget {
+  const _EvidencePhotoPicker({
+    required this.spacing,
+    required this.isUploading,
+    required this.photoUrl,
+    required this.enabled,
+    required this.onCapture,
+  });
+
+  final Spacing spacing;
+  final bool isUploading;
+  final String? photoUrl;
+  final bool enabled;
+  final VoidCallback onCapture;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = KinlyThemeAccess.of(context);
+    final colorScheme = theme.colorScheme;
+    final hasPhoto = photoUrl?.trim().isNotEmpty == true;
+
+    final preview = Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child:
+                hasPhoto && photoUrl != null
+                    ? ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        photoUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder:
+                            (_, __, ___) => Center(
+                              child: Text(
+                                s.flowChorePhotoLoadError,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.error,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                      ),
+                    )
+                    : Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            KinlyIcons.photoCameraOutlined,
+                            size: 32,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                          SizedBox(height: spacing.xs),
+                          Text(
+                            s.flowChorePhotoPlaceholder,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+          ),
+          if (isUploading)
+            Container(
+              decoration: BoxDecoration(
+                color: colorScheme.onSurface.withValues(
+                  alpha:
+                      KinlyThemeAccess.of(
+                        context,
+                      ).extension<KinlyOpacity>()!.alphaHalo,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Center(child: KinlyLoader(size: 32)),
+            ),
+        ],
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(s.shoppingPhotoLabel, style: theme.textTheme.titleMedium),
+        SizedBox(height: spacing.xs),
+        Opacity(
+          opacity: enabled ? 1 : 0.6,
+          child: IgnorePointer(
+            ignoring: !enabled || isUploading,
+            child: KinlyTapTarget(
+              onTap: onCapture,
+              borderRadius: BorderRadius.circular(12),
+              child: AspectRatio(aspectRatio: 4 / 3, child: preview),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _PrimaryActionButton extends StatelessWidget {
   const _PrimaryActionButton({
     required this.label,

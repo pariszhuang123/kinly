@@ -60,10 +60,13 @@ class ShareCreateRegistry {
             notesController: scope.notesController,
             recurrenceEveryController: scope.recurrenceEveryController,
             customControllers: scope.customControllers,
+            evidencePhotoUrl: scope.evidencePhotoUrl,
+            isUploadingEvidencePhoto: scope.isUploadingEvidencePhoto,
             onSubmit: scope.actions.onSubmit,
             onDeleteRequested: scope.actions.onDeleteRequested,
             onTerminatePlan: scope.actions.onTerminatePlan,
             onPaywallOpened: scope.actions.onPaywallOpened,
+            onEvidencePhotoCapture: scope.actions.onEvidencePhotoCapture,
           );
         },
       ),

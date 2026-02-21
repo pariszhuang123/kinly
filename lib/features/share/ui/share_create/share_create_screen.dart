@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../core/di/locator.dart';
+import '../../../../core/supabase/storage_path_resolver.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
@@ -144,8 +147,14 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
                 previous.planTerminationErrorTick !=
                     current.planTerminationErrorTick ||
                 previous.planTerminationSuccessTick !=
-                    current.planTerminationSuccessTick,
+                    current.planTerminationSuccessTick ||
+                previous.evidencePhotoErrorTick != current.evidencePhotoErrorTick,
         listener: (context, state) {
+          if (state.evidencePhotoErrorTick > 0) {
+            _showEvidencePhotoError(context, state);
+            return;
+          }
+
           if (state.deletionSuccessTick > 0) {
             Navigator.of(context).pop(ShareEditOutcome.deleted);
             return;
@@ -204,6 +213,13 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
           _hydrateBaseControllers(state.form);
           _syncCustomControllers(state);
           _syncRecurrenceController(state.form);
+          final resolver =
+              sl.isRegistered<StoragePathResolver>()
+                  ? sl<StoragePathResolver>()
+                  : null;
+          final evidencePhotoUrl = resolver?.toPublicUrl(
+            state.form.evidencePhotoPath,
+          );
           final showTerminatePlan =
               state.isEditing &&
               state.planId != null &&
@@ -224,6 +240,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
                 spacing,
                 shareColors,
                 showTerminatePlan,
+                evidencePhotoUrl,
               ),
             ),
           );
@@ -272,14 +289,42 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
           s.shareCreateValidationStartDateRange,
       ExpenseErrorCode.paywallActiveExpensesCap:
           s.shareCreateErrorPaywallActiveCap,
+      ExpenseErrorCode.paywallExpensePhotosCap:
+          s.shareCreateErrorPaywallActiveCap,
       ExpenseErrorCode.forbidden: s.shareCreateErrorForbidden,
       ExpenseErrorCode.notHomeMember: s.shareCreateErrorForbidden,
       ExpenseErrorCode.notCreator: s.shareCreateErrorForbidden,
       ExpenseErrorCode.invalidDebtor: s.shareCreateErrorForbidden,
       ExpenseErrorCode.editNotAllowed: s.shareEditNotAllowed,
+      ExpenseErrorCode.invalidEvidencePhotoPath: s.flowChoreErrorInvalidPhoto,
     };
 
     return messageByCode[code] ?? s.shareCreateErrorGeneric;
+  }
+
+  void _showEvidencePhotoError(BuildContext context, ShareCreateState state) {
+    final s = S.of(context);
+    final isPermission = state.evidencePhotoErrorMessage == 'permission';
+    final snackText =
+        isPermission
+            ? s.flowChorePhotoPermissionDenied
+            : s.flowChorePhotoUploadError;
+    final accent =
+        KinlyThemeAccess.of(context).extension<KinlySections>()?.share.accent;
+    final isPermanent = state.isCameraPermissionPermanentlyDenied;
+    final actionLabel =
+        isPermanent ? s.flowChorePhotoPermissionOpenSettings : null;
+    final onAction = isPermanent ? openAppSettings : null;
+    final showSnack =
+        isPermission ? KinlySnackBar.showInfo : KinlySnackBar.showError;
+
+    showSnack(
+      context,
+      snackText,
+      accentColor: accent,
+      actionLabel: actionLabel,
+      onAction: onAction,
+    );
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
@@ -318,6 +363,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
     Spacing spacing,
     SectionColors? shareColors,
     bool showTerminatePlan,
+    String? evidencePhotoUrl,
   ) {
     final actions = ShareCreateSurfaceActions(
       onRetry:
@@ -336,6 +382,10 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
               : () => context.read<ShareCreateBloc>().add(
                 ShareCreatePaywallOpened(state.paywallRequest!.requestId),
               ),
+      onEvidencePhotoCapture:
+          () => context.read<ShareCreateBloc>().add(
+            const ShareCreateEvidencePhotoCaptureRequested(),
+          ),
     );
     final scope = ShareCreateSurfaceScope(
       context: context,
@@ -351,6 +401,8 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
       notesController: _notesController,
       recurrenceEveryController: _recurrenceEveryController,
       customControllers: _customControllers,
+      evidencePhotoUrl: evidencePhotoUrl,
+      isUploadingEvidencePhoto: state.isUploadingEvidencePhoto,
     );
     final slots = ShareCreateSurfaceSlots(
       body: _buildShareCreateSections(scope, shareColors),
@@ -376,10 +428,13 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
         notesController: scope.notesController,
         recurrenceEveryController: scope.recurrenceEveryController,
         customControllers: scope.customControllers,
+        evidencePhotoUrl: scope.evidencePhotoUrl,
+        isUploadingEvidencePhoto: scope.isUploadingEvidencePhoto,
         onSubmit: scope.actions.onSubmit,
         onDeleteRequested: scope.actions.onDeleteRequested,
         onTerminatePlan: scope.actions.onTerminatePlan,
         onPaywallOpened: scope.actions.onPaywallOpened,
+        onEvidencePhotoCapture: scope.actions.onEvidencePhotoCapture,
       );
     }
     return Column(

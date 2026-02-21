@@ -96,9 +96,10 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
 
+      final context = tester.element(find.byType(ShareCreateScreen));
       expect(find.byType(SnackBar), findsOneWidget);
       expect(
-        find.text("You cannot include only yourself in this bill. Add at least one other person."),
+        find.text(S.of(context).shareCreateValidationCustomSinglePayer),
         findsOneWidget,
       );
     },
@@ -135,9 +136,10 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
 
+      final context = tester.element(find.byType(ShareCreateScreen));
       expect(find.byType(SnackBar), findsOneWidget);
       expect(
-        find.text("You cannot include only yourself in this bill. Add at least one other person."),
+        find.text(S.of(context).shareCreateValidationCustomSinglePayer),
         findsOneWidget,
       );
     },

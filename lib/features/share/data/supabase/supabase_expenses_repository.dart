@@ -18,6 +18,7 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     int? amountCents,
     required String description,
     String? notes,
+    String? evidencePhotoPath,
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
@@ -27,12 +28,14 @@ class SupabaseExpensesRepository implements ExpensesRepository {
   }) async {
     try {
       final response = await _client.rpc(
-        'expenses_create_v2',
+        'expenses_create_v3',
         params: {
           'p_home_id': homeId,
           'p_description': description,
           if (amountCents != null) 'p_amount_cents': amountCents,
           if (notes != null) 'p_notes': notes,
+          if (evidencePhotoPath != null)
+            'p_evidence_photo_path': evidencePhotoPath,
           if (splitType != null) 'p_split_mode': splitType.wireValue,
           if (memberIds != null && memberIds.isNotEmpty)
             'p_member_ids': memberIds,
@@ -65,6 +68,7 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     required int amountCents,
     required String description,
     String? notes,
+    String? evidencePhotoPath,
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
@@ -74,12 +78,14 @@ class SupabaseExpensesRepository implements ExpensesRepository {
   }) async {
     try {
       final response = await _client.rpc(
-        'expenses_edit_v2',
+        'expenses_edit_v3',
         params: {
           'p_expense_id': expenseId,
           'p_amount_cents': amountCents,
           'p_description': description,
           if (notes != null) 'p_notes': notes,
+          if (evidencePhotoPath != null)
+            'p_evidence_photo_path': evidencePhotoPath,
           if (splitType != null) 'p_split_mode': splitType.wireValue,
           if (memberIds != null && memberIds.isNotEmpty)
             'p_member_ids': memberIds,

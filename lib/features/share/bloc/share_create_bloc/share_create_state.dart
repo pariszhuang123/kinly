@@ -35,6 +35,10 @@ class ShareCreateState extends Equatable {
     required this.paywallAction,
     required this.paywallRequest,
     required this.paywallInFlightRequestId,
+    required this.isUploadingEvidencePhoto,
+    required this.evidencePhotoErrorMessage,
+    required this.evidencePhotoErrorTick,
+    required this.isCameraPermissionPermanentlyDenied,
   }) : participants = List.unmodifiable(participants);
 
   factory ShareCreateState.initial({
@@ -83,6 +87,10 @@ class ShareCreateState extends Equatable {
       paywallAction: null,
       paywallRequest: null,
       paywallInFlightRequestId: null,
+      isUploadingEvidencePhoto: false,
+      evidencePhotoErrorMessage: null,
+      evidencePhotoErrorTick: 0,
+      isCameraPermissionPermanentlyDenied: false,
     );
   }
 
@@ -118,6 +126,10 @@ class ShareCreateState extends Equatable {
   final PaywallRetryAction? paywallAction;
   final PaywallGateRequest? paywallRequest;
   final String? paywallInFlightRequestId;
+  final bool isUploadingEvidencePhoto;
+  final String? evidencePhotoErrorMessage;
+  final int evidencePhotoErrorTick;
+  final bool isCameraPermissionPermanentlyDenied;
 
   /// Tracks whether the user has made *any* edits in this session.
   /// Used by the primary button to decide between Delete vs Update.
@@ -162,6 +174,11 @@ class ShareCreateState extends Equatable {
     PaywallRetryAction? paywallAction,
     PaywallGateRequest? paywallRequest,
     String? paywallInFlightRequestId,
+    bool? isUploadingEvidencePhoto,
+    String? evidencePhotoErrorMessage,
+    bool clearEvidencePhotoError = false,
+    int? evidencePhotoErrorTick,
+    bool? isCameraPermissionPermanentlyDenied,
   }) {
     return ShareCreateState(
       form: form ?? this.form,
@@ -214,6 +231,17 @@ class ShareCreateState extends Equatable {
       paywallRequest: paywallRequest ?? this.paywallRequest,
       paywallInFlightRequestId:
           paywallInFlightRequestId ?? this.paywallInFlightRequestId,
+      isUploadingEvidencePhoto:
+          isUploadingEvidencePhoto ?? this.isUploadingEvidencePhoto,
+      evidencePhotoErrorMessage:
+          clearEvidencePhotoError
+              ? null
+              : evidencePhotoErrorMessage ?? this.evidencePhotoErrorMessage,
+      evidencePhotoErrorTick:
+          evidencePhotoErrorTick ?? this.evidencePhotoErrorTick,
+      isCameraPermissionPermanentlyDenied:
+          isCameraPermissionPermanentlyDenied ??
+          this.isCameraPermissionPermanentlyDenied,
     );
   }
 
@@ -304,6 +332,10 @@ class ShareCreateState extends Equatable {
     paywallAction,
     paywallRequest,
     paywallInFlightRequestId,
+    isUploadingEvidencePhoto,
+    evidencePhotoErrorMessage,
+    evidencePhotoErrorTick,
+    isCameraPermissionPermanentlyDenied,
   ];
 }
 

@@ -1,17 +1,21 @@
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/router/app_route_names.dart';
 import '../../../../core/theme/color_tokens.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/theme/typography_tokens.dart';
 import '../../../../core/ui/kinly_circle_avatar.dart';
+import '../../../../core/ui/kinly_icons.dart';
 import '../../../../core/ui/kinly_list_tile.dart';
 import '../../../../core/ui/kinly_loader.dart';
 import '../../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../../core/ui/kinly_material.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../contracts/share/models.dart';
+import '../share_detail_route_args.dart';
 import '../share_paid_to_me_detail_models.dart';
 import '../share_period_label.dart';
 import '../../../../core/ui/kinly_theme_access.dart';
@@ -33,6 +37,8 @@ class SharePaidToMeDetailBody extends StatelessWidget {
   final S strings;
   final bool isLoading;
   final String? error;
+
+  static bool _hasText(String? value) => (value ?? '').trim().isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -103,14 +109,45 @@ class SharePaidToMeDetailBody extends StatelessWidget {
                         return KinlyListTile(
                           title: item.description,
                           subtitle: periodLabel,
-                          trailing: Text(
-                            item.formattedAmount,
-                            style: (typography?.titleSmall ??
-                                    KinlyThemeAccess.of(
-                                      context,
-                                    ).textTheme.titleSmall)
-                                ?.copyWith(color: colors?.onSurface),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                item.formattedAmount,
+                                style: (typography?.titleSmall ??
+                                        KinlyThemeAccess.of(
+                                          context,
+                                        ).textTheme.titleSmall)
+                                    ?.copyWith(color: colors?.onSurface),
+                              ),
+                              if (_hasText(item.notes)) ...[
+                                SizedBox(width: spacing.xs),
+                                const Icon(KinlyIcons.notesOutlined, size: 18),
+                              ],
+                              if (_hasText(item.evidencePhotoPath)) ...[
+                                SizedBox(width: spacing.xs),
+                                const Icon(
+                                  KinlyIcons.photoCameraOutlined,
+                                  size: 18,
+                                ),
+                              ],
+                              if (_hasText(item.notes) ||
+                                  _hasText(item.evidencePhotoPath)) ...[
+                                SizedBox(width: spacing.xs),
+                                const Icon(KinlyIcons.chevronRight, size: 18),
+                              ],
+                            ],
                           ),
+                          onTap:
+                              _hasText(item.notes) ||
+                                      _hasText(item.evidencePhotoPath)
+                                  ? () => context.pushNamed(
+                                    AppRouteNames.sharePaidItemDetail,
+                                    extra: SharePaidItemDetailRouteArgs(
+                                      item: item,
+                                    ),
+                                  )
+                                  : null,
                         );
                       },
                     ),

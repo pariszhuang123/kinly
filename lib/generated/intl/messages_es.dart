@@ -1630,6 +1630,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "¿Crear factura?",
     ),
     "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("Sí"),
+    "shoppingArchiveShareNo": MessageLookupByLibrary.simpleMessage("No"),
     "shoppingCardSubtitle": m21,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage(
       "Lista de compras",

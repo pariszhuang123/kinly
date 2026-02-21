@@ -1533,6 +1533,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "إنشاء فاتورة؟",
     ),
     "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("نعم"),
+    "shoppingArchiveShareNo": MessageLookupByLibrary.simpleMessage("لا"),
     "shoppingCardSubtitle": m21,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("قائمة التسوّق"),
     "shoppingContextHint": MessageLookupByLibrary.simpleMessage(

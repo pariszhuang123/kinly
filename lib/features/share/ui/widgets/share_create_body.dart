@@ -24,10 +24,13 @@ class ShareCreateBody extends StatelessWidget {
     required this.notesController,
     required this.recurrenceEveryController,
     required this.customControllers,
+    required this.evidencePhotoUrl,
+    required this.isUploadingEvidencePhoto,
     required this.onSubmit,
     required this.onDeleteRequested,
     required this.onTerminatePlan,
     required this.onPaywallOpened,
+    required this.onEvidencePhotoCapture,
   });
 
   final Spacing spacing;
@@ -41,10 +44,13 @@ class ShareCreateBody extends StatelessWidget {
   final TextEditingController notesController;
   final TextEditingController recurrenceEveryController;
   final Map<String, TextEditingController> customControllers;
+  final String? evidencePhotoUrl;
+  final bool isUploadingEvidencePhoto;
   final VoidCallback onSubmit;
   final VoidCallback? onDeleteRequested;
   final VoidCallback onTerminatePlan;
   final VoidCallback? onPaywallOpened;
+  final VoidCallback onEvidencePhotoCapture;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +82,9 @@ class ShareCreateBody extends StatelessWidget {
                 notesController: notesController,
                 recurrenceEveryController: recurrenceEveryController,
                 customControllers: customControllers,
+                evidencePhotoUrl: evidencePhotoUrl,
+                isUploadingEvidencePhoto: isUploadingEvidencePhoto,
+                onEvidencePhotoCapture: onEvidencePhotoCapture,
                 allowDelete: false,
                 onDeleteRequested: null,
                 showTerminatePlan: false,

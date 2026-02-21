@@ -288,6 +288,10 @@ void main() {
       ),
       act: (bloc) =>
           bloc.add(const ArchiveMyCompletedShoppingItemsEvent(triggerShareSpend: false)),
+      expect: () => [
+        isA<ShoppingListState>()
+            .having((s) => s.archivedTick, 'archivedTick', 1),
+      ],
       verify: (_) {
         verify(
           () => shoppingListRepository.archiveItemsForUser(
@@ -358,10 +362,12 @@ void main() {
       expect: () => [
         isA<ShoppingListState>()
             .having((s) => s.linkedExpenseId, 'linkedExpenseId', 'expense-1')
-            .having((s) => s.linkedExpenseTick, 'linkedExpenseTick', 1),
+            .having((s) => s.linkedExpenseTick, 'linkedExpenseTick', 1)
+            .having((s) => s.archivedTick, 'archivedTick', 0),
         isA<ShoppingListState>()
             .having((s) => s.linkedExpenseId, 'linkedExpenseId', 'expense-1')
-            .having((s) => s.linkedExpenseTick, 'linkedExpenseTick', 1),
+            .having((s) => s.linkedExpenseTick, 'linkedExpenseTick', 1)
+            .having((s) => s.archivedTick, 'archivedTick', 0),
       ],
     );
 

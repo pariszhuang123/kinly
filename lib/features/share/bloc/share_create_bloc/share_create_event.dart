@@ -48,6 +48,10 @@ class ShareCreateNotesChanged extends ShareCreateEvent {
   List<Object?> get props => [value];
 }
 
+class ShareCreateEvidencePhotoCaptureRequested extends ShareCreateEvent {
+  const ShareCreateEvidencePhotoCaptureRequested();
+}
+
 class ShareCreateStartDateChanged extends ShareCreateEvent {
   const ShareCreateStartDateChanged(this.date);
 

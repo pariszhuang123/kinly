@@ -11,7 +11,10 @@ import 'package:kinly/features/share/ui/share_detail_route_args.dart';
 import 'package:kinly/features/share/ui/share_edit_provider.dart';
 import 'package:kinly/features/share/ui/share_edit_route_args.dart';
 import 'package:kinly/features/share/ui/share_owed_detail_screen.dart';
+import 'package:kinly/features/share/ui/share_owed_item_detail_screen.dart';
+import 'package:kinly/features/share/ui/share_paid_item_detail_screen.dart';
 import 'package:kinly/features/share/ui/share_paid_to_me_detail_screen.dart';
+import 'package:kinly/features/share/ui/share_photo_viewer_screen.dart';
 
 class ShareRouteContext {
   const ShareRouteContext({required this.homeId});
@@ -92,6 +95,43 @@ List<GoRoute> buildShareRoutes({
           entry: args.entry,
           homeId: args.homeId,
           expensesRepository: sl<ExpensesRepository>(),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutePaths.shareOwedItemDetail,
+      name: AppRouteNames.shareOwedItemDetail,
+      builder: (_, state) {
+        final args = state.extra as ShareOwedItemDetailRouteArgs?;
+        if (args == null) {
+          return routeFallback('shareOwedItemDetail');
+        }
+        return ShareOwedItemDetailScreen(item: args.item);
+      },
+    ),
+    GoRoute(
+      path: AppRoutePaths.sharePaidItemDetail,
+      name: AppRouteNames.sharePaidItemDetail,
+      builder: (_, state) {
+        final args = state.extra as SharePaidItemDetailRouteArgs?;
+        if (args == null) {
+          return routeFallback('sharePaidItemDetail');
+        }
+        return SharePaidItemDetailScreen(item: args.item);
+      },
+    ),
+    GoRoute(
+      path: AppRoutePaths.sharePhoto,
+      name: AppRouteNames.sharePhoto,
+      builder: (_, state) {
+        final args = state.extra as SharePhotoRouteArgs?;
+        if (args == null) {
+          return routeFallback('sharePhoto');
+        }
+        return SharePhotoViewerScreen(
+          photoUrl: args.photoUrl,
+          title: args.title,
+          heroTag: args.heroTag,
         );
       },
     ),

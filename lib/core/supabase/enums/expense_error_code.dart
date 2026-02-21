@@ -20,6 +20,8 @@ enum ExpenseErrorCode {
   splitRequired,
   lockedAfterPayment,
   paywallActiveExpensesCap,
+  paywallExpensePhotosCap,
+  invalidEvidencePhotoPath,
   editNotAllowed,
   forbidden,
   unauthorized,

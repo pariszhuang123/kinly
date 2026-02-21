@@ -48,6 +48,11 @@ void main() {
         expect(form.recurrenceUnit, isNull);
         expect(form.isRecurring, isFalse);
       });
+
+      test('initial form has empty evidencePhotoPath', () {
+        final form = ShareCreateForm.initial();
+        expect(form.evidencePhotoPath, '');
+      });
     });
 
     group('copyWith', () {
@@ -104,6 +109,15 @@ void main() {
         expect(updated.description, 'Utilities');
         expect(updated.amountInput, '500.00');
         expect(updated.notes, 'Monthly rent');
+      });
+
+      test('copyWith updates evidencePhotoPath', () {
+        final form = ShareCreateForm.initial();
+        final updated = form.copyWith(
+          evidencePhotoPath: 'households/home-1/share/photo.jpg',
+        );
+
+        expect(updated.evidencePhotoPath, 'households/home-1/share/photo.jpg');
       });
     });
 

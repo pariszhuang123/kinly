@@ -12,6 +12,7 @@ class TodaySharePaidItem {
     required this.recurrenceUnit,
     required this.startDate,
     this.notes,
+    this.evidencePhotoPath,
   });
 
   final String expenseId;
@@ -22,6 +23,7 @@ class TodaySharePaidItem {
   final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
   final String? notes;
+  final String? evidencePhotoPath;
 
   factory TodaySharePaidItem.fromModel(ExpensePaidToMeItem model) {
     return TodaySharePaidItem(
@@ -33,6 +35,7 @@ class TodaySharePaidItem {
       recurrenceUnit: model.recurrenceUnit,
       startDate: model.startDate,
       notes: model.notes,
+      evidencePhotoPath: model.evidencePhotoPath,
     );
   }
 

@@ -353,6 +353,8 @@ const _expenseCodeMap = <String, ExpenseErrorCode>{
   'EXPENSE_LOCKED_AFTER_PAYMENT': ExpenseErrorCode.lockedAfterPayment,
   'EDIT_NOT_ALLOWED': ExpenseErrorCode.editNotAllowed,
   'PAYWALL_LIMIT_ACTIVE_EXPENSES': ExpenseErrorCode.paywallActiveExpensesCap,
+  'PAYWALL_LIMIT_EXPENSE_PHOTOS': ExpenseErrorCode.paywallExpensePhotosCap,
+  'INVALID_EVIDENCE_PHOTO_PATH': ExpenseErrorCode.invalidEvidencePhotoPath,
   'FORBIDDEN': ExpenseErrorCode.forbidden,
   'UNAUTHORIZED': ExpenseErrorCode.unauthorized,
 };

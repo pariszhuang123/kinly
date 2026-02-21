@@ -342,6 +342,26 @@ void main() {
       expect(result.code, ExpenseErrorCode.paywallActiveExpensesCap);
     });
 
+    test('maps PAYWALL_LIMIT_EXPENSE_PHOTOS to paywallExpensePhotosCap', () {
+      final error = _postgrestError(
+        'PAYWALL_LIMIT_EXPENSE_PHOTOS',
+        'Photo limit',
+      );
+      final result = SupabaseErrorMapper.mapExpense(error);
+
+      expect(result.code, ExpenseErrorCode.paywallExpensePhotosCap);
+    });
+
+    test('maps INVALID_EVIDENCE_PHOTO_PATH to invalidEvidencePhotoPath', () {
+      final error = _postgrestError(
+        'INVALID_EVIDENCE_PHOTO_PATH',
+        'Invalid evidence path',
+      );
+      final result = SupabaseErrorMapper.mapExpense(error);
+
+      expect(result.code, ExpenseErrorCode.invalidEvidencePhotoPath);
+    });
+
     test('maps NOT_CREATOR to notCreator', () {
       final error = _postgrestError('NOT_CREATOR', 'Only creator can edit');
       final result = SupabaseErrorMapper.mapExpense(error);

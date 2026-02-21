@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/features/share/share.dart';
+import 'package:kinly/features/share/ui/share_detail_route_args.dart';
 import 'package:kinly/features/share/ui/share_owed_detail_screen.dart';
 import 'package:kinly/foundation/surfaces/today/domain/models.dart';
 import 'package:kinly/generated/l10n.dart';
@@ -11,7 +14,9 @@ import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/contracts/expenses/models.dart';
+import 'package:kinly/core/ui/kinly_icons.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:kinly/features/share/ui/share_owed_item_detail_screen.dart';
 
 class _MockExpensesRepository extends Mock implements ExpensesRepository {}
 
@@ -269,51 +274,101 @@ void main() {
     expect(find.text(S.of(context).shareOwedDetailError), findsOneWidget);
   });
 
-  testWidgets('notes toggle uses onSurface color in dark theme for contrast', (
+  testWidgets('shows icons and drill-through only for comments/photo items', (
     tester,
   ) async {
     final owed = TodayShareOwed(
       payerUserId: 'user-1',
       displayName: 'Alex',
-      totalOwedCents: 1500,
+      totalOwedCents: 4500,
       items: [
         TodayShareOwedItem(
           expenseId: 'exp-1',
-          description: 'Snacks',
+          description: 'Plain row',
           amountCents: 1500,
           recurrenceEvery: null,
           recurrenceUnit: null,
           startDate: DateTime(2024, 1, 1),
+        ),
+        TodayShareOwedItem(
+          expenseId: 'exp-2',
+          description: 'With comments',
+          amountCents: 1500,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: DateTime(2024, 1, 2),
           notes: 'Remember to reimburse',
+        ),
+        TodayShareOwedItem(
+          expenseId: 'exp-3',
+          description: 'With photo',
+          amountCents: 1500,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: DateTime(2024, 1, 3),
+          evidencePhotoPath: 'https://example.com/photo.jpg',
+        ),
+      ],
+    );
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder:
+              (_, __) => MediaQuery(
+                data: const MediaQueryData(disableAnimations: true),
+                child: ShareOwedDetailScreen(
+                  owed: owed,
+                  expensesRepository: _MockExpensesRepository(),
+                ),
+              ),
+        ),
+        GoRoute(
+          path: '/share/owed-item-detail',
+          name: AppRouteNames.shareOwedItemDetail,
+          builder: (_, state) {
+            final args = state.extra as ShareOwedItemDetailRouteArgs;
+            return ShareOwedItemDetailScreen(item: args.item);
+          },
         ),
       ],
     );
 
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildKinlyTheme(Brightness.dark),
+      MaterialApp.router(
+        theme: buildKinlyTheme(Brightness.light),
         localizationsDelegates: const [S.delegate],
         supportedLocales: S.delegate.supportedLocales,
-        home: MediaQuery(
-          data: const MediaQueryData(disableAnimations: true),
-          child: ShareOwedDetailScreen(
-            owed: owed,
-            expensesRepository: _MockExpensesRepository(),
-          ),
-        ),
+        routerConfig: router,
       ),
     );
 
     await tester.pumpAndSettle();
 
-    final iconFinder = find.byIcon(Icons.expand_more_rounded);
-    expect(iconFinder, findsOneWidget);
+    expect(find.byIcon(KinlyIcons.notesOutlined), findsOneWidget);
+    expect(find.byIcon(KinlyIcons.photoCameraOutlined), findsOneWidget);
+    expect(find.byIcon(KinlyIcons.chevronRight), findsNWidgets(2));
 
-    final icon = tester.widget<Icon>(iconFinder);
-    final context = tester.element(find.byType(ShareOwedDetailScreen));
-    final onSurface = Theme.of(context).colorScheme.onSurface;
+    await tester.tap(find.text('Plain row'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ShareOwedItemDetailScreen), findsNothing);
 
-    expect(icon.color, onSurface);
+    await tester.tap(find.text('With comments'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ShareOwedItemDetailScreen), findsOneWidget);
+    expect(find.text('Remember to reimburse'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('With photo'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ShareOwedItemDetailScreen), findsOneWidget);
+    final detailContext = tester.element(find.byType(ShareOwedItemDetailScreen));
+    expect(
+      find.text(S.of(detailContext).shoppingPhotoLabel),
+      findsOneWidget,
+    );
   });
 
   testWidgets('shows period label for recurring and one-time shares', (

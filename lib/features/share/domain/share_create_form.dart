@@ -17,6 +17,7 @@ class ShareCreateForm extends Equatable {
     required this.recurrenceEvery,
     required this.recurrenceUnit,
     required this.startDate,
+    this.evidencePhotoPath = '',
   }) : selectedParticipantIds = Set.unmodifiable(
          selectedParticipantIds is LinkedHashSet<String>
              ? selectedParticipantIds
@@ -37,6 +38,7 @@ class ShareCreateForm extends Equatable {
       recurrenceEvery: null,
       recurrenceUnit: null,
       startDate: dateOnly(DateTime.now()),
+      evidencePhotoPath: '',
     );
   }
 
@@ -49,6 +51,7 @@ class ShareCreateForm extends Equatable {
   final int? recurrenceEvery;
   final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
+  final String evidencePhotoPath;
 
   ShareCreateForm copyWith({
     String? description,
@@ -63,6 +66,7 @@ class ShareCreateForm extends Equatable {
     ExpenseRecurrenceUnit? recurrenceUnit,
     bool clearRecurrenceUnit = false,
     DateTime? startDate,
+    String? evidencePhotoPath,
   }) {
     return ShareCreateForm(
       description: description ?? this.description,
@@ -79,6 +83,7 @@ class ShareCreateForm extends Equatable {
       recurrenceUnit:
           clearRecurrenceUnit ? null : recurrenceUnit ?? this.recurrenceUnit,
       startDate: startDate != null ? dateOnly(startDate) : this.startDate,
+      evidencePhotoPath: evidencePhotoPath ?? this.evidencePhotoPath,
     );
   }
 
@@ -148,6 +153,7 @@ class ShareCreateForm extends Equatable {
       recurrenceEvery,
       recurrenceUnit,
       startDate,
+      evidencePhotoPath,
     ];
   }
 }

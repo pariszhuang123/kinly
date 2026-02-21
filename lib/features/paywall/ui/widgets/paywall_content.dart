@@ -121,6 +121,7 @@ class _PaywallBody extends StatelessWidget {
               children: [
                 _PaywallHero(
                   subtitle: strings.subtitle,
+                  emotionalBody: strings.emotionalBody,
                   priceLine: priceLine,
                   priceCaption: strings.priceCaption ?? strings.unlimitedLabel,
                   unlimitedLabel: strings.unlimitedLabel,
@@ -262,6 +263,7 @@ class _BenefitChecklist extends StatelessWidget {
 class _PaywallHero extends StatelessWidget {
   const _PaywallHero({
     required this.subtitle,
+    required this.emotionalBody,
     required this.priceLine,
     required this.priceCaption,
     required this.unlimitedLabel,
@@ -271,6 +273,7 @@ class _PaywallHero extends StatelessWidget {
   });
 
   final String subtitle;
+  final String? emotionalBody;
   final String priceLine;
   final String? priceCaption;
   final String unlimitedLabel;
@@ -326,6 +329,10 @@ class _PaywallHero extends StatelessWidget {
               color: colorScheme.onSurfaceVariant,
             ),
           ),
+          if (emotionalBody?.trim().isNotEmpty == true) ...[
+            SizedBox(height: spacing.s),
+            Text(emotionalBody!, style: typography.bodyMedium),
+          ],
           if (caption.isNotEmpty) ...[
             SizedBox(height: spacing.m),
             Text(caption, style: typography.bodyMedium),

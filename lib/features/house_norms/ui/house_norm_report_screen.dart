@@ -392,20 +392,21 @@ class _HouseNormOwnerActions extends StatelessWidget {
       children: [
         if (hasPublicUrl) _PublicUrlRow(url: document.publicUrl!),
         if (hasPublicUrl) SizedBox(height: spacing?.m ?? 12),
-        if (document.showRepublishButton)
-          KinlyFilledButton.text(
-            fullWidth: true,
-            label: strings.houseNormRepublishCta,
-            backgroundColor: palette.accent,
-            onPressed: state.isBusy ? null : () => _publish(context, strings),
-          ),
-        if (document.showPublishButton)
-          KinlyFilledButton.text(
-            fullWidth: true,
-            label: strings.houseNormPublishCta,
-            backgroundColor: palette.accent,
-            onPressed: state.isBusy ? null : () => _publish(context, strings),
-          ),
+        // TODO: Re-enable publish buttons when publish-to-web is ready.
+        // if (document.showRepublishButton)
+        //   KinlyFilledButton.text(
+        //     fullWidth: true,
+        //     label: strings.houseNormRepublishCta,
+        //     backgroundColor: palette.accent,
+        //     onPressed: state.isBusy ? null : () => _publish(context, strings),
+        //   ),
+        // if (document.showPublishButton)
+        //   KinlyFilledButton.text(
+        //     fullWidth: true,
+        //     label: strings.houseNormPublishCta,
+        //     backgroundColor: palette.accent,
+        //     onPressed: state.isBusy ? null : () => _publish(context, strings),
+        //   ),
       ],
     );
   }

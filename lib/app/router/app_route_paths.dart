@@ -29,7 +29,10 @@ class AppRoutePaths {
   static const shareDraftEdit = '/share/:expenseId/edit';
   static const shareCreatedList = '/share/created';
   static const shareOwedDetail = '/share/owed-detail';
+  static const shareOwedItemDetail = '/share/owed-item-detail';
   static const sharePaidToMeDetail = '/share/paid-to-me-detail';
+  static const sharePaidItemDetail = '/share/paid-item-detail';
+  static const sharePhoto = '/share/photo';
   static const profileSettings = '/settings/profile';
   static const profileIdentity = '/settings/profile/identity';
   static const connectionSettings = '/settings/profile/connection';

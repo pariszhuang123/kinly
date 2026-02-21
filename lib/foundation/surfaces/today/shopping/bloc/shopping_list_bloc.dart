@@ -131,6 +131,10 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
           homeId: _homeId,
           itemIds: mine.map((item) => item.id).toList(growable: false),
         );
+        emit(
+          state.copyWith(archivedTick: state.archivedTick + 1),
+        );
+        return;
       }
 
       await _load(emit, keepCurrent: true);
@@ -164,6 +168,7 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
               .length,
           linkedExpenseId: state.linkedExpenseId,
           linkedExpenseTick: state.linkedExpenseTick,
+          archivedTick: state.archivedTick,
           message: state.message,
           messageTick: state.messageTick,
         ),

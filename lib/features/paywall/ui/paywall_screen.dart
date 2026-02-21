@@ -55,6 +55,10 @@ class KinlyPaywallScreen extends StatelessWidget {
             strings: strings,
             triggers: triggers,
           );
+          final contextualStrings = _resolveContextualStrings(
+            strings: strings,
+            orderedBenefits: orderedBenefits,
+          );
 
           void handleDismiss() {
             context.read<PaywallBloc>().add(const PaywallDismissed());
@@ -64,7 +68,7 @@ class KinlyPaywallScreen extends StatelessWidget {
           return KinlyScaffold(
             appBar: KinlyAppBar(
               title: Text(
-                strings.title,
+                contextualStrings.title,
                 style: typography.titleSmall.copyWith(
                   color: theme.colorScheme.onSurface,
                 ),
@@ -74,7 +78,7 @@ class KinlyPaywallScreen extends StatelessWidget {
               automaticallyImplyLeading: false,
               actions: [
                 KinlyIconButton(
-                  tooltip: strings.secondaryCta,
+                  tooltip: contextualStrings.secondaryCta,
                   icon: KinlyIcons.closeRounded,
                   onPressed: handleDismiss,
                 ),
@@ -91,6 +95,7 @@ class KinlyPaywallScreen extends StatelessWidget {
                     (context, state) => _buildPaywallSections(
                       context: context,
                       state: state,
+                      strings: contextualStrings,
                       orderedBenefits: orderedBenefits,
                       handleDismiss: handleDismiss,
                     ),
@@ -114,6 +119,7 @@ class KinlyPaywallScreen extends StatelessWidget {
   Widget _buildPaywallSections({
     required BuildContext context,
     required PaywallState state,
+    required PaywallStrings strings,
     required List<String> orderedBenefits,
     required VoidCallback handleDismiss,
   }) {
@@ -154,12 +160,29 @@ class KinlyPaywallScreen extends StatelessWidget {
   }
 }
 
-enum _PaywallBenefitGroup { flow, flowPhotos, shoppingPhotos, expenses, members }
+PaywallStrings _resolveContextualStrings({
+  required PaywallStrings strings,
+  required List<String> orderedBenefits,
+}) {
+  if (strings.emotionalBody?.trim().isNotEmpty == true) return strings;
+  if (orderedBenefits.isEmpty) return strings;
+  return strings.copyWith(emotionalBody: orderedBenefits.first);
+}
+
+enum _PaywallBenefitGroup {
+  flow,
+  flowPhotos,
+  shoppingPhotos,
+  expensePhotos,
+  expenses,
+  members,
+}
 
 const _groupPriority = [
   _PaywallBenefitGroup.flow,
   _PaywallBenefitGroup.flowPhotos,
   _PaywallBenefitGroup.shoppingPhotos,
+  _PaywallBenefitGroup.expensePhotos,
   _PaywallBenefitGroup.expenses,
   _PaywallBenefitGroup.members,
 ];
@@ -187,6 +210,9 @@ List<_PaywallBenefitGroup> _resolvePrimaryGroups(Set<PaywallTrigger> triggers) {
       case PaywallTrigger.expenseActiveCap:
         groups.add(_PaywallBenefitGroup.expenses);
         break;
+      case PaywallTrigger.expensePhotosCap:
+        groups.add(_PaywallBenefitGroup.expensePhotos);
+        break;
       case PaywallTrigger.membersCap:
         groups.add(_PaywallBenefitGroup.members);
         break;
@@ -213,10 +239,18 @@ List<String> orderPaywallBenefits({
   required PaywallStrings strings,
   required Set<PaywallTrigger> triggers,
 }) {
+  final prefersExpensePhotos = triggers.contains(PaywallTrigger.expensePhotosCap);
+
   final benefits = <_Benefit>[
     _Benefit(_PaywallBenefitGroup.flow, strings.bulletFlows),
-    _Benefit(_PaywallBenefitGroup.flowPhotos, strings.bulletPhotos),
+    if (!prefersExpensePhotos)
+      _Benefit(
+        _PaywallBenefitGroup.flowPhotos,
+        strings.bulletFlowPhotos ?? strings.bulletPhotos,
+      ),
     _Benefit(_PaywallBenefitGroup.shoppingPhotos, strings.bulletShoppingPhotos),
+    if (prefersExpensePhotos)
+      _Benefit(_PaywallBenefitGroup.expensePhotos, strings.bulletPhotos),
     _Benefit(_PaywallBenefitGroup.expenses, strings.bulletShares),
     _Benefit(_PaywallBenefitGroup.members, strings.bulletMembers),
   ];
@@ -232,5 +266,7 @@ List<String> orderPaywallBenefits({
     benefits,
   );
 
-  return [...primaryBenefits, ...secondaryBenefits];
+  final ordered = [...primaryBenefits, ...secondaryBenefits];
+  final unique = <String>{};
+  return ordered.where(unique.add).toList(growable: false);
 }

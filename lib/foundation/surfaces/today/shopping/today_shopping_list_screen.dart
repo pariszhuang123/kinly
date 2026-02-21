@@ -54,13 +54,25 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
       listenWhen:
           (prev, curr) =>
               prev.messageTick != curr.messageTick ||
-              prev.linkedExpenseTick != curr.linkedExpenseTick,
+              prev.linkedExpenseTick != curr.linkedExpenseTick ||
+              prev.archivedTick != curr.archivedTick,
       listener: (context, state) async {
         if (state.messageTick > 0 && state.message != null) {
           final resolved = _resolveErrorMessage(context, state);
           KinlySnackBar.showError(context, resolved);
         }
         if (state.linkedExpenseTick > 0 && state.linkedExpenseId != null) {
+          KinlySnackBar.showSuccess(
+            context,
+            S.of(context).shoppingArchiveDraftBillCreated,
+          );
+          context.goNamed(AppRouteNames.today);
+        }
+        if (state.archivedTick > 0) {
+          KinlySnackBar.showSuccess(
+            context,
+            S.of(context).shoppingArchiveItemsBought,
+          );
           context.goNamed(AppRouteNames.today);
         }
       },
@@ -281,8 +293,10 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
       title: s.shoppingArchiveSharePromptTitle,
       message: s.shoppingArchiveSharePromptBody,
       confirmLabel: s.shoppingArchiveShareYes,
+      cancelLabel: s.shoppingArchiveShareNo,
     );
-    if (!context.mounted || triggerShare == null) return;
+    if (!context.mounted) return;
+    if (triggerShare == null) return;
     context.read<ShoppingListBloc>().add(
       ArchiveMyCompletedShoppingItemsEvent(triggerShareSpend: triggerShare),
     );

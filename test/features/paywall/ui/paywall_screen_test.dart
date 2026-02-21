@@ -50,7 +50,8 @@ PaywallStrings _buildStrings() {
     subtitle: 'Affordable message',
     bulletMembers: 'Unlimited members',
     bulletFlows: 'Unlimited flows',
-    bulletPhotos: 'Unlimited flow photos',
+    bulletFlowPhotos: 'Unlimited flow photos',
+    bulletPhotos: 'Unlimited task photos',
     bulletShoppingPhotos: 'Unlimited shopping photos',
     bulletShares: 'Unlimited shares',
     unlimitedLabel: 'Unlimited everything',
@@ -226,6 +227,20 @@ void main() {
         'Unlimited shares',
         'Unlimited flows',
         'Unlimited shopping photos',
+        'Unlimited members',
+      ],
+    );
+
+    expect(
+      orderPaywallBenefits(
+        strings: strings,
+        triggers: const {PaywallTrigger.expensePhotosCap},
+      ),
+      [
+        'Unlimited task photos',
+        'Unlimited flows',
+        'Unlimited shopping photos',
+        'Unlimited shares',
         'Unlimited members',
       ],
     );

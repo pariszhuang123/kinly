@@ -20,6 +20,7 @@ void main() {
         'recurrence_unit': 'week',
         'plan_id': 'plan-111',
         'fully_paid_at': '2024-01-20T10:30:00Z',
+        'evidence_photo_path': 'households/home-456/share/photo.jpg',
       };
       final result = Expense.fromJson(json);
 
@@ -35,6 +36,10 @@ void main() {
       expect(result.recurrenceUnit, ExpenseRecurrenceUnit.week);
       expect(result.planId, 'plan-111');
       expect(result.fullyPaidAt, isNotNull);
+      expect(
+        result.evidencePhotoPath,
+        'households/home-456/share/photo.jpg',
+      );
     });
 
     test('parses with camelCase keys', () {
@@ -52,6 +57,7 @@ void main() {
         'recurrenceEvery': 2,
         'recurrenceUnit': 'month',
         'planId': 'plan-222',
+        'evidencePhotoPath': 'households/home-456/share/photo-2.jpg',
       };
       final result = Expense.fromJson(json);
 
@@ -63,6 +69,10 @@ void main() {
       expect(result.recurrenceEvery, 2);
       expect(result.recurrenceUnit, ExpenseRecurrenceUnit.month);
       expect(result.planId, 'plan-222');
+      expect(
+        result.evidencePhotoPath,
+        'households/home-456/share/photo-2.jpg',
+      );
     });
 
     test('handles null split_type', () {
@@ -246,6 +256,7 @@ void main() {
             'description': 'Groceries',
             'amountCents': 2500,
             'startDate': '2024-01-15',
+            'evidencePhotoPath': 'households/home-1/share/expenses/exp-111.jpg',
           },
           {
             'expenseId': 'exp-222',
@@ -263,6 +274,10 @@ void main() {
       expect(result.totalOwedCents, 5000);
       expect(result.items.length, 2);
       expect(result.items[0].description, 'Groceries');
+      expect(
+        result.items[0].evidencePhotoPath,
+        'households/home-1/share/expenses/exp-111.jpg',
+      );
     });
 
     test('handles missing items', () {
@@ -309,6 +324,30 @@ void main() {
       expect(result.totalPaidCents, 0);
       expect(result.unseenCount, 0);
       expect(result.latestPaidAt, isNull);
+    });
+  });
+
+  group('ExpensePaidToMeItem.fromJson', () {
+    test('parses notes and evidence photo path', () {
+      final json = {
+        'expenseId': 'exp-1',
+        'description': 'Dinner',
+        'amountCents': 1800,
+        'markedPaidAt': '2024-01-20T10:30:00Z',
+        'recurrenceEvery': 1,
+        'recurrenceUnit': 'week',
+        'startDate': '2024-01-15',
+        'notes': 'Paid in cash',
+        'evidencePhotoPath': 'households/home-1/share/expenses/exp-1.jpg',
+      };
+      final result = ExpensePaidToMeItem.fromJson(json);
+
+      expect(result.expenseId, 'exp-1');
+      expect(result.notes, 'Paid in cash');
+      expect(
+        result.evidencePhotoPath,
+        'households/home-1/share/expenses/exp-1.jpg',
+      );
     });
   });
 

@@ -3,6 +3,7 @@ class PaywallStrings {
   final String subtitle;
   final String bulletMembers;
   final String bulletFlows;
+  final String? bulletFlowPhotos;
   final String bulletPhotos;
   final String bulletShoppingPhotos;
   final String bulletShares;
@@ -24,6 +25,7 @@ class PaywallStrings {
     required this.subtitle,
     required this.bulletMembers,
     required this.bulletFlows,
+    this.bulletFlowPhotos,
     required this.bulletPhotos,
     required this.bulletShoppingPhotos,
     required this.bulletShares,
@@ -40,4 +42,50 @@ class PaywallStrings {
     required this.errorTitle,
     required this.retryLabel,
   });
+
+  PaywallStrings copyWith({
+    String? title,
+    String? subtitle,
+    String? bulletMembers,
+    String? bulletFlows,
+    String? bulletFlowPhotos,
+    String? bulletPhotos,
+    String? bulletShoppingPhotos,
+    String? bulletShares,
+    String? unlimitedLabel,
+    String? priceCaption,
+    String? emotionalBody,
+    String? priceUnavailableLabel,
+    String Function(String price)? priceFormatter,
+    String? primaryCta,
+    String? secondaryCta,
+    String? purchaseFailed,
+    String? purchaseSuccess,
+    String? restoreCta,
+    String? errorTitle,
+    String? retryLabel,
+  }) {
+    return PaywallStrings(
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      bulletMembers: bulletMembers ?? this.bulletMembers,
+      bulletFlows: bulletFlows ?? this.bulletFlows,
+      bulletFlowPhotos: bulletFlowPhotos ?? this.bulletFlowPhotos,
+      bulletPhotos: bulletPhotos ?? this.bulletPhotos,
+      bulletShoppingPhotos: bulletShoppingPhotos ?? this.bulletShoppingPhotos,
+      bulletShares: bulletShares ?? this.bulletShares,
+      unlimitedLabel: unlimitedLabel ?? this.unlimitedLabel,
+      priceCaption: priceCaption ?? this.priceCaption,
+      emotionalBody: emotionalBody ?? this.emotionalBody,
+      priceUnavailableLabel: priceUnavailableLabel ?? this.priceUnavailableLabel,
+      priceFormatter: priceFormatter ?? this.priceFormatter,
+      primaryCta: primaryCta ?? this.primaryCta,
+      secondaryCta: secondaryCta ?? this.secondaryCta,
+      purchaseFailed: purchaseFailed ?? this.purchaseFailed,
+      purchaseSuccess: purchaseSuccess ?? this.purchaseSuccess,
+      restoreCta: restoreCta ?? this.restoreCta,
+      errorTitle: errorTitle ?? this.errorTitle,
+      retryLabel: retryLabel ?? this.retryLabel,
+    );
+  }
 }

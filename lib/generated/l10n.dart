@@ -886,6 +886,36 @@ class S {
     );
   }
 
+  /// `No`
+  String get shoppingArchiveShareNo {
+    return Intl.message(
+      'No',
+      name: 'shoppingArchiveShareNo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Items bought and removed from the list`
+  String get shoppingArchiveItemsBought {
+    return Intl.message(
+      'Items bought and removed from the list',
+      name: 'shoppingArchiveItemsBought',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Draft bill created for items bought`
+  String get shoppingArchiveDraftBillCreated {
+    return Intl.message(
+      'Draft bill created for items bought',
+      name: 'shoppingArchiveDraftBillCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Together feels lighter`
   String get login_tagline {
     return Intl.message(

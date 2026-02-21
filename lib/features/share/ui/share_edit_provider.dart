@@ -99,6 +99,7 @@ class ShareEditProvider extends StatelessWidget {
           description: expense.description,
           amountInput: _formatAmount(expense.amountCents),
           notes: expense.notes ?? '',
+          evidencePhotoPath: expense.evidencePhotoPath ?? '',
           splitMode: splitMode,
           selectedParticipantIds: selectedIds,
           customAmountInputs: customInputs,

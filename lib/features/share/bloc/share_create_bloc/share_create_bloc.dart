@@ -5,6 +5,8 @@ import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../contracts/expenses/models.dart';
+import '../../../../core/media/expectation_photo_service.dart';
+import '../../../../core/media/supabase_media_repository.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
@@ -20,6 +22,7 @@ import '../../domain/share_split_mode.dart';
 part 'share_create_event.dart';
 part 'share_create_state.dart';
 part 'share_create_validation.dart';
+part 'share_create_submission.dart';
 
 class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   ShareCreateBloc({
@@ -35,9 +38,12 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     bool paidByOther = false,
     bool canEdit = true,
     String? editDisabledReason,
+    ExpectationPhotoService? evidencePhotoService,
   }) : _homeId = homeId,
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
+       _initialEvidencePhotoPath = initialForm?.evidencePhotoPath.trim() ?? '',
+       _evidencePhotoService = evidencePhotoService,
        _uuid = const Uuid(),
        super(
          ShareCreateState.initial(
@@ -58,6 +64,9 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     on<ShareCreateAmountChanged>(_onAmountChanged);
     on<ShareCreateSplitModeChanged>(_onSplitModeChanged);
     on<ShareCreateNotesChanged>(_onNotesChanged);
+    on<ShareCreateEvidencePhotoCaptureRequested>(
+      _onEvidencePhotoCaptureRequested,
+    );
     on<ShareCreateParticipantToggled>(_onParticipantToggled);
     on<ShareCreateCustomAmountChanged>(_onCustomAmountChanged);
     on<ShareCreateStartDateChanged>(_onStartDateChanged);
@@ -74,6 +83,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   final String _homeId;
   final ExpensesRepository _expensesRepository;
   final HomeRepository _homeRepository;
+  final String _initialEvidencePhotoPath;
+  ExpectationPhotoService? _evidencePhotoService;
   final Uuid _uuid;
 
   Future<void> _onParticipantsRequested(
@@ -189,13 +200,14 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
         ),
       );
     } else if (isSwitchingToCustom) {
-      final idsWithAmount = nextForm.customAmountInputs.entries
-          .where((e) {
-            final cents = ShareCreateForm.parseCurrency(e.value);
-            return cents != null && cents > 0;
-          })
-          .map((e) => e.key)
-          .toSet();
+      final idsWithAmount =
+          nextForm.customAmountInputs.entries
+              .where((e) {
+                final cents = ShareCreateForm.parseCurrency(e.value);
+                return cents != null && cents > 0;
+              })
+              .map((e) => e.key)
+              .toSet();
       nextForm = nextForm.copyWith(
         selectedParticipantIds: LinkedHashSet<String>.from(idsWithAmount),
       );
@@ -214,6 +226,64 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
         hasUserEdits: true,
       ),
     );
+  }
+
+  Future<void> _onEvidencePhotoCaptureRequested(
+    ShareCreateEvidencePhotoCaptureRequested event,
+    Emitter<ShareCreateState> emit,
+  ) async {
+    if (state.isUploadingEvidencePhoto) return;
+
+    emit(
+      state.copyWith(
+        isUploadingEvidencePhoto: true,
+        clearEvidencePhotoError: true,
+        isCameraPermissionPermanentlyDenied: false,
+      ),
+    );
+
+    try {
+      final photoService =
+          _evidencePhotoService ??=
+              ExpectationPhotoService(
+                mediaRepository: SupabaseMediaRepository(),
+              );
+      final upload = await photoService.captureAndUpload(
+        homeId: _homeId,
+        choreId: state.editingExpenseId,
+        rootSegment: 'share',
+        featureSegment: 'expenses',
+      );
+      emit(
+        state.copyWith(
+          isUploadingEvidencePhoto: false,
+          form: state.form.copyWith(
+            evidencePhotoPath: _withHouseholdsPrefix(upload.storagePath),
+          ),
+          hasUserEdits: true,
+          clearEvidencePhotoError: true,
+        ),
+      );
+    } on CameraPermissionException catch (error) {
+      emit(
+        state.copyWith(
+          isUploadingEvidencePhoto: false,
+          isCameraPermissionPermanentlyDenied: error.permanentlyDenied,
+          evidencePhotoErrorMessage: 'permission',
+          evidencePhotoErrorTick: state.evidencePhotoErrorTick + 1,
+        ),
+      );
+    } on CameraCaptureCancelled {
+      emit(state.copyWith(isUploadingEvidencePhoto: false));
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isUploadingEvidencePhoto: false,
+          evidencePhotoErrorMessage: error.toString(),
+          evidencePhotoErrorTick: state.evidencePhotoErrorTick + 1,
+        ),
+      );
+    }
   }
 
   void _onParticipantToggled(
@@ -338,32 +408,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     );
 
     try {
-      final saved =
-          plan.isEditing
-              ? await _expensesRepository.edit(
-                expenseId: plan.editingExpenseId!,
-                amountCents: plan.amountCents!,
-                description: plan.description,
-                notes: plan.notes,
-                splitType: plan.splitType,
-                memberIds: plan.memberIds,
-                customSplits: plan.customSplits,
-                recurrenceEvery: plan.recurrenceEvery,
-                recurrenceUnit: plan.recurrenceUnit,
-                startDate: plan.startDate,
-              )
-              : await _expensesRepository.create(
-                homeId: _homeId,
-                amountCents: plan.amountCents,
-                description: plan.description,
-                notes: plan.notes,
-                splitType: plan.splitType,
-                memberIds: plan.memberIds,
-                customSplits: plan.customSplits,
-                recurrenceEvery: plan.recurrenceEvery,
-                recurrenceUnit: plan.recurrenceUnit,
-                startDate: plan.startDate,
-              );
+      final saved = await _submitPlan(plan);
 
       emit(
         state.copyWith(
@@ -373,8 +418,9 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
         ),
       );
     } on ExpenseException catch (error) {
-      if (error.code == ExpenseErrorCode.paywallActiveExpensesCap) {
-        _emitPaywallRequest(emit, state);
+      if (error.code == ExpenseErrorCode.paywallActiveExpensesCap ||
+          error.code == ExpenseErrorCode.paywallExpensePhotosCap) {
+        _emitPaywallRequest(emit, state, code: error.code);
         return;
       }
 
@@ -488,219 +534,4 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
       add(const ShareCreateSubmitted());
     }
   }
-
-  String? _normalize(String value) {
-    final trimmed = value.trim();
-    return trimmed.isEmpty ? null : trimmed;
-  }
-
-  _SubmissionPlan? _buildSubmissionPlan(ShareCreateState currentState) {
-    final ctx = _buildValidationContext(currentState);
-    if (!_hasBasicValidity(ctx)) return null;
-
-    final splitDecision = _buildSplitDecision(currentState, ctx);
-    if (splitDecision == null) return null;
-
-    return _SubmissionPlan(
-      isEditing: ctx.isEditing,
-      editingExpenseId: ctx.editingExpenseId,
-      amountCents: ctx.amountCents,
-      description: ctx.description,
-      notes: ctx.notes,
-      splitType: splitDecision.splitType,
-      memberIds: splitDecision.memberIds,
-      customSplits: splitDecision.customSplits,
-      recurrenceEvery: ctx.recurrenceEvery,
-      recurrenceUnit: ctx.recurrenceUnit,
-      startDate: ctx.startDate,
-    );
-  }
-
-  void _emitPaywallRequest(
-    Emitter<ShareCreateState> emit,
-    ShareCreateState currentState,
-  ) {
-    final tick = currentState.paywallRequestTick + 1;
-    const triggers = {PaywallTrigger.expenseActiveCap};
-    emit(
-      currentState.copyWith(
-        isSubmitting: false,
-        clearSuccess: true,
-        clearSubmissionError: true,
-        paywallAction: PaywallRetryAction.submit,
-        paywallRequestTick: tick,
-        paywallRequest: PaywallGateRequest(
-          requestId: _uuid.v4(),
-          homeId: _homeId,
-          source: PaywallSources.shareCreateExpense,
-          action: PaywallRetryAction.submit,
-          tick: tick,
-          triggers: triggers,
-        ),
-        paywallInFlightRequestId: null,
-      ),
-    );
-  }
-
-  void _emitSubmissionError({
-    required Emitter<ShareCreateState> emit,
-    required ExpenseErrorCode code,
-    required String message,
-    required int tick,
-  }) {
-    emit(
-      state.copyWith(
-        isSubmitting: false,
-        submissionErrorCode: code,
-        submissionErrorMessage: message,
-        submissionErrorTick: tick,
-      ),
-    );
-  }
-
-  _ValidationContext _buildValidationContext(ShareCreateState currentState) {
-    final form = currentState.form;
-    final amountCents = form.amountCents;
-    final amountValid = amountCents != null && amountCents > 0;
-    final isEditing = currentState.isEditing;
-    final amountLocked = isEditing && currentState.isAmountLocked;
-    final splitMode = form.splitMode;
-    final requiresAmount = isEditing ? !amountLocked : splitMode != null;
-
-    return _ValidationContext(
-      isEditing: isEditing,
-      editingExpenseId: currentState.editingExpenseId,
-      amountCents: amountCents,
-      description: form.description.trim(),
-      notes: _normalize(form.notes),
-      descriptionValid: form.hasValidDescription,
-      amountValid: amountValid,
-      requiresAmount: requiresAmount,
-      splitMode: splitMode,
-      recurrenceEvery: form.recurrenceEvery,
-      recurrenceUnit: form.recurrenceUnit,
-      startDate: form.startDate,
-      amountLocked: amountLocked,
-    );
-  }
-
-  _SplitDecision? _buildSplitDecision(
-    ShareCreateState currentState,
-    _ValidationContext ctx,
-  ) {
-    if (ctx.amountLocked) {
-      return const _SplitDecision(
-        splitType: null,
-        memberIds: null,
-        customSplits: null,
-      );
-    }
-
-    if (ctx.splitMode == ShareSplitMode.equal) {
-      final selection = currentState.equalSelectionIds;
-      if (selection.isEmpty) return null;
-      if (currentState.currentUserId != null &&
-          selection.length == 1 &&
-          selection.contains(currentState.currentUserId)) {
-        return null;
-      }
-      return _SplitDecision(
-        splitType: ExpenseSplitType.equal,
-        memberIds: selection.toList(growable: false),
-        customSplits: null,
-      );
-    }
-
-    if (ctx.splitMode == ShareSplitMode.custom) {
-      final summary = currentState.evaluateCustomSplit();
-      if (!summary.isValid) return null;
-      final splits = summary.entries
-          .map(
-            (entry) => ExpenseCustomSplitInput(
-              userId: entry.userId,
-              amountCents: entry.amountCents,
-            ),
-          )
-          .toList(growable: false);
-      return _SplitDecision(
-        splitType: ExpenseSplitType.custom,
-        memberIds: null,
-        customSplits: splits,
-      );
-    }
-
-    return _SplitDecision(splitType: null, memberIds: null, customSplits: null);
-  }
-}
-
-class _SubmissionPlan {
-  const _SubmissionPlan({
-    required this.isEditing,
-    required this.editingExpenseId,
-    required this.amountCents,
-    required this.description,
-    required this.notes,
-    required this.splitType,
-    required this.memberIds,
-    required this.customSplits,
-    required this.recurrenceEvery,
-    required this.recurrenceUnit,
-    required this.startDate,
-  });
-
-  final bool isEditing;
-  final String? editingExpenseId;
-  final int? amountCents;
-  final String description;
-  final String? notes;
-  final ExpenseSplitType? splitType;
-  final List<String>? memberIds;
-  final List<ExpenseCustomSplitInput>? customSplits;
-  final int? recurrenceEvery;
-  final ExpenseRecurrenceUnit? recurrenceUnit;
-  final DateTime startDate;
-}
-
-class _ValidationContext {
-  _ValidationContext({
-    required this.isEditing,
-    required this.editingExpenseId,
-    required this.amountCents,
-    required this.description,
-    required this.notes,
-    required this.descriptionValid,
-    required this.amountValid,
-    required this.requiresAmount,
-    required this.splitMode,
-    required this.recurrenceEvery,
-    required this.recurrenceUnit,
-    required this.startDate,
-    required this.amountLocked,
-  });
-
-  final bool isEditing;
-  final String? editingExpenseId;
-  final int? amountCents;
-  final String description;
-  final String? notes;
-  final bool descriptionValid;
-  final bool amountValid;
-  final bool requiresAmount;
-  final ShareSplitMode? splitMode;
-  final int? recurrenceEvery;
-  final ExpenseRecurrenceUnit? recurrenceUnit;
-  final DateTime startDate;
-  final bool amountLocked;
-}
-
-class _SplitDecision {
-  const _SplitDecision({
-    required this.splitType,
-    required this.memberIds,
-    required this.customSplits,
-  });
-
-  final ExpenseSplitType? splitType;
-  final List<String>? memberIds;
-  final List<ExpenseCustomSplitInput>? customSplits;
 }

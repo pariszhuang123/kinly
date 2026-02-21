@@ -1555,6 +1555,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Create bill?",
     ),
     "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("Yes"),
+    "shoppingArchiveShareNo": MessageLookupByLibrary.simpleMessage("No"),
+    "shoppingArchiveItemsBought": MessageLookupByLibrary.simpleMessage(
+      "Items bought and removed from the list",
+    ),
+    "shoppingArchiveDraftBillCreated": MessageLookupByLibrary.simpleMessage(
+      "Draft bill created for items bought",
+    ),
     "shoppingCardSubtitle": m21,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
     "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
