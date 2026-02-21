@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:kinly/contracts/house_norms/house_norm_publish_exception.dart';
 import 'package:kinly/contracts/house_norms/models.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 import 'package:kinly/features/house_norms/bloc/house_norm_report_cubit.dart';
@@ -140,6 +141,52 @@ void main() {
         ),
       );
     },
+  );
+
+  blocTest<HouseNormReportCubit, HouseNormReportState>(
+    'publish failure emits mapped supabase message',
+    build: () {
+      when(
+        () => repository.publishForHome(
+          homeId: any(named: 'homeId'),
+          locale: any(named: 'locale'),
+        ),
+      ).thenThrow(
+        const HouseNormPublishException(
+          code: HouseNormPublishErrorCode.artifactSyncFailed,
+          message: 'Publish artifact write failed.',
+        ),
+      );
+      return buildCubit();
+    },
+    seed:
+        () => HouseNormReportState.ready(
+          _buildHouseNormDocument(status: 'out_of_date'),
+          isOwner: true,
+        ),
+    act: (cubit) async {
+      final ok = await cubit.publish();
+      expect(ok, isFalse);
+    },
+    expect:
+        () => [
+          isA<HouseNormReportState>().having(
+            (s) => s.status,
+            'status',
+            HouseNormReportStatus.busy,
+          ),
+          isA<HouseNormReportState>()
+              .having(
+                (s) => s.status,
+                'status',
+                HouseNormReportStatus.failure,
+              )
+              .having(
+                (s) => s.errorMessage,
+                'errorMessage',
+                'Publish artifact write failed.',
+              ),
+        ],
   );
 }
 

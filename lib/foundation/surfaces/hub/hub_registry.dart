@@ -83,7 +83,7 @@ class HubRegistry {
     register(
       HubSectionEntry(
         id: 'preferences',
-        order: 25,
+        order: 27,
         spacingAfter: HubSectionSpacing.lg,
         isVisible: (scope) => scope.state.hasPreferenceReports,
         builder:
@@ -100,17 +100,18 @@ class HubRegistry {
     register(
       HubSectionEntry(
         id: 'house_norms',
-        order: 27,
+        order: 25,
         spacingAfter: HubSectionSpacing.lg,
         isVisible: (scope) => scope.state.hasHouseNorms,
         builder: (scope) {
+          final palette = scope.sections.houseNorms;
           return KinlySelectionCard(
-            colors: scope.sections.preference,
+            colors: palette,
             title: scope.strings.hubHouseNormsTitle,
             subtitle: scope.strings.hubHouseNormsSubtitle,
             icon: Icon(
               KinlyIcons.notesOutlined,
-              color: scope.sections.preference.icon,
+              color: palette.icon,
               size: 28,
             ),
             onTap: scope.actions.onHouseNormsTap,

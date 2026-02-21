@@ -108,7 +108,9 @@ class TodayRegistry {
               onTaskTap: scope.actions.onFlowTaskTap,
               onSeeAllTap: scope.actions.onFlowSeeAllTap,
             ),
-        isVisible: (scope) => scope.state.hasFlowContent,
+        isVisible:
+            (scope) =>
+                scope.state.hasFlowContent || scope.state.hasShareContent,
       ),
     );
 
@@ -124,7 +126,9 @@ class TodayRegistry {
               onDraftTap: scope.actions.onShareDraftTap,
               onSeeAllDraftsTap: scope.actions.onShareSeeAllDraftsTap,
             ),
-        isVisible: (scope) => scope.state.hasShareContent,
+        isVisible:
+            (scope) =>
+                scope.state.hasFlowContent || scope.state.hasShareContent,
       ),
     );
 
@@ -222,7 +226,7 @@ Widget _buildPreferencesPrompt(TodaySurfaceScope scope) {
 }
 
 Widget _buildHouseNormsPrompt(TodaySurfaceScope scope) {
-  final palette = scope.context.preferenceSection;
+  final palette = scope.context.houseNormSection;
   return TodayInvitePrompt(
     title: scope.strings.houseNormPromptTitle,
     subtitle: scope.strings.houseNormPromptSubtitle,

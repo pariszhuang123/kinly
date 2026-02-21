@@ -24,7 +24,7 @@ class HouseNormOnboardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
-    final palette = context.preferenceSection;
+    final palette = context.houseNormSection;
     final s = S.of(context);
 
     return BlocConsumer<HouseNormCaptureBloc, HouseNormCaptureState>(
@@ -132,7 +132,6 @@ class HouseNormOnboardingScreen extends StatelessWidget {
                           fullWidth: true,
                           label: s.houseNormOnboardingSubmit,
                           backgroundColor: palette.accent,
-                          foregroundColor: palette.onAccent(),
                           disabledBackgroundColor: palette.background,
                           disabledForegroundColor: palette.icon.withValues(
                             alpha: 0.4,

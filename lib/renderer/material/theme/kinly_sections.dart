@@ -90,11 +90,16 @@ class KinlySections extends ThemeExtension<KinlySections> {
       empty: SectionColors.lerp(empty, other.empty, t),
     );
   }
+
+  /// Distinct house-norm palette derived from existing section tokens.
+  /// Keeps visual consistency while separating it from personal preferences.
+  SectionColors get houseNorms => SectionColors.lerp(preference, pulse, 0.4);
 }
 
 extension KinlySectionsAccess on BuildContext {
   KinlySections get sections => Theme.of(this).extension<KinlySections>()!;
   SectionColors get preferenceSection => sections.preference;
+  SectionColors get houseNormSection => sections.houseNorms;
 }
 
 extension SectionColorsForeground on SectionColors {

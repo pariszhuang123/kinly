@@ -94,11 +94,6 @@ class _TodayShareSectionState extends State<TodayShareSection> {
       hasDrafts: widget.drafts.isNotEmpty,
     );
 
-    // If there are no owed items and no drafts, don't render this section.
-    if (tabs.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
     const shareIconSize = 32.0;
 
     final content = Column(
@@ -112,7 +107,7 @@ class _TodayShareSectionState extends State<TodayShareSection> {
               type: KinlyBannerType.error,
             ),
           ),
-        if (tabs.length > 1) ...[
+        if (tabs.isNotEmpty) ...[
           KinlyTabBar<TodaySectionTabType>(
             tabs: {
               if (widget.owed.isNotEmpty)

@@ -39,56 +39,58 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m7(answered, total) =>
       "بناءً على ${answered} من ${total} أعضاء";
 
-  static String m8(link) =>
+  static String m8(current, total) => "السؤال ${current} من ${total}";
+
+  static String m9(link) =>
       "مشاركة نبض منزلنا على كينلي. حمّل التطبيق: ${link}";
 
-  static String m9(date) => "تم التحديث ${date}";
+  static String m10(date) => "تم التحديث ${date}";
 
-  static String m10(link) =>
+  static String m11(link) =>
       "نشارك طابع منزلنا على كينلي. حمّل التطبيق: ${link}";
 
-  static String m11(link) => "شارك كينلي ليصبح العيش معًا أخف: ${link}";
+  static String m12(link) => "شارك كينلي ليصبح العيش معًا أخف: ${link}";
 
-  static String m12(code, link) =>
+  static String m13(code, link) =>
       "مرحبًا بك في منزلنا على كينلي! أدخل رمز الدعوة: ${code}\n\nحمّل تطبيق كينلي: ${link}";
 
-  static String m13(code) => "تم الأمر. أهلًا بك في المنزل.";
+  static String m14(code) => "تم الأمر. أهلًا بك في المنزل.";
 
-  static String m14(price) => "${price} شهريًا.";
+  static String m15(price) => "${price} شهريًا.";
 
-  static String m15(current, total) => "سؤال ${current} من ${total}";
+  static String m16(current, total) => "سؤال ${current} من ${total}";
 
-  static String m16(period) => "ينطبق على ${period}";
+  static String m17(period) => "ينطبق على ${period}";
 
-  static String m17(total, included, difference) =>
+  static String m18(total, included, difference) =>
       "التقسيم المخصص غير متطابق. الإجمالي: ${total}. المُضمَّن: ${included}. الفرق: ${difference}.";
 
-  static String m18(paidAmount, totalAmount) =>
+  static String m19(paidAmount, totalAmount) =>
       "تم تحصيل ${paidAmount} من ${totalAmount}";
 
-  static String m19(paid, total) => "تم دفع ${paid} من ${total}";
+  static String m20(paid, total) => "تم دفع ${paid} من ${total}";
 
-  static String m20(count) =>
+  static String m21(count) =>
       "${Intl.plural(count, one: '${count} عنصر للتأشير', other: '${count} عناصر للتأشير')}";
 
-  static String m21(name) => "مرحبًا ${name}";
+  static String m22(name) => "مرحبًا ${name}";
 
-  static String m22(count) =>
+  static String m23(count) =>
       "عرض الكل ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m23(name) => "لم نتمكن من إكمال طلب ${name}.";
+  static String m24(name) => "لم نتمكن من إكمال طلب ${name}.";
 
-  static String m24(name) => "انضم ${name} إلى منزلك.";
+  static String m25(name) => "انضم ${name} إلى منزلك.";
 
-  static String m25(name) => "انضم ${name} إلى منزل آخر.";
+  static String m26(name) => "انضم ${name} إلى منزل آخر.";
 
-  static String m26(names) =>
+  static String m27(names) =>
       "${names} يريد الانضمام إلى منزلك. قم بالترقية لدعم عدد غير محدود من الأعضاء.";
 
-  static String m27(count) =>
+  static String m28(count) =>
       "${Intl.plural(count, one: '${count} دفعة معلّقة', other: '${count} للتسوية')}";
 
-  static String m28(count) =>
+  static String m29(count) =>
       "${Intl.plural(count, one: '${count} دفعة جديدة لك', other: '${count} دفعات جديدة لك')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -380,6 +382,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonyErrorUnknown": MessageLookupByLibrary.simpleMessage(
       "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
     ),
+    "harmonyFeedbackSingleHousemateHint": MessageLookupByLibrary.simpleMessage(
+      "اكتب @ لتقديم ملاحظة لزميل منزل واحد.",
+    ),
     "harmonyMoodCloudy": MessageLookupByLibrary.simpleMessage("غائم"),
     "harmonyMoodPartiallySunny": MessageLookupByLibrary.simpleMessage(
       "مشمس جزئيًا",
@@ -399,20 +404,220 @@ class MessageLookup extends MessageLookupByLibrary {
     "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage("تم الحفظ"),
     "homeVibeCoverage": m7,
     "homeVibeTitle": MessageLookupByLibrary.simpleMessage("طابع المنزل"),
+    "houseNormCopyUrlCta": MessageLookupByLibrary.simpleMessage("نسخ الرابط"),
+    "houseNormDoneCta": MessageLookupByLibrary.simpleMessage("تم"),
+    "houseNormEditTitle": MessageLookupByLibrary.simpleMessage(
+      "تعديل أعراف المنزل",
+    ),
+    "houseNormGenerationFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر إنشاء أعراف المنزل الآن. يُرجى المحاولة مرة أخرى.",
+    ),
+    "houseNormOnboardingBack": MessageLookupByLibrary.simpleMessage("رجوع"),
+    "houseNormOnboardingProgress": m8,
+    "houseNormOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
+      "إنشاء أعراف المنزل",
+    ),
+    "houseNormOnboardingTitle": MessageLookupByLibrary.simpleMessage(
+      "أعراف المنزل",
+    ),
+    "houseNormPromptCta": MessageLookupByLibrary.simpleMessage(
+      "إنشاء أعراف المنزل",
+    ),
+    "houseNormPromptSubtitle": MessageLookupByLibrary.simpleMessage(
+      "اكتبوا نقطة بداية مشتركة لكيفية سير المنزل عادةً.",
+    ),
+    "houseNormPromptTitle": MessageLookupByLibrary.simpleMessage(
+      "إنشاء أعراف المنزل",
+    ),
+    "houseNormPublishCta": MessageLookupByLibrary.simpleMessage(
+      "النشر على الويب",
+    ),
+    "houseNormPublishFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر النشر الآن.",
+    ),
+    "houseNormPublishSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم نشر أعراف المنزل.",
+    ),
+    "houseNormReportEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "أنشئ أعراف المنزل لرؤية نقطة الانطلاق المشتركة.",
+    ),
+    "houseNormReportEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "أعراف المنزل غير جاهزة",
+    ),
+    "houseNormReportErrorBody": MessageLookupByLibrary.simpleMessage(
+      "يُرجى المحاولة مرة أخرى.",
+    ),
+    "houseNormReportErrorTitle": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل أعراف المنزل",
+    ),
+    "houseNormReportTitle": MessageLookupByLibrary.simpleMessage(
+      "أعراف المنزل",
+    ),
+    "houseNormRepublishCta": MessageLookupByLibrary.simpleMessage(
+      "إعادة النشر",
+    ),
+    "houseNormScenarioGuestsOption1": MessageLookupByLibrary.simpleMessage(
+      "يكون مخططًا له ويتم الحديث عنه مسبقًا",
+    ),
+    "houseNormScenarioGuestsOption2": MessageLookupByLibrary.simpleMessage(
+      "يكفي إشعار مسبق",
+    ),
+    "houseNormScenarioGuestsOption3": MessageLookupByLibrary.simpleMessage(
+      "هذا جزء من الحياة اليومية هنا",
+    ),
+    "houseNormScenarioGuestsQuestion": MessageLookupByLibrary.simpleMessage(
+      "صديق أو شريك يريد الزيارة. ما الذي يبدو مناسبًا عادةً؟",
+    ),
+    "houseNormScenarioHomeIdentityOption1":
+        MessageLookupByLibrary.simpleMessage("مكان هادئ لاستعادة الطاقة"),
+    "houseNormScenarioHomeIdentityOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "توازن بين الوقت الهادئ والوقت معًا",
+        ),
+    "houseNormScenarioHomeIdentityOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "مكان حيوي يأتي فيه الناس ويذهبون",
+        ),
+    "houseNormScenarioHomeIdentityQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "في يوم جيد، يشعر هذا المنزل أكثر بأنه...",
+        ),
+    "houseNormScenarioPropertyContextOption1":
+        MessageLookupByLibrary.simpleMessage("نملك هذا المنزل"),
+    "houseNormScenarioPropertyContextOption2":
+        MessageLookupByLibrary.simpleMessage("نستأجر المنزل بالكامل"),
+    "houseNormScenarioPropertyContextOption3":
+        MessageLookupByLibrary.simpleMessage("نستأجر غرفًا في منزل مشترك"),
+    "houseNormScenarioPropertyContextQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "هل تسكنون هذا المنزل بالإيجار أم بالملكية؟",
+        ),
+    "houseNormScenarioRelationshipModelOption1":
+        MessageLookupByLibrary.simpleMessage("زملاء سكن"),
+    "houseNormScenarioRelationshipModelOption2":
+        MessageLookupByLibrary.simpleMessage("عائلة"),
+    "houseNormScenarioRelationshipModelOption3":
+        MessageLookupByLibrary.simpleMessage("عائلة وزملاء سكن"),
+    "houseNormScenarioRelationshipModelQuestion":
+        MessageLookupByLibrary.simpleMessage("من يشارك السكن في هذا المنزل؟"),
+    "houseNormScenarioRepairOption1": MessageLookupByLibrary.simpleMessage(
+      "الحديث عنه في وقت أقرب بدلًا من التأجيل",
+    ),
+    "houseNormScenarioRepairOption2": MessageLookupByLibrary.simpleMessage(
+      "الاطمئنان بلطف عندما يكون التوقيت مناسبًا",
+    ),
+    "houseNormScenarioRepairOption3": MessageLookupByLibrary.simpleMessage(
+      "تجاوز الأمور الصغيرة ما لم تتراكم",
+    ),
+    "houseNormScenarioRepairQuestion": MessageLookupByLibrary.simpleMessage(
+      "هناك شيء غير مريح قليلًا بين الأشخاص. ما الذي يساعد أكثر؟",
+    ),
+    "houseNormScenarioResponsibilityOption1":
+        MessageLookupByLibrary.simpleMessage("عادةً لدينا اتفاقات واضحة"),
+    "houseNormScenarioResponsibilityOption2":
+        MessageLookupByLibrary.simpleMessage("يتولى أحدهم الأمر عندما يلاحظه"),
+    "houseNormScenarioResponsibilityOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "غالبًا كل شخص يهتم بأموره الخاصة",
+        ),
+    "houseNormScenarioResponsibilityQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "هناك أمر صغير يحتاج إنجازًا في المنزل. ماذا يحدث عادةً؟",
+        ),
+    "houseNormScenarioRhythmOption1": MessageLookupByLibrary.simpleMessage(
+      "عادةً نهدّئ الأجواء ليأخذ المنزل قسطًا من الراحة",
+    ),
+    "houseNormScenarioRhythmOption2": MessageLookupByLibrary.simpleMessage(
+      "يعتمد الأمر، فبعض الليالي أهدأ من غيرها",
+    ),
+    "houseNormScenarioRhythmOption3": MessageLookupByLibrary.simpleMessage(
+      "يكمل كل شخص ما يفعله",
+    ),
+    "houseNormScenarioRhythmQuestion": MessageLookupByLibrary.simpleMessage(
+      "إنه وقت الليل وما زال أحدهم نشطًا في المنزل. ما الذي يكون مقبولًا عادةً؟",
+    ),
+    "houseNormScenarioSharedSpacesOption1":
+        MessageLookupByLibrary.simpleMessage("غالبًا مرتب وجاهز للاستخدام"),
+    "houseNormScenarioSharedSpacesOption2":
+        MessageLookupByLibrary.simpleMessage(
+          "يبدو مستخدمًا لكن تتم إعادته لاحقًا",
+        ),
+    "houseNormScenarioSharedSpacesOption3":
+        MessageLookupByLibrary.simpleMessage(
+          "لا بأس ببعض الفوضى - هذا منزل مشترك",
+        ),
+    "houseNormScenarioSharedSpacesQuestion":
+        MessageLookupByLibrary.simpleMessage(
+          "تدخل المطبخ في نهاية اليوم. ما الذي تشعر أنه الأنسب؟",
+        ),
+    "houseNormSectionEditLabel": MessageLookupByLibrary.simpleMessage(
+      "عدّل هذا القسم",
+    ),
+    "houseNormSectionEmptyError": MessageLookupByLibrary.simpleMessage(
+      "أضف نصًا قبل الحفظ.",
+    ),
+    "houseNormSectionFallbackTitle": MessageLookupByLibrary.simpleMessage(
+      "قسم",
+    ),
+    "houseNormSectionGuestsSocialTitle": MessageLookupByLibrary.simpleMessage(
+      "الضيوف والحياة الاجتماعية",
+    ),
+    "houseNormSectionHomeIdentityTitle": MessageLookupByLibrary.simpleMessage(
+      "هوية المنزل",
+    ),
+    "houseNormSectionRepairStyleTitle": MessageLookupByLibrary.simpleMessage(
+      "أسلوب إصلاح الخلاف",
+    ),
+    "houseNormSectionResponsibilityFlowTitle":
+        MessageLookupByLibrary.simpleMessage("توزيع المسؤوليات"),
+    "houseNormSectionRhythmQuietTitle": MessageLookupByLibrary.simpleMessage(
+      "الإيقاع والهدوء",
+    ),
+    "houseNormSectionSaveCta": MessageLookupByLibrary.simpleMessage("حفظ"),
+    "houseNormSectionSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر حفظ هذا التحديث.",
+    ),
+    "houseNormSectionSaveSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم تحديث القسم.",
+    ),
+    "houseNormSectionSharedSpacesTitle": MessageLookupByLibrary.simpleMessage(
+      "المساحات المشتركة",
+    ),
+    "houseNormShareSubject": MessageLookupByLibrary.simpleMessage(
+      "أعراف منزلنا",
+    ),
+    "houseNormShareUrlCta": MessageLookupByLibrary.simpleMessage(
+      "مشاركة الرابط",
+    ),
+    "houseNormSummaryFramingLabel": MessageLookupByLibrary.simpleMessage(
+      "صياغة الملخص",
+    ),
+    "houseNormSummarySubtitle": MessageLookupByLibrary.simpleMessage(
+      "نقطة بداية مشتركة، وليست كتاب قواعد.",
+    ),
+    "houseNormSummaryTitle": MessageLookupByLibrary.simpleMessage(
+      "أعراف المنزل",
+    ),
+    "houseNormUrlCopied": MessageLookupByLibrary.simpleMessage(
+      "تم نسخ رابط أعراف المنزل.",
+    ),
+    "houseNormViewTitle": MessageLookupByLibrary.simpleMessage(
+      "عرض أعراف المنزل",
+    ),
     "housePulseCardHeader": MessageLookupByLibrary.simpleMessage(
       "نبض المنزل الأسبوعي",
     ),
     "housePulseShareCta": MessageLookupByLibrary.simpleMessage("مشاركة النبض"),
-    "housePulseShareMessage": m8,
+    "housePulseShareMessage": m9,
     "housePulseShareTitle": MessageLookupByLibrary.simpleMessage(
       "مشاركة نبض منزلنا على كينلي",
     ),
-    "housePulseUpdatedOn": m9,
+    "housePulseUpdatedOn": m10,
     "houseVibeShareCta": MessageLookupByLibrary.simpleMessage("مشاركة الطابع"),
     "houseVibeShareError": MessageLookupByLibrary.simpleMessage(
       "تعذّرت المشاركة الآن. يرجى المحاولة مرة أخرى.",
     ),
-    "houseVibeShareMessage": m10,
+    "houseVibeShareMessage": m11,
     "houseVibeShareTitle": MessageLookupByLibrary.simpleMessage("طابع المنزل"),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "شكر سريع من منزلك.",
@@ -422,6 +627,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل مركز المنزل. يرجى المحاولة مرة أخرى.",
     ),
+    "hubHouseNormsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "نقطة بداية مشتركة لكيفية سير هذا المنزل عادةً.",
+    ),
+    "hubHouseNormsTitle": MessageLookupByLibrary.simpleMessage("أعراف المنزل"),
     "hubInviteCta": MessageLookupByLibrary.simpleMessage("دعوة"),
     "hubInviteUnavailable": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل الدعوة. يرجى المحاولة مرة أخرى.",
@@ -445,12 +654,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "hubRotateSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تغيير رمز الدعوة",
     ),
-    "hubShareAppBody": m11,
+    "hubShareAppBody": m12,
     "hubShareAppCta": MessageLookupByLibrary.simpleMessage("مشاركة كينلي"),
     "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
       "احصل على تطبيق كينلي",
     ),
-    "hubShareInviteBody": m12,
+    "hubShareInviteBody": m13,
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "دعوة إلى منزلي على كينلي",
     ),
@@ -486,7 +695,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "أدخل رمز الدعوة مثل ABC123",
     ),
     "join_submit": MessageLookupByLibrary.simpleMessage("انضمام"),
-    "join_success": m13,
+    "join_success": m14,
     "join_title": MessageLookupByLibrary.simpleMessage("الانضمام إلى منزل"),
     "login_consent_connector": MessageLookupByLibrary.simpleMessage(" و "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
@@ -574,7 +783,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
       "خطة واحدة للمنزل، بدون مستويات مخفية.",
     ),
-    "paywallPricePerMonth": m14,
+    "paywallPricePerMonth": m15,
     "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
       "التسعير غير متاح الآن.",
     ),
@@ -624,7 +833,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "planPremiumLabel": MessageLookupByLibrary.simpleMessage("بريميوم"),
     "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("رجوع"),
-    "preferenceOnboardingProgress": m15,
+    "preferenceOnboardingProgress": m16,
     "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
       "حفظ التفضيلات",
     ),
@@ -1080,6 +1289,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "reflectiveGenericSecondary": MessageLookupByLibrary.simpleMessage(
       "لحظة هادئة قبل أن نعرضه.",
     ),
+    "reflectiveHouseNormsPrimary": MessageLookupByLibrary.simpleMessage(
+      "نعكس ما شاركه هذا المنزل.",
+    ),
+    "reflectiveHouseNormsSecondary": MessageLookupByLibrary.simpleMessage(
+      "مرجع مشترك، وليس كتاب قواعد.",
+    ),
     "reflectiveHousePrimary": MessageLookupByLibrary.simpleMessage(
       "نضع توقعات المنزل في كلمات.",
     ),
@@ -1100,7 +1315,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
       "أدخل حصة كل شخص. تأكد أن المجموع يساوي المبلغ أعلاه.",
     ),
-    "shareCreateCyclePeriod": m16,
+    "shareCreateCyclePeriod": m17,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
       "مثال: مشتريات البقالة",
     ),
@@ -1181,7 +1396,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
       "تأكد أن التقسيم المخصص يساوي المبلغ أعلاه.",
     ),
-    "shareCreateValidationCustomSumBreakdown": m17,
+    "shareCreateValidationCustomSumBreakdown": m18,
     "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
       "أدخل وصفًا.",
     ),
@@ -1202,8 +1417,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
       "اختر تاريخًا ضمن النطاق المسموح.",
     ),
-    "shareCreatedListActiveAmount": m18,
-    "shareCreatedListActiveSubtitle": m19,
+    "shareCreatedListActiveAmount": m19,
+    "shareCreatedListActiveSubtitle": m20,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
       "غير مُسندة",
     ),
@@ -1318,7 +1533,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "إنشاء فاتورة؟",
     ),
     "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("نعم"),
-    "shoppingCardSubtitle": m20,
+    "shoppingCardSubtitle": m21,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("قائمة التسوّق"),
     "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
       "أي شيء مفيد (العلامة، الحجم، إلخ)",
@@ -1367,7 +1582,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
       "ماذا تريد أن تفعل بعد ذلك؟",
     ),
-    "startReturningTitle": m21,
+    "startReturningTitle": m22,
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("إضافة مهمة"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("إضافة فاتورة"),
     "todayAddSheetShopping": MessageLookupByLibrary.simpleMessage(
@@ -1391,7 +1606,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("جديد اليوم"),
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("المهام"),
-    "todayFlowSeeAll": m22,
+    "todayFlowSeeAll": m23,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
       "إليك ما يحتاج إلى انتباه اليوم.",
     ),
@@ -1422,28 +1637,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
       "ترقية المنزل",
     ),
-    "todayMemberCapResolutionFailed": m23,
-    "todayMemberCapResolutionJoined": m24,
-    "todayMemberCapResolutionSuperseded": m25,
+    "todayMemberCapResolutionFailed": m24,
+    "todayMemberCapResolutionJoined": m25,
+    "todayMemberCapResolutionSuperseded": m26,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
       "شخص ما",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage("تجاهل"),
-    "todayMemberCapSubtitle": m26,
+    "todayMemberCapSubtitle": m27,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
       "منزلك يكبر. قم بالترقية للترحيب بالمزيد من الأشخاص.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
       "يريد شخص ما الانضمام إلى منزلك",
     ),
-    "todayShareActiveSubtitle": m27,
+    "todayShareActiveSubtitle": m28,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحديث قسم الفواتير الآن.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
       "المبلغ المُسَوّى",
     ),
-    "todaySharePaidUnseen": m28,
+    "todaySharePaidUnseen": m29,
     "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("فاتورة"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("للتسوية"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("مسودات"),

@@ -69,6 +69,7 @@ void main() {
 
     expect(find.text(l10n.todayShareTabActive), findsOneWidget);
     expect(find.text(l10n.todayShareTabPaidToMe), findsOneWidget);
+    expect(find.text(l10n.todayShareTabDrafts), findsNothing);
 
     // Switch to Paid to me tab
     await tester.tap(find.text(l10n.todayShareTabPaidToMe));
@@ -118,6 +119,11 @@ void main() {
         ),
       ),
     );
+
+    final l10n = S.of(tester.element(find.byType(TodayShareSection)));
+    expect(find.text(l10n.todayShareTabActive), findsNothing);
+    expect(find.text(l10n.todayShareTabDrafts), findsNothing);
+    expect(find.text(l10n.todayShareTabPaidToMe), findsOneWidget);
 
     await tester.tap(find.text('Taylor'));
     expect(tapped, isTrue);

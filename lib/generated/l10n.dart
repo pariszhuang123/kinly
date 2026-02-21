@@ -2425,10 +2425,10 @@ class S {
     );
   }
 
-  /// `You cannot include only yourself in this bill. Add at least one other person.`
+  /// `You're the only person selected for this bill. Add at least one other person.`
   String get shareCreateValidationCustomSinglePayer {
     return Intl.message(
-      'You cannot include only yourself in this bill. Add at least one other person.',
+      'You\'re the only person selected for this bill. Add at least one other person.',
       name: 'shareCreateValidationCustomSinglePayer',
       desc: '',
       args: [],
@@ -3995,6 +3995,16 @@ class S {
     return Intl.message(
       'Add context if helpful',
       name: 'harmonyCommentHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type @ to provide feedback to 1 housemate.`
+  String get harmonyFeedbackSingleHousemateHint {
+    return Intl.message(
+      'Type @ to provide feedback to 1 housemate.',
+      name: 'harmonyFeedbackSingleHousemateHint',
       desc: '',
       args: [],
     );

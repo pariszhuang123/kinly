@@ -9,7 +9,7 @@ void main() {
     final ids = HubRegistry.bodySections.map((e) => e.id).toList();
     expect(
       ids,
-      equals(['members', 'qr', 'preferences', 'house_norms', 'gratitude']),
+      equals(['members', 'qr', 'house_norms', 'preferences', 'gratitude']),
     );
   });
 }

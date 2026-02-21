@@ -86,7 +86,7 @@ class _HouseNormReportScreenState extends State<HouseNormReportScreen> {
     final theme = KinlyThemeAccess.of(context);
     final sections = theme.extension<KinlySections>();
     final colors = theme.colorScheme;
-    final palette = context.preferenceSection;
+    final palette = context.houseNormSection;
     final s = S.of(context);
 
     return KinlyScaffold(
@@ -397,7 +397,6 @@ class _HouseNormOwnerActions extends StatelessWidget {
             fullWidth: true,
             label: strings.houseNormRepublishCta,
             backgroundColor: palette.accent,
-            foregroundColor: palette.onAccent(),
             onPressed: state.isBusy ? null : () => _publish(context, strings),
           ),
         if (document.showPublishButton)
@@ -405,7 +404,6 @@ class _HouseNormOwnerActions extends StatelessWidget {
             fullWidth: true,
             label: strings.houseNormPublishCta,
             backgroundColor: palette.accent,
-            foregroundColor: palette.onAccent(),
             onPressed: state.isBusy ? null : () => _publish(context, strings),
           ),
       ],
@@ -413,13 +411,22 @@ class _HouseNormOwnerActions extends StatelessWidget {
   }
 
   Future<void> _publish(BuildContext context, S strings) async {
-    final ok = await context.read<HouseNormReportCubit>().publish();
+    final cubit = context.read<HouseNormReportCubit>();
+    final ok = await cubit.publish();
     if (!context.mounted) return;
     if (ok) {
       KinlySnackBar.showSuccess(context, strings.houseNormPublishSuccess);
       return;
     }
-    KinlySnackBar.showError(context, strings.houseNormPublishFailed);
+    final state = cubit.state;
+    final message =
+        state.status == HouseNormReportStatus.failure ? state.errorMessage : null;
+    KinlySnackBar.showError(
+      context,
+      (message != null && message.trim().isNotEmpty)
+          ? message
+          : strings.houseNormPublishFailed,
+    );
   }
 }
 
@@ -433,7 +440,7 @@ class _PublicUrlRow extends StatelessWidget {
     final s = S.of(context);
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
-    final palette = context.preferenceSection;
+    final palette = context.houseNormSection;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -538,7 +545,7 @@ class _HouseNormEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
-    final palette = context.preferenceSection;
+    final palette = context.houseNormSection;
 
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(
@@ -558,7 +565,6 @@ class _HouseNormEmpty extends StatelessWidget {
             fullWidth: true,
             label: S.of(context).houseNormDoneCta,
             backgroundColor: palette.accent,
-            foregroundColor: palette.onAccent(),
             onPressed: () => context.goNamed(AppRouteNames.today),
           ),
         ],

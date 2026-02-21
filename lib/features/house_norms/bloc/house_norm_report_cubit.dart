@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:kinly/contracts/house_norms/house_norm_publish_exception.dart';
 import 'package:kinly/contracts/house_norms/models.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 
@@ -38,7 +39,12 @@ class HouseNormReportCubit extends Cubit<HouseNormReportState> {
       }
       emit(HouseNormReportState.ready(document, isOwner: _isOwner));
     } catch (error) {
-      emit(HouseNormReportState.failure(error.toString(), isOwner: _isOwner));
+      emit(
+        HouseNormReportState.failure(
+          _resolveErrorMessage(error),
+          isOwner: _isOwner,
+        ),
+      );
     }
   }
 
@@ -80,8 +86,27 @@ class HouseNormReportCubit extends Cubit<HouseNormReportState> {
       emit(HouseNormReportState.ready(updated, isOwner: _isOwner));
       return true;
     } catch (error) {
-      emit(HouseNormReportState.failure(error.toString(), isOwner: _isOwner));
+      emit(
+        HouseNormReportState.failure(
+          _resolveErrorMessage(error),
+          isOwner: _isOwner,
+        ),
+      );
       return false;
     }
+  }
+
+  String _resolveErrorMessage(Object error) {
+    if (error is HouseNormPublishException) {
+      return error.message;
+    }
+    final text = error.toString().trim();
+    if (text.startsWith('Exception: ')) {
+      return text.substring('Exception: '.length).trim();
+    }
+    if (text.startsWith('StateError: ')) {
+      return text.substring('StateError: '.length).trim();
+    }
+    return text;
   }
 }

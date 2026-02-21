@@ -630,6 +630,7 @@
   "harmonyMoodThunderstorm": "Thunderstorm",
   "harmonyCommentLabel": "Optional note",
   "harmonyCommentHint": "Add context if helpful",
+  "harmonyFeedbackSingleHousemateHint": "Type @ to provide feedback to 1 housemate.",
   "harmonyShareLabel": "Visible to everyone in the home",
   "harmonySubmitCta": "Save",
   "harmonySubmitSuccess": "Saved",

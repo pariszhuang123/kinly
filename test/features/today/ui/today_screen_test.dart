@@ -209,6 +209,64 @@ void main() {
     expect(find.text('Take out trash'), findsOneWidget);
   });
 
+  testWidgets('shows share header when only tasks exist', (tester) async {
+    when(() => todayBloc.state).thenReturn(
+      TodayState.loaded(
+        activeTasks: const [
+          TodayFlowTask(
+            id: '1',
+            title: 'Take out trash',
+            state: ChoreState.active,
+          ),
+        ],
+        draftTasks: const [],
+        shareOwed: const [],
+        sharePaidToMe: const [],
+        shareDrafts: const [],
+      ),
+    );
+
+    await tester.pumpWidget(buildApp(bundle: _FakeSvgBundle()));
+    await tester.pump();
+
+    expect(find.text(S.current.todayFlowSectionTitle), findsOneWidget);
+    expect(find.text(S.current.todayShareSectionTitle), findsOneWidget);
+  });
+
+  testWidgets('shows tasks header when only share exists', (tester) async {
+    when(() => todayBloc.state).thenReturn(
+      TodayState.loaded(
+        activeTasks: const [],
+        draftTasks: const [],
+        shareOwed: [
+          TodayShareOwed(
+            payerUserId: 'payer-1',
+            displayName: 'Payer',
+            totalOwedCents: 1200,
+            items: [
+              TodayShareOwedItem(
+                expenseId: 'expense-1',
+                description: 'Test expense',
+                amountCents: 1200,
+                recurrenceEvery: null,
+                recurrenceUnit: null,
+                startDate: DateTime(2024, 1, 1),
+              ),
+            ],
+          ),
+        ],
+        sharePaidToMe: const [],
+        shareDrafts: const [],
+      ),
+    );
+
+    await tester.pumpWidget(buildApp(bundle: _FakeSvgBundle()));
+    await tester.pump();
+
+    expect(find.text(S.current.todayFlowSectionTitle), findsOneWidget);
+    expect(find.text(S.current.todayShareSectionTitle), findsOneWidget);
+  });
+
   testWidgets('shows empty state card when no tasks', (tester) async {
     when(() => todayBloc.state).thenReturn(
       const TodayState.loaded(

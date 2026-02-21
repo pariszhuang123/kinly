@@ -26,6 +26,7 @@ class KinlyWeatherSelectorRow<T> extends StatelessWidget {
     required this.selectedValue,
     required this.onChanged,
     this.showLabels = false,
+    this.showLabelOnSelected = false,
     this.spacing,
     this.runSpacing,
     this.iconSize = 44,
@@ -36,6 +37,7 @@ class KinlyWeatherSelectorRow<T> extends StatelessWidget {
   final T? selectedValue;
   final ValueChanged<T> onChanged;
   final bool showLabels;
+  final bool showLabelOnSelected;
   final double? spacing;
   final double? runSpacing;
   final double iconSize;
@@ -68,6 +70,7 @@ class KinlyWeatherSelectorRow<T> extends StatelessWidget {
       selectedValues: selectedValue != null ? <T>{selectedValue as T} : <T>{},
       onToggle: onChanged,
       showLabels: showLabels,
+      showLabelOnSelected: showLabelOnSelected,
       itemVisualSize: iconSize + (spacingTokens?.xxs ?? 4.0) * 2,
       spacing: spacing,
       runSpacing: runSpacing,

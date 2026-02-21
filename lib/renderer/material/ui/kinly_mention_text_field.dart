@@ -180,7 +180,7 @@ class _KinlyMentionTextFieldState extends State<KinlyMentionTextField> {
                     ),
                   ),
                 ],
-                if (!canSelectMore)
+                if (widget.maxSelections > 1 && !canSelectMore)
                   Padding(
                     padding: EdgeInsets.only(top: spacing?.xs ?? 4),
                     child: Text(

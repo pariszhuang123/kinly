@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/inputs/kinly_text_field.dart';
@@ -63,10 +64,15 @@ class _HouseNormSectionScreenState extends State<HouseNormSectionScreen> {
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
+    final palette = context.houseNormSection;
     final s = S.of(context);
 
     return KinlyScaffold(
-      appBar: KinlyAppBar(title: Text(widget.args.title)),
+      appBar: KinlyAppBar(
+        title: Text(widget.args.title),
+        backgroundColor: palette.background,
+        foregroundColor: palette.icon,
+      ),
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: Padding(
@@ -89,6 +95,7 @@ class _HouseNormSectionScreenState extends State<HouseNormSectionScreen> {
               KinlyFilledButton.text(
                 fullWidth: true,
                 label: s.houseNormSectionSaveCta,
+                backgroundColor: palette.accent,
                 onPressed: _isSaving ? null : _save,
               ),
             ],

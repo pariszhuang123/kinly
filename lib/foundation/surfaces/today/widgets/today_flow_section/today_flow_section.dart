@@ -46,7 +46,7 @@ class _TodayFlowSectionState extends State<TodayFlowSection> {
           hasReceived: false,
           hasDrafts: widget.draftTasks.isNotEmpty,
         ) ??
-        TodaySectionTabType.active; // fallback, won't render if both empty
+        TodaySectionTabType.active;
   }
 
   @override
@@ -85,17 +85,12 @@ class _TodayFlowSectionState extends State<TodayFlowSection> {
       hasDrafts: widget.draftTasks.isNotEmpty,
     );
 
-    // No active or draft tasks → hide section
-    if (tabs.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
     const flowIconSize = 28.0;
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (tabs.length > 1) ...[
+        if (tabs.isNotEmpty) ...[
           KinlyTabBar<TodaySectionTabType>(
             tabs: {
               if (widget.activeTasks.isNotEmpty)

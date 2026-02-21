@@ -225,6 +225,7 @@ class _MoodSelector extends StatelessWidget {
           selectedValue: state.selectedMood,
           onChanged: (mood) => context.read<HarmonyCubit>().selectMood(mood),
           showLabels: false,
+          showLabelOnSelected: true,
         );
       },
     );
@@ -264,9 +265,11 @@ class _CommentBox extends StatelessWidget {
           label: s.harmonyCommentLabel,
           inputKey: const ValueKey('harmony_mentions_input'),
           hintText:
-              canMention
-                  ? '${s.harmonyCommentHint} (${s.mentionFieldHint})'
-                  : s.harmonyCommentHint,
+              isNegative && canMention
+                  ? s.harmonyFeedbackSingleHousemateHint
+                  : (canMention
+                        ? '${s.harmonyCommentHint} (${s.mentionFieldHint})'
+                        : s.harmonyCommentHint),
           maxLines: 4,
           onSelectedChanged:
               (next) => context.read<HarmonyCubit>().setMentions(next),

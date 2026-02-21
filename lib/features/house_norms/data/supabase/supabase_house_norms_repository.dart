@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:kinly/contracts/house_norms/models.dart';
+import 'package:kinly/contracts/house_norms/house_norm_publish_exception.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 
 class SupabaseHouseNormsRepository implements HouseNormsRepository {
@@ -90,23 +93,32 @@ class SupabaseHouseNormsRepository implements HouseNormsRepository {
     required String homeId,
     required String locale,
   }) async {
-    final response = await _client.rpc(
-      'house_norms_publish_for_home',
-      params: {
-        'p_home_id': homeId,
-        'p_locale': locale,
-      },
-    );
-    final payload = _coerceMap(response);
-    if (payload == null) {
-      throw StateError('Missing house norms publish response.');
+    try {
+      final response = await _client.rpc(
+        'house_norms_publish_for_home',
+        params: {
+          'p_home_id': homeId,
+          'p_locale': locale,
+        },
+      );
+      final payload = _coerceMap(response);
+      if (payload == null) {
+        throw StateError('Missing house norms publish response.');
+      }
+      final refreshed = await getForHome(homeId: homeId, locale: locale);
+      if (refreshed == null) {
+        // Fall back to payload shape if read-after-write is unavailable.
+        return HouseNormDocument.fromJson(homeId: homeId, json: payload);
+      }
+      return refreshed;
+    } on AuthException catch (error) {
+      throw HouseNormPublishException(
+        code: HouseNormPublishErrorCode.unauthorized,
+        message: error.message,
+      );
+    } on PostgrestException catch (error) {
+      throw _mapPublishError(error);
     }
-    final refreshed = await getForHome(homeId: homeId, locale: locale);
-    if (refreshed == null) {
-      // Fall back to payload shape if read-after-write is unavailable.
-      return HouseNormDocument.fromJson(homeId: homeId, json: payload);
-    }
-    return refreshed;
   }
 
   Map<String, dynamic>? _coerceMap(dynamic response) {
@@ -119,4 +131,51 @@ class SupabaseHouseNormsRepository implements HouseNormsRepository {
     }
     return null;
   }
+
+  HouseNormPublishException _mapPublishError(PostgrestException error) {
+    final parsed = _parseErrorJson(error.message);
+    final code = switch (parsed.code) {
+      'HOUSE_NORMS_PUBLISH_ARTIFACT_FAILED' =>
+        HouseNormPublishErrorCode.artifactSyncFailed,
+      'HOUSE_NORMS_PUBLISH_REVALIDATE_FAILED' =>
+        HouseNormPublishErrorCode.revalidateFailed,
+      'FORBIDDEN' => HouseNormPublishErrorCode.forbidden,
+      'UNAUTHORIZED' => HouseNormPublishErrorCode.unauthorized,
+      _ => HouseNormPublishErrorCode.unknown,
+    };
+    return HouseNormPublishException(
+      code: code,
+      message: parsed.message,
+      details: parsed.details,
+    );
+  }
+
+  _Parsed _parseErrorJson(String message) {
+    try {
+      final decoded = jsonDecode(message);
+      if (decoded is Map<String, dynamic>) {
+        return _Parsed(
+          code: ((decoded['code'] as String?) ?? '').toUpperCase(),
+          message: (decoded['message'] as String?) ?? message,
+          details:
+              decoded['details'] is Map<String, dynamic>
+                  ? (decoded['details'] as Map<String, dynamic>)
+                  : null,
+        );
+      }
+    } catch (_) {}
+    return _Parsed(code: '', message: message, details: null);
+  }
+}
+
+class _Parsed {
+  _Parsed({
+    required this.code,
+    required this.message,
+    required this.details,
+  });
+
+  final String code;
+  final String message;
+  final Map<String, dynamic>? details;
 }

@@ -28,7 +28,7 @@ class HouseNormEditScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>();
-    final palette = context.preferenceSection;
+    final palette = context.houseNormSection;
     final s = S.of(context);
 
     return KinlyScaffold(
