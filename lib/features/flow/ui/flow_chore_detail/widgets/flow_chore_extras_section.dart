@@ -193,7 +193,7 @@ class _ExpectationPhotoSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               child: AspectRatio(
                 aspectRatio: 4 / 3,
-                child: Image.network(photoUrl, fit: BoxFit.cover),
+                child: Image.network(photoUrl, fit: BoxFit.cover, cacheWidth: 800),
               ),
             ),
           ),

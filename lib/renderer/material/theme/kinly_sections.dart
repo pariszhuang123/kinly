@@ -93,7 +93,14 @@ class KinlySections extends ThemeExtension<KinlySections> {
 
   /// Distinct house-norm palette derived from existing section tokens.
   /// Keeps visual consistency while separating it from personal preferences.
-  SectionColors get houseNorms => SectionColors.lerp(preference, pulse, 0.4);
+  /// The accent is darkened so [SectionColorsForeground.onAccent] resolves to
+  /// white instead of black, keeping the filled-button legible in light mode.
+  SectionColors get houseNorms {
+    final base = SectionColors.lerp(preference, pulse, 0.4);
+    return base.copyWith(
+      accent: Color.lerp(base.accent, const Color(0xFF000000), 0.18)!,
+    );
+  }
 }
 
 extension KinlySectionsAccess on BuildContext {

@@ -22,7 +22,7 @@ class ShareRouteContext {
   final String homeId;
 }
 
-typedef ShareRouteContextResolver = ShareRouteContext Function();
+typedef ShareRouteContextResolver = ShareRouteContext? Function();
 
 List<GoRoute> buildShareRoutes({
   required ShareRouteContextResolver resolveContext,
@@ -33,6 +33,13 @@ List<GoRoute> buildShareRoutes({
       name: AppRouteNames.shareCreatedList,
       builder: (_, state) {
         final membership = resolveContext();
+        if (membership == null) {
+          return routeFallback(
+            'shareCreatedList',
+            state: state,
+            reason: 'active membership missing while opening Share list',
+          );
+        }
         final draftsOnly = state.extra is bool ? state.extra as bool : false;
         return ShareCreatedListProvider(
           homeId: membership.homeId,
@@ -44,8 +51,15 @@ List<GoRoute> buildShareRoutes({
     GoRoute(
       path: AppRoutePaths.shareCreate,
       name: AppRouteNames.shareCreate,
-      builder: (_, __) {
+      builder: (_, state) {
         final membership = resolveContext();
+        if (membership == null) {
+          return routeFallback(
+            'shareCreate',
+            state: state,
+            reason: 'active membership missing while opening Share create',
+          );
+        }
         return ShareCreateProvider(
           homeId: membership.homeId,
           expensesRepository: sl<ExpensesRepository>(),
@@ -58,6 +72,13 @@ List<GoRoute> buildShareRoutes({
       name: AppRouteNames.shareDraftEdit,
       builder: (_, state) {
         final membership = resolveContext();
+        if (membership == null) {
+          return routeFallback(
+            'shareDraftEdit',
+            state: state,
+            reason: 'active membership missing while opening Share draft',
+          );
+        }
         final expenseId = state.pathParameters['expenseId']!;
         final args = state.extra as ShareEditRouteArgs?;
         return ShareEditProvider(

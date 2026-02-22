@@ -46,8 +46,17 @@ Widget _buildTodayContentImpl(
     onMemberCapSecondary:
         () => context.read<TodayBloc>().add(const TodayMemberCapDismissed()),
     onPreferencePrompt: () => context.pushNamed(AppRouteNames.preferenceOnboarding),
-    onHouseNormsPrompt:
-        () => context.pushNamed(AppRouteNames.houseNormsOnboarding),
+    onHouseNormsPrompt: () {
+      final isOwner = state.profile?.isOwner == true;
+      final routeName =
+          isOwner
+              ? AppRouteNames.houseNormsOnboarding
+              : AppRouteNames.houseNormsReport;
+      context.pushNamed(routeName).then((_) {
+        if (!context.mounted) return;
+        context.read<TodayBloc>().add(const TodayRefreshed());
+      });
+    },
     onInvitePrimary: (config) async {
       final shared = await stateful._shareInvite(
         context,

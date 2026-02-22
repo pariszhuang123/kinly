@@ -383,7 +383,6 @@ class _HouseNormOwnerActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = KinlyThemeAccess.of(context).extension<Spacing>();
-    final strings = S.of(context);
     final hasPublicUrl =
         document.showPublicUrl && (document.publicUrl?.isNotEmpty ?? false);
 
@@ -408,25 +407,6 @@ class _HouseNormOwnerActions extends StatelessWidget {
         //     onPressed: state.isBusy ? null : () => _publish(context, strings),
         //   ),
       ],
-    );
-  }
-
-  Future<void> _publish(BuildContext context, S strings) async {
-    final cubit = context.read<HouseNormReportCubit>();
-    final ok = await cubit.publish();
-    if (!context.mounted) return;
-    if (ok) {
-      KinlySnackBar.showSuccess(context, strings.houseNormPublishSuccess);
-      return;
-    }
-    final state = cubit.state;
-    final message =
-        state.status == HouseNormReportStatus.failure ? state.errorMessage : null;
-    KinlySnackBar.showError(
-      context,
-      (message != null && message.trim().isNotEmpty)
-          ? message
-          : strings.houseNormPublishFailed,
     );
   }
 }

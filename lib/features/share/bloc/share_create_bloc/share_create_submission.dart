@@ -146,7 +146,10 @@ extension _ShareCreateBlocSubmission on ShareCreateBloc {
         paywallRequest: PaywallGateRequest(
           requestId: _uuid.v4(),
           homeId: _homeId,
-          source: PaywallSources.shareCreateExpense,
+          source:
+              code == ExpenseErrorCode.paywallExpensePhotosCap
+                  ? PaywallSources.expensePhotoCap
+                  : PaywallSources.shareCreateExpense,
           action: PaywallRetryAction.submit,
           tick: tick,
           triggers: triggers,

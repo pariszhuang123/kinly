@@ -13,6 +13,7 @@ class KinlyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      restorationScopeId: 'kinly_app',
       onGenerateTitle: (context) => S.of(context).app_title,
       routerConfig: routerConfig,
       builder: builder,

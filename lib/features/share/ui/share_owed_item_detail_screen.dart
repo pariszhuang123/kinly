@@ -111,6 +111,7 @@ class ShareOwedItemDetailScreen extends StatelessWidget {
                         child: Image.network(
                           photoUrl,
                           fit: BoxFit.cover,
+                          cacheWidth: 800,
                           errorBuilder:
                               (context, error, stackTrace) =>
                                   const SizedBox.shrink(),

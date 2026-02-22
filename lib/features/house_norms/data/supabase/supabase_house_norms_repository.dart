@@ -121,6 +121,14 @@ class SupabaseHouseNormsRepository implements HouseNormsRepository {
     }
   }
 
+  @override
+  Future<void> recordView({required String homeId}) async {
+    await _client.rpc(
+      'house_norms_record_view',
+      params: {'p_home_id': homeId},
+    );
+  }
+
   Map<String, dynamic>? _coerceMap(dynamic response) {
     if (response is Map<String, dynamic>) return response;
     if (response is Map) return response.cast<String, dynamic>();

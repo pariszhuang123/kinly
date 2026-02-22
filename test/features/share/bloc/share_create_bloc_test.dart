@@ -8,6 +8,7 @@ import 'package:kinly/features/paywall/paywall.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_retry_action.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_gate_status.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_trigger.dart';
+import 'package:kinly/core/ui/paywall/paywall_sources.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/home/home.dart';
@@ -1247,6 +1248,11 @@ void main() {
               )
               .having((s) => s.paywallRequest?.homeId, 'homeId', 'home-1')
               .having(
+                (s) => s.paywallRequest?.source,
+                'source',
+                PaywallSources.shareCreateExpense,
+              )
+              .having(
                 (s) => s.paywallRequest?.triggers,
                 'triggers',
                 equals(const {PaywallTrigger.expenseActiveCap}),
@@ -1292,6 +1298,11 @@ void main() {
                 PaywallRetryAction.submit,
               )
               .having((s) => s.paywallRequest?.homeId, 'homeId', 'home-1')
+              .having(
+                (s) => s.paywallRequest?.source,
+                'source',
+                PaywallSources.expensePhotoCap,
+              )
               .having(
                 (s) => s.paywallRequest?.triggers,
                 'triggers',

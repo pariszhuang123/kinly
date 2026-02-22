@@ -218,7 +218,13 @@ List<_PaywallBenefitGroup> _resolvePrimaryGroups(Set<PaywallTrigger> triggers) {
         break;
     }
   }
-  return _groupPriority.where(groups.contains).toList(growable: false);
+  final ordered = <_PaywallBenefitGroup>[];
+  if (groups.remove(_PaywallBenefitGroup.expensePhotos)) {
+    // Expense-photo caps should lead only when they are explicitly triggered.
+    ordered.add(_PaywallBenefitGroup.expensePhotos);
+  }
+  ordered.addAll(_groupPriority.where(groups.contains));
+  return ordered;
 }
 
 List<String> _orderedBenefitsForGroups(
@@ -239,18 +245,14 @@ List<String> orderPaywallBenefits({
   required PaywallStrings strings,
   required Set<PaywallTrigger> triggers,
 }) {
-  final prefersExpensePhotos = triggers.contains(PaywallTrigger.expensePhotosCap);
-
   final benefits = <_Benefit>[
     _Benefit(_PaywallBenefitGroup.flow, strings.bulletFlows),
-    if (!prefersExpensePhotos)
-      _Benefit(
-        _PaywallBenefitGroup.flowPhotos,
-        strings.bulletFlowPhotos ?? strings.bulletPhotos,
-      ),
+    _Benefit(
+      _PaywallBenefitGroup.flowPhotos,
+      strings.bulletFlowPhotos ?? strings.bulletPhotos,
+    ),
     _Benefit(_PaywallBenefitGroup.shoppingPhotos, strings.bulletShoppingPhotos),
-    if (prefersExpensePhotos)
-      _Benefit(_PaywallBenefitGroup.expensePhotos, strings.bulletPhotos),
+    _Benefit(_PaywallBenefitGroup.expensePhotos, strings.bulletExpensePhotos),
     _Benefit(_PaywallBenefitGroup.expenses, strings.bulletShares),
     _Benefit(_PaywallBenefitGroup.members, strings.bulletMembers),
   ];

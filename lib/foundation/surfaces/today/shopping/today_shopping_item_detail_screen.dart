@@ -86,7 +86,7 @@ class TodayShoppingItemDetailScreen extends StatelessWidget {
                 tag: heroTag,
                 child: AspectRatio(
                   aspectRatio: 4 / 3,
-                  child: Image.network(resolvedPhotoUrl, fit: BoxFit.cover),
+                  child: Image.network(resolvedPhotoUrl, fit: BoxFit.cover, cacheWidth: 800),
                 ),
               ),
             ),

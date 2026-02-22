@@ -55,6 +55,7 @@ class _TodayShoppingItemEditorScreenState
       bulletMembers: s.paywallBulletMembers,
       bulletFlows: s.paywallBulletFlows,
       bulletPhotos: s.paywallBulletPhotos,
+      bulletExpensePhotos: s.paywallFeatureUnlimitedSharedExpensePhotos,
       bulletShoppingPhotos: s.paywallBulletShoppingPhotos,
       bulletShares: s.paywallBulletShares,
       unlimitedLabel: s.paywallSubtitle,

@@ -33,7 +33,7 @@ class TodayRouteContext {
   final String homeId;
 }
 
-typedef TodayRouteContextResolver = TodayRouteContext Function();
+typedef TodayRouteContextResolver = TodayRouteContext? Function();
 
 List<GoRoute> buildTodayRoutes({
   required TodayRouteContextResolver resolveContext,
@@ -44,6 +44,18 @@ List<GoRoute> buildTodayRoutes({
       name: AppRouteNames.today,
       pageBuilder: (_, state) {
         final membership = resolveContext();
+        if (membership == null) {
+          return CustomTransitionPage<void>(
+            key: state.pageKey,
+            child: routeFallback(
+              'today',
+              state: state,
+              reason: 'active membership missing while Today is restoring',
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) => child,
+          );
+        }
         final navExtra = homeTabNavExtraFrom(state.extra);
         final begin = homeTabEntryOffset(
           targetIndex: homeTabIndexToday,
@@ -107,10 +119,18 @@ List<GoRoute> buildTodayRoutes({
       name: AppRouteNames.todayShoppingList,
       builder: (_, state) {
         final args = state.extra as TodayShoppingRouteArgs?;
+        final routeContext = resolveContext();
         final homeId =
             args?.homeId ??
             state.uri.queryParameters['homeId'] ??
-            resolveContext().homeId;
+            routeContext?.homeId;
+        if (homeId == null) {
+          return routeFallback(
+            'todayShoppingList',
+            state: state,
+            reason: 'homeId unavailable while active membership is unresolved',
+          );
+        }
         return TodayShoppingListProvider(
           homeId: homeId,
           shoppingListRepository: sl<ShoppingListRepository>(),
@@ -125,10 +145,18 @@ List<GoRoute> buildTodayRoutes({
       name: AppRouteNames.todayShoppingCreate,
       builder: (_, state) {
         final args = state.extra as TodayShoppingRouteArgs?;
+        final routeContext = resolveContext();
         final homeId =
             args?.homeId ??
             state.uri.queryParameters['homeId'] ??
-            resolveContext().homeId;
+            routeContext?.homeId;
+        if (homeId == null) {
+          return routeFallback(
+            'todayShoppingCreate',
+            state: state,
+            reason: 'homeId unavailable while active membership is unresolved',
+          );
+        }
         return TodayShoppingItemProvider(
           homeId: homeId,
           shoppingListRepository: sl<ShoppingListRepository>(),
@@ -141,10 +169,18 @@ List<GoRoute> buildTodayRoutes({
       name: AppRouteNames.todayShoppingEdit,
       builder: (_, state) {
         final args = state.extra as TodayShoppingRouteArgs?;
+        final routeContext = resolveContext();
         final homeId =
             args?.homeId ??
             state.uri.queryParameters['homeId'] ??
-            resolveContext().homeId;
+            routeContext?.homeId;
+        if (homeId == null) {
+          return routeFallback(
+            'todayShoppingEdit',
+            state: state,
+            reason: 'homeId unavailable while active membership is unresolved',
+          );
+        }
         final itemId = state.pathParameters['itemId'];
         if (itemId == null || itemId.isEmpty) {
           return routeFallback(
@@ -165,8 +201,16 @@ List<GoRoute> buildTodayRoutes({
       path: AppRoutePaths.todayShoppingDetail,
       name: AppRouteNames.todayShoppingDetail,
       builder: (_, state) {
+        final routeContext = resolveContext();
         final homeId =
-            state.uri.queryParameters['homeId'] ?? resolveContext().homeId;
+            state.uri.queryParameters['homeId'] ?? routeContext?.homeId;
+        if (homeId == null) {
+          return routeFallback(
+            'todayShoppingDetail',
+            state: state,
+            reason: 'homeId unavailable while active membership is unresolved',
+          );
+        }
         final itemId = state.pathParameters['itemId'];
         if (itemId == null || itemId.isEmpty) {
           return routeFallback(

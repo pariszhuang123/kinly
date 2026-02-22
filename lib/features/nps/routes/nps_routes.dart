@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/nps/nps.dart';
@@ -11,7 +12,7 @@ class NpsRouteContext {
   final String homeId;
 }
 
-typedef NpsRouteContextResolver = NpsRouteContext Function();
+typedef NpsRouteContextResolver = NpsRouteContext? Function();
 
 List<GoRoute> buildNpsRoutes({
   required NpsRouteContextResolver resolveContext,
@@ -20,8 +21,15 @@ List<GoRoute> buildNpsRoutes({
     GoRoute(
       path: AppRoutePaths.nps,
       name: AppRouteNames.nps,
-      builder: (_, __) {
+      builder: (_, state) {
         final membership = resolveContext();
+        if (membership == null) {
+          return routeFallback(
+            'nps',
+            state: state,
+            reason: 'active membership missing while NPS is restoring',
+          );
+        }
         return NpsProvider(
           homeId: membership.homeId,
           moodRepository: sl<MoodRepository>(),

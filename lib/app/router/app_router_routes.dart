@@ -7,9 +7,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ...buildFlowRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;
-        if (membership == null) {
-          throw StateError('Flow routes require an active membership.');
-        }
+        if (membership == null) return null;
         return FlowRouteContext(
           homeId: membership.homeId,
           userId: membership.userId,
@@ -19,18 +17,14 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ...buildShareRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;
-        if (membership == null) {
-          throw StateError('Share routes require an active membership.');
-        }
+        if (membership == null) return null;
         return ShareRouteContext(homeId: membership.homeId);
       },
     ),
     ...buildProfileSettingsRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;
-        if (membership == null) {
-          throw StateError('Profile settings requires an active membership.');
-        }
+        if (membership == null) return null;
         return ProfileSettingsRouteContext(homeId: membership.homeId);
       },
       onMembershipRefresh:
@@ -40,27 +34,21 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ...buildProfileSettingsDetailRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;
-        if (membership == null) {
-          throw StateError('Profile settings requires an active membership.');
-        }
+        if (membership == null) return null;
         return ProfileSettingsDetailRouteContext(homeId: membership.homeId);
       },
     ),
     ...buildNpsRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;
-        if (membership == null) {
-          throw StateError('NPS requires an active membership.');
-        }
+        if (membership == null) return null;
         return NpsRouteContext(homeId: membership.homeId);
       },
     ),
     ...buildHarmonyRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;
-        if (membership == null) {
-          throw StateError('Harmony requires an active membership.');
-        }
+        if (membership == null) return null;
         return HarmonyRouteContext(homeId: membership.homeId);
       },
     ),
@@ -82,9 +70,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
       resolveContext: () {
         final membership = authBloc.state.membership;
         final userId = authBloc.state.userId;
-        if (membership == null || userId == null) {
-          throw StateError('House norms require an active membership.');
-        }
+        if (membership == null || userId == null) return null;
         return HouseNormRouteContext(
           homeId: membership.homeId,
           userId: userId,
@@ -99,9 +85,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ...buildExploreRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;
-        if (membership == null) {
-          throw StateError('Explore requires an active membership.');
-        }
+        if (membership == null) return null;
         return ExploreRouteContext(
           homeId: membership.homeId,
           userId: membership.userId,
@@ -111,18 +95,14 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
     ...buildHubRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;
-        if (membership == null) {
-          throw StateError('Hub requires an active membership.');
-        }
+        if (membership == null) return null;
         return HubRouteContext(homeId: membership.homeId);
       },
     ),
     ...buildTodayRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;
-        if (membership == null) {
-          throw StateError('Today requires an active membership.');
-        }
+        if (membership == null) return null;
         return TodayRouteContext(homeId: membership.homeId);
       },
     ),

@@ -24,6 +24,9 @@ void main() {
       ),
     ).thenAnswer((_) async => _buildHouseNormDocument(status: 'published'));
     when(
+      () => repository.recordView(homeId: any(named: 'homeId')),
+    ).thenAnswer((_) async {});
+    when(
       () => repository.editSectionText(
         homeId: any(named: 'homeId'),
         locale: any(named: 'locale'),
@@ -144,6 +147,17 @@ void main() {
   );
 
   blocTest<HouseNormReportCubit, HouseNormReportState>(
+    'load records member view for non-owner when document exists',
+    build: () => buildCubit(isOwner: false),
+    act: (cubit) => cubit.load(),
+    verify: (_) {
+      verify(
+        () => repository.recordView(homeId: any(named: 'homeId')),
+      ).called(1);
+    },
+  );
+
+  blocTest<HouseNormReportCubit, HouseNormReportState>(
     'publish failure emits mapped supabase message',
     build: () {
       when(
@@ -242,5 +256,7 @@ HouseNormDocument _buildHouseNormDocument({required String status}) {
     showPublishButton: status != 'published',
     showRepublishButton: status == 'out_of_date',
     showPublicUrl: status == 'published' || status == 'out_of_date',
+    memberViewedAt: null,
+    showMemberReviewCard: false,
   );
 }

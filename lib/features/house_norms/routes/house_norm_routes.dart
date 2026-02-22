@@ -26,7 +26,7 @@ class HouseNormRouteContext {
   final bool isOwner;
 }
 
-typedef HouseNormRouteContextResolver = HouseNormRouteContext Function();
+typedef HouseNormRouteContextResolver = HouseNormRouteContext? Function();
 
 List<GoRoute> buildHouseNormRoutes({
   required HouseNormRouteContextResolver resolveContext,
@@ -35,8 +35,16 @@ List<GoRoute> buildHouseNormRoutes({
     GoRoute(
       path: AppRoutePaths.houseNormsOnboarding,
       name: AppRouteNames.houseNormsOnboarding,
-      builder: (_, __) {
+      builder: (_, state) {
         final context = resolveContext();
+        if (context == null) {
+          return routeFallback(
+            'houseNormsOnboarding',
+            state: state,
+            reason:
+                'active membership missing while House norms onboarding restores',
+          );
+        }
         return HouseNormOnboardingProvider(
           repository: sl<HouseNormsRepository>(),
           homeId: context.homeId,
@@ -49,6 +57,13 @@ List<GoRoute> buildHouseNormRoutes({
       name: AppRouteNames.houseNormsReport,
       builder: (_, state) {
         final context = resolveContext();
+        if (context == null) {
+          return routeFallback(
+            'houseNormsReport',
+            state: state,
+            reason: 'active membership missing while House norms report restores',
+          );
+        }
         final extra = state.extra;
         final args = extra is HouseNormReportNavigationArgs ? extra : null;
         return HouseNormReportProvider(
@@ -64,8 +79,15 @@ List<GoRoute> buildHouseNormRoutes({
     GoRoute(
       path: AppRoutePaths.houseNormsEdit,
       name: AppRouteNames.houseNormsEdit,
-      builder: (_, __) {
+      builder: (_, state) {
         final context = resolveContext();
+        if (context == null) {
+          return routeFallback(
+            'houseNormsEdit',
+            state: state,
+            reason: 'active membership missing while House norms edit restores',
+          );
+        }
         return HouseNormEditProvider(
           homeId: context.homeId,
           locale: _localeBase(),

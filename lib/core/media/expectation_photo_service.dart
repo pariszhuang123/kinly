@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:io';
 
+import 'package:flutter/painting.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,6 +34,9 @@ class ExpectationPhotoService {
   int _captureAttempt = 0;
   static const String _pendingCaptureKey = 'expectation_photo.pending_capture_v1';
   static const Duration _pendingCaptureTtl = Duration(hours: 1);
+  static const double _captureMaxWidth = 1400;
+  static const double _captureMaxHeight = 1050;
+  static const int _captureImageQuality = 70;
 
   Future<MediaUploadResult> captureAndUpload({
     required String homeId,
@@ -65,6 +69,8 @@ class ExpectationPhotoService {
       throw CameraPermissionException(permanentlyDenied: false);
     }
 
+    _trimImageCacheBeforeCameraLaunch();
+
     await _persistPendingCapture(
       homeId: homeId,
       choreId: choreId,
@@ -75,9 +81,9 @@ class ExpectationPhotoService {
     try {
       picked = await _picker.pickImage(
         source: ImageSource.camera,
-        maxWidth: 1600,
-        maxHeight: 1200,
-        imageQuality: 75,
+        maxWidth: _captureMaxWidth,
+        maxHeight: _captureMaxHeight,
+        imageQuality: _captureImageQuality,
         requestFullMetadata: false,
       );
     } finally {
@@ -166,13 +172,12 @@ class ExpectationPhotoService {
     required int captureAttempt,
     required String source,
   }) async {
-    final bytes = await picked.readAsBytes();
     final result = await _mediaRepository.uploadExpectationPhoto(
       homeId: homeId,
       choreId: choreId,
       rootSegment: rootSegment,
       featureSegment: featureSegment,
-      bytes: Uint8List.fromList(bytes),
+      file: File(picked.path),
     );
     _logger.info(
       'Photo capture uploaded successfully. attempt=$captureAttempt source=$source '
@@ -232,6 +237,25 @@ class ExpectationPhotoService {
       );
     }
     return null;
+  }
+
+  void _trimImageCacheBeforeCameraLaunch() {
+    try {
+      final imageCache = PaintingBinding.instance.imageCache;
+      imageCache.clear();
+      imageCache.clearLiveImages();
+      _logger.debug(
+        'Trimmed Flutter image cache before camera launch.',
+        tag: 'PhotoCapture',
+      );
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to trim image cache before camera launch.',
+        tag: 'PhotoCapture',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   Future<bool> _ensureCameraPermission() async {

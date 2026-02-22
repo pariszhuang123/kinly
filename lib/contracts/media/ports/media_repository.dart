@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'dart:io';
 
 /// Uploads media files to backing storage and returns both the stored object
 /// path and a public URL constructed from it.
@@ -16,12 +16,13 @@ abstract class MediaRepository {
   /// Uploads an expectation photo for a chore or related flow feature.
   ///
   /// The caller should supply the scoped home/chore IDs so the path is
-  /// namespaced and obfuscated.
+  /// namespaced and obfuscated. Accepts a [File] to enable streamed uploads
+  /// without buffering the entire image in memory.
   Future<MediaUploadResult> uploadExpectationPhoto({
     required String homeId,
     String? choreId,
     String rootSegment = 'flow',
     String featureSegment = 'expectations',
-    required Uint8List bytes,
+    required File file,
   });
 }

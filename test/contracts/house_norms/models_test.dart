@@ -112,6 +112,25 @@ void main() {
       );
     });
 
+    test('parses member review metadata from payload', () {
+      final document = HouseNormDocument.fromJson(
+        homeId: 'home-1',
+        json: const {
+          'status': 'published',
+          'member_viewed_at': '2026-01-02T03:04:05Z',
+          'show_member_review_card': true,
+          'published_content': {
+            'summary': {'title': 'House norms', 'subtitle': '', 'framing': ''},
+            'context': '',
+            'sections': [],
+          },
+        },
+      );
+
+      expect(document.memberViewedAt, DateTime.parse('2026-01-02T03:04:05Z'));
+      expect(document.showMemberReviewCard, isTrue);
+    });
+
     test('display content falls back to published then draft', () {
       final publishedOnly = HouseNormDocument(
         homeId: 'home-1',
@@ -146,6 +165,8 @@ void main() {
         showPublishButton: false,
         showRepublishButton: false,
         showPublicUrl: false,
+        memberViewedAt: null,
+        showMemberReviewCard: false,
       );
 
       expect(

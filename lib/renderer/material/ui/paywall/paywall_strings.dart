@@ -5,6 +5,7 @@ class PaywallStrings {
   final String bulletFlows;
   final String? bulletFlowPhotos;
   final String bulletPhotos;
+  final String bulletExpensePhotos;
   final String bulletShoppingPhotos;
   final String bulletShares;
   final String unlimitedLabel;
@@ -27,6 +28,7 @@ class PaywallStrings {
     required this.bulletFlows,
     this.bulletFlowPhotos,
     required this.bulletPhotos,
+    required this.bulletExpensePhotos,
     required this.bulletShoppingPhotos,
     required this.bulletShares,
     required this.unlimitedLabel,
@@ -50,6 +52,7 @@ class PaywallStrings {
     String? bulletFlows,
     String? bulletFlowPhotos,
     String? bulletPhotos,
+    String? bulletExpensePhotos,
     String? bulletShoppingPhotos,
     String? bulletShares,
     String? unlimitedLabel,
@@ -72,6 +75,7 @@ class PaywallStrings {
       bulletFlows: bulletFlows ?? this.bulletFlows,
       bulletFlowPhotos: bulletFlowPhotos ?? this.bulletFlowPhotos,
       bulletPhotos: bulletPhotos ?? this.bulletPhotos,
+      bulletExpensePhotos: bulletExpensePhotos ?? this.bulletExpensePhotos,
       bulletShoppingPhotos: bulletShoppingPhotos ?? this.bulletShoppingPhotos,
       bulletShares: bulletShares ?? this.bulletShares,
       unlimitedLabel: unlimitedLabel ?? this.unlimitedLabel,

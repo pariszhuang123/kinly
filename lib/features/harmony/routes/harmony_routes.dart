@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/features/harmony/harmony.dart';
@@ -12,7 +13,7 @@ class HarmonyRouteContext {
   final String homeId;
 }
 
-typedef HarmonyRouteContextResolver = HarmonyRouteContext Function();
+typedef HarmonyRouteContextResolver = HarmonyRouteContext? Function();
 
 List<GoRoute> buildHarmonyRoutes({
   required HarmonyRouteContextResolver resolveContext,
@@ -21,8 +22,15 @@ List<GoRoute> buildHarmonyRoutes({
     GoRoute(
       path: AppRoutePaths.harmony,
       name: AppRouteNames.harmony,
-      builder: (_, __) {
+      builder: (_, state) {
         final membership = resolveContext();
+        if (membership == null) {
+          return routeFallback(
+            'harmony',
+            state: state,
+            reason: 'active membership missing while Harmony is restoring',
+          );
+        }
         return HarmonyProvider(
           homeId: membership.homeId,
           moodRepository: sl<MoodRepository>(),
@@ -36,6 +44,14 @@ List<GoRoute> buildHarmonyRoutes({
       name: AppRouteNames.gratitudeWall,
       builder: (_, state) {
         final membership = resolveContext();
+        if (membership == null) {
+          return routeFallback(
+            'gratitudeWall',
+            state: state,
+            reason:
+                'active membership missing while Gratitude Wall is restoring',
+          );
+        }
         final tabParam = state.uri.queryParameters['tab'];
         final initialTab =
             tabParam == 'personal'

@@ -1,5 +1,12 @@
 part of 'app_router.dart';
 
+String? _pendingProtectedLocation;
+
+@visibleForTesting
+void resetPendingProtectedLocationForTest() {
+  _pendingProtectedLocation = null;
+}
+
 String? _redirect({
   required GoRouterState state,
   required AuthBloc authBloc,
@@ -56,18 +63,20 @@ String? _redirectCore({
 
   final authRedirect = _authRedirect(path: path, uri: uri, status: authStatus);
   if (authStatus != AuthStatus.authenticated) {
+    _clearPendingProtectedLocation();
     return authRedirect;
   }
 
   if (isProfileDeactivated) {
+    _clearPendingProtectedLocation();
     return AppRoutes.welcome;
   }
 
-  return _membershipRedirect(path, membershipStatus);
+  return _membershipRedirect(path: path, uri: uri, status: membershipStatus);
 }
 
 String? _redirectForNoMembership(String path) {
-  if (path == AppRoutes.today) return AppRoutes.start;
+  if (_requiresActiveMembershipPath(path)) return AppRoutes.start;
   if (path == AppRoutes.splash || path == AppRoutes.welcome) {
     return AppRoutes.start;
   }
@@ -132,12 +141,63 @@ bool _looksLikeInviteIntent(Uri uri) {
   return joinIndex >= 0 && joinIndex < segments.length - 1;
 }
 
-String? _membershipRedirect(String path, AuthMembershipStatus status) {
+String? _membershipRedirect({
+  required String path,
+  required Uri uri,
+  required AuthMembershipStatus status,
+}) {
   if (status == AuthMembershipStatus.unknown) {
-    return path == AppRoutes.splash ? null : AppRoutes.splash;
+    if (_requiresActiveMembershipPath(path)) {
+      _pendingProtectedLocation ??= uri.toString();
+      return path == AppRoutes.splash ? null : AppRoutes.splash;
+    }
+    return null;
   }
   if (status != AuthMembershipStatus.active) {
+    _clearPendingProtectedLocation();
     return _redirectForNoMembership(path);
   }
+  if (path == AppRoutes.splash) {
+    final pendingReplay = _consumePendingProtectedLocation(path: path);
+    if (pendingReplay != null) {
+      return pendingReplay;
+    }
+  } else {
+    _clearPendingProtectedLocation();
+  }
   return _redirectForMember(path);
+}
+
+void _clearPendingProtectedLocation() {
+  _pendingProtectedLocation = null;
+}
+
+String? _consumePendingProtectedLocation({required String path}) {
+  if (path != AppRoutes.splash) return null;
+  final pending = _pendingProtectedLocation;
+  _pendingProtectedLocation = null;
+  if (pending == null || pending.isEmpty) return null;
+  return pending;
+}
+
+bool _requiresActiveMembershipPath(String path) {
+  if (_matchesPathOrChild(path, AppRoutes.today)) return true;
+  if (_matchesPathOrChild(path, AppRoutes.hub)) return true;
+  if (_matchesPathOrChild(path, AppRoutes.explore)) return true;
+  if (_matchesPathOrChild(path, AppRoutes.flow)) return true;
+  if (_matchesPathOrChild(path, '/share')) return true;
+  if (path == AppRoutes.profileSettings) return true;
+  if (path == AppRoutes.profileIdentity) return true;
+  if (path == AppRoutes.connectionSettings) return true;
+  if (_matchesPathOrChild(path, AppRoutes.nps)) return true;
+  if (_matchesPathOrChild(path, AppRoutes.harmony)) return true;
+  if (_matchesPathOrChild(path, AppRoutes.gratitudeWall)) return true;
+  if (_matchesPathOrChild(path, AppRoutes.houseNormsOnboarding)) return true;
+  if (_matchesPathOrChild(path, AppRoutes.houseNormsReport)) return true;
+  if (_matchesPathOrChild(path, AppRoutes.houseNormsEdit)) return true;
+  return false;
+}
+
+bool _matchesPathOrChild(String path, String basePath) {
+  return path == basePath || path.startsWith('$basePath/');
 }

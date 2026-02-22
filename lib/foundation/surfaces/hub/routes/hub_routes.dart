@@ -20,7 +20,7 @@ class HubRouteContext {
   final String homeId;
 }
 
-typedef HubRouteContextResolver = HubRouteContext Function();
+typedef HubRouteContextResolver = HubRouteContext? Function();
 
 List<GoRoute> buildHubRoutes({
   required HubRouteContextResolver resolveContext,
@@ -31,6 +31,18 @@ List<GoRoute> buildHubRoutes({
       name: AppRouteNames.hub,
       pageBuilder: (_, state) {
         final membership = resolveContext();
+        if (membership == null) {
+          return CustomTransitionPage<void>(
+            key: state.pageKey,
+            child: routeFallback(
+              'hub',
+              state: state,
+              reason: 'active membership missing while Hub is restoring',
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) => child,
+          );
+        }
         final navExtra = homeTabNavExtraFrom(state.extra);
         final begin = homeTabEntryOffset(
           targetIndex: homeTabIndexHub,

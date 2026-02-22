@@ -96,6 +96,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
       bulletMembers: s.paywallBulletMembers,
       bulletFlows: s.paywallBulletFlows,
       bulletPhotos: s.paywallBulletPhotos,
+      bulletExpensePhotos: s.paywallFeatureUnlimitedSharedExpensePhotos,
       bulletShoppingPhotos: s.paywallBulletShoppingPhotos,
       bulletShares: s.paywallBulletShares,
       unlimitedLabel: s.paywallSubtitle,
@@ -177,14 +178,18 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
             strings: s,
           );
 
+          final isViewOnly = state.isEditMode && !state.canEditOrDelete;
+
           return KinlyScaffold(
-            appBar: KinlyAppBar(
-              title: Text(
-                state.isEditMode
-                    ? s.flowChoreEditTitle
-                    : s.flowChoreCreateTitle,
-              ),
+          appBar: KinlyAppBar(
+            title: Text(
+              isViewOnly
+                  ? s.flowChoreViewTitle
+                  : state.isEditMode
+                      ? s.flowChoreEditTitle
+                      : s.flowChoreCreateTitle,
             ),
+          ),
             body: SafeArea(
               child: Column(
                 children: [
@@ -257,6 +262,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
             () => context.read<FlowChoreBloc>().add(const FlowChoreStarted()),
       );
     }
+    final isViewOnly = state.isEditMode && !state.canEditOrDelete;
     return KinlyScrollFade(
       child: _FlowChoreFormView(
         titleController: _titleController,
@@ -268,6 +274,7 @@ class _FlowChoreScreenState extends State<FlowChoreScreen> {
         isUploadingPhoto: state.isUploadingPhoto,
         expectationPhotoUrl: expectationPhotoUrl,
         recurrenceEveryController: _recurrenceEveryController,
+        enabled: !isViewOnly,
         onPhotoCapture:
             () => context.read<FlowChoreBloc>().add(
               const FlowChorePhotoCaptureRequested(),

@@ -390,6 +390,40 @@ void main() {
       );
 
       blocTest<TodayBloc, TodayState>(
+        'sets shouldPromptHouseNorms for non-owner when backend review card is true',
+        build: () {
+          when(() => profileRepository.getCurrentProfile()).thenAnswer(
+            (_) async => UserProfile(userId: memberUserId, username: 'Member'),
+          );
+          when(
+            () => homeRepository.listActiveMembers(
+              any(),
+              excludeSelf: any(named: 'excludeSelf'),
+            ),
+          ).thenAnswer((_) async => [ownerMember, regularMember]);
+          when(
+            () => houseNormsRepository.getForHome(
+              homeId: any(named: 'homeId'),
+              locale: any(named: 'locale'),
+            ),
+          ).thenAnswer(
+            (_) async => _buildHouseNormDocument(showMemberReviewCard: true),
+          );
+          return buildBloc();
+        },
+        wait: const Duration(milliseconds: 50),
+        expect:
+            () => [
+              isA<TodayState>(),
+              isA<TodayState>().having(
+                (s) => s.shouldPromptHouseNorms,
+                'shouldPromptHouseNorms',
+                true,
+              ),
+            ],
+      );
+
+      blocTest<TodayBloc, TodayState>(
         'sets harmonyPromptTick when mood not submitted and not shown',
         build: () {
           when(
@@ -1120,7 +1154,7 @@ void main() {
   });
 }
 
-HouseNormDocument _buildHouseNormDocument() {
+HouseNormDocument _buildHouseNormDocument({bool showMemberReviewCard = false}) {
   return HouseNormDocument(
     homeId: 'home-1',
     templateKey: 'house_norms_v1',
@@ -1154,5 +1188,7 @@ HouseNormDocument _buildHouseNormDocument() {
     showPublishButton: false,
     showRepublishButton: false,
     showPublicUrl: true,
+    memberViewedAt: null,
+    showMemberReviewCard: showMemberReviewCard,
   );
 }

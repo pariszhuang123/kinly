@@ -24,6 +24,7 @@ class FlowChoreState extends Equatable {
   final int paywallRequestTick;
   final PaywallRetryAction? paywallAction;
   final PaywallGateRequest? paywallRequest;
+  final String? ownerUserId;
   final String? paywallInFlightRequestId;
 
   const FlowChoreState({
@@ -49,6 +50,7 @@ class FlowChoreState extends Equatable {
     required this.choreState,
     required this.paywallRequestTick,
     required this.paywallAction,
+    required this.ownerUserId,
     required this.paywallRequest,
     required this.paywallInFlightRequestId,
   });
@@ -78,6 +80,7 @@ class FlowChoreState extends Equatable {
       isCameraPermissionPermanentlyDenied: false,
       currentUserId: null,
       choreState: isEditMode ? null : ChoreState.draft,
+      ownerUserId: null,
       paywallRequestTick: 0,
       paywallAction: null,
       paywallRequest: null,
@@ -111,6 +114,7 @@ class FlowChoreState extends Equatable {
     String? currentUserId,
     ChoreState? choreState,
     int? paywallRequestTick,
+    String? ownerUserId,
     PaywallRetryAction? paywallAction,
     PaywallGateRequest? paywallRequest,
     String? paywallInFlightRequestId,
@@ -148,6 +152,7 @@ class FlowChoreState extends Equatable {
           this.isCameraPermissionPermanentlyDenied,
       currentUserId: currentUserId ?? this.currentUserId,
       choreState: choreState ?? this.choreState,
+      ownerUserId: ownerUserId ?? this.ownerUserId,
       paywallRequestTick: paywallRequestTick ?? this.paywallRequestTick,
       paywallAction: paywallAction ?? this.paywallAction,
       paywallRequest: paywallRequest ?? this.paywallRequest,
@@ -160,9 +165,9 @@ class FlowChoreState extends Equatable {
   bool get requiresAssignee => isEditMode;
   bool get isStartDateValid => form.isStartDateInRange(DateTime.now());
   bool get isAssignedToCurrentUser =>
-      form.assigneeUserId != null &&
+      referenceForm.assigneeUserId != null &&
       currentUserId != null &&
-      form.assigneeUserId == currentUserId;
+      referenceForm.assigneeUserId == currentUserId;
   bool get canEditOrDelete {
     if (!isEditMode) return true;
     if (choreState == ChoreState.active && !isAssignedToCurrentUser) {
@@ -193,6 +198,7 @@ class FlowChoreState extends Equatable {
     isCameraPermissionPermanentlyDenied,
     currentUserId,
     choreState,
+    ownerUserId,
     paywallRequestTick,
     paywallAction,
     paywallRequest,

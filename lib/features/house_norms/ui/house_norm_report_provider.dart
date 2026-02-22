@@ -41,6 +41,8 @@ class HouseNormReportProvider extends StatelessWidget {
         );
         if (initialDocument == null) {
           cubit.load();
+        } else if (!isOwner) {
+          cubit.recordView();
         }
         return cubit;
       },

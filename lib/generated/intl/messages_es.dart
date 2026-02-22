@@ -201,6 +201,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sin asignar",
     ),
     "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Editar tarea"),
+    "flowChoreViewTitle": MessageLookupByLibrary.simpleMessage("Ver tarea"),
     "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
       "Ese miembro no forma parte de este hogar ahora mismo.",
     ),
@@ -447,12 +448,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "houseNormPublishCta": MessageLookupByLibrary.simpleMessage(
       "Publicar en la web",
-    ),
-    "houseNormPublishFailed": MessageLookupByLibrary.simpleMessage(
-      "No pudimos publicar ahora mismo.",
-    ),
-    "houseNormPublishSuccess": MessageLookupByLibrary.simpleMessage(
-      "Normas de la casa publicadas.",
     ),
     "houseNormReportEmptyBody": MessageLookupByLibrary.simpleMessage(
       "Genera las normas de la casa para ver su punto de partida compartido.",
@@ -815,6 +810,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
       "Fotos de tareas ilimitadas",
     ),
+    "paywallFeatureUnlimitedSharedExpensePhotos":
+        MessageLookupByLibrary.simpleMessage(
+          "Fotos de gastos compartidos ilimitadas",
+        ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "Gastos compartidos ilimitados",
     ),
@@ -1630,7 +1629,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "¿Crear factura?",
     ),
     "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("Sí"),
-    "shoppingArchiveShareNo": MessageLookupByLibrary.simpleMessage("No"),
     "shoppingCardSubtitle": m21,
     "shoppingCardTitle": MessageLookupByLibrary.simpleMessage(
       "Lista de compras",

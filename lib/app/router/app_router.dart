@@ -86,6 +86,7 @@ GoRouter createRouter({
 }) {
   return GoRouter(
     initialLocation: AppRoutes.splash,
+    restorationScopeId: 'kinly_router',
     refreshListenable: refreshListenable,
     redirect:
         (context, state) => _redirect(

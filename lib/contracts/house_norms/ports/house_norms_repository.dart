@@ -26,4 +26,6 @@ abstract class HouseNormsRepository {
     required String homeId,
     required String locale,
   });
+
+  Future<void> recordView({required String homeId});
 }

@@ -77,6 +77,19 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     try {
       final membership = await _homeRepository.getCurrentMembership();
       final assignees = await _choresRepository.listAssigneesForHome(_homeId);
+      final members = await _homeRepository.listActiveMembers(
+        _homeId,
+        excludeSelf: false,
+      );
+      final ownerUserId =
+          members.isEmpty
+              ? null
+              : members
+                  .firstWhere(
+                    (m) => m.isOwner,
+                    orElse: () => members.first,
+                  )
+                  .userId;
       FlowChoreForm form = state.form;
       ChoreState? choreState = _choreId == null ? ChoreState.draft : null;
 
@@ -97,6 +110,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
           referenceForm: form,
           clearLoadError: true,
           currentUserId: membership?.userId,
+          ownerUserId: ownerUserId,
           choreState: choreState,
         ),
       );

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
 import 'package:kinly/app/router/home_tab_navigation.dart';
+import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +18,7 @@ class ExploreRouteContext {
   final String userId;
 }
 
-typedef ExploreRouteContextResolver = ExploreRouteContext Function();
+typedef ExploreRouteContextResolver = ExploreRouteContext? Function();
 
 List<GoRoute> buildExploreRoutes({
   required ExploreRouteContextResolver resolveContext,
@@ -28,6 +29,18 @@ List<GoRoute> buildExploreRoutes({
       name: AppRouteNames.explore,
       pageBuilder: (_, state) {
         final route = resolveContext();
+        if (route == null) {
+          return CustomTransitionPage<void>(
+            key: state.pageKey,
+            child: routeFallback(
+              'explore',
+              state: state,
+              reason: 'active membership missing while Explore is restoring',
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) => child,
+          );
+        }
         final navExtra = homeTabNavExtraFrom(state.extra);
         final begin = homeTabEntryOffset(
           targetIndex: homeTabIndexExplore,

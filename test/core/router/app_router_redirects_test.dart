@@ -5,6 +5,8 @@ import 'package:kinly/features/version_gating/bloc/app_version_cubit.dart';
 
 void main() {
   group('redirectForTest', () {
+    setUp(resetPendingProtectedLocationForTest);
+
     test('auth unknown redirects to splash for non-splash paths', () {
       expect(
         redirectForTest(
@@ -46,6 +48,45 @@ void main() {
         isNull,
       );
     });
+
+    test(
+      'authenticated with unknown membership redirects protected routes to splash',
+      () {
+        expect(
+          redirectForTest(
+            path: AppRoutes.flowChoreCreate,
+            authStatus: AuthStatus.authenticated,
+            membershipStatus: AuthMembershipStatus.unknown,
+            appVersionStatus: AppVersionStatus.upToDate,
+          ),
+          AppRoutes.splash,
+        );
+      },
+    );
+
+    test(
+      'replays pending protected route after membership becomes active',
+      () {
+        expect(
+          redirectForTest(
+            path: AppRoutes.flowChoreCreate,
+            authStatus: AuthStatus.authenticated,
+            membershipStatus: AuthMembershipStatus.unknown,
+            appVersionStatus: AppVersionStatus.upToDate,
+          ),
+          AppRoutes.splash,
+        );
+        expect(
+          redirectForTest(
+            path: AppRoutes.splash,
+            authStatus: AuthStatus.authenticated,
+            membershipStatus: AuthMembershipStatus.active,
+            appVersionStatus: AppVersionStatus.upToDate,
+          ),
+          AppRoutes.flowChoreCreate,
+        );
+      },
+    );
 
     test('force update overrides all other redirects', () {
       expect(
@@ -105,6 +146,15 @@ void main() {
       expect(
         redirectForTest(
           path: AppRoutes.today,
+          authStatus: AuthStatus.authenticated,
+          membershipStatus: AuthMembershipStatus.none,
+          appVersionStatus: AppVersionStatus.upToDate,
+        ),
+        AppRoutes.start,
+      );
+      expect(
+        redirectForTest(
+          path: AppRoutes.shareCreate,
           authStatus: AuthStatus.authenticated,
           membershipStatus: AuthMembershipStatus.none,
           appVersionStatus: AppVersionStatus.upToDate,

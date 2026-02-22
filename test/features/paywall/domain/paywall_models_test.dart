@@ -24,6 +24,7 @@ void main() {
         'chore_photos': 2,
         'active_members': 4,
         'active_expenses': 5,
+        'expense_photos': 6,
         'updated_at': '2024-06-15T10:30:00Z',
       };
       final usage = PaywallUsage.fromJson(json);
@@ -31,6 +32,7 @@ void main() {
       expect(usage.chorePhotos, 2);
       expect(usage.activeMembers, 4);
       expect(usage.activeExpenses, 5);
+      expect(usage.expensePhotos, 6);
       expect(usage.updatedAt, DateTime.utc(2024, 6, 15, 10, 30));
     });
 
@@ -40,11 +42,24 @@ void main() {
         'chore_photos': 2.0,
         'active_members': 4.0,
         'active_expenses': 5.0,
+        'expense_photos': 6.0,
         'updated_at': '2024-01-01T00:00:00Z',
       };
       final usage = PaywallUsage.fromJson(json);
       expect(usage.activeChores, 3);
       expect(usage.chorePhotos, 2);
+      expect(usage.expensePhotos, 6);
+    });
+
+    test('fromJson defaults missing usage counters to zero', () {
+      final usage = PaywallUsage.fromJson({
+        'updated_at': '2024-01-01T00:00:00Z',
+      });
+      expect(usage.activeChores, 0);
+      expect(usage.chorePhotos, 0);
+      expect(usage.activeMembers, 0);
+      expect(usage.activeExpenses, 0);
+      expect(usage.expensePhotos, 0);
     });
   });
 
@@ -54,6 +69,7 @@ void main() {
       'chore_photos': 0,
       'active_members': 2,
       'active_expenses': 3,
+      'expense_photos': 1,
       'updated_at': '2024-06-15T10:30:00Z',
     };
 
@@ -102,6 +118,7 @@ void main() {
           chorePhotos: 0,
           activeMembers: 1,
           activeExpenses: 0,
+          expensePhotos: 0,
           updatedAt: DateTime.now(),
         ),
         limits: const [],
@@ -120,6 +137,7 @@ void main() {
             chorePhotos: 0,
             activeMembers: 1,
             activeExpenses: 0,
+            expensePhotos: 0,
             updatedAt: DateTime.now(),
           ),
           limits: const [],
@@ -137,6 +155,7 @@ void main() {
           chorePhotos: 0,
           activeMembers: 1,
           activeExpenses: 0,
+          expensePhotos: 0,
           updatedAt: DateTime.now(),
         ),
         limits: const [],
@@ -154,6 +173,7 @@ void main() {
           chorePhotos: 0,
           activeMembers: 1,
           activeExpenses: 0,
+          expensePhotos: 0,
           updatedAt: DateTime.now(),
         ),
         limits: const [],

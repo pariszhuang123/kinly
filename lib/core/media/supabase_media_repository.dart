@@ -1,5 +1,5 @@
+import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -18,7 +18,7 @@ class SupabaseMediaRepository implements MediaRepository {
     String? choreId, // optional: reserved for future path scoping
     String rootSegment = 'flow',
     String featureSegment = 'expectations',
-    required Uint8List bytes,
+    required File file,
   }) async {
     // Build a path that only depends on the home, timestamp, and randomness
     final objectPath = _buildObjectPath(
@@ -29,9 +29,9 @@ class SupabaseMediaRepository implements MediaRepository {
 
     await _client.storage
         .from(_bucket)
-        .uploadBinary(
+        .upload(
           objectPath,
-          bytes,
+          file,
           fileOptions: const FileOptions(
             contentType: 'image/jpeg',
             upsert: true,

@@ -144,6 +144,8 @@ class HouseNormDocument {
     required this.showPublishButton,
     required this.showRepublishButton,
     required this.showPublicUrl,
+    required this.memberViewedAt,
+    required this.showMemberReviewCard,
   });
 
   final String homeId;
@@ -164,6 +166,8 @@ class HouseNormDocument {
   final bool showPublishButton;
   final bool showRepublishButton;
   final bool showPublicUrl;
+  final DateTime? memberViewedAt;
+  final bool showMemberReviewCard;
 
   factory HouseNormDocument.fromJson({
     required String homeId,
@@ -211,6 +215,8 @@ class HouseNormDocument {
       showPublishButton: json['show_publish_button'] as bool? ?? false,
       showRepublishButton: json['show_republish_button'] as bool? ?? false,
       showPublicUrl: json['show_public_url'] as bool? ?? false,
+      memberViewedAt: _parseDate(json['member_viewed_at']),
+      showMemberReviewCard: json['show_member_review_card'] as bool? ?? false,
     );
   }
 }

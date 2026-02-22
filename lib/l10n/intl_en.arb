@@ -70,6 +70,7 @@
   "paywallBulletMembers": "Unlimited home members",
   "paywallBulletFlows": "Unlimited tasks",
   "paywallBulletPhotos": "Unlimited task photos",
+  "paywallFeatureUnlimitedSharedExpensePhotos": "Unlimited shared expense photos",
   "paywallBulletShoppingPhotos": "Unlimited shopping list photos",
   "paywallBulletShares": "Unlimited shared expenses",
   "paywallPrimaryCta": "Upgrade to Kinly Premium",
@@ -454,6 +455,7 @@
   "shareCreateSuccess": "Bill created.",
   "flowChoreCreateTitle": "Add Task",
   "flowChoreEditTitle": "Edit Task",
+  "flowChoreViewTitle": "View Task",
   "flowChoreNameLabel": "What needs to be done?",
   "flowChoreNameHint": "Eg. Bin night, clean the fridge, water plants",
   "flowChoreValidationName": "Name this task.",
@@ -921,6 +923,9 @@
   "@flowChoreEditTitle": {
     "surface": "title"
   },
+  "@flowChoreViewTitle": {
+    "surface": "title"
+  },
   "@flowChoreHowToLaunchError": {
     "surface": "error"
   },
@@ -1366,8 +1371,6 @@
   "houseNormReportErrorBody": "Please try again.",
   "houseNormPublishCta": "Publish to web",
   "houseNormRepublishCta": "Republish",
-  "houseNormPublishSuccess": "House norms published.",
-  "houseNormPublishFailed": "We couldn't publish right now.",
   "houseNormCopyUrlCta": "Copy URL",
   "houseNormShareUrlCta": "Share URL",
   "houseNormUrlCopied": "House norms URL copied.",

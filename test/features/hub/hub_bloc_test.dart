@@ -342,5 +342,7 @@ HouseNormDocument _buildHouseNormDocument(String homeId) {
     showPublishButton: false,
     showRepublishButton: false,
     showPublicUrl: true,
+    memberViewedAt: null,
+    showMemberReviewCard: false,
   );
 }

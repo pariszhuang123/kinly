@@ -38,6 +38,9 @@ class _NoopHouseNormsRepository implements HouseNormsRepository {
     required String homeId,
     required String locale,
   }) async => _buildDocument();
+
+  @override
+  Future<void> recordView({required String homeId}) async {}
 }
 
 void main() {
@@ -159,5 +162,7 @@ HouseNormDocument _buildDocument({
     showPublishButton: false,
     showRepublishButton: showRepublishButton,
     showPublicUrl: showPublicUrl,
+    memberViewedAt: null,
+    showMemberReviewCard: false,
   );
 }

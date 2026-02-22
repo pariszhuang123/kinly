@@ -13,7 +13,7 @@ class _ExpectationPhotoPicker extends StatelessWidget {
   final S s;
   final bool isUploading;
   final String? photoUrl;
-  final VoidCallback onCapture;
+  final VoidCallback? onCapture;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +36,7 @@ class _ExpectationPhotoPicker extends StatelessWidget {
                       child: Image.network(
                         photoUrl!,
                         fit: BoxFit.cover,
+                        cacheWidth: 800,
                         errorBuilder:
                             (_, __, ___) => Center(
                               child: Text(

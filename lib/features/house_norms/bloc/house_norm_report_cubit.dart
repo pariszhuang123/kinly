@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,6 +40,7 @@ class HouseNormReportCubit extends Cubit<HouseNormReportState> {
         return;
       }
       emit(HouseNormReportState.ready(document, isOwner: _isOwner));
+      _recordViewIfMember();
     } catch (error) {
       emit(
         HouseNormReportState.failure(
@@ -50,6 +53,10 @@ class HouseNormReportCubit extends Cubit<HouseNormReportState> {
 
   Future<void> refresh() async {
     await load();
+  }
+
+  Future<void> recordView() async {
+    _recordViewIfMember();
   }
 
   Future<bool> editSectionText({
@@ -108,5 +115,10 @@ class HouseNormReportCubit extends Cubit<HouseNormReportState> {
       return text.substring('StateError: '.length).trim();
     }
     return text;
+  }
+
+  void _recordViewIfMember() {
+    if (_isOwner) return;
+    unawaited(_repository.recordView(homeId: _homeId).catchError((_) {}));
   }
 }

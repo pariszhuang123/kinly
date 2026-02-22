@@ -77,11 +77,11 @@ Future<PaywallGateOutcome> showPaywallAndAwait({
 }
 
 const _triggerPriority = [
-  PaywallTrigger.flowActiveCap,
-  PaywallTrigger.flowPhotosCap,
-  PaywallTrigger.shoppingPhotosCap,
   PaywallTrigger.expensePhotosCap,
   PaywallTrigger.expenseActiveCap,
+  PaywallTrigger.flowPhotosCap,
+  PaywallTrigger.flowActiveCap,
+  PaywallTrigger.shoppingPhotosCap,
   PaywallTrigger.membersCap,
 ];
 
@@ -104,7 +104,7 @@ PaywallStrings _withTriggerContext({
         emotionalBody = strings.bulletShoppingPhotos;
         break;
       case PaywallTrigger.expensePhotosCap:
-        emotionalBody = strings.bulletPhotos;
+        emotionalBody = strings.bulletExpensePhotos;
         break;
       case PaywallTrigger.expenseActiveCap:
         emotionalBody = strings.bulletShares;

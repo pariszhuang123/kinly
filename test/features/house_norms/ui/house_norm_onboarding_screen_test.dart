@@ -52,6 +52,9 @@ class _FakeHouseNormsRepository implements HouseNormsRepository {
   }) async {
     return _buildHouseNormDocument();
   }
+
+  @override
+  Future<void> recordView({required String homeId}) async {}
 }
 
 void main() {
@@ -212,6 +215,8 @@ HouseNormDocument _buildHouseNormDocument() {
     showPublishButton: true,
     showRepublishButton: false,
     showPublicUrl: false,
+    memberViewedAt: null,
+    showMemberReviewCard: false,
   );
 }
 

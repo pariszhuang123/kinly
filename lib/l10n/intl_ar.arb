@@ -70,6 +70,7 @@
   "paywallBulletMembers": "أعضاء منزل غير محدودين",
   "paywallBulletFlows": "مهام غير محدودة",
   "paywallBulletPhotos": "صور مهام غير محدودة",
+  "paywallFeatureUnlimitedSharedExpensePhotos": "صور المصروفات المشتركة غير محدودة",
   "paywallBulletShoppingPhotos": "صور قائمة تسوّق غير محدودة",
   "paywallBulletShares": "فواتير مشتركة غير محدودة",
   "paywallPrimaryCta": "الترقية إلى كينلي بريميوم",
@@ -451,6 +452,7 @@
   "shareCreateSuccess": "تم إنشاء الفاتورة.",
   "flowChoreCreateTitle": "إضافة مهمة",
   "flowChoreEditTitle": "تعديل المهمة",
+  "flowChoreViewTitle": "عرض المهمة",
   "flowChoreNameLabel": "ما الذي يجب إنجازه؟",
   "flowChoreNameHint": "مثل: ليلة إخراج القمامة، تنظيف الثلاجة، سقي النباتات",
   "flowChoreValidationName": "سمِّ هذه المهمة.",
@@ -916,6 +918,9 @@
     "surface": "title"
   },
   "@flowChoreEditTitle": {
+    "surface": "title"
+  },
+  "@flowChoreViewTitle": {
     "surface": "title"
   },
   "@flowChoreHowToLaunchError": {

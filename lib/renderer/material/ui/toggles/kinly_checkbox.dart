@@ -15,7 +15,7 @@ class KinlyCheckbox extends StatelessWidget {
   });
 
   final bool value;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool>? onChanged;
   final double borderWidth;
 
   @override
@@ -27,7 +27,10 @@ class KinlyCheckbox extends StatelessWidget {
 
     return Checkbox(
       value: value,
-      onChanged: (checked) => onChanged(checked ?? false),
+      onChanged:
+          onChanged != null
+              ? (checked) => onChanged!(checked ?? false)
+              : null,
       activeColor: controls.checkboxChecked,
       checkColor: controls.selectableItemFgSelected,
       side: BorderSide(color: controls.checkboxBorder, width: borderWidth),

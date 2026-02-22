@@ -14,7 +14,7 @@ void main() {
     await initializeDateFormatting('en');
   });
 
-  Widget _buildSubject(TodaySharePaidItem item) {
+  Widget buildSubject(TodaySharePaidItem item) {
     return MaterialApp(
       localizationsDelegates: const [S.delegate],
       supportedLocales: S.delegate.supportedLocales,
@@ -38,7 +38,7 @@ void main() {
       evidencePhotoPath: null,
     );
 
-    await tester.pumpWidget(_buildSubject(item));
+    await tester.pumpWidget(buildSubject(item));
     await tester.pumpAndSettle();
 
     final s = S.of(tester.element(find.byType(SharePaidItemDetailScreen)));
@@ -62,7 +62,7 @@ void main() {
       evidencePhotoPath: 'https://example.com/photo.jpg',
     );
 
-    await tester.pumpWidget(_buildSubject(item));
+    await tester.pumpWidget(buildSubject(item));
     await tester.pumpAndSettle();
 
     final s = S.of(tester.element(find.byType(SharePaidItemDetailScreen)));

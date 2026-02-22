@@ -289,6 +289,16 @@ class S {
     );
   }
 
+  /// `Unlimited shared expense photos`
+  String get paywallFeatureUnlimitedSharedExpensePhotos {
+    return Intl.message(
+      'Unlimited shared expense photos',
+      name: 'paywallFeatureUnlimitedSharedExpensePhotos',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Unlimited shopping list photos`
   String get paywallBulletShoppingPhotos {
     return Intl.message(
@@ -2590,6 +2600,16 @@ class S {
     return Intl.message(
       'Edit Task',
       name: 'flowChoreEditTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Task`
+  String get flowChoreViewTitle {
+    return Intl.message(
+      'View Task',
+      name: 'flowChoreViewTitle',
       desc: '',
       args: [],
     );
@@ -5348,26 +5368,6 @@ class S {
     return Intl.message(
       'Republish',
       name: 'houseNormRepublishCta',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `House norms published.`
-  String get houseNormPublishSuccess {
-    return Intl.message(
-      'House norms published.',
-      name: 'houseNormPublishSuccess',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `We couldn't publish right now.`
-  String get houseNormPublishFailed {
-    return Intl.message(
-      'We couldn\'t publish right now.',
-      name: 'houseNormPublishFailed',
       desc: '',
       args: [],
     );

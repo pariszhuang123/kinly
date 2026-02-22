@@ -70,6 +70,7 @@
   "paywallBulletMembers": "Miembros ilimitados en el hogar",
   "paywallBulletFlows": "Tareas ilimitadas",
   "paywallBulletPhotos": "Fotos de tareas ilimitadas",
+  "paywallFeatureUnlimitedSharedExpensePhotos": "Fotos de gastos compartidos ilimitadas",
   "paywallBulletShoppingPhotos": "Fotos de la lista de compras ilimitadas",
   "paywallBulletShares": "Gastos compartidos ilimitados",
   "paywallPrimaryCta": "Mejorar a Kinly Premium",
@@ -451,6 +452,7 @@
   "shareCreateSuccess": "Factura creada.",
   "flowChoreCreateTitle": "Añadir tarea",
   "flowChoreEditTitle": "Editar tarea",
+  "flowChoreViewTitle": "Ver tarea",
   "flowChoreNameLabel": "¿Qué hay que hacer?",
   "flowChoreNameHint": "p. ej. Noche de sacar la basura, limpiar la nevera, regar plantas",
   "flowChoreValidationName": "Ponle un nombre a esta tarea.",
@@ -916,6 +918,9 @@
     "surface": "title"
   },
   "@flowChoreEditTitle": {
+    "surface": "title"
+  },
+  "@flowChoreViewTitle": {
     "surface": "title"
   },
   "@flowChoreHowToLaunchError": {

@@ -12,6 +12,7 @@ class _FlowChoreFormView extends StatelessWidget {
     required this.expectationPhotoUrl,
     required this.onPhotoCapture,
     required this.recurrenceEveryController,
+    this.enabled = true,
   });
 
   final TextEditingController titleController;
@@ -24,6 +25,7 @@ class _FlowChoreFormView extends StatelessWidget {
   final String? expectationPhotoUrl;
   final VoidCallback onPhotoCapture;
   final TextEditingController recurrenceEveryController;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +61,7 @@ class _FlowChoreFormView extends StatelessWidget {
           showValidation: showValidation,
           hasRecurrenceError: hasRecurrenceError,
           controller: recurrenceEveryController,
+          enabled: enabled,
         ),
         SizedBox(height: spacing?.lg ?? 16),
         _OptionalDetailsExpansion(
@@ -72,6 +75,7 @@ class _FlowChoreFormView extends StatelessWidget {
           onPhotoCapture: onPhotoCapture,
           flowColors: flowColors,
           initiallyExpanded: expandOptional,
+          enabled: enabled,
         ),
         SizedBox(height: spacing?.xl ?? 24),
       ],
@@ -107,14 +111,18 @@ class _FlowChoreFormView extends StatelessWidget {
       controller: titleController,
       labelText: s.flowChoreNameLabel,
       hintText: s.flowChoreNameHint,
+      enabled: enabled,
       errorText:
           showValidation && !form.isTitleValid
               ? s.flowChoreValidationName
               : null,
       textInputAction: TextInputAction.next,
       onChanged:
-          (value) =>
-              context.read<FlowChoreBloc>().add(FlowChoreTitleChanged(value)),
+          enabled
+              ? (value) => context.read<FlowChoreBloc>().add(
+                    FlowChoreTitleChanged(value),
+                  )
+              : null,
     );
   }
 
@@ -128,9 +136,16 @@ class _FlowChoreFormView extends StatelessWidget {
     return [
       Text(s.flowChoreAssigneeLabel, style: theme.textTheme.titleMedium),
       SizedBox(height: spacing?.sm ?? 8),
-      _AssigneeSelector(
-        assignees: state.assignees,
-        selectedUserId: form.assigneeUserId,
+      Opacity(
+        opacity: enabled ? 1.0 : 0.5,
+        child: IgnorePointer(
+          ignoring: !enabled,
+          child: _AssigneeSelector(
+            assignees: state.assignees,
+            selectedUserId: form.assigneeUserId,
+            ownerUserId: state.ownerUserId,
+          ),
+        ),
       ),
       if (hasAssigneeError)
         Padding(
@@ -157,7 +172,8 @@ class _FlowChoreFormView extends StatelessWidget {
       Text(s.flowChoreStartLabel, style: theme.textTheme.titleMedium),
       SizedBox(height: spacing?.xs ?? 4),
       KinlyOutlinedButton.text(
-        onPressed: () => _pickStartDate(context, form.startDate),
+        onPressed:
+            enabled ? () => _pickStartDate(context, form.startDate) : null,
         label: dateLabel,
       ),
       if (hasDateError)
@@ -203,12 +219,14 @@ class _RecurrenceField extends StatelessWidget {
     required this.showValidation,
     required this.hasRecurrenceError,
     required this.controller,
+    this.enabled = true,
   });
 
   final FlowChoreForm form;
   final bool showValidation;
   final bool hasRecurrenceError;
   final TextEditingController controller;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -227,9 +245,11 @@ class _RecurrenceField extends StatelessWidget {
             KinlyCheckbox(
               value: isRecurring,
               onChanged:
-                  (value) => context.read<FlowChoreBloc>().add(
-                    FlowChoreRecurrenceToggled(value),
-                  ),
+                  enabled
+                      ? (value) => context.read<FlowChoreBloc>().add(
+                            FlowChoreRecurrenceToggled(value),
+                          )
+                      : null,
             ),
             SizedBox(width: spacing.xs),
             Text(s.shareCreateRecurrenceToggleLabel),
@@ -247,11 +267,14 @@ class _RecurrenceField extends StatelessWidget {
                 child: KinlyTextField(
                   controller: controller,
                   keyboardType: TextInputType.number,
+                  enabled: enabled,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged:
-                      (value) => context.read<FlowChoreBloc>().add(
-                        FlowChoreRecurrenceEveryChanged(value),
-                      ),
+                      enabled
+                          ? (value) => context.read<FlowChoreBloc>().add(
+                                FlowChoreRecurrenceEveryChanged(value),
+                              )
+                          : null,
                   errorText:
                       showValidation && hasRecurrenceError
                           ? s.shareCreateValidationRecurrence
@@ -260,21 +283,29 @@ class _RecurrenceField extends StatelessWidget {
               ),
               SizedBox(width: spacing.sm),
               Expanded(
-                child: KinlyDropdownField<ChoreRecurrenceUnit>(
-                  value: form.recurrenceUnit,
-                  items:
-                      ChoreRecurrenceUnit.values
-                          .map(
-                            (value) => KinlyDropdownMenuItem.item(
-                              value: value,
-                              child: Text(_recurrenceUnitLabel(context, value)),
-                            ),
-                          )
-                          .toList(),
-                  onChanged:
-                      (value) => context.read<FlowChoreBloc>().add(
-                        FlowChoreRecurrenceUnitChanged(value!),
-                      ),
+                child: IgnorePointer(
+                  ignoring: !enabled,
+                  child: Opacity(
+                    opacity: enabled ? 1.0 : 0.5,
+                    child: KinlyDropdownField<ChoreRecurrenceUnit>(
+                      value: form.recurrenceUnit,
+                      items:
+                          ChoreRecurrenceUnit.values
+                              .map(
+                                (value) => KinlyDropdownMenuItem.item(
+                                  value: value,
+                                  child: Text(
+                                    _recurrenceUnitLabel(context, value),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                      onChanged:
+                          (value) => context.read<FlowChoreBloc>().add(
+                            FlowChoreRecurrenceUnitChanged(value!),
+                          ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -313,10 +344,12 @@ class _AssigneeSelector extends StatelessWidget {
   const _AssigneeSelector({
     required this.assignees,
     required this.selectedUserId,
+    this.ownerUserId,
   });
 
   final List<ChoreAssigneeSummary> assignees;
   final String? selectedUserId;
+  final String? ownerUserId;
 
   @override
   Widget build(BuildContext context) {
@@ -331,7 +364,7 @@ class _AssigneeSelector extends StatelessWidget {
                 assignee.fullName ??
                 assignee.email ??
                 '',
-            role: 'member',
+            role: ownerUserId == assignee.userId ? 'owner' : 'member',
             validFrom: DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
             avatarUrl: assignee.avatarStoragePath,
           ),
@@ -365,6 +398,7 @@ class _OptionalDetailsExpansion extends StatefulWidget {
     required this.onPhotoCapture,
     required this.flowColors,
     this.initiallyExpanded = false,
+    this.enabled = true,
   });
 
   final Spacing? spacing;
@@ -377,6 +411,7 @@ class _OptionalDetailsExpansion extends StatefulWidget {
   final VoidCallback onPhotoCapture;
   final SectionColors? flowColors;
   final bool initiallyExpanded;
+  final bool enabled;
 
   @override
   State<_OptionalDetailsExpansion> createState() =>
@@ -443,25 +478,31 @@ class _OptionalDetailsExpansionState extends State<_OptionalDetailsExpansion> {
             maxLines: 4,
             labelText: widget.s.flowChoreNotesLabel,
             hintText: widget.s.flowChoreNotesHint,
+            enabled: widget.enabled,
             onChanged:
-                (value) => context.read<FlowChoreBloc>().add(
-                  FlowChoreNotesChanged(value),
-                ),
+                widget.enabled
+                    ? (value) => context.read<FlowChoreBloc>().add(
+                          FlowChoreNotesChanged(value),
+                        )
+                    : null,
           ),
           SizedBox(height: widget.spacing?.lg ?? 16),
           KinlyTextField(
             controller: widget.howToController,
             labelText: widget.s.flowChoreHowToLabel,
             hintText: widget.s.flowChoreHowToHint,
+            enabled: widget.enabled,
             errorText:
                 widget.hasHowToError
                     ? widget.s.flowChoreValidationHowToUrl
                     : null,
             keyboardType: TextInputType.url,
             onChanged:
-                (value) => context.read<FlowChoreBloc>().add(
-                  FlowChoreHowToChanged(value),
-                ),
+                widget.enabled
+                    ? (value) => context.read<FlowChoreBloc>().add(
+                          FlowChoreHowToChanged(value),
+                        )
+                    : null,
           ),
           SizedBox(height: widget.spacing?.lg ?? 16),
           _ExpectationPhotoPicker(
@@ -469,7 +510,7 @@ class _OptionalDetailsExpansionState extends State<_OptionalDetailsExpansion> {
             s: widget.s,
             isUploading: widget.isUploadingPhoto,
             photoUrl: widget.photoUrl,
-            onCapture: widget.onPhotoCapture,
+            onCapture: widget.enabled ? widget.onPhotoCapture : null,
           ),
         ],
       ),

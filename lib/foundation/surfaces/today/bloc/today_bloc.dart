@@ -436,13 +436,20 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required String locale,
     required bool fallback,
   }) async {
-    if (!profile.isOwner) return false;
+    final repository = _houseNormsRepository;
+    if (repository == null) return fallback;
     try {
-      final houseNorms = await _houseNormsRepository?.getForHome(
+      final houseNorms = await repository.getForHome(
         homeId: _homeId,
         locale: locale,
       );
-      return houseNorms == null;
+      if (profile.isOwner) {
+        return houseNorms == null;
+      }
+      if (houseNorms == null) {
+        return false;
+      }
+      return houseNorms.showMemberReviewCard;
     } catch (_) {
       // Ignore house norms prompt errors; keep Today usable.
       return fallback;

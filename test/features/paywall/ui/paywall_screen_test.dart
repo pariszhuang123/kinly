@@ -52,6 +52,7 @@ PaywallStrings _buildStrings() {
     bulletFlows: 'Unlimited flows',
     bulletFlowPhotos: 'Unlimited flow photos',
     bulletPhotos: 'Unlimited task photos',
+    bulletExpensePhotos: 'Unlimited shared expense photos',
     bulletShoppingPhotos: 'Unlimited shopping photos',
     bulletShares: 'Unlimited shares',
     unlimitedLabel: 'Unlimited everything',
@@ -193,6 +194,7 @@ void main() {
         'Unlimited flows',
         'Unlimited flow photos',
         'Unlimited shopping photos',
+        'Unlimited shared expense photos',
         'Unlimited shares',
       ],
     );
@@ -210,6 +212,7 @@ void main() {
         'Unlimited shares',
         'Unlimited flows',
         'Unlimited flow photos',
+        'Unlimited shared expense photos',
         'Unlimited members',
       ],
     );
@@ -227,6 +230,7 @@ void main() {
         'Unlimited shares',
         'Unlimited flows',
         'Unlimited shopping photos',
+        'Unlimited shared expense photos',
         'Unlimited members',
       ],
     );
@@ -237,8 +241,9 @@ void main() {
         triggers: const {PaywallTrigger.expensePhotosCap},
       ),
       [
-        'Unlimited task photos',
+        'Unlimited shared expense photos',
         'Unlimited flows',
+        'Unlimited flow photos',
         'Unlimited shopping photos',
         'Unlimited shares',
         'Unlimited members',

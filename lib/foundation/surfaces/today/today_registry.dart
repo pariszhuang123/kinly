@@ -227,10 +227,20 @@ Widget _buildPreferencesPrompt(TodaySurfaceScope scope) {
 
 Widget _buildHouseNormsPrompt(TodaySurfaceScope scope) {
   final palette = scope.context.houseNormSection;
+  final isOwner = scope.state.profile?.isOwner == true;
   return TodayInvitePrompt(
-    title: scope.strings.houseNormPromptTitle,
-    subtitle: scope.strings.houseNormPromptSubtitle,
-    primaryLabel: scope.strings.houseNormPromptCta,
+    title:
+        isOwner
+            ? scope.strings.houseNormPromptTitle
+            : scope.strings.houseNormViewTitle,
+    subtitle:
+        isOwner
+            ? scope.strings.houseNormPromptSubtitle
+            : scope.strings.houseNormSummarySubtitle,
+    primaryLabel:
+        isOwner
+            ? scope.strings.houseNormPromptCta
+            : scope.strings.houseNormViewTitle,
     onPrimary: scope.actions.onHouseNormsPrompt,
     palette: palette,
   );

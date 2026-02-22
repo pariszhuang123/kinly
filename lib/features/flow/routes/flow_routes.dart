@@ -18,17 +18,17 @@ class FlowRouteContext {
   final String userId;
 }
 
-typedef FlowRouteContextResolver = FlowRouteContext Function();
+typedef FlowRouteContextResolver = FlowRouteContext? Function();
 
 List<GoRoute> buildFlowRoutes({
   required FlowRouteContextResolver resolveContext,
 }) {
-  String resolveHomeId(GoRouterState state) {
-    return state.uri.queryParameters['homeId'] ?? resolveContext().homeId;
+  String? resolveHomeId(GoRouterState state, FlowRouteContext? routeContext) {
+    return state.uri.queryParameters['homeId'] ?? routeContext?.homeId;
   }
 
-  String resolveUserId(GoRouterState state) {
-    return state.uri.queryParameters['userId'] ?? resolveContext().userId;
+  String? resolveUserId(GoRouterState state, FlowRouteContext? routeContext) {
+    return state.uri.queryParameters['userId'] ?? routeContext?.userId;
   }
 
   return [
@@ -36,8 +36,16 @@ List<GoRoute> buildFlowRoutes({
       path: AppRoutePaths.flow,
       name: AppRouteNames.flow,
       builder: (_, state) {
-        final homeId = resolveHomeId(state);
-        final userId = resolveUserId(state);
+        final routeContext = resolveContext();
+        final homeId = resolveHomeId(state, routeContext);
+        final userId = resolveUserId(state, routeContext);
+        if (homeId == null || userId == null) {
+          return routeFallback(
+            'flow',
+            state: state,
+            reason: 'active membership missing and route query is incomplete',
+          );
+        }
         final filter = FlowListFilter.fromQueryParam(
           state.uri.queryParameters['filter'],
         );
@@ -57,7 +65,15 @@ List<GoRoute> buildFlowRoutes({
       path: AppRoutePaths.flowChoreCreate,
       name: AppRouteNames.flowChoreCreate,
       builder: (_, state) {
-        final homeId = resolveHomeId(state);
+        final routeContext = resolveContext();
+        final homeId = resolveHomeId(state, routeContext);
+        if (homeId == null) {
+          return routeFallback(
+            'flowChoreCreate',
+            state: state,
+            reason: 'homeId unavailable while active membership is unresolved',
+          );
+        }
         return FlowChoreProvider(
           homeId: homeId,
           choresRepository: sl<ChoresRepository>(),
@@ -94,7 +110,15 @@ List<GoRoute> buildFlowRoutes({
       path: AppRoutePaths.flowChoreEdit,
       name: AppRouteNames.flowChoreEdit,
       builder: (_, state) {
-        final homeId = resolveHomeId(state);
+        final routeContext = resolveContext();
+        final homeId = resolveHomeId(state, routeContext);
+        if (homeId == null) {
+          return routeFallback(
+            'flowChoreEdit',
+            state: state,
+            reason: 'homeId unavailable while active membership is unresolved',
+          );
+        }
         final choreId = state.pathParameters['choreId']!;
         return FlowChoreProvider(
           homeId: homeId,
@@ -108,7 +132,15 @@ List<GoRoute> buildFlowRoutes({
       path: AppRoutePaths.flowChoreDetail,
       name: AppRouteNames.flowChoreDetail,
       builder: (_, state) {
-        final homeId = resolveHomeId(state);
+        final routeContext = resolveContext();
+        final homeId = resolveHomeId(state, routeContext);
+        if (homeId == null) {
+          return routeFallback(
+            'flowChoreDetail',
+            state: state,
+            reason: 'homeId unavailable while active membership is unresolved',
+          );
+        }
         final choreId = state.pathParameters['choreId']!;
         return FlowChoreDetailProvider(
           homeId: homeId,

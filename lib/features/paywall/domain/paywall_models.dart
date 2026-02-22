@@ -17,6 +17,7 @@ class PaywallUsage {
   final int chorePhotos;
   final int activeMembers;
   final int activeExpenses;
+  final int expensePhotos;
   final DateTime updatedAt;
 
   const PaywallUsage({
@@ -24,15 +25,17 @@ class PaywallUsage {
     required this.chorePhotos,
     required this.activeMembers,
     required this.activeExpenses,
+    required this.expensePhotos,
     required this.updatedAt,
   });
 
   factory PaywallUsage.fromJson(Map<String, dynamic> json) {
     return PaywallUsage(
-      activeChores: (json['active_chores'] as num).toInt(),
-      chorePhotos: (json['chore_photos'] as num).toInt(),
-      activeMembers: (json['active_members'] as num).toInt(),
-      activeExpenses: (json['active_expenses'] as num).toInt(),
+      activeChores: (json['active_chores'] as num?)?.toInt() ?? 0,
+      chorePhotos: (json['chore_photos'] as num?)?.toInt() ?? 0,
+      activeMembers: (json['active_members'] as num?)?.toInt() ?? 0,
+      activeExpenses: (json['active_expenses'] as num?)?.toInt() ?? 0,
+      expensePhotos: (json['expense_photos'] as num?)?.toInt() ?? 0,
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
   }
