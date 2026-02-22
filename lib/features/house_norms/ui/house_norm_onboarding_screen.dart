@@ -36,6 +36,7 @@ class HouseNormOnboardingScreen extends StatelessWidget {
             extra: HouseNormReportNavigationArgs(
               showConfetti: true,
               initialDocument: state.generatedDocument,
+              backRouteName: AppRouteNames.today,
             ),
           );
         } else if (state.status == HouseNormCaptureStatus.failure) {

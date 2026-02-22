@@ -52,7 +52,14 @@ Widget _buildTodayContentImpl(
           isOwner
               ? AppRouteNames.houseNormsOnboarding
               : AppRouteNames.houseNormsReport;
-      context.pushNamed(routeName).then((_) {
+      final extra =
+          isOwner
+              ? null
+              : const <String, Object?>{
+                'showConfetti': false,
+                'backRouteName': AppRouteNames.today,
+              };
+      context.pushNamed(routeName, extra: extra).then((_) {
         if (!context.mounted) return;
         context.read<TodayBloc>().add(const TodayRefreshed());
       });

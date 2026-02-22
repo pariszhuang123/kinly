@@ -35,12 +35,14 @@ class HouseNormReportScreen extends StatefulWidget {
     this.showConfetti = false,
     this.showDoneCta = true,
     this.popOnDone = false,
+    this.backRouteName = AppRouteNames.today,
   });
 
   final bool isOwner;
   final bool showConfetti;
   final bool showDoneCta;
   final bool popOnDone;
+  final String backRouteName;
 
   @override
   State<HouseNormReportScreen> createState() => _HouseNormReportScreenState();
@@ -81,6 +83,29 @@ class _HouseNormReportScreenState extends State<HouseNormReportScreen> {
     });
   }
 
+  void _goToBackRoute() {
+    if (!mounted) return;
+    try {
+      context.goNamed(widget.backRouteName);
+    } catch (_) {
+      Navigator.of(context).maybePop();
+    }
+  }
+
+  void _handleBackTap() {
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      navigator.pop();
+      return;
+    }
+    _goToBackRoute();
+  }
+
+  void _handleSystemBack(bool didPop) {
+    if (didPop) return;
+    _goToBackRoute();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
@@ -89,50 +114,50 @@ class _HouseNormReportScreenState extends State<HouseNormReportScreen> {
     final palette = context.houseNormSection;
     final s = S.of(context);
 
-    return KinlyScaffold(
-      appBar: KinlyAppBar(
-        title: Text(widget.isOwner ? s.houseNormEditTitle : s.houseNormReportTitle),
-        leading: _DirectionalBackButton(
-          label: s.houseNormOnboardingBack,
-          colors: palette,
-          onTap: () {
-            if (context.canPop()) {
-              context.pop();
-              return;
-            }
-            context.goNamed(AppRouteNames.today);
-          },
+    return PopScope(
+      canPop: Navigator.of(context).canPop(),
+      onPopInvokedWithResult: (didPop, _) => _handleSystemBack(didPop),
+      child: KinlyScaffold(
+        appBar: KinlyAppBar(
+          title: Text(
+            widget.isOwner ? s.houseNormEditTitle : s.houseNormReportTitle,
+          ),
+          leading: _DirectionalBackButton(
+            label: s.houseNormOnboardingBack,
+            colors: palette,
+            onTap: _handleBackTap,
+          ),
+          backgroundColor: colors.surface,
+          foregroundColor: colors.onSurface,
         ),
         backgroundColor: colors.surface,
-        foregroundColor: colors.onSurface,
-      ),
-      backgroundColor: colors.surface,
-      body: Stack(
-        children: [
-          SafeArea(
-            child: BlocBuilder<HouseNormReportCubit, HouseNormReportState>(
-              builder: (context, state) => _buildStateBody(
-                context: context,
-                state: state,
-                strings: s,
-                palette: palette,
+        body: Stack(
+          children: [
+            SafeArea(
+              child: BlocBuilder<HouseNormReportCubit, HouseNormReportState>(
+                builder: (context, state) => _buildStateBody(
+                  context: context,
+                  state: state,
+                  strings: s,
+                  palette: palette,
+                ),
               ),
             ),
-          ),
-          if (sections != null)
-            Positioned.fill(
-              child: KinlyConfettiOverlay(
-                confettiController: _confettiController,
-                colors: [
-                  sections.flow.accent,
-                  sections.share.accent,
-                  palette.accent,
-                  colors.primary,
-                  colors.secondary,
-                ],
+            if (sections != null)
+              Positioned.fill(
+                child: KinlyConfettiOverlay(
+                  confettiController: _confettiController,
+                  colors: [
+                    sections.flow.accent,
+                    sections.share.accent,
+                    palette.accent,
+                    colors.primary,
+                    colors.secondary,
+                  ],
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -244,8 +269,9 @@ class _HouseNormReadyBody extends StatelessWidget {
                     foregroundColor: palette.accent,
                     borderColor: palette.accent,
                     onPressed: () {
-                      if (popOnDone && context.canPop()) {
-                        context.pop();
+                      final navigator = Navigator.of(context);
+                      if (popOnDone && navigator.canPop()) {
+                        navigator.pop();
                         return;
                       }
                       context.goNamed(AppRouteNames.today);

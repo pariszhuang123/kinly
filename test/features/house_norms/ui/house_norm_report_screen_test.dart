@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/house_norms/models.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
@@ -68,6 +70,54 @@ void main() {
     );
   }
 
+  Widget buildRouterApp({
+    required String initialLocation,
+    required String backRouteName,
+  }) {
+    final router = GoRouter(
+      initialLocation: initialLocation,
+      routes: [
+        GoRoute(
+          path: '/report',
+          name: AppRouteNames.houseNormsReport,
+          builder:
+              (_, __) => HouseNormReportProvider(
+                homeId: 'home-1',
+                locale: 'en',
+                isOwner: false,
+                repository: _NoopHouseNormsRepository(),
+                initialDocument: _buildDocument(),
+                showDoneCta: false,
+                backRouteName: backRouteName,
+              ),
+        ),
+        GoRoute(
+          path: '/today',
+          name: AppRouteNames.today,
+          builder: (_, __) => const Scaffold(body: Text('Today')),
+        ),
+        GoRoute(
+          path: '/hub',
+          name: AppRouteNames.hub,
+          builder: (_, __) => const Scaffold(body: Text('Hub')),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+
+    return MaterialApp.router(
+      routerConfig: router,
+      theme: buildKinlyTheme(Brightness.light),
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+    );
+  }
+
   testWidgets(
     'owner sees public url and edit controls when out_of_date',
     (tester) async {
@@ -108,6 +158,62 @@ void main() {
     expect(find.text(strings.houseNormCopyUrlCta), findsNothing);
     expect(find.text(strings.houseNormEditTitle), findsNothing);
   });
+
+  testWidgets(
+    'back button routes to Today when no stack and back target is Today',
+    (tester) async {
+      await tester.pumpWidget(
+        buildRouterApp(
+          initialLocation: '/report',
+          backRouteName: AppRouteNames.today,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final strings = S.of(tester.element(find.byType(HouseNormReportProvider)));
+      await tester.tap(find.bySemanticsLabel(strings.houseNormOnboardingBack));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Today'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'back button routes to Hub when no stack and back target is Hub',
+    (tester) async {
+      await tester.pumpWidget(
+        buildRouterApp(
+          initialLocation: '/report',
+          backRouteName: AppRouteNames.hub,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final strings = S.of(tester.element(find.byType(HouseNormReportProvider)));
+      await tester.tap(find.bySemanticsLabel(strings.houseNormOnboardingBack));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Hub'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'system back routes to Hub when no stack and back target is Hub',
+    (tester) async {
+      await tester.pumpWidget(
+        buildRouterApp(
+          initialLocation: '/report',
+          backRouteName: AppRouteNames.hub,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Hub'), findsOneWidget);
+    },
+  );
 }
 
 HouseNormDocument _buildDocument({

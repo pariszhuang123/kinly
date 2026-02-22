@@ -65,7 +65,7 @@ List<GoRoute> buildHouseNormRoutes({
           );
         }
         final extra = state.extra;
-        final args = extra is HouseNormReportNavigationArgs ? extra : null;
+        final args = _reportNavigationArgs(extra);
         return HouseNormReportProvider(
           homeId: context.homeId,
           locale: _localeBase(),
@@ -73,6 +73,7 @@ List<GoRoute> buildHouseNormRoutes({
           repository: sl<HouseNormsRepository>(),
           showConfetti: args?.showConfetti ?? false,
           initialDocument: args?.initialDocument,
+          backRouteName: args?.backRouteName ?? AppRouteNames.today,
         );
       },
     ),
@@ -111,6 +112,20 @@ List<GoRoute> buildHouseNormRoutes({
       },
     ),
   ];
+}
+
+HouseNormReportNavigationArgs? _reportNavigationArgs(Object? extra) {
+  if (extra is HouseNormReportNavigationArgs) {
+    return extra;
+  }
+  if (extra is! Map<String, Object?>) {
+    return null;
+  }
+
+  return HouseNormReportNavigationArgs(
+    showConfetti: extra['showConfetti'] as bool? ?? false,
+    backRouteName: extra['backRouteName'] as String?,
+  );
 }
 
 String _localeBase() {

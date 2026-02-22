@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/house_norms/models.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 import 'package:kinly/features/house_norms/bloc/house_norm_report_cubit.dart';
@@ -17,6 +18,7 @@ class HouseNormReportProvider extends StatelessWidget {
     this.initialDocument,
     this.showDoneCta = true,
     this.popOnDone = false,
+    this.backRouteName = AppRouteNames.today,
   });
 
   final String homeId;
@@ -27,6 +29,7 @@ class HouseNormReportProvider extends StatelessWidget {
   final HouseNormDocument? initialDocument;
   final bool showDoneCta;
   final bool popOnDone;
+  final String backRouteName;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +54,7 @@ class HouseNormReportProvider extends StatelessWidget {
         showConfetti: showConfetti,
         showDoneCta: showDoneCta,
         popOnDone: popOnDone,
+        backRouteName: backRouteName,
       ),
     );
   }
