@@ -18,6 +18,7 @@ class KinlyTabBar<T> extends StatelessWidget {
     required this.onChanged,
     this.selected,
     this.emptySelectionAllowed = false,
+    this.selectedIcons,
   });
 
   /// Map of value -> label.
@@ -33,6 +34,10 @@ class KinlyTabBar<T> extends StatelessWidget {
   /// Whether no selection is allowed (passes `null` to [onChanged]).
   final bool emptySelectionAllowed;
 
+  /// Per-tab icons shown when that tab is selected. Tabs without an entry
+  /// fall back to the default check icon.
+  final Map<T, Widget>? selectedIcons;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -43,15 +48,28 @@ class KinlyTabBar<T> extends StatelessWidget {
         KinlyPalette.build(theme.brightness).colorTokens;
     final type = theme.extension<KinlyTypography>();
 
+    final hasCustomIcons = selectedIcons != null;
+
     return SegmentedButton<T>(
       emptySelectionAllowed: emptySelectionAllowed,
+      showSelectedIcon: !hasCustomIcons,
       segments:
           tabs.entries
               .map(
-                (entry) => ButtonSegment<T>(
-                  value: entry.key,
-                  label: Text(entry.value),
-                ),
+                (entry) {
+                  final isSelected = entry.key == selected;
+                  Widget? icon;
+                  if (hasCustomIcons && isSelected) {
+                    icon =
+                        selectedIcons![entry.key] ??
+                        const Icon(Icons.check, size: 18);
+                  }
+                  return ButtonSegment<T>(
+                    value: entry.key,
+                    label: Text(entry.value),
+                    icon: icon,
+                  );
+                },
               )
               .toList(),
       selected: selected != null ? {selected as T} : <T>{},

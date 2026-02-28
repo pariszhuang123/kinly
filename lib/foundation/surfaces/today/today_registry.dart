@@ -64,15 +64,6 @@ class TodayRegistry {
 
     register(
       TodaySectionEntry(
-        id: 'preferences',
-        order: 15,
-        builder: _buildPreferencesPrompt,
-        isVisible: (scope) => scope.state.shouldPromptPreferences,
-      ),
-    );
-
-    register(
-      TodaySectionEntry(
         id: 'house_norms',
         order: 16,
         builder: _buildHouseNormsPrompt,
@@ -108,9 +99,7 @@ class TodayRegistry {
               onTaskTap: scope.actions.onFlowTaskTap,
               onSeeAllTap: scope.actions.onFlowSeeAllTap,
             ),
-        isVisible:
-            (scope) =>
-                scope.state.hasFlowContent || scope.state.hasShareContent,
+        isVisible: (scope) => scope.state.hasFlowContent,
       ),
     );
 
@@ -126,9 +115,7 @@ class TodayRegistry {
               onDraftTap: scope.actions.onShareDraftTap,
               onSeeAllDraftsTap: scope.actions.onShareSeeAllDraftsTap,
             ),
-        isVisible:
-            (scope) =>
-                scope.state.hasFlowContent || scope.state.hasShareContent,
+        isVisible: (scope) => scope.state.hasShareContent,
       ),
     );
 
@@ -149,8 +136,17 @@ class TodayRegistry {
 
     register(
       TodaySectionEntry(
-        id: 'gratitude',
+        id: 'preferences',
         order: 50,
+        builder: _buildPreferencesPrompt,
+        isVisible: (scope) => scope.state.shouldPromptPreferences,
+      ),
+    );
+
+    register(
+      TodaySectionEntry(
+        id: 'gratitude',
+        order: 55,
         spacingAfter: TodaySectionSpacing.none,
         builder:
             (scope) => TodayGratitudeSection(

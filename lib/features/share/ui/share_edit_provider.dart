@@ -123,7 +123,9 @@ class ShareEditProvider extends StatelessWidget {
                 paidByOther: paidByOther,
                 canEdit: constraints.canEdit,
                 editDisabledReason: constraints.editDisabledReason,
-              )..add(const ShareCreateParticipantsRequested()),
+              )
+                ..add(const ShareCreateParticipantsRequested())
+                ..add(const ShareCreateEvidencePhotoRecoveryRequested()),
           child: ShareCreateScreen(
             homeId: homeId,
             allowDelete: allowDelete && constraints.canEdit,

@@ -26,7 +26,9 @@ class ShareCreateProvider extends StatelessWidget {
             homeId: homeId,
             expensesRepository: expensesRepository,
             homeRepository: homeRepository,
-          )..add(const ShareCreateParticipantsRequested()),
+          )
+            ..add(const ShareCreateParticipantsRequested())
+            ..add(const ShareCreateEvidencePhotoRecoveryRequested()),
       child: ShareCreateScreen(homeId: homeId),
     );
   }

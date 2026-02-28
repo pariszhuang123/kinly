@@ -150,6 +150,7 @@
   "shoppingDetailTitle": "Artículo de compra",
   "shoppingMarkCompleteCta": "Marcar como completado",
   "shoppingTabPending": "Por comprar",
+  "shoppingAllItemsBought": "Todos los artículos comprados",
   "shoppingEmptyTitle": "No hay artículos por comprar.",
   "shoppingCreateTitle": "Añadir artículo",
   "shoppingEditTitle": "Detalles del artículo",

@@ -62,7 +62,7 @@ class FlowChoreDetailView extends StatelessWidget {
         normalizedHowToUrl ??
         (chore.howToVideoUrl?.trim().isNotEmpty == true
             ? chore.howToVideoUrl!.trim()
-            : s.flowChoreDetailNoHowTo);
+            : null);
     final expectationPhotoUrl = storagePathResolver.toPublicUrl(
       chore.expectationPhotoPath,
     );
@@ -111,7 +111,7 @@ class FlowChoreDetailView extends StatelessWidget {
                       notesBody:
                           chore.notes?.isNotEmpty == true
                               ? chore.notes!
-                              : s.flowChoreDetailNoNotes,
+                              : null,
                       howToLabel: s.flowChoreHowToLabel,
                       howToBody: howToBody,
                       onHowToTap:

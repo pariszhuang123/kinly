@@ -22,6 +22,7 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
        super(const ShoppingListState.loading()) {
     on<LoadShoppingListEvent>(_onLoadShoppingList);
     on<ToggleShoppingItemEvent>(_onToggleShoppingItem);
+    on<ToggleAllShoppingItemsEvent>(_onToggleAllShoppingItems);
     on<ArchiveMyCompletedShoppingItemsEvent>(_onArchiveMyCompletedShoppingItems);
   }
 
@@ -48,6 +49,34 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
         itemId: event.itemId,
         isCompleted: event.isCompleted,
       );
+      await _load(emit, keepCurrent: true);
+    } catch (error) {
+      if (_shoppingListRepository.isItemCompletedByOtherError(error)) {
+        await _load(emit, keepCurrent: true);
+        emit(
+          state.copyWith(
+            message: shoppingErrorItemCompletedByOther,
+            messageTick: state.messageTick + 1,
+          ),
+        );
+        return;
+      }
+      emit(state.copyWith(message: error.toString(), messageTick: state.messageTick + 1));
+    }
+  }
+
+  Future<void> _onToggleAllShoppingItems(
+    ToggleAllShoppingItemsEvent event,
+    Emitter<ShoppingListState> emit,
+  ) async {
+    try {
+      final items = event.isCompleted ? state.pendingItems : state.completedItems;
+      for (final item in items) {
+        await _shoppingListRepository.updateItem(
+          itemId: item.id,
+          isCompleted: event.isCompleted,
+        );
+      }
       await _load(emit, keepCurrent: true);
     } catch (error) {
       if (_shoppingListRepository.isItemCompletedByOtherError(error)) {

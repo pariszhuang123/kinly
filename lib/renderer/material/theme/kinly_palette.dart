@@ -301,9 +301,15 @@ class _DerivedEngine {
   }
 
   static Color _surfaceBase(Brightness brightness) {
-    return brightness == Brightness.dark
-        ? KinlyFoundationColors.surfaceDark
-        : KinlyFoundationColors.surfaceLight;
+    if (brightness == Brightness.dark) {
+      // Keep dark mode brand-forward by tinting the base surface toward primary.
+      return _mix(
+        KinlyFoundationColors.surfaceDark,
+        KinlyFoundationColors.brandPrimary,
+        0.10,
+      );
+    }
+    return KinlyFoundationColors.surfaceLight;
   }
 
   static _SurfaceSet _deriveSurfaces({
@@ -312,13 +318,13 @@ class _DerivedEngine {
     required Color Function(double) shade,
     required Color surfaceBase,
   }) {
-    final surfaceContainerLowest = isDark ? lift(0.05) : lift(0.02);
-    final surfaceContainerLow = isDark ? lift(0.08) : lift(0.04);
-    final surfaceContainer = isDark ? lift(0.12) : lift(0.06);
-    final surfaceContainerHigh = isDark ? lift(0.16) : lift(0.08);
-    final surfaceContainerHighest = isDark ? lift(0.22) : lift(0.12);
-    final surfaceBright = isDark ? lift(0.20) : lift(0.10);
-    final surfaceDim = isDark ? shade(0.06) : shade(0.08);
+    final surfaceContainerLowest = isDark ? lift(0.03) : lift(0.02);
+    final surfaceContainerLow = isDark ? lift(0.05) : lift(0.04);
+    final surfaceContainer = isDark ? lift(0.06) : lift(0.06);
+    final surfaceContainerHigh = isDark ? lift(0.13) : lift(0.08);
+    final surfaceContainerHighest = isDark ? lift(0.18) : lift(0.12);
+    final surfaceBright = isDark ? lift(0.16) : lift(0.10);
+    final surfaceDim = isDark ? shade(0.04) : shade(0.08);
     final inverseSurface = isDark ? lift(0.92) : shade(0.82);
     final onSurface = _pickOnColor(
       background: surfaceBase,
@@ -351,7 +357,7 @@ class _DerivedEngine {
     final primary = _mix(
       KinlyFoundationColors.brandPrimary,
       isDark ? _white : _black,
-      isDark ? 0.35 : 0.10,
+      isDark ? 0.11 : 0.10,
     );
     final primaryContainer = _mix(
       primary,

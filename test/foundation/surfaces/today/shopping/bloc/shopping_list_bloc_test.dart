@@ -434,6 +434,160 @@ void main() {
     );
 
     blocTest<ShoppingListBloc, ShoppingListState>(
+      'toggle all marks every pending item as completed and reloads',
+      build: () {
+        when(
+          () => shoppingListRepository.getForHome(homeId: homeId),
+        ).thenAnswer(
+          (_) async => ShoppingListSnapshot(
+            listId: 'list-1',
+            itemsUnarchivedCount: 2,
+            itemsUncompletedCount: 0,
+            items: [
+              item(
+                id: 'a',
+                isCompleted: true,
+                completedByUserId: currentUserId,
+                updatedAt: DateTime(2026, 2, 1, 11),
+              ),
+              item(
+                id: 'b',
+                isCompleted: true,
+                completedByUserId: currentUserId,
+                updatedAt: DateTime(2026, 2, 1, 11),
+              ),
+            ],
+          ),
+        );
+        return buildBloc();
+      },
+      seed: () => ShoppingListState.loaded(
+        pendingItems: [
+          item(id: 'a', isCompleted: false, updatedAt: DateTime(2026, 2, 1, 10)),
+          item(id: 'b', isCompleted: false, updatedAt: DateTime(2026, 2, 1, 10)),
+        ],
+        completedItems: const [],
+        photoUrlsByItemId: const {},
+        myCompletedCount: 0,
+      ),
+      act: (bloc) =>
+          bloc.add(const ToggleAllShoppingItemsEvent(isCompleted: true)),
+      expect: () => [
+        isA<ShoppingListState>()
+            .having((s) => s.pendingItems, 'pendingItems', isEmpty)
+            .having((s) => s.completedItems.length, 'completedItems.length', 2),
+      ],
+      verify: (_) {
+        verify(
+          () => shoppingListRepository.updateItem(
+            itemId: 'a',
+            isCompleted: true,
+          ),
+        ).called(1);
+        verify(
+          () => shoppingListRepository.updateItem(
+            itemId: 'b',
+            isCompleted: true,
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<ShoppingListBloc, ShoppingListState>(
+      'toggle all uncompletes every completed item and reloads',
+      build: () {
+        when(
+          () => shoppingListRepository.getForHome(homeId: homeId),
+        ).thenAnswer(
+          (_) async => ShoppingListSnapshot(
+            listId: 'list-1',
+            itemsUnarchivedCount: 2,
+            itemsUncompletedCount: 2,
+            items: [
+              item(id: 'a', isCompleted: false, updatedAt: DateTime(2026, 2, 1, 11)),
+              item(id: 'b', isCompleted: false, updatedAt: DateTime(2026, 2, 1, 11)),
+            ],
+          ),
+        );
+        return buildBloc();
+      },
+      seed: () => ShoppingListState.loaded(
+        pendingItems: const [],
+        completedItems: [
+          item(
+            id: 'a',
+            isCompleted: true,
+            completedByUserId: currentUserId,
+            updatedAt: DateTime(2026, 2, 1, 10),
+          ),
+          item(
+            id: 'b',
+            isCompleted: true,
+            completedByUserId: currentUserId,
+            updatedAt: DateTime(2026, 2, 1, 10),
+          ),
+        ],
+        photoUrlsByItemId: const {},
+        myCompletedCount: 2,
+      ),
+      act: (bloc) =>
+          bloc.add(const ToggleAllShoppingItemsEvent(isCompleted: false)),
+      expect: () => [
+        isA<ShoppingListState>()
+            .having((s) => s.pendingItems.length, 'pendingItems.length', 2)
+            .having((s) => s.completedItems, 'completedItems', isEmpty),
+      ],
+      verify: (_) {
+        verify(
+          () => shoppingListRepository.updateItem(
+            itemId: 'a',
+            isCompleted: false,
+          ),
+        ).called(1);
+        verify(
+          () => shoppingListRepository.updateItem(
+            itemId: 'b',
+            isCompleted: false,
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<ShoppingListBloc, ShoppingListState>(
+      'toggle all emits sentinel message when item completed by other',
+      build: () {
+        final error = Exception('completed by other');
+        when(
+          () => shoppingListRepository.updateItem(
+            itemId: any(named: 'itemId'),
+            isCompleted: any(named: 'isCompleted'),
+          ),
+        ).thenThrow(error);
+        when(
+          () => shoppingListRepository.isItemCompletedByOtherError(error),
+        ).thenReturn(true);
+        return buildBloc();
+      },
+      seed: () => ShoppingListState.loaded(
+        pendingItems: [
+          item(id: 'a', isCompleted: false, updatedAt: DateTime(2026, 2, 1, 10)),
+        ],
+        completedItems: const [],
+        photoUrlsByItemId: const {},
+        myCompletedCount: 0,
+      ),
+      act: (bloc) =>
+          bloc.add(const ToggleAllShoppingItemsEvent(isCompleted: true)),
+      expect: () => [
+        isA<ShoppingListState>()
+            .having((s) => s.isLoading, 'isLoading', false),
+        isA<ShoppingListState>()
+            .having((s) => s.message, 'message', shoppingErrorItemCompletedByOther)
+            .having((s) => s.messageTick, 'messageTick', 1),
+      ],
+    );
+
+    blocTest<ShoppingListBloc, ShoppingListState>(
       'toggle emits sentinel message and reloads list when item completed by other',
       build: () {
         final error = Exception('completed by other');

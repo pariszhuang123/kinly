@@ -81,7 +81,7 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
         final hasPendingItems = state.pendingItems.isNotEmpty;
         final hasCompletedItems = state.completedItems.isNotEmpty;
         final showAddFab = isManageMode || !hasCompletedItems;
-        final showTabBar = !isManageMode && hasPendingItems && hasCompletedItems;
+        final showTabBar = !isManageMode && (hasPendingItems || hasCompletedItems);
         _syncSelectedTab(
           hasPendingItems: hasPendingItems,
           hasCompletedItems: hasCompletedItems,
@@ -187,16 +187,45 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
             ),
             child: KinlyTabBar<_ShoppingTab>(
               tabs: <_ShoppingTab, String>{
-                _ShoppingTab.pending:
-                    '${s.shoppingTabPending} (${state.pendingItems.length})',
-                _ShoppingTab.completed:
-                    '${s.shoppingArchiveCta} (${state.completedItems.length})',
+                if (state.pendingItems.isNotEmpty)
+                  _ShoppingTab.pending:
+                      '${s.shoppingTabPending} (${state.pendingItems.length})',
+                if (state.completedItems.isNotEmpty)
+                  _ShoppingTab.completed:
+                      '${s.shoppingArchiveCta} (${state.completedItems.length})',
               },
               selected: _selectedTab,
               onChanged: (value) {
                 if (value == null) return;
                 setState(() => _selectedTab = value);
               },
+            ),
+          ),
+        if (!isManageMode && activeItems.isNotEmpty)
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(
+              spacing.lg,
+              spacing.sm,
+              spacing.lg,
+              0,
+            ),
+            child: Row(
+              children: [
+                KinlyCheckbox(
+                  value: state.pendingItems.isEmpty,
+                  borderWidth: 1.8,
+                  onChanged: (isCompleted) {
+                    context.read<ShoppingListBloc>().add(
+                      ToggleAllShoppingItemsEvent(isCompleted: isCompleted),
+                    );
+                  },
+                ),
+                SizedBox(width: spacing.sm),
+                Text(
+                  s.shoppingAllItemsBought,
+                  style: theme.textTheme.bodySmall,
+                ),
+              ],
             ),
           ),
         Expanded(child: list),

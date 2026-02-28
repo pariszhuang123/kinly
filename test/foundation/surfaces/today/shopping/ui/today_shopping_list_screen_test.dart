@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
+import 'package:kinly/core/ui/toggles/kinly_checkbox.dart';
 import 'package:kinly/foundation/surfaces/today/shopping/bloc/shopping_list_bloc.dart';
 import 'package:kinly/foundation/surfaces/today/routes/today_shopping_route_args.dart';
 import 'package:kinly/foundation/surfaces/today/shopping/today_shopping_list_screen.dart';
@@ -164,7 +166,7 @@ void main() {
     expect(find.text('edit:milk'), findsOneWidget);
   });
 
-  testWidgets('hides tabs when only pending items exist', (tester) async {
+  testWidgets('shows only pending tab when no completed items exist', (tester) async {
     final state = ShoppingListState.loaded(
       pendingItems: [item(id: 'milk', name: 'Milk', isCompleted: false)],
       completedItems: const [],
@@ -176,7 +178,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final s = strings(tester);
-    expect(find.text('${s.shoppingTabPending} (1)'), findsNothing);
+    expect(find.text('${s.shoppingTabPending} (1)'), findsOneWidget);
     expect(find.text('${s.shoppingArchiveCta} (0)'), findsNothing);
   });
 
@@ -220,7 +222,7 @@ void main() {
     expect(find.text('create'), findsOneWidget);
   });
 
-  testWidgets('hides tabs when only completed items exist', (tester) async {
+  testWidgets('shows only completed tab when no pending items exist', (tester) async {
     final state = ShoppingListState.loaded(
       pendingItems: const [],
       completedItems: [item(id: 'milk', name: 'Milk', isCompleted: true)],
@@ -233,7 +235,7 @@ void main() {
 
     final s = strings(tester);
     expect(find.text('${s.shoppingTabPending} (0)'), findsNothing);
-    expect(find.text('${s.shoppingArchiveCta} (1)'), findsNothing);
+    expect(find.text('${s.shoppingArchiveCta} (1)'), findsOneWidget);
     expect(find.byIcon(Icons.add), findsNothing);
   });
 
@@ -271,7 +273,9 @@ void main() {
       await tester.pumpAndSettle();
 
       final s = strings(tester);
-      await tester.tap(find.text(s.shoppingArchiveCta));
+      await tester.tap(
+        find.widgetWithText(KinlyFilledButton, s.shoppingArchiveCta),
+      );
       await tester.pumpAndSettle();
       expect(find.text(s.shoppingArchiveSharePromptTitle), findsOneWidget);
 
@@ -291,6 +295,79 @@ void main() {
       );
     },
   );
+
+  testWidgets('shows all-items-bought checkbox when pending items exist', (
+    tester,
+  ) async {
+    final state = ShoppingListState.loaded(
+      pendingItems: [
+        item(id: 'milk', name: 'Milk', isCompleted: false),
+        item(id: 'eggs', name: 'Eggs', isCompleted: false),
+      ],
+      completedItems: const [],
+      photoUrlsByItemId: const {},
+      myCompletedCount: 0,
+    );
+
+    await tester.pumpWidget(buildRouterApp(state));
+    await tester.pumpAndSettle();
+
+    final s = strings(tester);
+    expect(find.text(s.shoppingAllItemsBought), findsOneWidget);
+  });
+
+  testWidgets('tapping all-items-bought checkbox dispatches ToggleAllShoppingItemsEvent', (
+    tester,
+  ) async {
+    final state = ShoppingListState.loaded(
+      pendingItems: [
+        item(id: 'milk', name: 'Milk', isCompleted: false),
+      ],
+      completedItems: const [],
+      photoUrlsByItemId: const {},
+      myCompletedCount: 0,
+    );
+
+    await tester.pumpWidget(buildRouterApp(state));
+    await tester.pumpAndSettle();
+
+    final s = strings(tester);
+    final allItemsRow = find.ancestor(
+      of: find.text(s.shoppingAllItemsBought),
+      matching: find.byType(Row),
+    );
+    final allItemsCheckbox = find.descendant(
+      of: allItemsRow,
+      matching: find.byType(KinlyCheckbox),
+    );
+    await tester.tap(allItemsCheckbox);
+    await tester.pumpAndSettle();
+
+    verify(
+      () => bloc.add(const ToggleAllShoppingItemsEvent(isCompleted: true)),
+    ).called(1);
+  });
+
+  testWidgets('hides all-items-bought checkbox in manage mode', (
+    tester,
+  ) async {
+    final state = ShoppingListState.loaded(
+      pendingItems: [
+        item(id: 'milk', name: 'Milk', isCompleted: false),
+      ],
+      completedItems: const [],
+      photoUrlsByItemId: const {},
+      myCompletedCount: 0,
+    );
+
+    await tester.pumpWidget(
+      buildRouterApp(state, mode: TodayShoppingListMode.manage),
+    );
+    await tester.pumpAndSettle();
+
+    final s = strings(tester);
+    expect(find.text(s.shoppingAllItemsBought), findsNothing);
+  });
 
   testWidgets('navigates to today when share draft is linked', (tester) async {
     final initial = ShoppingListState.loaded(

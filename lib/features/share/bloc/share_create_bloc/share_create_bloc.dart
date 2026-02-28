@@ -67,6 +67,9 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     on<ShareCreateEvidencePhotoCaptureRequested>(
       _onEvidencePhotoCaptureRequested,
     );
+    on<ShareCreateEvidencePhotoRecoveryRequested>(
+      _onEvidencePhotoRecoveryRequested,
+    );
     on<ShareCreateParticipantToggled>(_onParticipantToggled);
     on<ShareCreateCustomAmountChanged>(_onCustomAmountChanged);
     on<ShareCreateStartDateChanged>(_onStartDateChanged);
@@ -275,6 +278,55 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
       );
     } on CameraCaptureCancelled {
       emit(state.copyWith(isUploadingEvidencePhoto: false));
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isUploadingEvidencePhoto: false,
+          evidencePhotoErrorMessage: error.toString(),
+          evidencePhotoErrorTick: state.evidencePhotoErrorTick + 1,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onEvidencePhotoRecoveryRequested(
+    ShareCreateEvidencePhotoRecoveryRequested event,
+    Emitter<ShareCreateState> emit,
+  ) async {
+    if (state.isUploadingEvidencePhoto) return;
+    emit(
+      state.copyWith(
+        isUploadingEvidencePhoto: true,
+        clearEvidencePhotoError: true,
+        isCameraPermissionPermanentlyDenied: false,
+      ),
+    );
+    try {
+      final photoService =
+          _evidencePhotoService ??=
+              ExpectationPhotoService(
+                mediaRepository: SupabaseMediaRepository(),
+              );
+      final upload = await photoService.recoverLostAndUploadIfPending(
+        homeId: _homeId,
+        choreId: state.editingExpenseId,
+        rootSegment: 'share',
+        featureSegment: 'expenses',
+      );
+      if (upload == null) {
+        emit(state.copyWith(isUploadingEvidencePhoto: false));
+        return;
+      }
+      emit(
+        state.copyWith(
+          isUploadingEvidencePhoto: false,
+          form: state.form.copyWith(
+            evidencePhotoPath: _withHouseholdsPrefix(upload.storagePath),
+          ),
+          hasUserEdits: true,
+          clearEvidencePhotoError: true,
+        ),
+      );
     } catch (error) {
       emit(
         state.copyWith(

@@ -23,9 +23,9 @@ class FlowChoreExtrasSection extends StatelessWidget {
   });
 
   final String notesLabel;
-  final String notesBody;
+  final String? notesBody;
   final String howToLabel;
-  final String howToBody;
+  final String? howToBody;
   final VoidCallback? onHowToTap;
   final String? expectationPhotoLabel;
   final String? expectationPhotoUrl;
@@ -40,7 +40,13 @@ class FlowChoreExtrasSection extends StatelessWidget {
         KinlyLinkColors(link: colorScheme.primary, icon: colorScheme.primary);
     final s = S.of(context);
 
+    final hasNotes = notesBody?.trim().isNotEmpty == true;
+    final hasHowTo = howToBody?.trim().isNotEmpty == true;
     final hasExpectationPhoto = expectationPhotoUrl?.trim().isNotEmpty == true;
+
+    if (!hasNotes && !hasHowTo && !hasExpectationPhoto) {
+      return const SizedBox.shrink();
+    }
 
     return Container(
       width: double.infinity,
@@ -57,19 +63,23 @@ class FlowChoreExtrasSection extends StatelessWidget {
             s.flowChoreDetailMoreInfoTitle,
             style: theme.textTheme.titleMedium,
           ),
-          SizedBox(height: spacing.md),
-          _FlowDetailSection(
-            title: notesLabel,
-            body: notesBody,
-            linkColors: linkColors,
-          ),
-          SizedBox(height: spacing.md),
-          _FlowDetailSection(
-            title: howToLabel,
-            body: howToBody,
-            onTap: onHowToTap,
-            linkColors: linkColors,
-          ),
+          if (hasNotes) ...[
+            SizedBox(height: spacing.md),
+            _FlowDetailSection(
+              title: notesLabel,
+              body: notesBody!,
+              linkColors: linkColors,
+            ),
+          ],
+          if (hasHowTo) ...[
+            SizedBox(height: spacing.md),
+            _FlowDetailSection(
+              title: howToLabel,
+              body: howToBody!,
+              onTap: onHowToTap,
+              linkColors: linkColors,
+            ),
+          ],
           if (hasExpectationPhoto) ...[
             SizedBox(height: spacing.md),
             _ExpectationPhotoSection(

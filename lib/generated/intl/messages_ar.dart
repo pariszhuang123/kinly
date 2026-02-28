@@ -180,12 +180,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
       "سياق مفيد",
     ),
-    "flowChoreDetailNoHowTo": MessageLookupByLibrary.simpleMessage(
-      "لا توجد روابط إرشادية.",
-    ),
-    "flowChoreDetailNoNotes": MessageLookupByLibrary.simpleMessage(
-      "لا يوجد سياق.",
-    ),
     "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
       "تفاصيل المهمة",
     ),
@@ -193,7 +187,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "غير مُسندة",
     ),
     "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("تعديل المهمة"),
-    "flowChoreViewTitle": MessageLookupByLibrary.simpleMessage("عرض المهمة"),
     "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
       "هذا العضو ليس ضمن هذا المنزل الآن.",
     ),
@@ -293,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
       "سمِّ هذه المهمة.",
     ),
+    "flowChoreViewTitle": MessageLookupByLibrary.simpleMessage("عرض المهمة"),
     "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("مسودة"),
     "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
       "مهام لإبقاء الجميع متوافقين.",
@@ -766,10 +760,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
       "صور مهام غير محدودة",
     ),
-    "paywallFeatureUnlimitedSharedExpensePhotos":
-        MessageLookupByLibrary.simpleMessage(
-          "صور المصروفات المشتركة غير محدودة",
-        ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "فواتير مشتركة غير محدودة",
     ),
@@ -779,6 +769,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل صفحة الترقية.",
     ),
+    "paywallFeatureUnlimitedSharedExpensePhotos":
+        MessageLookupByLibrary.simpleMessage(
+          "صور المصروفات المشتركة غير محدودة",
+        ),
     "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
       "خطة واحدة للمنزل، بدون مستويات مخفية.",
     ),
@@ -1519,6 +1513,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
       "جارٍ التأكيد…",
+    ),
+    "shoppingAllItemsBought": MessageLookupByLibrary.simpleMessage(
+      "تم شراء جميع العناصر",
     ),
     "shoppingAmountHint": MessageLookupByLibrary.simpleMessage("مثال: 2 عبوات"),
     "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage("الكمية"),

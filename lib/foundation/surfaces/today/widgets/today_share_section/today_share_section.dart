@@ -109,6 +109,12 @@ class _TodayShareSectionState extends State<TodayShareSection> {
           ),
         if (tabs.isNotEmpty) ...[
           KinlyTabBar<TodaySectionTabType>(
+            selectedIcons: const {
+              TodaySectionTabType.active: Text(
+                '!',
+                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14),
+              ),
+            },
             tabs: {
               if (widget.owed.isNotEmpty)
                 TodaySectionTabType.active: s.todayShareTabActive,

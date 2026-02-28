@@ -671,6 +671,16 @@ class S {
     );
   }
 
+  /// `All items bought`
+  String get shoppingAllItemsBought {
+    return Intl.message(
+      'All items bought',
+      name: 'shoppingAllItemsBought',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No shopping items to buy.`
   String get shoppingEmptyTitle {
     return Intl.message(
@@ -2995,26 +3005,6 @@ class S {
     return Intl.message(
       'Unassigned',
       name: 'flowChoreDetailUnassigned',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No context provided.`
-  String get flowChoreDetailNoNotes {
-    return Intl.message(
-      'No context provided.',
-      name: 'flowChoreDetailNoNotes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No guide links provided.`
-  String get flowChoreDetailNoHowTo {
-    return Intl.message(
-      'No guide links provided.',
-      name: 'flowChoreDetailNoHowTo',
       desc: '',
       args: [],
     );

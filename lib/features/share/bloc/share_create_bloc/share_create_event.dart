@@ -52,6 +52,10 @@ class ShareCreateEvidencePhotoCaptureRequested extends ShareCreateEvent {
   const ShareCreateEvidencePhotoCaptureRequested();
 }
 
+class ShareCreateEvidencePhotoRecoveryRequested extends ShareCreateEvent {
+  const ShareCreateEvidencePhotoRecoveryRequested();
+}
+
 class ShareCreateStartDateChanged extends ShareCreateEvent {
   const ShareCreateStartDateChanged(this.date);
 

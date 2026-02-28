@@ -209,7 +209,7 @@ void main() {
     expect(find.text('Take out trash'), findsOneWidget);
   });
 
-  testWidgets('shows share header when only tasks exist', (tester) async {
+  testWidgets('shows only tasks header when only tasks exist', (tester) async {
     when(() => todayBloc.state).thenReturn(
       TodayState.loaded(
         activeTasks: const [
@@ -230,10 +230,10 @@ void main() {
     await tester.pump();
 
     expect(find.text(S.current.todayFlowSectionTitle), findsOneWidget);
-    expect(find.text(S.current.todayShareSectionTitle), findsOneWidget);
+    expect(find.text(S.current.todayShareSectionTitle), findsNothing);
   });
 
-  testWidgets('shows tasks header when only share exists', (tester) async {
+  testWidgets('shows only share header when only share exists', (tester) async {
     when(() => todayBloc.state).thenReturn(
       TodayState.loaded(
         activeTasks: const [],
@@ -263,7 +263,7 @@ void main() {
     await tester.pumpWidget(buildApp(bundle: _FakeSvgBundle()));
     await tester.pump();
 
-    expect(find.text(S.current.todayFlowSectionTitle), findsOneWidget);
+    expect(find.text(S.current.todayFlowSectionTitle), findsNothing);
     expect(find.text(S.current.todayShareSectionTitle), findsOneWidget);
   });
 

@@ -29,6 +29,15 @@ class ToggleShoppingItemEvent extends ShoppingListEvent {
   List<Object?> get props => [itemId, isCompleted];
 }
 
+class ToggleAllShoppingItemsEvent extends ShoppingListEvent {
+  const ToggleAllShoppingItemsEvent({required this.isCompleted});
+
+  final bool isCompleted;
+
+  @override
+  List<Object?> get props => [isCompleted];
+}
+
 class ArchiveMyCompletedShoppingItemsEvent extends ShoppingListEvent {
   const ArchiveMyCompletedShoppingItemsEvent({required this.triggerShareSpend});
 

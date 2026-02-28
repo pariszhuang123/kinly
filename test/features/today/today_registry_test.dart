@@ -11,13 +11,13 @@ void main() {
       ids,
       equals([
         'member_cap',
-        'preferences',
         'house_norms',
         'invite',
         'house_pulse',
         'flow',
         'share',
         'shopping',
+        'preferences',
         'gratitude',
       ]),
     );

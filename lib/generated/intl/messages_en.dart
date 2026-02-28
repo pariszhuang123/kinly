@@ -182,12 +182,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
       "Helpful context",
     ),
-    "flowChoreDetailNoHowTo": MessageLookupByLibrary.simpleMessage(
-      "No guide links provided.",
-    ),
-    "flowChoreDetailNoNotes": MessageLookupByLibrary.simpleMessage(
-      "No context provided.",
-    ),
     "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
       "Task details",
     ),
@@ -195,7 +189,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Unassigned",
     ),
     "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Edit Task"),
-    "flowChoreViewTitle": MessageLookupByLibrary.simpleMessage("View Task"),
     "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
       "That member isn\'t part of this home right now.",
     ),
@@ -293,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
       "Name this task.",
     ),
+    "flowChoreViewTitle": MessageLookupByLibrary.simpleMessage("View Task"),
     "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("Draft"),
     "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
       "Tasks to keep everyone aligned.",
@@ -767,10 +761,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
       "Unlimited task photos",
     ),
-    "paywallFeatureUnlimitedSharedExpensePhotos":
-        MessageLookupByLibrary.simpleMessage(
-          "Unlimited shared expense photos",
-        ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
       "Unlimited shared expenses",
     ),
@@ -780,6 +770,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
       "Unable to load paywall.",
     ),
+    "paywallFeatureUnlimitedSharedExpensePhotos":
+        MessageLookupByLibrary.simpleMessage("Unlimited shared expense photos"),
     "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
       "One home plan, no hidden tiers.",
     ),
@@ -1541,6 +1533,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
       "Acknowledging...",
+    ),
+    "shoppingAllItemsBought": MessageLookupByLibrary.simpleMessage(
+      "All items bought",
     ),
     "shoppingAmountHint": MessageLookupByLibrary.simpleMessage(
       "e.g. 2 cartons",
