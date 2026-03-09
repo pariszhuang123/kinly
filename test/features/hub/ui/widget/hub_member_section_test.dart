@@ -45,6 +45,7 @@ void main() {
       inviteLink: 'https://example.com',
       appLink: 'https://example.com/app',
       isOwner: true,
+      hasGratitudePosts: false,
     );
   }
 

@@ -1,5 +1,5 @@
-{
-  "@@locale": "en",
+﻿{
+  "@@locale": "my",
   "app_title": "Kinly",
   "bootstrap_initializing": "Starting Kinly ({env})",
   "@bootstrap_initializing": {
@@ -82,8 +82,8 @@
   "paywallRetryLabel": "Retry",
   "join_error_unauthorized": "Please sign in to join this home.",
   "join_error_forbidden": "You don't have permission to join this home.",
-  "join_blocked_title": "This home isnâ€™t accepting new members right now",
-  "join_blocked_body": "Weâ€™ve notified the home owner.",
+  "join_blocked_title": "This home isnÃ¢â‚¬â„¢t accepting new members right now",
+  "join_blocked_body": "WeÃ¢â‚¬â„¢ve notified the home owner.",
   "join_blocked_cta": "Done",
   "todayMemberCapTitle": "Someone wants to join your home",
   "todayMemberCapSubtitle": "{names} wants to join your home. Upgrade to support unlimited members.",
@@ -185,7 +185,7 @@
   "login_terms": "Service Terms",
   "login_privacy": "Privacy Policy",
   "logout": "Sign out",
-  "membership_status_checking": "Connecting you to your homeâ€¦",
+  "membership_status_checking": "Connecting you to your homeÃ¢â‚¬Â¦",
   "membership_status_none": "Your shared home starts here.",
   "membership_status_active": "You're connected to a home.",
   "authMembershipLoadFailed": "We couldn't refresh your home membership. Please try again.",
@@ -312,7 +312,7 @@
       }
     }
   },
-  "todayFlowSubtitle": "Here’s what needs attention today.",
+  "todayFlowSubtitle": "Hereâ€™s what needs attention today.",
   "todayFlowSectionTitle": "Tasks",
   "todayFlowTabActive": "Active",
   "todayFlowTabDrafts": "Drafts",
@@ -447,7 +447,7 @@
   "shareCreateValidationRecurrenceSplit": "Pick how to split before setting a repeat.",
   "shareCreateValidationStartDate": "Choose a start date.",
   "shareCreateValidationStartDateRange": "Choose a date within the allowed range.",
-  "shareCreateErrorRecurrenceDraft": "Drafts canâ€™t repeat until you add a split.",
+  "shareCreateErrorRecurrenceDraft": "Drafts canÃ¢â‚¬â„¢t repeat until you add a split.",
   "shareCreateLoadError": "We couldn't load your household members.",
   "shareCreateRetry": "Try again",
   "shareCreateErrorGeneric": "Couldn't create. Try again.",
@@ -1536,3 +1536,4 @@
     "surface": "button"
   }
 }
+

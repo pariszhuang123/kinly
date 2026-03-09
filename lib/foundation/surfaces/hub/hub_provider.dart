@@ -8,6 +8,7 @@ import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/contracts/preferences/ports/house_vibe_repository.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
+import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'bloc/hub_bloc.dart';
 import 'hub_surface.dart';
 
@@ -19,6 +20,7 @@ class HubProvider extends StatelessWidget {
     required this.preferenceReportsRepository,
     required this.houseVibeRepository,
     this.houseNormsRepository,
+    this.moodRepository,
   });
 
   final String homeId;
@@ -26,6 +28,7 @@ class HubProvider extends StatelessWidget {
   final PreferenceReportsRepository preferenceReportsRepository;
   final HouseVibeRepository houseVibeRepository;
   final HouseNormsRepository? houseNormsRepository;
+  final MoodRepository? moodRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +42,7 @@ class HubProvider extends StatelessWidget {
             preferenceReportsRepository: preferenceReportsRepository,
             houseVibeRepository: houseVibeRepository,
             houseNormsRepository: houseNormsRepository,
+            moodRepository: moodRepository,
             homeId: homeId,
             logger: logger,
           ),

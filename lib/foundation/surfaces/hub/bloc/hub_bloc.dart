@@ -8,6 +8,7 @@ import 'package:kinly/contracts/preferences/ports/house_vibe_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/contracts/house_norms/models.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
+import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
@@ -22,12 +23,14 @@ class HubBloc extends Bloc<HubEvent, HubState> {
     required PreferenceReportsRepository preferenceReportsRepository,
     required HouseVibeRepository houseVibeRepository,
     HouseNormsRepository? houseNormsRepository,
+    MoodRepository? moodRepository,
     required String homeId,
     Logger? logger,
   }) : _homeRepository = homeRepository,
        _preferenceReportsRepository = preferenceReportsRepository,
        _houseVibeRepository = houseVibeRepository,
        _houseNormsRepository = houseNormsRepository,
+       _moodRepository = moodRepository,
        _homeId = homeId,
        _logger = logger ?? const DebugLogger(),
        super(HubState.initial(appLink: _resolveAppLink())) {
@@ -43,6 +46,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
   final PreferenceReportsRepository _preferenceReportsRepository;
   final HouseVibeRepository _houseVibeRepository;
   final HouseNormsRepository? _houseNormsRepository;
+  final MoodRepository? _moodRepository;
   final String _homeId;
   final Logger _logger;
 
@@ -219,6 +223,19 @@ class HubBloc extends Bloc<HubEvent, HubState> {
       );
     }
 
+    var hasGratitudePosts = false;
+    try {
+      final stats = await _moodRepository?.getWallStats(_homeId);
+      hasGratitudePosts = (stats?.totalPosts ?? 0) > 0;
+    } catch (error, stack) {
+      _logger.warn(
+        'Failed to load gratitude stats for hub',
+        error: error,
+        stackTrace: stack,
+        tag: 'Hub',
+      );
+    }
+
     final previousCode = previousInviteCode ?? state.invite?.code;
     final nextCode = invite?.code;
     final hasRotateChange =
@@ -238,6 +255,7 @@ class HubBloc extends Bloc<HubEvent, HubState> {
         invite: invite,
         inviteLink: inviteLink,
         houseNorms: houseNorms,
+        hasGratitudePosts: hasGratitudePosts,
         isRefreshing: false,
         isOwner: isOwner,
         notice: notice,

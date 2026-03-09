@@ -134,7 +134,7 @@ void main() {
     await tester.pumpAndSettle();
     final strings = S.of(tester.element(find.byType(HouseNormReportProvider)));
 
-    expect(find.text(strings.houseNormRepublishCta), findsNothing);
+    expect(find.text(strings.houseNormRepublishCta), findsOneWidget);
     expect(find.text(strings.houseNormCopyUrlCta), findsOneWidget);
     expect(find.text(strings.houseNormEditTitle), findsOneWidget);
   });

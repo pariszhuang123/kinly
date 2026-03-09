@@ -99,39 +99,44 @@ class S {
     );
   }
 
-  /// `Create a Home`
+  /// `Create a House`
   String get welcome_create {
     return Intl.message(
-      'Create a Home',
+      'Create a House',
       name: 'welcome_create',
       desc: '',
       args: [],
     );
   }
 
-  /// `Join your Home`
+  /// `Join your House`
   String get welcome_join {
     return Intl.message(
-      'Join your Home',
+      'Join your House',
       name: 'welcome_join',
       desc: '',
       args: [],
     );
   }
 
-  /// `Could not create the home. Try again.`
+  /// `Could not create the house. Try again.`
   String get create_failed_generic {
     return Intl.message(
-      'Could not create the home. Try again.',
+      'Could not create the house. Try again.',
       name: 'create_failed_generic',
       desc: '',
       args: [],
     );
   }
 
-  /// `Join Home`
+  /// `Join Household`
   String get join_title {
-    return Intl.message('Join Home', name: 'join_title', desc: '', args: []);
+    return Intl.message(
+      'Join Household',
+      name: 'join_title',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Enter invite code Eg. ABC123`
@@ -149,10 +154,10 @@ class S {
     return Intl.message('Join', name: 'join_submit', desc: '', args: []);
   }
 
-  /// `You're in. Welcome home.`
+  /// `You're in. Welcome to your household!`
   String join_success(String code) {
     return Intl.message(
-      'You\'re in. Welcome home.',
+      'You\'re in. Welcome to your household!',
       name: 'join_success',
       desc: 'Snackbar message displayed when the user joins successfully',
       args: [code],
@@ -1116,9 +1121,9 @@ class S {
     return Intl.message('Manage', name: 'navExplore', desc: '', args: []);
   }
 
-  /// `Home Hub`
+  /// `House Hub`
   String get navHub {
-    return Intl.message('Home Hub', name: 'navHub', desc: '', args: []);
+    return Intl.message('House Hub', name: 'navHub', desc: '', args: []);
   }
 
   /// `No active members yet.`
@@ -1146,20 +1151,20 @@ class S {
     );
   }
 
-  /// `Invite to my Kinly home`
+  /// `Invite to my Kinly house`
   String get hubShareInviteTitle {
     return Intl.message(
-      'Invite to my Kinly home',
+      'Invite to my Kinly house',
       name: 'hubShareInviteTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Welcome to our Kinly home! Enter this invite code: {code}\n\nDownload the Kinly app: {link}`
+  /// `Welcome to our Kinly house! Enter this invite code: {code}\n\nDownload the Kinly app: {link}`
   String hubShareInviteBody(String code, String link) {
     return Intl.message(
-      'Welcome to our Kinly home! Enter this invite code: $code\n\nDownload the Kinly app: $link',
+      'Welcome to our Kinly house! Enter this invite code: $code\n\nDownload the Kinly app: $link',
       name: 'hubShareInviteBody',
       desc: '',
       args: [code, link],
@@ -1356,9 +1361,14 @@ class S {
     );
   }
 
-  /// `Home Vibe`
+  /// `House Vibe`
   String get homeVibeTitle {
-    return Intl.message('Home Vibe', name: 'homeVibeTitle', desc: '', args: []);
+    return Intl.message(
+      'House Vibe',
+      name: 'homeVibeTitle',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Based on {answered} of {total} members`
@@ -1621,20 +1631,20 @@ class S {
     );
   }
 
-  /// `Your home supports space and quiet.`
+  /// `Your house supports space and quiet.`
   String get vibeIndependentSummary {
     return Intl.message(
-      'Your home supports space and quiet.',
+      'Your house supports space and quiet.',
       name: 'vibeIndependentSummary',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn't load Home Hub. Please try again.`
+  /// `Couldn't load House Hub. Please try again.`
   String get hubError {
     return Intl.message(
-      'Couldn\'t load Home Hub. Please try again.',
+      'Couldn\'t load House Hub. Please try again.',
       name: 'hubError',
       desc: '',
       args: [],
@@ -3470,50 +3480,50 @@ class S {
     );
   }
 
-  /// `Leave home`
+  /// `Leave house`
   String get profileLeaveHomeTitle {
     return Intl.message(
-      'Leave home',
+      'Leave house',
       name: 'profileLeaveHomeTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Leaving this home means stepping out of your shared Kinly space.`
+  /// `Leaving this house means stepping out of your shared Kinly space.`
   String get profileLeaveHomeSubtitle {
     return Intl.message(
-      'Leaving this home means stepping out of your shared Kinly space.',
+      'Leaving this house means stepping out of your shared Kinly space.',
       name: 'profileLeaveHomeSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Checking your home members...`
+  /// `Checking your house members...`
   String get profileLeaveEligibilityLoading {
     return Intl.message(
-      'Checking your home members...',
+      'Checking your house members...',
       name: 'profileLeaveEligibilityLoading',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't load your home members. Try again.`
+  /// `We couldn't load your house members. Try again.`
   String get profileLeaveEligibilityError {
     return Intl.message(
-      'We couldn\'t load your home members. Try again.',
+      'We couldn\'t load your house members. Try again.',
       name: 'profileLeaveEligibilityError',
       desc: '',
       args: [],
     );
   }
 
-  /// `You're the last member. Leaving will deactivate this home.`
+  /// `You're the last member. Leaving will deactivate this house.`
   String get profileLeaveOwnerSoloMessage {
     return Intl.message(
-      'You\'re the last member. Leaving will deactivate this home.',
+      'You\'re the last member. Leaving will deactivate this house.',
       name: 'profileLeaveOwnerSoloMessage',
       desc: '',
       args: [],
@@ -3560,10 +3570,10 @@ class S {
     );
   }
 
-  /// `Choose who will lose access to this home.`
+  /// `Choose who will lose access to this house.`
   String get profileKickMemberSubtitle {
     return Intl.message(
-      'Choose who will lose access to this home.',
+      'Choose who will lose access to this house.',
       name: 'profileKickMemberSubtitle',
       desc: '',
       args: [],
@@ -3610,20 +3620,20 @@ class S {
     );
   }
 
-  /// `Only the home owner can remove members.`
+  /// `Only the house owner can remove members.`
   String get profileKickOwnerOnly {
     return Intl.message(
-      'Only the home owner can remove members.',
+      'Only the house owner can remove members.',
       name: 'profileKickOwnerOnly',
       desc: '',
       args: [],
     );
   }
 
-  /// `They no longer have access to this home.`
+  /// `They no longer have access to this house.`
   String get profileKickSuccessMessage {
     return Intl.message(
-      'They no longer have access to this home.',
+      'They no longer have access to this house.',
       name: 'profileKickSuccessMessage',
       desc: '',
       args: [],
@@ -3870,10 +3880,10 @@ class S {
     );
   }
 
-  /// `Leave this home?`
+  /// `Leave this house?`
   String get profileConfirmLeaveTitle {
     return Intl.message(
-      'Leave this home?',
+      'Leave this house?',
       name: 'profileConfirmLeaveTitle',
       desc: '',
       args: [],
@@ -3920,20 +3930,20 @@ class S {
     );
   }
 
-  /// `Leave Home`
+  /// `Leave House`
   String get profileActionConfirm {
     return Intl.message(
-      'Leave Home',
+      'Leave House',
       name: 'profileActionConfirm',
       desc: '',
       args: [],
     );
   }
 
-  /// `You left your home.`
+  /// `You left your house.`
   String get profileLeaveSuccessMessage {
     return Intl.message(
-      'You left your home.',
+      'You left your house.',
       name: 'profileLeaveSuccessMessage',
       desc: '',
       args: [],
@@ -3960,10 +3970,10 @@ class S {
     );
   }
 
-  /// `We couldn't find your current home. Try again.`
+  /// `We couldn't find your current house. Try again.`
   String get profileMissingHomeError {
     return Intl.message(
-      'We couldn\'t find your current home. Try again.',
+      'We couldn\'t find your current house. Try again.',
       name: 'profileMissingHomeError',
       desc: '',
       args: [],
@@ -4185,10 +4195,10 @@ class S {
     );
   }
 
-  /// `Homes`
+  /// `Houses`
   String get gratitudeWallStatsHomes {
     return Intl.message(
-      'Homes',
+      'Houses',
       name: 'gratitudeWallStatsHomes',
       desc: '',
       args: [],
@@ -5483,10 +5493,10 @@ class S {
     );
   }
 
-  /// `Home identity`
+  /// `House identity`
   String get houseNormSectionHomeIdentityTitle {
     return Intl.message(
-      'Home identity',
+      'House identity',
       name: 'houseNormSectionHomeIdentityTitle',
       desc: '',
       args: [],
@@ -5573,10 +5583,10 @@ class S {
     );
   }
 
-  /// `Are you renting or owning this house?`
+  /// `Are you renting or do you own this house?`
   String get houseNormScenarioPropertyContextQuestion {
     return Intl.message(
-      'Are you renting or owning this house?',
+      'Are you renting or do you own this house?',
       name: 'houseNormScenarioPropertyContextQuestion',
       desc: '',
       args: [],
@@ -5853,10 +5863,10 @@ class S {
     );
   }
 
-  /// `On a good day, this home feels most like...`
+  /// `On a good day, this house feels most like...`
   String get houseNormScenarioHomeIdentityQuestion {
     return Intl.message(
-      'On a good day, this home feels most like...',
+      'On a good day, this house feels most like...',
       name: 'houseNormScenarioHomeIdentityQuestion',
       desc: '',
       args: [],
@@ -5923,10 +5933,10 @@ class S {
     );
   }
 
-  /// `Putting the home's expectations into words.`
+  /// `Putting the house's expectations into words.`
   String get reflectiveHousePrimary {
     return Intl.message(
-      'Putting the home\'s expectations into words.',
+      'Putting the house\'s expectations into words.',
       name: 'reflectiveHousePrimary',
       desc: '',
       args: [],
@@ -5943,10 +5953,10 @@ class S {
     );
   }
 
-  /// `Reflecting what this home shared.`
+  /// `Reflecting what this house shared.`
   String get reflectiveHouseNormsPrimary {
     return Intl.message(
-      'Reflecting what this home shared.',
+      'Reflecting what this house shared.',
       name: 'reflectiveHouseNormsPrimary',
       desc: '',
       args: [],
@@ -6467,6 +6477,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'ar'),
       Locale.fromSubtags(languageCode: 'es'),
+      Locale.fromSubtags(languageCode: 'my'),
     ];
   }
 

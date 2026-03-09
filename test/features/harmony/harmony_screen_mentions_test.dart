@@ -262,4 +262,66 @@ void main() {
     final cubit = context.read<HarmonyCubit>();
     expect(cubit.state.selectedMentions.length, 5);
   });
+
+  testWidgets('negative mood uses Save CTA until a mention is selected', (
+    tester,
+  ) async {
+    final homeRepo = _StubHomeRepository(buildMembers(2));
+    final moodRepo = _FakeMoodRepository();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: _theme,
+        localizationsDelegates: const [S.delegate],
+        supportedLocales: S.delegate.supportedLocales,
+        home: BlocProvider(
+          create:
+              (_) => HarmonyCubit(
+                homeId: 'home',
+                moodRepository: moodRepo,
+                homeRepository: homeRepo,
+              )..loadMembers(),
+          child: const HarmonyPage(homeId: 'home'),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    final context = tester.element(find.byType(HarmonyPage));
+    final strings = S.of(context);
+
+    await tester.tap(find.bySemanticsLabel(strings.harmonyMoodRainy));
+    await tester.pumpAndSettle();
+
+    expect(find.text(strings.harmonySubmitCta), findsOneWidget);
+    expect(find.text(strings.weeklyRewriteCta), findsNothing);
+    expect(
+      tester.widget<FilledButton>(find.byType(FilledButton).first).onPressed,
+      isNotNull,
+    );
+
+    await tester.enterText(
+      find.byKey(const ValueKey('harmony_mentions_input')),
+      'Still should save',
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text(strings.harmonySubmitCta), findsOneWidget);
+    expect(find.text(strings.weeklyRewriteCta), findsNothing);
+    expect(
+      tester.widget<FilledButton>(find.byType(FilledButton).first).onPressed,
+      isNotNull,
+    );
+
+    await tester.enterText(
+      find.byKey(const ValueKey('harmony_mentions_input')),
+      '@',
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Member 0').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text(strings.weeklyRewriteCta), findsOneWidget);
+    expect(find.text(strings.harmonySubmitCta), findsNothing);
+  });
 }

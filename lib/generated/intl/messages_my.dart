@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a my locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -18,7 +18,7 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'my';
 
   static String m0(env) => "Starting Kinly (${env})";
 
@@ -652,11 +652,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Invite to my Kinly house",
     ),
     "join_blocked_body": MessageLookupByLibrary.simpleMessage(
-      "Weâ€™ve notified the home owner.",
+      "WeÃ¢â‚¬â„¢ve notified the home owner.",
     ),
     "join_blocked_cta": MessageLookupByLibrary.simpleMessage("Done"),
     "join_blocked_title": MessageLookupByLibrary.simpleMessage(
-      "This home isnâ€™t accepting new members right now",
+      "This home isnÃ¢â‚¬â„¢t accepting new members right now",
     ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
       "Leave your current home to join a new one",
@@ -705,7 +705,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "You\'re connected to a home.",
     ),
     "membership_status_checking": MessageLookupByLibrary.simpleMessage(
-      "Connecting you to your homeâ€¦",
+      "Connecting you to your homeÃ¢â‚¬Â¦",
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
       "Your shared home starts here.",
@@ -1350,7 +1350,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "You\'re at the free limit of active bills. Upgrade for more space.",
     ),
     "shareCreateErrorRecurrenceDraft": MessageLookupByLibrary.simpleMessage(
-      "Drafts canâ€™t repeat until you add a split.",
+      "Drafts canÃ¢â‚¬â„¢t repeat until you add a split.",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "We couldn\'t load your household members.",
@@ -1637,7 +1637,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Tasks"),
     "todayFlowSeeAll": m23,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Here’s what needs attention today.",
+      "Hereâ€™s what needs attention today.",
     ),
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),

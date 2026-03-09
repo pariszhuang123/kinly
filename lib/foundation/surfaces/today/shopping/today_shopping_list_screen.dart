@@ -11,6 +11,7 @@ import 'package:kinly/core/ui/kinly_app_bar.dart';
 import 'package:kinly/core/ui/buttons/kinly_fab.dart';
 import 'package:kinly/core/ui/kinly_list_tile.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
+import 'package:kinly/core/ui/kinly_refresh_indicator.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
 import 'package:kinly/core/ui/kinly_tab_bar.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
@@ -149,7 +150,7 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
 
     final list =
         activeItems.isEmpty
-            ? Center(child: Text(s.shoppingEmptyTitle))
+            ? _ShoppingItemsEmptyState(title: s.shoppingEmptyTitle)
             : _ShoppingItemsList(
               items: activeItems,
               showCheckbox: !isManageMode,
@@ -228,7 +229,16 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
               ],
             ),
           ),
-        Expanded(child: list),
+        Expanded(
+          child: KinlyRefreshIndicator(
+            onRefresh: () async {
+              context.read<ShoppingListBloc>().add(
+                const LoadShoppingListEvent(keepCurrent: true),
+              );
+            },
+            child: list,
+          ),
+        ),
         if (!isManageMode && state.completedItems.isNotEmpty)
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(
@@ -354,6 +364,7 @@ class _ShoppingItemsList extends StatelessWidget {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsetsDirectional.all(spacing.lg),
       itemCount: items.length,
       separatorBuilder: (_, __) => SizedBox(height: spacing.sm),
@@ -397,6 +408,26 @@ class _ShoppingItemsList extends StatelessWidget {
           onTap: canOpen ? () => onTapItem!(item) : null,
         );
       },
+    );
+  }
+}
+
+class _ShoppingItemsEmptyState extends StatelessWidget {
+  const _ShoppingItemsEmptyState({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: EdgeInsetsDirectional.all(spacing.lg),
+      children: [
+        SizedBox(height: spacing.xl * 2),
+        Center(child: Text(title)),
+      ],
     );
   }
 }

@@ -127,10 +127,12 @@ class HarmonySubmitButton extends StatelessWidget {
 
         final isNegative =
             mood == MoodScale.rainy || mood == MoodScale.thunderstorm;
+        final hasNegativeMention =
+            isNegative && state.selectedMentions.isNotEmpty;
         final negativeReady =
-            isNegative &&
-            state.comment.trim().isNotEmpty &&
-            state.selectedMentions.length == 1;
+            !hasNegativeMention ||
+            (state.comment.trim().isNotEmpty &&
+                state.selectedMentions.length == 1);
         final canSubmit =
             !state.isSubmitting &&
             state.submitSuccessTick == 0 &&
@@ -144,7 +146,8 @@ class HarmonySubmitButton extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             KinlyFilledButton.text(
-              label: isNegative ? s.weeklyRewriteCta : s.harmonySubmitCta,
+              label:
+                  hasNegativeMention ? s.weeklyRewriteCta : s.harmonySubmitCta,
               onPressed: canSubmit ? handler : null,
               fullWidth: true,
             ),

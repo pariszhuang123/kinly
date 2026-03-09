@@ -10,6 +10,7 @@ class HubState extends Equatable {
     required this.houseNorms,
     required this.appLink,
     required this.isOwner,
+    required this.hasGratitudePosts,
     this.invite,
     this.inviteLink,
     this.isRefreshing = false,
@@ -27,6 +28,7 @@ class HubState extends Equatable {
     inviteLink: null,
     appLink: appLink,
     isOwner: false,
+    hasGratitudePosts: false,
   );
 
   final HubStatus status;
@@ -39,6 +41,7 @@ class HubState extends Equatable {
   final String? inviteLink;
   final String appLink;
   final bool isOwner;
+  final bool hasGratitudePosts;
   final bool isRefreshing;
   final HubNotice? notice;
 
@@ -63,6 +66,7 @@ class HubState extends Equatable {
     String? inviteLink,
     String? appLink,
     bool? isOwner,
+    bool? hasGratitudePosts,
     bool? isRefreshing,
     HubNotice? notice,
   }) {
@@ -77,6 +81,7 @@ class HubState extends Equatable {
       inviteLink: clearInvite ? null : (inviteLink ?? this.inviteLink),
       appLink: appLink ?? this.appLink,
       isOwner: isOwner ?? this.isOwner,
+      hasGratitudePosts: hasGratitudePosts ?? this.hasGratitudePosts,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       notice: notice,
     );
@@ -94,6 +99,7 @@ class HubState extends Equatable {
     inviteLink,
     appLink,
     isOwner,
+    hasGratitudePosts,
     isRefreshing,
     notice,
   ];

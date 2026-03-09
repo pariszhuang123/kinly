@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/renderer/material/share/kinly_story_share_scaffold.dart';
 
@@ -13,6 +14,7 @@ import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/house/house_info_card.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
+import 'package:kinly/core/ui/kinly_refresh_indicator.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
 import 'package:kinly/core/ui/kinly_scrollbar.dart';
 import 'package:kinly/core/ui/kinly_tap_target.dart';
@@ -22,7 +24,7 @@ import 'package:kinly/foundation/surfaces/hub/routes/hub_house_vibe_share_route_
 import 'package:kinly/generated/l10n.dart';
 import '../bloc/hub_bloc.dart';
 
-class HubPreferencesListScreen extends StatelessWidget {
+class HubPreferencesListScreen extends StatefulWidget {
   const HubPreferencesListScreen({
     super.key,
     required this.members,
@@ -39,11 +41,146 @@ class HubPreferencesListScreen extends StatelessWidget {
   final HubBloc hubBloc;
 
   @override
+  State<HubPreferencesListScreen> createState() =>
+      _HubPreferencesListScreenState();
+}
+
+class _HubPreferencesListScreenState extends State<HubPreferencesListScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onRefresh() async {
+    final bloc = widget.hubBloc;
+    if (bloc.state.isRefreshing) {
+      await bloc.stream.firstWhere((state) => !state.isRefreshing);
+      return;
+    }
+
+    final completion = bloc.stream
+        .skipWhile((state) => !state.isRefreshing)
+        .firstWhere((state) => !state.isRefreshing);
+    bloc.add(const HubRefreshed());
+    await completion;
+  }
+
+  void _openPreferenceReport({
+    required BuildContext context,
+    required bool isCreator,
+    required String displayName,
+    required String avatarUrl,
+    required String subjectUserId,
+  }) {
+    final extra = <String, Object>{
+      'displayName': displayName,
+      'avatarUrl': avatarUrl,
+    };
+
+    if (!isCreator) {
+      extra['canEdit'] = false;
+      extra['subjectUserId'] = subjectUserId;
+    }
+
+    context.goNamed(
+      AppRouteNames.preferenceReportEdit,
+      extra: extra,
+    );
+  }
+
+  Widget _buildMemberTile({
+    required BuildContext context,
+    required HomeMemberSummary member,
+    required String resolvedCurrentUserId,
+    required SectionColors resolvedPalette,
+    required Spacing spacing,
+    required TextStyle? titleStyle,
+    required S strings,
+  }) {
+    final displayName =
+        member.username.isNotEmpty ? member.username : strings.friendDefaultName;
+    final avatar = member.avatarUrl ?? '';
+    final isCreator =
+        resolvedCurrentUserId.isNotEmpty && member.userId == resolvedCurrentUserId;
+
+    return KinlyTapTarget(
+      onTap:
+          () => _openPreferenceReport(
+            context: context,
+            isCreator: isCreator,
+            displayName: displayName,
+            avatarUrl: avatar,
+            subjectUserId: member.userId,
+          ),
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: resolvedPalette.card,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: resolvedPalette.accent.withValues(
+              alpha: 0.12,
+            ),
+          ),
+        ),
+        padding: EdgeInsetsDirectional.fromSTEB(
+          spacing.md,
+          spacing.sm,
+          spacing.md,
+          spacing.sm,
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 48,
+              width: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: resolvedPalette.icon.withValues(
+                  alpha: 0.14,
+                ),
+                image:
+                    avatar.isNotEmpty
+                        ? DecorationImage(
+                          image: NetworkImage(avatar),
+                          fit: BoxFit.cover,
+                        )
+                        : null,
+              ),
+              child:
+                  avatar.isEmpty
+                      ? Icon(
+                        KinlyIcons.selfImprovementRounded,
+                        color: resolvedPalette.icon,
+                      )
+                      : null,
+            ),
+            SizedBox(width: spacing.md),
+            Expanded(
+              child: Text(
+                displayName,
+                style: titleStyle,
+              ),
+            ),
+            Icon(
+              KinlyIcons.chevronRightRounded,
+              color: resolvedPalette.icon,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final sections = theme.extension<KinlySections>();
-    final resolvedPalette = sections?.preference ?? palette;
+    final resolvedPalette = sections?.preference ?? widget.palette;
     final _ = context.preferenceSection;
     final surface = theme.colorScheme.surface;
     final onSurface = theme.colorScheme.onSurface;
@@ -56,131 +193,76 @@ class HubPreferencesListScreen extends StatelessWidget {
         foregroundColor: onSurface,
       ),
       backgroundColor: surface,
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(
-            spacing.lg,
-            spacing.lg,
-            spacing.lg,
-            spacing.xl,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (houseVibe != null) ...[
-                _HouseVibeSection(
-                  vibe: houseVibe!,
-                  palette: resolvedPalette,
-                  hubBloc: hubBloc,
-                ),
-                SizedBox(height: spacing.lg),
-              ],
-              Expanded(
+      body: BlocBuilder<HubBloc, HubState>(
+        bloc: widget.hubBloc,
+        builder: (context, state) {
+          final memberById = {
+            for (final member in state.members) member.userId: member,
+          };
+          final resolvedMembers =
+              widget.members
+                  .map((member) => memberById[member.userId] ?? member)
+                  .toList(growable: false);
+          final resolvedCurrentUserId =
+              state.currentUserId.isNotEmpty
+                  ? state.currentUserId
+                  : widget.currentUserId;
+          final resolvedHouseVibe = state.houseVibe ?? widget.houseVibe;
+          final hasHouseVibe = resolvedHouseVibe != null;
+
+          return SafeArea(
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(
+                spacing.lg,
+                spacing.lg,
+                spacing.lg,
+                spacing.xl,
+              ),
+              child: KinlyRefreshIndicator(
+                onRefresh: _onRefresh,
                 child: KinlyScrollbar(
+                  controller: _scrollController,
                   child: KinlyScrollFade(
                     child: ListView.separated(
+                      controller: _scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
                       padding: EdgeInsets.zero,
-                      itemCount: members.length,
-                      separatorBuilder: (_, __) => SizedBox(height: spacing.sm),
-                      itemBuilder: (context, index) {
-                        final member = members[index];
-                        final displayName =
-                            member.username.isNotEmpty
-                                ? member.username
-                                : s.friendDefaultName;
-                        final avatar = member.avatarUrl ?? '';
-                        final isCreator =
-                            currentUserId.isNotEmpty &&
-                            member.userId == currentUserId;
-
-                        return KinlyTapTarget(
-                          onTap: () {
-                            if (isCreator) {
-                              context.goNamed(
-                                AppRouteNames.preferenceReportEdit,
-                                extra: {
-                                  'displayName': displayName,
-                                  'avatarUrl': avatar,
-                                },
-                              );
-                              return;
-                            }
-                            context.goNamed(
-                              AppRouteNames.preferenceReportEdit,
-                              extra: {
-                                'displayName': displayName,
-                                'avatarUrl': avatar,
-                                'canEdit': false,
-                                'subjectUserId': member.userId,
-                              },
-                            );
-                          },
-                          borderRadius: BorderRadius.circular(16),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: resolvedPalette.card,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: resolvedPalette.accent.withValues(
-                                  alpha: 0.12,
-                                ),
-                              ),
-                            ),
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                              spacing.md,
-                              spacing.sm,
-                              spacing.md,
-                              spacing.sm,
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 48,
-                                  width: 48,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: resolvedPalette.icon.withValues(
-                                      alpha: 0.14,
-                                    ),
-                                    image:
-                                        avatar.isNotEmpty
-                                            ? DecorationImage(
-                                              image: NetworkImage(avatar),
-                                              fit: BoxFit.cover,
-                                            )
-                                            : null,
-                                  ),
-                                  child:
-                                      avatar.isEmpty
-                                          ? Icon(
-                                            KinlyIcons.selfImprovementRounded,
-                                            color: resolvedPalette.icon,
-                                          )
-                                          : null,
-                                ),
-                                SizedBox(width: spacing.md),
-                                Expanded(
-                                  child: Text(
-                                    displayName,
-                                    style: theme.textTheme.titleMedium,
-                                  ),
-                                ),
-                                Icon(
-                                  KinlyIcons.chevronRightRounded,
-                                  color: resolvedPalette.icon,
-                                ),
-                              ],
-                            ),
+                      itemCount: resolvedMembers.length + (hasHouseVibe ? 1 : 0),
+                      separatorBuilder:
+                          (_, index) => SizedBox(
+                            height:
+                                hasHouseVibe && index == 0
+                                    ? spacing.lg
+                                    : spacing.sm,
                           ),
+                      itemBuilder: (context, index) {
+                        if (hasHouseVibe && index == 0) {
+                          return _HouseVibeSection(
+                            vibe: resolvedHouseVibe,
+                            palette: resolvedPalette,
+                            hubBloc: widget.hubBloc,
+                          );
+                        }
+
+                        final member =
+                            resolvedMembers[index - (hasHouseVibe ? 1 : 0)];
+                        return _buildMemberTile(
+                          context: context,
+                          member: member,
+                          resolvedCurrentUserId: resolvedCurrentUserId,
+                          resolvedPalette: resolvedPalette,
+                          spacing: spacing,
+                          titleStyle: theme.textTheme.titleMedium,
+                          strings: s,
                         );
                       },
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

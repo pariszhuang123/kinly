@@ -409,31 +409,37 @@ class _HouseNormOwnerActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = KinlyThemeAccess.of(context).extension<Spacing>();
+    final strings = S.of(context);
     final hasPublicUrl =
         document.showPublicUrl && (document.publicUrl?.isNotEmpty ?? false);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (hasPublicUrl) _PublicUrlRow(url: document.publicUrl!),
-        if (hasPublicUrl) SizedBox(height: spacing?.m ?? 12),
-        // TODO: Re-enable publish buttons when publish-to-web is ready.
-        // if (document.showRepublishButton)
-        //   KinlyFilledButton.text(
-        //     fullWidth: true,
-        //     label: strings.houseNormRepublishCta,
-        //     backgroundColor: palette.accent,
-        //     onPressed: state.isBusy ? null : () => _publish(context, strings),
-        //   ),
-        // if (document.showPublishButton)
-        //   KinlyFilledButton.text(
-        //     fullWidth: true,
-        //     label: strings.houseNormPublishCta,
-        //     backgroundColor: palette.accent,
-        //     onPressed: state.isBusy ? null : () => _publish(context, strings),
-        //   ),
-      ],
-    );
+        children: [
+          if (hasPublicUrl) _PublicUrlRow(url: document.publicUrl!),
+          if (hasPublicUrl) SizedBox(height: spacing?.m ?? 12),
+          if (document.showRepublishButton)
+            KinlyFilledButton.text(
+              fullWidth: true,
+              label: strings.houseNormRepublishCta,
+              backgroundColor: palette.accent,
+              onPressed:
+                  state.isBusy
+                      ? null
+                      : () => context.read<HouseNormReportCubit>().publish(),
+            ),
+          if (document.showPublishButton)
+            KinlyFilledButton.text(
+              fullWidth: true,
+              label: strings.houseNormPublishCta,
+              backgroundColor: palette.accent,
+              onPressed:
+                  state.isBusy
+                      ? null
+                      : () => context.read<HouseNormReportCubit>().publish(),
+            ),
+        ],
+      );
   }
 }
 

@@ -158,16 +158,18 @@ class _FlowListScreenState extends State<FlowListScreen> {
 
     final hasCurrent = currentItems.isNotEmpty;
     final hasFuture = futureItems.isNotEmpty;
-    final showTabs = hasCurrent && hasFuture;
+    final tabs = <_FlowTimeTab, String>{
+      if (hasCurrent) _FlowTimeTab.current: s.flowListTabCurrent,
+      if (hasFuture) _FlowTimeTab.future: s.flowListTabFuture,
+    };
+    final showTabs = tabs.isNotEmpty;
 
-    _adjustSelectedTab(showTabs, hasCurrent, hasFuture);
+    _adjustSelectedTab(hasCurrent, hasFuture);
 
-    final visibleItems =
-        showTabs
-            ? (_selectedTab == _FlowTimeTab.current
-                ? currentItems
-                : futureItems)
-            : filteredItems;
+    final visibleItems = switch (_selectedTab) {
+      _FlowTimeTab.current => currentItems,
+      _FlowTimeTab.future => futureItems,
+    };
 
     final actions = FlowSurfaceActions(
       onAddTap: () => _openChoreEntry(context, null),
@@ -197,10 +199,7 @@ class _FlowListScreenState extends State<FlowListScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         KinlyTabBar<_FlowTimeTab>(
-          tabs: {
-            _FlowTimeTab.current: s.flowListTabCurrent,
-            _FlowTimeTab.future: s.flowListTabFuture,
-          },
+          tabs: tabs,
           selected: _selectedTab,
           onChanged: (tab) {
             if (tab == null) return;
@@ -235,12 +234,10 @@ class _FlowListScreenState extends State<FlowListScreen> {
     return (currentItems, futureItems);
   }
 
-  void _adjustSelectedTab(bool showTabs, bool hasCurrent, bool hasFuture) {
-    if (showTabs && !hasCurrent && _selectedTab == _FlowTimeTab.current) {
+  void _adjustSelectedTab(bool hasCurrent, bool hasFuture) {
+    if (!hasCurrent && _selectedTab == _FlowTimeTab.current) {
       _selectedTab = _FlowTimeTab.future;
-    } else if (showTabs &&
-        !hasFuture &&
-        _selectedTab == _FlowTimeTab.future) {
+    } else if (!hasFuture && _selectedTab == _FlowTimeTab.future) {
       _selectedTab = _FlowTimeTab.current;
     }
   }

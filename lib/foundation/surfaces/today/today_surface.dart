@@ -21,6 +21,7 @@ import '../../../core/ui/buttons/kinly_fab.dart';
 import '../../../core/ui/home_bottom_nav.dart';
 import '../../../core/ui/kinly_confetti_overlay.dart';
 import '../../../core/ui/kinly_loader.dart';
+import '../../../core/ui/kinly_refresh_indicator.dart';
 import '../../../core/ui/scroll/kinly_scroll_fade.dart';
 import '../../../core/ui/snackbars/kinly_snackbar.dart';
 import '../../../contracts/homes/ports/home_repository.dart';
@@ -191,24 +192,31 @@ class _TodayScreenState extends State<TodayScreen>
                               SizedBox(height: spacing.xl),
                               Expanded(
                                 child: KinlyScrollFade(
-                                  child: SingleChildScrollView(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                      spacing.lg,
-                                      spacing.lg,
-                                      spacing.lg,
-                                      spacing.xl *
-                                          2, // bottom spacing for FAB
-                                    ),
-                                    child: BlocBuilder<TodayBloc, TodayState>(
-                                      builder: (context, state) {
-                                        return _buildTodayContent(
-                                          context,
-                                          state,
-                                          spacing,
-                                          s,
-                                          logger,
-                                        );
-                                      },
+                                  child: KinlyRefreshIndicator(
+                                    onRefresh:
+                                        () async => context.read<TodayBloc>().add(
+                                          const TodayRefreshed(),
+                                        ),
+                                    child: SingleChildScrollView(
+                                      physics: const AlwaysScrollableScrollPhysics(),
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                        spacing.lg,
+                                        spacing.lg,
+                                        spacing.lg,
+                                        spacing.xl *
+                                            2, // bottom spacing for FAB
+                                      ),
+                                      child: BlocBuilder<TodayBloc, TodayState>(
+                                        builder: (context, state) {
+                                          return _buildTodayContent(
+                                            context,
+                                            state,
+                                            spacing,
+                                            s,
+                                            logger,
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),

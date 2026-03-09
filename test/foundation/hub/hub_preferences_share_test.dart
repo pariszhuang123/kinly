@@ -94,8 +94,10 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('Home Vibe'), findsOneWidget);
-    await tester.tap(find.text('Home Vibe'));
+    final strings = S.of(tester.element(find.byType(HubPreferencesListScreen)));
+
+    expect(find.text(strings.homeVibeTitle), findsOneWidget);
+    await tester.tap(find.text(strings.homeVibeTitle));
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('share-screen')), findsOneWidget);

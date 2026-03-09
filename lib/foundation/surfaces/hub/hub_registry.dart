@@ -125,6 +125,7 @@ class HubRegistry {
         id: 'gratitude',
         order: 30,
         spacingAfter: HubSectionSpacing.lg,
+        isVisible: (scope) => scope.state.hasGratitudePosts,
         builder: (scope) {
           return KinlySelectionCard(
             colors: scope.sections.pulse,
