@@ -9,6 +9,7 @@ import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/house_norms/models.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/core/ui/selector/kinly_onboarding_option_card.dart';
 import 'package:kinly/features/house_norms/bloc/house_norm_capture_bloc.dart';
 import 'package:kinly/features/house_norms/ui/house_norm_onboarding_screen.dart';
 import 'package:kinly/generated/l10n.dart';
@@ -141,6 +142,18 @@ void main() {
     await tester.tap(find.text('Option 2'));
     await tester.pump();
     expect(find.text('Question 2'), findsOneWidget);
+  });
+
+  testWidgets('renders shared onboarding option cards for current scenario', (
+    tester,
+  ) async {
+    final bloc = buildBloc();
+    addTearDown(bloc.close);
+
+    await tester.pumpWidget(buildApp(bloc));
+    await tester.pump();
+
+    expect(find.byType(KinlyOnboardingOptionCard), findsNWidgets(3));
   });
 
   testWidgets('navigates to report after successful reflection', (tester) async {

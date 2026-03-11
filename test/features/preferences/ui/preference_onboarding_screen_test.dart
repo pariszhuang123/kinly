@@ -9,6 +9,7 @@ import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/preferences/models.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
+import 'package:kinly/core/ui/selector/kinly_onboarding_option_card.dart';
 import 'package:kinly/features/preferences/bloc/preference_capture_bloc.dart';
 import 'package:kinly/features/preferences/domain/preference_scenarios.dart';
 import 'package:kinly/features/preferences/ui/preference_onboarding_screen.dart';
@@ -228,6 +229,23 @@ void main() {
     await tester.pump();
 
     expect(find.text('Question 2'), findsOneWidget);
+  });
+
+  testWidgets('renders shared onboarding option cards for current scenario', (
+    tester,
+  ) async {
+    final bloc = PreferenceCaptureBloc(
+      repository: repository,
+      scenarios: buildScenarios(),
+      userId: 'user-1',
+      homeId: 'home-1',
+    );
+    addTearDown(bloc.close);
+
+    await tester.pumpWidget(buildApp(bloc));
+    await tester.pump();
+
+    expect(find.byType(KinlyOnboardingOptionCard), findsNWidgets(3));
   });
 
   testWidgets('shows submit button only on the last scenario', (tester) async {

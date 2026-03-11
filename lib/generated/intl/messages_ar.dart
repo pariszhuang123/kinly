@@ -20,75 +20,75 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ar';
 
-  static String m0(env) => "بدء تشغيل كينلي (${env})";
+  static String m0(env) => "جارٍ بدء كينلي (${env})";
 
-  static String m1(time) => "مجدول في ${time}";
+  static String m1(time) => "مجدول عند ${time}";
 
-  static String m2(current) => "وصول تجريبي: ${current} من 7 نقرات";
+  static String m2(current) => "الوصول التجريبي: ${current} من 7 نقرات";
 
-  static String m3(appName) => "صُنع باستخدام ${appName} - معًا يصبح الأمر أخف";
+  static String m3(appName) =>
+      "صُنع باستخدام ${appName} - معًا يصبح كل شيء أخف";
 
   static String m4(link) =>
-      "بعض الإشادات من منزلنا على كينلي. حمّل التطبيق: ${link}";
+      "بعض رسائل الشكر من منزلنا على كينلي. حمّل التطبيق: ${link}";
 
   static String m5(weeks) =>
-      "${Intl.plural(weeks, zero: 'هذا الأسبوع', one: 'قبل أسبوع واحد', other: 'قبل # أسابيع')}";
+      "${Intl.plural(weeks, zero: 'هذا الأسبوع', one: 'منذ أسبوع', other: 'منذ # أسابيع')}";
 
-  static String m6(partOfDay, name) => "${partOfDay} سعيد، ${name}";
+  static String m6(partOfDay, name) => "صباح/مساء الخير ${partOfDay}، ${name}";
 
   static String m7(answered, total) =>
-      "بناءً على ${answered} من ${total} أعضاء";
+      "استنادًا إلى ${answered} من أصل ${total} أعضاء";
 
-  static String m8(current, total) => "السؤال ${current} من ${total}";
+  static String m8(current, total) => "${current}/${total}";
 
-  static String m9(link) =>
-      "مشاركة نبض منزلنا على كينلي. حمّل التطبيق: ${link}";
+  static String m9(link) => "نشارك نبض منزلنا على كينلي. حمّل التطبيق: ${link}";
 
-  static String m10(date) => "تم التحديث ${date}";
+  static String m10(date) => "تم التحديث في ${date}";
 
   static String m11(link) =>
       "نشارك طابع منزلنا على كينلي. حمّل التطبيق: ${link}";
 
-  static String m12(link) => "شارك كينلي ليصبح العيش معًا أخف: ${link}";
+  static String m12(link) => "اجعل السكن المشترك أسهل مع كينلي: ${link}";
 
   static String m13(code, link) =>
-      "مرحبًا بك في منزلنا على كينلي! أدخل رمز الدعوة: ${code}\n\nحمّل تطبيق كينلي: ${link}";
+      "انضم إلى منزلنا على كينلي باستخدام رمز الدعوة هذا: ${code}\n\nحمّل كينلي: ${link}";
 
-  static String m14(code) => "تم الأمر. أهلًا بك في المنزل.";
+  static String m14(code) => "لقد انضممت إلى منزلك.";
 
-  static String m15(price) => "${price} شهريًا.";
+  static String m15(price) => "${price} شهريًا";
 
-  static String m16(current, total) => "سؤال ${current} من ${total}";
+  static String m16(current, total) => "${current}/${total}";
 
   static String m17(period) => "ينطبق على ${period}";
 
   static String m18(total, included, difference) =>
-      "التقسيم المخصص غير متطابق. الإجمالي: ${total}. المُضمَّن: ${included}. الفرق: ${difference}.";
+      "التقسيم غير متطابق. الإجمالي: ${total}. المُدرج: ${included}. الفرق: ${difference}.";
 
   static String m19(paidAmount, totalAmount) =>
-      "تم تحصيل ${paidAmount} من ${totalAmount}";
+      "تم تحصيل ${paidAmount} من أصل ${totalAmount}";
 
-  static String m20(paid, total) => "تم دفع ${paid} من ${total}";
+  static String m20(paid, total) => "${paid} من ${total} تم دفعها";
 
   static String m21(count) =>
-      "${Intl.plural(count, one: '${count} عنصر للتأشير', other: '${count} عناصر للتأشير')}";
+      "${Intl.plural(count, one: '${count} عنصر للشراء', other: '${count} عناصر للشراء')}";
 
   static String m22(name) => "مرحبًا ${name}";
 
   static String m23(count) =>
       "عرض الكل ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m24(name) => "لم نتمكن من إكمال طلب ${name}.";
+  static String m24(name) => "تعذّر إكمال طلب ${name}.";
 
   static String m25(name) => "انضم ${name} إلى منزلك.";
 
   static String m26(name) => "انضم ${name} إلى منزل آخر.";
 
   static String m27(names) =>
-      "${names} يريد الانضمام إلى منزلك. قم بالترقية لدعم عدد غير محدود من الأعضاء.";
+      "${names} يريد الانضمام إلى منزلك. قم بالترقية للحصول على أعضاء غير محدودين.";
 
   static String m28(count) =>
-      "${Intl.plural(count, one: '${count} دفعة معلّقة', other: '${count} للتسوية')}";
+      "${Intl.plural(count, one: '${count} دفعة معلقة', other: '${count} للتسوية')}";
 
   static String m29(count) =>
       "${Intl.plural(count, one: '${count} دفعة جديدة لك', other: '${count} دفعات جديدة لك')}";
@@ -97,119 +97,119 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "app_title": MessageLookupByLibrary.simpleMessage("كينلي"),
     "authMembershipLoadFailed": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحديث عضوية منزلك. يرجى المحاولة مرة أخرى.",
+      "تعذّر تحديث عضويتك المنزلية.",
     ),
     "bootstrap_initializing": m0,
     "close": MessageLookupByLibrary.simpleMessage("إغلاق"),
     "connectionNotificationsPermissionBlocked":
         MessageLookupByLibrary.simpleMessage(
-          "فعّل الإشعارات في إعدادات هاتفك لاستخدام هذا.",
+          "فعّل الإشعارات أولًا من إعدادات هاتفك.",
         ),
     "connectionNotificationsTimeLabel": MessageLookupByLibrary.simpleMessage(
       "وقت التذكير",
     ),
     "connectionNotificationsTimeSubtitle": m1,
     "connectionNotificationsToggleSubtitleOff":
-        MessageLookupByLibrary.simpleMessage("فعّل التذكيرات حول منزلك."),
+        MessageLookupByLibrary.simpleMessage("فعّل التذكيرات لمنزلك."),
     "connectionNotificationsToggleSubtitleOn":
         MessageLookupByLibrary.simpleMessage("احصل على تذكير واحد كل يوم."),
     "connectionNotificationsToggleTitle": MessageLookupByLibrary.simpleMessage(
-      "إشعارات يومية",
+      "التذكيرات اليومية",
     ),
     "connectionSettingsGenericError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحديث إعدادات الاتصال. حاول مرة أخرى.",
+      "تعذّر تحديث إعدادات الإشعارات.",
     ),
     "connectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "تحكّم بتذكير اليوم الواحد وتوقيت الإشعارات.",
+      "التحكم في التذكيرات اليومية والتوقيت.",
     ),
     "connectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "إعدادات الاتصال",
+      "الإشعارات",
     ),
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
-      "تعذّر إنشاء المنزل. حاول مرة أخرى.",
+      "تعذّر إنشاء المنزل.",
     ),
     "demoAccess": MessageLookupByLibrary.simpleMessage("وصول تجريبي"),
     "demoAccessEmail": MessageLookupByLibrary.simpleMessage(
       "البريد الإلكتروني",
     ),
     "demoAccessError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تسجيل الدخول. يرجى التحقق من بياناتك.",
+      "تعذّر تسجيل الدخول. تحقق من بيانات الاعتماد.",
     ),
     "demoAccessPassword": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
     "demoAccessSubmit": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "demoAccessTapHint": m2,
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "اطّلع على ما يجب فعله ومن سيتولى ذلك.",
+      "اطّلع على ما يجب إنجازه ومن يقوم به.",
     ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
-      "حدّث الحالة والتفاصيل لإبقاء الأمور المشتركة واضحة.",
+      "حافظ على وضوح الأشياء المشتركة.",
     ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "اطّلع على كل فاتورة أنشأتها وتتبع التحصيل.",
+      "اطّلع على كل فاتورة أنشأتها وتابع التحصيلات.",
     ),
     "exploreShoppingSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "قائمة التسوّق",
+      "قائمة التسوق",
     ),
     "exploreShoppingSubtitle": MessageLookupByLibrary.simpleMessage(
-      "عرض وإدارة عناصر التسوّق المشتركة.",
+      "عرض وإدارة عناصر التسوق المشتركة.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
-      "من سيتولى هذا؟",
+      "من سيقوم بهذا؟",
     ),
     "flowChoreCreateSuccess": MessageLookupByLibrary.simpleMessage(
       "تم إنشاء المهمة.",
     ),
     "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("إضافة مهمة"),
-    "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage("حذف التدفق"),
+    "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage("حذف المهمة"),
     "flowChoreDeleteConfirm": MessageLookupByLibrary.simpleMessage("حذف"),
     "flowChoreDeleteDialogMessage": MessageLookupByLibrary.simpleMessage(
-      "سيؤدي ذلك إلى إزالة التدفق للجميع في منزلك.",
+      "سيؤدي هذا إلى إزالة المهمة للجميع في منزلك.",
     ),
     "flowChoreDeleteDialogTitle": MessageLookupByLibrary.simpleMessage(
-      "حذف هذا التدفق؟",
+      "هل تريد حذف هذه المهمة؟",
     ),
     "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
-      "وضع علامة كمكتمل",
+      "تحديد كمكتملة",
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر إكمال هذه المهمة. يرجى المحاولة مرة أخرى.",
+      "تعذّر إكمال هذه المهمة.",
     ),
     "flowChoreDetailCompletionSuccess": MessageLookupByLibrary.simpleMessage(
-      "تم إكمال المهمة.",
+      "اكتملت المهمة.",
     ),
     "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
-      "سياق مفيد",
+      "تفاصيل مفيدة",
     ),
     "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
       "تفاصيل المهمة",
     ),
     "flowChoreDetailUnassigned": MessageLookupByLibrary.simpleMessage(
-      "غير مُسندة",
+      "غير معيّنة",
     ),
     "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("تعديل المهمة"),
     "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
-      "هذا العضو ليس ضمن هذا المنزل الآن.",
+      "هذا الشخص ليس جزءًا من هذا المنزل الآن.",
     ),
     "flowChoreErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "ليس لديك إذن لتغيير هذا التدفق.",
+      "ليس لديك إذن لتغيير هذه المهمة.",
     ),
     "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "تعذّر حفظ هذا التدفق. يرجى المحاولة مرة أخرى.",
+      "تعذّر حفظ هذه المهمة.",
     ),
     "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
-      "مسار الصورة غير صالح لهذا المنزل.",
+      "هذه الصورة لا تنتمي إلى هذا المنزل.",
     ),
     "flowChoreErrorInvalidStart": MessageLookupByLibrary.simpleMessage(
       "اختر تاريخ بدء صالحًا.",
     ),
     "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
-      "هذا التدفق غير متاح للتحديث الآن.",
+      "لا يمكن تحديث هذه المهمة الآن.",
     ),
     "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "وصلت إلى الحد المجاني للتدفقات النشطة. قم بالترقية للمزيد.",
+      "لقد وصلت إلى الحد المجاني للمهام النشطة. قم بالترقية للمزيد.",
     ),
     "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
-      "وصلت إلى الحد المجاني لصور التدفق. قم بالترقية للمزيد.",
+      "لقد وصلت إلى الحد المجاني لصور المهام. قم بالترقية للمزيد.",
     ),
     "flowChoreExpectationPhotoLabel": MessageLookupByLibrary.simpleMessage(
       "صورة مرجعية",
@@ -218,56 +218,54 @@ class MessageLookup extends MessageLookupByLibrary {
       "أضف رابطًا إذا كانت هناك طريقة محددة",
     ),
     "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage(
-      "طريقة التنفيذ (اختياري)",
+      "كيفية القيام بذلك (اختياري)",
     ),
     "flowChoreHowToLaunchError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر فتح هذا الرابط. حاول مرة أخرى.",
+      "تعذّر فتح هذا الرابط.",
     ),
     "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحميل هذه المهمة. يرجى المحاولة مرة أخرى.",
+      "تعذّر تحميل هذه المهمة.",
     ),
     "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
-      "مثل: ليلة إخراج القمامة، تنظيف الثلاجة، سقي النباتات",
+      "مثال: ليلة إخراج القمامة، تنظيف الثلاجة، سقي النباتات",
     ),
     "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage(
-      "ما الذي يجب إنجازه؟",
+      "ما الذي يجب القيام به؟",
     ),
     "flowChoreNotesHint": MessageLookupByLibrary.simpleMessage(
-      "أي شيء يساعد الآخرين على تنفيذ المهمة بسهولة",
+      "أي شيء يساعد الآخرين على إنجاز هذا",
     ),
     "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage(
       "لماذا هذا مهم",
     ),
     "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "ما الذي يبدو جيدًا",
+      "ما الشكل الصحيح",
     ),
     "flowChorePhotoLoadError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحميل الصورة",
+      "تعذّر تحميل الصورة.",
     ),
     "flowChorePhotoPermissionDenied": MessageLookupByLibrary.simpleMessage(
-      "اسمح بالوصول للكاميرا لالتقاط صورة.",
+      "اسمح بالوصول إلى الكاميرا لالتقاط صورة.",
     ),
     "flowChorePhotoPermissionOpenSettings":
         MessageLookupByLibrary.simpleMessage("فتح الإعدادات"),
     "flowChorePhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
-      "قد تساعد الصورة الجميع على البقاء متوافقين",
+      "أضف صورة ليبقى الجميع على نفس الفهم",
     ),
     "flowChorePhotoUploadError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر رفع الصورة. حاول مرة أخرى.",
+      "تعذّر رفع الصورة.",
     ),
     "flowChoreRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
-      "كم مرة يتكرر هذا؟",
+      "كم مرة يحدث هذا؟",
     ),
     "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage(
       "مرة واحدة",
     ),
     "flowChoreRetry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
     "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage(
-      "متى يحدث هذا؟ ",
+      "متى يحين موعدها؟",
     ),
-    "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage(
-      "إنشاء التدفق",
-    ),
+    "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage("إنشاء مهمة"),
     "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage(
       "حفظ التغييرات",
     ),
@@ -278,107 +276,105 @@ class MessageLookup extends MessageLookupByLibrary {
       "اختر شخصًا.",
     ),
     "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
-      "اختر تاريخًا حتى سنة من اليوم.",
+      "اختر تاريخًا ضمن السنة القادمة.",
     ),
     "flowChoreValidationHowToUrl": MessageLookupByLibrary.simpleMessage(
       "أدخل رابطًا صالحًا يبدأ بـ http أو https.",
     ),
     "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
-      "سمِّ هذه المهمة.",
+      "أدخل اسم المهمة.",
     ),
     "flowChoreViewTitle": MessageLookupByLibrary.simpleMessage("عرض المهمة"),
     "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("مسودة"),
     "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "مهام لإبقاء الجميع متوافقين.",
+      "المهام تحافظ على انسجام الجميع.",
     ),
     "flowListEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "لا شيء هنا بعد",
+      "لا يوجد شيء هنا بعد",
     ),
     "flowListError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل المهام. اسحب للتحديث.",
     ),
     "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage(
-      "يحتاج انتباهًا",
+      "يحتاج إلى انتباه",
     ),
-    "flowListTabCurrent": MessageLookupByLibrary.simpleMessage("الحالية"),
-    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("القادمة"),
+    "flowListTabCurrent": MessageLookupByLibrary.simpleMessage("الحالي"),
+    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("القادم"),
     "force_update_body": MessageLookupByLibrary.simpleMessage(
-      "لم تعد هذه النسخة من كينلي مدعومة. يرجى تثبيت أحدث إصدار للمتابعة.",
+      "هذا الإصدار من كينلي لم يعد مدعومًا. قم بالتحديث للمتابعة.",
     ),
     "force_update_button": MessageLookupByLibrary.simpleMessage("تحديث كينلي"),
-    "force_update_title": MessageLookupByLibrary.simpleMessage("يلزم تحديث"),
+    "force_update_title": MessageLookupByLibrary.simpleMessage("التحديث مطلوب"),
     "friendDefaultName": MessageLookupByLibrary.simpleMessage("صديق"),
     "gratitudeWallEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "مكان الإشادات السريعة هنا.\n\nأضف واحدة من هذا الأسبوع.",
+      "أضف رسالة شكر من هذا الأسبوع.",
     ),
     "gratitudeWallEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "لا توجد إشادات بعد",
+      "لا توجد رسائل شكر بعد",
     ),
     "gratitudeWallErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحميل الإشادات الآن.",
+      "تعذّر تحميل رسائل الشكر الآن.",
     ),
     "gratitudeWallFooter": m3,
     "gratitudeWallHouseTab": MessageLookupByLibrary.simpleMessage("المنزل"),
     "gratitudeWallPersonalSummary": MessageLookupByLibrary.simpleMessage(
-      "مكان خاص لحفظ شكر سريع.",
+      "مكان خاص للشكر السريع.",
     ),
-    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage("خاصتي"),
+    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage("لي"),
     "gratitudeWallPersonalTitle": MessageLookupByLibrary.simpleMessage(
-      "إشاداتي",
+      "رسائل شكري",
     ),
     "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("حاول مرة أخرى"),
     "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage("مشاركة"),
     "gratitudeWallShareError": MessageLookupByLibrary.simpleMessage(
-      "تعذّرت المشاركة الآن. يرجى المحاولة مرة أخرى.",
+      "تعذّرت المشاركة الآن.",
     ),
     "gratitudeWallShareMessage": m4,
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
-      "إشادات المنزل",
+      "رسائل شكر المنزل",
     ),
     "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("منازل"),
     "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
-      "إشادات",
+      "رسائل شكر",
     ),
     "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage("أشخاص"),
     "gratitudeWallWeeksAgo": m5,
     "greetingPartOfDay": m6,
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
-      "أضف سياقًا إن كان مفيدًا",
+      "أضف سياقًا إذا كان ذلك مفيدًا",
     ),
     "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
       "ملاحظة اختيارية",
     ),
     "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
-      "لقد أرسلت لهذا الأسبوع بالفعل.",
+      "لقد أرسلت بالفعل هذا الأسبوع.",
     ),
     "harmonyErrorCommentRequiredForMention":
         MessageLookupByLibrary.simpleMessage(
-          "أضف ملاحظة قصيرة لإرسال هذه الإشارة.",
+          "أضف ملاحظة قصيرة قبل إرسال هذه الإشارة.",
         ),
     "harmonyErrorCommentRequiredForPublicWall":
         MessageLookupByLibrary.simpleMessage(
-          "أضف ملاحظة قصيرة لنشر هذا الشكر.",
+          "أضف ملاحظة قصيرة قبل نشر رسالة الشكر هذه.",
         ),
     "harmonyErrorComplaintNeedsSentence": MessageLookupByLibrary.simpleMessage(
-      "أضف جملة واضحة لتكون أسهل للفهم.",
+      "أضف جملة واضحة.",
     ),
     "harmonyErrorComplaintTooBrief": MessageLookupByLibrary.simpleMessage(
-      "اكتب جملة قصيرة لتكون أسهل للفهم.",
+      "اكتب جملة قصيرة حتى يكون الأمر واضحًا.",
     ),
     "harmonyErrorComplaintTooShort": MessageLookupByLibrary.simpleMessage(
-      "أضف مزيدًا من التفاصيل ليكون الأمر واضحًا.",
+      "أضف مزيدًا قليلًا من التفاصيل.",
     ),
     "harmonyErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "الإرسال لهذا المنزل غير متاح.",
+      "التغذية الراجعة الأسبوعية غير متاحة الآن.",
     ),
     "harmonyErrorSingleMentionRequired": MessageLookupByLibrary.simpleMessage(
       "اختر شخصًا واحدًا لهذه الملاحظة.",
     ),
-    "harmonyErrorUnknown": MessageLookupByLibrary.simpleMessage(
-      "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
-    ),
+    "harmonyErrorUnknown": MessageLookupByLibrary.simpleMessage("حدث خطأ ما."),
     "harmonyFeedbackSingleHousemateHint": MessageLookupByLibrary.simpleMessage(
-      "اكتب @ لتقديم ملاحظة لزميل منزل واحد.",
+      "اكتب @ للإشارة إلى زميل سكن واحد.",
     ),
     "harmonyMoodCloudy": MessageLookupByLibrary.simpleMessage("غائم"),
     "harmonyMoodPartiallySunny": MessageLookupByLibrary.simpleMessage(
@@ -390,7 +386,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "عاصفة رعدية",
     ),
     "harmonyQuestion": MessageLookupByLibrary.simpleMessage(
-      "هل هناك شيء لتقديره أو تعديله هذا الأسبوع؟",
+      "ما الذي سار جيدًا أو يحتاج إلى تعديل هذا الأسبوع؟",
     ),
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
       "مرئي للجميع في المنزل",
@@ -405,36 +401,32 @@ class MessageLookup extends MessageLookupByLibrary {
       "تعديل أعراف المنزل",
     ),
     "houseNormGenerationFailed": MessageLookupByLibrary.simpleMessage(
-      "تعذّر إنشاء أعراف المنزل الآن. يُرجى المحاولة مرة أخرى.",
+      "تعذّر إنشاء أعراف المنزل الآن.",
     ),
     "houseNormOnboardingBack": MessageLookupByLibrary.simpleMessage("رجوع"),
     "houseNormOnboardingProgress": m8,
-    "houseNormOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
-      "إنشاء أعراف المنزل",
-    ),
+    "houseNormOnboardingSubmit": MessageLookupByLibrary.simpleMessage("إنشاء"),
     "houseNormOnboardingTitle": MessageLookupByLibrary.simpleMessage(
-      "أعراف المنزل",
+      "طابع المنزل",
     ),
-    "houseNormPromptCta": MessageLookupByLibrary.simpleMessage(
-      "إنشاء أعراف المنزل",
-    ),
+    "houseNormPromptCta": MessageLookupByLibrary.simpleMessage("إنشاء"),
     "houseNormPromptSubtitle": MessageLookupByLibrary.simpleMessage(
-      "اكتبوا نقطة بداية مشتركة لكيفية سير المنزل عادةً.",
+      "حوّل إجاباتك إلى دليل مشترك.",
     ),
     "houseNormPromptTitle": MessageLookupByLibrary.simpleMessage(
-      "إنشاء أعراف المنزل",
+      "أنشئ أعراف المنزل",
     ),
     "houseNormPublishCta": MessageLookupByLibrary.simpleMessage(
-      "النشر على الويب",
+      "نشر على الويب",
     ),
     "houseNormReportEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "أنشئ أعراف المنزل لرؤية نقطة الانطلاق المشتركة.",
+      "أنشئ أعراف المنزل لرؤيتها.",
     ),
     "houseNormReportEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "أعراف المنزل غير جاهزة",
     ),
     "houseNormReportErrorBody": MessageLookupByLibrary.simpleMessage(
-      "يُرجى المحاولة مرة أخرى.",
+      "يرجى المحاولة مرة أخرى.",
     ),
     "houseNormReportErrorTitle": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل أعراف المنزل",
@@ -446,99 +438,81 @@ class MessageLookup extends MessageLookupByLibrary {
       "إعادة النشر",
     ),
     "houseNormScenarioGuestsOption1": MessageLookupByLibrary.simpleMessage(
-      "يكون مخططًا له ويتم الحديث عنه مسبقًا",
+      "اسأل أولًا",
     ),
     "houseNormScenarioGuestsOption2": MessageLookupByLibrary.simpleMessage(
-      "يكفي إشعار مسبق",
+      "أعطِ تنبيهًا مسبقًا",
     ),
     "houseNormScenarioGuestsOption3": MessageLookupByLibrary.simpleMessage(
-      "هذا جزء من الحياة اليومية هنا",
+      "هذا طبيعي تمامًا",
     ),
     "houseNormScenarioGuestsQuestion": MessageLookupByLibrary.simpleMessage(
-      "صديق أو شريك يريد الزيارة. ما الذي يبدو مناسبًا عادةً؟",
+      "إحضار الضيوف؟",
     ),
     "houseNormScenarioHomeIdentityOption1":
-        MessageLookupByLibrary.simpleMessage("مكان هادئ لاستعادة الطاقة"),
+        MessageLookupByLibrary.simpleMessage("منزل هادئ"),
     "houseNormScenarioHomeIdentityOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "توازن بين الوقت الهادئ والوقت معًا",
-        ),
+        MessageLookupByLibrary.simpleMessage("منزل متوازن"),
     "houseNormScenarioHomeIdentityOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "مكان حيوي يأتي فيه الناس ويذهبون",
-        ),
+        MessageLookupByLibrary.simpleMessage("منزل اجتماعي"),
     "houseNormScenarioHomeIdentityQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "في يوم جيد، يشعر هذا المنزل أكثر بأنه...",
-        ),
+        MessageLookupByLibrary.simpleMessage("أفضل وصف؟"),
     "houseNormScenarioPropertyContextOption1":
-        MessageLookupByLibrary.simpleMessage("نملك هذا المنزل"),
+        MessageLookupByLibrary.simpleMessage("مملوك"),
     "houseNormScenarioPropertyContextOption2":
-        MessageLookupByLibrary.simpleMessage("نستأجر المنزل بالكامل"),
+        MessageLookupByLibrary.simpleMessage("إيجار كامل"),
     "houseNormScenarioPropertyContextOption3":
-        MessageLookupByLibrary.simpleMessage("نستأجر غرفًا في منزل مشترك"),
+        MessageLookupByLibrary.simpleMessage("إيجار غرفة"),
     "houseNormScenarioPropertyContextQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "هل تسكنون هذا المنزل بالإيجار أم بالملكية؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("هذا المنزل هو:"),
     "houseNormScenarioRelationshipModelOption1":
         MessageLookupByLibrary.simpleMessage("زملاء سكن"),
     "houseNormScenarioRelationshipModelOption2":
         MessageLookupByLibrary.simpleMessage("عائلة"),
     "houseNormScenarioRelationshipModelOption3":
-        MessageLookupByLibrary.simpleMessage("عائلة وزملاء سكن"),
+        MessageLookupByLibrary.simpleMessage("مختلط"),
     "houseNormScenarioRelationshipModelQuestion":
-        MessageLookupByLibrary.simpleMessage("من يشارك السكن في هذا المنزل؟"),
+        MessageLookupByLibrary.simpleMessage("من يسكن هنا؟"),
     "houseNormScenarioRepairOption1": MessageLookupByLibrary.simpleMessage(
-      "الحديث عنه في وقت أقرب بدلًا من التأجيل",
+      "تحدث مبكرًا",
     ),
     "houseNormScenarioRepairOption2": MessageLookupByLibrary.simpleMessage(
-      "الاطمئنان بلطف عندما يكون التوقيت مناسبًا",
+      "اختر اللحظة المناسبة",
     ),
     "houseNormScenarioRepairOption3": MessageLookupByLibrary.simpleMessage(
-      "تجاوز الأمور الصغيرة ما لم تتراكم",
+      "اترك الأمور الصغيرة تمر",
     ),
     "houseNormScenarioRepairQuestion": MessageLookupByLibrary.simpleMessage(
-      "هناك شيء غير مريح قليلًا بين الأشخاص. ما الذي يساعد أكثر؟",
+      "التوتر؟",
     ),
     "houseNormScenarioResponsibilityOption1":
-        MessageLookupByLibrary.simpleMessage("عادةً لدينا اتفاقات واضحة"),
+        MessageLookupByLibrary.simpleMessage("اتفاقات واضحة"),
     "houseNormScenarioResponsibilityOption2":
-        MessageLookupByLibrary.simpleMessage("يتولى أحدهم الأمر عندما يلاحظه"),
+        MessageLookupByLibrary.simpleMessage("من يلاحظ يقوم بها"),
     "houseNormScenarioResponsibilityOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "غالبًا كل شخص يهتم بأموره الخاصة",
-        ),
+        MessageLookupByLibrary.simpleMessage("كل شخص يهتم بأموره"),
     "houseNormScenarioResponsibilityQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "هناك أمر صغير يحتاج إنجازًا في المنزل. ماذا يحدث عادةً؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("الأعمال الصغيرة؟"),
     "houseNormScenarioRhythmOption1": MessageLookupByLibrary.simpleMessage(
-      "عادةً نهدّئ الأجواء ليأخذ المنزل قسطًا من الراحة",
+      "الاسترخاء والهدوء",
     ),
     "houseNormScenarioRhythmOption2": MessageLookupByLibrary.simpleMessage(
-      "يعتمد الأمر، فبعض الليالي أهدأ من غيرها",
+      "يعتمد",
     ),
     "houseNormScenarioRhythmOption3": MessageLookupByLibrary.simpleMessage(
-      "يكمل كل شخص ما يفعله",
+      "كل شخص يفعل ما يريد",
     ),
     "houseNormScenarioRhythmQuestion": MessageLookupByLibrary.simpleMessage(
-      "إنه وقت الليل وما زال أحدهم نشطًا في المنزل. ما الذي يكون مقبولًا عادةً؟",
+      "في وقت متأخر من الليل؟",
     ),
     "houseNormScenarioSharedSpacesOption1":
-        MessageLookupByLibrary.simpleMessage("غالبًا مرتب وجاهز للاستخدام"),
+        MessageLookupByLibrary.simpleMessage("نظيف"),
     "houseNormScenarioSharedSpacesOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "يبدو مستخدمًا لكن تتم إعادته لاحقًا",
-        ),
+        MessageLookupByLibrary.simpleMessage("يُستخدم بشكل طبيعي"),
     "houseNormScenarioSharedSpacesOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "لا بأس ببعض الفوضى - هذا منزل مشترك",
-        ),
+        MessageLookupByLibrary.simpleMessage("الفوضى لا بأس بها"),
     "houseNormScenarioSharedSpacesQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "تدخل المطبخ في نهاية اليوم. ما الذي تشعر أنه الأنسب؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("المطبخ ليلًا؟"),
     "houseNormSectionEditLabel": MessageLookupByLibrary.simpleMessage(
       "عدّل هذا القسم",
     ),
@@ -546,19 +520,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "أضف نصًا قبل الحفظ.",
     ),
     "houseNormSectionFallbackTitle": MessageLookupByLibrary.simpleMessage(
-      "قسم",
+      "القسم",
     ),
     "houseNormSectionGuestsSocialTitle": MessageLookupByLibrary.simpleMessage(
-      "الضيوف والحياة الاجتماعية",
+      "الضيوف والتفاعل الاجتماعي",
     ),
     "houseNormSectionHomeIdentityTitle": MessageLookupByLibrary.simpleMessage(
       "هوية المنزل",
     ),
     "houseNormSectionRepairStyleTitle": MessageLookupByLibrary.simpleMessage(
-      "أسلوب إصلاح الخلاف",
+      "أسلوب الإصلاح",
     ),
     "houseNormSectionResponsibilityFlowTitle":
-        MessageLookupByLibrary.simpleMessage("توزيع المسؤوليات"),
+        MessageLookupByLibrary.simpleMessage("تدفق المسؤوليات"),
     "houseNormSectionRhythmQuietTitle": MessageLookupByLibrary.simpleMessage(
       "الإيقاع والهدوء",
     ),
@@ -579,10 +553,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "مشاركة الرابط",
     ),
     "houseNormSummaryFramingLabel": MessageLookupByLibrary.simpleMessage(
-      "صياغة الملخص",
+      "الملخص",
     ),
     "houseNormSummarySubtitle": MessageLookupByLibrary.simpleMessage(
-      "نقطة بداية مشتركة، وليست كتاب قواعد.",
+      "دليل، وليس كتاب قواعد.",
     ),
     "houseNormSummaryTitle": MessageLookupByLibrary.simpleMessage(
       "أعراف المنزل",
@@ -599,100 +573,94 @@ class MessageLookup extends MessageLookupByLibrary {
     "housePulseShareCta": MessageLookupByLibrary.simpleMessage("مشاركة النبض"),
     "housePulseShareMessage": m9,
     "housePulseShareTitle": MessageLookupByLibrary.simpleMessage(
-      "مشاركة نبض منزلنا على كينلي",
+      "نشارك نبض منزلنا على كينلي",
     ),
     "housePulseUpdatedOn": m10,
     "houseVibeShareCta": MessageLookupByLibrary.simpleMessage("مشاركة الطابع"),
     "houseVibeShareError": MessageLookupByLibrary.simpleMessage(
-      "تعذّرت المشاركة الآن. يرجى المحاولة مرة أخرى.",
+      "تعذّرت المشاركة الآن.",
     ),
     "houseVibeShareMessage": m11,
     "houseVibeShareTitle": MessageLookupByLibrary.simpleMessage("طابع المنزل"),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
       "شكر سريع من منزلك.",
     ),
-    "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage("إشادات"),
+    "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
+      "رسائل الشكر",
+    ),
     "hubCodeCopied": MessageLookupByLibrary.simpleMessage("تم نسخ رمز الدعوة"),
     "hubError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحميل مركز المنزل. يرجى المحاولة مرة أخرى.",
+      "تعذّر تحميل مركز المنزل.",
     ),
     "hubHouseNormsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "نقطة بداية مشتركة لكيفية سير هذا المنزل عادةً.",
+      "دليل لكيفية عمل هذا المنزل.",
     ),
     "hubHouseNormsTitle": MessageLookupByLibrary.simpleMessage("أعراف المنزل"),
     "hubInviteCta": MessageLookupByLibrary.simpleMessage("دعوة"),
     "hubInviteUnavailable": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحميل الدعوة. يرجى المحاولة مرة أخرى.",
+      "تعذّر تحميل الدعوة.",
     ),
     "hubMembersEmpty": MessageLookupByLibrary.simpleMessage(
       "لا يوجد أعضاء نشطون بعد.",
     ),
     "hubPreferencesSubtitle": MessageLookupByLibrary.simpleMessage(
-      "كيف يفضّل كل شخص أن تعمل الحياة المشتركة.",
+      "كيف يفضل كل شخص أن يعمل السكن المشترك.",
     ),
-    "hubPreferencesTitle": MessageLookupByLibrary.simpleMessage(
-      "التفضيلات الشخصية",
-    ),
-    "hubQrSubtitle": MessageLookupByLibrary.simpleMessage("امسح لتنزيل كينلي"),
+    "hubPreferencesTitle": MessageLookupByLibrary.simpleMessage("التفضيلات"),
+    "hubQrSubtitle": MessageLookupByLibrary.simpleMessage("امسح لتحميل كينلي"),
     "hubQrTitle": MessageLookupByLibrary.simpleMessage("مشاركة التطبيق"),
     "hubRetry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
     "hubRotateError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تغيير رمز الدعوة. حاول مرة أخرى.",
+      "تعذّر تحديث الدعوة.",
     ),
-    "hubRotateInvite": MessageLookupByLibrary.simpleMessage("تغيير رمز الدعوة"),
-    "hubRotateSuccess": MessageLookupByLibrary.simpleMessage(
-      "تم تغيير رمز الدعوة",
-    ),
+    "hubRotateInvite": MessageLookupByLibrary.simpleMessage("تدوير الدعوة"),
+    "hubRotateSuccess": MessageLookupByLibrary.simpleMessage("تم تحديث الدعوة"),
     "hubShareAppBody": m12,
     "hubShareAppCta": MessageLookupByLibrary.simpleMessage("مشاركة كينلي"),
-    "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
-      "احصل على تطبيق كينلي",
-    ),
+    "hubShareAppTitle": MessageLookupByLibrary.simpleMessage("احصل على كينلي"),
     "hubShareInviteBody": m13,
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
       "دعوة إلى منزلي على كينلي",
     ),
     "join_blocked_body": MessageLookupByLibrary.simpleMessage(
-      "لقد أخطرنا مالك المنزل.",
+      "لقد أبلغنا مالك المنزل.",
     ),
     "join_blocked_cta": MessageLookupByLibrary.simpleMessage("تم"),
     "join_blocked_title": MessageLookupByLibrary.simpleMessage(
-      "هذا المنزل لا يقبل أعضاء جددًا الآن",
+      "هذا المنزل لا يقبل أعضاء جدد الآن",
     ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
-      "غادر منزلك الحالي للانضمام إلى منزل جديد",
+      "غادر منزلك الحالي أولًا.",
     ),
     "join_error_forbidden": MessageLookupByLibrary.simpleMessage(
       "ليس لديك إذن للانضمام إلى هذا المنزل.",
     ),
     "join_error_inactive_invite": MessageLookupByLibrary.simpleMessage(
-      "هذه الدعوة لم تعد نشطة. اطلب من المالك رمزًا جديدًا.",
+      "انتهت صلاحية هذه الدعوة. اطلب من المالك دعوة جديدة.",
     ),
     "join_error_invalid_code": MessageLookupByLibrary.simpleMessage(
-      "رمز الدعوة هذا لا يبدو صحيحًا.",
+      "رمز الدعوة هذا يبدو غير صحيح.",
     ),
     "join_error_paywall_limit": MessageLookupByLibrary.simpleMessage(
-      "وصل هذا المنزل إلى الحد الأقصى للأعضاء. اطلب من المالك الترقية أو إزالة عضو.",
+      "وصل هذا المنزل إلى الحد الأقصى للأعضاء. اطلب من المالك الترقية أو إزالة أحد الأعضاء.",
     ),
     "join_error_unauthorized": MessageLookupByLibrary.simpleMessage(
-      "يرجى تسجيل الدخول للانضمام إلى هذا المنزل.",
+      "سجّل الدخول للانضمام إلى هذا المنزل.",
     ),
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
-      "لم نتمكن من الانضمام إلى هذا المنزل. يرجى المحاولة مرة أخرى.",
+      "تعذّر الانضمام إلى هذا المنزل.",
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage(
-      "أدخل رمز الدعوة مثل ABC123",
+      "أدخل رمز الدعوة (مثال: ABC123)",
     ),
     "join_submit": MessageLookupByLibrary.simpleMessage("انضمام"),
     "join_success": m14,
     "join_title": MessageLookupByLibrary.simpleMessage("الانضمام إلى منزل"),
     "login_consent_connector": MessageLookupByLibrary.simpleMessage(" و "),
-    "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
-      "لقد قرأت ووافقت على ",
-    ),
+    "login_consent_prefix": MessageLookupByLibrary.simpleMessage("أوافق على "),
     "login_privacy": MessageLookupByLibrary.simpleMessage("سياسة الخصوصية"),
     "login_tagline": MessageLookupByLibrary.simpleMessage(
-      "معًا يصبح الأمر أخف",
+      "معًا يصبح كل شيء أخف",
     ),
     "login_terms": MessageLookupByLibrary.simpleMessage("شروط الخدمة"),
     "login_with_apple": MessageLookupByLibrary.simpleMessage(
@@ -706,20 +674,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "أنت متصل بمنزل.",
     ),
     "membership_status_checking": MessageLookupByLibrary.simpleMessage(
-      "نوصلك بمنزلك…",
+      "جارٍ الاتصال بمنزلك...",
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
-      "منزلك المشترك يبدأ من هنا.",
+      "أنشئ منزلًا أو انضم إلى منزل.",
     ),
-    "mentionFieldHint": MessageLookupByLibrary.simpleMessage("اكتب @ لذكر شخص"),
-    "navExplore": MessageLookupByLibrary.simpleMessage("إدارة"),
+    "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
+      "اكتب @ للإشارة إلى شخص",
+    ),
+    "navExplore": MessageLookupByLibrary.simpleMessage("الإدارة"),
     "navHub": MessageLookupByLibrary.simpleMessage("مركز المنزل"),
     "navToday": MessageLookupByLibrary.simpleMessage("اليوم"),
     "npsCannotSkip": MessageLookupByLibrary.simpleMessage(
-      "يرجى اختيار درجة للمتابعة.",
+      "اختر درجة للمتابعة.",
     ),
     "npsDescription": MessageLookupByLibrary.simpleMessage(
-      "0 يعني إطلاقًا. 10 يعني أنه أحدث فرقًا حقيقيًا.",
+      "0 يعني لم يساعد إطلاقًا. 10 يعني أنه أحدث فرقًا حقيقيًا.",
     ),
     "npsEmailSubject": MessageLookupByLibrary.simpleMessage(
       "كيف يمكن لكينلي أن يدعم منزلك بشكل أفضل؟",
@@ -730,24 +700,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "npsScaleHighLabel": MessageLookupByLibrary.simpleMessage(
       "10 أحدث فرقًا حقيقيًا",
     ),
-    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 إطلاقًا"),
+    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage(
+      "0 لم يساعد إطلاقًا",
+    ),
     "npsSubmitErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "الملاحظات غير متاحة الآن.",
+      "التغذية الراجعة غير متاحة الآن.",
     ),
     "npsSubmitErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "تعذّر إرسال ملاحظاتك. يرجى المحاولة مرة أخرى.",
+      "تعذّر إرسال ملاحظاتك.",
     ),
     "npsSubmitErrorInvalidScore": MessageLookupByLibrary.simpleMessage(
-      "يرجى اختيار رقم بين 0 و10.",
+      "اختر رقمًا بين 0 و10.",
     ),
     "npsSubmitErrorNotRequired": MessageLookupByLibrary.simpleMessage(
-      "لست بحاجة لمشاركة ملاحظات الآن.",
+      "لا تحتاج إلى مشاركة ملاحظات الآن.",
     ),
     "npsTitle": MessageLookupByLibrary.simpleMessage(
       "هل ساعد كينلي منزلك على العمل بسلاسة أكثر؟",
     ),
     "offline_body": MessageLookupByLibrary.simpleMessage(
-      "يحتاج كينلي إلى اتصال بالإنترنت. تحقّق من الشبكة وحاول مرة أخرى.",
+      "لا يوجد اتصال بالإنترنت. حاول مرة أخرى.",
     ),
     "offline_retry": MessageLookupByLibrary.simpleMessage("حاول مرة أخرى"),
     "offline_title": MessageLookupByLibrary.simpleMessage("أنت غير متصل"),
@@ -755,36 +727,34 @@ class MessageLookup extends MessageLookupByLibrary {
       "مهام غير محدودة",
     ),
     "paywallBulletMembers": MessageLookupByLibrary.simpleMessage(
-      "أعضاء منزل غير محدودين",
+      "أعضاء غير محدودين",
     ),
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
       "صور مهام غير محدودة",
     ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
-      "فواتير مشتركة غير محدودة",
+      "فواتير غير محدودة",
     ),
     "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
-      "صور قائمة تسوّق غير محدودة",
+      "صور تسوق غير محدودة",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحميل صفحة الترقية.",
+      "تعذّر تحميل صفحة الاشتراك.",
     ),
     "paywallFeatureUnlimitedSharedExpensePhotos":
-        MessageLookupByLibrary.simpleMessage(
-          "صور المصروفات المشتركة غير محدودة",
-        ),
+        MessageLookupByLibrary.simpleMessage("صور فواتير غير محدودة"),
     "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
-      "خطة واحدة للمنزل، بدون مستويات مخفية.",
+      "خطة واحدة للمنزل. بدون مستويات مخفية.",
     ),
     "paywallPricePerMonth": m15,
     "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
-      "التسعير غير متاح الآن.",
+      "السعر غير متاح الآن.",
     ),
     "paywallPrimaryCta": MessageLookupByLibrary.simpleMessage(
-      "الترقية إلى كينلي بريميوم",
+      "الترقية إلى بريميوم",
     ),
     "paywallPurchaseFailed": MessageLookupByLibrary.simpleMessage(
-      "لم تكتمل عملية الشراء — يمكنك المحاولة مرة أخرى في أي وقت.",
+      "لم يكتمل الشراء.",
     ),
     "paywallPurchaseSuccess": MessageLookupByLibrary.simpleMessage(
       "أنت الآن على كينلي بريميوم.",
@@ -797,7 +767,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "البقاء على الخطة المجانية",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "يكلف أقل من 0.5% من إيجارك.",
+      "أقل من 0.5٪ من إيجارك.",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
       "حافظ على سير منزلك بسلاسة",
@@ -806,7 +776,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "الإشارات الشخصية",
     ),
     "personalProfileLoadError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحميل ملفك الشخصي الآن. يرجى المحاولة مرة أخرى.",
+      "تعذّر تحميل ملفك الشخصي.",
     ),
     "personalProfileMentions": MessageLookupByLibrary.simpleMessage(
       "الإشارات الشخصية",
@@ -819,7 +789,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "الترقية إلى بريميوم",
     ),
     "planPremiumActiveBody": MessageLookupByLibrary.simpleMessage(
-      "استمتع بوصول غير محدود لكل الميزات.",
+      "استمتع بوصول غير محدود إلى جميع الميزات.",
     ),
     "planPremiumActiveTitle": MessageLookupByLibrary.simpleMessage(
       "أنت على بريميوم",
@@ -827,21 +797,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "planPremiumLabel": MessageLookupByLibrary.simpleMessage("بريميوم"),
     "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("رجوع"),
     "preferenceOnboardingProgress": m16,
-    "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
-      "حفظ التفضيلات",
-    ),
-    "preferenceOnboardingTitle": MessageLookupByLibrary.simpleMessage(
-      "التفضيلات الشخصية",
-    ),
-    "preferencePromptCta": MessageLookupByLibrary.simpleMessage(
-      "بدء التفضيلات",
-    ),
+    "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage("حفظ"),
+    "preferenceOnboardingTitle": MessageLookupByLibrary.simpleMessage("طابعك"),
+    "preferencePromptCta": MessageLookupByLibrary.simpleMessage("ابدأ"),
     "preferencePromptSubtitle": MessageLookupByLibrary.simpleMessage(
-      "قم بإعداد تفضيلاتك الشخصية حتى يتعلم منزلك كيف تفضل الأمور.",
+      "ساعد منزلك على فهم ما يناسبك.",
     ),
-    "preferencePromptTitle": MessageLookupByLibrary.simpleMessage(
-      "شارك تفضيلاتك",
-    ),
+    "preferencePromptTitle": MessageLookupByLibrary.simpleMessage("حدّد طابعك"),
     "preferenceReportDoneCta": MessageLookupByLibrary.simpleMessage("تم"),
     "preferenceReportEditCta": MessageLookupByLibrary.simpleMessage("تعديل"),
     "preferenceReportEditError": MessageLookupByLibrary.simpleMessage(
@@ -851,10 +813,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم",
     ),
     "preferenceReportEditSectionHint": MessageLookupByLibrary.simpleMessage(
-      "اكتب ما يبدو مناسبًا لك",
+      "اكتب ما يبدو مناسبًا",
     ),
     "preferenceReportEditSectionPrompt": MessageLookupByLibrary.simpleMessage(
-      "عدّل صياغة هذا القسم.",
+      "عدّل هذا القسم.",
     ),
     "preferenceReportEditTitle": MessageLookupByLibrary.simpleMessage(
       "تعديل التفضيلات",
@@ -863,7 +825,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "أكمل تفضيلاتك لإنشاء تقريرك.",
     ),
     "preferenceReportEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "تقرير التفضيلات غير جاهز",
+      "التفضيلات غير جاهزة",
     ),
     "preferenceReportErrorBody": MessageLookupByLibrary.simpleMessage(
       "يرجى المحاولة مرة أخرى.",
@@ -878,182 +840,124 @@ class MessageLookup extends MessageLookupByLibrary {
       "تعذّر إكمال انعكاس تفضيلاتك. حاول مرة أخرى قريبًا.",
     ),
     "preferenceReportReadOnlyNote": MessageLookupByLibrary.simpleMessage(
-      "هذا يوضح ما يشعرون بالراحة معه.",
+      "هذا يوضح ما يشعرهم بالراحة.",
     ),
-    "preferenceReportTitle": MessageLookupByLibrary.simpleMessage(
-      "تقرير تفضيلاتك",
-    ),
+    "preferenceReportTitle": MessageLookupByLibrary.simpleMessage("تفضيلاتك"),
     "preferenceReportViewTitle": MessageLookupByLibrary.simpleMessage(
       "عرض التفضيلات",
     ),
     "preferenceScenarioCleanlinessSharedSpaceOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "أشعر بأفضل حال عندما تكون الأمور مرتبة إلى حدّ كبير",
-        ),
+        MessageLookupByLibrary.simpleMessage("ابقها مرتبة"),
     "preferenceScenarioCleanlinessSharedSpaceOption2":
-        MessageLookupByLibrary.simpleMessage("بعض الفوضى اليومية مقبول"),
+        MessageLookupByLibrary.simpleMessage("فوضى بسيطة لا بأس بها"),
     "preferenceScenarioCleanlinessSharedSpaceOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "أنا مرتاح مع الفوضى في المناطق المشتركة",
-        ),
+        MessageLookupByLibrary.simpleMessage("الفوضى لا بأس بها"),
     "preferenceScenarioCleanlinessSharedSpaceQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "في المساحات المشتركة، ما مستوى الترتيب الذي يناسبك؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("المساحة المشتركة؟"),
     "preferenceScenarioCommunicationChannelOption1":
-        MessageLookupByLibrary.simpleMessage("الرسائل أو الكتابة"),
+        MessageLookupByLibrary.simpleMessage("رسالة نصية"),
     "preferenceScenarioCommunicationChannelOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "التحدث وجهًا لوجه عندما يحين الوقت",
-        ),
+        MessageLookupByLibrary.simpleMessage("وجهًا لوجه"),
     "preferenceScenarioCommunicationChannelOption3":
-        MessageLookupByLibrary.simpleMessage("مكالمة سريعة هي الأسهل"),
+        MessageLookupByLibrary.simpleMessage("مكالمة"),
     "preferenceScenarioCommunicationChannelQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "عندما تحتاجون للتنسيق في المنزل، ما الأسهل لك؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("أفضل طريقة للوصول إليك؟"),
     "preferenceScenarioCommunicationDirectnessOption1":
-        MessageLookupByLibrary.simpleMessage("بلطف، مع سياق أو تمهيد"),
+        MessageLookupByLibrary.simpleMessage("كن لطيفًا"),
     "preferenceScenarioCommunicationDirectnessOption2":
-        MessageLookupByLibrary.simpleMessage("مزيج — يعتمد على الموقف"),
+        MessageLookupByLibrary.simpleMessage("يعتمد"),
     "preferenceScenarioCommunicationDirectnessOption3":
-        MessageLookupByLibrary.simpleMessage("بشكل مباشر وواضح"),
+        MessageLookupByLibrary.simpleMessage("كن مباشرًا"),
     "preferenceScenarioCommunicationDirectnessQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "عندما يطرح عليك شخص موضوعًا، كيف تفضل أن يصلك؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("عندما يكون هناك شيء خاطئ؟"),
     "preferenceScenarioConflictResolutionOption1":
-        MessageLookupByLibrary.simpleMessage("أخذ وقت للهدوء أولًا"),
+        MessageLookupByLibrary.simpleMessage("اهدأ أولًا"),
     "preferenceScenarioConflictResolutionOption2":
-        MessageLookupByLibrary.simpleMessage("الاطمئنان بلطف في الوقت المناسب"),
+        MessageLookupByLibrary.simpleMessage("تحقق لاحقًا"),
     "preferenceScenarioConflictResolutionOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "التحدث عنه sooner rather than later",
-        ),
+        MessageLookupByLibrary.simpleMessage("تحدث مبكرًا"),
     "preferenceScenarioConflictResolutionQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "إذا كان هناك أمر يحتاج معالجة في المنزل، ما الذي يساعد أكثر؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("إذا كان هناك شيء غير مريح؟"),
     "preferenceScenarioEnvironmentLightOption1":
-        MessageLookupByLibrary.simpleMessage("إضاءة أهدأ أو أخف"),
+        MessageLookupByLibrary.simpleMessage("ناعمة"),
     "preferenceScenarioEnvironmentLightOption2":
-        MessageLookupByLibrary.simpleMessage("إضاءة متوازنة وطبيعية"),
+        MessageLookupByLibrary.simpleMessage("متوازنة"),
     "preferenceScenarioEnvironmentLightOption3":
-        MessageLookupByLibrary.simpleMessage("إضاءة ساطعة وجيدة"),
+        MessageLookupByLibrary.simpleMessage("ساطعة"),
     "preferenceScenarioEnvironmentLightQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "في المناطق المشتركة، ما الإضاءة التي تفضلها؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("الإضاءة؟"),
     "preferenceScenarioEnvironmentNoiseOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "أشعر براحة أكبر عندما تكون الأجواء هادئة بشكل عام",
-        ),
+        MessageLookupByLibrary.simpleMessage("هادئ من فضلك"),
     "preferenceScenarioEnvironmentNoiseOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "مستوى معتدل من ضجيج الحياة اليومية مناسب",
-        ),
+        MessageLookupByLibrary.simpleMessage("ضوضاء عادية"),
     "preferenceScenarioEnvironmentNoiseOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "الضوضاء لا تزعجني كثيرًا — الأجواء الحيوية مناسبة",
-        ),
+        MessageLookupByLibrary.simpleMessage("الأجواء الحيوية لا بأس بها"),
     "preferenceScenarioEnvironmentNoiseQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "ما مدى راحتك مع الضوضاء الخلفية في المساحات المشتركة؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("مستوى الضوضاء؟"),
     "preferenceScenarioEnvironmentScentOption1":
-        MessageLookupByLibrary.simpleMessage("أنا حساس جدًا للروائح القوية"),
+        MessageLookupByLibrary.simpleMessage("حساس"),
     "preferenceScenarioEnvironmentScentOption2":
-        MessageLookupByLibrary.simpleMessage("أنا محايد غالبًا"),
+        MessageLookupByLibrary.simpleMessage("محايد"),
     "preferenceScenarioEnvironmentScentOption3":
-        MessageLookupByLibrary.simpleMessage("الروائح القوية لا تزعجني كثيرًا"),
+        MessageLookupByLibrary.simpleMessage("لا تزعجني"),
     "preferenceScenarioEnvironmentScentQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "ما مدى راحتك مع الروائح القوية (شموع، طبخ، منظفات)؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("الروائح القوية؟"),
     "preferenceScenarioPrivacyNotificationsOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "أفضل عدم التواصل بعد ساعات الهدوء",
-        ),
+        MessageLookupByLibrary.simpleMessage("من فضلك لا"),
     "preferenceScenarioPrivacyNotificationsOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "الرسائل المحدودة أو المهمة مقبولة",
-        ),
+        MessageLookupByLibrary.simpleMessage("للأمور المهمة فقط"),
     "preferenceScenarioPrivacyNotificationsOption3":
-        MessageLookupByLibrary.simpleMessage("لا مشكلة لدي في التواصل بأي وقت"),
+        MessageLookupByLibrary.simpleMessage("في أي وقت"),
     "preferenceScenarioPrivacyNotificationsQuestion":
-        MessageLookupByLibrary.simpleMessage("ما شعورك تجاه الرسائل ليلًا؟"),
+        MessageLookupByLibrary.simpleMessage("الرسائل ليلًا؟"),
     "preferenceScenarioPrivacyRoomEntryOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "أفضل أن يطرقوا أو يطلبوا الإذن أولًا",
-        ),
+        MessageLookupByLibrary.simpleMessage("اطرق أولًا"),
     "preferenceScenarioPrivacyRoomEntryOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "طلب الإذن لطيف، لكن المرونة مقبولة",
-        ),
+        MessageLookupByLibrary.simpleMessage("عادةً اطرق"),
     "preferenceScenarioPrivacyRoomEntryOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "أنا مرتاح عمومًا مع الدخول دون تعقيد",
-        ),
+        MessageLookupByLibrary.simpleMessage("الباب مفتوح"),
     "preferenceScenarioPrivacyRoomEntryQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "قبل دخول غرفة شخص ما، ما الذي يبدو مناسبًا لك؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("الدخول إلى غرفتك؟"),
     "preferenceScenarioRoutinePlanningOption1":
-        MessageLookupByLibrary.simpleMessage("يساعدني وجود خطط وتنظيم"),
+        MessageLookupByLibrary.simpleMessage("منظمة"),
     "preferenceScenarioRoutinePlanningOption2":
-        MessageLookupByLibrary.simpleMessage("مزيج من التخطيط والعفوية"),
+        MessageLookupByLibrary.simpleMessage("بعض التنظيم"),
     "preferenceScenarioRoutinePlanningOption3":
-        MessageLookupByLibrary.simpleMessage("المرونة وترك الأمور تسير أسهل"),
+        MessageLookupByLibrary.simpleMessage("على حسب المزاج"),
     "preferenceScenarioRoutinePlanningQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "فيما يخص الحياة اليومية في المنزل، ما الأكثر طبيعية لك؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("الحياة اليومية؟"),
     "preferenceScenarioScheduleQuietHoursOption1":
-        MessageLookupByLibrary.simpleMessage("أمسياتي عادةً أكثر هدوءًا"),
+        MessageLookupByLibrary.simpleMessage("ليالٍ هادئة"),
     "preferenceScenarioScheduleQuietHoursOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "يعتمد — بعض الليالي أهدأ من غيرها",
-        ),
+        MessageLookupByLibrary.simpleMessage("يعتمد"),
     "preferenceScenarioScheduleQuietHoursOption3":
-        MessageLookupByLibrary.simpleMessage("النشاط ليلًا لا يزعجني عادةً"),
+        MessageLookupByLibrary.simpleMessage("النشاط لا بأس به"),
     "preferenceScenarioScheduleQuietHoursQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "في المساء، ما الذي يناسبك عادةً؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("المساءات؟"),
     "preferenceScenarioScheduleSleepTimingOption1":
-        MessageLookupByLibrary.simpleMessage("أنام وأستيقظ مبكرًا"),
+        MessageLookupByLibrary.simpleMessage("يستيقظ مبكرًا"),
     "preferenceScenarioScheduleSleepTimingOption2":
-        MessageLookupByLibrary.simpleMessage("في الوسط"),
+        MessageLookupByLibrary.simpleMessage("بين هذا وذاك"),
     "preferenceScenarioScheduleSleepTimingOption3":
-        MessageLookupByLibrary.simpleMessage("أنام وأستيقظ متأخرًا"),
+        MessageLookupByLibrary.simpleMessage("ساهر"),
     "preferenceScenarioScheduleSleepTimingQuestion":
-        MessageLookupByLibrary.simpleMessage("هل أنت شخص صباحي أم ليلي؟"),
+        MessageLookupByLibrary.simpleMessage("أسلوب النوم؟"),
     "preferenceScenarioSocialHostingOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "أرتاح أكثر عندما يكون الضيوف نادرين",
-        ),
+        MessageLookupByLibrary.simpleMessage("نادرًا"),
     "preferenceScenarioSocialHostingOption2":
-        MessageLookupByLibrary.simpleMessage("الضيوف أحيانًا مناسبون"),
+        MessageLookupByLibrary.simpleMessage("أحيانًا"),
     "preferenceScenarioSocialHostingOption3":
-        MessageLookupByLibrary.simpleMessage("الضيوف المتكررون لا بأس بهم"),
+        MessageLookupByLibrary.simpleMessage("كثيرًا"),
     "preferenceScenarioSocialHostingQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "ما شعورك تجاه قدوم ضيوف إلى المنزل؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("الضيوف؟"),
     "preferenceScenarioSocialTogethernessOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "في الغالب أكون على راحتي وأنا بمفردي",
-        ),
+        MessageLookupByLibrary.simpleMessage("غالبًا بمفردي"),
     "preferenceScenarioSocialTogethernessOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "مزيج من الوقت المشترك والوقت الخاص",
-        ),
+        MessageLookupByLibrary.simpleMessage("مزيج من الأمرين"),
     "preferenceScenarioSocialTogethernessOption3":
-        MessageLookupByLibrary.simpleMessage("قضاء وقت معًا غالبًا"),
+        MessageLookupByLibrary.simpleMessage("نتجمع كثيرًا"),
     "preferenceScenarioSocialTogethernessQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "في المنزل، ما التوازن الأنسب لك؟",
-        ),
+        MessageLookupByLibrary.simpleMessage("طاقة المنزل؟"),
     "profileActionConfirm": MessageLookupByLibrary.simpleMessage(
       "مغادرة المنزل",
     ),
@@ -1061,35 +965,35 @@ class MessageLookup extends MessageLookupByLibrary {
       "حذف الحساب",
     ),
     "profileConfirmDeleteMessage": MessageLookupByLibrary.simpleMessage(
-      "سيؤدي ذلك إلى إزالة حسابك وتسجيل خروجك. لا يمكنك التراجع عن هذا.",
+      "سيؤدي هذا إلى حذف حسابك وتسجيل خروجك. لا يمكنك التراجع عن ذلك.",
     ),
     "profileConfirmDeleteTitle": MessageLookupByLibrary.simpleMessage(
-      "حذف حسابك؟",
+      "هل تريد حذف حسابك؟",
     ),
     "profileConfirmLeaveMessage": MessageLookupByLibrary.simpleMessage(
       "ستفقد الوصول إلى المهام والسجل والدعوات.",
     ),
     "profileConfirmLeaveTitle": MessageLookupByLibrary.simpleMessage(
-      "مغادرة هذا المنزل؟",
+      "هل تريد مغادرة هذا المنزل؟",
     ),
     "profileConnectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "إدارة الإشعارات والتذكيرات.",
+      "إدارة التذكيرات والتنبيهات.",
     ),
     "profileConnectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "إعدادات الاتصال",
+      "الإشعارات",
     ),
     "profileContactEmailSubject": MessageLookupByLibrary.simpleMessage(
       "تواصل معنا",
     ),
     "profileContactLaunchError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر فتح تطبيق البريد. حاول مرة أخرى.",
+      "تعذّر فتح تطبيق البريد الإلكتروني.",
     ),
     "profileContactUsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "أرسل بريدًا إلى support@makinglifeeasie.com",
+      "راسل support@makinglifeeasie.com",
     ),
     "profileContactUsTitle": MessageLookupByLibrary.simpleMessage("تواصل معنا"),
     "profileDeleteAccountSubtitle": MessageLookupByLibrary.simpleMessage(
-      "إزالة حساب كينلي وبيانات ملفك الشخصي.",
+      "حذف حسابك وبياناتك على كينلي.",
     ),
     "profileDeleteAccountTitle": MessageLookupByLibrary.simpleMessage(
       "حذف الحساب",
@@ -1097,19 +1001,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileDeleteSuccessMessage": MessageLookupByLibrary.simpleMessage(
       "سيتم حذف حسابك قريبًا. سنقوم بتسجيل خروجك.",
     ),
-    "profileGenericError": MessageLookupByLibrary.simpleMessage(
-      "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
-    ),
+    "profileGenericError": MessageLookupByLibrary.simpleMessage("حدث خطأ ما."),
     "profileIdentityAvatarEmpty": MessageLookupByLibrary.simpleMessage(
-      "لا توجد صور رمزية متاحة الآن. حاول لاحقًا.",
+      "لا توجد صور رمزية متاحة الآن.",
     ),
     "profileIdentityAvatarSectionDescription":
-        MessageLookupByLibrary.simpleMessage("كل صورة رمزية فريدة داخل منزلك."),
+        MessageLookupByLibrary.simpleMessage(
+          "يجب أن تكون كل صورة رمزية فريدة داخل منزلك.",
+        ),
     "profileIdentityAvatarSectionTitle": MessageLookupByLibrary.simpleMessage(
       "اختر صورة رمزية",
     ),
     "profileIdentityLoadError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحميل ملفك الشخصي الآن.",
+      "تعذّر تحميل ملفك الشخصي.",
     ),
     "profileIdentityRetry": MessageLookupByLibrary.simpleMessage(
       "إعادة المحاولة",
@@ -1118,7 +1022,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "حفظ التغييرات",
     ),
     "profileIdentitySubtitle": MessageLookupByLibrary.simpleMessage(
-      "اختر اسم مستخدم وصورة رمزية لمنزلك.",
+      "اختر اسم مستخدم وصورة رمزية.",
     ),
     "profileIdentitySuccessMessage": MessageLookupByLibrary.simpleMessage(
       "تم تحديث الملف الشخصي.",
@@ -1127,13 +1031,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "تعديل الملف الشخصي",
     ),
     "profileIdentityUsernameEmptyError": MessageLookupByLibrary.simpleMessage(
-      "أدخل اسم مستخدم للمتابعة.",
+      "أدخل اسم مستخدم.",
     ),
     "profileIdentityUsernameFormatError": MessageLookupByLibrary.simpleMessage(
-      "استخدم 3-30 حرفًا/رقمًا صغيرًا. يمكنك إضافة نقاط أو شرطات سفلية في الوسط.",
+      "استخدم من 3 إلى 30 حرفًا صغيرًا أو رقمًا. يمكن أن تأتي النقاط والشرطات السفلية في المنتصف.",
     ),
     "profileIdentityUsernameHint": MessageLookupByLibrary.simpleMessage(
-      "حروف، أرقام، . أو _",
+      "حروف وأرقام و . أو _",
     ),
     "profileIdentityUsernameLabel": MessageLookupByLibrary.simpleMessage(
       "اسم المستخدم",
@@ -1141,10 +1045,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "profileIdentityUsernamePreviewFallback":
         MessageLookupByLibrary.simpleMessage("اسم المستخدم الخاص بك"),
     "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
-      "اسم المستخدم هذا مستخدم. جرّب اسمًا آخر.",
+      "اسم المستخدم هذا مستخدم بالفعل.",
     ),
     "profileInfoHubLoadError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحميل مركز المعلومات. تحقّق من الاتصال.",
+      "تعذّر تحميل مركز المعلومات. تحقق من اتصالك.",
     ),
     "profileInfoHubSubtitle": MessageLookupByLibrary.simpleMessage(
       "افتح مركز كينلي على Notion داخل التطبيق.",
@@ -1163,7 +1067,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "لا يوجد أعضاء آخرون لإزالتهم الآن.",
     ),
     "profileKickOwnerOnly": MessageLookupByLibrary.simpleMessage(
-      "يمكن لمالك المنزل فقط إزالة الأعضاء.",
+      "فقط مالك المنزل يمكنه إزالة الأعضاء.",
     ),
     "profileKickSheetSubtitle": MessageLookupByLibrary.simpleMessage(
       "اختر عضوًا لإزالته. سيفقد الوصول فورًا.",
@@ -1173,93 +1077,95 @@ class MessageLookup extends MessageLookupByLibrary {
       "لم يعد لديه وصول إلى هذا المنزل.",
     ),
     "profileLeaveEligibilityError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحميل أعضاء منزلك. حاول مرة أخرى.",
+      "تعذّر تحميل أعضاء منزلك.",
     ),
     "profileLeaveEligibilityLoading": MessageLookupByLibrary.simpleMessage(
-      "جارٍ التحقق من أعضاء منزلك...",
+      "جارٍ التحقق من أعضاء المنزل...",
     ),
     "profileLeaveHomeSubtitle": MessageLookupByLibrary.simpleMessage(
-      "مغادرة هذا المنزل تعني الخروج من مساحتك المشتركة على كينلي.",
+      "ستغادر هذه المساحة المشتركة على كينلي.",
     ),
     "profileLeaveHomeTitle": MessageLookupByLibrary.simpleMessage(
       "مغادرة المنزل",
     ),
     "profileLeaveOwnerNoEligibleMembers": MessageLookupByLibrary.simpleMessage(
-      "لا يمكن لأي شخص آخر استلام الملكية الآن. حاول لاحقًا.",
+      "لا يوجد أي شخص آخر يمكنه تولّي الملكية الآن.",
     ),
     "profileLeaveOwnerSoloMessage": MessageLookupByLibrary.simpleMessage(
-      "أنت آخر عضو. المغادرة ستؤدي إلى تعطيل هذا المنزل.",
+      "أنت العضو الأخير. مغادرتك ستؤدي إلى إلغاء تفعيل هذا المنزل.",
     ),
     "profileLeaveSuccessMessage": MessageLookupByLibrary.simpleMessage(
       "لقد غادرت منزلك.",
     ),
     "profileLeaveTransferSheetSubtitle": MessageLookupByLibrary.simpleMessage(
-      "اختر من سيصبح المالك الجديد قبل المغادرة.",
+      "اختر من سيصبح المالك الجديد قبل أن تغادر.",
     ),
     "profileLeaveTransferSheetTitle": MessageLookupByLibrary.simpleMessage(
       "نقل الملكية",
     ),
     "profileLeaveTransferSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "تم نقل الملكية. جارٍ إكمال المغادرة...",
+      "تم نقل الملكية. جارٍ إنهاء المغادرة...",
     ),
     "profileLogoutSubtitle": MessageLookupByLibrary.simpleMessage(
       "تسجيل الخروج من كينلي على هذا الجهاز.",
     ),
     "profileLogoutTitle": MessageLookupByLibrary.simpleMessage("تسجيل الخروج"),
     "profileMissingHomeError": MessageLookupByLibrary.simpleMessage(
-      "لم نتمكن من العثور على منزلك الحالي. حاول مرة أخرى.",
+      "تعذّر العثور على منزلك الحالي.",
     ),
     "profileSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "إدارة تفضيلات الحساب والوصول إلى المنزل.",
+      "إدارة حسابك ووصولك إلى المنزل.",
     ),
     "profileSettingsTitle": MessageLookupByLibrary.simpleMessage(
       "الملف الشخصي",
     ),
     "profile_deactivated_message": MessageLookupByLibrary.simpleMessage(
-      "تم تعطيل ملفك الشخصي. يرجى تسجيل الدخول باستخدام بريد إلكتروني آخر.",
+      "تم إلغاء تفعيل ملفك الشخصي. سجّل الدخول باستخدام عنوان بريد إلكتروني آخر.",
     ),
     "pulseCloudySteadySummary": MessageLookupByLibrary.simpleMessage(
-      "مزيج من لحظات سلسة واحتكاكات صغيرة.",
+      "بعض الأمور نجحت. وبعضها لم ينجح.",
     ),
     "pulseCloudySteadyTitle": MessageLookupByLibrary.simpleMessage("مختلط"),
     "pulseCloudyTenseSummary": MessageLookupByLibrary.simpleMessage(
       "ظهر بعض التوتر هذا الأسبوع.",
     ),
     "pulseCloudyTenseTitle": MessageLookupByLibrary.simpleMessage(
-      "يحتاج انتباهًا",
+      "يحتاج إلى انتباه",
     ),
     "pulseFormingSummary": MessageLookupByLibrary.simpleMessage(
-      "بعض التحققّات الإضافية ستعطي صورة أوضح.",
+      "بعض المتابعات الإضافية ستعطي صورة أوضح.",
     ),
-    "pulseFormingTitle": MessageLookupByLibrary.simpleMessage("لا يزال يتشكل"),
+    "pulseFormingTitle": MessageLookupByLibrary.simpleMessage("ما يزال يتشكل"),
     "pulsePartlySupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "مستقر عمومًا، مع بعض الجوانب للتحسين.",
+      "الأمور مستقرة في الغالب، مع بعض المجال للتحسن.",
     ),
     "pulsePartlySupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "جيد عمومًا",
+      "جيد إجمالًا",
     ),
     "pulseRainySupportedSummary": MessageLookupByLibrary.simpleMessage(
       "قد يكون الوقت مناسبًا لإعادة ضبط بسيطة.",
     ),
     "pulseRainySupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "يوصى بإعادة ضبط",
+      "يُنصح بإعادة ضبط",
     ),
     "pulseRainyUnsupportedSummary": MessageLookupByLibrary.simpleMessage(
       "هناك احتكاك ملحوظ الآن.",
     ),
     "pulseRainyUnsupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "إعادة ضبط مطلوبة",
+      "إعادة الضبط مطلوبة",
     ),
     "pulseSunnyBumpySummary": MessageLookupByLibrary.simpleMessage(
-      "سلس غالبًا، مع بعض العثرات الصغيرة.",
+      "كان سلسًا في الغالب، مع بعض التعثرات.",
     ),
-    "pulseSunnyBumpyTitle": MessageLookupByLibrary.simpleMessage("سلس غالبًا"),
+    "pulseSunnyBumpyTitle": MessageLookupByLibrary.simpleMessage(
+      "سلس في الغالب",
+    ),
     "pulseSunnyCalmSummary": MessageLookupByLibrary.simpleMessage(
       "سارت الأمور بسلاسة هذا الأسبوع.",
     ),
     "pulseSunnyCalmTitle": MessageLookupByLibrary.simpleMessage("يسير بسلاسة"),
     "pulseThunderstormSummary": MessageLookupByLibrary.simpleMessage(
-      "التوتر مرتفع. إعادة ضبط سريعة قد تساعد.",
+      "التوتر مرتفع. أعد الضبط قريبًا.",
     ),
     "pulseThunderstormTitle": MessageLookupByLibrary.simpleMessage(
       "توتر مرتفع",
@@ -1277,28 +1183,28 @@ class MessageLookup extends MessageLookupByLibrary {
       "حسنًا.",
     ),
     "reflectiveGenericPrimary": MessageLookupByLibrary.simpleMessage(
-      "نرتّب هذا بعناية.",
+      "نقوم بتجميع هذا بعناية.",
     ),
     "reflectiveGenericSecondary": MessageLookupByLibrary.simpleMessage(
-      "لحظة هادئة قبل أن نعرضه.",
+      "وقفة قصيرة قبل أن نعرضه.",
     ),
     "reflectiveHouseNormsPrimary": MessageLookupByLibrary.simpleMessage(
       "نعكس ما شاركه هذا المنزل.",
     ),
     "reflectiveHouseNormsSecondary": MessageLookupByLibrary.simpleMessage(
-      "مرجع مشترك، وليس كتاب قواعد.",
+      "دليل مشترك، وليس كتاب قواعد.",
     ),
     "reflectiveHousePrimary": MessageLookupByLibrary.simpleMessage(
-      "نضع توقعات المنزل في كلمات.",
+      "نحوّل توقعات منزلك إلى كلمات.",
     ),
     "reflectiveHouseSecondary": MessageLookupByLibrary.simpleMessage(
-      "حتى يعرف الجميع ما الذي يتوقعونه.",
+      "حتى تكون التوقعات واضحة.",
     ),
     "reflectivePersonalPrimary": MessageLookupByLibrary.simpleMessage(
       "نعكس ما شاركته.",
     ),
     "reflectivePersonalSecondary": MessageLookupByLibrary.simpleMessage(
-      "حتى يفهم الآخرون ما الذي يشعرك بالراحة.",
+      "حتى يفهم الآخرون ما يجعلك مرتاحًا.",
     ),
     "shareCreateAmountHint": MessageLookupByLibrary.simpleMessage("0.00"),
     "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("المبلغ"),
@@ -1306,7 +1212,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "المبلغ",
     ),
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
-      "أدخل حصة كل شخص. تأكد أن المجموع يساوي المبلغ أعلاه.",
+      "أدخل حصة كل شخص. يجب أن يطابق المجموع المبلغ أعلاه.",
     ),
     "shareCreateCyclePeriod": m17,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
@@ -1316,31 +1222,33 @@ class MessageLookup extends MessageLookupByLibrary {
       "الوصف",
     ),
     "shareCreateErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "ليس لديك إذن للإنشاء الآن.",
+      "ليس لديك إذن لإنشاء هذا الآن.",
     ),
     "shareCreateErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "تعذّر الإنشاء. حاول مرة أخرى.",
+      "تعذّر إنشاء الفاتورة.",
     ),
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "وصلت إلى الحد المجاني للفواتير النشطة. قم بالترقية للمزيد.",
+      "لقد وصلت إلى الحد المجاني للفواتير النشطة. قم بالترقية للمزيد.",
     ),
     "shareCreateErrorRecurrenceDraft": MessageLookupByLibrary.simpleMessage(
-      "لا يمكن للمسودات أن تتكرر قبل إضافة تقسيم.",
+      "لا يمكن للمسودات أن تتكرر حتى تضيف تقسيمًا.",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل أعضاء منزلك.",
     ),
     "shareCreateNotesHint": MessageLookupByLibrary.simpleMessage(
-      "سياق اختياري يمكن للجميع رؤيته",
+      "ملاحظة اختيارية يمكن للجميع رؤيتها",
     ),
-    "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("السياق"),
+    "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("ملاحظات"),
     "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
-      "تحتاج إلى عضوين على الأقل للمشاركة.",
+      "تحتاج إلى عضوين على الأقل في المنزل لمشاركة فاتورة.",
     ),
     "shareCreateRecurrenceEveryLabel": MessageLookupByLibrary.simpleMessage(
       "كل",
     ),
-    "shareCreateRecurrenceLabel": MessageLookupByLibrary.simpleMessage("تكرار"),
+    "shareCreateRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
+      "التكرار",
+    ),
     "shareCreateRecurrenceToggleLabel": MessageLookupByLibrary.simpleMessage(
       "متكرر",
     ),
@@ -1362,7 +1270,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تقسيم بالتساوي",
     ),
     "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage(
-      "كيف نريد تقسيم هذا؟",
+      "كيف يجب تقسيمها؟",
     ),
     "shareCreateStartLabel": MessageLookupByLibrary.simpleMessage(
       "متى ينطبق هذا؟",
@@ -1371,23 +1279,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreateSuccess": MessageLookupByLibrary.simpleMessage(
       "تم إنشاء الفاتورة.",
     ),
-    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("إنشاء فاتورة"),
+    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("إضافة فاتورة"),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
-      "أدخل مبلغًا صالحًا أكبر من صفر.",
+      "أدخل مبلغًا أكبر من صفر.",
     ),
     "shareCreateValidationCustomAmounts": MessageLookupByLibrary.simpleMessage(
-      "أدخل مبلغًا صالحًا لكل شخص محدد.",
+      "أدخل مبلغًا صالحًا لكل شخص تم اختياره.",
     ),
     "shareCreateValidationCustomParticipants":
         MessageLookupByLibrary.simpleMessage(
           "اختر شخصًا واحدًا على الأقل لهذه الفاتورة.",
         ),
     "shareCreateValidationCustomSinglePayer":
-        MessageLookupByLibrary.simpleMessage(
-          "لا يمكنك تضمين نفسك فقط في هذه الفاتورة. أضف شخصًا آخر على الأقل.",
-        ),
+        MessageLookupByLibrary.simpleMessage("أضف شخصًا آخر واحدًا على الأقل."),
     "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
-      "تأكد أن التقسيم المخصص يساوي المبلغ أعلاه.",
+      "تأكد من أن التقسيم يساوي المبلغ الإجمالي.",
     ),
     "shareCreateValidationCustomSumBreakdown": m18,
     "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
@@ -1395,17 +1301,17 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareCreateValidationEqualParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "اختر شخصًا واحدًا على الأقل لتقسيم المبلغ.",
+          "اختر شخصًا واحدًا على الأقل لتقسيم هذه الفاتورة.",
         ),
     "shareCreateValidationRecurrence": MessageLookupByLibrary.simpleMessage(
-      "اختر وتيرة التكرار.",
+      "اختر عدد مرات التكرار.",
     ),
     "shareCreateValidationRecurrenceSplit":
         MessageLookupByLibrary.simpleMessage(
-          "اختر طريقة التقسيم قبل تحديد التكرار.",
+          "اختر طريقة تقسيم قبل جعل هذه الفاتورة متكررة.",
         ),
     "shareCreateValidationStartDate": MessageLookupByLibrary.simpleMessage(
-      "اختر تاريخ بدء.",
+      "اختر تاريخ البدء.",
     ),
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
       "اختر تاريخًا ضمن النطاق المسموح.",
@@ -1413,13 +1319,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreatedListActiveAmount": m19,
     "shareCreatedListActiveSubtitle": m20,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
-      "غير مُسندة",
+      "غير مخصّصة",
     ),
     "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
-      "قسّمها ليعرف الجميع حصتهم قبل النشر.",
+      "قسّمها قبل النشر حتى يعرف الجميع حصتهم.",
     ),
     "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "الفواتير تُبقي المال واضحًا بدون تذكيرات محرجة.",
+      "الفواتير تجعل الأمور المالية واضحة.",
     ),
     "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "لا توجد فواتير بعد",
@@ -1427,7 +1333,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل فواتيرك. اسحب للتحديث.",
     ),
-    "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage("مُسددة"),
+    "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage(
+      "مدفوعة بالكامل",
+    ),
     "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage(
       "حاول مرة أخرى",
     ),
@@ -1436,92 +1344,99 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("حذف"),
     "shareEditDeleteConfirm": MessageLookupByLibrary.simpleMessage("حذف"),
     "shareEditDeleteConfirmMessage": MessageLookupByLibrary.simpleMessage(
-      "سيؤدي ذلك إلى إزالة المسودة للجميع.",
+      "سيؤدي هذا إلى إزالة المسودة للجميع.",
     ),
-    "shareEditDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage("حذف؟"),
+    "shareEditDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "هل تريد حذف الفاتورة؟",
+    ),
     "shareEditDeleteError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر الحذف. حاول مرة أخرى.",
+      "تعذّر حذف الفاتورة.",
     ),
     "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
       "تم حذف الفاتورة.",
     ),
     "shareEditDisabledActive": MessageLookupByLibrary.simpleMessage(
-      "الفواتير النشطة مقفلة عن التعديل.",
+      "لا يمكن تعديل الفواتير النشطة.",
     ),
     "shareEditDisabledConverted": MessageLookupByLibrary.simpleMessage(
-      "أصبحت هذه الفاتورة الآن خطة، وتم إيقاف التعديل.",
+      "هذه الفاتورة أصبحت الآن خطة ولا يمكن تعديلها هنا.",
     ),
     "shareEditDisabledGeneric": MessageLookupByLibrary.simpleMessage(
-      "تعديل هذه الفاتورة غير متاح الآن.",
+      "لا يمكن تعديل هذه الفاتورة الآن.",
     ),
     "shareEditDisabledRecurringCycle": MessageLookupByLibrary.simpleMessage(
-      "دورات التكرار مقفلة عن التعديل هنا.",
+      "لا يمكن تعديل الدورات المتكررة هنا.",
     ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
       "تعذّر تحميل هذه المسودة.",
     ),
     "shareEditNotAllowed": MessageLookupByLibrary.simpleMessage(
-      "ستظل مقفلة حتى يأخذ أحدهم هذه الفاتورة.",
+      "تبقى هذه الفاتورة مقفلة حتى يتولاها أحد.",
     ),
     "shareEditSplitsLocked": MessageLookupByLibrary.simpleMessage(
-      "تم قفل التقسيم لأن شخصًا ما دفع بالفعل. يمكنك تحديث الوصف والملاحظات فقط.",
+      "التقسيمات مقفلة لأن شخصًا ما قد دفع بالفعل. لا يزال بإمكانك تحديث الوصف والملاحظات.",
     ),
     "shareEditSubmit": MessageLookupByLibrary.simpleMessage("تحديث"),
     "shareEditSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تحديث الفاتورة.",
     ),
     "shareEditTerminateError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر إنهاء الخطة. حاول مرة أخرى.",
+      "تعذّر إنهاء الخطة.",
     ),
     "shareEditTerminatePlan": MessageLookupByLibrary.simpleMessage(
       "إنهاء الخطة",
     ),
     "shareEditTerminatePlanBusy": MessageLookupByLibrary.simpleMessage(
-      "جارٍ الإنهاء…",
+      "جارٍ الإنهاء...",
     ),
     "shareEditTerminatePlanConfirm": MessageLookupByLibrary.simpleMessage(
       "إنهاء الخطة",
     ),
     "shareEditTerminatePlanMessage": MessageLookupByLibrary.simpleMessage(
-      "سيوقف هذا دورات الفواتير المستقبلية.",
+      "سيؤدي هذا إلى إيقاف دورات الفواتير المستقبلية.",
     ),
     "shareEditTerminatePlanTitle": MessageLookupByLibrary.simpleMessage(
-      "إنهاء الخطة المتكررة؟",
+      "هل تريد إنهاء الخطة المتكررة؟",
     ),
     "shareEditTerminateSuccess": MessageLookupByLibrary.simpleMessage(
       "تم إنهاء الخطة.",
     ),
     "shareEditTitle": MessageLookupByLibrary.simpleMessage("تعديل الفاتورة"),
     "shareOwedDetailEmpty": MessageLookupByLibrary.simpleMessage(
-      "أنت على ما يرام مع هذا الشخص.",
+      "أنت منتهٍ تمامًا مع هذا الشخص.",
     ),
     "shareOwedDetailError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر وضع علامة التسوية. حاول مرة أخرى.",
+      "تعذّر تحديد هذه الدفعة كمسوّاة.",
     ),
-    "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage(
-      "وضع علامة كمُسَوّى",
-    ),
+    "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage("تحديد كمسوّى"),
     "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage(
-      "تمت التسوية.",
+      "تم التحديد كمسوّى.",
     ),
     "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage("للتسوية"),
     "sharePaidDetailAcknowledge": MessageLookupByLibrary.simpleMessage(
       "تأكيد الاستلام",
     ),
     "sharePaidDetailAcknowledgeError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تأكيد استلام الفواتير.",
+      "تعذّر تأكيد هذه الدفعة.",
     ),
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
-      "جارٍ التأكيد…",
+      "جارٍ التأكيد...",
     ),
     "shoppingAllItemsBought": MessageLookupByLibrary.simpleMessage(
-      "تم شراء جميع العناصر",
+      "تم شراء كل شيء",
     ),
-    "shoppingAmountHint": MessageLookupByLibrary.simpleMessage("مثال: 2 عبوات"),
+    "shoppingAmountHint": MessageLookupByLibrary.simpleMessage("مثال: عبوتان"),
     "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage("الكمية"),
     "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage(
-      "العناصر التي تم شراؤها",
+      "العناصر المشتراة",
     ),
+    "shoppingArchiveDraftBillCreated": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء مسودة فاتورة",
+    ),
+    "shoppingArchiveItemsBought": MessageLookupByLibrary.simpleMessage(
+      "تم تحديد العناصر كمشتراة وإزالتها",
+    ),
+    "shoppingArchiveShareNo": MessageLookupByLibrary.simpleMessage("لا"),
     "shoppingArchiveSharePromptBody": MessageLookupByLibrary.simpleMessage(
       "هل تريد إنشاء مسودة فاتورة من هذه العناصر؟",
     ),
@@ -1530,72 +1445,70 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("نعم"),
     "shoppingCardSubtitle": m21,
-    "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("قائمة التسوّق"),
+    "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("قائمة التسوق"),
     "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
-      "أي شيء مفيد (العلامة، الحجم، إلخ)",
+      "الماركة أو الحجم أو ملاحظات",
     ),
     "shoppingContextLabel": MessageLookupByLibrary.simpleMessage("ملاحظات"),
     "shoppingCreateTitle": MessageLookupByLibrary.simpleMessage(
-      "إضافة عنصر تسوّق",
+      "إضافة عنصر تسوق",
     ),
     "shoppingDelete": MessageLookupByLibrary.simpleMessage("حذف العنصر"),
     "shoppingDeleteConfirmBody": MessageLookupByLibrary.simpleMessage(
-      "سيؤدي ذلك إلى إزالة العنصر من قائمة التسوّق المشتركة.",
+      "سيؤدي هذا إلى إزالته من قائمة التسوق المشتركة.",
     ),
     "shoppingDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
-      "حذف هذا العنصر؟",
+      "هل تريد حذف هذا العنصر؟",
     ),
-    "shoppingDetailTitle": MessageLookupByLibrary.simpleMessage("عنصر تسوّق"),
+    "shoppingDetailTitle": MessageLookupByLibrary.simpleMessage("عنصر التسوق"),
     "shoppingEditTitle": MessageLookupByLibrary.simpleMessage(
-      "تفاصيل عنصر التسوّق",
+      "تعديل عنصر التسوق",
     ),
     "shoppingEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "لا توجد عناصر تسوّق للشراء.",
+      "لا توجد عناصر تسوق.",
     ),
     "shoppingErrorItemAlreadyCompletedByOther":
         MessageLookupByLibrary.simpleMessage(
-          "قام شخص آخر بالفعل بتأشير هذا العنصر كمكتمل.",
+          "قام شخص آخر بالفعل بتحديد هذا العنصر كمشترى.",
         ),
-    "shoppingListTitle": MessageLookupByLibrary.simpleMessage("قائمة التسوّق"),
+    "shoppingListTitle": MessageLookupByLibrary.simpleMessage("قائمة التسوق"),
     "shoppingMarkCompleteCta": MessageLookupByLibrary.simpleMessage(
-      "وضع علامة كمكتمل",
+      "تحديد كمشترى",
     ),
     "shoppingNameHint": MessageLookupByLibrary.simpleMessage("مثال: حليب"),
     "shoppingNameLabel": MessageLookupByLibrary.simpleMessage("الاسم"),
     "shoppingPhotoLabel": MessageLookupByLibrary.simpleMessage("إضافة صورة"),
     "shoppingPhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
-      "أضف صورة للمساعدة في التسوّق",
+      "أضف صورة",
     ),
     "shoppingPhotoReplaceLabel": MessageLookupByLibrary.simpleMessage(
-      "ساعد الآخرين على معرفة ما الذي يجب شراؤه",
+      "ساعد الآخرين على شراء العنصر الصحيح",
     ),
     "shoppingSubmitAdd": MessageLookupByLibrary.simpleMessage("إضافة عنصر"),
     "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage("حفظ التغييرات"),
     "shoppingTabPending": MessageLookupByLibrary.simpleMessage("للشراء"),
     "shoppingValidationName": MessageLookupByLibrary.simpleMessage(
-      "يرجى إدخال اسم العنصر.",
+      "أدخل اسم العنصر.",
     ),
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
-      "ماذا تريد أن تفعل بعد ذلك؟",
+      "ماذا تريد أن تفعل؟",
     ),
     "startReturningTitle": m22,
     "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("إضافة مهمة"),
     "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("إضافة فاتورة"),
     "todayAddSheetShopping": MessageLookupByLibrary.simpleMessage(
-      "إضافة عنصر تسوّق",
+      "إضافة عنصر تسوق",
     ),
-    "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
-      "إضافة إلى منزلك",
-    ),
+    "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage("أضف إلى منزلك"),
     "todayEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "استمتع بالهدوء — سيخبرك كينلي عندما يحتاج شيء إلى انتباهك.",
+      "لا يوجد ما يحتاج إلى انتباهك الآن.",
     ),
-    "todayEmptyCardBadge": MessageLookupByLibrary.simpleMessage("خذ نفسًا"),
+    "todayEmptyCardBadge": MessageLookupByLibrary.simpleMessage("خذ استراحة"),
     "todayEmptyCardTitle": MessageLookupByLibrary.simpleMessage(
-      "تم إنجاز كل شيء اليوم",
+      "كل شيء تحت السيطرة",
     ),
     "todayFlatmateInviteSubtitle": MessageLookupByLibrary.simpleMessage(
-      "ابقوا متوافقين وتشاركوا المسؤوليات.",
+      "ابقوا منسجمين وتقاسموا المسؤوليات.",
     ),
     "todayFlatmateInviteTitle": MessageLookupByLibrary.simpleMessage(
       "ادعُ زملاء السكن",
@@ -1609,22 +1522,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("نشطة"),
     "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("مسودات"),
     "todayGratitudeHouseCta": MessageLookupByLibrary.simpleMessage(
-      "إشادات المنزل",
+      "رسائل شكر المنزل",
     ),
     "todayGratitudePersonalCta": MessageLookupByLibrary.simpleMessage(
-      "إشاداتي",
+      "رسائل شكري",
     ),
     "todayGratitudeSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "لوحة الامتنان",
+      "رسائل الشكر",
     ),
     "todayGratitudeUnreadBody": MessageLookupByLibrary.simpleMessage(
-      "هناك منشورات امتنان جديدة بانتظارك.",
+      "هناك رسائل شكر جديدة بانتظارك.",
     ),
     "todayInviteFriendsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "شارك كينلي كي يسهل عليهم العيش المشترك.",
+      "شارك كينلي مع الأصدقاء.",
     ),
     "todayInviteFriendsTitle": MessageLookupByLibrary.simpleMessage(
-      "ادعُ أصدقاء إلى كينلي",
+      "ادعُ أصدقاءك إلى كينلي",
     ),
     "todayInviteNotNow": MessageLookupByLibrary.simpleMessage("ليس الآن"),
     "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
@@ -1642,39 +1555,39 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage("تجاهل"),
     "todayMemberCapSubtitle": m27,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
-      "منزلك يكبر. قم بالترقية للترحيب بالمزيد من الأشخاص.",
+      "قم بالترقية لإضافة المزيد من الأشخاص.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
-      "يريد شخص ما الانضمام إلى منزلك",
+      "هناك من يريد الانضمام إلى منزلك",
     ),
     "todayShareActiveSubtitle": m28,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
-      "تعذّر تحديث قسم الفواتير الآن.",
+      "تعذّر تحديث الفواتير الآن.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
-      "المبلغ المُسَوّى",
+      "المبلغ المُسوّى",
     ),
     "todaySharePaidUnseen": m29,
-    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("فاتورة"),
+    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("الفواتير"),
     "todayShareTabActive": MessageLookupByLibrary.simpleMessage("للتسوية"),
     "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("مسودات"),
-    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("مُسَوّاة"),
+    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage(
+      "تمت التسوية",
+    ),
     "vibeCozySocialSummary": MessageLookupByLibrary.simpleMessage(
-      "منزلك مريح وهادئ عندما يقضي الناس وقتًا معًا.",
+      "منزلك يبدو مريحًا وهادئًا معًا.",
     ),
-    "vibeCozySocialTitle": MessageLookupByLibrary.simpleMessage(
-      "اجتماعي ومريح",
-    ),
+    "vibeCozySocialTitle": MessageLookupByLibrary.simpleMessage("اجتماعي مريح"),
     "vibeDefaultSummary": MessageLookupByLibrary.simpleMessage(
-      "منزلك سهل العيش للجميع.",
+      "منزلك يبدو متوازنًا.",
     ),
     "vibeDefaultTitle": MessageLookupByLibrary.simpleMessage("منزل متوازن"),
     "vibeEasygoingSummary": MessageLookupByLibrary.simpleMessage(
-      "منزلك مريح ومفتوح للتغيّر يومًا بيوم.",
+      "منزلك يبدو مريحًا ومرنًا.",
     ),
-    "vibeEasygoingTitle": MessageLookupByLibrary.simpleMessage("سلاسة مرنة"),
+    "vibeEasygoingTitle": MessageLookupByLibrary.simpleMessage("تدفق سهل"),
     "vibeIndependentSummary": MessageLookupByLibrary.simpleMessage(
-      "منزلك يدعم المساحة والهدوء.",
+      "منزلك يقدّر المساحة والهدوء.",
     ),
     "vibeIndependentTitle": MessageLookupByLibrary.simpleMessage("هدوء مستقل"),
     "vibeInsufficientSummary": MessageLookupByLibrary.simpleMessage(
@@ -1684,36 +1597,34 @@ class MessageLookup extends MessageLookupByLibrary {
       "لا توجد بيانات كافية بعد",
     ),
     "vibeMixedSummary": MessageLookupByLibrary.simpleMessage(
-      "يعرض منزلك مزيجًا من أساليب الراحة، متأثرًا باختلاف طرق عيش الأشخاص.",
+      "منزلك يحتوي على أنماط معيشة مختلفة.",
     ),
-    "vibeMixedTitle": MessageLookupByLibrary.simpleMessage("منزل متنوع"),
+    "vibeMixedTitle": MessageLookupByLibrary.simpleMessage("منزل بطابع مختلط"),
     "vibeQuietCareSummary": MessageLookupByLibrary.simpleMessage(
-      "منزلك هادئ، بطاقة لطيفة وإيقاع ألين.",
+      "منزلك يبدو هادئًا ولطيفًا.",
     ),
-    "vibeQuietCareTitle": MessageLookupByLibrary.simpleMessage("هدوء واهتمام"),
+    "vibeQuietCareTitle": MessageLookupByLibrary.simpleMessage("اهتمام هادئ"),
     "vibeSocialSummary": MessageLookupByLibrary.simpleMessage(
-      "منزلك نشِط، والناس معًا.",
+      "منزلك يبدو نشيطًا واجتماعيًا.",
     ),
     "vibeSocialTitle": MessageLookupByLibrary.simpleMessage("طاقة اجتماعية"),
     "vibeSteadySummary": MessageLookupByLibrary.simpleMessage(
-      "منزلك ثابت، ويظهر الاهتمام عبر العادات اليومية.",
+      "منزلك يبدو ثابتًا ومتسقًا.",
     ),
     "vibeSteadyTitle": MessageLookupByLibrary.simpleMessage("هدوء ثابت"),
     "vibeStructuredSummary": MessageLookupByLibrary.simpleMessage(
-      "يعمل منزلك بأفضل شكل مع روتين واضح وخطط مشتركة.",
+      "منزلك يعمل بشكل أفضل مع الروتين والخطط.",
     ),
-    "vibeStructuredTitle": MessageLookupByLibrary.simpleMessage("إيقاع منظّم"),
+    "vibeStructuredTitle": MessageLookupByLibrary.simpleMessage("إيقاع منظم"),
     "vibeWarmSocialSummary": MessageLookupByLibrary.simpleMessage(
-      "منزلك دافئ ومرحب، وغالبًا ما يقضي الناس وقتًا معًا.",
+      "منزلك يبدو دافئًا ومرحبًا.",
     ),
-    "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage(
-      "اجتماعي ودافئ",
-    ),
+    "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage("اجتماعي دافئ"),
     "weeklyRewriteCta": MessageLookupByLibrary.simpleMessage(
       "أرسل بهدوء مع كينلي",
     ),
     "welcome_create": MessageLookupByLibrary.simpleMessage("إنشاء منزل"),
-    "welcome_join": MessageLookupByLibrary.simpleMessage("الانضمام إلى منزلك"),
+    "welcome_join": MessageLookupByLibrary.simpleMessage("الانضمام إلى منزل"),
     "welcome_title": MessageLookupByLibrary.simpleMessage("مرحبًا بك في كينلي"),
   };
 }

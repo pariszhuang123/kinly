@@ -134,12 +134,18 @@ class _HouseNormReportScreenState extends State<HouseNormReportScreen> {
         body: Stack(
           children: [
             SafeArea(
-              child: BlocBuilder<HouseNormReportCubit, HouseNormReportState>(
-                builder: (context, state) => _buildStateBody(
-                  context: context,
-                  state: state,
-                  strings: s,
-                  palette: palette,
+              child: BlocListener<HouseNormReportCubit, HouseNormReportState>(
+                listenWhen: (prev, curr) => prev.publishError != curr.publishError && curr.publishError != null,
+                listener: (context, state) {
+                  KinlySnackBar.showError(context, state.publishError!);
+                },
+                child: BlocBuilder<HouseNormReportCubit, HouseNormReportState>(
+                  builder: (context, state) => _buildStateBody(
+                    context: context,
+                    state: state,
+                    strings: s,
+                    palette: palette,
+                  ),
                 ),
               ),
             ),

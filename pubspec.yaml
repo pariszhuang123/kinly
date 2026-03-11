@@ -126,7 +126,7 @@ flutter:
     - assets/icons/logo/
     - assets/icons/weather/
     - assets/icons/feature/
-    - assets/house_vibes/v1/
+    - assets/house_vibes/v2/
     - assets/house_pulse_v1/
 
   fonts:

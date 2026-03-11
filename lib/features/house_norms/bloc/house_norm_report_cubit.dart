@@ -93,12 +93,10 @@ class HouseNormReportCubit extends Cubit<HouseNormReportState> {
       emit(HouseNormReportState.ready(updated, isOwner: _isOwner));
       return true;
     } catch (error) {
-      emit(
-        HouseNormReportState.failure(
-          _resolveErrorMessage(error),
-          isOwner: _isOwner,
-        ),
-      );
+      // Restore the ready state so the user keeps their document visible;
+      // the UI surfaces the error via publishError instead of replacing
+      // the whole screen with the failure state.
+      emit(HouseNormReportState.ready(current, isOwner: _isOwner, publishError: _resolveErrorMessage(error)));
       return false;
     }
   }

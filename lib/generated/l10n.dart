@@ -79,10 +79,10 @@ class S {
     );
   }
 
-  /// `What do you want to do next?`
+  /// `What do you want to do?`
   String get startReturningSubtitle {
     return Intl.message(
-      'What do you want to do next?',
+      'What do you want to do?',
       name: 'startReturningSubtitle',
       desc: 'Follow-up prompt for returning users on the Start screen.',
       args: [],
@@ -99,50 +99,45 @@ class S {
     );
   }
 
-  /// `Create a House`
+  /// `Create a Home`
   String get welcome_create {
     return Intl.message(
-      'Create a House',
+      'Create a Home',
       name: 'welcome_create',
       desc: '',
       args: [],
     );
   }
 
-  /// `Join your House`
+  /// `Join a Home`
   String get welcome_join {
     return Intl.message(
-      'Join your House',
+      'Join a Home',
       name: 'welcome_join',
       desc: '',
       args: [],
     );
   }
 
-  /// `Could not create the house. Try again.`
+  /// `Couldn't create the home.`
   String get create_failed_generic {
     return Intl.message(
-      'Could not create the house. Try again.',
+      'Couldn\'t create the home.',
       name: 'create_failed_generic',
       desc: '',
       args: [],
     );
   }
 
-  /// `Join Household`
+  /// `Join Home`
   String get join_title {
-    return Intl.message(
-      'Join Household',
-      name: 'join_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Join Home', name: 'join_title', desc: '', args: []);
   }
 
-  /// `Enter invite code Eg. ABC123`
+  /// `Enter invite code (e.g. ABC123)`
   String get join_hint {
     return Intl.message(
-      'Enter invite code Eg. ABC123',
+      'Enter invite code (e.g. ABC123)',
       name: 'join_hint',
       desc: '',
       args: [],
@@ -154,60 +149,60 @@ class S {
     return Intl.message('Join', name: 'join_submit', desc: '', args: []);
   }
 
-  /// `You're in. Welcome to your household!`
+  /// `Joined your home.`
   String join_success(String code) {
     return Intl.message(
-      'You\'re in. Welcome to your household!',
+      'Joined your home.',
       name: 'join_success',
       desc: 'Snackbar message displayed when the user joins successfully',
       args: [code],
     );
   }
 
-  /// `We couldn't join this home. Please try again.`
+  /// `Couldn't join this home.`
   String get join_failed_generic {
     return Intl.message(
-      'We couldn\'t join this home. Please try again.',
+      'Couldn\'t join this home.',
       name: 'join_failed_generic',
       desc: '',
       args: [],
     );
   }
 
-  /// `That invite code doesn't look right.`
+  /// `That invite code looks wrong.`
   String get join_error_invalid_code {
     return Intl.message(
-      'That invite code doesn\'t look right.',
+      'That invite code looks wrong.',
       name: 'join_error_invalid_code',
       desc: '',
       args: [],
     );
   }
 
-  /// `That invite is no longer active. Ask the owner for a new code.`
+  /// `That invite has expired. Ask the owner for a new one.`
   String get join_error_inactive_invite {
     return Intl.message(
-      'That invite is no longer active. Ask the owner for a new code.',
+      'That invite has expired. Ask the owner for a new one.',
       name: 'join_error_inactive_invite',
       desc: '',
       args: [],
     );
   }
 
-  /// `Leave your current home to join a new one`
+  /// `Leave your current home first.`
   String get join_error_already_in_other_home {
     return Intl.message(
-      'Leave your current home to join a new one',
+      'Leave your current home first.',
       name: 'join_error_already_in_other_home',
       desc: '',
       args: [],
     );
   }
 
-  /// `This home has reached its member limit. Ask the owner to upgrade or remove a member.`
+  /// `This home has reached its member limit. Ask the owner to upgrade or remove someone.`
   String get join_error_paywall_limit {
     return Intl.message(
-      'This home has reached its member limit. Ask the owner to upgrade or remove a member.',
+      'This home has reached its member limit. Ask the owner to upgrade or remove someone.',
       name: 'join_error_paywall_limit',
       desc: '',
       args: [],
@@ -224,50 +219,50 @@ class S {
     );
   }
 
-  /// `Costs less than 0.5% of your rent.`
+  /// `Less than 0.5% of your rent.`
   String get paywallSubtitle {
     return Intl.message(
-      'Costs less than 0.5% of your rent.',
+      'Less than 0.5% of your rent.',
       name: 'paywallSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `One home plan, no hidden tiers.`
+  /// `One home plan. No hidden tiers.`
   String get paywallPriceCaption {
     return Intl.message(
-      'One home plan, no hidden tiers.',
+      'One home plan. No hidden tiers.',
       name: 'paywallPriceCaption',
       desc: '',
       args: [],
     );
   }
 
-  /// `{price} per month.`
+  /// `{price} per month`
   String paywallPricePerMonth(String price) {
     return Intl.message(
-      '$price per month.',
+      '$price per month',
       name: 'paywallPricePerMonth',
       desc: '',
       args: [price],
     );
   }
 
-  /// `Pricing not available right now.`
+  /// `Pricing isn't available right now.`
   String get paywallPriceUnavailable {
     return Intl.message(
-      'Pricing not available right now.',
+      'Pricing isn\'t available right now.',
       name: 'paywallPriceUnavailable',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unlimited home members`
+  /// `Unlimited members`
   String get paywallBulletMembers {
     return Intl.message(
-      'Unlimited home members',
+      'Unlimited members',
       name: 'paywallBulletMembers',
       desc: '',
       args: [],
@@ -294,40 +289,40 @@ class S {
     );
   }
 
-  /// `Unlimited shared expense photos`
+  /// `Unlimited bill photos`
   String get paywallFeatureUnlimitedSharedExpensePhotos {
     return Intl.message(
-      'Unlimited shared expense photos',
+      'Unlimited bill photos',
       name: 'paywallFeatureUnlimitedSharedExpensePhotos',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unlimited shopping list photos`
+  /// `Unlimited shopping photos`
   String get paywallBulletShoppingPhotos {
     return Intl.message(
-      'Unlimited shopping list photos',
+      'Unlimited shopping photos',
       name: 'paywallBulletShoppingPhotos',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unlimited shared expenses`
+  /// `Unlimited bills`
   String get paywallBulletShares {
     return Intl.message(
-      'Unlimited shared expenses',
+      'Unlimited bills',
       name: 'paywallBulletShares',
       desc: '',
       args: [],
     );
   }
 
-  /// `Upgrade to Kinly Premium`
+  /// `Upgrade to Premium`
   String get paywallPrimaryCta {
     return Intl.message(
-      'Upgrade to Kinly Premium',
+      'Upgrade to Premium',
       name: 'paywallPrimaryCta',
       desc: '',
       args: [],
@@ -344,10 +339,10 @@ class S {
     );
   }
 
-  /// `Purchase not completed - you can try again anytime.`
+  /// `Purchase not completed.`
   String get paywallPurchaseFailed {
     return Intl.message(
-      'Purchase not completed - you can try again anytime.',
+      'Purchase not completed.',
       name: 'paywallPurchaseFailed',
       desc: '',
       args: [],
@@ -374,10 +369,10 @@ class S {
     );
   }
 
-  /// `Unable to load paywall.`
+  /// `Couldn't load paywall.`
   String get paywallErrorTitle {
     return Intl.message(
-      'Unable to load paywall.',
+      'Couldn\'t load paywall.',
       name: 'paywallErrorTitle',
       desc: '',
       args: [],
@@ -389,10 +384,10 @@ class S {
     return Intl.message('Retry', name: 'paywallRetryLabel', desc: '', args: []);
   }
 
-  /// `Please sign in to join this home.`
+  /// `Sign in to join this home.`
   String get join_error_unauthorized {
     return Intl.message(
-      'Please sign in to join this home.',
+      'Sign in to join this home.',
       name: 'join_error_unauthorized',
       desc: '',
       args: [],
@@ -409,20 +404,20 @@ class S {
     );
   }
 
-  /// `This home isnâ€™t accepting new members right now`
+  /// `This home isn't accepting new members right now`
   String get join_blocked_title {
     return Intl.message(
-      'This home isnâ€™t accepting new members right now',
+      'This home isn\'t accepting new members right now',
       name: 'join_blocked_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Weâ€™ve notified the home owner.`
+  /// `We've notified the home owner.`
   String get join_blocked_body {
     return Intl.message(
-      'Weâ€™ve notified the home owner.',
+      'We\'ve notified the home owner.',
       name: 'join_blocked_body',
       desc: '',
       args: [],
@@ -444,20 +439,20 @@ class S {
     );
   }
 
-  /// `{names} wants to join your home. Upgrade to support unlimited members.`
+  /// `{names} wants to join your home. Upgrade for unlimited members.`
   String todayMemberCapSubtitle(String names) {
     return Intl.message(
-      '$names wants to join your home. Upgrade to support unlimited members.',
+      '$names wants to join your home. Upgrade for unlimited members.',
       name: 'todayMemberCapSubtitle',
       desc: '',
       args: [names],
     );
   }
 
-  /// `Your home is growing. Upgrade to welcome more people.`
+  /// `Upgrade to add more people.`
   String get todayMemberCapSubtitleGeneric {
     return Intl.message(
-      'Your home is growing. Upgrade to welcome more people.',
+      'Upgrade to add more people.',
       name: 'todayMemberCapSubtitleGeneric',
       desc: '',
       args: [],
@@ -504,10 +499,10 @@ class S {
     );
   }
 
-  /// `We could not complete {name}'s request.`
+  /// `Couldn't complete {name}'s request.`
   String todayMemberCapResolutionFailed(String name) {
     return Intl.message(
-      'We could not complete $name\'s request.',
+      'Couldn\'t complete $name\'s request.',
       name: 'todayMemberCapResolutionFailed',
       desc: '',
       args: [name],
@@ -624,12 +619,12 @@ class S {
     );
   }
 
-  /// `{count, plural, one {{count} item to check} other {{count} items to check}}`
+  /// `{count, plural, one {{count} item to buy} other {{count} items to buy}}`
   String shoppingCardSubtitle(int count) {
     return Intl.plural(
       count,
-      one: '$count item to check',
-      other: '$count items to check',
+      one: '$count item to buy',
+      other: '$count items to buy',
       name: 'shoppingCardSubtitle',
       desc: '',
       args: [count],
@@ -656,10 +651,10 @@ class S {
     );
   }
 
-  /// `Mark as completed`
+  /// `Mark bought`
   String get shoppingMarkCompleteCta {
     return Intl.message(
-      'Mark as completed',
+      'Mark bought',
       name: 'shoppingMarkCompleteCta',
       desc: '',
       args: [],
@@ -676,20 +671,20 @@ class S {
     );
   }
 
-  /// `All items bought`
+  /// `Everything bought`
   String get shoppingAllItemsBought {
     return Intl.message(
-      'All items bought',
+      'Everything bought',
       name: 'shoppingAllItemsBought',
       desc: '',
       args: [],
     );
   }
 
-  /// `No shopping items to buy.`
+  /// `No shopping items.`
   String get shoppingEmptyTitle {
     return Intl.message(
-      'No shopping items to buy.',
+      'No shopping items.',
       name: 'shoppingEmptyTitle',
       desc: '',
       args: [],
@@ -706,10 +701,10 @@ class S {
     );
   }
 
-  /// `Shopping item details`
+  /// `Edit shopping item`
   String get shoppingEditTitle {
     return Intl.message(
-      'Shopping item details',
+      'Edit shopping item',
       name: 'shoppingEditTitle',
       desc: '',
       args: [],
@@ -731,10 +726,10 @@ class S {
     );
   }
 
-  /// `How many`
+  /// `Amount`
   String get shoppingAmountLabel {
     return Intl.message(
-      'How many',
+      'Amount',
       name: 'shoppingAmountLabel',
       desc: '',
       args: [],
@@ -761,50 +756,50 @@ class S {
     );
   }
 
-  /// `Anything helpful (brand, size, etc.)`
+  /// `Brand, size, or notes`
   String get shoppingContextHint {
     return Intl.message(
-      'Anything helpful (brand, size, etc.)',
+      'Brand, size, or notes',
       name: 'shoppingContextHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add a photo`
+  /// `Add photo`
   String get shoppingPhotoLabel {
     return Intl.message(
-      'Add a photo',
+      'Add photo',
       name: 'shoppingPhotoLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Help someone to know what to buy`
+  /// `Help others buy the right item`
   String get shoppingPhotoReplaceLabel {
     return Intl.message(
-      'Help someone to know what to buy',
+      'Help others buy the right item',
       name: 'shoppingPhotoReplaceLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add a photo to help with shopping`
+  /// `Add a photo`
   String get shoppingPhotoPlaceholder {
     return Intl.message(
-      'Add a photo to help with shopping',
+      'Add a photo',
       name: 'shoppingPhotoPlaceholder',
       desc: '',
       args: [],
     );
   }
 
-  /// `Please enter an item name.`
+  /// `Enter an item name.`
   String get shoppingValidationName {
     return Intl.message(
-      'Please enter an item name.',
+      'Enter an item name.',
       name: 'shoppingValidationName',
       desc: '',
       args: [],
@@ -851,30 +846,30 @@ class S {
     );
   }
 
-  /// `This removes the item from your shared shopping list.`
+  /// `This removes it from the shared shopping list.`
   String get shoppingDeleteConfirmBody {
     return Intl.message(
-      'This removes the item from your shared shopping list.',
+      'This removes it from the shared shopping list.',
       name: 'shoppingDeleteConfirmBody',
       desc: '',
       args: [],
     );
   }
 
-  /// `Someone else already checked off this item.`
+  /// `Someone already marked this bought.`
   String get shoppingErrorItemAlreadyCompletedByOther {
     return Intl.message(
-      'Someone else already checked off this item.',
+      'Someone already marked this bought.',
       name: 'shoppingErrorItemAlreadyCompletedByOther',
       desc: '',
       args: [],
     );
   }
 
-  /// `Items bought`
+  /// `Bought items`
   String get shoppingArchiveCta {
     return Intl.message(
-      'Items bought',
+      'Bought items',
       name: 'shoppingArchiveCta',
       desc: '',
       args: [],
@@ -891,10 +886,10 @@ class S {
     );
   }
 
-  /// `Do you want to create a draft bill from these items?`
+  /// `Create a draft bill from these items?`
   String get shoppingArchiveSharePromptBody {
     return Intl.message(
-      'Do you want to create a draft bill from these items?',
+      'Create a draft bill from these items?',
       name: 'shoppingArchiveSharePromptBody',
       desc: '',
       args: [],
@@ -921,20 +916,20 @@ class S {
     );
   }
 
-  /// `Items bought and removed from the list`
+  /// `Items marked bought and removed`
   String get shoppingArchiveItemsBought {
     return Intl.message(
-      'Items bought and removed from the list',
+      'Items marked bought and removed',
       name: 'shoppingArchiveItemsBought',
       desc: '',
       args: [],
     );
   }
 
-  /// `Draft bill created for items bought`
+  /// `Draft bill created`
   String get shoppingArchiveDraftBillCreated {
     return Intl.message(
-      'Draft bill created for items bought',
+      'Draft bill created',
       name: 'shoppingArchiveDraftBillCreated',
       desc: '',
       args: [],
@@ -971,10 +966,10 @@ class S {
     );
   }
 
-  /// `I have read and agree to the `
+  /// `I agree to the `
   String get login_consent_prefix {
     return Intl.message(
-      'I have read and agree to the ',
+      'I agree to the ',
       name: 'login_consent_prefix',
       desc: '',
       args: [],
@@ -1016,20 +1011,20 @@ class S {
     return Intl.message('Sign out', name: 'logout', desc: '', args: []);
   }
 
-  /// `Connecting you to your homeâ€¦`
+  /// `Connecting to your home...`
   String get membership_status_checking {
     return Intl.message(
-      'Connecting you to your homeâ€¦',
+      'Connecting to your home...',
       name: 'membership_status_checking',
       desc: '',
       args: [],
     );
   }
 
-  /// `Your shared home starts here.`
+  /// `Create or join a home.`
   String get membership_status_none {
     return Intl.message(
-      'Your shared home starts here.',
+      'Create or join a home.',
       name: 'membership_status_none',
       desc: '',
       args: [],
@@ -1046,10 +1041,10 @@ class S {
     );
   }
 
-  /// `We couldn't refresh your home membership. Please try again.`
+  /// `Couldn't refresh your home membership.`
   String get authMembershipLoadFailed {
     return Intl.message(
-      'We couldn\'t refresh your home membership. Please try again.',
+      'Couldn\'t refresh your home membership.',
       name: 'authMembershipLoadFailed',
       desc: '',
       args: [],
@@ -1066,10 +1061,10 @@ class S {
     );
   }
 
-  /// `Kinly needs an internet connection. Check your signal and try again.`
+  /// `No internet connection. Try again.`
   String get offline_body {
     return Intl.message(
-      'Kinly needs an internet connection. Check your signal and try again.',
+      'No internet connection. Try again.',
       name: 'offline_body',
       desc: '',
       args: [],
@@ -1091,10 +1086,10 @@ class S {
     );
   }
 
-  /// `This version of Kinly is no longer supported. Please install the newest release to continue.`
+  /// `This version of Kinly is no longer supported. Update to continue.`
   String get force_update_body {
     return Intl.message(
-      'This version of Kinly is no longer supported. Please install the newest release to continue.',
+      'This version of Kinly is no longer supported. Update to continue.',
       name: 'force_update_body',
       desc: '',
       args: [],
@@ -1121,9 +1116,9 @@ class S {
     return Intl.message('Manage', name: 'navExplore', desc: '', args: []);
   }
 
-  /// `House Hub`
+  /// `Home Hub`
   String get navHub {
-    return Intl.message('House Hub', name: 'navHub', desc: '', args: []);
+    return Intl.message('Home Hub', name: 'navHub', desc: '', args: []);
   }
 
   /// `No active members yet.`
@@ -1141,50 +1136,50 @@ class S {
     return Intl.message('Invite', name: 'hubInviteCta', desc: '', args: []);
   }
 
-  /// `Couldn't load invite. Please try again.`
+  /// `Couldn't load invite.`
   String get hubInviteUnavailable {
     return Intl.message(
-      'Couldn\'t load invite. Please try again.',
+      'Couldn\'t load invite.',
       name: 'hubInviteUnavailable',
       desc: '',
       args: [],
     );
   }
 
-  /// `Invite to my Kinly house`
+  /// `Invite to my Kinly home`
   String get hubShareInviteTitle {
     return Intl.message(
-      'Invite to my Kinly house',
+      'Invite to my Kinly home',
       name: 'hubShareInviteTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Welcome to our Kinly house! Enter this invite code: {code}\n\nDownload the Kinly app: {link}`
+  /// `Join our Kinly home with this invite code: {code}\n\nDownload Kinly: {link}`
   String hubShareInviteBody(String code, String link) {
     return Intl.message(
-      'Welcome to our Kinly house! Enter this invite code: $code\n\nDownload the Kinly app: $link',
+      'Join our Kinly home with this invite code: $code\n\nDownload Kinly: $link',
       name: 'hubShareInviteBody',
       desc: '',
       args: [code, link],
     );
   }
 
-  /// `Get the Kinly app`
+  /// `Get Kinly`
   String get hubShareAppTitle {
     return Intl.message(
-      'Get the Kinly app',
+      'Get Kinly',
       name: 'hubShareAppTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Share Kinly so together feels lighter: {link}`
+  /// `Make shared living easier with Kinly: {link}`
   String hubShareAppBody(String link) {
     return Intl.message(
-      'Share Kinly so together feels lighter: $link',
+      'Make shared living easier with Kinly: $link',
       name: 'hubShareAppBody',
       desc: '',
       args: [link],
@@ -1231,10 +1226,10 @@ class S {
     );
   }
 
-  /// `Share Kinly so they can make shared living easier.`
+  /// `Share Kinly with friends.`
   String get todayInviteFriendsSubtitle {
     return Intl.message(
-      'Share Kinly so they can make shared living easier.',
+      'Share Kinly with friends.',
       name: 'todayInviteFriendsSubtitle',
       desc: '',
       args: [],
@@ -1291,10 +1286,10 @@ class S {
     );
   }
 
-  /// `Couldn't rotate invite. Try again.`
+  /// `Couldn't rotate invite.`
   String get hubRotateError {
     return Intl.message(
-      'Couldn\'t rotate invite. Try again.',
+      'Couldn\'t rotate invite.',
       name: 'hubRotateError',
       desc: '',
       args: [],
@@ -1341,34 +1336,29 @@ class S {
     );
   }
 
-  /// `Personal preferences`
+  /// `Preferences`
   String get hubPreferencesTitle {
     return Intl.message(
-      'Personal preferences',
+      'Preferences',
       name: 'hubPreferencesTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `How each person prefers shared living to work.`
+  /// `How each person likes shared living to work.`
   String get hubPreferencesSubtitle {
     return Intl.message(
-      'How each person prefers shared living to work.',
+      'How each person likes shared living to work.',
       name: 'hubPreferencesSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `House Vibe`
+  /// `Home Vibe`
   String get homeVibeTitle {
-    return Intl.message(
-      'House Vibe',
-      name: 'homeVibeTitle',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Home Vibe', name: 'homeVibeTitle', desc: '', args: []);
   }
 
   /// `Based on {answered} of {total} members`
@@ -1381,30 +1371,30 @@ class S {
     );
   }
 
-  /// `House vibe`
+  /// `Home vibe`
   String get houseVibeShareTitle {
     return Intl.message(
-      'House vibe',
+      'Home vibe',
       name: 'houseVibeShareTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Sharing our Kinly house vibe. Download the app: {link}`
+  /// `Sharing our Kinly home vibe. Download the app: {link}`
   String houseVibeShareMessage(String link) {
     return Intl.message(
-      'Sharing our Kinly house vibe. Download the app: $link',
+      'Sharing our Kinly home vibe. Download the app: $link',
       name: 'houseVibeShareMessage',
       desc: '',
       args: [link],
     );
   }
 
-  /// `Couldn't share right now. Please try again.`
+  /// `Couldn't share right now.`
   String get houseVibeShareError {
     return Intl.message(
-      'Couldn\'t share right now. Please try again.',
+      'Couldn\'t share right now.',
       name: 'houseVibeShareError',
       desc: '',
       args: [],
@@ -1431,50 +1421,50 @@ class S {
     );
   }
 
-  /// `Finish preferences to see your home vibe.`
+  /// `Complete preferences to see your home vibe.`
   String get vibeInsufficientSummary {
     return Intl.message(
-      'Finish preferences to see your home vibe.',
+      'Complete preferences to see your home vibe.',
       name: 'vibeInsufficientSummary',
       desc: '',
       args: [],
     );
   }
 
-  /// `A mixed home`
+  /// `Mixed home`
   String get vibeMixedTitle {
     return Intl.message(
-      'A mixed home',
+      'Mixed home',
       name: 'vibeMixedTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Your home shows a mix of comfort styles, influenced by how different people like to live.`
+  /// `Your home has mixed living styles.`
   String get vibeMixedSummary {
     return Intl.message(
-      'Your home shows a mix of comfort styles, influenced by how different people like to live.',
+      'Your home has mixed living styles.',
       name: 'vibeMixedSummary',
       desc: '',
       args: [],
     );
   }
 
-  /// `A balanced home`
+  /// `Balanced home`
   String get vibeDefaultTitle {
     return Intl.message(
-      'A balanced home',
+      'Balanced home',
       name: 'vibeDefaultTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Your home feels easy to live in for everyone.`
+  /// `Your home feels balanced.`
   String get vibeDefaultSummary {
     return Intl.message(
-      'Your home feels easy to live in for everyone.',
+      'Your home feels balanced.',
       name: 'vibeDefaultSummary',
       desc: '',
       args: [],
@@ -1491,10 +1481,10 @@ class S {
     );
   }
 
-  /// `Your home feels calm, with gentle energy and softer rhythms.`
+  /// `Your home feels calm and gentle.`
   String get vibeQuietCareSummary {
     return Intl.message(
-      'Your home feels calm, with gentle energy and softer rhythms.',
+      'Your home feels calm and gentle.',
       name: 'vibeQuietCareSummary',
       desc: '',
       args: [],
@@ -1511,10 +1501,10 @@ class S {
     );
   }
 
-  /// `Your home feels active, with people together.`
+  /// `Your home feels active and social.`
   String get vibeSocialSummary {
     return Intl.message(
-      'Your home feels active, with people together.',
+      'Your home feels active and social.',
       name: 'vibeSocialSummary',
       desc: '',
       args: [],
@@ -1531,10 +1521,10 @@ class S {
     );
   }
 
-  /// `Your home feels warm and welcoming, with people often together.`
+  /// `Your home feels warm and welcoming.`
   String get vibeWarmSocialSummary {
     return Intl.message(
-      'Your home feels warm and welcoming, with people often together.',
+      'Your home feels warm and welcoming.',
       name: 'vibeWarmSocialSummary',
       desc: '',
       args: [],
@@ -1551,10 +1541,10 @@ class S {
     );
   }
 
-  /// `Your home feels cozy and calm when people spend time together.`
+  /// `Your home feels cozy and calm together.`
   String get vibeCozySocialSummary {
     return Intl.message(
-      'Your home feels cozy and calm when people spend time together.',
+      'Your home feels cozy and calm together.',
       name: 'vibeCozySocialSummary',
       desc: '',
       args: [],
@@ -1571,10 +1561,10 @@ class S {
     );
   }
 
-  /// `Your home feels steady, with care shown through daily habits.`
+  /// `Your home feels steady and consistent.`
   String get vibeSteadySummary {
     return Intl.message(
-      'Your home feels steady, with care shown through daily habits.',
+      'Your home feels steady and consistent.',
       name: 'vibeSteadySummary',
       desc: '',
       args: [],
@@ -1591,10 +1581,10 @@ class S {
     );
   }
 
-  /// `Your home works best with clear routines and shared plans.`
+  /// `Your home works best with routines and plans.`
   String get vibeStructuredSummary {
     return Intl.message(
-      'Your home works best with clear routines and shared plans.',
+      'Your home works best with routines and plans.',
       name: 'vibeStructuredSummary',
       desc: '',
       args: [],
@@ -1611,10 +1601,10 @@ class S {
     );
   }
 
-  /// `Your home feels relaxed and open to change day by day.`
+  /// `Your home feels relaxed and flexible.`
   String get vibeEasygoingSummary {
     return Intl.message(
-      'Your home feels relaxed and open to change day by day.',
+      'Your home feels relaxed and flexible.',
       name: 'vibeEasygoingSummary',
       desc: '',
       args: [],
@@ -1631,20 +1621,20 @@ class S {
     );
   }
 
-  /// `Your house supports space and quiet.`
+  /// `Your home values space and quiet.`
   String get vibeIndependentSummary {
     return Intl.message(
-      'Your house supports space and quiet.',
+      'Your home values space and quiet.',
       name: 'vibeIndependentSummary',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn't load House Hub. Please try again.`
+  /// `Couldn't load Home Hub.`
   String get hubError {
     return Intl.message(
-      'Couldn\'t load House Hub. Please try again.',
+      'Couldn\'t load Home Hub.',
       name: 'hubError',
       desc: '',
       args: [],
@@ -1656,10 +1646,10 @@ class S {
     return Intl.message('Retry', name: 'hubRetry', desc: '', args: []);
   }
 
-  /// `All caught up today`
+  /// `All caught up`
   String get todayEmptyCardTitle {
     return Intl.message(
-      'All caught up today',
+      'All caught up',
       name: 'todayEmptyCardTitle',
       desc: '',
       args: [],
@@ -1676,10 +1666,10 @@ class S {
     );
   }
 
-  /// `Enjoy the calm - Kinly will let you know when something needs your attention.`
+  /// `Nothing needs your attention right now.`
   String get todayEmptyBody {
     return Intl.message(
-      'Enjoy the calm - Kinly will let you know when something needs your attention.',
+      'Nothing needs your attention right now.',
       name: 'todayEmptyBody',
       desc: '',
       args: [],
@@ -1706,10 +1696,10 @@ class S {
     );
   }
 
-  /// `Here’s what needs attention today.`
+  /// `Here's what needs attention today.`
   String get todayFlowSubtitle {
     return Intl.message(
-      'Here’s what needs attention today.',
+      'Here\'s what needs attention today.',
       name: 'todayFlowSubtitle',
       desc: '',
       args: [],
@@ -1766,10 +1756,10 @@ class S {
     );
   }
 
-  /// `Bill`
+  /// `Bills`
   String get todayShareSectionTitle {
     return Intl.message(
-      'Bill',
+      'Bills',
       name: 'todayShareSectionTitle',
       desc: '',
       args: [],
@@ -1806,10 +1796,10 @@ class S {
     );
   }
 
-  /// `Settled Amount`
+  /// `Settled amount`
   String get todaySharePaidSubtitle {
     return Intl.message(
-      'Settled Amount',
+      'Settled amount',
       name: 'todaySharePaidSubtitle',
       desc: '',
       args: [],
@@ -1829,10 +1819,10 @@ class S {
     );
   }
 
-  /// `We couldn't refresh Share right now.`
+  /// `Couldn't refresh bills right now.`
   String get todayShareError {
     return Intl.message(
-      'We couldn\'t refresh Share right now.',
+      'Couldn\'t refresh bills right now.',
       name: 'todayShareError',
       desc: '',
       args: [],
@@ -1851,20 +1841,20 @@ class S {
     );
   }
 
-  /// `Gratitude Wall`
+  /// `Shoutouts`
   String get todayGratitudeSectionTitle {
     return Intl.message(
-      'Gratitude Wall',
+      'Shoutouts',
       name: 'todayGratitudeSectionTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `New gratitude posts are waiting for you.`
+  /// `New shoutouts are waiting for you.`
   String get todayGratitudeUnreadBody {
     return Intl.message(
-      'New gratitude posts are waiting for you.',
+      'New shoutouts are waiting for you.',
       name: 'todayGratitudeUnreadBody',
       desc: '',
       args: [],
@@ -1901,30 +1891,30 @@ class S {
     );
   }
 
-  /// `Settled.`
+  /// `Marked settled.`
   String get shareOwedDetailSuccess {
     return Intl.message(
-      'Settled.',
+      'Marked settled.',
       name: 'shareOwedDetailSuccess',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't mark that share paid. Try again.`
+  /// `Couldn't mark this payment as settled.`
   String get shareOwedDetailError {
     return Intl.message(
-      'We couldn\'t mark that share paid. Try again.',
+      'Couldn\'t mark this payment as settled.',
       name: 'shareOwedDetailError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Acknowledge Receipt`
+  /// `Acknowledge receipt`
   String get sharePaidDetailAcknowledge {
     return Intl.message(
-      'Acknowledge Receipt',
+      'Acknowledge receipt',
       name: 'sharePaidDetailAcknowledge',
       desc: '',
       args: [],
@@ -1941,10 +1931,10 @@ class S {
     );
   }
 
-  /// `We couldn't acknowledge receipting the bills.`
+  /// `Couldn't acknowledge this payment.`
   String get sharePaidDetailAcknowledgeError {
     return Intl.message(
-      'We couldn\'t acknowledge receipting the bills.',
+      'Couldn\'t acknowledge this payment.',
       name: 'sharePaidDetailAcknowledgeError',
       desc: '',
       args: [],
@@ -1976,20 +1966,20 @@ class S {
     );
   }
 
-  /// `We couldn't load that draft.`
+  /// `Couldn't load that draft.`
   String get shareEditLoadError {
     return Intl.message(
-      'We couldn\'t load that draft.',
+      'Couldn\'t load that draft.',
       name: 'shareEditLoadError',
       desc: '',
       args: [],
     );
   }
 
-  /// `This stays locked until someone takes this share.`
+  /// `This stays locked until someone takes this bill.`
   String get shareEditNotAllowed {
     return Intl.message(
-      'This stays locked until someone takes this share.',
+      'This stays locked until someone takes this bill.',
       name: 'shareEditNotAllowed',
       desc: '',
       args: [],
@@ -2021,10 +2011,10 @@ class S {
     );
   }
 
-  /// `Delete?`
+  /// `Delete bill?`
   String get shareEditDeleteConfirmTitle {
     return Intl.message(
-      'Delete?',
+      'Delete bill?',
       name: 'shareEditDeleteConfirmTitle',
       desc: '',
       args: [],
@@ -2051,10 +2041,10 @@ class S {
     );
   }
 
-  /// `Couldn't delete. Try again.`
+  /// `Couldn't delete bill.`
   String get shareEditDeleteError {
     return Intl.message(
-      'Couldn\'t delete. Try again.',
+      'Couldn\'t delete bill.',
       name: 'shareEditDeleteError',
       desc: '',
       args: [],
@@ -2071,40 +2061,40 @@ class S {
     );
   }
 
-  /// `Plan terminated.`
+  /// `Plan ended.`
   String get shareEditTerminateSuccess {
     return Intl.message(
-      'Plan terminated.',
+      'Plan ended.',
       name: 'shareEditTerminateSuccess',
       desc: '',
       args: [],
     );
   }
 
-  /// `Terminate plan`
+  /// `End plan`
   String get shareEditTerminatePlan {
     return Intl.message(
-      'Terminate plan',
+      'End plan',
       name: 'shareEditTerminatePlan',
       desc: '',
       args: [],
     );
   }
 
-  /// `Terminating...`
+  /// `Ending...`
   String get shareEditTerminatePlanBusy {
     return Intl.message(
-      'Terminating...',
+      'Ending...',
       name: 'shareEditTerminatePlanBusy',
       desc: '',
       args: [],
     );
   }
 
-  /// `Terminate recurring plan?`
+  /// `End recurring plan?`
   String get shareEditTerminatePlanTitle {
     return Intl.message(
-      'Terminate recurring plan?',
+      'End recurring plan?',
       name: 'shareEditTerminatePlanTitle',
       desc: '',
       args: [],
@@ -2121,60 +2111,60 @@ class S {
     );
   }
 
-  /// `Terminate plan`
+  /// `End plan`
   String get shareEditTerminatePlanConfirm {
     return Intl.message(
-      'Terminate plan',
+      'End plan',
       name: 'shareEditTerminatePlanConfirm',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn't terminate the plan. Try again.`
+  /// `Couldn't end the plan.`
   String get shareEditTerminateError {
     return Intl.message(
-      'Couldn\'t terminate the plan. Try again.',
+      'Couldn\'t end the plan.',
       name: 'shareEditTerminateError',
       desc: '',
       args: [],
     );
   }
 
-  /// `This bill is now a plan, and editing is off.`
+  /// `This bill is now a plan and can't be edited here.`
   String get shareEditDisabledConverted {
     return Intl.message(
-      'This bill is now a plan, and editing is off.',
+      'This bill is now a plan and can\'t be edited here.',
       name: 'shareEditDisabledConverted',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recurring cycles are locked from edits here.`
+  /// `Recurring cycles can't be edited here.`
   String get shareEditDisabledRecurringCycle {
     return Intl.message(
-      'Recurring cycles are locked from edits here.',
+      'Recurring cycles can\'t be edited here.',
       name: 'shareEditDisabledRecurringCycle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Active bills are locked from edits.`
+  /// `Active bills can't be edited.`
   String get shareEditDisabledActive {
     return Intl.message(
-      'Active bills are locked from edits.',
+      'Active bills can\'t be edited.',
       name: 'shareEditDisabledActive',
       desc: '',
       args: [],
     );
   }
 
-  /// `Editing this bill is unavailable right now.`
+  /// `This bill can't be edited right now.`
   String get shareEditDisabledGeneric {
     return Intl.message(
-      'Editing this bill is unavailable right now.',
+      'This bill can\'t be edited right now.',
       name: 'shareEditDisabledGeneric',
       desc: '',
       args: [],
@@ -2231,10 +2221,10 @@ class S {
     );
   }
 
-  /// `How do we want to split this?`
+  /// `How should this be split?`
   String get shareCreateSplitLabel {
     return Intl.message(
-      'How do we want to split this?',
+      'How should this be split?',
       name: 'shareCreateSplitLabel',
       desc: '',
       args: [],
@@ -2261,40 +2251,40 @@ class S {
     );
   }
 
-  /// `You need at least two household members to share.`
+  /// `You need at least two home members to share a bill.`
   String get shareCreateParticipantsEmpty {
     return Intl.message(
-      'You need at least two household members to share.',
+      'You need at least two home members to share a bill.',
       name: 'shareCreateParticipantsEmpty',
       desc: '',
       args: [],
     );
   }
 
-  /// `Context`
+  /// `Notes`
   String get shareCreateNotesLabel {
     return Intl.message(
-      'Context',
+      'Notes',
       name: 'shareCreateNotesLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Optional context everyone can see`
+  /// `Optional note everyone can see`
   String get shareCreateNotesHint {
     return Intl.message(
-      'Optional context everyone can see',
+      'Optional note everyone can see',
       name: 'shareCreateNotesHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter each person's part. Make sure the total matches the amount above.`
+  /// `Enter each person's share. The total must match the amount above.`
   String get shareCreateCustomHelper {
     return Intl.message(
-      'Enter each person\'s part. Make sure the total matches the amount above.',
+      'Enter each person\'s share. The total must match the amount above.',
       name: 'shareCreateCustomHelper',
       desc: '',
       args: [],
@@ -2421,20 +2411,20 @@ class S {
     );
   }
 
-  /// `Enter a valid amount greater than zero.`
+  /// `Enter an amount greater than zero.`
   String get shareCreateValidationAmount {
     return Intl.message(
-      'Enter a valid amount greater than zero.',
+      'Enter an amount greater than zero.',
       name: 'shareCreateValidationAmount',
       desc: '',
       args: [],
     );
   }
 
-  /// `Select at least one person to split the amount.`
+  /// `Select at least one person to split this bill.`
   String get shareCreateValidationEqualParticipants {
     return Intl.message(
-      'Select at least one person to split the amount.',
+      'Select at least one person to split this bill.',
       name: 'shareCreateValidationEqualParticipants',
       desc: '',
       args: [],
@@ -2461,34 +2451,34 @@ class S {
     );
   }
 
-  /// `Make sure the custom split adds up to the amount above.`
+  /// `Make sure the split adds up to the total amount.`
   String get shareCreateValidationCustomSum {
     return Intl.message(
-      'Make sure the custom split adds up to the amount above.',
+      'Make sure the split adds up to the total amount.',
       name: 'shareCreateValidationCustomSum',
       desc: '',
       args: [],
     );
   }
 
-  /// `Custom split does not match. Total: {total}. Included: {included}. Difference: {difference}.`
+  /// `Split doesn't match. Total: {total}. Included: {included}. Difference: {difference}.`
   String shareCreateValidationCustomSumBreakdown(
     String total,
     String included,
     String difference,
   ) {
     return Intl.message(
-      'Custom split does not match. Total: $total. Included: $included. Difference: $difference.',
+      'Split doesn\'t match. Total: $total. Included: $included. Difference: $difference.',
       name: 'shareCreateValidationCustomSumBreakdown',
       desc: '',
       args: [total, included, difference],
     );
   }
 
-  /// `You're the only person selected for this bill. Add at least one other person.`
+  /// `Add at least one other person.`
   String get shareCreateValidationCustomSinglePayer {
     return Intl.message(
-      'You\'re the only person selected for this bill. Add at least one other person.',
+      'Add at least one other person.',
       name: 'shareCreateValidationCustomSinglePayer',
       desc: '',
       args: [],
@@ -2505,10 +2495,10 @@ class S {
     );
   }
 
-  /// `Pick how to split before setting a repeat.`
+  /// `Choose a split before making this recurring.`
   String get shareCreateValidationRecurrenceSplit {
     return Intl.message(
-      'Pick how to split before setting a repeat.',
+      'Choose a split before making this recurring.',
       name: 'shareCreateValidationRecurrenceSplit',
       desc: '',
       args: [],
@@ -2525,30 +2515,30 @@ class S {
     );
   }
 
-  /// `Choose a date within the allowed range.`
+  /// `Choose a date in the allowed range.`
   String get shareCreateValidationStartDateRange {
     return Intl.message(
-      'Choose a date within the allowed range.',
+      'Choose a date in the allowed range.',
       name: 'shareCreateValidationStartDateRange',
       desc: '',
       args: [],
     );
   }
 
-  /// `Drafts canâ€™t repeat until you add a split.`
+  /// `Drafts can't repeat until you add a split.`
   String get shareCreateErrorRecurrenceDraft {
     return Intl.message(
-      'Drafts canâ€™t repeat until you add a split.',
+      'Drafts can\'t repeat until you add a split.',
       name: 'shareCreateErrorRecurrenceDraft',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't load your household members.`
+  /// `Couldn't load your home members.`
   String get shareCreateLoadError {
     return Intl.message(
-      'We couldn\'t load your household members.',
+      'Couldn\'t load your home members.',
       name: 'shareCreateLoadError',
       desc: '',
       args: [],
@@ -2565,20 +2555,20 @@ class S {
     );
   }
 
-  /// `Couldn't create. Try again.`
+  /// `Couldn't create bill.`
   String get shareCreateErrorGeneric {
     return Intl.message(
-      'Couldn\'t create. Try again.',
+      'Couldn\'t create bill.',
       name: 'shareCreateErrorGeneric',
       desc: '',
       args: [],
     );
   }
 
-  /// `You're at the free limit of active bills. Upgrade for more space.`
+  /// `You've reached the free limit for active bills. Upgrade for more.`
   String get shareCreateErrorPaywallActiveCap {
     return Intl.message(
-      'You\'re at the free limit of active bills. Upgrade for more space.',
+      'You\'ve reached the free limit for active bills. Upgrade for more.',
       name: 'shareCreateErrorPaywallActiveCap',
       desc: '',
       args: [],
@@ -2645,30 +2635,30 @@ class S {
     );
   }
 
-  /// `Eg. Bin night, clean the fridge, water plants`
+  /// `e.g. Bin night, clean the fridge, water plants`
   String get flowChoreNameHint {
     return Intl.message(
-      'Eg. Bin night, clean the fridge, water plants',
+      'e.g. Bin night, clean the fridge, water plants',
       name: 'flowChoreNameHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `Name this task.`
+  /// `Enter a task name.`
   String get flowChoreValidationName {
     return Intl.message(
-      'Name this task.',
+      'Enter a task name.',
       name: 'flowChoreValidationName',
       desc: '',
       args: [],
     );
   }
 
-  /// `Who's handling this?`
+  /// `Who's doing this?`
   String get flowChoreAssigneeLabel {
     return Intl.message(
-      'Who\'s handling this?',
+      'Who\'s doing this?',
       name: 'flowChoreAssigneeLabel',
       desc: '',
       args: [],
@@ -2685,30 +2675,30 @@ class S {
     );
   }
 
-  /// `When does this come up? `
+  /// `When is it due?`
   String get flowChoreStartLabel {
     return Intl.message(
-      'When does this come up? ',
+      'When is it due?',
       name: 'flowChoreStartLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Pick a date up to a year from today.`
+  /// `Choose a date within the next year.`
   String get flowChoreValidationDate {
     return Intl.message(
-      'Pick a date up to a year from today.',
+      'Choose a date within the next year.',
       name: 'flowChoreValidationDate',
       desc: '',
       args: [],
     );
   }
 
-  /// `How often does this come up?`
+  /// `How often does this happen?`
   String get flowChoreRecurrenceLabel {
     return Intl.message(
-      'How often does this come up?',
+      'How often does this happen?',
       name: 'flowChoreRecurrenceLabel',
       desc: '',
       args: [],
@@ -2725,20 +2715,20 @@ class S {
     );
   }
 
-  /// `Why this matters`
+  /// `Why it matters`
   String get flowChoreNotesLabel {
     return Intl.message(
-      'Why this matters',
+      'Why it matters',
       name: 'flowChoreNotesLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Anything that helps others do this easily`
+  /// `Anything that helps others do this`
   String get flowChoreNotesHint {
     return Intl.message(
-      'Anything that helps others do this easily',
+      'Anything that helps others do this',
       name: 'flowChoreNotesHint',
       desc: '',
       args: [],
@@ -2755,30 +2745,30 @@ class S {
     );
   }
 
-  /// `Add a link if there's a specific way to do it`
+  /// `Add a link if there's a specific way`
   String get flowChoreHowToHint {
     return Intl.message(
-      'Add a link if there\'s a specific way to do it',
+      'Add a link if there\'s a specific way',
       name: 'flowChoreHowToHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter a valid link that starts with http or https.`
+  /// `Enter a valid link starting with http or https.`
   String get flowChoreValidationHowToUrl {
     return Intl.message(
-      'Enter a valid link that starts with http or https.',
+      'Enter a valid link starting with http or https.',
       name: 'flowChoreValidationHowToUrl',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't open that link. Try again.`
+  /// `Couldn't open that link.`
   String get flowChoreHowToLaunchError {
     return Intl.message(
-      'We couldn\'t open that link. Try again.',
+      'Couldn\'t open that link.',
       name: 'flowChoreHowToLaunchError',
       desc: '',
       args: [],
@@ -2795,10 +2785,10 @@ class S {
     );
   }
 
-  /// `A photo can help everyone stay aligned`
+  /// `Add a photo to keep everyone aligned`
   String get flowChorePhotoPlaceholder {
     return Intl.message(
-      'A photo can help everyone stay aligned',
+      'Add a photo to keep everyone aligned',
       name: 'flowChorePhotoPlaceholder',
       desc: '',
       args: [],
@@ -2825,30 +2815,30 @@ class S {
     );
   }
 
-  /// `Could not upload the photo. Try again.`
+  /// `Couldn't upload the photo.`
   String get flowChorePhotoUploadError {
     return Intl.message(
-      'Could not upload the photo. Try again.',
+      'Couldn\'t upload the photo.',
       name: 'flowChorePhotoUploadError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Could not load photo`
+  /// `Couldn't load photo.`
   String get flowChorePhotoLoadError {
     return Intl.message(
-      'Could not load photo',
+      'Couldn\'t load photo.',
       name: 'flowChorePhotoLoadError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Create flow`
+  /// `Create task`
   String get flowChoreSubmitCreate {
     return Intl.message(
-      'Create flow',
+      'Create task',
       name: 'flowChoreSubmitCreate',
       desc: '',
       args: [],
@@ -2875,20 +2865,20 @@ class S {
     );
   }
 
-  /// `Delete this flow?`
+  /// `Delete this task?`
   String get flowChoreDeleteDialogTitle {
     return Intl.message(
-      'Delete this flow?',
+      'Delete this task?',
       name: 'flowChoreDeleteDialogTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `This removes the flow for everyone in your home.`
+  /// `This removes the task for everyone in your home.`
   String get flowChoreDeleteDialogMessage {
     return Intl.message(
-      'This removes the flow for everyone in your home.',
+      'This removes the task for everyone in your home.',
       name: 'flowChoreDeleteDialogMessage',
       desc: '',
       args: [],
@@ -2905,10 +2895,10 @@ class S {
     );
   }
 
-  /// `We couldn't load this task. Please try again.`
+  /// `Couldn't load this task.`
   String get flowChoreLoadError {
     return Intl.message(
-      'We couldn\'t load this task. Please try again.',
+      'Couldn\'t load this task.',
       name: 'flowChoreLoadError',
       desc: '',
       args: [],
@@ -2920,80 +2910,80 @@ class S {
     return Intl.message('Retry', name: 'flowChoreRetry', desc: '', args: []);
   }
 
-  /// `You're at the free limit for active flows. Upgrade for more space.`
+  /// `You've reached the free limit for active tasks. Upgrade for more.`
   String get flowChoreErrorPaywallActiveCap {
     return Intl.message(
-      'You\'re at the free limit for active flows. Upgrade for more space.',
+      'You\'ve reached the free limit for active tasks. Upgrade for more.',
       name: 'flowChoreErrorPaywallActiveCap',
       desc: '',
       args: [],
     );
   }
 
-  /// `You're at the free limit for flow photos. Upgrade for more space.`
+  /// `You've reached the free limit for task photos. Upgrade for more.`
   String get flowChoreErrorPaywallMediaCap {
     return Intl.message(
-      'You\'re at the free limit for flow photos. Upgrade for more space.',
+      'You\'ve reached the free limit for task photos. Upgrade for more.',
       name: 'flowChoreErrorPaywallMediaCap',
       desc: '',
       args: [],
     );
   }
 
-  /// `That member isn't part of this home right now.`
+  /// `That person isn't part of this home right now.`
   String get flowChoreErrorAssigneeNotMember {
     return Intl.message(
-      'That member isn\'t part of this home right now.',
+      'That person isn\'t part of this home right now.',
       name: 'flowChoreErrorAssigneeNotMember',
       desc: '',
       args: [],
     );
   }
 
-  /// `You don't have permission to change this flow.`
+  /// `You don't have permission to change this task.`
   String get flowChoreErrorForbidden {
     return Intl.message(
-      'You don\'t have permission to change this flow.',
+      'You don\'t have permission to change this task.',
       name: 'flowChoreErrorForbidden',
       desc: '',
       args: [],
     );
   }
 
-  /// `That photo path isn't valid for this home.`
+  /// `That photo doesn't belong to this home.`
   String get flowChoreErrorInvalidPhoto {
     return Intl.message(
-      'That photo path isn\'t valid for this home.',
+      'That photo doesn\'t belong to this home.',
       name: 'flowChoreErrorInvalidPhoto',
       desc: '',
       args: [],
     );
   }
 
-  /// `Pick a valid start date.`
+  /// `Choose a valid start date.`
   String get flowChoreErrorInvalidStart {
     return Intl.message(
-      'Pick a valid start date.',
+      'Choose a valid start date.',
       name: 'flowChoreErrorInvalidStart',
       desc: '',
       args: [],
     );
   }
 
-  /// `This flow is not available to update right now.`
+  /// `This task can't be updated right now.`
   String get flowChoreErrorInvalidState {
     return Intl.message(
-      'This flow is not available to update right now.',
+      'This task can\'t be updated right now.',
       name: 'flowChoreErrorInvalidState',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn't save this flow. Please try again.`
+  /// `Couldn't save this task.`
   String get flowChoreErrorGeneric {
     return Intl.message(
-      'Couldn\'t save this flow. Please try again.',
+      'Couldn\'t save this task.',
       name: 'flowChoreErrorGeneric',
       desc: '',
       args: [],
@@ -3060,20 +3050,20 @@ class S {
     );
   }
 
-  /// `Couldn't complete this task. Please try again.`
+  /// `Couldn't complete this task.`
   String get flowChoreDetailCompletionError {
     return Intl.message(
-      'Couldn\'t complete this task. Please try again.',
+      'Couldn\'t complete this task.',
       name: 'flowChoreDetailCompletionError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Helpful context`
+  /// `Helpful details`
   String get flowChoreDetailMoreInfoTitle {
     return Intl.message(
-      'Helpful context',
+      'Helpful details',
       name: 'flowChoreDetailMoreInfoTitle',
       desc: '',
       args: [],
@@ -3100,10 +3090,10 @@ class S {
     );
   }
 
-  /// `Tasks to keep everyone aligned.`
+  /// `Tasks keep everyone aligned.`
   String get flowListEmptySubtitle {
     return Intl.message(
-      'Tasks to keep everyone aligned.',
+      'Tasks keep everyone aligned.',
       name: 'flowListEmptySubtitle',
       desc: '',
       args: [],
@@ -3150,40 +3140,40 @@ class S {
     );
   }
 
-  /// `We couldn't load tasks. Pull to refresh.`
+  /// `Couldn't load tasks. Pull to refresh.`
   String get flowListError {
     return Intl.message(
-      'We couldn\'t load tasks. Pull to refresh.',
+      'Couldn\'t load tasks. Pull to refresh.',
       name: 'flowListError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Update status and details to keep shared things clear.`
+  /// `Keep shared things clear.`
   String get exploreIntroSubtitle {
     return Intl.message(
-      'Update status and details to keep shared things clear.',
+      'Keep shared things clear.',
       name: 'exploreIntroSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `See what needs doing and who's taking care of it.`
+  /// `See what needs doing and who's doing it.`
   String get exploreFlowSubtitle {
     return Intl.message(
-      'See what needs doing and who\'s taking care of it.',
+      'See what needs doing and who\'s doing it.',
       name: 'exploreFlowSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `See every Bill you've created and track collections.`
+  /// `See every bill you've created and track collections.`
   String get exploreShareSubtitle {
     return Intl.message(
-      'See every Bill you\'ve created and track collections.',
+      'See every bill you\'ve created and track collections.',
       name: 'exploreShareSubtitle',
       desc: '',
       args: [],
@@ -3200,10 +3190,10 @@ class S {
     );
   }
 
-  /// `View and manage your shared shopping items.`
+  /// `View and manage shared shopping items.`
   String get exploreShoppingSubtitle {
     return Intl.message(
-      'View and manage your shared shopping items.',
+      'View and manage shared shopping items.',
       name: 'exploreShoppingSubtitle',
       desc: '',
       args: [],
@@ -3230,20 +3220,20 @@ class S {
     );
   }
 
-  /// `Bills keep money clear, with no awkward reminders.`
+  /// `Bills keep money clear.`
   String get shareCreatedListEmptySubtitle {
     return Intl.message(
-      'Bills keep money clear, with no awkward reminders.',
+      'Bills keep money clear.',
       name: 'shareCreatedListEmptySubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't load your bills. Pull to refresh.`
+  /// `Couldn't load your bills. Pull to refresh.`
   String get shareCreatedListError {
     return Intl.message(
-      'We couldn\'t load your bills. Pull to refresh.',
+      'Couldn\'t load your bills. Pull to refresh.',
       name: 'shareCreatedListError',
       desc: '',
       args: [],
@@ -3280,10 +3270,10 @@ class S {
     );
   }
 
-  /// `Split it so everyone knows their part before publishing.`
+  /// `Split it before publishing so everyone knows their part.`
   String get shareCreatedListDraftSubtitle {
     return Intl.message(
-      'Split it so everyone knows their part before publishing.',
+      'Split it before publishing so everyone knows their part.',
       name: 'shareCreatedListDraftSubtitle',
       desc: '',
       args: [],
@@ -3320,10 +3310,10 @@ class S {
     );
   }
 
-  /// `Manage your account preferences and home access.`
+  /// `Manage your account and home access.`
   String get profileSettingsSubtitle {
     return Intl.message(
-      'Manage your account preferences and home access.',
+      'Manage your account and home access.',
       name: 'profileSettingsSubtitle',
       desc: '',
       args: [],
@@ -3340,10 +3330,10 @@ class S {
     );
   }
 
-  /// `Pick a username and avatar for your home.`
+  /// `Choose a username and avatar.`
   String get profileIdentitySubtitle {
     return Intl.message(
-      'Pick a username and avatar for your home.',
+      'Choose a username and avatar.',
       name: 'profileIdentitySubtitle',
       desc: '',
       args: [],
@@ -3370,70 +3360,70 @@ class S {
     );
   }
 
-  /// `Enter a username to continue.`
+  /// `Enter a username.`
   String get profileIdentityUsernameEmptyError {
     return Intl.message(
-      'Enter a username to continue.',
+      'Enter a username.',
       name: 'profileIdentityUsernameEmptyError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Use 3-30 lowercase letters or numbers. You can include dots or underscores in the middle.`
+  /// `Use 3-30 lowercase letters or numbers. Dots and underscores can go in the middle.`
   String get profileIdentityUsernameFormatError {
     return Intl.message(
-      'Use 3-30 lowercase letters or numbers. You can include dots or underscores in the middle.',
+      'Use 3-30 lowercase letters or numbers. Dots and underscores can go in the middle.',
       name: 'profileIdentityUsernameFormatError',
       desc: '',
       args: [],
     );
   }
 
-  /// `That username is taken. Try a different one.`
+  /// `That username is taken.`
   String get profileIdentityUsernameTakenError {
     return Intl.message(
-      'That username is taken. Try a different one.',
+      'That username is taken.',
       name: 'profileIdentityUsernameTakenError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Pick an avatar`
+  /// `Choose an avatar`
   String get profileIdentityAvatarSectionTitle {
     return Intl.message(
-      'Pick an avatar',
+      'Choose an avatar',
       name: 'profileIdentityAvatarSectionTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Each avatar is unique inside your home.`
+  /// `Each avatar must be unique in your home.`
   String get profileIdentityAvatarSectionDescription {
     return Intl.message(
-      'Each avatar is unique inside your home.',
+      'Each avatar must be unique in your home.',
       name: 'profileIdentityAvatarSectionDescription',
       desc: '',
       args: [],
     );
   }
 
-  /// `No avatars are available right now. Try again soon.`
+  /// `No avatars are available right now.`
   String get profileIdentityAvatarEmpty {
     return Intl.message(
-      'No avatars are available right now. Try again soon.',
+      'No avatars are available right now.',
       name: 'profileIdentityAvatarEmpty',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't load your profile right now.`
+  /// `Couldn't load your profile.`
   String get profileIdentityLoadError {
     return Intl.message(
-      'We couldn\'t load your profile right now.',
+      'Couldn\'t load your profile.',
       name: 'profileIdentityLoadError',
       desc: '',
       args: [],
@@ -3480,60 +3470,60 @@ class S {
     );
   }
 
-  /// `Leave house`
+  /// `Leave home`
   String get profileLeaveHomeTitle {
     return Intl.message(
-      'Leave house',
+      'Leave home',
       name: 'profileLeaveHomeTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Leaving this house means stepping out of your shared Kinly space.`
+  /// `You'll leave this shared Kinly space.`
   String get profileLeaveHomeSubtitle {
     return Intl.message(
-      'Leaving this house means stepping out of your shared Kinly space.',
+      'You\'ll leave this shared Kinly space.',
       name: 'profileLeaveHomeSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Checking your house members...`
+  /// `Checking home members...`
   String get profileLeaveEligibilityLoading {
     return Intl.message(
-      'Checking your house members...',
+      'Checking home members...',
       name: 'profileLeaveEligibilityLoading',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't load your house members. Try again.`
+  /// `Couldn't load your home members.`
   String get profileLeaveEligibilityError {
     return Intl.message(
-      'We couldn\'t load your house members. Try again.',
+      'Couldn\'t load your home members.',
       name: 'profileLeaveEligibilityError',
       desc: '',
       args: [],
     );
   }
 
-  /// `You're the last member. Leaving will deactivate this house.`
+  /// `You're the last member. Leaving will deactivate this home.`
   String get profileLeaveOwnerSoloMessage {
     return Intl.message(
-      'You\'re the last member. Leaving will deactivate this house.',
+      'You\'re the last member. Leaving will deactivate this home.',
       name: 'profileLeaveOwnerSoloMessage',
       desc: '',
       args: [],
     );
   }
 
-  /// `No one else can take ownership right now. Try again later.`
+  /// `No one else can take ownership right now.`
   String get profileLeaveOwnerNoEligibleMembers {
     return Intl.message(
-      'No one else can take ownership right now. Try again later.',
+      'No one else can take ownership right now.',
       name: 'profileLeaveOwnerNoEligibleMembers',
       desc: '',
       args: [],
@@ -3550,10 +3540,10 @@ class S {
     );
   }
 
-  /// `Select who will become the new owner before you leave.`
+  /// `Choose who becomes the new owner before you leave.`
   String get profileLeaveTransferSheetSubtitle {
     return Intl.message(
-      'Select who will become the new owner before you leave.',
+      'Choose who becomes the new owner before you leave.',
       name: 'profileLeaveTransferSheetSubtitle',
       desc: '',
       args: [],
@@ -3570,10 +3560,10 @@ class S {
     );
   }
 
-  /// `Choose who will lose access to this house.`
+  /// `Choose who loses access to this home.`
   String get profileKickMemberSubtitle {
     return Intl.message(
-      'Choose who will lose access to this house.',
+      'Choose who loses access to this home.',
       name: 'profileKickMemberSubtitle',
       desc: '',
       args: [],
@@ -3590,10 +3580,10 @@ class S {
     );
   }
 
-  /// `Select a member to remove. They'll lose access right away.`
+  /// `Choose a member to remove. They'll lose access right away.`
   String get profileKickSheetSubtitle {
     return Intl.message(
-      'Select a member to remove. They\'ll lose access right away.',
+      'Choose a member to remove. They\'ll lose access right away.',
       name: 'profileKickSheetSubtitle',
       desc: '',
       args: [],
@@ -3620,30 +3610,30 @@ class S {
     );
   }
 
-  /// `Only the house owner can remove members.`
+  /// `Only the home owner can remove members.`
   String get profileKickOwnerOnly {
     return Intl.message(
-      'Only the house owner can remove members.',
+      'Only the home owner can remove members.',
       name: 'profileKickOwnerOnly',
       desc: '',
       args: [],
     );
   }
 
-  /// `They no longer have access to this house.`
+  /// `They no longer have access to this home.`
   String get profileKickSuccessMessage {
     return Intl.message(
-      'They no longer have access to this house.',
+      'They no longer have access to this home.',
       name: 'profileKickSuccessMessage',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ownership transferred. Finishing your leave...`
+  /// `Ownership transferred. Finishing leave...`
   String get profileLeaveTransferSuccessMessage {
     return Intl.message(
-      'Ownership transferred. Finishing your leave...',
+      'Ownership transferred. Finishing leave...',
       name: 'profileLeaveTransferSuccessMessage',
       desc: '',
       args: [],
@@ -3670,10 +3660,10 @@ class S {
     );
   }
 
-  /// `The Info Hub couldn't load. Check your connection.`
+  /// `Couldn't load the Info Hub. Check your connection.`
   String get profileInfoHubLoadError {
     return Intl.message(
-      'The Info Hub couldn\'t load. Check your connection.',
+      'Couldn\'t load the Info Hub. Check your connection.',
       name: 'profileInfoHubLoadError',
       desc: '',
       args: [],
@@ -3700,60 +3690,60 @@ class S {
     );
   }
 
-  /// `Connection settings`
+  /// `Notifications`
   String get profileConnectionSettingsTitle {
     return Intl.message(
-      'Connection settings',
+      'Notifications',
       name: 'profileConnectionSettingsTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Manage notifications and reminders.`
+  /// `Manage reminders and alerts.`
   String get profileConnectionSettingsSubtitle {
     return Intl.message(
-      'Manage notifications and reminders.',
+      'Manage reminders and alerts.',
       name: 'profileConnectionSettingsSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Connection settings`
+  /// `Notifications`
   String get connectionSettingsTitle {
     return Intl.message(
-      'Connection settings',
+      'Notifications',
       name: 'connectionSettingsTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Control daily reminders and notification timing.`
+  /// `Control daily reminders and timing.`
   String get connectionSettingsSubtitle {
     return Intl.message(
-      'Control daily reminders and notification timing.',
+      'Control daily reminders and timing.',
       name: 'connectionSettingsSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn't update connection settings. Try again.`
+  /// `Couldn't update notification settings.`
   String get connectionSettingsGenericError {
     return Intl.message(
-      'Couldn\'t update connection settings. Try again.',
+      'Couldn\'t update notification settings.',
       name: 'connectionSettingsGenericError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Daily notifications`
+  /// `Daily reminders`
   String get connectionNotificationsToggleTitle {
     return Intl.message(
-      'Daily notifications',
+      'Daily reminders',
       name: 'connectionNotificationsToggleTitle',
       desc: '',
       args: [],
@@ -3770,20 +3760,20 @@ class S {
     );
   }
 
-  /// `Turn on reminders about your home.`
+  /// `Turn on reminders for your home.`
   String get connectionNotificationsToggleSubtitleOff {
     return Intl.message(
-      'Turn on reminders about your home.',
+      'Turn on reminders for your home.',
       name: 'connectionNotificationsToggleSubtitleOff',
       desc: '',
       args: [],
     );
   }
 
-  /// `Turn on notifications in your phone settings to use this.`
+  /// `Turn on notifications in your phone settings first.`
   String get connectionNotificationsPermissionBlocked {
     return Intl.message(
-      'Turn on notifications in your phone settings to use this.',
+      'Turn on notifications in your phone settings first.',
       name: 'connectionNotificationsPermissionBlocked',
       desc: '',
       args: [],
@@ -3820,20 +3810,20 @@ class S {
     );
   }
 
-  /// `Your profile is deactivated. Please sign in with another email address.`
+  /// `Your profile is deactivated. Sign in with another email address.`
   String get profile_deactivated_message {
     return Intl.message(
-      'Your profile is deactivated. Please sign in with another email address.',
+      'Your profile is deactivated. Sign in with another email address.',
       name: 'profile_deactivated_message',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't open your email app. Try again.`
+  /// `Couldn't open your email app.`
   String get profileContactLaunchError {
     return Intl.message(
-      'We couldn\'t open your email app. Try again.',
+      'Couldn\'t open your email app.',
       name: 'profileContactLaunchError',
       desc: '',
       args: [],
@@ -3870,20 +3860,20 @@ class S {
     );
   }
 
-  /// `Remove your Kinly account and profile data.`
+  /// `Delete your Kinly account and data.`
   String get profileDeleteAccountSubtitle {
     return Intl.message(
-      'Remove your Kinly account and profile data.',
+      'Delete your Kinly account and data.',
       name: 'profileDeleteAccountSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Leave this house?`
+  /// `Leave this home?`
   String get profileConfirmLeaveTitle {
     return Intl.message(
-      'Leave this house?',
+      'Leave this home?',
       name: 'profileConfirmLeaveTitle',
       desc: '',
       args: [],
@@ -3910,10 +3900,10 @@ class S {
     );
   }
 
-  /// `This removes your account and signs you out. You won't be able to undo this.`
+  /// `This deletes your account and signs you out. You can't undo this.`
   String get profileConfirmDeleteMessage {
     return Intl.message(
-      'This removes your account and signs you out. You won\'t be able to undo this.',
+      'This deletes your account and signs you out. You can\'t undo this.',
       name: 'profileConfirmDeleteMessage',
       desc: '',
       args: [],
@@ -3930,20 +3920,20 @@ class S {
     );
   }
 
-  /// `Leave House`
+  /// `Leave home`
   String get profileActionConfirm {
     return Intl.message(
-      'Leave House',
+      'Leave home',
       name: 'profileActionConfirm',
       desc: '',
       args: [],
     );
   }
 
-  /// `You left your house.`
+  /// `You left your home.`
   String get profileLeaveSuccessMessage {
     return Intl.message(
-      'You left your house.',
+      'You left your home.',
       name: 'profileLeaveSuccessMessage',
       desc: '',
       args: [],
@@ -3960,30 +3950,30 @@ class S {
     );
   }
 
-  /// `Something went wrong. Please try again.`
+  /// `Something went wrong.`
   String get profileGenericError {
     return Intl.message(
-      'Something went wrong. Please try again.',
+      'Something went wrong.',
       name: 'profileGenericError',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't find your current house. Try again.`
+  /// `Couldn't find your current home.`
   String get profileMissingHomeError {
     return Intl.message(
-      'We couldn\'t find your current house. Try again.',
+      'Couldn\'t find your current home.',
       name: 'profileMissingHomeError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Anything to appreciate or adjust this week?`
+  /// `What went well or needs adjusting this week?`
   String get harmonyQuestion {
     return Intl.message(
-      'Anything to appreciate or adjust this week?',
+      'What went well or needs adjusting this week?',
       name: 'harmonyQuestion',
       desc: '',
       args: [],
@@ -4050,10 +4040,10 @@ class S {
     );
   }
 
-  /// `Type @ to provide feedback to 1 housemate.`
+  /// `Type @ to mention 1 housemate.`
   String get harmonyFeedbackSingleHousemateHint {
     return Intl.message(
-      'Type @ to provide feedback to 1 housemate.',
+      'Type @ to mention 1 housemate.',
       name: 'harmonyFeedbackSingleHousemateHint',
       desc: '',
       args: [],
@@ -4095,20 +4085,20 @@ class S {
     );
   }
 
-  /// `Submitting for this home is unavailable.`
+  /// `Weekly feedback isn't available right now.`
   String get harmonyErrorForbidden {
     return Intl.message(
-      'Submitting for this home is unavailable.',
+      'Weekly feedback isn\'t available right now.',
       name: 'harmonyErrorForbidden',
       desc: '',
       args: [],
     );
   }
 
-  /// `Something went wrong. Please try again.`
+  /// `Something went wrong.`
   String get harmonyErrorUnknown {
     return Intl.message(
-      'Something went wrong. Please try again.',
+      'Something went wrong.',
       name: 'harmonyErrorUnknown',
       desc: '',
       args: [],
@@ -4165,10 +4155,10 @@ class S {
     );
   }
 
-  /// `A private place to save quick thanks.`
+  /// `A private place for quick thanks.`
   String get gratitudeWallPersonalSummary {
     return Intl.message(
-      'A private place to save quick thanks.',
+      'A private place for quick thanks.',
       name: 'gratitudeWallPersonalSummary',
       desc: '',
       args: [],
@@ -4195,10 +4185,10 @@ class S {
     );
   }
 
-  /// `Houses`
+  /// `Homes`
   String get gratitudeWallStatsHomes {
     return Intl.message(
-      'Houses',
+      'Homes',
       name: 'gratitudeWallStatsHomes',
       desc: '',
       args: [],
@@ -4225,20 +4215,20 @@ class S {
     );
   }
 
-  /// `Quick thanks live here.\n\nAdd one from this week.`
+  /// `Add a shoutout from this week.`
   String get gratitudeWallEmptySubtitle {
     return Intl.message(
-      'Quick thanks live here.\n\nAdd one from this week.',
+      'Add a shoutout from this week.',
       name: 'gratitudeWallEmptySubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unable to load shoutouts right now.`
+  /// `Couldn't load shoutouts right now.`
   String get gratitudeWallErrorGeneric {
     return Intl.message(
-      'Unable to load shoutouts right now.',
+      'Couldn\'t load shoutouts right now.',
       name: 'gratitudeWallErrorGeneric',
       desc: '',
       args: [],
@@ -4285,10 +4275,10 @@ class S {
     );
   }
 
-  /// `Couldn't share right now. Please try again.`
+  /// `Couldn't share right now.`
   String get gratitudeWallShareError {
     return Intl.message(
-      'Couldn\'t share right now. Please try again.',
+      'Couldn\'t share right now.',
       name: 'gratitudeWallShareError',
       desc: '',
       args: [],
@@ -4328,10 +4318,10 @@ class S {
     );
   }
 
-  /// `0 means not at all. 10 means it's made a real difference.`
+  /// `0 means not at all. 10 means it made a real difference.`
   String get npsDescription {
     return Intl.message(
-      '0 means not at all. 10 means it\'s made a real difference.',
+      '0 means not at all. 10 means it made a real difference.',
       name: 'npsDescription',
       desc: '',
       args: [],
@@ -4358,10 +4348,10 @@ class S {
     );
   }
 
-  /// `Please choose a score to continue.`
+  /// `Choose a score to continue.`
   String get npsCannotSkip {
     return Intl.message(
-      'Please choose a score to continue.',
+      'Choose a score to continue.',
       name: 'npsCannotSkip',
       desc: '',
       args: [],
@@ -4378,30 +4368,30 @@ class S {
     );
   }
 
-  /// `Please pick a number between 0 and 10.`
+  /// `Choose a number between 0 and 10.`
   String get npsSubmitErrorInvalidScore {
     return Intl.message(
-      'Please pick a number between 0 and 10.',
+      'Choose a number between 0 and 10.',
       name: 'npsSubmitErrorInvalidScore',
       desc: '',
       args: [],
     );
   }
 
-  /// `Feedback is unavailable right now.`
+  /// `Feedback isn't available right now.`
   String get npsSubmitErrorForbidden {
     return Intl.message(
-      'Feedback is unavailable right now.',
+      'Feedback isn\'t available right now.',
       name: 'npsSubmitErrorForbidden',
       desc: '',
       args: [],
     );
   }
 
-  /// `Couldn't send your feedback. Please try again.`
+  /// `Couldn't send your feedback.`
   String get npsSubmitErrorGeneric {
     return Intl.message(
-      'Couldn\'t send your feedback. Please try again.',
+      'Couldn\'t send your feedback.',
       name: 'npsSubmitErrorGeneric',
       desc: '',
       args: [],
@@ -4428,40 +4418,40 @@ class S {
     );
   }
 
-  /// `Share your preferences`
+  /// `Set your vibe`
   String get preferencePromptTitle {
     return Intl.message(
-      'Share your preferences',
+      'Set your vibe',
       name: 'preferencePromptTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Set up your personal preferences so your home can learn how you like things.`
+  /// `Help your home understand what works for you.`
   String get preferencePromptSubtitle {
     return Intl.message(
-      'Set up your personal preferences so your home can learn how you like things.',
+      'Help your home understand what works for you.',
       name: 'preferencePromptSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Start preferences`
+  /// `Start`
   String get preferencePromptCta {
     return Intl.message(
-      'Start preferences',
+      'Start',
       name: 'preferencePromptCta',
       desc: '',
       args: [],
     );
   }
 
-  /// `Personal preferences`
+  /// `Your vibe`
   String get preferenceOnboardingTitle {
     return Intl.message(
-      'Personal preferences',
+      'Your vibe',
       name: 'preferenceOnboardingTitle',
       desc: '',
       args: [],
@@ -4478,30 +4468,30 @@ class S {
     );
   }
 
-  /// `Save preferences`
+  /// `Save`
   String get preferenceOnboardingSubmit {
     return Intl.message(
-      'Save preferences',
+      'Save',
       name: 'preferenceOnboardingSubmit',
       desc: '',
       args: [],
     );
   }
 
-  /// `Question {current} of {total}`
+  /// `{current}/{total}`
   String preferenceOnboardingProgress(int current, int total) {
     return Intl.message(
-      'Question $current of $total',
+      '$current/$total',
       name: 'preferenceOnboardingProgress',
       desc: 'Progress for preference onboarding',
       args: [current, total],
     );
   }
 
-  /// `Your preference report`
+  /// `Your preferences`
   String get preferenceReportTitle {
     return Intl.message(
-      'Your preference report',
+      'Your preferences',
       name: 'preferenceReportTitle',
       desc: '',
       args: [],
@@ -4548,20 +4538,20 @@ class S {
     );
   }
 
-  /// `Adjust the wording for this section.`
+  /// `Edit this section.`
   String get preferenceReportEditSectionPrompt {
     return Intl.message(
-      'Adjust the wording for this section.',
+      'Edit this section.',
       name: 'preferenceReportEditSectionPrompt',
       desc: '',
       args: [],
     );
   }
 
-  /// `Write what feels right for you`
+  /// `Write what feels right`
   String get preferenceReportEditSectionHint {
     return Intl.message(
-      'Write what feels right for you',
+      'Write what feels right',
       name: 'preferenceReportEditSectionHint',
       desc: '',
       args: [],
@@ -4578,10 +4568,10 @@ class S {
     );
   }
 
-  /// `Preference report not ready`
+  /// `Preferences not ready`
   String get preferenceReportEmptyTitle {
     return Intl.message(
-      'Preference report not ready',
+      'Preferences not ready',
       name: 'preferenceReportEmptyTitle',
       desc: '',
       args: [],
@@ -4598,10 +4588,10 @@ class S {
     );
   }
 
-  /// `Could not load report`
+  /// `Couldn't load report`
   String get preferenceReportErrorTitle {
     return Intl.message(
-      'Could not load report',
+      'Couldn\'t load report',
       name: 'preferenceReportErrorTitle',
       desc: '',
       args: [],
@@ -4618,10 +4608,10 @@ class S {
     );
   }
 
-  /// `We couldn't save that update.`
+  /// `Couldn't save that update.`
   String get preferenceReportEditError {
     return Intl.message(
-      'We couldn\'t save that update.',
+      'Couldn\'t save that update.',
       name: 'preferenceReportEditError',
       desc: '',
       args: [],
@@ -4638,560 +4628,560 @@ class S {
     );
   }
 
-  /// `How comfortable are you with background noise in shared spaces?`
+  /// `Noise level?`
   String get preferenceScenarioEnvironmentNoiseQuestion {
     return Intl.message(
-      'How comfortable are you with background noise in shared spaces?',
+      'Noise level?',
       name: 'preferenceScenarioEnvironmentNoiseQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `I'm most comfortable when things are generally quiet`
+  /// `Quiet please`
   String get preferenceScenarioEnvironmentNoiseOption1 {
     return Intl.message(
-      'I\'m most comfortable when things are generally quiet',
+      'Quiet please',
       name: 'preferenceScenarioEnvironmentNoiseOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `A moderate level of everyday noise feels fine`
+  /// `Normal noise`
   String get preferenceScenarioEnvironmentNoiseOption2 {
     return Intl.message(
-      'A moderate level of everyday noise feels fine',
+      'Normal noise',
       name: 'preferenceScenarioEnvironmentNoiseOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Noise doesn't bother me much - lively spaces are okay`
+  /// `Lively is fine`
   String get preferenceScenarioEnvironmentNoiseOption3 {
     return Intl.message(
-      'Noise doesn\'t bother me much - lively spaces are okay',
+      'Lively is fine',
       name: 'preferenceScenarioEnvironmentNoiseOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `In shared areas, what lighting do you prefer?`
+  /// `Lighting?`
   String get preferenceScenarioEnvironmentLightQuestion {
     return Intl.message(
-      'In shared areas, what lighting do you prefer?',
+      'Lighting?',
       name: 'preferenceScenarioEnvironmentLightQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Softer or dimmer lighting`
+  /// `Soft`
   String get preferenceScenarioEnvironmentLightOption1 {
     return Intl.message(
-      'Softer or dimmer lighting',
+      'Soft',
       name: 'preferenceScenarioEnvironmentLightOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Balanced, natural lighting`
+  /// `Balanced`
   String get preferenceScenarioEnvironmentLightOption2 {
     return Intl.message(
-      'Balanced, natural lighting',
+      'Balanced',
       name: 'preferenceScenarioEnvironmentLightOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Bright, well-lit spaces`
+  /// `Bright`
   String get preferenceScenarioEnvironmentLightOption3 {
     return Intl.message(
-      'Bright, well-lit spaces',
+      'Bright',
       name: 'preferenceScenarioEnvironmentLightOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `How comfortable are you with strong scents (candles, cooking, cleaners)?`
+  /// `Strong smells?`
   String get preferenceScenarioEnvironmentScentQuestion {
     return Intl.message(
-      'How comfortable are you with strong scents (candles, cooking, cleaners)?',
+      'Strong smells?',
       name: 'preferenceScenarioEnvironmentScentQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `I'm quite sensitive to strong scents`
+  /// `Sensitive`
   String get preferenceScenarioEnvironmentScentOption1 {
     return Intl.message(
-      'I\'m quite sensitive to strong scents',
+      'Sensitive',
       name: 'preferenceScenarioEnvironmentScentOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `I'm mostly neutral`
+  /// `Neutral`
   String get preferenceScenarioEnvironmentScentOption2 {
     return Intl.message(
-      'I\'m mostly neutral',
+      'Neutral',
       name: 'preferenceScenarioEnvironmentScentOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Strong scents don't really bother me`
+  /// `Doesn't bother me`
   String get preferenceScenarioEnvironmentScentOption3 {
     return Intl.message(
-      'Strong scents don\'t really bother me',
+      'Doesn\'t bother me',
       name: 'preferenceScenarioEnvironmentScentOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `In the evenings, what usually works best for you?`
+  /// `Evenings?`
   String get preferenceScenarioScheduleQuietHoursQuestion {
     return Intl.message(
-      'In the evenings, what usually works best for you?',
+      'Evenings?',
       name: 'preferenceScenarioScheduleQuietHoursQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Evenings tend to be quieter for me`
+  /// `Quiet nights`
   String get preferenceScenarioScheduleQuietHoursOption1 {
     return Intl.message(
-      'Evenings tend to be quieter for me',
+      'Quiet nights',
       name: 'preferenceScenarioScheduleQuietHoursOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `It depends - some nights are quieter than others`
+  /// `Depends`
   String get preferenceScenarioScheduleQuietHoursOption2 {
     return Intl.message(
-      'It depends - some nights are quieter than others',
+      'Depends',
       name: 'preferenceScenarioScheduleQuietHoursOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Nighttime activity doesn't usually bother me`
+  /// `Active is fine`
   String get preferenceScenarioScheduleQuietHoursOption3 {
     return Intl.message(
-      'Nighttime activity doesn\'t usually bother me',
+      'Active is fine',
       name: 'preferenceScenarioScheduleQuietHoursOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `Are you more of an early bird or a night owl?`
+  /// `Sleep style?`
   String get preferenceScenarioScheduleSleepTimingQuestion {
     return Intl.message(
-      'Are you more of an early bird or a night owl?',
+      'Sleep style?',
       name: 'preferenceScenarioScheduleSleepTimingQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Earlier nights and mornings`
+  /// `Early bird`
   String get preferenceScenarioScheduleSleepTimingOption1 {
     return Intl.message(
-      'Earlier nights and mornings',
+      'Early bird',
       name: 'preferenceScenarioScheduleSleepTimingOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Somewhere in the middle`
+  /// `In between`
   String get preferenceScenarioScheduleSleepTimingOption2 {
     return Intl.message(
-      'Somewhere in the middle',
+      'In between',
       name: 'preferenceScenarioScheduleSleepTimingOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Later nights and mornings`
+  /// `Night owl`
   String get preferenceScenarioScheduleSleepTimingOption3 {
     return Intl.message(
-      'Later nights and mornings',
+      'Night owl',
       name: 'preferenceScenarioScheduleSleepTimingOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `When you need to coordinate at home, what works best for you?`
+  /// `Best way to reach you?`
   String get preferenceScenarioCommunicationChannelQuestion {
     return Intl.message(
-      'When you need to coordinate at home, what works best for you?',
+      'Best way to reach you?',
       name: 'preferenceScenarioCommunicationChannelQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Messaging or text`
+  /// `Text`
   String get preferenceScenarioCommunicationChannelOption1 {
     return Intl.message(
-      'Messaging or text',
+      'Text',
       name: 'preferenceScenarioCommunicationChannelOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Talking in person when it comes up`
+  /// `In person`
   String get preferenceScenarioCommunicationChannelOption2 {
     return Intl.message(
-      'Talking in person when it comes up',
+      'In person',
       name: 'preferenceScenarioCommunicationChannelOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `A quick call feels easiest`
+  /// `Call`
   String get preferenceScenarioCommunicationChannelOption3 {
     return Intl.message(
-      'A quick call feels easiest',
+      'Call',
       name: 'preferenceScenarioCommunicationChannelOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `When someone bring something up to you, how would you prefer to receive it?`
+  /// `When something's wrong?`
   String get preferenceScenarioCommunicationDirectnessQuestion {
     return Intl.message(
-      'When someone bring something up to you, how would you prefer to receive it?',
+      'When something\'s wrong?',
       name: 'preferenceScenarioCommunicationDirectnessQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Gently, with context or easing in`
+  /// `Be gentle`
   String get preferenceScenarioCommunicationDirectnessOption1 {
     return Intl.message(
-      'Gently, with context or easing in',
+      'Be gentle',
       name: 'preferenceScenarioCommunicationDirectnessOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `A mix - it depends on the situation`
+  /// `Depends`
   String get preferenceScenarioCommunicationDirectnessOption2 {
     return Intl.message(
-      'A mix - it depends on the situation',
+      'Depends',
       name: 'preferenceScenarioCommunicationDirectnessOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Directly and clearly`
+  /// `Be direct`
   String get preferenceScenarioCommunicationDirectnessOption3 {
     return Intl.message(
-      'Directly and clearly',
+      'Be direct',
       name: 'preferenceScenarioCommunicationDirectnessOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `In shared spaces, what level of tidiness works for you?`
+  /// `Shared space?`
   String get preferenceScenarioCleanlinessSharedSpaceQuestion {
     return Intl.message(
-      'In shared spaces, what level of tidiness works for you?',
+      'Shared space?',
       name: 'preferenceScenarioCleanlinessSharedSpaceQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `I feel best when things are kept fairly tidy`
+  /// `Keep tidy`
   String get preferenceScenarioCleanlinessSharedSpaceOption1 {
     return Intl.message(
-      'I feel best when things are kept fairly tidy',
+      'Keep tidy',
       name: 'preferenceScenarioCleanlinessSharedSpaceOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Some clutter is okay day-to-day`
+  /// `A little messy`
   String get preferenceScenarioCleanlinessSharedSpaceOption2 {
     return Intl.message(
-      'Some clutter is okay day-to-day',
+      'A little messy',
       name: 'preferenceScenarioCleanlinessSharedSpaceOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `I'm relaxed about mess in shared areas`
+  /// `Mess is fine`
   String get preferenceScenarioCleanlinessSharedSpaceOption3 {
     return Intl.message(
-      'I\'m relaxed about mess in shared areas',
+      'Mess is fine',
       name: 'preferenceScenarioCleanlinessSharedSpaceOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `Before entering someone's room, what feels right to you?`
+  /// `Entering your room?`
   String get preferenceScenarioPrivacyRoomEntryQuestion {
     return Intl.message(
-      'Before entering someone\'s room, what feels right to you?',
+      'Entering your room?',
       name: 'preferenceScenarioPrivacyRoomEntryQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `I prefer people to ask or knock first`
+  /// `Knock first`
   String get preferenceScenarioPrivacyRoomEntryOption1 {
     return Intl.message(
-      'I prefer people to ask or knock first',
+      'Knock first',
       name: 'preferenceScenarioPrivacyRoomEntryOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Asking is nice, but flexibility is okay`
+  /// `Usually knock`
   String get preferenceScenarioPrivacyRoomEntryOption2 {
     return Intl.message(
-      'Asking is nice, but flexibility is okay',
+      'Usually knock',
       name: 'preferenceScenarioPrivacyRoomEntryOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `I'm generally comfortable with open access`
+  /// `Open door`
   String get preferenceScenarioPrivacyRoomEntryOption3 {
     return Intl.message(
-      'I\'m generally comfortable with open access',
+      'Open door',
       name: 'preferenceScenarioPrivacyRoomEntryOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `How do you feel about messages at night?`
+  /// `Messages at night?`
   String get preferenceScenarioPrivacyNotificationsQuestion {
     return Intl.message(
-      'How do you feel about messages at night?',
+      'Messages at night?',
       name: 'preferenceScenarioPrivacyNotificationsQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `I prefer not to be contacted after quiet hours`
+  /// `Please don't`
   String get preferenceScenarioPrivacyNotificationsOption1 {
     return Intl.message(
-      'I prefer not to be contacted after quiet hours',
+      'Please don\'t',
       name: 'preferenceScenarioPrivacyNotificationsOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Limited or important messages are okay`
+  /// `Important only`
   String get preferenceScenarioPrivacyNotificationsOption2 {
     return Intl.message(
-      'Limited or important messages are okay',
+      'Important only',
       name: 'preferenceScenarioPrivacyNotificationsOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `I'm fine being contacted anytime`
+  /// `Anytime`
   String get preferenceScenarioPrivacyNotificationsOption3 {
     return Intl.message(
-      'I\'m fine being contacted anytime',
+      'Anytime',
       name: 'preferenceScenarioPrivacyNotificationsOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `How do you feel about guests coming over to the home?`
+  /// `Guests?`
   String get preferenceScenarioSocialHostingQuestion {
     return Intl.message(
-      'How do you feel about guests coming over to the home?',
+      'Guests?',
       name: 'preferenceScenarioSocialHostingQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `I'm most comfortable with guests being rare`
+  /// `Rare`
   String get preferenceScenarioSocialHostingOption1 {
     return Intl.message(
-      'I\'m most comfortable with guests being rare',
+      'Rare',
       name: 'preferenceScenarioSocialHostingOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Occasional guests feel fine`
+  /// `Sometimes`
   String get preferenceScenarioSocialHostingOption2 {
     return Intl.message(
-      'Occasional guests feel fine',
+      'Sometimes',
       name: 'preferenceScenarioSocialHostingOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Frequent guests are okay with me`
+  /// `Often`
   String get preferenceScenarioSocialHostingOption3 {
     return Intl.message(
-      'Frequent guests are okay with me',
+      'Often',
       name: 'preferenceScenarioSocialHostingOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `At home, what balance works best for you?`
+  /// `Home energy?`
   String get preferenceScenarioSocialTogethernessQuestion {
     return Intl.message(
-      'At home, what balance works best for you?',
+      'Home energy?',
       name: 'preferenceScenarioSocialTogethernessQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Mostly doing my own thing`
+  /// `Mostly solo`
   String get preferenceScenarioSocialTogethernessOption1 {
     return Intl.message(
-      'Mostly doing my own thing',
+      'Mostly solo',
       name: 'preferenceScenarioSocialTogethernessOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `A mix of shared time and solo time`
+  /// `Mix of both`
   String get preferenceScenarioSocialTogethernessOption2 {
     return Intl.message(
-      'A mix of shared time and solo time',
+      'Mix of both',
       name: 'preferenceScenarioSocialTogethernessOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Spending time together often`
+  /// `Hang out a lot`
   String get preferenceScenarioSocialTogethernessOption3 {
     return Intl.message(
-      'Spending time together often',
+      'Hang out a lot',
       name: 'preferenceScenarioSocialTogethernessOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `When it comes to daily life at home, what feels most natural to you?`
+  /// `Daily life?`
   String get preferenceScenarioRoutinePlanningQuestion {
     return Intl.message(
-      'When it comes to daily life at home, what feels most natural to you?',
+      'Daily life?',
       name: 'preferenceScenarioRoutinePlanningQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Having plans and structure helps me`
+  /// `Structured`
   String get preferenceScenarioRoutinePlanningOption1 {
     return Intl.message(
-      'Having plans and structure helps me',
+      'Structured',
       name: 'preferenceScenarioRoutinePlanningOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `A mix of planning and spontaneity`
+  /// `Some structure`
   String get preferenceScenarioRoutinePlanningOption2 {
     return Intl.message(
-      'A mix of planning and spontaneity',
+      'Some structure',
       name: 'preferenceScenarioRoutinePlanningOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Going with the flow feels best`
+  /// `Go with the flow`
   String get preferenceScenarioRoutinePlanningOption3 {
     return Intl.message(
-      'Going with the flow feels best',
+      'Go with the flow',
       name: 'preferenceScenarioRoutinePlanningOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `If something needs addressing at home, what helps most?`
+  /// `If something's off?`
   String get preferenceScenarioConflictResolutionQuestion {
     return Intl.message(
-      'If something needs addressing at home, what helps most?',
+      'If something\'s off?',
       name: 'preferenceScenarioConflictResolutionQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Taking time to cool off first`
+  /// `Cool off first`
   String get preferenceScenarioConflictResolutionOption1 {
     return Intl.message(
-      'Taking time to cool off first',
+      'Cool off first',
       name: 'preferenceScenarioConflictResolutionOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Gently checking in at the right moment`
+  /// `Check in later`
   String get preferenceScenarioConflictResolutionOption2 {
     return Intl.message(
-      'Gently checking in at the right moment',
+      'Check in later',
       name: 'preferenceScenarioConflictResolutionOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Talking it through sooner rather than later`
+  /// `Talk early`
   String get preferenceScenarioConflictResolutionOption3 {
     return Intl.message(
-      'Talking it through sooner rather than later',
+      'Talk early',
       name: 'preferenceScenarioConflictResolutionOption3',
       desc: '',
       args: [],
@@ -5208,30 +5198,30 @@ class S {
     );
   }
 
-  /// `Write a shared starting point for how your home tends to work.`
+  /// `Turn your answers into a shared guide.`
   String get houseNormPromptSubtitle {
     return Intl.message(
-      'Write a shared starting point for how your home tends to work.',
+      'Turn your answers into a shared guide.',
       name: 'houseNormPromptSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Create house norms`
+  /// `Generate`
   String get houseNormPromptCta {
     return Intl.message(
-      'Create house norms',
+      'Generate',
       name: 'houseNormPromptCta',
       desc: '',
       args: [],
     );
   }
 
-  /// `House norms`
+  /// `House vibe`
   String get houseNormOnboardingTitle {
     return Intl.message(
-      'House norms',
+      'House vibe',
       name: 'houseNormOnboardingTitle',
       desc: '',
       args: [],
@@ -5248,30 +5238,30 @@ class S {
     );
   }
 
-  /// `Generate house norms`
+  /// `Generate`
   String get houseNormOnboardingSubmit {
     return Intl.message(
-      'Generate house norms',
+      'Generate',
       name: 'houseNormOnboardingSubmit',
       desc: '',
       args: [],
     );
   }
 
-  /// `Question {current} of {total}`
+  /// `{current}/{total}`
   String houseNormOnboardingProgress(int current, int total) {
     return Intl.message(
-      'Question $current of $total',
+      '$current/$total',
       name: 'houseNormOnboardingProgress',
       desc: 'Progress for house norms onboarding',
       args: [current, total],
     );
   }
 
-  /// `We couldn't generate house norms right now. Please try again.`
+  /// `Couldn't generate house norms right now.`
   String get houseNormGenerationFailed {
     return Intl.message(
-      'We couldn\'t generate house norms right now. Please try again.',
+      'Couldn\'t generate house norms right now.',
       name: 'houseNormGenerationFailed',
       desc: '',
       args: [],
@@ -5323,20 +5313,20 @@ class S {
     );
   }
 
-  /// `Generate house norms to see your shared starting point.`
+  /// `Generate house norms to see them.`
   String get houseNormReportEmptyBody {
     return Intl.message(
-      'Generate house norms to see your shared starting point.',
+      'Generate house norms to see them.',
       name: 'houseNormReportEmptyBody',
       desc: '',
       args: [],
     );
   }
 
-  /// `Could not load house norms`
+  /// `Couldn't load house norms`
   String get houseNormReportErrorTitle {
     return Intl.message(
-      'Could not load house norms',
+      'Couldn\'t load house norms',
       name: 'houseNormReportErrorTitle',
       desc: '',
       args: [],
@@ -5423,20 +5413,20 @@ class S {
     );
   }
 
-  /// `A shared starting point - not a rulebook.`
+  /// `A guide, not a rulebook.`
   String get houseNormSummarySubtitle {
     return Intl.message(
-      'A shared starting point - not a rulebook.',
+      'A guide, not a rulebook.',
       name: 'houseNormSummarySubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Summary framing`
+  /// `Summary`
   String get houseNormSummaryFramingLabel {
     return Intl.message(
-      'Summary framing',
+      'Summary',
       name: 'houseNormSummaryFramingLabel',
       desc: '',
       args: [],
@@ -5493,10 +5483,10 @@ class S {
     );
   }
 
-  /// `House identity`
+  /// `Home identity`
   String get houseNormSectionHomeIdentityTitle {
     return Intl.message(
-      'House identity',
+      'Home identity',
       name: 'houseNormSectionHomeIdentityTitle',
       desc: '',
       args: [],
@@ -5513,10 +5503,10 @@ class S {
     );
   }
 
-  /// `Adjust this section`
+  /// `Edit this section`
   String get houseNormSectionEditLabel {
     return Intl.message(
-      'Adjust this section',
+      'Edit this section',
       name: 'houseNormSectionEditLabel',
       desc: '',
       args: [],
@@ -5533,10 +5523,10 @@ class S {
     );
   }
 
-  /// `Please add text before saving.`
+  /// `Add text before saving.`
   String get houseNormSectionEmptyError {
     return Intl.message(
-      'Please add text before saving.',
+      'Add text before saving.',
       name: 'houseNormSectionEmptyError',
       desc: '',
       args: [],
@@ -5553,10 +5543,10 @@ class S {
     );
   }
 
-  /// `We couldn't save that update.`
+  /// `Couldn't save that update.`
   String get houseNormSectionSaveFailed {
     return Intl.message(
-      'We couldn\'t save that update.',
+      'Couldn\'t save that update.',
       name: 'houseNormSectionSaveFailed',
       desc: '',
       args: [],
@@ -5573,60 +5563,60 @@ class S {
     );
   }
 
-  /// `A shared starting point for how this home tends to work.`
+  /// `A guide for how this home works.`
   String get hubHouseNormsSubtitle {
     return Intl.message(
-      'A shared starting point for how this home tends to work.',
+      'A guide for how this home works.',
       name: 'hubHouseNormsSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Are you renting or do you own this house?`
+  /// `This home is:`
   String get houseNormScenarioPropertyContextQuestion {
     return Intl.message(
-      'Are you renting or do you own this house?',
+      'This home is:',
       name: 'houseNormScenarioPropertyContextQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `We own this home`
+  /// `Owned`
   String get houseNormScenarioPropertyContextOption1 {
     return Intl.message(
-      'We own this home',
+      'Owned',
       name: 'houseNormScenarioPropertyContextOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `We rent this whole home`
+  /// `Whole rental`
   String get houseNormScenarioPropertyContextOption2 {
     return Intl.message(
-      'We rent this whole home',
+      'Whole rental',
       name: 'houseNormScenarioPropertyContextOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `We rent rooms in a shared home`
+  /// `Room rental`
   String get houseNormScenarioPropertyContextOption3 {
     return Intl.message(
-      'We rent rooms in a shared home',
+      'Room rental',
       name: 'houseNormScenarioPropertyContextOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `Who's sharing this home together?`
+  /// `Who's living here?`
   String get houseNormScenarioRelationshipModelQuestion {
     return Intl.message(
-      'Who\'s sharing this home together?',
+      'Who\'s living here?',
       name: 'houseNormScenarioRelationshipModelQuestion',
       desc: '',
       args: [],
@@ -5653,250 +5643,250 @@ class S {
     );
   }
 
-  /// `Family and housemates`
+  /// `Mixed`
   String get houseNormScenarioRelationshipModelOption3 {
     return Intl.message(
-      'Family and housemates',
+      'Mixed',
       name: 'houseNormScenarioRelationshipModelOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `It is nighttime, and someone is still active at home. What usually feels okay?`
+  /// `Late at night?`
   String get houseNormScenarioRhythmQuestion {
     return Intl.message(
-      'It is nighttime, and someone is still active at home. What usually feels okay?',
+      'Late at night?',
       name: 'houseNormScenarioRhythmQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Things wind down so the home can rest`
+  /// `Wind down`
   String get houseNormScenarioRhythmOption1 {
     return Intl.message(
-      'Things wind down so the home can rest',
+      'Wind down',
       name: 'houseNormScenarioRhythmOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `It depends - some nights are quieter than others`
+  /// `Depends`
   String get houseNormScenarioRhythmOption2 {
     return Intl.message(
-      'It depends - some nights are quieter than others',
+      'Depends',
       name: 'houseNormScenarioRhythmOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Everyone keeps doing their thing`
+  /// `People do their thing`
   String get houseNormScenarioRhythmOption3 {
     return Intl.message(
-      'Everyone keeps doing their thing',
+      'People do their thing',
       name: 'houseNormScenarioRhythmOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `You walk into the kitchen at the end of the day. What feels most comfortable?`
+  /// `Kitchen at night?`
   String get houseNormScenarioSharedSpacesQuestion {
     return Intl.message(
-      'You walk into the kitchen at the end of the day. What feels most comfortable?',
+      'Kitchen at night?',
       name: 'houseNormScenarioSharedSpacesQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Mostly clear and ready to use`
+  /// `Clean`
   String get houseNormScenarioSharedSpacesOption1 {
     return Intl.message(
-      'Mostly clear and ready to use',
+      'Clean',
       name: 'houseNormScenarioSharedSpacesOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Lived-in, but reset later`
+  /// `Lived-in`
   String get houseNormScenarioSharedSpacesOption2 {
     return Intl.message(
-      'Lived-in, but reset later',
+      'Lived-in',
       name: 'houseNormScenarioSharedSpacesOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `A bit messy is fine - it's a shared home`
+  /// `Messy is fine`
   String get houseNormScenarioSharedSpacesOption3 {
     return Intl.message(
-      'A bit messy is fine - it\'s a shared home',
+      'Messy is fine',
       name: 'houseNormScenarioSharedSpacesOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `A friend or partner wants to come over. What usually feels right?`
+  /// `Bringing guests?`
   String get houseNormScenarioGuestsQuestion {
     return Intl.message(
-      'A friend or partner wants to come over. What usually feels right?',
+      'Bringing guests?',
       name: 'houseNormScenarioGuestsQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `It's planned and talked about first`
+  /// `Ask first`
   String get houseNormScenarioGuestsOption1 {
     return Intl.message(
-      'It\'s planned and talked about first',
+      'Ask first',
       name: 'houseNormScenarioGuestsOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `A heads-up is enough`
+  /// `Give a heads-up`
   String get houseNormScenarioGuestsOption2 {
     return Intl.message(
-      'A heads-up is enough',
+      'Give a heads-up',
       name: 'houseNormScenarioGuestsOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `That's part of daily life here`
+  /// `Totally normal`
   String get houseNormScenarioGuestsOption3 {
     return Intl.message(
-      'That\'s part of daily life here',
+      'Totally normal',
       name: 'houseNormScenarioGuestsOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `Something small needs doing around the house. What tends to happen?`
+  /// `Small chores?`
   String get houseNormScenarioResponsibilityQuestion {
     return Intl.message(
-      'Something small needs doing around the house. What tends to happen?',
+      'Small chores?',
       name: 'houseNormScenarioResponsibilityQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `We usually have clear agreements`
+  /// `Clear agreements`
   String get houseNormScenarioResponsibilityOption1 {
     return Intl.message(
-      'We usually have clear agreements',
+      'Clear agreements',
       name: 'houseNormScenarioResponsibilityOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Someone takes care of it when they notice`
+  /// `Whoever notices`
   String get houseNormScenarioResponsibilityOption2 {
     return Intl.message(
-      'Someone takes care of it when they notice',
+      'Whoever notices',
       name: 'houseNormScenarioResponsibilityOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Everyone mostly looks after their own things`
+  /// `Everyone handles their own`
   String get houseNormScenarioResponsibilityOption3 {
     return Intl.message(
-      'Everyone mostly looks after their own things',
+      'Everyone handles their own',
       name: 'houseNormScenarioResponsibilityOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `Something feels a bit off between people. What helps most?`
+  /// `Tension?`
   String get houseNormScenarioRepairQuestion {
     return Intl.message(
-      'Something feels a bit off between people. What helps most?',
+      'Tension?',
       name: 'houseNormScenarioRepairQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `Talking it through sooner rather than later`
+  /// `Talk early`
   String get houseNormScenarioRepairOption1 {
     return Intl.message(
-      'Talking it through sooner rather than later',
+      'Talk early',
       name: 'houseNormScenarioRepairOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `Checking in gently when the moment feels right`
+  /// `Pick the moment`
   String get houseNormScenarioRepairOption2 {
     return Intl.message(
-      'Checking in gently when the moment feels right',
+      'Pick the moment',
       name: 'houseNormScenarioRepairOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `Letting small things pass unless they build up`
+  /// `Let small things pass`
   String get houseNormScenarioRepairOption3 {
     return Intl.message(
-      'Letting small things pass unless they build up',
+      'Let small things pass',
       name: 'houseNormScenarioRepairOption3',
       desc: '',
       args: [],
     );
   }
 
-  /// `On a good day, this house feels most like...`
+  /// `Best description?`
   String get houseNormScenarioHomeIdentityQuestion {
     return Intl.message(
-      'On a good day, this house feels most like...',
+      'Best description?',
       name: 'houseNormScenarioHomeIdentityQuestion',
       desc: '',
       args: [],
     );
   }
 
-  /// `A calm place to recharge`
+  /// `Calm home`
   String get houseNormScenarioHomeIdentityOption1 {
     return Intl.message(
-      'A calm place to recharge',
+      'Calm home',
       name: 'houseNormScenarioHomeIdentityOption1',
       desc: '',
       args: [],
     );
   }
 
-  /// `A balance of quiet time and togetherness`
+  /// `Balanced home`
   String get houseNormScenarioHomeIdentityOption2 {
     return Intl.message(
-      'A balance of quiet time and togetherness',
+      'Balanced home',
       name: 'houseNormScenarioHomeIdentityOption2',
       desc: '',
       args: [],
     );
   }
 
-  /// `A lively place where people come and go`
+  /// `Social home`
   String get houseNormScenarioHomeIdentityOption3 {
     return Intl.message(
-      'A lively place where people come and go',
+      'Social home',
       name: 'houseNormScenarioHomeIdentityOption3',
       desc: '',
       args: [],
@@ -5923,50 +5913,50 @@ class S {
     );
   }
 
-  /// `So others can understand what feels comfortable to you.`
+  /// `So others understand what feels comfortable to you.`
   String get reflectivePersonalSecondary {
     return Intl.message(
-      'So others can understand what feels comfortable to you.',
+      'So others understand what feels comfortable to you.',
       name: 'reflectivePersonalSecondary',
       desc: '',
       args: [],
     );
   }
 
-  /// `Putting the house's expectations into words.`
+  /// `Putting your home's expectations into words.`
   String get reflectiveHousePrimary {
     return Intl.message(
-      'Putting the house\'s expectations into words.',
+      'Putting your home\'s expectations into words.',
       name: 'reflectiveHousePrimary',
       desc: '',
       args: [],
     );
   }
 
-  /// `So everyone knows what to expect.`
+  /// `So expectations are clear.`
   String get reflectiveHouseSecondary {
     return Intl.message(
-      'So everyone knows what to expect.',
+      'So expectations are clear.',
       name: 'reflectiveHouseSecondary',
       desc: '',
       args: [],
     );
   }
 
-  /// `Reflecting what this house shared.`
+  /// `Reflecting what this home shared.`
   String get reflectiveHouseNormsPrimary {
     return Intl.message(
-      'Reflecting what this house shared.',
+      'Reflecting what this home shared.',
       name: 'reflectiveHouseNormsPrimary',
       desc: '',
       args: [],
     );
   }
 
-  /// `A shared reference, not a rulebook.`
+  /// `A shared guide, not a rulebook.`
   String get reflectiveHouseNormsSecondary {
     return Intl.message(
-      'A shared reference, not a rulebook.',
+      'A shared guide, not a rulebook.',
       name: 'reflectiveHouseNormsSecondary',
       desc: '',
       args: [],
@@ -5983,30 +5973,30 @@ class S {
     );
   }
 
-  /// `A quiet moment before we show it.`
+  /// `A short pause before we show it.`
   String get reflectiveGenericSecondary {
     return Intl.message(
-      'A quiet moment before we show it.',
+      'A short pause before we show it.',
       name: 'reflectiveGenericSecondary',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't finish your preference reflection. Please try again soon.`
+  /// `Couldn't finish your preference reflection. Try again soon.`
   String get preferenceReportGenerationMissing {
     return Intl.message(
-      'We couldn\'t finish your preference reflection. Please try again soon.',
+      'Couldn\'t finish your preference reflection. Try again soon.',
       name: 'preferenceReportGenerationMissing',
       desc: '',
       args: [],
     );
   }
 
-  /// `We couldn't finish your preference reflection. Head back and try again.`
+  /// `Couldn't finish your preference reflection. Go back and try again.`
   String get preferenceReportGenerationFailed {
     return Intl.message(
-      'We couldn\'t finish your preference reflection. Head back and try again.',
+      'Couldn\'t finish your preference reflection. Go back and try again.',
       name: 'preferenceReportGenerationFailed',
       desc: '',
       args: [],
@@ -6043,10 +6033,10 @@ class S {
     );
   }
 
-  /// `We couldn't load your personal profile right now. Please try again.`
+  /// `Couldn't load your personal profile.`
   String get personalProfileLoadError {
     return Intl.message(
-      'We couldn\'t load your personal profile right now. Please try again.',
+      'Couldn\'t load your personal profile.',
       name: 'personalProfileLoadError',
       desc: '',
       args: [],
@@ -6063,10 +6053,10 @@ class S {
     );
   }
 
-  /// `Weekly house pulse`
+  /// `Weekly home pulse`
   String get housePulseCardHeader {
     return Intl.message(
-      'Weekly house pulse',
+      'Weekly home pulse',
       name: 'housePulseCardHeader',
       desc: '',
       args: [],
@@ -6083,20 +6073,20 @@ class S {
     );
   }
 
-  /// `Sharing our Kinly house pulse`
+  /// `Sharing our Kinly home pulse`
   String get housePulseShareTitle {
     return Intl.message(
-      'Sharing our Kinly house pulse',
+      'Sharing our Kinly home pulse',
       name: 'housePulseShareTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Sharing our Kinly house pulse. Download the app: {link}`
+  /// `Sharing our Kinly home pulse. Download the app: {link}`
   String housePulseShareMessage(String link) {
     return Intl.message(
-      'Sharing our Kinly house pulse. Download the app: $link',
+      'Sharing our Kinly home pulse. Download the app: $link',
       name: 'housePulseShareMessage',
       desc: '',
       args: [link],
@@ -6163,10 +6153,10 @@ class S {
     );
   }
 
-  /// `Mostly smooth, with a few small bumps.`
+  /// `Mostly smooth, with a few bumps.`
   String get pulseSunnyBumpySummary {
     return Intl.message(
-      'Mostly smooth, with a few small bumps.',
+      'Mostly smooth, with a few bumps.',
       name: 'pulseSunnyBumpySummary',
       desc: '',
       args: [],
@@ -6183,10 +6173,10 @@ class S {
     );
   }
 
-  /// `Overall steady, with some areas to improve.`
+  /// `Mostly steady, with some room to improve.`
   String get pulsePartlySupportedSummary {
     return Intl.message(
-      'Overall steady, with some areas to improve.',
+      'Mostly steady, with some room to improve.',
       name: 'pulsePartlySupportedSummary',
       desc: '',
       args: [],
@@ -6203,10 +6193,10 @@ class S {
     );
   }
 
-  /// `A mix of smooth moments and small friction.`
+  /// `Some things worked. Some didn't.`
   String get pulseCloudySteadySummary {
     return Intl.message(
-      'A mix of smooth moments and small friction.',
+      'Some things worked. Some didn\'t.',
       name: 'pulseCloudySteadySummary',
       desc: '',
       args: [],
@@ -6223,10 +6213,10 @@ class S {
     );
   }
 
-  /// `Some tension surfaced this week.`
+  /// `Some tension came up this week.`
   String get pulseCloudyTenseSummary {
     return Intl.message(
-      'Some tension surfaced this week.',
+      'Some tension came up this week.',
       name: 'pulseCloudyTenseSummary',
       desc: '',
       args: [],
@@ -6283,10 +6273,10 @@ class S {
     );
   }
 
-  /// `Tension is high. A quick reset can help.`
+  /// `Tension is high. Reset soon.`
   String get pulseThunderstormSummary {
     return Intl.message(
-      'Tension is high. A quick reset can help.',
+      'Tension is high. Reset soon.',
       name: 'pulseThunderstormSummary',
       desc: '',
       args: [],
@@ -6303,10 +6293,10 @@ class S {
     );
   }
 
-  /// `Add a short note to send this mention.`
+  /// `Add a short note before sending this mention.`
   String get harmonyErrorCommentRequiredForMention {
     return Intl.message(
-      'Add a short note to send this mention.',
+      'Add a short note before sending this mention.',
       name: 'harmonyErrorCommentRequiredForMention',
       desc: '',
       args: [],
@@ -6323,40 +6313,40 @@ class S {
     );
   }
 
-  /// `Add a short note to post this shoutout.`
+  /// `Add a short note before posting this shoutout.`
   String get harmonyErrorCommentRequiredForPublicWall {
     return Intl.message(
-      'Add a short note to post this shoutout.',
+      'Add a short note before posting this shoutout.',
       name: 'harmonyErrorCommentRequiredForPublicWall',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add a little more detail so it's clear.`
+  /// `Add a bit more detail.`
   String get harmonyErrorComplaintTooShort {
     return Intl.message(
-      'Add a little more detail so it\'s clear.',
+      'Add a bit more detail.',
       name: 'harmonyErrorComplaintTooShort',
       desc: '',
       args: [],
     );
   }
 
-  /// `Write a short sentence so it's easier to understand.`
+  /// `Write a short sentence so it's clear.`
   String get harmonyErrorComplaintTooBrief {
     return Intl.message(
-      'Write a short sentence so it\'s easier to understand.',
+      'Write a short sentence so it\'s clear.',
       name: 'harmonyErrorComplaintTooBrief',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add a clear sentence so it's easier to understand.`
+  /// `Add a clear sentence.`
   String get harmonyErrorComplaintNeedsSentence {
     return Intl.message(
-      'Add a clear sentence so it\'s easier to understand.',
+      'Add a clear sentence.',
       name: 'harmonyErrorComplaintNeedsSentence',
       desc: '',
       args: [],
@@ -6413,10 +6403,10 @@ class S {
     );
   }
 
-  /// `Could not sign in. Please check your credentials.`
+  /// `Couldn't sign in. Check your credentials.`
   String get demoAccessError {
     return Intl.message(
-      'Could not sign in. Please check your credentials.',
+      'Couldn\'t sign in. Check your credentials.',
       name: 'demoAccessError',
       desc: 'Error message shown when demo login does not succeed',
       args: [],

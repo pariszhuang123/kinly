@@ -13,6 +13,7 @@ import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/enums/reflective_generation_mode.dart';
 import 'package:kinly/core/ui/reflective_generation/reflective_generation_overlay.dart';
+import 'package:kinly/core/ui/selector/kinly_onboarding_option_card.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/generated/l10n.dart';
 import '../bloc/preference_capture_bloc.dart';
@@ -108,7 +109,7 @@ class PreferenceOnboardingScreen extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final optionText = scenario.options[index](s);
                             final isSelected = selectedIndex == index;
-                            return _PreferenceOptionTile(
+                            return KinlyOnboardingOptionCard(
                               label: optionText,
                               isSelected: isSelected,
                               colors: preferenceColors,
@@ -168,56 +169,6 @@ class PreferenceOnboardingScreen extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _PreferenceOptionTile extends StatelessWidget {
-  const _PreferenceOptionTile({
-    required this.label,
-    required this.isSelected,
-    required this.colors,
-    this.onTap,
-  });
-
-  final String label;
-  final bool isSelected;
-  final SectionColors colors;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>();
-    final colorScheme = theme.colorScheme;
-
-    return KinlyTapTarget(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      alignment: AlignmentDirectional.centerStart,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: EdgeInsetsDirectional.fromSTEB(
-          spacing?.lg ?? 16,
-          spacing?.m ?? 12,
-          spacing?.lg ?? 16,
-          spacing?.m ?? 12,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? colors.card : colors.background,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected ? colors.accent : colorScheme.outlineVariant,
-            width: isSelected ? 1.6 : 1,
-          ),
-        ),
-        child: Text(
-          label,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: isSelected ? colors.accent : colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ),
     );
   }
 }

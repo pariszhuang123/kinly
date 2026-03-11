@@ -158,7 +158,7 @@ void main() {
   );
 
   blocTest<HouseNormReportCubit, HouseNormReportState>(
-    'publish failure emits mapped supabase message',
+    'publish failure keeps ready state and sets publishError',
     build: () {
       when(
         () => repository.publishForHome(
@@ -193,11 +193,11 @@ void main() {
               .having(
                 (s) => s.status,
                 'status',
-                HouseNormReportStatus.failure,
+                HouseNormReportStatus.ready,
               )
               .having(
-                (s) => s.errorMessage,
-                'errorMessage',
+                (s) => s.publishError,
+                'publishError',
                 'Publish artifact write failed.',
               ),
         ],

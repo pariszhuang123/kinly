@@ -8,6 +8,7 @@ class HouseNormReportState extends Equatable {
     required this.isOwner,
     this.document,
     this.errorMessage,
+    this.publishError,
   });
 
   const HouseNormReportState.loading({required bool isOwner})
@@ -19,10 +20,12 @@ class HouseNormReportState extends Equatable {
   const HouseNormReportState.ready(
     HouseNormDocument document, {
     required bool isOwner,
+    String? publishError,
   }) : this._(
          status: HouseNormReportStatus.ready,
          document: document,
          isOwner: isOwner,
+         publishError: publishError,
        );
 
   const HouseNormReportState.busy(
@@ -48,9 +51,12 @@ class HouseNormReportState extends Equatable {
   final HouseNormDocument? document;
   final String? errorMessage;
 
+  /// Non-null when a publish attempt failed but the document is still valid.
+  final String? publishError;
+
   bool get isLoading => status == HouseNormReportStatus.loading;
   bool get isBusy => status == HouseNormReportStatus.busy;
 
   @override
-  List<Object?> get props => [status, isOwner, document, errorMessage];
+  List<Object?> get props => [status, isOwner, document, errorMessage, publishError];
 }

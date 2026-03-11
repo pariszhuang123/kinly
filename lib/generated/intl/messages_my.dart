@@ -20,1735 +20,1717 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'my';
 
-  static String m0(env) => "Starting Kinly (${env})";
+  static String m0(env) => "Kinly ကို စတင်နေသည် (${env})";
 
-  static String m1(time) => "Scheduled for ${time}";
+  static String m1(time) => "${time} အတွက် စီစဉ်ထားသည်";
 
-  static String m2(current) => "Demo access: ${current} of 7 taps";
+  static String m2(current) => "Demo access: 7 ချက်ထဲမှ ${current} ချက်";
 
-  static String m3(appName) => "Made with ${appName} - Together feels lighter";
+  static String m3(appName) =>
+      "${appName} ဖြင့် ပြုလုပ်ထားသည် - အတူဆို ပိုပေါ့ပါးတယ်";
 
   static String m4(link) =>
-      "A few shoutouts from our Kinly home. Download the app: ${link}";
+      "ကျွန်ုပ်တို့၏ Kinly အိမ်မှ ကျေးဇူးတင်စကားအချို့ကို မျှဝေနေပါသည်။ အက်ပ်ကို ဒေါင်းလုဒ်လုပ်ပါ: ${link}";
 
   static String m5(weeks) =>
-      "${Intl.plural(weeks, zero: 'This week', one: '# week ago', other: '# weeks ago')}";
+      "${Intl.plural(weeks, zero: 'ဒီအပတ်', one: '# ပတ်အကြာ', other: '# ပတ်အကြာများ')}";
 
-  static String m6(partOfDay, name) => "Good ${partOfDay}, ${name}";
+  static String m6(partOfDay, name) => "ကောင်းသော ${partOfDay} ပါ၊ ${name}";
 
   static String m7(answered, total) =>
-      "Based on ${answered} of ${total} members";
+      "အဖွဲ့ဝင် ${total} ယောက်ထဲမှ ${answered} ယောက်၏ ဖြေဆိုချက်အပေါ် အခြေခံထားသည်";
 
-  static String m8(current, total) => "Question ${current} of ${total}";
+  static String m8(current, total) => "${current}/${total}";
 
   static String m9(link) =>
-      "Sharing our Kinly house pulse. Download the app: ${link}";
+      "ကျွန်ုပ်တို့၏ Kinly အိမ် pulse ကို မျှဝေနေပါသည်။ အက်ပ်ကို ဒေါင်းလုဒ်လုပ်ပါ: ${link}";
 
-  static String m10(date) => "Updated ${date}";
+  static String m10(date) => "${date} တွင် အပ်ဒိတ်လုပ်ခဲ့သည်";
 
   static String m11(link) =>
-      "Sharing our Kinly house vibe. Download the app: ${link}";
+      "ကျွန်ုပ်တို့၏ Kinly အိမ် vibe ကို မျှဝေနေပါသည်။ အက်ပ်ကို ဒေါင်းလုဒ်လုပ်ပါ: ${link}";
 
-  static String m12(link) => "Share Kinly so together feels lighter: ${link}";
+  static String m12(link) =>
+      "Kinly ဖြင့် မျှဝေနေထိုင်မှုကို ပိုလွယ်ကူစေပါ: ${link}";
 
   static String m13(code, link) =>
-      "Welcome to our Kinly house! Enter this invite code: ${code}\n\nDownload the Kinly app: ${link}";
+      "ဒီဖိတ်ခေါ်ကုဒ်နဲ့ ကျွန်ုပ်တို့၏ Kinly အိမ်သို့ ဝင်ပါ: ${code}\n\nKinly ဒေါင်းလုဒ်လုပ်ရန်: ${link}";
 
-  static String m14(code) => "You\'re in. Welcome to your household!";
+  static String m14(code) => "သင့်အိမ်သို့ ဝင်ရောက်ပြီးပါပြီ။";
 
-  static String m15(price) => "${price} per month.";
+  static String m15(price) => "တစ်လလျှင် ${price}";
 
-  static String m16(current, total) => "Question ${current} of ${total}";
+  static String m16(current, total) => "${current}/${total}";
 
-  static String m17(period) => "Applies to ${period}";
+  static String m17(period) => "${period} အတွက် သက်ရောက်သည်";
 
   static String m18(total, included, difference) =>
-      "Custom split does not match. Total: ${total}. Included: ${included}. Difference: ${difference}.";
+      "ခွဲဝေမှု မကိုက်ညီပါ။ စုစုပေါင်း: ${total}. ထည့်သွင်းထားသည်: ${included}. ကွာခြားချက်: ${difference}.";
 
   static String m19(paidAmount, totalAmount) =>
-      "${paidAmount} of ${totalAmount} collected";
+      "${paidAmount} / ${totalAmount} စုဆောင်းပြီး";
 
-  static String m20(paid, total) => "${paid} of ${total} paid";
+  static String m20(paid, total) => "${paid} / ${total} ပေးချေပြီး";
 
   static String m21(count) =>
-      "${Intl.plural(count, one: '${count} item to check', other: '${count} items to check')}";
+      "${Intl.plural(count, one: '${count} ခု ဝယ်ရန်ရှိသည်', other: '${count} ခု ဝယ်ရန်ရှိသည်')}";
 
-  static String m22(name) => "Hi ${name}";
+  static String m22(name) => "မင်္ဂလာပါ ${name}";
 
   static String m23(count) =>
-      "See all ${Intl.plural(count, one: '(#)', other: '(#)')}";
+      "အားလုံးကြည့်မည် ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m24(name) => "We could not complete ${name}\'s request.";
+  static String m24(name) => "${name} ၏ တောင်းဆိုမှုကို မပြီးမြောက်နိုင်ခဲ့ပါ။";
 
-  static String m25(name) => "${name} joined your home.";
+  static String m25(name) => "${name} သည် သင့်အိမ်သို့ ဝင်ရောက်ပြီးပါပြီ။";
 
-  static String m26(name) => "${name} joined another home.";
+  static String m26(name) => "${name} သည် အခြားအိမ်တစ်ခုသို့ ဝင်သွားပါပြီ။";
 
   static String m27(names) =>
-      "${names} wants to join your home. Upgrade to support unlimited members.";
+      "${names} သည် သင့်အိမ်သို့ ဝင်ချင်နေပါသည်။ အဖွဲ့ဝင်အကန့်အသတ်မရှိရန် အဆင့်မြှင့်ပါ။";
 
   static String m28(count) =>
-      "${Intl.plural(count, one: '${count} payment pending', other: '${count} to settle')}";
+      "${Intl.plural(count, one: '${count} ခု ပေးချေရန် ကျန်သည်', other: '${count} ခု ဖြေရှင်းရန် ကျန်သည်')}";
 
   static String m29(count) =>
-      "${Intl.plural(count, one: '${count} new payment to you', other: '${count} new payments to you')}";
+      "${Intl.plural(count, one: '${count} ခု ပေးချေမှုအသစ်', other: '${count} ခု ပေးချေမှုအသစ်များ')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
     "authMembershipLoadFailed": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t refresh your home membership. Please try again.",
+      "သင့်အိမ်အဖွဲ့ဝင်အခြေအနေကို မပြန်လည်စစ်ဆေးနိုင်ခဲ့ပါ။",
     ),
     "bootstrap_initializing": m0,
-    "close": MessageLookupByLibrary.simpleMessage("Close"),
+    "close": MessageLookupByLibrary.simpleMessage("ပိတ်မည်"),
     "connectionNotificationsPermissionBlocked":
         MessageLookupByLibrary.simpleMessage(
-          "Turn on notifications in your phone settings to use this.",
+          "မူလဦးစွာ သင့်ဖုန်းဆက်တင်များတွင် အသိပေးချက်များကို ဖွင့်ပါ။",
         ),
     "connectionNotificationsTimeLabel": MessageLookupByLibrary.simpleMessage(
-      "Reminder time",
+      "သတိပေးချိန်",
     ),
     "connectionNotificationsTimeSubtitle": m1,
     "connectionNotificationsToggleSubtitleOff":
         MessageLookupByLibrary.simpleMessage(
-          "Turn on reminders about your home.",
+          "သင့်အိမ်အတွက် သတိပေးချက်များကို ဖွင့်ပါ။",
         ),
     "connectionNotificationsToggleSubtitleOn":
-        MessageLookupByLibrary.simpleMessage("Get one reminder each day."),
+        MessageLookupByLibrary.simpleMessage("နေ့စဉ် သတိပေးချက်တစ်ခု ရယူပါ။"),
     "connectionNotificationsToggleTitle": MessageLookupByLibrary.simpleMessage(
-      "Daily notifications",
+      "နေ့စဉ် သတိပေးချက်များ",
     ),
     "connectionSettingsGenericError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t update connection settings. Try again.",
+      "အသိပေးချက်ဆက်တင်များကို အပ်ဒိတ်မလုပ်နိုင်ခဲ့ပါ။",
     ),
     "connectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Control daily reminders and notification timing.",
+      "နေ့စဉ်သတိပေးချက်များနှင့် အချိန်ကို ထိန်းချုပ်ပါ။",
     ),
     "connectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "Connection settings",
+      "အသိပေးချက်များ",
     ),
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
-      "Could not create the house. Try again.",
+      "အိမ်ကို မဖန်တီးနိုင်ခဲ့ပါ။",
     ),
     "demoAccess": MessageLookupByLibrary.simpleMessage("Demo Access"),
-    "demoAccessEmail": MessageLookupByLibrary.simpleMessage("Email"),
+    "demoAccessEmail": MessageLookupByLibrary.simpleMessage("အီးမေးလ်"),
     "demoAccessError": MessageLookupByLibrary.simpleMessage(
-      "Could not sign in. Please check your credentials.",
+      "အကောင့်မဝင်နိုင်ခဲ့ပါ။ သင့်အချက်အလက်များကို စစ်ဆေးပါ။",
     ),
-    "demoAccessPassword": MessageLookupByLibrary.simpleMessage("Password"),
-    "demoAccessSubmit": MessageLookupByLibrary.simpleMessage("Sign in"),
+    "demoAccessPassword": MessageLookupByLibrary.simpleMessage("စကားဝှက်"),
+    "demoAccessSubmit": MessageLookupByLibrary.simpleMessage("အကောင့်ဝင်မည်"),
     "demoAccessTapHint": m2,
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "See what needs doing and who\'s taking care of it.",
+      "ဘာလုပ်ရမည်၊ ဘယ်သူလုပ်နေသည်ကို ကြည့်ပါ။",
     ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Update status and details to keep shared things clear.",
+      "မျှဝေထားသောအရာများကို ရှင်းလင်းစွာထားပါ။",
     ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "See every Bill you\'ve created and track collections.",
+      "သင်ဖန်တီးထားသော ဘေလ်များအားလုံးကို ကြည့်ပြီး စုဆောင်းမှုများကို ခြေရာခံပါ။",
     ),
     "exploreShoppingSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Shopping list",
+      "စျေးဝယ်စာရင်း",
     ),
     "exploreShoppingSubtitle": MessageLookupByLibrary.simpleMessage(
-      "View and manage your shared shopping items.",
+      "မျှဝေစျေးဝယ်ပစ္စည်းများကို ကြည့်ရှုပြီး စီမံပါ။",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
-      "Who\'s handling this?",
+      "ဘယ်သူ လုပ်မလဲ?",
     ),
     "flowChoreCreateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Task created.",
+      "တာဝန် ဖန်တီးပြီးပါပြီ။",
     ),
-    "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("Add Task"),
+    "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "တာဝန် ထည့်မည်",
+    ),
     "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage(
-      "Delete Task",
+      "တာဝန် ဖျက်မည်",
     ),
-    "flowChoreDeleteConfirm": MessageLookupByLibrary.simpleMessage("Delete"),
+    "flowChoreDeleteConfirm": MessageLookupByLibrary.simpleMessage("ဖျက်မည်"),
     "flowChoreDeleteDialogMessage": MessageLookupByLibrary.simpleMessage(
-      "This removes the flow for everyone in your home.",
+      "၎င်းသည် သင့်အိမ်ရှိ လူတိုင်းအတွက် ဤတာဝန်ကို ဖယ်ရှားမည်။",
     ),
     "flowChoreDeleteDialogTitle": MessageLookupByLibrary.simpleMessage(
-      "Delete this flow?",
+      "ဤတာဝန်ကို ဖျက်မလား?",
     ),
     "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
-      "Mark complete",
+      "ပြီးစီးဟု မှတ်မည်",
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t complete this task. Please try again.",
+      "ဤတာဝန်ကို မပြီးစီးနိုင်ခဲ့ပါ။",
     ),
     "flowChoreDetailCompletionSuccess": MessageLookupByLibrary.simpleMessage(
-      "Task completed.",
+      "တာဝန် ပြီးစီးပြီးပါပြီ။",
     ),
     "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
-      "Helpful context",
+      "အသုံးဝင်သော အသေးစိတ်အချက်များ",
     ),
     "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
-      "Task details",
+      "တာဝန်အသေးစိတ်",
     ),
     "flowChoreDetailUnassigned": MessageLookupByLibrary.simpleMessage(
-      "Unassigned",
+      "တာဝန်မပေးထားသေးပါ",
     ),
-    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Edit Task"),
+    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("တာဝန် ပြင်မည်"),
     "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
-      "That member isn\'t part of this home right now.",
+      "ဤလူသည် လက်ရှိတွင် ဒီအိမ်၏ အဖွဲ့ဝင် မဟုတ်ပါ။",
     ),
     "flowChoreErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "You don\'t have permission to change this flow.",
+      "ဤတာဝန်ကို ပြောင်းလဲရန် သင့်တွင် ခွင့်ပြုချက် မရှိပါ။",
     ),
     "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t save this flow. Please try again.",
+      "ဤတာဝန်ကို မသိမ်းနိုင်ခဲ့ပါ။",
     ),
     "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
-      "That photo path isn\'t valid for this home.",
+      "ဤဓာတ်ပုံသည် ဤအိမ်နှင့် မသက်ဆိုင်ပါ။",
     ),
     "flowChoreErrorInvalidStart": MessageLookupByLibrary.simpleMessage(
-      "Pick a valid start date.",
+      "မှန်ကန်သော စတင်ရက်စွဲ ရွေးပါ။",
     ),
     "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
-      "This flow is not available to update right now.",
+      "ဤတာဝန်ကို လတ်တလော အပ်ဒိတ်မလုပ်နိုင်ပါ။",
     ),
     "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "You\'re at the free limit for active flows. Upgrade for more space.",
+      "လက်ရှိ တာဝန်များအတွက် အခမဲ့ကန့်သတ်ချက် ပြည့်သွားပါပြီ။ ပိုမိုအသုံးပြုရန် အဆင့်မြှင့်ပါ။",
     ),
     "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
-      "You\'re at the free limit for flow photos. Upgrade for more space.",
+      "တာဝန်ဓာတ်ပုံများအတွက် အခမဲ့ကန့်သတ်ချက် ပြည့်သွားပါပြီ။ ပိုမိုအသုံးပြုရန် အဆင့်မြှင့်ပါ။",
     ),
     "flowChoreExpectationPhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "Reference photo",
+      "ကိုးကားဓာတ်ပုံ",
     ),
     "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
-      "Add a link if there\'s a specific way to do it",
+      "သီးသန့်နည်းလမ်းရှိလျှင် လင့်ခ်ထည့်ပါ",
     ),
     "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage(
-      "How to do it (optional)",
+      "ဘယ်လိုလုပ်ရမလဲ (မဖြစ်မနေမဟုတ်)",
     ),
     "flowChoreHowToLaunchError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t open that link. Try again.",
+      "ထိုလင့်ခ်ကို မဖွင့်နိုင်ခဲ့ပါ။",
     ),
     "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load this task. Please try again.",
+      "ဤတာဝန်ကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
-      "Eg. Bin night, clean the fridge, water plants",
+      "ဥပမာ အမှိုက်ပစ်ည၊ ရေခဲသေတ္တာ သန့်ရှင်းရေး၊ အပင်ရေလောင်း",
     ),
-    "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage(
-      "What needs to be done?",
-    ),
+    "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage("ဘာလုပ်ရမလဲ?"),
     "flowChoreNotesHint": MessageLookupByLibrary.simpleMessage(
-      "Anything that helps others do this easily",
+      "အခြားသူများ ဒီတာဝန်ကို လုပ်ရာတွင် ကူညီမည့် အရာများ",
     ),
     "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage(
-      "Why this matters",
+      "ဘာကြောင့် အရေးကြီးသလဲ",
     ),
     "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "What good looks like",
+      "ကောင်းမွန်သော အခြေအနေ ပုံစံ",
     ),
     "flowChorePhotoLoadError": MessageLookupByLibrary.simpleMessage(
-      "Could not load photo",
+      "ဓာတ်ပုံကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "flowChorePhotoPermissionDenied": MessageLookupByLibrary.simpleMessage(
-      "Allow camera access to take a photo.",
+      "ဓာတ်ပုံရိုက်ရန် ကင်မရာခွင့်ပြုချက် ပေးပါ။",
     ),
     "flowChorePhotoPermissionOpenSettings":
-        MessageLookupByLibrary.simpleMessage("Open settings"),
+        MessageLookupByLibrary.simpleMessage("ဆက်တင်များ ဖွင့်မည်"),
     "flowChorePhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
-      "A photo can help everyone stay aligned",
+      "လူတိုင်း တစ်မျိုးတည်း နားလည်ရန် ဓာတ်ပုံ ထည့်ပါ",
     ),
     "flowChorePhotoUploadError": MessageLookupByLibrary.simpleMessage(
-      "Could not upload the photo. Try again.",
+      "ဓာတ်ပုံကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "flowChoreRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
-      "How often does this come up?",
+      "ဒါ ဘယ်နှကြိမ် ဖြစ်တတ်သလဲ?",
     ),
-    "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage("One time"),
-    "flowChoreRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage(
+      "တစ်ကြိမ်တည်း",
+    ),
+    "flowChoreRetry": MessageLookupByLibrary.simpleMessage("ပြန်ကြိုးစားမည်"),
     "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage(
-      "When does this come up? ",
+      "ဘယ်နေ့ နောက်ဆုံးထားရမလဲ?",
     ),
     "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage(
-      "Create flow",
+      "တာဝန် ဖန်တီးမည်",
     ),
     "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage(
-      "Save changes",
+      "ပြောင်းလဲမှုများ သိမ်းမည်",
     ),
     "flowChoreUpdateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Task updated.",
+      "တာဝန်ကို အပ်ဒိတ်လုပ်ပြီးပါပြီ။",
     ),
     "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
-      "Choose someone.",
+      "တစ်ယောက်ရွေးပါ။",
     ),
     "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
-      "Pick a date up to a year from today.",
+      "နောက်တစ်နှစ်အတွင်း ရက်စွဲတစ်ခု ရွေးပါ။",
     ),
     "flowChoreValidationHowToUrl": MessageLookupByLibrary.simpleMessage(
-      "Enter a valid link that starts with http or https.",
+      "http သို့မဟုတ် https ဖြင့် စတင်သော မှန်ကန်သော လင့်ခ် ထည့်ပါ။",
     ),
     "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
-      "Name this task.",
+      "တာဝန်အမည် ထည့်ပါ။",
     ),
-    "flowChoreViewTitle": MessageLookupByLibrary.simpleMessage("View Task"),
-    "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("Draft"),
+    "flowChoreViewTitle": MessageLookupByLibrary.simpleMessage(
+      "တာဝန် ကြည့်မည်",
+    ),
+    "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("မူကြမ်း"),
     "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Tasks to keep everyone aligned.",
+      "တာဝန်များသည် လူတိုင်းကို တစ်မျိုးတည်း နားလည်စေသည်။",
     ),
     "flowListEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "Nothing here yet",
+      "ဒီမှာ ဘာမှ မရှိသေးပါ",
     ),
     "flowListError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load tasks. Pull to refresh.",
+      "တာဝန်များကို မတင်နိုင်ခဲ့ပါ။ ဆွဲချပြီး ပြန်လည်ရယူပါ။",
     ),
     "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage(
-      "Needs attention",
+      "အာရုံစိုက်ရန်လိုသည်",
     ),
-    "flowListTabCurrent": MessageLookupByLibrary.simpleMessage("Current"),
-    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("Upcoming"),
+    "flowListTabCurrent": MessageLookupByLibrary.simpleMessage("လက်ရှိ"),
+    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("လာမည့်"),
     "force_update_body": MessageLookupByLibrary.simpleMessage(
-      "This version of Kinly is no longer supported. Please install the newest release to continue.",
+      "ဤ Kinly ဗားရှင်းကို မထောက်ပံ့တော့ပါ။ ဆက်လက်အသုံးပြုရန် အပ်ဒိတ်လုပ်ပါ။",
     ),
-    "force_update_button": MessageLookupByLibrary.simpleMessage("Update Kinly"),
-    "force_update_title": MessageLookupByLibrary.simpleMessage("Update needed"),
-    "friendDefaultName": MessageLookupByLibrary.simpleMessage("friend"),
+    "force_update_button": MessageLookupByLibrary.simpleMessage(
+      "Kinly ကို အပ်ဒိတ်လုပ်မည်",
+    ),
+    "force_update_title": MessageLookupByLibrary.simpleMessage(
+      "အပ်ဒိတ် လိုအပ်ပါသည်",
+    ),
+    "friendDefaultName": MessageLookupByLibrary.simpleMessage("သူငယ်ချင်း"),
     "gratitudeWallEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Quick thanks live here.\n\nAdd one from this week.",
+      "ဒီအပတ်မှ ကျေးဇူးတင်စကားတစ်ခု ထည့်ပါ။",
     ),
     "gratitudeWallEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No shoutouts yet",
+      "ကျေးဇူးတင်စကား မရှိသေးပါ",
     ),
     "gratitudeWallErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Unable to load shoutouts right now.",
+      "လတ်တလော ကျေးဇူးတင်စကားများကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "gratitudeWallFooter": m3,
-    "gratitudeWallHouseTab": MessageLookupByLibrary.simpleMessage("House"),
+    "gratitudeWallHouseTab": MessageLookupByLibrary.simpleMessage("အိမ်"),
     "gratitudeWallPersonalSummary": MessageLookupByLibrary.simpleMessage(
-      "A private place to save quick thanks.",
+      "အမြန်ကျေးဇူးတင်စကားများအတွက် ကိုယ်ပိုင်နေရာတစ်ခု။",
     ),
-    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage("Mine"),
+    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage(
+      "ကျွန်ုပ်",
+    ),
     "gratitudeWallPersonalTitle": MessageLookupByLibrary.simpleMessage(
-      "My Shoutouts",
+      "ကျွန်ုပ်၏ ကျေးဇူးတင်စကားများ",
     ),
-    "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("Try again"),
-    "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage("Share"),
+    "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage(
+      "ထပ်မံကြိုးစားမည်",
+    ),
+    "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage("မျှဝေမည်"),
     "gratitudeWallShareError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t share right now. Please try again.",
+      "လတ်တလော မမျှဝေနိုင်ပါ။",
     ),
     "gratitudeWallShareMessage": m4,
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
-      "House shoutouts",
+      "အိမ်ကျေးဇူးတင်စကားများ",
     ),
-    "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Houses"),
+    "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("အိမ်များ"),
     "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
-      "Shoutouts",
+      "ကျေးဇူးတင်စကားများ",
     ),
-    "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage("People"),
+    "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage("လူများ"),
     "gratitudeWallWeeksAgo": m5,
     "greetingPartOfDay": m6,
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
-      "Add context if helpful",
+      "လိုအပ်လျှင် အကြောင်းအရာထည့်ပါ",
     ),
     "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
-      "Optional note",
+      "ရွေးချယ်နိုင်သော မှတ်စု",
     ),
     "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
-      "You\'ve already submitted this week.",
+      "ဒီအပတ် သင် တင်ပြီးသားဖြစ်ပါသည်။",
     ),
     "harmonyErrorCommentRequiredForMention":
         MessageLookupByLibrary.simpleMessage(
-          "Add a short note to send this mention.",
+          "ဤဖော်ပြချက်ကို မပို့မီ တိုတိုမှတ်စု ထည့်ပါ။",
         ),
     "harmonyErrorCommentRequiredForPublicWall":
         MessageLookupByLibrary.simpleMessage(
-          "Add a short note to post this shoutout.",
+          "ဤကျေးဇူးတင်စကားကို မတင်မီ တိုတိုမှတ်စု ထည့်ပါ။",
         ),
     "harmonyErrorComplaintNeedsSentence": MessageLookupByLibrary.simpleMessage(
-      "Add a clear sentence so it\'s easier to understand.",
+      "ရှင်းလင်းသော စာကြောင်းတစ်ကြောင်း ထည့်ပါ။",
     ),
     "harmonyErrorComplaintTooBrief": MessageLookupByLibrary.simpleMessage(
-      "Write a short sentence so it\'s easier to understand.",
+      "ရှင်းလင်းစေရန် စာကြောင်းတိုတစ်ကြောင်း ရေးပါ။",
     ),
     "harmonyErrorComplaintTooShort": MessageLookupByLibrary.simpleMessage(
-      "Add a little more detail so it\'s clear.",
+      "နည်းနည်း ပိုပြီး အသေးစိတ် ထည့်ပါ။",
     ),
     "harmonyErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "Submitting for this home is unavailable.",
+      "အပတ်စဉ် အကြံပြုချက်ကို လတ်တလော မရနိုင်ပါ။",
     ),
     "harmonyErrorSingleMentionRequired": MessageLookupByLibrary.simpleMessage(
-      "Choose one person for this note.",
+      "ဤမှတ်စုအတွက် လူတစ်ယောက် ရွေးပါ။",
     ),
     "harmonyErrorUnknown": MessageLookupByLibrary.simpleMessage(
-      "Something went wrong. Please try again.",
+      "တစ်ခုခု မှားယွင်းသွားပါသည်။",
     ),
     "harmonyFeedbackSingleHousemateHint": MessageLookupByLibrary.simpleMessage(
-      "Type @ to provide feedback to 1 housemate.",
+      "@ ရိုက်ပြီး အိမ်ဖော် 1 ယောက်ကို ဖော်ပြပါ။",
     ),
-    "harmonyMoodCloudy": MessageLookupByLibrary.simpleMessage("Cloudy"),
+    "harmonyMoodCloudy": MessageLookupByLibrary.simpleMessage("မိုးအုံ့"),
     "harmonyMoodPartiallySunny": MessageLookupByLibrary.simpleMessage(
-      "Partly sunny",
+      "နေရောင်အနည်းငယ်",
     ),
-    "harmonyMoodRainy": MessageLookupByLibrary.simpleMessage("Rainy"),
-    "harmonyMoodSunny": MessageLookupByLibrary.simpleMessage("Sunny"),
+    "harmonyMoodRainy": MessageLookupByLibrary.simpleMessage("မိုးရွာ"),
+    "harmonyMoodSunny": MessageLookupByLibrary.simpleMessage("နေရောင်ကောင်း"),
     "harmonyMoodThunderstorm": MessageLookupByLibrary.simpleMessage(
-      "Thunderstorm",
+      "မိုးကြိုးမုန်တိုင်း",
     ),
     "harmonyQuestion": MessageLookupByLibrary.simpleMessage(
-      "Anything to appreciate or adjust this week?",
+      "ဒီအပတ် ဘာက ကောင်းခဲ့သလဲ သို့မဟုတ် ဘာကို ညှိရမလဲ?",
     ),
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
-      "Visible to everyone in the home",
+      "အိမ်ရှိ လူတိုင်း မြင်နိုင်သည်",
     ),
-    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Save"),
-    "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage("Saved"),
+    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("သိမ်းမည်"),
+    "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage(
+      "သိမ်းပြီးပါပြီ",
+    ),
     "homeVibeCoverage": m7,
-    "homeVibeTitle": MessageLookupByLibrary.simpleMessage("House Vibe"),
-    "houseNormCopyUrlCta": MessageLookupByLibrary.simpleMessage("Copy URL"),
-    "houseNormDoneCta": MessageLookupByLibrary.simpleMessage("Done"),
+    "homeVibeTitle": MessageLookupByLibrary.simpleMessage("အိမ်၏ vibe"),
+    "houseNormCopyUrlCta": MessageLookupByLibrary.simpleMessage("URL ကူးမည်"),
+    "houseNormDoneCta": MessageLookupByLibrary.simpleMessage("ပြီးပြီ"),
     "houseNormEditTitle": MessageLookupByLibrary.simpleMessage(
-      "Edit house norms",
+      "အိမ်စံနှုန်းများ ပြင်မည်",
     ),
     "houseNormGenerationFailed": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t generate house norms right now. Please try again.",
+      "လတ်တလော အိမ်စံနှုန်းများကို မဖန်တီးနိုင်ခဲ့ပါ။",
     ),
-    "houseNormOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
+    "houseNormOnboardingBack": MessageLookupByLibrary.simpleMessage(
+      "နောက်သို့",
+    ),
     "houseNormOnboardingProgress": m8,
     "houseNormOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
-      "Generate house norms",
+      "ဖန်တီးမည်",
     ),
     "houseNormOnboardingTitle": MessageLookupByLibrary.simpleMessage(
-      "House norms",
+      "အိမ် vibe",
     ),
-    "houseNormPromptCta": MessageLookupByLibrary.simpleMessage(
-      "Create house norms",
-    ),
+    "houseNormPromptCta": MessageLookupByLibrary.simpleMessage("ဖန်တီးမည်"),
     "houseNormPromptSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Write a shared starting point for how your home tends to work.",
+      "သင့်အဖြေများကို မျှဝေထားသော လမ်းညွှန်တစ်ခုအဖြစ် ပြောင်းလဲပါ။",
     ),
     "houseNormPromptTitle": MessageLookupByLibrary.simpleMessage(
-      "Create house norms",
+      "အိမ်စံနှုန်းများ ဖန်တီးမည်",
     ),
     "houseNormPublishCta": MessageLookupByLibrary.simpleMessage(
-      "Publish to web",
+      "ဝဘ်သို့ ထုတ်ပြန်မည်",
     ),
     "houseNormReportEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "Generate house norms to see your shared starting point.",
+      "ကြည့်ရန် အိမ်စံနှုန်းများကို ဖန်တီးပါ။",
     ),
     "houseNormReportEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "House norms not ready",
+      "အိမ်စံနှုန်းများ မအဆင်သင့်သေးပါ",
     ),
     "houseNormReportErrorBody": MessageLookupByLibrary.simpleMessage(
-      "Please try again.",
+      "ထပ်မံကြိုးစားပါ။",
     ),
     "houseNormReportErrorTitle": MessageLookupByLibrary.simpleMessage(
-      "Could not load house norms",
+      "အိမ်စံနှုန်းများကို မတင်နိုင်ခဲ့ပါ",
     ),
-    "houseNormReportTitle": MessageLookupByLibrary.simpleMessage("House norms"),
-    "houseNormRepublishCta": MessageLookupByLibrary.simpleMessage("Republish"),
+    "houseNormReportTitle": MessageLookupByLibrary.simpleMessage(
+      "အိမ်စံနှုန်းများ",
+    ),
+    "houseNormRepublishCta": MessageLookupByLibrary.simpleMessage(
+      "ပြန်လည်ထုတ်ပြန်မည်",
+    ),
     "houseNormScenarioGuestsOption1": MessageLookupByLibrary.simpleMessage(
-      "It\'s planned and talked about first",
+      "အရင် မေးပါ",
     ),
     "houseNormScenarioGuestsOption2": MessageLookupByLibrary.simpleMessage(
-      "A heads-up is enough",
+      "ကြိုတင် အသိပေးပါ",
     ),
     "houseNormScenarioGuestsOption3": MessageLookupByLibrary.simpleMessage(
-      "That\'s part of daily life here",
+      "ပုံမှန်ပါပဲ",
     ),
     "houseNormScenarioGuestsQuestion": MessageLookupByLibrary.simpleMessage(
-      "A friend or partner wants to come over. What usually feels right?",
+      "ဧည့်သည် ခေါ်လာခြင်း?",
     ),
     "houseNormScenarioHomeIdentityOption1":
-        MessageLookupByLibrary.simpleMessage("A calm place to recharge"),
+        MessageLookupByLibrary.simpleMessage("အေးချမ်းသောအိမ်"),
     "houseNormScenarioHomeIdentityOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "A balance of quiet time and togetherness",
-        ),
+        MessageLookupByLibrary.simpleMessage("မျှတသောအိမ်"),
     "houseNormScenarioHomeIdentityOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "A lively place where people come and go",
-        ),
+        MessageLookupByLibrary.simpleMessage("လူမှုရေးဆန်သောအိမ်"),
     "houseNormScenarioHomeIdentityQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "On a good day, this house feels most like...",
-        ),
+        MessageLookupByLibrary.simpleMessage("အကောင်းဆုံး ဖော်ပြချက်?"),
     "houseNormScenarioPropertyContextOption1":
-        MessageLookupByLibrary.simpleMessage("We own this home"),
+        MessageLookupByLibrary.simpleMessage("ပိုင်ဆိုင်ထားသောအိမ်"),
     "houseNormScenarioPropertyContextOption2":
-        MessageLookupByLibrary.simpleMessage("We rent this whole home"),
+        MessageLookupByLibrary.simpleMessage("တစ်အိမ်လုံး ငှားထားသည်"),
     "houseNormScenarioPropertyContextOption3":
-        MessageLookupByLibrary.simpleMessage("We rent rooms in a shared home"),
+        MessageLookupByLibrary.simpleMessage("အခန်းငှားနေထိုင်မှု"),
     "houseNormScenarioPropertyContextQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "Are you renting or do you own this house?",
-        ),
+        MessageLookupByLibrary.simpleMessage("ဤအိမ်သည်:"),
     "houseNormScenarioRelationshipModelOption1":
-        MessageLookupByLibrary.simpleMessage("Housemates"),
+        MessageLookupByLibrary.simpleMessage("အိမ်ဖော်များ"),
     "houseNormScenarioRelationshipModelOption2":
-        MessageLookupByLibrary.simpleMessage("Family"),
+        MessageLookupByLibrary.simpleMessage("မိသားစု"),
     "houseNormScenarioRelationshipModelOption3":
-        MessageLookupByLibrary.simpleMessage("Family and housemates"),
+        MessageLookupByLibrary.simpleMessage("ရောနှော"),
     "houseNormScenarioRelationshipModelQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "Who\'s sharing this home together?",
-        ),
+        MessageLookupByLibrary.simpleMessage("ဘယ်သူတွေ နေကြသလဲ?"),
     "houseNormScenarioRepairOption1": MessageLookupByLibrary.simpleMessage(
-      "Talking it through sooner rather than later",
+      "စောစော ပြောပါ",
     ),
     "houseNormScenarioRepairOption2": MessageLookupByLibrary.simpleMessage(
-      "Checking in gently when the moment feels right",
+      "သင့်တော်သော အချိန်ကို ရွေးပါ",
     ),
     "houseNormScenarioRepairOption3": MessageLookupByLibrary.simpleMessage(
-      "Letting small things pass unless they build up",
+      "သေးငယ်တာတွေကို ကျော်လိုက်မည်",
     ),
     "houseNormScenarioRepairQuestion": MessageLookupByLibrary.simpleMessage(
-      "Something feels a bit off between people. What helps most?",
+      "တင်းမာမှု?",
     ),
     "houseNormScenarioResponsibilityOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "We usually have clear agreements",
-        ),
+        MessageLookupByLibrary.simpleMessage("ရှင်းလင်းသော သဘောတူညီချက်များ"),
     "houseNormScenarioResponsibilityOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "Someone takes care of it when they notice",
-        ),
+        MessageLookupByLibrary.simpleMessage("ဘယ်သူ သတိထားမိလဲ သူလုပ်"),
     "houseNormScenarioResponsibilityOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "Everyone mostly looks after their own things",
-        ),
+        MessageLookupByLibrary.simpleMessage("လူတိုင်း ကိုယ့်တာဝန်ကိုယ် လုပ်"),
     "houseNormScenarioResponsibilityQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "Something small needs doing around the house. What tends to happen?",
-        ),
+        MessageLookupByLibrary.simpleMessage("သေးငယ်တဲ့ အိမ်မှုကိစ္စများ?"),
     "houseNormScenarioRhythmOption1": MessageLookupByLibrary.simpleMessage(
-      "Things wind down so the home can rest",
+      "အေးဆေးနားမည်",
     ),
     "houseNormScenarioRhythmOption2": MessageLookupByLibrary.simpleMessage(
-      "It depends - some nights are quieter than others",
+      "အခြေအနေပေါ်မူတည်",
     ),
     "houseNormScenarioRhythmOption3": MessageLookupByLibrary.simpleMessage(
-      "Everyone keeps doing their thing",
+      "လူတိုင်း ကိုယ့်အလုပ်ကိုယ် လုပ်ကြမည်",
     ),
     "houseNormScenarioRhythmQuestion": MessageLookupByLibrary.simpleMessage(
-      "It is nighttime, and someone is still active at home. What usually feels okay?",
+      "ညနက်ပိုင်း?",
     ),
     "houseNormScenarioSharedSpacesOption1":
-        MessageLookupByLibrary.simpleMessage("Mostly clear and ready to use"),
+        MessageLookupByLibrary.simpleMessage("သန့်ရှင်း"),
     "houseNormScenarioSharedSpacesOption2":
-        MessageLookupByLibrary.simpleMessage("Lived-in, but reset later"),
+        MessageLookupByLibrary.simpleMessage("အသုံးပြုထားသလို"),
     "houseNormScenarioSharedSpacesOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "A bit messy is fine - it\'s a shared home",
-        ),
-    "houseNormScenarioSharedSpacesQuestion": MessageLookupByLibrary.simpleMessage(
-      "You walk into the kitchen at the end of the day. What feels most comfortable?",
-    ),
+        MessageLookupByLibrary.simpleMessage("ရှုပ်နေလည်း ရတယ်"),
+    "houseNormScenarioSharedSpacesQuestion":
+        MessageLookupByLibrary.simpleMessage("ညဘက် မီးဖိုချောင်?"),
     "houseNormSectionEditLabel": MessageLookupByLibrary.simpleMessage(
-      "Adjust this section",
+      "ဤအပိုင်းကို ပြင်မည်",
     ),
     "houseNormSectionEmptyError": MessageLookupByLibrary.simpleMessage(
-      "Please add text before saving.",
+      "မသိမ်းမီ စာသားထည့်ပါ။",
     ),
     "houseNormSectionFallbackTitle": MessageLookupByLibrary.simpleMessage(
-      "Section",
+      "အပိုင်း",
     ),
     "houseNormSectionGuestsSocialTitle": MessageLookupByLibrary.simpleMessage(
-      "Guests and social flow",
+      "ဧည့်သည်များနှင့် လူမှုရေးစီးဆင်းမှု",
     ),
     "houseNormSectionHomeIdentityTitle": MessageLookupByLibrary.simpleMessage(
-      "House identity",
+      "အိမ်၏ အထင်အမြင်",
     ),
     "houseNormSectionRepairStyleTitle": MessageLookupByLibrary.simpleMessage(
-      "Repair style",
+      "ပြန်လည်ညှိနှိုင်းပုံစံ",
     ),
     "houseNormSectionResponsibilityFlowTitle":
-        MessageLookupByLibrary.simpleMessage("Responsibility flow"),
+        MessageLookupByLibrary.simpleMessage("တာဝန်စီးဆင်းမှု"),
     "houseNormSectionRhythmQuietTitle": MessageLookupByLibrary.simpleMessage(
-      "Rhythm and quiet",
+      "နေ့စဉ်လှုပ်ရှားမှုနှင့် တိတ်ဆိတ်မှု",
     ),
-    "houseNormSectionSaveCta": MessageLookupByLibrary.simpleMessage("Save"),
+    "houseNormSectionSaveCta": MessageLookupByLibrary.simpleMessage("သိမ်းမည်"),
     "houseNormSectionSaveFailed": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t save that update.",
+      "ဤအပ်ဒိတ်ကို မသိမ်းနိုင်ခဲ့ပါ။",
     ),
     "houseNormSectionSaveSuccess": MessageLookupByLibrary.simpleMessage(
-      "Section updated.",
+      "အပိုင်းကို အပ်ဒိတ်လုပ်ပြီးပါပြီ။",
     ),
     "houseNormSectionSharedSpacesTitle": MessageLookupByLibrary.simpleMessage(
-      "Shared spaces",
+      "မျှဝေနေရာများ",
     ),
     "houseNormShareSubject": MessageLookupByLibrary.simpleMessage(
-      "Our house norms",
+      "ကျွန်ုပ်တို့၏ အိမ်စံနှုန်းများ",
     ),
-    "houseNormShareUrlCta": MessageLookupByLibrary.simpleMessage("Share URL"),
+    "houseNormShareUrlCta": MessageLookupByLibrary.simpleMessage(
+      "URL မျှဝေမည်",
+    ),
     "houseNormSummaryFramingLabel": MessageLookupByLibrary.simpleMessage(
-      "Summary framing",
+      "အကျဉ်းချုပ်",
     ),
     "houseNormSummarySubtitle": MessageLookupByLibrary.simpleMessage(
-      "A shared starting point - not a rulebook.",
+      "စည်းကမ်းစာအုပ် မဟုတ်သော လမ်းညွှန်တစ်ခု။",
     ),
     "houseNormSummaryTitle": MessageLookupByLibrary.simpleMessage(
-      "House norms",
+      "အိမ်စံနှုန်းများ",
     ),
     "houseNormUrlCopied": MessageLookupByLibrary.simpleMessage(
-      "House norms URL copied.",
+      "အိမ်စံနှုန်း URL ကို ကူးယူပြီးပါပြီ။",
     ),
     "houseNormViewTitle": MessageLookupByLibrary.simpleMessage(
-      "View house norms",
+      "အိမ်စံနှုန်းများ ကြည့်မည်",
     ),
     "housePulseCardHeader": MessageLookupByLibrary.simpleMessage(
-      "Weekly house pulse",
+      "အပတ်စဉ် အိမ် pulse",
     ),
-    "housePulseShareCta": MessageLookupByLibrary.simpleMessage("Share pulse"),
+    "housePulseShareCta": MessageLookupByLibrary.simpleMessage(
+      "pulse ကို မျှဝေမည်",
+    ),
     "housePulseShareMessage": m9,
     "housePulseShareTitle": MessageLookupByLibrary.simpleMessage(
-      "Sharing our Kinly house pulse",
+      "ကျွန်ုပ်တို့၏ Kinly အိမ် pulse ကို မျှဝေနေပါသည်",
     ),
     "housePulseUpdatedOn": m10,
-    "houseVibeShareCta": MessageLookupByLibrary.simpleMessage("Share vibe"),
+    "houseVibeShareCta": MessageLookupByLibrary.simpleMessage(
+      "vibe ကို မျှဝေမည်",
+    ),
     "houseVibeShareError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t share right now. Please try again.",
+      "လတ်တလော မမျှဝေနိုင်ပါ။",
     ),
     "houseVibeShareMessage": m11,
-    "houseVibeShareTitle": MessageLookupByLibrary.simpleMessage("House vibe"),
+    "houseVibeShareTitle": MessageLookupByLibrary.simpleMessage("အိမ်၏ vibe"),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Quick thanks from your home.",
+      "သင့်အိမ်မှ အမြန်ကျေးဇူးတင်စကားများ။",
     ),
     "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
-      "Shoutouts",
+      "ကျေးဇူးတင်စကားများ",
     ),
-    "hubCodeCopied": MessageLookupByLibrary.simpleMessage("Invite code copied"),
+    "hubCodeCopied": MessageLookupByLibrary.simpleMessage(
+      "ဖိတ်ခေါ်ကုဒ် ကူးယူပြီးပါပြီ",
+    ),
     "hubError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load House Hub. Please try again.",
+      "အိမ် Hub ကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "hubHouseNormsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "A shared starting point for how this home tends to work.",
+      "ဤအိမ် ဘယ်လို အလုပ်လုပ်သလဲဆိုသော လမ်းညွှန်။",
     ),
-    "hubHouseNormsTitle": MessageLookupByLibrary.simpleMessage("House norms"),
-    "hubInviteCta": MessageLookupByLibrary.simpleMessage("Invite"),
+    "hubHouseNormsTitle": MessageLookupByLibrary.simpleMessage(
+      "အိမ်စံနှုန်းများ",
+    ),
+    "hubInviteCta": MessageLookupByLibrary.simpleMessage("ဖိတ်မည်"),
     "hubInviteUnavailable": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load invite. Please try again.",
+      "ဖိတ်ခေါ်မှုကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "hubMembersEmpty": MessageLookupByLibrary.simpleMessage(
-      "No active members yet.",
+      "လက်ရှိ အဖွဲ့ဝင် မရှိသေးပါ။",
     ),
     "hubPreferencesSubtitle": MessageLookupByLibrary.simpleMessage(
-      "How each person prefers shared living to work.",
+      "လူတိုင်း မျှဝေနေထိုင်မှုကို ဘယ်လို အလုပ်လုပ်စေချင်သလဲ။",
     ),
-    "hubPreferencesTitle": MessageLookupByLibrary.simpleMessage(
-      "Personal preferences",
-    ),
+    "hubPreferencesTitle": MessageLookupByLibrary.simpleMessage("အကြိုက်များ"),
     "hubQrSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Scan to download Kinly",
+      "Kinly ဒေါင်းလုဒ်လုပ်ရန် စကင်ဖတ်ပါ",
     ),
-    "hubQrTitle": MessageLookupByLibrary.simpleMessage("Share the app"),
-    "hubRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "hubQrTitle": MessageLookupByLibrary.simpleMessage("အက်ပ် မျှဝေမည်"),
+    "hubRetry": MessageLookupByLibrary.simpleMessage("ပြန်ကြိုးစားမည်"),
     "hubRotateError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t rotate invite. Try again.",
+      "ဖိတ်ခေါ်မှုကို အသစ်မပြောင်းနိုင်ခဲ့ပါ။",
     ),
-    "hubRotateInvite": MessageLookupByLibrary.simpleMessage("Rotate invite"),
-    "hubRotateSuccess": MessageLookupByLibrary.simpleMessage("Invite rotated"),
+    "hubRotateInvite": MessageLookupByLibrary.simpleMessage(
+      "ဖိတ်ခေါ်မှု အသစ်ပြောင်းမည်",
+    ),
+    "hubRotateSuccess": MessageLookupByLibrary.simpleMessage(
+      "ဖိတ်ခေါ်မှု အသစ်ပြောင်းပြီးပါပြီ",
+    ),
     "hubShareAppBody": m12,
-    "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Share Kinly"),
-    "hubShareAppTitle": MessageLookupByLibrary.simpleMessage(
-      "Get the Kinly app",
-    ),
+    "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Kinly မျှဝေမည်"),
+    "hubShareAppTitle": MessageLookupByLibrary.simpleMessage("Kinly ရယူမည်"),
     "hubShareInviteBody": m13,
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
-      "Invite to my Kinly house",
+      "ကျွန်ုပ်၏ Kinly အိမ်သို့ ဖိတ်ခေါ်မည်",
     ),
     "join_blocked_body": MessageLookupByLibrary.simpleMessage(
-      "WeÃ¢â‚¬â„¢ve notified the home owner.",
+      "အိမ်ပိုင်ရှင်ကို ကျွန်ုပ်တို့ အသိပေးထားပါသည်။",
     ),
-    "join_blocked_cta": MessageLookupByLibrary.simpleMessage("Done"),
+    "join_blocked_cta": MessageLookupByLibrary.simpleMessage("ပြီးပြီ"),
     "join_blocked_title": MessageLookupByLibrary.simpleMessage(
-      "This home isnÃ¢â‚¬â„¢t accepting new members right now",
+      "ဤအိမ်သည် လတ်တလော အဖွဲ့ဝင်အသစ်များကို လက်မခံသေးပါ",
     ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
-      "Leave your current home to join a new one",
+      "လက်ရှိအိမ်မှ အရင်ထွက်ပါ။",
     ),
     "join_error_forbidden": MessageLookupByLibrary.simpleMessage(
-      "You don\'t have permission to join this home.",
+      "ဤအိမ်သို့ ဝင်ရန် သင့်တွင် ခွင့်ပြုချက် မရှိပါ။",
     ),
     "join_error_inactive_invite": MessageLookupByLibrary.simpleMessage(
-      "That invite is no longer active. Ask the owner for a new code.",
+      "ဤဖိတ်ခေါ်မှု သက်တမ်းကုန်သွားပါပြီ။ ပိုင်ရှင်ထံမှ အသစ်တစ်ခု တောင်းပါ။",
     ),
     "join_error_invalid_code": MessageLookupByLibrary.simpleMessage(
-      "That invite code doesn\'t look right.",
+      "ဖိတ်ခေါ်ကုဒ် မမှန်သလို ဖြစ်နေပါသည်။",
     ),
     "join_error_paywall_limit": MessageLookupByLibrary.simpleMessage(
-      "This home has reached its member limit. Ask the owner to upgrade or remove a member.",
+      "ဤအိမ်သည် အဖွဲ့ဝင်အရေအတွက် ကန့်သတ်ချက်ပြည့်သွားပါပြီ။ ပိုင်ရှင်အား အဆင့်မြှင့်ရန် သို့မဟုတ် တစ်ယောက်ယောက်ကို ဖယ်ရှားရန် ပြောပါ။",
     ),
     "join_error_unauthorized": MessageLookupByLibrary.simpleMessage(
-      "Please sign in to join this home.",
+      "ဤအိမ်သို့ ဝင်ရန် အကောင့်ဝင်ပါ။",
     ),
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t join this home. Please try again.",
+      "ဤအိမ်သို့ မဝင်နိုင်ခဲ့ပါ။",
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage(
-      "Enter invite code Eg. ABC123",
+      "ဖိတ်ခေါ်ကုဒ် ထည့်ပါ (ဥပမာ ABC123)",
     ),
-    "join_submit": MessageLookupByLibrary.simpleMessage("Join"),
+    "join_submit": MessageLookupByLibrary.simpleMessage("ဝင်မည်"),
     "join_success": m14,
-    "join_title": MessageLookupByLibrary.simpleMessage("Join Household"),
-    "login_consent_connector": MessageLookupByLibrary.simpleMessage(" & "),
+    "join_title": MessageLookupByLibrary.simpleMessage("အိမ်သို့ ဝင်မည်"),
+    "login_consent_connector": MessageLookupByLibrary.simpleMessage(" နှင့် "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
-      "I have read and agree to the ",
+      "ကျွန်ုပ်သည် ",
     ),
-    "login_privacy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+    "login_privacy": MessageLookupByLibrary.simpleMessage(
+      "ကိုယ်ရေးအချက်အလက် မူဝါဒ",
+    ),
     "login_tagline": MessageLookupByLibrary.simpleMessage(
-      "Together feels lighter",
+      "အတူတကွဆို ပိုပေါ့ပါးတယ်",
     ),
-    "login_terms": MessageLookupByLibrary.simpleMessage("Service Terms"),
+    "login_terms": MessageLookupByLibrary.simpleMessage(
+      "ဝန်ဆောင်မှုစည်းမျဉ်းများ",
+    ),
     "login_with_apple": MessageLookupByLibrary.simpleMessage(
-      "Continue with Apple",
+      "Apple ဖြင့် ဆက်လုပ်မည်",
     ),
     "login_with_google": MessageLookupByLibrary.simpleMessage(
-      "Continue with Google",
+      "Google ဖြင့် ဆက်လုပ်မည်",
     ),
-    "logout": MessageLookupByLibrary.simpleMessage("Sign out"),
+    "logout": MessageLookupByLibrary.simpleMessage("အကောင့်ထွက်မည်"),
     "membership_status_active": MessageLookupByLibrary.simpleMessage(
-      "You\'re connected to a home.",
+      "သင်သည် အိမ်တစ်ခုနှင့် ချိတ်ဆက်ထားပါသည်။",
     ),
     "membership_status_checking": MessageLookupByLibrary.simpleMessage(
-      "Connecting you to your homeÃ¢â‚¬Â¦",
+      "သင့်အိမ်နှင့် ချိတ်ဆက်နေသည်...",
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
-      "Your shared home starts here.",
+      "အိမ်တစ်ခု ဖန်တီးပါ သို့မဟုတ် ဝင်ပါ။",
     ),
     "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
-      "Type @ to mention someone",
+      "@ ရိုက်ပြီး တစ်ယောက်ယောက်ကို ဖော်ပြပါ",
     ),
-    "navExplore": MessageLookupByLibrary.simpleMessage("Manage"),
-    "navHub": MessageLookupByLibrary.simpleMessage("House Hub"),
-    "navToday": MessageLookupByLibrary.simpleMessage("Today"),
+    "navExplore": MessageLookupByLibrary.simpleMessage("စီမံမည်"),
+    "navHub": MessageLookupByLibrary.simpleMessage("အိမ် Hub"),
+    "navToday": MessageLookupByLibrary.simpleMessage("ယနေ့"),
     "npsCannotSkip": MessageLookupByLibrary.simpleMessage(
-      "Please choose a score to continue.",
+      "ဆက်လုပ်ရန် အမှတ်တစ်ခု ရွေးပါ။",
     ),
     "npsDescription": MessageLookupByLibrary.simpleMessage(
-      "0 means not at all. 10 means it\'s made a real difference.",
+      "0 ဆိုသည်မှာ လုံးဝမဟုတ်ပါ။ 10 ဆိုသည်မှာ တကယ် ကွာခြားမှုရှိစေခဲ့သည်။",
     ),
     "npsEmailSubject": MessageLookupByLibrary.simpleMessage(
-      "How could Kinly better support your home?",
+      "Kinly က သင့်အိမ်ကို ဘယ်လို ပိုကောင်းအောင် ကူညီနိုင်မလဲ?",
     ),
     "npsLaunchError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t open the next step.",
+      "နောက်အဆင့်ကို မဖွင့်နိုင်ခဲ့ပါ။",
     ),
     "npsScaleHighLabel": MessageLookupByLibrary.simpleMessage(
-      "10 Made a real difference",
+      "10 တကယ် ကွာခြားမှုရှိစေခဲ့သည်",
     ),
-    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 Not at all"),
+    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 လုံးဝမဟုတ်ပါ"),
     "npsSubmitErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "Feedback is unavailable right now.",
+      "လတ်တလော အကြံပြုချက် မရနိုင်ပါ။",
     ),
     "npsSubmitErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t send your feedback. Please try again.",
+      "သင့်အကြံပြုချက်ကို မပို့နိုင်ခဲ့ပါ။",
     ),
     "npsSubmitErrorInvalidScore": MessageLookupByLibrary.simpleMessage(
-      "Please pick a number between 0 and 10.",
+      "0 နှင့် 10 ကြား နံပါတ်တစ်ခု ရွေးပါ။",
     ),
     "npsSubmitErrorNotRequired": MessageLookupByLibrary.simpleMessage(
-      "You don\'t need to share feedback right now.",
+      "လတ်တလော သင် အကြံပြုချက် မပေးလည်း ရပါသည်။",
     ),
     "npsTitle": MessageLookupByLibrary.simpleMessage(
-      "Has Kinly helped your home run more smoothly?",
+      "Kinly က သင့်အိမ်ကို ပိုချောမွေ့စွာ လည်ပတ်စေဖို့ ကူညီခဲ့ပါသလား?",
     ),
     "offline_body": MessageLookupByLibrary.simpleMessage(
-      "Kinly needs an internet connection. Check your signal and try again.",
+      "အင်တာနက်ချိတ်ဆက်မှု မရှိပါ။ ထပ်မံကြိုးစားပါ။",
     ),
-    "offline_retry": MessageLookupByLibrary.simpleMessage("Try again"),
-    "offline_title": MessageLookupByLibrary.simpleMessage("You\'re offline"),
+    "offline_retry": MessageLookupByLibrary.simpleMessage("ထပ်မံကြိုးစားမည်"),
+    "offline_title": MessageLookupByLibrary.simpleMessage(
+      "သင် အော့ဖ်လိုင်း ဖြစ်နေပါသည်",
+    ),
     "paywallBulletFlows": MessageLookupByLibrary.simpleMessage(
-      "Unlimited tasks",
+      "တာဝန်များ အကန့်အသတ်မရှိ",
     ),
     "paywallBulletMembers": MessageLookupByLibrary.simpleMessage(
-      "Unlimited home members",
+      "အဖွဲ့ဝင် အကန့်အသတ်မရှိ",
     ),
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
-      "Unlimited task photos",
+      "တာဝန်ဓာတ်ပုံများ အကန့်အသတ်မရှိ",
     ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
-      "Unlimited shared expenses",
+      "ဘေလ်များ အကန့်အသတ်မရှိ",
     ),
     "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
-      "Unlimited shopping list photos",
+      "စျေးဝယ်ဓာတ်ပုံများ အကန့်အသတ်မရှိ",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
-      "Unable to load paywall.",
+      "Paywall ကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "paywallFeatureUnlimitedSharedExpensePhotos":
-        MessageLookupByLibrary.simpleMessage("Unlimited shared expense photos"),
+        MessageLookupByLibrary.simpleMessage("ဘေလ်ဓာတ်ပုံများ အကန့်အသတ်မရှိ"),
     "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
-      "One home plan, no hidden tiers.",
+      "အိမ်တစ်အိမ် အစီအစဉ်တစ်ခု။ လျှို့ဝှက်အဆင့်များ မရှိပါ။",
     ),
     "paywallPricePerMonth": m15,
     "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
-      "Pricing not available right now.",
+      "လတ်တလော ဈေးနှုန်း မရရှိနိုင်ပါ။",
     ),
     "paywallPrimaryCta": MessageLookupByLibrary.simpleMessage(
-      "Upgrade to Kinly Premium",
+      "Premium သို့ အဆင့်မြှင့်မည်",
     ),
     "paywallPurchaseFailed": MessageLookupByLibrary.simpleMessage(
-      "Purchase not completed - you can try again anytime.",
+      "ဝယ်ယူမှု မပြီးဆုံးခဲ့ပါ။",
     ),
     "paywallPurchaseSuccess": MessageLookupByLibrary.simpleMessage(
-      "You\'re now on Kinly Premium.",
+      "ယခု သင်သည် Kinly Premium တွင် ရှိပါသည်။",
     ),
     "paywallRestoreCta": MessageLookupByLibrary.simpleMessage(
-      "Restore purchases",
+      "ဝယ်ယူမှုများ ပြန်လည်ရယူမည်",
     ),
-    "paywallRetryLabel": MessageLookupByLibrary.simpleMessage("Retry"),
+    "paywallRetryLabel": MessageLookupByLibrary.simpleMessage(
+      "ပြန်ကြိုးစားမည်",
+    ),
     "paywallSecondaryCta": MessageLookupByLibrary.simpleMessage(
-      "Stay on free plan",
+      "အခမဲ့အစီအစဉ်တွင် ဆက်နေရမည်",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Costs less than 0.5% of your rent.",
+      "သင့်အိမ်လခ၏ 0.5% ထက်နည်းပါသည်။",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
-      "Keep your home running smoothly",
+      "သင့်အိမ်ကို ချောမွေ့စွာ လည်ပတ်နေစေပါ",
     ),
     "personalMentionsTitle": MessageLookupByLibrary.simpleMessage(
-      "Personal mentions",
+      "ကိုယ်ပိုင် ဖော်ပြချက်များ",
     ),
     "personalProfileLoadError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load your personal profile right now. Please try again.",
+      "သင့်ကိုယ်ပိုင် ပရိုဖိုင်ကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "personalProfileMentions": MessageLookupByLibrary.simpleMessage(
-      "Personal mentions",
+      "ကိုယ်ပိုင် ဖော်ပြချက်များ",
     ),
     "personalProfilePreferences": MessageLookupByLibrary.simpleMessage(
-      "Personal preferences",
+      "ကိုယ်ပိုင်အကြိုက်များ",
     ),
     "personalProfileTitle": MessageLookupByLibrary.simpleMessage(
-      "Your profile",
+      "သင့်ပရိုဖိုင်",
     ),
-    "planFreeLabel": MessageLookupByLibrary.simpleMessage("Upgrade to Premium"),
+    "planFreeLabel": MessageLookupByLibrary.simpleMessage(
+      "Premium သို့ အဆင့်မြှင့်မည်",
+    ),
     "planPremiumActiveBody": MessageLookupByLibrary.simpleMessage(
-      "Enjoy unlimited access to all features.",
+      "အင်္ဂါရပ်အားလုံးကို အကန့်အသတ်မရှိ အသုံးပြုနိုင်ပါသည်။",
     ),
     "planPremiumActiveTitle": MessageLookupByLibrary.simpleMessage(
-      "You\'re on Premium",
+      "သင်သည် Premium တွင် ရှိပါသည်",
     ),
     "planPremiumLabel": MessageLookupByLibrary.simpleMessage("Premium"),
-    "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
+    "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage(
+      "နောက်သို့",
+    ),
     "preferenceOnboardingProgress": m16,
     "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
-      "Save preferences",
+      "သိမ်းမည်",
     ),
     "preferenceOnboardingTitle": MessageLookupByLibrary.simpleMessage(
-      "Personal preferences",
+      "သင့် vibe",
     ),
-    "preferencePromptCta": MessageLookupByLibrary.simpleMessage(
-      "Start preferences",
-    ),
+    "preferencePromptCta": MessageLookupByLibrary.simpleMessage("စတင်မည်"),
     "preferencePromptSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Set up your personal preferences so your home can learn how you like things.",
+      "သင့်အတွက် ဘာက အဆင်ပြေလဲဆိုတာ အိမ်က နားလည်စေရန် ကူညီပါ။",
     ),
     "preferencePromptTitle": MessageLookupByLibrary.simpleMessage(
-      "Share your preferences",
+      "သင့် vibe ကို သတ်မှတ်ပါ",
     ),
-    "preferenceReportDoneCta": MessageLookupByLibrary.simpleMessage("Done"),
-    "preferenceReportEditCta": MessageLookupByLibrary.simpleMessage("Edit"),
+    "preferenceReportDoneCta": MessageLookupByLibrary.simpleMessage("ပြီးပြီ"),
+    "preferenceReportEditCta": MessageLookupByLibrary.simpleMessage("ပြင်မည်"),
     "preferenceReportEditError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t save that update.",
+      "ဤအပ်ဒိတ်ကို မသိမ်းနိုင်ခဲ့ပါ။",
     ),
     "preferenceReportEditSectionDone": MessageLookupByLibrary.simpleMessage(
-      "Done",
+      "ပြီးပြီ",
     ),
     "preferenceReportEditSectionHint": MessageLookupByLibrary.simpleMessage(
-      "Write what feels right for you",
+      "သင့်အတွက် မှန်ကန်သလို ခံစားရတာကို ရေးပါ",
     ),
     "preferenceReportEditSectionPrompt": MessageLookupByLibrary.simpleMessage(
-      "Adjust the wording for this section.",
+      "ဤအပိုင်းကို ပြင်ပါ။",
     ),
     "preferenceReportEditTitle": MessageLookupByLibrary.simpleMessage(
-      "Edit preferences",
+      "အကြိုက်များကို ပြင်မည်",
     ),
     "preferenceReportEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "Complete your preferences to generate your report.",
+      "သင့်အစီရင်ခံစာ ဖန်တီးရန် အကြိုက်များကို ဖြည့်စွက်ပါ။",
     ),
     "preferenceReportEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "Preference report not ready",
+      "အကြိုက်များ မပြည့်စုံသေးပါ",
     ),
     "preferenceReportErrorBody": MessageLookupByLibrary.simpleMessage(
-      "Please try again.",
+      "ထပ်မံကြိုးစားပါ။",
     ),
     "preferenceReportErrorTitle": MessageLookupByLibrary.simpleMessage(
-      "Could not load report",
+      "အစီရင်ခံစာကို မတင်နိုင်ခဲ့ပါ",
     ),
     "preferenceReportGenerationFailed": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t finish your preference reflection. Head back and try again.",
+      "သင့်အကြိုက် ထင်ဟပ်ချက်ကို မပြီးမြောက်နိုင်ခဲ့ပါ။ နောက်သို့ ပြန်ပြီး ထပ်ကြိုးစားပါ။",
     ),
     "preferenceReportGenerationMissing": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t finish your preference reflection. Please try again soon.",
+      "သင့်အကြိုက် ထင်ဟပ်ချက်ကို မပြီးမြောက်နိုင်ခဲ့ပါ။ မကြာမီ ထပ်ကြိုးစားပါ။",
     ),
     "preferenceReportReadOnlyNote": MessageLookupByLibrary.simpleMessage(
-      "This shows what feels comfortable for them.",
+      "ဤအရာသည် သူတို့အတွက် ဘာက သက်သောင့်သက်သာရှိသလဲကို ပြသသည်။",
     ),
     "preferenceReportTitle": MessageLookupByLibrary.simpleMessage(
-      "Your preference report",
+      "သင့်အကြိုက်များ",
     ),
     "preferenceReportViewTitle": MessageLookupByLibrary.simpleMessage(
-      "View preferences",
+      "အကြိုက်များကို ကြည့်မည်",
     ),
     "preferenceScenarioCleanlinessSharedSpaceOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "I feel best when things are kept fairly tidy",
-        ),
+        MessageLookupByLibrary.simpleMessage("သပ်ရပ်စွာထား"),
     "preferenceScenarioCleanlinessSharedSpaceOption2":
-        MessageLookupByLibrary.simpleMessage("Some clutter is okay day-to-day"),
+        MessageLookupByLibrary.simpleMessage("နည်းနည်း ရှုပ်လည်း ရတယ်"),
     "preferenceScenarioCleanlinessSharedSpaceOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "I\'m relaxed about mess in shared areas",
-        ),
+        MessageLookupByLibrary.simpleMessage("ရှုပ်နေလည်း ရတယ်"),
     "preferenceScenarioCleanlinessSharedSpaceQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "In shared spaces, what level of tidiness works for you?",
-        ),
+        MessageLookupByLibrary.simpleMessage("မျှဝေနေရာ?"),
     "preferenceScenarioCommunicationChannelOption1":
-        MessageLookupByLibrary.simpleMessage("Messaging or text"),
+        MessageLookupByLibrary.simpleMessage("စာတို"),
     "preferenceScenarioCommunicationChannelOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "Talking in person when it comes up",
-        ),
+        MessageLookupByLibrary.simpleMessage("ကိုယ်တိုင်တွေ့"),
     "preferenceScenarioCommunicationChannelOption3":
-        MessageLookupByLibrary.simpleMessage("A quick call feels easiest"),
+        MessageLookupByLibrary.simpleMessage("ဖုန်းခေါ်"),
     "preferenceScenarioCommunicationChannelQuestion":
         MessageLookupByLibrary.simpleMessage(
-          "When you need to coordinate at home, what works best for you?",
+          "သင့်ကို ဆက်သွယ်ရန် အကောင်းဆုံးနည်း?",
         ),
     "preferenceScenarioCommunicationDirectnessOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "Gently, with context or easing in",
-        ),
+        MessageLookupByLibrary.simpleMessage("နူးညံ့စွာ ပြောပါ"),
     "preferenceScenarioCommunicationDirectnessOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "A mix - it depends on the situation",
-        ),
+        MessageLookupByLibrary.simpleMessage("အခြေအနေပေါ်မူတည်"),
     "preferenceScenarioCommunicationDirectnessOption3":
-        MessageLookupByLibrary.simpleMessage("Directly and clearly"),
+        MessageLookupByLibrary.simpleMessage("တိုက်ရိုက် ပြောပါ"),
     "preferenceScenarioCommunicationDirectnessQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "When someone bring something up to you, how would you prefer to receive it?",
-        ),
+        MessageLookupByLibrary.simpleMessage("တစ်ခုခု မမှန်ရင်?"),
     "preferenceScenarioConflictResolutionOption1":
-        MessageLookupByLibrary.simpleMessage("Taking time to cool off first"),
+        MessageLookupByLibrary.simpleMessage("အရင် စိတ်အေးအောင်လုပ်"),
     "preferenceScenarioConflictResolutionOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "Gently checking in at the right moment",
-        ),
+        MessageLookupByLibrary.simpleMessage("နောက်မှ စစ်ဆေးပြောဆိုမည်"),
     "preferenceScenarioConflictResolutionOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "Talking it through sooner rather than later",
-        ),
+        MessageLookupByLibrary.simpleMessage("စောစော ပြောဆိုမည်"),
     "preferenceScenarioConflictResolutionQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "If something needs addressing at home, what helps most?",
-        ),
+        MessageLookupByLibrary.simpleMessage("တစ်ခုခု မမှန်ဘူးဆိုရင်?"),
     "preferenceScenarioEnvironmentLightOption1":
-        MessageLookupByLibrary.simpleMessage("Softer or dimmer lighting"),
+        MessageLookupByLibrary.simpleMessage("ပျော့ပျောင်း"),
     "preferenceScenarioEnvironmentLightOption2":
-        MessageLookupByLibrary.simpleMessage("Balanced, natural lighting"),
+        MessageLookupByLibrary.simpleMessage("မျှတ"),
     "preferenceScenarioEnvironmentLightOption3":
-        MessageLookupByLibrary.simpleMessage("Bright, well-lit spaces"),
+        MessageLookupByLibrary.simpleMessage("တောက်ပ"),
     "preferenceScenarioEnvironmentLightQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "In shared areas, what lighting do you prefer?",
-        ),
+        MessageLookupByLibrary.simpleMessage("အလင်းအနေအထား?"),
     "preferenceScenarioEnvironmentNoiseOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "I\'m most comfortable when things are generally quiet",
-        ),
+        MessageLookupByLibrary.simpleMessage("တိတ်တိတ်ဆိတ်ဆိတ်ပါ"),
     "preferenceScenarioEnvironmentNoiseOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "A moderate level of everyday noise feels fine",
-        ),
+        MessageLookupByLibrary.simpleMessage("ပုံမှန်အသံ"),
     "preferenceScenarioEnvironmentNoiseOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "Noise doesn\'t bother me much - lively spaces are okay",
-        ),
+        MessageLookupByLibrary.simpleMessage("အသက်ဝင်နေတာ အဆင်ပြေတယ်"),
     "preferenceScenarioEnvironmentNoiseQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "How comfortable are you with background noise in shared spaces?",
-        ),
+        MessageLookupByLibrary.simpleMessage("အသံအဆင့်?"),
     "preferenceScenarioEnvironmentScentOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "I\'m quite sensitive to strong scents",
-        ),
+        MessageLookupByLibrary.simpleMessage("လွယ်ကူစွာ ထိခိုက်တတ်"),
     "preferenceScenarioEnvironmentScentOption2":
-        MessageLookupByLibrary.simpleMessage("I\'m mostly neutral"),
+        MessageLookupByLibrary.simpleMessage("ပုံမှန်"),
     "preferenceScenarioEnvironmentScentOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "Strong scents don\'t really bother me",
-        ),
+        MessageLookupByLibrary.simpleMessage("မကန့်ကွက်ဘူး"),
     "preferenceScenarioEnvironmentScentQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "How comfortable are you with strong scents (candles, cooking, cleaners)?",
-        ),
+        MessageLookupByLibrary.simpleMessage("အနံ့ပြင်းတာ?"),
     "preferenceScenarioPrivacyNotificationsOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "I prefer not to be contacted after quiet hours",
-        ),
+        MessageLookupByLibrary.simpleMessage("မပို့ပါနဲ့"),
     "preferenceScenarioPrivacyNotificationsOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "Limited or important messages are okay",
-        ),
+        MessageLookupByLibrary.simpleMessage("အရေးကြီးတာသာ"),
     "preferenceScenarioPrivacyNotificationsOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "I\'m fine being contacted anytime",
-        ),
+        MessageLookupByLibrary.simpleMessage("ဘယ်အချိန်မဆို"),
     "preferenceScenarioPrivacyNotificationsQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "How do you feel about messages at night?",
-        ),
+        MessageLookupByLibrary.simpleMessage("ညဘက် မက်ဆေ့ချ်များ?"),
     "preferenceScenarioPrivacyRoomEntryOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "I prefer people to ask or knock first",
-        ),
+        MessageLookupByLibrary.simpleMessage("အရင် တံခါးခေါက်ပါ"),
     "preferenceScenarioPrivacyRoomEntryOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "Asking is nice, but flexibility is okay",
-        ),
+        MessageLookupByLibrary.simpleMessage("များသောအားဖြင့် တံခါးခေါက်ပါ"),
     "preferenceScenarioPrivacyRoomEntryOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "I\'m generally comfortable with open access",
-        ),
+        MessageLookupByLibrary.simpleMessage("တံခါးဖွင့်ထားလျှင် ရတယ်"),
     "preferenceScenarioPrivacyRoomEntryQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "Before entering someone\'s room, what feels right to you?",
-        ),
+        MessageLookupByLibrary.simpleMessage("သင့်အခန်းထဲ ဝင်ခြင်း?"),
     "preferenceScenarioRoutinePlanningOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "Having plans and structure helps me",
-        ),
+        MessageLookupByLibrary.simpleMessage("ဖွဲ့စည်းထားသည်"),
     "preferenceScenarioRoutinePlanningOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "A mix of planning and spontaneity",
-        ),
+        MessageLookupByLibrary.simpleMessage("အနည်းငယ် ဖွဲ့စည်းထားသည်"),
     "preferenceScenarioRoutinePlanningOption3":
-        MessageLookupByLibrary.simpleMessage("Going with the flow feels best"),
+        MessageLookupByLibrary.simpleMessage("ဖြစ်သလို စီးဆင်းမည်"),
     "preferenceScenarioRoutinePlanningQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "When it comes to daily life at home, what feels most natural to you?",
-        ),
+        MessageLookupByLibrary.simpleMessage("နေ့စဉ်ဘဝ?"),
     "preferenceScenarioScheduleQuietHoursOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "Evenings tend to be quieter for me",
-        ),
+        MessageLookupByLibrary.simpleMessage("တိတ်ဆိတ်သောညများ"),
     "preferenceScenarioScheduleQuietHoursOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "It depends - some nights are quieter than others",
-        ),
+        MessageLookupByLibrary.simpleMessage("အခြေအနေပေါ်မူတည်"),
     "preferenceScenarioScheduleQuietHoursOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "Nighttime activity doesn\'t usually bother me",
-        ),
+        MessageLookupByLibrary.simpleMessage("တက်ကြွနေလည်း အဆင်ပြေတယ်"),
     "preferenceScenarioScheduleQuietHoursQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "In the evenings, what usually works best for you?",
-        ),
+        MessageLookupByLibrary.simpleMessage("ညနေပိုင်း?"),
     "preferenceScenarioScheduleSleepTimingOption1":
-        MessageLookupByLibrary.simpleMessage("Earlier nights and mornings"),
+        MessageLookupByLibrary.simpleMessage("စောစောထ"),
     "preferenceScenarioScheduleSleepTimingOption2":
-        MessageLookupByLibrary.simpleMessage("Somewhere in the middle"),
+        MessageLookupByLibrary.simpleMessage("အလယ်အလတ်"),
     "preferenceScenarioScheduleSleepTimingOption3":
-        MessageLookupByLibrary.simpleMessage("Later nights and mornings"),
+        MessageLookupByLibrary.simpleMessage("ညဉ့်နက်နေရသူ"),
     "preferenceScenarioScheduleSleepTimingQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "Are you more of an early bird or a night owl?",
-        ),
+        MessageLookupByLibrary.simpleMessage("အိပ်စက်မှုပုံစံ?"),
     "preferenceScenarioSocialHostingOption1":
-        MessageLookupByLibrary.simpleMessage(
-          "I\'m most comfortable with guests being rare",
-        ),
+        MessageLookupByLibrary.simpleMessage("ရှားရှားပါးပါး"),
     "preferenceScenarioSocialHostingOption2":
-        MessageLookupByLibrary.simpleMessage("Occasional guests feel fine"),
+        MessageLookupByLibrary.simpleMessage("တစ်ခါတစ်လေ"),
     "preferenceScenarioSocialHostingOption3":
-        MessageLookupByLibrary.simpleMessage(
-          "Frequent guests are okay with me",
-        ),
+        MessageLookupByLibrary.simpleMessage("မကြာခဏ"),
     "preferenceScenarioSocialHostingQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "How do you feel about guests coming over to the home?",
-        ),
+        MessageLookupByLibrary.simpleMessage("ဧည့်သည်များ?"),
     "preferenceScenarioSocialTogethernessOption1":
-        MessageLookupByLibrary.simpleMessage("Mostly doing my own thing"),
+        MessageLookupByLibrary.simpleMessage("အများစု ကိုယ်တိုင်နေ"),
     "preferenceScenarioSocialTogethernessOption2":
-        MessageLookupByLibrary.simpleMessage(
-          "A mix of shared time and solo time",
-        ),
+        MessageLookupByLibrary.simpleMessage("နှစ်မျိုးလုံး ရောနှော"),
     "preferenceScenarioSocialTogethernessOption3":
-        MessageLookupByLibrary.simpleMessage("Spending time together often"),
+        MessageLookupByLibrary.simpleMessage("အတူ မကြာခဏ အပန်းဖြေ"),
     "preferenceScenarioSocialTogethernessQuestion":
-        MessageLookupByLibrary.simpleMessage(
-          "At home, what balance works best for you?",
-        ),
-    "profileActionConfirm": MessageLookupByLibrary.simpleMessage("Leave House"),
+        MessageLookupByLibrary.simpleMessage("အိမ်၏ စွမ်းအင်?"),
+    "profileActionConfirm": MessageLookupByLibrary.simpleMessage(
+      "အိမ်မှ ထွက်မည်",
+    ),
     "profileActionConfirmDelete": MessageLookupByLibrary.simpleMessage(
-      "Delete account",
+      "အကောင့် ဖျက်မည်",
     ),
     "profileConfirmDeleteMessage": MessageLookupByLibrary.simpleMessage(
-      "This removes your account and signs you out. You won\'t be able to undo this.",
+      "၎င်းသည် သင့်အကောင့်ကို ဖျက်ပြီး အကောင့်ထွက်စေမည်။ ပြန်မလည်နိုင်ပါ။",
     ),
     "profileConfirmDeleteTitle": MessageLookupByLibrary.simpleMessage(
-      "Delete your account?",
+      "သင့်အကောင့်ကို ဖျက်မလား?",
     ),
     "profileConfirmLeaveMessage": MessageLookupByLibrary.simpleMessage(
-      "You\'ll lose access to tasks, history, and invites.",
+      "သင်သည် တာဝန်များ၊ မှတ်တမ်းနှင့် ဖိတ်ခေါ်မှုများသို့ ဝင်ရောက်ခွင့် ဆုံးရှုံးမည်။",
     ),
     "profileConfirmLeaveTitle": MessageLookupByLibrary.simpleMessage(
-      "Leave this house?",
+      "ဤအိမ်မှ ထွက်မလား?",
     ),
     "profileConnectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Manage notifications and reminders.",
+      "သတိပေးချက်များနှင့် အကြောင်းကြားချက်များကို စီမံပါ။",
     ),
     "profileConnectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "Connection settings",
+      "အသိပေးချက်များ",
     ),
     "profileContactEmailSubject": MessageLookupByLibrary.simpleMessage(
-      "Contact us",
+      "ဆက်သွယ်ရန်",
     ),
     "profileContactLaunchError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t open your email app. Try again.",
+      "သင့်အီးမေးလ်အက်ပ်ကို မဖွင့်နိုင်ခဲ့ပါ။",
     ),
     "profileContactUsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Email support@makinglifeeasie.com",
+      "support@makinglifeeasie.com သို့ အီးမေးလ်ပို့ပါ",
     ),
-    "profileContactUsTitle": MessageLookupByLibrary.simpleMessage("Contact us"),
+    "profileContactUsTitle": MessageLookupByLibrary.simpleMessage("ဆက်သွယ်ရန်"),
     "profileDeleteAccountSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Remove your Kinly account and profile data.",
+      "သင့် Kinly အကောင့်နှင့် ဒေတာများကို ဖျက်မည်။",
     ),
     "profileDeleteAccountTitle": MessageLookupByLibrary.simpleMessage(
-      "Delete account",
+      "အကောင့် ဖျက်မည်",
     ),
     "profileDeleteSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "Your account will be deleted shortly. We\'ll sign you out.",
+      "သင့်အကောင့်ကို မကြာမီ ဖျက်ပါမည်။ ကျွန်ုပ်တို့က သင့်ကို အကောင့်ထွက်ပေးပါမည်။",
     ),
     "profileGenericError": MessageLookupByLibrary.simpleMessage(
-      "Something went wrong. Please try again.",
+      "တစ်ခုခု မှားယွင်းသွားပါသည်။",
     ),
     "profileIdentityAvatarEmpty": MessageLookupByLibrary.simpleMessage(
-      "No avatars are available right now. Try again soon.",
+      "လတ်တလော avatar မရရှိနိုင်ပါ။",
     ),
     "profileIdentityAvatarSectionDescription":
         MessageLookupByLibrary.simpleMessage(
-          "Each avatar is unique inside your home.",
+          "အိမ်အတွင်း avatar တစ်ခုစီသည် သီးသန့် ဖြစ်ရမည်။",
         ),
     "profileIdentityAvatarSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Pick an avatar",
+      "Avatar ရွေးပါ",
     ),
     "profileIdentityLoadError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load your profile right now.",
+      "သင့်ပရိုဖိုင်ကို မတင်နိုင်ခဲ့ပါ။",
     ),
-    "profileIdentityRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "profileIdentityRetry": MessageLookupByLibrary.simpleMessage(
+      "ပြန်ကြိုးစားမည်",
+    ),
     "profileIdentitySaveButton": MessageLookupByLibrary.simpleMessage(
-      "Save changes",
+      "ပြောင်းလဲမှုများ သိမ်းမည်",
     ),
     "profileIdentitySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Pick a username and avatar for your home.",
+      "အသုံးပြုသူအမည်နှင့် avatar ရွေးပါ။",
     ),
     "profileIdentitySuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "Profile updated.",
+      "ပရိုဖိုင်ကို အပ်ဒိတ်လုပ်ပြီးပါပြီ။",
     ),
     "profileIdentityTitle": MessageLookupByLibrary.simpleMessage(
-      "Edit profile",
+      "ပရိုဖိုင် ပြင်မည်",
     ),
     "profileIdentityUsernameEmptyError": MessageLookupByLibrary.simpleMessage(
-      "Enter a username to continue.",
+      "အသုံးပြုသူအမည် ထည့်ပါ။",
     ),
     "profileIdentityUsernameFormatError": MessageLookupByLibrary.simpleMessage(
-      "Use 3-30 lowercase letters or numbers. You can include dots or underscores in the middle.",
+      "စာလုံးသေး သို့မဟုတ် နံပါတ် 3-30 လုံး သုံးပါ။ Dot နှင့် underscore ကို အလယ်တွင်သာ သုံးနိုင်သည်။",
     ),
     "profileIdentityUsernameHint": MessageLookupByLibrary.simpleMessage(
-      "letters, numbers, . or _",
+      "အက္ခရာ၊ နံပါတ်၊ . သို့မဟုတ် _",
     ),
     "profileIdentityUsernameLabel": MessageLookupByLibrary.simpleMessage(
-      "Username",
+      "အသုံးပြုသူအမည်",
     ),
     "profileIdentityUsernamePreviewFallback":
-        MessageLookupByLibrary.simpleMessage("your username"),
+        MessageLookupByLibrary.simpleMessage("သင့်အသုံးပြုသူအမည်"),
     "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
-      "That username is taken. Try a different one.",
+      "ဤအသုံးပြုသူအမည်ကို အခြားသူ အသုံးပြုပြီးပါပြီ။",
     ),
     "profileInfoHubLoadError": MessageLookupByLibrary.simpleMessage(
-      "The Info Hub couldn\'t load. Check your connection.",
+      "Info Hub ကို မတင်နိုင်ခဲ့ပါ။ သင့်ချိတ်ဆက်မှုကို စစ်ဆေးပါ။",
     ),
     "profileInfoHubSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Open the Kinly Notion hub in-app.",
+      "Kinly Notion hub ကို အက်ပ်အတွင်းဖွင့်ပါ။",
     ),
     "profileInfoHubTitle": MessageLookupByLibrary.simpleMessage("Info Hub"),
     "profileKickActionConfirm": MessageLookupByLibrary.simpleMessage(
-      "Remove member",
+      "အဖွဲ့ဝင် ဖယ်ရှားမည်",
     ),
     "profileKickMemberSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Choose who will lose access to this house.",
+      "ဤအိမ်မှ ဝင်ရောက်ခွင့် ဆုံးရှုံးမည့်သူကို ရွေးပါ။",
     ),
     "profileKickMemberTitle": MessageLookupByLibrary.simpleMessage(
-      "Remove a member",
+      "အဖွဲ့ဝင် ဖယ်ရှားမည်",
     ),
     "profileKickNoMembers": MessageLookupByLibrary.simpleMessage(
-      "No other members to remove right now.",
+      "လတ်တလော ဖယ်ရှားရန် အခြားအဖွဲ့ဝင် မရှိပါ။",
     ),
     "profileKickOwnerOnly": MessageLookupByLibrary.simpleMessage(
-      "Only the house owner can remove members.",
+      "အိမ်ပိုင်ရှင်သာ အဖွဲ့ဝင်များကို ဖယ်ရှားနိုင်သည်။",
     ),
     "profileKickSheetSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Select a member to remove. They\'ll lose access right away.",
+      "ဖယ်ရှားမည့် အဖွဲ့ဝင်ကို ရွေးပါ။ သူတို့သည် ချက်ချင်း ဝင်ရောက်ခွင့် ဆုံးရှုံးမည်။",
     ),
     "profileKickSheetTitle": MessageLookupByLibrary.simpleMessage(
-      "Remove a member",
+      "အဖွဲ့ဝင် ဖယ်ရှားမည်",
     ),
     "profileKickSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "They no longer have access to this house.",
+      "သူတို့သည် ဤအိမ်သို့ မဝင်ရောက်နိုင်တော့ပါ။",
     ),
     "profileLeaveEligibilityError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load your house members. Try again.",
+      "အိမ်အဖွဲ့ဝင်များကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "profileLeaveEligibilityLoading": MessageLookupByLibrary.simpleMessage(
-      "Checking your house members...",
+      "အိမ်အဖွဲ့ဝင်များကို စစ်ဆေးနေသည်...",
     ),
     "profileLeaveHomeSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Leaving this house means stepping out of your shared Kinly space.",
+      "သင်သည် ဤ မျှဝေထားသော Kinly နေရာမှ ထွက်သွားမည်ဖြစ်သည်။",
     ),
     "profileLeaveHomeTitle": MessageLookupByLibrary.simpleMessage(
-      "Leave house",
+      "အိမ်မှ ထွက်မည်",
     ),
     "profileLeaveOwnerNoEligibleMembers": MessageLookupByLibrary.simpleMessage(
-      "No one else can take ownership right now. Try again later.",
+      "ယခုပိုင်ဆိုင်မှု လွှဲပြောင်းယူနိုင်မည့် အခြားသူ မရှိသေးပါ။",
     ),
     "profileLeaveOwnerSoloMessage": MessageLookupByLibrary.simpleMessage(
-      "You\'re the last member. Leaving will deactivate this house.",
+      "သင်က နောက်ဆုံးအဖွဲ့ဝင်ဖြစ်ပါသည်။ ထွက်သွားပါက ဤအိမ်ကို ပိတ်သိမ်းမည်ဖြစ်သည်။",
     ),
     "profileLeaveSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "You left your house.",
+      "သင်သည် သင့်အိမ်မှ ထွက်သွားပြီးပါပြီ။",
     ),
     "profileLeaveTransferSheetSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Select who will become the new owner before you leave.",
+      "သင်မထွက်မီ ပိုင်ရှင်အသစ် ဖြစ်မည့်သူကို ရွေးပါ။",
     ),
     "profileLeaveTransferSheetTitle": MessageLookupByLibrary.simpleMessage(
-      "Transfer ownership",
+      "ပိုင်ဆိုင်မှု လွှဲပြောင်းမည်",
     ),
     "profileLeaveTransferSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "Ownership transferred. Finishing your leave...",
+      "ပိုင်ဆိုင်မှု လွှဲပြောင်းပြီးပါပြီ။ ထွက်ခွာမှုကို ဆက်လက်ပြီးဆုံးနေသည်...",
     ),
     "profileLogoutSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Sign out of Kinly on this device.",
+      "ဤစက်ပေါ်ရှိ Kinly မှ အကောင့်ထွက်မည်။",
     ),
-    "profileLogoutTitle": MessageLookupByLibrary.simpleMessage("Sign out"),
+    "profileLogoutTitle": MessageLookupByLibrary.simpleMessage(
+      "အကောင့်ထွက်မည်",
+    ),
     "profileMissingHomeError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t find your current house. Try again.",
+      "သင့်လက်ရှိအိမ်ကို မတွေ့နိုင်ခဲ့ပါ။",
     ),
     "profileSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Manage your account preferences and home access.",
+      "သင့်အကောင့်နှင့် အိမ်ဝင်ရောက်မှုကို စီမံပါ။",
     ),
-    "profileSettingsTitle": MessageLookupByLibrary.simpleMessage("Profile"),
+    "profileSettingsTitle": MessageLookupByLibrary.simpleMessage("ပရိုဖိုင်"),
     "profile_deactivated_message": MessageLookupByLibrary.simpleMessage(
-      "Your profile is deactivated. Please sign in with another email address.",
+      "သင့်ပရိုဖိုင်ကို ပိတ်ထားပါသည်။ အခြားအီးမေးလ်လိပ်စာဖြင့် အကောင့်ဝင်ပါ။",
     ),
     "pulseCloudySteadySummary": MessageLookupByLibrary.simpleMessage(
-      "A mix of smooth moments and small friction.",
+      "အချို့က အလုပ်ဖြစ်ခဲ့တယ်။ အချို့က မဖြစ်ခဲ့ဘူး။",
     ),
-    "pulseCloudySteadyTitle": MessageLookupByLibrary.simpleMessage("Mixed"),
+    "pulseCloudySteadyTitle": MessageLookupByLibrary.simpleMessage(
+      "ရောနှောနေသည်",
+    ),
     "pulseCloudyTenseSummary": MessageLookupByLibrary.simpleMessage(
-      "Some tension surfaced this week.",
+      "ဒီအပတ် တင်းမာမှုအချို့ ပေါ်လာခဲ့တယ်။",
     ),
     "pulseCloudyTenseTitle": MessageLookupByLibrary.simpleMessage(
-      "Needs attention",
+      "အာရုံစိုက်ရန်လိုသည်",
     ),
     "pulseFormingSummary": MessageLookupByLibrary.simpleMessage(
-      "A few more check-ins will give a clearer picture.",
+      "နောက်ထပ် စစ်ဆေးမှုအချို့ ရှိလာပါက ပိုရှင်းလင်းသော ပုံရိပ် ရလာမည်။",
     ),
-    "pulseFormingTitle": MessageLookupByLibrary.simpleMessage("Still forming"),
+    "pulseFormingTitle": MessageLookupByLibrary.simpleMessage("ဖွဲ့စည်းဆဲ"),
     "pulsePartlySupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "Overall steady, with some areas to improve.",
+      "အများစု တည်ငြိမ်ပေမယ့် တိုးတက်စရာ အနည်းငယ် ရှိတယ်။",
     ),
     "pulsePartlySupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Okay overall",
+      "စုစုပေါင်း အဆင်ပြေသည်",
     ),
     "pulseRainySupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "It may be time for a small reset.",
+      "သေးငယ်သော reset တစ်ခု လုပ်ရန် အချိန်ရောက်ပြီ ဖြစ်နိုင်သည်။",
     ),
     "pulseRainySupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Reset recommended",
+      "ပြန်လည်ညှိနှိုင်းရန် အကြံပြုသည်",
     ),
     "pulseRainyUnsupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "There\'s noticeable friction right now.",
+      "လတ်တလော သိသာသော friction ရှိနေပါသည်။",
     ),
     "pulseRainyUnsupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Reset needed",
+      "ပြန်လည်ညှိနှိုင်းရန် လိုအပ်သည်",
     ),
     "pulseSunnyBumpySummary": MessageLookupByLibrary.simpleMessage(
-      "Mostly smooth, with a few small bumps.",
+      "အများစု ချောမွေ့ပေမယ့် နည်းနည်း အခက်အခဲတွေ ရှိတယ်။",
     ),
     "pulseSunnyBumpyTitle": MessageLookupByLibrary.simpleMessage(
-      "Mostly smooth",
+      "အများစု ချောမွေ့သည်",
     ),
     "pulseSunnyCalmSummary": MessageLookupByLibrary.simpleMessage(
-      "Things felt smooth this week.",
+      "ဒီအပတ် အရာအားလုံး ချောမွေ့သလို ခံစားရသည်။",
     ),
     "pulseSunnyCalmTitle": MessageLookupByLibrary.simpleMessage(
-      "Running smoothly",
+      "ချောမွေ့စွာ လည်ပတ်နေသည်",
     ),
     "pulseThunderstormSummary": MessageLookupByLibrary.simpleMessage(
-      "Tension is high. A quick reset can help.",
+      "တင်းမာမှု မြင့်နေပါသည်။ မကြာမီ ပြန်လည်ညှိနှိုင်းပါ။",
     ),
     "pulseThunderstormTitle": MessageLookupByLibrary.simpleMessage(
-      "Tension high",
+      "တင်းမာမှု မြင့်မားသည်",
     ),
     "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Create a task",
+      "တာဝန်တစ်ခု ဖန်တီးမည်",
     ),
-    "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Task"),
+    "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("တာဝန်"),
     "quick_add_share_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Add a bill",
+      "ဘေလ်တစ်ခု ထည့်မည်",
     ),
-    "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Bill"),
-    "quick_add_title": MessageLookupByLibrary.simpleMessage("Quick Add"),
+    "quick_add_share_title": MessageLookupByLibrary.simpleMessage("ဘေလ်"),
+    "quick_add_title": MessageLookupByLibrary.simpleMessage("အမြန်ထည့်မည်"),
     "reflectiveAcknowledgementTitle": MessageLookupByLibrary.simpleMessage(
-      "Got it.",
+      "နားလည်ပါပြီ။",
     ),
     "reflectiveGenericPrimary": MessageLookupByLibrary.simpleMessage(
-      "Putting this together with care.",
+      "ဂရုတစိုက် စုစည်းနေပါသည်။",
     ),
     "reflectiveGenericSecondary": MessageLookupByLibrary.simpleMessage(
-      "A quiet moment before we show it.",
+      "မပြမီ ခဏ နားနေပါ။",
     ),
     "reflectiveHouseNormsPrimary": MessageLookupByLibrary.simpleMessage(
-      "Reflecting what this house shared.",
+      "ဤအိမ် မျှဝေထားသည်ကို ပြန်လည်ထင်ဟပ်နေပါသည်။",
     ),
     "reflectiveHouseNormsSecondary": MessageLookupByLibrary.simpleMessage(
-      "A shared reference, not a rulebook.",
+      "စည်းကမ်းစာအုပ် မဟုတ်သော မျှဝေလမ်းညွှန်တစ်ခု။",
     ),
     "reflectiveHousePrimary": MessageLookupByLibrary.simpleMessage(
-      "Putting the house\'s expectations into words.",
+      "သင့်အိမ်၏ မျှော်လင့်ချက်များကို စကားလုံးအဖြစ် ပြောင်းနေပါသည်။",
     ),
     "reflectiveHouseSecondary": MessageLookupByLibrary.simpleMessage(
-      "So everyone knows what to expect.",
+      "မျှော်လင့်ချက်များ ရှင်းလင်းစေရန်။",
     ),
     "reflectivePersonalPrimary": MessageLookupByLibrary.simpleMessage(
-      "Reflecting what you shared.",
+      "သင်မျှဝေထားတာကို ပြန်လည်ထင်ဟပ်နေပါသည်။",
     ),
     "reflectivePersonalSecondary": MessageLookupByLibrary.simpleMessage(
-      "So others can understand what feels comfortable to you.",
+      "သင့်အတွက် ဘာက သက်သောင့်သက်သာရှိသလဲဆိုတာ အခြားသူများ နားလည်စေရန်။",
     ),
     "shareCreateAmountHint": MessageLookupByLibrary.simpleMessage("0.00"),
-    "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("Amount"),
+    "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("ပမာဏ"),
     "shareCreateCustomAmountLabel": MessageLookupByLibrary.simpleMessage(
-      "Amount",
+      "ပမာဏ",
     ),
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
-      "Enter each person\'s part. Make sure the total matches the amount above.",
+      "လူတစ်ဦးချင်းစီ၏ ဝေစုကို ထည့်ပါ။ စုစုပေါင်းသည် အထက်ပါ ပမာဏနှင့် တူရမည်။",
     ),
     "shareCreateCyclePeriod": m17,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
-      "e.g. Grocery run",
+      "ဥပမာ စျေးဝယ်သွားခြင်း",
     ),
     "shareCreateDescriptionLabel": MessageLookupByLibrary.simpleMessage(
-      "Description",
+      "ဖော်ပြချက်",
     ),
     "shareCreateErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "You don\'t have permission to create this right now.",
+      "ဤအရာကို လတ်တလော ဖန်တီးရန် သင့်တွင် ခွင့်ပြုချက် မရှိပါ။",
     ),
     "shareCreateErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t create. Try again.",
+      "ဘေလ်ကို မဖန်တီးနိုင်ခဲ့ပါ။",
     ),
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "You\'re at the free limit of active bills. Upgrade for more space.",
+      "လက်ရှိ ဘေလ်များအတွက် အခမဲ့ကန့်သတ်ချက် ပြည့်သွားပါပြီ။ ပိုမိုအသုံးပြုရန် အဆင့်မြှင့်ပါ။",
     ),
     "shareCreateErrorRecurrenceDraft": MessageLookupByLibrary.simpleMessage(
-      "Drafts canÃ¢â‚¬â„¢t repeat until you add a split.",
+      "မူကြမ်းများကို ခွဲဝေမှု မထည့်မချင်း ထပ်တလဲလဲ မလုပ်နိုင်ပါ။",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load your household members.",
+      "သင့်အိမ်အဖွဲ့ဝင်များကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "shareCreateNotesHint": MessageLookupByLibrary.simpleMessage(
-      "Optional context everyone can see",
+      "လူတိုင်း မြင်နိုင်သော ရွေးချယ်နိုင်သည့် မှတ်စု",
     ),
-    "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("Context"),
+    "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("မှတ်စု"),
     "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
-      "You need at least two household members to share.",
+      "ဘေလ်တစ်ခု မျှဝေရန် အနည်းဆုံး အိမ်အဖွဲ့ဝင် 2 ယောက် လိုအပ်သည်။",
     ),
     "shareCreateRecurrenceEveryLabel": MessageLookupByLibrary.simpleMessage(
-      "Every",
+      "တိုင်း",
     ),
     "shareCreateRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
-      "Repeat",
+      "ထပ်ခါတလဲလဲ",
     ),
     "shareCreateRecurrenceToggleLabel": MessageLookupByLibrary.simpleMessage(
-      "Recurring",
+      "ထပ်တလဲလဲ ဖြစ်မည်",
     ),
-    "shareCreateRecurrenceUnitDay": MessageLookupByLibrary.simpleMessage("Day"),
-    "shareCreateRecurrenceUnitMonth": MessageLookupByLibrary.simpleMessage(
-      "Month",
-    ),
+    "shareCreateRecurrenceUnitDay": MessageLookupByLibrary.simpleMessage("နေ့"),
+    "shareCreateRecurrenceUnitMonth": MessageLookupByLibrary.simpleMessage("လ"),
     "shareCreateRecurrenceUnitWeek": MessageLookupByLibrary.simpleMessage(
-      "Week",
+      "ပတ်",
     ),
     "shareCreateRecurrenceUnitYear": MessageLookupByLibrary.simpleMessage(
-      "Year",
+      "နှစ်",
     ),
-    "shareCreateRetry": MessageLookupByLibrary.simpleMessage("Try again"),
+    "shareCreateRetry": MessageLookupByLibrary.simpleMessage(
+      "ထပ်မံကြိုးစားမည်",
+    ),
     "shareCreateSplitCustom": MessageLookupByLibrary.simpleMessage(
-      "Choose amounts",
+      "ပမာဏ ရွေးမည်",
     ),
     "shareCreateSplitEqual": MessageLookupByLibrary.simpleMessage(
-      "Split evenly",
+      "ညီမျှစွာ ခွဲမည်",
     ),
     "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage(
-      "How do we want to split this?",
+      "ဘယ်လို ခွဲဝေမလဲ?",
     ),
     "shareCreateStartLabel": MessageLookupByLibrary.simpleMessage(
-      "When does this apply?",
+      "ဘယ်အချိန်မှ စတင်သက်ရောက်မလဲ?",
     ),
-    "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Create"),
-    "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Bill created."),
-    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Add Bill"),
+    "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("ဖန်တီးမည်"),
+    "shareCreateSuccess": MessageLookupByLibrary.simpleMessage(
+      "ဘေလ် ဖန်တီးပြီးပါပြီ။",
+    ),
+    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("ဘေလ် ထည့်မည်"),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
-      "Enter a valid amount greater than zero.",
+      "သုညထက် ကြီးသော ပမာဏ ထည့်ပါ။",
     ),
     "shareCreateValidationCustomAmounts": MessageLookupByLibrary.simpleMessage(
-      "Enter a valid amount for each selected person.",
+      "ရွေးထားသော လူတိုင်းအတွက် မှန်ကန်သော ပမာဏ ထည့်ပါ။",
     ),
     "shareCreateValidationCustomParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "Select at least one person for this bill.",
+          "ဤဘေလ်အတွက် အနည်းဆုံး လူတစ်ယောက် ရွေးပါ။",
         ),
-    "shareCreateValidationCustomSinglePayer": MessageLookupByLibrary.simpleMessage(
-      "You\'re the only person selected for this bill. Add at least one other person.",
-    ),
+    "shareCreateValidationCustomSinglePayer":
+        MessageLookupByLibrary.simpleMessage(
+          "အခြားလူ အနည်းဆုံး တစ်ယောက် ထည့်ပါ။",
+        ),
     "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
-      "Make sure the custom split adds up to the amount above.",
+      "ခွဲဝေမှု စုစုပေါင်းသည် စုစုပေါင်းပမာဏနှင့် ကိုက်ညီကြောင်း သေချာစေပါ။",
     ),
     "shareCreateValidationCustomSumBreakdown": m18,
     "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
-      "Enter a description.",
+      "ဖော်ပြချက် ထည့်ပါ။",
     ),
     "shareCreateValidationEqualParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "Select at least one person to split the amount.",
+          "ဤဘေလ်ကို ခွဲရန် အနည်းဆုံး လူတစ်ယောက် ရွေးပါ။",
         ),
     "shareCreateValidationRecurrence": MessageLookupByLibrary.simpleMessage(
-      "Choose how often this repeats.",
+      "ဘယ်နှကြိမ် ထပ်ဖြစ်မည်ကို ရွေးပါ။",
     ),
     "shareCreateValidationRecurrenceSplit":
         MessageLookupByLibrary.simpleMessage(
-          "Pick how to split before setting a repeat.",
+          "ထပ်တလဲလဲ မလုပ်မီ ခွဲဝေမှုပုံစံ ရွေးပါ။",
         ),
     "shareCreateValidationStartDate": MessageLookupByLibrary.simpleMessage(
-      "Choose a start date.",
+      "စတင်ရက်စွဲ ရွေးပါ။",
     ),
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
-      "Choose a date within the allowed range.",
+      "ခွင့်ပြုထားသော အကွာအဝေးအတွင်း ရက်စွဲ ရွေးပါ။",
     ),
     "shareCreatedListActiveAmount": m19,
     "shareCreatedListActiveSubtitle": m20,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
-      "Unassigned",
+      "တာဝန်မပေးထား",
     ),
     "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Split it so everyone knows their part before publishing.",
+      "လူတိုင်း မိမိဝေစုကို သိနိုင်ရန် မထုတ်ပြန်မီ ခွဲဝေပါ။",
     ),
     "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Bills keep money clear, with no awkward reminders.",
+      "ဘေလ်များက ငွေကြေးကိစ္စကို ရှင်းလင်းစေသည်။",
     ),
     "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No bills yet",
+      "ဘေလ်များ မရှိသေးပါ",
     ),
     "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load your bills. Pull to refresh.",
+      "သင့်ဘေလ်များကို မတင်နိုင်ခဲ့ပါ။ ဆွဲချပြီး ပြန်လည်ရယူပါ။",
     ),
     "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage(
-      "Paid off",
+      "အပြည့်အစုံ ပေးပြီး",
     ),
-    "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage("Try again"),
-    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage("Your bills"),
-    "shareEditClose": MessageLookupByLibrary.simpleMessage("Close"),
-    "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("Delete"),
-    "shareEditDeleteConfirm": MessageLookupByLibrary.simpleMessage("Delete"),
+    "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage(
+      "ပြန်ကြိုးစားမည်",
+    ),
+    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage(
+      "သင့်ဘေလ်များ",
+    ),
+    "shareEditClose": MessageLookupByLibrary.simpleMessage("ပိတ်မည်"),
+    "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("ဖျက်မည်"),
+    "shareEditDeleteConfirm": MessageLookupByLibrary.simpleMessage("ဖျက်မည်"),
     "shareEditDeleteConfirmMessage": MessageLookupByLibrary.simpleMessage(
-      "This removes the draft for everyone.",
+      "၎င်းသည် လူတိုင်းအတွက် မူကြမ်းကို ဖယ်ရှားပါမည်။",
     ),
     "shareEditDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
-      "Delete?",
+      "ဘေလ်ကို ဖျက်မလား?",
     ),
     "shareEditDeleteError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t delete. Try again.",
+      "ဘေလ်ကို မဖျက်နိုင်ခဲ့ပါ။",
     ),
     "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
-      "Bill deleted.",
+      "ဘေလ်ကို ဖျက်ပြီးပါပြီ။",
     ),
     "shareEditDisabledActive": MessageLookupByLibrary.simpleMessage(
-      "Active bills are locked from edits.",
+      "လက်ရှိဘေလ်များကို မပြင်နိုင်ပါ။",
     ),
     "shareEditDisabledConverted": MessageLookupByLibrary.simpleMessage(
-      "This bill is now a plan, and editing is off.",
+      "ဤဘေလ်သည် ယခု အစီအစဉ်တစ်ခု ဖြစ်သွားပြီး ဤနေရာတွင် မပြင်နိုင်တော့ပါ။",
     ),
     "shareEditDisabledGeneric": MessageLookupByLibrary.simpleMessage(
-      "Editing this bill is unavailable right now.",
+      "ဤဘေလ်ကို လတ်တလော မပြင်နိုင်ပါ။",
     ),
     "shareEditDisabledRecurringCycle": MessageLookupByLibrary.simpleMessage(
-      "Recurring cycles are locked from edits here.",
+      "ထပ်ခါတလဲလဲ စက်ဝန်းများကို ဤနေရာတွင် မပြင်နိုင်ပါ။",
     ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t load that draft.",
+      "ထိုမူကြမ်းကို မတင်နိုင်ခဲ့ပါ။",
     ),
     "shareEditNotAllowed": MessageLookupByLibrary.simpleMessage(
-      "This stays locked until someone takes this share.",
+      "တစ်ယောက်ယောက်က ဒီဘေလ်ကို ယူမချင်း လော့ခ်ထားမည်။",
     ),
     "shareEditSplitsLocked": MessageLookupByLibrary.simpleMessage(
-      "Splits are locked because someone already paid. You can still update the description and notes.",
+      "တစ်ယောက်ယောက်က ပေးပြီးသွားသောကြောင့် ခွဲဝေမှုများ လော့ခ်ထားပါသည်။ ဖော်ပြချက်နှင့် မှတ်စုများကိုသာ ပြင်နိုင်သေးသည်။",
     ),
-    "shareEditSubmit": MessageLookupByLibrary.simpleMessage("Update"),
-    "shareEditSuccess": MessageLookupByLibrary.simpleMessage("Bill updated."),
+    "shareEditSubmit": MessageLookupByLibrary.simpleMessage("အပ်ဒိတ်လုပ်မည်"),
+    "shareEditSuccess": MessageLookupByLibrary.simpleMessage(
+      "ဘေလ်ကို အပ်ဒိတ်လုပ်ပြီးပါပြီ။",
+    ),
     "shareEditTerminateError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t terminate the plan. Try again.",
+      "အစီအစဉ်ကို မအဆုံးသတ်နိုင်ခဲ့ပါ။",
     ),
     "shareEditTerminatePlan": MessageLookupByLibrary.simpleMessage(
-      "Terminate plan",
+      "အစီအစဉ်ကို အဆုံးသတ်မည်",
     ),
     "shareEditTerminatePlanBusy": MessageLookupByLibrary.simpleMessage(
-      "Terminating...",
+      "အဆုံးသတ်နေသည်...",
     ),
     "shareEditTerminatePlanConfirm": MessageLookupByLibrary.simpleMessage(
-      "Terminate plan",
+      "အစီအစဉ် အဆုံးသတ်မည်",
     ),
     "shareEditTerminatePlanMessage": MessageLookupByLibrary.simpleMessage(
-      "This stops future bill cycles.",
+      "၎င်းသည် အနာဂတ် ဘေလ်စက်ဝန်းများကို ရပ်တန့်စေမည်။",
     ),
     "shareEditTerminatePlanTitle": MessageLookupByLibrary.simpleMessage(
-      "Terminate recurring plan?",
+      "ထပ်ခါတလဲလဲ အစီအစဉ်ကို အဆုံးသတ်မလား?",
     ),
     "shareEditTerminateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Plan terminated.",
+      "အစီအစဉ် ပြီးဆုံးပြီးပါပြီ။",
     ),
-    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Edit Bill"),
+    "shareEditTitle": MessageLookupByLibrary.simpleMessage("ဘေလ် ပြင်မည်"),
     "shareOwedDetailEmpty": MessageLookupByLibrary.simpleMessage(
-      "You\'re all caught up with this person.",
+      "ဤလူနှင့် ပတ်သက်ပြီး သင်ရှင်းလင်းပြီးပါပြီ။",
     ),
     "shareOwedDetailError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t mark that share paid. Try again.",
+      "ဤပေးချေမှုကို ရှင်းပြီးဟု မမှတ်နိုင်ခဲ့ပါ။",
     ),
     "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage(
-      "Mark as settled",
+      "ရှင်းပြီးဟု မှတ်မည်",
     ),
-    "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage("Settled."),
-    "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage("To settle"),
+    "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage(
+      "ရှင်းပြီးဟု မှတ်ထားပြီးပါပြီ။",
+    ),
+    "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage("ဖြေရှင်းရန်"),
     "sharePaidDetailAcknowledge": MessageLookupByLibrary.simpleMessage(
-      "Acknowledge Receipt",
+      "လက်ခံရရှိကြောင်း အတည်ပြုမည်",
     ),
     "sharePaidDetailAcknowledgeError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t acknowledge receipting the bills.",
+      "ဤပေးချေမှုကို အတည်မပြုနိုင်ခဲ့ပါ။",
     ),
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
-      "Acknowledging...",
+      "အတည်ပြုနေသည်...",
     ),
     "shoppingAllItemsBought": MessageLookupByLibrary.simpleMessage(
-      "All items bought",
+      "အားလုံး ဝယ်ပြီးပါပြီ",
     ),
     "shoppingAmountHint": MessageLookupByLibrary.simpleMessage(
-      "e.g. 2 cartons",
+      "ဥပမာ ဘူး 2 ဘူး",
     ),
-    "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage("How many"),
-    "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage("Items bought"),
+    "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage("အရေအတွက်"),
+    "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage(
+      "ဝယ်ပြီးပစ္စည်းများ",
+    ),
     "shoppingArchiveDraftBillCreated": MessageLookupByLibrary.simpleMessage(
-      "Draft bill created for items bought",
+      "မူကြမ်းဘေလ် ဖန်တီးပြီးပါပြီ",
     ),
     "shoppingArchiveItemsBought": MessageLookupByLibrary.simpleMessage(
-      "Items bought and removed from the list",
+      "ပစ္စည်းများကို ဝယ်ပြီးဟု မှတ်ပြီး ဖယ်ရှားလိုက်ပါပြီ",
     ),
-    "shoppingArchiveShareNo": MessageLookupByLibrary.simpleMessage("No"),
+    "shoppingArchiveShareNo": MessageLookupByLibrary.simpleMessage("မလုပ်ပါ"),
     "shoppingArchiveSharePromptBody": MessageLookupByLibrary.simpleMessage(
-      "Do you want to create a draft bill from these items?",
+      "ဤပစ္စည်းများမှ မူကြမ်းဘေလ်တစ်ခု ဖန်တီးမလား?",
     ),
     "shoppingArchiveSharePromptTitle": MessageLookupByLibrary.simpleMessage(
-      "Create bill?",
+      "ဘေလ် ဖန်တီးမလား?",
     ),
-    "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("Yes"),
+    "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("ဟုတ်ကဲ့"),
     "shoppingCardSubtitle": m21,
-    "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
+    "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("စျေးဝယ်စာရင်း"),
     "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
-      "Anything helpful (brand, size, etc.)",
+      "အမှတ်တံဆိပ်၊ အရွယ်အစား သို့မဟုတ် မှတ်စု",
     ),
-    "shoppingContextLabel": MessageLookupByLibrary.simpleMessage("Notes"),
+    "shoppingContextLabel": MessageLookupByLibrary.simpleMessage("မှတ်စု"),
     "shoppingCreateTitle": MessageLookupByLibrary.simpleMessage(
-      "Add shopping item",
+      "စျေးဝယ်ပစ္စည်း ထည့်မည်",
     ),
-    "shoppingDelete": MessageLookupByLibrary.simpleMessage("Delete item"),
+    "shoppingDelete": MessageLookupByLibrary.simpleMessage("ပစ္စည်း ဖျက်မည်"),
     "shoppingDeleteConfirmBody": MessageLookupByLibrary.simpleMessage(
-      "This removes the item from your shared shopping list.",
+      "၎င်းကို မျှဝေစျေးဝယ်စာရင်းမှ ဖယ်ရှားပါမည်။",
     ),
     "shoppingDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
-      "Delete this item?",
+      "ဤပစ္စည်းကို ဖျက်မလား?",
     ),
     "shoppingDetailTitle": MessageLookupByLibrary.simpleMessage(
-      "Shopping item",
+      "စျေးဝယ်ပစ္စည်း",
     ),
     "shoppingEditTitle": MessageLookupByLibrary.simpleMessage(
-      "Shopping item details",
+      "စျေးဝယ်ပစ္စည်း ပြင်မည်",
     ),
     "shoppingEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No shopping items to buy.",
+      "စျေးဝယ်ပစ္စည်း မရှိသေးပါ။",
     ),
     "shoppingErrorItemAlreadyCompletedByOther":
         MessageLookupByLibrary.simpleMessage(
-          "Someone else already checked off this item.",
+          "တစ်ယောက်ယောက်က ဒီပစ္စည်းကို ဝယ်ပြီးဟု အမှတ်ထားပြီးပါပြီ။",
         ),
-    "shoppingListTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
+    "shoppingListTitle": MessageLookupByLibrary.simpleMessage("စျေးဝယ်စာရင်း"),
     "shoppingMarkCompleteCta": MessageLookupByLibrary.simpleMessage(
-      "Mark as completed",
+      "ဝယ်ပြီးဟု မှတ်မည်",
     ),
-    "shoppingNameHint": MessageLookupByLibrary.simpleMessage("e.g. Milk"),
-    "shoppingNameLabel": MessageLookupByLibrary.simpleMessage("Name"),
-    "shoppingPhotoLabel": MessageLookupByLibrary.simpleMessage("Add a photo"),
+    "shoppingNameHint": MessageLookupByLibrary.simpleMessage("ဥပမာ နို့"),
+    "shoppingNameLabel": MessageLookupByLibrary.simpleMessage("အမည်"),
+    "shoppingPhotoLabel": MessageLookupByLibrary.simpleMessage(
+      "ဓာတ်ပုံထည့်မည်",
+    ),
     "shoppingPhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
-      "Add a photo to help with shopping",
+      "ဓာတ်ပုံထည့်ပါ",
     ),
     "shoppingPhotoReplaceLabel": MessageLookupByLibrary.simpleMessage(
-      "Help someone to know what to buy",
+      "အခြားသူများ မှန်ကန်သောပစ္စည်းကို ဝယ်နိုင်ရန် ကူညီပါ",
     ),
-    "shoppingSubmitAdd": MessageLookupByLibrary.simpleMessage("Add item"),
-    "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage("Save changes"),
-    "shoppingTabPending": MessageLookupByLibrary.simpleMessage("To buy"),
+    "shoppingSubmitAdd": MessageLookupByLibrary.simpleMessage("ပစ္စည်းထည့်မည်"),
+    "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage(
+      "ပြောင်းလဲမှုများ သိမ်းမည်",
+    ),
+    "shoppingTabPending": MessageLookupByLibrary.simpleMessage("ဝယ်ရန်"),
     "shoppingValidationName": MessageLookupByLibrary.simpleMessage(
-      "Please enter an item name.",
+      "ပစ္စည်းအမည် ထည့်ပါ။",
     ),
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
-      "What do you want to do next?",
+      "ဘာလုပ်ချင်ပါသလဲ?",
     ),
     "startReturningTitle": m22,
-    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Task"),
-    "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Bill"),
+    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("တာဝန် ထည့်မည်"),
+    "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("ဘေလ် ထည့်မည်"),
     "todayAddSheetShopping": MessageLookupByLibrary.simpleMessage(
-      "Add Shopping Item",
+      "စျေးဝယ်ပစ္စည်း ထည့်မည်",
     ),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
-      "Add to your home",
+      "သင့်အိမ်ထဲသို့ ထည့်မည်",
     ),
     "todayEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "Enjoy the calm - Kinly will let you know when something needs your attention.",
+      "လတ်တလော သင့်အာရုံစိုက်မှု လိုအပ်တာ မရှိပါ။",
     ),
     "todayEmptyCardBadge": MessageLookupByLibrary.simpleMessage(
-      "Take a breather",
+      "နည်းနည်း အနားယူပါ",
     ),
     "todayEmptyCardTitle": MessageLookupByLibrary.simpleMessage(
-      "All caught up today",
+      "အားလုံး အဆင်ပြေပါပြီ",
     ),
     "todayFlatmateInviteSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Stay aligned and share responsibilities.",
+      "တစ်မျိုးတည်း နားလည်ပြီး တာဝန်များကို မျှဝေပါ။",
     ),
     "todayFlatmateInviteTitle": MessageLookupByLibrary.simpleMessage(
-      "Invite your flatmates",
+      "သင့်အိမ်ဖော်များကို ဖိတ်ခေါ်ပါ",
     ),
-    "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
-    "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Tasks"),
+    "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("ယနေ့ အသစ်"),
+    "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("တာဝန်များ"),
     "todayFlowSeeAll": m23,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Hereâ€™s what needs attention today.",
+      "ယနေ့ အာရုံစိုက်ရန်လိုသော အရာများမှာ —",
     ),
-    "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
-    "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
+    "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("လက်ရှိ"),
+    "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("မူကြမ်းများ"),
     "todayGratitudeHouseCta": MessageLookupByLibrary.simpleMessage(
-      "House shoutouts",
+      "အိမ်ကျေးဇူးတင်စကားများ",
     ),
     "todayGratitudePersonalCta": MessageLookupByLibrary.simpleMessage(
-      "My shoutouts",
+      "ကျွန်ုပ်၏ ကျေးဇူးတင်စကားများ",
     ),
     "todayGratitudeSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Gratitude Wall",
+      "ကျေးဇူးတင်စကားများ",
     ),
     "todayGratitudeUnreadBody": MessageLookupByLibrary.simpleMessage(
-      "New gratitude posts are waiting for you.",
+      "ကျေးဇူးတင်စကားအသစ်များ သင့်ကို စောင့်နေပါသည်။",
     ),
     "todayInviteFriendsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Share Kinly so they can make shared living easier.",
+      "Kinly ကို သူငယ်ချင်းများနှင့် မျှဝေပါ။",
     ),
     "todayInviteFriendsTitle": MessageLookupByLibrary.simpleMessage(
-      "Invite friends to Kinly",
+      "သူငယ်ချင်းများကို Kinly သို့ ဖိတ်ခေါ်ပါ",
     ),
-    "todayInviteNotNow": MessageLookupByLibrary.simpleMessage("Not now"),
-    "todayInviteShareCta": MessageLookupByLibrary.simpleMessage("Share invite"),
+    "todayInviteNotNow": MessageLookupByLibrary.simpleMessage("အခုမလုပ်သေးပါ"),
+    "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
+      "ဖိတ်ခေါ်မှု မျှဝေမည်",
+    ),
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
-      "Upgrade home",
+      "အိမ်ကို အဆင့်မြှင့်မည်",
     ),
     "todayMemberCapResolutionFailed": m24,
     "todayMemberCapResolutionJoined": m25,
     "todayMemberCapResolutionSuperseded": m26,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
-      "Someone",
+      "တစ်ယောက်ယောက်",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage(
-      "Ignore",
+      "လျစ်လျူရှုမည်",
     ),
     "todayMemberCapSubtitle": m27,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
-      "Your home is growing. Upgrade to welcome more people.",
+      "လူပိုထည့်ရန် အဆင့်မြှင့်ပါ။",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
-      "Someone wants to join your home",
+      "တစ်ယောက်ယောက်က သင့်အိမ်သို့ ဝင်ချင်နေပါသည်",
     ),
     "todayShareActiveSubtitle": m28,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
-      "We couldn\'t refresh Share right now.",
+      "လတ်တလော ဘေလ်များကို မပြန်လည်ရယူနိုင်ခဲ့ပါ။",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Settled Amount",
+      "ရှင်းပြီး ပမာဏ",
     ),
     "todaySharePaidUnseen": m29,
-    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Bill"),
-    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To settle"),
-    "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("Settled"),
+    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("ဘေလ်များ"),
+    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("ဖြေရှင်းရန်"),
+    "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("မူကြမ်းများ"),
+    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("ရှင်းပြီး"),
     "vibeCozySocialSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels cozy and calm when people spend time together.",
+      "သင့်အိမ်သည် နွေးထွေးပြီး အတူတကွ တည်ငြိမ်သလို ခံစားရပါသည်။",
     ),
-    "vibeCozySocialTitle": MessageLookupByLibrary.simpleMessage("Cozy social"),
+    "vibeCozySocialTitle": MessageLookupByLibrary.simpleMessage(
+      "နွေးနွေးထွေးထွေး လူမှုရေး",
+    ),
     "vibeDefaultSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels easy to live in for everyone.",
+      "သင့်အိမ်သည် မျှတသလို ခံစားရပါသည်။",
     ),
-    "vibeDefaultTitle": MessageLookupByLibrary.simpleMessage("A balanced home"),
+    "vibeDefaultTitle": MessageLookupByLibrary.simpleMessage("မျှတသောအိမ်"),
     "vibeEasygoingSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels relaxed and open to change day by day.",
+      "သင့်အိမ်သည် သက်သောင့်သက်သာနှင့် လိုက်လျောညီထွေဖြစ်သလို ခံစားရပါသည်။",
     ),
     "vibeEasygoingTitle": MessageLookupByLibrary.simpleMessage(
-      "Easygoing flow",
+      "ပေါ့ပေါ့ပါးပါး စီးဆင်းမှု",
     ),
     "vibeIndependentSummary": MessageLookupByLibrary.simpleMessage(
-      "Your house supports space and quiet.",
+      "သင့်အိမ်သည် ကိုယ်ပိုင်နေရာနှင့် တိတ်ဆိတ်မှုကို တန်ဖိုးထားပါသည်။",
     ),
     "vibeIndependentTitle": MessageLookupByLibrary.simpleMessage(
-      "Independent calm",
+      "ကိုယ်ပိုင်နေရာရှိသော အေးချမ်းမှု",
     ),
     "vibeInsufficientSummary": MessageLookupByLibrary.simpleMessage(
-      "Finish preferences to see your home vibe.",
+      "သင့်အိမ် vibe ကို ကြည့်ရန် အကြိုက်များကို ဖြည့်ပါ။",
     ),
     "vibeInsufficientTitle": MessageLookupByLibrary.simpleMessage(
-      "Not enough data yet",
+      "ဒေတာ မလုံလောက်သေးပါ",
     ),
     "vibeMixedSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home shows a mix of comfort styles, influenced by how different people like to live.",
+      "သင့်အိမ်တွင် နေထိုင်မှုပုံစံများ ရောနှောနေပါသည်။",
     ),
-    "vibeMixedTitle": MessageLookupByLibrary.simpleMessage("A mixed home"),
+    "vibeMixedTitle": MessageLookupByLibrary.simpleMessage("ရောနှောအိမ်"),
     "vibeQuietCareSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels calm, with gentle energy and softer rhythms.",
+      "သင့်အိမ်သည် တည်ငြိမ်ပြီး နူးညံ့သလို ခံစားရပါသည်။",
     ),
-    "vibeQuietCareTitle": MessageLookupByLibrary.simpleMessage("Quiet care"),
+    "vibeQuietCareTitle": MessageLookupByLibrary.simpleMessage(
+      "တိတ်ဆိတ်စွာ ဂရုစိုက်ခြင်း",
+    ),
     "vibeSocialSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels active, with people together.",
+      "သင့်အိမ်သည် တက်ကြွပြီး လူမှုရေးဆန်သလို ခံစားရပါသည်။",
     ),
-    "vibeSocialTitle": MessageLookupByLibrary.simpleMessage("Social energy"),
+    "vibeSocialTitle": MessageLookupByLibrary.simpleMessage("လူမှုရေးစွမ်းအင်"),
     "vibeSteadySummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels steady, with care shown through daily habits.",
+      "သင့်အိမ်သည် တည်ငြိမ်ပြီး အမြဲတမ်းတူညီသလို ခံစားရပါသည်။",
     ),
-    "vibeSteadyTitle": MessageLookupByLibrary.simpleMessage("Steady calm"),
+    "vibeSteadyTitle": MessageLookupByLibrary.simpleMessage(
+      "တည်ငြိမ်သော အေးချမ်းမှု",
+    ),
     "vibeStructuredSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home works best with clear routines and shared plans.",
+      "သင့်အိမ်သည် အစီအစဉ်များနှင့် ပုံမှန်လုပ်ရိုးလုပ်စဉ်များဖြင့် ပိုကောင်းစွာ လည်ပတ်သည်။",
     ),
     "vibeStructuredTitle": MessageLookupByLibrary.simpleMessage(
-      "Structured rhythm",
+      "ဖွဲ့စည်းထားသော လှုပ်ရှားမှုစည်းချက်",
     ),
     "vibeWarmSocialSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels warm and welcoming, with people often together.",
+      "သင့်အိမ်သည် နွေးထွေးပြီး ကြိုဆိုသလို ခံစားရပါသည်။",
     ),
-    "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage("Warm social"),
+    "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage(
+      "နွေးထွေးသော လူမှုရေး",
+    ),
     "weeklyRewriteCta": MessageLookupByLibrary.simpleMessage(
-      "Send calmly with Kinly",
+      "Kinly ဖြင့် တည်ငြိမ်စွာ ပို့မည်",
     ),
-    "welcome_create": MessageLookupByLibrary.simpleMessage("Create a House"),
-    "welcome_join": MessageLookupByLibrary.simpleMessage("Join your House"),
-    "welcome_title": MessageLookupByLibrary.simpleMessage("Welcome to Kinly"),
+    "welcome_create": MessageLookupByLibrary.simpleMessage(
+      "အိမ်တစ်ခု ဖန်တီးမည်",
+    ),
+    "welcome_join": MessageLookupByLibrary.simpleMessage(
+      "အိမ်တစ်ခုသို့ ဝင်မည်",
+    ),
+    "welcome_title": MessageLookupByLibrary.simpleMessage(
+      "Kinly မှ ကြိုဆိုပါသည်",
+    ),
   };
 }
