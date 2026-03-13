@@ -14,6 +14,7 @@ void main() {
         'house_norms',
         'invite',
         'house_pulse',
+        'house_directory_reminders',
         'flow',
         'share',
         'shopping',

@@ -2,6 +2,7 @@ part of 'today_bloc.dart';
 
 class TodayState extends Equatable {
   final bool isLoading;
+  final List<HouseDirectoryReminder> houseDirectoryReminders;
   final List<TodayFlowTask> activeTasks;
   final List<TodayFlowTask> draftTasks;
   final List<TodayShareOwed> shareOwed;
@@ -30,6 +31,7 @@ class TodayState extends Equatable {
 
   const TodayState._({
     required this.isLoading,
+    required this.houseDirectoryReminders,
     required this.activeTasks,
     required this.draftTasks,
     required this.shareOwed,
@@ -58,6 +60,7 @@ class TodayState extends Equatable {
   });
 
   const TodayState.loading({
+    List<HouseDirectoryReminder> houseDirectoryReminders = const [],
     TodayUserProfile? profile,
     List<TodayShareOwed> shareOwed = const [],
     List<TodaySharePaidToMe> sharePaidToMe = const [],
@@ -80,6 +83,7 @@ class TodayState extends Equatable {
     HousePulsePayload? housePulse,
   }) : this._(
          isLoading: true,
+         houseDirectoryReminders: houseDirectoryReminders,
          activeTasks: const [],
          draftTasks: const [],
          shareOwed: shareOwed,
@@ -105,6 +109,7 @@ class TodayState extends Equatable {
        );
 
   const TodayState.loaded({
+    List<HouseDirectoryReminder> houseDirectoryReminders = const [],
     required List<TodayFlowTask> activeTasks,
     required List<TodayFlowTask> draftTasks,
     required List<TodayShareOwed> shareOwed,
@@ -130,6 +135,7 @@ class TodayState extends Equatable {
     HousePulsePayload? housePulse,
   }) : this._(
          isLoading: false,
+         houseDirectoryReminders: houseDirectoryReminders,
          activeTasks: activeTasks,
          draftTasks: draftTasks,
          shareOwed: shareOwed,
@@ -156,6 +162,7 @@ class TodayState extends Equatable {
        );
 
   const TodayState.failure({
+    List<HouseDirectoryReminder> houseDirectoryReminders = const [],
     TodayUserProfile? profile,
     String? message,
     Object? error,
@@ -181,6 +188,7 @@ class TodayState extends Equatable {
     HousePulsePayload? housePulse,
   }) : this._(
          isLoading: false,
+         houseDirectoryReminders: houseDirectoryReminders,
          activeTasks: const [],
          draftTasks: const [],
          shareOwed: shareOwed,
@@ -209,6 +217,7 @@ class TodayState extends Equatable {
        );
 
   bool get hasFlowContent => activeTasks.isNotEmpty || draftTasks.isNotEmpty;
+  bool get hasHouseDirectoryReminders => houseDirectoryReminders.isNotEmpty;
   bool get hasShareContent =>
       shareOwed.isNotEmpty ||
       sharePaidToMe.isNotEmpty ||
@@ -219,6 +228,7 @@ class TodayState extends Equatable {
   bool get hasHousePulseCard => hasUnseenHousePulse(housePulse);
   bool get hasAnyTodayContent =>
       hasFlowContent ||
+      hasHouseDirectoryReminders ||
       hasShareContent ||
       hasGratitudeUnread ||
       hasPersonalGratitudeUnread ||
@@ -228,6 +238,7 @@ class TodayState extends Equatable {
   @override
   List<Object?> get props => [
     isLoading,
+    houseDirectoryReminders,
     activeTasks,
     draftTasks,
     shareOwed,

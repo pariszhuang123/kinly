@@ -6,6 +6,7 @@ TodayState _todayStateWithProfile(
 ) {
   if (current.isLoading) {
     return TodayState.loading(
+      houseDirectoryReminders: current.houseDirectoryReminders,
       profile: profile,
       shareOwed: current.shareOwed,
       sharePaidToMe: current.sharePaidToMe,
@@ -31,6 +32,7 @@ TodayState _todayStateWithProfile(
 
   if (current.message != null || current.error != null) {
     return TodayState.failure(
+      houseDirectoryReminders: current.houseDirectoryReminders,
       profile: profile,
       message: current.message,
       error: current.error,
@@ -58,6 +60,7 @@ TodayState _todayStateWithProfile(
   }
 
   return TodayState.loaded(
+    houseDirectoryReminders: current.houseDirectoryReminders,
     activeTasks: current.activeTasks,
     draftTasks: current.draftTasks,
     shareOwed: current.shareOwed,
@@ -86,6 +89,7 @@ TodayState _todayStateWithProfile(
 TodayState _todayStateWithoutInvitePrompt(TodayState current) {
   if (current.isLoading) {
     return TodayState.loading(
+      houseDirectoryReminders: current.houseDirectoryReminders,
       profile: current.profile,
       shareOwed: current.shareOwed,
       sharePaidToMe: current.sharePaidToMe,
@@ -110,6 +114,7 @@ TodayState _todayStateWithoutInvitePrompt(TodayState current) {
 
   if (current.message != null || current.error != null) {
     return TodayState.failure(
+      houseDirectoryReminders: current.houseDirectoryReminders,
       profile: current.profile,
       message: current.message,
       error: current.error,
@@ -136,6 +141,7 @@ TodayState _todayStateWithoutInvitePrompt(TodayState current) {
   }
 
   return TodayState.loaded(
+    houseDirectoryReminders: current.houseDirectoryReminders,
     activeTasks: current.activeTasks,
     draftTasks: current.draftTasks,
     shareOwed: current.shareOwed,
@@ -164,6 +170,7 @@ TodayState _todayStateWithoutInvitePrompt(TodayState current) {
 TodayState _todayStateWithoutFlatmatePrompt(TodayState current) {
   if (current.isLoading) {
     return TodayState.loading(
+      houseDirectoryReminders: current.houseDirectoryReminders,
       profile: current.profile,
       shareOwed: current.shareOwed,
       shareDrafts: current.shareDrafts,
@@ -187,6 +194,7 @@ TodayState _todayStateWithoutFlatmatePrompt(TodayState current) {
 
   if (current.message != null || current.error != null) {
     return TodayState.failure(
+      houseDirectoryReminders: current.houseDirectoryReminders,
       profile: current.profile,
       message: current.message,
       error: current.error,
@@ -213,6 +221,7 @@ TodayState _todayStateWithoutFlatmatePrompt(TodayState current) {
   }
 
   return TodayState.loaded(
+    houseDirectoryReminders: current.houseDirectoryReminders,
     activeTasks: current.activeTasks,
     draftTasks: current.draftTasks,
     shareOwed: current.shareOwed,
@@ -241,6 +250,7 @@ TodayState _todayStateWithoutFlatmatePrompt(TodayState current) {
 TodayState _todayStateWithoutMemberCapPrompt(TodayState current) {
   if (current.isLoading) {
     return TodayState.loading(
+      houseDirectoryReminders: current.houseDirectoryReminders,
       profile: current.profile,
       shareOwed: current.shareOwed,
       sharePaidToMe: current.sharePaidToMe,
@@ -265,6 +275,7 @@ TodayState _todayStateWithoutMemberCapPrompt(TodayState current) {
 
   if (current.message != null || current.error != null) {
     return TodayState.failure(
+      houseDirectoryReminders: current.houseDirectoryReminders,
       profile: current.profile,
       message: current.message,
       error: current.error,
@@ -291,6 +302,7 @@ TodayState _todayStateWithoutMemberCapPrompt(TodayState current) {
   }
 
   return TodayState.loaded(
+    houseDirectoryReminders: current.houseDirectoryReminders,
     activeTasks: current.activeTasks,
     draftTasks: current.draftTasks,
     shareOwed: current.shareOwed,
@@ -322,6 +334,7 @@ TodayState _todayStateWithHousePulse(
 ) {
   if (current.isLoading) {
     return TodayState.loading(
+      houseDirectoryReminders: current.houseDirectoryReminders,
       profile: current.profile,
       shareOwed: current.shareOwed,
       sharePaidToMe: current.sharePaidToMe,
@@ -347,6 +360,7 @@ TodayState _todayStateWithHousePulse(
 
   if (current.message != null || current.error != null) {
     return TodayState.failure(
+      houseDirectoryReminders: current.houseDirectoryReminders,
       profile: current.profile,
       message: current.message,
       error: current.error,
@@ -374,6 +388,7 @@ TodayState _todayStateWithHousePulse(
   }
 
   return TodayState.loaded(
+    houseDirectoryReminders: current.houseDirectoryReminders,
     activeTasks: current.activeTasks,
     draftTasks: current.draftTasks,
     shareOwed: current.shareOwed,

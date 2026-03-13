@@ -2,6 +2,7 @@ import 'package:kinly/core/di/locator.dart';
 
 import '../../features/flow/flow_di.dart';
 import '../../features/home/home_di.dart';
+import '../../features/house_directory/house_directory_di.dart';
 import '../../features/paywall/paywall_di.dart';
 import '../../features/share/share_di.dart';
 import '../../features/harmony/harmony_di.dart';
@@ -17,6 +18,7 @@ void composeDependencies() {
 
   // Feature-owned dependencies.
   installHomeDependencies(sl);
+  installHouseDirectoryDependencies(sl);
   installFlowDependencies(sl);
   installPaywallDependencies(sl);
   installShareDependencies(sl);

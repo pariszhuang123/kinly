@@ -68,3 +68,21 @@ class TodayHousePulseShareLogged extends TodayEvent {
   @override
   List<Object?> get props => [channel];
 }
+
+class TodayHouseDirectoryReminderAcknowledged extends TodayEvent {
+  const TodayHouseDirectoryReminderAcknowledged(this.reminderId);
+
+  final String reminderId;
+
+  @override
+  List<Object?> get props => [reminderId];
+}
+
+class TodayHouseDirectoryReminderDismissed extends TodayEvent {
+  const TodayHouseDirectoryReminderDismissed(this.reminderId);
+
+  final String reminderId;
+
+  @override
+  List<Object?> get props => [reminderId];
+}

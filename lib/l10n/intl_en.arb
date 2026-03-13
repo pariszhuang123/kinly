@@ -1528,6 +1528,117 @@
   "planPremiumActiveTitle": "You're on Premium",
   "planPremiumActiveBody": "Enjoy unlimited access to all features.",
   "close": "Close",
+  "houseDirectoryTitle": "House directory",
+  "houseDirectoryLoadError": "Couldn't load House directory.",
+  "houseDirectoryRetry": "Retry",
+  "hubHouseDirectoryTitle": "House directory",
+  "hubHouseDirectorySubtitle": "Wifi, services, links, and renewal reminders.",
+  "houseDirectoryEmptyTitle": "Shared home details live here.",
+  "houseDirectoryEmptyBody": "Save wifi, rent, services, and links here.",
+  "houseDirectoryWifiTitle": "Wifi",
+  "houseDirectoryRentTitle": "Rent",
+  "houseDirectoryServicesTitle": "Utilities and services",
+  "houseDirectoryLinksTitle": "Key links",
+  "houseDirectoryAddWifi": "Add wifi",
+  "houseDirectoryEditWifi": "Edit wifi",
+  "houseDirectoryAddService": "Add service",
+  "houseDirectoryEditService": "Edit service",
+  "houseDirectoryAddLink": "Add link",
+  "houseDirectoryEditLink": "Edit link",
+  "houseDirectorySave": "Save",
+  "houseDirectoryEdit": "Edit",
+  "houseDirectoryDelete": "Archive",
+  "houseDirectoryWifiOwnerEmpty": "Add your home wifi so everyone can find it here.",
+  "houseDirectoryWifiMemberEmpty": "No wifi details have been added yet.",
+  "houseDirectoryWifiMaskedHint": "Password stays hidden in the app. Expand to copy the QR payload.",
+  "houseDirectoryCopySsid": "Copy SSID",
+  "houseDirectorySsidCopied": "SSID copied.",
+  "houseDirectoryRentEmpty": "No rent details added yet.",
+  "houseDirectoryServicesEmpty": "No services added yet.",
+  "houseDirectoryLinksEmpty": "No links added yet.",
+  "houseDirectoryServiceOther": "Other",
+  "houseDirectoryLinkOther": "Other",
+  "houseDirectoryAccountReference": "Reference: {reference}",
+  "@houseDirectoryAccountReference": {
+    "placeholders": {
+      "reference": {
+        "type": "String",
+        "example": "ABC-123"
+      }
+    }
+  },
+  "houseDirectoryReminderDue": "Reminder for {date}",
+  "@houseDirectoryReminderDue": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Jan 5, 2026"
+      }
+    }
+  },
+  "houseDirectoryTermRange": "{start} to {end}",
+  "@houseDirectoryTermRange": {
+    "placeholders": {
+      "start": {
+        "type": "String",
+        "example": "Jan 1, 2026"
+      },
+      "end": {
+        "type": "String",
+        "example": "Dec 31, 2026"
+      }
+    }
+  },
+  "houseDirectoryDateUnknown": "Unknown",
+  "houseDirectoryOpenLink": "Open link",
+  "houseDirectoryOpenLinkError": "Couldn't open that link.",
+  "houseDirectorySsidLabel": "SSID",
+  "houseDirectoryPasswordLabel": "Password",
+  "houseDirectoryPasswordHelper": "Leave blank to save as an open network.",
+  "houseDirectoryServiceTypeLabel": "Service type",
+  "houseDirectoryCustomLabel": "Custom label",
+  "houseDirectoryProviderLabel": "Provider name",
+  "houseDirectoryAccountReferenceLabel": "Account reference",
+  "houseDirectoryLinkLabel": "Provider link",
+  "houseDirectoryStartDate": "Start date",
+  "houseDirectoryEndDate": "End date",
+  "houseDirectoryReminderOffset": "Reminder offset",
+  "houseDirectoryReminderOffsetUnit": "Offset unit",
+  "houseDirectoryReminderOffsetUnitNone": "Default",
+  "houseDirectoryNotes": "Notes",
+  "houseDirectoryTitleLabel": "Title",
+  "houseDirectoryUrlLabel": "URL",
+  "houseDirectoryTagLabel": "Tag",
+  "houseDirectoryCustomTag": "Custom tag",
+  "houseDirectoryValidationProvider": "Enter a provider name.",
+  "houseDirectoryValidationCustomLabel": "Enter a custom label.",
+  "houseDirectoryValidationRentDates": "Rent needs both start and end dates.",
+  "houseDirectoryValidationDateRange": "Pick an end date after the start date.",
+  "houseDirectoryValidationReminderOffset": "Enter a valid reminder offset.",
+  "houseDirectoryValidationLinkFields": "Enter a title and URL.",
+  "houseDirectoryValidationUrl": "Enter a valid http or https URL.",
+  "houseDirectoryValidationCustomTag": "Enter a custom tag.",
+  "houseDirectoryWifiSaved": "Wifi details saved.",
+  "houseDirectoryServiceSaved": "Service saved.",
+  "houseDirectoryServiceArchived": "Service archived.",
+  "houseDirectoryLinkSaved": "Link saved.",
+  "houseDirectoryLinkArchived": "Link archived.",
+  "houseDirectoryReminderAcknowledged": "Reminder acknowledged.",
+  "houseDirectoryReminderDismissed": "Reminder dismissed.",
+  "houseDirectoryActionFailed": "Couldn't save those changes.",
+  "todayHouseDirectoryRemindersTitle": "Renewal reminders",
+  "todayHouseDirectoryReminderDue": "Reminder for {date}",
+  "@todayHouseDirectoryReminderDue": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Jan 5, 2026"
+      }
+    }
+  },
+  "todayHouseDirectoryOpenCta": "Open directory",
+  "todayHouseDirectoryAcknowledgeCta": "Acknowledge",
+  "todayHouseDirectoryDismissCta": "Dismiss",
   "@planFreeLabel": {
     "surface": "button"
   },

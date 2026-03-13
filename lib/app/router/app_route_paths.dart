@@ -17,6 +17,7 @@ class AppRoutePaths {
   static const todayShoppingDetail = '/today/shopping/:itemId/detail';
   static const todayShoppingPhoto = '/today/shopping/photo';
   static const hub = '/hub';
+  static const houseDirectory = '/hub/house-directory';
   static const hubPreferencesList = '/hub/preferences';
   static const hubHouseVibeShare = '/hub/house-vibe/share';
   static const explore = '/explore';

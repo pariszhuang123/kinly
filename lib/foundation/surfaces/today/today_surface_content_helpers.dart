@@ -13,6 +13,7 @@ Widget _buildTodayContentImpl(
   }
 
   final hasFlow = state.hasFlowContent;
+  final hasHouseDirectoryReminders = state.hasHouseDirectoryReminders;
   final hasShare = state.hasShareContent;
   final hasGratitude = state.hasGratitudeUnread;
   final hasHousePulse = state.hasHousePulseCard;
@@ -26,6 +27,7 @@ Widget _buildTodayContentImpl(
   final hasHouseNormsPrompt = state.shouldPromptHouseNorms;
 
   if (!hasFlow &&
+      !hasHouseDirectoryReminders &&
       !hasShare &&
       !hasGratitude &&
       !hasHousePulse &&
@@ -99,6 +101,16 @@ Widget _buildTodayContentImpl(
     onPersonalGratitudeTap:
         () => stateful._openGratitudeWall(context, openPersonal: true),
     onHousePulseTap: () => _openHousePulseDetail(context),
+    onHouseDirectoryTap:
+        () => context.pushNamed(AppRouteNames.houseDirectory),
+    onHouseDirectoryReminderAcknowledge:
+        (reminder) => context.read<TodayBloc>().add(
+          TodayHouseDirectoryReminderAcknowledged(reminder.id),
+        ),
+    onHouseDirectoryReminderDismiss:
+        (reminder) => context.read<TodayBloc>().add(
+          TodayHouseDirectoryReminderDismissed(reminder.id),
+        ),
     onShoppingTap: () => stateful._openShoppingList(context),
   );
 

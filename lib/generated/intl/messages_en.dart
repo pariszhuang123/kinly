@@ -205,7 +205,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Choose a valid start date.",
     ),
     "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
-      "This task can\'t be updated right now.",
+      "This task is not editable right now.",
     ),
     "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
       "You\'ve reached the free limit for active tasks. Upgrade for more.",
@@ -263,7 +263,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage("One time"),
     "flowChoreRetry": MessageLookupByLibrary.simpleMessage("Retry"),
     "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage(
-      "When is it due?",
+      "When will it happen?",
     ),
     "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage(
       "Create task",
@@ -494,7 +494,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "houseNormScenarioResponsibilityOption3":
         MessageLookupByLibrary.simpleMessage("Everyone handles their own"),
     "houseNormScenarioResponsibilityQuestion":
-        MessageLookupByLibrary.simpleMessage("Small chores?"),
+        MessageLookupByLibrary.simpleMessage("Small home tasks?"),
     "houseNormScenarioRhythmOption1": MessageLookupByLibrary.simpleMessage(
       "Wind down",
     ),
@@ -505,7 +505,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "People do their thing",
     ),
     "houseNormScenarioRhythmQuestion": MessageLookupByLibrary.simpleMessage(
-      "Late at night?",
+      "At night?",
     ),
     "houseNormScenarioSharedSpacesOption1":
         MessageLookupByLibrary.simpleMessage("Clean"),
@@ -971,7 +971,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Delete account",
     ),
     "profileConfirmDeleteMessage": MessageLookupByLibrary.simpleMessage(
-      "This deletes your account and signs you out. You can\'t undo this.",
+      "This deletes your account and signs you out. This is permanent.",
     ),
     "profileConfirmDeleteTitle": MessageLookupByLibrary.simpleMessage(
       "Delete your account?",
@@ -1015,7 +1015,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "profileIdentityAvatarSectionDescription":
         MessageLookupByLibrary.simpleMessage(
-          "Each avatar must be unique in your home.",
+          "Use a different avatar for each person in your home.",
         ),
     "profileIdentityAvatarSectionTitle": MessageLookupByLibrary.simpleMessage(
       "Choose an avatar",
@@ -1124,7 +1124,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "profileSettingsTitle": MessageLookupByLibrary.simpleMessage("Profile"),
     "profile_deactivated_message": MessageLookupByLibrary.simpleMessage(
-      "Your profile is deactivated. Sign in with another email address.",
+      "Your profile is off. Sign in with another email.",
     ),
     "pulseCloudySteadySummary": MessageLookupByLibrary.simpleMessage(
       "Some things worked. Some didn\'t.",
@@ -1218,7 +1218,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Amount",
     ),
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
-      "Enter each person\'s share. The total must match the amount above.",
+      "Enter each person\'s share. Total equals the amount above.",
     ),
     "shareCreateCyclePeriod": m17,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
@@ -1237,7 +1237,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "You\'ve reached the free limit for active bills. Upgrade for more.",
     ),
     "shareCreateErrorRecurrenceDraft": MessageLookupByLibrary.simpleMessage(
-      "Drafts can\'t repeat until you add a split.",
+      "Drafts do not repeat until you add a split.",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t load your home members.",
@@ -1276,7 +1276,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Split evenly",
     ),
     "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage(
-      "How should this be split?",
+      "How do you want to split this?",
     ),
     "shareCreateStartLabel": MessageLookupByLibrary.simpleMessage(
       "When does this apply?",
@@ -1358,16 +1358,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "Bill deleted.",
     ),
     "shareEditDisabledActive": MessageLookupByLibrary.simpleMessage(
-      "Active bills can\'t be edited.",
+      "Active bills are not editable.",
     ),
     "shareEditDisabledConverted": MessageLookupByLibrary.simpleMessage(
-      "This bill is now a plan and can\'t be edited here.",
+      "This bill is now a plan and is not editable here.",
     ),
     "shareEditDisabledGeneric": MessageLookupByLibrary.simpleMessage(
-      "This bill can\'t be edited right now.",
+      "This bill is not editable right now.",
     ),
     "shareEditDisabledRecurringCycle": MessageLookupByLibrary.simpleMessage(
-      "Recurring cycles can\'t be edited here.",
+      "Recurring cycles are not editable here.",
     ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t load that draft.",

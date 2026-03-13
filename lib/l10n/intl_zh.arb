@@ -1,0 +1,1537 @@
+{
+  "@@locale": "zh",
+  "app_title": "Kinly",
+  "bootstrap_initializing": "正在启动 Kinly（{env}）",
+  "@bootstrap_initializing": {
+    "surface": "subtitle",
+    "placeholders": {
+      "env": {
+        "type": "String",
+        "example": "prod"
+      }
+    }
+  },
+  "startReturningTitle": "你好，{name}",
+  "@startReturningTitle": {
+    "description": "Greeting shown on the Start screen for returning users.",
+    "surface": "title",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "startReturningSubtitle": "今天想先处理什么？",
+  "@startReturningSubtitle": {
+    "description": "Follow-up prompt for returning users on the Start screen.",
+    "surface": "subtitle"
+  },
+  "welcome_title": "欢迎使用 Kinly",
+  "welcome_create": "创建共享家庭",
+  "@welcome_create": {
+    "surface": "button"
+  },
+  "welcome_join": "加入共享家庭",
+  "create_failed_generic": "暂时无法创建家庭。",
+  "join_title": "加入家庭",
+  "join_hint": "输入邀请码（例如：ABC123）",
+  "join_submit": "加入",
+  "join_success": "你已成功加入家庭。",
+  "@join_success": {
+    "description": "Snackbar message displayed when the user joins successfully",
+    "surface": "success_message",
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "ABCD123"
+      }
+    }
+  },
+  "join_failed_generic": "暂时无法加入这个家庭。",
+  "join_error_invalid_code": "这个邀请码看起来不对。",
+  "join_error_inactive_invite": "这个邀请码已失效，请联系房主获取新的邀请码。",
+  "join_error_already_in_other_home": "请先退出你当前加入的家庭。",
+  "join_error_paywall_limit": "这个家庭已达到成员上限，请房主升级或移除成员后再试。",
+  "paywallTitle": "让共享生活更顺一点",
+  "paywallSubtitle": "不到房租的 0.5%。",
+  "paywallPriceCaption": "一个家庭方案，没有隐藏等级。",
+  "paywallPricePerMonth": "每月 {price}",
+  "@paywallPricePerMonth": {
+    "surface": "paywall_subtitle",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "$7.99"
+      }
+    }
+  },
+  "paywallPriceUnavailable": "目前暂时无法显示价格。",
+  "paywallBulletMembers": "无限成员",
+  "paywallBulletFlows": "无限任务",
+  "paywallBulletPhotos": "无限任务照片",
+  "paywallFeatureUnlimitedSharedExpensePhotos": "无限账单照片",
+  "paywallBulletShoppingPhotos": "无限购物照片",
+  "paywallBulletShares": "无限账单",
+  "paywallPrimaryCta": "升级到 Premium",
+  "paywallSecondaryCta": "继续使用免费版",
+  "paywallPurchaseFailed": "购买未完成。",
+  "paywallPurchaseSuccess": "你已成功升级到 Kinly Premium。",
+  "paywallRestoreCta": "恢复购买",
+  "paywallErrorTitle": "暂时无法加载订阅信息。",
+  "paywallRetryLabel": "重试",
+  "join_error_unauthorized": "请先登录后再加入家庭。",
+  "join_error_forbidden": "你目前没有权限加入这个家庭。",
+  "join_blocked_title": "这个家庭目前暂时无法加入新成员",
+  "join_blocked_body": "我们已经通知房主了。",
+  "join_blocked_cta": "知道了",
+  "todayMemberCapTitle": "有人想加入你的家庭",
+  "todayMemberCapSubtitle": "{names} 想加入你的家庭。升级后可支持无限成员。",
+  "@todayMemberCapSubtitle": {
+    "surface": "subtitle",
+    "placeholders": {
+      "names": {
+        "type": "String",
+        "example": "Alex, Sam"
+      }
+    }
+  },
+  "todayMemberCapSubtitleGeneric": "升级后可添加更多成员。",
+  "todayMemberCapPrimaryCta": "升级家庭方案",
+  "todayMemberCapSecondaryCta": "暂时忽略",
+  "todayMemberCapResolutionJoined": "{name} 已加入你的家庭。",
+  "@todayMemberCapResolutionJoined": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionSuperseded": "{name} 已加入其他家庭。",
+  "@todayMemberCapResolutionSuperseded": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionFailed": "暂时无法完成 {name} 的加入请求。",
+  "@todayMemberCapResolutionFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionUnknownName": "有人",
+  "quick_add_title": "快速添加",
+  "quick_add_flow_title": "任务",
+  "quick_add_flow_subtitle": "新增一个任务",
+  "quick_add_share_title": "账单",
+  "quick_add_share_subtitle": "新增一笔账单",
+  "todayAddSheetTitle": "添加到家庭",
+  "todayAddSheetFlow": "添加任务",
+  "todayAddSheetShare": "添加账单",
+  "todayAddSheetShopping": "添加购物项",
+  "shoppingCardTitle": "购物清单",
+  "shoppingCardSubtitle": "{count, plural, one {{count} 件待购买} other {{count} 件待购买}}",
+  "@shoppingCardSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "shoppingListTitle": "购物清单",
+  "shoppingDetailTitle": "购物项目",
+  "shoppingMarkCompleteCta": "标记为已购买",
+  "shoppingTabPending": "待购买",
+  "shoppingAllItemsBought": "全部买好了",
+  "shoppingEmptyTitle": "目前还没有购物项目。",
+  "shoppingCreateTitle": "添加购物项目",
+  "shoppingEditTitle": "编辑购物项目",
+  "shoppingNameLabel": "名称",
+  "shoppingNameHint": "例如：牛奶",
+  "shoppingAmountLabel": "数量",
+  "shoppingAmountHint": "例如：2 盒",
+  "shoppingContextLabel": "备注",
+  "shoppingContextHint": "品牌、规格或其他说明",
+  "shoppingPhotoLabel": "添加照片",
+  "shoppingPhotoReplaceLabel": "帮助室友买对商品",
+  "shoppingPhotoPlaceholder": "添加一张照片",
+  "shoppingValidationName": "请输入商品名称。",
+  "shoppingSubmitAdd": "添加项目",
+  "shoppingSubmitEdit": "保存修改",
+  "shoppingDelete": "删除项目",
+  "shoppingDeleteConfirmTitle": "要删除这个项目吗？",
+  "shoppingDeleteConfirmBody": "删除后，它会从共享购物清单中移除。",
+  "shoppingErrorItemAlreadyCompletedByOther": "有人已经把它标记为已购买了。",
+  "shoppingArchiveCta": "已购买",
+  "shoppingArchiveSharePromptTitle": "要创建账单吗？",
+  "shoppingArchiveSharePromptBody": "要根据这些项目生成一份账单草稿吗？",
+  "shoppingArchiveShareYes": "创建",
+  "shoppingArchiveShareNo": "不用了",
+  "shoppingArchiveItemsBought": "已标记购买并移除",
+  "shoppingArchiveDraftBillCreated": "账单草稿已创建",
+  "login_tagline": "一起住，轻松一点",
+  "login_with_google": "使用 Google 继续",
+  "login_with_apple": "使用 Apple 继续",
+  "login_consent_prefix": "我同意",
+  "login_consent_connector": "和",
+  "login_terms": "服务条款",
+  "login_privacy": "隐私政策",
+  "logout": "退出登录",
+  "membership_status_checking": "正在连接你的家庭...",
+  "membership_status_none": "创建或加入一个家庭。",
+  "membership_status_active": "你已连接到一个家庭。",
+  "authMembershipLoadFailed": "暂时无法刷新你的家庭信息。",
+  "offline_title": "你当前处于离线状态",
+  "offline_body": "当前没有网络连接，请稍后重试。",
+  "offline_retry": "再试一次",
+  "force_update_title": "需要更新",
+  "force_update_body": "当前版本的 Kinly 已不再支持，请更新后继续使用。",
+  "force_update_button": "更新 Kinly",
+  "navToday": "今天",
+  "navExplore": "管理",
+  "navHub": "家庭中心",
+  "hubMembersEmpty": "目前还没有活跃成员。",
+  "hubInviteCta": "邀请成员",
+  "hubInviteUnavailable": "暂时无法加载邀请码。",
+  "hubShareInviteTitle": "邀请加入我的 Kinly 家庭",
+  "hubShareInviteBody": "使用这个邀请码加入我们的 Kinly 家庭：{code}\n\n下载 Kinly：{link}",
+  "@hubShareInviteBody": {
+    "surface": "subtitle",
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "ABCD123"
+      },
+      "link": {
+        "type": "String",
+        "example": "https://go.makinglifeeasie.com/kinly"
+      }
+    }
+  },
+  "hubShareAppTitle": "获取 Kinly",
+  "hubShareAppBody": "用 Kinly，让共享生活更轻松：{link}",
+  "@hubShareAppBody": {
+    "surface": "subtitle",
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://go.makinglifeeasie.com/kinly"
+      }
+    }
+  },
+  "hubShareAppCta": "分享 Kinly",
+  "todayFlatmateInviteTitle": "邀请你的室友",
+  "todayFlatmateInviteSubtitle": "让分工更清楚，让生活更顺一点。",
+  "todayInviteFriendsTitle": "邀请朋友使用 Kinly",
+  "todayInviteFriendsSubtitle": "把 Kinly 分享给朋友。",
+  "todayInviteShareCta": "发送邀请",
+  "todayInviteNotNow": "暂时不用",
+  "hubCodeCopied": "邀请码已复制",
+  "hubRotateInvite": "更换邀请码",
+  "hubRotateSuccess": "邀请码已更新",
+  "hubRotateError": "暂时无法更新邀请码。",
+  "hubQrTitle": "分享应用",
+  "hubQrSubtitle": "扫码下载 Kinly",
+  "hubCardGratitudeWallTitle": "感谢墙",
+  "hubCardGratitudeWallSubtitle": "记录这个家里小小的感谢。",
+  "hubPreferencesTitle": "生活偏好",
+  "hubPreferencesSubtitle": "看看每个人喜欢怎样的共享生活方式。",
+  "homeVibeTitle": "家庭氛围",
+  "homeVibeCoverage": "已有 {answered}/{total} 位成员完成填写",
+  "@homeVibeCoverage": {
+    "placeholders": {
+      "answered": {
+        "type": "int",
+        "example": "3"
+      },
+      "total": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "houseVibeShareTitle": "家庭氛围",
+  "houseVibeShareMessage": "这是我们的 Kinly 家庭氛围。下载应用：{link}",
+  "@houseVibeShareMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://go.makinglifeeasie.com/kinly"
+      }
+    }
+  },
+  "houseVibeShareError": "暂时无法分享。",
+  "houseVibeShareCta": "分享氛围",
+  "vibeInsufficientTitle": "资料还不够",
+  "vibeInsufficientSummary": "完成偏好设置后，就能看到这个家的整体氛围。",
+  "vibeMixedTitle": "混合型家庭",
+  "vibeMixedSummary": "这个家的生活方式比较多元。",
+  "vibeDefaultTitle": "平衡型家庭",
+  "vibeDefaultSummary": "这个家的整体节奏比较平衡。",
+  "vibeQuietCareTitle": "安静温和",
+  "vibeQuietCareSummary": "这个家整体偏安静、温和。",
+  "vibeSocialTitle": "社交活力",
+  "vibeSocialSummary": "这个家整体比较活跃、喜欢互动。",
+  "vibeWarmSocialTitle": "温暖社交",
+  "vibeWarmSocialSummary": "这个家给人的感觉温暖又欢迎彼此。",
+  "vibeCozySocialTitle": "温馨相处",
+  "vibeCozySocialSummary": "这个家相处起来轻松又温暖。",
+  "vibeSteadyTitle": "稳定平静",
+  "vibeSteadySummary": "这个家的节奏稳定、相处平和。",
+  "vibeStructuredTitle": "有序节奏",
+  "vibeStructuredSummary": "这个家更适合有规律、有安排的生活方式。",
+  "vibeEasygoingTitle": "轻松随性",
+  "vibeEasygoingSummary": "这个家的风格比较放松、灵活。",
+  "vibeIndependentTitle": "独立安静",
+  "vibeIndependentSummary": "这个家更重视空间感和安静。",
+  "hubError": "暂时无法加载家庭中心。",
+  "hubRetry": "重试",
+  "todayEmptyCardTitle": "都处理好了",
+  "todayEmptyCardBadge": "可以喘口气了",
+  "todayEmptyBody": "目前没有需要你处理的事情。",
+  "friendDefaultName": "朋友",
+  "greetingPartOfDay": "{partOfDay}好，{name}",
+  "@greetingPartOfDay": {
+    "surface": "title",
+    "placeholders": {
+      "partOfDay": {
+        "type": "String",
+        "example": "morning"
+      },
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayFlowSubtitle": "这是今天需要留意的内容。",
+  "todayFlowSectionTitle": "任务",
+  "todayFlowTabActive": "进行中",
+  "todayFlowTabDrafts": "草稿",
+  "todayFlowSeeAll": "查看全部 {count, plural, one {(#)} other {(#)}}",
+  "@todayFlowSeeAll": {
+    "surface": "subtitle",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "todayFlowBadgeNew": "今日新增",
+  "todayShareSectionTitle": "账单",
+  "todayShareTabActive": "待结算",
+  "todayShareTabDrafts": "草稿",
+  "todayShareTabPaidToMe": "已结清",
+  "todaySharePaidSubtitle": "已结清金额",
+  "todaySharePaidUnseen": "{count, plural, one {{count} 笔新收款} other {{count} 笔新收款}}",
+  "@todaySharePaidUnseen": {
+    "description": "Subtitle shown for paid-to-me entries when there are unseen items.",
+    "surface": "subtitle",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "todayShareError": "暂时无法刷新账单。",
+  "todayShareActiveSubtitle": "{count, plural, one {{count} 笔待付款} other {{count} 笔待结算}}",
+  "@todayShareActiveSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    },
+    "surface": "subtitle"
+  },
+  "todayGratitudeSectionTitle": "感谢",
+  "todayGratitudeUnreadBody": "你有新的感谢还没看。",
+  "shareOwedDetailTitle": "待结算",
+  "shareOwedDetailEmpty": "你和这个人之间目前都结清了。",
+  "shareOwedDetailPaid": "标记为已结清",
+  "shareOwedDetailSuccess": "已标记为已结清。",
+  "shareOwedDetailError": "暂时无法标记为已结清。",
+  "sharePaidDetailAcknowledge": "确认已收到",
+  "sharePaidDetailAcknowledging": "确认中...",
+  "sharePaidDetailAcknowledgeError": "暂时无法确认这笔收款。",
+  "shareEditTitle": "编辑账单",
+  "shareEditSubmit": "更新",
+  "shareEditSuccess": "账单已更新。",
+  "shareEditLoadError": "暂时无法加载这份草稿。",
+  "shareEditNotAllowed": "在有人接手这张账单前，它会保持锁定。",
+  "shareEditSplitsLocked": "由于已经有人付款，分摊金额已锁定。你仍可修改描述和备注。",
+  "shareEditClose": "关闭",
+  "shareEditDeleteButton": "删除",
+  "shareEditDeleteConfirmTitle": "要删除这张账单吗？",
+  "shareEditDeleteConfirmMessage": "删除后，这份草稿会从所有人那里移除。",
+  "shareEditDeleteConfirm": "删除",
+  "shareEditDeleteError": "暂时无法删除账单。",
+  "shareEditDeleteSuccess": "账单已删除。",
+  "shareEditTerminateSuccess": "计划已结束。",
+  "shareEditTerminatePlan": "结束计划",
+  "shareEditTerminatePlanBusy": "结束中...",
+  "shareEditTerminatePlanTitle": "要结束这个周期计划吗？",
+  "shareEditTerminatePlanMessage": "结束后将不会再生成新的账单周期。",
+  "shareEditTerminatePlanConfirm": "结束计划",
+  "shareEditTerminateError": "暂时无法结束这个计划。",
+  "shareEditDisabledConverted": "这张账单已变成计划，无法在这里编辑。",
+  "shareEditDisabledRecurringCycle": "周期账单无法在这里编辑。",
+  "shareEditDisabledActive": "进行中的账单暂时无法编辑。",
+  "shareEditDisabledGeneric": "这张账单目前无法编辑。",
+  "shareCreateTitle": "添加账单",
+  "shareCreateDescriptionLabel": "账单说明",
+  "shareCreateDescriptionHint": "例如：超市采购",
+  "shareCreateAmountLabel": "金额",
+  "shareCreateAmountHint": "0.00",
+  "shareCreateSplitLabel": "你想怎么分摊？",
+  "shareCreateSplitEqual": "平均分摊",
+  "shareCreateSplitCustom": "自定义金额",
+  "shareCreateParticipantsEmpty": "至少需要两位家庭成员才能分摊账单。",
+  "shareCreateNotesLabel": "备注",
+  "shareCreateNotesHint": "可选，所有人都能看到",
+  "shareCreateCustomHelper": "请输入每个人应分摊的金额，总额需与上方金额一致。",
+  "shareCreateCustomAmountLabel": "金额",
+  "shareCreateStartLabel": "从什么时候开始？",
+  "shareCreateCyclePeriod": "适用周期：{period}",
+  "@shareCreateCyclePeriod": {
+    "placeholders": {
+      "period": {
+        "type": "String",
+        "example": "Jan 5 - Jan 11, 2026"
+      }
+    }
+  },
+  "shareCreateRecurrenceLabel": "重复",
+  "shareCreateRecurrenceToggleLabel": "周期重复",
+  "shareCreateRecurrenceEveryLabel": "每",
+  "shareCreateRecurrenceUnitDay": "天",
+  "shareCreateRecurrenceUnitWeek": "周",
+  "shareCreateRecurrenceUnitMonth": "月",
+  "shareCreateRecurrenceUnitYear": "年",
+  "shareCreateSubmit": "创建",
+  "shareCreateValidationDescription": "请输入账单说明。",
+  "shareCreateValidationAmount": "请输入大于 0 的金额。",
+  "shareCreateValidationEqualParticipants": "请至少选择一位成员分摊账单。",
+  "shareCreateValidationCustomParticipants": "请至少选择一位成员参与账单。",
+  "shareCreateValidationCustomAmounts": "请为每位选中的成员输入有效金额。",
+  "shareCreateValidationCustomSum": "请确认分摊总额与账单金额一致。",
+  "shareCreateValidationCustomSumBreakdown": "分摊金额不一致。总额：{total}，已分配：{included}，差额：{difference}。",
+  "@shareCreateValidationCustomSumBreakdown": {
+    "placeholders": {
+      "total": {
+        "type": "String",
+        "example": "$120.00"
+      },
+      "included": {
+        "type": "String",
+        "example": "$100.00"
+      },
+      "difference": {
+        "type": "String",
+        "example": "+$20.00"
+      }
+    }
+  },
+  "shareCreateValidationCustomSinglePayer": "请至少再添加一位其他成员。",
+  "shareCreateValidationRecurrence": "请选择重复频率。",
+  "shareCreateValidationRecurrenceSplit": "设置周期账单前，请先选择分摊方式。",
+  "shareCreateValidationStartDate": "请选择开始日期。",
+  "shareCreateValidationStartDateRange": "请选择允许范围内的日期。",
+  "shareCreateErrorRecurrenceDraft": "草稿在设置分摊前不会重复生成。",
+  "shareCreateLoadError": "暂时无法加载家庭成员。",
+  "shareCreateRetry": "重试",
+  "shareCreateErrorGeneric": "暂时无法创建账单。",
+  "shareCreateErrorPaywallActiveCap": "免费版的进行中账单数量已达上限，升级后可继续添加。",
+  "shareCreateErrorForbidden": "你目前没有权限创建这张账单。",
+  "shareCreateSuccess": "账单已创建。",
+  "flowChoreCreateTitle": "添加任务",
+  "flowChoreEditTitle": "编辑任务",
+  "flowChoreViewTitle": "查看任务",
+  "flowChoreNameLabel": "需要做什么？",
+  "flowChoreNameHint": "例如：倒垃圾、清冰箱、浇植物",
+  "flowChoreValidationName": "请输入任务名称。",
+  "flowChoreAssigneeLabel": "由谁来做？",
+  "flowChoreValidationAssignee": "请选择一位成员。",
+  "flowChoreStartLabel": "什么时候进行？",
+  "flowChoreValidationDate": "请选择未来一年内的日期。",
+  "flowChoreRecurrenceLabel": "这个任务多久发生一次？",
+  "flowChoreRecurrenceNone": "一次性",
+  "flowChoreNotesLabel": "为什么重要",
+  "flowChoreNotesHint": "补充一些背景，方便大家理解",
+  "flowChoreHowToLabel": "怎么做（可选）",
+  "flowChoreHowToHint": "如果有固定做法，可以贴上链接",
+  "flowChoreValidationHowToUrl": "请输入以 http 或 https 开头的有效链接。",
+  "flowChoreHowToLaunchError": "暂时无法打开这个链接。",
+  "flowChorePhotoLabel": "理想参考图",
+  "flowChorePhotoPlaceholder": "添加照片，让大家更清楚完成标准",
+  "flowChorePhotoPermissionDenied": "请开启相机权限后再拍照。",
+  "flowChorePhotoPermissionOpenSettings": "前往设置",
+  "flowChorePhotoUploadError": "暂时无法上传照片。",
+  "flowChorePhotoLoadError": "暂时无法加载照片。",
+  "flowChoreSubmitCreate": "创建任务",
+  "flowChoreSubmitUpdate": "保存修改",
+  "flowChoreDeleteButton": "删除任务",
+  "flowChoreDeleteDialogTitle": "要删除这个任务吗？",
+  "flowChoreDeleteDialogMessage": "删除后，这个任务会从整个家庭中移除。",
+  "flowChoreDeleteConfirm": "删除",
+  "flowChoreLoadError": "暂时无法加载这个任务。",
+  "flowChoreRetry": "重试",
+  "flowChoreErrorPaywallActiveCap": "免费版的进行中任务数量已达上限，升级后可继续添加。",
+  "flowChoreErrorPaywallMediaCap": "免费版的任务照片数量已达上限，升级后可继续添加。",
+  "flowChoreErrorAssigneeNotMember": "这个人目前不在你的家庭中。",
+  "flowChoreErrorForbidden": "你目前没有权限修改这个任务。",
+  "flowChoreErrorInvalidPhoto": "这张照片不属于这个家庭。",
+  "flowChoreErrorInvalidStart": "请选择有效的开始日期。",
+  "flowChoreErrorInvalidState": "这个任务当前无法编辑。",
+  "flowChoreErrorGeneric": "暂时无法保存这个任务。",
+  "flowChoreDetailTitle": "任务详情",
+  "flowChoreDetailUnassigned": "未分配",
+  "flowChoreDetailCompleteButton": "标记完成",
+  "flowChoreCreateSuccess": "任务已创建。",
+  "flowChoreUpdateSuccess": "任务已更新。",
+  "flowChoreDetailCompletionSuccess": "任务已完成。",
+  "flowChoreDetailCompletionError": "暂时无法完成这个任务。",
+  "flowChoreDetailMoreInfoTitle": "补充说明",
+  "flowChoreExpectationPhotoLabel": "参考照片",
+  "flowListEmptyTitle": "这里还没有内容",
+  "flowListEmptySubtitle": "任务可以帮助大家更清楚地分工。",
+  "flowListDraftLabel": "草稿",
+  "flowListOverdueLabel": "需要留意",
+  "flowListTabCurrent": "当前",
+  "flowListTabFuture": "即将开始",
+  "flowListError": "暂时无法加载任务，下拉可刷新。",
+  "exploreIntroSubtitle": "把共享的事说清楚。",
+  "exploreFlowSubtitle": "查看有哪些任务、由谁负责。",
+  "exploreShareSubtitle": "查看你创建的账单并跟进收款情况。",
+  "exploreShoppingSectionTitle": "购物清单",
+  "exploreShoppingSubtitle": "查看和管理共享购物项目。",
+  "shareCreatedListTitle": "你的账单",
+  "shareCreatedListEmptyTitle": "还没有账单",
+  "shareCreatedListEmptySubtitle": "账单能让金钱往来更清楚。",
+  "shareCreatedListError": "暂时无法加载你的账单，下拉可刷新。",
+  "shareCreatedListRetry": "重试",
+  "shareCreatedListActiveSubtitle": "已支付 {paid}/{total}",
+  "@shareCreatedListActiveSubtitle": {
+    "placeholders": {
+      "paid": {
+        "type": "int",
+        "example": "2"
+      },
+      "total": {
+        "type": "int",
+        "example": "4"
+      }
+    },
+    "surface": "subtitle"
+  },
+  "shareCreatedListActiveAmount": "已收 {paidAmount} / 共 {totalAmount}",
+  "@shareCreatedListActiveAmount": {
+    "placeholders": {
+      "paidAmount": {
+        "type": "String",
+        "example": "$20.00"
+      },
+      "totalAmount": {
+        "type": "String",
+        "example": "$40.00"
+      }
+    }
+  },
+  "shareCreatedListDraftSubtitle": "先设置好分摊方式，再发布给大家。",
+  "shareCreatedListDraftBadge": "未分配",
+  "shareCreatedListPaidBadge": "已结清",
+  "profileSettingsTitle": "个人设置",
+  "profileSettingsSubtitle": "管理你的账号与家庭权限。",
+  "profileIdentityTitle": "编辑个人资料",
+  "profileIdentitySubtitle": "设置你的用户名和头像。",
+  "profileIdentityUsernameLabel": "用户名",
+  "profileIdentityUsernameHint": "字母、数字、. 或 _",
+  "profileIdentityUsernameEmptyError": "请输入用户名。",
+  "profileIdentityUsernameFormatError": "请使用 3-30 位小写字母或数字，中间可包含 . 和 _。",
+  "profileIdentityUsernameTakenError": "这个用户名已被使用。",
+  "profileIdentityAvatarSectionTitle": "选择头像",
+  "profileIdentityAvatarSectionDescription": "同一家庭中的每个人都可以使用不同头像。",
+  "profileIdentityAvatarEmpty": "目前没有可用头像。",
+  "profileIdentityLoadError": "暂时无法加载你的个人资料。",
+  "profileIdentityRetry": "重试",
+  "profileIdentitySaveButton": "保存修改",
+  "profileIdentitySuccessMessage": "个人资料已更新。",
+  "profileIdentityUsernamePreviewFallback": "你的用户名",
+  "profileLeaveHomeTitle": "退出家庭",
+  "profileLeaveHomeSubtitle": "你将离开当前这个共享家庭空间。",
+  "profileLeaveEligibilityLoading": "正在检查家庭成员...",
+  "profileLeaveEligibilityError": "暂时无法加载家庭成员。",
+  "profileLeaveOwnerSoloMessage": "你是最后一位成员。退出后，这个家庭会被停用。",
+  "profileLeaveOwnerNoEligibleMembers": "目前没有可转移为房主的成员。",
+  "profileLeaveTransferSheetTitle": "转移房主身份",
+  "profileLeaveTransferSheetSubtitle": "请先选择新的房主，再退出家庭。",
+  "profileKickMemberTitle": "移除成员",
+  "profileKickMemberSubtitle": "选择一位成员并移除其访问权限。",
+  "profileKickSheetTitle": "移除成员",
+  "profileKickSheetSubtitle": "选择要移除的成员，对方会立即失去访问权限。",
+  "profileKickActionConfirm": "移除成员",
+  "profileKickNoMembers": "目前没有其他成员可移除。",
+  "profileKickOwnerOnly": "只有房主可以移除成员。",
+  "profileKickSuccessMessage": "对方已失去这个家庭的访问权限。",
+  "profileLeaveTransferSuccessMessage": "房主身份已转移，正在完成退出流程...",
+  "profileInfoHubTitle": "信息中心",
+  "profileInfoHubSubtitle": "在应用内打开 Kinly Notion 信息中心。",
+  "profileInfoHubLoadError": "暂时无法加载信息中心，请检查网络。",
+  "profileContactUsTitle": "联系我们",
+  "profileContactUsSubtitle": "发送邮件至 support@makinglifeeasie.com",
+  "profileConnectionSettingsTitle": "通知设置",
+  "profileConnectionSettingsSubtitle": "管理提醒和通知。",
+  "connectionSettingsTitle": "通知设置",
+  "connectionSettingsSubtitle": "设置每日提醒与提醒时间。",
+  "connectionSettingsGenericError": "暂时无法更新通知设置。",
+  "connectionNotificationsToggleTitle": "每日提醒",
+  "connectionNotificationsToggleSubtitleOn": "每天接收一次提醒。",
+  "connectionNotificationsToggleSubtitleOff": "开启提醒，帮助你留意家庭事项。",
+  "connectionNotificationsPermissionBlocked": "请先到手机系统设置里开启通知权限。",
+  "connectionNotificationsTimeLabel": "提醒时间",
+  "connectionNotificationsTimeSubtitle": "已安排在 {time}",
+  "@connectionNotificationsTimeSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "8:00 AM"
+      }
+    },
+    "surface": "subtitle"
+  },
+  "profileContactEmailSubject": "联系 Kinly",
+  "profile_deactivated_message": "你的资料已停用，请使用其他邮箱登录。",
+  "profileContactLaunchError": "暂时无法打开邮件应用。",
+  "profileLogoutTitle": "退出登录",
+  "profileLogoutSubtitle": "在这台设备上退出 Kinly。",
+  "profileDeleteAccountTitle": "删除账号",
+  "profileDeleteAccountSubtitle": "删除你的 Kinly 账号与相关数据。",
+  "profileConfirmLeaveTitle": "要退出这个家庭吗？",
+  "profileConfirmLeaveMessage": "退出后，你将无法继续查看任务、历史记录和邀请码。",
+  "profileConfirmDeleteTitle": "要删除你的账号吗？",
+  "profileConfirmDeleteMessage": "此操作会删除你的账号并退出登录，而且无法恢复。",
+  "profileActionConfirmDelete": "删除账号",
+  "profileActionConfirm": "退出家庭",
+  "profileLeaveSuccessMessage": "你已退出这个家庭。",
+  "profileDeleteSuccessMessage": "你的账号即将删除，我们会将你退出登录。",
+  "profileGenericError": "出了点问题，请稍后再试。",
+  "profileMissingHomeError": "暂时找不到你当前的家庭。",
+  "harmonyQuestion": "这周有什么地方做得不错，或需要调整？",
+  "harmonyMoodSunny": "晴朗",
+  "harmonyMoodPartiallySunny": "局部晴朗",
+  "harmonyMoodCloudy": "多云",
+  "harmonyMoodRainy": "下雨",
+  "harmonyMoodThunderstorm": "雷雨",
+  "harmonyCommentLabel": "可选备注",
+  "harmonyCommentHint": "如果有帮助，可以补充一点背景",
+  "harmonyFeedbackSingleHousemateHint": "输入 @ 可提及 1 位室友。",
+  "harmonyShareLabel": "家庭内所有人可见",
+  "harmonySubmitCta": "保存",
+  "harmonySubmitSuccess": "已保存",
+  "harmonyErrorAlreadySubmitted": "你本周已经提交过了。",
+  "harmonyErrorForbidden": "目前暂时无法使用每周反馈。",
+  "harmonyErrorUnknown": "出了点问题，请稍后再试。",
+  "todayGratitudeHouseCta": "家庭感谢",
+  "todayGratitudePersonalCta": "我的感谢",
+  "gratitudeWallHouseTab": "家庭",
+  "gratitudeWallPersonalTab": "我的",
+  "gratitudeWallPersonalTitle": "我的感谢",
+  "gratitudeWallPersonalSummary": "留给自己的一个小小感谢角落。",
+  "gratitudeWallStatsMentions": "感谢次数",
+  "gratitudeWallStatsPeople": "提及人数",
+  "gratitudeWallStatsHomes": "家庭数",
+  "mentionFieldHint": "输入 @ 提及某个人",
+  "gratitudeWallEmptyTitle": "还没有感谢",
+  "gratitudeWallEmptySubtitle": "写下一句这周值得感谢的话吧。",
+  "gratitudeWallErrorGeneric": "暂时无法加载感谢内容。",
+  "gratitudeWallRetry": "重试",
+  "gratitudeWallShareCta": "分享",
+  "gratitudeWallShareTitle": "家庭感谢",
+  "gratitudeWallShareMessage": "这是我们在 Kinly 家庭里的几句感谢。下载应用：{link}",
+  "@gratitudeWallShareMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://go.makinglifeeasie.com/kinly"
+      }
+    }
+  },
+  "gratitudeWallShareError": "暂时无法分享。",
+  "gratitudeWallFooter": "由 {appName} 制作 · 一起住，轻松一点",
+  "gratitudeWallWeeksAgo": "{weeks, plural, =0{本周} one{# 周前} other{# 周前}}",
+  "@gratitudeWallWeeksAgo": {
+    "surface": "subtitle",
+    "placeholders": {
+      "weeks": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "@gratitudeWallFooter": {
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "Kinly"
+      }
+    }
+  },
+  "npsTitle": "Kinly 是否让你的家庭运转得更顺一点？",
+  "npsDescription": "0 表示完全没有帮助，10 表示真的带来了明显改变。",
+  "npsScaleLowLabel": "0 完全没有帮助",
+  "npsScaleHighLabel": "10 真的有明显帮助",
+  "npsCannotSkip": "请选择一个分数后再继续。",
+  "npsSubmitErrorNotRequired": "你现在暂时不需要填写这项反馈。",
+  "npsSubmitErrorInvalidScore": "请选择 0 到 10 之间的分数。",
+  "npsSubmitErrorForbidden": "目前暂时无法提交反馈。",
+  "npsSubmitErrorGeneric": "暂时无法发送反馈。",
+  "npsLaunchError": "暂时无法打开下一步。",
+  "npsEmailSubject": "Kinly 还可以怎样更好地支持你的家庭？",
+  "@app_title": {
+    "surface": "title"
+  },
+  "@welcome_title": {
+    "surface": "title"
+  },
+  "@join_title": {
+    "surface": "title"
+  },
+  "@join_submit": {
+    "surface": "button"
+  },
+  "@paywallTitle": {
+    "surface": "title_hero"
+  },
+  "@paywallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@paywallPrimaryCta": {
+    "surface": "button"
+  },
+  "@paywallSecondaryCta": {
+    "surface": "button"
+  },
+  "@paywallPurchaseSuccess": {
+    "surface": "success_message"
+  },
+  "@paywallRestoreCta": {
+    "surface": "button"
+  },
+  "@paywallErrorTitle": {
+    "surface": "title"
+  },
+  "@quick_add_title": {
+    "surface": "title"
+  },
+  "@quick_add_flow_title": {
+    "surface": "title"
+  },
+  "@quick_add_flow_subtitle": {
+    "surface": "subtitle"
+  },
+  "@quick_add_share_title": {
+    "surface": "title"
+  },
+  "@quick_add_share_subtitle": {
+    "surface": "subtitle"
+  },
+  "@todayAddSheetTitle": {
+    "surface": "title"
+  },
+  "@offline_title": {
+    "surface": "title"
+  },
+  "@offline_body": {
+    "surface": "subtitle"
+  },
+  "@offline_retry": {
+    "surface": "button"
+  },
+  "@force_update_title": {
+    "surface": "title"
+  },
+  "@force_update_body": {
+    "surface": "subtitle"
+  },
+  "@force_update_button": {
+    "surface": "button"
+  },
+  "@hubMembersEmpty": {
+    "surface": "empty_body"
+  },
+  "@hubInviteCta": {
+    "surface": "button"
+  },
+  "@hubShareInviteTitle": {
+    "surface": "title"
+  },
+  "@hubShareAppTitle": {
+    "surface": "title"
+  },
+  "@hubShareAppCta": {
+    "surface": "button"
+  },
+  "@todayFlatmateInviteTitle": {
+    "surface": "title"
+  },
+  "@todayFlatmateInviteSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayInviteFriendsTitle": {
+    "surface": "title"
+  },
+  "@todayInviteFriendsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayInviteShareCta": {
+    "surface": "button"
+  },
+  "@hubRotateSuccess": {
+    "surface": "success_message"
+  },
+  "@hubRotateError": {
+    "surface": "error"
+  },
+  "@hubQrTitle": {
+    "surface": "title"
+  },
+  "@hubQrSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubCardGratitudeWallTitle": {
+    "surface": "title"
+  },
+  "@hubCardGratitudeWallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubPreferencesTitle": {
+    "surface": "title"
+  },
+  "@hubPreferencesSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubError": {
+    "surface": "error"
+  },
+  "@hubRetry": {
+    "surface": "button"
+  },
+  "@todayEmptyCardTitle": {
+    "surface": "title"
+  },
+  "@todayEmptyBody": {
+    "surface": "subtitle"
+  },
+  "@todayFlowSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayFlowSectionTitle": {
+    "surface": "title"
+  },
+  "@todayShareSectionTitle": {
+    "surface": "title"
+  },
+  "@todayShareError": {
+    "surface": "error"
+  },
+  "@todayGratitudeSectionTitle": {
+    "surface": "title"
+  },
+  "@todayGratitudeUnreadBody": {
+    "surface": "subtitle"
+  },
+  "@shareOwedDetailTitle": {
+    "surface": "title"
+  },
+  "@shareOwedDetailEmpty": {
+    "surface": "empty_body"
+  },
+  "@shareOwedDetailSuccess": {
+    "surface": "success_message"
+  },
+  "@shareOwedDetailError": {
+    "surface": "error"
+  },
+  "@shareEditTitle": {
+    "surface": "title"
+  },
+  "@shareEditSubmit": {
+    "surface": "button"
+  },
+  "@shareEditSuccess": {
+    "surface": "success_message"
+  },
+  "@shareEditLoadError": {
+    "surface": "error"
+  },
+  "@shareEditClose": {
+    "surface": "button"
+  },
+  "@shareEditDeleteButton": {
+    "surface": "button"
+  },
+  "@shareEditDeleteConfirmTitle": {
+    "surface": "title"
+  },
+  "@shareEditDeleteError": {
+    "surface": "error"
+  },
+  "@shareEditDeleteSuccess": {
+    "surface": "success_message"
+  },
+  "@shareCreateTitle": {
+    "surface": "title"
+  },
+  "@shareCreateParticipantsEmpty": {
+    "surface": "empty_body"
+  },
+  "@shareCreateSubmit": {
+    "surface": "button"
+  },
+  "@shareCreateLoadError": {
+    "surface": "error"
+  },
+  "@shareCreateRetry": {
+    "surface": "button"
+  },
+  "@shareCreateErrorGeneric": {
+    "surface": "error"
+  },
+  "@shareCreateErrorPaywallActiveCap": {
+    "surface": "error"
+  },
+  "@shareCreateErrorForbidden": {
+    "surface": "error"
+  },
+  "@shareCreateSuccess": {
+    "surface": "success_message"
+  },
+  "@flowChoreCreateTitle": {
+    "surface": "title"
+  },
+  "@flowChoreEditTitle": {
+    "surface": "title"
+  },
+  "@flowChoreViewTitle": {
+    "surface": "title"
+  },
+  "@flowChoreHowToLaunchError": {
+    "surface": "error"
+  },
+  "@flowChorePhotoUploadError": {
+    "surface": "error"
+  },
+  "@flowChorePhotoLoadError": {
+    "surface": "error"
+  },
+  "@flowChoreDeleteButton": {
+    "surface": "button"
+  },
+  "@flowChoreDeleteDialogTitle": {
+    "surface": "dialog_title"
+  },
+  "@flowChoreDeleteDialogMessage": {
+    "surface": "dialog_body"
+  },
+  "@flowChoreLoadError": {
+    "surface": "error"
+  },
+  "@flowChoreRetry": {
+    "surface": "button"
+  },
+  "@flowChoreErrorPaywallActiveCap": {
+    "surface": "error"
+  },
+  "@flowChoreErrorPaywallMediaCap": {
+    "surface": "error"
+  },
+  "@flowChoreErrorAssigneeNotMember": {
+    "surface": "error"
+  },
+  "@flowChoreErrorForbidden": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidPhoto": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidStart": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidState": {
+    "surface": "error"
+  },
+  "@flowChoreErrorGeneric": {
+    "surface": "error"
+  },
+  "@flowChoreDetailTitle": {
+    "surface": "title"
+  },
+  "@flowChoreDetailCompleteButton": {
+    "surface": "button"
+  },
+  "@flowChoreCreateSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreUpdateSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreDetailCompletionSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreDetailCompletionError": {
+    "surface": "error"
+  },
+  "@flowChoreDetailMoreInfoTitle": {
+    "surface": "title"
+  },
+  "@flowListEmptyTitle": {
+    "surface": "title"
+  },
+  "@flowListEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@flowListTabCurrent": {
+    "surface": "tab"
+  },
+  "@flowListTabFuture": {
+    "surface": "tab"
+  },
+  "@flowListError": {
+    "surface": "error"
+  },
+  "@exploreIntroSubtitle": {
+    "surface": "subtitle"
+  },
+  "@exploreFlowSubtitle": {
+    "surface": "subtitle"
+  },
+  "@exploreShareSubtitle": {
+    "surface": "subtitle"
+  },
+  "@shareCreatedListTitle": {
+    "surface": "title"
+  },
+  "@shareCreatedListEmptyTitle": {
+    "surface": "title"
+  },
+  "@shareCreatedListEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@shareCreatedListError": {
+    "surface": "error"
+  },
+  "@shareCreatedListRetry": {
+    "surface": "button"
+  },
+  "@shareCreatedListDraftSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileSettingsTitle": {
+    "surface": "title"
+  },
+  "@profileSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileIdentityTitle": {
+    "surface": "title"
+  },
+  "@profileIdentitySubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileIdentityUsernameEmptyError": {
+    "surface": "error"
+  },
+  "@profileIdentityUsernameFormatError": {
+    "surface": "error"
+  },
+  "@profileIdentityUsernameTakenError": {
+    "surface": "error"
+  },
+  "@profileIdentityAvatarSectionTitle": {
+    "surface": "title"
+  },
+  "@profileIdentityAvatarEmpty": {
+    "surface": "empty_body"
+  },
+  "@profileIdentityLoadError": {
+    "surface": "error"
+  },
+  "@profileIdentityRetry": {
+    "surface": "button"
+  },
+  "@profileIdentitySaveButton": {
+    "surface": "button"
+  },
+  "@profileIdentitySuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileLeaveHomeTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveHomeSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileLeaveEligibilityError": {
+    "surface": "error"
+  },
+  "@profileLeaveTransferSheetTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveTransferSheetSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickMemberTitle": {
+    "surface": "title"
+  },
+  "@profileKickMemberSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickSheetTitle": {
+    "surface": "title"
+  },
+  "@profileKickSheetSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileLeaveTransferSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileInfoHubTitle": {
+    "surface": "title"
+  },
+  "@profileInfoHubSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileInfoHubLoadError": {
+    "surface": "error"
+  },
+  "@profileContactUsTitle": {
+    "surface": "title"
+  },
+  "@profileContactUsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileConnectionSettingsTitle": {
+    "surface": "title"
+  },
+  "@profileConnectionSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@connectionSettingsTitle": {
+    "surface": "title"
+  },
+  "@connectionSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@connectionSettingsGenericError": {
+    "surface": "error"
+  },
+  "@connectionNotificationsToggleTitle": {
+    "surface": "title"
+  },
+  "@connectionNotificationsToggleSubtitleOn": {
+    "surface": "notification_title"
+  },
+  "@connectionNotificationsToggleSubtitleOff": {
+    "surface": "notification_title"
+  },
+  "@profileContactLaunchError": {
+    "surface": "error"
+  },
+  "@profileLogoutTitle": {
+    "surface": "title"
+  },
+  "@profileLogoutSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileDeleteAccountTitle": {
+    "surface": "title"
+  },
+  "@profileDeleteAccountSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileConfirmLeaveTitle": {
+    "surface": "title"
+  },
+  "@profileConfirmDeleteTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileDeleteSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileGenericError": {
+    "surface": "error"
+  },
+  "@profileMissingHomeError": {
+    "surface": "error"
+  },
+  "@harmonySubmitCta": {
+    "surface": "button"
+  },
+  "@harmonySubmitSuccess": {
+    "surface": "success_message"
+  },
+  "@harmonyErrorAlreadySubmitted": {
+    "surface": "error"
+  },
+  "@harmonyErrorForbidden": {
+    "surface": "error"
+  },
+  "@harmonyErrorUnknown": {
+    "surface": "error"
+  },
+  "@gratitudeWallEmptyTitle": {
+    "surface": "title"
+  },
+  "@gratitudeWallEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@gratitudeWallRetry": {
+    "surface": "button"
+  },
+  "@gratitudeWallShareCta": {
+    "surface": "button"
+  },
+  "@gratitudeWallShareTitle": {
+    "surface": "title"
+  },
+  "@gratitudeWallShareError": {
+    "surface": "error"
+  },
+  "@npsTitle": {
+    "surface": "subtitle"
+  },
+  "@npsSubmitErrorNotRequired": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorInvalidScore": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorForbidden": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorGeneric": {
+    "surface": "error"
+  },
+  "@npsLaunchError": {
+    "surface": "error"
+  },
+  "@join_error_invalid_code": {
+    "surface": "error"
+  },
+  "@join_error_inactive_invite": {
+    "surface": "error"
+  },
+  "@join_error_already_in_other_home": {
+    "surface": "error"
+  },
+  "@join_error_paywall_limit": {
+    "surface": "error"
+  },
+  "@join_error_unauthorized": {
+    "surface": "error"
+  },
+  "@join_error_forbidden": {
+    "surface": "error"
+  },
+  "preferencePromptTitle": "设置你的生活风格",
+  "preferencePromptSubtitle": "帮助这个家更了解什么方式让你住得舒服。",
+  "preferencePromptCta": "开始填写",
+  "preferenceOnboardingTitle": "你的生活偏好",
+  "preferenceOnboardingBack": "返回",
+  "preferenceOnboardingSubmit": "保存",
+  "preferenceOnboardingProgress": "{current}/{total}",
+  "@preferenceOnboardingProgress": {
+    "description": "Progress for preference onboarding",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "3"
+      },
+      "total": {
+        "type": "int",
+        "example": "10"
+      }
+    }
+  },
+  "preferenceReportTitle": "你的偏好报告",
+  "preferenceReportEditCta": "编辑",
+  "preferenceReportDoneCta": "完成",
+  "preferenceReportEditTitle": "编辑偏好",
+  "preferenceReportViewTitle": "查看偏好",
+  "preferenceReportEditSectionPrompt": "编辑这一部分",
+  "preferenceReportEditSectionHint": "写下对你来说更舒服的方式",
+  "preferenceReportEditSectionDone": "完成",
+  "preferenceReportEmptyTitle": "偏好报告尚未生成",
+  "preferenceReportEmptyBody": "完成偏好设置后，就能生成你的个人报告。",
+  "preferenceReportErrorTitle": "暂时无法加载报告",
+  "preferenceReportErrorBody": "请稍后重试。",
+  "preferenceReportEditError": "暂时无法保存这次更新。",
+  "preferenceReportReadOnlyNote": "这能帮助别人理解什么方式会让他们更舒服。",
+  "preferenceScenarioEnvironmentNoiseQuestion": "你更喜欢怎样的噪音程度？",
+  "preferenceScenarioEnvironmentNoiseOption1": "希望安静一点",
+  "preferenceScenarioEnvironmentNoiseOption2": "正常就好",
+  "preferenceScenarioEnvironmentNoiseOption3": "热闹一点也可以",
+  "preferenceScenarioEnvironmentLightQuestion": "你更喜欢怎样的光线？",
+  "preferenceScenarioEnvironmentLightOption1": "柔和一点",
+  "preferenceScenarioEnvironmentLightOption2": "适中就好",
+  "preferenceScenarioEnvironmentLightOption3": "明亮一点",
+  "preferenceScenarioEnvironmentScentQuestion": "对气味敏感吗？",
+  "preferenceScenarioEnvironmentScentOption1": "比较敏感",
+  "preferenceScenarioEnvironmentScentOption2": "还好",
+  "preferenceScenarioEnvironmentScentOption3": "不太在意",
+  "preferenceScenarioScheduleQuietHoursQuestion": "晚上的家庭节奏？",
+  "preferenceScenarioScheduleQuietHoursOption1": "希望安静一点",
+  "preferenceScenarioScheduleQuietHoursOption2": "看情况",
+  "preferenceScenarioScheduleQuietHoursOption3": "活动多一点也可以",
+  "preferenceScenarioScheduleSleepTimingQuestion": "你的作息习惯？",
+  "preferenceScenarioScheduleSleepTimingOption1": "早睡早起型",
+  "preferenceScenarioScheduleSleepTimingOption2": "中间型",
+  "preferenceScenarioScheduleSleepTimingOption3": "夜猫子型",
+  "preferenceScenarioCommunicationChannelQuestion": "别人怎么联系你最合适？",
+  "preferenceScenarioCommunicationChannelOption1": "发消息",
+  "preferenceScenarioCommunicationChannelOption2": "当面说",
+  "preferenceScenarioCommunicationChannelOption3": "打电话",
+  "preferenceScenarioCommunicationDirectnessQuestion": "如果有问题，你希望别人怎么说？",
+  "preferenceScenarioCommunicationDirectnessOption1": "温和一点",
+  "preferenceScenarioCommunicationDirectnessOption2": "看情况",
+  "preferenceScenarioCommunicationDirectnessOption3": "直接一点也没关系",
+  "preferenceScenarioCleanlinessSharedSpaceQuestion": "你希望共享空间保持到什么程度？",
+  "preferenceScenarioCleanlinessSharedSpaceOption1": "尽量整洁",
+  "preferenceScenarioCleanlinessSharedSpaceOption2": "稍微乱一点也可以",
+  "preferenceScenarioCleanlinessSharedSpaceOption3": "乱一点也没关系",
+  "preferenceScenarioPrivacyRoomEntryQuestion": "进入你的房间时，希望别人怎么做？",
+  "preferenceScenarioPrivacyRoomEntryOption1": "一定要先敲门",
+  "preferenceScenarioPrivacyRoomEntryOption2": "通常先敲门",
+  "preferenceScenarioPrivacyRoomEntryOption3": "门开着就可以",
+  "preferenceScenarioPrivacyNotificationsQuestion": "晚上发消息给你可以吗？",
+  "preferenceScenarioPrivacyNotificationsOption1": "尽量不要",
+  "preferenceScenarioPrivacyNotificationsOption2": "重要的事可以",
+  "preferenceScenarioPrivacyNotificationsOption3": "随时都可以",
+  "preferenceScenarioSocialHostingQuestion": "带朋友来家里的频率？",
+  "preferenceScenarioSocialHostingOption1": "尽量少一点",
+  "preferenceScenarioSocialHostingOption2": "偶尔可以",
+  "preferenceScenarioSocialHostingOption3": "常常也可以",
+  "preferenceScenarioSocialTogethernessQuestion": "你喜欢怎样的家庭互动感？",
+  "preferenceScenarioSocialTogethernessOption1": "各自为主",
+  "preferenceScenarioSocialTogethernessOption2": "两者都可以",
+  "preferenceScenarioSocialTogethernessOption3": "喜欢常常一起互动",
+  "preferenceScenarioRoutinePlanningQuestion": "你偏好的生活方式？",
+  "preferenceScenarioRoutinePlanningOption1": "有规划一点",
+  "preferenceScenarioRoutinePlanningOption2": "有一点结构就好",
+  "preferenceScenarioRoutinePlanningOption3": "顺其自然",
+  "preferenceScenarioConflictResolutionQuestion": "如果有点不对劲，你更希望怎么处理？",
+  "preferenceScenarioConflictResolutionOption1": "先冷静一下",
+  "preferenceScenarioConflictResolutionOption2": "晚一点再聊",
+  "preferenceScenarioConflictResolutionOption3": "尽早说清楚",
+  "houseNormPromptTitle": "生成家庭共识",
+  "houseNormPromptSubtitle": "把大家的回答整理成一份共享指南。",
+  "houseNormPromptCta": "开始生成",
+  "houseNormOnboardingTitle": "家庭氛围",
+  "houseNormOnboardingBack": "返回",
+  "houseNormOnboardingSubmit": "生成",
+  "houseNormOnboardingProgress": "{current}/{total}",
+  "@houseNormOnboardingProgress": {
+    "description": "Progress for house norms onboarding",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "3"
+      },
+      "total": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "houseNormGenerationFailed": "暂时无法生成家庭共识。",
+  "houseNormReportTitle": "家庭共识",
+  "houseNormDoneCta": "完成",
+  "houseNormEditTitle": "编辑家庭共识",
+  "houseNormViewTitle": "查看家庭共识",
+  "houseNormReportEmptyTitle": "家庭共识尚未生成",
+  "houseNormReportEmptyBody": "生成后即可在这里查看。",
+  "houseNormReportErrorTitle": "暂时无法加载家庭共识",
+  "houseNormReportErrorBody": "请稍后再试。",
+  "houseNormPublishCta": "发布到网页",
+  "houseNormRepublishCta": "重新发布",
+  "houseNormCopyUrlCta": "复制链接",
+  "houseNormShareUrlCta": "分享链接",
+  "houseNormUrlCopied": "家庭共识链接已复制。",
+  "houseNormShareSubject": "我们的家庭共识",
+  "houseNormSummaryTitle": "家庭共识",
+  "houseNormSummarySubtitle": "它不是规则书，而是一份彼此更好相处的指南。",
+  "houseNormSummaryFramingLabel": "总结",
+  "houseNormSectionRhythmQuietTitle": "节奏与安静",
+  "houseNormSectionSharedSpacesTitle": "共享空间",
+  "houseNormSectionGuestsSocialTitle": "来访与社交",
+  "houseNormSectionResponsibilityFlowTitle": "责任分工",
+  "houseNormSectionRepairStyleTitle": "修复与沟通",
+  "houseNormSectionHomeIdentityTitle": "这个家的感觉",
+  "houseNormSectionFallbackTitle": "章节",
+  "houseNormSectionEditLabel": "编辑这一部分",
+  "houseNormSectionSaveCta": "保存",
+  "houseNormSectionEmptyError": "请先输入内容再保存。",
+  "houseNormSectionSaveSuccess": "已更新。",
+  "houseNormSectionSaveFailed": "暂时无法保存这次更新。",
+  "hubHouseNormsTitle": "家庭共识",
+  "hubHouseNormsSubtitle": "看看这个家希望怎样一起生活。",
+  "houseNormScenarioPropertyContextQuestion": "这个家目前是：",
+  "houseNormScenarioPropertyContextOption1": "自住房",
+  "houseNormScenarioPropertyContextOption2": "整租",
+  "houseNormScenarioPropertyContextOption3": "分租",
+  "houseNormScenarioRelationshipModelQuestion": "住在这里的是：",
+  "houseNormScenarioRelationshipModelOption1": "室友",
+  "houseNormScenarioRelationshipModelOption2": "家人",
+  "houseNormScenarioRelationshipModelOption3": "混合",
+  "houseNormScenarioRhythmQuestion": "到了晚上，这个家的节奏通常是：",
+  "houseNormScenarioRhythmOption1": "慢慢安静下来",
+  "houseNormScenarioRhythmOption2": "看情况",
+  "houseNormScenarioRhythmOption3": "大家各自活动",
+  "houseNormScenarioSharedSpacesQuestion": "晚上厨房更适合保持：",
+  "houseNormScenarioSharedSpacesOption1": "整洁一些",
+  "houseNormScenarioSharedSpacesOption2": "有生活感就好",
+  "houseNormScenarioSharedSpacesOption3": "乱一点也没关系",
+  "houseNormScenarioGuestsQuestion": "带朋友来家里时：",
+  "houseNormScenarioGuestsOption1": "最好先问一下",
+  "houseNormScenarioGuestsOption2": "提前说一声",
+  "houseNormScenarioGuestsOption3": "很正常，不用特别说明",
+  "houseNormScenarioResponsibilityQuestion": "家里的小事通常怎么处理？",
+  "houseNormScenarioResponsibilityOption1": "说清楚由谁负责",
+  "houseNormScenarioResponsibilityOption2": "谁看到谁处理",
+  "houseNormScenarioResponsibilityOption3": "大家各管各的",
+  "houseNormScenarioRepairQuestion": "如果有一点摩擦：",
+  "houseNormScenarioRepairOption1": "尽早说开",
+  "houseNormScenarioRepairOption2": "挑适合的时候再说",
+  "houseNormScenarioRepairOption3": "小事就先放过去",
+  "houseNormScenarioHomeIdentityQuestion": "这个家更像：",
+  "houseNormScenarioHomeIdentityOption1": "安静型家庭",
+  "houseNormScenarioHomeIdentityOption2": "平衡型家庭",
+  "houseNormScenarioHomeIdentityOption3": "社交型家庭",
+  "reflectiveAcknowledgementTitle": "收到。",
+  "reflectivePersonalPrimary": "正在整理你刚刚分享的内容。",
+  "reflectivePersonalSecondary": "让别人更容易理解，什么方式会让你住得更舒服。",
+  "reflectiveHousePrimary": "正在把这个家的期待整理成文字。",
+  "reflectiveHouseSecondary": "让彼此的期待更清楚。",
+  "reflectiveHouseNormsPrimary": "正在整理这个家共同表达的内容。",
+  "reflectiveHouseNormsSecondary": "它是一份共享指南，而不是规则书。",
+  "reflectiveGenericPrimary": "我们正在认真整理中。",
+  "reflectiveGenericSecondary": "请稍等一下，很快就好。",
+  "preferenceReportGenerationMissing": "暂时无法完成你的偏好整理，请稍后再试。",
+  "preferenceReportGenerationFailed": "暂时无法生成你的偏好整理，请返回后重试。",
+  "@preferenceReportReadOnlyNote": {
+    "surface": "body"
+  },
+  "personalProfileTitle": "你的资料",
+  "personalProfilePreferences": "个人偏好",
+  "personalProfileMentions": "个人提及",
+  "personalProfileLoadError": "暂时无法加载你的个人资料。",
+  "personalMentionsTitle": "个人提及",
+  "housePulseCardHeader": "每周家庭脉搏",
+  "housePulseShareCta": "分享脉搏",
+  "housePulseShareTitle": "分享我们的 Kinly 家庭脉搏",
+  "housePulseShareMessage": "这是我们在 Kinly 的家庭脉搏。下载应用：{link}",
+  "@housePulseShareMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://go.makinglifeeasie.com/kinly"
+      }
+    }
+  },
+  "housePulseUpdatedOn": "更新于 {date}",
+  "@housePulseUpdatedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Jan 5, 2026"
+      }
+    }
+  },
+  "pulseFormingTitle": "还在形成中",
+  "pulseFormingSummary": "再多几次反馈后，画面会更清楚。",
+  "pulseSunnyCalmTitle": "运行顺畅",
+  "pulseSunnyCalmSummary": "这周整体感觉挺顺。",
+  "pulseSunnyBumpyTitle": "大致顺利",
+  "pulseSunnyBumpySummary": "整体还不错，只是有一点小起伏。",
+  "pulsePartlySupportedTitle": "整体还可以",
+  "pulsePartlySupportedSummary": "大致稳定，但还有一些可以改善的地方。",
+  "pulseCloudySteadyTitle": "有点混合",
+  "pulseCloudySteadySummary": "有些地方运作得不错，有些地方还不太顺。",
+  "pulseCloudyTenseTitle": "需要留意",
+  "pulseCloudyTenseSummary": "这周出现了一些紧张感。",
+  "pulseRainySupportedTitle": "建议小调整",
+  "pulseRainySupportedSummary": "现在也许适合做一次小小重整。",
+  "pulseRainyUnsupportedTitle": "需要重整",
+  "pulseRainyUnsupportedSummary": "目前摩擦感已经比较明显。",
+  "pulseThunderstormTitle": "紧张偏高",
+  "pulseThunderstormSummary": "当前紧张感较高，建议尽快做一次重整。",
+  "weeklyRewriteCta": "用 Kinly 更平和地表达",
+  "harmonyErrorCommentRequiredForMention": "请先写一点说明，再发送这条提及。",
+  "harmonyErrorSingleMentionRequired": "这条内容只能选择 1 位成员。",
+  "harmonyErrorCommentRequiredForPublicWall": "发到公开墙前，请先补上一句内容。",
+  "harmonyErrorComplaintTooShort": "再多写一点会更清楚。",
+  "harmonyErrorComplaintTooBrief": "请写成一句简短的话，让意思更明确。",
+  "harmonyErrorComplaintNeedsSentence": "请补上一句清楚的话。",
+  "demoAccess": "演示入口",
+  "@demoAccess": {
+    "description": "Title for the demo access screen used by app store reviewers",
+    "surface": "title"
+  },
+  "demoAccessTapHint": "演示入口：已点击 {current} / 7 次",
+  "@demoAccessTapHint": {
+    "description": "Progress indicator shown when tapping logo to reveal demo access",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "demoAccessEmail": "邮箱",
+  "@demoAccessEmail": {
+    "description": "Label for email input on demo access screen",
+    "surface": "label"
+  },
+  "demoAccessPassword": "密码",
+  "@demoAccessPassword": {
+    "description": "Label for password input on demo access screen",
+    "surface": "label"
+  },
+  "demoAccessSubmit": "登录",
+  "@demoAccessSubmit": {
+    "description": "Submit button label on demo access screen",
+    "surface": "button"
+  },
+  "demoAccessError": "暂时无法登录，请检查账号信息。",
+  "@demoAccessError": {
+    "description": "Error message shown when demo login does not succeed",
+    "surface": "error"
+  },
+  "planFreeLabel": "升级到 Premium",
+  "planPremiumLabel": "Premium",
+  "planPremiumActiveTitle": "你正在使用 Premium",
+  "planPremiumActiveBody": "尽情使用所有无限制功能。",
+  "close": "关闭",
+  "@planFreeLabel": {
+    "surface": "button"
+  },
+  "@planPremiumLabel": {
+    "surface": "button"
+  }
+}

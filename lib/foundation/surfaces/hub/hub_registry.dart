@@ -99,6 +99,28 @@ class HubRegistry {
 
     register(
       HubSectionEntry(
+        id: 'house_directory',
+        order: 24,
+        spacingAfter: HubSectionSpacing.lg,
+        builder: (scope) {
+          final palette = scope.sections.share;
+          return KinlySelectionCard(
+            colors: palette,
+            title: scope.strings.hubHouseDirectoryTitle,
+            subtitle: scope.strings.hubHouseDirectorySubtitle,
+            icon: Icon(
+              KinlyIcons.notesOutlined,
+              color: palette.icon,
+              size: 28,
+            ),
+            onTap: scope.actions.onHouseDirectoryTap,
+          );
+        },
+      ),
+    );
+
+    register(
+      HubSectionEntry(
         id: 'house_norms',
         order: 25,
         spacingAfter: HubSectionSpacing.lg,

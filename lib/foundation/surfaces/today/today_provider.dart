@@ -9,6 +9,7 @@ import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'package:kinly/contracts/mood/ports/house_pulse_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
+import 'package:kinly/contracts/house_directory/ports/house_directory_repository.dart';
 import '../../../contracts/onboarding/ports/onboarding_repository.dart';
 import '../../../core/notifications/profile_update_notifier.dart';
 import 'bloc/today_bloc.dart';
@@ -25,6 +26,7 @@ class TodayProvider extends StatelessWidget {
   final OnboardingRepository onboardingRepository;
   final PreferenceReportsRepository preferenceReportsRepository;
   final HouseNormsRepository? houseNormsRepository;
+  final HouseDirectoryRepository? houseDirectoryRepository;
   final ProfileUpdateNotifier profileUpdateNotifier;
 
   const TodayProvider({
@@ -39,6 +41,7 @@ class TodayProvider extends StatelessWidget {
     required this.onboardingRepository,
     required this.preferenceReportsRepository,
     this.houseNormsRepository,
+    this.houseDirectoryRepository,
     required this.profileUpdateNotifier,
   });
 
@@ -56,6 +59,7 @@ class TodayProvider extends StatelessWidget {
             onboardingRepository: onboardingRepository,
             preferenceReportsRepository: preferenceReportsRepository,
             houseNormsRepository: houseNormsRepository,
+            houseDirectoryRepository: houseDirectoryRepository,
             homeId: homeId,
             profileUpdateNotifier: profileUpdateNotifier,
           ),

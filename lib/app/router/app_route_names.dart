@@ -16,6 +16,7 @@ class AppRouteNames {
   static const todayShoppingDetail = 'todayShoppingDetail';
   static const todayShoppingPhoto = 'todayShoppingPhoto';
   static const hub = 'hub';
+  static const houseDirectory = 'houseDirectory';
   static const hubPreferencesList = 'hubPreferencesList';
   static const hubHouseVibeShare = 'hubHouseVibeShare';
   static const explore = 'explore';

@@ -26,6 +26,7 @@ class HubSurfaceActions {
     required this.onInviteTap,
     required this.onShareAppTap,
     required this.onQrTap,
+    required this.onHouseDirectoryTap,
     required this.onHouseNormsTap,
     required this.onGratitudeTap,
     this.onCopyCode,
@@ -35,6 +36,7 @@ class HubSurfaceActions {
   final VoidCallback onInviteTap;
   final VoidCallback onShareAppTap;
   final VoidCallback onQrTap;
+  final VoidCallback onHouseDirectoryTap;
   final VoidCallback onHouseNormsTap;
   final VoidCallback onGratitudeTap;
   final VoidCallback? onCopyCode;

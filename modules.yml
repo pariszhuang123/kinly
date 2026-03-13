@@ -371,6 +371,50 @@ modules:
       plan_gate: true
     notes: Expenses/splits; orchestration only via owner RPCs.
 
+  - name: house_directory
+    owner_role: Planner
+    status: feature
+    killable: true
+    kill_switch_flag: feature.house_directory.enabled
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["hub", "today"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - home_directory_wifi
+        - home_directory_services
+        - home_directory_links
+        - home_directory_reminders
+        - home_directory_reminder_acks
+      cross_module_refs:
+        - homes.id
+        - members.id
+    rpcs:
+      owner:
+        - homes_directory.get_wifi
+        - homes_directory.upsert_wifi
+        - homes_directory.get_content
+        - homes_directory.upsert_service
+        - homes_directory.archive_service
+        - homes_directory.upsert_link
+        - homes_directory.archive_link
+        - homes_directory.list_due_reminders
+        - homes_directory.acknowledge_reminder
+        - homes_directory.dismiss_reminder
+      orchestration: []
+    entrypoints:
+      routes:
+        - /hub/house-directory
+      deep_links: []
+      navigation_tiles:
+        - house_directory_tile
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: true
+    notes: Home wifi, services, links, and renewal reminders surfaced in Hub and Today.
+
   - name: harmony
     owner_role: Planner
     status: feature

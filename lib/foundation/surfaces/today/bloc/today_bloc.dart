@@ -18,6 +18,8 @@ import 'package:kinly/contracts/mood/ports/house_pulse_repository.dart';
 import 'package:kinly/contracts/mood/personal_wall_models.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
+import 'package:kinly/contracts/house_directory/models.dart';
+import 'package:kinly/contracts/house_directory/ports/house_directory_repository.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/notifications/profile_update_notifier.dart';
@@ -38,6 +40,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final OnboardingRepository _onboardingRepository;
   final PreferenceReportsRepository _preferenceReportsRepository;
   final HouseNormsRepository? _houseNormsRepository;
+  final HouseDirectoryRepository? _houseDirectoryRepository;
   final ProfileUpdateNotifier _profileUpdateNotifier;
   final Logger _logger;
   final String _homeId;
@@ -57,6 +60,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required OnboardingRepository onboardingRepository,
     required PreferenceReportsRepository preferenceReportsRepository,
     HouseNormsRepository? houseNormsRepository,
+    HouseDirectoryRepository? houseDirectoryRepository,
     required String homeId,
     required ProfileUpdateNotifier profileUpdateNotifier,
     Logger? logger,
@@ -69,6 +73,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       _onboardingRepository = onboardingRepository,
       _preferenceReportsRepository = preferenceReportsRepository,
       _houseNormsRepository = houseNormsRepository,
+      _houseDirectoryRepository = houseDirectoryRepository,
       _profileUpdateNotifier = profileUpdateNotifier,
       _logger = logger ?? const DebugLogger(),
       _homeId = homeId,
@@ -82,6 +87,10 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     on<TodayMemberCapDismissed>(_onMemberCapDismissed);
     on<TodayHousePulseViewed>(_onHousePulseViewed);
     on<TodayHousePulseShareLogged>(_onHousePulseShareLogged);
+    on<TodayHouseDirectoryReminderAcknowledged>(
+      _onHouseDirectoryReminderAcknowledged,
+    );
+    on<TodayHouseDirectoryReminderDismissed>(_onHouseDirectoryReminderDismissed);
 
     _profileUpdateSub = _profileUpdateNotifier.stream.listen(
       (profile) => add(TodayProfileUpdated(profile)),
@@ -122,6 +131,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   }) async {
     TodayUserProfile? profile = state.profile;
     HousePulsePayload? housePulse = state.housePulse;
+    var houseDirectoryReminders = state.houseDirectoryReminders;
     final prevPromptTick = state.harmonyPromptTick;
     final prevHasShownHarmony = state.hasShownHarmonyPrompt;
     final prevNpsPromptTick = state.npsPromptTick;
@@ -143,6 +153,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         emit: emit,
         isRefresh: isRefresh,
         profile: profile,
+        houseDirectoryReminders: houseDirectoryReminders,
         prevPromptTick: prevPromptTick,
         prevHasShownHarmony: prevHasShownHarmony,
         prevNpsPromptTick: prevNpsPromptTick,
@@ -184,6 +195,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       final housePulseFuture = _housePulseRepository.getWeeklyPulse(
         homeId: _homeId,
       );
+      final houseDirectoryRemindersFuture = _loadHouseDirectoryReminders();
       final profileFuture = _profileRepository.getCurrentProfile();
       final draftsFuture = _choresRepository.listTodayFlow(
         homeId: _homeId,
@@ -244,6 +256,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         future: housePulseFuture,
         fallback: housePulse,
       );
+      houseDirectoryReminders = await houseDirectoryRemindersFuture;
 
       final draftTasks = drafts
           .map(_mapEntryToTodayTask)
@@ -254,6 +267,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
 
       emit(
         TodayState.loaded(
+          houseDirectoryReminders: houseDirectoryReminders,
           activeTasks: activeTasks,
           draftTasks: draftTasks,
           shareOwed: shareSnapshot.owed,
@@ -284,6 +298,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       // for now: basic error handling
       emit(
         TodayState.failure(
+          houseDirectoryReminders: houseDirectoryReminders,
           message: "Could not load today's chores. Please try again.",
           error: error,
           profile: profile,
@@ -315,6 +330,22 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       return Future.value(
         const PersonalGratitudeStatus(hasUnread: false, lastReadAt: null),
       );
+    }
+  }
+
+  Future<List<HouseDirectoryReminder>> _loadHouseDirectoryReminders() async {
+    final repository = _houseDirectoryRepository;
+    if (repository == null) return const <HouseDirectoryReminder>[];
+    try {
+      return await repository.listDueReminders(homeId: _homeId);
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to load house directory reminders',
+        error: error,
+        stackTrace: stackTrace,
+        tag: 'TodayHouseDirectory',
+      );
+      return state.houseDirectoryReminders;
     }
   }
 
@@ -360,6 +391,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required Emitter<TodayState> emit,
     required bool isRefresh,
     required TodayUserProfile? profile,
+    required List<HouseDirectoryReminder> houseDirectoryReminders,
     required int prevPromptTick,
     required bool prevHasShownHarmony,
     required int prevNpsPromptTick,
@@ -371,6 +403,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     if (isRefresh) return;
     emit(
       TodayState.loading(
+        houseDirectoryReminders: houseDirectoryReminders,
         profile: profile,
         shareOwed: state.shareOwed,
         sharePaidToMe: state.sharePaidToMe,
@@ -750,6 +783,50 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         tag: 'TodayHousePulse',
         error: error,
         stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<void> _onHouseDirectoryReminderAcknowledged(
+    TodayHouseDirectoryReminderAcknowledged event,
+    Emitter<TodayState> emit,
+  ) async {
+    final repository = _houseDirectoryRepository;
+    if (repository == null) return;
+    try {
+      await repository.acknowledgeReminder(
+        homeId: _homeId,
+        reminderId: event.reminderId,
+      );
+      await _loadToday(emit, isRefresh: true);
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to acknowledge house directory reminder',
+        error: error,
+        stackTrace: stackTrace,
+        tag: 'TodayHouseDirectory',
+      );
+    }
+  }
+
+  Future<void> _onHouseDirectoryReminderDismissed(
+    TodayHouseDirectoryReminderDismissed event,
+    Emitter<TodayState> emit,
+  ) async {
+    final repository = _houseDirectoryRepository;
+    if (repository == null) return;
+    try {
+      await repository.dismissReminder(
+        homeId: _homeId,
+        reminderId: event.reminderId,
+      );
+      await _loadToday(emit, isRefresh: true);
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to dismiss house directory reminder',
+        error: error,
+        stackTrace: stackTrace,
+        tag: 'TodayHouseDirectory',
       );
     }
   }

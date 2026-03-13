@@ -5,6 +5,7 @@ import 'today_slots.dart';
 import 'widgets/today_flow_section/today_flow_section_container.dart';
 import 'widgets/today_house_pulse_card.dart';
 import 'widgets/today_gratitude_section.dart';
+import 'widgets/today_house_directory_reminders_card.dart';
 import 'widgets/today_invite_prompt.dart';
 import 'widgets/today_share_section/today_share_section_container.dart';
 import 'widgets/today_shopping_list_card.dart';
@@ -87,6 +88,23 @@ class TodayRegistry {
         spacingAfter: TodaySectionSpacing.lg,
         builder: _buildHousePulseCard,
         isVisible: (scope) => scope.state.hasHousePulseCard,
+      ),
+    );
+
+    register(
+      TodaySectionEntry(
+        id: 'house_directory_reminders',
+        order: 27,
+        spacingAfter: TodaySectionSpacing.lg,
+        builder:
+            (scope) => TodayHouseDirectoryRemindersCard(
+              reminders: scope.state.houseDirectoryReminders,
+              isOwner: scope.state.profile?.isOwner == true,
+              onOpen: scope.actions.onHouseDirectoryTap,
+              onAcknowledge: scope.actions.onHouseDirectoryReminderAcknowledge,
+              onDismiss: scope.actions.onHouseDirectoryReminderDismiss,
+            ),
+        isVisible: (scope) => scope.state.hasHouseDirectoryReminders,
       ),
     );
 

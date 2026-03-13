@@ -99,6 +99,16 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
         return HubRouteContext(homeId: membership.homeId);
       },
     ),
+    ...buildHouseDirectoryRoutes(
+      resolveContext: () {
+        final membership = authBloc.state.membership;
+        if (membership == null) return null;
+        return HouseDirectoryRouteContext(
+          homeId: membership.homeId,
+          isOwner: membership.role.toLowerCase() == 'owner',
+        );
+      },
+    ),
     ...buildTodayRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;

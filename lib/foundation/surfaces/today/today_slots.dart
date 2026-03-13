@@ -6,6 +6,7 @@ import '../../../generated/l10n.dart';
 import 'bloc/today_bloc.dart';
 import 'domain/models.dart';
 import 'package:kinly/contracts/flow/enums/flow_list_filter.dart';
+import 'package:kinly/contracts/house_directory/models.dart';
 
 class TodaySurfaceSlots {
   const TodaySurfaceSlots({
@@ -52,6 +53,9 @@ class TodaySurfaceActions {
     required this.onGratitudeTap,
     required this.onPersonalGratitudeTap,
     required this.onHousePulseTap,
+    required this.onHouseDirectoryTap,
+    required this.onHouseDirectoryReminderAcknowledge,
+    required this.onHouseDirectoryReminderDismiss,
     required this.onShoppingTap,
   });
 
@@ -70,6 +74,11 @@ class TodaySurfaceActions {
   final void Function() onGratitudeTap;
   final void Function() onPersonalGratitudeTap;
   final Future<void> Function() onHousePulseTap;
+  final VoidCallback onHouseDirectoryTap;
+  final void Function(HouseDirectoryReminder reminder)
+      onHouseDirectoryReminderAcknowledge;
+  final void Function(HouseDirectoryReminder reminder)
+      onHouseDirectoryReminderDismiss;
   final VoidCallback onShoppingTap;
 }
 

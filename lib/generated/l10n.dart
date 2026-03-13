@@ -2131,40 +2131,40 @@ class S {
     );
   }
 
-  /// `This bill is now a plan and can't be edited here.`
+  /// `This bill is now a plan and is not editable here.`
   String get shareEditDisabledConverted {
     return Intl.message(
-      'This bill is now a plan and can\'t be edited here.',
+      'This bill is now a plan and is not editable here.',
       name: 'shareEditDisabledConverted',
       desc: '',
       args: [],
     );
   }
 
-  /// `Recurring cycles can't be edited here.`
+  /// `Recurring cycles are not editable here.`
   String get shareEditDisabledRecurringCycle {
     return Intl.message(
-      'Recurring cycles can\'t be edited here.',
+      'Recurring cycles are not editable here.',
       name: 'shareEditDisabledRecurringCycle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Active bills can't be edited.`
+  /// `Active bills are not editable.`
   String get shareEditDisabledActive {
     return Intl.message(
-      'Active bills can\'t be edited.',
+      'Active bills are not editable.',
       name: 'shareEditDisabledActive',
       desc: '',
       args: [],
     );
   }
 
-  /// `This bill can't be edited right now.`
+  /// `This bill is not editable right now.`
   String get shareEditDisabledGeneric {
     return Intl.message(
-      'This bill can\'t be edited right now.',
+      'This bill is not editable right now.',
       name: 'shareEditDisabledGeneric',
       desc: '',
       args: [],
@@ -2221,10 +2221,10 @@ class S {
     );
   }
 
-  /// `How should this be split?`
+  /// `How do you want to split this?`
   String get shareCreateSplitLabel {
     return Intl.message(
-      'How should this be split?',
+      'How do you want to split this?',
       name: 'shareCreateSplitLabel',
       desc: '',
       args: [],
@@ -2281,10 +2281,10 @@ class S {
     );
   }
 
-  /// `Enter each person's share. The total must match the amount above.`
+  /// `Enter each person's share. Total equals the amount above.`
   String get shareCreateCustomHelper {
     return Intl.message(
-      'Enter each person\'s share. The total must match the amount above.',
+      'Enter each person\'s share. Total equals the amount above.',
       name: 'shareCreateCustomHelper',
       desc: '',
       args: [],
@@ -2525,10 +2525,10 @@ class S {
     );
   }
 
-  /// `Drafts can't repeat until you add a split.`
+  /// `Drafts do not repeat until you add a split.`
   String get shareCreateErrorRecurrenceDraft {
     return Intl.message(
-      'Drafts can\'t repeat until you add a split.',
+      'Drafts do not repeat until you add a split.',
       name: 'shareCreateErrorRecurrenceDraft',
       desc: '',
       args: [],
@@ -2675,10 +2675,10 @@ class S {
     );
   }
 
-  /// `When is it due?`
+  /// `When will it happen?`
   String get flowChoreStartLabel {
     return Intl.message(
-      'When is it due?',
+      'When will it happen?',
       name: 'flowChoreStartLabel',
       desc: '',
       args: [],
@@ -2970,10 +2970,10 @@ class S {
     );
   }
 
-  /// `This task can't be updated right now.`
+  /// `This task is not editable right now.`
   String get flowChoreErrorInvalidState {
     return Intl.message(
-      'This task can\'t be updated right now.',
+      'This task is not editable right now.',
       name: 'flowChoreErrorInvalidState',
       desc: '',
       args: [],
@@ -3400,10 +3400,10 @@ class S {
     );
   }
 
-  /// `Each avatar must be unique in your home.`
+  /// `Use a different avatar for each person in your home.`
   String get profileIdentityAvatarSectionDescription {
     return Intl.message(
-      'Each avatar must be unique in your home.',
+      'Use a different avatar for each person in your home.',
       name: 'profileIdentityAvatarSectionDescription',
       desc: '',
       args: [],
@@ -3810,10 +3810,10 @@ class S {
     );
   }
 
-  /// `Your profile is deactivated. Sign in with another email address.`
+  /// `Your profile is off. Sign in with another email.`
   String get profile_deactivated_message {
     return Intl.message(
-      'Your profile is deactivated. Sign in with another email address.',
+      'Your profile is off. Sign in with another email.',
       name: 'profile_deactivated_message',
       desc: '',
       args: [],
@@ -3900,10 +3900,10 @@ class S {
     );
   }
 
-  /// `This deletes your account and signs you out. You can't undo this.`
+  /// `This deletes your account and signs you out. This is permanent.`
   String get profileConfirmDeleteMessage {
     return Intl.message(
-      'This deletes your account and signs you out. You can\'t undo this.',
+      'This deletes your account and signs you out. This is permanent.',
       name: 'profileConfirmDeleteMessage',
       desc: '',
       args: [],
@@ -5653,10 +5653,10 @@ class S {
     );
   }
 
-  /// `Late at night?`
+  /// `At night?`
   String get houseNormScenarioRhythmQuestion {
     return Intl.message(
-      'Late at night?',
+      'At night?',
       name: 'houseNormScenarioRhythmQuestion',
       desc: '',
       args: [],
@@ -5773,10 +5773,10 @@ class S {
     );
   }
 
-  /// `Small chores?`
+  /// `Small home tasks?`
   String get houseNormScenarioResponsibilityQuestion {
     return Intl.message(
-      'Small chores?',
+      'Small home tasks?',
       name: 'houseNormScenarioResponsibilityQuestion',
       desc: '',
       args: [],
@@ -6453,6 +6453,560 @@ class S {
     );
   }
 
+  /// `House directory`
+  String get houseDirectoryTitle {
+    return Intl.message(
+      'House directory',
+      name: 'houseDirectoryTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load House directory.`
+  String get houseDirectoryLoadError {
+    return Intl.message(
+      'Couldn\'t load House directory.',
+      name: 'houseDirectoryLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get houseDirectoryRetry {
+    return Intl.message(
+      'Retry',
+      name: 'houseDirectoryRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `House directory`
+  String get hubHouseDirectoryTitle {
+    return Intl.message(
+      'House directory',
+      name: 'hubHouseDirectoryTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wifi, services, links, and renewal reminders.`
+  String get hubHouseDirectorySubtitle {
+    return Intl.message(
+      'Wifi, services, links, and renewal reminders.',
+      name: 'hubHouseDirectorySubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared home details live here.`
+  String get houseDirectoryEmptyTitle {
+    return Intl.message(
+      'Shared home details live here.',
+      name: 'houseDirectoryEmptyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep wifi, rent, utilities, and useful links in one place for everyone in the home.`
+  String get houseDirectoryEmptyBody {
+    return Intl.message(
+      'Keep wifi, rent, utilities, and useful links in one place for everyone in the home.',
+      name: 'houseDirectoryEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get houseDirectoryWifiTitle => Intl.message(
+    'Wifi',
+    name: 'houseDirectoryWifiTitle',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryRentTitle => Intl.message(
+    'Rent',
+    name: 'houseDirectoryRentTitle',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryServicesTitle => Intl.message(
+    'Utilities and services',
+    name: 'houseDirectoryServicesTitle',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryLinksTitle => Intl.message(
+    'Key links',
+    name: 'houseDirectoryLinksTitle',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryAddWifi => Intl.message(
+    'Add wifi',
+    name: 'houseDirectoryAddWifi',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryEditWifi => Intl.message(
+    'Edit wifi',
+    name: 'houseDirectoryEditWifi',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryAddService => Intl.message(
+    'Add service',
+    name: 'houseDirectoryAddService',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryEditService => Intl.message(
+    'Edit service',
+    name: 'houseDirectoryEditService',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryAddLink => Intl.message(
+    'Add link',
+    name: 'houseDirectoryAddLink',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryEditLink => Intl.message(
+    'Edit link',
+    name: 'houseDirectoryEditLink',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectorySave => Intl.message(
+    'Save',
+    name: 'houseDirectorySave',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryEdit => Intl.message(
+    'Edit',
+    name: 'houseDirectoryEdit',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryDelete => Intl.message(
+    'Archive',
+    name: 'houseDirectoryDelete',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryWifiOwnerEmpty => Intl.message(
+    'Add your home wifi so everyone can find it here.',
+    name: 'houseDirectoryWifiOwnerEmpty',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryWifiMemberEmpty => Intl.message(
+    'No wifi details have been added yet.',
+    name: 'houseDirectoryWifiMemberEmpty',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryWifiMaskedHint => Intl.message(
+    'Password stays hidden in the app. Expand to copy the QR payload.',
+    name: 'houseDirectoryWifiMaskedHint',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryCopySsid => Intl.message(
+    'Copy SSID',
+    name: 'houseDirectoryCopySsid',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectorySsidCopied => Intl.message(
+    'SSID copied.',
+    name: 'houseDirectorySsidCopied',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryRentEmpty => Intl.message(
+    'No rent details added yet.',
+    name: 'houseDirectoryRentEmpty',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryServicesEmpty => Intl.message(
+    'No services added yet.',
+    name: 'houseDirectoryServicesEmpty',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryLinksEmpty => Intl.message(
+    'No links added yet.',
+    name: 'houseDirectoryLinksEmpty',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryServiceOther => Intl.message(
+    'Other',
+    name: 'houseDirectoryServiceOther',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryLinkOther => Intl.message(
+    'Other',
+    name: 'houseDirectoryLinkOther',
+    desc: '',
+    args: [],
+  );
+
+  String houseDirectoryAccountReference(String reference) {
+    return Intl.message(
+      'Reference: $reference',
+      name: 'houseDirectoryAccountReference',
+      desc: '',
+      args: [reference],
+    );
+  }
+
+  String houseDirectoryReminderDue(String date) {
+    return Intl.message(
+      'Reminder due $date',
+      name: 'houseDirectoryReminderDue',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  String houseDirectoryTermRange(String start, String end) {
+    return Intl.message(
+      '$start to $end',
+      name: 'houseDirectoryTermRange',
+      desc: '',
+      args: [start, end],
+    );
+  }
+
+  String get houseDirectoryDateUnknown => Intl.message(
+    'Unknown',
+    name: 'houseDirectoryDateUnknown',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryOpenLink => Intl.message(
+    'Open link',
+    name: 'houseDirectoryOpenLink',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryOpenLinkError => Intl.message(
+    'Couldn\'t open that link.',
+    name: 'houseDirectoryOpenLinkError',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectorySsidLabel => Intl.message(
+    'SSID',
+    name: 'houseDirectorySsidLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryPasswordLabel => Intl.message(
+    'Password',
+    name: 'houseDirectoryPasswordLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryPasswordHelper => Intl.message(
+    'Leave blank to save as an open network.',
+    name: 'houseDirectoryPasswordHelper',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryServiceTypeLabel => Intl.message(
+    'Service type',
+    name: 'houseDirectoryServiceTypeLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryCustomLabel => Intl.message(
+    'Custom label',
+    name: 'houseDirectoryCustomLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryProviderLabel => Intl.message(
+    'Provider name',
+    name: 'houseDirectoryProviderLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryAccountReferenceLabel => Intl.message(
+    'Account reference',
+    name: 'houseDirectoryAccountReferenceLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryLinkLabel => Intl.message(
+    'Provider link',
+    name: 'houseDirectoryLinkLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryStartDate => Intl.message(
+    'Start date',
+    name: 'houseDirectoryStartDate',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryEndDate => Intl.message(
+    'End date',
+    name: 'houseDirectoryEndDate',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryReminderOffset => Intl.message(
+    'Reminder offset',
+    name: 'houseDirectoryReminderOffset',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryReminderOffsetUnit => Intl.message(
+    'Offset unit',
+    name: 'houseDirectoryReminderOffsetUnit',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryReminderOffsetUnitNone => Intl.message(
+    'Default',
+    name: 'houseDirectoryReminderOffsetUnitNone',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryNotes => Intl.message(
+    'Notes',
+    name: 'houseDirectoryNotes',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryTitleLabel => Intl.message(
+    'Title',
+    name: 'houseDirectoryTitleLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryUrlLabel => Intl.message(
+    'URL',
+    name: 'houseDirectoryUrlLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryTagLabel => Intl.message(
+    'Tag',
+    name: 'houseDirectoryTagLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryCustomTag => Intl.message(
+    'Custom tag',
+    name: 'houseDirectoryCustomTag',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryValidationProvider => Intl.message(
+    'Enter a provider name.',
+    name: 'houseDirectoryValidationProvider',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryValidationCustomLabel => Intl.message(
+    'Enter a custom label.',
+    name: 'houseDirectoryValidationCustomLabel',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryValidationRentDates => Intl.message(
+    'Rent needs both start and end dates.',
+    name: 'houseDirectoryValidationRentDates',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryValidationDateRange => Intl.message(
+    'End date must be after start date.',
+    name: 'houseDirectoryValidationDateRange',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryValidationReminderOffset => Intl.message(
+    'Enter a valid reminder offset.',
+    name: 'houseDirectoryValidationReminderOffset',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryValidationLinkFields => Intl.message(
+    'Enter a title and URL.',
+    name: 'houseDirectoryValidationLinkFields',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryValidationUrl => Intl.message(
+    'Enter a valid http or https URL.',
+    name: 'houseDirectoryValidationUrl',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryValidationCustomTag => Intl.message(
+    'Enter a custom tag.',
+    name: 'houseDirectoryValidationCustomTag',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryWifiSaved => Intl.message(
+    'Wifi details saved.',
+    name: 'houseDirectoryWifiSaved',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryServiceSaved => Intl.message(
+    'Service saved.',
+    name: 'houseDirectoryServiceSaved',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryServiceArchived => Intl.message(
+    'Service archived.',
+    name: 'houseDirectoryServiceArchived',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryLinkSaved => Intl.message(
+    'Link saved.',
+    name: 'houseDirectoryLinkSaved',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryLinkArchived => Intl.message(
+    'Link archived.',
+    name: 'houseDirectoryLinkArchived',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryReminderAcknowledged => Intl.message(
+    'Reminder acknowledged.',
+    name: 'houseDirectoryReminderAcknowledged',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryReminderDismissed => Intl.message(
+    'Reminder dismissed.',
+    name: 'houseDirectoryReminderDismissed',
+    desc: '',
+    args: [],
+  );
+
+  String get houseDirectoryActionFailed => Intl.message(
+    'Couldn\'t save those changes.',
+    name: 'houseDirectoryActionFailed',
+    desc: '',
+    args: [],
+  );
+
+  String get todayHouseDirectoryRemindersTitle => Intl.message(
+    'Renewal reminders',
+    name: 'todayHouseDirectoryRemindersTitle',
+    desc: '',
+    args: [],
+  );
+
+  String todayHouseDirectoryReminderDue(String date) {
+    return Intl.message(
+      'Due $date',
+      name: 'todayHouseDirectoryReminderDue',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  String get todayHouseDirectoryOpenCta => Intl.message(
+    'Open directory',
+    name: 'todayHouseDirectoryOpenCta',
+    desc: '',
+    args: [],
+  );
+
+  String get todayHouseDirectoryAcknowledgeCta => Intl.message(
+    'Acknowledge',
+    name: 'todayHouseDirectoryAcknowledgeCta',
+    desc: '',
+    args: [],
+  );
+
+  String get todayHouseDirectoryDismissCta => Intl.message(
+    'Dismiss',
+    name: 'todayHouseDirectoryDismissCta',
+    desc: '',
+    args: [],
+  );
+
   /// `Close`
   String get close {
     return Intl.message('Close', name: 'close', desc: '', args: []);
@@ -6468,6 +7022,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'ar'),
       Locale.fromSubtags(languageCode: 'es'),
       Locale.fromSubtags(languageCode: 'my'),
+      Locale.fromSubtags(languageCode: 'zh'),
     ];
   }
 

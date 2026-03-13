@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'enums/chore_error_code.dart';
 import 'enums/expense_error_code.dart';
+import 'enums/house_directory_error_code.dart';
 import 'enums/home_error_codes.dart';
 import 'enums/mood_error_code.dart';
 import 'enums/nps_submit_error_code.dart';
@@ -11,6 +12,7 @@ import 'enums/shopping_list_error_code.dart';
 
 export 'enums/chore_error_code.dart';
 export 'enums/expense_error_code.dart';
+export 'enums/house_directory_error_code.dart';
 export 'enums/home_error_codes.dart';
 export 'enums/mood_error_code.dart';
 export 'enums/nps_submit_error_code.dart';
@@ -36,6 +38,17 @@ class HomeCreateException implements Exception {
 
   @override
   String toString() => 'HomeCreateException($code): $message';
+}
+
+class HouseDirectoryException implements Exception {
+  final HouseDirectoryErrorCode code;
+  final String message;
+  final Map<String, dynamic>? details;
+
+  const HouseDirectoryException(this.code, this.message, {this.details});
+
+  @override
+  String toString() => 'HouseDirectoryException($code): $message';
 }
 
 class SupabaseErrorMapper {
@@ -73,6 +86,29 @@ class SupabaseErrorMapper {
         fallbackFactory:
             (message) =>
                 HomeCreateException(CreateHomeErrorCode.unknown, message),
+      );
+
+  // ----- house_directory.* -----
+  static HouseDirectoryException mapHouseDirectory(Object error) =>
+      _mapWithAuth<HouseDirectoryException, HouseDirectoryErrorCode>(
+        error: error,
+        authFactory:
+            (message) => HouseDirectoryException(
+              HouseDirectoryErrorCode.unauthorized,
+              message,
+            ),
+        postgrestFactory:
+            (parsed) => HouseDirectoryException(
+              _houseDirectoryCodeMap[parsed.code] ??
+                  HouseDirectoryErrorCode.unknown,
+              parsed.message,
+              details: parsed.details,
+            ),
+        fallbackFactory:
+            (message) => HouseDirectoryException(
+              HouseDirectoryErrorCode.unknown,
+              message,
+            ),
       );
 
   // ----- invites.rotate -----
@@ -357,6 +393,39 @@ const _expenseCodeMap = <String, ExpenseErrorCode>{
   'INVALID_EVIDENCE_PHOTO_PATH': ExpenseErrorCode.invalidEvidencePhotoPath,
   'FORBIDDEN': ExpenseErrorCode.forbidden,
   'UNAUTHORIZED': ExpenseErrorCode.unauthorized,
+};
+
+const _houseDirectoryCodeMap = <String, HouseDirectoryErrorCode>{
+  'UNAUTHORIZED': HouseDirectoryErrorCode.unauthorized,
+  'NOT_HOME_MEMBER': HouseDirectoryErrorCode.notHomeMember,
+  'FORBIDDEN_OWNER_ONLY': HouseDirectoryErrorCode.forbiddenOwnerOnly,
+  'INVALID_HOME': HouseDirectoryErrorCode.invalidHome,
+  'HOME_NOT_FOUND': HouseDirectoryErrorCode.homeNotFound,
+  'HOME_INACTIVE': HouseDirectoryErrorCode.homeInactive,
+  'HOUSE_DIRECTORY_INVALID_ENUM': HouseDirectoryErrorCode.invalidEnum,
+  'HOUSE_DIRECTORY_INVALID_INPUT': HouseDirectoryErrorCode.invalidInput,
+  'HOUSE_DIRECTORY_INVALID_TERM_RANGE': HouseDirectoryErrorCode.invalidTermRange,
+  'HOUSE_DIRECTORY_INVALID_DATE_RANGE': HouseDirectoryErrorCode.invalidDateRange,
+  'HOUSE_DIRECTORY_RENT_TERM_REQUIRED': HouseDirectoryErrorCode.rentTermRequired,
+  'HOUSE_DIRECTORY_INVALID_REMINDER_OFFSET':
+      HouseDirectoryErrorCode.invalidReminderOffset,
+  'HOUSE_DIRECTORY_OTHER_LABEL_REQUIRED':
+      HouseDirectoryErrorCode.otherLabelRequired,
+  'HOUSE_DIRECTORY_OTHER_LABEL_FORBIDDEN':
+      HouseDirectoryErrorCode.otherLabelForbidden,
+  'HOUSE_DIRECTORY_OTHER_TAG_REQUIRED':
+      HouseDirectoryErrorCode.otherTagRequired,
+  'HOUSE_DIRECTORY_OTHER_TAG_FORBIDDEN':
+      HouseDirectoryErrorCode.otherTagForbidden,
+  'HOUSE_DIRECTORY_ACTIVE_SERVICE_CONFLICT':
+      HouseDirectoryErrorCode.activeServiceConflict,
+  'HOUSE_DIRECTORY_SERVICE_NOT_FOUND':
+      HouseDirectoryErrorCode.serviceNotFound,
+  'HOUSE_DIRECTORY_LINK_NOT_FOUND': HouseDirectoryErrorCode.linkNotFound,
+  'HOUSE_DIRECTORY_REMINDER_NOT_FOUND':
+      HouseDirectoryErrorCode.reminderNotFound,
+  'HOUSE_DIRECTORY_REMINDER_NOT_ACTIONABLE':
+      HouseDirectoryErrorCode.reminderNotActionable,
 };
 
 const _shoppingListCodeMap = <String, ShoppingListErrorCode>{
