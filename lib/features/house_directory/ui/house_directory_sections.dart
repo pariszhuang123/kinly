@@ -1,13 +1,14 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:kinly/contracts/house_directory/models.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/buttons/kinly_outlined_button.dart';
 import 'package:kinly/core/ui/kinly_list_tile.dart';
+import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HouseDirectorySectionHeader extends StatelessWidget {
@@ -45,14 +46,16 @@ class HouseDirectorySurfaceCard extends StatelessWidget {
   const HouseDirectorySurfaceCard({
     super.key,
     required this.child,
+    this.onTap,
   });
 
   final Widget child;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
-    return Container(
+    final card = Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
@@ -60,6 +63,13 @@ class HouseDirectorySurfaceCard extends StatelessWidget {
       ),
       padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
       child: child,
+    );
+    if (onTap == null) return card;
+    return KinlyTapTarget(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      alignment: AlignmentDirectional.centerStart,
+      child: card,
     );
   }
 }
@@ -90,59 +100,89 @@ class HouseDirectoryEmptyCard extends StatelessWidget {
   }
 }
 
-class HouseDirectoryWifiCard extends StatelessWidget {
-  const HouseDirectoryWifiCard({
+class HouseDirectoryWifiCardContent extends StatelessWidget {
+  const HouseDirectoryWifiCardContent({
     super.key,
     required this.wifi,
     required this.isOwner,
+    this.onEdit,
   });
 
   final HouseDirectoryWifi? wifi;
   final bool isOwner;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final theme = KinlyThemeAccess.of(context);
     if (wifi == null) {
-      return HouseDirectorySurfaceCard(
-        child: Text(
-          isOwner
-              ? s.houseDirectoryWifiOwnerEmpty
-              : s.houseDirectoryWifiMemberEmpty,
-        ),
-      );
-    }
-
-    return HouseDirectorySurfaceCard(
-      child: Column(
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            wifi!.ssid,
-            style: KinlyThemeAccess.of(context).textTheme.titleMedium,
+            isOwner
+                ? s.houseDirectoryWifiOwnerEmpty
+                : s.houseDirectoryWifiMemberEmpty,
           ),
-          const SizedBox(height: 8),
-          Text(s.houseDirectoryWifiMaskedHint),
-          const SizedBox(height: 12),
-          Text(wifi!.qrPayload),
-          const SizedBox(height: 12),
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: KinlyOutlinedButton.text(
-              onPressed: () => _copySsid(context, wifi!.ssid),
-              label: s.houseDirectoryCopySsid,
+          if (isOwner && onEdit != null) ...[
+            const SizedBox(height: 12),
+            KinlyOutlinedButton.text(
+              onPressed: onEdit,
+              label: s.houseDirectoryAddWifi,
               compact: true,
             ),
-          ),
+          ],
         ],
-      ),
-    );
-  }
+      );
+    }
 
-  Future<void> _copySsid(BuildContext context, String ssid) async {
-    await Clipboard.setData(ClipboardData(text: ssid));
-    if (!context.mounted) return;
-    KinlySnackBar.showSuccess(context, S.of(context).houseDirectorySsidCopied);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                wifi!.ssid,
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
+            if (isOwner && onEdit != null)
+              KinlyOutlinedButton.text(
+                onPressed: onEdit,
+                label: s.houseDirectoryEdit,
+                compact: true,
+                fullWidth: false,
+              ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Center(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: QrImageView(
+                data: wifi!.qrPayload,
+                version: QrVersions.auto,
+                size: 132,
+                eyeStyle: QrEyeStyle(color: theme.colorScheme.onSurface),
+                dataModuleStyle: QrDataModuleStyle(
+                  color: theme.colorScheme.onSurface,
+                  dataModuleShape: QrDataModuleShape.square,
+                ),
+                backgroundColor: theme.colorScheme.surface,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

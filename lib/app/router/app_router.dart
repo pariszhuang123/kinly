@@ -43,6 +43,7 @@ class AppRoutes {
   static const today = AppRoutePaths.today;
   static const hub = AppRoutePaths.hub;
   static const houseDirectory = AppRoutePaths.houseDirectory;
+  static const houseDirectoryDetails = AppRoutePaths.houseDirectoryDetails;
   static const explore = AppRoutePaths.explore;
   static const flow = AppRoutePaths.flow;
   static const flowChoreCreate = AppRoutePaths.flowChoreCreate;
