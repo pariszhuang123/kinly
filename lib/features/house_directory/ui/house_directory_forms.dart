@@ -1,16 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:kinly/contracts/house_directory/models.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/buttons/kinly_outlined_button.dart';
-import 'package:kinly/core/ui/inputs/kinly_dropdown_field.dart';
 import 'package:kinly/core/ui/inputs/kinly_text_field.dart';
 import 'package:kinly/core/ui/kinly_bottom_sheet.dart';
 import 'package:kinly/core/ui/kinly_date_picker.dart';
-import 'package:kinly/core/ui/kinly_dropdown_menu_item.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
+import 'package:kinly/features/house_directory/ui/house_directory_form_sections.dart';
 import 'package:kinly/generated/l10n.dart';
 
 Future<UpsertHouseDirectoryWifiInput?> showHouseDirectoryWifiSheet(
@@ -19,35 +17,10 @@ Future<UpsertHouseDirectoryWifiInput?> showHouseDirectoryWifiSheet(
   HouseDirectoryWifi? wifi,
 }) {
   final s = S.of(context);
-  return showGeneralDialog<UpsertHouseDirectoryWifiInput>(
+  return KinlyBottomSheet.show<UpsertHouseDirectoryWifiInput>(
     context: context,
-    barrierDismissible: true,
-    barrierLabel:
-        wifi == null ? s.houseDirectoryAddWifi : s.houseDirectoryEditWifi,
-    barrierColor: const Color(0x99000000),
-    transitionDuration: const Duration(milliseconds: 180),
-    pageBuilder:
-        (dialogContext, _, __) => _WifiDialog(
-          homeId: homeId,
-          wifi: wifi,
-        ),
-    transitionBuilder: (dialogContext, animation, _, child) {
-      final curved = CurvedAnimation(
-        parent: animation,
-        curve: Curves.easeOutCubic,
-        reverseCurve: Curves.easeInCubic,
-      );
-      return FadeTransition(
-        opacity: curved,
-        child: ScaleTransition(
-          scale: Tween<double>(
-            begin: 0.96,
-            end: 1,
-          ).animate(curved),
-          child: child,
-        ),
-      );
-    },
+    title: wifi == null ? s.houseDirectoryAddWifi : s.houseDirectoryEditWifi,
+    body: _WifiSheetBody(homeId: homeId, wifi: wifi),
   );
 }
 
@@ -72,21 +45,21 @@ Future<UpsertHouseDirectoryServiceInput?> showHouseDirectoryServiceSheet(
   );
 }
 
-Future<UpsertHouseDirectoryLinkInput?> showHouseDirectoryLinkSheet(
+Future<UpsertHouseDirectoryNoteInput?> showHouseDirectoryNoteSheet(
   BuildContext context, {
   required String homeId,
-  HouseDirectoryLink? link,
+  HouseDirectoryNote? note,
 }) {
   final s = S.of(context);
-  return KinlyBottomSheet.show<UpsertHouseDirectoryLinkInput>(
+  return KinlyBottomSheet.show<UpsertHouseDirectoryNoteInput>(
     context: context,
-    title: link == null ? s.houseDirectoryAddLink : s.houseDirectoryEditLink,
-    body: _LinkSheetBody(homeId: homeId, link: link),
+    title: note == null ? s.houseDirectoryAddNote : s.houseDirectoryEditNote,
+    body: _NoteSheetBody(homeId: homeId, note: note),
   );
 }
 
-class _WifiDialog extends StatefulWidget {
-  const _WifiDialog({
+class _WifiSheetBody extends StatefulWidget {
+  const _WifiSheetBody({
     required this.homeId,
     this.wifi,
   });
@@ -95,10 +68,10 @@ class _WifiDialog extends StatefulWidget {
   final HouseDirectoryWifi? wifi;
 
   @override
-  State<_WifiDialog> createState() => _WifiDialogState();
+  State<_WifiSheetBody> createState() => _WifiSheetBodyState();
 }
 
-class _WifiDialogState extends State<_WifiDialog> {
+class _WifiSheetBodyState extends State<_WifiSheetBody> {
   late final TextEditingController _ssidController;
   late final TextEditingController _passwordController;
 
@@ -121,92 +94,46 @@ class _WifiDialogState extends State<_WifiDialog> {
     final s = S.of(context);
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
-    final title =
-        widget.wifi == null
-            ? s.houseDirectoryAddWifi
-            : s.houseDirectoryEditWifi;
 
-    return SafeArea(
-      child: Center(
-        child: SingleChildScrollView(
-          padding: EdgeInsetsDirectional.all(spacing.lg),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 460),
-            child: Material(
-              color: Colors.transparent,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(spacing.lg),
-                  border: Border.all(
-                    color: theme.colorScheme.outlineVariant.withValues(
-                      alpha: 0.45,
-                    ),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.colorScheme.shadow.withValues(alpha: 0.12),
-                      blurRadius: spacing.xl,
-                      offset: Offset(0, spacing.xs),
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(
-                    spacing.lg,
-                    spacing.lg,
-                    spacing.lg,
-                    spacing.lg,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(title, style: theme.textTheme.titleLarge),
-                      SizedBox(height: spacing.xs),
-                      Text(
-                        s.houseDirectoryPasswordHelper,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      SizedBox(height: spacing.lg),
-                      KinlyTextField(
-                        controller: _ssidController,
-                        labelText: s.houseDirectorySsidLabel,
-                      ),
-                      SizedBox(height: spacing.md),
-                      KinlyTextField(
-                        controller: _passwordController,
-                        labelText: s.houseDirectoryPasswordLabel,
-                        hintText: s.houseDirectoryPasswordHelper,
-                        obscureText: true,
-                      ),
-                      SizedBox(height: spacing.lg),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          KinlyOutlinedButton.text(
-                            onPressed: _close,
-                            label: s.shareEditClose,
-                            fullWidth: false,
-                            compact: true,
-                          ),
-                          SizedBox(width: spacing.sm),
-                          KinlyFilledButton.text(
-                            onPressed: _save,
-                            label: s.houseDirectorySave,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          s.houseDirectoryPasswordHelper,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
-      ),
+        SizedBox(height: spacing.lg),
+        KinlyTextField(
+          controller: _ssidController,
+          labelText: s.houseDirectorySsidLabel,
+        ),
+        SizedBox(height: spacing.md),
+        KinlyTextField(
+          controller: _passwordController,
+          labelText: s.houseDirectoryPasswordLabel,
+          hintText: s.houseDirectoryPasswordHelper,
+          obscureText: true,
+        ),
+        SizedBox(height: spacing.lg),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            KinlyOutlinedButton.text(
+              onPressed: _close,
+              label: s.shareEditClose,
+              fullWidth: false,
+              compact: true,
+            ),
+            SizedBox(width: spacing.sm),
+            KinlyFilledButton.text(
+              onPressed: _save,
+              label: s.houseDirectorySave,
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -299,118 +226,23 @@ class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = KinlyThemeAccess.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        KinlyDropdownField<HouseDirectoryServiceType>(
-          value: _type,
-          labelText: s.houseDirectoryServiceTypeLabel,
-          items:
-              HouseDirectoryServiceType.values
-                  .map(
-                    (type) => KinlyDropdownMenuItem.item(
-                      value: type,
-                      child: Text(type.wireValue),
-                    ),
-                  )
-                  .toList(growable: false),
-          onChanged: _updateType,
-        ),
-        if (_type == HouseDirectoryServiceType.other) ...[
-          const SizedBox(height: 12),
-          KinlyTextField(
-            controller: _customLabelController,
-            labelText: s.houseDirectoryCustomLabel,
-            hintText: s.houseDirectoryCustomLabelHint,
-          ),
-        ],
-        const SizedBox(height: 12),
-        KinlyTextField(
-          controller: _providerController,
-          labelText: s.houseDirectoryProviderLabel,
-          hintText: s.houseDirectoryProviderHint,
-        ),
-        const SizedBox(height: 12),
-        KinlyTextField(
-          controller: _referenceController,
-          labelText: s.houseDirectoryAccountReferenceLabel,
-          hintText: s.houseDirectoryAccountReferenceHint,
-        ),
-        const SizedBox(height: 12),
-        KinlyTextField(
-          controller: _linkController,
-          labelText: s.houseDirectoryLinkLabel,
-          hintText: s.houseDirectoryProviderLinkHint,
-        ),
-        const SizedBox(height: 12),
-        _DateButtons(
-          startLabel: _formatDateLabel(s.houseDirectoryStartDate, _startDate),
-          endLabel: _formatDateLabel(s.houseDirectoryEndDate, _endDate),
-          onStartPressed: _pickStartDate,
-          onEndPressed: _pickEndDate,
-        ),
-        if (_endDate != null) ...[
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: KinlyTextField(
-                  controller: _offsetValueController,
-                  labelText: s.houseDirectoryReminderOffset,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: KinlyDropdownField<HouseDirectoryReminderOffsetUnit>(
-                  value: _offsetUnit ?? HouseDirectoryReminderOffsetUnit.day,
-                  labelText: s.houseDirectoryReminderOffsetUnit,
-                  items:
-                      HouseDirectoryReminderOffsetUnit.values
-                          .map(
-                            (unit) => KinlyDropdownMenuItem.item(
-                              value: unit,
-                              child: Text(unit.wireValue),
-                            ),
-                          )
-                          .toList(growable: false),
-                  onChanged: (value) {
-                    if (value == null) return;
-                    setState(() => _offsetUnit = value);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
-        const SizedBox(height: 12),
-        KinlyTextField(
-          controller: _notesController,
-          labelText: s.houseDirectoryNotes,
-          hintText: s.houseDirectoryNotesHint,
-          minLines: 3,
-          maxLines: 5,
-        ),
-        if (_error != null) ...[
-          const SizedBox(height: 12),
-          Text(
-            _error!,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.error,
-            ),
-          ),
-        ],
-        const SizedBox(height: 16),
-        Align(
-          alignment: AlignmentDirectional.centerEnd,
-          child: KinlyFilledButton.text(
-            onPressed: _save,
-            label: s.houseDirectorySave,
-          ),
-        ),
-      ],
+    return HouseDirectoryServiceSheetContent(
+      type: _type,
+      customLabelController: _customLabelController,
+      providerController: _providerController,
+      referenceController: _referenceController,
+      linkController: _linkController,
+      offsetValueController: _offsetValueController,
+      notesController: _notesController,
+      offsetUnit: _endDate == null ? null : _offsetUnit,
+      startLabel: _formatDateLabel(s.houseDirectoryStartDate, _startDate),
+      endLabel: _formatDateLabel(s.houseDirectoryEndDate, _endDate),
+      error: _error,
+      onTypeChanged: _updateType,
+      onStartPressed: _pickStartDate,
+      onEndPressed: _pickEndDate,
+      onOffsetUnitChanged: _updateOffsetUnit,
+      onSave: _save,
     );
   }
 
@@ -422,6 +254,11 @@ class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
   void _updateType(HouseDirectoryServiceType? value) {
     if (value == null) return;
     setState(() => _type = value);
+  }
+
+  void _updateOffsetUnit(HouseDirectoryReminderOffsetUnit? value) {
+    if (value == null) return;
+    setState(() => _offsetUnit = value);
   }
 
   Future<void> _pickStartDate() async {
@@ -539,110 +376,54 @@ class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
   }
 }
 
-class _LinkSheetBody extends StatefulWidget {
-  const _LinkSheetBody({
+class _NoteSheetBody extends StatefulWidget {
+  const _NoteSheetBody({
     required this.homeId,
-    this.link,
+    this.note,
   });
 
   final String homeId;
-  final HouseDirectoryLink? link;
+  final HouseDirectoryNote? note;
 
   @override
-  State<_LinkSheetBody> createState() => _LinkSheetBodyState();
+  State<_NoteSheetBody> createState() => _NoteSheetBodyState();
 }
 
-class _LinkSheetBodyState extends State<_LinkSheetBody> {
+class _NoteSheetBodyState extends State<_NoteSheetBody> {
   late final TextEditingController _titleController;
-  late final TextEditingController _urlController;
-  late final TextEditingController _customTagController;
-  late HouseDirectoryLinkTag _tag;
+  late final TextEditingController _detailsController;
+  late final TextEditingController _referenceUrlController;
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.link?.title ?? '');
-    _urlController = TextEditingController(text: widget.link?.url ?? '');
-    _customTagController = TextEditingController(
-      text: widget.link?.customTag ?? '',
+    _titleController = TextEditingController(text: widget.note?.title ?? '');
+    _detailsController = TextEditingController(
+      text: widget.note?.details ?? '',
     );
-    _tag = widget.link?.tag ?? HouseDirectoryLinkTag.utilities;
+    _referenceUrlController = TextEditingController(
+      text: widget.note?.referenceUrl ?? '',
+    );
   }
 
   @override
   void dispose() {
     _titleController.dispose();
-    _urlController.dispose();
-    _customTagController.dispose();
+    _detailsController.dispose();
+    _referenceUrlController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
-    final theme = KinlyThemeAccess.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        KinlyTextField(
-          controller: _titleController,
-          labelText: s.houseDirectoryTitleLabel,
-          hintText: s.houseDirectoryLinkTitleHint,
-        ),
-        const SizedBox(height: 12),
-        KinlyTextField(
-          controller: _urlController,
-          labelText: s.houseDirectoryUrlLabel,
-          hintText: s.houseDirectoryUrlHint,
-        ),
-        const SizedBox(height: 12),
-        KinlyDropdownField<HouseDirectoryLinkTag>(
-          value: _tag,
-          labelText: s.houseDirectoryTagLabel,
-          items:
-              HouseDirectoryLinkTag.values
-                  .map(
-                    (tag) => KinlyDropdownMenuItem.item(
-                      value: tag,
-                      child: Text(tag.wireValue),
-                    ),
-                  )
-                  .toList(growable: false),
-          onChanged: _updateTag,
-        ),
-        if (_tag == HouseDirectoryLinkTag.other) ...[
-          const SizedBox(height: 12),
-          KinlyTextField(
-            controller: _customTagController,
-            labelText: s.houseDirectoryCustomTag,
-            hintText: s.houseDirectoryCustomTagHint,
-          ),
-        ],
-        if (_error != null) ...[
-          const SizedBox(height: 12),
-          Text(
-            _error!,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.error,
-            ),
-          ),
-        ],
-        const SizedBox(height: 16),
-        Align(
-          alignment: AlignmentDirectional.centerEnd,
-          child: KinlyFilledButton.text(
-            onPressed: _save,
-            label: s.houseDirectorySave,
-          ),
-        ),
-      ],
+    return HouseDirectoryNoteSheetContent(
+      titleController: _titleController,
+      detailsController: _detailsController,
+      referenceUrlController: _referenceUrlController,
+      error: _error,
+      onSave: _save,
     );
-  }
-
-  void _updateTag(HouseDirectoryLinkTag? value) {
-    if (value == null) return;
-    setState(() => _tag = value);
   }
 
   void _save() {
@@ -653,67 +434,30 @@ class _LinkSheetBodyState extends State<_LinkSheetBody> {
     }
     setState(() => _error = null);
     Navigator.of(context).pop(
-      UpsertHouseDirectoryLinkInput(
+      UpsertHouseDirectoryNoteInput(
         homeId: widget.homeId,
-        linkId: widget.link?.id,
+        noteId: widget.note?.id,
         title: _titleController.text.trim(),
-        url: _urlController.text.trim(),
-        tag: _tag,
-        customTag: _nullIfBlank(_customTagController.text),
+        details: _detailsController.text.trim(),
+        referenceUrl: _nullIfBlank(_referenceUrlController.text),
+        photoPath: widget.note?.photoPath,
       ),
     );
   }
 
   String? _validationError(S s) {
     final title = _titleController.text.trim();
-    final url = _urlController.text.trim();
-    final customTag = _customTagController.text.trim();
-    if (title.isEmpty || url.isEmpty) {
-      return s.houseDirectoryValidationLinkFields;
+    final details = _detailsController.text.trim();
+    final referenceUrl = _referenceUrlController.text.trim();
+    if (title.isEmpty || details.isEmpty) {
+      return s.houseDirectoryValidationNoteFields;
     }
-    final uri = Uri.tryParse(url);
+    if (referenceUrl.isEmpty) return null;
+    final uri = Uri.tryParse(referenceUrl);
     if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) {
       return s.houseDirectoryValidationUrl;
     }
-    if (_tag == HouseDirectoryLinkTag.other && customTag.isEmpty) {
-      return s.houseDirectoryValidationCustomTag;
-    }
     return null;
-  }
-}
-
-class _DateButtons extends StatelessWidget {
-  const _DateButtons({
-    required this.startLabel,
-    required this.endLabel,
-    required this.onStartPressed,
-    required this.onEndPressed,
-  });
-
-  final String startLabel;
-  final String endLabel;
-  final VoidCallback onStartPressed;
-  final VoidCallback onEndPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: KinlyOutlinedButton.text(
-            onPressed: onStartPressed,
-            label: startLabel,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: KinlyOutlinedButton.text(
-            onPressed: onEndPressed,
-            label: endLabel,
-          ),
-        ),
-      ],
-    );
   }
 }
 

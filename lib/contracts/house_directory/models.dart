@@ -1,12 +1,10 @@
 import 'package:kinly/contracts/time/timezone.dart';
 
-import 'enums/house_directory_link_tag.dart';
 import 'enums/house_directory_reminder_kind.dart';
 import 'enums/house_directory_reminder_offset_unit.dart';
 import 'enums/house_directory_reminder_status.dart';
 import 'enums/house_directory_service_type.dart';
 
-export 'enums/house_directory_link_tag.dart';
 export 'enums/house_directory_reminder_kind.dart';
 export 'enums/house_directory_reminder_offset_unit.dart';
 export 'enums/house_directory_reminder_status.dart';
@@ -168,41 +166,35 @@ class HouseDirectoryService {
   }
 }
 
-class HouseDirectoryLink {
-  const HouseDirectoryLink({
+class HouseDirectoryNote {
+  const HouseDirectoryNote({
     required this.id,
     required this.homeId,
     required this.title,
-    required this.url,
-    required this.tag,
+    required this.details,
     required this.createdAt,
     required this.updatedAt,
-    this.customTag,
-    this.startDate,
-    this.endDate,
+    this.referenceUrl,
+    this.photoPath,
   });
 
   final String id;
   final String homeId;
   final String title;
-  final String url;
-  final HouseDirectoryLinkTag tag;
+  final String details;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String? customTag;
-  final DateTime? startDate;
-  final DateTime? endDate;
+  final String? referenceUrl;
+  final String? photoPath;
 
-  factory HouseDirectoryLink.fromJson(Map<String, dynamic> json) {
-    return HouseDirectoryLink(
+  factory HouseDirectoryNote.fromJson(Map<String, dynamic> json) {
+    return HouseDirectoryNote(
       id: json['id'] as String? ?? '',
       homeId: json['home_id'] as String? ?? '',
       title: json['title'] as String? ?? '',
-      url: json['url'] as String? ?? '',
-      tag: HouseDirectoryLinkTag.fromWire(json['tag'] as String?),
-      customTag: json['custom_tag'] as String?,
-      startDate: parseDateToLocal(json['start_date']),
-      endDate: parseDateToLocal(json['end_date']),
+      details: json['details'] as String? ?? '',
+      referenceUrl: json['reference_url'] as String?,
+      photoPath: json['photo_path'] as String?,
       createdAt:
           parseTimestampToLocal(json['created_at']) ??
           DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
@@ -216,15 +208,15 @@ class HouseDirectoryLink {
 class HouseDirectoryContent {
   const HouseDirectoryContent({
     required this.services,
-    required this.links,
+    required this.notes,
   });
 
   final List<HouseDirectoryService> services;
-  final List<HouseDirectoryLink> links;
+  final List<HouseDirectoryNote> notes;
 
   factory HouseDirectoryContent.fromJson(Map<String, dynamic> json) {
     final servicesRaw = json['services'] as List? ?? const <dynamic>[];
-    final linksRaw = json['links'] as List? ?? const <dynamic>[];
+    final notesRaw = json['notes'] as List? ?? const <dynamic>[];
     return HouseDirectoryContent(
       services:
           servicesRaw
@@ -233,10 +225,10 @@ class HouseDirectoryContent {
                 entry.cast<String, dynamic>(),
               ))
               .toList(growable: false),
-      links:
-          linksRaw
+      notes:
+          notesRaw
               .whereType<Map>()
-              .map((entry) => HouseDirectoryLink.fromJson(
+              .map((entry) => HouseDirectoryNote.fromJson(
                 entry.cast<String, dynamic>(),
               ))
               .toList(growable: false),
@@ -286,24 +278,20 @@ class UpsertHouseDirectoryServiceInput {
   final String? notes;
 }
 
-class UpsertHouseDirectoryLinkInput {
-  const UpsertHouseDirectoryLinkInput({
+class UpsertHouseDirectoryNoteInput {
+  const UpsertHouseDirectoryNoteInput({
     required this.homeId,
     required this.title,
-    required this.url,
-    required this.tag,
-    this.linkId,
-    this.customTag,
-    this.startDate,
-    this.endDate,
+    required this.details,
+    this.noteId,
+    this.referenceUrl,
+    this.photoPath,
   });
 
   final String homeId;
-  final String? linkId;
+  final String? noteId;
   final String title;
-  final String url;
-  final HouseDirectoryLinkTag tag;
-  final String? customTag;
-  final DateTime? startDate;
-  final DateTime? endDate;
+  final String details;
+  final String? referenceUrl;
+  final String? photoPath;
 }

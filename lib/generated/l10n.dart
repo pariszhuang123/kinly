@@ -6478,16 +6478,6 @@ class S {
     );
   }
 
-  /// `Retry`
-  String get houseDirectoryRetry {
-    return Intl.message(
-      'Retry',
-      name: 'houseDirectoryRetry',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `House directory`
   String get hubHouseDirectoryTitle {
     return Intl.message(
@@ -6498,10 +6488,10 @@ class S {
     );
   }
 
-  /// `Wifi, services, links, and renewal reminders.`
+  /// `Wifi, services, notes, and renewal reminders.`
   String get hubHouseDirectorySubtitle {
     return Intl.message(
-      'Wifi, services, links, and renewal reminders.',
+      'Wifi, services, notes, and renewal reminders.',
       name: 'hubHouseDirectorySubtitle',
       desc: '',
       args: [],
@@ -6518,10 +6508,10 @@ class S {
     );
   }
 
-  /// `Save wifi, rent, services, and links here.`
+  /// `Save wifi, rent, services, and house notes here.`
   String get houseDirectoryEmptyBody {
     return Intl.message(
-      'Save wifi, rent, services, and links here.',
+      'Save wifi, rent, services, and house notes here.',
       name: 'houseDirectoryEmptyBody',
       desc: '',
       args: [],
@@ -6558,11 +6548,11 @@ class S {
     );
   }
 
-  /// `Key links`
-  String get houseDirectoryLinksTitle {
+  /// `House notes`
+  String get houseDirectoryNotesTitle {
     return Intl.message(
-      'Key links',
-      name: 'houseDirectoryLinksTitle',
+      'House notes',
+      name: 'houseDirectoryNotesTitle',
       desc: '',
       args: [],
     );
@@ -6608,21 +6598,21 @@ class S {
     );
   }
 
-  /// `Add link`
-  String get houseDirectoryAddLink {
+  /// `Add note`
+  String get houseDirectoryAddNote {
     return Intl.message(
-      'Add link',
-      name: 'houseDirectoryAddLink',
+      'Add note',
+      name: 'houseDirectoryAddNote',
       desc: '',
       args: [],
     );
   }
 
-  /// `Edit link`
-  String get houseDirectoryEditLink {
+  /// `Edit note`
+  String get houseDirectoryEditNote {
     return Intl.message(
-      'Edit link',
-      name: 'houseDirectoryEditLink',
+      'Edit note',
+      name: 'houseDirectoryEditNote',
       desc: '',
       args: [],
     );
@@ -6668,46 +6658,6 @@ class S {
     );
   }
 
-  /// `Password stays hidden in the app. Expand to copy the QR payload.`
-  String get houseDirectoryWifiMaskedHint {
-    return Intl.message(
-      'Password stays hidden in the app. Expand to copy the QR payload.',
-      name: 'houseDirectoryWifiMaskedHint',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Copy SSID`
-  String get houseDirectoryCopySsid {
-    return Intl.message(
-      'Copy SSID',
-      name: 'houseDirectoryCopySsid',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `SSID copied.`
-  String get houseDirectorySsidCopied {
-    return Intl.message(
-      'SSID copied.',
-      name: 'houseDirectorySsidCopied',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No rent details added yet.`
-  String get houseDirectoryRentEmpty {
-    return Intl.message(
-      'No rent details added yet.',
-      name: 'houseDirectoryRentEmpty',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `No services added yet.`
   String get houseDirectoryServicesEmpty {
     return Intl.message(
@@ -6718,11 +6668,11 @@ class S {
     );
   }
 
-  /// `No links added yet.`
-  String get houseDirectoryLinksEmpty {
+  /// `No notes added yet.`
+  String get houseDirectoryNotesEmpty {
     return Intl.message(
-      'No links added yet.',
-      name: 'houseDirectoryLinksEmpty',
+      'No notes added yet.',
+      name: 'houseDirectoryNotesEmpty',
       desc: '',
       args: [],
     );
@@ -6733,16 +6683,6 @@ class S {
     return Intl.message(
       'Other',
       name: 'houseDirectoryServiceOther',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Other`
-  String get houseDirectoryLinkOther {
-    return Intl.message(
-      'Other',
-      name: 'houseDirectoryLinkOther',
       desc: '',
       args: [],
     );
@@ -6878,10 +6818,10 @@ class S {
     );
   }
 
-  /// `Who manages this service, like your power or internet company`
+  /// `Who runs this service, like your power company`
   String get houseDirectoryProviderHint {
     return Intl.message(
-      'Who manages this service, like your power or internet company',
+      'Who runs this service, like your power company',
       name: 'houseDirectoryProviderHint',
       desc: '',
       args: [],
@@ -6898,10 +6838,10 @@ class S {
     );
   }
 
-  /// `Add the account number, customer ID, or tenancy reference`
+  /// `Add the account number or customer ID`
   String get houseDirectoryAccountReferenceHint {
     return Intl.message(
-      'Add the account number, customer ID, or tenancy reference',
+      'Add the account number or customer ID',
       name: 'houseDirectoryAccountReferenceHint',
       desc: '',
       args: [],
@@ -6968,16 +6908,6 @@ class S {
     );
   }
 
-  /// `Default`
-  String get houseDirectoryReminderOffsetUnitNone {
-    return Intl.message(
-      'Default',
-      name: 'houseDirectoryReminderOffsetUnitNone',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Notes`
   String get houseDirectoryNotes {
     return Intl.message(
@@ -6988,10 +6918,10 @@ class S {
     );
   }
 
-  /// `Add anything helpful, like billing dates, plan details, or contact steps`
+  /// `Add helpful details, like billing dates or contact steps`
   String get houseDirectoryNotesHint {
     return Intl.message(
-      'Add anything helpful, like billing dates, plan details, or contact steps',
+      'Add helpful details, like billing dates or contact steps',
       name: 'houseDirectoryNotesHint',
       desc: '',
       args: [],
@@ -7008,61 +6938,51 @@ class S {
     );
   }
 
-  /// `Name the link so everyone knows what it opens`
-  String get houseDirectoryLinkTitleHint {
+  /// `Name the note so everyone knows what it covers`
+  String get houseDirectoryNoteTitleHint {
     return Intl.message(
-      'Name the link so everyone knows what it opens',
-      name: 'houseDirectoryLinkTitleHint',
+      'Name the note so everyone knows what it covers',
+      name: 'houseDirectoryNoteTitleHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `URL`
-  String get houseDirectoryUrlLabel {
+  /// `Details`
+  String get houseDirectoryNoteDetailsLabel {
     return Intl.message(
-      'URL',
-      name: 'houseDirectoryUrlLabel',
+      'Details',
+      name: 'houseDirectoryNoteDetailsLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Paste the full web address for the portal or resource`
-  String get houseDirectoryUrlHint {
+  /// `Add clear details for the home`
+  String get houseDirectoryNoteDetailsHint {
     return Intl.message(
-      'Paste the full web address for the portal or resource',
-      name: 'houseDirectoryUrlHint',
+      'Add clear details for the home',
+      name: 'houseDirectoryNoteDetailsHint',
       desc: '',
       args: [],
     );
   }
 
-  /// `Tag`
-  String get houseDirectoryTagLabel {
+  /// `Reference URL`
+  String get houseDirectoryNoteUrlLabel {
     return Intl.message(
-      'Tag',
-      name: 'houseDirectoryTagLabel',
+      'Reference URL',
+      name: 'houseDirectoryNoteUrlLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Custom tag`
-  String get houseDirectoryCustomTag {
+  /// `Optional. Paste a related web address if this note points to one`
+  String get houseDirectoryNoteUrlHint {
     return Intl.message(
-      'Custom tag',
-      name: 'houseDirectoryCustomTag',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Add a short label if none of the preset tags fit`
-  String get houseDirectoryCustomTagHint {
-    return Intl.message(
-      'Add a short label if none of the preset tags fit',
-      name: 'houseDirectoryCustomTagHint',
+      'Optional. Paste a related web address if this note points to one',
+      name: 'houseDirectoryNoteUrlHint',
       desc: '',
       args: [],
     );
@@ -7118,11 +7038,11 @@ class S {
     );
   }
 
-  /// `Enter a title and URL.`
-  String get houseDirectoryValidationLinkFields {
+  /// `Enter a title and details.`
+  String get houseDirectoryValidationNoteFields {
     return Intl.message(
-      'Enter a title and URL.',
-      name: 'houseDirectoryValidationLinkFields',
+      'Enter a title and details.',
+      name: 'houseDirectoryValidationNoteFields',
       desc: '',
       args: [],
     );
@@ -7133,16 +7053,6 @@ class S {
     return Intl.message(
       'Enter a valid http or https URL.',
       name: 'houseDirectoryValidationUrl',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter a custom tag.`
-  String get houseDirectoryValidationCustomTag {
-    return Intl.message(
-      'Enter a custom tag.',
-      name: 'houseDirectoryValidationCustomTag',
       desc: '',
       args: [],
     );
@@ -7178,21 +7088,31 @@ class S {
     );
   }
 
-  /// `Link saved.`
-  String get houseDirectoryLinkSaved {
+  /// `Note saved.`
+  String get houseDirectoryNoteSaved {
     return Intl.message(
-      'Link saved.',
-      name: 'houseDirectoryLinkSaved',
+      'Note saved.',
+      name: 'houseDirectoryNoteSaved',
       desc: '',
       args: [],
     );
   }
 
-  /// `Link archived.`
-  String get houseDirectoryLinkArchived {
+  /// `Note archived.`
+  String get houseDirectoryNoteArchived {
     return Intl.message(
-      'Link archived.',
-      name: 'houseDirectoryLinkArchived',
+      'Note archived.',
+      name: 'houseDirectoryNoteArchived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Photo attached.`
+  String get houseDirectoryNotePhotoAttached {
+    return Intl.message(
+      'Photo attached.',
+      name: 'houseDirectoryNotePhotoAttached',
       desc: '',
       args: [],
     );

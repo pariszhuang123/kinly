@@ -7,8 +7,8 @@ enum HouseDirectoryNotice {
   wifiSaved,
   serviceSaved,
   serviceArchived,
-  linkSaved,
-  linkArchived,
+  noteSaved,
+  noteArchived,
   reminderAcknowledged,
   reminderDismissed,
   actionFailed,
@@ -19,7 +19,7 @@ class HouseDirectoryState extends Equatable {
     required this.status,
     required this.isOwner,
     required this.services,
-    required this.links,
+    required this.notes,
     required this.reminders,
     this.wifi,
     this.notice,
@@ -32,7 +32,7 @@ class HouseDirectoryState extends Equatable {
       status: HouseDirectoryStatus.initial,
       isOwner: isOwner,
       services: const [],
-      links: const [],
+      notes: const [],
       reminders: const [],
     );
   }
@@ -41,7 +41,7 @@ class HouseDirectoryState extends Equatable {
   final bool isOwner;
   final HouseDirectoryWifi? wifi;
   final List<HouseDirectoryService> services;
-  final List<HouseDirectoryLink> links;
+  final List<HouseDirectoryNote> notes;
   final List<HouseDirectoryReminder> reminders;
   final HouseDirectoryNotice? notice;
   final String? errorMessage;
@@ -58,7 +58,7 @@ class HouseDirectoryState extends Equatable {
   bool get hasContent =>
       wifi != null ||
       services.isNotEmpty ||
-      links.isNotEmpty ||
+      notes.isNotEmpty ||
       reminders.isNotEmpty;
   List<HouseDirectoryService> get rentServices =>
       services
@@ -78,7 +78,7 @@ class HouseDirectoryState extends Equatable {
     bool? isOwner,
     Object? wifi = _unset,
     List<HouseDirectoryService>? services,
-    List<HouseDirectoryLink>? links,
+    List<HouseDirectoryNote>? notes,
     List<HouseDirectoryReminder>? reminders,
     Object? notice = _unset,
     Object? errorMessage = _unset,
@@ -89,7 +89,7 @@ class HouseDirectoryState extends Equatable {
       isOwner: isOwner ?? this.isOwner,
       wifi: wifi == _unset ? this.wifi : wifi as HouseDirectoryWifi?,
       services: services ?? this.services,
-      links: links ?? this.links,
+      notes: notes ?? this.notes,
       reminders: reminders ?? this.reminders,
       notice:
           notice == _unset ? this.notice : notice as HouseDirectoryNotice?,
@@ -107,7 +107,7 @@ class HouseDirectoryState extends Equatable {
     isOwner,
     wifi,
     services,
-    links,
+    notes,
     reminders,
     notice,
     errorMessage,

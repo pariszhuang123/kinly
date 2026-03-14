@@ -40,7 +40,7 @@ void main() {
           updatedAt: now,
         ),
       ],
-      links: const [],
+      notes: const [],
     );
   }
 

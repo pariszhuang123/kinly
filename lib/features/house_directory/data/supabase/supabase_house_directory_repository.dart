@@ -115,41 +115,39 @@ class SupabaseHouseDirectoryRepository implements HouseDirectoryRepository {
   }
 
   @override
-  Future<HouseDirectoryLink> upsertLink(UpsertHouseDirectoryLinkInput input) async {
+  Future<HouseDirectoryNote> upsertNote(UpsertHouseDirectoryNoteInput input) async {
     try {
       final response = await _client.rpc(
-        'upsert_home_directory_link',
+        'upsert_home_directory_note',
         params: {
           'p_home_id': input.homeId,
-          'p_link_id': input.linkId,
+          'p_note_id': input.noteId,
           'p_title': input.title,
-          'p_url': input.url,
-          'p_tag': input.tag.wireValue,
-          'p_custom_tag': input.customTag,
-          'p_start_date': _date(input.startDate),
-          'p_end_date': _date(input.endDate),
+          'p_details': input.details,
+          'p_reference_url': input.referenceUrl,
+          'p_photo_path': input.photoPath,
         },
       );
       final map = _asMap(response);
-      final link = map['link'];
-      if (link is! Map) {
-        throw const FormatException('Missing link payload');
+      final note = map['note'];
+      if (note is! Map) {
+        throw const FormatException('Missing note payload');
       }
-      return HouseDirectoryLink.fromJson(link.cast<String, dynamic>());
+      return HouseDirectoryNote.fromJson(note.cast<String, dynamic>());
     } catch (error) {
       throw SupabaseErrorMapper.mapHouseDirectory(error);
     }
   }
 
   @override
-  Future<void> archiveLink({
+  Future<void> archiveNote({
     required String homeId,
-    required String linkId,
+    required String noteId,
   }) async {
     try {
       await _client.rpc(
-        'archive_home_directory_link',
-        params: {'p_home_id': homeId, 'p_link_id': linkId},
+        'archive_home_directory_note',
+        params: {'p_home_id': homeId, 'p_note_id': noteId},
       );
     } catch (error) {
       throw SupabaseErrorMapper.mapHouseDirectory(error);

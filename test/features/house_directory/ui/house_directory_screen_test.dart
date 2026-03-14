@@ -140,7 +140,7 @@ HouseDirectoryState _buildState({required bool isOwner}) {
       updatedAt: now,
     ),
     services: const [],
-    links: const [],
+    notes: const [],
     reminders: const [],
   );
 }

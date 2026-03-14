@@ -409,7 +409,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "homeVibeTitle": MessageLookupByLibrary.simpleMessage("Home Vibe"),
     "houseDirectoryAccountReference": m30,
     "houseDirectoryAccountReferenceHint": MessageLookupByLibrary.simpleMessage(
-      "Add the account number, customer ID, or tenancy reference",
+      "Add the account number or customer ID",
     ),
     "houseDirectoryAccountReferenceLabel": MessageLookupByLibrary.simpleMessage(
       "Account reference",
@@ -417,66 +417,73 @@ class MessageLookup extends MessageLookupByLibrary {
     "houseDirectoryActionFailed": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t save those changes.",
     ),
-    "houseDirectoryAddLink": MessageLookupByLibrary.simpleMessage("Add link"),
+    "houseDirectoryAddNote": MessageLookupByLibrary.simpleMessage("Add note"),
     "houseDirectoryAddService": MessageLookupByLibrary.simpleMessage(
       "Add service",
     ),
     "houseDirectoryAddWifi": MessageLookupByLibrary.simpleMessage("Add wifi"),
-    "houseDirectoryCopySsid": MessageLookupByLibrary.simpleMessage("Copy SSID"),
     "houseDirectoryCustomLabel": MessageLookupByLibrary.simpleMessage(
       "Custom label",
     ),
     "houseDirectoryCustomLabelHint": MessageLookupByLibrary.simpleMessage(
       "Use a clear name like cleaner, parking, or storage",
     ),
-    "houseDirectoryCustomTag": MessageLookupByLibrary.simpleMessage(
-      "Custom tag",
-    ),
-    "houseDirectoryCustomTagHint": MessageLookupByLibrary.simpleMessage(
-      "Add a short label if none of the preset tags fit",
-    ),
     "houseDirectoryDateUnknown": MessageLookupByLibrary.simpleMessage(
       "Unknown",
     ),
     "houseDirectoryDelete": MessageLookupByLibrary.simpleMessage("Archive"),
     "houseDirectoryEdit": MessageLookupByLibrary.simpleMessage("Edit"),
-    "houseDirectoryEditLink": MessageLookupByLibrary.simpleMessage("Edit link"),
+    "houseDirectoryEditNote": MessageLookupByLibrary.simpleMessage("Edit note"),
     "houseDirectoryEditService": MessageLookupByLibrary.simpleMessage(
       "Edit service",
     ),
     "houseDirectoryEditWifi": MessageLookupByLibrary.simpleMessage("Edit wifi"),
     "houseDirectoryEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "Save wifi, rent, services, and links here.",
+      "Save wifi, rent, services, and house notes here.",
     ),
     "houseDirectoryEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Shared home details live here.",
     ),
     "houseDirectoryEndDate": MessageLookupByLibrary.simpleMessage("End date"),
-    "houseDirectoryLinkArchived": MessageLookupByLibrary.simpleMessage(
-      "Link archived.",
-    ),
     "houseDirectoryLinkLabel": MessageLookupByLibrary.simpleMessage(
       "Provider link",
-    ),
-    "houseDirectoryLinkOther": MessageLookupByLibrary.simpleMessage("Other"),
-    "houseDirectoryLinkSaved": MessageLookupByLibrary.simpleMessage(
-      "Link saved.",
-    ),
-    "houseDirectoryLinkTitleHint": MessageLookupByLibrary.simpleMessage(
-      "Name the link so everyone knows what it opens",
-    ),
-    "houseDirectoryLinksEmpty": MessageLookupByLibrary.simpleMessage(
-      "No links added yet.",
-    ),
-    "houseDirectoryLinksTitle": MessageLookupByLibrary.simpleMessage(
-      "Key links",
     ),
     "houseDirectoryLoadError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t load House directory.",
     ),
+    "houseDirectoryNoteArchived": MessageLookupByLibrary.simpleMessage(
+      "Note archived.",
+    ),
+    "houseDirectoryNoteDetailsHint": MessageLookupByLibrary.simpleMessage(
+      "Add clear details for the home",
+    ),
+    "houseDirectoryNoteDetailsLabel": MessageLookupByLibrary.simpleMessage(
+      "Details",
+    ),
+    "houseDirectoryNotePhotoAttached": MessageLookupByLibrary.simpleMessage(
+      "Photo attached.",
+    ),
+    "houseDirectoryNoteSaved": MessageLookupByLibrary.simpleMessage(
+      "Note saved.",
+    ),
+    "houseDirectoryNoteTitleHint": MessageLookupByLibrary.simpleMessage(
+      "Name the note so everyone knows what it covers",
+    ),
+    "houseDirectoryNoteUrlHint": MessageLookupByLibrary.simpleMessage(
+      "Optional. Paste a related web address if this note points to one",
+    ),
+    "houseDirectoryNoteUrlLabel": MessageLookupByLibrary.simpleMessage(
+      "Reference URL",
+    ),
     "houseDirectoryNotes": MessageLookupByLibrary.simpleMessage("Notes"),
+    "houseDirectoryNotesEmpty": MessageLookupByLibrary.simpleMessage(
+      "No notes added yet.",
+    ),
     "houseDirectoryNotesHint": MessageLookupByLibrary.simpleMessage(
-      "Add anything helpful, like billing dates, plan details, or contact steps",
+      "Add helpful details, like billing dates or contact steps",
+    ),
+    "houseDirectoryNotesTitle": MessageLookupByLibrary.simpleMessage(
+      "House notes",
     ),
     "houseDirectoryOpenLink": MessageLookupByLibrary.simpleMessage("Open link"),
     "houseDirectoryOpenLinkError": MessageLookupByLibrary.simpleMessage(
@@ -489,7 +496,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Password",
     ),
     "houseDirectoryProviderHint": MessageLookupByLibrary.simpleMessage(
-      "Who manages this service, like your power or internet company",
+      "Who runs this service, like your power company",
     ),
     "houseDirectoryProviderLabel": MessageLookupByLibrary.simpleMessage(
       "Provider name",
@@ -510,13 +517,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "houseDirectoryReminderOffsetUnit": MessageLookupByLibrary.simpleMessage(
       "Offset unit",
     ),
-    "houseDirectoryReminderOffsetUnitNone":
-        MessageLookupByLibrary.simpleMessage("Default"),
-    "houseDirectoryRentEmpty": MessageLookupByLibrary.simpleMessage(
-      "No rent details added yet.",
-    ),
     "houseDirectoryRentTitle": MessageLookupByLibrary.simpleMessage("Rent"),
-    "houseDirectoryRetry": MessageLookupByLibrary.simpleMessage("Retry"),
     "houseDirectorySave": MessageLookupByLibrary.simpleMessage("Save"),
     "houseDirectoryServiceArchived": MessageLookupByLibrary.simpleMessage(
       "Service archived.",
@@ -534,34 +535,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "houseDirectoryServicesTitle": MessageLookupByLibrary.simpleMessage(
       "Utilities and services",
     ),
-    "houseDirectorySsidCopied": MessageLookupByLibrary.simpleMessage(
-      "SSID copied.",
-    ),
     "houseDirectorySsidLabel": MessageLookupByLibrary.simpleMessage("SSID"),
     "houseDirectoryStartDate": MessageLookupByLibrary.simpleMessage(
       "Start date",
     ),
-    "houseDirectoryTagLabel": MessageLookupByLibrary.simpleMessage("Tag"),
     "houseDirectoryTermRange": m32,
     "houseDirectoryTitle": MessageLookupByLibrary.simpleMessage(
       "House directory",
     ),
     "houseDirectoryTitleLabel": MessageLookupByLibrary.simpleMessage("Title"),
-    "houseDirectoryUrlHint": MessageLookupByLibrary.simpleMessage(
-      "Paste the full web address for the portal or resource",
-    ),
-    "houseDirectoryUrlLabel": MessageLookupByLibrary.simpleMessage("URL"),
     "houseDirectoryValidationCustomLabel": MessageLookupByLibrary.simpleMessage(
       "Enter a custom label.",
-    ),
-    "houseDirectoryValidationCustomTag": MessageLookupByLibrary.simpleMessage(
-      "Enter a custom tag.",
     ),
     "houseDirectoryValidationDateRange": MessageLookupByLibrary.simpleMessage(
       "Pick an end date after the start date.",
     ),
-    "houseDirectoryValidationLinkFields": MessageLookupByLibrary.simpleMessage(
-      "Enter a title and URL.",
+    "houseDirectoryValidationNoteFields": MessageLookupByLibrary.simpleMessage(
+      "Enter a title and details.",
     ),
     "houseDirectoryValidationProvider": MessageLookupByLibrary.simpleMessage(
       "Enter a provider name.",
@@ -573,9 +563,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "houseDirectoryValidationUrl": MessageLookupByLibrary.simpleMessage(
       "Enter a valid http or https URL.",
-    ),
-    "houseDirectoryWifiMaskedHint": MessageLookupByLibrary.simpleMessage(
-      "Password stays hidden in the app. Expand to copy the QR payload.",
     ),
     "houseDirectoryWifiMemberEmpty": MessageLookupByLibrary.simpleMessage(
       "No wifi details have been added yet.",
@@ -781,7 +768,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Couldn\'t load Home Hub.",
     ),
     "hubHouseDirectorySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Wifi, services, links, and renewal reminders.",
+      "Wifi, services, notes, and renewal reminders.",
     ),
     "hubHouseDirectoryTitle": MessageLookupByLibrary.simpleMessage(
       "House directory",

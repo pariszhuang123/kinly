@@ -21,8 +21,8 @@ class HouseDirectoryBloc
     on<HouseDirectoryWifiSaved>(_onWifiSaved);
     on<HouseDirectoryServiceSaved>(_onServiceSaved);
     on<HouseDirectoryServiceArchived>(_onServiceArchived);
-    on<HouseDirectoryLinkSaved>(_onLinkSaved);
-    on<HouseDirectoryLinkArchived>(_onLinkArchived);
+    on<HouseDirectoryNoteSaved>(_onNoteSaved);
+    on<HouseDirectoryNoteArchived>(_onNoteArchived);
     on<HouseDirectoryReminderAcknowledged>(_onReminderAcknowledged);
     on<HouseDirectoryReminderDismissed>(_onReminderDismissed);
 
@@ -83,29 +83,29 @@ class HouseDirectoryBloc
     );
   }
 
-  Future<void> _onLinkSaved(
-    HouseDirectoryLinkSaved event,
+  Future<void> _onNoteSaved(
+    HouseDirectoryNoteSaved event,
     Emitter<HouseDirectoryState> emit,
   ) async {
     await _runMutation(
       emit,
-      action: () => _repository.upsertLink(event.input),
-      successNotice: HouseDirectoryNotice.linkSaved,
+      action: () => _repository.upsertNote(event.input),
+      successNotice: HouseDirectoryNotice.noteSaved,
     );
   }
 
-  Future<void> _onLinkArchived(
-    HouseDirectoryLinkArchived event,
+  Future<void> _onNoteArchived(
+    HouseDirectoryNoteArchived event,
     Emitter<HouseDirectoryState> emit,
   ) async {
     await _runMutation(
       emit,
       action:
-          () => _repository.archiveLink(
+          () => _repository.archiveNote(
             homeId: _homeId,
-            linkId: event.linkId,
+            noteId: event.noteId,
           ),
-      successNotice: HouseDirectoryNotice.linkArchived,
+      successNotice: HouseDirectoryNotice.noteArchived,
     );
   }
 
@@ -166,7 +166,7 @@ class HouseDirectoryBloc
           status: HouseDirectoryStatus.success,
           wifi: wifi,
           services: content.services,
-          links: content.links,
+          notes: content.notes,
           reminders: reminders,
           isRefreshing: false,
           notice: null,
@@ -210,7 +210,7 @@ class HouseDirectoryBloc
           status: HouseDirectoryStatus.success,
           wifi: wifi,
           services: content.services,
-          links: content.links,
+          notes: content.notes,
           reminders: reminders,
           notice: successNotice,
           errorMessage: null,

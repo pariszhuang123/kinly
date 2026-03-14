@@ -42,22 +42,22 @@ class HouseDirectoryServiceArchived extends HouseDirectoryEvent {
   List<Object?> get props => [serviceId];
 }
 
-class HouseDirectoryLinkSaved extends HouseDirectoryEvent {
-  const HouseDirectoryLinkSaved(this.input);
+class HouseDirectoryNoteSaved extends HouseDirectoryEvent {
+  const HouseDirectoryNoteSaved(this.input);
 
-  final UpsertHouseDirectoryLinkInput input;
+  final UpsertHouseDirectoryNoteInput input;
 
   @override
   List<Object?> get props => [input];
 }
 
-class HouseDirectoryLinkArchived extends HouseDirectoryEvent {
-  const HouseDirectoryLinkArchived(this.linkId);
+class HouseDirectoryNoteArchived extends HouseDirectoryEvent {
+  const HouseDirectoryNoteArchived(this.noteId);
 
-  final String linkId;
+  final String noteId;
 
   @override
-  List<Object?> get props => [linkId];
+  List<Object?> get props => [noteId];
 }
 
 class HouseDirectoryReminderAcknowledged extends HouseDirectoryEvent {

@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:kinly/contracts/house_directory/models.dart';
+import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/buttons/kinly_outlined_button.dart';
-import 'package:kinly/core/ui/kinly_list_tile.dart';
 import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
@@ -116,6 +116,7 @@ class HouseDirectoryWifiCardContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
     if (wifi == null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +167,7 @@ class HouseDirectoryWifiCardContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsetsDirectional.all(spacing.xs),
               child: QrImageView(
                 data: wifi!.qrPayload,
                 version: QrVersions.auto,
@@ -240,16 +241,16 @@ class HouseDirectoryServiceCard extends StatelessWidget {
   }
 }
 
-class HouseDirectoryLinkCard extends StatelessWidget {
-  const HouseDirectoryLinkCard({
+class HouseDirectoryNoteCard extends StatelessWidget {
+  const HouseDirectoryNoteCard({
     super.key,
-    required this.link,
+    required this.note,
     required this.isOwner,
     required this.onEdit,
     required this.onArchive,
   });
 
-  final HouseDirectoryLink link;
+  final HouseDirectoryNote note;
   final bool isOwner;
   final VoidCallback onEdit;
   final VoidCallback onArchive;
@@ -257,14 +258,32 @@ class HouseDirectoryLinkCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final theme = KinlyThemeAccess.of(context);
     return HouseDirectorySurfaceCard(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          KinlyListTile(
-            title: link.title,
-            subtitle: _linkLabel(s, link),
-            onTap: () => launchHouseDirectoryUrl(context, link.url),
-          ),
+          Text(note.title, style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Text(note.details, style: theme.textTheme.bodyMedium),
+          if (note.referenceUrl?.isNotEmpty == true) ...[
+            const SizedBox(height: 12),
+            KinlyOutlinedButton.text(
+              onPressed: () => launchHouseDirectoryUrl(
+                context,
+                note.referenceUrl!,
+              ),
+              label: s.houseDirectoryOpenLink,
+              compact: true,
+            ),
+          ],
+          if (note.photoPath?.isNotEmpty == true) ...[
+            const SizedBox(height: 8),
+            Text(
+              s.houseDirectoryNotePhotoAttached,
+              style: theme.textTheme.bodySmall,
+            ),
+          ],
           if (isOwner) ...[
             const SizedBox(height: 12),
             HouseDirectoryOwnerActions(
@@ -358,11 +377,4 @@ List<String> _serviceDetails(
     );
   }
   return details;
-}
-
-String _linkLabel(S s, HouseDirectoryLink link) {
-  if (link.tag == HouseDirectoryLinkTag.other) {
-    return link.customTag ?? s.houseDirectoryLinkOther;
-  }
-  return link.tag.wireValue;
 }

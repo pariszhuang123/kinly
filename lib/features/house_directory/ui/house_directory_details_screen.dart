@@ -38,8 +38,12 @@ class HouseDirectoryDetailsScreen extends StatelessWidget {
         state.errorMessage ?? s.houseDirectoryLoadError,
       HouseDirectoryNotice.serviceSaved => s.houseDirectoryServiceSaved,
       HouseDirectoryNotice.serviceArchived => s.houseDirectoryServiceArchived,
-      HouseDirectoryNotice.linkSaved => s.houseDirectoryLinkSaved,
-      HouseDirectoryNotice.linkArchived => s.houseDirectoryLinkArchived,
+      HouseDirectoryNotice.noteSaved => s.houseDirectoryNoteSaved,
+      HouseDirectoryNotice.noteArchived => s.houseDirectoryNoteArchived,
+      HouseDirectoryNotice.reminderAcknowledged =>
+        s.houseDirectoryReminderAcknowledged,
+      HouseDirectoryNotice.reminderDismissed =>
+        s.houseDirectoryReminderDismissed,
       HouseDirectoryNotice.actionFailed =>
         state.errorMessage ?? s.houseDirectoryActionFailed,
       _ => null,
@@ -90,7 +94,7 @@ class _DetailsBody extends StatelessWidget {
                   useTwoColumns: useTwoColumns,
                 ),
                 const SizedBox(height: 24),
-                _LinksSection(
+                _NotesSection(
                   homeId: homeId,
                   state: state,
                   useTwoColumns: useTwoColumns,
@@ -183,8 +187,8 @@ class _ServiceSection extends StatelessWidget {
   }
 }
 
-class _LinksSection extends StatelessWidget {
-  const _LinksSection({
+class _NotesSection extends StatelessWidget {
+  const _NotesSection({
     required this.homeId,
     required this.state,
     required this.useTwoColumns,
@@ -201,24 +205,24 @@ class _LinksSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         HouseDirectorySectionHeader(
-          title: s.houseDirectoryLinksTitle,
-          actionLabel: state.isOwner ? s.houseDirectoryAddLink : null,
+          title: s.houseDirectoryNotesTitle,
+          actionLabel: state.isOwner ? s.houseDirectoryAddNote : null,
           onAction: state.isOwner ? () => _openCreateSheet(context) : null,
         ),
         const SizedBox(height: 12),
-        if (state.links.isEmpty)
-          HouseDirectorySurfaceCard(child: Text(s.houseDirectoryLinksEmpty))
+        if (state.notes.isEmpty)
+          HouseDirectorySurfaceCard(child: Text(s.houseDirectoryNotesEmpty))
         else
           _ResponsiveCardGrid(
             useTwoColumns: useTwoColumns,
             children:
-                state.links
+                state.notes
                     .map(
-                      (link) => HouseDirectoryLinkCard(
-                        link: link,
+                      (note) => HouseDirectoryNoteCard(
+                        note: note,
                         isOwner: state.isOwner,
-                        onEdit: () => _openEditSheet(context, link),
-                        onArchive: () => _archive(context, link.id),
+                        onEdit: () => _openEditSheet(context, note),
+                        onArchive: () => _archive(context, note.id),
                       ),
                     )
                     .toList(growable: false),
@@ -228,27 +232,27 @@ class _LinksSection extends StatelessWidget {
   }
 
   Future<void> _openCreateSheet(BuildContext context) async {
-    final result = await showHouseDirectoryLinkSheet(context, homeId: homeId);
+    final result = await showHouseDirectoryNoteSheet(context, homeId: homeId);
     if (result == null || !context.mounted) return;
-    context.read<HouseDirectoryBloc>().add(HouseDirectoryLinkSaved(result));
+    context.read<HouseDirectoryBloc>().add(HouseDirectoryNoteSaved(result));
   }
 
   Future<void> _openEditSheet(
     BuildContext context,
-    HouseDirectoryLink link,
+    HouseDirectoryNote note,
   ) async {
-    final result = await showHouseDirectoryLinkSheet(
+    final result = await showHouseDirectoryNoteSheet(
       context,
       homeId: homeId,
-      link: link,
+      note: note,
     );
     if (result == null || !context.mounted) return;
-    context.read<HouseDirectoryBloc>().add(HouseDirectoryLinkSaved(result));
+    context.read<HouseDirectoryBloc>().add(HouseDirectoryNoteSaved(result));
   }
 
-  void _archive(BuildContext context, String linkId) {
+  void _archive(BuildContext context, String noteId) {
     context.read<HouseDirectoryBloc>().add(
-      HouseDirectoryLinkArchived(linkId),
+      HouseDirectoryNoteArchived(noteId),
     );
   }
 }

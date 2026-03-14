@@ -16,11 +16,11 @@ abstract class HouseDirectoryRepository {
     required String serviceId,
   });
 
-  Future<HouseDirectoryLink> upsertLink(UpsertHouseDirectoryLinkInput input);
+  Future<HouseDirectoryNote> upsertNote(UpsertHouseDirectoryNoteInput input);
 
-  Future<void> archiveLink({
+  Future<void> archiveNote({
     required String homeId,
-    required String linkId,
+    required String noteId,
   });
 
   Future<List<HouseDirectoryReminder>> listDueReminders({required String homeId});
