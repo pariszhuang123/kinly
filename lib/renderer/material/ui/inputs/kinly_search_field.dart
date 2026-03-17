@@ -11,12 +11,14 @@ class KinlySearchField extends StatelessWidget {
   const KinlySearchField({
     super.key,
     required this.controller,
+    this.labelText,
     this.hintText,
     this.onChanged,
     this.onClear,
   });
 
   final TextEditingController controller;
+  final String? labelText;
   final String? hintText;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onClear;
@@ -39,6 +41,7 @@ class KinlySearchField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       decoration: InputDecoration(
+        labelText: labelText,
         hintText: hintText,
         filled: true,
         fillColor: colors.surfaceVariant,

@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a id locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -18,1855 +18,1923 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'id';
 
-  static String m0(env) => "Starting Kinly (${env})";
+  static String m0(env) => "Memulai Kinly (${env})";
 
-  static String m1(time) => "Scheduled for ${time}";
+  static String m1(time) => "Dijadwalkan pada ${time}";
 
-  static String m2(current) => "Demo access: ${current} of 7 taps";
+  static String m2(current) => "Akses demo: ${current} dari 7 ketukan";
 
-  static String m3(appName) => "Made with ${appName} - Together feels lighter";
+  static String m3(appName) =>
+      "Dibuat dengan ${appName} - Bersama terasa lebih ringan";
 
   static String m4(link) =>
-      "A few shoutouts from our Kinly home. Download the app: ${link}";
+      "Beberapa ucapan terima kasih dari rumah Kinly kami. Unduh aplikasinya: ${link}";
 
   static String m5(weeks) =>
-      "${Intl.plural(weeks, zero: 'This week', one: '# week ago', other: '# weeks ago')}";
+      "${Intl.plural(weeks, zero: 'Minggu ini', one: '# minggu lalu', other: '# minggu lalu')}";
 
-  static String m6(partOfDay, name) => "Good ${partOfDay}, ${name}";
+  static String m6(partOfDay, name) => "Selamat ${partOfDay}, ${name}";
 
   static String m7(answered, total) =>
-      "Based on ${answered} of ${total} members";
+      "Berdasarkan ${answered} dari ${total} anggota";
 
-  static String m30(start, end) => "${start} to ${end}";
+  static String m30(start, end) => "${start} sampai ${end}";
 
   static String m8(current, total) => "${current}/${total}";
 
   static String m9(link) =>
-      "Sharing our Kinly home pulse. Download the app: ${link}";
+      "Membagikan pulse rumah Kinly kami. Unduh aplikasinya: ${link}";
 
-  static String m10(date) => "Updated ${date}";
+  static String m10(date) => "Diperbarui ${date}";
 
   static String m11(link) =>
-      "Sharing our Kinly home vibe. Download the app: ${link}";
+      "Membagikan suasana rumah Kinly kami. Unduh aplikasinya: ${link}";
 
-  static String m12(link) => "Make shared living easier with Kinly: ${link}";
+  static String m12(link) =>
+      "Buat hidup bersama lebih mudah dengan Kinly: ${link}";
 
   static String m13(code, link) =>
-      "Join our Kinly home with this invite code: ${code}\n\nDownload Kinly: ${link}";
+      "Gabung ke rumah Kinly kami dengan kode undangan ini: ${code}\n\nUnduh Kinly: ${link}";
 
-  static String m14(code) => "Joined your home.";
+  static String m14(code) => "Berhasil bergabung ke rumahmu.";
 
-  static String m15(price) => "${price} per month";
+  static String m15(price) => "${price} per bulan";
 
   static String m16(current, total) => "${current}/${total}";
 
-  static String m17(period) => "Applies to ${period}";
+  static String m17(period) => "Berlaku untuk ${period}";
 
   static String m18(total, included, difference) =>
-      "Split doesn\'t match. Total: ${total}. Included: ${included}. Difference: ${difference}.";
+      "Pembagian tidak cocok. Total: ${total}. Termasuk: ${included}. Selisih: ${difference}.";
 
   static String m19(paidAmount, totalAmount) =>
-      "${paidAmount} of ${totalAmount} collected";
+      "${paidAmount} dari ${totalAmount} sudah terkumpul";
 
-  static String m20(paid, total) => "${paid} of ${total} paid";
+  static String m20(paid, total) => "${paid} dari ${total} sudah dibayar";
 
   static String m21(count) =>
-      "${Intl.plural(count, one: '${count} item to buy', other: '${count} items to buy')}";
+      "${Intl.plural(count, one: '${count} item untuk dibeli', other: '${count} item untuk dibeli')}";
 
-  static String m22(name) => "Hi ${name}";
+  static String m22(name) => "Hai ${name}";
 
   static String m23(count) =>
-      "See all ${Intl.plural(count, one: '(#)', other: '(#)')}";
+      "Lihat semua ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m31(date) => "Reminder for ${date}";
+  static String m31(date) => "Pengingat untuk ${date}";
 
-  static String m24(name) => "Couldn\'t complete ${name}\'s request.";
+  static String m24(name) => "Tidak dapat menyelesaikan permintaan ${name}.";
 
-  static String m25(name) => "${name} joined your home.";
+  static String m25(name) => "${name} bergabung ke rumahmu.";
 
-  static String m26(name) => "${name} joined another home.";
+  static String m26(name) => "${name} bergabung ke rumah lain.";
 
   static String m27(names) =>
-      "${names} wants to join your home. Upgrade for unlimited members.";
+      "${names} ingin bergabung ke rumahmu. Upgrade untuk anggota tanpa batas.";
 
   static String m28(count) =>
-      "${Intl.plural(count, one: '${count} payment pending', other: '${count} to settle')}";
+      "${Intl.plural(count, one: '${count} pembayaran menunggu', other: '${count} untuk diselesaikan')}";
 
   static String m29(count) =>
-      "${Intl.plural(count, one: '${count} new payment to you', other: '${count} new payments to you')}";
+      "${Intl.plural(count, one: '${count} pembayaran baru untukmu', other: '${count} pembayaran baru untukmu')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "app_title": MessageLookupByLibrary.simpleMessage("Kinly"),
     "authMembershipLoadFailed": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t refresh your home membership.",
+      "Tidak dapat memuat ulang keanggotaan rumahmu.",
     ),
     "bootstrap_initializing": m0,
-    "close": MessageLookupByLibrary.simpleMessage("Close"),
+    "close": MessageLookupByLibrary.simpleMessage("Tutup"),
     "connectionNotificationsPermissionBlocked":
         MessageLookupByLibrary.simpleMessage(
-          "Turn on notifications in your phone settings first.",
+          "Aktifkan notifikasi di pengaturan ponselmu terlebih dahulu.",
         ),
     "connectionNotificationsTimeLabel": MessageLookupByLibrary.simpleMessage(
-      "Reminder time",
+      "Waktu pengingat",
     ),
     "connectionNotificationsTimeSubtitle": m1,
     "connectionNotificationsToggleSubtitleOff":
         MessageLookupByLibrary.simpleMessage(
-          "Turn on reminders for your home.",
+          "Aktifkan pengingat untuk rumahmu.",
         ),
     "connectionNotificationsToggleSubtitleOn":
-        MessageLookupByLibrary.simpleMessage("Get one reminder each day."),
+        MessageLookupByLibrary.simpleMessage(
+          "Dapatkan satu pengingat setiap hari.",
+        ),
     "connectionNotificationsToggleTitle": MessageLookupByLibrary.simpleMessage(
-      "Daily reminders",
+      "Pengingat harian",
     ),
     "connectionSettingsGenericError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t update notification settings.",
+      "Tidak dapat memperbarui pengaturan notifikasi.",
     ),
     "connectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Control daily reminders and timing.",
+      "Atur pengingat harian dan waktunya.",
     ),
     "connectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "Notifications",
+      "Notifikasi",
     ),
     "create_failed_generic": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t create the home.",
+      "Tidak dapat membuat rumah.",
     ),
-    "demoAccess": MessageLookupByLibrary.simpleMessage("Demo Access"),
+    "demoAccess": MessageLookupByLibrary.simpleMessage("Akses Demo"),
     "demoAccessEmail": MessageLookupByLibrary.simpleMessage("Email"),
     "demoAccessError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t sign in. Check your credentials.",
+      "Tidak dapat masuk. Periksa kredensialmu.",
     ),
-    "demoAccessPassword": MessageLookupByLibrary.simpleMessage("Password"),
-    "demoAccessSubmit": MessageLookupByLibrary.simpleMessage("Sign in"),
+    "demoAccessPassword": MessageLookupByLibrary.simpleMessage("Kata sandi"),
+    "demoAccessSubmit": MessageLookupByLibrary.simpleMessage("Masuk"),
     "demoAccessTapHint": m2,
     "exploreFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "See what needs doing and who\'s doing it.",
+      "Lihat apa yang perlu dilakukan dan siapa yang melakukannya.",
     ),
     "exploreIntroSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Keep shared things clear.",
+      "Jaga hal-hal bersama tetap jelas.",
     ),
     "exploreShareSubtitle": MessageLookupByLibrary.simpleMessage(
-      "See every bill you\'ve created and track collections.",
+      "Lihat semua tagihan yang kamu buat dan pantau penagihan.",
     ),
     "exploreShoppingSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Shopping list",
+      "Daftar belanja",
     ),
     "exploreShoppingSubtitle": MessageLookupByLibrary.simpleMessage(
-      "View and manage shared shopping items.",
+      "Lihat dan kelola item belanja bersama.",
     ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
-      "Who\'s doing this?",
+      "Siapa yang mengerjakan ini?",
     ),
     "flowChoreCreateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Task created.",
+      "Tugas dibuat.",
     ),
-    "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage("Add Task"),
+    "flowChoreCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "Tambah Tugas",
+    ),
     "flowChoreDeleteButton": MessageLookupByLibrary.simpleMessage(
-      "Delete Task",
+      "Hapus Tugas",
     ),
-    "flowChoreDeleteConfirm": MessageLookupByLibrary.simpleMessage("Delete"),
+    "flowChoreDeleteConfirm": MessageLookupByLibrary.simpleMessage("Hapus"),
     "flowChoreDeleteDialogMessage": MessageLookupByLibrary.simpleMessage(
-      "This removes the task for everyone in your home.",
+      "Ini akan menghapus tugas untuk semua orang di rumahmu.",
     ),
     "flowChoreDeleteDialogTitle": MessageLookupByLibrary.simpleMessage(
-      "Delete this task?",
+      "Hapus tugas ini?",
     ),
     "flowChoreDetailCompleteButton": MessageLookupByLibrary.simpleMessage(
-      "Mark complete",
+      "Tandai selesai",
     ),
     "flowChoreDetailCompletionError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t complete this task.",
+      "Tidak dapat menyelesaikan tugas ini.",
     ),
     "flowChoreDetailCompletionSuccess": MessageLookupByLibrary.simpleMessage(
-      "Task completed.",
+      "Tugas selesai.",
     ),
     "flowChoreDetailMoreInfoTitle": MessageLookupByLibrary.simpleMessage(
-      "Helpful details",
+      "Detail tambahan",
     ),
     "flowChoreDetailTitle": MessageLookupByLibrary.simpleMessage(
-      "Task details",
+      "Detail tugas",
     ),
     "flowChoreDetailUnassigned": MessageLookupByLibrary.simpleMessage(
-      "Unassigned",
+      "Belum ditugaskan",
     ),
-    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Edit Task"),
+    "flowChoreEditTitle": MessageLookupByLibrary.simpleMessage("Edit Tugas"),
     "flowChoreErrorAssigneeNotMember": MessageLookupByLibrary.simpleMessage(
-      "That person isn\'t part of this home right now.",
+      "Orang itu bukan bagian dari rumah ini saat ini.",
     ),
     "flowChoreErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "You don\'t have permission to change this task.",
+      "Kamu tidak punya izin untuk mengubah tugas ini.",
     ),
     "flowChoreErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t save this task.",
+      "Tidak dapat menyimpan tugas ini.",
     ),
     "flowChoreErrorInvalidPhoto": MessageLookupByLibrary.simpleMessage(
-      "That photo doesn\'t belong to this home.",
+      "Foto itu bukan milik rumah ini.",
     ),
     "flowChoreErrorInvalidStart": MessageLookupByLibrary.simpleMessage(
-      "Choose a valid start date.",
+      "Pilih tanggal mulai yang valid.",
     ),
     "flowChoreErrorInvalidState": MessageLookupByLibrary.simpleMessage(
-      "This task is not editable right now.",
+      "Tugas ini tidak dapat diedit saat ini.",
     ),
     "flowChoreErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "You\'ve reached the free limit for active tasks. Upgrade for more.",
+      "Kamu sudah mencapai batas gratis untuk tugas aktif. Upgrade untuk lebih banyak.",
     ),
     "flowChoreErrorPaywallMediaCap": MessageLookupByLibrary.simpleMessage(
-      "You\'ve reached the free limit for task photos. Upgrade for more.",
+      "Kamu sudah mencapai batas gratis untuk foto tugas. Upgrade untuk lebih banyak.",
     ),
     "flowChoreExpectationPhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "Reference photo",
+      "Foto referensi",
     ),
     "flowChoreHowToHint": MessageLookupByLibrary.simpleMessage(
-      "Add a link if there\'s a specific way",
+      "Tambahkan tautan jika ada cara tertentu",
     ),
     "flowChoreHowToLabel": MessageLookupByLibrary.simpleMessage(
-      "How to do it (optional)",
+      "Cara melakukannya (opsional)",
     ),
     "flowChoreHowToLaunchError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t open that link.",
+      "Tidak dapat membuka tautan itu.",
     ),
     "flowChoreLoadError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load this task.",
+      "Tidak dapat memuat tugas ini.",
     ),
     "flowChoreNameHint": MessageLookupByLibrary.simpleMessage(
-      "e.g. Bin night, clean the fridge, water plants",
+      "mis. malam buang sampah, bersihkan kulkas, siram tanaman",
     ),
     "flowChoreNameLabel": MessageLookupByLibrary.simpleMessage(
-      "What needs to be done?",
+      "Apa yang perlu dilakukan?",
     ),
     "flowChoreNotesHint": MessageLookupByLibrary.simpleMessage(
-      "Anything that helps others do this",
+      "Apa pun yang membantu orang lain melakukannya",
     ),
     "flowChoreNotesLabel": MessageLookupByLibrary.simpleMessage(
-      "Why it matters",
+      "Kenapa ini penting",
     ),
     "flowChorePhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "What good looks like",
+      "Seperti apa hasil yang baik",
     ),
     "flowChorePhotoLoadError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load photo.",
+      "Tidak dapat memuat foto.",
     ),
     "flowChorePhotoPermissionDenied": MessageLookupByLibrary.simpleMessage(
-      "Allow camera access to take a photo.",
+      "Izinkan akses kamera untuk mengambil foto.",
     ),
     "flowChorePhotoPermissionOpenSettings":
-        MessageLookupByLibrary.simpleMessage("Open settings"),
+        MessageLookupByLibrary.simpleMessage("Buka pengaturan"),
     "flowChorePhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
-      "Add a photo to keep everyone aligned",
+      "Tambahkan foto agar semua tetap selaras",
     ),
     "flowChorePhotoUploadError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t upload the photo.",
+      "Tidak dapat mengunggah foto.",
     ),
     "flowChoreRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
-      "How often does this happen?",
+      "Seberapa sering ini terjadi?",
     ),
-    "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage("One time"),
-    "flowChoreRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "flowChoreRecurrenceNone": MessageLookupByLibrary.simpleMessage(
+      "Satu kali",
+    ),
+    "flowChoreRetry": MessageLookupByLibrary.simpleMessage("Coba lagi"),
     "flowChoreStartLabel": MessageLookupByLibrary.simpleMessage(
-      "When will it happen?",
+      "Kapan ini akan dilakukan?",
     ),
-    "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage(
-      "Create task",
-    ),
+    "flowChoreSubmitCreate": MessageLookupByLibrary.simpleMessage("Buat tugas"),
     "flowChoreSubmitUpdate": MessageLookupByLibrary.simpleMessage(
-      "Save changes",
+      "Simpan perubahan",
     ),
     "flowChoreUpdateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Task updated.",
+      "Tugas diperbarui.",
     ),
     "flowChoreValidationAssignee": MessageLookupByLibrary.simpleMessage(
-      "Choose someone.",
+      "Pilih seseorang.",
     ),
     "flowChoreValidationDate": MessageLookupByLibrary.simpleMessage(
-      "Choose a date within the next year.",
+      "Pilih tanggal dalam satu tahun ke depan.",
     ),
     "flowChoreValidationHowToUrl": MessageLookupByLibrary.simpleMessage(
-      "Enter a valid link starting with http or https.",
+      "Masukkan tautan valid yang dimulai dengan http atau https.",
     ),
     "flowChoreValidationName": MessageLookupByLibrary.simpleMessage(
-      "Enter a task name.",
+      "Masukkan nama tugas.",
     ),
-    "flowChoreViewTitle": MessageLookupByLibrary.simpleMessage("View Task"),
-    "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("Draft"),
+    "flowChoreViewTitle": MessageLookupByLibrary.simpleMessage("Lihat Tugas"),
+    "flowListDraftLabel": MessageLookupByLibrary.simpleMessage("Draf"),
     "flowListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Tasks keep everyone aligned.",
+      "Tugas membantu semua orang tetap selaras.",
     ),
     "flowListEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "Nothing here yet",
+      "Belum ada apa-apa di sini",
     ),
     "flowListError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load tasks. Pull to refresh.",
+      "Tidak dapat memuat tugas. Tarik untuk menyegarkan.",
     ),
     "flowListOverdueLabel": MessageLookupByLibrary.simpleMessage(
-      "Needs attention",
+      "Perlu perhatian",
     ),
-    "flowListTabCurrent": MessageLookupByLibrary.simpleMessage("Current"),
-    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("Upcoming"),
+    "flowListTabCurrent": MessageLookupByLibrary.simpleMessage("Saat ini"),
+    "flowListTabFuture": MessageLookupByLibrary.simpleMessage("Akan datang"),
     "force_update_body": MessageLookupByLibrary.simpleMessage(
-      "This version of Kinly is no longer supported. Update to continue.",
+      "Versi Kinly ini sudah tidak didukung. Perbarui untuk melanjutkan.",
     ),
-    "force_update_button": MessageLookupByLibrary.simpleMessage("Update Kinly"),
-    "force_update_title": MessageLookupByLibrary.simpleMessage("Update needed"),
-    "friendDefaultName": MessageLookupByLibrary.simpleMessage("friend"),
+    "force_update_button": MessageLookupByLibrary.simpleMessage(
+      "Perbarui Kinly",
+    ),
+    "force_update_title": MessageLookupByLibrary.simpleMessage(
+      "Pembaruan diperlukan",
+    ),
+    "friendDefaultName": MessageLookupByLibrary.simpleMessage("teman"),
     "gratitudeWallEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Add a shoutout from this week.",
+      "Tambahkan ucapan terima kasih dari minggu ini.",
     ),
     "gratitudeWallEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No shoutouts yet",
+      "Belum ada ucapan terima kasih",
     ),
     "gratitudeWallErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load shoutouts right now.",
+      "Tidak dapat memuat ucapan terima kasih saat ini.",
     ),
     "gratitudeWallFooter": m3,
-    "gratitudeWallHouseTab": MessageLookupByLibrary.simpleMessage("House"),
+    "gratitudeWallHouseTab": MessageLookupByLibrary.simpleMessage("Rumah"),
     "gratitudeWallPersonalSummary": MessageLookupByLibrary.simpleMessage(
-      "A private place for quick thanks.",
+      "Tempat pribadi untuk ucapan terima kasih singkat.",
     ),
-    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage("Mine"),
+    "gratitudeWallPersonalTab": MessageLookupByLibrary.simpleMessage(
+      "Milik saya",
+    ),
     "gratitudeWallPersonalTitle": MessageLookupByLibrary.simpleMessage(
-      "My Shoutouts",
+      "Ucapan Terima Kasih Saya",
     ),
-    "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("Try again"),
-    "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage("Share"),
+    "gratitudeWallRetry": MessageLookupByLibrary.simpleMessage("Coba lagi"),
+    "gratitudeWallShareCta": MessageLookupByLibrary.simpleMessage("Bagikan"),
     "gratitudeWallShareError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t share right now.",
+      "Tidak dapat membagikan sekarang.",
     ),
     "gratitudeWallShareMessage": m4,
     "gratitudeWallShareTitle": MessageLookupByLibrary.simpleMessage(
-      "House shoutouts",
+      "Ucapan terima kasih rumah",
     ),
-    "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Homes"),
+    "gratitudeWallStatsHomes": MessageLookupByLibrary.simpleMessage("Rumah"),
     "gratitudeWallStatsMentions": MessageLookupByLibrary.simpleMessage(
-      "Shoutouts",
+      "Ucapan terima kasih",
     ),
-    "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage("People"),
+    "gratitudeWallStatsPeople": MessageLookupByLibrary.simpleMessage("Orang"),
     "gratitudeWallWeeksAgo": m5,
     "greetingPartOfDay": m6,
     "harmonyCommentHint": MessageLookupByLibrary.simpleMessage(
-      "Add context if helpful",
+      "Tambahkan konteks jika membantu",
     ),
     "harmonyCommentLabel": MessageLookupByLibrary.simpleMessage(
-      "Optional note",
+      "Catatan opsional",
     ),
     "harmonyErrorAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
-      "You\'ve already submitted this week.",
+      "Kamu sudah mengirim minggu ini.",
     ),
     "harmonyErrorCommentRequiredForMention":
         MessageLookupByLibrary.simpleMessage(
-          "Add a short note before sending this mention.",
+          "Tambahkan catatan singkat sebelum mengirim sebutan ini.",
         ),
     "harmonyErrorCommentRequiredForPublicWall":
         MessageLookupByLibrary.simpleMessage(
-          "Add a short note before posting this shoutout.",
+          "Tambahkan catatan singkat sebelum memposting ucapan terima kasih ini.",
         ),
     "harmonyErrorComplaintNeedsSentence": MessageLookupByLibrary.simpleMessage(
-      "Add a clear sentence.",
+      "Tambahkan kalimat yang jelas.",
     ),
     "harmonyErrorComplaintTooBrief": MessageLookupByLibrary.simpleMessage(
-      "Write a short sentence so it\'s clear.",
+      "Tulis kalimat singkat agar jelas.",
     ),
     "harmonyErrorComplaintTooShort": MessageLookupByLibrary.simpleMessage(
-      "Add a bit more detail.",
+      "Tambahkan sedikit detail lagi.",
     ),
     "harmonyErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "Weekly feedback isn\'t available right now.",
+      "Umpan balik mingguan tidak tersedia saat ini.",
     ),
     "harmonyErrorSingleMentionRequired": MessageLookupByLibrary.simpleMessage(
-      "Choose one person for this note.",
+      "Pilih satu orang untuk catatan ini.",
     ),
     "harmonyErrorUnknown": MessageLookupByLibrary.simpleMessage(
-      "Something went wrong.",
+      "Terjadi kesalahan.",
     ),
     "harmonyFeedbackSingleHousemateHint": MessageLookupByLibrary.simpleMessage(
-      "Type @ to mention 1 housemate.",
+      "Ketik @ untuk menyebut 1 teman serumah.",
     ),
-    "harmonyMoodCloudy": MessageLookupByLibrary.simpleMessage("Cloudy"),
+    "harmonyMoodCloudy": MessageLookupByLibrary.simpleMessage("Berawan"),
     "harmonyMoodPartiallySunny": MessageLookupByLibrary.simpleMessage(
-      "Partly sunny",
+      "Cerah sebagian",
     ),
-    "harmonyMoodRainy": MessageLookupByLibrary.simpleMessage("Rainy"),
-    "harmonyMoodSunny": MessageLookupByLibrary.simpleMessage("Sunny"),
+    "harmonyMoodRainy": MessageLookupByLibrary.simpleMessage("Hujan"),
+    "harmonyMoodSunny": MessageLookupByLibrary.simpleMessage("Cerah"),
     "harmonyMoodThunderstorm": MessageLookupByLibrary.simpleMessage(
-      "Thunderstorm",
+      "Badai petir",
     ),
     "harmonyQuestion": MessageLookupByLibrary.simpleMessage(
-      "What went well or needs adjusting this week?",
+      "Apa yang berjalan baik atau perlu disesuaikan minggu ini?",
     ),
     "harmonyShareLabel": MessageLookupByLibrary.simpleMessage(
-      "Visible to everyone in the home",
+      "Terlihat oleh semua orang di rumah",
     ),
-    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Save"),
-    "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage("Saved"),
+    "harmonySubmitCta": MessageLookupByLibrary.simpleMessage("Simpan"),
+    "harmonySubmitSuccess": MessageLookupByLibrary.simpleMessage("Tersimpan"),
     "homeVibeCoverage": m7,
-    "homeVibeTitle": MessageLookupByLibrary.simpleMessage("Home Vibe"),
+    "homeVibeTitle": MessageLookupByLibrary.simpleMessage("Suasana Rumah"),
     "houseDirectoryAccountReferenceHint": MessageLookupByLibrary.simpleMessage(
-      "Add the account number or customer ID",
+      "Tambahkan nomor akun atau ID pelanggan",
     ),
     "houseDirectoryAccountReferenceLabel": MessageLookupByLibrary.simpleMessage(
-      "Account reference",
+      "Referensi akun",
     ),
     "houseDirectoryActionFailed": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t save those changes.",
+      "Tidak dapat menyimpan perubahan itu.",
     ),
-    "houseDirectoryAddNote": MessageLookupByLibrary.simpleMessage("Add note"),
+    "houseDirectoryAddNote": MessageLookupByLibrary.simpleMessage(
+      "Tambah catatan",
+    ),
     "houseDirectoryAddService": MessageLookupByLibrary.simpleMessage(
-      "Add service",
+      "Tambah layanan",
     ),
-    "houseDirectoryAddWifi": MessageLookupByLibrary.simpleMessage("Add wifi"),
+    "houseDirectoryAddWifi": MessageLookupByLibrary.simpleMessage(
+      "Tambah wifi",
+    ),
     "houseDirectoryArchiveConfirm": MessageLookupByLibrary.simpleMessage(
-      "Archive",
+      "Arsipkan",
     ),
     "houseDirectoryArchiveNoteBody": MessageLookupByLibrary.simpleMessage(
-      "This removes it from your House directory view.",
+      "Ini akan menghapusnya dari tampilan Direktori rumahmu.",
     ),
     "houseDirectoryArchiveNoteTitle": MessageLookupByLibrary.simpleMessage(
-      "Archive this note?",
+      "Arsipkan catatan ini?",
     ),
     "houseDirectoryArchiveServiceBody": MessageLookupByLibrary.simpleMessage(
-      "This removes it from your House directory view.",
+      "Ini akan menghapusnya dari tampilan Direktori rumahmu.",
     ),
     "houseDirectoryArchiveServiceTitle": MessageLookupByLibrary.simpleMessage(
-      "Archive this service?",
+      "Arsipkan layanan ini?",
     ),
     "houseDirectoryCustomLabel": MessageLookupByLibrary.simpleMessage(
-      "Custom label",
+      "Label khusus",
     ),
     "houseDirectoryCustomLabelHint": MessageLookupByLibrary.simpleMessage(
-      "Use a clear name like cleaner, parking, or storage",
+      "Gunakan nama yang jelas seperti pembersih, parkir, atau penyimpanan",
     ),
     "houseDirectoryDateUnknown": MessageLookupByLibrary.simpleMessage(
-      "Unknown",
+      "Tidak diketahui",
     ),
-    "houseDirectoryDelete": MessageLookupByLibrary.simpleMessage("Archive"),
+    "houseDirectoryDelete": MessageLookupByLibrary.simpleMessage("Arsipkan"),
     "houseDirectoryEdit": MessageLookupByLibrary.simpleMessage("Edit"),
-    "houseDirectoryEditNote": MessageLookupByLibrary.simpleMessage("Edit note"),
+    "houseDirectoryEditNote": MessageLookupByLibrary.simpleMessage(
+      "Edit catatan",
+    ),
     "houseDirectoryEditService": MessageLookupByLibrary.simpleMessage(
-      "Edit service",
+      "Edit layanan",
     ),
     "houseDirectoryEditWifi": MessageLookupByLibrary.simpleMessage("Edit wifi"),
     "houseDirectoryEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "Save wifi, rent, services, and house notes here.",
+      "Simpan wifi, sewa, layanan, dan catatan rumah di sini.",
     ),
     "houseDirectoryEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "Shared home details live here.",
+      "Detail rumah bersama ada di sini.",
     ),
-    "houseDirectoryEndDate": MessageLookupByLibrary.simpleMessage("End date"),
+    "houseDirectoryEndDate": MessageLookupByLibrary.simpleMessage(
+      "Tanggal berakhir",
+    ),
     "houseDirectoryLinkLabel": MessageLookupByLibrary.simpleMessage(
-      "Provider link",
+      "Tautan penyedia",
     ),
     "houseDirectoryLoadError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load House directory.",
+      "Tidak dapat memuat Direktori rumah.",
     ),
     "houseDirectoryNoteArchived": MessageLookupByLibrary.simpleMessage(
-      "Note archived.",
+      "Catatan diarsipkan.",
     ),
     "houseDirectoryNoteDetailsHint": MessageLookupByLibrary.simpleMessage(
-      "Add clear details for the home",
+      "Tambahkan detail yang jelas untuk rumah",
     ),
     "houseDirectoryNoteDetailsLabel": MessageLookupByLibrary.simpleMessage(
-      "Details",
+      "Detail",
     ),
     "houseDirectoryNotePhotoLabel": MessageLookupByLibrary.simpleMessage(
-      "Photo",
+      "Foto",
     ),
     "houseDirectoryNotePhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
-      "Add a photo for this note",
+      "Tambahkan foto untuk catatan ini",
     ),
     "houseDirectoryNotePhotoReplaceLabel": MessageLookupByLibrary.simpleMessage(
-      "Replace photo",
+      "Ganti foto",
     ),
     "houseDirectoryNotePhotoUploadError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t upload that photo.",
+      "Tidak dapat mengunggah foto itu.",
     ),
     "houseDirectoryNoteSaved": MessageLookupByLibrary.simpleMessage(
-      "Note saved.",
+      "Catatan tersimpan.",
     ),
     "houseDirectoryNoteTitleHint": MessageLookupByLibrary.simpleMessage(
-      "Name the note so everyone knows what it covers",
+      "Beri nama catatan agar semua orang tahu isinya",
     ),
     "houseDirectoryNoteUrlHint": MessageLookupByLibrary.simpleMessage(
-      "Optional. Paste a related web address if this note points to one",
+      "Opsional. Tempel alamat web terkait jika catatan ini mengarah ke sana",
     ),
     "houseDirectoryNoteUrlLabel": MessageLookupByLibrary.simpleMessage(
-      "Reference URL",
+      "URL referensi",
     ),
-    "houseDirectoryNotes": MessageLookupByLibrary.simpleMessage("Notes"),
+    "houseDirectoryNotes": MessageLookupByLibrary.simpleMessage("Catatan"),
     "houseDirectoryNotesEmpty": MessageLookupByLibrary.simpleMessage(
-      "No notes added yet.",
+      "Belum ada catatan ditambahkan.",
     ),
     "houseDirectoryNotesHint": MessageLookupByLibrary.simpleMessage(
-      "Add helpful details, like billing dates or contact steps",
+      "Tambahkan detail yang membantu, seperti tanggal tagihan atau langkah menghubungi",
     ),
     "houseDirectoryNotesSearchEmpty": MessageLookupByLibrary.simpleMessage(
-      "No notes match that search.",
+      "Tidak ada catatan yang cocok dengan pencarian itu.",
     ),
     "houseDirectoryNotesTitle": MessageLookupByLibrary.simpleMessage(
-      "House notes",
+      "Catatan rumah",
     ),
-    "houseDirectoryOpenLink": MessageLookupByLibrary.simpleMessage("Open link"),
+    "houseDirectoryOpenLink": MessageLookupByLibrary.simpleMessage(
+      "Buka tautan",
+    ),
     "houseDirectoryOpenLinkError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t open that link.",
+      "Tidak dapat membuka tautan itu.",
     ),
     "houseDirectoryPasswordHelper": MessageLookupByLibrary.simpleMessage(
-      "Leave blank to save as an open network.",
+      "Biarkan kosong untuk menyimpan sebagai jaringan terbuka.",
     ),
     "houseDirectoryPasswordLabel": MessageLookupByLibrary.simpleMessage(
-      "Password",
+      "Kata sandi",
     ),
     "houseDirectoryPhotoViewerTitle": MessageLookupByLibrary.simpleMessage(
-      "Photo",
+      "Foto",
     ),
     "houseDirectoryProviderHint": MessageLookupByLibrary.simpleMessage(
-      "Who runs this service, like your power company",
+      "Siapa yang menjalankan layanan ini, misalnya perusahaan listrikmu",
     ),
     "houseDirectoryProviderLabel": MessageLookupByLibrary.simpleMessage(
-      "Provider name",
+      "Nama penyedia",
     ),
     "houseDirectoryProviderLinkHint": MessageLookupByLibrary.simpleMessage(
-      "Paste the login, portal, or payment link for this service",
+      "Tempel tautan login, portal, atau pembayaran untuk layanan ini",
     ),
     "houseDirectoryReminderAcknowledged": MessageLookupByLibrary.simpleMessage(
-      "Reminder acknowledged.",
+      "Pengingat dikonfirmasi.",
     ),
     "houseDirectoryReminderDismissed": MessageLookupByLibrary.simpleMessage(
-      "Reminder dismissed.",
+      "Pengingat ditutup.",
     ),
     "houseDirectoryReminderOffset": MessageLookupByLibrary.simpleMessage(
-      "Reminder offset",
+      "Jeda pengingat",
     ),
     "houseDirectoryReminderOffsetUnit": MessageLookupByLibrary.simpleMessage(
-      "Offset unit",
+      "Satuan jeda",
     ),
-    "houseDirectoryRentTitle": MessageLookupByLibrary.simpleMessage("Rent"),
-    "houseDirectorySave": MessageLookupByLibrary.simpleMessage("Save"),
+    "houseDirectoryRentTitle": MessageLookupByLibrary.simpleMessage("Sewa"),
+    "houseDirectorySave": MessageLookupByLibrary.simpleMessage("Simpan"),
     "houseDirectorySearchHint": MessageLookupByLibrary.simpleMessage(
-      "Find services or notes",
+      "Temukan layanan atau catatan",
     ),
     "houseDirectorySearchLabel": MessageLookupByLibrary.simpleMessage(
-      "Search home details",
+      "Cari detail rumah",
     ),
     "houseDirectoryServiceArchived": MessageLookupByLibrary.simpleMessage(
-      "Service archived.",
+      "Layanan diarsipkan.",
     ),
-    "houseDirectoryServiceOther": MessageLookupByLibrary.simpleMessage("Other"),
+    "houseDirectoryServiceOther": MessageLookupByLibrary.simpleMessage(
+      "Lainnya",
+    ),
     "houseDirectoryServiceSaved": MessageLookupByLibrary.simpleMessage(
-      "Service saved.",
+      "Layanan tersimpan.",
     ),
     "houseDirectoryServiceTypeLabel": MessageLookupByLibrary.simpleMessage(
-      "Service type",
+      "Jenis layanan",
     ),
     "houseDirectoryServicesEmpty": MessageLookupByLibrary.simpleMessage(
-      "No services added yet.",
+      "Belum ada layanan ditambahkan.",
     ),
     "houseDirectoryServicesSearchEmpty": MessageLookupByLibrary.simpleMessage(
-      "No services match that search.",
+      "Tidak ada layanan yang cocok dengan pencarian itu.",
     ),
     "houseDirectoryServicesTitle": MessageLookupByLibrary.simpleMessage(
-      "Utilities and services",
+      "Utilitas dan layanan",
     ),
     "houseDirectorySsidLabel": MessageLookupByLibrary.simpleMessage("SSID"),
     "houseDirectoryStartDate": MessageLookupByLibrary.simpleMessage(
-      "Start date",
+      "Tanggal mulai",
     ),
-    "houseDirectoryTermLabel": MessageLookupByLibrary.simpleMessage("Term"),
+    "houseDirectoryTermLabel": MessageLookupByLibrary.simpleMessage(
+      "Masa berlaku",
+    ),
     "houseDirectoryTermRange": m30,
     "houseDirectoryTitle": MessageLookupByLibrary.simpleMessage(
-      "House directory",
+      "Direktori rumah",
     ),
-    "houseDirectoryTitleLabel": MessageLookupByLibrary.simpleMessage("Title"),
+    "houseDirectoryTitleLabel": MessageLookupByLibrary.simpleMessage("Judul"),
     "houseDirectoryValidationCustomLabel": MessageLookupByLibrary.simpleMessage(
-      "Enter a custom label.",
+      "Masukkan label khusus.",
     ),
     "houseDirectoryValidationDateRange": MessageLookupByLibrary.simpleMessage(
-      "Pick an end date after the start date.",
+      "Pilih tanggal akhir setelah tanggal mulai.",
     ),
     "houseDirectoryValidationNoteFields": MessageLookupByLibrary.simpleMessage(
-      "Enter a title and details.",
+      "Masukkan judul dan detail.",
     ),
     "houseDirectoryValidationProvider": MessageLookupByLibrary.simpleMessage(
-      "Enter a provider name.",
+      "Masukkan nama penyedia.",
     ),
     "houseDirectoryValidationReminderOffset":
-        MessageLookupByLibrary.simpleMessage("Enter a valid reminder offset."),
+        MessageLookupByLibrary.simpleMessage(
+          "Masukkan jeda pengingat yang valid.",
+        ),
     "houseDirectoryValidationRentDates": MessageLookupByLibrary.simpleMessage(
-      "Rent needs both start and end dates.",
+      "Sewa memerlukan tanggal mulai dan tanggal berakhir.",
     ),
     "houseDirectoryValidationUrl": MessageLookupByLibrary.simpleMessage(
-      "Enter a valid http or https URL.",
+      "Masukkan URL http atau https yang valid.",
     ),
     "houseDirectoryWifiMemberEmpty": MessageLookupByLibrary.simpleMessage(
-      "No wifi details have been added yet.",
+      "Detail wifi belum ditambahkan.",
     ),
     "houseDirectoryWifiOwnerEmpty": MessageLookupByLibrary.simpleMessage(
-      "Add your home wifi so everyone can find it here.",
+      "Tambahkan wifi rumahmu agar semua orang bisa menemukannya di sini.",
     ),
     "houseDirectoryWifiSaved": MessageLookupByLibrary.simpleMessage(
-      "Wifi details saved.",
+      "Detail wifi tersimpan.",
     ),
     "houseDirectoryWifiTitle": MessageLookupByLibrary.simpleMessage("Wifi"),
-    "houseNormCopyUrlCta": MessageLookupByLibrary.simpleMessage("Copy URL"),
-    "houseNormDoneCta": MessageLookupByLibrary.simpleMessage("Done"),
+    "houseNormCopyUrlCta": MessageLookupByLibrary.simpleMessage("Salin URL"),
+    "houseNormDoneCta": MessageLookupByLibrary.simpleMessage("Selesai"),
     "houseNormEditTitle": MessageLookupByLibrary.simpleMessage(
-      "Edit house norms",
+      "Edit norma rumah",
     ),
     "houseNormGenerationFailed": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t generate house norms right now.",
+      "Tidak dapat membuat norma rumah saat ini.",
     ),
-    "houseNormOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
+    "houseNormOnboardingBack": MessageLookupByLibrary.simpleMessage("Kembali"),
     "houseNormOnboardingProgress": m8,
-    "houseNormOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
-      "Generate",
-    ),
+    "houseNormOnboardingSubmit": MessageLookupByLibrary.simpleMessage("Buat"),
     "houseNormOnboardingTitle": MessageLookupByLibrary.simpleMessage(
-      "House vibe",
+      "Suasana rumah",
     ),
-    "houseNormOpenUrlCta": MessageLookupByLibrary.simpleMessage("Open URL"),
+    "houseNormOpenUrlCta": MessageLookupByLibrary.simpleMessage("Buka URL"),
     "houseNormOpenUrlError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t open that URL.",
+      "Tidak dapat membuka URL itu.",
     ),
-    "houseNormPromptCta": MessageLookupByLibrary.simpleMessage("Generate"),
+    "houseNormPromptCta": MessageLookupByLibrary.simpleMessage("Buat"),
     "houseNormPromptSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Turn your answers into a shared guide.",
+      "Ubah jawabanmu menjadi panduan bersama.",
     ),
     "houseNormPromptTitle": MessageLookupByLibrary.simpleMessage(
-      "Create house norms",
+      "Buat norma rumah",
     ),
     "houseNormPublishCta": MessageLookupByLibrary.simpleMessage(
-      "Publish to web",
+      "Publikasikan ke web",
     ),
     "houseNormReportEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "Generate house norms to see them.",
+      "Buat norma rumah untuk melihatnya.",
     ),
     "houseNormReportEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "House norms not ready",
+      "Norma rumah belum siap",
     ),
     "houseNormReportErrorBody": MessageLookupByLibrary.simpleMessage(
-      "Please try again.",
+      "Silakan coba lagi.",
     ),
     "houseNormReportErrorTitle": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load house norms",
+      "Tidak dapat memuat norma rumah",
     ),
-    "houseNormReportTitle": MessageLookupByLibrary.simpleMessage("House norms"),
-    "houseNormRepublishCta": MessageLookupByLibrary.simpleMessage("Republish"),
+    "houseNormReportTitle": MessageLookupByLibrary.simpleMessage("Norma rumah"),
+    "houseNormRepublishCta": MessageLookupByLibrary.simpleMessage(
+      "Publikasikan ulang",
+    ),
     "houseNormScenarioGuestsOption1": MessageLookupByLibrary.simpleMessage(
-      "Ask first",
+      "Tanya dulu",
     ),
     "houseNormScenarioGuestsOption2": MessageLookupByLibrary.simpleMessage(
-      "Give a heads-up",
+      "Kasih tahu dulu",
     ),
     "houseNormScenarioGuestsOption3": MessageLookupByLibrary.simpleMessage(
-      "Totally normal",
+      "Sangat normal",
     ),
     "houseNormScenarioGuestsQuestion": MessageLookupByLibrary.simpleMessage(
-      "Bringing guests?",
+      "Membawa tamu?",
     ),
     "houseNormScenarioHomeIdentityOption1":
-        MessageLookupByLibrary.simpleMessage("Calm home"),
+        MessageLookupByLibrary.simpleMessage("Rumah tenang"),
     "houseNormScenarioHomeIdentityOption2":
-        MessageLookupByLibrary.simpleMessage("Balanced home"),
+        MessageLookupByLibrary.simpleMessage("Rumah seimbang"),
     "houseNormScenarioHomeIdentityOption3":
-        MessageLookupByLibrary.simpleMessage("Social home"),
+        MessageLookupByLibrary.simpleMessage("Rumah sosial"),
     "houseNormScenarioHomeIdentityQuestion":
-        MessageLookupByLibrary.simpleMessage("Best description?"),
+        MessageLookupByLibrary.simpleMessage("Deskripsi terbaik?"),
     "houseNormScenarioPropertyContextOption1":
-        MessageLookupByLibrary.simpleMessage("Owned"),
+        MessageLookupByLibrary.simpleMessage("Milik sendiri"),
     "houseNormScenarioPropertyContextOption2":
-        MessageLookupByLibrary.simpleMessage("Whole rental"),
+        MessageLookupByLibrary.simpleMessage("Sewa seluruh rumah"),
     "houseNormScenarioPropertyContextOption3":
-        MessageLookupByLibrary.simpleMessage("Room rental"),
+        MessageLookupByLibrary.simpleMessage("Sewa kamar"),
     "houseNormScenarioPropertyContextQuestion":
-        MessageLookupByLibrary.simpleMessage("This home is:"),
+        MessageLookupByLibrary.simpleMessage("Rumah ini adalah:"),
     "houseNormScenarioRelationshipModelOption1":
-        MessageLookupByLibrary.simpleMessage("Housemates"),
+        MessageLookupByLibrary.simpleMessage("Teman serumah"),
     "houseNormScenarioRelationshipModelOption2":
-        MessageLookupByLibrary.simpleMessage("Family"),
+        MessageLookupByLibrary.simpleMessage("Keluarga"),
     "houseNormScenarioRelationshipModelOption3":
-        MessageLookupByLibrary.simpleMessage("Mixed"),
+        MessageLookupByLibrary.simpleMessage("Campuran"),
     "houseNormScenarioRelationshipModelQuestion":
-        MessageLookupByLibrary.simpleMessage("Who\'s living here?"),
+        MessageLookupByLibrary.simpleMessage("Siapa yang tinggal di sini?"),
     "houseNormScenarioRepairOption1": MessageLookupByLibrary.simpleMessage(
-      "Talk early",
+      "Bicarakan lebih awal",
     ),
     "houseNormScenarioRepairOption2": MessageLookupByLibrary.simpleMessage(
-      "Pick the moment",
+      "Pilih waktunya",
     ),
     "houseNormScenarioRepairOption3": MessageLookupByLibrary.simpleMessage(
-      "Let small things pass",
+      "Biarkan hal kecil lewat",
     ),
     "houseNormScenarioRepairQuestion": MessageLookupByLibrary.simpleMessage(
-      "Tension?",
+      "Ketegangan?",
     ),
     "houseNormScenarioResponsibilityOption1":
-        MessageLookupByLibrary.simpleMessage("Clear agreements"),
+        MessageLookupByLibrary.simpleMessage("Kesepakatan yang jelas"),
     "houseNormScenarioResponsibilityOption2":
-        MessageLookupByLibrary.simpleMessage("Whoever notices"),
+        MessageLookupByLibrary.simpleMessage("Siapa yang melihat duluan"),
     "houseNormScenarioResponsibilityOption3":
-        MessageLookupByLibrary.simpleMessage("Everyone handles their own"),
+        MessageLookupByLibrary.simpleMessage("Semua urus miliknya sendiri"),
     "houseNormScenarioResponsibilityQuestion":
-        MessageLookupByLibrary.simpleMessage("Small home tasks?"),
+        MessageLookupByLibrary.simpleMessage("Tugas rumah kecil?"),
     "houseNormScenarioRhythmOption1": MessageLookupByLibrary.simpleMessage(
-      "Wind down",
+      "Mulai tenang",
     ),
     "houseNormScenarioRhythmOption2": MessageLookupByLibrary.simpleMessage(
-      "Depends",
+      "Tergantung",
     ),
     "houseNormScenarioRhythmOption3": MessageLookupByLibrary.simpleMessage(
-      "People do their thing",
+      "Semua melakukan urusannya sendiri",
     ),
     "houseNormScenarioRhythmQuestion": MessageLookupByLibrary.simpleMessage(
-      "At night?",
+      "Di malam hari?",
     ),
     "houseNormScenarioSharedSpacesOption1":
-        MessageLookupByLibrary.simpleMessage("Clean"),
+        MessageLookupByLibrary.simpleMessage("Bersih"),
     "houseNormScenarioSharedSpacesOption2":
-        MessageLookupByLibrary.simpleMessage("Lived-in"),
+        MessageLookupByLibrary.simpleMessage("Terlihat dipakai"),
     "houseNormScenarioSharedSpacesOption3":
-        MessageLookupByLibrary.simpleMessage("Messy is fine"),
+        MessageLookupByLibrary.simpleMessage("Berantakan tidak masalah"),
     "houseNormScenarioSharedSpacesQuestion":
-        MessageLookupByLibrary.simpleMessage("Kitchen at night?"),
+        MessageLookupByLibrary.simpleMessage("Dapur di malam hari?"),
     "houseNormSectionEditLabel": MessageLookupByLibrary.simpleMessage(
-      "Edit this section",
+      "Edit bagian ini",
     ),
     "houseNormSectionEmptyError": MessageLookupByLibrary.simpleMessage(
-      "Add text before saving.",
+      "Tambahkan teks sebelum menyimpan.",
     ),
     "houseNormSectionFallbackTitle": MessageLookupByLibrary.simpleMessage(
-      "Section",
+      "Bagian",
     ),
     "houseNormSectionGuestsSocialTitle": MessageLookupByLibrary.simpleMessage(
-      "Guests and social flow",
+      "Tamu dan alur sosial",
     ),
     "houseNormSectionHomeIdentityTitle": MessageLookupByLibrary.simpleMessage(
-      "Home identity",
+      "Identitas rumah",
     ),
     "houseNormSectionRepairStyleTitle": MessageLookupByLibrary.simpleMessage(
-      "Repair style",
+      "Gaya memperbaiki hubungan",
     ),
     "houseNormSectionResponsibilityFlowTitle":
-        MessageLookupByLibrary.simpleMessage("Responsibility flow"),
+        MessageLookupByLibrary.simpleMessage("Alur tanggung jawab"),
     "houseNormSectionRhythmQuietTitle": MessageLookupByLibrary.simpleMessage(
-      "Rhythm and quiet",
+      "Ritme dan ketenangan",
     ),
-    "houseNormSectionSaveCta": MessageLookupByLibrary.simpleMessage("Save"),
+    "houseNormSectionSaveCta": MessageLookupByLibrary.simpleMessage("Simpan"),
     "houseNormSectionSaveFailed": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t save that update.",
+      "Tidak dapat menyimpan pembaruan itu.",
     ),
     "houseNormSectionSaveSuccess": MessageLookupByLibrary.simpleMessage(
-      "Section updated.",
+      "Bagian diperbarui.",
     ),
     "houseNormSectionSharedSpacesTitle": MessageLookupByLibrary.simpleMessage(
-      "Shared spaces",
+      "Ruang bersama",
     ),
     "houseNormShareSubject": MessageLookupByLibrary.simpleMessage(
-      "Our house norms",
+      "Norma rumah kami",
     ),
-    "houseNormShareUrlCta": MessageLookupByLibrary.simpleMessage("Share URL"),
+    "houseNormShareUrlCta": MessageLookupByLibrary.simpleMessage("Bagikan URL"),
     "houseNormSummaryFramingLabel": MessageLookupByLibrary.simpleMessage(
-      "Summary",
+      "Ringkasan",
     ),
     "houseNormSummarySubtitle": MessageLookupByLibrary.simpleMessage(
-      "A guide, not a rulebook.",
+      "Panduan, bukan buku aturan.",
     ),
     "houseNormSummaryTitle": MessageLookupByLibrary.simpleMessage(
-      "House norms",
+      "Norma rumah",
     ),
     "houseNormUrlCopied": MessageLookupByLibrary.simpleMessage(
-      "House norms URL copied.",
+      "URL norma rumah disalin.",
     ),
     "houseNormViewTitle": MessageLookupByLibrary.simpleMessage(
-      "View house norms",
+      "Lihat norma rumah",
     ),
     "housePulseCardHeader": MessageLookupByLibrary.simpleMessage(
-      "Weekly home pulse",
+      "Pulse rumah mingguan",
     ),
-    "housePulseShareCta": MessageLookupByLibrary.simpleMessage("Share pulse"),
+    "housePulseShareCta": MessageLookupByLibrary.simpleMessage("Bagikan pulse"),
     "housePulseShareMessage": m9,
     "housePulseShareTitle": MessageLookupByLibrary.simpleMessage(
-      "Sharing our Kinly home pulse",
+      "Membagikan pulse rumah Kinly kami",
     ),
     "housePulseUpdatedOn": m10,
-    "houseVibeShareCta": MessageLookupByLibrary.simpleMessage("Share vibe"),
+    "houseVibeShareCta": MessageLookupByLibrary.simpleMessage(
+      "Bagikan suasana",
+    ),
     "houseVibeShareError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t share right now.",
+      "Tidak dapat membagikan sekarang.",
     ),
     "houseVibeShareMessage": m11,
-    "houseVibeShareTitle": MessageLookupByLibrary.simpleMessage("Home vibe"),
+    "houseVibeShareTitle": MessageLookupByLibrary.simpleMessage(
+      "Suasana rumah",
+    ),
     "hubCardGratitudeWallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Quick thanks from your home.",
+      "Ucapan terima kasih singkat dari rumahmu.",
     ),
     "hubCardGratitudeWallTitle": MessageLookupByLibrary.simpleMessage(
-      "Shoutouts",
+      "Ucapan terima kasih",
     ),
-    "hubCodeCopied": MessageLookupByLibrary.simpleMessage("Invite code copied"),
+    "hubCodeCopied": MessageLookupByLibrary.simpleMessage(
+      "Kode undangan disalin",
+    ),
     "hubError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load Home Hub.",
+      "Tidak dapat memuat Pusat Rumah.",
     ),
     "hubHouseDirectorySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Wifi, services, notes, and renewal reminders.",
+      "Wifi, layanan, catatan, dan pengingat perpanjangan.",
     ),
     "hubHouseDirectoryTitle": MessageLookupByLibrary.simpleMessage(
-      "House directory",
+      "Direktori rumah",
     ),
     "hubHouseNormsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "A guide for how this home works.",
+      "Panduan untuk cara rumah ini berjalan.",
     ),
-    "hubHouseNormsTitle": MessageLookupByLibrary.simpleMessage("House norms"),
-    "hubInviteCta": MessageLookupByLibrary.simpleMessage("Invite"),
+    "hubHouseNormsTitle": MessageLookupByLibrary.simpleMessage("Norma rumah"),
+    "hubInviteCta": MessageLookupByLibrary.simpleMessage("Undang"),
     "hubInviteUnavailable": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load invite.",
+      "Tidak dapat memuat undangan.",
     ),
     "hubMembersEmpty": MessageLookupByLibrary.simpleMessage(
-      "No active members yet.",
+      "Belum ada anggota aktif.",
     ),
     "hubPreferencesSubtitle": MessageLookupByLibrary.simpleMessage(
-      "How each person likes shared living to work.",
+      "Bagaimana tiap orang ingin hidup bersama berjalan.",
     ),
-    "hubPreferencesTitle": MessageLookupByLibrary.simpleMessage("Preferences"),
+    "hubPreferencesTitle": MessageLookupByLibrary.simpleMessage("Preferensi"),
     "hubQrSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Scan to download Kinly",
+      "Pindai untuk mengunduh Kinly",
     ),
-    "hubQrTitle": MessageLookupByLibrary.simpleMessage("Share the app"),
-    "hubRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "hubQrTitle": MessageLookupByLibrary.simpleMessage("Bagikan aplikasi"),
+    "hubRetry": MessageLookupByLibrary.simpleMessage("Coba lagi"),
     "hubRotateError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t rotate invite.",
+      "Tidak dapat memperbarui undangan.",
     ),
-    "hubRotateInvite": MessageLookupByLibrary.simpleMessage("Rotate invite"),
-    "hubRotateSuccess": MessageLookupByLibrary.simpleMessage("Invite rotated"),
+    "hubRotateInvite": MessageLookupByLibrary.simpleMessage(
+      "Putar ulang undangan",
+    ),
+    "hubRotateSuccess": MessageLookupByLibrary.simpleMessage(
+      "Undangan diperbarui",
+    ),
     "hubShareAppBody": m12,
-    "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Share Kinly"),
-    "hubShareAppTitle": MessageLookupByLibrary.simpleMessage("Get Kinly"),
+    "hubShareAppCta": MessageLookupByLibrary.simpleMessage("Bagikan Kinly"),
+    "hubShareAppTitle": MessageLookupByLibrary.simpleMessage("Dapatkan Kinly"),
     "hubShareInviteBody": m13,
     "hubShareInviteTitle": MessageLookupByLibrary.simpleMessage(
-      "Invite to my Kinly home",
+      "Undang ke rumah Kinly saya",
     ),
     "join_blocked_body": MessageLookupByLibrary.simpleMessage(
-      "We\'ve notified the home owner.",
+      "Kami sudah memberi tahu pemilik rumah.",
     ),
-    "join_blocked_cta": MessageLookupByLibrary.simpleMessage("Done"),
+    "join_blocked_cta": MessageLookupByLibrary.simpleMessage("Selesai"),
     "join_blocked_title": MessageLookupByLibrary.simpleMessage(
-      "This home isn\'t accepting new members right now",
+      "Rumah ini sedang tidak menerima anggota baru",
     ),
     "join_error_already_in_other_home": MessageLookupByLibrary.simpleMessage(
-      "Leave your current home first.",
+      "Keluar dari rumahmu saat ini terlebih dahulu.",
     ),
     "join_error_forbidden": MessageLookupByLibrary.simpleMessage(
-      "You don\'t have permission to join this home.",
+      "Kamu tidak punya izin untuk bergabung ke rumah ini.",
     ),
     "join_error_inactive_invite": MessageLookupByLibrary.simpleMessage(
-      "That invite has expired. Ask the owner for a new one.",
+      "Undangan itu sudah kedaluwarsa. Minta pemilik rumah untuk membuat yang baru.",
     ),
     "join_error_invalid_code": MessageLookupByLibrary.simpleMessage(
-      "That invite code looks wrong.",
+      "Kode undangan itu tampaknya salah.",
     ),
     "join_error_paywall_limit": MessageLookupByLibrary.simpleMessage(
-      "This home has reached its member limit. Ask the owner to upgrade or remove someone.",
+      "Rumah ini sudah mencapai batas anggota. Minta pemilik rumah untuk upgrade atau menghapus seseorang.",
     ),
     "join_error_unauthorized": MessageLookupByLibrary.simpleMessage(
-      "Sign in to join this home.",
+      "Masuk untuk bergabung ke rumah ini.",
     ),
     "join_failed_generic": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t join this home.",
+      "Tidak dapat bergabung ke rumah ini.",
     ),
     "join_hint": MessageLookupByLibrary.simpleMessage(
-      "Enter invite code (e.g. ABC123)",
+      "Masukkan kode undangan (mis. ABC123)",
     ),
-    "join_submit": MessageLookupByLibrary.simpleMessage("Join"),
+    "join_submit": MessageLookupByLibrary.simpleMessage("Gabung"),
     "join_success": m14,
-    "join_title": MessageLookupByLibrary.simpleMessage("Join Home"),
+    "join_title": MessageLookupByLibrary.simpleMessage("Gabung ke Rumah"),
     "login_consent_connector": MessageLookupByLibrary.simpleMessage(" & "),
     "login_consent_prefix": MessageLookupByLibrary.simpleMessage(
-      "I agree to the ",
+      "Saya menyetujui ",
     ),
-    "login_privacy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+    "login_privacy": MessageLookupByLibrary.simpleMessage("Kebijakan Privasi"),
     "login_tagline": MessageLookupByLibrary.simpleMessage(
-      "Together feels lighter",
+      "Bersama terasa lebih ringan",
     ),
-    "login_terms": MessageLookupByLibrary.simpleMessage("Service Terms"),
+    "login_terms": MessageLookupByLibrary.simpleMessage("Syarat Layanan"),
     "login_with_apple": MessageLookupByLibrary.simpleMessage(
-      "Continue with Apple",
+      "Lanjutkan dengan Apple",
     ),
     "login_with_google": MessageLookupByLibrary.simpleMessage(
-      "Continue with Google",
+      "Lanjutkan dengan Google",
     ),
-    "logout": MessageLookupByLibrary.simpleMessage("Sign out"),
+    "logout": MessageLookupByLibrary.simpleMessage("Keluar"),
     "membership_status_active": MessageLookupByLibrary.simpleMessage(
-      "You\'re connected to a home.",
+      "Kamu terhubung ke sebuah rumah.",
     ),
     "membership_status_checking": MessageLookupByLibrary.simpleMessage(
-      "Connecting to your home...",
+      "Menghubungkan ke rumahmu...",
     ),
     "membership_status_none": MessageLookupByLibrary.simpleMessage(
-      "Create or join a home.",
+      "Buat atau gabung ke rumah.",
     ),
     "mentionFieldHint": MessageLookupByLibrary.simpleMessage(
-      "Type @ to mention someone",
+      "Ketik @ untuk menyebut seseorang",
     ),
-    "navExplore": MessageLookupByLibrary.simpleMessage("Manage"),
-    "navHub": MessageLookupByLibrary.simpleMessage("Home Hub"),
-    "navToday": MessageLookupByLibrary.simpleMessage("Today"),
+    "navExplore": MessageLookupByLibrary.simpleMessage("Kelola"),
+    "navHub": MessageLookupByLibrary.simpleMessage("Pusat Rumah"),
+    "navToday": MessageLookupByLibrary.simpleMessage("Hari ini"),
     "npsCannotSkip": MessageLookupByLibrary.simpleMessage(
-      "Choose a score to continue.",
+      "Pilih skor untuk melanjutkan.",
     ),
     "npsDescription": MessageLookupByLibrary.simpleMessage(
-      "0 means not at all. 10 means it made a real difference.",
+      "0 berarti sama sekali tidak. 10 berarti benar-benar memberi perbedaan.",
     ),
     "npsEmailSubject": MessageLookupByLibrary.simpleMessage(
-      "How could Kinly better support your home?",
+      "Bagaimana Kinly bisa lebih mendukung rumahmu?",
     ),
     "npsLaunchError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t open the next step.",
+      "Tidak dapat membuka langkah berikutnya.",
     ),
     "npsScaleHighLabel": MessageLookupByLibrary.simpleMessage(
-      "10 Made a real difference",
+      "10 Sangat membantu",
     ),
-    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage("0 Not at all"),
+    "npsScaleLowLabel": MessageLookupByLibrary.simpleMessage(
+      "0 Sama sekali tidak",
+    ),
     "npsSubmitErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "Feedback isn\'t available right now.",
+      "Masukan tidak tersedia saat ini.",
     ),
     "npsSubmitErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t send your feedback.",
+      "Tidak dapat mengirim masukanmu.",
     ),
     "npsSubmitErrorInvalidScore": MessageLookupByLibrary.simpleMessage(
-      "Choose a number between 0 and 10.",
+      "Pilih angka antara 0 dan 10.",
     ),
     "npsSubmitErrorNotRequired": MessageLookupByLibrary.simpleMessage(
-      "You don\'t need to share feedback right now.",
+      "Kamu tidak perlu membagikan masukan sekarang.",
     ),
     "npsTitle": MessageLookupByLibrary.simpleMessage(
-      "Has Kinly helped your home run more smoothly?",
+      "Apakah Kinly membantu rumahmu berjalan lebih lancar?",
     ),
     "offline_body": MessageLookupByLibrary.simpleMessage(
-      "No internet connection. Try again.",
+      "Tidak ada koneksi internet. Coba lagi.",
     ),
-    "offline_retry": MessageLookupByLibrary.simpleMessage("Try again"),
-    "offline_title": MessageLookupByLibrary.simpleMessage("You\'re offline"),
+    "offline_retry": MessageLookupByLibrary.simpleMessage("Coba lagi"),
+    "offline_title": MessageLookupByLibrary.simpleMessage(
+      "Kamu sedang offline",
+    ),
     "paywallBulletFlows": MessageLookupByLibrary.simpleMessage(
-      "Unlimited tasks",
+      "Tugas tanpa batas",
     ),
     "paywallBulletMembers": MessageLookupByLibrary.simpleMessage(
-      "Unlimited members",
+      "Anggota tanpa batas",
     ),
     "paywallBulletPhotos": MessageLookupByLibrary.simpleMessage(
-      "Unlimited task photos",
+      "Foto tugas tanpa batas",
     ),
     "paywallBulletShares": MessageLookupByLibrary.simpleMessage(
-      "Unlimited bills",
+      "Tagihan tanpa batas",
     ),
     "paywallBulletShoppingPhotos": MessageLookupByLibrary.simpleMessage(
-      "Unlimited shopping photos",
+      "Foto belanja tanpa batas",
     ),
     "paywallErrorTitle": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load paywall.",
+      "Tidak dapat memuat paywall.",
     ),
     "paywallFeatureUnlimitedSharedExpensePhotos":
-        MessageLookupByLibrary.simpleMessage("Unlimited bill photos"),
+        MessageLookupByLibrary.simpleMessage("Foto tagihan tanpa batas"),
     "paywallPriceCaption": MessageLookupByLibrary.simpleMessage(
-      "One home plan. No hidden tiers.",
+      "Satu paket rumah. Tanpa tingkatan tersembunyi.",
     ),
     "paywallPricePerMonth": m15,
     "paywallPriceUnavailable": MessageLookupByLibrary.simpleMessage(
-      "Pricing isn\'t available right now.",
+      "Harga belum tersedia saat ini.",
     ),
     "paywallPrimaryCta": MessageLookupByLibrary.simpleMessage(
-      "Upgrade to Premium",
+      "Upgrade ke Premium",
     ),
     "paywallPurchaseFailed": MessageLookupByLibrary.simpleMessage(
-      "Purchase not completed.",
+      "Pembelian tidak selesai.",
     ),
     "paywallPurchaseSuccess": MessageLookupByLibrary.simpleMessage(
-      "You\'re now on Kinly Premium.",
+      "Kamu sekarang menggunakan Kinly Premium.",
     ),
     "paywallRestoreCta": MessageLookupByLibrary.simpleMessage(
-      "Restore purchases",
+      "Pulihkan pembelian",
     ),
-    "paywallRetryLabel": MessageLookupByLibrary.simpleMessage("Retry"),
+    "paywallRetryLabel": MessageLookupByLibrary.simpleMessage("Coba lagi"),
     "paywallSecondaryCta": MessageLookupByLibrary.simpleMessage(
-      "Stay on free plan",
+      "Tetap di paket gratis",
     ),
     "paywallSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Less than 0.5% of your rent.",
+      "Kurang dari 0,5% dari sewa rumahmu.",
     ),
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
-      "Keep your home running smoothly",
+      "Bantu rumahmu tetap berjalan lancar",
     ),
     "personalMentionsTitle": MessageLookupByLibrary.simpleMessage(
-      "Personal mentions",
+      "Sebutan pribadi",
     ),
     "personalProfileLoadError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load your personal profile.",
+      "Tidak dapat memuat profil pribadimu.",
     ),
     "personalProfileMentions": MessageLookupByLibrary.simpleMessage(
-      "Personal mentions",
+      "Sebutan pribadi",
     ),
     "personalProfilePreferences": MessageLookupByLibrary.simpleMessage(
-      "Personal preferences",
+      "Preferensi pribadi",
     ),
-    "personalProfileTitle": MessageLookupByLibrary.simpleMessage(
-      "Your profile",
-    ),
-    "planFreeLabel": MessageLookupByLibrary.simpleMessage("Upgrade to Premium"),
+    "personalProfileTitle": MessageLookupByLibrary.simpleMessage("Profilmu"),
+    "planFreeLabel": MessageLookupByLibrary.simpleMessage("Upgrade ke Premium"),
     "planPremiumActiveBody": MessageLookupByLibrary.simpleMessage(
-      "Enjoy unlimited access to all features.",
+      "Nikmati akses tanpa batas ke semua fitur.",
     ),
     "planPremiumActiveTitle": MessageLookupByLibrary.simpleMessage(
-      "You\'re on Premium",
+      "Kamu menggunakan Premium",
     ),
     "planPremiumLabel": MessageLookupByLibrary.simpleMessage("Premium"),
-    "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("Back"),
+    "preferenceOnboardingBack": MessageLookupByLibrary.simpleMessage("Kembali"),
     "preferenceOnboardingProgress": m16,
-    "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage("Save"),
-    "preferenceOnboardingTitle": MessageLookupByLibrary.simpleMessage(
-      "Your vibe",
+    "preferenceOnboardingSubmit": MessageLookupByLibrary.simpleMessage(
+      "Simpan",
     ),
-    "preferencePromptCta": MessageLookupByLibrary.simpleMessage("Start"),
+    "preferenceOnboardingTitle": MessageLookupByLibrary.simpleMessage(
+      "Suasanamu",
+    ),
+    "preferencePromptCta": MessageLookupByLibrary.simpleMessage("Mulai"),
     "preferencePromptSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Help your home understand what works for you.",
+      "Bantu rumahmu memahami apa yang cocok untukmu.",
     ),
     "preferencePromptTitle": MessageLookupByLibrary.simpleMessage(
-      "Set your vibe",
+      "Atur suasanamu",
     ),
-    "preferenceReportDoneCta": MessageLookupByLibrary.simpleMessage("Done"),
+    "preferenceReportDoneCta": MessageLookupByLibrary.simpleMessage("Selesai"),
     "preferenceReportEditCta": MessageLookupByLibrary.simpleMessage("Edit"),
     "preferenceReportEditError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t save that update.",
+      "Tidak dapat menyimpan pembaruan itu.",
     ),
     "preferenceReportEditSectionDone": MessageLookupByLibrary.simpleMessage(
-      "Done",
+      "Selesai",
     ),
     "preferenceReportEditSectionHint": MessageLookupByLibrary.simpleMessage(
-      "Write what feels right",
+      "Tulis yang terasa paling tepat",
     ),
     "preferenceReportEditSectionPrompt": MessageLookupByLibrary.simpleMessage(
-      "Edit this section.",
+      "Edit bagian ini.",
     ),
     "preferenceReportEditTitle": MessageLookupByLibrary.simpleMessage(
-      "Edit preferences",
+      "Edit preferensi",
     ),
     "preferenceReportEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "Complete your preferences to generate your report.",
+      "Lengkapi preferensimu untuk membuat laporan.",
     ),
     "preferenceReportEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "Preferences not ready",
+      "Preferensi belum siap",
     ),
     "preferenceReportErrorBody": MessageLookupByLibrary.simpleMessage(
-      "Please try again.",
+      "Silakan coba lagi.",
     ),
     "preferenceReportErrorTitle": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load report",
+      "Tidak dapat memuat laporan",
     ),
     "preferenceReportGenerationFailed": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t finish your preference reflection. Go back and try again.",
+      "Tidak dapat menyelesaikan refleksi preferensimu. Kembali dan coba lagi.",
     ),
     "preferenceReportGenerationMissing": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t finish your preference reflection. Try again soon.",
+      "Tidak dapat menyelesaikan refleksi preferensimu. Coba lagi nanti.",
     ),
     "preferenceReportReadOnlyNote": MessageLookupByLibrary.simpleMessage(
-      "This shows what feels comfortable for them.",
+      "Ini menunjukkan apa yang terasa nyaman bagi mereka.",
     ),
     "preferenceReportTitle": MessageLookupByLibrary.simpleMessage(
-      "Your preferences",
+      "Preferensimu",
     ),
     "preferenceReportViewTitle": MessageLookupByLibrary.simpleMessage(
-      "View preferences",
+      "Lihat preferensi",
     ),
     "preferenceScenarioCleanlinessSharedSpaceOption1":
-        MessageLookupByLibrary.simpleMessage("Keep tidy"),
+        MessageLookupByLibrary.simpleMessage("Jaga tetap rapi"),
     "preferenceScenarioCleanlinessSharedSpaceOption2":
-        MessageLookupByLibrary.simpleMessage("A little messy"),
+        MessageLookupByLibrary.simpleMessage("Sedikit berantakan"),
     "preferenceScenarioCleanlinessSharedSpaceOption3":
-        MessageLookupByLibrary.simpleMessage("Mess is fine"),
+        MessageLookupByLibrary.simpleMessage("Berantakan tidak masalah"),
     "preferenceScenarioCleanlinessSharedSpaceQuestion":
-        MessageLookupByLibrary.simpleMessage("Shared space?"),
+        MessageLookupByLibrary.simpleMessage("Ruang bersama?"),
     "preferenceScenarioCommunicationChannelOption1":
-        MessageLookupByLibrary.simpleMessage("Text"),
+        MessageLookupByLibrary.simpleMessage("Pesan"),
     "preferenceScenarioCommunicationChannelOption2":
-        MessageLookupByLibrary.simpleMessage("In person"),
+        MessageLookupByLibrary.simpleMessage("Langsung"),
     "preferenceScenarioCommunicationChannelOption3":
-        MessageLookupByLibrary.simpleMessage("Call"),
+        MessageLookupByLibrary.simpleMessage("Telepon"),
     "preferenceScenarioCommunicationChannelQuestion":
-        MessageLookupByLibrary.simpleMessage("Best way to reach you?"),
+        MessageLookupByLibrary.simpleMessage("Cara terbaik menghubungimu?"),
     "preferenceScenarioCommunicationDirectnessOption1":
-        MessageLookupByLibrary.simpleMessage("Be gentle"),
+        MessageLookupByLibrary.simpleMessage("Lembut saja"),
     "preferenceScenarioCommunicationDirectnessOption2":
-        MessageLookupByLibrary.simpleMessage("Depends"),
+        MessageLookupByLibrary.simpleMessage("Tergantung"),
     "preferenceScenarioCommunicationDirectnessOption3":
-        MessageLookupByLibrary.simpleMessage("Be direct"),
+        MessageLookupByLibrary.simpleMessage("Langsung saja"),
     "preferenceScenarioCommunicationDirectnessQuestion":
-        MessageLookupByLibrary.simpleMessage("When something\'s wrong?"),
+        MessageLookupByLibrary.simpleMessage("Saat ada yang salah?"),
     "preferenceScenarioConflictResolutionOption1":
-        MessageLookupByLibrary.simpleMessage("Cool off first"),
+        MessageLookupByLibrary.simpleMessage("Tenang dulu"),
     "preferenceScenarioConflictResolutionOption2":
-        MessageLookupByLibrary.simpleMessage("Check in later"),
+        MessageLookupByLibrary.simpleMessage("Cek lagi nanti"),
     "preferenceScenarioConflictResolutionOption3":
-        MessageLookupByLibrary.simpleMessage("Talk early"),
+        MessageLookupByLibrary.simpleMessage("Bicarakan lebih awal"),
     "preferenceScenarioConflictResolutionQuestion":
-        MessageLookupByLibrary.simpleMessage("If something\'s off?"),
+        MessageLookupByLibrary.simpleMessage("Kalau ada yang tidak beres?"),
     "preferenceScenarioEnvironmentLightOption1":
-        MessageLookupByLibrary.simpleMessage("Soft"),
+        MessageLookupByLibrary.simpleMessage("Lembut"),
     "preferenceScenarioEnvironmentLightOption2":
-        MessageLookupByLibrary.simpleMessage("Balanced"),
+        MessageLookupByLibrary.simpleMessage("Seimbang"),
     "preferenceScenarioEnvironmentLightOption3":
-        MessageLookupByLibrary.simpleMessage("Bright"),
+        MessageLookupByLibrary.simpleMessage("Terang"),
     "preferenceScenarioEnvironmentLightQuestion":
-        MessageLookupByLibrary.simpleMessage("Lighting?"),
+        MessageLookupByLibrary.simpleMessage("Pencahayaan?"),
     "preferenceScenarioEnvironmentNoiseOption1":
-        MessageLookupByLibrary.simpleMessage("Quiet please"),
+        MessageLookupByLibrary.simpleMessage("Tolong tenang"),
     "preferenceScenarioEnvironmentNoiseOption2":
-        MessageLookupByLibrary.simpleMessage("Normal noise"),
+        MessageLookupByLibrary.simpleMessage("Bising normal"),
     "preferenceScenarioEnvironmentNoiseOption3":
-        MessageLookupByLibrary.simpleMessage("Lively is fine"),
+        MessageLookupByLibrary.simpleMessage("Ramai tidak masalah"),
     "preferenceScenarioEnvironmentNoiseQuestion":
-        MessageLookupByLibrary.simpleMessage("Noise level?"),
+        MessageLookupByLibrary.simpleMessage("Tingkat kebisingan?"),
     "preferenceScenarioEnvironmentScentOption1":
-        MessageLookupByLibrary.simpleMessage("Sensitive"),
+        MessageLookupByLibrary.simpleMessage("Sensitif"),
     "preferenceScenarioEnvironmentScentOption2":
-        MessageLookupByLibrary.simpleMessage("Neutral"),
+        MessageLookupByLibrary.simpleMessage("Netral"),
     "preferenceScenarioEnvironmentScentOption3":
-        MessageLookupByLibrary.simpleMessage("Doesn\'t bother me"),
+        MessageLookupByLibrary.simpleMessage("Tidak mengganggu saya"),
     "preferenceScenarioEnvironmentScentQuestion":
-        MessageLookupByLibrary.simpleMessage("Strong smells?"),
+        MessageLookupByLibrary.simpleMessage("Bau yang kuat?"),
     "preferenceScenarioPrivacyNotificationsOption1":
-        MessageLookupByLibrary.simpleMessage("Please don\'t"),
+        MessageLookupByLibrary.simpleMessage("Tolong jangan"),
     "preferenceScenarioPrivacyNotificationsOption2":
-        MessageLookupByLibrary.simpleMessage("Important only"),
+        MessageLookupByLibrary.simpleMessage("Hanya yang penting"),
     "preferenceScenarioPrivacyNotificationsOption3":
-        MessageLookupByLibrary.simpleMessage("Anytime"),
+        MessageLookupByLibrary.simpleMessage("Kapan saja"),
     "preferenceScenarioPrivacyNotificationsQuestion":
-        MessageLookupByLibrary.simpleMessage("Messages at night?"),
+        MessageLookupByLibrary.simpleMessage("Pesan malam hari?"),
     "preferenceScenarioPrivacyRoomEntryOption1":
-        MessageLookupByLibrary.simpleMessage("Knock first"),
+        MessageLookupByLibrary.simpleMessage("Ketuk dulu"),
     "preferenceScenarioPrivacyRoomEntryOption2":
-        MessageLookupByLibrary.simpleMessage("Usually knock"),
+        MessageLookupByLibrary.simpleMessage("Biasanya ketuk"),
     "preferenceScenarioPrivacyRoomEntryOption3":
-        MessageLookupByLibrary.simpleMessage("Open door"),
+        MessageLookupByLibrary.simpleMessage("Buka pintu saja"),
     "preferenceScenarioPrivacyRoomEntryQuestion":
-        MessageLookupByLibrary.simpleMessage("Entering your room?"),
+        MessageLookupByLibrary.simpleMessage("Masuk ke kamarmu?"),
     "preferenceScenarioRoutinePlanningOption1":
-        MessageLookupByLibrary.simpleMessage("Structured"),
+        MessageLookupByLibrary.simpleMessage("Terstruktur"),
     "preferenceScenarioRoutinePlanningOption2":
-        MessageLookupByLibrary.simpleMessage("Some structure"),
+        MessageLookupByLibrary.simpleMessage("Sedikit terstruktur"),
     "preferenceScenarioRoutinePlanningOption3":
-        MessageLookupByLibrary.simpleMessage("Go with the flow"),
+        MessageLookupByLibrary.simpleMessage("Mengalir saja"),
     "preferenceScenarioRoutinePlanningQuestion":
-        MessageLookupByLibrary.simpleMessage("Daily life?"),
+        MessageLookupByLibrary.simpleMessage("Kehidupan sehari-hari?"),
     "preferenceScenarioScheduleQuietHoursOption1":
-        MessageLookupByLibrary.simpleMessage("Quiet nights"),
+        MessageLookupByLibrary.simpleMessage("Malam tenang"),
     "preferenceScenarioScheduleQuietHoursOption2":
-        MessageLookupByLibrary.simpleMessage("Depends"),
+        MessageLookupByLibrary.simpleMessage("Tergantung"),
     "preferenceScenarioScheduleQuietHoursOption3":
-        MessageLookupByLibrary.simpleMessage("Active is fine"),
+        MessageLookupByLibrary.simpleMessage("Aktif tidak masalah"),
     "preferenceScenarioScheduleQuietHoursQuestion":
-        MessageLookupByLibrary.simpleMessage("Evenings?"),
+        MessageLookupByLibrary.simpleMessage("Malam hari?"),
     "preferenceScenarioScheduleSleepTimingOption1":
-        MessageLookupByLibrary.simpleMessage("Early bird"),
+        MessageLookupByLibrary.simpleMessage("Bangun pagi"),
     "preferenceScenarioScheduleSleepTimingOption2":
-        MessageLookupByLibrary.simpleMessage("In between"),
+        MessageLookupByLibrary.simpleMessage("Di tengah-tengah"),
     "preferenceScenarioScheduleSleepTimingOption3":
-        MessageLookupByLibrary.simpleMessage("Night owl"),
+        MessageLookupByLibrary.simpleMessage("Begadang"),
     "preferenceScenarioScheduleSleepTimingQuestion":
-        MessageLookupByLibrary.simpleMessage("Sleep style?"),
+        MessageLookupByLibrary.simpleMessage("Gaya tidur?"),
     "preferenceScenarioSocialHostingOption1":
-        MessageLookupByLibrary.simpleMessage("Rare"),
+        MessageLookupByLibrary.simpleMessage("Jarang"),
     "preferenceScenarioSocialHostingOption2":
-        MessageLookupByLibrary.simpleMessage("Sometimes"),
+        MessageLookupByLibrary.simpleMessage("Kadang-kadang"),
     "preferenceScenarioSocialHostingOption3":
-        MessageLookupByLibrary.simpleMessage("Often"),
+        MessageLookupByLibrary.simpleMessage("Sering"),
     "preferenceScenarioSocialHostingQuestion":
-        MessageLookupByLibrary.simpleMessage("Guests?"),
+        MessageLookupByLibrary.simpleMessage("Tamu?"),
     "preferenceScenarioSocialTogethernessOption1":
-        MessageLookupByLibrary.simpleMessage("Mostly solo"),
+        MessageLookupByLibrary.simpleMessage("Kebanyakan sendiri"),
     "preferenceScenarioSocialTogethernessOption2":
-        MessageLookupByLibrary.simpleMessage("Mix of both"),
+        MessageLookupByLibrary.simpleMessage("Campuran keduanya"),
     "preferenceScenarioSocialTogethernessOption3":
-        MessageLookupByLibrary.simpleMessage("Hang out a lot"),
+        MessageLookupByLibrary.simpleMessage("Sering kumpul"),
     "preferenceScenarioSocialTogethernessQuestion":
-        MessageLookupByLibrary.simpleMessage("Home energy?"),
-    "profileActionConfirm": MessageLookupByLibrary.simpleMessage("Leave home"),
+        MessageLookupByLibrary.simpleMessage("Energi rumah?"),
+    "profileActionConfirm": MessageLookupByLibrary.simpleMessage(
+      "Keluar dari rumah",
+    ),
     "profileActionConfirmDelete": MessageLookupByLibrary.simpleMessage(
-      "Delete account",
+      "Hapus akun",
     ),
     "profileConfirmDeleteMessage": MessageLookupByLibrary.simpleMessage(
-      "This deletes your account and signs you out. This is permanent.",
+      "Ini akan menghapus akunmu dan mengeluarkanmu. Ini bersifat permanen.",
     ),
     "profileConfirmDeleteTitle": MessageLookupByLibrary.simpleMessage(
-      "Delete your account?",
+      "Hapus akunmu?",
     ),
     "profileConfirmLeaveMessage": MessageLookupByLibrary.simpleMessage(
-      "You\'ll lose access to tasks, history, and invites.",
+      "Kamu akan kehilangan akses ke tugas, riwayat, dan undangan.",
     ),
     "profileConfirmLeaveTitle": MessageLookupByLibrary.simpleMessage(
-      "Leave this home?",
+      "Keluar dari rumah ini?",
     ),
     "profileConnectionSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Manage reminders and alerts.",
+      "Kelola pengingat dan pemberitahuan.",
     ),
     "profileConnectionSettingsTitle": MessageLookupByLibrary.simpleMessage(
-      "Notifications",
+      "Notifikasi",
     ),
     "profileContactEmailSubject": MessageLookupByLibrary.simpleMessage(
-      "Contact us",
+      "Hubungi kami",
     ),
     "profileContactLaunchError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t open your email app.",
+      "Tidak dapat membuka aplikasi emailmu.",
     ),
     "profileContactUsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Email support@makinglifeeasie.com",
+      "Kirim email ke support@makinglifeeasie.com",
     ),
-    "profileContactUsTitle": MessageLookupByLibrary.simpleMessage("Contact us"),
+    "profileContactUsTitle": MessageLookupByLibrary.simpleMessage(
+      "Hubungi kami",
+    ),
     "profileDeleteAccountSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Delete your Kinly account and data.",
+      "Hapus akun dan data Kinly-mu.",
     ),
     "profileDeleteAccountTitle": MessageLookupByLibrary.simpleMessage(
-      "Delete account",
+      "Hapus akun",
     ),
     "profileDeleteSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "Your account will be deleted shortly. We\'ll sign you out.",
+      "Akunmu akan segera dihapus. Kami akan mengeluarkanmu.",
     ),
     "profileGenericError": MessageLookupByLibrary.simpleMessage(
-      "Something went wrong.",
+      "Terjadi kesalahan.",
     ),
     "profileIdentityAvatarEmpty": MessageLookupByLibrary.simpleMessage(
-      "No avatars are available right now.",
+      "Tidak ada avatar yang tersedia saat ini.",
     ),
     "profileIdentityAvatarSectionDescription":
         MessageLookupByLibrary.simpleMessage(
-          "Use a different avatar for each person in your home.",
+          "Gunakan avatar berbeda untuk tiap orang di rumahmu.",
         ),
     "profileIdentityAvatarSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Choose an avatar",
+      "Pilih avatar",
     ),
     "profileIdentityLoadError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load your profile.",
+      "Tidak dapat memuat profilmu.",
     ),
-    "profileIdentityRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "profileIdentityRetry": MessageLookupByLibrary.simpleMessage("Coba lagi"),
     "profileIdentitySaveButton": MessageLookupByLibrary.simpleMessage(
-      "Save changes",
+      "Simpan perubahan",
     ),
     "profileIdentitySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Choose a username and avatar.",
+      "Pilih nama pengguna dan avatar.",
     ),
     "profileIdentitySuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "Profile updated.",
+      "Profil diperbarui.",
     ),
-    "profileIdentityTitle": MessageLookupByLibrary.simpleMessage(
-      "Edit profile",
-    ),
+    "profileIdentityTitle": MessageLookupByLibrary.simpleMessage("Edit profil"),
     "profileIdentityUsernameEmptyError": MessageLookupByLibrary.simpleMessage(
-      "Enter a username.",
+      "Masukkan nama pengguna.",
     ),
     "profileIdentityUsernameFormatError": MessageLookupByLibrary.simpleMessage(
-      "Use 3-30 lowercase letters or numbers. Dots and underscores can go in the middle.",
+      "Gunakan 3-30 huruf kecil atau angka. Titik dan garis bawah boleh di tengah.",
     ),
     "profileIdentityUsernameHint": MessageLookupByLibrary.simpleMessage(
-      "letters, numbers, . or _",
+      "huruf, angka, . atau _",
     ),
     "profileIdentityUsernameLabel": MessageLookupByLibrary.simpleMessage(
-      "Username",
+      "Nama pengguna",
     ),
     "profileIdentityUsernamePreviewFallback":
-        MessageLookupByLibrary.simpleMessage("your username"),
+        MessageLookupByLibrary.simpleMessage("nama penggunamu"),
     "profileIdentityUsernameTakenError": MessageLookupByLibrary.simpleMessage(
-      "That username is taken.",
+      "Nama pengguna itu sudah dipakai.",
     ),
     "profileInfoHubLoadError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load the Info Hub. Check your connection.",
+      "Tidak dapat memuat Pusat Info. Periksa koneksimu.",
     ),
     "profileInfoHubSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Open the Kinly Notion hub in-app.",
+      "Buka pusat Notion Kinly di dalam aplikasi.",
     ),
-    "profileInfoHubTitle": MessageLookupByLibrary.simpleMessage("Info Hub"),
+    "profileInfoHubTitle": MessageLookupByLibrary.simpleMessage("Pusat Info"),
     "profileKickActionConfirm": MessageLookupByLibrary.simpleMessage(
-      "Remove member",
+      "Hapus anggota",
     ),
     "profileKickMemberSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Choose who loses access to this home.",
+      "Pilih siapa yang kehilangan akses ke rumah ini.",
     ),
     "profileKickMemberTitle": MessageLookupByLibrary.simpleMessage(
-      "Remove a member",
+      "Hapus anggota",
     ),
     "profileKickNoMembers": MessageLookupByLibrary.simpleMessage(
-      "No other members to remove right now.",
+      "Tidak ada anggota lain untuk dihapus saat ini.",
     ),
     "profileKickOwnerOnly": MessageLookupByLibrary.simpleMessage(
-      "Only the home owner can remove members.",
+      "Hanya pemilik rumah yang bisa menghapus anggota.",
     ),
     "profileKickSheetSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Choose a member to remove. They\'ll lose access right away.",
+      "Pilih anggota yang ingin dihapus. Mereka akan langsung kehilangan akses.",
     ),
     "profileKickSheetTitle": MessageLookupByLibrary.simpleMessage(
-      "Remove a member",
+      "Hapus anggota",
     ),
     "profileKickSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "They no longer have access to this home.",
+      "Mereka tidak lagi punya akses ke rumah ini.",
     ),
     "profileLeaveEligibilityError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load your home members.",
+      "Tidak dapat memuat anggota rumahmu.",
     ),
     "profileLeaveEligibilityLoading": MessageLookupByLibrary.simpleMessage(
-      "Checking home members...",
+      "Memeriksa anggota rumah...",
     ),
     "profileLeaveHomeSubtitle": MessageLookupByLibrary.simpleMessage(
-      "You\'ll leave this shared Kinly space.",
+      "Kamu akan keluar dari ruang bersama Kinly ini.",
     ),
-    "profileLeaveHomeTitle": MessageLookupByLibrary.simpleMessage("Leave home"),
+    "profileLeaveHomeTitle": MessageLookupByLibrary.simpleMessage(
+      "Keluar dari rumah",
+    ),
     "profileLeaveOwnerNoEligibleMembers": MessageLookupByLibrary.simpleMessage(
-      "No one else can take ownership right now.",
+      "Tidak ada orang lain yang bisa mengambil alih kepemilikan saat ini.",
     ),
     "profileLeaveOwnerSoloMessage": MessageLookupByLibrary.simpleMessage(
-      "You\'re the last member. Leaving will deactivate this home.",
+      "Kamu adalah anggota terakhir. Jika keluar, rumah ini akan dinonaktifkan.",
     ),
     "profileLeaveSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "You left your home.",
+      "Kamu telah keluar dari rumahmu.",
     ),
     "profileLeaveTransferSheetSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Choose who becomes the new owner before you leave.",
+      "Pilih siapa yang akan menjadi pemilik baru sebelum kamu keluar.",
     ),
     "profileLeaveTransferSheetTitle": MessageLookupByLibrary.simpleMessage(
-      "Transfer ownership",
+      "Alihkan kepemilikan",
     ),
     "profileLeaveTransferSuccessMessage": MessageLookupByLibrary.simpleMessage(
-      "Ownership transferred. Finishing leave...",
+      "Kepemilikan dialihkan. Menyelesaikan proses keluar...",
     ),
     "profileLogoutSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Sign out of Kinly on this device.",
+      "Keluar dari Kinly di perangkat ini.",
     ),
-    "profileLogoutTitle": MessageLookupByLibrary.simpleMessage("Sign out"),
+    "profileLogoutTitle": MessageLookupByLibrary.simpleMessage("Keluar"),
     "profileMissingHomeError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t find your current home.",
+      "Tidak dapat menemukan rumahmu saat ini.",
     ),
     "profileSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Manage your account and home access.",
+      "Kelola akunmu dan akses rumah.",
     ),
-    "profileSettingsTitle": MessageLookupByLibrary.simpleMessage("Profile"),
+    "profileSettingsTitle": MessageLookupByLibrary.simpleMessage("Profil"),
     "profile_deactivated_message": MessageLookupByLibrary.simpleMessage(
-      "Your profile is off. Sign in with another email.",
+      "Profilmu dinonaktifkan. Masuk dengan email lain.",
     ),
     "pulseCloudySteadySummary": MessageLookupByLibrary.simpleMessage(
-      "Some things worked. Some didn\'t.",
+      "Beberapa hal berjalan baik. Beberapa tidak.",
     ),
-    "pulseCloudySteadyTitle": MessageLookupByLibrary.simpleMessage("Mixed"),
+    "pulseCloudySteadyTitle": MessageLookupByLibrary.simpleMessage("Campuran"),
     "pulseCloudyTenseSummary": MessageLookupByLibrary.simpleMessage(
-      "Some tension came up this week.",
+      "Ada sedikit ketegangan minggu ini.",
     ),
     "pulseCloudyTenseTitle": MessageLookupByLibrary.simpleMessage(
-      "Needs attention",
+      "Perlu perhatian",
     ),
     "pulseFormingSummary": MessageLookupByLibrary.simpleMessage(
-      "A few more check-ins will give a clearer picture.",
+      "Beberapa check-in lagi akan memberi gambaran yang lebih jelas.",
     ),
-    "pulseFormingTitle": MessageLookupByLibrary.simpleMessage("Still forming"),
+    "pulseFormingTitle": MessageLookupByLibrary.simpleMessage(
+      "Masih terbentuk",
+    ),
     "pulsePartlySupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "Mostly steady, with some room to improve.",
+      "Sebagian besar stabil, dengan sedikit ruang untuk perbaikan.",
     ),
     "pulsePartlySupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Okay overall",
+      "Cukup baik secara keseluruhan",
     ),
     "pulseRainySupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "It may be time for a small reset.",
+      "Mungkin sudah waktunya untuk reset kecil.",
     ),
     "pulseRainySupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Reset recommended",
+      "Disarankan reset",
     ),
     "pulseRainyUnsupportedSummary": MessageLookupByLibrary.simpleMessage(
-      "There\'s noticeable friction right now.",
+      "Ada gesekan yang cukup terasa sekarang.",
     ),
     "pulseRainyUnsupportedTitle": MessageLookupByLibrary.simpleMessage(
-      "Reset needed",
+      "Perlu reset",
     ),
     "pulseSunnyBumpySummary": MessageLookupByLibrary.simpleMessage(
-      "Mostly smooth, with a few bumps.",
+      "Sebagian besar lancar, dengan beberapa hambatan kecil.",
     ),
     "pulseSunnyBumpyTitle": MessageLookupByLibrary.simpleMessage(
-      "Mostly smooth",
+      "Sebagian besar lancar",
     ),
     "pulseSunnyCalmSummary": MessageLookupByLibrary.simpleMessage(
-      "Things felt smooth this week.",
+      "Semuanya terasa lancar minggu ini.",
     ),
     "pulseSunnyCalmTitle": MessageLookupByLibrary.simpleMessage(
-      "Running smoothly",
+      "Berjalan lancar",
     ),
     "pulseThunderstormSummary": MessageLookupByLibrary.simpleMessage(
-      "Tension is high. Reset soon.",
+      "Ketegangan tinggi. Segera lakukan reset.",
     ),
     "pulseThunderstormTitle": MessageLookupByLibrary.simpleMessage(
-      "Tension high",
+      "Ketegangan tinggi",
     ),
     "quick_add_flow_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Create a task",
+      "Buat tugas",
     ),
-    "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Task"),
+    "quick_add_flow_title": MessageLookupByLibrary.simpleMessage("Tugas"),
     "quick_add_share_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Add a bill",
+      "Tambah tagihan",
     ),
-    "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Bill"),
-    "quick_add_title": MessageLookupByLibrary.simpleMessage("Quick Add"),
+    "quick_add_share_title": MessageLookupByLibrary.simpleMessage("Tagihan"),
+    "quick_add_title": MessageLookupByLibrary.simpleMessage("Tambah Cepat"),
     "reflectiveAcknowledgementTitle": MessageLookupByLibrary.simpleMessage(
-      "Got it.",
+      "Baik.",
     ),
     "reflectiveGenericPrimary": MessageLookupByLibrary.simpleMessage(
-      "Putting this together with care.",
+      "Menyusun ini dengan penuh perhatian.",
     ),
     "reflectiveGenericSecondary": MessageLookupByLibrary.simpleMessage(
-      "A short pause before we show it.",
+      "Jeda sebentar sebelum kami menampilkannya.",
     ),
     "reflectiveHouseNormsPrimary": MessageLookupByLibrary.simpleMessage(
-      "Reflecting what this home shared.",
+      "Merefleksikan apa yang dibagikan rumah ini.",
     ),
     "reflectiveHouseNormsSecondary": MessageLookupByLibrary.simpleMessage(
-      "A shared guide, not a rulebook.",
+      "Panduan bersama, bukan buku aturan.",
     ),
     "reflectiveHousePrimary": MessageLookupByLibrary.simpleMessage(
-      "Putting your home\'s expectations into words.",
+      "Menuangkan harapan rumahmu ke dalam kata-kata.",
     ),
     "reflectiveHouseSecondary": MessageLookupByLibrary.simpleMessage(
-      "So expectations are clear.",
+      "Agar harapan menjadi jelas.",
     ),
     "reflectivePersonalPrimary": MessageLookupByLibrary.simpleMessage(
-      "Reflecting what you shared.",
+      "Merefleksikan apa yang kamu bagikan.",
     ),
     "reflectivePersonalSecondary": MessageLookupByLibrary.simpleMessage(
-      "So others understand what feels comfortable to you.",
+      "Agar orang lain memahami apa yang terasa nyaman untukmu.",
     ),
     "shareCreateAmountHint": MessageLookupByLibrary.simpleMessage("0.00"),
-    "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("Amount"),
+    "shareCreateAmountLabel": MessageLookupByLibrary.simpleMessage("Jumlah"),
     "shareCreateCustomAmountLabel": MessageLookupByLibrary.simpleMessage(
-      "Amount",
+      "Jumlah",
     ),
     "shareCreateCustomHelper": MessageLookupByLibrary.simpleMessage(
-      "Enter each person\'s share. Total equals the amount above.",
+      "Masukkan bagian tiap orang. Total harus sama dengan jumlah di atas.",
     ),
     "shareCreateCyclePeriod": m17,
     "shareCreateDescriptionHint": MessageLookupByLibrary.simpleMessage(
-      "e.g. Grocery run",
+      "mis. Belanja bahan makanan",
     ),
     "shareCreateDescriptionLabel": MessageLookupByLibrary.simpleMessage(
-      "Description",
+      "Deskripsi",
     ),
     "shareCreateErrorForbidden": MessageLookupByLibrary.simpleMessage(
-      "You don\'t have permission to create this right now.",
+      "Kamu tidak punya izin untuk membuat ini sekarang.",
     ),
     "shareCreateErrorGeneric": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t create bill.",
+      "Tidak dapat membuat tagihan.",
     ),
     "shareCreateErrorPaywallActiveCap": MessageLookupByLibrary.simpleMessage(
-      "You\'ve reached the free limit for active bills. Upgrade for more.",
+      "Kamu sudah mencapai batas gratis untuk tagihan aktif. Upgrade untuk lebih banyak.",
     ),
     "shareCreateErrorRecurrenceDraft": MessageLookupByLibrary.simpleMessage(
-      "Drafts do not repeat until you add a split.",
+      "Draf tidak berulang sampai kamu menambahkan pembagian.",
     ),
     "shareCreateLoadError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load your home members.",
+      "Tidak dapat memuat anggota rumahmu.",
     ),
     "shareCreateNotesHint": MessageLookupByLibrary.simpleMessage(
-      "Optional note everyone can see",
+      "Catatan opsional yang bisa dilihat semua orang",
     ),
-    "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("Notes"),
+    "shareCreateNotesLabel": MessageLookupByLibrary.simpleMessage("Catatan"),
     "shareCreateParticipantsEmpty": MessageLookupByLibrary.simpleMessage(
-      "You need at least two home members to share a bill.",
+      "Kamu memerlukan setidaknya dua anggota rumah untuk berbagi tagihan.",
     ),
     "shareCreateRecurrenceEveryLabel": MessageLookupByLibrary.simpleMessage(
-      "Every",
+      "Setiap",
     ),
     "shareCreateRecurrenceLabel": MessageLookupByLibrary.simpleMessage(
-      "Repeat",
+      "Ulangi",
     ),
     "shareCreateRecurrenceToggleLabel": MessageLookupByLibrary.simpleMessage(
-      "Recurring",
+      "Berulang",
     ),
-    "shareCreateRecurrenceUnitDay": MessageLookupByLibrary.simpleMessage("Day"),
+    "shareCreateRecurrenceUnitDay": MessageLookupByLibrary.simpleMessage(
+      "Hari",
+    ),
     "shareCreateRecurrenceUnitMonth": MessageLookupByLibrary.simpleMessage(
-      "Month",
+      "Bulan",
     ),
     "shareCreateRecurrenceUnitWeek": MessageLookupByLibrary.simpleMessage(
-      "Week",
+      "Minggu",
     ),
     "shareCreateRecurrenceUnitYear": MessageLookupByLibrary.simpleMessage(
-      "Year",
+      "Tahun",
     ),
-    "shareCreateRetry": MessageLookupByLibrary.simpleMessage("Try again"),
+    "shareCreateRetry": MessageLookupByLibrary.simpleMessage("Coba lagi"),
     "shareCreateSplitCustom": MessageLookupByLibrary.simpleMessage(
-      "Choose amounts",
+      "Pilih jumlah",
     ),
-    "shareCreateSplitEqual": MessageLookupByLibrary.simpleMessage(
-      "Split evenly",
-    ),
+    "shareCreateSplitEqual": MessageLookupByLibrary.simpleMessage("Bagi rata"),
     "shareCreateSplitLabel": MessageLookupByLibrary.simpleMessage(
-      "How do you want to split this?",
+      "Bagaimana kamu ingin membaginya?",
     ),
     "shareCreateStartLabel": MessageLookupByLibrary.simpleMessage(
-      "When does this apply?",
+      "Kapan ini berlaku?",
     ),
-    "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Create"),
-    "shareCreateSuccess": MessageLookupByLibrary.simpleMessage("Bill created."),
-    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Add Bill"),
+    "shareCreateSubmit": MessageLookupByLibrary.simpleMessage("Buat"),
+    "shareCreateSuccess": MessageLookupByLibrary.simpleMessage(
+      "Tagihan dibuat.",
+    ),
+    "shareCreateTitle": MessageLookupByLibrary.simpleMessage("Tambah Tagihan"),
     "shareCreateValidationAmount": MessageLookupByLibrary.simpleMessage(
-      "Enter an amount greater than zero.",
+      "Masukkan jumlah yang lebih besar dari nol.",
     ),
     "shareCreateValidationCustomAmounts": MessageLookupByLibrary.simpleMessage(
-      "Enter a valid amount for each selected person.",
+      "Masukkan jumlah yang valid untuk setiap orang yang dipilih.",
     ),
     "shareCreateValidationCustomParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "Select at least one person for this bill.",
+          "Pilih setidaknya satu orang untuk tagihan ini.",
         ),
     "shareCreateValidationCustomSinglePayer":
-        MessageLookupByLibrary.simpleMessage("Add at least one other person."),
+        MessageLookupByLibrary.simpleMessage(
+          "Tambahkan setidaknya satu orang lain.",
+        ),
     "shareCreateValidationCustomSum": MessageLookupByLibrary.simpleMessage(
-      "Make sure the split adds up to the total amount.",
+      "Pastikan pembagian sesuai dengan jumlah total.",
     ),
     "shareCreateValidationCustomSumBreakdown": m18,
     "shareCreateValidationDescription": MessageLookupByLibrary.simpleMessage(
-      "Enter a description.",
+      "Masukkan deskripsi.",
     ),
     "shareCreateValidationEqualParticipants":
         MessageLookupByLibrary.simpleMessage(
-          "Select at least one person to split this bill.",
+          "Pilih setidaknya satu orang untuk membagi tagihan ini.",
         ),
     "shareCreateValidationRecurrence": MessageLookupByLibrary.simpleMessage(
-      "Choose how often this repeats.",
+      "Pilih seberapa sering ini berulang.",
     ),
     "shareCreateValidationRecurrenceSplit":
         MessageLookupByLibrary.simpleMessage(
-          "Choose a split before making this recurring.",
+          "Pilih pembagian sebelum menjadikan ini berulang.",
         ),
     "shareCreateValidationStartDate": MessageLookupByLibrary.simpleMessage(
-      "Choose a start date.",
+      "Pilih tanggal mulai.",
     ),
     "shareCreateValidationStartDateRange": MessageLookupByLibrary.simpleMessage(
-      "Choose a date in the allowed range.",
+      "Pilih tanggal dalam rentang yang diizinkan.",
     ),
     "shareCreatedListActiveAmount": m19,
     "shareCreatedListActiveSubtitle": m20,
     "shareCreatedListDraftBadge": MessageLookupByLibrary.simpleMessage(
-      "Unassigned",
+      "Belum ditugaskan",
     ),
     "shareCreatedListDraftSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Split it before publishing so everyone knows their part.",
+      "Bagikan dulu sebelum dipublikasikan agar semua orang tahu bagiannya.",
     ),
     "shareCreatedListEmptySubtitle": MessageLookupByLibrary.simpleMessage(
-      "Bills keep money clear.",
+      "Tagihan membantu urusan uang tetap jelas.",
     ),
     "shareCreatedListEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No bills yet",
+      "Belum ada tagihan",
     ),
     "shareCreatedListError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load your bills. Pull to refresh.",
+      "Tidak dapat memuat tagihanmu. Tarik untuk menyegarkan.",
     ),
-    "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage(
-      "Paid off",
-    ),
-    "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage("Try again"),
-    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage("Your bills"),
-    "shareEditClose": MessageLookupByLibrary.simpleMessage("Close"),
-    "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("Delete"),
-    "shareEditDeleteConfirm": MessageLookupByLibrary.simpleMessage("Delete"),
+    "shareCreatedListPaidBadge": MessageLookupByLibrary.simpleMessage("Lunas"),
+    "shareCreatedListRetry": MessageLookupByLibrary.simpleMessage("Coba lagi"),
+    "shareCreatedListTitle": MessageLookupByLibrary.simpleMessage("Tagihanmu"),
+    "shareEditClose": MessageLookupByLibrary.simpleMessage("Tutup"),
+    "shareEditDeleteButton": MessageLookupByLibrary.simpleMessage("Hapus"),
+    "shareEditDeleteConfirm": MessageLookupByLibrary.simpleMessage("Hapus"),
     "shareEditDeleteConfirmMessage": MessageLookupByLibrary.simpleMessage(
-      "This removes the draft for everyone.",
+      "Ini akan menghapus draf untuk semua orang.",
     ),
     "shareEditDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
-      "Delete bill?",
+      "Hapus tagihan?",
     ),
     "shareEditDeleteError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t delete bill.",
+      "Tidak dapat menghapus tagihan.",
     ),
     "shareEditDeleteSuccess": MessageLookupByLibrary.simpleMessage(
-      "Bill deleted.",
+      "Tagihan dihapus.",
     ),
     "shareEditDisabledActive": MessageLookupByLibrary.simpleMessage(
-      "Active bills are not editable.",
+      "Tagihan aktif tidak dapat diedit.",
     ),
     "shareEditDisabledConverted": MessageLookupByLibrary.simpleMessage(
-      "This bill is now a plan and is not editable here.",
+      "Tagihan ini sekarang menjadi rencana dan tidak bisa diedit di sini.",
     ),
     "shareEditDisabledGeneric": MessageLookupByLibrary.simpleMessage(
-      "This bill is not editable right now.",
+      "Tagihan ini tidak dapat diedit saat ini.",
     ),
     "shareEditDisabledRecurringCycle": MessageLookupByLibrary.simpleMessage(
-      "Recurring cycles are not editable here.",
+      "Siklus berulang tidak dapat diedit di sini.",
     ),
     "shareEditLoadError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t load that draft.",
+      "Tidak dapat memuat draf itu.",
     ),
     "shareEditNotAllowed": MessageLookupByLibrary.simpleMessage(
-      "This stays locked until someone takes this bill.",
+      "Ini tetap terkunci sampai seseorang mengambil tagihan ini.",
     ),
     "shareEditSplitsLocked": MessageLookupByLibrary.simpleMessage(
-      "Splits are locked because someone already paid. You can still update the description and notes.",
+      "Pembagian terkunci karena seseorang sudah membayar. Kamu masih bisa memperbarui deskripsi dan catatan.",
     ),
-    "shareEditSubmit": MessageLookupByLibrary.simpleMessage("Update"),
-    "shareEditSuccess": MessageLookupByLibrary.simpleMessage("Bill updated."),
+    "shareEditSubmit": MessageLookupByLibrary.simpleMessage("Perbarui"),
+    "shareEditSuccess": MessageLookupByLibrary.simpleMessage(
+      "Tagihan diperbarui.",
+    ),
     "shareEditTerminateError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t end the plan.",
+      "Tidak dapat mengakhiri rencana.",
     ),
-    "shareEditTerminatePlan": MessageLookupByLibrary.simpleMessage("End plan"),
+    "shareEditTerminatePlan": MessageLookupByLibrary.simpleMessage(
+      "Akhiri rencana",
+    ),
     "shareEditTerminatePlanBusy": MessageLookupByLibrary.simpleMessage(
-      "Ending...",
+      "Mengakhiri...",
     ),
     "shareEditTerminatePlanConfirm": MessageLookupByLibrary.simpleMessage(
-      "End plan",
+      "Akhiri rencana",
     ),
     "shareEditTerminatePlanMessage": MessageLookupByLibrary.simpleMessage(
-      "This stops future bill cycles.",
+      "Ini akan menghentikan siklus tagihan berikutnya.",
     ),
     "shareEditTerminatePlanTitle": MessageLookupByLibrary.simpleMessage(
-      "End recurring plan?",
+      "Akhiri rencana berulang?",
     ),
     "shareEditTerminateSuccess": MessageLookupByLibrary.simpleMessage(
-      "Plan ended.",
+      "Rencana diakhiri.",
     ),
-    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Edit Bill"),
+    "shareEditTitle": MessageLookupByLibrary.simpleMessage("Edit Tagihan"),
     "shareOwedDetailEmpty": MessageLookupByLibrary.simpleMessage(
-      "You\'re all caught up with this person.",
+      "Kamu sudah beres dengan orang ini.",
     ),
     "shareOwedDetailError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t mark this payment as settled.",
+      "Tidak dapat menandai pembayaran ini sebagai selesai.",
     ),
     "shareOwedDetailPaid": MessageLookupByLibrary.simpleMessage(
-      "Mark as settled",
+      "Tandai selesai",
     ),
     "shareOwedDetailSuccess": MessageLookupByLibrary.simpleMessage(
-      "Marked settled.",
+      "Ditandai selesai.",
     ),
-    "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage("To settle"),
+    "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage(
+      "Untuk diselesaikan",
+    ),
     "sharePaidDetailAcknowledge": MessageLookupByLibrary.simpleMessage(
-      "Acknowledge receipt",
+      "Konfirmasi penerimaan",
     ),
     "sharePaidDetailAcknowledgeError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t acknowledge this payment.",
+      "Tidak dapat mengonfirmasi pembayaran ini.",
     ),
     "sharePaidDetailAcknowledging": MessageLookupByLibrary.simpleMessage(
-      "Acknowledging...",
+      "Mengonfirmasi...",
     ),
     "shoppingAllItemsBought": MessageLookupByLibrary.simpleMessage(
-      "Everything bought",
+      "Semua sudah dibeli",
     ),
-    "shoppingAmountHint": MessageLookupByLibrary.simpleMessage(
-      "e.g. 2 cartons",
+    "shoppingAmountHint": MessageLookupByLibrary.simpleMessage("mis. 2 kotak"),
+    "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage("Jumlah"),
+    "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage(
+      "Item yang sudah dibeli",
     ),
-    "shoppingAmountLabel": MessageLookupByLibrary.simpleMessage("Amount"),
-    "shoppingArchiveCta": MessageLookupByLibrary.simpleMessage("Bought items"),
     "shoppingArchiveDraftBillCreated": MessageLookupByLibrary.simpleMessage(
-      "Draft bill created",
+      "Draf tagihan dibuat",
     ),
     "shoppingArchiveItemsBought": MessageLookupByLibrary.simpleMessage(
-      "Items marked bought and removed",
+      "Item ditandai sudah dibeli dan dihapus",
     ),
-    "shoppingArchiveShareNo": MessageLookupByLibrary.simpleMessage("No"),
+    "shoppingArchiveShareNo": MessageLookupByLibrary.simpleMessage("Tidak"),
     "shoppingArchiveSharePromptBody": MessageLookupByLibrary.simpleMessage(
-      "Create a draft bill from these items?",
+      "Buat draf tagihan dari item-item ini?",
     ),
     "shoppingArchiveSharePromptTitle": MessageLookupByLibrary.simpleMessage(
-      "Create bill?",
+      "Buat tagihan?",
     ),
-    "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("Yes"),
+    "shoppingArchiveShareYes": MessageLookupByLibrary.simpleMessage("Ya"),
     "shoppingCardSubtitle": m21,
-    "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
+    "shoppingCardTitle": MessageLookupByLibrary.simpleMessage("Daftar belanja"),
     "shoppingContextHint": MessageLookupByLibrary.simpleMessage(
-      "Brand, size, or notes",
+      "Merek, ukuran, atau catatan",
     ),
-    "shoppingContextLabel": MessageLookupByLibrary.simpleMessage("Notes"),
+    "shoppingContextLabel": MessageLookupByLibrary.simpleMessage("Catatan"),
     "shoppingCreateTitle": MessageLookupByLibrary.simpleMessage(
-      "Add shopping item",
+      "Tambah item belanja",
     ),
-    "shoppingDelete": MessageLookupByLibrary.simpleMessage("Delete item"),
+    "shoppingDelete": MessageLookupByLibrary.simpleMessage("Hapus item"),
     "shoppingDeleteConfirmBody": MessageLookupByLibrary.simpleMessage(
-      "This removes it from the shared shopping list.",
+      "Ini akan menghapusnya dari daftar belanja bersama.",
     ),
     "shoppingDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
-      "Delete this item?",
+      "Hapus item ini?",
     ),
-    "shoppingDetailTitle": MessageLookupByLibrary.simpleMessage(
-      "Shopping item",
-    ),
+    "shoppingDetailTitle": MessageLookupByLibrary.simpleMessage("Item belanja"),
     "shoppingEditTitle": MessageLookupByLibrary.simpleMessage(
-      "Edit shopping item",
+      "Edit item belanja",
     ),
     "shoppingEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No shopping items.",
+      "Belum ada item belanja.",
     ),
     "shoppingErrorItemAlreadyCompletedByOther":
         MessageLookupByLibrary.simpleMessage(
-          "Someone already marked this bought.",
+          "Seseorang sudah menandai item ini sebagai dibeli.",
         ),
-    "shoppingListTitle": MessageLookupByLibrary.simpleMessage("Shopping list"),
+    "shoppingListTitle": MessageLookupByLibrary.simpleMessage("Daftar belanja"),
     "shoppingMarkCompleteCta": MessageLookupByLibrary.simpleMessage(
-      "Mark bought",
+      "Tandai sudah dibeli",
     ),
-    "shoppingNameHint": MessageLookupByLibrary.simpleMessage("e.g. Milk"),
-    "shoppingNameLabel": MessageLookupByLibrary.simpleMessage("Name"),
-    "shoppingPhotoLabel": MessageLookupByLibrary.simpleMessage("Add photo"),
+    "shoppingNameHint": MessageLookupByLibrary.simpleMessage("mis. Susu"),
+    "shoppingNameLabel": MessageLookupByLibrary.simpleMessage("Nama"),
+    "shoppingPhotoLabel": MessageLookupByLibrary.simpleMessage("Tambah foto"),
     "shoppingPhotoPlaceholder": MessageLookupByLibrary.simpleMessage(
-      "Add a photo",
+      "Tambah foto",
     ),
     "shoppingPhotoReplaceLabel": MessageLookupByLibrary.simpleMessage(
-      "Help others buy the right item",
+      "Bantu orang lain membeli item yang tepat",
     ),
-    "shoppingSubmitAdd": MessageLookupByLibrary.simpleMessage("Add item"),
-    "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage("Save changes"),
-    "shoppingTabPending": MessageLookupByLibrary.simpleMessage("To buy"),
+    "shoppingSubmitAdd": MessageLookupByLibrary.simpleMessage("Tambah item"),
+    "shoppingSubmitEdit": MessageLookupByLibrary.simpleMessage(
+      "Simpan perubahan",
+    ),
+    "shoppingTabPending": MessageLookupByLibrary.simpleMessage("Untuk dibeli"),
     "shoppingValidationName": MessageLookupByLibrary.simpleMessage(
-      "Enter an item name.",
+      "Masukkan nama item.",
     ),
     "startReturningSubtitle": MessageLookupByLibrary.simpleMessage(
-      "What do you want to do?",
+      "Apa yang ingin kamu lakukan?",
     ),
     "startReturningTitle": m22,
-    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Add Task"),
-    "todayAddSheetShare": MessageLookupByLibrary.simpleMessage("Add Bill"),
+    "todayAddSheetFlow": MessageLookupByLibrary.simpleMessage("Tambah Tugas"),
+    "todayAddSheetShare": MessageLookupByLibrary.simpleMessage(
+      "Tambah Tagihan",
+    ),
     "todayAddSheetShopping": MessageLookupByLibrary.simpleMessage(
-      "Add Shopping Item",
+      "Tambah Item Belanja",
     ),
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
-      "Add to your home",
+      "Tambahkan ke rumahmu",
     ),
     "todayEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "Nothing needs your attention right now.",
+      "Tidak ada yang perlu perhatianmu saat ini.",
     ),
     "todayEmptyCardBadge": MessageLookupByLibrary.simpleMessage(
-      "Take a breather",
+      "Istirahat sejenak",
     ),
     "todayEmptyCardTitle": MessageLookupByLibrary.simpleMessage(
-      "All caught up",
+      "Semua sudah beres",
     ),
     "todayFlatmateInviteSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Stay aligned and share responsibilities.",
+      "Tetap selaras dan berbagi tanggung jawab.",
     ),
     "todayFlatmateInviteTitle": MessageLookupByLibrary.simpleMessage(
-      "Invite your flatmates",
+      "Undang teman serumahmu",
     ),
-    "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("new today"),
-    "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Tasks"),
+    "todayFlowBadgeNew": MessageLookupByLibrary.simpleMessage("baru hari ini"),
+    "todayFlowSectionTitle": MessageLookupByLibrary.simpleMessage("Tugas"),
     "todayFlowSeeAll": m23,
     "todayFlowSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Here\'s what needs attention today.",
+      "Ini yang perlu diperhatikan hari ini.",
     ),
-    "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Active"),
-    "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
+    "todayFlowTabActive": MessageLookupByLibrary.simpleMessage("Aktif"),
+    "todayFlowTabDrafts": MessageLookupByLibrary.simpleMessage("Draf"),
     "todayGratitudeHouseCta": MessageLookupByLibrary.simpleMessage(
-      "House shoutouts",
+      "Ucapan terima kasih rumah",
     ),
     "todayGratitudePersonalCta": MessageLookupByLibrary.simpleMessage(
-      "My shoutouts",
+      "Ucapan terima kasih saya",
     ),
     "todayGratitudeSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Shoutouts",
+      "Ucapan terima kasih",
     ),
     "todayGratitudeUnreadBody": MessageLookupByLibrary.simpleMessage(
-      "New shoutouts are waiting for you.",
+      "Ada ucapan terima kasih baru menunggumu.",
     ),
     "todayHouseDirectoryAcknowledgeCta": MessageLookupByLibrary.simpleMessage(
-      "Acknowledge",
+      "Konfirmasi",
     ),
     "todayHouseDirectoryDismissCta": MessageLookupByLibrary.simpleMessage(
-      "Dismiss",
+      "Tutup",
     ),
     "todayHouseDirectoryOpenCta": MessageLookupByLibrary.simpleMessage(
-      "Open directory",
+      "Buka direktori",
     ),
     "todayHouseDirectoryReminderDue": m31,
     "todayHouseDirectoryRemindersTitle": MessageLookupByLibrary.simpleMessage(
-      "Renewal reminders",
+      "Pengingat perpanjangan",
     ),
     "todayInviteFriendsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Share Kinly with friends.",
+      "Bagikan Kinly kepada teman-teman.",
     ),
     "todayInviteFriendsTitle": MessageLookupByLibrary.simpleMessage(
-      "Invite friends to Kinly",
+      "Undang teman ke Kinly",
     ),
-    "todayInviteNotNow": MessageLookupByLibrary.simpleMessage("Not now"),
-    "todayInviteShareCta": MessageLookupByLibrary.simpleMessage("Share invite"),
+    "todayInviteNotNow": MessageLookupByLibrary.simpleMessage("Nanti saja"),
+    "todayInviteShareCta": MessageLookupByLibrary.simpleMessage(
+      "Bagikan undangan",
+    ),
     "todayMemberCapPrimaryCta": MessageLookupByLibrary.simpleMessage(
-      "Upgrade home",
+      "Upgrade rumah",
     ),
     "todayMemberCapResolutionFailed": m24,
     "todayMemberCapResolutionJoined": m25,
     "todayMemberCapResolutionSuperseded": m26,
     "todayMemberCapResolutionUnknownName": MessageLookupByLibrary.simpleMessage(
-      "Someone",
+      "Seseorang",
     ),
     "todayMemberCapSecondaryCta": MessageLookupByLibrary.simpleMessage(
-      "Ignore",
+      "Abaikan",
     ),
     "todayMemberCapSubtitle": m27,
     "todayMemberCapSubtitleGeneric": MessageLookupByLibrary.simpleMessage(
-      "Upgrade to add more people.",
+      "Upgrade untuk menambah lebih banyak orang.",
     ),
     "todayMemberCapTitle": MessageLookupByLibrary.simpleMessage(
-      "Someone wants to join your home",
+      "Seseorang ingin bergabung ke rumahmu",
     ),
     "todayShareActiveSubtitle": m28,
     "todayShareError": MessageLookupByLibrary.simpleMessage(
-      "Couldn\'t refresh bills right now.",
+      "Tidak dapat memuat ulang tagihan saat ini.",
     ),
     "todaySharePaidSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Settled amount",
+      "Jumlah yang sudah diselesaikan",
     ),
     "todaySharePaidUnseen": m29,
-    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Bills"),
-    "todayShareTabActive": MessageLookupByLibrary.simpleMessage("To settle"),
-    "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
-    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("Settled"),
+    "todayShareSectionTitle": MessageLookupByLibrary.simpleMessage("Tagihan"),
+    "todayShareTabActive": MessageLookupByLibrary.simpleMessage(
+      "Perlu diselesaikan",
+    ),
+    "todayShareTabDrafts": MessageLookupByLibrary.simpleMessage("Draf"),
+    "todayShareTabPaidToMe": MessageLookupByLibrary.simpleMessage("Selesai"),
     "vibeCozySocialSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels cozy and calm together.",
+      "Rumahmu terasa nyaman dan tenang bersama.",
     ),
-    "vibeCozySocialTitle": MessageLookupByLibrary.simpleMessage("Cozy social"),
+    "vibeCozySocialTitle": MessageLookupByLibrary.simpleMessage(
+      "Sosial nyaman",
+    ),
     "vibeDefaultSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels balanced.",
+      "Rumahmu terasa seimbang.",
     ),
-    "vibeDefaultTitle": MessageLookupByLibrary.simpleMessage("Balanced home"),
+    "vibeDefaultTitle": MessageLookupByLibrary.simpleMessage("Rumah seimbang"),
     "vibeEasygoingSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels relaxed and flexible.",
+      "Rumahmu terasa santai dan fleksibel.",
     ),
-    "vibeEasygoingTitle": MessageLookupByLibrary.simpleMessage(
-      "Easygoing flow",
-    ),
+    "vibeEasygoingTitle": MessageLookupByLibrary.simpleMessage("Alur santai"),
     "vibeIndependentSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home values space and quiet.",
+      "Rumahmu menghargai ruang dan ketenangan.",
     ),
     "vibeIndependentTitle": MessageLookupByLibrary.simpleMessage(
-      "Independent calm",
+      "Tenang mandiri",
     ),
     "vibeInsufficientSummary": MessageLookupByLibrary.simpleMessage(
-      "Complete preferences to see your home vibe.",
+      "Lengkapi preferensi untuk melihat suasana rumahmu.",
     ),
     "vibeInsufficientTitle": MessageLookupByLibrary.simpleMessage(
-      "Not enough data yet",
+      "Data belum cukup",
     ),
     "vibeMixedSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home has mixed living styles.",
+      "Rumahmu punya gaya hidup bersama yang beragam.",
     ),
-    "vibeMixedTitle": MessageLookupByLibrary.simpleMessage("Mixed home"),
+    "vibeMixedTitle": MessageLookupByLibrary.simpleMessage("Rumah campuran"),
     "vibeQuietCareSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels calm and gentle.",
+      "Rumahmu terasa tenang dan lembut.",
     ),
-    "vibeQuietCareTitle": MessageLookupByLibrary.simpleMessage("Quiet care"),
+    "vibeQuietCareTitle": MessageLookupByLibrary.simpleMessage(
+      "Perhatian tenang",
+    ),
     "vibeSocialSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels active and social.",
+      "Rumahmu terasa aktif dan sosial.",
     ),
-    "vibeSocialTitle": MessageLookupByLibrary.simpleMessage("Social energy"),
+    "vibeSocialTitle": MessageLookupByLibrary.simpleMessage("Energi sosial"),
     "vibeSteadySummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels steady and consistent.",
+      "Rumahmu terasa stabil dan konsisten.",
     ),
-    "vibeSteadyTitle": MessageLookupByLibrary.simpleMessage("Steady calm"),
+    "vibeSteadyTitle": MessageLookupByLibrary.simpleMessage("Tenang stabil"),
     "vibeStructuredSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home works best with routines and plans.",
+      "Rumahmu berjalan paling baik dengan rutinitas dan rencana.",
     ),
     "vibeStructuredTitle": MessageLookupByLibrary.simpleMessage(
-      "Structured rhythm",
+      "Ritme terstruktur",
     ),
     "vibeWarmSocialSummary": MessageLookupByLibrary.simpleMessage(
-      "Your home feels warm and welcoming.",
+      "Rumahmu terasa hangat dan ramah.",
     ),
-    "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage("Warm social"),
+    "vibeWarmSocialTitle": MessageLookupByLibrary.simpleMessage(
+      "Sosial hangat",
+    ),
     "weeklyRewriteCta": MessageLookupByLibrary.simpleMessage(
-      "Send calmly with Kinly",
+      "Kirim dengan tenang lewat Kinly",
     ),
-    "welcome_create": MessageLookupByLibrary.simpleMessage("Create a Home"),
-    "welcome_join": MessageLookupByLibrary.simpleMessage("Join a Home"),
-    "welcome_title": MessageLookupByLibrary.simpleMessage("Welcome to Kinly"),
+    "welcome_create": MessageLookupByLibrary.simpleMessage("Buat Rumah"),
+    "welcome_join": MessageLookupByLibrary.simpleMessage("Gabung ke Rumah"),
+    "welcome_title": MessageLookupByLibrary.simpleMessage(
+      "Selamat datang di Kinly",
+    ),
   };
 }

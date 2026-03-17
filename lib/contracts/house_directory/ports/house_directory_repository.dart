@@ -18,12 +18,15 @@ abstract class HouseDirectoryRepository {
 
   Future<HouseDirectoryNote> upsertNote(UpsertHouseDirectoryNoteInput input);
 
-  Future<void> archiveNote({
-    required String homeId,
-    required String noteId,
-  });
+  Future<void> archiveNote({required String homeId, required String noteId});
 
-  Future<List<HouseDirectoryReminder>> listDueReminders({required String homeId});
+  Future<String?> captureAndUploadNotePhoto({required String homeId});
+
+  String? toPublicPhotoUrl(String? photoPath);
+
+  Future<List<HouseDirectoryReminder>> listDueReminders({
+    required String homeId,
+  });
 
   Future<void> acknowledgeReminder({
     required String homeId,

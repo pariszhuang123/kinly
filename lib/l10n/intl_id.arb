@@ -1,0 +1,1669 @@
+{
+  "@@locale": "id",
+  "app_title": "Kinly",
+  "bootstrap_initializing": "Memulai Kinly ({env})",
+  "@bootstrap_initializing": {
+    "surface": "subtitle",
+    "placeholders": {
+      "env": {
+        "type": "String",
+        "example": "prod"
+      }
+    }
+  },
+  "startReturningTitle": "Hai {name}",
+  "@startReturningTitle": {
+    "description": "Greeting shown on the Start screen for returning users.",
+    "surface": "title",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "startReturningSubtitle": "Apa yang ingin kamu lakukan?",
+  "@startReturningSubtitle": {
+    "description": "Follow-up prompt for returning users on the Start screen.",
+    "surface": "subtitle"
+  },
+  "welcome_title": "Selamat datang di Kinly",
+  "welcome_create": "Buat Rumah",
+  "@welcome_create": {
+    "surface": "button"
+  },
+  "welcome_join": "Gabung ke Rumah",
+  "create_failed_generic": "Tidak dapat membuat rumah.",
+  "join_title": "Gabung ke Rumah",
+  "join_hint": "Masukkan kode undangan (mis. ABC123)",
+  "join_submit": "Gabung",
+  "join_success": "Berhasil bergabung ke rumahmu.",
+  "@join_success": {
+    "description": "Snackbar message displayed when the user joins successfully",
+    "surface": "success_message",
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "ABCD123"
+      }
+    }
+  },
+  "join_failed_generic": "Tidak dapat bergabung ke rumah ini.",
+  "join_error_invalid_code": "Kode undangan itu tampaknya salah.",
+  "join_error_inactive_invite": "Undangan itu sudah kedaluwarsa. Minta pemilik rumah untuk membuat yang baru.",
+  "join_error_already_in_other_home": "Keluar dari rumahmu saat ini terlebih dahulu.",
+  "join_error_paywall_limit": "Rumah ini sudah mencapai batas anggota. Minta pemilik rumah untuk upgrade atau menghapus seseorang.",
+  "paywallTitle": "Bantu rumahmu tetap berjalan lancar",
+  "paywallSubtitle": "Kurang dari 0,5% dari sewa rumahmu.",
+  "paywallPriceCaption": "Satu paket rumah. Tanpa tingkatan tersembunyi.",
+  "paywallPricePerMonth": "{price} per bulan",
+  "@paywallPricePerMonth": {
+    "surface": "paywall_subtitle",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "$7.99"
+      }
+    }
+  },
+  "paywallPriceUnavailable": "Harga belum tersedia saat ini.",
+  "paywallBulletMembers": "Anggota tanpa batas",
+  "paywallBulletFlows": "Tugas tanpa batas",
+  "paywallBulletPhotos": "Foto tugas tanpa batas",
+  "paywallFeatureUnlimitedSharedExpensePhotos": "Foto tagihan tanpa batas",
+  "paywallBulletShoppingPhotos": "Foto belanja tanpa batas",
+  "paywallBulletShares": "Tagihan tanpa batas",
+  "paywallPrimaryCta": "Upgrade ke Premium",
+  "paywallSecondaryCta": "Tetap di paket gratis",
+  "paywallPurchaseFailed": "Pembelian tidak selesai.",
+  "paywallPurchaseSuccess": "Kamu sekarang menggunakan Kinly Premium.",
+  "paywallRestoreCta": "Pulihkan pembelian",
+  "paywallErrorTitle": "Tidak dapat memuat paywall.",
+  "paywallRetryLabel": "Coba lagi",
+  "join_error_unauthorized": "Masuk untuk bergabung ke rumah ini.",
+  "join_error_forbidden": "Kamu tidak punya izin untuk bergabung ke rumah ini.",
+  "join_blocked_title": "Rumah ini sedang tidak menerima anggota baru",
+  "join_blocked_body": "Kami sudah memberi tahu pemilik rumah.",
+  "join_blocked_cta": "Selesai",
+  "todayMemberCapTitle": "Seseorang ingin bergabung ke rumahmu",
+  "todayMemberCapSubtitle": "{names} ingin bergabung ke rumahmu. Upgrade untuk anggota tanpa batas.",
+  "@todayMemberCapSubtitle": {
+    "surface": "subtitle",
+    "placeholders": {
+      "names": {
+        "type": "String",
+        "example": "Alex, Sam"
+      }
+    }
+  },
+  "todayMemberCapSubtitleGeneric": "Upgrade untuk menambah lebih banyak orang.",
+  "todayMemberCapPrimaryCta": "Upgrade rumah",
+  "todayMemberCapSecondaryCta": "Abaikan",
+  "todayMemberCapResolutionJoined": "{name} bergabung ke rumahmu.",
+  "@todayMemberCapResolutionJoined": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionSuperseded": "{name} bergabung ke rumah lain.",
+  "@todayMemberCapResolutionSuperseded": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionFailed": "Tidak dapat menyelesaikan permintaan {name}.",
+  "@todayMemberCapResolutionFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayMemberCapResolutionUnknownName": "Seseorang",
+  "quick_add_title": "Tambah Cepat",
+  "quick_add_flow_title": "Tugas",
+  "quick_add_flow_subtitle": "Buat tugas",
+  "quick_add_share_title": "Tagihan",
+  "quick_add_share_subtitle": "Tambah tagihan",
+  "todayAddSheetTitle": "Tambahkan ke rumahmu",
+  "todayAddSheetFlow": "Tambah Tugas",
+  "todayAddSheetShare": "Tambah Tagihan",
+  "todayAddSheetShopping": "Tambah Item Belanja",
+  "shoppingCardTitle": "Daftar belanja",
+  "shoppingCardSubtitle": "{count, plural, one {{count} item untuk dibeli} other {{count} item untuk dibeli}}",
+  "@shoppingCardSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "shoppingListTitle": "Daftar belanja",
+  "shoppingDetailTitle": "Item belanja",
+  "shoppingMarkCompleteCta": "Tandai sudah dibeli",
+  "shoppingTabPending": "Untuk dibeli",
+  "shoppingAllItemsBought": "Semua sudah dibeli",
+  "shoppingEmptyTitle": "Belum ada item belanja.",
+  "shoppingCreateTitle": "Tambah item belanja",
+  "shoppingEditTitle": "Edit item belanja",
+  "shoppingNameLabel": "Nama",
+  "shoppingNameHint": "mis. Susu",
+  "shoppingAmountLabel": "Jumlah",
+  "shoppingAmountHint": "mis. 2 kotak",
+  "shoppingContextLabel": "Catatan",
+  "shoppingContextHint": "Merek, ukuran, atau catatan",
+  "shoppingPhotoLabel": "Tambah foto",
+  "shoppingPhotoReplaceLabel": "Bantu orang lain membeli item yang tepat",
+  "shoppingPhotoPlaceholder": "Tambah foto",
+  "shoppingValidationName": "Masukkan nama item.",
+  "shoppingSubmitAdd": "Tambah item",
+  "shoppingSubmitEdit": "Simpan perubahan",
+  "shoppingDelete": "Hapus item",
+  "shoppingDeleteConfirmTitle": "Hapus item ini?",
+  "shoppingDeleteConfirmBody": "Ini akan menghapusnya dari daftar belanja bersama.",
+  "shoppingErrorItemAlreadyCompletedByOther": "Seseorang sudah menandai item ini sebagai dibeli.",
+  "shoppingArchiveCta": "Item yang sudah dibeli",
+  "shoppingArchiveSharePromptTitle": "Buat tagihan?",
+  "shoppingArchiveSharePromptBody": "Buat draf tagihan dari item-item ini?",
+  "shoppingArchiveShareYes": "Ya",
+  "shoppingArchiveShareNo": "Tidak",
+  "shoppingArchiveItemsBought": "Item ditandai sudah dibeli dan dihapus",
+  "shoppingArchiveDraftBillCreated": "Draf tagihan dibuat",
+  "login_tagline": "Bersama terasa lebih ringan",
+  "login_with_google": "Lanjutkan dengan Google",
+  "login_with_apple": "Lanjutkan dengan Apple",
+  "login_consent_prefix": "Saya menyetujui ",
+  "login_consent_connector": " & ",
+  "login_terms": "Syarat Layanan",
+  "login_privacy": "Kebijakan Privasi",
+  "logout": "Keluar",
+  "membership_status_checking": "Menghubungkan ke rumahmu...",
+  "membership_status_none": "Buat atau gabung ke rumah.",
+  "membership_status_active": "Kamu terhubung ke sebuah rumah.",
+  "authMembershipLoadFailed": "Tidak dapat memuat ulang keanggotaan rumahmu.",
+  "offline_title": "Kamu sedang offline",
+  "offline_body": "Tidak ada koneksi internet. Coba lagi.",
+  "offline_retry": "Coba lagi",
+  "force_update_title": "Pembaruan diperlukan",
+  "force_update_body": "Versi Kinly ini sudah tidak didukung. Perbarui untuk melanjutkan.",
+  "force_update_button": "Perbarui Kinly",
+  "navToday": "Hari ini",
+  "navExplore": "Kelola",
+  "navHub": "Pusat Rumah",
+  "hubMembersEmpty": "Belum ada anggota aktif.",
+  "hubInviteCta": "Undang",
+  "hubInviteUnavailable": "Tidak dapat memuat undangan.",
+  "hubShareInviteTitle": "Undang ke rumah Kinly saya",
+  "hubShareInviteBody": "Gabung ke rumah Kinly kami dengan kode undangan ini: {code}\n\nUnduh Kinly: {link}",
+  "@hubShareInviteBody": {
+    "surface": "subtitle",
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "ABCD123"
+      },
+      "link": {
+        "type": "String",
+        "example": "https://go.makinglifeeasie.com/kinly"
+      }
+    }
+  },
+  "hubShareAppTitle": "Dapatkan Kinly",
+  "hubShareAppBody": "Buat hidup bersama lebih mudah dengan Kinly: {link}",
+  "@hubShareAppBody": {
+    "surface": "subtitle",
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://go.makinglifeeasie.com/kinly"
+      }
+    }
+  },
+  "hubShareAppCta": "Bagikan Kinly",
+  "todayFlatmateInviteTitle": "Undang teman serumahmu",
+  "todayFlatmateInviteSubtitle": "Tetap selaras dan berbagi tanggung jawab.",
+  "todayInviteFriendsTitle": "Undang teman ke Kinly",
+  "todayInviteFriendsSubtitle": "Bagikan Kinly kepada teman-teman.",
+  "todayInviteShareCta": "Bagikan undangan",
+  "todayInviteNotNow": "Nanti saja",
+  "hubCodeCopied": "Kode undangan disalin",
+  "hubRotateInvite": "Putar ulang undangan",
+  "hubRotateSuccess": "Undangan diperbarui",
+  "hubRotateError": "Tidak dapat memperbarui undangan.",
+  "hubQrTitle": "Bagikan aplikasi",
+  "hubQrSubtitle": "Pindai untuk mengunduh Kinly",
+  "hubCardGratitudeWallTitle": "Ucapan terima kasih",
+  "hubCardGratitudeWallSubtitle": "Ucapan terima kasih singkat dari rumahmu.",
+  "hubPreferencesTitle": "Preferensi",
+  "hubPreferencesSubtitle": "Bagaimana tiap orang ingin hidup bersama berjalan.",
+  "homeVibeTitle": "Suasana Rumah",
+  "homeVibeCoverage": "Berdasarkan {answered} dari {total} anggota",
+  "@homeVibeCoverage": {
+    "placeholders": {
+      "answered": {
+        "type": "int",
+        "example": "3"
+      },
+      "total": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "houseVibeShareTitle": "Suasana rumah",
+  "houseVibeShareMessage": "Membagikan suasana rumah Kinly kami. Unduh aplikasinya: {link}",
+  "@houseVibeShareMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://go.makinglifeeasie.com/kinly"
+      }
+    }
+  },
+  "houseVibeShareError": "Tidak dapat membagikan sekarang.",
+  "houseVibeShareCta": "Bagikan suasana",
+  "vibeInsufficientTitle": "Data belum cukup",
+  "vibeInsufficientSummary": "Lengkapi preferensi untuk melihat suasana rumahmu.",
+  "vibeMixedTitle": "Rumah campuran",
+  "vibeMixedSummary": "Rumahmu punya gaya hidup bersama yang beragam.",
+  "vibeDefaultTitle": "Rumah seimbang",
+  "vibeDefaultSummary": "Rumahmu terasa seimbang.",
+  "vibeQuietCareTitle": "Perhatian tenang",
+  "vibeQuietCareSummary": "Rumahmu terasa tenang dan lembut.",
+  "vibeSocialTitle": "Energi sosial",
+  "vibeSocialSummary": "Rumahmu terasa aktif dan sosial.",
+  "vibeWarmSocialTitle": "Sosial hangat",
+  "vibeWarmSocialSummary": "Rumahmu terasa hangat dan ramah.",
+  "vibeCozySocialTitle": "Sosial nyaman",
+  "vibeCozySocialSummary": "Rumahmu terasa nyaman dan tenang bersama.",
+  "vibeSteadyTitle": "Tenang stabil",
+  "vibeSteadySummary": "Rumahmu terasa stabil dan konsisten.",
+  "vibeStructuredTitle": "Ritme terstruktur",
+  "vibeStructuredSummary": "Rumahmu berjalan paling baik dengan rutinitas dan rencana.",
+  "vibeEasygoingTitle": "Alur santai",
+  "vibeEasygoingSummary": "Rumahmu terasa santai dan fleksibel.",
+  "vibeIndependentTitle": "Tenang mandiri",
+  "vibeIndependentSummary": "Rumahmu menghargai ruang dan ketenangan.",
+  "hubError": "Tidak dapat memuat Pusat Rumah.",
+  "hubRetry": "Coba lagi",
+  "todayEmptyCardTitle": "Semua sudah beres",
+  "todayEmptyCardBadge": "Istirahat sejenak",
+  "todayEmptyBody": "Tidak ada yang perlu perhatianmu saat ini.",
+  "friendDefaultName": "teman",
+  "greetingPartOfDay": "Selamat {partOfDay}, {name}",
+  "@greetingPartOfDay": {
+    "surface": "title",
+    "placeholders": {
+      "partOfDay": {
+        "type": "String",
+        "example": "pagi"
+      },
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
+  "todayFlowSubtitle": "Ini yang perlu diperhatikan hari ini.",
+  "todayFlowSectionTitle": "Tugas",
+  "todayFlowTabActive": "Aktif",
+  "todayFlowTabDrafts": "Draf",
+  "todayFlowSeeAll": "Lihat semua {count, plural, one {(#)} other {(#)}}",
+  "@todayFlowSeeAll": {
+    "surface": "subtitle",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "todayFlowBadgeNew": "baru hari ini",
+  "todayShareSectionTitle": "Tagihan",
+  "todayShareTabActive": "Perlu diselesaikan",
+  "todayShareTabDrafts": "Draf",
+  "todayShareTabPaidToMe": "Selesai",
+  "todaySharePaidSubtitle": "Jumlah yang sudah diselesaikan",
+  "todaySharePaidUnseen": "{count, plural, one {{count} pembayaran baru untukmu} other {{count} pembayaran baru untukmu}}",
+  "@todaySharePaidUnseen": {
+    "description": "Subtitle shown for paid-to-me entries when there are unseen items.",
+    "surface": "subtitle",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "todayShareError": "Tidak dapat memuat ulang tagihan saat ini.",
+  "todayShareActiveSubtitle": "{count, plural, one {{count} pembayaran menunggu} other {{count} untuk diselesaikan}}",
+  "@todayShareActiveSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    },
+    "surface": "subtitle"
+  },
+  "todayGratitudeSectionTitle": "Ucapan terima kasih",
+  "todayGratitudeUnreadBody": "Ada ucapan terima kasih baru menunggumu.",
+  "shareOwedDetailTitle": "Untuk diselesaikan",
+  "shareOwedDetailEmpty": "Kamu sudah beres dengan orang ini.",
+  "shareOwedDetailPaid": "Tandai selesai",
+  "shareOwedDetailSuccess": "Ditandai selesai.",
+  "shareOwedDetailError": "Tidak dapat menandai pembayaran ini sebagai selesai.",
+  "sharePaidDetailAcknowledge": "Konfirmasi penerimaan",
+  "sharePaidDetailAcknowledging": "Mengonfirmasi...",
+  "sharePaidDetailAcknowledgeError": "Tidak dapat mengonfirmasi pembayaran ini.",
+  "shareEditTitle": "Edit Tagihan",
+  "shareEditSubmit": "Perbarui",
+  "shareEditSuccess": "Tagihan diperbarui.",
+  "shareEditLoadError": "Tidak dapat memuat draf itu.",
+  "shareEditNotAllowed": "Ini tetap terkunci sampai seseorang mengambil tagihan ini.",
+  "shareEditSplitsLocked": "Pembagian terkunci karena seseorang sudah membayar. Kamu masih bisa memperbarui deskripsi dan catatan.",
+  "shareEditClose": "Tutup",
+  "shareEditDeleteButton": "Hapus",
+  "shareEditDeleteConfirmTitle": "Hapus tagihan?",
+  "shareEditDeleteConfirmMessage": "Ini akan menghapus draf untuk semua orang.",
+  "shareEditDeleteConfirm": "Hapus",
+  "shareEditDeleteError": "Tidak dapat menghapus tagihan.",
+  "shareEditDeleteSuccess": "Tagihan dihapus.",
+  "shareEditTerminateSuccess": "Rencana diakhiri.",
+  "shareEditTerminatePlan": "Akhiri rencana",
+  "shareEditTerminatePlanBusy": "Mengakhiri...",
+  "shareEditTerminatePlanTitle": "Akhiri rencana berulang?",
+  "shareEditTerminatePlanMessage": "Ini akan menghentikan siklus tagihan berikutnya.",
+  "shareEditTerminatePlanConfirm": "Akhiri rencana",
+  "shareEditTerminateError": "Tidak dapat mengakhiri rencana.",
+  "shareEditDisabledConverted": "Tagihan ini sekarang menjadi rencana dan tidak bisa diedit di sini.",
+  "shareEditDisabledRecurringCycle": "Siklus berulang tidak dapat diedit di sini.",
+  "shareEditDisabledActive": "Tagihan aktif tidak dapat diedit.",
+  "shareEditDisabledGeneric": "Tagihan ini tidak dapat diedit saat ini.",
+  "shareCreateTitle": "Tambah Tagihan",
+  "shareCreateDescriptionLabel": "Deskripsi",
+  "shareCreateDescriptionHint": "mis. Belanja bahan makanan",
+  "shareCreateAmountLabel": "Jumlah",
+  "shareCreateAmountHint": "0.00",
+  "shareCreateSplitLabel": "Bagaimana kamu ingin membaginya?",
+  "shareCreateSplitEqual": "Bagi rata",
+  "shareCreateSplitCustom": "Pilih jumlah",
+  "shareCreateParticipantsEmpty": "Kamu memerlukan setidaknya dua anggota rumah untuk berbagi tagihan.",
+  "shareCreateNotesLabel": "Catatan",
+  "shareCreateNotesHint": "Catatan opsional yang bisa dilihat semua orang",
+  "shareCreateCustomHelper": "Masukkan bagian tiap orang. Total harus sama dengan jumlah di atas.",
+  "shareCreateCustomAmountLabel": "Jumlah",
+  "shareCreateStartLabel": "Kapan ini berlaku?",
+  "shareCreateCyclePeriod": "Berlaku untuk {period}",
+  "@shareCreateCyclePeriod": {
+    "placeholders": {
+      "period": {
+        "type": "String",
+        "example": "5 Jan - 11 Jan, 2026"
+      }
+    }
+  },
+  "shareCreateRecurrenceLabel": "Ulangi",
+  "shareCreateRecurrenceToggleLabel": "Berulang",
+  "shareCreateRecurrenceEveryLabel": "Setiap",
+  "shareCreateRecurrenceUnitDay": "Hari",
+  "shareCreateRecurrenceUnitWeek": "Minggu",
+  "shareCreateRecurrenceUnitMonth": "Bulan",
+  "shareCreateRecurrenceUnitYear": "Tahun",
+  "shareCreateSubmit": "Buat",
+  "shareCreateValidationDescription": "Masukkan deskripsi.",
+  "shareCreateValidationAmount": "Masukkan jumlah yang lebih besar dari nol.",
+  "shareCreateValidationEqualParticipants": "Pilih setidaknya satu orang untuk membagi tagihan ini.",
+  "shareCreateValidationCustomParticipants": "Pilih setidaknya satu orang untuk tagihan ini.",
+  "shareCreateValidationCustomAmounts": "Masukkan jumlah yang valid untuk setiap orang yang dipilih.",
+  "shareCreateValidationCustomSum": "Pastikan pembagian sesuai dengan jumlah total.",
+  "shareCreateValidationCustomSumBreakdown": "Pembagian tidak cocok. Total: {total}. Termasuk: {included}. Selisih: {difference}.",
+  "@shareCreateValidationCustomSumBreakdown": {
+    "placeholders": {
+      "total": {
+        "type": "String",
+        "example": "$120.00"
+      },
+      "included": {
+        "type": "String",
+        "example": "$100.00"
+      },
+      "difference": {
+        "type": "String",
+        "example": "+$20.00"
+      }
+    }
+  },
+  "shareCreateValidationCustomSinglePayer": "Tambahkan setidaknya satu orang lain.",
+  "shareCreateValidationRecurrence": "Pilih seberapa sering ini berulang.",
+  "shareCreateValidationRecurrenceSplit": "Pilih pembagian sebelum menjadikan ini berulang.",
+  "shareCreateValidationStartDate": "Pilih tanggal mulai.",
+  "shareCreateValidationStartDateRange": "Pilih tanggal dalam rentang yang diizinkan.",
+  "shareCreateErrorRecurrenceDraft": "Draf tidak berulang sampai kamu menambahkan pembagian.",
+  "shareCreateLoadError": "Tidak dapat memuat anggota rumahmu.",
+  "shareCreateRetry": "Coba lagi",
+  "shareCreateErrorGeneric": "Tidak dapat membuat tagihan.",
+  "shareCreateErrorPaywallActiveCap": "Kamu sudah mencapai batas gratis untuk tagihan aktif. Upgrade untuk lebih banyak.",
+  "shareCreateErrorForbidden": "Kamu tidak punya izin untuk membuat ini sekarang.",
+  "shareCreateSuccess": "Tagihan dibuat.",
+  "flowChoreCreateTitle": "Tambah Tugas",
+  "flowChoreEditTitle": "Edit Tugas",
+  "flowChoreViewTitle": "Lihat Tugas",
+  "flowChoreNameLabel": "Apa yang perlu dilakukan?",
+  "flowChoreNameHint": "mis. malam buang sampah, bersihkan kulkas, siram tanaman",
+  "flowChoreValidationName": "Masukkan nama tugas.",
+  "flowChoreAssigneeLabel": "Siapa yang mengerjakan ini?",
+  "flowChoreValidationAssignee": "Pilih seseorang.",
+  "flowChoreStartLabel": "Kapan ini akan dilakukan?",
+  "flowChoreValidationDate": "Pilih tanggal dalam satu tahun ke depan.",
+  "flowChoreRecurrenceLabel": "Seberapa sering ini terjadi?",
+  "flowChoreRecurrenceNone": "Satu kali",
+  "flowChoreNotesLabel": "Kenapa ini penting",
+  "flowChoreNotesHint": "Apa pun yang membantu orang lain melakukannya",
+  "flowChoreHowToLabel": "Cara melakukannya (opsional)",
+  "flowChoreHowToHint": "Tambahkan tautan jika ada cara tertentu",
+  "flowChoreValidationHowToUrl": "Masukkan tautan valid yang dimulai dengan http atau https.",
+  "flowChoreHowToLaunchError": "Tidak dapat membuka tautan itu.",
+  "flowChorePhotoLabel": "Seperti apa hasil yang baik",
+  "flowChorePhotoPlaceholder": "Tambahkan foto agar semua tetap selaras",
+  "flowChorePhotoPermissionDenied": "Izinkan akses kamera untuk mengambil foto.",
+  "flowChorePhotoPermissionOpenSettings": "Buka pengaturan",
+  "flowChorePhotoUploadError": "Tidak dapat mengunggah foto.",
+  "flowChorePhotoLoadError": "Tidak dapat memuat foto.",
+  "flowChoreSubmitCreate": "Buat tugas",
+  "flowChoreSubmitUpdate": "Simpan perubahan",
+  "flowChoreDeleteButton": "Hapus Tugas",
+  "flowChoreDeleteDialogTitle": "Hapus tugas ini?",
+  "flowChoreDeleteDialogMessage": "Ini akan menghapus tugas untuk semua orang di rumahmu.",
+  "flowChoreDeleteConfirm": "Hapus",
+  "flowChoreLoadError": "Tidak dapat memuat tugas ini.",
+  "flowChoreRetry": "Coba lagi",
+  "flowChoreErrorPaywallActiveCap": "Kamu sudah mencapai batas gratis untuk tugas aktif. Upgrade untuk lebih banyak.",
+  "flowChoreErrorPaywallMediaCap": "Kamu sudah mencapai batas gratis untuk foto tugas. Upgrade untuk lebih banyak.",
+  "flowChoreErrorAssigneeNotMember": "Orang itu bukan bagian dari rumah ini saat ini.",
+  "flowChoreErrorForbidden": "Kamu tidak punya izin untuk mengubah tugas ini.",
+  "flowChoreErrorInvalidPhoto": "Foto itu bukan milik rumah ini.",
+  "flowChoreErrorInvalidStart": "Pilih tanggal mulai yang valid.",
+  "flowChoreErrorInvalidState": "Tugas ini tidak dapat diedit saat ini.",
+  "flowChoreErrorGeneric": "Tidak dapat menyimpan tugas ini.",
+  "flowChoreDetailTitle": "Detail tugas",
+  "flowChoreDetailUnassigned": "Belum ditugaskan",
+  "flowChoreDetailCompleteButton": "Tandai selesai",
+  "flowChoreCreateSuccess": "Tugas dibuat.",
+  "flowChoreUpdateSuccess": "Tugas diperbarui.",
+  "flowChoreDetailCompletionSuccess": "Tugas selesai.",
+  "flowChoreDetailCompletionError": "Tidak dapat menyelesaikan tugas ini.",
+  "flowChoreDetailMoreInfoTitle": "Detail tambahan",
+  "flowChoreExpectationPhotoLabel": "Foto referensi",
+  "flowListEmptyTitle": "Belum ada apa-apa di sini",
+  "flowListEmptySubtitle": "Tugas membantu semua orang tetap selaras.",
+  "flowListDraftLabel": "Draf",
+  "flowListOverdueLabel": "Perlu perhatian",
+  "flowListTabCurrent": "Saat ini",
+  "flowListTabFuture": "Akan datang",
+  "flowListError": "Tidak dapat memuat tugas. Tarik untuk menyegarkan.",
+  "exploreIntroSubtitle": "Jaga hal-hal bersama tetap jelas.",
+  "exploreFlowSubtitle": "Lihat apa yang perlu dilakukan dan siapa yang melakukannya.",
+  "exploreShareSubtitle": "Lihat semua tagihan yang kamu buat dan pantau penagihan.",
+  "exploreShoppingSectionTitle": "Daftar belanja",
+  "exploreShoppingSubtitle": "Lihat dan kelola item belanja bersama.",
+  "shareCreatedListTitle": "Tagihanmu",
+  "shareCreatedListEmptyTitle": "Belum ada tagihan",
+  "shareCreatedListEmptySubtitle": "Tagihan membantu urusan uang tetap jelas.",
+  "shareCreatedListError": "Tidak dapat memuat tagihanmu. Tarik untuk menyegarkan.",
+  "shareCreatedListRetry": "Coba lagi",
+  "shareCreatedListActiveSubtitle": "{paid} dari {total} sudah dibayar",
+  "@shareCreatedListActiveSubtitle": {
+    "placeholders": {
+      "paid": {
+        "type": "int",
+        "example": "2"
+      },
+      "total": {
+        "type": "int",
+        "example": "4"
+      }
+    },
+    "surface": "subtitle"
+  },
+  "shareCreatedListActiveAmount": "{paidAmount} dari {totalAmount} sudah terkumpul",
+  "@shareCreatedListActiveAmount": {
+    "placeholders": {
+      "paidAmount": {
+        "type": "String",
+        "example": "$20.00"
+      },
+      "totalAmount": {
+        "type": "String",
+        "example": "$40.00"
+      }
+    }
+  },
+  "shareCreatedListDraftSubtitle": "Bagikan dulu sebelum dipublikasikan agar semua orang tahu bagiannya.",
+  "shareCreatedListDraftBadge": "Belum ditugaskan",
+  "shareCreatedListPaidBadge": "Lunas",
+  "profileSettingsTitle": "Profil",
+  "profileSettingsSubtitle": "Kelola akunmu dan akses rumah.",
+  "profileIdentityTitle": "Edit profil",
+  "profileIdentitySubtitle": "Pilih nama pengguna dan avatar.",
+  "profileIdentityUsernameLabel": "Nama pengguna",
+  "profileIdentityUsernameHint": "huruf, angka, . atau _",
+  "profileIdentityUsernameEmptyError": "Masukkan nama pengguna.",
+  "profileIdentityUsernameFormatError": "Gunakan 3-30 huruf kecil atau angka. Titik dan garis bawah boleh di tengah.",
+  "profileIdentityUsernameTakenError": "Nama pengguna itu sudah dipakai.",
+  "profileIdentityAvatarSectionTitle": "Pilih avatar",
+  "profileIdentityAvatarSectionDescription": "Gunakan avatar berbeda untuk tiap orang di rumahmu.",
+  "profileIdentityAvatarEmpty": "Tidak ada avatar yang tersedia saat ini.",
+  "profileIdentityLoadError": "Tidak dapat memuat profilmu.",
+  "profileIdentityRetry": "Coba lagi",
+  "profileIdentitySaveButton": "Simpan perubahan",
+  "profileIdentitySuccessMessage": "Profil diperbarui.",
+  "profileIdentityUsernamePreviewFallback": "nama penggunamu",
+  "profileLeaveHomeTitle": "Keluar dari rumah",
+  "profileLeaveHomeSubtitle": "Kamu akan keluar dari ruang bersama Kinly ini.",
+  "profileLeaveEligibilityLoading": "Memeriksa anggota rumah...",
+  "profileLeaveEligibilityError": "Tidak dapat memuat anggota rumahmu.",
+  "profileLeaveOwnerSoloMessage": "Kamu adalah anggota terakhir. Jika keluar, rumah ini akan dinonaktifkan.",
+  "profileLeaveOwnerNoEligibleMembers": "Tidak ada orang lain yang bisa mengambil alih kepemilikan saat ini.",
+  "profileLeaveTransferSheetTitle": "Alihkan kepemilikan",
+  "profileLeaveTransferSheetSubtitle": "Pilih siapa yang akan menjadi pemilik baru sebelum kamu keluar.",
+  "profileKickMemberTitle": "Hapus anggota",
+  "profileKickMemberSubtitle": "Pilih siapa yang kehilangan akses ke rumah ini.",
+  "profileKickSheetTitle": "Hapus anggota",
+  "profileKickSheetSubtitle": "Pilih anggota yang ingin dihapus. Mereka akan langsung kehilangan akses.",
+  "profileKickActionConfirm": "Hapus anggota",
+  "profileKickNoMembers": "Tidak ada anggota lain untuk dihapus saat ini.",
+  "profileKickOwnerOnly": "Hanya pemilik rumah yang bisa menghapus anggota.",
+  "profileKickSuccessMessage": "Mereka tidak lagi punya akses ke rumah ini.",
+  "profileLeaveTransferSuccessMessage": "Kepemilikan dialihkan. Menyelesaikan proses keluar...",
+  "profileInfoHubTitle": "Pusat Info",
+  "profileInfoHubSubtitle": "Buka pusat Notion Kinly di dalam aplikasi.",
+  "profileInfoHubLoadError": "Tidak dapat memuat Pusat Info. Periksa koneksimu.",
+  "profileContactUsTitle": "Hubungi kami",
+  "profileContactUsSubtitle": "Kirim email ke support@makinglifeeasie.com",
+  "profileConnectionSettingsTitle": "Notifikasi",
+  "profileConnectionSettingsSubtitle": "Kelola pengingat dan pemberitahuan.",
+  "connectionSettingsTitle": "Notifikasi",
+  "connectionSettingsSubtitle": "Atur pengingat harian dan waktunya.",
+  "connectionSettingsGenericError": "Tidak dapat memperbarui pengaturan notifikasi.",
+  "connectionNotificationsToggleTitle": "Pengingat harian",
+  "connectionNotificationsToggleSubtitleOn": "Dapatkan satu pengingat setiap hari.",
+  "connectionNotificationsToggleSubtitleOff": "Aktifkan pengingat untuk rumahmu.",
+  "connectionNotificationsPermissionBlocked": "Aktifkan notifikasi di pengaturan ponselmu terlebih dahulu.",
+  "connectionNotificationsTimeLabel": "Waktu pengingat",
+  "connectionNotificationsTimeSubtitle": "Dijadwalkan pada {time}",
+  "@connectionNotificationsTimeSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "8:00 AM"
+      }
+    },
+    "surface": "subtitle"
+  },
+  "profileContactEmailSubject": "Hubungi kami",
+  "profile_deactivated_message": "Profilmu dinonaktifkan. Masuk dengan email lain.",
+  "profileContactLaunchError": "Tidak dapat membuka aplikasi emailmu.",
+  "profileLogoutTitle": "Keluar",
+  "profileLogoutSubtitle": "Keluar dari Kinly di perangkat ini.",
+  "profileDeleteAccountTitle": "Hapus akun",
+  "profileDeleteAccountSubtitle": "Hapus akun dan data Kinly-mu.",
+  "profileConfirmLeaveTitle": "Keluar dari rumah ini?",
+  "profileConfirmLeaveMessage": "Kamu akan kehilangan akses ke tugas, riwayat, dan undangan.",
+  "profileConfirmDeleteTitle": "Hapus akunmu?",
+  "profileConfirmDeleteMessage": "Ini akan menghapus akunmu dan mengeluarkanmu. Ini bersifat permanen.",
+  "profileActionConfirmDelete": "Hapus akun",
+  "profileActionConfirm": "Keluar dari rumah",
+  "profileLeaveSuccessMessage": "Kamu telah keluar dari rumahmu.",
+  "profileDeleteSuccessMessage": "Akunmu akan segera dihapus. Kami akan mengeluarkanmu.",
+  "profileGenericError": "Terjadi kesalahan.",
+  "profileMissingHomeError": "Tidak dapat menemukan rumahmu saat ini.",
+  "harmonyQuestion": "Apa yang berjalan baik atau perlu disesuaikan minggu ini?",
+  "harmonyMoodSunny": "Cerah",
+  "harmonyMoodPartiallySunny": "Cerah sebagian",
+  "harmonyMoodCloudy": "Berawan",
+  "harmonyMoodRainy": "Hujan",
+  "harmonyMoodThunderstorm": "Badai petir",
+  "harmonyCommentLabel": "Catatan opsional",
+  "harmonyCommentHint": "Tambahkan konteks jika membantu",
+  "harmonyFeedbackSingleHousemateHint": "Ketik @ untuk menyebut 1 teman serumah.",
+  "harmonyShareLabel": "Terlihat oleh semua orang di rumah",
+  "harmonySubmitCta": "Simpan",
+  "harmonySubmitSuccess": "Tersimpan",
+  "harmonyErrorAlreadySubmitted": "Kamu sudah mengirim minggu ini.",
+  "harmonyErrorForbidden": "Umpan balik mingguan tidak tersedia saat ini.",
+  "harmonyErrorUnknown": "Terjadi kesalahan.",
+  "todayGratitudeHouseCta": "Ucapan terima kasih rumah",
+  "todayGratitudePersonalCta": "Ucapan terima kasih saya",
+  "gratitudeWallHouseTab": "Rumah",
+  "gratitudeWallPersonalTab": "Milik saya",
+  "gratitudeWallPersonalTitle": "Ucapan Terima Kasih Saya",
+  "gratitudeWallPersonalSummary": "Tempat pribadi untuk ucapan terima kasih singkat.",
+  "gratitudeWallStatsMentions": "Ucapan terima kasih",
+  "gratitudeWallStatsPeople": "Orang",
+  "gratitudeWallStatsHomes": "Rumah",
+  "mentionFieldHint": "Ketik @ untuk menyebut seseorang",
+  "gratitudeWallEmptyTitle": "Belum ada ucapan terima kasih",
+  "gratitudeWallEmptySubtitle": "Tambahkan ucapan terima kasih dari minggu ini.",
+  "gratitudeWallErrorGeneric": "Tidak dapat memuat ucapan terima kasih saat ini.",
+  "gratitudeWallRetry": "Coba lagi",
+  "gratitudeWallShareCta": "Bagikan",
+  "gratitudeWallShareTitle": "Ucapan terima kasih rumah",
+  "gratitudeWallShareMessage": "Beberapa ucapan terima kasih dari rumah Kinly kami. Unduh aplikasinya: {link}",
+  "@gratitudeWallShareMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://go.makinglifeeasie.com/kinly"
+      }
+    }
+  },
+  "gratitudeWallShareError": "Tidak dapat membagikan sekarang.",
+  "gratitudeWallFooter": "Dibuat dengan {appName} - Bersama terasa lebih ringan",
+  "gratitudeWallWeeksAgo": "{weeks, plural, =0{Minggu ini} one{# minggu lalu} other{# minggu lalu}}",
+  "@gratitudeWallWeeksAgo": {
+    "surface": "subtitle",
+    "placeholders": {
+      "weeks": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "@gratitudeWallFooter": {
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "Kinly"
+      }
+    }
+  },
+  "npsTitle": "Apakah Kinly membantu rumahmu berjalan lebih lancar?",
+  "npsDescription": "0 berarti sama sekali tidak. 10 berarti benar-benar memberi perbedaan.",
+  "npsScaleLowLabel": "0 Sama sekali tidak",
+  "npsScaleHighLabel": "10 Sangat membantu",
+  "npsCannotSkip": "Pilih skor untuk melanjutkan.",
+  "npsSubmitErrorNotRequired": "Kamu tidak perlu membagikan masukan sekarang.",
+  "npsSubmitErrorInvalidScore": "Pilih angka antara 0 dan 10.",
+  "npsSubmitErrorForbidden": "Masukan tidak tersedia saat ini.",
+  "npsSubmitErrorGeneric": "Tidak dapat mengirim masukanmu.",
+  "npsLaunchError": "Tidak dapat membuka langkah berikutnya.",
+  "npsEmailSubject": "Bagaimana Kinly bisa lebih mendukung rumahmu?",
+  "@app_title": {
+    "surface": "title"
+  },
+  "@welcome_title": {
+    "surface": "title"
+  },
+  "@join_title": {
+    "surface": "title"
+  },
+  "@join_submit": {
+    "surface": "button"
+  },
+  "@paywallTitle": {
+    "surface": "title_hero"
+  },
+  "@paywallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@paywallPrimaryCta": {
+    "surface": "button"
+  },
+  "@paywallSecondaryCta": {
+    "surface": "button"
+  },
+  "@paywallPurchaseSuccess": {
+    "surface": "success_message"
+  },
+  "@paywallRestoreCta": {
+    "surface": "button"
+  },
+  "@paywallErrorTitle": {
+    "surface": "title"
+  },
+  "@quick_add_title": {
+    "surface": "title"
+  },
+  "@quick_add_flow_title": {
+    "surface": "title"
+  },
+  "@quick_add_flow_subtitle": {
+    "surface": "subtitle"
+  },
+  "@quick_add_share_title": {
+    "surface": "title"
+  },
+  "@quick_add_share_subtitle": {
+    "surface": "subtitle"
+  },
+  "@todayAddSheetTitle": {
+    "surface": "title"
+  },
+  "@offline_title": {
+    "surface": "title"
+  },
+  "@offline_body": {
+    "surface": "subtitle"
+  },
+  "@offline_retry": {
+    "surface": "button"
+  },
+  "@force_update_title": {
+    "surface": "title"
+  },
+  "@force_update_body": {
+    "surface": "subtitle"
+  },
+  "@force_update_button": {
+    "surface": "button"
+  },
+  "@hubMembersEmpty": {
+    "surface": "empty_body"
+  },
+  "@hubInviteCta": {
+    "surface": "button"
+  },
+  "@hubShareInviteTitle": {
+    "surface": "title"
+  },
+  "@hubShareAppTitle": {
+    "surface": "title"
+  },
+  "@hubShareAppCta": {
+    "surface": "button"
+  },
+  "@todayFlatmateInviteTitle": {
+    "surface": "title"
+  },
+  "@todayFlatmateInviteSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayInviteFriendsTitle": {
+    "surface": "title"
+  },
+  "@todayInviteFriendsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayInviteShareCta": {
+    "surface": "button"
+  },
+  "@hubRotateSuccess": {
+    "surface": "success_message"
+  },
+  "@hubRotateError": {
+    "surface": "error"
+  },
+  "@hubQrTitle": {
+    "surface": "title"
+  },
+  "@hubQrSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubCardGratitudeWallTitle": {
+    "surface": "title"
+  },
+  "@hubCardGratitudeWallSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubPreferencesTitle": {
+    "surface": "title"
+  },
+  "@hubPreferencesSubtitle": {
+    "surface": "subtitle"
+  },
+  "@hubError": {
+    "surface": "error"
+  },
+  "@hubRetry": {
+    "surface": "button"
+  },
+  "@todayEmptyCardTitle": {
+    "surface": "title"
+  },
+  "@todayEmptyBody": {
+    "surface": "subtitle"
+  },
+  "@todayFlowSubtitle": {
+    "surface": "subtitle"
+  },
+  "@todayFlowSectionTitle": {
+    "surface": "title"
+  },
+  "@todayShareSectionTitle": {
+    "surface": "title"
+  },
+  "@todayShareError": {
+    "surface": "error"
+  },
+  "@todayGratitudeSectionTitle": {
+    "surface": "title"
+  },
+  "@todayGratitudeUnreadBody": {
+    "surface": "subtitle"
+  },
+  "@shareOwedDetailTitle": {
+    "surface": "title"
+  },
+  "@shareOwedDetailEmpty": {
+    "surface": "empty_body"
+  },
+  "@shareOwedDetailSuccess": {
+    "surface": "success_message"
+  },
+  "@shareOwedDetailError": {
+    "surface": "error"
+  },
+  "@shareEditTitle": {
+    "surface": "title"
+  },
+  "@shareEditSubmit": {
+    "surface": "button"
+  },
+  "@shareEditSuccess": {
+    "surface": "success_message"
+  },
+  "@shareEditLoadError": {
+    "surface": "error"
+  },
+  "@shareEditClose": {
+    "surface": "button"
+  },
+  "@shareEditDeleteButton": {
+    "surface": "button"
+  },
+  "@shareEditDeleteConfirmTitle": {
+    "surface": "title"
+  },
+  "@shareEditDeleteError": {
+    "surface": "error"
+  },
+  "@shareEditDeleteSuccess": {
+    "surface": "success_message"
+  },
+  "@shareCreateTitle": {
+    "surface": "title"
+  },
+  "@shareCreateParticipantsEmpty": {
+    "surface": "empty_body"
+  },
+  "@shareCreateSubmit": {
+    "surface": "button"
+  },
+  "@shareCreateLoadError": {
+    "surface": "error"
+  },
+  "@shareCreateRetry": {
+    "surface": "button"
+  },
+  "@shareCreateErrorGeneric": {
+    "surface": "error"
+  },
+  "@shareCreateErrorPaywallActiveCap": {
+    "surface": "error"
+  },
+  "@shareCreateErrorForbidden": {
+    "surface": "error"
+  },
+  "@shareCreateSuccess": {
+    "surface": "success_message"
+  },
+  "@flowChoreCreateTitle": {
+    "surface": "title"
+  },
+  "@flowChoreEditTitle": {
+    "surface": "title"
+  },
+  "@flowChoreViewTitle": {
+    "surface": "title"
+  },
+  "@flowChoreHowToLaunchError": {
+    "surface": "error"
+  },
+  "@flowChorePhotoUploadError": {
+    "surface": "error"
+  },
+  "@flowChorePhotoLoadError": {
+    "surface": "error"
+  },
+  "@flowChoreDeleteButton": {
+    "surface": "button"
+  },
+  "@flowChoreDeleteDialogTitle": {
+    "surface": "dialog_title"
+  },
+  "@flowChoreDeleteDialogMessage": {
+    "surface": "dialog_body"
+  },
+  "@flowChoreLoadError": {
+    "surface": "error"
+  },
+  "@flowChoreRetry": {
+    "surface": "button"
+  },
+  "@flowChoreErrorPaywallActiveCap": {
+    "surface": "error"
+  },
+  "@flowChoreErrorPaywallMediaCap": {
+    "surface": "error"
+  },
+  "@flowChoreErrorAssigneeNotMember": {
+    "surface": "error"
+  },
+  "@flowChoreErrorForbidden": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidPhoto": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidStart": {
+    "surface": "error"
+  },
+  "@flowChoreErrorInvalidState": {
+    "surface": "error"
+  },
+  "@flowChoreErrorGeneric": {
+    "surface": "error"
+  },
+  "@flowChoreDetailTitle": {
+    "surface": "title"
+  },
+  "@flowChoreDetailCompleteButton": {
+    "surface": "button"
+  },
+  "@flowChoreCreateSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreUpdateSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreDetailCompletionSuccess": {
+    "surface": "snackbar"
+  },
+  "@flowChoreDetailCompletionError": {
+    "surface": "error"
+  },
+  "@flowChoreDetailMoreInfoTitle": {
+    "surface": "title"
+  },
+  "@flowListEmptyTitle": {
+    "surface": "title"
+  },
+  "@flowListEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@flowListTabCurrent": {
+    "surface": "tab"
+  },
+  "@flowListTabFuture": {
+    "surface": "tab"
+  },
+  "@flowListError": {
+    "surface": "error"
+  },
+  "@exploreIntroSubtitle": {
+    "surface": "subtitle"
+  },
+  "@exploreFlowSubtitle": {
+    "surface": "subtitle"
+  },
+  "@exploreShareSubtitle": {
+    "surface": "subtitle"
+  },
+  "@shareCreatedListTitle": {
+    "surface": "title"
+  },
+  "@shareCreatedListEmptyTitle": {
+    "surface": "title"
+  },
+  "@shareCreatedListEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@shareCreatedListError": {
+    "surface": "error"
+  },
+  "@shareCreatedListRetry": {
+    "surface": "button"
+  },
+  "@shareCreatedListDraftSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileSettingsTitle": {
+    "surface": "title"
+  },
+  "@profileSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileIdentityTitle": {
+    "surface": "title"
+  },
+  "@profileIdentitySubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileIdentityUsernameEmptyError": {
+    "surface": "error"
+  },
+  "@profileIdentityUsernameFormatError": {
+    "surface": "error"
+  },
+  "@profileIdentityUsernameTakenError": {
+    "surface": "error"
+  },
+  "@profileIdentityAvatarSectionTitle": {
+    "surface": "title"
+  },
+  "@profileIdentityAvatarEmpty": {
+    "surface": "empty_body"
+  },
+  "@profileIdentityLoadError": {
+    "surface": "error"
+  },
+  "@profileIdentityRetry": {
+    "surface": "button"
+  },
+  "@profileIdentitySaveButton": {
+    "surface": "button"
+  },
+  "@profileIdentitySuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileLeaveHomeTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveHomeSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileLeaveEligibilityError": {
+    "surface": "error"
+  },
+  "@profileLeaveTransferSheetTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveTransferSheetSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickMemberTitle": {
+    "surface": "title"
+  },
+  "@profileKickMemberSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickSheetTitle": {
+    "surface": "title"
+  },
+  "@profileKickSheetSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileKickSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileLeaveTransferSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileInfoHubTitle": {
+    "surface": "title"
+  },
+  "@profileInfoHubSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileInfoHubLoadError": {
+    "surface": "error"
+  },
+  "@profileContactUsTitle": {
+    "surface": "title"
+  },
+  "@profileContactUsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileConnectionSettingsTitle": {
+    "surface": "title"
+  },
+  "@profileConnectionSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@connectionSettingsTitle": {
+    "surface": "title"
+  },
+  "@connectionSettingsSubtitle": {
+    "surface": "subtitle"
+  },
+  "@connectionSettingsGenericError": {
+    "surface": "error"
+  },
+  "@connectionNotificationsToggleTitle": {
+    "surface": "title"
+  },
+  "@connectionNotificationsToggleSubtitleOn": {
+    "surface": "notification_title"
+  },
+  "@connectionNotificationsToggleSubtitleOff": {
+    "surface": "notification_title"
+  },
+  "@profileContactLaunchError": {
+    "surface": "error"
+  },
+  "@profileLogoutTitle": {
+    "surface": "title"
+  },
+  "@profileLogoutSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileDeleteAccountTitle": {
+    "surface": "title"
+  },
+  "@profileDeleteAccountSubtitle": {
+    "surface": "subtitle"
+  },
+  "@profileConfirmLeaveTitle": {
+    "surface": "title"
+  },
+  "@profileConfirmDeleteTitle": {
+    "surface": "title"
+  },
+  "@profileLeaveSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileDeleteSuccessMessage": {
+    "surface": "success_message"
+  },
+  "@profileGenericError": {
+    "surface": "error"
+  },
+  "@profileMissingHomeError": {
+    "surface": "error"
+  },
+  "@harmonySubmitCta": {
+    "surface": "button"
+  },
+  "@harmonySubmitSuccess": {
+    "surface": "success_message"
+  },
+  "@harmonyErrorAlreadySubmitted": {
+    "surface": "error"
+  },
+  "@harmonyErrorForbidden": {
+    "surface": "error"
+  },
+  "@harmonyErrorUnknown": {
+    "surface": "error"
+  },
+  "@gratitudeWallEmptyTitle": {
+    "surface": "title"
+  },
+  "@gratitudeWallEmptySubtitle": {
+    "surface": "subtitle"
+  },
+  "@gratitudeWallRetry": {
+    "surface": "button"
+  },
+  "@gratitudeWallShareCta": {
+    "surface": "button"
+  },
+  "@gratitudeWallShareTitle": {
+    "surface": "title"
+  },
+  "@gratitudeWallShareError": {
+    "surface": "error"
+  },
+  "@npsTitle": {
+    "surface": "subtitle"
+  },
+  "@npsSubmitErrorNotRequired": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorInvalidScore": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorForbidden": {
+    "surface": "error"
+  },
+  "@npsSubmitErrorGeneric": {
+    "surface": "error"
+  },
+  "@npsLaunchError": {
+    "surface": "error"
+  },
+  "@join_error_invalid_code": {
+    "surface": "error"
+  },
+  "@join_error_inactive_invite": {
+    "surface": "error"
+  },
+  "@join_error_already_in_other_home": {
+    "surface": "error"
+  },
+  "@join_error_paywall_limit": {
+    "surface": "error"
+  },
+  "@join_error_unauthorized": {
+    "surface": "error"
+  },
+  "@join_error_forbidden": {
+    "surface": "error"
+  },
+  "preferencePromptTitle": "Atur suasanamu",
+  "preferencePromptSubtitle": "Bantu rumahmu memahami apa yang cocok untukmu.",
+  "preferencePromptCta": "Mulai",
+  "preferenceOnboardingTitle": "Suasanamu",
+  "preferenceOnboardingBack": "Kembali",
+  "preferenceOnboardingSubmit": "Simpan",
+  "preferenceOnboardingProgress": "{current}/{total}",
+  "@preferenceOnboardingProgress": {
+    "description": "Progress for preference onboarding",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "3"
+      },
+      "total": {
+        "type": "int",
+        "example": "10"
+      }
+    }
+  },
+  "preferenceReportTitle": "Preferensimu",
+  "preferenceReportEditCta": "Edit",
+  "preferenceReportDoneCta": "Selesai",
+  "preferenceReportEditTitle": "Edit preferensi",
+  "preferenceReportViewTitle": "Lihat preferensi",
+  "preferenceReportEditSectionPrompt": "Edit bagian ini.",
+  "preferenceReportEditSectionHint": "Tulis yang terasa paling tepat",
+  "preferenceReportEditSectionDone": "Selesai",
+  "preferenceReportEmptyTitle": "Preferensi belum siap",
+  "preferenceReportEmptyBody": "Lengkapi preferensimu untuk membuat laporan.",
+  "preferenceReportErrorTitle": "Tidak dapat memuat laporan",
+  "preferenceReportErrorBody": "Silakan coba lagi.",
+  "preferenceReportEditError": "Tidak dapat menyimpan pembaruan itu.",
+  "preferenceReportReadOnlyNote": "Ini menunjukkan apa yang terasa nyaman bagi mereka.",
+  "preferenceScenarioEnvironmentNoiseQuestion": "Tingkat kebisingan?",
+  "preferenceScenarioEnvironmentNoiseOption1": "Tolong tenang",
+  "preferenceScenarioEnvironmentNoiseOption2": "Bising normal",
+  "preferenceScenarioEnvironmentNoiseOption3": "Ramai tidak masalah",
+  "preferenceScenarioEnvironmentLightQuestion": "Pencahayaan?",
+  "preferenceScenarioEnvironmentLightOption1": "Lembut",
+  "preferenceScenarioEnvironmentLightOption2": "Seimbang",
+  "preferenceScenarioEnvironmentLightOption3": "Terang",
+  "preferenceScenarioEnvironmentScentQuestion": "Bau yang kuat?",
+  "preferenceScenarioEnvironmentScentOption1": "Sensitif",
+  "preferenceScenarioEnvironmentScentOption2": "Netral",
+  "preferenceScenarioEnvironmentScentOption3": "Tidak mengganggu saya",
+  "preferenceScenarioScheduleQuietHoursQuestion": "Malam hari?",
+  "preferenceScenarioScheduleQuietHoursOption1": "Malam tenang",
+  "preferenceScenarioScheduleQuietHoursOption2": "Tergantung",
+  "preferenceScenarioScheduleQuietHoursOption3": "Aktif tidak masalah",
+  "preferenceScenarioScheduleSleepTimingQuestion": "Gaya tidur?",
+  "preferenceScenarioScheduleSleepTimingOption1": "Bangun pagi",
+  "preferenceScenarioScheduleSleepTimingOption2": "Di tengah-tengah",
+  "preferenceScenarioScheduleSleepTimingOption3": "Begadang",
+  "preferenceScenarioCommunicationChannelQuestion": "Cara terbaik menghubungimu?",
+  "preferenceScenarioCommunicationChannelOption1": "Pesan",
+  "preferenceScenarioCommunicationChannelOption2": "Langsung",
+  "preferenceScenarioCommunicationChannelOption3": "Telepon",
+  "preferenceScenarioCommunicationDirectnessQuestion": "Saat ada yang salah?",
+  "preferenceScenarioCommunicationDirectnessOption1": "Lembut saja",
+  "preferenceScenarioCommunicationDirectnessOption2": "Tergantung",
+  "preferenceScenarioCommunicationDirectnessOption3": "Langsung saja",
+  "preferenceScenarioCleanlinessSharedSpaceQuestion": "Ruang bersama?",
+  "preferenceScenarioCleanlinessSharedSpaceOption1": "Jaga tetap rapi",
+  "preferenceScenarioCleanlinessSharedSpaceOption2": "Sedikit berantakan",
+  "preferenceScenarioCleanlinessSharedSpaceOption3": "Berantakan tidak masalah",
+  "preferenceScenarioPrivacyRoomEntryQuestion": "Masuk ke kamarmu?",
+  "preferenceScenarioPrivacyRoomEntryOption1": "Ketuk dulu",
+  "preferenceScenarioPrivacyRoomEntryOption2": "Biasanya ketuk",
+  "preferenceScenarioPrivacyRoomEntryOption3": "Buka pintu saja",
+  "preferenceScenarioPrivacyNotificationsQuestion": "Pesan malam hari?",
+  "preferenceScenarioPrivacyNotificationsOption1": "Tolong jangan",
+  "preferenceScenarioPrivacyNotificationsOption2": "Hanya yang penting",
+  "preferenceScenarioPrivacyNotificationsOption3": "Kapan saja",
+  "preferenceScenarioSocialHostingQuestion": "Tamu?",
+  "preferenceScenarioSocialHostingOption1": "Jarang",
+  "preferenceScenarioSocialHostingOption2": "Kadang-kadang",
+  "preferenceScenarioSocialHostingOption3": "Sering",
+  "preferenceScenarioSocialTogethernessQuestion": "Energi rumah?",
+  "preferenceScenarioSocialTogethernessOption1": "Kebanyakan sendiri",
+  "preferenceScenarioSocialTogethernessOption2": "Campuran keduanya",
+  "preferenceScenarioSocialTogethernessOption3": "Sering kumpul",
+  "preferenceScenarioRoutinePlanningQuestion": "Kehidupan sehari-hari?",
+  "preferenceScenarioRoutinePlanningOption1": "Terstruktur",
+  "preferenceScenarioRoutinePlanningOption2": "Sedikit terstruktur",
+  "preferenceScenarioRoutinePlanningOption3": "Mengalir saja",
+  "preferenceScenarioConflictResolutionQuestion": "Kalau ada yang tidak beres?",
+  "preferenceScenarioConflictResolutionOption1": "Tenang dulu",
+  "preferenceScenarioConflictResolutionOption2": "Cek lagi nanti",
+  "preferenceScenarioConflictResolutionOption3": "Bicarakan lebih awal",
+  "houseNormPromptTitle": "Buat norma rumah",
+  "houseNormPromptSubtitle": "Ubah jawabanmu menjadi panduan bersama.",
+  "houseNormPromptCta": "Buat",
+  "houseNormOnboardingTitle": "Suasana rumah",
+  "houseNormOnboardingBack": "Kembali",
+  "houseNormOnboardingSubmit": "Buat",
+  "houseNormOnboardingProgress": "{current}/{total}",
+  "@houseNormOnboardingProgress": {
+    "description": "Progress for house norms onboarding",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "3"
+      },
+      "total": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "houseNormGenerationFailed": "Tidak dapat membuat norma rumah saat ini.",
+  "houseNormReportTitle": "Norma rumah",
+  "houseNormDoneCta": "Selesai",
+  "houseNormEditTitle": "Edit norma rumah",
+  "houseNormViewTitle": "Lihat norma rumah",
+  "houseNormReportEmptyTitle": "Norma rumah belum siap",
+  "houseNormReportEmptyBody": "Buat norma rumah untuk melihatnya.",
+  "houseNormReportErrorTitle": "Tidak dapat memuat norma rumah",
+  "houseNormReportErrorBody": "Silakan coba lagi.",
+  "houseNormPublishCta": "Publikasikan ke web",
+  "houseNormRepublishCta": "Publikasikan ulang",
+  "houseNormCopyUrlCta": "Salin URL",
+  "houseNormOpenUrlCta": "Buka URL",
+  "houseNormOpenUrlError": "Tidak dapat membuka URL itu.",
+  "houseNormShareUrlCta": "Bagikan URL",
+  "houseNormUrlCopied": "URL norma rumah disalin.",
+  "houseNormShareSubject": "Norma rumah kami",
+  "houseNormSummaryTitle": "Norma rumah",
+  "houseNormSummarySubtitle": "Panduan, bukan buku aturan.",
+  "houseNormSummaryFramingLabel": "Ringkasan",
+  "houseNormSectionRhythmQuietTitle": "Ritme dan ketenangan",
+  "houseNormSectionSharedSpacesTitle": "Ruang bersama",
+  "houseNormSectionGuestsSocialTitle": "Tamu dan alur sosial",
+  "houseNormSectionResponsibilityFlowTitle": "Alur tanggung jawab",
+  "houseNormSectionRepairStyleTitle": "Gaya memperbaiki hubungan",
+  "houseNormSectionHomeIdentityTitle": "Identitas rumah",
+  "houseNormSectionFallbackTitle": "Bagian",
+  "houseNormSectionEditLabel": "Edit bagian ini",
+  "houseNormSectionSaveCta": "Simpan",
+  "houseNormSectionEmptyError": "Tambahkan teks sebelum menyimpan.",
+  "houseNormSectionSaveSuccess": "Bagian diperbarui.",
+  "houseNormSectionSaveFailed": "Tidak dapat menyimpan pembaruan itu.",
+  "hubHouseNormsTitle": "Norma rumah",
+  "hubHouseNormsSubtitle": "Panduan untuk cara rumah ini berjalan.",
+  "houseNormScenarioPropertyContextQuestion": "Rumah ini adalah:",
+  "houseNormScenarioPropertyContextOption1": "Milik sendiri",
+  "houseNormScenarioPropertyContextOption2": "Sewa seluruh rumah",
+  "houseNormScenarioPropertyContextOption3": "Sewa kamar",
+  "houseNormScenarioRelationshipModelQuestion": "Siapa yang tinggal di sini?",
+  "houseNormScenarioRelationshipModelOption1": "Teman serumah",
+  "houseNormScenarioRelationshipModelOption2": "Keluarga",
+  "houseNormScenarioRelationshipModelOption3": "Campuran",
+  "houseNormScenarioRhythmQuestion": "Di malam hari?",
+  "houseNormScenarioRhythmOption1": "Mulai tenang",
+  "houseNormScenarioRhythmOption2": "Tergantung",
+  "houseNormScenarioRhythmOption3": "Semua melakukan urusannya sendiri",
+  "houseNormScenarioSharedSpacesQuestion": "Dapur di malam hari?",
+  "houseNormScenarioSharedSpacesOption1": "Bersih",
+  "houseNormScenarioSharedSpacesOption2": "Terlihat dipakai",
+  "houseNormScenarioSharedSpacesOption3": "Berantakan tidak masalah",
+  "houseNormScenarioGuestsQuestion": "Membawa tamu?",
+  "houseNormScenarioGuestsOption1": "Tanya dulu",
+  "houseNormScenarioGuestsOption2": "Kasih tahu dulu",
+  "houseNormScenarioGuestsOption3": "Sangat normal",
+  "houseNormScenarioResponsibilityQuestion": "Tugas rumah kecil?",
+  "houseNormScenarioResponsibilityOption1": "Kesepakatan yang jelas",
+  "houseNormScenarioResponsibilityOption2": "Siapa yang melihat duluan",
+  "houseNormScenarioResponsibilityOption3": "Semua urus miliknya sendiri",
+  "houseNormScenarioRepairQuestion": "Ketegangan?",
+  "houseNormScenarioRepairOption1": "Bicarakan lebih awal",
+  "houseNormScenarioRepairOption2": "Pilih waktunya",
+  "houseNormScenarioRepairOption3": "Biarkan hal kecil lewat",
+  "houseNormScenarioHomeIdentityQuestion": "Deskripsi terbaik?",
+  "houseNormScenarioHomeIdentityOption1": "Rumah tenang",
+  "houseNormScenarioHomeIdentityOption2": "Rumah seimbang",
+  "houseNormScenarioHomeIdentityOption3": "Rumah sosial",
+  "reflectiveAcknowledgementTitle": "Baik.",
+  "reflectivePersonalPrimary": "Merefleksikan apa yang kamu bagikan.",
+  "reflectivePersonalSecondary": "Agar orang lain memahami apa yang terasa nyaman untukmu.",
+  "reflectiveHousePrimary": "Menuangkan harapan rumahmu ke dalam kata-kata.",
+  "reflectiveHouseSecondary": "Agar harapan menjadi jelas.",
+  "reflectiveHouseNormsPrimary": "Merefleksikan apa yang dibagikan rumah ini.",
+  "reflectiveHouseNormsSecondary": "Panduan bersama, bukan buku aturan.",
+  "reflectiveGenericPrimary": "Menyusun ini dengan penuh perhatian.",
+  "reflectiveGenericSecondary": "Jeda sebentar sebelum kami menampilkannya.",
+  "preferenceReportGenerationMissing": "Tidak dapat menyelesaikan refleksi preferensimu. Coba lagi nanti.",
+  "preferenceReportGenerationFailed": "Tidak dapat menyelesaikan refleksi preferensimu. Kembali dan coba lagi.",
+  "@preferenceReportReadOnlyNote": {
+    "surface": "body"
+  },
+  "personalProfileTitle": "Profilmu",
+  "personalProfilePreferences": "Preferensi pribadi",
+  "personalProfileMentions": "Sebutan pribadi",
+  "personalProfileLoadError": "Tidak dapat memuat profil pribadimu.",
+  "personalMentionsTitle": "Sebutan pribadi",
+  "housePulseCardHeader": "Pulse rumah mingguan",
+  "housePulseShareCta": "Bagikan pulse",
+  "housePulseShareTitle": "Membagikan pulse rumah Kinly kami",
+  "housePulseShareMessage": "Membagikan pulse rumah Kinly kami. Unduh aplikasinya: {link}",
+  "@housePulseShareMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "example": "https://go.makinglifeeasie.com/kinly"
+      }
+    }
+  },
+  "housePulseUpdatedOn": "Diperbarui {date}",
+  "@housePulseUpdatedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "5 Jan, 2026"
+      }
+    }
+  },
+  "pulseFormingTitle": "Masih terbentuk",
+  "pulseFormingSummary": "Beberapa check-in lagi akan memberi gambaran yang lebih jelas.",
+  "pulseSunnyCalmTitle": "Berjalan lancar",
+  "pulseSunnyCalmSummary": "Semuanya terasa lancar minggu ini.",
+  "pulseSunnyBumpyTitle": "Sebagian besar lancar",
+  "pulseSunnyBumpySummary": "Sebagian besar lancar, dengan beberapa hambatan kecil.",
+  "pulsePartlySupportedTitle": "Cukup baik secara keseluruhan",
+  "pulsePartlySupportedSummary": "Sebagian besar stabil, dengan sedikit ruang untuk perbaikan.",
+  "pulseCloudySteadyTitle": "Campuran",
+  "pulseCloudySteadySummary": "Beberapa hal berjalan baik. Beberapa tidak.",
+  "pulseCloudyTenseTitle": "Perlu perhatian",
+  "pulseCloudyTenseSummary": "Ada sedikit ketegangan minggu ini.",
+  "pulseRainySupportedTitle": "Disarankan reset",
+  "pulseRainySupportedSummary": "Mungkin sudah waktunya untuk reset kecil.",
+  "pulseRainyUnsupportedTitle": "Perlu reset",
+  "pulseRainyUnsupportedSummary": "Ada gesekan yang cukup terasa sekarang.",
+  "pulseThunderstormTitle": "Ketegangan tinggi",
+  "pulseThunderstormSummary": "Ketegangan tinggi. Segera lakukan reset.",
+  "weeklyRewriteCta": "Kirim dengan tenang lewat Kinly",
+  "harmonyErrorCommentRequiredForMention": "Tambahkan catatan singkat sebelum mengirim sebutan ini.",
+  "harmonyErrorSingleMentionRequired": "Pilih satu orang untuk catatan ini.",
+  "harmonyErrorCommentRequiredForPublicWall": "Tambahkan catatan singkat sebelum memposting ucapan terima kasih ini.",
+  "harmonyErrorComplaintTooShort": "Tambahkan sedikit detail lagi.",
+  "harmonyErrorComplaintTooBrief": "Tulis kalimat singkat agar jelas.",
+  "harmonyErrorComplaintNeedsSentence": "Tambahkan kalimat yang jelas.",
+  "demoAccess": "Akses Demo",
+  "@demoAccess": {
+    "description": "Title for the demo access screen used by app store reviewers",
+    "surface": "title"
+  },
+  "demoAccessTapHint": "Akses demo: {current} dari 7 ketukan",
+  "@demoAccessTapHint": {
+    "description": "Progress indicator shown when tapping logo to reveal demo access",
+    "placeholders": {
+      "current": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "demoAccessEmail": "Email",
+  "@demoAccessEmail": {
+    "description": "Label for email input on demo access screen",
+    "surface": "label"
+  },
+  "demoAccessPassword": "Kata sandi",
+  "@demoAccessPassword": {
+    "description": "Label for password input on demo access screen",
+    "surface": "label"
+  },
+  "demoAccessSubmit": "Masuk",
+  "@demoAccessSubmit": {
+    "description": "Submit button label on demo access screen",
+    "surface": "button"
+  },
+  "demoAccessError": "Tidak dapat masuk. Periksa kredensialmu.",
+  "@demoAccessError": {
+    "description": "Error message shown when demo login does not succeed",
+    "surface": "error"
+  },
+  "planFreeLabel": "Upgrade ke Premium",
+  "planPremiumLabel": "Premium",
+  "planPremiumActiveTitle": "Kamu menggunakan Premium",
+  "planPremiumActiveBody": "Nikmati akses tanpa batas ke semua fitur.",
+  "close": "Tutup",
+  "houseDirectoryTitle": "Direktori rumah",
+  "houseDirectoryLoadError": "Tidak dapat memuat Direktori rumah.",
+  "hubHouseDirectoryTitle": "Direktori rumah",
+  "hubHouseDirectorySubtitle": "Wifi, layanan, catatan, dan pengingat perpanjangan.",
+  "houseDirectoryEmptyTitle": "Detail rumah bersama ada di sini.",
+  "houseDirectoryEmptyBody": "Simpan wifi, sewa, layanan, dan catatan rumah di sini.",
+  "houseDirectoryWifiTitle": "Wifi",
+  "houseDirectoryRentTitle": "Sewa",
+  "houseDirectoryServicesTitle": "Utilitas dan layanan",
+  "houseDirectoryNotesTitle": "Catatan rumah",
+  "houseDirectorySearchLabel": "Cari detail rumah",
+  "houseDirectorySearchHint": "Temukan layanan atau catatan",
+  "houseDirectoryServicesSearchLabel": "Cari layanan",
+  "houseDirectoryServicesSearchHint": "Temukan layanan",
+  "houseDirectoryServicesSearchEmpty": "Tidak ada layanan yang cocok dengan pencarian itu.",
+  "houseDirectoryNotesSearchLabel": "Cari catatan",
+  "houseDirectoryNotesSearchHint": "Temukan catatan",
+  "houseDirectoryNotesSearchEmpty": "Tidak ada catatan yang cocok dengan pencarian itu.",
+  "houseDirectoryAddWifi": "Tambah wifi",
+  "houseDirectoryEditWifi": "Edit wifi",
+  "houseDirectoryAddService": "Tambah layanan",
+  "houseDirectoryEditService": "Edit layanan",
+  "houseDirectoryAddNote": "Tambah catatan",
+  "houseDirectoryEditNote": "Edit catatan",
+  "houseDirectorySave": "Simpan",
+  "houseDirectoryEdit": "Edit",
+  "houseDirectoryDelete": "Arsipkan",
+  "houseDirectoryWifiOwnerEmpty": "Tambahkan wifi rumahmu agar semua orang bisa menemukannya di sini.",
+  "houseDirectoryWifiMemberEmpty": "Detail wifi belum ditambahkan.",
+  "houseDirectoryServicesEmpty": "Belum ada layanan ditambahkan.",
+  "houseDirectoryNotesEmpty": "Belum ada catatan ditambahkan.",
+  "houseDirectoryServiceOther": "Lainnya",
+  "houseDirectoryAccountReference": "Referensi: {reference}",
+  "@houseDirectoryAccountReference": {
+    "placeholders": {
+      "reference": {
+        "type": "String",
+        "example": "ABC-123"
+      }
+    }
+  },
+  "houseDirectoryReminderDue": "Pengingat untuk {date}",
+  "@houseDirectoryReminderDue": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "5 Jan, 2026"
+      }
+    }
+  },
+  "houseDirectoryTermRange": "{start} sampai {end}",
+  "@houseDirectoryTermRange": {
+    "placeholders": {
+      "start": {
+        "type": "String",
+        "example": "1 Jan, 2026"
+      },
+      "end": {
+        "type": "String",
+        "example": "31 Des, 2026"
+      }
+    }
+  },
+  "houseDirectoryDateUnknown": "Tidak diketahui",
+  "houseDirectoryOpenLink": "Buka tautan",
+  "houseDirectoryOpenLinkError": "Tidak dapat membuka tautan itu.",
+  "houseDirectoryTermLabel": "Masa berlaku",
+  "houseDirectorySsidLabel": "SSID",
+  "houseDirectoryPasswordLabel": "Kata sandi",
+  "houseDirectoryPasswordHelper": "Biarkan kosong untuk menyimpan sebagai jaringan terbuka.",
+  "houseDirectoryServiceTypeLabel": "Jenis layanan",
+  "houseDirectoryCustomLabel": "Label khusus",
+  "houseDirectoryCustomLabelHint": "Gunakan nama yang jelas seperti pembersih, parkir, atau penyimpanan",
+  "houseDirectoryProviderLabel": "Nama penyedia",
+  "houseDirectoryProviderHint": "Siapa yang menjalankan layanan ini, misalnya perusahaan listrikmu",
+  "houseDirectoryAccountReferenceLabel": "Referensi akun",
+  "houseDirectoryAccountReferenceHint": "Tambahkan nomor akun atau ID pelanggan",
+  "houseDirectoryLinkLabel": "Tautan penyedia",
+  "houseDirectoryProviderLinkHint": "Tempel tautan login, portal, atau pembayaran untuk layanan ini",
+  "houseDirectoryStartDate": "Tanggal mulai",
+  "houseDirectoryEndDate": "Tanggal berakhir",
+  "houseDirectoryReminderOffset": "Jeda pengingat",
+  "houseDirectoryReminderOffsetUnit": "Satuan jeda",
+  "houseDirectoryNotes": "Catatan",
+  "houseDirectoryNotesHint": "Tambahkan detail yang membantu, seperti tanggal tagihan atau langkah menghubungi",
+  "houseDirectoryTitleLabel": "Judul",
+  "houseDirectoryNoteTitleHint": "Beri nama catatan agar semua orang tahu isinya",
+  "houseDirectoryNoteDetailsLabel": "Detail",
+  "houseDirectoryNoteDetailsHint": "Tambahkan detail yang jelas untuk rumah",
+  "houseDirectoryNotePhotoLabel": "Foto",
+  "houseDirectoryNotePhotoReplaceLabel": "Ganti foto",
+  "houseDirectoryNotePhotoPlaceholder": "Tambahkan foto untuk catatan ini",
+  "houseDirectoryNotePhotoUploadError": "Tidak dapat mengunggah foto itu.",
+  "houseDirectoryPhotoViewerTitle": "Foto",
+  "houseDirectoryNoteUrlLabel": "URL referensi",
+  "houseDirectoryNoteUrlHint": "Opsional. Tempel alamat web terkait jika catatan ini mengarah ke sana",
+  "houseDirectoryValidationProvider": "Masukkan nama penyedia.",
+  "houseDirectoryValidationCustomLabel": "Masukkan label khusus.",
+  "houseDirectoryValidationRentDates": "Sewa memerlukan tanggal mulai dan tanggal berakhir.",
+  "houseDirectoryValidationDateRange": "Pilih tanggal akhir setelah tanggal mulai.",
+  "houseDirectoryValidationReminderOffset": "Masukkan jeda pengingat yang valid.",
+  "houseDirectoryValidationNoteFields": "Masukkan judul dan detail.",
+  "houseDirectoryValidationUrl": "Masukkan URL http atau https yang valid.",
+  "houseDirectoryArchiveConfirm": "Arsipkan",
+  "houseDirectoryArchiveNoteTitle": "Arsipkan catatan ini?",
+  "houseDirectoryArchiveNoteBody": "Ini akan menghapusnya dari tampilan Direktori rumahmu.",
+  "houseDirectoryArchiveServiceTitle": "Arsipkan layanan ini?",
+  "houseDirectoryArchiveServiceBody": "Ini akan menghapusnya dari tampilan Direktori rumahmu.",
+  "houseDirectoryWifiSaved": "Detail wifi tersimpan.",
+  "houseDirectoryServiceSaved": "Layanan tersimpan.",
+  "houseDirectoryServiceArchived": "Layanan diarsipkan.",
+  "houseDirectoryNoteSaved": "Catatan tersimpan.",
+  "houseDirectoryNoteArchived": "Catatan diarsipkan.",
+  "houseDirectoryNotePhotoAttached": "Foto dilampirkan.",
+  "houseDirectoryReminderAcknowledged": "Pengingat dikonfirmasi.",
+  "houseDirectoryReminderDismissed": "Pengingat ditutup.",
+  "houseDirectoryActionFailed": "Tidak dapat menyimpan perubahan itu.",
+  "todayHouseDirectoryRemindersTitle": "Pengingat perpanjangan",
+  "todayHouseDirectoryReminderDue": "Pengingat untuk {date}",
+  "@todayHouseDirectoryReminderDue": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "5 Jan, 2026"
+      }
+    }
+  },
+  "todayHouseDirectoryOpenCta": "Buka direktori",
+  "todayHouseDirectoryAcknowledgeCta": "Konfirmasi",
+  "todayHouseDirectoryDismissCta": "Tutup",
+  "@planFreeLabel": {
+    "surface": "button"
+  },
+  "@planPremiumLabel": {
+    "surface": "button"
+  }
+}

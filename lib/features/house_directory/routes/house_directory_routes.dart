@@ -5,10 +5,14 @@ import 'package:kinly/app/router/app_route_paths.dart';
 import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/house_directory/ports/house_directory_repository.dart';
 import 'package:kinly/core/di/locator.dart';
+import 'package:kinly/core/ui/media/kinly_photo_viewer_screen.dart';
 import 'package:kinly/features/house_directory/data/supabase/supabase_house_directory_repository.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_details_screen.dart';
+import 'package:kinly/features/house_directory/ui/house_directory_note_screen.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_provider.dart';
+import 'package:kinly/features/house_directory/ui/house_directory_route_args.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_screen.dart';
+import 'package:kinly/features/house_directory/ui/house_directory_service_screen.dart';
 
 class HouseDirectoryRouteContext {
   const HouseDirectoryRouteContext({
@@ -34,7 +38,8 @@ List<GoRoute> buildHouseDirectoryRoutes({
         state: state,
         routeName: 'houseDirectory',
         resolveContext: resolveContext,
-        childBuilder: (context) => HouseDirectoryScreen(homeId: context.homeId),
+        childBuilder:
+            (context, _) => HouseDirectoryScreen(homeId: context.homeId),
       ),
     ),
     GoRoute(
@@ -45,8 +50,61 @@ List<GoRoute> buildHouseDirectoryRoutes({
         routeName: 'houseDirectoryDetails',
         resolveContext: resolveContext,
         childBuilder:
-            (context) => HouseDirectoryDetailsScreen(homeId: context.homeId),
+            (context, repository) => HouseDirectoryDetailsScreen(
+              homeId: context.homeId,
+              repository: repository,
+            ),
       ),
+    ),
+    GoRoute(
+      path: AppRoutePaths.houseDirectoryService,
+      name: AppRouteNames.houseDirectoryService,
+      builder: (_, state) => _buildRoute(
+        state: state,
+        routeName: 'houseDirectoryService',
+        resolveContext: resolveContext,
+        childBuilder: (context, _) {
+          final args = state.extra as HouseDirectoryServiceRouteArgs?;
+          return HouseDirectoryServiceScreen(
+            homeId: context.homeId,
+            isOwner: context.isOwner,
+            serviceId: args?.serviceId,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: AppRoutePaths.houseDirectoryNote,
+      name: AppRouteNames.houseDirectoryNote,
+      builder: (_, state) => _buildRoute(
+        state: state,
+        routeName: 'houseDirectoryNote',
+        resolveContext: resolveContext,
+        childBuilder: (context, repository) {
+          final args = state.extra as HouseDirectoryNoteRouteArgs?;
+          return HouseDirectoryNoteScreen(
+            homeId: context.homeId,
+            repository: repository,
+            isOwner: context.isOwner,
+            noteId: args?.noteId,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: AppRoutePaths.houseDirectoryPhoto,
+      name: AppRouteNames.houseDirectoryPhoto,
+      builder: (_, state) {
+        final args = state.extra as HouseDirectoryPhotoRouteArgs?;
+        if (args == null) {
+          return routeFallback('houseDirectoryPhoto');
+        }
+        return KinlyPhotoViewerScreen(
+          photoUrl: args.photoUrl,
+          heroTag: args.heroTag,
+          title: args.title,
+        );
+      },
     ),
   ];
 }
@@ -55,7 +113,11 @@ Widget _buildRoute({
   required GoRouterState state,
   required String routeName,
   required HouseDirectoryRouteContextResolver resolveContext,
-  required Widget Function(HouseDirectoryRouteContext context) childBuilder,
+  required Widget Function(
+    HouseDirectoryRouteContext context,
+    HouseDirectoryRepository repository,
+  )
+  childBuilder,
 }) {
   final context = resolveContext();
   if (context == null) {
@@ -73,6 +135,6 @@ Widget _buildRoute({
     repository: repository,
     homeId: context.homeId,
     isOwner: context.isOwner,
-    child: childBuilder(context),
+    child: childBuilder(context, repository),
   );
 }

@@ -292,10 +292,7 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
     if (item == null) return;
     emit(state.copyWith(isSubmitting: true, clearSubmissionError: true));
     try {
-      await _shoppingListRepository.archiveItemsForUser(
-        homeId: _homeId,
-        itemIds: <String>[item.id],
-      );
+      await _shoppingListRepository.archiveItem(itemId: item.id);
       emit(state.copyWith(isSubmitting: false, successItemId: item.id));
     } catch (error) {
       emit(

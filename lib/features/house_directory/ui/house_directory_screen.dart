@@ -2,10 +2,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/core/ui/buttons/kinly_outlined_button.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
+import 'package:kinly/core/ui/kinly_refresh_indicator.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
+import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/features/house_directory/bloc/house_directory_bloc.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_forms.dart';
@@ -37,6 +40,7 @@ class HouseDirectoryScreen extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final useTwoColumns = constraints.maxWidth >= 760;
+                  final colors = theme.colorScheme;
                   final cardWidth =
                       useTwoColumns
                           ? (constraints.maxWidth - 12) / 2
@@ -52,21 +56,36 @@ class HouseDirectoryScreen extends StatelessWidget {
                       SizedBox(
                         width: cardWidth,
                         child: HouseDirectorySurfaceCard(
+                          backgroundColor: colors.surfaceContainerHigh,
+                          borderColor: colors.outlineVariant,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                S.of(context).houseDirectoryWifiTitle,
-                                style: theme.textTheme.titleMedium,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      S.of(context).houseDirectoryWifiTitle,
+                                      style: theme.textTheme.titleMedium,
+                                    ),
+                                  ),
+                                  if (state.isOwner)
+                                    KinlyOutlinedButton.text(
+                                      onPressed:
+                                          () => _openWifiDialog(context, state),
+                                      label:
+                                          state.wifi == null
+                                              ? S.of(context).houseDirectoryAddWifi
+                                              : S.of(context).houseDirectoryEdit,
+                                      compact: true,
+                                      fullWidth: false,
+                                    ),
+                                ],
                               ),
                               const SizedBox(height: 8),
                               HouseDirectoryWifiCardContent(
                                 wifi: state.wifi,
                                 isOwner: state.isOwner,
-                                onEdit:
-                                    state.isOwner
-                                        ? () => _openWifiDialog(context, state)
-                                        : null,
                               ),
                             ],
                           ),
@@ -76,6 +95,8 @@ class HouseDirectoryScreen extends StatelessWidget {
                       SizedBox(
                         width: cardWidth,
                         child: HouseDirectorySurfaceCard(
+                          backgroundColor: colors.surfaceContainerLowest,
+                          borderColor: colors.outlineVariant,
                           onTap:
                               () => context.pushNamed(
                                 AppRouteNames.houseDirectoryDetails,
@@ -96,11 +117,23 @@ class HouseDirectoryScreen extends StatelessWidget {
                         ),
                       ),
                   ];
-                  return SingleChildScrollView(
-                    child: Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: cards,
+                  return KinlyScrollFade(
+                    child: KinlyRefreshIndicator(
+                      onRefresh: () => _handleRefresh(context),
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            top: 8,
+                            bottom: 8,
+                          ),
+                          child: Wrap(
+                            spacing: 12,
+                            runSpacing: 12,
+                            children: cards,
+                          ),
+                        ),
+                      ),
                     ),
                   );
                 },
@@ -142,6 +175,12 @@ class HouseDirectoryScreen extends StatelessWidget {
     );
     if (result == null || !context.mounted) return;
     context.read<HouseDirectoryBloc>().add(HouseDirectoryWifiSaved(result));
+  }
+
+  Future<void> _handleRefresh(BuildContext context) async {
+    final bloc = context.read<HouseDirectoryBloc>();
+    bloc.add(const HouseDirectoryRefreshed());
+    await bloc.stream.firstWhere((state) => !state.isRefreshing);
   }
 
   String _detailsSummary(BuildContext context, HouseDirectoryState state) {

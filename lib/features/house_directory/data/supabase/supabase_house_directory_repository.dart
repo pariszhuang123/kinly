@@ -1,13 +1,23 @@
+import 'package:kinly/contracts/house_directory/house_directory_photo_capture.dart';
 import 'package:kinly/contracts/house_directory/models.dart';
 import 'package:kinly/contracts/house_directory/ports/house_directory_repository.dart';
+import 'package:kinly/core/media/expectation_photo_service.dart';
+import 'package:kinly/core/media/supabase_media_repository.dart';
+import 'package:kinly/core/supabase/storage_path_resolver.dart';
 import 'package:kinly/core/supabase/supabase_error_mapper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseHouseDirectoryRepository implements HouseDirectoryRepository {
   SupabaseHouseDirectoryRepository({SupabaseClient? client})
-    : _client = client ?? Supabase.instance.client;
+    : _client = client ?? Supabase.instance.client,
+      _storagePathResolver = StoragePathResolver(client: client),
+      _photoService = ExpectationPhotoService(
+        mediaRepository: SupabaseMediaRepository(client: client),
+      );
 
   final SupabaseClient _client;
+  final StoragePathResolver _storagePathResolver;
+  final ExpectationPhotoService _photoService;
 
   @override
   Future<HouseDirectoryWifi?> getWifi({required String homeId}) async {
@@ -152,6 +162,36 @@ class SupabaseHouseDirectoryRepository implements HouseDirectoryRepository {
     } catch (error) {
       throw SupabaseErrorMapper.mapHouseDirectory(error);
     }
+  }
+
+  @override
+  Future<String?> captureAndUploadNotePhoto({required String homeId}) async {
+    try {
+      final upload = await _photoService.captureAndUpload(
+        homeId: homeId,
+        rootSegment: 'house_directory',
+        featureSegment: 'notes',
+      );
+      return upload.storagePath;
+    } on CameraPermissionException catch (error) {
+      throw HouseDirectoryPhotoCaptureException(
+        kind: HouseDirectoryPhotoCaptureErrorKind.permission,
+        message: 'Camera permission is required to add a note photo.',
+        permanentlyDenied: error.permanentlyDenied,
+      );
+    } on CameraCaptureCancelled {
+      return null;
+    } catch (_) {
+      throw const HouseDirectoryPhotoCaptureException(
+        kind: HouseDirectoryPhotoCaptureErrorKind.upload,
+        message: 'Could not upload the note photo.',
+      );
+    }
+  }
+
+  @override
+  String? toPublicPhotoUrl(String? photoPath) {
+    return _storagePathResolver.toPublicUrl(photoPath);
   }
 
   @override

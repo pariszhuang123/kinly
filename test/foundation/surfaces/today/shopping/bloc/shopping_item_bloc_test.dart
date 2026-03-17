@@ -106,6 +106,12 @@ void main() {
         itemIds: any(named: 'itemIds'),
       ),
     ).thenAnswer((_) async => 1);
+    when(
+      () => shoppingListRepository.archiveItem(itemId: any(named: 'itemId')),
+    ).thenAnswer((invocation) async {
+      final itemId = invocation.namedArguments[#itemId] as String;
+      return testItem(id: itemId);
+    });
   });
 
   group('ShoppingItemBloc', () {
@@ -340,10 +346,7 @@ void main() {
           ],
       verify: (_) {
         verify(
-          () => shoppingListRepository.archiveItemsForUser(
-            homeId: homeId,
-            itemIds: ['item-delete'],
-          ),
+          () => shoppingListRepository.archiveItem(itemId: 'item-delete'),
         ).called(1);
       },
     );

@@ -1371,6 +1371,8 @@
   "houseNormPublishCta": "Publish to web",
   "houseNormRepublishCta": "Republish",
   "houseNormCopyUrlCta": "Copy URL",
+  "houseNormOpenUrlCta": "Open URL",
+  "houseNormOpenUrlError": "Couldn't open that URL.",
   "houseNormShareUrlCta": "Share URL",
   "houseNormUrlCopied": "House norms URL copied.",
   "houseNormShareSubject": "Our house norms",
@@ -1538,6 +1540,10 @@
   "houseDirectoryRentTitle": "Rent",
   "houseDirectoryServicesTitle": "Utilities and services",
   "houseDirectoryNotesTitle": "House notes",
+  "houseDirectorySearchLabel": "Search home details",
+  "houseDirectorySearchHint": "Find services or notes",
+  "houseDirectoryServicesSearchEmpty": "No services match that search.",
+  "houseDirectoryNotesSearchEmpty": "No notes match that search.",
   "houseDirectoryAddWifi": "Add wifi",
   "houseDirectoryEditWifi": "Edit wifi",
   "houseDirectoryAddService": "Add service",
@@ -1552,24 +1558,6 @@
   "houseDirectoryServicesEmpty": "No services added yet.",
   "houseDirectoryNotesEmpty": "No notes added yet.",
   "houseDirectoryServiceOther": "Other",
-  "houseDirectoryAccountReference": "Reference: {reference}",
-  "@houseDirectoryAccountReference": {
-    "placeholders": {
-      "reference": {
-        "type": "String",
-        "example": "ABC-123"
-      }
-    }
-  },
-  "houseDirectoryReminderDue": "Reminder for {date}",
-  "@houseDirectoryReminderDue": {
-    "placeholders": {
-      "date": {
-        "type": "String",
-        "example": "Jan 5, 2026"
-      }
-    }
-  },
   "houseDirectoryTermRange": "{start} to {end}",
   "@houseDirectoryTermRange": {
     "placeholders": {
@@ -1586,6 +1574,7 @@
   "houseDirectoryDateUnknown": "Unknown",
   "houseDirectoryOpenLink": "Open link",
   "houseDirectoryOpenLinkError": "Couldn't open that link.",
+  "houseDirectoryTermLabel": "Term",
   "houseDirectorySsidLabel": "SSID",
   "houseDirectoryPasswordLabel": "Password",
   "houseDirectoryPasswordHelper": "Leave blank to save as an open network.",
@@ -1608,6 +1597,11 @@
   "houseDirectoryNoteTitleHint": "Name the note so everyone knows what it covers",
   "houseDirectoryNoteDetailsLabel": "Details",
   "houseDirectoryNoteDetailsHint": "Add clear details for the home",
+  "houseDirectoryNotePhotoLabel": "Photo",
+  "houseDirectoryNotePhotoReplaceLabel": "Replace photo",
+  "houseDirectoryNotePhotoPlaceholder": "Add a photo for this note",
+  "houseDirectoryNotePhotoUploadError": "Couldn't upload that photo.",
+  "houseDirectoryPhotoViewerTitle": "Photo",
   "houseDirectoryNoteUrlLabel": "Reference URL",
   "houseDirectoryNoteUrlHint": "Optional. Paste a related web address if this note points to one",
   "houseDirectoryValidationProvider": "Enter a provider name.",
@@ -1617,12 +1611,16 @@
   "houseDirectoryValidationReminderOffset": "Enter a valid reminder offset.",
   "houseDirectoryValidationNoteFields": "Enter a title and details.",
   "houseDirectoryValidationUrl": "Enter a valid http or https URL.",
+  "houseDirectoryArchiveConfirm": "Archive",
+  "houseDirectoryArchiveNoteTitle": "Archive this note?",
+  "houseDirectoryArchiveNoteBody": "This removes it from your House directory view.",
+  "houseDirectoryArchiveServiceTitle": "Archive this service?",
+  "houseDirectoryArchiveServiceBody": "This removes it from your House directory view.",
   "houseDirectoryWifiSaved": "Wifi details saved.",
   "houseDirectoryServiceSaved": "Service saved.",
   "houseDirectoryServiceArchived": "Service archived.",
   "houseDirectoryNoteSaved": "Note saved.",
   "houseDirectoryNoteArchived": "Note archived.",
-  "houseDirectoryNotePhotoAttached": "Photo attached.",
   "houseDirectoryReminderAcknowledged": "Reminder acknowledged.",
   "houseDirectoryReminderDismissed": "Reminder dismissed.",
   "houseDirectoryActionFailed": "Couldn't save those changes.",

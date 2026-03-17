@@ -179,6 +179,26 @@ class SupabaseShoppingListRepository implements ShoppingListRepository {
   }
 
   @override
+  Future<ShoppingListItem> archiveItem({required String itemId}) async {
+    try {
+      final response = await _client.rpc(
+        'shopping_list_archive_item',
+        params: {'p_item_id': itemId},
+      );
+      final payload = _extractItemPayload(response);
+      if (payload == null) {
+        throw const ShoppingListException(
+          ShoppingListErrorCode.unknown,
+          'Malformed archive-item payload.',
+        );
+      }
+      return ShoppingListItem.fromJson(payload);
+    } catch (error) {
+      throw SupabaseErrorMapper.mapShoppingList(error);
+    }
+  }
+
+  @override
   Future<String?> captureAndUploadPhoto({required String homeId}) async {
     _logger.info(
       'Repository photo upload started. homeId=$homeId',

@@ -1,19 +1,31 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/house_directory/models.dart';
+import 'package:kinly/contracts/house_directory/ports/house_directory_repository.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
+import 'package:kinly/core/ui/inputs/kinly_search_field.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
+import 'package:kinly/core/ui/kinly_refresh_indicator.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
+import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
+import 'package:kinly/core/utils/kinly_search.dart';
 import 'package:kinly/features/house_directory/bloc/house_directory_bloc.dart';
-import 'package:kinly/features/house_directory/ui/house_directory_forms.dart';
+import 'package:kinly/features/house_directory/ui/house_directory_route_args.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_sections.dart';
 import 'package:kinly/generated/l10n.dart';
 
 class HouseDirectoryDetailsScreen extends StatelessWidget {
-  const HouseDirectoryDetailsScreen({super.key, required this.homeId});
+  const HouseDirectoryDetailsScreen({
+    super.key,
+    required this.homeId,
+    required this.repository,
+  });
 
   final String homeId;
+  final HouseDirectoryRepository repository;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +36,11 @@ class HouseDirectoryDetailsScreen extends StatelessWidget {
         builder: (context, state) {
           return KinlyScaffold(
             appBar: KinlyAppBar(title: Text(S.of(context).houseDirectoryTitle)),
-            body: _DetailsBody(homeId: homeId, state: state),
+            body: _DetailsBody(
+              homeId: homeId,
+              repository: repository,
+              state: state,
+            ),
           );
         },
       ),
@@ -58,17 +74,34 @@ class HouseDirectoryDetailsScreen extends StatelessWidget {
   }
 }
 
-class _DetailsBody extends StatelessWidget {
+class _DetailsBody extends StatefulWidget {
   const _DetailsBody({
     required this.homeId,
+    required this.repository,
     required this.state,
   });
 
   final String homeId;
+  final HouseDirectoryRepository repository;
   final HouseDirectoryState state;
 
   @override
+  State<_DetailsBody> createState() => _DetailsBodyState();
+}
+
+class _DetailsBodyState extends State<_DetailsBody> {
+  final _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = widget.state;
     if (state.isLoading && !state.hasContent) {
       return const Center(child: KinlyLoader());
     }
@@ -78,33 +111,101 @@ class _DetailsBody extends StatelessWidget {
         final services = [
           ...state.rentServices,
           ...state.utilityServices,
-        ];
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _ServiceSection(
-                  homeId: homeId,
-                  state: state,
-                  title: S.of(context).houseDirectoryServicesTitle,
-                  emptyMessage: S.of(context).houseDirectoryServicesEmpty,
-                  services: services,
-                  useTwoColumns: useTwoColumns,
+        ].where((service) => _matchesService(service, _query)).toList(
+          growable: false,
+        );
+        final filteredNotes =
+            state.notes.where((note) => _matchesNote(note, _query)).toList(
+              growable: false,
+            );
+        return KinlyScrollFade(
+          child: KinlyRefreshIndicator(
+            onRefresh: () => _handleRefresh(context),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (state.services.isNotEmpty || state.notes.isNotEmpty) ...[
+                      KinlySearchField(
+                        controller: _searchController,
+                        labelText: S.of(context).houseDirectorySearchLabel,
+                        hintText: S.of(context).houseDirectorySearchHint,
+                        onChanged: (value) => setState(() => _query = value),
+                        onClear: () {
+                          _searchController.clear();
+                          setState(() => _query = '');
+                        },
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                    _ServiceSection(
+                      homeId: widget.homeId,
+                      state: state,
+                      title: S.of(context).houseDirectoryServicesTitle,
+                      emptyMessage: S.of(context).houseDirectoryServicesEmpty,
+                      services: services,
+                      hasActiveSearch: _query.trim().isNotEmpty,
+                      useTwoColumns: useTwoColumns,
+                    ),
+                    const SizedBox(height: 24),
+                    _NotesSection(
+                      homeId: widget.homeId,
+                      repository: widget.repository,
+                      state: state,
+                      notes: filteredNotes,
+                      hasActiveSearch: _query.trim().isNotEmpty,
+                      useTwoColumns: useTwoColumns,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                _NotesSection(
-                  homeId: homeId,
-                  state: state,
-                  useTwoColumns: useTwoColumns,
-                ),
-              ],
+              ),
             ),
           ),
         );
       },
     );
+  }
+
+  bool _matchesService(HouseDirectoryService service, String query) {
+    return matchesSearchQuery(
+      query: query,
+      searchableText: _serviceSearchText(service),
+    );
+  }
+
+  bool _matchesNote(HouseDirectoryNote note, String query) {
+    return matchesSearchQuery(
+      query: query,
+      searchableText: _noteSearchText(note),
+    );
+  }
+
+  String _serviceSearchText(HouseDirectoryService service) {
+    return buildSearchableText([
+      service.providerName,
+      service.customLabel,
+      service.serviceType.wireValue,
+      service.accountReference,
+      service.notes,
+      service.linkUrl,
+    ]);
+  }
+
+  String _noteSearchText(HouseDirectoryNote note) {
+    return buildSearchableText([
+      note.title,
+      note.details,
+      note.referenceUrl,
+    ]);
+  }
+
+  Future<void> _handleRefresh(BuildContext context) async {
+    final bloc = context.read<HouseDirectoryBloc>();
+    bloc.add(const HouseDirectoryRefreshed());
+    await bloc.stream.firstWhere((state) => !state.isRefreshing);
   }
 }
 
@@ -115,6 +216,7 @@ class _ServiceSection extends StatelessWidget {
     required this.title,
     required this.emptyMessage,
     required this.services,
+    required this.hasActiveSearch,
     required this.useTwoColumns,
   });
 
@@ -123,6 +225,7 @@ class _ServiceSection extends StatelessWidget {
   final String title;
   final String emptyMessage;
   final List<HouseDirectoryService> services;
+  final bool hasActiveSearch;
   final bool useTwoColumns;
 
   @override
@@ -137,8 +240,12 @@ class _ServiceSection extends StatelessWidget {
           onAction: state.isOwner ? () => _openCreateSheet(context) : null,
         ),
         const SizedBox(height: 12),
-        if (services.isEmpty)
+        if (state.services.isEmpty)
           HouseDirectorySurfaceCard(child: Text(emptyMessage))
+        else if (services.isEmpty && hasActiveSearch)
+          HouseDirectorySurfaceCard(
+            child: Text(s.houseDirectoryServicesSearchEmpty),
+          )
         else
           _ResponsiveCardGrid(
             useTwoColumns: useTwoColumns,
@@ -147,9 +254,7 @@ class _ServiceSection extends StatelessWidget {
                     .map(
                       (service) => HouseDirectoryServiceCard(
                         service: service,
-                        isOwner: state.isOwner,
-                        onEdit: () => _openEditSheet(context, service),
-                        onArchive: () => _archive(context, service.id),
+                        onTap: () => _openService(context, service.id),
                       ),
                     )
                     .toList(growable: false),
@@ -159,30 +264,19 @@ class _ServiceSection extends StatelessWidget {
   }
 
   Future<void> _openCreateSheet(BuildContext context) async {
-    final result = await showHouseDirectoryServiceSheet(
-      context,
-      homeId: homeId,
+    await context.pushNamed(
+      AppRouteNames.houseDirectoryService,
+      extra: const HouseDirectoryServiceRouteArgs(),
     );
-    if (result == null || !context.mounted) return;
-    context.read<HouseDirectoryBloc>().add(HouseDirectoryServiceSaved(result));
   }
 
-  Future<void> _openEditSheet(
+  Future<void> _openService(
     BuildContext context,
-    HouseDirectoryService service,
+    String serviceId,
   ) async {
-    final result = await showHouseDirectoryServiceSheet(
-      context,
-      homeId: homeId,
-      service: service,
-    );
-    if (result == null || !context.mounted) return;
-    context.read<HouseDirectoryBloc>().add(HouseDirectoryServiceSaved(result));
-  }
-
-  void _archive(BuildContext context, String serviceId) {
-    context.read<HouseDirectoryBloc>().add(
-      HouseDirectoryServiceArchived(serviceId),
+    await context.pushNamed(
+      AppRouteNames.houseDirectoryService,
+      extra: HouseDirectoryServiceRouteArgs(serviceId: serviceId),
     );
   }
 }
@@ -190,12 +284,18 @@ class _ServiceSection extends StatelessWidget {
 class _NotesSection extends StatelessWidget {
   const _NotesSection({
     required this.homeId,
+    required this.repository,
     required this.state,
+    required this.notes,
+    required this.hasActiveSearch,
     required this.useTwoColumns,
   });
 
   final String homeId;
+  final HouseDirectoryRepository repository;
   final HouseDirectoryState state;
+  final List<HouseDirectoryNote> notes;
+  final bool hasActiveSearch;
   final bool useTwoColumns;
 
   @override
@@ -212,17 +312,19 @@ class _NotesSection extends StatelessWidget {
         const SizedBox(height: 12),
         if (state.notes.isEmpty)
           HouseDirectorySurfaceCard(child: Text(s.houseDirectoryNotesEmpty))
+        else if (notes.isEmpty && hasActiveSearch)
+          HouseDirectorySurfaceCard(
+            child: Text(s.houseDirectoryNotesSearchEmpty),
+          )
         else
           _ResponsiveCardGrid(
             useTwoColumns: useTwoColumns,
             children:
-                state.notes
+                notes
                     .map(
                       (note) => HouseDirectoryNoteCard(
                         note: note,
-                        isOwner: state.isOwner,
-                        onEdit: () => _openEditSheet(context, note),
-                        onArchive: () => _archive(context, note.id),
+                        onTap: () => _openNote(context, note.id),
                       ),
                     )
                     .toList(growable: false),
@@ -232,27 +334,19 @@ class _NotesSection extends StatelessWidget {
   }
 
   Future<void> _openCreateSheet(BuildContext context) async {
-    final result = await showHouseDirectoryNoteSheet(context, homeId: homeId);
-    if (result == null || !context.mounted) return;
-    context.read<HouseDirectoryBloc>().add(HouseDirectoryNoteSaved(result));
-  }
-
-  Future<void> _openEditSheet(
-    BuildContext context,
-    HouseDirectoryNote note,
-  ) async {
-    final result = await showHouseDirectoryNoteSheet(
-      context,
-      homeId: homeId,
-      note: note,
+    await context.pushNamed(
+      AppRouteNames.houseDirectoryNote,
+      extra: const HouseDirectoryNoteRouteArgs(),
     );
-    if (result == null || !context.mounted) return;
-    context.read<HouseDirectoryBloc>().add(HouseDirectoryNoteSaved(result));
   }
 
-  void _archive(BuildContext context, String noteId) {
-    context.read<HouseDirectoryBloc>().add(
-      HouseDirectoryNoteArchived(noteId),
+  Future<void> _openNote(
+    BuildContext context,
+    String noteId,
+  ) async {
+    await context.pushNamed(
+      AppRouteNames.houseDirectoryNote,
+      extra: HouseDirectoryNoteRouteArgs(noteId: noteId),
     );
   }
 }

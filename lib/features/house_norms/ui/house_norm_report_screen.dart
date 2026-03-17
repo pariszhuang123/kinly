@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/share/share_position_origin.dart';
@@ -461,41 +462,57 @@ class _PublicUrlRow extends StatelessWidget {
     final spacing = theme.extension<Spacing>();
     final palette = context.houseNormSection;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Wrap(
+      spacing: spacing?.sm ?? 8,
+      runSpacing: spacing?.sm ?? 8,
       children: [
-        Text(url, style: theme.textTheme.bodyMedium),
-        SizedBox(height: spacing?.s ?? 8),
-        Row(
-          children: [
-            Expanded(
-              child: KinlyOutlinedButton.text(
-                label: s.houseNormCopyUrlCta,
-                foregroundColor: palette.accent,
-                borderColor: palette.accent,
-                onPressed: () async {
-                  await Clipboard.setData(ClipboardData(text: url));
-                  if (!context.mounted) return;
-                  KinlySnackBar.showSuccess(context, s.houseNormUrlCopied);
-                },
-              ),
-            ),
-            SizedBox(width: spacing?.sm ?? 8),
-            Expanded(
-              child: KinlyOutlinedButton.text(
-                label: s.houseNormShareUrlCta,
-                foregroundColor: palette.accent,
-                borderColor: palette.accent,
-                onPressed: () async {
-                  await Share.share(
-                    url,
-                    subject: s.houseNormShareSubject,
-                    sharePositionOrigin: sharePositionOriginForContext(context),
-                  );
-                },
-              ),
-            ),
-          ],
+        KinlyOutlinedButton.text(
+          label: s.houseNormCopyUrlCta,
+          foregroundColor: palette.accent,
+          borderColor: palette.accent,
+          compact: true,
+          fullWidth: false,
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: url));
+            if (context.mounted) {
+              KinlySnackBar.showSuccess(context, s.houseNormUrlCopied);
+            }
+          },
+        ),
+        KinlyOutlinedButton.text(
+          label: s.houseNormOpenUrlCta,
+          foregroundColor: palette.accent,
+          borderColor: palette.accent,
+          compact: true,
+          fullWidth: false,
+          onPressed: () async {
+            final uri = Uri.tryParse(url);
+            if (uri == null) {
+              KinlySnackBar.showError(context, s.houseNormOpenUrlError);
+              return;
+            }
+            final launched = await launchUrl(
+              uri,
+              mode: LaunchMode.externalApplication,
+            );
+            if (!launched && context.mounted) {
+              KinlySnackBar.showError(context, s.houseNormOpenUrlError);
+            }
+          },
+        ),
+        KinlyOutlinedButton.text(
+          label: s.houseNormShareUrlCta,
+          foregroundColor: palette.accent,
+          borderColor: palette.accent,
+          compact: true,
+          fullWidth: false,
+          onPressed: () async {
+            await Share.share(
+              url,
+              subject: s.houseNormShareSubject,
+              sharePositionOrigin: sharePositionOriginForContext(context),
+            );
+          },
         ),
       ],
     );

@@ -5373,6 +5373,26 @@ class S {
     );
   }
 
+  /// `Open URL`
+  String get houseNormOpenUrlCta {
+    return Intl.message(
+      'Open URL',
+      name: 'houseNormOpenUrlCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't open that URL.`
+  String get houseNormOpenUrlError {
+    return Intl.message(
+      'Couldn\'t open that URL.',
+      name: 'houseNormOpenUrlError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Share URL`
   String get houseNormShareUrlCta {
     return Intl.message(
@@ -6558,6 +6578,46 @@ class S {
     );
   }
 
+  /// `Search home details`
+  String get houseDirectorySearchLabel {
+    return Intl.message(
+      'Search home details',
+      name: 'houseDirectorySearchLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Find services or notes`
+  String get houseDirectorySearchHint {
+    return Intl.message(
+      'Find services or notes',
+      name: 'houseDirectorySearchHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No services match that search.`
+  String get houseDirectoryServicesSearchEmpty {
+    return Intl.message(
+      'No services match that search.',
+      name: 'houseDirectoryServicesSearchEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No notes match that search.`
+  String get houseDirectoryNotesSearchEmpty {
+    return Intl.message(
+      'No notes match that search.',
+      name: 'houseDirectoryNotesSearchEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Add wifi`
   String get houseDirectoryAddWifi {
     return Intl.message(
@@ -6688,26 +6748,6 @@ class S {
     );
   }
 
-  /// `Reference: {reference}`
-  String houseDirectoryAccountReference(String reference) {
-    return Intl.message(
-      'Reference: $reference',
-      name: 'houseDirectoryAccountReference',
-      desc: '',
-      args: [reference],
-    );
-  }
-
-  /// `Reminder for {date}`
-  String houseDirectoryReminderDue(String date) {
-    return Intl.message(
-      'Reminder for $date',
-      name: 'houseDirectoryReminderDue',
-      desc: '',
-      args: [date],
-    );
-  }
-
   /// `{start} to {end}`
   String houseDirectoryTermRange(String start, String end) {
     return Intl.message(
@@ -6743,6 +6783,16 @@ class S {
     return Intl.message(
       'Couldn\'t open that link.',
       name: 'houseDirectoryOpenLinkError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Term`
+  String get houseDirectoryTermLabel {
+    return Intl.message(
+      'Term',
+      name: 'houseDirectoryTermLabel',
       desc: '',
       args: [],
     );
@@ -6968,6 +7018,56 @@ class S {
     );
   }
 
+  /// `Photo`
+  String get houseDirectoryNotePhotoLabel {
+    return Intl.message(
+      'Photo',
+      name: 'houseDirectoryNotePhotoLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replace photo`
+  String get houseDirectoryNotePhotoReplaceLabel {
+    return Intl.message(
+      'Replace photo',
+      name: 'houseDirectoryNotePhotoReplaceLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a photo for this note`
+  String get houseDirectoryNotePhotoPlaceholder {
+    return Intl.message(
+      'Add a photo for this note',
+      name: 'houseDirectoryNotePhotoPlaceholder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't upload that photo.`
+  String get houseDirectoryNotePhotoUploadError {
+    return Intl.message(
+      'Couldn\'t upload that photo.',
+      name: 'houseDirectoryNotePhotoUploadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Photo`
+  String get houseDirectoryPhotoViewerTitle {
+    return Intl.message(
+      'Photo',
+      name: 'houseDirectoryPhotoViewerTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Reference URL`
   String get houseDirectoryNoteUrlLabel {
     return Intl.message(
@@ -7058,6 +7158,56 @@ class S {
     );
   }
 
+  /// `Archive`
+  String get houseDirectoryArchiveConfirm {
+    return Intl.message(
+      'Archive',
+      name: 'houseDirectoryArchiveConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archive this note?`
+  String get houseDirectoryArchiveNoteTitle {
+    return Intl.message(
+      'Archive this note?',
+      name: 'houseDirectoryArchiveNoteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This removes it from your House directory view.`
+  String get houseDirectoryArchiveNoteBody {
+    return Intl.message(
+      'This removes it from your House directory view.',
+      name: 'houseDirectoryArchiveNoteBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archive this service?`
+  String get houseDirectoryArchiveServiceTitle {
+    return Intl.message(
+      'Archive this service?',
+      name: 'houseDirectoryArchiveServiceTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This removes it from your House directory view.`
+  String get houseDirectoryArchiveServiceBody {
+    return Intl.message(
+      'This removes it from your House directory view.',
+      name: 'houseDirectoryArchiveServiceBody',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Wifi details saved.`
   String get houseDirectoryWifiSaved {
     return Intl.message(
@@ -7103,16 +7253,6 @@ class S {
     return Intl.message(
       'Note archived.',
       name: 'houseDirectoryNoteArchived',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Photo attached.`
-  String get houseDirectoryNotePhotoAttached {
-    return Intl.message(
-      'Photo attached.',
-      name: 'houseDirectoryNotePhotoAttached',
       desc: '',
       args: [],
     );
@@ -7207,6 +7347,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'ar'),
       Locale.fromSubtags(languageCode: 'es'),
+      Locale.fromSubtags(languageCode: 'id'),
       Locale.fromSubtags(languageCode: 'my'),
       Locale.fromSubtags(languageCode: 'zh'),
     ];

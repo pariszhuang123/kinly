@@ -36,6 +36,8 @@ abstract class ShoppingListRepository {
     required List<String> itemIds,
   });
 
+  Future<ShoppingListItem> archiveItem({required String itemId});
+
   Future<String?> captureAndUploadPhoto({required String homeId});
 
   Future<String?> recoverPendingPhotoUpload({required String homeId});
