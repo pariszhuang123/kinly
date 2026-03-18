@@ -71,14 +71,9 @@ class SupabaseHouseDirectoryRepository implements HouseDirectoryRepository {
   }
 
   @override
-  Future<List<HouseDirectoryMemberCard>> getMemberCards({
-    required String homeId,
-  }) async {
+  Future<List<HouseDirectoryMemberCard>> getMemberCards() async {
     try {
-      final response = await _client.rpc(
-        'get_home_directory_member_cards',
-        params: {'p_home_id': homeId},
-      );
+      final response = await _client.rpc('get_home_directory_member_cards');
       final map = _asMap(response);
       final rows = map['members'] as List? ?? const <dynamic>[];
       return rows

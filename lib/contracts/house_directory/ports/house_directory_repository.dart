@@ -7,7 +7,7 @@ abstract class HouseDirectoryRepository {
 
   Future<HouseDirectoryContent> getContent({required String homeId});
 
-  Future<List<HouseDirectoryMemberCard>> getMemberCards({required String homeId});
+  Future<List<HouseDirectoryMemberCard>> getMemberCards();
 
   Future<HouseDirectoryService> upsertService(
     UpsertHouseDirectoryServiceInput input,
