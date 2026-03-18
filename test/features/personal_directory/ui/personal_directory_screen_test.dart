@@ -88,7 +88,10 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Emergency contact'), findsNothing);
-        expect(find.text('Allergy'), findsOneWidget);
+        expect(
+          find.text('Add an allergy so housemates know what to avoid.'),
+          findsOneWidget,
+        );
         expect(find.text('Other'), findsOneWidget);
       },
     );

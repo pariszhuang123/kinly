@@ -1036,7 +1036,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Add note",
     ),
     "personalDirectoryAllergyHelp": MessageLookupByLibrary.simpleMessage(
-      "Name the allergy clearly, like peanuts or penicillin.",
+      "Name the allergy, like peanuts.",
     ),
     "personalDirectoryAllergyLabel": MessageLookupByLibrary.simpleMessage(
       "Allergy",
@@ -1082,13 +1082,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "personalDirectoryEmergencyContactHelp":
         MessageLookupByLibrary.simpleMessage(
-          "Add one person your housemates can contact quickly in an emergency.",
+          "Add one person to call fast.",
         ),
     "personalDirectoryEmergencyContactTitle":
         MessageLookupByLibrary.simpleMessage("Emergency contact"),
     "personalDirectoryEmergencyDetailsHelp":
         MessageLookupByLibrary.simpleMessage(
-          "Add any extra context that would help in an emergency.",
+          "Add details that could help fast.",
         ),
     "personalDirectoryFallbackName": MessageLookupByLibrary.simpleMessage(
       "Member",
@@ -1127,13 +1127,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Notes",
     ),
     "personalDirectoryOtherDetailsHelp": MessageLookupByLibrary.simpleMessage(
-      "Add any extra details your housemates should know.",
+      "Add extra details your housemates can use.",
     ),
     "personalDirectoryOtherTitle": MessageLookupByLibrary.simpleMessage(
       "Other",
     ),
     "personalDirectoryOtherTypeHelp": MessageLookupByLibrary.simpleMessage(
-      "Add any other personal note that helps your housemates live with you.",
+      "Add another note that helps your housemates live with you.",
     ),
     "personalDirectoryPhoneNumberHelp": MessageLookupByLibrary.simpleMessage(
       "Add the best number to call or text for this person.",

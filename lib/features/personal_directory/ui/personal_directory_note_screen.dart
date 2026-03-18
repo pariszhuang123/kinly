@@ -1,14 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:kinly/contracts/personal_directory/models.dart';
 import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
-import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/dialogs/kinly_dialogs.dart';
-import 'package:kinly/core/ui/inputs/kinly_choice_chip.dart';
-import 'package:kinly/core/ui/inputs/kinly_text_field.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
-import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
+import 'package:kinly/features/personal_directory/ui/personal_directory_note_form_support.dart';
+import 'package:kinly/features/personal_directory/ui/personal_directory_note_form_sections.dart';
 import 'package:kinly/generated/l10n.dart';
 
 class PersonalDirectoryNoteScreen extends StatefulWidget {
@@ -76,11 +74,20 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
       appBar: KinlyAppBar(
         title: Text(_screenTitle(s)),
       ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 24),
-          children: _buildBodyChildren(context, s),
-        ),
+      body: PersonalDirectoryNoteFormBody(
+        noteType: _noteType,
+        availableNoteTypes: widget.availableNoteTypes,
+        canEdit: widget.canEdit,
+        isCreating: _isCreating,
+        isSaving: _isSaving,
+        validationError: _validationError,
+        titleController: _titleController,
+        contactNameController: _contactNameController,
+        phoneController: _phoneController,
+        detailsController: _detailsController,
+        onNoteTypeSelected: _updateNoteType,
+        onSave: _save,
+        onArchive: _archive,
       ),
     );
   }
@@ -88,216 +95,25 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
   String _screenTitle(S s) {
     if (_isCreating) return s.personalDirectoryAddNote;
     if (widget.canEdit) return s.personalDirectoryEditNote;
-    return _existingNoteTitle(s);
-  }
-
-  List<Widget> _buildBodyChildren(BuildContext context, S s) {
-    final children = <Widget>[
-      _buildTypeSelector(context, s),
-      const SizedBox(height: 16),
-      ..._buildPrimaryFields(s),
-    ];
-    if (_showsDetailsField) {
-      children.addAll([
-        const SizedBox(height: 16),
-        _buildDetailsField(s),
-      ]);
-    }
-    children.addAll([
-      ..._buildValidationMessage(context),
-      ..._buildActions(s),
-    ]);
-    return children;
-  }
-
-  Widget _buildTypeSelector(BuildContext context, S s) {
-    final theme = KinlyThemeAccess.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          s.personalDirectoryNoteTypeLabel,
-          style: theme.textTheme.titleSmall,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          _noteTypeDescription(s),
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children:
-              widget.availableNoteTypes
-                  .map(
-                    (value) => KinlyChoiceChip(
-                      label: _noteTypeLabel(value, s),
-                      selected: _noteType == value,
-                      onSelected:
-                          widget.canEdit && _isCreating
-                              ? (_) => setState(() => _noteType = value)
-                              : null,
-                    ),
-                  )
-                  .toList(growable: false),
-        ),
-      ],
-    );
-  }
-
-  List<Widget> _buildPrimaryFields(S s) {
-    if (_noteType == PersonalDirectoryNoteType.emergencyContact) {
-      return [
-        _FieldHelp(message: s.personalDirectoryContactNameHelp),
-        const SizedBox(height: 8),
-        KinlyTextField(
-          controller: _contactNameController,
-          enabled: widget.canEdit && !_isSaving,
-          labelText: s.personalDirectoryContactNameLabel,
-        ),
-        const SizedBox(height: 16),
-        _FieldHelp(message: s.personalDirectoryPhoneNumberHelp),
-        const SizedBox(height: 8),
-        KinlyTextField(
-          controller: _phoneController,
-          enabled: widget.canEdit && !_isSaving,
-          labelText: s.personalDirectoryPhoneNumberLabel,
-        ),
-      ];
-    }
-    return [
-      _FieldHelp(
-        message:
-            _noteType == PersonalDirectoryNoteType.allergy
-                ? s.personalDirectoryAllergyHelp
-                : s.personalDirectoryNoteTitleHelp,
-      ),
-      const SizedBox(height: 8),
-      KinlyTextField(
-        controller: _titleController,
-        enabled: widget.canEdit && !_isSaving,
-        labelText:
-            _noteType == PersonalDirectoryNoteType.allergy
-                ? s.personalDirectoryAllergyLabel
-                : s.personalDirectoryNoteTitleLabel,
-      ),
-    ];
-  }
-
-  Widget _buildDetailsField(S s) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _FieldHelp(
-          message:
-              _noteType == PersonalDirectoryNoteType.emergencyContact
-                  ? s.personalDirectoryEmergencyDetailsHelp
-                  : s.personalDirectoryOtherDetailsHelp,
-        ),
-        const SizedBox(height: 8),
-        KinlyTextField(
-          controller: _detailsController,
-          enabled: widget.canEdit && !_isSaving,
-          labelText: s.personalDirectoryDetailsLabel,
-          maxLines: 5,
-          minLines: 4,
-        ),
-      ],
-    );
-  }
-
-  List<Widget> _buildValidationMessage(BuildContext context) {
-    if (_validationError == null) return const <Widget>[];
-    final theme = KinlyThemeAccess.of(context);
-    return [
-      const SizedBox(height: 12),
-      Text(
-        _validationError!,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.error,
-        ),
-      ),
-    ];
-  }
-
-  List<Widget> _buildActions(S s) {
-    if (!widget.canEdit) return const <Widget>[];
-    final children = <Widget>[
-      const SizedBox(height: 24),
-      KinlyFilledButton.text(
-        fullWidth: true,
-        onPressed: _isSaving ? null : _save,
-        label: _isCreating ? s.personalDirectorySave : s.shoppingSubmitEdit,
-      ),
-    ];
-    if (!_isCreating) {
-      children.addAll([
-        const SizedBox(height: 12),
-        KinlyFilledButton.text(
-          fullWidth: true,
-          onPressed: _isSaving ? null : _archive,
-          label: s.houseDirectoryArchiveConfirm,
-        ),
-      ]);
-    }
-    return children;
-  }
-
-  String _existingNoteTitle(S s) {
-    final note = widget.note;
-    if (note == null) return s.personalDirectoryNotesTitle;
-    return switch (note.noteType) {
-      PersonalDirectoryNoteType.emergencyContact =>
-        note.contactName ?? note.customTitle ?? note.label ?? s.personalDirectoryNotesTitle,
-      PersonalDirectoryNoteType.allergy =>
-        note.label ?? s.personalDirectoryNotesTitle,
-      PersonalDirectoryNoteType.other =>
-        note.customTitle ?? s.personalDirectoryNotesTitle,
-    };
-  }
-
-  String _noteTypeLabel(PersonalDirectoryNoteType noteType, S s) {
-    return switch (noteType) {
-      PersonalDirectoryNoteType.emergencyContact =>
-        s.personalDirectoryEmergencyContactTitle,
-      PersonalDirectoryNoteType.allergy => s.personalDirectoryAllergyTitle,
-      PersonalDirectoryNoteType.other => s.personalDirectoryOtherTitle,
-    };
-  }
-
-  String _noteTypeDescription(S s) {
-    return switch (_noteType) {
-      PersonalDirectoryNoteType.emergencyContact =>
-        s.personalDirectoryEmergencyContactHelp,
-      PersonalDirectoryNoteType.allergy => s.personalDirectoryAllergyTypeHelp,
-      PersonalDirectoryNoteType.other => s.personalDirectoryOtherTypeHelp,
-    };
+    return existingPersonalDirectoryNoteTitle(note: widget.note, s: s);
   }
 
   bool get _showsDetailsField => _noteType != PersonalDirectoryNoteType.allergy;
 
+  void _updateNoteType(PersonalDirectoryNoteType noteType) {
+    setState(() => _noteType = noteType);
+  }
+
   bool _validate() {
     final s = S.of(context);
-    final details = _detailsController.text.trim();
-    final title = _titleController.text.trim();
-    final contact = _contactNameController.text.trim();
-    final phone = _phoneController.text.trim();
-    final isValid = switch (_noteType) {
-      PersonalDirectoryNoteType.emergencyContact =>
-        contact.isNotEmpty &&
-            contact.length <= 120 &&
-            phone.isNotEmpty &&
-            phone.length <= 30 &&
-            _isValidPhoneNumber(phone) &&
-            details.length <= 2000,
-      PersonalDirectoryNoteType.allergy =>
-        title.isNotEmpty && title.length <= 120 && details.isEmpty,
-      PersonalDirectoryNoteType.other =>
-        title.isNotEmpty && title.length <= 80 && details.length <= 2000,
-    };
+    final isValid = isValidPersonalDirectoryNoteForm(
+      noteType: _noteType,
+      title: _titleController.text.trim(),
+      contactName: _contactNameController.text.trim(),
+      phoneNumber: _phoneController.text.trim(),
+      details: _detailsController.text.trim(),
+      isValidPhoneNumber: _isValidPhoneNumber,
+    );
     setState(() {
       _validationError = isValid ? null : s.personalDirectoryNoteValidation;
     });
@@ -308,51 +124,25 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
     if (!_validate()) return;
     setState(() => _isSaving = true);
     try {
-      final details = _trimmedDetails();
       if (_isCreating) {
         await widget.repository.createNote(
-          CreatePersonalDirectoryNoteInput(
+          buildCreatePersonalDirectoryNoteInput(
             noteType: _noteType,
-            label:
-                _noteType == PersonalDirectoryNoteType.allergy
-                    ? _titleController.text.trim()
-                    : null,
-            customTitle:
-                _noteType == PersonalDirectoryNoteType.other
-                    ? _titleController.text.trim()
-                    : null,
-            contactName:
-                _noteType == PersonalDirectoryNoteType.emergencyContact
-                    ? _contactNameController.text.trim()
-                    : null,
-            phoneNumber:
-                _noteType == PersonalDirectoryNoteType.emergencyContact
-                    ? _phoneController.text.trim()
-                    : null,
-            details: details,
+            title: _titleController.text.trim(),
+            contactName: _contactNameController.text.trim(),
+            phoneNumber: _phoneController.text.trim(),
+            details: _trimmedDetails(),
           ),
         );
       } else {
         await widget.repository.updateNote(
-          UpdatePersonalDirectoryNoteInput(
+          buildUpdatePersonalDirectoryNoteInput(
             noteId: widget.note!.id,
-            label:
-                _noteType == PersonalDirectoryNoteType.allergy
-                    ? _titleController.text.trim()
-                    : null,
-            customTitle:
-                _noteType == PersonalDirectoryNoteType.other
-                    ? _titleController.text.trim()
-                    : null,
-            contactName:
-                _noteType == PersonalDirectoryNoteType.emergencyContact
-                    ? _contactNameController.text.trim()
-                    : null,
-            phoneNumber:
-                _noteType == PersonalDirectoryNoteType.emergencyContact
-                    ? _phoneController.text.trim()
-                    : null,
-            details: details,
+            noteType: _noteType,
+            title: _titleController.text.trim(),
+            contactName: _contactNameController.text.trim(),
+            phoneNumber: _phoneController.text.trim(),
+            details: _trimmedDetails(),
           ),
         );
       }
@@ -388,30 +178,14 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
   }
 
   String? _trimmedDetails() {
-    if (!_showsDetailsField) return null;
-    final value = _detailsController.text.trim();
-    return value.isEmpty ? null : value;
+    return trimPersonalDirectoryNoteDetails(
+      showsDetailsField: _showsDetailsField,
+      details: _detailsController.text,
+    );
   }
 
   bool _isValidPhoneNumber(String value) {
     return _phoneNumberPattern.hasMatch(value) &&
         value.contains(RegExp(r'\d'));
-  }
-}
-
-class _FieldHelp extends StatelessWidget {
-  const _FieldHelp({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    return Text(
-      message,
-      style: theme.textTheme.bodySmall?.copyWith(
-        color: theme.colorScheme.onSurfaceVariant,
-      ),
-    );
   }
 }

@@ -7628,10 +7628,10 @@ class S {
     );
   }
 
-  /// `Add one person your housemates can contact quickly in an emergency.`
+  /// `Add one person to call fast.`
   String get personalDirectoryEmergencyContactHelp {
     return Intl.message(
-      'Add one person your housemates can contact quickly in an emergency.',
+      'Add one person to call fast.',
       name: 'personalDirectoryEmergencyContactHelp',
       desc: '',
       args: [],
@@ -7651,7 +7651,7 @@ class S {
   /// `Add any other personal note that helps your housemates live with you.`
   String get personalDirectoryOtherTypeHelp {
     return Intl.message(
-      'Add any other personal note that helps your housemates live with you.',
+      'Add another note that helps your housemates live with you.',
       name: 'personalDirectoryOtherTypeHelp',
       desc: '',
       args: [],
@@ -7708,10 +7708,10 @@ class S {
     );
   }
 
-  /// `Name the allergy clearly, like peanuts or penicillin.`
+  /// `Name the allergy, like peanuts.`
   String get personalDirectoryAllergyHelp {
     return Intl.message(
-      'Name the allergy clearly, like peanuts or penicillin.',
+      'Name the allergy, like peanuts.',
       name: 'personalDirectoryAllergyHelp',
       desc: '',
       args: [],
@@ -7748,20 +7748,20 @@ class S {
     );
   }
 
-  /// `Add any extra context that would help in an emergency.`
+  /// `Add details that could help fast.`
   String get personalDirectoryEmergencyDetailsHelp {
     return Intl.message(
-      'Add any extra context that would help in an emergency.',
+      'Add details that could help fast.',
       name: 'personalDirectoryEmergencyDetailsHelp',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add any extra details your housemates should know.`
+  /// `Add extra details your housemates can use.`
   String get personalDirectoryOtherDetailsHelp {
     return Intl.message(
-      'Add any extra details your housemates should know.',
+      'Add extra details your housemates can use.',
       name: 'personalDirectoryOtherDetailsHelp',
       desc: '',
       args: [],

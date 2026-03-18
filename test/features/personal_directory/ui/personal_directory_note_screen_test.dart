@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kinly/contracts/personal_directory/models.dart';
+import 'package:kinly/core/ui/inputs/kinly_choice_chip.dart';
 import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/features/personal_directory/ui/personal_directory_note_screen.dart';
@@ -36,43 +37,30 @@ void main() {
         );
 
         await tester.pumpAndSettle();
+        final s = _strings(tester);
 
         expect(
-          find.text(
-            'Add an allergy so housemates know what to avoid.',
+          find.widgetWithText(
+            KinlyChoiceChip,
+            s.personalDirectoryAllergyTitle,
           ),
           findsOneWidget,
         );
-        expect(
-          find.text(
-            'Name the allergy clearly, like peanuts or penicillin.',
-          ),
-          findsOneWidget,
-        );
-        expect(find.text('Details'), findsNothing);
+        expect(_findTextFieldLabel(s.personalDirectoryAllergyLabel), findsOneWidget);
+        expect(_findTextFieldLabel(s.personalDirectoryDetailsLabel), findsNothing);
 
-        await tester.tap(find.text('Other'));
+        await tester.tap(find.text(s.personalDirectoryOtherTitle));
         await tester.pumpAndSettle();
 
         expect(
-          find.text(
-            'Add any other personal note that helps your housemates live with you.',
-          ),
+          find.widgetWithText(KinlyChoiceChip, s.personalDirectoryOtherTitle),
           findsOneWidget,
         );
         expect(
-          find.text(
-            'Give this note a short title so housemates know what it is about.',
-          ),
+          _findTextFieldLabel(s.personalDirectoryNoteTitleLabel),
           findsOneWidget,
         );
-        expect(
-          find.text(
-            'Add any extra details your housemates should know.',
-          ),
-          findsOneWidget,
-        );
-        expect(find.text('Details'), findsOneWidget);
+        expect(_findTextFieldLabel(s.personalDirectoryDetailsLabel), findsOneWidget);
       },
     );
 
@@ -93,35 +81,40 @@ void main() {
         );
 
         await tester.pumpAndSettle();
+        final s = _strings(tester);
 
         expect(
-          find.text(
-            'Add one person your housemates can contact quickly in an emergency.',
+          find.widgetWithText(
+            KinlyChoiceChip,
+            s.personalDirectoryEmergencyContactTitle,
           ),
           findsOneWidget,
         );
         expect(
-          find.text(
-            'Who should a housemate contact if something urgent happens?',
-          ),
+          _findTextFieldLabel(s.personalDirectoryContactNameLabel),
           findsOneWidget,
         );
         expect(
-          find.text(
-            'Add the best number to call or text for this person.',
-          ),
+          _findTextFieldLabel(s.personalDirectoryPhoneNumberLabel),
           findsOneWidget,
         );
-        expect(
-          find.text(
-            'Add any extra context that would help in an emergency.',
-          ),
-          findsOneWidget,
-        );
-        expect(find.text('Details'), findsOneWidget);
+        expect(_findTextFieldLabel(s.personalDirectoryDetailsLabel), findsOneWidget);
       },
     );
   });
+}
+
+Finder _findTextFieldLabel(String label) {
+  return find.byWidgetPredicate(
+    (widget) =>
+        widget is TextField && widget.decoration?.labelText == label,
+    description: 'TextField with label "$label"',
+  );
+}
+
+S _strings(WidgetTester tester) {
+  final context = tester.element(find.byType(PersonalDirectoryNoteScreen));
+  return S.of(context);
 }
 
 Widget _buildHarness(Widget child) {
