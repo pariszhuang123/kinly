@@ -109,6 +109,17 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
         );
       },
     ),
+    ...buildPersonalDirectoryRoutes(
+      resolveContext: () {
+        final userId = authBloc.state.userId;
+        if (userId == null) return null;
+        final membership = authBloc.state.membership;
+        return PersonalDirectoryRouteContext(
+          currentUserId: userId,
+          homeId: membership?.homeId,
+        );
+      },
+    ),
     ...buildTodayRoutes(
       resolveContext: () {
         final membership = authBloc.state.membership;

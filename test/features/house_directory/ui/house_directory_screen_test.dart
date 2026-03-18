@@ -39,12 +39,14 @@ void main() {
 
       await tester.pumpWidget(_buildHarness(bloc));
       await tester.pumpAndSettle();
+      final context = tester.element(find.byType(HouseDirectoryScreen));
+      final strings = S.of(context);
 
-      expect(find.text('Kinly Wifi'), findsOneWidget);
+      expect(find.text(strings.houseDirectoryWifiTitle), findsOneWidget);
       expect(find.byType(QrImageView), findsOneWidget);
-      expect(find.text('Edit'), findsOneWidget);
+      expect(find.text(strings.houseDirectoryEdit), findsOneWidget);
 
-      await tester.tap(find.text('Edit'));
+      await tester.tap(find.text(strings.houseDirectoryEdit));
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);
@@ -63,8 +65,10 @@ void main() {
 
       await tester.pumpWidget(_buildHarness(bloc));
       await tester.pumpAndSettle();
+      final context = tester.element(find.byType(HouseDirectoryScreen));
+      final strings = S.of(context);
 
-      await tester.tap(find.text('Edit'));
+      await tester.tap(find.text(strings.houseDirectoryEdit));
       await tester.pumpAndSettle();
 
       final textFields = find.byType(TextField);
@@ -100,10 +104,12 @@ void main() {
 
       await tester.pumpWidget(_buildHarness(bloc));
       await tester.pumpAndSettle();
+      final context = tester.element(find.byType(HouseDirectoryScreen));
+      final strings = S.of(context);
 
-      expect(find.text('Kinly Wifi'), findsOneWidget);
+      expect(find.text(strings.houseDirectoryWifiTitle), findsOneWidget);
       expect(find.byType(QrImageView), findsOneWidget);
-      expect(find.text('Edit'), findsNothing);
+      expect(find.text(strings.houseDirectoryEdit), findsNothing);
       verifyNever(() => bloc.add(any()));
     });
   });
@@ -141,6 +147,7 @@ HouseDirectoryState _buildState({required bool isOwner}) {
     ),
     services: const [],
     notes: const [],
+    members: const [],
     reminders: const [],
   );
 }

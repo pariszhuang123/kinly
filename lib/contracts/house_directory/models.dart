@@ -205,18 +205,51 @@ class HouseDirectoryNote {
   }
 }
 
+class HouseDirectoryMemberCard {
+  const HouseDirectoryMemberCard({
+    required this.userId,
+    required this.username,
+    required this.isOwner,
+    required this.hasPersonalDirectoryContent,
+    this.avatarStoragePath,
+    this.avatarUrl,
+  });
+
+  final String userId;
+  final String username;
+  final String? avatarStoragePath;
+  final String? avatarUrl;
+  final bool isOwner;
+  final bool hasPersonalDirectoryContent;
+
+  factory HouseDirectoryMemberCard.fromJson(Map<String, dynamic> json) {
+    return HouseDirectoryMemberCard(
+      userId: json['user_id'] as String? ?? '',
+      username: json['username'] as String? ?? '',
+      avatarStoragePath: json['avatar_storage_path'] as String?,
+      avatarUrl: json['avatar_url'] as String?,
+      isOwner: json['is_owner'] as bool? ?? false,
+      hasPersonalDirectoryContent:
+          json['has_personal_directory_content'] as bool? ?? false,
+    );
+  }
+}
+
 class HouseDirectoryContent {
   const HouseDirectoryContent({
     required this.services,
     required this.notes,
+    this.members = const [],
   });
 
   final List<HouseDirectoryService> services;
   final List<HouseDirectoryNote> notes;
+  final List<HouseDirectoryMemberCard> members;
 
   factory HouseDirectoryContent.fromJson(Map<String, dynamic> json) {
     final servicesRaw = json['services'] as List? ?? const <dynamic>[];
     final notesRaw = json['notes'] as List? ?? const <dynamic>[];
+    final membersRaw = json['members'] as List? ?? const <dynamic>[];
     return HouseDirectoryContent(
       services:
           servicesRaw
@@ -229,6 +262,13 @@ class HouseDirectoryContent {
           notesRaw
               .whereType<Map>()
               .map((entry) => HouseDirectoryNote.fromJson(
+                entry.cast<String, dynamic>(),
+              ))
+              .toList(growable: false),
+      members:
+          membersRaw
+              .whereType<Map>()
+              .map((entry) => HouseDirectoryMemberCard.fromJson(
                 entry.cast<String, dynamic>(),
               ))
               .toList(growable: false),

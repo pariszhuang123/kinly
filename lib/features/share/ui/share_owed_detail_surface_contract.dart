@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../core/theme/spacing.dart';
 import '../../../generated/l10n.dart';
+import '../../../contracts/personal_directory/models.dart';
 import '../../../contracts/share/models.dart';
 
 class ShareOwedDetailSurfaceSlots {
@@ -35,6 +36,8 @@ class ShareOwedDetailSurfaceScope {
     required this.hasItems,
     required this.isSubmitting,
     required this.errorMessage,
+    required this.paymentBankAccount,
+    required this.isLoadingPaymentBankAccount,
     required this.actions,
   });
 
@@ -45,5 +48,7 @@ class ShareOwedDetailSurfaceScope {
   final bool hasItems;
   final bool isSubmitting;
   final String? errorMessage;
+  final PersonalDirectoryBankAccount? paymentBankAccount;
+  final bool isLoadingPaymentBankAccount;
   final ShareOwedDetailSurfaceActions actions;
 }

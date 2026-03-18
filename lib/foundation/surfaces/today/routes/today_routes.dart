@@ -16,6 +16,7 @@ import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 import 'package:kinly/contracts/house_directory/ports/house_directory_repository.dart';
+import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/notifications/profile_update_notifier.dart';
 import 'package:kinly/foundation/surfaces/today/routes/today_house_pulse_route_args.dart';
@@ -81,6 +82,10 @@ List<GoRoute> buildTodayRoutes({
             houseDirectoryRepository:
                 sl.isRegistered<HouseDirectoryRepository>()
                     ? sl<HouseDirectoryRepository>()
+                    : null,
+            personalDirectoryRepository:
+                sl.isRegistered<PersonalDirectoryRepository>()
+                    ? sl<PersonalDirectoryRepository>()
                     : null,
             profileUpdateNotifier: sl<ProfileUpdateNotifier>(),
           ),

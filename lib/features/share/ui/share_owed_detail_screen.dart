@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:kinly/contracts/personal_directory/models.dart';
+import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/supabase/supabase_error_mapper.dart';
 import '../../share/share.dart';
@@ -13,10 +15,12 @@ class ShareOwedDetailScreen extends StatefulWidget {
     super.key,
     required this.owed,
     required this.expensesRepository,
+    required this.personalDirectoryRepository,
   });
 
   final TodayShareOwed owed;
   final ExpensesRepository expensesRepository;
+  final PersonalDirectoryRepository personalDirectoryRepository;
 
   @override
   State<ShareOwedDetailScreen> createState() => _ShareOwedDetailScreenState();
@@ -25,6 +29,14 @@ class ShareOwedDetailScreen extends StatefulWidget {
 class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
   bool _isSubmitting = false;
   String? _errorMessage;
+  PersonalDirectoryBankAccount? _bankAccount;
+  bool _isLoadingBank = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBankAccount();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +52,32 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsetsDirectional.all(spacing.lg),
-          child: _buildOwedBody(context, spacing, s, hasItems),
+          child: _buildOwedBody(
+            context,
+            spacing,
+            s,
+            hasItems,
+            _bankAccount,
+            _isLoadingBank,
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> _loadBankAccount() async {
+    try {
+      final bankAccount = await widget.personalDirectoryRepository
+          .getMemberBankAccount(targetUserId: widget.owed.payerUserId);
+      if (!mounted) return;
+      setState(() {
+        _bankAccount = bankAccount;
+        _isLoadingBank = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isLoadingBank = false);
+    }
   }
 
   /// Bulk pay all owed items for this recipient via expenses_pay_my_due.
@@ -89,6 +123,8 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     Spacing spacing,
     S strings,
     bool hasItems,
+    PersonalDirectoryBankAccount? bankAccount,
+    bool isLoadingBank,
   ) {
     final actions = ShareOwedDetailSurfaceActions(onMarkAllPaid: _markAllPaid);
     final scope = ShareOwedDetailSurfaceScope(
@@ -99,6 +135,8 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
       hasItems: hasItems,
       isSubmitting: _isSubmitting,
       errorMessage: _errorMessage,
+      paymentBankAccount: bankAccount,
+      isLoadingPaymentBankAccount: isLoadingBank,
       actions: actions,
     );
     final slots = ShareOwedDetailSurfaceSlots(body: _buildOwedSections(scope));

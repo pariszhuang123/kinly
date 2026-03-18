@@ -4,6 +4,7 @@ import '../../features/flow/flow_di.dart';
 import '../../features/home/home_di.dart';
 import '../../features/house_directory/house_directory_di.dart';
 import '../../features/paywall/paywall_di.dart';
+import '../../features/personal_directory/personal_directory_di.dart';
 import '../../features/share/share_di.dart';
 import '../../features/harmony/harmony_di.dart';
 import '../../features/profile_settings/profile_settings_di.dart';
@@ -21,6 +22,7 @@ void composeDependencies() {
   installHouseDirectoryDependencies(sl);
   installFlowDependencies(sl);
   installPaywallDependencies(sl);
+  installPersonalDirectoryDependencies(sl);
   installShareDependencies(sl);
   installHarmonyDependencies(sl);
   installProfileSettingsDependencies(sl);

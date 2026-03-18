@@ -20,6 +20,7 @@ import 'package:kinly/contracts/preferences/ports/preference_reports_repository.
 import 'package:kinly/contracts/house_norms/ports/house_norms_repository.dart';
 import 'package:kinly/contracts/house_directory/models.dart';
 import 'package:kinly/contracts/house_directory/ports/house_directory_repository.dart';
+import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
 import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
 import 'package:kinly/core/notifications/profile_update_notifier.dart';
@@ -41,6 +42,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
   final PreferenceReportsRepository _preferenceReportsRepository;
   final HouseNormsRepository? _houseNormsRepository;
   final HouseDirectoryRepository? _houseDirectoryRepository;
+  final PersonalDirectoryRepository? _personalDirectoryRepository;
   final ProfileUpdateNotifier _profileUpdateNotifier;
   final Logger _logger;
   final String _homeId;
@@ -61,6 +63,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     required PreferenceReportsRepository preferenceReportsRepository,
     HouseNormsRepository? houseNormsRepository,
     HouseDirectoryRepository? houseDirectoryRepository,
+    PersonalDirectoryRepository? personalDirectoryRepository,
     required String homeId,
     required ProfileUpdateNotifier profileUpdateNotifier,
     Logger? logger,
@@ -74,6 +77,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       _preferenceReportsRepository = preferenceReportsRepository,
       _houseNormsRepository = houseNormsRepository,
       _houseDirectoryRepository = houseDirectoryRepository,
+      _personalDirectoryRepository = personalDirectoryRepository,
       _profileUpdateNotifier = profileUpdateNotifier,
       _logger = logger ?? const DebugLogger(),
       _homeId = homeId,
@@ -145,6 +149,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     var shouldPromptInviteShare = state.shouldPromptInviteShare;
     var shouldPromptPreferences = state.shouldPromptPreferences;
     var shouldPromptHouseNorms = state.shouldPromptHouseNorms;
+    var shouldPromptBankAccount = state.shouldPromptBankAccount;
     var activeChoreCount = state.activeChoreCount;
     var memberCapJoinRequests = state.memberCapJoinRequests;
     var memberCapJoinResolution = state.memberCapJoinResolution;
@@ -211,6 +216,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       );
       final wallStatusFuture = _moodRepository.getWallStatus(_homeId);
       final personalStatusFuture = _loadPersonalStatusFuture();
+      final hasBankAccountFuture = _loadHasBankAccount();
 
       final members = await membersFuture;
       String? ownerUserId;
@@ -251,6 +257,8 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         personalStatusFuture,
         currentUserId: profile?.userId,
       );
+      final hasBankAccount = await hasBankAccountFuture;
+      shouldPromptBankAccount = !hasBankAccount;
       _logGratitudeStatus(wallStatus, profile?.userId);
       housePulse = await _resolveHousePulseSnapshot(
         future: housePulseFuture,
@@ -288,6 +296,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           shouldPromptInviteShare: shouldPromptInviteShare,
           shouldPromptPreferences: shouldPromptPreferences,
           shouldPromptHouseNorms: shouldPromptHouseNorms,
+          shouldPromptBankAccount: shouldPromptBankAccount,
           memberCapJoinRequests: memberCapJoinRequests,
           memberCapJoinResolution: memberCapJoinResolution,
           housePulse: housePulse,
@@ -314,6 +323,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
           hasShownNpsPrompt: prevHasShownNps,
           shouldPromptPreferences: state.shouldPromptPreferences,
           shouldPromptHouseNorms: state.shouldPromptHouseNorms,
+          shouldPromptBankAccount: state.shouldPromptBankAccount,
           memberCapJoinRequests: memberCapJoinRequests,
           memberCapJoinResolution: memberCapJoinResolution,
           housePulse: housePulse,
@@ -346,6 +356,22 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         tag: 'TodayHouseDirectory',
       );
       return state.houseDirectoryReminders;
+    }
+  }
+
+  Future<bool> _loadHasBankAccount() async {
+    final repository = _personalDirectoryRepository;
+    if (repository == null) return true;
+    try {
+      return await repository.getOwnBankAccount() != null;
+    } catch (error, stackTrace) {
+      _logger.warn(
+        'Failed to load personal directory bank account',
+        error: error,
+        stackTrace: stackTrace,
+        tag: 'TodayPersonalDirectory',
+      );
+      return !state.shouldPromptBankAccount;
     }
   }
 
@@ -421,6 +447,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
         shouldPromptInviteShare: state.shouldPromptInviteShare,
         shouldPromptPreferences: state.shouldPromptPreferences,
         shouldPromptHouseNorms: state.shouldPromptHouseNorms,
+        shouldPromptBankAccount: state.shouldPromptBankAccount,
         memberCapJoinRequests: state.memberCapJoinRequests,
         memberCapJoinResolution: state.memberCapJoinResolution,
         housePulse: state.housePulse,

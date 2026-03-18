@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
 import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/share/ui/share_detail_route_args.dart';
 import 'package:kinly/features/share/ui/share_owed_detail_screen.dart';
@@ -19,6 +20,9 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:kinly/features/share/ui/share_owed_item_detail_screen.dart';
 
 class _MockExpensesRepository extends Mock implements ExpensesRepository {}
+
+class _MockPersonalDirectoryRepository extends Mock
+    implements PersonalDirectoryRepository {}
 
 class _RouteHost extends StatefulWidget {
   const _RouteHost({required this.buildRoute});
@@ -56,6 +60,7 @@ void main() {
 
   testWidgets('marks paid pops true and calls repository', (tester) async {
     final repo = _MockExpensesRepository();
+    final personalDirectoryRepository = _MockPersonalDirectoryRepository();
     when(
       () => repo.payMyDue(recipientUserId: any(named: 'recipientUserId')),
     ).thenAnswer(
@@ -66,6 +71,11 @@ void main() {
         expensesNewlyFullyPaid: 1,
       ),
     );
+    when(
+      () => personalDirectoryRepository.getMemberBankAccount(
+        targetUserId: any(named: 'targetUserId'),
+      ),
+    ).thenAnswer((_) async => null);
 
     final owed = TodayShareOwed(
       payerUserId: 'user-1',
@@ -157,6 +167,7 @@ void main() {
                       child: ShareOwedDetailScreen(
                         owed: owed,
                         expensesRepository: repo,
+                        personalDirectoryRepository: personalDirectoryRepository,
                       ),
                     ),
               ),
@@ -180,9 +191,15 @@ void main() {
 
   testWidgets('error path shows message on failure', (tester) async {
     final repo = _MockExpensesRepository();
+    final personalDirectoryRepository = _MockPersonalDirectoryRepository();
     when(
       () => repo.payMyDue(recipientUserId: any(named: 'recipientUserId')),
     ).thenThrow(Exception('boom'));
+    when(
+      () => personalDirectoryRepository.getMemberBankAccount(
+        targetUserId: any(named: 'targetUserId'),
+      ),
+    ).thenAnswer((_) async => null);
 
     final owed = TodayShareOwed(
       payerUserId: 'user-1',
@@ -259,7 +276,11 @@ void main() {
         ),
         home: MediaQuery(
           data: const MediaQueryData(disableAnimations: true),
-          child: ShareOwedDetailScreen(owed: owed, expensesRepository: repo),
+          child: ShareOwedDetailScreen(
+            owed: owed,
+            expensesRepository: repo,
+            personalDirectoryRepository: personalDirectoryRepository,
+          ),
         ),
       ),
     );
@@ -277,6 +298,12 @@ void main() {
   testWidgets('shows icons and drill-through only for comments/photo items', (
     tester,
   ) async {
+    final personalDirectoryRepository = _MockPersonalDirectoryRepository();
+    when(
+      () => personalDirectoryRepository.getMemberBankAccount(
+        targetUserId: any(named: 'targetUserId'),
+      ),
+    ).thenAnswer((_) async => null);
     final owed = TodayShareOwed(
       payerUserId: 'user-1',
       displayName: 'Alex',
@@ -320,6 +347,7 @@ void main() {
                 child: ShareOwedDetailScreen(
                   owed: owed,
                   expensesRepository: _MockExpensesRepository(),
+                  personalDirectoryRepository: personalDirectoryRepository,
                 ),
               ),
         ),
@@ -374,6 +402,12 @@ void main() {
   testWidgets('shows period label for recurring and one-time shares', (
     tester,
   ) async {
+    final personalDirectoryRepository = _MockPersonalDirectoryRepository();
+    when(
+      () => personalDirectoryRepository.getMemberBankAccount(
+        targetUserId: any(named: 'targetUserId'),
+      ),
+    ).thenAnswer((_) async => null);
     final owed = TodayShareOwed(
       payerUserId: 'user-1',
       displayName: 'Alex',
@@ -408,6 +442,7 @@ void main() {
           child: ShareOwedDetailScreen(
             owed: owed,
             expensesRepository: _MockExpensesRepository(),
+            personalDirectoryRepository: personalDirectoryRepository,
           ),
         ),
       ),

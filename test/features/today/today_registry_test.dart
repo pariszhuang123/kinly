@@ -16,6 +16,7 @@ void main() {
         'house_pulse',
         'house_directory_reminders',
         'flow',
+        'bank_account',
         'share',
         'shopping',
         'preferences',

@@ -71,6 +71,33 @@ class SupabaseHouseDirectoryRepository implements HouseDirectoryRepository {
   }
 
   @override
+  Future<List<HouseDirectoryMemberCard>> getMemberCards({
+    required String homeId,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'get_home_directory_member_cards',
+        params: {'p_home_id': homeId},
+      );
+      final map = _asMap(response);
+      final rows = map['members'] as List? ?? const <dynamic>[];
+      return rows
+          .whereType<Map>()
+          .map((entry) {
+            final json = entry.cast<String, dynamic>();
+            final avatarStoragePath = json['avatar_storage_path'] as String?;
+            return HouseDirectoryMemberCard.fromJson({
+              ...json,
+              'avatar_url': _storagePathResolver.toPublicUrl(avatarStoragePath),
+            });
+          })
+          .toList(growable: false);
+    } catch (error) {
+      throw SupabaseErrorMapper.mapHouseDirectory(error);
+    }
+  }
+
+  @override
   Future<HouseDirectoryService> upsertService(
     UpsertHouseDirectoryServiceInput input,
   ) async {
@@ -172,7 +199,7 @@ class SupabaseHouseDirectoryRepository implements HouseDirectoryRepository {
         rootSegment: 'house_directory',
         featureSegment: 'notes',
       );
-      return upload.storagePath;
+      return _withHouseholdsPrefix(upload.storagePath);
     } on CameraPermissionException catch (error) {
       throw HouseDirectoryPhotoCaptureException(
         kind: HouseDirectoryPhotoCaptureErrorKind.permission,
@@ -256,5 +283,11 @@ class SupabaseHouseDirectoryRepository implements HouseDirectoryRepository {
     final month = value.month.toString().padLeft(2, '0');
     final day = value.day.toString().padLeft(2, '0');
     return '$year-$month-$day';
+  }
+
+  static String _withHouseholdsPrefix(String path) {
+    final trimmed = path.trim();
+    if (trimmed.startsWith('households/')) return trimmed;
+    return 'households/$trimmed';
   }
 }

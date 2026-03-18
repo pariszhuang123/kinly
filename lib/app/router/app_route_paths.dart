@@ -22,6 +22,9 @@ class AppRoutePaths {
   static const houseDirectoryService = '/hub/house-directory/service';
   static const houseDirectoryNote = '/hub/house-directory/note';
   static const houseDirectoryPhoto = '/hub/house-directory/photo';
+  static const personalDirectory = '/personal-directory';
+  static const personalDirectoryBank = '/personal-directory/bank';
+  static const personalDirectoryNote = '/personal-directory/note';
   static const hubPreferencesList = '/hub/preferences';
   static const hubHouseVibeShare = '/hub/house-vibe/share';
   static const explore = '/explore';

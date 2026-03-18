@@ -157,9 +157,11 @@ class HouseDirectoryBloc
     try {
       final wifiFuture = _repository.getWifi(homeId: _homeId);
       final contentFuture = _repository.getContent(homeId: _homeId);
+      final membersFuture = _repository.getMemberCards(homeId: _homeId);
       final remindersFuture = _repository.listDueReminders(homeId: _homeId);
       final wifi = await wifiFuture;
       final content = await contentFuture;
+      final members = await membersFuture;
       final reminders = await remindersFuture;
       emit(
         state.copyWith(
@@ -167,6 +169,7 @@ class HouseDirectoryBloc
           wifi: wifi,
           services: content.services,
           notes: content.notes,
+          members: members,
           reminders: reminders,
           isRefreshing: false,
           notice: null,
@@ -201,9 +204,11 @@ class HouseDirectoryBloc
       await action();
       final wifiFuture = _repository.getWifi(homeId: _homeId);
       final contentFuture = _repository.getContent(homeId: _homeId);
+      final membersFuture = _repository.getMemberCards(homeId: _homeId);
       final remindersFuture = _repository.listDueReminders(homeId: _homeId);
       final wifi = await wifiFuture;
       final content = await contentFuture;
+      final members = await membersFuture;
       final reminders = await remindersFuture;
       emit(
         state.copyWith(
@@ -211,6 +216,7 @@ class HouseDirectoryBloc
           wifi: wifi,
           services: content.services,
           notes: content.notes,
+          members: members,
           reminders: reminders,
           notice: successNotice,
           errorMessage: null,

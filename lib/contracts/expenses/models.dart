@@ -214,11 +214,13 @@ class ExpenseOwedGroup {
     required this.payerDisplay,
     required this.totalOwedCents,
     required this.items,
+    this.payerUsername,
     this.payerAvatarUrl,
   });
 
   final String payerUserId;
   final String payerDisplay;
+  final String? payerUsername;
   final String? payerAvatarUrl;
   final int totalOwedCents;
   final List<ExpenseOwedItem> items;
@@ -238,6 +240,7 @@ class ExpenseOwedGroup {
     return ExpenseOwedGroup(
       payerUserId: json['payerUserId'] as String,
       payerDisplay: (json['payerDisplay'] as String?) ?? '',
+      payerUsername: json['payerUsername'] as String?,
       payerAvatarUrl: json['payerAvatarUrl'] as String?,
       totalOwedCents: (json['totalOwedCents'] as num?)?.toInt() ?? 0,
       items: coercedItems,

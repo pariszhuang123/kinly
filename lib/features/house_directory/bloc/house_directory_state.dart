@@ -20,6 +20,7 @@ class HouseDirectoryState extends Equatable {
     required this.isOwner,
     required this.services,
     required this.notes,
+    required this.members,
     required this.reminders,
     this.wifi,
     this.notice,
@@ -33,6 +34,7 @@ class HouseDirectoryState extends Equatable {
       isOwner: isOwner,
       services: const [],
       notes: const [],
+      members: const [],
       reminders: const [],
     );
   }
@@ -42,6 +44,7 @@ class HouseDirectoryState extends Equatable {
   final HouseDirectoryWifi? wifi;
   final List<HouseDirectoryService> services;
   final List<HouseDirectoryNote> notes;
+  final List<HouseDirectoryMemberCard> members;
   final List<HouseDirectoryReminder> reminders;
   final HouseDirectoryNotice? notice;
   final String? errorMessage;
@@ -57,6 +60,7 @@ class HouseDirectoryState extends Equatable {
       status == HouseDirectoryStatus.working;
   bool get hasContent =>
       wifi != null ||
+      members.isNotEmpty ||
       services.isNotEmpty ||
       notes.isNotEmpty ||
       reminders.isNotEmpty;
@@ -79,6 +83,7 @@ class HouseDirectoryState extends Equatable {
     Object? wifi = _unset,
     List<HouseDirectoryService>? services,
     List<HouseDirectoryNote>? notes,
+    List<HouseDirectoryMemberCard>? members,
     List<HouseDirectoryReminder>? reminders,
     Object? notice = _unset,
     Object? errorMessage = _unset,
@@ -90,6 +95,7 @@ class HouseDirectoryState extends Equatable {
       wifi: wifi == _unset ? this.wifi : wifi as HouseDirectoryWifi?,
       services: services ?? this.services,
       notes: notes ?? this.notes,
+      members: members ?? this.members,
       reminders: reminders ?? this.reminders,
       notice:
           notice == _unset ? this.notice : notice as HouseDirectoryNotice?,
@@ -108,6 +114,7 @@ class HouseDirectoryState extends Equatable {
     wifi,
     services,
     notes,
+    members,
     reminders,
     notice,
     errorMessage,

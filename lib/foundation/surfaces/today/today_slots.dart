@@ -57,6 +57,7 @@ class TodaySurfaceActions {
     required this.onHouseDirectoryReminderAcknowledge,
     required this.onHouseDirectoryReminderDismiss,
     required this.onShoppingTap,
+    required this.onBankAccountPrompt,
   });
 
   final Future<void> Function() onMemberCapPrimary;
@@ -80,6 +81,7 @@ class TodaySurfaceActions {
   final void Function(HouseDirectoryReminder reminder)
       onHouseDirectoryReminderDismiss;
   final VoidCallback onShoppingTap;
+  final VoidCallback onBankAccountPrompt;
 }
 
 class TodaySurfaceScope {

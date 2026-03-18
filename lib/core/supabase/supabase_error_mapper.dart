@@ -2,20 +2,27 @@ import 'dart:convert';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'enums/chore_error_code.dart';
+import 'chore_error_mapper.dart';
 import 'enums/expense_error_code.dart';
 import 'enums/house_directory_error_code.dart';
 import 'enums/home_error_codes.dart';
 import 'enums/mood_error_code.dart';
 import 'enums/nps_submit_error_code.dart';
+import 'enums/personal_directory_error_code.dart';
+import 'personal_directory_error_mapper.dart';
+import 'shopping_list_error_mapper.dart';
 import 'enums/shopping_list_error_code.dart';
 
 export 'enums/chore_error_code.dart';
+export 'chore_error_mapper.dart';
 export 'enums/expense_error_code.dart';
 export 'enums/house_directory_error_code.dart';
 export 'enums/home_error_codes.dart';
 export 'enums/mood_error_code.dart';
 export 'enums/nps_submit_error_code.dart';
+export 'enums/personal_directory_error_code.dart';
+export 'personal_directory_error_mapper.dart';
+export 'shopping_list_error_mapper.dart';
 export 'enums/shopping_list_error_code.dart';
 
 class HomeJoinException implements Exception {
@@ -110,6 +117,16 @@ class SupabaseErrorMapper {
               message,
             ),
       );
+
+  // ----- personal_directory.* -----
+  static PersonalDirectoryException mapPersonalDirectory(Object error) {
+    return mapPersonalDirectoryError(
+      error,
+      parseCode: (exception) => _parseErrorJson(exception.message).code,
+      parseMessage: (exception) => _parseErrorJson(exception.message).message,
+      parseDetails: (exception) => _parseErrorJson(exception.message).details,
+    );
+  }
 
   // ----- invites.rotate -----
   static InviteRotateException mapRotate(Object error) =>
@@ -284,17 +301,7 @@ class SupabaseErrorMapper {
   }
 
   /// Map chore RPC errors into [ChoreException].
-  static ChoreException mapChore(Object error) {
-    if (error is AuthException) {
-      return ChoreException(ChoreErrorCode.unauthorized, error.message);
-    }
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final code = _choreCodeMap[parsed.code] ?? ChoreErrorCode.unknown;
-      return ChoreException(code, parsed.message, details: parsed.details);
-    }
-    return ChoreException(ChoreErrorCode.unknown, error.toString());
-  }
+  static ChoreException mapChore(Object error) => mapChoreError(error);
 
   /// Maps expenses RPC errors into [ExpenseException].
   static ExpenseException mapExpense(Object error) {
@@ -311,19 +318,12 @@ class SupabaseErrorMapper {
 
   /// Maps shopping list RPC errors into [ShoppingListException].
   static ShoppingListException mapShoppingList(Object error) {
-    if (error is AuthException) {
-      return ShoppingListException(
-        ShoppingListErrorCode.unauthorized,
-        error.message,
-      );
-    }
-    if (error is PostgrestException) {
-      final parsed = _parseErrorJson(error.message);
-      final code =
-          _shoppingListCodeMap[parsed.code] ?? ShoppingListErrorCode.unknown;
-      return ShoppingListException(code, parsed.message, details: parsed.details);
-    }
-    return ShoppingListException(ShoppingListErrorCode.unknown, error.toString());
+    return mapShoppingListError(
+      error,
+      parseCode: (exception) => _parseErrorJson(exception.message).code,
+      parseMessage: (exception) => _parseErrorJson(exception.message).message,
+      parseDetails: (exception) => _parseErrorJson(exception.message).details,
+    );
   }
 }
 
@@ -349,23 +349,6 @@ T _mapWithAuth<T, C>({
   }
   return fallbackFactory(error.toString());
 }
-
-const _choreCodeMap = <String, ChoreErrorCode>{
-  'INVALID_INPUT': ChoreErrorCode.invalidInput,
-  'INVALID_NAME': ChoreErrorCode.invalidInput,
-  'INVALID_STATE': ChoreErrorCode.invalidState,
-  'INVALID_MEDIA_PATH': ChoreErrorCode.invalidMediaPath,
-  'ASSIGNEE_NOT_MEMBER': ChoreErrorCode.assigneeNotMember,
-  'ALREADY_FINALIZED': ChoreErrorCode.alreadyFinalized,
-  'PAYWALL_LIMIT_ACTIVE_CHORES': ChoreErrorCode.paywallActiveCap,
-  'PAYWALL_LIMIT_CHORE_PHOTOS': ChoreErrorCode.paywallMediaCap,
-  'INVALID_START': ChoreErrorCode.invalidStart,
-  'NOT_FOUND': ChoreErrorCode.notFound,
-  'CHORE_NOT_FOUND': ChoreErrorCode.notFound,
-  'NOT_HOME_MEMBER': ChoreErrorCode.notHomeMember,
-  'FORBIDDEN': ChoreErrorCode.forbidden,
-  'UNAUTHORIZED': ChoreErrorCode.unauthorized,
-};
 
 const _expenseCodeMap = <String, ExpenseErrorCode>{
   'INVALID_HOME': ExpenseErrorCode.invalidHome,
@@ -426,21 +409,6 @@ const _houseDirectoryCodeMap = <String, HouseDirectoryErrorCode>{
       HouseDirectoryErrorCode.reminderNotFound,
   'HOUSE_DIRECTORY_REMINDER_NOT_ACTIONABLE':
       HouseDirectoryErrorCode.reminderNotActionable,
-};
-
-const _shoppingListCodeMap = <String, ShoppingListErrorCode>{
-  'INVALID_NAME': ShoppingListErrorCode.invalidName,
-  'INVALID_REFERENCE_PHOTO_PATH': ShoppingListErrorCode.invalidReferencePhotoPath,
-  'PHOTO_DELETE_NOT_ALLOWED': ShoppingListErrorCode.photoDeleteNotAllowed,
-  'NOT_HOME_MEMBER': ShoppingListErrorCode.notHomeMember,
-  'ITEM_NOT_FOUND': ShoppingListErrorCode.itemNotFound,
-  'ITEM_ALREADY_COMPLETED_BY_OTHER':
-      ShoppingListErrorCode.itemAlreadyCompletedByOther,
-  'INVALID_EXPENSE': ShoppingListErrorCode.invalidExpense,
-  'PAYWALL_LIMIT_SHOPPING_ITEM_PHOTOS':
-      ShoppingListErrorCode.paywallShoppingItemPhotosCap,
-  'FORBIDDEN': ShoppingListErrorCode.forbidden,
-  'UNAUTHORIZED': ShoppingListErrorCode.unauthorized,
 };
 
 const _joinCodeMap = <String, JoinErrorCode>{
@@ -585,16 +553,6 @@ class KickMemberException implements Exception {
   String toString() => 'KickMemberException($code): $message';
 }
 
-class ChoreException implements Exception {
-  final ChoreErrorCode code;
-  final String message;
-  final Map<String, dynamic>? details;
-  const ChoreException(this.code, this.message, {this.details});
-
-  @override
-  String toString() => 'ChoreException($code): $message';
-}
-
 class ExpenseException implements Exception {
   final ExpenseErrorCode code;
   final String message;
@@ -604,15 +562,4 @@ class ExpenseException implements Exception {
 
   @override
   String toString() => 'ExpenseException($code): $message';
-}
-
-class ShoppingListException implements Exception {
-  final ShoppingListErrorCode code;
-  final String message;
-  final Map<String, dynamic>? details;
-
-  const ShoppingListException(this.code, this.message, {this.details});
-
-  @override
-  String toString() => 'ShoppingListException($code): $message';
 }

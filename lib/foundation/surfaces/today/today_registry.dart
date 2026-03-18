@@ -123,6 +123,15 @@ class TodayRegistry {
 
     register(
       TodaySectionEntry(
+        id: 'bank_account',
+        order: 35,
+        builder: _buildBankAccountPrompt,
+        isVisible: (scope) => scope.state.shouldPromptBankAccount,
+      ),
+    );
+
+    register(
+      TodaySectionEntry(
         id: 'share',
         order: 40,
         spacingAfter: TodaySectionSpacing.lg,
@@ -180,6 +189,17 @@ class TodayRegistry {
       ),
     );
   }
+}
+
+Widget _buildBankAccountPrompt(TodaySurfaceScope scope) {
+  final palette = scope.sections.share;
+  return TodayInvitePrompt(
+    title: scope.strings.todayBankAccountPromptTitle,
+    subtitle: scope.strings.todayBankAccountPromptSubtitle,
+    primaryLabel: scope.strings.todayBankAccountPromptCta,
+    onPrimary: scope.actions.onBankAccountPrompt,
+    palette: palette,
+  );
 }
 
 bool _shouldShowMemberCapPrompt(TodaySurfaceScope scope) {

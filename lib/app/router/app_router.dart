@@ -11,6 +11,7 @@ import 'package:kinly/features/version_gating/bloc/app_version_cubit.dart';
 import 'package:kinly/features/harmony/routes/harmony_routes.dart';
 import 'package:kinly/features/house_directory/routes/house_directory_routes.dart';
 import 'package:kinly/features/home_membership/routes/home_membership_routes.dart';
+import 'package:kinly/features/personal_directory/routes/personal_directory_routes.dart';
 import 'package:kinly/foundation/surfaces/explore/routes/explore_routes.dart';
 import 'package:kinly/foundation/surfaces/hub/routes/hub_routes.dart';
 import 'package:kinly/features/nps/routes/nps_routes.dart';
@@ -44,6 +45,9 @@ class AppRoutes {
   static const hub = AppRoutePaths.hub;
   static const houseDirectory = AppRoutePaths.houseDirectory;
   static const houseDirectoryDetails = AppRoutePaths.houseDirectoryDetails;
+  static const personalDirectory = AppRoutePaths.personalDirectory;
+  static const personalDirectoryBank = AppRoutePaths.personalDirectoryBank;
+  static const personalDirectoryNote = AppRoutePaths.personalDirectoryNote;
   static const explore = AppRoutePaths.explore;
   static const flow = AppRoutePaths.flow;
   static const flowChoreCreate = AppRoutePaths.flowChoreCreate;

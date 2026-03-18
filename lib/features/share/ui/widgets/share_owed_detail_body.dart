@@ -1,9 +1,12 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../app/router/app_route_names.dart';
+import '../../../../contracts/personal_directory/models.dart';
 import '../../../../core/theme/spacing.dart';
+import '../../../../core/ui/buttons/kinly_outlined_button.dart';
 import '../../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../../core/ui/kinly_circle_avatar.dart';
 import '../../../../core/ui/kinly_icons.dart';
@@ -25,6 +28,8 @@ class ShareOwedDetailBody extends StatelessWidget {
     required this.hasItems,
     required this.isSubmitting,
     required this.errorMessage,
+    required this.paymentBankAccount,
+    required this.isLoadingPaymentBankAccount,
     required this.onMarkAllPaid,
   });
 
@@ -34,6 +39,8 @@ class ShareOwedDetailBody extends StatelessWidget {
   final bool hasItems;
   final bool isSubmitting;
   final String? errorMessage;
+  final PersonalDirectoryBankAccount? paymentBankAccount;
+  final bool isLoadingPaymentBankAccount;
   final Future<void> Function() onMarkAllPaid;
 
   @override
@@ -45,6 +52,14 @@ class ShareOwedDetailBody extends StatelessWidget {
       children: [
         _ShareOwedHeader(owed: owed),
         SizedBox(height: spacing.lg),
+        if (!isLoadingPaymentBankAccount) ...[
+          _SharePaymentCard(
+            owed: owed,
+            bankAccount: paymentBankAccount,
+            strings: strings,
+          ),
+          SizedBox(height: spacing.lg),
+        ],
         Expanded(
           child:
               hasItems
@@ -172,6 +187,119 @@ class _ShareOwedItemsList extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class _SharePaymentCard extends StatelessWidget {
+  const _SharePaymentCard({
+    required this.owed,
+    required this.bankAccount,
+    required this.strings,
+  });
+
+  final TodayShareOwed owed;
+  final PersonalDirectoryBankAccount? bankAccount;
+  final S strings;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final reference = _paymentReference(strings);
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsetsDirectional.all(spacing.md),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child:
+          bankAccount == null
+              ? Text(strings.shareOwedBankMissing(reference))
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    strings.shareOwedPaymentDetailsTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  SizedBox(height: spacing.md),
+                  _CopyRow(
+                    label: strings.shareOwedAccountHolderLabel,
+                    value: bankAccount!.accountHolderName,
+                    ctaLabel: strings.shareOwedCopyCta,
+                  ),
+                  SizedBox(height: spacing.sm),
+                  _CopyRow(
+                    label: strings.shareOwedAccountNumberLabel,
+                    value: bankAccount!.accountNumber,
+                    ctaLabel: strings.shareOwedCopyCta,
+                  ),
+                  SizedBox(height: spacing.sm),
+                  _CopyRow(
+                    label: strings.shareOwedReferenceLabel,
+                    value: reference,
+                    ctaLabel: strings.shareOwedCopyCta,
+                  ),
+                ],
+              ),
+    );
+  }
+
+  String _paymentReference(S strings) {
+    final username = (owed.username ?? '').trim();
+    if (username.isNotEmpty) return username;
+    final displayName = owed.displayName.trim();
+    if (displayName.isNotEmpty) return displayName;
+    return strings.personalDirectoryFallbackName;
+  }
+}
+
+class _CopyRow extends StatelessWidget {
+  const _CopyRow({
+    required this.label,
+    required this.value,
+    required this.ctaLabel,
+  });
+
+  final String label;
+  final String value;
+  final String ctaLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(value, style: theme.textTheme.bodyMedium),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        KinlyOutlinedButton.text(
+          onPressed: () => _copy(value),
+          label: ctaLabel,
+          compact: true,
+          fullWidth: false,
+        ),
+      ],
+    );
+  }
+
+  Future<void> _copy(String value) async {
+    await Clipboard.setData(ClipboardData(text: value));
   }
 }
 

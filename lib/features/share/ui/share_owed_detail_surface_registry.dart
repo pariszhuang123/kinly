@@ -54,6 +54,8 @@ class ShareOwedDetailRegistry {
               hasItems: scope.hasItems,
               isSubmitting: scope.isSubmitting,
               errorMessage: scope.errorMessage,
+              paymentBankAccount: scope.paymentBankAccount,
+              isLoadingPaymentBankAccount: scope.isLoadingPaymentBankAccount,
               onMarkAllPaid: scope.actions.onMarkAllPaid,
             ),
       ),

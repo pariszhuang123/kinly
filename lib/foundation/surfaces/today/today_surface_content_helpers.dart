@@ -19,6 +19,7 @@ Widget _buildTodayContentImpl(
   final hasHousePulse = state.hasHousePulseCard;
   final hasInvitePrompt =
       state.shouldPromptFlatmateInviteShare || state.shouldPromptInviteShare;
+  final hasBankAccountPrompt = state.shouldPromptBankAccount;
   final hasShopping = stateful._shoppingCount > 0;
   final hasMemberCapPrompt =
       (state.memberCapJoinRequests?.pendingCount ?? 0) > 0 &&
@@ -32,6 +33,7 @@ Widget _buildTodayContentImpl(
       !hasGratitude &&
       !hasHousePulse &&
       !hasInvitePrompt &&
+      !hasBankAccountPrompt &&
       !hasShopping &&
       !hasMemberCapPrompt &&
       !hasPreferencePrompt &&
@@ -112,6 +114,9 @@ Widget _buildTodayContentImpl(
           TodayHouseDirectoryReminderDismissed(reminder.id),
         ),
     onShoppingTap: () => stateful._openShoppingList(context),
+    onBankAccountPrompt: () {
+      stateful._openPersonalDirectoryBank(context);
+    },
   );
 
   final scope = TodaySurfaceScope(

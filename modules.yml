@@ -415,6 +415,49 @@ modules:
       plan_gate: true
     notes: Home wifi, services, links, and renewal reminders surfaced in Hub and Today.
 
+  - name: personal_directory
+    owner_role: Planner
+    status: feature
+    killable: true
+    kill_switch_flag: feature.personal_directory.enabled
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["house_directory", "today", "share", "profile_settings"]
+    public_api:
+      dart: null
+    data:
+      tables_owned:
+        - member_directory_bank_accounts
+        - member_directory_notes
+        - member_directory_nudges
+      cross_module_refs:
+        - members.id
+        - homes.id
+    rpcs:
+      owner:
+        - member_directory.get_bank_account
+        - member_directory.upsert_bank_account
+        - member_directory.get_notes
+        - member_directory.create_note
+        - member_directory.update_note
+        - member_directory.archive_note
+        - member_directory.get_nudge
+        - member_directory.dismiss_nudge
+      orchestration: []
+    entrypoints:
+      routes:
+        - /personal-directory
+        - /personal-directory/bank
+        - /personal-directory/note
+      deep_links: []
+      navigation_tiles:
+        - personal_directory_tile
+        - personal_directory_bank_prompt
+    test_matrix:
+      feature_flag_off: true
+      plan_gate: true
+    notes: User-owned personal notes and bank details, surfaced from House Directory, Today, Share, and the personal profile sheet.
+
   - name: harmony
     owner_role: Planner
     status: feature

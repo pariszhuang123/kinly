@@ -2,11 +2,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/contracts/house_directory/models.dart';
+import 'package:kinly/contracts/personal_directory/models.dart';
 import 'package:kinly/core/ui/buttons/kinly_outlined_button.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
+import 'package:kinly/core/ui/kinly_circle_avatar.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/core/ui/kinly_refresh_indicator.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
+import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
@@ -51,6 +55,7 @@ class HouseDirectoryScreen extends StatelessWidget {
                       state.utilityServices.length +
                       state.notes.length;
                   final showDetailsCard = state.isOwner || detailsCount > 0;
+                  final showMembersCard = state.members.isNotEmpty;
                   final cards = <Widget>[
                     if (showWifiCard)
                       SizedBox(
@@ -116,6 +121,25 @@ class HouseDirectoryScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                    if (showMembersCard)
+                      SizedBox(
+                        width: cardWidth,
+                        child: HouseDirectorySurfaceCard(
+                          backgroundColor: colors.surfaceContainerHigh,
+                          borderColor: colors.outlineVariant,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                S.of(context).houseDirectoryMembersTitle,
+                                style: theme.textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 12),
+                              ..._buildMemberRows(context, state.members),
+                            ],
+                          ),
+                        ),
+                      ),
                   ];
                   return KinlyScrollFade(
                     child: KinlyRefreshIndicator(
@@ -141,6 +165,40 @@ class HouseDirectoryScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  List<Widget> _buildMemberRows(
+    BuildContext context,
+    List<HouseDirectoryMemberCard> members,
+  ) {
+    return members
+        .map(
+          (member) => Padding(
+            padding: const EdgeInsetsDirectional.only(bottom: 8),
+            child: _HouseDirectoryMemberRow(
+              member: member,
+              onTap: () => _openMemberDirectory(context, member),
+            ),
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  void _openMemberDirectory(
+    BuildContext context,
+    HouseDirectoryMemberCard member,
+  ) {
+    context.pushNamed(
+      AppRouteNames.personalDirectory,
+      extra: PersonalDirectoryMemberSummary(
+        userId: member.userId,
+        username: member.username,
+        avatarUrl: member.avatarUrl,
+        avatarStoragePath: member.avatarStoragePath,
+        isHomeOwner: member.isOwner,
+        hasContent: member.hasPersonalDirectoryContent,
       ),
     );
   }
@@ -195,5 +253,47 @@ class HouseDirectoryScreen extends StatelessWidget {
     return '${state.rentServices.length} ${s.houseDirectoryRentTitle.toLowerCase()}, '
         '${state.utilityServices.length} ${s.houseDirectoryServicesTitle.toLowerCase()}, '
         '${state.notes.length} ${s.houseDirectoryNotesTitle.toLowerCase()}';
+  }
+}
+
+class _HouseDirectoryMemberRow extends StatelessWidget {
+  const _HouseDirectoryMemberRow({
+    required this.member,
+    required this.onTap,
+  });
+
+  final HouseDirectoryMemberCard member;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    return KinlyTapTarget(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      alignment: AlignmentDirectional.centerStart,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: 4,
+          vertical: 6,
+        ),
+        child: Row(
+          children: [
+            KinlyCircleAvatar(
+              avatarUrl: member.avatarUrl,
+              radius: 20,
+              isOwner: member.isOwner,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                member.username,
+                style: theme.textTheme.bodyLarge,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

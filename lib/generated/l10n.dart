@@ -7337,6 +7337,466 @@ class S {
       args: [],
     );
   }
+
+  /// `Personal directory`
+  String get personalProfilePersonalDirectory {
+    return Intl.message(
+      'Personal directory',
+      name: 'personalProfilePersonalDirectory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal directory`
+  String get personalDirectoryTitle {
+    return Intl.message(
+      'Personal directory',
+      name: 'personalDirectoryTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Member`
+  String get personalDirectoryFallbackName {
+    return Intl.message(
+      'Member',
+      name: 'personalDirectoryFallbackName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search notes`
+  String get personalDirectorySearchLabel {
+    return Intl.message(
+      'Search notes',
+      name: 'personalDirectorySearchLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search notes`
+  String get personalDirectorySearchHint {
+    return Intl.message(
+      'Search notes',
+      name: 'personalDirectorySearchHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bank account`
+  String get personalDirectoryBankTitle {
+    return Intl.message(
+      'Bank account',
+      name: 'personalDirectoryBankTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add bank`
+  String get personalDirectoryAddBank {
+    return Intl.message(
+      'Add bank',
+      name: 'personalDirectoryAddBank',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit bank`
+  String get personalDirectoryEditBank {
+    return Intl.message(
+      'Edit bank',
+      name: 'personalDirectoryEditBank',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add your bank details so housemates can pay you more easily.`
+  String get personalDirectoryBankEmpty {
+    return Intl.message(
+      'Add your bank details so housemates can pay you more easily.',
+      name: 'personalDirectoryBankEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account holder name`
+  String get personalDirectoryAccountHolderLabel {
+    return Intl.message(
+      'Account holder name',
+      name: 'personalDirectoryAccountHolderLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account number`
+  String get personalDirectoryAccountNumberLabel {
+    return Intl.message(
+      'Account number',
+      name: 'personalDirectoryAccountNumberLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get personalDirectorySave {
+    return Intl.message(
+      'Save',
+      name: 'personalDirectorySave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes`
+  String get personalDirectoryNotesTitle {
+    return Intl.message(
+      'Notes',
+      name: 'personalDirectoryNotesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add note`
+  String get personalDirectoryAddNote {
+    return Intl.message(
+      'Add note',
+      name: 'personalDirectoryAddNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit note`
+  String get personalDirectoryEditNote {
+    return Intl.message(
+      'Edit note',
+      name: 'personalDirectoryEditNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add emergency contacts, allergies, or other notes.`
+  String get personalDirectoryNotesEmptySelf {
+    return Intl.message(
+      'Add emergency contacts, allergies, or other notes.',
+      name: 'personalDirectoryNotesEmptySelf',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No notes added yet.`
+  String get personalDirectoryNotesEmptyOther {
+    return Intl.message(
+      'No notes added yet.',
+      name: 'personalDirectoryNotesEmptyOther',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No notes match that search.`
+  String get personalDirectoryNotesSearchEmpty {
+    return Intl.message(
+      'No notes match that search.',
+      name: 'personalDirectoryNotesSearchEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Emergency contact`
+  String get personalDirectoryEmergencyContactTitle {
+    return Intl.message(
+      'Emergency contact',
+      name: 'personalDirectoryEmergencyContactTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allergy`
+  String get personalDirectoryAllergyTitle {
+    return Intl.message(
+      'Allergy',
+      name: 'personalDirectoryAllergyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Other`
+  String get personalDirectoryOtherTitle {
+    return Intl.message(
+      'Other',
+      name: 'personalDirectoryOtherTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note type`
+  String get personalDirectoryNoteTypeLabel {
+    return Intl.message(
+      'Note type',
+      name: 'personalDirectoryNoteTypeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact name`
+  String get personalDirectoryContactNameLabel {
+    return Intl.message(
+      'Contact name',
+      name: 'personalDirectoryContactNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone number`
+  String get personalDirectoryPhoneNumberLabel {
+    return Intl.message(
+      'Phone number',
+      name: 'personalDirectoryPhoneNumberLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allergy`
+  String get personalDirectoryAllergyLabel {
+    return Intl.message(
+      'Allergy',
+      name: 'personalDirectoryAllergyLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Title`
+  String get personalDirectoryNoteTitleLabel {
+    return Intl.message(
+      'Title',
+      name: 'personalDirectoryNoteTitleLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Details`
+  String get personalDirectoryDetailsLabel {
+    return Intl.message(
+      'Details',
+      name: 'personalDirectoryDetailsLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check the bank details and try again.`
+  String get personalDirectoryBankValidation {
+    return Intl.message(
+      'Check the bank details and try again.',
+      name: 'personalDirectoryBankValidation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check this note and try again.`
+  String get personalDirectoryNoteValidation {
+    return Intl.message(
+      'Check this note and try again.',
+      name: 'personalDirectoryNoteValidation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archive this note?`
+  String get personalDirectoryArchiveNoteTitle {
+    return Intl.message(
+      'Archive this note?',
+      name: 'personalDirectoryArchiveNoteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This removes it from your Personal directory view.`
+  String get personalDirectoryArchiveNoteBody {
+    return Intl.message(
+      'This removes it from your Personal directory view.',
+      name: 'personalDirectoryArchiveNoteBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load your personal directory.`
+  String get personalDirectoryLoadError {
+    return Intl.message(
+      'Couldn\'t load your personal directory.',
+      name: 'personalDirectoryLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bank details saved.`
+  String get personalDirectoryBankSaved {
+    return Intl.message(
+      'Bank details saved.',
+      name: 'personalDirectoryBankSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note saved.`
+  String get personalDirectoryNoteSaved {
+    return Intl.message(
+      'Note saved.',
+      name: 'personalDirectoryNoteSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note archived.`
+  String get personalDirectoryNoteArchived {
+    return Intl.message(
+      'Note archived.',
+      name: 'personalDirectoryNoteArchived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't save those changes.`
+  String get personalDirectoryActionFailed {
+    return Intl.message(
+      'Couldn\'t save those changes.',
+      name: 'personalDirectoryActionFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Members`
+  String get houseDirectoryMembersTitle {
+    return Intl.message(
+      'Members',
+      name: 'houseDirectoryMembersTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment details`
+  String get shareOwedPaymentDetailsTitle {
+    return Intl.message(
+      'Payment details',
+      name: 'shareOwedPaymentDetailsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account holder`
+  String get shareOwedAccountHolderLabel {
+    return Intl.message(
+      'Account holder',
+      name: 'shareOwedAccountHolderLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account number`
+  String get shareOwedAccountNumberLabel {
+    return Intl.message(
+      'Account number',
+      name: 'shareOwedAccountNumberLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reference`
+  String get shareOwedReferenceLabel {
+    return Intl.message(
+      'Reference',
+      name: 'shareOwedReferenceLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy`
+  String get shareOwedCopyCta {
+    return Intl.message(
+      'Copy',
+      name: 'shareOwedCopyCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bank details aren't here yet for {name}. Check with them directly.`
+  String shareOwedBankMissing(String name) {
+    return Intl.message(
+      'Bank details aren\'t here yet for $name. Check with them directly.',
+      name: 'shareOwedBankMissing',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Add your bank details`
+  String get todayBankAccountPromptTitle {
+    return Intl.message(
+      'Add your bank details',
+      name: 'todayBankAccountPromptTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Make it easier for housemates to pay you.`
+  String get todayBankAccountPromptSubtitle {
+    return Intl.message(
+      'Make it easier for housemates to pay you.',
+      name: 'todayBankAccountPromptSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add bank details`
+  String get todayBankAccountPromptCta {
+    return Intl.message(
+      'Add bank details',
+      name: 'todayBankAccountPromptCta',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

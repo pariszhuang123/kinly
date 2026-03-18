@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/core/auth/user_context.dart';
 import 'package:kinly/core/auth/user_context_cubit.dart';
+import 'package:kinly/contracts/personal_directory/models.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/generated/l10n.dart';
@@ -21,7 +22,7 @@ Future<void> showPersonalProfileSheet({
   final strings = S.of(context);
   final ctx = await userContextCubit.refresh();
   if (!context.mounted) return;
-  if (ctx == null || !ctx.hasPersonalArtifact) {
+  if (ctx == null) {
     KinlySnackBar.showError(context, strings.personalProfileLoadError);
     return;
   }
@@ -32,6 +33,22 @@ Future<void> showPersonalProfileSheet({
     body: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        _PersonalProfileActionTile(
+          icon: KinlyIcons.menuBookOutlined,
+          label: strings.personalProfilePersonalDirectory,
+          onTap: () {
+            Navigator.of(context).pop();
+            GoRouter.of(context).pushNamed(
+              AppRouteNames.personalDirectory,
+              extra: PersonalDirectoryMemberSummary(
+                userId: ctx.userId,
+                username: (ctx.displayName ?? '').trim(),
+                avatarUrl: ctx.avatarUrl,
+                isHomeOwner: false,
+              ),
+            );
+          },
+        ),
         _PersonalProfileActionTile(
           icon: KinlyIcons.tuneRounded,
           label: strings.personalProfilePreferences,
@@ -44,14 +61,15 @@ Future<void> showPersonalProfileSheet({
             );
           },
         ),
-        _PersonalProfileActionTile(
-          icon: KinlyIcons.favoriteRounded,
-          label: strings.personalProfileMentions,
-          onTap: () {
-            Navigator.of(context).pop();
-            _openMentions(context, entrySource);
-          },
-        ),
+        if (ctx.hasPersonalMentions)
+          _PersonalProfileActionTile(
+            icon: KinlyIcons.favoriteRounded,
+            label: strings.personalProfileMentions,
+            onTap: () {
+              Navigator.of(context).pop();
+              _openMentions(context, entrySource);
+            },
+          ),
       ],
     ),
   );

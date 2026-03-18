@@ -25,6 +25,7 @@ class TodayState extends Equatable {
   final bool shouldPromptInviteShare;
   final bool shouldPromptPreferences;
   final bool shouldPromptHouseNorms;
+  final bool shouldPromptBankAccount;
   final MemberCapJoinRequests? memberCapJoinRequests;
   final MemberCapJoinResolution? memberCapJoinResolution;
   final HousePulsePayload? housePulse;
@@ -54,6 +55,7 @@ class TodayState extends Equatable {
     this.shouldPromptInviteShare = false,
     this.shouldPromptPreferences = false,
     this.shouldPromptHouseNorms = false,
+    this.shouldPromptBankAccount = false,
     this.memberCapJoinRequests,
     this.memberCapJoinResolution,
     this.housePulse,
@@ -78,6 +80,7 @@ class TodayState extends Equatable {
     bool shouldPromptInviteShare = false,
     bool shouldPromptPreferences = false,
     bool shouldPromptHouseNorms = false,
+    bool shouldPromptBankAccount = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
     HousePulsePayload? housePulse,
@@ -103,6 +106,7 @@ class TodayState extends Equatable {
          shouldPromptInviteShare: shouldPromptInviteShare,
          shouldPromptPreferences: shouldPromptPreferences,
          shouldPromptHouseNorms: shouldPromptHouseNorms,
+         shouldPromptBankAccount: shouldPromptBankAccount,
          memberCapJoinRequests: memberCapJoinRequests,
          memberCapJoinResolution: memberCapJoinResolution,
          housePulse: housePulse,
@@ -130,6 +134,7 @@ class TodayState extends Equatable {
     bool shouldPromptInviteShare = false,
     bool shouldPromptPreferences = false,
     bool shouldPromptHouseNorms = false,
+    bool shouldPromptBankAccount = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
     HousePulsePayload? housePulse,
@@ -156,6 +161,7 @@ class TodayState extends Equatable {
          shouldPromptInviteShare: shouldPromptInviteShare,
          shouldPromptPreferences: shouldPromptPreferences,
          shouldPromptHouseNorms: shouldPromptHouseNorms,
+         shouldPromptBankAccount: shouldPromptBankAccount,
          memberCapJoinRequests: memberCapJoinRequests,
          memberCapJoinResolution: memberCapJoinResolution,
          housePulse: housePulse,
@@ -183,6 +189,7 @@ class TodayState extends Equatable {
     bool shouldPromptInviteShare = false,
     bool shouldPromptPreferences = false,
     bool shouldPromptHouseNorms = false,
+    bool shouldPromptBankAccount = false,
     MemberCapJoinRequests? memberCapJoinRequests,
     MemberCapJoinResolution? memberCapJoinResolution,
     HousePulsePayload? housePulse,
@@ -211,6 +218,7 @@ class TodayState extends Equatable {
          shouldPromptInviteShare: shouldPromptInviteShare,
          shouldPromptPreferences: shouldPromptPreferences,
          shouldPromptHouseNorms: shouldPromptHouseNorms,
+         shouldPromptBankAccount: shouldPromptBankAccount,
          memberCapJoinRequests: memberCapJoinRequests,
          memberCapJoinResolution: memberCapJoinResolution,
          housePulse: housePulse,
@@ -230,6 +238,7 @@ class TodayState extends Equatable {
       hasFlowContent ||
       hasHouseDirectoryReminders ||
       hasShareContent ||
+      shouldPromptBankAccount ||
       hasGratitudeUnread ||
       hasPersonalGratitudeUnread ||
       hasHousePulseCard;
@@ -261,6 +270,7 @@ class TodayState extends Equatable {
     shouldPromptInviteShare,
     shouldPromptPreferences,
     shouldPromptHouseNorms,
+    shouldPromptBankAccount,
     memberCapJoinRequests,
     memberCapJoinResolution,
     housePulse,

@@ -55,12 +55,14 @@ class TodayShareOwed extends Equatable {
     required this.displayName,
     required this.totalOwedCents,
     required this.items,
+    this.username,
     this.avatarUrl,
     this.isOwner = false,
   });
 
   final String payerUserId;
   final String displayName;
+  final String? username;
   final String? avatarUrl;
   final int totalOwedCents;
   final List<TodayShareOwedItem> items;
@@ -73,6 +75,7 @@ class TodayShareOwed extends Equatable {
     return TodayShareOwed(
       payerUserId: group.payerUserId,
       displayName: group.payerDisplay,
+      username: group.payerUsername ?? group.payerDisplay,
       avatarUrl: group.payerAvatarUrl,
       totalOwedCents: group.totalOwedCents,
       items: group.items
@@ -86,6 +89,7 @@ class TodayShareOwed extends Equatable {
   List<Object?> get props => [
     payerUserId,
     displayName,
+    username,
     avatarUrl,
     totalOwedCents,
     items,

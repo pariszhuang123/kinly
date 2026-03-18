@@ -140,6 +140,19 @@ Future<void> _openMemberCapPaywallImpl(
   }
 }
 
+Future<void> _openPersonalDirectoryBankImpl(BuildContext context) async {
+  final state = context.read<TodayBloc>().state;
+  final profile = state.profile;
+  if (profile == null) return;
+  final result = await context.pushNamed<bool>(
+    AppRouteNames.personalDirectoryBank,
+    extra: const PersonalDirectoryBankRouteArgs(canEdit: true),
+  );
+  if (result == true && context.mounted) {
+    context.read<TodayBloc>().add(const TodayRefreshed());
+  }
+}
+
 extension _TodayScreenStateActions on _TodayScreenState {
   String partOfDayExt(DateTime now) => _partOfDayImpl(now);
 
@@ -188,6 +201,9 @@ extension _TodayScreenStateActions on _TodayScreenState {
 
   Future<void> openShareCreatedListExt(BuildContext context) =>
       _openShareCreatedListImpl(context);
+
+  Future<void> openPersonalDirectoryBankExt(BuildContext context) =>
+      _openPersonalDirectoryBankImpl(context);
 
 Future<void> openGratitudeWallExt(
   BuildContext context, {

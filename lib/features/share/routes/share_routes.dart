@@ -3,6 +3,7 @@ import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
 import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
+import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/share/ui/share_created_list/share_created_list_provider.dart';
@@ -101,6 +102,7 @@ List<GoRoute> buildShareRoutes({
         return ShareOwedDetailScreen(
           owed: args.owed,
           expensesRepository: sl<ExpensesRepository>(),
+          personalDirectoryRepository: sl<PersonalDirectoryRepository>(),
         );
       },
     ),

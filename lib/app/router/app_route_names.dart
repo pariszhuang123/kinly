@@ -21,6 +21,9 @@ class AppRouteNames {
   static const houseDirectoryService = 'houseDirectoryService';
   static const houseDirectoryNote = 'houseDirectoryNote';
   static const houseDirectoryPhoto = 'houseDirectoryPhoto';
+  static const personalDirectory = 'personalDirectory';
+  static const personalDirectoryBank = 'personalDirectoryBank';
+  static const personalDirectoryNote = 'personalDirectoryNote';
   static const hubPreferencesList = 'hubPreferencesList';
   static const hubHouseVibeShare = 'hubHouseVibeShare';
   static const explore = 'explore';
