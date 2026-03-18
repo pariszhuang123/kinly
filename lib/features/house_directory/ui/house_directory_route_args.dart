@@ -1,3 +1,5 @@
+import 'package:kinly/contracts/house_directory/models.dart';
+
 class HouseDirectoryServiceRouteArgs {
   const HouseDirectoryServiceRouteArgs({this.serviceId});
 
@@ -5,9 +7,13 @@ class HouseDirectoryServiceRouteArgs {
 }
 
 class HouseDirectoryNoteRouteArgs {
-  const HouseDirectoryNoteRouteArgs({this.noteId});
+  const HouseDirectoryNoteRouteArgs({
+    this.noteId,
+    this.initialNoteType = HouseDirectoryNoteType.general,
+  });
 
   final String? noteId;
+  final HouseDirectoryNoteType initialNoteType;
 }
 
 class HouseDirectoryPhotoRouteArgs {

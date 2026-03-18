@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/contracts/personal_directory/models.dart';
 import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
 import 'package:kinly/features/share/share.dart';
 import 'package:kinly/features/share/ui/share_detail_route_args.dart';
@@ -452,5 +453,62 @@ void main() {
 
     expect(find.text('Applies to January 1 - 7, 2024'), findsOneWidget);
     expect(find.text('One time'), findsOneWidget);
+  });
+
+  testWidgets('payment reference prefers username when available', (
+    tester,
+  ) async {
+    final personalDirectoryRepository = _MockPersonalDirectoryRepository();
+    when(
+      () => personalDirectoryRepository.getMemberBankAccount(
+        targetUserId: any(named: 'targetUserId'),
+      ),
+    ).thenAnswer(
+      (_) async => PersonalDirectoryBankAccount(
+        id: 'bank-1',
+        accountHolderName: 'Alex Doe',
+        accountNumber: '12345678',
+        createdAt: DateTime(2026, 3, 18),
+        updatedAt: DateTime(2026, 3, 18),
+      ),
+    );
+
+    final owed = TodayShareOwed(
+      payerUserId: 'user-1',
+      displayName: 'Alex Doe',
+      username: 'alex',
+      totalOwedCents: 2500,
+      items: [
+        TodayShareOwedItem(
+          expenseId: 'exp-1',
+          description: 'Groceries',
+          amountCents: 2500,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: DateTime(2024, 1, 1),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: buildKinlyTheme(Brightness.light),
+        localizationsDelegates: const [S.delegate],
+        supportedLocales: S.delegate.supportedLocales,
+        home: MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: ShareOwedDetailScreen(
+            owed: owed,
+            expensesRepository: _MockExpensesRepository(),
+            personalDirectoryRepository: personalDirectoryRepository,
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('alex'), findsOneWidget);
+    expect(find.text('Alex Doe'), findsNWidgets(2));
   });
 }

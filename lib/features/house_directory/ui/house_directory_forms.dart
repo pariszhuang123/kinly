@@ -439,6 +439,7 @@ class _NoteSheetBodyState extends State<_NoteSheetBody> {
         noteId: widget.note?.id,
         title: _titleController.text.trim(),
         details: _detailsController.text.trim(),
+        noteType: widget.note?.noteType ?? HouseDirectoryNoteType.general,
         referenceUrl: _nullIfBlank(_referenceUrlController.text),
         photoPath: widget.note?.photoPath,
       ),
@@ -447,9 +448,8 @@ class _NoteSheetBodyState extends State<_NoteSheetBody> {
 
   String? _validationError(S s) {
     final title = _titleController.text.trim();
-    final details = _detailsController.text.trim();
     final referenceUrl = _referenceUrlController.text.trim();
-    if (title.isEmpty || details.isEmpty) {
+    if (title.isEmpty) {
       return s.houseDirectoryValidationNoteFields;
     }
     if (referenceUrl.isEmpty) return null;

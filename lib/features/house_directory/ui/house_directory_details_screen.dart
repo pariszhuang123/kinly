@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/house_directory/models.dart';
-import 'package:kinly/contracts/house_directory/ports/house_directory_repository.dart';
-import 'package:kinly/core/ui/kinly_app_bar.dart';
+import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/inputs/kinly_search_field.dart';
+import 'package:kinly/core/ui/kinly_app_bar.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/core/ui/kinly_refresh_indicator.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
+import 'package:kinly/core/ui/kinly_segmented_control.dart';
+import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/core/utils/kinly_search.dart';
@@ -21,11 +23,9 @@ class HouseDirectoryDetailsScreen extends StatelessWidget {
   const HouseDirectoryDetailsScreen({
     super.key,
     required this.homeId,
-    required this.repository,
   });
 
   final String homeId;
-  final HouseDirectoryRepository repository;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,6 @@ class HouseDirectoryDetailsScreen extends StatelessWidget {
             appBar: KinlyAppBar(title: Text(S.of(context).houseDirectoryTitle)),
             body: _DetailsBody(
               homeId: homeId,
-              repository: repository,
               state: state,
             ),
           );
@@ -77,21 +76,23 @@ class HouseDirectoryDetailsScreen extends StatelessWidget {
 class _DetailsBody extends StatefulWidget {
   const _DetailsBody({
     required this.homeId,
-    required this.repository,
     required this.state,
   });
 
   final String homeId;
-  final HouseDirectoryRepository repository;
   final HouseDirectoryState state;
 
   @override
   State<_DetailsBody> createState() => _DetailsBodyState();
 }
 
+enum _HouseDirectoryBrowseSection { services, notes, tutorials }
+
 class _DetailsBodyState extends State<_DetailsBody> {
   final _searchController = TextEditingController();
   String _query = '';
+  _HouseDirectoryBrowseSection _selectedSection =
+      _HouseDirectoryBrowseSection.services;
 
   @override
   void dispose() {
@@ -102,13 +103,17 @@ class _DetailsBodyState extends State<_DetailsBody> {
   @override
   Widget build(BuildContext context) {
     final state = widget.state;
+    final s = S.of(context);
+    final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
     if (state.isLoading && !state.hasContent) {
       return const Center(child: KinlyLoader());
     }
     return LayoutBuilder(
       builder: (context, constraints) {
+        final hasActiveSearch = _query.trim().isNotEmpty;
         final useTwoColumns = constraints.maxWidth >= 760;
-        final services = [
+        final filteredServices = [
           ...state.rentServices,
           ...state.utilityServices,
         ].where((service) => _matchesService(service, _query)).toList(
@@ -118,6 +123,16 @@ class _DetailsBodyState extends State<_DetailsBody> {
             state.notes.where((note) => _matchesNote(note, _query)).toList(
               growable: false,
             );
+        final filteredTutorials =
+            state.tutorials.where((note) => _matchesNote(note, _query)).toList(
+              growable: false,
+            );
+        final segments = <_HouseDirectoryBrowseSection, String>{
+          _HouseDirectoryBrowseSection.services: s.houseDirectoryServicesTitle,
+          _HouseDirectoryBrowseSection.notes: s.houseDirectoryNotesTitle,
+          _HouseDirectoryBrowseSection.tutorials: s.houseDirectoryTutorialsTitle,
+        };
+
         return KinlyScrollFade(
           child: KinlyRefreshIndicator(
             onRefresh: () => _handleRefresh(context),
@@ -128,37 +143,52 @@ class _DetailsBodyState extends State<_DetailsBody> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (state.services.isNotEmpty || state.notes.isNotEmpty) ...[
+                    if (state.services.isNotEmpty ||
+                        state.notes.isNotEmpty ||
+                        state.tutorials.isNotEmpty) ...[
                       KinlySearchField(
                         controller: _searchController,
-                        labelText: S.of(context).houseDirectorySearchLabel,
-                        hintText: S.of(context).houseDirectorySearchHint,
+                        labelText: s.houseDirectorySearchLabel,
+                        hintText: s.houseDirectorySearchHint,
                         onChanged: (value) => setState(() => _query = value),
                         onClear: () {
                           _searchController.clear();
                           setState(() => _query = '');
                         },
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: spacing.md),
+                      if (hasActiveSearch)
+                        Text(
+                          s.houseDirectorySearchingAll,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        )
+                      else
+                        KinlySegmentedControl<_HouseDirectoryBrowseSection>(
+                          segments: segments,
+                          selected: _selectedSection,
+                          onChanged:
+                              (value) => setState(() => _selectedSection = value),
+                        ),
+                      SizedBox(height: spacing.lg),
                     ],
-                    _ServiceSection(
-                      homeId: widget.homeId,
-                      state: state,
-                      title: S.of(context).houseDirectoryServicesTitle,
-                      emptyMessage: S.of(context).houseDirectoryServicesEmpty,
-                      services: services,
-                      hasActiveSearch: _query.trim().isNotEmpty,
-                      useTwoColumns: useTwoColumns,
-                    ),
-                    const SizedBox(height: 24),
-                    _NotesSection(
-                      homeId: widget.homeId,
-                      repository: widget.repository,
-                      state: state,
-                      notes: filteredNotes,
-                      hasActiveSearch: _query.trim().isNotEmpty,
-                      useTwoColumns: useTwoColumns,
-                    ),
+                    if (hasActiveSearch)
+                      _SearchResultsView(
+                        homeId: widget.homeId,
+                        state: state,
+                        services: filteredServices,
+                        notes: filteredNotes,
+                        tutorials: filteredTutorials,
+                        useTwoColumns: useTwoColumns,
+                      )
+                    else
+                      _BrowseSectionView(
+                        section: _selectedSection,
+                        homeId: widget.homeId,
+                        state: state,
+                        useTwoColumns: useTwoColumns,
+                      ),
                   ],
                 ),
               ),
@@ -206,6 +236,148 @@ class _DetailsBodyState extends State<_DetailsBody> {
     final bloc = context.read<HouseDirectoryBloc>();
     bloc.add(const HouseDirectoryRefreshed());
     await bloc.stream.firstWhere((state) => !state.isRefreshing);
+  }
+}
+
+class _BrowseSectionView extends StatelessWidget {
+  const _BrowseSectionView({
+    required this.section,
+    required this.homeId,
+    required this.state,
+    required this.useTwoColumns,
+  });
+
+  final _HouseDirectoryBrowseSection section;
+  final String homeId;
+  final HouseDirectoryState state;
+  final bool useTwoColumns;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    return switch (section) {
+      _HouseDirectoryBrowseSection.services => _ServiceSection(
+        homeId: homeId,
+        state: state,
+        title: s.houseDirectoryServicesTitle,
+        emptyMessage: s.houseDirectoryServicesEmpty,
+        services: [...state.rentServices, ...state.utilityServices],
+        hasActiveSearch: false,
+        useTwoColumns: useTwoColumns,
+      ),
+      _HouseDirectoryBrowseSection.notes => _NoteSection(
+        homeId: homeId,
+        state: state,
+        title: s.houseDirectoryNotesTitle,
+        emptyMessage: s.houseDirectoryNotesEmpty,
+        searchEmptyMessage: s.houseDirectoryNotesSearchEmpty,
+        notes: state.notes,
+        allNotes: state.notes,
+        hasActiveSearch: false,
+        useTwoColumns: useTwoColumns,
+        actionLabel: s.houseDirectoryAddNote,
+        createNoteType: HouseDirectoryNoteType.general,
+      ),
+      _HouseDirectoryBrowseSection.tutorials => _NoteSection(
+        homeId: homeId,
+        state: state,
+        title: s.houseDirectoryTutorialsTitle,
+        emptyMessage: s.houseDirectoryTutorialsEmpty,
+        searchEmptyMessage: s.houseDirectoryTutorialsSearchEmpty,
+        notes: state.tutorials,
+        allNotes: state.tutorials,
+        hasActiveSearch: false,
+        useTwoColumns: useTwoColumns,
+        actionLabel: s.houseDirectoryAddTutorial,
+        createNoteType: HouseDirectoryNoteType.tutorial,
+      ),
+    };
+  }
+}
+
+class _SearchResultsView extends StatelessWidget {
+  const _SearchResultsView({
+    required this.homeId,
+    required this.state,
+    required this.services,
+    required this.notes,
+    required this.tutorials,
+    required this.useTwoColumns,
+  });
+
+  final String homeId;
+  final HouseDirectoryState state;
+  final List<HouseDirectoryService> services;
+  final List<HouseDirectoryNote> notes;
+  final List<HouseDirectoryNote> tutorials;
+  final bool useTwoColumns;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final children = <Widget>[];
+    if (services.isNotEmpty) {
+      children.add(
+        _ServiceSection(
+          homeId: homeId,
+          state: state,
+          title: s.houseDirectoryServicesTitle,
+          emptyMessage: s.houseDirectoryServicesEmpty,
+          services: services,
+          hasActiveSearch: true,
+          useTwoColumns: useTwoColumns,
+        ),
+      );
+    }
+    if (notes.isNotEmpty) {
+      if (children.isNotEmpty) {
+        children.add(const SizedBox(height: 24));
+      }
+      children.add(
+        _NoteSection(
+          homeId: homeId,
+          state: state,
+          title: s.houseDirectoryNotesTitle,
+          emptyMessage: s.houseDirectoryNotesEmpty,
+          searchEmptyMessage: s.houseDirectoryNotesSearchEmpty,
+          notes: notes,
+          allNotes: state.notes,
+          hasActiveSearch: true,
+          useTwoColumns: useTwoColumns,
+          actionLabel: s.houseDirectoryAddNote,
+          createNoteType: HouseDirectoryNoteType.general,
+        ),
+      );
+    }
+    if (tutorials.isNotEmpty) {
+      if (children.isNotEmpty) {
+        children.add(const SizedBox(height: 24));
+      }
+      children.add(
+        _NoteSection(
+          homeId: homeId,
+          state: state,
+          title: s.houseDirectoryTutorialsTitle,
+          emptyMessage: s.houseDirectoryTutorialsEmpty,
+          searchEmptyMessage: s.houseDirectoryTutorialsSearchEmpty,
+          notes: tutorials,
+          allNotes: state.tutorials,
+          hasActiveSearch: true,
+          useTwoColumns: useTwoColumns,
+          actionLabel: s.houseDirectoryAddTutorial,
+          createNoteType: HouseDirectoryNoteType.tutorial,
+        ),
+      );
+    }
+    if (children.isEmpty) {
+      return HouseDirectorySurfaceCard(
+        child: Text(s.houseDirectorySearchAllEmpty),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
   }
 }
 
@@ -281,40 +453,49 @@ class _ServiceSection extends StatelessWidget {
   }
 }
 
-class _NotesSection extends StatelessWidget {
-  const _NotesSection({
+class _NoteSection extends StatelessWidget {
+  const _NoteSection({
     required this.homeId,
-    required this.repository,
     required this.state,
+    required this.title,
+    required this.emptyMessage,
+    required this.searchEmptyMessage,
     required this.notes,
+    required this.allNotes,
     required this.hasActiveSearch,
     required this.useTwoColumns,
+    required this.actionLabel,
+    required this.createNoteType,
   });
 
   final String homeId;
-  final HouseDirectoryRepository repository;
   final HouseDirectoryState state;
+  final String title;
+  final String emptyMessage;
+  final String searchEmptyMessage;
   final List<HouseDirectoryNote> notes;
+  final List<HouseDirectoryNote> allNotes;
   final bool hasActiveSearch;
   final bool useTwoColumns;
+  final String actionLabel;
+  final HouseDirectoryNoteType createNoteType;
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         HouseDirectorySectionHeader(
-          title: s.houseDirectoryNotesTitle,
-          actionLabel: state.isOwner ? s.houseDirectoryAddNote : null,
+          title: title,
+          actionLabel: state.isOwner ? actionLabel : null,
           onAction: state.isOwner ? () => _openCreateSheet(context) : null,
         ),
         const SizedBox(height: 12),
-        if (state.notes.isEmpty)
-          HouseDirectorySurfaceCard(child: Text(s.houseDirectoryNotesEmpty))
+        if (allNotes.isEmpty)
+          HouseDirectorySurfaceCard(child: Text(emptyMessage))
         else if (notes.isEmpty && hasActiveSearch)
           HouseDirectorySurfaceCard(
-            child: Text(s.houseDirectoryNotesSearchEmpty),
+            child: Text(searchEmptyMessage),
           )
         else
           _ResponsiveCardGrid(
@@ -336,7 +517,7 @@ class _NotesSection extends StatelessWidget {
   Future<void> _openCreateSheet(BuildContext context) async {
     await context.pushNamed(
       AppRouteNames.houseDirectoryNote,
-      extra: const HouseDirectoryNoteRouteArgs(),
+      extra: HouseDirectoryNoteRouteArgs(initialNoteType: createNoteType),
     );
   }
 

@@ -156,6 +156,7 @@ class SupabaseHouseDirectoryRepository implements HouseDirectoryRepository {
           'p_note_id': input.noteId,
           'p_title': input.title,
           'p_details': input.details,
+          'p_note_type': input.noteType.wireValue,
           'p_reference_url': input.referenceUrl,
           'p_photo_path': input.photoPath,
         },

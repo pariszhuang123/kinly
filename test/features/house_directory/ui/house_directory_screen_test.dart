@@ -147,6 +147,7 @@ HouseDirectoryState _buildState({required bool isOwner}) {
     ),
     services: const [],
     notes: const [],
+    tutorials: const [],
     members: const [],
     reminders: const [],
   );

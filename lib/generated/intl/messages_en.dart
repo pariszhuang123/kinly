@@ -72,6 +72,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m20(paid, total) => "${paid} of ${total} paid";
 
+  static String m31(name) =>
+      "Bank details aren\'t here yet for ${name}. Check with them directly.";
+
   static String m21(count) =>
       "${Intl.plural(count, one: '${count} item to buy', other: '${count} items to buy')}";
 
@@ -80,7 +83,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m23(count) =>
       "See all ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m31(date) => "Reminder for ${date}";
+  static String m32(date) => "Reminder for ${date}";
 
   static String m24(name) => "Couldn\'t complete ${name}\'s request.";
 
@@ -416,6 +419,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "houseDirectoryAddService": MessageLookupByLibrary.simpleMessage(
       "Add service",
     ),
+    "houseDirectoryAddTutorial": MessageLookupByLibrary.simpleMessage(
+      "Add tutorial",
+    ),
     "houseDirectoryAddWifi": MessageLookupByLibrary.simpleMessage("Add wifi"),
     "houseDirectoryArchiveConfirm": MessageLookupByLibrary.simpleMessage(
       "Archive",
@@ -447,6 +453,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "houseDirectoryEditService": MessageLookupByLibrary.simpleMessage(
       "Edit service",
     ),
+    "houseDirectoryEditTutorial": MessageLookupByLibrary.simpleMessage(
+      "Edit tutorial",
+    ),
     "houseDirectoryEditWifi": MessageLookupByLibrary.simpleMessage("Edit wifi"),
     "houseDirectoryEmptyBody": MessageLookupByLibrary.simpleMessage(
       "Save wifi, rent, services, and house notes here.",
@@ -460,6 +469,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "houseDirectoryLoadError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t load House directory.",
+    ),
+    "houseDirectoryMembersTitle": MessageLookupByLibrary.simpleMessage(
+      "Members",
     ),
     "houseDirectoryNoteArchived": MessageLookupByLibrary.simpleMessage(
       "Note archived.",
@@ -489,7 +501,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Name the note so everyone knows what it covers",
     ),
     "houseDirectoryNoteUrlHint": MessageLookupByLibrary.simpleMessage(
-      "Optional. Paste a related web address if this note points to one",
+      "Enter a valid http or https URL.",
     ),
     "houseDirectoryNoteUrlLabel": MessageLookupByLibrary.simpleMessage(
       "Reference URL",
@@ -543,11 +555,17 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "houseDirectoryRentTitle": MessageLookupByLibrary.simpleMessage("Rent"),
     "houseDirectorySave": MessageLookupByLibrary.simpleMessage("Save"),
+    "houseDirectorySearchAllEmpty": MessageLookupByLibrary.simpleMessage(
+      "No services, notes, or tutorials match that search.",
+    ),
     "houseDirectorySearchHint": MessageLookupByLibrary.simpleMessage(
       "Find services or notes",
     ),
     "houseDirectorySearchLabel": MessageLookupByLibrary.simpleMessage(
       "Search home details",
+    ),
+    "houseDirectorySearchingAll": MessageLookupByLibrary.simpleMessage(
+      "Searching all house details",
     ),
     "houseDirectoryServiceArchived": MessageLookupByLibrary.simpleMessage(
       "Service archived.",
@@ -566,7 +584,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "No services match that search.",
     ),
     "houseDirectoryServicesTitle": MessageLookupByLibrary.simpleMessage(
-      "Utilities and services",
+      "Services",
     ),
     "houseDirectorySsidLabel": MessageLookupByLibrary.simpleMessage("SSID"),
     "houseDirectoryStartDate": MessageLookupByLibrary.simpleMessage(
@@ -578,6 +596,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "House directory",
     ),
     "houseDirectoryTitleLabel": MessageLookupByLibrary.simpleMessage("Title"),
+    "houseDirectoryTutorialsEmpty": MessageLookupByLibrary.simpleMessage(
+      "No tutorials added yet.",
+    ),
+    "houseDirectoryTutorialsSearchEmpty": MessageLookupByLibrary.simpleMessage(
+      "No tutorials match that search.",
+    ),
+    "houseDirectoryTutorialsTitle": MessageLookupByLibrary.simpleMessage(
+      "Tutorials",
+    ),
     "houseDirectoryValidationCustomLabel": MessageLookupByLibrary.simpleMessage(
       "Enter a custom label.",
     ),
@@ -585,7 +612,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Pick an end date after the start date.",
     ),
     "houseDirectoryValidationNoteFields": MessageLookupByLibrary.simpleMessage(
-      "Enter a title and details.",
+      "Enter a title.",
     ),
     "houseDirectoryValidationProvider": MessageLookupByLibrary.simpleMessage(
       "Enter a provider name.",
@@ -993,6 +1020,137 @@ class MessageLookup extends MessageLookupByLibrary {
     "paywallTitle": MessageLookupByLibrary.simpleMessage(
       "Keep your home running smoothly",
     ),
+    "personalDirectoryAccountHolderLabel": MessageLookupByLibrary.simpleMessage(
+      "Account holder name",
+    ),
+    "personalDirectoryAccountNumberLabel": MessageLookupByLibrary.simpleMessage(
+      "Account number",
+    ),
+    "personalDirectoryActionFailed": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t save those changes.",
+    ),
+    "personalDirectoryAddBank": MessageLookupByLibrary.simpleMessage(
+      "Add bank",
+    ),
+    "personalDirectoryAddNote": MessageLookupByLibrary.simpleMessage(
+      "Add note",
+    ),
+    "personalDirectoryAllergyHelp": MessageLookupByLibrary.simpleMessage(
+      "Name the allergy clearly, like peanuts or penicillin.",
+    ),
+    "personalDirectoryAllergyLabel": MessageLookupByLibrary.simpleMessage(
+      "Allergy",
+    ),
+    "personalDirectoryAllergyTitle": MessageLookupByLibrary.simpleMessage(
+      "Allergy",
+    ),
+    "personalDirectoryAllergyTypeHelp": MessageLookupByLibrary.simpleMessage(
+      "Add an allergy so housemates know what to avoid.",
+    ),
+    "personalDirectoryArchiveNoteBody": MessageLookupByLibrary.simpleMessage(
+      "This removes it from your Personal directory view.",
+    ),
+    "personalDirectoryArchiveNoteTitle": MessageLookupByLibrary.simpleMessage(
+      "Archive this note?",
+    ),
+    "personalDirectoryBankEmpty": MessageLookupByLibrary.simpleMessage(
+      "Add your bank details so housemates can pay you more easily.",
+    ),
+    "personalDirectoryBankSaved": MessageLookupByLibrary.simpleMessage(
+      "Bank details saved.",
+    ),
+    "personalDirectoryBankTitle": MessageLookupByLibrary.simpleMessage(
+      "Bank account",
+    ),
+    "personalDirectoryBankValidation": MessageLookupByLibrary.simpleMessage(
+      "Check the bank details and try again.",
+    ),
+    "personalDirectoryContactNameHelp": MessageLookupByLibrary.simpleMessage(
+      "Who should a housemate contact if something urgent happens?",
+    ),
+    "personalDirectoryContactNameLabel": MessageLookupByLibrary.simpleMessage(
+      "Contact name",
+    ),
+    "personalDirectoryDetailsLabel": MessageLookupByLibrary.simpleMessage(
+      "Details",
+    ),
+    "personalDirectoryEditBank": MessageLookupByLibrary.simpleMessage(
+      "Edit bank",
+    ),
+    "personalDirectoryEditNote": MessageLookupByLibrary.simpleMessage(
+      "Edit note",
+    ),
+    "personalDirectoryEmergencyContactHelp":
+        MessageLookupByLibrary.simpleMessage(
+          "Add one person your housemates can contact quickly in an emergency.",
+        ),
+    "personalDirectoryEmergencyContactTitle":
+        MessageLookupByLibrary.simpleMessage("Emergency contact"),
+    "personalDirectoryEmergencyDetailsHelp":
+        MessageLookupByLibrary.simpleMessage(
+          "Add any extra context that would help in an emergency.",
+        ),
+    "personalDirectoryFallbackName": MessageLookupByLibrary.simpleMessage(
+      "Member",
+    ),
+    "personalDirectoryLoadError": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t load your personal directory.",
+    ),
+    "personalDirectoryNoteArchived": MessageLookupByLibrary.simpleMessage(
+      "Note archived.",
+    ),
+    "personalDirectoryNoteSaved": MessageLookupByLibrary.simpleMessage(
+      "Note saved.",
+    ),
+    "personalDirectoryNoteTitleHelp": MessageLookupByLibrary.simpleMessage(
+      "Give this note a short title so housemates know what it is about.",
+    ),
+    "personalDirectoryNoteTitleLabel": MessageLookupByLibrary.simpleMessage(
+      "Title",
+    ),
+    "personalDirectoryNoteTypeLabel": MessageLookupByLibrary.simpleMessage(
+      "Note type",
+    ),
+    "personalDirectoryNoteValidation": MessageLookupByLibrary.simpleMessage(
+      "Check this note and try again.",
+    ),
+    "personalDirectoryNotesEmptyOther": MessageLookupByLibrary.simpleMessage(
+      "No notes added yet.",
+    ),
+    "personalDirectoryNotesEmptySelf": MessageLookupByLibrary.simpleMessage(
+      "Add emergency contacts, allergies, or other notes.",
+    ),
+    "personalDirectoryNotesSearchEmpty": MessageLookupByLibrary.simpleMessage(
+      "No notes match that search.",
+    ),
+    "personalDirectoryNotesTitle": MessageLookupByLibrary.simpleMessage(
+      "Notes",
+    ),
+    "personalDirectoryOtherDetailsHelp": MessageLookupByLibrary.simpleMessage(
+      "Add any extra details your housemates should know.",
+    ),
+    "personalDirectoryOtherTitle": MessageLookupByLibrary.simpleMessage(
+      "Other",
+    ),
+    "personalDirectoryOtherTypeHelp": MessageLookupByLibrary.simpleMessage(
+      "Add any other personal note that helps your housemates live with you.",
+    ),
+    "personalDirectoryPhoneNumberHelp": MessageLookupByLibrary.simpleMessage(
+      "Add the best number to call or text for this person.",
+    ),
+    "personalDirectoryPhoneNumberLabel": MessageLookupByLibrary.simpleMessage(
+      "Phone number",
+    ),
+    "personalDirectorySave": MessageLookupByLibrary.simpleMessage("Save"),
+    "personalDirectorySearchHint": MessageLookupByLibrary.simpleMessage(
+      "Search notes",
+    ),
+    "personalDirectorySearchLabel": MessageLookupByLibrary.simpleMessage(
+      "Search notes",
+    ),
+    "personalDirectoryTitle": MessageLookupByLibrary.simpleMessage(
+      "Personal directory",
+    ),
     "personalMentionsTitle": MessageLookupByLibrary.simpleMessage(
       "Personal mentions",
     ),
@@ -1001,6 +1159,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "personalProfileMentions": MessageLookupByLibrary.simpleMessage(
       "Personal mentions",
+    ),
+    "personalProfilePersonalDirectory": MessageLookupByLibrary.simpleMessage(
+      "Personal directory",
     ),
     "personalProfilePreferences": MessageLookupByLibrary.simpleMessage(
       "Personal preferences",
@@ -1619,6 +1780,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "Plan ended.",
     ),
     "shareEditTitle": MessageLookupByLibrary.simpleMessage("Edit Bill"),
+    "shareOwedAccountHolderLabel": MessageLookupByLibrary.simpleMessage(
+      "Account holder",
+    ),
+    "shareOwedAccountNumberLabel": MessageLookupByLibrary.simpleMessage(
+      "Account number",
+    ),
+    "shareOwedBankMissing": m31,
+    "shareOwedCopyCta": MessageLookupByLibrary.simpleMessage("Copy"),
     "shareOwedDetailEmpty": MessageLookupByLibrary.simpleMessage(
       "You\'re all caught up with this person.",
     ),
@@ -1632,6 +1801,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Marked settled.",
     ),
     "shareOwedDetailTitle": MessageLookupByLibrary.simpleMessage("To settle"),
+    "shareOwedPaymentDetailsTitle": MessageLookupByLibrary.simpleMessage(
+      "Payment details",
+    ),
+    "shareOwedReferenceLabel": MessageLookupByLibrary.simpleMessage(
+      "Reference",
+    ),
     "sharePaidDetailAcknowledge": MessageLookupByLibrary.simpleMessage(
       "Acknowledge receipt",
     ),
@@ -1723,6 +1898,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayAddSheetTitle": MessageLookupByLibrary.simpleMessage(
       "Add to your home",
     ),
+    "todayBankAccountPromptCta": MessageLookupByLibrary.simpleMessage(
+      "Add bank details",
+    ),
+    "todayBankAccountPromptSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Make it easier for housemates to pay you.",
+    ),
+    "todayBankAccountPromptTitle": MessageLookupByLibrary.simpleMessage(
+      "Add your bank details",
+    ),
     "todayEmptyBody": MessageLookupByLibrary.simpleMessage(
       "Nothing needs your attention right now.",
     ),
@@ -1767,7 +1951,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayHouseDirectoryOpenCta": MessageLookupByLibrary.simpleMessage(
       "Open directory",
     ),
-    "todayHouseDirectoryReminderDue": m31,
+    "todayHouseDirectoryReminderDue": m32,
     "todayHouseDirectoryRemindersTitle": MessageLookupByLibrary.simpleMessage(
       "Renewal reminders",
     ),

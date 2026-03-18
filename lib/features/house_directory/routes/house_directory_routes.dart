@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
 import 'package:kinly/app/router/route_fallback.dart';
+import 'package:kinly/contracts/house_directory/models.dart';
 import 'package:kinly/contracts/house_directory/ports/house_directory_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/ui/media/kinly_photo_viewer_screen.dart';
@@ -50,9 +51,8 @@ List<GoRoute> buildHouseDirectoryRoutes({
         routeName: 'houseDirectoryDetails',
         resolveContext: resolveContext,
         childBuilder:
-            (context, repository) => HouseDirectoryDetailsScreen(
+            (context, _) => HouseDirectoryDetailsScreen(
               homeId: context.homeId,
-              repository: repository,
             ),
       ),
     ),
@@ -87,6 +87,8 @@ List<GoRoute> buildHouseDirectoryRoutes({
             repository: repository,
             isOwner: context.isOwner,
             noteId: args?.noteId,
+            initialNoteType:
+                args?.initialNoteType ?? HouseDirectoryNoteType.general,
           );
         },
       ),

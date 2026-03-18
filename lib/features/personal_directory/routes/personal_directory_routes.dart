@@ -88,6 +88,7 @@ List<GoRoute> buildPersonalDirectoryRoutes({
           repository: sl<PersonalDirectoryRepository>(),
           note: args.note,
           canEdit: args.canEdit,
+          availableNoteTypes: args.availableNoteTypes,
         );
       },
     ),

@@ -53,7 +53,7 @@ class HouseDirectoryScreen extends StatelessWidget {
                   final detailsCount =
                       state.rentServices.length +
                       state.utilityServices.length +
-                      state.notes.length;
+                      state.allNotes.length;
                   final showDetailsCard = state.isOwner || detailsCount > 0;
                   final showMembersCard = state.members.isNotEmpty;
                   final cards = <Widget>[
@@ -246,13 +246,13 @@ class HouseDirectoryScreen extends StatelessWidget {
     final count =
         state.rentServices.length +
         state.utilityServices.length +
-        state.notes.length;
+        state.allNotes.length;
     if (count == 0) {
       return s.houseDirectoryServicesEmpty;
     }
     return '${state.rentServices.length} ${s.houseDirectoryRentTitle.toLowerCase()}, '
         '${state.utilityServices.length} ${s.houseDirectoryServicesTitle.toLowerCase()}, '
-        '${state.notes.length} ${s.houseDirectoryNotesTitle.toLowerCase()}';
+        '${state.allNotes.length} ${s.houseDirectoryNotesTitle.toLowerCase()}';
   }
 }
 

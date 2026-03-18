@@ -14,8 +14,10 @@ class PersonalDirectoryNoteRouteArgs {
   const PersonalDirectoryNoteRouteArgs({
     this.note,
     required this.canEdit,
+    this.availableNoteTypes = PersonalDirectoryNoteType.values,
   });
 
   final PersonalDirectoryNote? note;
   final bool canEdit;
+  final List<PersonalDirectoryNoteType> availableNoteTypes;
 }

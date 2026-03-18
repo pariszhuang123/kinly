@@ -3,11 +3,13 @@ import 'package:kinly/contracts/time/timezone.dart';
 import 'enums/house_directory_reminder_kind.dart';
 import 'enums/house_directory_reminder_offset_unit.dart';
 import 'enums/house_directory_reminder_status.dart';
+import 'enums/house_directory_note_type.dart';
 import 'enums/house_directory_service_type.dart';
 
 export 'enums/house_directory_reminder_kind.dart';
 export 'enums/house_directory_reminder_offset_unit.dart';
 export 'enums/house_directory_reminder_status.dart';
+export 'enums/house_directory_note_type.dart';
 export 'enums/house_directory_service_type.dart';
 
 class HouseDirectoryWifi {
@@ -172,6 +174,7 @@ class HouseDirectoryNote {
     required this.homeId,
     required this.title,
     required this.details,
+    required this.noteType,
     required this.createdAt,
     required this.updatedAt,
     this.referenceUrl,
@@ -182,6 +185,7 @@ class HouseDirectoryNote {
   final String homeId;
   final String title;
   final String details;
+  final HouseDirectoryNoteType noteType;
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? referenceUrl;
@@ -193,6 +197,7 @@ class HouseDirectoryNote {
       homeId: json['home_id'] as String? ?? '',
       title: json['title'] as String? ?? '',
       details: json['details'] as String? ?? '',
+      noteType: HouseDirectoryNoteType.fromWire(json['note_type'] as String?),
       referenceUrl: json['reference_url'] as String?,
       photoPath: json['photo_path'] as String?,
       createdAt:
@@ -239,16 +244,19 @@ class HouseDirectoryContent {
   const HouseDirectoryContent({
     required this.services,
     required this.notes,
+    required this.tutorials,
     this.members = const [],
   });
 
   final List<HouseDirectoryService> services;
   final List<HouseDirectoryNote> notes;
+  final List<HouseDirectoryNote> tutorials;
   final List<HouseDirectoryMemberCard> members;
 
   factory HouseDirectoryContent.fromJson(Map<String, dynamic> json) {
     final servicesRaw = json['services'] as List? ?? const <dynamic>[];
     final notesRaw = json['notes'] as List? ?? const <dynamic>[];
+    final tutorialsRaw = json['tutorials'] as List? ?? const <dynamic>[];
     final membersRaw = json['members'] as List? ?? const <dynamic>[];
     return HouseDirectoryContent(
       services:
@@ -260,6 +268,13 @@ class HouseDirectoryContent {
               .toList(growable: false),
       notes:
           notesRaw
+              .whereType<Map>()
+              .map((entry) => HouseDirectoryNote.fromJson(
+                entry.cast<String, dynamic>(),
+              ))
+              .toList(growable: false),
+      tutorials:
+          tutorialsRaw
               .whereType<Map>()
               .map((entry) => HouseDirectoryNote.fromJson(
                 entry.cast<String, dynamic>(),
@@ -323,6 +338,7 @@ class UpsertHouseDirectoryNoteInput {
     required this.homeId,
     required this.title,
     required this.details,
+    required this.noteType,
     this.noteId,
     this.referenceUrl,
     this.photoPath,
@@ -332,6 +348,7 @@ class UpsertHouseDirectoryNoteInput {
   final String? noteId;
   final String title;
   final String details;
+  final HouseDirectoryNoteType noteType;
   final String? referenceUrl;
   final String? photoPath;
 }

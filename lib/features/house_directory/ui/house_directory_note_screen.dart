@@ -26,12 +26,14 @@ class HouseDirectoryNoteScreen extends StatefulWidget {
     required this.repository,
     required this.isOwner,
     this.noteId,
+    this.initialNoteType = HouseDirectoryNoteType.general,
   });
 
   final String homeId;
   final HouseDirectoryRepository repository;
   final bool isOwner;
   final String? noteId;
+  final HouseDirectoryNoteType initialNoteType;
 
   bool get isCreating => noteId == null;
 
@@ -86,7 +88,9 @@ class _HouseDirectoryNoteScreenState extends State<HouseDirectoryNoteScreen> {
         _hydrateFromNote(note);
         final photoUrl = _photoUrl ?? widget.repository.toPublicPhotoUrl(_photoPath) ?? '';
         final hasPhoto = photoUrl.isNotEmpty;
-        final title = widget.isCreating ? s.houseDirectoryAddNote : _titleForState(s);
+        final title = widget.isCreating
+            ? _createTitle(s)
+            : _titleForState(s, note);
 
         return KinlyScaffold(
           appBar: KinlyAppBar(
@@ -184,18 +188,29 @@ class _HouseDirectoryNoteScreenState extends State<HouseDirectoryNoteScreen> {
   HouseDirectoryNote? _resolveNote(HouseDirectoryState state) {
     final noteId = widget.noteId;
     if (noteId == null) return null;
-    for (final note in state.notes) {
+    for (final note in state.allNotes) {
       if (note.id == noteId) return note;
     }
     return null;
   }
 
-  String _titleForState(S s) {
+  String _createTitle(S s) {
+    return widget.initialNoteType == HouseDirectoryNoteType.tutorial
+        ? s.houseDirectoryAddTutorial
+        : s.houseDirectoryAddNote;
+  }
+
+  String _titleForState(S s, HouseDirectoryNote? note) {
     if (_isEditing) {
-      return s.houseDirectoryEditNote;
+      final noteType = note?.noteType ?? widget.initialNoteType;
+      return noteType == HouseDirectoryNoteType.tutorial
+          ? s.houseDirectoryEditTutorial
+          : s.houseDirectoryEditNote;
     }
     return _titleController.text.trim().isEmpty
-        ? s.houseDirectoryTitle
+        ? (note?.noteType == HouseDirectoryNoteType.tutorial
+            ? s.houseDirectoryTutorialsTitle
+            : s.houseDirectoryTitle)
         : _titleController.text.trim();
   }
 
@@ -249,12 +264,10 @@ class _HouseDirectoryNoteScreenState extends State<HouseDirectoryNoteScreen> {
   void _save(HouseDirectoryNote? note) {
     final s = S.of(context);
     final title = _titleController.text.trim();
-    final details = _detailsController.text.trim();
-    if (title.isEmpty || details.isEmpty) {
+    if (title.isEmpty) {
       setState(() {
         _titleError = title.isEmpty ? s.houseDirectoryValidationNoteFields : null;
-        _detailsError =
-            details.isEmpty ? s.houseDirectoryValidationNoteFields : null;
+        _detailsError = null;
         _referenceUrlError = null;
         _validationError = s.houseDirectoryValidationNoteFields;
       });
@@ -282,6 +295,9 @@ class _HouseDirectoryNoteScreenState extends State<HouseDirectoryNoteScreen> {
               noteId: note?.id,
               title: _titleController.text.trim(),
               details: _detailsController.text.trim(),
+              noteType:
+                  note?.noteType ??
+                  widget.initialNoteType,
               referenceUrl: _emptyToNull(_referenceUrlController.text),
               photoPath: _photoPath,
             ),

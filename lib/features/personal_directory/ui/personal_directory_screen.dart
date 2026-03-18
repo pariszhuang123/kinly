@@ -180,9 +180,21 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
   }
 
   Future<void> _openCreateNote(BuildContext context) async {
+    final state = context.read<PersonalDirectoryBloc>().state;
+    final hasEmergencyContact = state.notes.any(
+      (note) => note.noteType == PersonalDirectoryNoteType.emergencyContact,
+    );
+    final availableNoteTypes =
+        PersonalDirectoryNoteType.values.where((type) {
+          if (type != PersonalDirectoryNoteType.emergencyContact) return true;
+          return !hasEmergencyContact;
+        }).toList(growable: false);
     final result = await context.pushNamed<bool>(
       AppRouteNames.personalDirectoryNote,
-      extra: const PersonalDirectoryNoteRouteArgs(canEdit: true),
+      extra: PersonalDirectoryNoteRouteArgs(
+        canEdit: true,
+        availableNoteTypes: availableNoteTypes,
+      ),
     );
     if (result == true && context.mounted) {
       context.read<PersonalDirectoryBloc>().add(const PersonalDirectoryRefreshed());
@@ -340,7 +352,16 @@ class _NoteCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: theme.textTheme.titleSmall),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(title, style: theme.textTheme.titleSmall),
+              ),
+              const SizedBox(width: 12),
+              _NoteTypePill(noteType: note.noteType),
+            ],
+          ),
           if (summary != null) ...[
             const SizedBox(height: 8),
             Text(
@@ -360,6 +381,40 @@ class _NoteCard extends StatelessWidget {
     final phoneNumber = note.phoneNumber?.trim();
     if (phoneNumber != null && phoneNumber.isNotEmpty) return phoneNumber;
     return null;
+  }
+}
+
+class _NoteTypePill extends StatelessWidget {
+  const _NoteTypePill({required this.noteType});
+
+  final PersonalDirectoryNoteType noteType;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(10, 6, 10, 6),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        _label(context),
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      ),
+    );
+  }
+
+  String _label(BuildContext context) {
+    final s = S.of(context);
+    return switch (noteType) {
+      PersonalDirectoryNoteType.emergencyContact =>
+        s.personalDirectoryEmergencyContactTitle,
+      PersonalDirectoryNoteType.allergy => s.personalDirectoryAllergyTitle,
+      PersonalDirectoryNoteType.other => s.personalDirectoryOtherTitle,
+    };
   }
 }
 

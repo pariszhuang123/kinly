@@ -20,6 +20,7 @@ class HouseDirectoryState extends Equatable {
     required this.isOwner,
     required this.services,
     required this.notes,
+    required this.tutorials,
     required this.members,
     required this.reminders,
     this.wifi,
@@ -34,6 +35,7 @@ class HouseDirectoryState extends Equatable {
       isOwner: isOwner,
       services: const [],
       notes: const [],
+      tutorials: const [],
       members: const [],
       reminders: const [],
     );
@@ -44,6 +46,7 @@ class HouseDirectoryState extends Equatable {
   final HouseDirectoryWifi? wifi;
   final List<HouseDirectoryService> services;
   final List<HouseDirectoryNote> notes;
+  final List<HouseDirectoryNote> tutorials;
   final List<HouseDirectoryMemberCard> members;
   final List<HouseDirectoryReminder> reminders;
   final HouseDirectoryNotice? notice;
@@ -63,7 +66,9 @@ class HouseDirectoryState extends Equatable {
       members.isNotEmpty ||
       services.isNotEmpty ||
       notes.isNotEmpty ||
+      tutorials.isNotEmpty ||
       reminders.isNotEmpty;
+  List<HouseDirectoryNote> get allNotes => [...notes, ...tutorials];
   List<HouseDirectoryService> get rentServices =>
       services
           .where(
@@ -83,6 +88,7 @@ class HouseDirectoryState extends Equatable {
     Object? wifi = _unset,
     List<HouseDirectoryService>? services,
     List<HouseDirectoryNote>? notes,
+    List<HouseDirectoryNote>? tutorials,
     List<HouseDirectoryMemberCard>? members,
     List<HouseDirectoryReminder>? reminders,
     Object? notice = _unset,
@@ -95,6 +101,7 @@ class HouseDirectoryState extends Equatable {
       wifi: wifi == _unset ? this.wifi : wifi as HouseDirectoryWifi?,
       services: services ?? this.services,
       notes: notes ?? this.notes,
+      tutorials: tutorials ?? this.tutorials,
       members: members ?? this.members,
       reminders: reminders ?? this.reminders,
       notice:
@@ -114,6 +121,7 @@ class HouseDirectoryState extends Equatable {
     wifi,
     services,
     notes,
+    tutorials,
     members,
     reminders,
     notice,

@@ -6558,10 +6558,10 @@ class S {
     );
   }
 
-  /// `Utilities and services`
+  /// `Services`
   String get houseDirectoryServicesTitle {
     return Intl.message(
-      'Utilities and services',
+      'Services',
       name: 'houseDirectoryServicesTitle',
       desc: '',
       args: [],
@@ -6573,6 +6573,16 @@ class S {
     return Intl.message(
       'House notes',
       name: 'houseDirectoryNotesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tutorials`
+  String get houseDirectoryTutorialsTitle {
+    return Intl.message(
+      'Tutorials',
+      name: 'houseDirectoryTutorialsTitle',
       desc: '',
       args: [],
     );
@@ -6598,6 +6608,26 @@ class S {
     );
   }
 
+  /// `Searching all house details`
+  String get houseDirectorySearchingAll {
+    return Intl.message(
+      'Searching all house details',
+      name: 'houseDirectorySearchingAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No services, notes, or tutorials match that search.`
+  String get houseDirectorySearchAllEmpty {
+    return Intl.message(
+      'No services, notes, or tutorials match that search.',
+      name: 'houseDirectorySearchAllEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No services match that search.`
   String get houseDirectoryServicesSearchEmpty {
     return Intl.message(
@@ -6613,6 +6643,16 @@ class S {
     return Intl.message(
       'No notes match that search.',
       name: 'houseDirectoryNotesSearchEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No tutorials match that search.`
+  String get houseDirectoryTutorialsSearchEmpty {
+    return Intl.message(
+      'No tutorials match that search.',
+      name: 'houseDirectoryTutorialsSearchEmpty',
       desc: '',
       args: [],
     );
@@ -6668,11 +6708,31 @@ class S {
     );
   }
 
+  /// `Add tutorial`
+  String get houseDirectoryAddTutorial {
+    return Intl.message(
+      'Add tutorial',
+      name: 'houseDirectoryAddTutorial',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Edit note`
   String get houseDirectoryEditNote {
     return Intl.message(
       'Edit note',
       name: 'houseDirectoryEditNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit tutorial`
+  String get houseDirectoryEditTutorial {
+    return Intl.message(
+      'Edit tutorial',
+      name: 'houseDirectoryEditTutorial',
       desc: '',
       args: [],
     );
@@ -6733,6 +6793,16 @@ class S {
     return Intl.message(
       'No notes added yet.',
       name: 'houseDirectoryNotesEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No tutorials added yet.`
+  String get houseDirectoryTutorialsEmpty {
+    return Intl.message(
+      'No tutorials added yet.',
+      name: 'houseDirectoryTutorialsEmpty',
       desc: '',
       args: [],
     );
@@ -7078,10 +7148,10 @@ class S {
     );
   }
 
-  /// `Optional. Paste a related web address if this note points to one`
+  /// `Enter a valid http or https URL.`
   String get houseDirectoryNoteUrlHint {
     return Intl.message(
-      'Optional. Paste a related web address if this note points to one',
+      'Enter a valid http or https URL.',
       name: 'houseDirectoryNoteUrlHint',
       desc: '',
       args: [],
@@ -7138,10 +7208,10 @@ class S {
     );
   }
 
-  /// `Enter a title and details.`
+  /// `Enter a title.`
   String get houseDirectoryValidationNoteFields {
     return Intl.message(
-      'Enter a title and details.',
+      'Enter a title.',
       name: 'houseDirectoryValidationNoteFields',
       desc: '',
       args: [],
@@ -7558,11 +7628,51 @@ class S {
     );
   }
 
+  /// `Add one person your housemates can contact quickly in an emergency.`
+  String get personalDirectoryEmergencyContactHelp {
+    return Intl.message(
+      'Add one person your housemates can contact quickly in an emergency.',
+      name: 'personalDirectoryEmergencyContactHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add an allergy so housemates know what to avoid.`
+  String get personalDirectoryAllergyTypeHelp {
+    return Intl.message(
+      'Add an allergy so housemates know what to avoid.',
+      name: 'personalDirectoryAllergyTypeHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add any other personal note that helps your housemates live with you.`
+  String get personalDirectoryOtherTypeHelp {
+    return Intl.message(
+      'Add any other personal note that helps your housemates live with you.',
+      name: 'personalDirectoryOtherTypeHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Contact name`
   String get personalDirectoryContactNameLabel {
     return Intl.message(
       'Contact name',
       name: 'personalDirectoryContactNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Who should a housemate contact if something urgent happens?`
+  String get personalDirectoryContactNameHelp {
+    return Intl.message(
+      'Who should a housemate contact if something urgent happens?',
+      name: 'personalDirectoryContactNameHelp',
       desc: '',
       args: [],
     );
@@ -7578,11 +7688,31 @@ class S {
     );
   }
 
+  /// `Add the best number to call or text for this person.`
+  String get personalDirectoryPhoneNumberHelp {
+    return Intl.message(
+      'Add the best number to call or text for this person.',
+      name: 'personalDirectoryPhoneNumberHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Allergy`
   String get personalDirectoryAllergyLabel {
     return Intl.message(
       'Allergy',
       name: 'personalDirectoryAllergyLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name the allergy clearly, like peanuts or penicillin.`
+  String get personalDirectoryAllergyHelp {
+    return Intl.message(
+      'Name the allergy clearly, like peanuts or penicillin.',
+      name: 'personalDirectoryAllergyHelp',
       desc: '',
       args: [],
     );
@@ -7598,11 +7728,41 @@ class S {
     );
   }
 
+  /// `Give this note a short title so housemates know what it is about.`
+  String get personalDirectoryNoteTitleHelp {
+    return Intl.message(
+      'Give this note a short title so housemates know what it is about.',
+      name: 'personalDirectoryNoteTitleHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Details`
   String get personalDirectoryDetailsLabel {
     return Intl.message(
       'Details',
       name: 'personalDirectoryDetailsLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add any extra context that would help in an emergency.`
+  String get personalDirectoryEmergencyDetailsHelp {
+    return Intl.message(
+      'Add any extra context that would help in an emergency.',
+      name: 'personalDirectoryEmergencyDetailsHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add any extra details your housemates should know.`
+  String get personalDirectoryOtherDetailsHelp {
+    return Intl.message(
+      'Add any extra details your housemates should know.',
+      name: 'personalDirectoryOtherDetailsHelp',
       desc: '',
       args: [],
     );
@@ -7750,12 +7910,7 @@ class S {
 
   /// `Copy`
   String get shareOwedCopyCta {
-    return Intl.message(
-      'Copy',
-      name: 'shareOwedCopyCta',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Copy', name: 'shareOwedCopyCta', desc: '', args: []);
   }
 
   /// `Bank details aren't here yet for {name}. Check with them directly.`

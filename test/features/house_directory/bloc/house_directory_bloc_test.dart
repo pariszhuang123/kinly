@@ -41,6 +41,7 @@ void main() {
         ),
       ],
       notes: const [],
+      tutorials: const [],
     );
   }
 
@@ -71,7 +72,9 @@ void main() {
         when(
           () => repository.listDueReminders(homeId: 'home-1'),
         ).thenAnswer((_) async => [buildReminder()]);
-      when(() => repository.getMemberCards()).thenAnswer((_) async => const []);
+        when(
+          () => repository.getMemberCards(),
+        ).thenAnswer((_) async => const []);
         return HouseDirectoryBloc(
           repository: repository,
           homeId: 'home-1',

@@ -16,12 +16,14 @@ class PersonalDirectoryNoteScreen extends StatefulWidget {
     super.key,
     required this.repository,
     required this.canEdit,
+    this.availableNoteTypes = PersonalDirectoryNoteType.values,
     this.note,
   });
 
   final PersonalDirectoryRepository repository;
   final PersonalDirectoryNote? note;
   final bool canEdit;
+  final List<PersonalDirectoryNoteType> availableNoteTypes;
 
   @override
   State<PersonalDirectoryNoteScreen> createState() =>
@@ -45,7 +47,11 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
   void initState() {
     super.initState();
     final note = widget.note;
-    _noteType = note?.noteType ?? PersonalDirectoryNoteType.emergencyContact;
+    _noteType =
+        note?.noteType ??
+        (widget.availableNoteTypes.isNotEmpty
+            ? widget.availableNoteTypes.first
+            : PersonalDirectoryNoteType.allergy);
     _titleController = TextEditingController(
       text: note?.customTitle ?? note?.label ?? '',
     );
@@ -113,12 +119,19 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
           s.personalDirectoryNoteTypeLabel,
           style: theme.textTheme.titleSmall,
         ),
+        const SizedBox(height: 8),
+        Text(
+          _noteTypeDescription(s),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
         const SizedBox(height: 16),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children:
-              PersonalDirectoryNoteType.values
+              widget.availableNoteTypes
                   .map(
                     (value) => KinlyChoiceChip(
                       label: _noteTypeLabel(value, s),
@@ -138,12 +151,16 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
   List<Widget> _buildPrimaryFields(S s) {
     if (_noteType == PersonalDirectoryNoteType.emergencyContact) {
       return [
+        _FieldHelp(message: s.personalDirectoryContactNameHelp),
+        const SizedBox(height: 8),
         KinlyTextField(
           controller: _contactNameController,
           enabled: widget.canEdit && !_isSaving,
           labelText: s.personalDirectoryContactNameLabel,
         ),
         const SizedBox(height: 16),
+        _FieldHelp(message: s.personalDirectoryPhoneNumberHelp),
+        const SizedBox(height: 8),
         KinlyTextField(
           controller: _phoneController,
           enabled: widget.canEdit && !_isSaving,
@@ -152,6 +169,13 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
       ];
     }
     return [
+      _FieldHelp(
+        message:
+            _noteType == PersonalDirectoryNoteType.allergy
+                ? s.personalDirectoryAllergyHelp
+                : s.personalDirectoryNoteTitleHelp,
+      ),
+      const SizedBox(height: 8),
       KinlyTextField(
         controller: _titleController,
         enabled: widget.canEdit && !_isSaving,
@@ -164,12 +188,24 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
   }
 
   Widget _buildDetailsField(S s) {
-    return KinlyTextField(
-      controller: _detailsController,
-      enabled: widget.canEdit && !_isSaving,
-      labelText: s.personalDirectoryDetailsLabel,
-      maxLines: 5,
-      minLines: 4,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _FieldHelp(
+          message:
+              _noteType == PersonalDirectoryNoteType.emergencyContact
+                  ? s.personalDirectoryEmergencyDetailsHelp
+                  : s.personalDirectoryOtherDetailsHelp,
+        ),
+        const SizedBox(height: 8),
+        KinlyTextField(
+          controller: _detailsController,
+          enabled: widget.canEdit && !_isSaving,
+          labelText: s.personalDirectoryDetailsLabel,
+          maxLines: 5,
+          minLines: 4,
+        ),
+      ],
     );
   }
 
@@ -229,6 +265,15 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
         s.personalDirectoryEmergencyContactTitle,
       PersonalDirectoryNoteType.allergy => s.personalDirectoryAllergyTitle,
       PersonalDirectoryNoteType.other => s.personalDirectoryOtherTitle,
+    };
+  }
+
+  String _noteTypeDescription(S s) {
+    return switch (_noteType) {
+      PersonalDirectoryNoteType.emergencyContact =>
+        s.personalDirectoryEmergencyContactHelp,
+      PersonalDirectoryNoteType.allergy => s.personalDirectoryAllergyTypeHelp,
+      PersonalDirectoryNoteType.other => s.personalDirectoryOtherTypeHelp,
     };
   }
 
@@ -351,5 +396,22 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
   bool _isValidPhoneNumber(String value) {
     return _phoneNumberPattern.hasMatch(value) &&
         value.contains(RegExp(r'\d'));
+  }
+}
+
+class _FieldHelp extends StatelessWidget {
+  const _FieldHelp({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    return Text(
+      message,
+      style: theme.textTheme.bodySmall?.copyWith(
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
+    );
   }
 }

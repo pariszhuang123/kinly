@@ -82,7 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m23(count) =>
       "Lihat semua ${Intl.plural(count, one: '(#)', other: '(#)')}";
 
-  static String m31(date) => "Pengingat untuk ${date}";
+  static String m32(date) => "Pengingat untuk ${date}";
 
   static String m24(name) => "Tidak dapat menyelesaikan permintaan ${name}.";
 
@@ -1825,7 +1825,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "todayHouseDirectoryOpenCta": MessageLookupByLibrary.simpleMessage(
       "Buka direktori",
     ),
-    "todayHouseDirectoryReminderDue": m31,
+    "todayHouseDirectoryReminderDue": m32,
     "todayHouseDirectoryRemindersTitle": MessageLookupByLibrary.simpleMessage(
       "Pengingat perpanjangan",
     ),
