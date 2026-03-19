@@ -298,7 +298,7 @@
   "todayEmptyCardBadge": "Take a breather",
   "todayEmptyBody": "Nothing needs your attention right now.",
   "friendDefaultName": "friend",
-  "greetingPartOfDay": "Good {partOfDay, select, morning{morning，{name}} afternoon{afternoon，{name}} evening{evening，{name}} other{你好，{name}}}",
+  "greetingPartOfDay": "{partOfDay, select, morning{Good morning, {name}} afternoon{Good afternoon, {name}} evening{Good evening, {name}} other{Hi, {name}}}",
   "@greetingPartOfDay": {
     "surface": "title",
     "placeholders": {

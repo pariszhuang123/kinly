@@ -1686,10 +1686,16 @@ class S {
     );
   }
 
-  /// `Good {partOfDay, select, morning{morning，{name}} afternoon{afternoon，{name}} evening{evening，{name}} other{你好，{name}}}`
+  /// `{partOfDay, select, morning{Good morning, {name}} afternoon{Good afternoon, {name}} evening{Good evening, {name}} other{Hi, {name}}}`
   String greetingPartOfDay(String partOfDay, String name) {
-    return Intl.message(
-      'Good ${Intl.select(partOfDay, {'morning': 'morning，$name', 'afternoon': 'afternoon，$name', 'evening': 'evening，$name', 'other': '你好，$name'})}',
+    return Intl.select(
+      partOfDay,
+      {
+        'morning': 'Good morning, $name',
+        'afternoon': 'Good afternoon, $name',
+        'evening': 'Good evening, $name',
+        'other': 'Hi, $name',
+      },
       name: 'greetingPartOfDay',
       desc: '',
       args: [partOfDay, name],
