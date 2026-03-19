@@ -35,10 +35,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m5(weeks) =>
       "${Intl.plural(weeks, zero: 'Esta semana', one: 'hace # semana', other: 'hace # semanas')}";
 
-  static String m6(partOfDay, name) => "Buen ${partOfDay}, ${name}";
+  static String m6(partOfDay, name) =>
+      "${Intl.select(partOfDay, {'morning': 'Buenos días, ${name}', 'afternoon': 'Buenas tardes, ${name}', 'evening': 'Buenas noches, ${name}', 'other': 'Hola, ${name}'})}";
 
   static String m7(answered, total) =>
-      "Basado en ${answered} de ${total} miembros";
+      "Basado en ${answered} de ${Intl.plural(total, one: '${total} miembro', other: '${total} miembros')}";
 
   static String m8(current, total) => "${current}/${total}";
 
@@ -70,7 +71,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m19(paidAmount, totalAmount) =>
       "${paidAmount} de ${totalAmount} cobrados";
 
-  static String m20(paid, total) => "${paid} de ${total} pagadas";
+  static String m20(paid, total) =>
+      "${paid} de ${Intl.plural(total, one: '${total} pago', other: '${total} pagos')} pagados";
 
   static String m21(count) =>
       "${Intl.plural(count, one: '${count} artículo por comprar', other: '${count} artículos por comprar')}";
@@ -87,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m26(name) => "${name} se unió a otro hogar.";
 
   static String m27(names) =>
-      "${names} quiere unirse a tu hogar. Actualiza para tener miembros ilimitados.";
+      "${names} quiere unirse a tu hogar. Actualiza para añadir más miembros.";
 
   static String m28(count) =>
       "${Intl.plural(count, one: '${count} pago pendiente', other: '${count} por liquidar')}";

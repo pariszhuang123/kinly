@@ -86,7 +86,7 @@
   "join_blocked_body": "Kami sudah memberi tahu pemilik rumah.",
   "join_blocked_cta": "Selesai",
   "todayMemberCapTitle": "Seseorang ingin bergabung ke rumahmu",
-  "todayMemberCapSubtitle": "{names} ingin bergabung ke rumahmu. Upgrade untuk anggota tanpa batas.",
+  "todayMemberCapSubtitle": "{names} ingin bergabung ke rumahmu. Upgrade untuk menambah lebih banyak anggota.",
   "@todayMemberCapSubtitle": {
     "surface": "subtitle",
     "placeholders": {
@@ -245,7 +245,7 @@
   "hubPreferencesTitle": "Preferensi",
   "hubPreferencesSubtitle": "Bagaimana tiap orang ingin hidup bersama berjalan.",
   "homeVibeTitle": "Suasana Rumah",
-  "homeVibeCoverage": "Berdasarkan {answered} dari {total} anggota",
+  "homeVibeCoverage": "Berdasarkan {answered} dari {total, plural, other{{total} anggota}}",
   "@homeVibeCoverage": {
     "placeholders": {
       "answered": {
@@ -298,7 +298,7 @@
   "todayEmptyCardBadge": "Istirahat sejenak",
   "todayEmptyBody": "Tidak ada yang perlu perhatianmu saat ini.",
   "friendDefaultName": "teman",
-  "greetingPartOfDay": "Selamat {partOfDay}, {name}",
+  "greetingPartOfDay": "{partOfDay, select, morning{Selamat pagi, {name}} afternoon{Selamat siang, {name}} evening{Selamat malam, {name}} other{Halo, {name}}}",
   "@greetingPartOfDay": {
     "surface": "title",
     "placeholders": {
@@ -520,7 +520,7 @@
   "shareCreatedListEmptySubtitle": "Tagihan membantu urusan uang tetap jelas.",
   "shareCreatedListError": "Tidak dapat memuat tagihanmu. Tarik untuk menyegarkan.",
   "shareCreatedListRetry": "Coba lagi",
-  "shareCreatedListActiveSubtitle": "{paid} dari {total} sudah dibayar",
+  "shareCreatedListActiveSubtitle": "{paid} dari {total, plural, other{{total} pembayaran}} sudah dibayar",
   "@shareCreatedListActiveSubtitle": {
     "placeholders": {
       "paid": {

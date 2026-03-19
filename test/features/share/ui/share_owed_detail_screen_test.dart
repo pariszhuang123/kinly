@@ -455,7 +455,7 @@ void main() {
     expect(find.text('One time'), findsOneWidget);
   });
 
-  testWidgets('payment reference prefers username when available', (
+  testWidgets('payment reference prefers current user username when available', (
     tester,
   ) async {
     final personalDirectoryRepository = _MockPersonalDirectoryRepository();
@@ -499,6 +499,7 @@ void main() {
           data: const MediaQueryData(disableAnimations: true),
           child: ShareOwedDetailScreen(
             owed: owed,
+            currentUsername: 'me',
             expensesRepository: _MockExpensesRepository(),
             personalDirectoryRepository: personalDirectoryRepository,
           ),
@@ -508,7 +509,69 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('alex'), findsOneWidget);
+    expect(find.text('me'), findsOneWidget);
+    expect(find.text('alex'), findsNothing);
     expect(find.text('Alex Doe'), findsNWidgets(2));
+  });
+
+  testWidgets('payment reference falls back when current user username is blank', (
+    tester,
+  ) async {
+    final personalDirectoryRepository = _MockPersonalDirectoryRepository();
+    when(
+      () => personalDirectoryRepository.getMemberBankAccount(
+        targetUserId: any(named: 'targetUserId'),
+      ),
+    ).thenAnswer(
+      (_) async => PersonalDirectoryBankAccount(
+        id: 'bank-1',
+        accountHolderName: 'Alex Doe',
+        accountNumber: '12345678',
+        createdAt: DateTime(2026, 3, 18),
+        updatedAt: DateTime(2026, 3, 18),
+      ),
+    );
+
+    final owed = TodayShareOwed(
+      payerUserId: 'user-1',
+      displayName: 'Alex Doe',
+      username: 'alex',
+      totalOwedCents: 2500,
+      items: [
+        TodayShareOwedItem(
+          expenseId: 'exp-1',
+          description: 'Groceries',
+          amountCents: 2500,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: DateTime(2024, 1, 1),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: buildKinlyTheme(Brightness.light),
+        localizationsDelegates: const [S.delegate],
+        supportedLocales: S.delegate.supportedLocales,
+        home: MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: ShareOwedDetailScreen(
+            owed: owed,
+            currentUsername: '  ',
+            expensesRepository: _MockExpensesRepository(),
+            personalDirectoryRepository: personalDirectoryRepository,
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.byType(ShareOwedDetailScreen));
+    expect(
+      find.text(S.of(context).personalDirectoryFallbackName),
+      findsOneWidget,
+    );
   });
 }

@@ -214,7 +214,9 @@ Widget _buildMemberCapPrompt(TodaySurfaceScope scope) {
   final memberCapNamesLabel = scope.formatMemberCapNames(memberCapNames);
   final subtitle =
       memberCapNamesLabel.isNotEmpty
-          ? scope.strings.todayMemberCapSubtitle(memberCapNamesLabel)
+          ? scope.strings.todayMemberCapSubtitle(
+              memberCapNamesLabel,
+            )
           : scope.strings.todayMemberCapSubtitleGeneric;
 
   return TodayInvitePrompt(

@@ -35,10 +35,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m5(weeks) =>
       "${Intl.plural(weeks, zero: 'Minggu ini', one: '# minggu lalu', other: '# minggu lalu')}";
 
-  static String m6(partOfDay, name) => "Selamat ${partOfDay}, ${name}";
+  static String m6(partOfDay, name) =>
+      "${Intl.select(partOfDay, {'morning': 'Selamat pagi, ${name}', 'afternoon': 'Selamat siang, ${name}', 'evening': 'Selamat malam, ${name}', 'other': 'Halo, ${name}'})}";
 
   static String m7(answered, total) =>
-      "Berdasarkan ${answered} dari ${total} anggota";
+      "Berdasarkan ${answered} dari ${Intl.plural(total, other: '${total} anggota')}";
 
   static String m30(start, end) => "${start} sampai ${end}";
 
@@ -72,7 +73,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m19(paidAmount, totalAmount) =>
       "${paidAmount} dari ${totalAmount} sudah terkumpul";
 
-  static String m20(paid, total) => "${paid} dari ${total} sudah dibayar";
+  static String m20(paid, total) =>
+      "${paid} dari ${Intl.plural(total, other: '${total} pembayaran')} sudah dibayar";
 
   static String m21(count) =>
       "${Intl.plural(count, one: '${count} item untuk dibeli', other: '${count} item untuk dibeli')}";
@@ -91,7 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m26(name) => "${name} bergabung ke rumah lain.";
 
   static String m27(names) =>
-      "${names} ingin bergabung ke rumahmu. Upgrade untuk anggota tanpa batas.";
+      "${names} ingin bergabung ke rumahmu. Upgrade untuk menambah lebih banyak anggota.";
 
   static String m28(count) =>
       "${Intl.plural(count, one: '${count} pembayaran menunggu', other: '${count} untuk diselesaikan')}";

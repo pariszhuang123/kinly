@@ -1,5 +1,11 @@
 import 'models.dart';
 
+enum PersonalDirectoryRouteResult {
+  bankSaved,
+  noteSaved,
+  noteArchived,
+}
+
 class PersonalDirectoryBankRouteArgs {
   const PersonalDirectoryBankRouteArgs({
     this.initial,

@@ -3,13 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:kinly/contracts/house_directory/models.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
-import 'package:kinly/core/ui/buttons/kinly_outlined_button.dart';
 import 'package:kinly/core/ui/inputs/kinly_text_field.dart';
 import 'package:kinly/core/ui/kinly_bottom_sheet.dart';
 import 'package:kinly/core/ui/kinly_date_picker.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_form_sections.dart';
 import 'package:kinly/generated/l10n.dart';
+
+part 'house_directory_forms_note_sheet.dart';
 
 Future<UpsertHouseDirectoryWifiInput?> showHouseDirectoryWifiSheet(
   BuildContext context, {
@@ -92,19 +93,10 @@ class _WifiSheetBodyState extends State<_WifiSheetBody> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
-
+    final spacing = KinlyThemeAccess.of(context).extension<Spacing>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          s.houseDirectoryPasswordHelper,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        SizedBox(height: spacing.lg),
         KinlyTextField(
           controller: _ssidController,
           labelText: s.houseDirectorySsidLabel,
@@ -117,28 +109,12 @@ class _WifiSheetBodyState extends State<_WifiSheetBody> {
           obscureText: true,
         ),
         SizedBox(height: spacing.lg),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            KinlyOutlinedButton.text(
-              onPressed: _close,
-              label: s.shareEditClose,
-              fullWidth: false,
-              compact: true,
-            ),
-            SizedBox(width: spacing.sm),
-            KinlyFilledButton.text(
-              onPressed: _save,
-              label: s.houseDirectorySave,
-            ),
-          ],
+        KinlyFilledButton.text(
+          onPressed: _save,
+          label: s.houseDirectorySave,
         ),
       ],
     );
-  }
-
-  void _close() {
-    Navigator.of(context).pop();
   }
 
   void _save() {
@@ -184,6 +160,10 @@ class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
   HouseDirectoryReminderOffsetUnit? _offsetUnit;
   DateTime? _startDate;
   DateTime? _endDate;
+  String? _customLabelError;
+  String? _providerError;
+  String? _linkError;
+  String? _offsetValueError;
   String? _error;
 
   @override
@@ -237,6 +217,10 @@ class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
       offsetUnit: _endDate == null ? null : _offsetUnit,
       startLabel: _formatDateLabel(s.houseDirectoryStartDate, _startDate),
       endLabel: _formatDateLabel(s.houseDirectoryEndDate, _endDate),
+      customLabelError: _customLabelError,
+      providerError: _providerError,
+      linkError: _linkError,
+      offsetValueError: _offsetValueError,
       error: _error,
       onTypeChanged: _updateType,
       onStartPressed: _pickStartDate,
@@ -287,37 +271,75 @@ class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
   }
 
   void _save() {
-    final error = _validationError(S.of(context));
-    if (error != null) {
-      setState(() => _error = error);
-      return;
-    }
-    setState(() => _error = null);
+    final validation = _validateInput(S.of(context));
+    _applyValidation(validation);
+    if (!validation.isValid) return;
     Navigator.of(context).pop(_buildInput());
   }
 
-  String? _validationError(S s) {
-    final providerName = _providerController.text.trim();
+  _ServiceValidationResult _validateInput(S s) {
+    return _ServiceValidationResult(
+      customLabelError: _validateCustomLabel(s),
+      providerError: _validateProvider(s),
+      linkError: _validateLink(s),
+      offsetValueError: _validateReminderOffset(s),
+      error: _validateDates(s),
+    );
+  }
+
+  String? _validateCustomLabel(S s) {
     final customLabel = _customLabelController.text.trim();
-    final offsetValueRaw = _offsetValueController.text.trim();
-    if (providerName.isEmpty) return s.houseDirectoryValidationProvider;
     if (_type == HouseDirectoryServiceType.other && customLabel.isEmpty) {
       return s.houseDirectoryValidationCustomLabel;
     }
-    if (_type == HouseDirectoryServiceType.rent) {
-      if (_startDate == null || _endDate == null) {
-        return s.houseDirectoryValidationRentDates;
-      }
+    return null;
+  }
+
+  String? _validateProvider(S s) {
+    if (_providerController.text.trim().isEmpty) {
+      return s.houseDirectoryValidationProvider;
+    }
+    return null;
+  }
+
+  String? _validateLink(S s) {
+    final referenceUrl = _linkController.text.trim();
+    if (referenceUrl.isEmpty) return null;
+    final uri = Uri.tryParse(referenceUrl);
+    if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) {
+      return s.houseDirectoryValidationUrl;
+    }
+    return null;
+  }
+
+  String? _validateReminderOffset(S s) {
+    if (_endDate == null) return null;
+    return _isInvalidReminderOffset(_offsetValueController.text.trim())
+        ? s.houseDirectoryValidationReminderOffset
+        : null;
+  }
+
+  String? _validateDates(S s) {
+    if (_type == HouseDirectoryServiceType.rent &&
+        (_startDate == null || _endDate == null)) {
+      return s.houseDirectoryValidationRentDates;
     }
     if (_startDate != null &&
         _endDate != null &&
         _endDate!.isBefore(_startDate!)) {
       return s.houseDirectoryValidationDateRange;
     }
-    if (_endDate != null && _isInvalidReminderOffset(offsetValueRaw)) {
-      return s.houseDirectoryValidationReminderOffset;
-    }
     return null;
+  }
+
+  void _applyValidation(_ServiceValidationResult validation) {
+    setState(() {
+      _customLabelError = validation.customLabelError;
+      _providerError = validation.providerError;
+      _linkError = validation.linkError;
+      _offsetValueError = validation.offsetValueError;
+      _error = validation.error;
+    });
   }
 
   bool _isInvalidReminderOffset(String offsetValueRaw) {
@@ -376,89 +398,27 @@ class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
   }
 }
 
-class _NoteSheetBody extends StatefulWidget {
-  const _NoteSheetBody({
-    required this.homeId,
-    this.note,
+class _ServiceValidationResult {
+  const _ServiceValidationResult({
+    this.customLabelError,
+    this.providerError,
+    this.linkError,
+    this.offsetValueError,
+    this.error,
   });
 
-  final String homeId;
-  final HouseDirectoryNote? note;
+  final String? customLabelError;
+  final String? providerError;
+  final String? linkError;
+  final String? offsetValueError;
+  final String? error;
 
-  @override
-  State<_NoteSheetBody> createState() => _NoteSheetBodyState();
-}
-
-class _NoteSheetBodyState extends State<_NoteSheetBody> {
-  late final TextEditingController _titleController;
-  late final TextEditingController _detailsController;
-  late final TextEditingController _referenceUrlController;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _titleController = TextEditingController(text: widget.note?.title ?? '');
-    _detailsController = TextEditingController(
-      text: widget.note?.details ?? '',
-    );
-    _referenceUrlController = TextEditingController(
-      text: widget.note?.referenceUrl ?? '',
-    );
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _detailsController.dispose();
-    _referenceUrlController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return HouseDirectoryNoteSheetContent(
-      titleController: _titleController,
-      detailsController: _detailsController,
-      referenceUrlController: _referenceUrlController,
-      error: _error,
-      onSave: _save,
-    );
-  }
-
-  void _save() {
-    final error = _validationError(S.of(context));
-    if (error != null) {
-      setState(() => _error = error);
-      return;
-    }
-    setState(() => _error = null);
-    Navigator.of(context).pop(
-      UpsertHouseDirectoryNoteInput(
-        homeId: widget.homeId,
-        noteId: widget.note?.id,
-        title: _titleController.text.trim(),
-        details: _detailsController.text.trim(),
-        noteType: widget.note?.noteType ?? HouseDirectoryNoteType.general,
-        referenceUrl: _nullIfBlank(_referenceUrlController.text),
-        photoPath: widget.note?.photoPath,
-      ),
-    );
-  }
-
-  String? _validationError(S s) {
-    final title = _titleController.text.trim();
-    final referenceUrl = _referenceUrlController.text.trim();
-    if (title.isEmpty) {
-      return s.houseDirectoryValidationNoteFields;
-    }
-    if (referenceUrl.isEmpty) return null;
-    final uri = Uri.tryParse(referenceUrl);
-    if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) {
-      return s.houseDirectoryValidationUrl;
-    }
-    return null;
-  }
+  bool get isValid =>
+      customLabelError == null &&
+      providerError == null &&
+      linkError == null &&
+      offsetValueError == null &&
+      error == null;
 }
 
 String? _nullIfBlank(String raw) {

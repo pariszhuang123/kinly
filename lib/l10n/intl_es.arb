@@ -86,7 +86,7 @@
   "join_blocked_body": "Hemos notificado al propietario del hogar.",
   "join_blocked_cta": "Hecho",
   "todayMemberCapTitle": "Alguien quiere unirse a tu hogar",
-  "todayMemberCapSubtitle": "{names} quiere unirse a tu hogar. Actualiza para tener miembros ilimitados.",
+  "todayMemberCapSubtitle": "{names} quiere unirse a tu hogar. Actualiza para añadir más miembros.",
   "@todayMemberCapSubtitle": {
     "surface": "subtitle",
     "placeholders": {
@@ -245,7 +245,7 @@
   "hubPreferencesTitle": "Preferencias",
   "hubPreferencesSubtitle": "Cómo le gusta a cada persona que funcione la vida compartida.",
   "homeVibeTitle": "Ambiente del hogar",
-  "homeVibeCoverage": "Basado en {answered} de {total} miembros",
+  "homeVibeCoverage": "Basado en {answered} de {total, plural, one{{total} miembro} other{{total} miembros}}",
   "@homeVibeCoverage": {
     "placeholders": {
       "answered": {
@@ -298,7 +298,7 @@
   "todayEmptyCardBadge": "Tómate un respiro",
   "todayEmptyBody": "Nada necesita tu atención ahora mismo.",
   "friendDefaultName": "amigo",
-  "greetingPartOfDay": "Buen {partOfDay}, {name}",
+  "greetingPartOfDay": "{partOfDay, select, morning{Buenos días, {name}} afternoon{Buenas tardes, {name}} evening{Buenas noches, {name}} other{Hola, {name}}}",
   "@greetingPartOfDay": {
     "surface": "title",
     "placeholders": {
@@ -520,7 +520,7 @@
   "shareCreatedListEmptySubtitle": "Las facturas hacen que el dinero esté claro.",
   "shareCreatedListError": "No se pudieron cargar tus facturas. Desliza para actualizar.",
   "shareCreatedListRetry": "Intentar de nuevo",
-  "shareCreatedListActiveSubtitle": "{paid} de {total} pagadas",
+  "shareCreatedListActiveSubtitle": "{paid} de {total, plural, one{{total} pago} other{{total} pagos}} pagados",
   "@shareCreatedListActiveSubtitle": {
     "placeholders": {
       "paid": {

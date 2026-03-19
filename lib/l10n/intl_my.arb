@@ -86,7 +86,7 @@
   "join_blocked_body": "အိမ်ပိုင်ရှင်ကို ကျွန်ုပ်တို့ အသိပေးထားပါသည်။",
   "join_blocked_cta": "ပြီးပြီ",
   "todayMemberCapTitle": "တစ်ယောက်ယောက်က သင့်အိမ်သို့ ဝင်ချင်နေပါသည်",
-  "todayMemberCapSubtitle": "{names} သည် သင့်အိမ်သို့ ဝင်ချင်နေပါသည်။ အဖွဲ့ဝင်အကန့်အသတ်မရှိရန် အဆင့်မြှင့်ပါ။",
+  "todayMemberCapSubtitle": "{names} သင့်အိမ်သို့ ပူးပေါင်းလိုပါသည်။ အဖွဲ့ဝင်များ ထပ်ထည့်ရန် အဆင့်မြှင့်ပါ။",
   "@todayMemberCapSubtitle": {
     "surface": "subtitle",
     "placeholders": {
@@ -245,7 +245,7 @@
   "hubPreferencesTitle": "အကြိုက်များ",
   "hubPreferencesSubtitle": "လူတိုင်း မျှဝေနေထိုင်မှုကို ဘယ်လို အလုပ်လုပ်စေချင်သလဲ။",
   "homeVibeTitle": "အိမ်၏ vibe",
-  "homeVibeCoverage": "အဖွဲ့ဝင် {total} ယောက်ထဲမှ {answered} ယောက်၏ ဖြေဆိုချက်အပေါ် အခြေခံထားသည်",
+  "homeVibeCoverage": "အဖွဲ့ဝင် {total, plural, other{{total} ယောက်}}ထဲမှ {answered} ယောက်၏ ဖြေဆိုချက်အပေါ် အခြေခံထားသည်",
   "@homeVibeCoverage": {
     "placeholders": {
       "answered": {
@@ -298,7 +298,7 @@
   "todayEmptyCardBadge": "နည်းနည်း အနားယူပါ",
   "todayEmptyBody": "လတ်တလော သင့်အာရုံစိုက်မှု လိုအပ်တာ မရှိပါ။",
   "friendDefaultName": "သူငယ်ချင်း",
-  "greetingPartOfDay": "ကောင်းသော {partOfDay} ပါ၊ {name}",
+  "greetingPartOfDay": "{partOfDay, select, morning{မင်္ဂလာနံနက်ခင်းပါ၊ {name}} afternoon{မင်္ဂလာနေ့လည်ခင်းပါ၊ {name}} evening{မင်္ဂလာညနေခင်းပါ၊ {name}} other{မင်္ဂလာပါ၊ {name}}}",
   "@greetingPartOfDay": {
     "surface": "title",
     "placeholders": {
@@ -520,7 +520,7 @@
   "shareCreatedListEmptySubtitle": "ဘေလ်များက ငွေကြေးကိစ္စကို ရှင်းလင်းစေသည်။",
   "shareCreatedListError": "သင့်ဘေလ်များကို မတင်နိုင်ခဲ့ပါ။ ဆွဲချပြီး ပြန်လည်ရယူပါ။",
   "shareCreatedListRetry": "ပြန်ကြိုးစားမည်",
-  "shareCreatedListActiveSubtitle": "{paid} / {total} ပေးချေပြီး",
+  "shareCreatedListActiveSubtitle": "{paid} / {total, plural, other{{total} ခု}} ပေးချေပြီး",
   "@shareCreatedListActiveSubtitle": {
     "placeholders": {
       "paid": {

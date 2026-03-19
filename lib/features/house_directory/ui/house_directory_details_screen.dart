@@ -485,12 +485,14 @@ class _NoteSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        HouseDirectorySectionHeader(
-          title: title,
-          actionLabel: state.isOwner ? actionLabel : null,
-          onAction: state.isOwner ? () => _openCreateSheet(context) : null,
-        ),
-        const SizedBox(height: 12),
+        if (hasActiveSearch) ...[
+          HouseDirectorySectionHeader(
+            title: title,
+            actionLabel: state.isOwner ? actionLabel : null,
+            onAction: state.isOwner ? () => _openCreateSheet(context) : null,
+          ),
+          const SizedBox(height: 12),
+        ],
         if (allNotes.isEmpty)
           HouseDirectorySurfaceCard(child: Text(emptyMessage))
         else if (notes.isEmpty && hasActiveSearch)

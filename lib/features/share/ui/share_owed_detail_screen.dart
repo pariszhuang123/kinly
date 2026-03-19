@@ -14,11 +14,13 @@ class ShareOwedDetailScreen extends StatefulWidget {
   const ShareOwedDetailScreen({
     super.key,
     required this.owed,
+    this.currentUsername,
     required this.expensesRepository,
     required this.personalDirectoryRepository,
   });
 
   final TodayShareOwed owed;
+  final String? currentUsername;
   final ExpensesRepository expensesRepository;
   final PersonalDirectoryRepository personalDirectoryRepository;
 
@@ -130,6 +132,7 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     final scope = ShareOwedDetailSurfaceScope(
       context: context,
       owed: widget.owed,
+      currentUsername: widget.currentUsername,
       spacing: spacing,
       strings: strings,
       hasItems: hasItems,

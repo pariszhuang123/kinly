@@ -23,6 +23,10 @@ class HouseDirectoryServiceSheetContent extends StatelessWidget {
     required this.offsetUnit,
     required this.startLabel,
     required this.endLabel,
+    this.customLabelError,
+    this.providerError,
+    this.linkError,
+    this.offsetValueError,
     required this.error,
     required this.onTypeChanged,
     required this.onStartPressed,
@@ -41,6 +45,10 @@ class HouseDirectoryServiceSheetContent extends StatelessWidget {
   final HouseDirectoryReminderOffsetUnit? offsetUnit;
   final String startLabel;
   final String endLabel;
+  final String? customLabelError;
+  final String? providerError;
+  final String? linkError;
+  final String? offsetValueError;
   final String? error;
   final ValueChanged<HouseDirectoryServiceType?> onTypeChanged;
   final VoidCallback onStartPressed;
@@ -76,6 +84,7 @@ class HouseDirectoryServiceSheetContent extends StatelessWidget {
             controller: customLabelController,
             labelText: s.houseDirectoryCustomLabel,
             hintText: s.houseDirectoryCustomLabelHint,
+            errorText: customLabelError,
           ),
         ],
         SizedBox(height: spacing.md),
@@ -83,6 +92,7 @@ class HouseDirectoryServiceSheetContent extends StatelessWidget {
           controller: providerController,
           labelText: s.houseDirectoryProviderLabel,
           hintText: s.houseDirectoryProviderHint,
+          errorText: providerError,
         ),
         SizedBox(height: spacing.md),
         KinlyTextField(
@@ -95,6 +105,7 @@ class HouseDirectoryServiceSheetContent extends StatelessWidget {
           controller: linkController,
           labelText: s.houseDirectoryLinkLabel,
           hintText: s.houseDirectoryProviderLinkHint,
+          errorText: linkError,
         ),
         SizedBox(height: spacing.md),
         HouseDirectoryDateButtons(
@@ -113,6 +124,7 @@ class HouseDirectoryServiceSheetContent extends StatelessWidget {
                   labelText: s.houseDirectoryReminderOffset,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  errorText: offsetValueError,
                 ),
               ),
               SizedBox(width: spacing.md),
@@ -157,6 +169,9 @@ class HouseDirectoryNoteSheetContent extends StatelessWidget {
     required this.titleController,
     required this.detailsController,
     required this.referenceUrlController,
+    this.titleError,
+    this.detailsError,
+    this.referenceUrlError,
     required this.error,
     required this.onSave,
   });
@@ -164,6 +179,9 @@ class HouseDirectoryNoteSheetContent extends StatelessWidget {
   final TextEditingController titleController;
   final TextEditingController detailsController;
   final TextEditingController referenceUrlController;
+  final String? titleError;
+  final String? detailsError;
+  final String? referenceUrlError;
   final String? error;
   final VoidCallback onSave;
 
@@ -179,12 +197,14 @@ class HouseDirectoryNoteSheetContent extends StatelessWidget {
           controller: titleController,
           labelText: s.houseDirectoryTitleLabel,
           hintText: s.houseDirectoryNoteTitleHint,
+          errorText: titleError,
         ),
         SizedBox(height: spacing.md),
         KinlyTextField(
           controller: detailsController,
           labelText: s.houseDirectoryNoteDetailsLabel,
           hintText: s.houseDirectoryNoteDetailsHint,
+          errorText: detailsError,
           minLines: 3,
           maxLines: 5,
         ),
@@ -193,6 +213,7 @@ class HouseDirectoryNoteSheetContent extends StatelessWidget {
           controller: referenceUrlController,
           labelText: s.houseDirectoryNoteUrlLabel,
           hintText: s.houseDirectoryNoteUrlHint,
+          errorText: referenceUrlError,
         ),
         HouseDirectorySheetErrorText(error: error),
         SizedBox(height: spacing.lg),

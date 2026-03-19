@@ -35,10 +35,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m5(weeks) =>
       "${Intl.plural(weeks, zero: 'هذا الأسبوع', one: 'منذ أسبوع', other: 'منذ # أسابيع')}";
 
-  static String m6(partOfDay, name) => "صباح/مساء الخير ${partOfDay}، ${name}";
+  static String m6(partOfDay, name) =>
+      "${Intl.select(partOfDay, {'morning': 'صباح الخير، ${name}', 'afternoon': 'مساء الخير، ${name}', 'evening': 'مساء الخير، ${name}', 'other': 'مرحباً، ${name}'})}";
 
   static String m7(answered, total) =>
-      "استنادًا إلى ${answered} من أصل ${total} أعضاء";
+      "استنادًا إلى ${answered} من أصل ${Intl.plural(total, one: '${total} عضو', two: '${total} عضوين', other: '${total} أعضاء')}";
 
   static String m8(current, total) => "${current}/${total}";
 
@@ -68,7 +69,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m19(paidAmount, totalAmount) =>
       "تم تحصيل ${paidAmount} من أصل ${totalAmount}";
 
-  static String m20(paid, total) => "${paid} من ${total} تم دفعها";
+  static String m20(paid, total) =>
+      "${paid} من ${Intl.plural(total, one: '${total} دفعة', two: '${total} دفعتين', other: '${total} دفعات')} مدفوعة";
 
   static String m21(count) =>
       "${Intl.plural(count, one: '${count} عنصر للشراء', other: '${count} عناصر للشراء')}";
@@ -85,7 +87,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m26(name) => "انضم ${name} إلى منزل آخر.";
 
   static String m27(names) =>
-      "${names} يريد الانضمام إلى منزلك. قم بالترقية للحصول على أعضاء غير محدودين.";
+      "${names} يريد الانضمام إلى منزلك. قم بالترقية لإضافة المزيد من الأعضاء.";
 
   static String m28(count) =>
       "${Intl.plural(count, one: '${count} دفعة معلقة', other: '${count} للتسوية')}";

@@ -101,6 +101,7 @@ List<GoRoute> buildShareRoutes({
         }
         return ShareOwedDetailScreen(
           owed: args.owed,
+          currentUsername: args.currentUsername,
           expensesRepository: sl<ExpensesRepository>(),
           personalDirectoryRepository: sl<PersonalDirectoryRepository>(),
         );

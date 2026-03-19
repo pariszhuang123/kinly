@@ -439,10 +439,10 @@ class S {
     );
   }
 
-  /// `{names} wants to join your home. Upgrade for unlimited members.`
+  /// `{names} wants to join your home. Upgrade for more members.`
   String todayMemberCapSubtitle(String names) {
     return Intl.message(
-      '$names wants to join your home. Upgrade for unlimited members.',
+      '$names wants to join your home. Upgrade for more members.',
       name: 'todayMemberCapSubtitle',
       desc: '',
       args: [names],
@@ -1361,10 +1361,10 @@ class S {
     return Intl.message('Home Vibe', name: 'homeVibeTitle', desc: '', args: []);
   }
 
-  /// `Based on {answered} of {total} members`
+  /// `Based on {answered} of {total, plural, one{{total} member} other{{total} members}}`
   String homeVibeCoverage(int answered, int total) {
     return Intl.message(
-      'Based on $answered of $total members',
+      'Based on $answered of ${Intl.plural(total, one: '$total member', other: '$total members')}',
       name: 'homeVibeCoverage',
       desc: '',
       args: [answered, total],
@@ -1686,10 +1686,10 @@ class S {
     );
   }
 
-  /// `Good {partOfDay}, {name}`
+  /// `Good {partOfDay, select, morning{morning，{name}} afternoon{afternoon，{name}} evening{evening，{name}} other{你好，{name}}}`
   String greetingPartOfDay(String partOfDay, String name) {
     return Intl.message(
-      'Good $partOfDay, $name',
+      'Good ${Intl.select(partOfDay, {'morning': 'morning，$name', 'afternoon': 'afternoon，$name', 'evening': 'evening，$name', 'other': '你好，$name'})}',
       name: 'greetingPartOfDay',
       desc: '',
       args: [partOfDay, name],
@@ -3250,10 +3250,10 @@ class S {
     );
   }
 
-  /// `{paid} of {total} paid`
+  /// `{paid} of {total, plural, one{{total} payment} other{{total} payments}} paid`
   String shareCreatedListActiveSubtitle(int paid, int total) {
     return Intl.message(
-      '$paid of $total paid',
+      '$paid of ${Intl.plural(total, one: '$total payment', other: '$total payments')} paid',
       name: 'shareCreatedListActiveSubtitle',
       desc: '',
       args: [paid, total],
@@ -7488,16 +7488,6 @@ class S {
     );
   }
 
-  /// `Add your bank details so housemates can pay you more easily.`
-  String get personalDirectoryBankEmpty {
-    return Intl.message(
-      'Add your bank details so housemates can pay you more easily.',
-      name: 'personalDirectoryBankEmpty',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Account holder name`
   String get personalDirectoryAccountHolderLabel {
     return Intl.message(
@@ -7648,7 +7638,7 @@ class S {
     );
   }
 
-  /// `Add any other personal note that helps your housemates live with you.`
+  /// `Add another note that helps your housemates live with you.`
   String get personalDirectoryOtherTypeHelp {
     return Intl.message(
       'Add another note that helps your housemates live with you.',
@@ -7668,10 +7658,10 @@ class S {
     );
   }
 
-  /// `Who should a housemate contact if something urgent happens?`
+  /// `Who can a housemate contact in an emergency?`
   String get personalDirectoryContactNameHelp {
     return Intl.message(
-      'Who should a housemate contact if something urgent happens?',
+      'Who can a housemate contact in an emergency?',
       name: 'personalDirectoryContactNameHelp',
       desc: '',
       args: [],

@@ -35,10 +35,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m5(weeks) =>
       "${Intl.plural(weeks, zero: 'ဒီအပတ်', one: '# ပတ်အကြာ', other: '# ပတ်အကြာများ')}";
 
-  static String m6(partOfDay, name) => "ကောင်းသော ${partOfDay} ပါ၊ ${name}";
+  static String m6(partOfDay, name) =>
+      "${Intl.select(partOfDay, {'morning': 'မင်္ဂလာနံနက်ခင်းပါ၊ ${name}', 'afternoon': 'မင်္ဂလာနေ့လည်ခင်းပါ၊ ${name}', 'evening': 'မင်္ဂလာညနေခင်းပါ၊ ${name}', 'other': 'မင်္ဂလာပါ၊ ${name}'})}";
 
   static String m7(answered, total) =>
-      "အဖွဲ့ဝင် ${total} ယောက်ထဲမှ ${answered} ယောက်၏ ဖြေဆိုချက်အပေါ် အခြေခံထားသည်";
+      "အဖွဲ့ဝင် ${Intl.plural(total, other: '${total} ယောက်')}ထဲမှ ${answered} ယောက်၏ ဖြေဆိုချက်အပေါ် အခြေခံထားသည်";
 
   static String m8(current, total) => "${current}/${total}";
 
@@ -70,7 +71,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m19(paidAmount, totalAmount) =>
       "${paidAmount} / ${totalAmount} စုဆောင်းပြီး";
 
-  static String m20(paid, total) => "${paid} / ${total} ပေးချေပြီး";
+  static String m20(paid, total) =>
+      "${paid} / ${Intl.plural(total, other: '${total} ခု')} ပေးချေပြီး";
 
   static String m21(count) =>
       "${Intl.plural(count, one: '${count} ခု ဝယ်ရန်ရှိသည်', other: '${count} ခု ဝယ်ရန်ရှိသည်')}";
@@ -87,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m26(name) => "${name} သည် အခြားအိမ်တစ်ခုသို့ ဝင်သွားပါပြီ။";
 
   static String m27(names) =>
-      "${names} သည် သင့်အိမ်သို့ ဝင်ချင်နေပါသည်။ အဖွဲ့ဝင်အကန့်အသတ်မရှိရန် အဆင့်မြှင့်ပါ။";
+      "${names} သင့်အိမ်သို့ ပူးပေါင်းလိုပါသည်။ အဖွဲ့ဝင်များ ထပ်ထည့်ရန် အဆင့်မြှင့်ပါ။";
 
   static String m28(count) =>
       "${Intl.plural(count, one: '${count} ခု ပေးချေရန် ကျန်သည်', other: '${count} ခု ဖြေရှင်းရန် ကျန်သည်')}";

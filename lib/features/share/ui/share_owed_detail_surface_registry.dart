@@ -49,6 +49,7 @@ class ShareOwedDetailRegistry {
         builder:
             (scope) => ShareOwedDetailBody(
               owed: scope.owed,
+              currentUsername: scope.currentUsername,
               spacing: scope.spacing,
               strings: scope.strings,
               hasItems: scope.hasItems,

@@ -2,9 +2,13 @@ import 'package:kinly/contracts/share/models.dart';
 import 'share_paid_to_me_detail_models.dart';
 
 class ShareOwedDetailRouteArgs {
-  const ShareOwedDetailRouteArgs({required this.owed});
+  const ShareOwedDetailRouteArgs({
+    required this.owed,
+    this.currentUsername,
+  });
 
   final TodayShareOwed owed;
+  final String? currentUsername;
 }
 
 class SharePaidToMeDetailRouteArgs {

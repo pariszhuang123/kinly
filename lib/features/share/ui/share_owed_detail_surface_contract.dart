@@ -31,6 +31,7 @@ class ShareOwedDetailSurfaceScope {
   const ShareOwedDetailSurfaceScope({
     required this.context,
     required this.owed,
+    required this.currentUsername,
     required this.spacing,
     required this.strings,
     required this.hasItems,
@@ -43,6 +44,7 @@ class ShareOwedDetailSurfaceScope {
 
   final BuildContext context;
   final TodayShareOwed owed;
+  final String? currentUsername;
   final Spacing spacing;
   final S strings;
   final bool hasItems;

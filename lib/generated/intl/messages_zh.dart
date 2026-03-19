@@ -33,9 +33,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m5(weeks) =>
       "${Intl.plural(weeks, zero: '本周', one: '# 周前', other: '# 周前')}";
 
-  static String m6(partOfDay, name) => "${partOfDay}好，${name}";
+  static String m6(partOfDay, name) =>
+      "${Intl.select(partOfDay, {'morning': '早上好，${name}', 'afternoon': '下午好，${name}', 'evening': '晚上好，${name}', 'other': '你好，${name}'})}";
 
-  static String m7(answered, total) => "已有 ${answered}/${total} 位成员完成填写";
+  static String m7(answered, total) =>
+      "已有 ${answered}/${Intl.plural(total, other: '${total} 位成员')}完成填写";
 
   static String m8(current, total) => "${current}/${total}";
 
@@ -64,7 +66,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m19(paidAmount, totalAmount) =>
       "已收 ${paidAmount} / 共 ${totalAmount}";
 
-  static String m20(paid, total) => "已支付 ${paid}/${total}";
+  static String m20(paid, total) =>
+      "已支付 ${paid}/${Intl.plural(total, other: '${total} 笔')}";
 
   static String m21(count) =>
       "${Intl.plural(count, one: '${count} 件待购买', other: '${count} 件待购买')}";
@@ -80,7 +83,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m26(name) => "${name} 已加入其他家庭。";
 
-  static String m27(names) => "${names} 想加入你的家庭。升级后可支持无限成员。";
+  static String m27(names) => "${names} 想加入你的家庭。升级后可添加更多成员。";
 
   static String m28(count) =>
       "${Intl.plural(count, one: '${count} 笔待付款', other: '${count} 笔待结算')}";

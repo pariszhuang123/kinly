@@ -1,23 +1,31 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/personal_directory/models.dart';
 import 'package:kinly/contracts/personal_directory/route_args.dart';
+import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_outlined_button.dart';
 import 'package:kinly/core/ui/inputs/kinly_search_field.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
 import 'package:kinly/core/ui/kinly_circle_avatar.dart';
+import 'package:kinly/core/ui/kinly_icons.dart';
 import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/core/ui/kinly_refresh_indicator.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
+import 'package:kinly/core/ui/kinly_segmented_control.dart';
 import 'package:kinly/core/ui/kinly_tap_target.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
+import 'package:kinly/core/utils/kinly_search.dart';
 import 'package:kinly/features/personal_directory/bloc/personal_directory_bloc.dart';
 import 'package:kinly/generated/l10n.dart';
-import 'package:flutter/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+part 'personal_directory_screen_view_data.dart';
+part 'personal_directory_screen_widgets.dart';
 
 class PersonalDirectoryScreen extends StatefulWidget {
   const PersonalDirectoryScreen({super.key});
@@ -29,6 +37,8 @@ class PersonalDirectoryScreen extends StatefulWidget {
 class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
+  _PersonalDirectoryBrowseSection _selectedSection =
+      _PersonalDirectoryBrowseSection.allergy;
 
   @override
   void dispose() {
@@ -42,117 +52,220 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
       listenWhen: (previous, current) => previous.notice != current.notice,
       listener: _showNotice,
       child: BlocBuilder<PersonalDirectoryBloc, PersonalDirectoryState>(
-        builder: (context, state) {
-          final s = S.of(context);
-          if (state.isLoading && !state.hasLoaded) {
-            return const KinlyScaffold(
-              body: Center(child: KinlyLoader()),
-            );
-          }
-          final filteredNotes = _filterNotes(state.notes);
-          return KinlyScaffold(
-            appBar: KinlyAppBar(title: Text(s.personalDirectoryTitle)),
-            body: KinlyScrollFade(
-              child: KinlyRefreshIndicator(
-                onRefresh: () => _handleRefresh(context),
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 24),
-                  children: [
-                    _TargetHeader(target: state.target),
-                    const SizedBox(height: 24),
-                    if (state.isSelf) ...[
-                      _SectionHeader(
-                        title: s.personalDirectoryBankTitle,
-                        actionLabel:
-                            state.bankAccount == null
-                                ? s.personalDirectoryAddBank
-                                : s.houseDirectoryEdit,
-                        onAction: () => _openBank(context, state),
-                      ),
-                      const SizedBox(height: 12),
-                      _BankCard(
-                        bankAccount: state.bankAccount,
-                        onTap: () => _openBank(context, state),
-                      ),
-                      const SizedBox(height: 24),
-                    ],
-                    if (state.notes.isNotEmpty) ...[
-                      KinlySearchField(
-                        controller: _searchController,
-                        labelText: s.personalDirectorySearchLabel,
-                        hintText: s.personalDirectorySearchHint,
-                        onChanged: (value) => setState(() => _query = value),
-                        onClear: () {
-                          _searchController.clear();
-                          setState(() => _query = '');
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                    ],
-                    _SectionHeader(
-                      title: s.personalDirectoryNotesTitle,
-                      actionLabel:
-                          state.isSelf ? s.personalDirectoryAddNote : null,
-                      onAction:
-                          state.isSelf ? () => _openCreateNote(context) : null,
-                    ),
-                    const SizedBox(height: 12),
-                    if (state.notes.isEmpty)
-                      _MessageCard(
-                        message:
-                            state.isSelf
-                                ? s.personalDirectoryNotesEmptySelf
-                                : s.personalDirectoryNotesEmptyOther,
-                      )
-                    else if (filteredNotes.isEmpty)
-                      _MessageCard(message: s.personalDirectoryNotesSearchEmpty)
-                    else
-                      ...filteredNotes.map(
-                        (note) => Padding(
-                          padding: const EdgeInsetsDirectional.only(bottom: 12),
-                          child: _NoteCard(
-                            note: note,
-                            title: _noteTitle(note),
-                            onTap: () => _openNote(context, state, note),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+        builder: _buildState,
       ),
     );
   }
 
-  String _noteTitle(PersonalDirectoryNote note) {
-    return switch (note.noteType) {
-      PersonalDirectoryNoteType.emergencyContact =>
-        note.contactName ?? note.customTitle ?? note.label ?? '',
-      PersonalDirectoryNoteType.allergy => note.label ?? '',
-      PersonalDirectoryNoteType.other => note.customTitle ?? '',
-    };
+  Widget _buildState(BuildContext context, PersonalDirectoryState state) {
+    if (state.isLoading && !state.hasLoaded) {
+      return const KinlyScaffold(
+        body: Center(child: KinlyLoader()),
+      );
+    }
+    final data = _PersonalDirectoryViewData.fromState(
+      context: context,
+      state: state,
+      query: _query,
+      selectedSection: _selectedSection,
+      filterNotes: (notes) => _filterNotes(context, notes),
+    );
+    return KinlyScaffold(
+      appBar: KinlyAppBar(title: Text(S.of(context).personalDirectoryTitle)),
+      body: KinlyScrollFade(
+        child: KinlyRefreshIndicator(
+          onRefresh: () => _handleRefresh(context),
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 24),
+            children: _buildBodyChildren(context, state, data),
+          ),
+        ),
+      ),
+    );
   }
 
-  List<PersonalDirectoryNote> _filterNotes(List<PersonalDirectoryNote> notes) {
-    final trimmed = _query.trim().toLowerCase();
-    if (trimmed.isEmpty) return notes;
-    return notes.where((note) {
-      final fields = <String?>[
-        _noteTitle(note),
-        note.label,
-        note.customTitle,
-        note.contactName,
-        note.phoneNumber,
-        note.details,
+  List<Widget> _buildBodyChildren(
+    BuildContext context,
+    PersonalDirectoryState state,
+    _PersonalDirectoryViewData data,
+  ) {
+    return [
+      _TargetHeader(target: state.target),
+      const SizedBox(height: 24),
+      ..._buildOwnerCards(context, state, data),
+      ..._buildReadOnlyEmergencySection(context, state, data),
+      _buildNotesHeader(context, state),
+      const SizedBox(height: 12),
+      ..._buildSearchField(context, state),
+      ..._buildNotesBody(context, state, data),
+    ];
+  }
+
+  List<Widget> _buildOwnerCards(
+    BuildContext context,
+    PersonalDirectoryState state,
+    _PersonalDirectoryViewData data,
+  ) {
+    if (!state.isSelf) {
+      return const <Widget>[];
+    }
+    return [
+      _BankCard(
+        bankAccount: state.bankAccount,
+        onTap: () => _openBank(context, state),
+      ),
+      const SizedBox(height: 12),
+      _EmergencyContactOwnerCard(
+        note: data.emergencyContact,
+        onTap: () => _openEmergencyContact(context, state, data.emergencyContact),
+        onTapPhone:
+            data.emergencyPhoneNumber == null
+                ? null
+                : () => _launchPhoneNumber(data.emergencyPhoneNumber!),
+      ),
+      const SizedBox(height: 24),
+    ];
+  }
+
+  List<Widget> _buildReadOnlyEmergencySection(
+    BuildContext context,
+    PersonalDirectoryState state,
+    _PersonalDirectoryViewData data,
+  ) {
+    if (state.isSelf || data.emergencyContact == null) {
+      return const <Widget>[];
+    }
+    return [
+      _SectionHeader(title: S.of(context).personalDirectoryEmergencyContactTitle),
+      const SizedBox(height: 12),
+      Padding(
+        padding: const EdgeInsetsDirectional.only(bottom: 24),
+        child: _EmergencyContactViewerCard(note: data.emergencyContact!),
+      ),
+    ];
+  }
+
+  Widget _buildNotesHeader(
+    BuildContext context,
+    PersonalDirectoryState state,
+  ) {
+    final s = S.of(context);
+    return _SectionHeader(
+      title: s.personalDirectoryNotesTitle,
+      actionLabel: state.isSelf ? s.personalDirectoryAddNote : null,
+      onAction: state.isSelf ? () => _openCreateNote(context, state) : null,
+    );
+  }
+
+  List<Widget> _buildSearchField(
+    BuildContext context,
+    PersonalDirectoryState state,
+  ) {
+    if (state.notes.isEmpty) {
+      return const <Widget>[];
+    }
+    final s = S.of(context);
+    return [
+      KinlySearchField(
+        controller: _searchController,
+        labelText: s.personalDirectorySearchLabel,
+        hintText: s.personalDirectorySearchHint,
+        onChanged: _updateQuery,
+        onClear: _clearQuery,
+      ),
+      const SizedBox(height: 24),
+    ];
+  }
+
+  List<Widget> _buildNotesBody(
+    BuildContext context,
+    PersonalDirectoryState state,
+    _PersonalDirectoryViewData data,
+  ) {
+    final emptyMessage =
+        state.isSelf
+            ? S.of(context).personalDirectoryNotesEmptySelf
+            : S.of(context).personalDirectoryNotesEmptyOther;
+    if (data.hasNoBrowsableNotes) {
+      return [_MessageCard(message: emptyMessage)];
+    }
+    if (data.showSearchEmpty) {
+      return [_MessageCard(message: S.of(context).personalDirectoryNotesSearchEmpty)];
+    }
+    return [
+      ..._buildBrowseControls(data),
+      _NoteSection(
+        notes: data.visibleBrowseNotes,
+        showTypePill: data.showTypePill,
+        onOpenNote: (note) => _openNote(context, state, note),
+      ),
+    ];
+  }
+
+  List<Widget> _buildBrowseControls(_PersonalDirectoryViewData data) {
+    if (data.hasActiveSearch) {
+      return const <Widget>[];
+    }
+    if (data.showSegmentedControl) {
+      return [
+        KinlySegmentedControl<_PersonalDirectoryBrowseSection>(
+          segments: data.segments,
+          selected: data.browseSection,
+          onChanged: (value) => setState(() => _selectedSection = value),
+        ),
+        const SizedBox(height: 16),
       ];
-      return fields.any(
-        (field) => (field ?? '').toLowerCase().contains(trimmed),
+    }
+    if (data.singleSectionTitle == null) {
+      return const <Widget>[];
+    }
+    return [
+      _DirectorySectionHeader(title: data.singleSectionTitle!),
+      const SizedBox(height: 12),
+    ];
+  }
+
+  void _updateQuery(String value) {
+    setState(() => _query = value);
+  }
+
+  void _clearQuery() {
+    _searchController.clear();
+    setState(() => _query = '');
+  }
+
+  List<PersonalDirectoryNote> _filterNotes(
+    BuildContext context,
+    List<PersonalDirectoryNote> notes,
+  ) {
+    return notes.where((note) {
+      return matchesSearchQuery(
+        query: _query,
+        searchableText: buildSearchableText([
+          _noteTypeLabel(context, note.noteType),
+          _noteTitle(note),
+          note.label,
+          note.customTitle,
+          note.contactName,
+          note.phoneNumber,
+          note.details,
+        ]),
       );
     }).toList(growable: false);
+  }
+
+  String _noteTypeLabel(
+    BuildContext context,
+    PersonalDirectoryNoteType noteType,
+  ) {
+    final s = S.of(context);
+    return switch (noteType) {
+      PersonalDirectoryNoteType.emergencyContact =>
+        s.personalDirectoryEmergencyContactTitle,
+      PersonalDirectoryNoteType.allergy => s.personalDirectoryAllergyTitle,
+      PersonalDirectoryNoteType.other => s.personalDirectoryOtherTitle,
+    };
   }
 
   Future<void> _handleRefresh(BuildContext context) async {
@@ -167,28 +280,31 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
     BuildContext context,
     PersonalDirectoryState state,
   ) async {
-    final result = await context.pushNamed<bool>(
+    final result = await context.pushNamed<PersonalDirectoryRouteResult>(
       AppRouteNames.personalDirectoryBank,
       extra: PersonalDirectoryBankRouteArgs(
         initial: state.bankAccount,
         canEdit: state.isSelf,
       ),
     );
-    if (result == true && context.mounted) {
-      context.read<PersonalDirectoryBloc>().add(const PersonalDirectoryRefreshed());
-    }
+    if (!context.mounted) return;
+    _handleRouteResult(context, result);
   }
 
-  Future<void> _openCreateNote(BuildContext context) async {
-    final state = context.read<PersonalDirectoryBloc>().state;
+  Future<void> _openCreateNote(
+    BuildContext context,
+    PersonalDirectoryState state,
+  ) async {
     final hasEmergencyContact = state.notes.any(
       (note) => note.noteType == PersonalDirectoryNoteType.emergencyContact,
     );
     final availableNoteTypes =
-        PersonalDirectoryNoteType.values.where((type) {
-          if (type != PersonalDirectoryNoteType.emergencyContact) return true;
-          return !hasEmergencyContact;
-        }).toList(growable: false);
+        hasEmergencyContact
+            ? const [
+              PersonalDirectoryNoteType.allergy,
+              PersonalDirectoryNoteType.other,
+            ]
+            : const [PersonalDirectoryNoteType.emergencyContact];
     final result = await context.pushNamed<bool>(
       AppRouteNames.personalDirectoryNote,
       extra: PersonalDirectoryNoteRouteArgs(
@@ -196,9 +312,28 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
         availableNoteTypes: availableNoteTypes,
       ),
     );
-    if (result == true && context.mounted) {
-      context.read<PersonalDirectoryBloc>().add(const PersonalDirectoryRefreshed());
-    }
+    if (!context.mounted || result != true) return;
+    context.read<PersonalDirectoryBloc>().add(const PersonalDirectoryRefreshed());
+  }
+
+  Future<void> _openEmergencyContact(
+    BuildContext context,
+    PersonalDirectoryState state,
+    PersonalDirectoryNote? note,
+  ) async {
+    final result = await context.pushNamed<PersonalDirectoryRouteResult>(
+      AppRouteNames.personalDirectoryNote,
+      extra: PersonalDirectoryNoteRouteArgs(
+        note: note,
+        canEdit: state.isSelf,
+        availableNoteTypes:
+            note == null
+                ? const [PersonalDirectoryNoteType.emergencyContact]
+                : PersonalDirectoryNoteType.values,
+      ),
+    );
+    if (!context.mounted) return;
+    _handleRouteResult(context, result);
   }
 
   Future<void> _openNote(
@@ -206,16 +341,31 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
     PersonalDirectoryState state,
     PersonalDirectoryNote note,
   ) async {
-    final result = await context.pushNamed<bool>(
+    final result = await context.pushNamed<PersonalDirectoryRouteResult>(
       AppRouteNames.personalDirectoryNote,
       extra: PersonalDirectoryNoteRouteArgs(
         note: note,
         canEdit: state.isSelf,
       ),
     );
-    if (result == true && context.mounted) {
-      context.read<PersonalDirectoryBloc>().add(const PersonalDirectoryRefreshed());
-    }
+    if (!context.mounted) return;
+    _handleRouteResult(context, result);
+  }
+
+  void _handleRouteResult(
+    BuildContext context,
+    PersonalDirectoryRouteResult? result,
+  ) {
+    if (result == null || !context.mounted) return;
+    context.read<PersonalDirectoryBloc>().add(const PersonalDirectoryRefreshed());
+    final s = S.of(context);
+    final message = switch (result) {
+      PersonalDirectoryRouteResult.bankSaved => s.personalDirectoryBankSaved,
+      PersonalDirectoryRouteResult.noteSaved => s.personalDirectoryNoteSaved,
+      PersonalDirectoryRouteResult.noteArchived =>
+        s.personalDirectoryNoteArchived,
+    };
+    KinlySnackBar.showSuccess(context, message);
   }
 
   void _showNotice(BuildContext context, PersonalDirectoryState state) {
@@ -238,221 +388,10 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
     }
     KinlySnackBar.showSuccess(context, message);
   }
-}
 
-class _TargetHeader extends StatelessWidget {
-  const _TargetHeader({required this.target});
-
-  final PersonalDirectoryMemberSummary target;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
-    return Row(
-      children: [
-        KinlyCircleAvatar(
-          avatarUrl: target.avatarUrl,
-          radius: 28,
-          isOwner: target.isHomeOwner,
-        ),
-        SizedBox(width: spacing.md),
-        Expanded(
-          child: Text(
-            target.username.trim().isEmpty
-                ? S.of(context).personalDirectoryFallbackName
-                : target.username,
-            style: theme.textTheme.titleLarge,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.title,
-    this.actionLabel,
-    this.onAction,
-  });
-
-  final String title;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final spacing = theme.extension<Spacing>()!;
-    return Row(
-      children: [
-        Expanded(child: Text(title, style: theme.textTheme.titleMedium)),
-        if (actionLabel != null && onAction != null) ...[
-          SizedBox(width: spacing.sm),
-          KinlyOutlinedButton.text(
-            onPressed: onAction,
-            label: actionLabel!,
-            compact: true,
-            fullWidth: false,
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _BankCard extends StatelessWidget {
-  const _BankCard({required this.bankAccount, this.onTap});
-
-  final PersonalDirectoryBankAccount? bankAccount;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final s = S.of(context);
-    return _SurfaceCard(
-      onTap: onTap,
-      child:
-          bankAccount == null
-              ? Text(s.personalDirectoryBankEmpty)
-              : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    bankAccount!.accountHolderName,
-                    style: theme.textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(bankAccount!.accountNumber),
-                ],
-              ),
-    );
-  }
-}
-
-class _NoteCard extends StatelessWidget {
-  const _NoteCard({
-    required this.note,
-    required this.title,
-    required this.onTap,
-  });
-
-  final PersonalDirectoryNote note;
-  final String title;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final summary = _noteSummary(note);
-    return _SurfaceCard(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(title, style: theme.textTheme.titleSmall),
-              ),
-              const SizedBox(width: 12),
-              _NoteTypePill(noteType: note.noteType),
-            ],
-          ),
-          if (summary != null) ...[
-            const SizedBox(height: 8),
-            Text(
-              summary,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  String? _noteSummary(PersonalDirectoryNote note) {
-    final details = note.details?.trim();
-    if (details != null && details.isNotEmpty) return details;
-    final phoneNumber = note.phoneNumber?.trim();
-    if (phoneNumber != null && phoneNumber.isNotEmpty) return phoneNumber;
-    return null;
-  }
-}
-
-class _NoteTypePill extends StatelessWidget {
-  const _NoteTypePill({required this.noteType});
-
-  final PersonalDirectoryNoteType noteType;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    return Container(
-      padding: const EdgeInsetsDirectional.fromSTEB(10, 6, 10, 6),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        _label(context),
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
-
-  String _label(BuildContext context) {
-    final s = S.of(context);
-    return switch (noteType) {
-      PersonalDirectoryNoteType.emergencyContact =>
-        s.personalDirectoryEmergencyContactTitle,
-      PersonalDirectoryNoteType.allergy => s.personalDirectoryAllergyTitle,
-      PersonalDirectoryNoteType.other => s.personalDirectoryOtherTitle,
-    };
-  }
-}
-
-class _MessageCard extends StatelessWidget {
-  const _MessageCard({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SurfaceCard(child: Text(message));
-  }
-}
-
-class _SurfaceCard extends StatelessWidget {
-  const _SurfaceCard({required this.child, this.onTap});
-
-  final Widget child;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = KinlyThemeAccess.of(context);
-    final card = Container(
-      width: double.infinity,
-      padding: const EdgeInsetsDirectional.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: child,
-    );
-    if (onTap == null) return card;
-    return KinlyTapTarget(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      alignment: AlignmentDirectional.centerStart,
-      child: card,
-    );
+  Future<void> _launchPhoneNumber(String phoneNumber) async {
+    final normalized = phoneNumber.replaceAll(RegExp(r'[\s()-]'), '');
+    final uri = Uri(scheme: 'tel', path: normalized);
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }

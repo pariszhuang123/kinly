@@ -13,10 +13,14 @@ class ShareNavigationImpl implements ShareNavigation {
   Future<bool?> openOwedDetail({
     required BuildContext context,
     required TodayShareOwed owed,
+    String? currentUsername,
   }) {
     return context.pushNamed<bool>(
       AppRouteNames.shareOwedDetail,
-      extra: ShareOwedDetailRouteArgs(owed: owed),
+      extra: ShareOwedDetailRouteArgs(
+        owed: owed,
+        currentUsername: currentUsername,
+      ),
     );
   }
 

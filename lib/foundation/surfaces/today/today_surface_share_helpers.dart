@@ -21,7 +21,12 @@ Future<void> _openShareOwedDetailImpl(
   TodayShareOwed owed,
 ) async {
   final navigator = sl<ShareNavigation>();
-  final result = await navigator.openOwedDetail(context: context, owed: owed);
+  final currentUsername = context.read<TodayBloc>().state.profile?.username;
+  final result = await navigator.openOwedDetail(
+    context: context,
+    owed: owed,
+    currentUsername: currentUsername,
+  );
   if (result == true && context.mounted) {
     final s = S.of(context);
     final accent =

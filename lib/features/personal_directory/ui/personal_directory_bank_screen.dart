@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:kinly/contracts/personal_directory/models.dart';
 import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
+import 'package:kinly/contracts/personal_directory/route_args.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/inputs/kinly_text_field.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
@@ -116,7 +117,7 @@ class _PersonalDirectoryBankScreenState
         ),
       );
       if (!mounted) return;
-      Navigator.of(context).pop(true);
+      Navigator.of(context).pop(PersonalDirectoryRouteResult.bankSaved);
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSaving = false);

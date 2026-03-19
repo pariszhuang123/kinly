@@ -34,10 +34,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m5(weeks) =>
       "${Intl.plural(weeks, zero: 'This week', one: '# week ago', other: '# weeks ago')}";
 
-  static String m6(partOfDay, name) => "Good ${partOfDay}, ${name}";
+  static String m6(partOfDay, name) =>
+      "Good ${Intl.select(partOfDay, {'morning': 'morning，${name}', 'afternoon': 'afternoon，${name}', 'evening': 'evening，${name}', 'other': '你好，${name}'})}";
 
   static String m7(answered, total) =>
-      "Based on ${answered} of ${total} members";
+      "Based on ${answered} of ${Intl.plural(total, one: '${total} member', other: '${total} members')}";
 
   static String m30(start, end) => "${start} to ${end}";
 
@@ -70,7 +71,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m19(paidAmount, totalAmount) =>
       "${paidAmount} of ${totalAmount} collected";
 
-  static String m20(paid, total) => "${paid} of ${total} paid";
+  static String m20(paid, total) =>
+      "${paid} of ${Intl.plural(total, one: '${total} payment', other: '${total} payments')} paid";
 
   static String m31(name) =>
       "Bank details aren\'t here yet for ${name}. Check with them directly.";
@@ -92,7 +94,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m26(name) => "${name} joined another home.";
 
   static String m27(names) =>
-      "${names} wants to join your home. Upgrade for unlimited members.";
+      "${names} wants to join your home. Upgrade for more members.";
 
   static String m28(count) =>
       "${Intl.plural(count, one: '${count} payment pending', other: '${count} to settle')}";
@@ -1053,9 +1055,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "personalDirectoryArchiveNoteTitle": MessageLookupByLibrary.simpleMessage(
       "Archive this note?",
     ),
-    "personalDirectoryBankEmpty": MessageLookupByLibrary.simpleMessage(
-      "Add your bank details so housemates can pay you more easily.",
-    ),
     "personalDirectoryBankSaved": MessageLookupByLibrary.simpleMessage(
       "Bank details saved.",
     ),
@@ -1066,7 +1065,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Check the bank details and try again.",
     ),
     "personalDirectoryContactNameHelp": MessageLookupByLibrary.simpleMessage(
-      "Who should a housemate contact if something urgent happens?",
+      "Who can a housemate contact in an emergency?",
     ),
     "personalDirectoryContactNameLabel": MessageLookupByLibrary.simpleMessage(
       "Contact name",
@@ -1081,9 +1080,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Edit note",
     ),
     "personalDirectoryEmergencyContactHelp":
-        MessageLookupByLibrary.simpleMessage(
-          "Add one person to call fast.",
-        ),
+        MessageLookupByLibrary.simpleMessage("Add one person to call fast."),
     "personalDirectoryEmergencyContactTitle":
         MessageLookupByLibrary.simpleMessage("Emergency contact"),
     "personalDirectoryEmergencyDetailsHelp":

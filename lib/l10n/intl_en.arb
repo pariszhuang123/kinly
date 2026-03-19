@@ -86,7 +86,7 @@
   "join_blocked_body": "We've notified the home owner.",
   "join_blocked_cta": "Done",
   "todayMemberCapTitle": "Someone wants to join your home",
-  "todayMemberCapSubtitle": "{names} wants to join your home. Upgrade for unlimited members.",
+  "todayMemberCapSubtitle": "{names} wants to join your home. Upgrade for more members.",
   "@todayMemberCapSubtitle": {
     "surface": "subtitle",
     "placeholders": {
@@ -245,7 +245,7 @@
   "hubPreferencesTitle": "Preferences",
   "hubPreferencesSubtitle": "How each person likes shared living to work.",
   "homeVibeTitle": "Home Vibe",
-  "homeVibeCoverage": "Based on {answered} of {total} members",
+  "homeVibeCoverage": "Based on {answered} of {total, plural, one{{total} member} other{{total} members}}",
   "@homeVibeCoverage": {
     "placeholders": {
       "answered": {
@@ -298,7 +298,7 @@
   "todayEmptyCardBadge": "Take a breather",
   "todayEmptyBody": "Nothing needs your attention right now.",
   "friendDefaultName": "friend",
-  "greetingPartOfDay": "Good {partOfDay}, {name}",
+  "greetingPartOfDay": "Good {partOfDay, select, morning{morning，{name}} afternoon{afternoon，{name}} evening{evening，{name}} other{你好，{name}}}",
   "@greetingPartOfDay": {
     "surface": "title",
     "placeholders": {
@@ -520,7 +520,7 @@
   "shareCreatedListEmptySubtitle": "Bills keep money clear.",
   "shareCreatedListError": "Couldn't load your bills. Pull to refresh.",
   "shareCreatedListRetry": "Try again",
-  "shareCreatedListActiveSubtitle": "{paid} of {total} paid",
+  "shareCreatedListActiveSubtitle": "{paid} of {total, plural, one{{total} payment} other{{total} payments}} paid",
   "@shareCreatedListActiveSubtitle": {
     "placeholders": {
       "paid": {
@@ -1652,7 +1652,6 @@
   "personalDirectoryBankTitle": "Bank account",
   "personalDirectoryAddBank": "Add bank",
   "personalDirectoryEditBank": "Edit bank",
-  "personalDirectoryBankEmpty": "Add your bank details so housemates can pay you more easily.",
   "personalDirectoryAccountHolderLabel": "Account holder name",
   "personalDirectoryAccountNumberLabel": "Account number",
   "personalDirectorySave": "Save",

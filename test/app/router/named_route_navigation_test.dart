@@ -88,6 +88,7 @@ void main() {
                         () => navigation.openOwedDetail(
                           context: context,
                           owed: owed,
+                          currentUsername: 'me',
                         ),
                     child: const Text('open-owed'),
                   ),
@@ -99,7 +100,11 @@ void main() {
           name: AppRouteNames.shareOwedDetail,
           builder: (_, state) {
             final args = state.extra as ShareOwedDetailRouteArgs;
-            return Scaffold(body: Text('owed:${args.owed.payerUserId}'));
+            return Scaffold(
+              body: Text(
+                'owed:${args.owed.payerUserId}:${args.currentUsername}',
+              ),
+            );
           },
         ),
       ],
@@ -110,7 +115,7 @@ void main() {
     await tester.tap(find.text('open-owed'));
     await tester.pumpAndSettle();
 
-    expect(find.text('owed:payer-1'), findsOneWidget);
+    expect(find.text('owed:payer-1:me'), findsOneWidget);
   });
 
   testWidgets('pushNamed passes paywall args', (tester) async {

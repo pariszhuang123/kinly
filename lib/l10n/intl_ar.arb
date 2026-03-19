@@ -86,7 +86,7 @@
   "join_blocked_body": "لقد أبلغنا مالك المنزل.",
   "join_blocked_cta": "تم",
   "todayMemberCapTitle": "هناك من يريد الانضمام إلى منزلك",
-  "todayMemberCapSubtitle": "{names} يريد الانضمام إلى منزلك. قم بالترقية للحصول على أعضاء غير محدودين.",
+  "todayMemberCapSubtitle": "{names} يريد الانضمام إلى منزلك. قم بالترقية لإضافة المزيد من الأعضاء.",
   "@todayMemberCapSubtitle": {
     "surface": "subtitle",
     "placeholders": {
@@ -245,7 +245,7 @@
   "hubPreferencesTitle": "التفضيلات",
   "hubPreferencesSubtitle": "كيف يفضل كل شخص أن يعمل السكن المشترك.",
   "homeVibeTitle": "طابع المنزل",
-  "homeVibeCoverage": "استنادًا إلى {answered} من أصل {total} أعضاء",
+  "homeVibeCoverage": "استنادًا إلى {answered} من أصل {total, plural, one{{total} عضو} two{{total} عضوين} other{{total} أعضاء}}",
   "@homeVibeCoverage": {
     "placeholders": {
       "answered": {
@@ -298,7 +298,7 @@
   "todayEmptyCardBadge": "خذ استراحة",
   "todayEmptyBody": "لا يوجد ما يحتاج إلى انتباهك الآن.",
   "friendDefaultName": "صديق",
-  "greetingPartOfDay": "صباح/مساء الخير {partOfDay}، {name}",
+  "greetingPartOfDay": "{partOfDay, select, morning{صباح الخير، {name}} afternoon{مساء الخير، {name}} evening{مساء الخير، {name}} other{مرحباً، {name}}}",
   "@greetingPartOfDay": {
     "surface": "title",
     "placeholders": {
@@ -520,7 +520,7 @@
   "shareCreatedListEmptySubtitle": "الفواتير تجعل الأمور المالية واضحة.",
   "shareCreatedListError": "تعذّر تحميل فواتيرك. اسحب للتحديث.",
   "shareCreatedListRetry": "حاول مرة أخرى",
-  "shareCreatedListActiveSubtitle": "{paid} من {total} تم دفعها",
+  "shareCreatedListActiveSubtitle": "{paid} من {total, plural, one{{total} دفعة} two{{total} دفعتين} other{{total} دفعات}} مدفوعة",
   "@shareCreatedListActiveSubtitle": {
     "placeholders": {
       "paid": {

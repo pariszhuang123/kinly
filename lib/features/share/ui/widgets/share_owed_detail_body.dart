@@ -23,6 +23,7 @@ class ShareOwedDetailBody extends StatelessWidget {
   const ShareOwedDetailBody({
     super.key,
     required this.owed,
+    required this.currentUsername,
     required this.spacing,
     required this.strings,
     required this.hasItems,
@@ -34,6 +35,7 @@ class ShareOwedDetailBody extends StatelessWidget {
   });
 
   final TodayShareOwed owed;
+  final String? currentUsername;
   final Spacing spacing;
   final S strings;
   final bool hasItems;
@@ -55,6 +57,7 @@ class ShareOwedDetailBody extends StatelessWidget {
         if (!isLoadingPaymentBankAccount) ...[
           _SharePaymentCard(
             owed: owed,
+            currentUsername: currentUsername,
             bankAccount: paymentBankAccount,
             strings: strings,
           ),
@@ -193,11 +196,13 @@ class _ShareOwedItemsList extends StatelessWidget {
 class _SharePaymentCard extends StatelessWidget {
   const _SharePaymentCard({
     required this.owed,
+    required this.currentUsername,
     required this.bankAccount,
     required this.strings,
   });
 
   final TodayShareOwed owed;
+  final String? currentUsername;
   final PersonalDirectoryBankAccount? bankAccount;
   final S strings;
 
@@ -247,10 +252,8 @@ class _SharePaymentCard extends StatelessWidget {
   }
 
   String _paymentReference(S strings) {
-    final username = (owed.username ?? '').trim();
+    final username = (currentUsername ?? '').trim();
     if (username.isNotEmpty) return username;
-    final displayName = owed.displayName.trim();
-    if (displayName.isNotEmpty) return displayName;
     return strings.personalDirectoryFallbackName;
   }
 }

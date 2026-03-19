@@ -8,10 +8,8 @@ import 'enums/house_directory_error_code.dart';
 import 'enums/home_error_codes.dart';
 import 'enums/mood_error_code.dart';
 import 'enums/nps_submit_error_code.dart';
-import 'enums/personal_directory_error_code.dart';
 import 'personal_directory_error_mapper.dart';
 import 'shopping_list_error_mapper.dart';
-import 'enums/shopping_list_error_code.dart';
 
 export 'enums/chore_error_code.dart';
 export 'chore_error_mapper.dart';
@@ -387,9 +385,12 @@ const _houseDirectoryCodeMap = <String, HouseDirectoryErrorCode>{
   'HOME_INACTIVE': HouseDirectoryErrorCode.homeInactive,
   'HOUSE_DIRECTORY_INVALID_ENUM': HouseDirectoryErrorCode.invalidEnum,
   'HOUSE_DIRECTORY_INVALID_INPUT': HouseDirectoryErrorCode.invalidInput,
-  'HOUSE_DIRECTORY_INVALID_TERM_RANGE': HouseDirectoryErrorCode.invalidTermRange,
-  'HOUSE_DIRECTORY_INVALID_DATE_RANGE': HouseDirectoryErrorCode.invalidDateRange,
-  'HOUSE_DIRECTORY_RENT_TERM_REQUIRED': HouseDirectoryErrorCode.rentTermRequired,
+  'HOUSE_DIRECTORY_INVALID_TERM_RANGE':
+      HouseDirectoryErrorCode.invalidTermRange,
+  'HOUSE_DIRECTORY_INVALID_DATE_RANGE':
+      HouseDirectoryErrorCode.invalidDateRange,
+  'HOUSE_DIRECTORY_RENT_TERM_REQUIRED':
+      HouseDirectoryErrorCode.rentTermRequired,
   'HOUSE_DIRECTORY_INVALID_REMINDER_OFFSET':
       HouseDirectoryErrorCode.invalidReminderOffset,
   'HOUSE_DIRECTORY_OTHER_LABEL_REQUIRED':
@@ -402,8 +403,7 @@ const _houseDirectoryCodeMap = <String, HouseDirectoryErrorCode>{
       HouseDirectoryErrorCode.otherTagForbidden,
   'HOUSE_DIRECTORY_ACTIVE_SERVICE_CONFLICT':
       HouseDirectoryErrorCode.activeServiceConflict,
-  'HOUSE_DIRECTORY_SERVICE_NOT_FOUND':
-      HouseDirectoryErrorCode.serviceNotFound,
+  'HOUSE_DIRECTORY_SERVICE_NOT_FOUND': HouseDirectoryErrorCode.serviceNotFound,
   'HOUSE_DIRECTORY_LINK_NOT_FOUND': HouseDirectoryErrorCode.linkNotFound,
   'HOUSE_DIRECTORY_REMINDER_NOT_FOUND':
       HouseDirectoryErrorCode.reminderNotFound,
@@ -478,8 +478,7 @@ const _moodSubmitMap = <String, MoodSubmitErrorCode>{
   'SELF_MENTION_NOT_ALLOWED': MoodSubmitErrorCode.selfMentionNotAllowed,
   'MENTION_NOT_HOME_MEMBER': MoodSubmitErrorCode.mentionNotHomeMember,
   'INVALID_MENTION_USER': MoodSubmitErrorCode.invalidMentionUser,
-  'COMMENT_REQUIRED_FOR_MENTION':
-      MoodSubmitErrorCode.commentRequiredForMention,
+  'COMMENT_REQUIRED_FOR_MENTION': MoodSubmitErrorCode.commentRequiredForMention,
   'SINGLE_MENTION_REQUIRED': MoodSubmitErrorCode.singleMentionRequired,
   'COMMENT_REQUIRED_FOR_PUBLIC_WALL':
       MoodSubmitErrorCode.commentRequiredForPublicWall,

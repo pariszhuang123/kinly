@@ -86,7 +86,7 @@
   "join_blocked_body": "我们已经通知房主了。",
   "join_blocked_cta": "知道了",
   "todayMemberCapTitle": "有人想加入你的家庭",
-  "todayMemberCapSubtitle": "{names} 想加入你的家庭。升级后可支持无限成员。",
+  "todayMemberCapSubtitle": "{names} 想加入你的家庭。升级后可添加更多成员。",
   "@todayMemberCapSubtitle": {
     "surface": "subtitle",
     "placeholders": {
@@ -245,7 +245,7 @@
   "hubPreferencesTitle": "生活偏好",
   "hubPreferencesSubtitle": "看看每个人喜欢怎样的共享生活方式。",
   "homeVibeTitle": "家庭氛围",
-  "homeVibeCoverage": "已有 {answered}/{total} 位成员完成填写",
+  "homeVibeCoverage": "已有 {answered}/{total, plural, other{{total} 位成员}}完成填写",
   "@homeVibeCoverage": {
     "placeholders": {
       "answered": {
@@ -298,7 +298,7 @@
   "todayEmptyCardBadge": "可以喘口气了",
   "todayEmptyBody": "目前没有需要你处理的事情。",
   "friendDefaultName": "朋友",
-  "greetingPartOfDay": "{partOfDay}好，{name}",
+  "greetingPartOfDay": "{partOfDay, select, morning{早上好，{name}} afternoon{下午好，{name}} evening{晚上好，{name}} other{你好，{name}}}",
   "@greetingPartOfDay": {
     "surface": "title",
     "placeholders": {
@@ -520,7 +520,7 @@
   "shareCreatedListEmptySubtitle": "账单能让金钱往来更清楚。",
   "shareCreatedListError": "暂时无法加载你的账单，下拉可刷新。",
   "shareCreatedListRetry": "重试",
-  "shareCreatedListActiveSubtitle": "已支付 {paid}/{total}",
+  "shareCreatedListActiveSubtitle": "已支付 {paid}/{total, plural, other{{total} 笔}}",
   "@shareCreatedListActiveSubtitle": {
     "placeholders": {
       "paid": {

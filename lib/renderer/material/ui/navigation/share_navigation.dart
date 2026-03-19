@@ -6,6 +6,7 @@ abstract class ShareNavigation {
   Future<bool?> openOwedDetail({
     required BuildContext context,
     required TodayShareOwed owed,
+    String? currentUsername,
   });
 
   Future<bool?> openPaidToMeDetail({
