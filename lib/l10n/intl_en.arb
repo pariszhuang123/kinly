@@ -306,14 +306,6 @@
         "type": "String",
         "example": "morning"
       },
-      "Good": {
-        "type": "String",
-        "example": "Good"
-      },
-      "Hi": {
-        "type": "String",
-        "example": "Hi"
-      },
       "name": {
         "type": "String",
         "example": "Alex"

@@ -274,9 +274,83 @@ String _stripPlaceholders(String text) {
 }
 
 List<String> _extractPlaceholders(String text) {
-  return RegExp(
-    r'\{(\w+)[^}]*\}',
-  ).allMatches(text).map((m) => m.group(1)!).toSet().toList();
+  final placeholders = <String>{};
+  _collectPlaceholders(text, placeholders);
+  return placeholders.toList();
+}
+
+void _collectPlaceholders(String text, Set<String> placeholders) {
+  var index = 0;
+  while (index < text.length) {
+    final start = text.indexOf('{', index);
+    if (start == -1) return;
+    final end = _findMatchingBrace(text, start);
+    if (end == -1) return;
+
+    final content = text.substring(start + 1, end);
+    final firstComma = _findTopLevelComma(content);
+    if (firstComma == -1) {
+      final match = RegExp(r'^\s*(\w+)\s*$').firstMatch(content);
+      if (match != null) {
+        placeholders.add(match.group(1)!);
+      }
+    } else {
+      final nameMatch = RegExp(r'^\s*(\w+)').firstMatch(content);
+      if (nameMatch != null) {
+        placeholders.add(nameMatch.group(1)!);
+      }
+
+      final secondComma = _findTopLevelComma(content, firstComma + 1);
+      if (secondComma != -1) {
+        _collectIcuOptionPlaceholders(
+          content.substring(secondComma + 1),
+          placeholders,
+        );
+      }
+    }
+
+    index = end + 1;
+  }
+}
+
+void _collectIcuOptionPlaceholders(String text, Set<String> placeholders) {
+  var index = 0;
+  while (index < text.length) {
+    while (index < text.length && text[index].trim().isEmpty) {
+      index++;
+    }
+    while (index < text.length && text[index] != '{') {
+      index++;
+    }
+    if (index >= text.length) return;
+
+    final end = _findMatchingBrace(text, index);
+    if (end == -1) return;
+    _collectPlaceholders(text.substring(index + 1, end), placeholders);
+    index = end + 1;
+  }
+}
+
+int _findMatchingBrace(String text, int start) {
+  var depth = 0;
+  for (var i = start; i < text.length; i++) {
+    if (text[i] == '{') depth++;
+    if (text[i] == '}') {
+      depth--;
+      if (depth == 0) return i;
+    }
+  }
+  return -1;
+}
+
+int _findTopLevelComma(String text, [int start = 0]) {
+  var depth = 0;
+  for (var i = start; i < text.length; i++) {
+    if (text[i] == '{') depth++;
+    if (text[i] == '}') depth--;
+    if (text[i] == ',' && depth == 0) return i;
+  }
+  return -1;
 }
 
 List<String> _splitSentences(String text) {
