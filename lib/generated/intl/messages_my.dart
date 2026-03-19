@@ -35,7 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m5(weeks) =>
       "${Intl.plural(weeks, zero: 'ဒီအပတ်', one: '# ပတ်အကြာ', other: '# ပတ်အကြာများ')}";
 
-  static String m6(partOfDay, name) =>
+  static String m6(partOfDay, Good, Hi, name) =>
       "${Intl.select(partOfDay, {'morning': 'မင်္ဂလာနံနက်ခင်းပါ၊ ${name}', 'afternoon': 'မင်္ဂလာနေ့လည်ခင်းပါ၊ ${name}', 'evening': 'မင်္ဂလာညနေခင်းပါ၊ ${name}', 'other': 'မင်္ဂလာပါ၊ ${name}'})}";
 
   static String m7(answered, total) =>

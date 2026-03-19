@@ -1687,7 +1687,12 @@ class S {
   }
 
   /// `{partOfDay, select, morning{Good morning, {name}} afternoon{Good afternoon, {name}} evening{Good evening, {name}} other{Hi, {name}}}`
-  String greetingPartOfDay(String partOfDay, String name) {
+  String greetingPartOfDay(
+    String partOfDay,
+    String Good,
+    String Hi,
+    String name,
+  ) {
     return Intl.select(
       partOfDay,
       {
@@ -1698,7 +1703,7 @@ class S {
       },
       name: 'greetingPartOfDay',
       desc: '',
-      args: [partOfDay, name],
+      args: [partOfDay, Good, Hi, name],
     );
   }
 
