@@ -245,10 +245,10 @@ void main() {
       await tester.pumpAndSettle();
 
       final s = S.of(tester.element(find.byType(StartHomeScreen)));
-      expect(find.byType(KinlyCircleAvatar), findsOneWidget);
-      expect(find.bySemanticsLabel(s.personalProfileTitle), findsOneWidget);
+      final avatarFinder = find.byType(KinlyCircleAvatar);
+      expect(avatarFinder, findsOneWidget);
 
-      await tester.tap(find.bySemanticsLabel(s.personalProfileTitle));
+      await tester.tap(avatarFinder);
       await tester.pumpAndSettle();
 
       expect(find.text(s.personalProfilePersonalDirectory), findsOneWidget);

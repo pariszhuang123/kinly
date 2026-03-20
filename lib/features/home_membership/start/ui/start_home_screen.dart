@@ -204,6 +204,7 @@ class _PersonalProfileAction extends StatelessWidget {
                 ? strings.personalProfileTitle.substring(0, 1).toUpperCase()
                 : 'Y';
         return Semantics(
+          container: true,
           label: strings.personalProfileTitle,
           button: true,
           child: Padding(

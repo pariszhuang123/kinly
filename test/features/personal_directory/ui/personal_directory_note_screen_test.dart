@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kinly/contracts/personal_directory/models.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/logging/debug_logger.dart';
@@ -70,49 +69,54 @@ void main() {
       }
     });
 
-    testWidgets(
-      'shows helper copy and hides details field for allergy notes',
-      (tester) async {
-        await tester.pumpWidget(
-          _buildHarness(
-            PersonalDirectoryNoteScreen(
-              repository: repository,
-              canEdit: true,
-              availableNoteTypes: const [
-                PersonalDirectoryNoteType.allergy,
-                PersonalDirectoryNoteType.other,
-              ],
-            ),
+    testWidgets('shows helper copy and hides details field for allergy notes', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _buildHarness(
+          PersonalDirectoryNoteScreen(
+            repository: repository,
+            canEdit: true,
+            availableNoteTypes: const [
+              PersonalDirectoryNoteType.allergy,
+              PersonalDirectoryNoteType.other,
+            ],
           ),
-        );
+        ),
+      );
 
-        await tester.pumpAndSettle();
-        final s = _strings(tester);
+      await tester.pumpAndSettle();
+      final s = _strings(tester);
 
-        expect(
-          find.widgetWithText(
-            KinlyChoiceChip,
-            s.personalDirectoryAllergyTitle,
-          ),
-          findsOneWidget,
-        );
-        expect(_findTextFieldLabel(s.personalDirectoryAllergyLabel), findsOneWidget);
-        expect(_findTextFieldLabel(s.personalDirectoryDetailsLabel), findsNothing);
+      expect(
+        find.widgetWithText(KinlyChoiceChip, s.personalDirectoryAllergyTitle),
+        findsOneWidget,
+      );
+      expect(
+        _findTextFieldLabel(s.personalDirectoryAllergyLabel),
+        findsOneWidget,
+      );
+      expect(
+        _findTextFieldLabel(s.personalDirectoryDetailsLabel),
+        findsNothing,
+      );
 
-        await tester.tap(find.text(s.personalDirectoryOtherTitle));
-        await tester.pumpAndSettle();
+      await tester.tap(find.text(s.personalDirectoryOtherTitle));
+      await tester.pumpAndSettle();
 
-        expect(
-          find.widgetWithText(KinlyChoiceChip, s.personalDirectoryOtherTitle),
-          findsOneWidget,
-        );
-        expect(
-          _findTextFieldLabel(s.personalDirectoryNoteTitleLabel),
-          findsOneWidget,
-        );
-        expect(_findTextFieldLabel(s.personalDirectoryDetailsLabel), findsOneWidget);
-      },
-    );
+      expect(
+        find.widgetWithText(KinlyChoiceChip, s.personalDirectoryOtherTitle),
+        findsOneWidget,
+      );
+      expect(
+        _findTextFieldLabel(s.personalDirectoryNoteTitleLabel),
+        findsOneWidget,
+      );
+      expect(
+        _findTextFieldLabel(s.personalDirectoryDetailsLabel),
+        findsOneWidget,
+      );
+    });
 
     testWidgets(
       'dedicated emergency contact flow hides type selector and keeps details field visible',
@@ -132,10 +136,7 @@ void main() {
         await tester.pumpAndSettle();
         final s = _strings(tester);
 
-        expect(
-          find.text(s.personalDirectoryNoteTypeLabel),
-          findsNothing,
-        );
+        expect(find.text(s.personalDirectoryNoteTypeLabel), findsNothing);
         expect(
           _findTextFieldLabel(s.personalDirectoryContactNameLabel),
           findsOneWidget,
@@ -144,44 +145,44 @@ void main() {
           _findTextFieldLabel(s.personalDirectoryPhoneNumberLabel),
           findsOneWidget,
         );
-        expect(_findTextFieldLabel(s.personalDirectoryDetailsLabel), findsOneWidget);
+        expect(
+          _findTextFieldLabel(s.personalDirectoryDetailsLabel),
+          findsOneWidget,
+        );
       },
     );
 
-    testWidgets(
-      'view-only emergency contact launches dialer',
-      (tester) async {
-        const phoneNumber = '+64 21 111 2222';
+    testWidgets('view-only emergency contact launches dialer', (tester) async {
+      const phoneNumber = '+64 21 111 2222';
 
-        await tester.pumpWidget(
-          _buildHarness(
-            PersonalDirectoryNoteScreen(
-              repository: repository,
-              canEdit: false,
-              note: PersonalDirectoryNote(
-                id: 'emergency-1',
-                noteType: PersonalDirectoryNoteType.emergencyContact,
-                contactName: 'Alex',
-                phoneNumber: phoneNumber,
-                details: 'Call if something urgent happens.',
-                createdAt: DateTime(2026, 3, 18),
-                updatedAt: DateTime(2026, 3, 18),
-              ),
+      await tester.pumpWidget(
+        _buildHarness(
+          PersonalDirectoryNoteScreen(
+            repository: repository,
+            canEdit: false,
+            note: PersonalDirectoryNote(
+              id: 'emergency-1',
+              noteType: PersonalDirectoryNoteType.emergencyContact,
+              contactName: 'Alex',
+              phoneNumber: phoneNumber,
+              details: 'Call if something urgent happens.',
+              createdAt: DateTime(2026, 3, 18),
+              updatedAt: DateTime(2026, 3, 18),
             ),
           ),
-        );
+        ),
+      );
 
-        await tester.pumpAndSettle();
-        await tester.tap(find.widgetWithText(OutlinedButton, phoneNumber));
-        await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(OutlinedButton, phoneNumber));
+      await tester.pumpAndSettle();
 
-        expect(fakeLauncher.launchedUrl, 'tel:+64211112222');
-        expect(
-          fakeLauncher.launchOptions?.mode,
-          PreferredLaunchMode.externalApplication,
-        );
-      },
-    );
+      expect(fakeLauncher.launchedUrl, 'tel:+64211112222');
+      expect(
+        fakeLauncher.launchOptions?.mode,
+        PreferredLaunchMode.externalApplication,
+      );
+    });
 
     testWidgets(
       'editing an existing other note swaps archive for edit when fields change',
@@ -221,85 +222,78 @@ void main() {
       },
     );
 
-    testWidgets(
-      'existing allergy note hides the type selector',
-      (tester) async {
-        await tester.pumpWidget(
-          _buildHarness(
-            PersonalDirectoryNoteScreen(
-              repository: repository,
-              canEdit: true,
-              note: PersonalDirectoryNote(
-                id: 'allergy-1',
-                noteType: PersonalDirectoryNoteType.allergy,
-                label: 'Peanuts',
-                createdAt: DateTime(2026, 3, 18),
-                updatedAt: DateTime(2026, 3, 18),
-              ),
-              availableNoteTypes: const [PersonalDirectoryNoteType.allergy],
+    testWidgets('existing allergy note hides the type selector', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _buildHarness(
+          PersonalDirectoryNoteScreen(
+            repository: repository,
+            canEdit: true,
+            note: PersonalDirectoryNote(
+              id: 'allergy-1',
+              noteType: PersonalDirectoryNoteType.allergy,
+              label: 'Peanuts',
+              createdAt: DateTime(2026, 3, 18),
+              updatedAt: DateTime(2026, 3, 18),
             ),
+            availableNoteTypes: const [PersonalDirectoryNoteType.allergy],
           ),
-        );
+        ),
+      );
 
-        await tester.pumpAndSettle();
-        final s = _strings(tester);
+      await tester.pumpAndSettle();
+      final s = _strings(tester);
 
-        expect(find.text(s.personalDirectoryNoteTypeLabel), findsNothing);
-        expect(
-          find.widgetWithText(
-            KinlyChoiceChip,
-            s.personalDirectoryEmergencyContactTitle,
+      expect(find.text(s.personalDirectoryNoteTypeLabel), findsNothing);
+      expect(
+        find.widgetWithText(
+          KinlyChoiceChip,
+          s.personalDirectoryEmergencyContactTitle,
+        ),
+        findsNothing,
+      );
+    });
+
+    testWidgets('other note can save with title only', (tester) async {
+      when(() => repository.createNote(any())).thenAnswer(
+        (_) async => PersonalDirectoryNote(
+          id: 'other-1',
+          noteType: PersonalDirectoryNoteType.other,
+          customTitle: 'Medication',
+          details: null,
+          createdAt: DateTime(2026, 3, 18),
+          updatedAt: DateTime(2026, 3, 18),
+        ),
+      );
+
+      await tester.pumpWidget(
+        _buildNavigatorHarness(
+          (context) => PersonalDirectoryNoteScreen(
+            repository: repository,
+            canEdit: true,
+            availableNoteTypes: const [PersonalDirectoryNoteType.other],
           ),
-          findsNothing,
-        );
-      },
-    );
+        ),
+      );
+      await tester.pumpAndSettle();
+      final s = _strings(tester);
 
-    testWidgets(
-      'other note can save with title only',
-      (tester) async {
-        when(
-          () => repository.createNote(any()),
-        ).thenAnswer(
-          (_) async => PersonalDirectoryNote(
-            id: 'other-1',
-            noteType: PersonalDirectoryNoteType.other,
-            customTitle: 'Medication',
-            details: null,
-            createdAt: DateTime(2026, 3, 18),
-            updatedAt: DateTime(2026, 3, 18),
-          ),
-        );
+      await tester.enterText(find.byType(TextField).first, 'Medication');
+      await tester.tap(find.text(s.personalDirectorySave));
+      await tester.pumpAndSettle();
 
-        await tester.pumpWidget(
-          _buildNavigatorHarness(
-            (context) => PersonalDirectoryNoteScreen(
-              repository: repository,
-              canEdit: true,
-              availableNoteTypes: const [PersonalDirectoryNoteType.other],
-            ),
-          ),
-        );
-        await tester.pumpAndSettle();
-        final s = _strings(tester);
-
-        await tester.enterText(find.byType(TextField).first, 'Medication');
-        await tester.tap(find.text(s.personalDirectorySave));
-        await tester.pumpAndSettle();
-
-        verify(() => repository.createNote(any())).called(1);
-        expect(find.text(s.personalDirectoryNoteValidation), findsNothing);
-        expect(find.byType(PersonalDirectoryNoteScreen), findsNothing);
-        expect(tester.takeException(), isNull);
-      },
-    );
+      verify(() => repository.createNote(any())).called(1);
+      expect(find.text(s.personalDirectoryNoteValidation), findsNothing);
+      expect(find.byType(PersonalDirectoryNoteScreen), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
   });
 }
 
 Finder _findTextFieldLabel(String label) {
   return find.byWidgetPredicate(
-    (widget) =>
-        widget is TextField && widget.decoration?.labelText == label,
+    (widget) => widget is TextField && widget.decoration?.labelText == label,
     description: 'TextField with label "$label"',
   );
 }
@@ -323,20 +317,6 @@ Widget _buildHarness(Widget child) {
   );
 }
 
-Widget _buildRouterHarness(GoRouter router) {
-  return MaterialApp.router(
-    theme: buildKinlyTheme(Brightness.light),
-    localizationsDelegates: const [
-      S.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    supportedLocales: S.delegate.supportedLocales,
-    routerConfig: router,
-  );
-}
-
 class _NavigatorPushHarness extends StatefulWidget {
   const _NavigatorPushHarness({required this.builder});
 
@@ -356,9 +336,9 @@ class _NavigatorPushHarnessState extends State<_NavigatorPushHarness> {
     _pushed = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      Navigator.of(context).push<void>(
-        MaterialPageRoute<void>(builder: widget.builder),
-      );
+      Navigator.of(
+        context,
+      ).push<void>(MaterialPageRoute<void>(builder: widget.builder));
     });
   }
 

@@ -127,6 +127,7 @@ class _PersonalProfileActionTile extends StatelessWidget {
     final textStyle = theme.textTheme.titleMedium;
 
     return Semantics(
+      container: true,
       button: true,
       label: label,
       child: KinlyTapTarget(
