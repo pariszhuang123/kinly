@@ -33,11 +33,11 @@ List<GoRoute> buildPersonalDirectoryRoutes({
       name: AppRouteNames.personalDirectory,
       builder: (_, state) {
         final routeContext = resolveContext();
-        final target = _resolveTarget(
+        final args = _resolveScreenArgs(
           extra: state.extra,
           routeContext: routeContext,
         );
-        if (routeContext == null || target == null) {
+        if (routeContext == null || args == null) {
           return routeFallback(
             'personalDirectory',
             state: state,
@@ -46,10 +46,10 @@ List<GoRoute> buildPersonalDirectoryRoutes({
         }
         return PersonalDirectoryProvider(
           repository: sl<PersonalDirectoryRepository>(),
-          target: target,
+          target: args.target,
           currentUserId: routeContext.currentUserId,
           homeId: routeContext.homeId,
-          child: const PersonalDirectoryScreen(),
+          child: PersonalDirectoryScreen(canEdit: args.canEdit),
         );
       },
     ),
@@ -95,15 +95,20 @@ List<GoRoute> buildPersonalDirectoryRoutes({
   ];
 }
 
-PersonalDirectoryMemberSummary? _resolveTarget({
+PersonalDirectoryScreenRouteArgs? _resolveScreenArgs({
   required Object? extra,
   required PersonalDirectoryRouteContext? routeContext,
 }) {
-  if (extra is PersonalDirectoryMemberSummary) return extra;
+  if (extra is PersonalDirectoryScreenRouteArgs) return extra;
+  if (extra is PersonalDirectoryMemberSummary) {
+    return PersonalDirectoryScreenRouteArgs(target: extra);
+  }
   if (routeContext == null) return null;
-  return PersonalDirectoryMemberSummary(
-    userId: routeContext.currentUserId,
-    username: '',
-    isHomeOwner: false,
+  return PersonalDirectoryScreenRouteArgs(
+    target: PersonalDirectoryMemberSummary(
+      userId: routeContext.currentUserId,
+      username: '',
+      isHomeOwner: false,
+    ),
   );
 }

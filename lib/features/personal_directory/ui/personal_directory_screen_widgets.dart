@@ -94,6 +94,57 @@ class _DirectorySectionHeader extends StatelessWidget {
   }
 }
 
+class _EditableOwnerCardGrid extends StatelessWidget {
+  const _EditableOwnerCardGrid({required this.cards});
+
+  final List<Widget> cards;
+
+  static const double _breakpoint = 520;
+  static const double _spacing = 12;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final useTwoColumns =
+            cards.length > 1 && constraints.maxWidth >= _breakpoint;
+        if (!useTwoColumns) {
+          return Column(
+            children: _withVerticalSpacing(cards, spacing: _spacing),
+          );
+        }
+        final cardWidth = (constraints.maxWidth - _spacing) / 2;
+        return Wrap(
+          spacing: _spacing,
+          runSpacing: _spacing,
+          children: [
+            for (final card in cards)
+              SizedBox(
+                width: cardWidth,
+                child: card,
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  List<Widget> _withVerticalSpacing(
+    List<Widget> widgets, {
+    required double spacing,
+  }) {
+    if (widgets.isEmpty) return const <Widget>[];
+    final children = <Widget>[];
+    for (var index = 0; index < widgets.length; index++) {
+      if (index > 0) {
+        children.add(SizedBox(height: spacing));
+      }
+      children.add(widgets[index]);
+    }
+    return children;
+  }
+}
+
 class _BankCard extends StatelessWidget {
   const _BankCard({
     required this.bankAccount,
@@ -123,12 +174,12 @@ class _BankCard extends StatelessWidget {
 class _EmergencyContactOwnerCard extends StatelessWidget {
   const _EmergencyContactOwnerCard({
     required this.note,
-    required this.onTap,
+    this.onTap,
     this.onTapPhone,
   });
 
   final PersonalDirectoryNote? note;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final VoidCallback? onTapPhone;
 
   @override
@@ -195,6 +246,8 @@ class _EmergencyContactViewerCard extends StatelessWidget {
                       color: palette.accent,
                     ),
                     textAlign: TextAlign.end,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -258,7 +311,7 @@ class _CompactInfoCard extends StatelessWidget {
           ],
           if ((subtitle ?? '').trim().isNotEmpty) ...[
             SizedBox(height: spacing.xs),
-            Text(
+            _CompactCardText(
               subtitle!,
               style: subtitleStyle?.copyWith(
                 color: onTap != null ? context.preferenceSection.accent : null,
@@ -267,13 +320,11 @@ class _CompactInfoCard extends StatelessWidget {
           ],
           if (supporting != null && supporting.isNotEmpty) ...[
             SizedBox(height: spacing.xs),
-            Text(
+            _CompactCardText(
               supporting,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ],
@@ -297,12 +348,30 @@ class _InlineLinkText extends StatelessWidget {
     return KinlyTapTarget(
       onTap: onTap,
       alignment: AlignmentDirectional.centerStart,
-      child: Text(
+      child: _CompactCardText(
         text,
         style: theme.textTheme.bodyMedium?.copyWith(
           color: context.preferenceSection.accent,
         ),
       ),
+    );
+  }
+}
+
+class _CompactCardText extends StatelessWidget {
+  const _CompactCardText(this.text, {this.style});
+
+  final String text;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: style,
+      maxLines: 1,
+      softWrap: false,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

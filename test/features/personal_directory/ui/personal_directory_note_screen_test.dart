@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kinly/contracts/personal_directory/models.dart';
+import 'package:kinly/core/di/locator.dart';
+import 'package:kinly/core/logging/debug_logger.dart';
+import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/ui/inputs/kinly_choice_chip.dart';
 import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
@@ -14,6 +18,9 @@ import 'package:url_launcher_platform_interface/url_launcher_platform_interface.
 
 class _MockPersonalDirectoryRepository extends Mock
     implements PersonalDirectoryRepository {}
+
+class _FakeCreatePersonalDirectoryNoteInput extends Fake
+    implements CreatePersonalDirectoryNoteInput {}
 
 class _FakeUrlLauncherPlatform extends UrlLauncherPlatform
     with MockPlatformInterfaceMixin {
@@ -47,10 +54,20 @@ void main() {
       previousLauncher = UrlLauncherPlatform.instance;
       fakeLauncher = _FakeUrlLauncherPlatform();
       UrlLauncherPlatform.instance = fakeLauncher;
+      if (!sl.isRegistered<Logger>()) {
+        sl.registerLazySingleton<Logger>(() => const DebugLogger());
+      }
+    });
+
+    setUpAll(() {
+      registerFallbackValue(_FakeCreatePersonalDirectoryNoteInput());
     });
 
     tearDown(() {
       UrlLauncherPlatform.instance = previousLauncher;
+      if (sl.isRegistered<Logger>()) {
+        sl.unregister<Logger>();
+      }
     });
 
     testWidgets(
@@ -165,6 +182,117 @@ void main() {
         );
       },
     );
+
+    testWidgets(
+      'editing an existing other note swaps archive for edit when fields change',
+      (tester) async {
+        await tester.pumpWidget(
+          _buildHarness(
+            PersonalDirectoryNoteScreen(
+              repository: repository,
+              canEdit: true,
+              note: PersonalDirectoryNote(
+                id: 'other-1',
+                noteType: PersonalDirectoryNoteType.other,
+                customTitle: 'Medication',
+                details: 'In the kitchen drawer.',
+                createdAt: DateTime(2026, 3, 18),
+                updatedAt: DateTime(2026, 3, 18),
+              ),
+              availableNoteTypes: const [PersonalDirectoryNoteType.other],
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+        final s = _strings(tester);
+
+        expect(find.text(s.houseDirectoryArchiveConfirm), findsOneWidget);
+        expect(find.text(s.shoppingSubmitEdit), findsNothing);
+
+        await tester.enterText(
+          find.byType(TextField).first,
+          'Medication updated',
+        );
+        await tester.pump();
+
+        expect(find.text(s.houseDirectoryArchiveConfirm), findsNothing);
+        expect(find.text(s.shoppingSubmitEdit), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'existing allergy note hides the type selector',
+      (tester) async {
+        await tester.pumpWidget(
+          _buildHarness(
+            PersonalDirectoryNoteScreen(
+              repository: repository,
+              canEdit: true,
+              note: PersonalDirectoryNote(
+                id: 'allergy-1',
+                noteType: PersonalDirectoryNoteType.allergy,
+                label: 'Peanuts',
+                createdAt: DateTime(2026, 3, 18),
+                updatedAt: DateTime(2026, 3, 18),
+              ),
+              availableNoteTypes: const [PersonalDirectoryNoteType.allergy],
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+        final s = _strings(tester);
+
+        expect(find.text(s.personalDirectoryNoteTypeLabel), findsNothing);
+        expect(
+          find.widgetWithText(
+            KinlyChoiceChip,
+            s.personalDirectoryEmergencyContactTitle,
+          ),
+          findsNothing,
+        );
+      },
+    );
+
+    testWidgets(
+      'other note can save with title only',
+      (tester) async {
+        when(
+          () => repository.createNote(any()),
+        ).thenAnswer(
+          (_) async => PersonalDirectoryNote(
+            id: 'other-1',
+            noteType: PersonalDirectoryNoteType.other,
+            customTitle: 'Medication',
+            details: null,
+            createdAt: DateTime(2026, 3, 18),
+            updatedAt: DateTime(2026, 3, 18),
+          ),
+        );
+
+        await tester.pumpWidget(
+          _buildNavigatorHarness(
+            (context) => PersonalDirectoryNoteScreen(
+              repository: repository,
+              canEdit: true,
+              availableNoteTypes: const [PersonalDirectoryNoteType.other],
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final s = _strings(tester);
+
+        await tester.enterText(find.byType(TextField).first, 'Medication');
+        await tester.tap(find.text(s.personalDirectorySave));
+        await tester.pumpAndSettle();
+
+        verify(() => repository.createNote(any())).called(1);
+        expect(find.text(s.personalDirectoryNoteValidation), findsNothing);
+        expect(find.byType(PersonalDirectoryNoteScreen), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }
 
@@ -192,5 +320,62 @@ Widget _buildHarness(Widget child) {
     ],
     supportedLocales: S.delegate.supportedLocales,
     home: child,
+  );
+}
+
+Widget _buildRouterHarness(GoRouter router) {
+  return MaterialApp.router(
+    theme: buildKinlyTheme(Brightness.light),
+    localizationsDelegates: const [
+      S.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: S.delegate.supportedLocales,
+    routerConfig: router,
+  );
+}
+
+class _NavigatorPushHarness extends StatefulWidget {
+  const _NavigatorPushHarness({required this.builder});
+
+  final WidgetBuilder builder;
+
+  @override
+  State<_NavigatorPushHarness> createState() => _NavigatorPushHarnessState();
+}
+
+class _NavigatorPushHarnessState extends State<_NavigatorPushHarness> {
+  bool _pushed = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_pushed) return;
+    _pushed = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(builder: widget.builder),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
+}
+
+Widget _buildNavigatorHarness(WidgetBuilder builder) {
+  return MaterialApp(
+    theme: buildKinlyTheme(Brightness.light),
+    localizationsDelegates: const [
+      S.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: S.delegate.supportedLocales,
+    home: _NavigatorPushHarness(builder: builder),
   );
 }

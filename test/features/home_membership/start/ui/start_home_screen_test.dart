@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/contracts/personal_directory/route_args.dart';
+import 'package:kinly/core/ui/kinly_circle_avatar.dart';
 import 'package:kinly/features/auth/bloc/auth_bloc.dart';
 import 'package:kinly/features/home_membership/start/ui/start_home_screen.dart';
 import 'package:kinly/features/home_membership/start/bloc/start_home_bloc.dart';
@@ -29,15 +33,16 @@ class _FakeAuthEvent extends Fake implements AuthEvent {}
 class _FakeAuthState extends Fake implements AuthState {}
 
 class _FakeUserContextRepository implements UserContextRepository {
-  @override
-  Future<UserContext> fetch() async => const UserContext(
+  UserContext context = const UserContext(
     userId: 'user-ctx',
-    hasHome: false,
-    activeHomeId: null,
     hasPreferenceReport: false,
     hasPersonalMentions: false,
+    hasPersonalDirectoryContent: false,
     avatarUrl: null,
   );
+
+  @override
+  Future<UserContext> fetch() async => context;
 }
 
 void main() {
@@ -51,11 +56,13 @@ void main() {
   late _MockAuthBloc authBloc;
   late _MockStartHomeBloc startHomeBloc;
   late _MockJoinIntentCoordinator joinCoordinator;
+  late _FakeUserContextRepository userContextRepository;
 
   setUp(() async {
     await sl.reset();
+    userContextRepository = _FakeUserContextRepository();
     sl.registerLazySingleton<UserContextRepository>(
-      () => _FakeUserContextRepository(),
+      () => userContextRepository,
     );
 
     authBloc = _MockAuthBloc();
@@ -160,4 +167,97 @@ void main() {
     expect(createButton.onPressed, isNotNull);
     expect(joinButton.onPressed, isNotNull);
   });
+
+  testWidgets('does not show personal profile action without artifacts', (
+    tester,
+  ) async {
+    when(
+      () => authBloc.state,
+    ).thenReturn(const AuthState(membershipStatus: AuthMembershipStatus.none));
+
+    await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
+
+    final s = S.of(tester.element(find.byType(StartHomeScreen)));
+    expect(find.bySemanticsLabel(s.personalProfileTitle), findsNothing);
+    expect(find.text(s.welcome_title), findsOneWidget);
+  });
+
+  testWidgets(
+    'personal-directory-only context shows profile action and opens editable directory',
+    (tester) async {
+      final semantics = tester.ensureSemantics();
+      userContextRepository.context = const UserContext(
+        userId: 'user-ctx',
+        hasPreferenceReport: false,
+        hasPersonalMentions: false,
+        hasPersonalDirectoryContent: true,
+        avatarUrl: null,
+        displayName: 'Alex',
+      );
+      when(() => authBloc.state).thenReturn(
+        const AuthState(membershipStatus: AuthMembershipStatus.none),
+      );
+
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder:
+                (_, __) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider<AuthBloc>.value(value: authBloc),
+                    BlocProvider<StartHomeBloc>.value(value: startHomeBloc),
+                  ],
+                  child: const StartHomeScreen(),
+                ),
+          ),
+          GoRoute(
+            path: '/personal-directory',
+            name: AppRouteNames.personalDirectory,
+            builder: (_, state) {
+              final args = state.extra as PersonalDirectoryScreenRouteArgs;
+              final target = args.target;
+              return Text('personal-directory:${args.canEdit}:${target.userId}');
+            },
+          ),
+          GoRoute(
+            path: '/preferences',
+            name: AppRouteNames.preferenceOnboarding,
+            builder: (_, __) => const SizedBox.shrink(),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: buildKinlyTheme(Brightness.light),
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          routerConfig: router,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final s = S.of(tester.element(find.byType(StartHomeScreen)));
+      expect(find.byType(KinlyCircleAvatar), findsOneWidget);
+      expect(find.bySemanticsLabel(s.personalProfileTitle), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel(s.personalProfileTitle));
+      await tester.pumpAndSettle();
+
+      expect(find.text(s.personalProfilePersonalDirectory), findsOneWidget);
+
+      await tester.tap(find.text(s.personalProfilePersonalDirectory));
+      await tester.pumpAndSettle();
+
+      expect(find.text('personal-directory:true:user-ctx'), findsOneWidget);
+      semantics.dispose();
+    },
+  );
 }

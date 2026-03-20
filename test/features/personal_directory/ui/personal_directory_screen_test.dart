@@ -248,7 +248,7 @@ void main() {
     );
 
     testWidgets(
-      'self sees empty emergency contact card and can open create flow',
+      'editable self sees empty emergency contact card and can open create flow',
       (tester) async {
         final state = _buildState(notes: const []);
         when(() => bloc.state).thenReturn(state);
@@ -265,7 +265,7 @@ void main() {
               builder:
                   (_, __) => BlocProvider<PersonalDirectoryBloc>.value(
                     value: bloc,
-                    child: const PersonalDirectoryScreen(),
+                    child: const PersonalDirectoryScreen(canEdit: true),
                   ),
             ),
             GoRoute(
@@ -292,10 +292,127 @@ void main() {
         expect(find.text('Emergency contact'), findsOneWidget);
         expect(find.text('Add note'), findsOneWidget);
 
-        await tester.tap(find.text('Add note'));
+        await tester.tap(find.text('Emergency contact'));
         await tester.pumpAndSettle();
 
         expect(find.text('create emergency contact'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'read-only self hides empty bank and emergency cards',
+      (tester) async {
+        final state = _buildState(notes: const []);
+        when(() => bloc.state).thenReturn(state);
+        whenListen(
+          bloc,
+          const Stream<PersonalDirectoryState>.empty(),
+          initialState: state,
+        );
+
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder:
+                  (_, __) => BlocProvider<PersonalDirectoryBloc>.value(
+                    value: bloc,
+                    child: const PersonalDirectoryScreen(canEdit: false),
+                  ),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(_buildRouterHarness(router));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Bank account'), findsNothing);
+        expect(find.text('Emergency contact'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'read-only self shows bank card when bank details exist',
+      (tester) async {
+        final state = _buildState(
+          notes: const [],
+          bankAccount: PersonalDirectoryBankAccount(
+            id: 'bank-1',
+            accountHolderName: 'Alex',
+            accountNumber: '12-1234-1234567-00',
+            createdAt: DateTime(2026, 3, 18),
+            updatedAt: DateTime(2026, 3, 18),
+          ),
+        );
+        when(() => bloc.state).thenReturn(state);
+        whenListen(
+          bloc,
+          const Stream<PersonalDirectoryState>.empty(),
+          initialState: state,
+        );
+
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder:
+                  (_, __) => BlocProvider<PersonalDirectoryBloc>.value(
+                    value: bloc,
+                    child: const PersonalDirectoryScreen(canEdit: false),
+                  ),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(_buildRouterHarness(router));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Bank account'), findsOneWidget);
+        expect(find.text('Alex'), findsAtLeastNWidgets(1));
+        expect(find.text('12-1234-1234567-00'), findsOneWidget);
+        expect(find.text('Emergency contact'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'read-only self shows emergency card when contact exists',
+      (tester) async {
+        const phoneNumber = '+64 21 111 2222';
+        final state = _buildState(notes: [
+          _note(
+            id: 'emergency-1',
+            type: PersonalDirectoryNoteType.emergencyContact,
+            contactName: 'Alex',
+            phoneNumber: phoneNumber,
+            details: 'Call first.',
+          ),
+        ]);
+        when(() => bloc.state).thenReturn(state);
+        whenListen(
+          bloc,
+          const Stream<PersonalDirectoryState>.empty(),
+          initialState: state,
+        );
+
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder:
+                  (_, __) => BlocProvider<PersonalDirectoryBloc>.value(
+                    value: bloc,
+                    child: const PersonalDirectoryScreen(canEdit: false),
+                  ),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(_buildRouterHarness(router));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Bank account'), findsNothing);
+        expect(find.text('Emergency contact'), findsOneWidget);
+        expect(find.text(phoneNumber), findsOneWidget);
       },
     );
 
@@ -352,6 +469,56 @@ void main() {
     );
 
     testWidgets(
+      'editable self renders bank and emergency cards in the editable grid',
+      (tester) async {
+        final state = _buildState(
+          notes: [
+            _note(
+              id: 'emergency-1',
+              type: PersonalDirectoryNoteType.emergencyContact,
+              contactName: 'Alex',
+              phoneNumber: '+64 21 111 2222',
+              details: 'Call first.',
+            ),
+          ],
+          bankAccount: PersonalDirectoryBankAccount(
+            id: 'bank-1',
+            accountHolderName: 'Alex',
+            accountNumber: '12-1234-1234567-00',
+            createdAt: DateTime(2026, 3, 18),
+            updatedAt: DateTime(2026, 3, 18),
+          ),
+        );
+        when(() => bloc.state).thenReturn(state);
+        whenListen(
+          bloc,
+          const Stream<PersonalDirectoryState>.empty(),
+          initialState: state,
+        );
+
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder:
+                  (_, __) => BlocProvider<PersonalDirectoryBloc>.value(
+                    value: bloc,
+                    child: const PersonalDirectoryScreen(canEdit: true),
+                  ),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(_buildRouterHarness(router));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(Wrap), findsWidgets);
+        expect(find.text('Bank account'), findsOneWidget);
+        expect(find.text('Emergency contact'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
       'allergy and other notes use pill browsing when search is inactive',
       (tester) async {
         final state = _buildState(notes: [
@@ -398,6 +565,44 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Medication'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'search field is hidden when there are no allergy or other notes',
+      (tester) async {
+        final state = _buildState(notes: [
+          _note(
+            id: 'emergency-1',
+            type: PersonalDirectoryNoteType.emergencyContact,
+            contactName: 'Alex',
+            phoneNumber: '+64 21 111 2222',
+          ),
+        ]);
+        when(() => bloc.state).thenReturn(state);
+        whenListen(
+          bloc,
+          const Stream<PersonalDirectoryState>.empty(),
+          initialState: state,
+        );
+
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder:
+                  (_, __) => BlocProvider<PersonalDirectoryBloc>.value(
+                    value: bloc,
+                    child: const PersonalDirectoryScreen(),
+                  ),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(_buildRouterHarness(router));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Search notes'), findsNothing);
       },
     );
 

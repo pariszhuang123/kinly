@@ -460,7 +460,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "houseDirectoryEditWifi": MessageLookupByLibrary.simpleMessage("Edit wifi"),
     "houseDirectoryEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "Save wifi, rent, services, and house notes here.",
+      "Record your home details so everyone can find them in one place.",
     ),
     "houseDirectoryEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Shared home details live here.",
@@ -518,9 +518,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "houseDirectoryNotesSearchEmpty": MessageLookupByLibrary.simpleMessage(
       "No notes match that search.",
     ),
-    "houseDirectoryNotesTitle": MessageLookupByLibrary.simpleMessage(
-      "House notes",
-    ),
+    "houseDirectoryNotesTitle": MessageLookupByLibrary.simpleMessage("Notes"),
     "houseDirectoryOpenLink": MessageLookupByLibrary.simpleMessage("Open link"),
     "houseDirectoryOpenLinkError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t open that link.",
@@ -595,7 +593,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "houseDirectoryTermLabel": MessageLookupByLibrary.simpleMessage("Term"),
     "houseDirectoryTermRange": m30,
     "houseDirectoryTitle": MessageLookupByLibrary.simpleMessage(
-      "House directory",
+      "Shared house details",
     ),
     "houseDirectoryTitleLabel": MessageLookupByLibrary.simpleMessage("Title"),
     "houseDirectoryTutorialsEmpty": MessageLookupByLibrary.simpleMessage(

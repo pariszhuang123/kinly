@@ -26,9 +26,15 @@ import 'package:url_launcher/url_launcher.dart';
 
 part 'personal_directory_screen_view_data.dart';
 part 'personal_directory_screen_widgets.dart';
+part 'personal_directory_screen_helpers.dart';
 
 class PersonalDirectoryScreen extends StatefulWidget {
-  const PersonalDirectoryScreen({super.key});
+  const PersonalDirectoryScreen({
+    super.key,
+    this.canEdit = true,
+  });
+
+  final bool canEdit;
 
   @override
   State<PersonalDirectoryScreen> createState() => _PersonalDirectoryScreenState();
@@ -97,7 +103,7 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
       ..._buildReadOnlyEmergencySection(context, state, data),
       _buildNotesHeader(context, state),
       const SizedBox(height: 12),
-      ..._buildSearchField(context, state),
+      ..._buildSearchField(context, data),
       ..._buildNotesBody(context, state, data),
     ];
   }
@@ -110,20 +116,50 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
     if (!state.isSelf) {
       return const <Widget>[];
     }
+    final hasBankCard = state.bankAccount != null || _canEdit(state);
+    final hasEmergencyCard = data.emergencyContact != null || _canEdit(state);
+    if (!hasBankCard && !hasEmergencyCard) {
+      return const <Widget>[];
+    }
+    final cards = <Widget>[];
+    if (hasBankCard) {
+      cards.add(
+        _BankCard(
+          bankAccount: state.bankAccount,
+          onTap:
+              state.bankAccount != null || _canEdit(state)
+                  ? () => _openBank(context, state)
+                  : null,
+        ),
+      );
+    }
+    if (hasEmergencyCard) {
+      cards.add(
+        _EmergencyContactOwnerCard(
+          note: data.emergencyContact,
+          onTap:
+              data.emergencyContact != null || _canEdit(state)
+                  ? () => _openEmergencyContact(
+                    context,
+                    state,
+                    data.emergencyContact,
+                  )
+                  : null,
+          onTapPhone:
+              data.emergencyPhoneNumber == null
+                  ? null
+                  : () => _launchPhoneNumber(data.emergencyPhoneNumber!),
+          ),
+      );
+    }
+    if (_canEdit(state)) {
+      return [
+        _EditableOwnerCardGrid(cards: cards),
+        const SizedBox(height: 24),
+      ];
+    }
     return [
-      _BankCard(
-        bankAccount: state.bankAccount,
-        onTap: () => _openBank(context, state),
-      ),
-      const SizedBox(height: 12),
-      _EmergencyContactOwnerCard(
-        note: data.emergencyContact,
-        onTap: () => _openEmergencyContact(context, state, data.emergencyContact),
-        onTapPhone:
-            data.emergencyPhoneNumber == null
-                ? null
-                : () => _launchPhoneNumber(data.emergencyPhoneNumber!),
-      ),
+      ...withVerticalSpacing(cards, spacing: 12),
       const SizedBox(height: 24),
     ];
   }
@@ -153,16 +189,16 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
     final s = S.of(context);
     return _SectionHeader(
       title: s.personalDirectoryNotesTitle,
-      actionLabel: state.isSelf ? s.personalDirectoryAddNote : null,
-      onAction: state.isSelf ? () => _openCreateNote(context, state) : null,
+      actionLabel: _canEdit(state) ? s.personalDirectoryAddNote : null,
+      onAction: _canEdit(state) ? () => _openCreateNote(context, state) : null,
     );
   }
 
   List<Widget> _buildSearchField(
     BuildContext context,
-    PersonalDirectoryState state,
+    _PersonalDirectoryViewData data,
   ) {
-    if (state.notes.isEmpty) {
+    if (data.browsableNotes.isEmpty) {
       return const <Widget>[];
     }
     final s = S.of(context);
@@ -184,7 +220,7 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
     _PersonalDirectoryViewData data,
   ) {
     final emptyMessage =
-        state.isSelf
+        _canEdit(state)
             ? S.of(context).personalDirectoryNotesEmptySelf
             : S.of(context).personalDirectoryNotesEmptyOther;
     if (data.hasNoBrowsableNotes) {
@@ -243,7 +279,7 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
       return matchesSearchQuery(
         query: _query,
         searchableText: buildSearchableText([
-          _noteTypeLabel(context, note.noteType),
+          personalDirectoryNoteTypeLabel(context, note.noteType),
           _noteTitle(note),
           note.label,
           note.customTitle,
@@ -253,19 +289,6 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
         ]),
       );
     }).toList(growable: false);
-  }
-
-  String _noteTypeLabel(
-    BuildContext context,
-    PersonalDirectoryNoteType noteType,
-  ) {
-    final s = S.of(context);
-    return switch (noteType) {
-      PersonalDirectoryNoteType.emergencyContact =>
-        s.personalDirectoryEmergencyContactTitle,
-      PersonalDirectoryNoteType.allergy => s.personalDirectoryAllergyTitle,
-      PersonalDirectoryNoteType.other => s.personalDirectoryOtherTitle,
-    };
   }
 
   Future<void> _handleRefresh(BuildContext context) async {
@@ -284,7 +307,7 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
       AppRouteNames.personalDirectoryBank,
       extra: PersonalDirectoryBankRouteArgs(
         initial: state.bankAccount,
-        canEdit: state.isSelf,
+        canEdit: _canEdit(state),
       ),
     );
     if (!context.mounted) return;
@@ -295,25 +318,18 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
     BuildContext context,
     PersonalDirectoryState state,
   ) async {
-    final hasEmergencyContact = state.notes.any(
-      (note) => note.noteType == PersonalDirectoryNoteType.emergencyContact,
-    );
-    final availableNoteTypes =
-        hasEmergencyContact
-            ? const [
-              PersonalDirectoryNoteType.allergy,
-              PersonalDirectoryNoteType.other,
-            ]
-            : const [PersonalDirectoryNoteType.emergencyContact];
-    final result = await context.pushNamed<bool>(
+    final result = await context.pushNamed<PersonalDirectoryRouteResult>(
       AppRouteNames.personalDirectoryNote,
       extra: PersonalDirectoryNoteRouteArgs(
-        canEdit: true,
-        availableNoteTypes: availableNoteTypes,
+        canEdit: _canEdit(state),
+        availableNoteTypes: const [
+          PersonalDirectoryNoteType.allergy,
+          PersonalDirectoryNoteType.other,
+        ],
       ),
     );
-    if (!context.mounted || result != true) return;
-    context.read<PersonalDirectoryBloc>().add(const PersonalDirectoryRefreshed());
+    if (!context.mounted) return;
+    _handleRouteResult(context, result);
   }
 
   Future<void> _openEmergencyContact(
@@ -325,11 +341,8 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
       AppRouteNames.personalDirectoryNote,
       extra: PersonalDirectoryNoteRouteArgs(
         note: note,
-        canEdit: state.isSelf,
-        availableNoteTypes:
-            note == null
-                ? const [PersonalDirectoryNoteType.emergencyContact]
-                : PersonalDirectoryNoteType.values,
+        canEdit: _canEdit(state),
+        availableNoteTypes: const [PersonalDirectoryNoteType.emergencyContact],
       ),
     );
     if (!context.mounted) return;
@@ -345,7 +358,8 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
       AppRouteNames.personalDirectoryNote,
       extra: PersonalDirectoryNoteRouteArgs(
         note: note,
-        canEdit: state.isSelf,
+        canEdit: _canEdit(state),
+        availableNoteTypes: [note.noteType],
       ),
     );
     if (!context.mounted) return;
@@ -393,5 +407,9 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
     final normalized = phoneNumber.replaceAll(RegExp(r'[\s()-]'), '');
     final uri = Uri(scheme: 'tel', path: normalized);
     await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  bool _canEdit(PersonalDirectoryState state) {
+    return widget.canEdit && state.isSelf;
   }
 }

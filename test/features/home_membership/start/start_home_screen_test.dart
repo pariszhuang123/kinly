@@ -110,10 +110,9 @@ class _FakeUserContextRepository implements UserContextRepository {
   @override
   Future<UserContext> fetch() async => const UserContext(
     userId: 'user-ctx',
-    hasHome: false,
-    activeHomeId: null,
     hasPreferenceReport: false,
     hasPersonalMentions: false,
+    hasPersonalDirectoryContent: false,
     avatarUrl: null,
   );
 }

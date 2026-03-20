@@ -19,6 +19,8 @@ import 'package:kinly/features/house_directory/ui/house_directory_route_args.dar
 import 'package:kinly/features/house_directory/ui/house_directory_sections.dart';
 import 'package:kinly/generated/l10n.dart';
 
+part 'house_directory_note_screen_support.dart';
+
 class HouseDirectoryNoteScreen extends StatefulWidget {
   const HouseDirectoryNoteScreen({
     super.key,
@@ -330,15 +332,31 @@ class _HouseDirectoryNoteScreenState extends State<HouseDirectoryNoteScreen> {
     switch (notice) {
       case HouseDirectoryNotice.noteSaved:
         if (!mounted) return;
+        final result =
+            widget.initialNoteType == HouseDirectoryNoteType.tutorial
+                ? (widget.isCreating
+                    ? HouseDirectoryRouteResult.tutorialCreated
+                    : HouseDirectoryRouteResult.tutorialUpdated)
+                : (widget.isCreating
+                    ? HouseDirectoryRouteResult.noteCreated
+                    : HouseDirectoryRouteResult.noteUpdated);
         if (widget.isCreating) {
-          Navigator.of(context).pop();
+          Navigator.of(context).pop(result);
           return;
         }
         setState(() => _isEditing = false);
+        KinlySnackBar.showSuccess(
+          context,
+          S.of(context).houseDirectoryNoteSaved,
+        );
         return;
       case HouseDirectoryNotice.noteArchived:
         if (!mounted) return;
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(
+          widget.initialNoteType == HouseDirectoryNoteType.tutorial
+              ? HouseDirectoryRouteResult.tutorialArchived
+              : HouseDirectoryRouteResult.noteArchived,
+        );
         return;
       case HouseDirectoryNotice.actionFailed:
         if (!mounted) return;
@@ -363,9 +381,4 @@ class _HouseDirectoryNoteScreenState extends State<HouseDirectoryNoteScreen> {
       ),
     );
   }
-}
-
-String? _emptyToNull(String value) {
-  final trimmed = value.trim();
-  return trimmed.isEmpty ? null : trimmed;
 }

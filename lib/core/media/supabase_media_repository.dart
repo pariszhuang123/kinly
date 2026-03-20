@@ -56,7 +56,7 @@ class SupabaseMediaRepository implements MediaRepository {
     final safeRoot = _sanitizeSegment(rootSegment);
     final safeFeature = _sanitizeFeature(featureSegment);
     final timestamp = DateTime.now().toUtc().millisecondsSinceEpoch;
-    return '$safeHomeId/$safeRoot/$safeFeature/$safeHomeId/'
+    return '$safeRoot/$safeFeature/$safeHomeId/'
         '$timestamp-${_randomSuffix()}.jpg';
   }
 

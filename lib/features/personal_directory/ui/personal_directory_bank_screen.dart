@@ -1,7 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/personal_directory/models.dart';
 import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
 import 'package:kinly/contracts/personal_directory/route_args.dart';
+import 'package:kinly/core/di/locator.dart';
+import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/inputs/kinly_text_field.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
@@ -60,7 +66,11 @@ class _PersonalDirectoryBankScreenState
     return KinlyScaffold(
       appBar: KinlyAppBar(
         title: Text(
-          _isEditing ? s.personalDirectoryEditBank : s.personalDirectoryAddBank,
+          widget.canEdit
+              ? (_isEditing
+                  ? s.personalDirectoryEditBank
+                  : s.personalDirectoryAddBank)
+              : s.personalDirectoryBankTitle,
         ),
       ),
       body: SafeArea(
@@ -116,12 +126,34 @@ class _PersonalDirectoryBankScreenState
           accountNumber: number,
         ),
       );
-      if (!mounted) return;
-      Navigator.of(context).pop(PersonalDirectoryRouteResult.bankSaved);
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSaving = false);
       KinlySnackBar.showError(context, s.personalDirectoryActionFailed);
+      return;
+    }
+    if (!mounted) return;
+    _closeWithResult(PersonalDirectoryRouteResult.bankSaved);
+  }
+
+  void _closeWithResult(PersonalDirectoryRouteResult result) {
+    unawaited(_closeAfterFrame(result));
+  }
+
+  Future<void> _closeAfterFrame(PersonalDirectoryRouteResult result) async {
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+    try {
+      Navigator.of(context).pop(result);
+    } catch (error, stackTrace) {
+      sl<Logger>().error(
+        'Personal directory bank route pop failed after a successful save.',
+        tag: 'Router',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      GoRouter.of(context).goNamed(AppRouteNames.personalDirectory);
     }
   }
 }

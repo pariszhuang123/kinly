@@ -27,3 +27,13 @@ class PersonalDirectoryNoteRouteArgs {
   final bool canEdit;
   final List<PersonalDirectoryNoteType> availableNoteTypes;
 }
+
+class PersonalDirectoryScreenRouteArgs {
+  const PersonalDirectoryScreenRouteArgs({
+    required this.target,
+    this.canEdit = true,
+  });
+
+  final PersonalDirectoryMemberSummary target;
+  final bool canEdit;
+}

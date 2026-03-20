@@ -5,6 +5,7 @@ import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/core/auth/user_context.dart';
 import 'package:kinly/core/auth/user_context_cubit.dart';
 import 'package:kinly/contracts/personal_directory/models.dart';
+import 'package:kinly/contracts/personal_directory/route_args.dart';
 import 'package:kinly/core/ui/kinly_icons.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/generated/l10n.dart';
@@ -33,22 +34,26 @@ Future<void> showPersonalProfileSheet({
     body: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _PersonalProfileActionTile(
-          icon: KinlyIcons.menuBookOutlined,
-          label: strings.personalProfilePersonalDirectory,
-          onTap: () {
-            Navigator.of(context).pop();
-            GoRouter.of(context).pushNamed(
-              AppRouteNames.personalDirectory,
-              extra: PersonalDirectoryMemberSummary(
-                userId: ctx.userId,
-                username: (ctx.displayName ?? '').trim(),
-                avatarUrl: ctx.avatarUrl,
-                isHomeOwner: false,
-              ),
-            );
-          },
-        ),
+        if (ctx.hasPersonalDirectoryContent)
+          _PersonalProfileActionTile(
+            icon: KinlyIcons.menuBookOutlined,
+            label: strings.personalProfilePersonalDirectory,
+            onTap: () {
+              Navigator.of(context).pop();
+              GoRouter.of(context).pushNamed(
+                AppRouteNames.personalDirectory,
+                extra: PersonalDirectoryScreenRouteArgs(
+                  target: PersonalDirectoryMemberSummary(
+                    userId: ctx.userId,
+                    username: (ctx.displayName ?? '').trim(),
+                    avatarUrl: ctx.avatarUrl,
+                    isHomeOwner: false,
+                  ),
+                  canEdit: true,
+                ),
+              );
+            },
+          ),
         _PersonalProfileActionTile(
           icon: KinlyIcons.tuneRounded,
           label: strings.personalProfilePreferences,

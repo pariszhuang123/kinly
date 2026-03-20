@@ -52,14 +52,16 @@ class _StartHomeView extends StatelessWidget {
     );
     final userContextState = context.watch<UserContextCubit>().state;
     final userContext = userContextState.context;
+    final hasProfileAccess = userContextState.hasArtifacts;
     final membershipMessage = switch (membershipStatus) {
       AuthMembershipStatus.unknown => s.membership_status_checking,
       AuthMembershipStatus.none => s.membership_status_none,
       AuthMembershipStatus.active => s.membership_status_active,
     };
-    final hasAvatar = (userContext?.avatarUrl?.isNotEmpty ?? false);
+    final hasAvatar =
+        hasProfileAccess && (userContext?.avatarUrl?.isNotEmpty ?? false);
     final displayName =
-        (userContext?.displayName?.trim().isNotEmpty ?? false)
+        hasProfileAccess && (userContext?.displayName?.trim().isNotEmpty ?? false)
             ? userContext!.displayName!.trim()
             : null;
     final personalizedTitle =
@@ -188,7 +190,9 @@ class _PersonalProfileAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<UserContextCubit, UserContextState>(
       builder: (context, state) {
-        if (!state.hasArtifacts) return const SizedBox.shrink();
+        if (state.context == null || !state.hasArtifacts) {
+          return const SizedBox.shrink();
+        }
         final theme = KinlyThemeAccess.of(context);
         final spacing = theme.extension<Spacing>();
         final strings = S.of(context);

@@ -15,10 +15,10 @@ class SupabaseUserContextRepository implements UserContextRepository {
     final row = _coerceRow(response);
     return UserContext(
       userId: row['user_id'] as String? ?? '',
-      hasHome: row['has_home'] as bool? ?? false,
-      activeHomeId: row['active_home_id']?.toString(),
       hasPreferenceReport: row['has_preference_report'] as bool? ?? false,
       hasPersonalMentions: row['has_personal_mentions'] as bool? ?? false,
+      hasPersonalDirectoryContent:
+          row['has_personal_directory_content'] as bool? ?? false,
       avatarUrl: row['avatar_storage_path'] as String?,
       displayName: row['display_name'] as String?,
     );

@@ -91,5 +91,60 @@ void main() {
 
       expect(find.text('Today'), findsOneWidget);
     });
+
+    testWidgets('redirects to Today instead of popping an existing stack', (
+      tester,
+    ) async {
+      final router = GoRouter(
+        initialLocation: '/base',
+        routes: [
+          GoRoute(
+            path: '/base',
+            builder: (_, context) => const _PushMissingArgsPage(),
+          ),
+          GoRoute(
+            path: '/missing-args',
+            name: 'missingArgs',
+            builder: (_, __) => routeFallback('testRoute'),
+          ),
+          GoRoute(
+            path: '/today',
+            name: AppRouteNames.today,
+            builder: (_, __) => const Scaffold(body: Text('Today')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Today'), findsOneWidget);
+      expect(find.text('Base'), findsNothing);
+    });
   });
+}
+
+class _PushMissingArgsPage extends StatefulWidget {
+  const _PushMissingArgsPage();
+
+  @override
+  State<_PushMissingArgsPage> createState() => _PushMissingArgsPageState();
+}
+
+class _PushMissingArgsPageState extends State<_PushMissingArgsPage> {
+  bool _didPush = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didPush) return;
+    _didPush = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      GoRouter.of(context).push('/missing-args');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => const Scaffold(body: Text('Base'));
 }

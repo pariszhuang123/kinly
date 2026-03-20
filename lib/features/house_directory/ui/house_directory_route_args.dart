@@ -1,5 +1,17 @@
 import 'package:kinly/contracts/house_directory/models.dart';
 
+enum HouseDirectoryRouteResult {
+  serviceCreated,
+  serviceUpdated,
+  serviceArchived,
+  noteCreated,
+  noteUpdated,
+  noteArchived,
+  tutorialCreated,
+  tutorialUpdated,
+  tutorialArchived,
+}
+
 class HouseDirectoryServiceRouteArgs {
   const HouseDirectoryServiceRouteArgs({this.serviceId});
 

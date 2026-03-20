@@ -9,6 +9,7 @@ import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/features/house_directory/bloc/house_directory_bloc.dart';
+import 'package:kinly/features/house_directory/ui/house_directory_route_args.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_service_screen_content.dart';
 import 'package:kinly/generated/l10n.dart';
 
@@ -335,14 +336,22 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
       case HouseDirectoryNotice.serviceSaved:
         if (!mounted) return;
         if (widget.isCreating) {
-          Navigator.of(context).pop();
+          Navigator.of(
+            context,
+          ).pop(HouseDirectoryRouteResult.serviceCreated);
           return;
         }
         setState(() => _isEditing = false);
+        KinlySnackBar.showSuccess(
+          context,
+          S.of(context).houseDirectoryServiceSaved,
+        );
         return;
       case HouseDirectoryNotice.serviceArchived:
         if (!mounted) return;
-        Navigator.of(context).pop();
+        Navigator.of(
+          context,
+        ).pop(HouseDirectoryRouteResult.serviceArchived);
         return;
       case HouseDirectoryNotice.actionFailed:
         if (!mounted) return;

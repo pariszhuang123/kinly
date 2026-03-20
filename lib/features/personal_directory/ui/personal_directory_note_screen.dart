@@ -1,4 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/core/di/locator.dart';
+import 'package:kinly/core/logging/logger.dart';
 import 'package:kinly/contracts/personal_directory/models.dart';
 import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
 import 'package:kinly/contracts/personal_directory/route_args.dart';
@@ -146,7 +152,6 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
     String? titleError;
     String? contactNameError;
     String? phoneError;
-    String? detailsError;
 
     switch (_noteType) {
       case PersonalDirectoryNoteType.emergencyContact:
@@ -168,9 +173,6 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
         if (title.isEmpty) {
           titleError = s.personalDirectoryNoteTitleHelp;
         }
-        if (details.isEmpty) {
-          detailsError = s.personalDirectoryOtherDetailsHelp;
-        }
         break;
     }
 
@@ -178,7 +180,6 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
         titleError == null &&
         contactNameError == null &&
         phoneError == null &&
-        detailsError == null &&
         isValidPersonalDirectoryNoteForm(
           noteType: _noteType,
           title: title,
@@ -191,13 +192,12 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
       _titleError = titleError;
       _contactNameError = contactNameError;
       _phoneError = phoneError;
-      _detailsError = detailsError;
+      _detailsError = null;
       _validationError =
           isValid ||
                   titleError != null ||
                   contactNameError != null ||
-                  phoneError != null ||
-                  detailsError != null
+                  phoneError != null
               ? null
               : s.personalDirectoryNoteValidation;
     });
@@ -205,15 +205,10 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
   }
 
   void _handleFieldChanged() {
-    if (_titleError == null &&
-        _contactNameError == null &&
-        _phoneError == null &&
-        _detailsError == null &&
-        _validationError == null) {
-      return;
-    }
     if (!mounted) return;
-    setState(_clearValidationErrors);
+    setState(() {
+      _clearValidationErrors();
+    });
   }
 
   void _clearValidationErrors() {
@@ -250,13 +245,14 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
           ),
         );
       }
-      if (!mounted) return;
-      Navigator.of(context).pop(PersonalDirectoryRouteResult.noteSaved);
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSaving = false);
       KinlySnackBar.showError(context, S.of(context).personalDirectoryActionFailed);
+      return;
     }
+    if (!mounted) return;
+    _closeWithResult(PersonalDirectoryRouteResult.noteSaved);
   }
 
   Future<void> _archive() async {
@@ -272,13 +268,14 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
     setState(() => _isSaving = true);
     try {
       await widget.repository.archiveNote(widget.note!.id);
-      if (!mounted) return;
-      Navigator.of(context).pop(PersonalDirectoryRouteResult.noteArchived);
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSaving = false);
       KinlySnackBar.showError(context, s.personalDirectoryActionFailed);
+      return;
     }
+    if (!mounted) return;
+    _closeWithResult(PersonalDirectoryRouteResult.noteArchived);
   }
 
   String? _trimmedDetails() {
@@ -299,5 +296,26 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
   bool _isValidPhoneNumber(String value) {
     return _phoneNumberPattern.hasMatch(value) &&
         value.contains(RegExp(r'\d'));
+  }
+
+  void _closeWithResult(PersonalDirectoryRouteResult result) {
+    unawaited(_closeAfterFrame(result));
+  }
+
+  Future<void> _closeAfterFrame(PersonalDirectoryRouteResult result) async {
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+    try {
+      Navigator.of(context).pop(result);
+    } catch (error, stackTrace) {
+      sl<Logger>().error(
+        'Personal directory route pop failed after a successful mutation.',
+        tag: 'Router',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      if (!mounted) return;
+      GoRouter.of(context).goNamed(AppRouteNames.personalDirectory);
+    }
   }
 }

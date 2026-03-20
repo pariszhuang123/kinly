@@ -6484,10 +6484,10 @@ class S {
     return Intl.message('Close', name: 'close', desc: '', args: []);
   }
 
-  /// `House directory`
+  /// `Shared house details`
   String get houseDirectoryTitle {
     return Intl.message(
-      'House directory',
+      'Shared house details',
       name: 'houseDirectoryTitle',
       desc: '',
       args: [],
@@ -6534,10 +6534,10 @@ class S {
     );
   }
 
-  /// `Save wifi, rent, services, and house notes here.`
+  /// `Record your home details so everyone can find them in one place.`
   String get houseDirectoryEmptyBody {
     return Intl.message(
-      'Save wifi, rent, services, and house notes here.',
+      'Record your home details so everyone can find them in one place.',
       name: 'houseDirectoryEmptyBody',
       desc: '',
       args: [],
@@ -6574,10 +6574,10 @@ class S {
     );
   }
 
-  /// `House notes`
+  /// `Notes`
   String get houseDirectoryNotesTitle {
     return Intl.message(
-      'House notes',
+      'Notes',
       name: 'houseDirectoryNotesTitle',
       desc: '',
       args: [],

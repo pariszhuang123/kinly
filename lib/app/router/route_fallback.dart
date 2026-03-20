@@ -85,18 +85,9 @@ void _recoverFallbackRoute(
     );
     return;
   }
-  if (router.canPop()) {
-    logger.warn(
-      'Fallback recovered by popping route="$routeName" '
-      'uri=$fromUri',
-      tag: 'Router',
-    );
-    router.pop();
-    return;
-  }
   logger.warn(
     'Executing fallback redirect to Today from route="$routeName" '
-    'uri=$fromUri (no back stack)',
+    'uri=$fromUri',
     tag: 'Router',
   );
   router.goNamed(AppRouteNames.today);
