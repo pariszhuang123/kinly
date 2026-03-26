@@ -465,6 +465,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "houseDirectoryEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "Shared home details live here.",
     ),
+    "houseDirectoryMemberSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Tap here to see your home details, services, notes, and reminders.",
+    ),
     "houseDirectoryEndDate": MessageLookupByLibrary.simpleMessage("End date"),
     "houseDirectoryLinkLabel": MessageLookupByLibrary.simpleMessage(
       "Provider link",
@@ -519,6 +522,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "No notes match that search.",
     ),
     "houseDirectoryNotesTitle": MessageLookupByLibrary.simpleMessage("Notes"),
+    "houseDirectoryOwnerSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Add and manage your home details here.",
+    ),
     "houseDirectoryOpenLink": MessageLookupByLibrary.simpleMessage("Open link"),
     "houseDirectoryOpenLinkError": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t open that link.",

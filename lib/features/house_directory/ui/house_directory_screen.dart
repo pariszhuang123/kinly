@@ -15,9 +15,10 @@ import 'package:kinly/core/ui/kinly_theme_access.dart';
 import 'package:kinly/core/ui/scroll/kinly_scroll_fade.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/features/house_directory/bloc/house_directory_bloc.dart';
-import 'package:kinly/features/house_directory/ui/house_directory_forms.dart';
+import 'package:kinly/features/house_directory/ui/house_directory_route_args.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_sections.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/renderer/material/kinly_icons.dart';
 
 class HouseDirectoryScreen extends StatelessWidget {
   const HouseDirectoryScreen({super.key, required this.homeId});
@@ -77,7 +78,7 @@ class HouseDirectoryScreen extends StatelessWidget {
                                   if (state.isOwner)
                                     KinlyOutlinedButton.text(
                                       onPressed:
-                                          () => _openWifiDialog(context, state),
+                                          () => _openWifiScreen(context, state),
                                       label:
                                           state.wifi == null
                                               ? S.of(context).houseDirectoryAddWifi
@@ -109,12 +110,22 @@ class HouseDirectoryScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                S.of(context).houseDirectoryEmptyTitle,
-                                style: theme.textTheme.titleMedium,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      S.of(context).houseDirectoryEmptyTitle,
+                                      style: theme.textTheme.titleMedium,
+                                    ),
+                                  ),
+                                  Icon(
+                                    KinlyIcons.chevronRightRounded,
+                                    color: colors.onSurfaceVariant,
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 8),
-                              Text(S.of(context).houseDirectoryEmptyBody),
+                              Text(_detailsSubtitle(context, state)),
                               const SizedBox(height: 12),
                               Text(_detailsSummary(context, state)),
                             ],
@@ -222,14 +233,13 @@ class HouseDirectoryScreen extends StatelessWidget {
     KinlySnackBar.showSuccess(context, message);
   }
 
-  Future<void> _openWifiDialog(
+  Future<void> _openWifiScreen(
     BuildContext context,
     HouseDirectoryState state,
   ) async {
-    final result = await showHouseDirectoryWifiSheet(
-      context,
-      homeId: homeId,
-      wifi: state.wifi,
+    final result = await context.pushNamed<UpsertHouseDirectoryWifiInput>(
+      AppRouteNames.houseDirectoryWifi,
+      extra: HouseDirectoryWifiRouteArgs(wifi: state.wifi),
     );
     if (result == null || !context.mounted) return;
     context.read<HouseDirectoryBloc>().add(HouseDirectoryWifiSaved(result));
@@ -253,6 +263,14 @@ class HouseDirectoryScreen extends StatelessWidget {
     return '${state.rentServices.length} ${s.houseDirectoryRentTitle.toLowerCase()}, '
         '${state.utilityServices.length} ${s.houseDirectoryServicesTitle.toLowerCase()}, '
         '${state.allNotes.length} ${s.houseDirectoryNotesTitle.toLowerCase()}';
+  }
+
+  String _detailsSubtitle(BuildContext context, HouseDirectoryState state) {
+    final s = S.of(context);
+    if (state.isOwner) {
+      return s.houseDirectoryOwnerSubtitle;
+    }
+    return s.houseDirectoryMemberSubtitle;
   }
 }
 
@@ -290,6 +308,10 @@ class _HouseDirectoryMemberRow extends StatelessWidget {
                 member.username,
                 style: theme.textTheme.bodyLarge,
               ),
+            ),
+            Icon(
+              KinlyIcons.chevronRightRounded,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ],
         ),

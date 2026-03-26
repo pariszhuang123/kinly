@@ -41,6 +41,8 @@ class HouseDirectoryServiceContent extends StatelessWidget {
     required this.onOffsetUnitChanged,
     required this.onArchive,
     required this.onSave,
+    this.reminder,
+    this.onCreateTask,
   });
 
   final HouseDirectoryService? service;
@@ -69,6 +71,8 @@ class HouseDirectoryServiceContent extends StatelessWidget {
   final ValueChanged<HouseDirectoryReminderOffsetUnit?> onOffsetUnitChanged;
   final VoidCallback onArchive;
   final VoidCallback onSave;
+  final HouseDirectoryReminder? reminder;
+  final VoidCallback? onCreateTask;
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +112,7 @@ class HouseDirectoryServiceContent extends StatelessWidget {
                       )
                       : HouseDirectoryServiceReadOnlyContent(
                         service: service!,
+                        reminder: reminder,
                       ),
             ),
           ),
@@ -125,6 +130,13 @@ class HouseDirectoryServiceContent extends StatelessWidget {
                 label: isCreating ? s.houseDirectorySave : s.houseDirectoryEdit,
                 fullWidth: true,
               ),
+          ] else if (onCreateTask != null) ...[
+            SizedBox(height: spacing.lg),
+            KinlyFilledButton.text(
+              onPressed: onCreateTask,
+              label: s.flowChoreSubmitCreate,
+              fullWidth: true,
+            ),
           ],
         ],
       ),
@@ -306,9 +318,14 @@ class _HouseDirectoryServiceEditor extends StatelessWidget {
 }
 
 class HouseDirectoryServiceReadOnlyContent extends StatelessWidget {
-  const HouseDirectoryServiceReadOnlyContent({super.key, required this.service});
+  const HouseDirectoryServiceReadOnlyContent({
+    super.key,
+    required this.service,
+    this.reminder,
+  });
 
   final HouseDirectoryService service;
+  final HouseDirectoryReminder? reminder;
 
   @override
   Widget build(BuildContext context) {
@@ -320,6 +337,15 @@ class HouseDirectoryServiceReadOnlyContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (reminder != null) ...[
+          _ReadOnlyField(
+            label: s.todayHouseDirectoryRemindersTitle,
+            value: s.todayHouseDirectoryReminderDue(
+              format.format(reminder!.dueAt),
+            ),
+          ),
+          SizedBox(height: spacing.md),
+        ],
         _ReadOnlyField(label: s.houseDirectoryProviderLabel, value: service.providerName),
         SizedBox(height: spacing.md),
         _ReadOnlyField(

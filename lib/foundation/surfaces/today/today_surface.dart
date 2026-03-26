@@ -33,6 +33,7 @@ import '../../../core/notifications/notifications.dart';
 import '../../../generated/l10n.dart';
 import '../../../core/config/app_config.dart';
 import '../../../contracts/homes/models.dart';
+import '../../../contracts/house_directory/route_args.dart';
 import '../../../contracts/personal_directory/route_args.dart';
 import 'package:kinly/contracts/flow/flow_chore_outcome.dart';
 import 'package:kinly/contracts/flow/enums/flow_list_filter.dart';

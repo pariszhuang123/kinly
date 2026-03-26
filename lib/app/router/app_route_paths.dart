@@ -19,6 +19,7 @@ class AppRoutePaths {
   static const hub = '/hub';
   static const houseDirectory = '/hub/house-directory';
   static const houseDirectoryDetails = '/hub/house-directory/details';
+  static const houseDirectoryWifi = '/hub/house-directory/wifi';
   static const houseDirectoryService = '/hub/house-directory/service';
   static const houseDirectoryNote = '/hub/house-directory/note';
   static const houseDirectoryPhoto = '/hub/house-directory/photo';

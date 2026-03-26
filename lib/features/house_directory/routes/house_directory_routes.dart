@@ -14,6 +14,7 @@ import 'package:kinly/features/house_directory/ui/house_directory_provider.dart'
 import 'package:kinly/features/house_directory/ui/house_directory_route_args.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_screen.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_service_screen.dart';
+import 'package:kinly/features/house_directory/ui/house_directory_wifi_screen.dart';
 
 class HouseDirectoryRouteContext {
   const HouseDirectoryRouteContext({
@@ -57,6 +58,22 @@ List<GoRoute> buildHouseDirectoryRoutes({
       ),
     ),
     GoRoute(
+      path: AppRoutePaths.houseDirectoryWifi,
+      name: AppRouteNames.houseDirectoryWifi,
+      builder: (_, state) => _buildRoute(
+        state: state,
+        routeName: 'houseDirectoryWifi',
+        resolveContext: resolveContext,
+        childBuilder: (context, _) {
+          final args = state.extra as HouseDirectoryWifiRouteArgs?;
+          return HouseDirectoryWifiScreen(
+            homeId: context.homeId,
+            wifi: args?.wifi,
+          );
+        },
+      ),
+    ),
+    GoRoute(
       path: AppRoutePaths.houseDirectoryService,
       name: AppRouteNames.houseDirectoryService,
       builder: (_, state) => _buildRoute(
@@ -69,6 +86,7 @@ List<GoRoute> buildHouseDirectoryRoutes({
             homeId: context.homeId,
             isOwner: context.isOwner,
             serviceId: args?.serviceId,
+            reminderId: args?.reminderId,
           );
         },
       ),

@@ -1,4 +1,5 @@
 import '../../../contracts/chores/models.dart';
+import '../../../contracts/flow/flow_chore_prefill.dart';
 import '../../../core/time/date_only.dart';
 import '../../../core/utils/url_validator.dart';
 
@@ -49,6 +50,17 @@ class FlowChoreForm {
       notes: chore.notes ?? '',
       howToVideoUrl: chore.howToVideoUrl ?? '',
       expectationPhotoPath: chore.expectationPhotoPath ?? '',
+    );
+  }
+
+  factory FlowChoreForm.fromPrefill(FlowChorePrefill prefill) {
+    return FlowChoreForm.initial(
+      startDate: prefill.startDate,
+    ).copyWith(
+      title: prefill.title ?? '',
+      assigneeUserId: prefill.assigneeUserId,
+      notes: prefill.notes ?? '',
+      howToVideoUrl: prefill.howToVideoUrl ?? '',
     );
   }
 

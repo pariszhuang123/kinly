@@ -99,10 +99,8 @@ class TodayRegistry {
         builder:
             (scope) => TodayHouseDirectoryRemindersCard(
               reminders: scope.state.houseDirectoryReminders,
-              isOwner: scope.state.profile?.isOwner == true,
-              onOpen: scope.actions.onHouseDirectoryTap,
-              onAcknowledge: scope.actions.onHouseDirectoryReminderAcknowledge,
-              onDismiss: scope.actions.onHouseDirectoryReminderDismiss,
+              palette: scope.context.houseNormSection,
+              onOpenReminder: scope.actions.onHouseDirectoryReminderOpen,
             ),
         isVisible: (scope) => scope.state.hasHouseDirectoryReminders,
       ),

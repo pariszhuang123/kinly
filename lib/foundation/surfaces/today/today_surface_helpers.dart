@@ -144,11 +144,11 @@ Future<void> _openPersonalDirectoryBankImpl(BuildContext context) async {
   final state = context.read<TodayBloc>().state;
   final profile = state.profile;
   if (profile == null) return;
-  final result = await context.pushNamed<bool>(
+  final result = await context.pushNamed<PersonalDirectoryRouteResult>(
     AppRouteNames.personalDirectoryBank,
     extra: const PersonalDirectoryBankRouteArgs(canEdit: true),
   );
-  if (result == true && context.mounted) {
+  if (result == PersonalDirectoryRouteResult.bankSaved && context.mounted) {
     context.read<TodayBloc>().add(const TodayRefreshed());
   }
 }

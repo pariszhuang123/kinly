@@ -96,6 +96,7 @@ class PersonalDirectoryNote {
     this.contactName,
     this.phoneNumber,
     this.details,
+    this.referenceUrl,
     this.photoPath,
   });
 
@@ -106,6 +107,7 @@ class PersonalDirectoryNote {
   final String? contactName;
   final String? phoneNumber;
   final String? details;
+  final String? referenceUrl;
   final String? photoPath;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -121,6 +123,7 @@ class PersonalDirectoryNote {
       contactName: json['contact_name'] as String?,
       phoneNumber: json['phone_number'] as String?,
       details: json['details'] as String?,
+      referenceUrl: json['reference_url'] as String?,
       photoPath: json['photo_path'] as String?,
       createdAt:
           parseTimestampToLocal(json['created_at']) ??
@@ -150,6 +153,7 @@ class CreatePersonalDirectoryNoteInput {
     this.contactName,
     this.phoneNumber,
     this.details,
+    this.referenceUrl,
     this.photoPath,
   });
 
@@ -159,6 +163,7 @@ class CreatePersonalDirectoryNoteInput {
   final String? contactName;
   final String? phoneNumber;
   final String? details;
+  final String? referenceUrl;
   final String? photoPath;
 }
 
@@ -170,6 +175,7 @@ class UpdatePersonalDirectoryNoteInput {
     this.contactName,
     this.phoneNumber,
     this.details,
+    this.referenceUrl,
     this.photoPath,
   });
 
@@ -179,6 +185,7 @@ class UpdatePersonalDirectoryNoteInput {
   final String? contactName;
   final String? phoneNumber;
   final String? details;
+  final String? referenceUrl;
   final String? photoPath;
 }
 

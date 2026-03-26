@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kinly/contracts/flow/ports/chores_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import '../bloc/flow_chore_bloc.dart';
+import '../domain/flow_chore_form.dart';
 import 'flow_chore_screen.dart';
 
 class FlowChoreProvider extends StatelessWidget {
@@ -11,6 +12,7 @@ class FlowChoreProvider extends StatelessWidget {
   final ChoresRepository choresRepository;
   final HomeRepository homeRepository;
   final String? choreId;
+  final FlowChoreForm? initialForm;
 
   const FlowChoreProvider({
     super.key,
@@ -18,6 +20,7 @@ class FlowChoreProvider extends StatelessWidget {
     required this.choresRepository,
     required this.homeRepository,
     this.choreId,
+    this.initialForm,
   });
 
   @override
@@ -29,6 +32,7 @@ class FlowChoreProvider extends StatelessWidget {
             choreId: choreId,
             choresRepository: choresRepository,
             homeRepository: homeRepository,
+            initialForm: initialForm,
           )
             ..add(const FlowChoreStarted())
             ..add(const FlowChorePhotoRecoveryRequested()),

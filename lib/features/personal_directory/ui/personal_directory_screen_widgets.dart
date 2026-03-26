@@ -460,6 +460,8 @@ class _NoteCard extends StatelessWidget {
     if (details != null && details.isNotEmpty) return details;
     final phoneNumber = note.phoneNumber?.trim();
     if (phoneNumber != null && phoneNumber.isNotEmpty) return phoneNumber;
+    final referenceUrl = note.referenceUrl?.trim();
+    if (referenceUrl != null && referenceUrl.isNotEmpty) return referenceUrl;
     return null;
   }
 }

@@ -286,6 +286,7 @@ class _PersonalDirectoryScreenState extends State<PersonalDirectoryScreen> {
           note.contactName,
           note.phoneNumber,
           note.details,
+          note.referenceUrl,
         ]),
       );
     }).toList(growable: false);

@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/house_directory/models.dart';
 import 'package:kinly/features/house_directory/bloc/house_directory_bloc.dart';
+import 'package:kinly/features/house_directory/ui/house_directory_route_args.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_screen.dart';
+import 'package:kinly/features/house_directory/ui/house_directory_wifi_screen.dart';
 import 'package:kinly/generated/l10n.dart';
+import 'package:kinly/renderer/material/kinly_icons.dart';
 import 'package:kinly/renderer/material/theme/kinly_theme.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -27,7 +32,7 @@ void main() {
       bloc = _MockHouseDirectoryBloc();
     });
 
-    testWidgets('shows qr code for saved wifi and lets the owner edit', (
+    testWidgets('shows qr code for saved wifi and opens the wifi page for owners', (
       tester,
     ) async {
       when(() => bloc.state).thenReturn(_buildState(isOwner: true));
@@ -50,10 +55,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);
+      expect(find.byType(HouseDirectoryWifiScreen), findsOneWidget);
       expect(find.byType(TextField), findsNWidgets(2));
     });
 
-    testWidgets('saving from the wifi dialog dispatches a wifi saved event', (
+    testWidgets('saving from the wifi page dispatches a wifi saved event', (
       tester,
     ) async {
       when(() => bloc.state).thenReturn(_buildState(isOwner: true));
@@ -112,12 +118,98 @@ void main() {
       expect(find.text(strings.houseDirectoryEdit), findsNothing);
       verifyNever(() => bloc.add(any()));
     });
+
+    testWidgets('owners see manage copy on the shared details card', (
+      tester,
+    ) async {
+      when(() => bloc.state).thenReturn(_buildState(isOwner: true));
+      whenListen(
+        bloc,
+        const Stream<HouseDirectoryState>.empty(),
+        initialState: _buildState(isOwner: true),
+      );
+
+      await tester.pumpWidget(_buildHarness(bloc));
+      await tester.pumpAndSettle();
+      final context = tester.element(find.byType(HouseDirectoryScreen));
+      final strings = S.of(context);
+
+      expect(find.text(strings.houseDirectoryOwnerSubtitle), findsOneWidget);
+      expect(find.byIcon(KinlyIcons.chevronRightRounded), findsOneWidget);
+    });
+
+    testWidgets('members see view copy and chevrons for details and member rows', (
+      tester,
+    ) async {
+      final state = _buildState(
+        isOwner: false,
+        services: [
+          HouseDirectoryService(
+            id: 'service-1',
+            homeId: 'home-1',
+            serviceType: HouseDirectoryServiceType.electricity,
+            providerName: 'Power Co',
+            createdAt: DateTime(2026, 3, 14),
+            updatedAt: DateTime(2026, 3, 14),
+          ),
+        ],
+        members: const [
+          HouseDirectoryMemberCard(
+            userId: 'user-2',
+            username: 'Alex',
+            isOwner: false,
+            hasPersonalDirectoryContent: true,
+          ),
+        ],
+      );
+      when(() => bloc.state).thenReturn(state);
+      whenListen(
+        bloc,
+        const Stream<HouseDirectoryState>.empty(),
+        initialState: state,
+      );
+
+      await tester.pumpWidget(_buildHarness(bloc));
+      await tester.pumpAndSettle();
+      final context = tester.element(find.byType(HouseDirectoryScreen));
+      final strings = S.of(context);
+
+      expect(find.text(strings.houseDirectoryMemberSubtitle), findsOneWidget);
+      expect(find.text('Alex'), findsOneWidget);
+      expect(find.byIcon(KinlyIcons.chevronRightRounded), findsNWidgets(2));
+    });
   });
 }
 
 Widget _buildHarness(HouseDirectoryBloc bloc) {
-  return MaterialApp(
+  final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder:
+            (_, __) => BlocProvider<HouseDirectoryBloc>.value(
+              value: bloc,
+              child: const HouseDirectoryScreen(homeId: 'home-1'),
+            ),
+        routes: [
+          GoRoute(
+            path: 'wifi',
+            name: AppRouteNames.houseDirectoryWifi,
+            builder: (_, state) {
+              final args = state.extra as HouseDirectoryWifiRouteArgs?;
+              return HouseDirectoryWifiScreen(
+                homeId: 'home-1',
+                wifi: args?.wifi,
+              );
+            },
+          ),
+        ],
+      ),
+    ],
+  );
+  return MaterialApp.router(
     theme: buildKinlyTheme(Brightness.light),
+    routerConfig: router,
     localizationsDelegates: const [
       S.delegate,
       GlobalMaterialLocalizations.delegate,
@@ -125,14 +217,14 @@ Widget _buildHarness(HouseDirectoryBloc bloc) {
       GlobalCupertinoLocalizations.delegate,
     ],
     supportedLocales: S.delegate.supportedLocales,
-    home: BlocProvider<HouseDirectoryBloc>.value(
-      value: bloc,
-      child: const HouseDirectoryScreen(homeId: 'home-1'),
-    ),
   );
 }
 
-HouseDirectoryState _buildState({required bool isOwner}) {
+HouseDirectoryState _buildState({
+  required bool isOwner,
+  List<HouseDirectoryService> services = const [],
+  List<HouseDirectoryMemberCard> members = const [],
+}) {
   final now = DateTime(2026, 3, 14);
   return HouseDirectoryState(
     status: HouseDirectoryStatus.success,
@@ -145,10 +237,10 @@ HouseDirectoryState _buildState({required bool isOwner}) {
       createdAt: now,
       updatedAt: now,
     ),
-    services: const [],
+    services: services,
     notes: const [],
     tutorials: const [],
-    members: const [],
+    members: members,
     reminders: const [],
   );
 }

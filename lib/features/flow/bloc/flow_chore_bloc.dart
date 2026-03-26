@@ -26,12 +26,14 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
     String? choreId,
     required ChoresRepository choresRepository,
     required HomeRepository homeRepository,
+    FlowChoreForm? initialForm,
     ExpectationPhotoService? expectationPhotoService,
     Logger? logger,
   }) : _homeId = homeId,
        _choreId = choreId,
        _choresRepository = choresRepository,
        _homeRepository = homeRepository,
+       _initialForm = initialForm,
        _expectationPhotoService =
            expectationPhotoService ??
            ExpectationPhotoService(mediaRepository: SupabaseMediaRepository()),
@@ -65,6 +67,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
   final String? _choreId;
   final ChoresRepository _choresRepository;
   final HomeRepository _homeRepository;
+  final FlowChoreForm? _initialForm;
   final ExpectationPhotoService _expectationPhotoService;
   final Logger _logger;
   final Uuid _uuid;
@@ -85,10 +88,7 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
           members.isEmpty
               ? null
               : members
-                  .firstWhere(
-                    (m) => m.isOwner,
-                    orElse: () => members.first,
-                  )
+                  .firstWhere((m) => m.isOwner, orElse: () => members.first)
                   .userId;
       FlowChoreForm form = state.form;
       ChoreState? choreState = _choreId == null ? ChoreState.draft : null;
@@ -100,6 +100,8 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
         );
         form = FlowChoreForm.fromChore(details.chore);
         choreState = details.chore.state;
+      } else if (_initialForm != null) {
+        form = _initialForm;
       }
 
       emit(
@@ -294,12 +296,13 @@ class FlowChoreBloc extends Bloc<FlowChoreEvent, FlowChoreState> {
       ),
     );
     try {
-      final upload = await _expectationPhotoService.recoverLostAndUploadIfPending(
-        homeId: _homeId,
-        choreId: _choreId,
-        rootSegment: 'flow',
-        featureSegment: 'expectations',
-      );
+      final upload = await _expectationPhotoService
+          .recoverLostAndUploadIfPending(
+            homeId: _homeId,
+            choreId: _choreId,
+            rootSegment: 'flow',
+            featureSegment: 'expectations',
+          );
       if (upload == null) {
         emit(state.copyWith(isUploadingPhoto: false));
         return;

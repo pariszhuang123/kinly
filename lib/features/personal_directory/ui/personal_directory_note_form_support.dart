@@ -7,6 +7,7 @@ CreatePersonalDirectoryNoteInput buildCreatePersonalDirectoryNoteInput({
   required String contactName,
   required String phoneNumber,
   required String? details,
+  required String? referenceUrl,
 }) {
   return CreatePersonalDirectoryNoteInput(
     noteType: noteType,
@@ -15,6 +16,7 @@ CreatePersonalDirectoryNoteInput buildCreatePersonalDirectoryNoteInput({
     contactName: _emergencyContactName(noteType, contactName),
     phoneNumber: _emergencyPhoneNumber(noteType, phoneNumber),
     details: details,
+    referenceUrl: referenceUrl,
   );
 }
 
@@ -25,6 +27,7 @@ UpdatePersonalDirectoryNoteInput buildUpdatePersonalDirectoryNoteInput({
   required String contactName,
   required String phoneNumber,
   required String? details,
+  required String? referenceUrl,
 }) {
   return UpdatePersonalDirectoryNoteInput(
     noteId: noteId,
@@ -33,6 +36,7 @@ UpdatePersonalDirectoryNoteInput buildUpdatePersonalDirectoryNoteInput({
     contactName: _emergencyContactName(noteType, contactName),
     phoneNumber: _emergencyPhoneNumber(noteType, phoneNumber),
     details: details,
+    referenceUrl: referenceUrl,
   );
 }
 
@@ -42,23 +46,27 @@ bool isValidPersonalDirectoryNoteForm({
   required String contactName,
   required String phoneNumber,
   required String details,
+  required String referenceUrl,
   required bool Function(String value) isValidPhoneNumber,
+  required bool Function(String value) isValidReferenceUrl,
 }) {
+  final hasValidReferenceUrl =
+      referenceUrl.isEmpty || isValidReferenceUrl(referenceUrl);
   return switch (noteType) {
     PersonalDirectoryNoteType.emergencyContact => _isValidEmergencyContact(
       contactName: contactName,
       phoneNumber: phoneNumber,
       details: details,
       isValidPhoneNumber: isValidPhoneNumber,
-    ),
+    ) && hasValidReferenceUrl,
     PersonalDirectoryNoteType.allergy => _isValidAllergy(
       title: title,
       details: details,
-    ),
+    ) && hasValidReferenceUrl,
     PersonalDirectoryNoteType.other => _isValidOther(
       title: title,
       details: details,
-    ),
+    ) && hasValidReferenceUrl,
   };
 }
 
@@ -69,6 +77,18 @@ String? trimPersonalDirectoryNoteDetails({
   if (!showsDetailsField) return null;
   final trimmed = details.trim();
   return trimmed.isEmpty ? null : trimmed;
+}
+
+String? trimPersonalDirectoryReferenceUrl(String referenceUrl) {
+  final trimmed = referenceUrl.trim();
+  return trimmed.isEmpty ? null : trimmed;
+}
+
+bool isValidPersonalDirectoryReferenceUrl(String value) {
+  final trimmed = value.trim();
+  if (trimmed.isEmpty) return true;
+  final uri = Uri.tryParse(trimmed);
+  return uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
 }
 
 bool _isValidEmergencyContact({

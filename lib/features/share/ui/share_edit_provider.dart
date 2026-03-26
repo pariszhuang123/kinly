@@ -184,6 +184,9 @@ ShareEditConstraints resolveShareEditConstraints(ExpenseForEdit detail) {
 }
 
 String _formatAmount(int amountCents) {
+  if (amountCents <= 0) {
+    return '';
+  }
   final value = amountCents / 100.0;
   return value.toStringAsFixed(2);
 }

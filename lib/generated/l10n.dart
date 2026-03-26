@@ -6544,6 +6544,26 @@ class S {
     );
   }
 
+  /// `Add and manage your home details here.`
+  String get houseDirectoryOwnerSubtitle {
+    return Intl.message(
+      'Add and manage your home details here.',
+      name: 'houseDirectoryOwnerSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap here to see your home details, services, notes, and reminders.`
+  String get houseDirectoryMemberSubtitle {
+    return Intl.message(
+      'Tap here to see your home details, services, notes, and reminders.',
+      name: 'houseDirectoryMemberSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Wifi`
   String get houseDirectoryWifiTitle {
     return Intl.message(

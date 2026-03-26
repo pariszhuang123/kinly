@@ -54,8 +54,7 @@ class TodaySurfaceActions {
     required this.onPersonalGratitudeTap,
     required this.onHousePulseTap,
     required this.onHouseDirectoryTap,
-    required this.onHouseDirectoryReminderAcknowledge,
-    required this.onHouseDirectoryReminderDismiss,
+    required this.onHouseDirectoryReminderOpen,
     required this.onShoppingTap,
     required this.onBankAccountPrompt,
   });
@@ -76,10 +75,8 @@ class TodaySurfaceActions {
   final void Function() onPersonalGratitudeTap;
   final Future<void> Function() onHousePulseTap;
   final VoidCallback onHouseDirectoryTap;
-  final void Function(HouseDirectoryReminder reminder)
-      onHouseDirectoryReminderAcknowledge;
-  final void Function(HouseDirectoryReminder reminder)
-      onHouseDirectoryReminderDismiss;
+  final Future<void> Function(HouseDirectoryReminder reminder)
+      onHouseDirectoryReminderOpen;
   final VoidCallback onShoppingTap;
   final VoidCallback onBankAccountPrompt;
 }

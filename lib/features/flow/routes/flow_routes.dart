@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/contracts/flow/route_args.dart';
 import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/flow/ports/chores_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
@@ -8,6 +9,7 @@ import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/flow/ui/flow_chore_detail/widgets/flow_chore_expectation_photo_viewer.dart';
 import 'package:kinly/features/flow/ui/flow_chore_detail/flow_chore_detail_provider.dart';
 import 'package:kinly/features/flow/ui/flow_chore_provider.dart';
+import 'package:kinly/features/flow/domain/flow_chore_form.dart';
 import 'package:kinly/features/flow/ui/flow_list_filter.dart';
 import 'package:kinly/features/flow/ui/flow_list_provider.dart';
 
@@ -74,10 +76,18 @@ List<GoRoute> buildFlowRoutes({
             reason: 'homeId unavailable while active membership is unresolved',
           );
         }
+        final args =
+            state.extra is FlowChoreRouteArgs
+                ? state.extra as FlowChoreRouteArgs
+                : null;
         return FlowChoreProvider(
           homeId: homeId,
           choresRepository: sl<ChoresRepository>(),
           homeRepository: sl<HomeRepository>(),
+          initialForm:
+              args?.initialForm == null
+                  ? null
+                  : FlowChoreForm.fromPrefill(args!.initialForm!),
         );
       },
     ),

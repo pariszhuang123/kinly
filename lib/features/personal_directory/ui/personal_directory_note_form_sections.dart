@@ -22,12 +22,15 @@ class PersonalDirectoryNoteFormBody extends StatelessWidget {
     required this.contactNameController,
     required this.phoneController,
     required this.detailsController,
+    required this.referenceUrlController,
     this.titleError,
     this.contactNameError,
     this.phoneError,
     this.detailsError,
+    this.referenceUrlError,
     required this.onNoteTypeSelected,
     this.onCallPhoneNumber,
+    this.onOpenReferenceUrl,
     required this.onSave,
     required this.onArchive,
   });
@@ -43,12 +46,15 @@ class PersonalDirectoryNoteFormBody extends StatelessWidget {
   final TextEditingController contactNameController;
   final TextEditingController phoneController;
   final TextEditingController detailsController;
+  final TextEditingController referenceUrlController;
   final String? titleError;
   final String? contactNameError;
   final String? phoneError;
   final String? detailsError;
+  final String? referenceUrlError;
   final ValueChanged<PersonalDirectoryNoteType> onNoteTypeSelected;
   final Future<void> Function()? onCallPhoneNumber;
+  final Future<void> Function()? onOpenReferenceUrl;
   final VoidCallback onSave;
   final VoidCallback onArchive;
 
@@ -94,6 +100,14 @@ class PersonalDirectoryNoteFormBody extends StatelessWidget {
               detailsError: detailsError,
             ),
           ],
+          const SizedBox(height: 16),
+          _ReferenceUrlFieldSection(
+            canEdit: canEdit,
+            isSaving: isSaving,
+            referenceUrlController: referenceUrlController,
+            referenceUrlError: referenceUrlError,
+            onOpenReferenceUrl: onOpenReferenceUrl,
+          ),
           if (validationError != null) ...[
             const SizedBox(height: 12),
             _ValidationMessage(message: validationError!),
@@ -297,6 +311,48 @@ class _ValidationMessage extends StatelessWidget {
       style: theme.textTheme.bodySmall?.copyWith(
         color: theme.colorScheme.error,
       ),
+    );
+  }
+}
+
+class _ReferenceUrlFieldSection extends StatelessWidget {
+  const _ReferenceUrlFieldSection({
+    required this.canEdit,
+    required this.isSaving,
+    required this.referenceUrlController,
+    this.referenceUrlError,
+    this.onOpenReferenceUrl,
+  });
+
+  final bool canEdit;
+  final bool isSaving;
+  final TextEditingController referenceUrlController;
+  final String? referenceUrlError;
+  final Future<void> Function()? onOpenReferenceUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final hasReferenceUrl = referenceUrlController.text.trim().isNotEmpty;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        KinlyTextField(
+          controller: referenceUrlController,
+          enabled: canEdit && !isSaving,
+          labelText: s.houseDirectoryNoteUrlLabel,
+          hintText: s.houseDirectoryNoteUrlHint,
+          errorText: referenceUrlError,
+        ),
+        if (!canEdit && hasReferenceUrl && onOpenReferenceUrl != null) ...[
+          const SizedBox(height: 12),
+          KinlyOutlinedButton.text(
+            onPressed: () => onOpenReferenceUrl!.call(),
+            label: s.houseDirectoryOpenLink,
+            fullWidth: true,
+          ),
+        ],
+      ],
     );
   }
 }

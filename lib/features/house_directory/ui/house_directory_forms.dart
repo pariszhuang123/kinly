@@ -147,7 +147,6 @@ class _ServiceSheetBody extends StatefulWidget {
 }
 
 class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
-  static const int _daysPerWeek = 7;
   static const int _daysPerMonth = 30;
 
   late final TextEditingController _providerController;
@@ -266,7 +265,7 @@ class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
     if (picked == null || !mounted) return;
     setState(() {
       _endDate = picked;
-      _seedReminderDefaults(force: true);
+      _seedReminderDefaults();
     });
   }
 
@@ -348,14 +347,14 @@ class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
     return offsetValue == null || offsetValue < 1;
   }
 
-  void _seedReminderDefaults({bool force = false}) {
+  void _seedReminderDefaults() {
     if (_endDate == null) {
       _offsetValueController.clear();
       _offsetUnit = null;
       return;
     }
     final hasExistingOffset = _offsetValueController.text.trim().isNotEmpty;
-    if (!force && hasExistingOffset && _offsetUnit != null) {
+    if (hasExistingOffset && _offsetUnit != null) {
       return;
     }
     _offsetValueController.text = '1';
@@ -363,14 +362,14 @@ class _ServiceSheetBodyState extends State<_ServiceSheetBody> {
   }
 
   HouseDirectoryReminderOffsetUnit _defaultOffsetUnitFor(DateTime endDate) {
-    final daysUntilEnd = endDate.difference(DateTime.now()).inDays;
-    if (daysUntilEnd > _daysPerMonth) {
-      return HouseDirectoryReminderOffsetUnit.month;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final end = DateTime(endDate.year, endDate.month, endDate.day);
+    final daysUntilEnd = end.difference(today).inDays;
+    if (daysUntilEnd <= _daysPerMonth) {
+      return HouseDirectoryReminderOffsetUnit.day;
     }
-    if (daysUntilEnd > _daysPerWeek) {
-      return HouseDirectoryReminderOffsetUnit.week;
-    }
-    return HouseDirectoryReminderOffsetUnit.day;
+    return HouseDirectoryReminderOffsetUnit.month;
   }
 
   UpsertHouseDirectoryServiceInput _buildInput() {

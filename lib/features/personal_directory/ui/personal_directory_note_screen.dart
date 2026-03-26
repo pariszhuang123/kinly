@@ -44,12 +44,14 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
   late final TextEditingController _contactNameController;
   late final TextEditingController _phoneController;
   late final TextEditingController _detailsController;
+  late final TextEditingController _referenceUrlController;
   bool _isSaving = false;
   String? _validationError;
   String? _titleError;
   String? _contactNameError;
   String? _phoneError;
   String? _detailsError;
+  String? _referenceUrlError;
 
   bool get _isCreating => widget.note == null;
   bool get _isDirty {
@@ -58,13 +60,15 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
       return _titleController.text.trim().isNotEmpty ||
           _contactNameController.text.trim().isNotEmpty ||
           _phoneController.text.trim().isNotEmpty ||
-          _detailsController.text.trim().isNotEmpty;
+          _detailsController.text.trim().isNotEmpty ||
+          _referenceUrlController.text.trim().isNotEmpty;
     }
     return _noteType != note.noteType ||
         _titleController.text.trim() != (note.customTitle ?? note.label ?? '').trim() ||
         _contactNameController.text.trim() != (note.contactName ?? '').trim() ||
         _phoneController.text.trim() != (note.phoneNumber ?? '').trim() ||
-        (_trimmedDetails() ?? '') != (note.details ?? '').trim();
+        (_trimmedDetails() ?? '') != (note.details ?? '').trim() ||
+        (_trimmedReferenceUrl() ?? '') != (note.referenceUrl ?? '').trim();
   }
 
   @override
@@ -82,10 +86,14 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
     _contactNameController = TextEditingController(text: note?.contactName ?? '');
     _phoneController = TextEditingController(text: note?.phoneNumber ?? '');
     _detailsController = TextEditingController(text: note?.details ?? '');
+    _referenceUrlController = TextEditingController(
+      text: note?.referenceUrl ?? '',
+    );
     _titleController.addListener(_handleFieldChanged);
     _contactNameController.addListener(_handleFieldChanged);
     _phoneController.addListener(_handleFieldChanged);
     _detailsController.addListener(_handleFieldChanged);
+    _referenceUrlController.addListener(_handleFieldChanged);
   }
 
   @override
@@ -94,6 +102,7 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
     _contactNameController.dispose();
     _phoneController.dispose();
     _detailsController.dispose();
+    _referenceUrlController.dispose();
     super.dispose();
   }
 
@@ -116,12 +125,15 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
         contactNameController: _contactNameController,
         phoneController: _phoneController,
         detailsController: _detailsController,
+        referenceUrlController: _referenceUrlController,
         titleError: _titleError,
         contactNameError: _contactNameError,
         phoneError: _phoneError,
         detailsError: _detailsError,
+        referenceUrlError: _referenceUrlError,
         onNoteTypeSelected: _updateNoteType,
         onCallPhoneNumber: widget.canEdit ? null : _dialEmergencyContact,
+        onOpenReferenceUrl: widget.canEdit ? null : _openReferenceUrl,
         onSave: _save,
         onArchive: _archive,
       ),
@@ -149,9 +161,11 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
     final contactName = _contactNameController.text.trim();
     final phoneNumber = _phoneController.text.trim();
     final details = _detailsController.text.trim();
+    final referenceUrl = _referenceUrlController.text.trim();
     String? titleError;
     String? contactNameError;
     String? phoneError;
+    String? referenceUrlError;
 
     switch (_noteType) {
       case PersonalDirectoryNoteType.emergencyContact:
@@ -176,28 +190,38 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
         break;
     }
 
+    if (referenceUrl.isNotEmpty &&
+        !isValidPersonalDirectoryReferenceUrl(referenceUrl)) {
+      referenceUrlError = s.houseDirectoryValidationUrl;
+    }
+
     final isValid =
         titleError == null &&
         contactNameError == null &&
         phoneError == null &&
+        referenceUrlError == null &&
         isValidPersonalDirectoryNoteForm(
           noteType: _noteType,
           title: title,
           contactName: contactName,
           phoneNumber: phoneNumber,
           details: details,
+          referenceUrl: referenceUrl,
           isValidPhoneNumber: _isValidPhoneNumber,
+          isValidReferenceUrl: isValidPersonalDirectoryReferenceUrl,
         );
     setState(() {
       _titleError = titleError;
       _contactNameError = contactNameError;
       _phoneError = phoneError;
       _detailsError = null;
+      _referenceUrlError = referenceUrlError;
       _validationError =
           isValid ||
                   titleError != null ||
                   contactNameError != null ||
-                  phoneError != null
+                  phoneError != null ||
+                  referenceUrlError != null
               ? null
               : s.personalDirectoryNoteValidation;
     });
@@ -217,6 +241,7 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
     _contactNameError = null;
     _phoneError = null;
     _detailsError = null;
+    _referenceUrlError = null;
   }
 
   Future<void> _save() async {
@@ -231,6 +256,7 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
             contactName: _contactNameController.text.trim(),
             phoneNumber: _phoneController.text.trim(),
             details: _trimmedDetails(),
+            referenceUrl: _trimmedReferenceUrl(),
           ),
         );
       } else {
@@ -242,6 +268,7 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
             contactName: _contactNameController.text.trim(),
             phoneNumber: _phoneController.text.trim(),
             details: _trimmedDetails(),
+            referenceUrl: _trimmedReferenceUrl(),
           ),
         );
       }
@@ -285,12 +312,27 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
     );
   }
 
+  String? _trimmedReferenceUrl() {
+    return trimPersonalDirectoryReferenceUrl(_referenceUrlController.text);
+  }
+
   Future<void> _dialEmergencyContact() async {
     final phoneNumber = _phoneController.text.trim();
     if (phoneNumber.isEmpty) return;
     final normalized = phoneNumber.replaceAll(RegExp(r'[\s()-]'), '');
     final uri = Uri(scheme: 'tel', path: normalized);
     await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  Future<void> _openReferenceUrl() async {
+    final referenceUrl = _trimmedReferenceUrl();
+    if (referenceUrl == null) return;
+    final uri = Uri.tryParse(referenceUrl);
+    if (uri == null) return;
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!launched && mounted) {
+      KinlySnackBar.showError(context, S.of(context).houseDirectoryOpenLinkError);
+    }
   }
 
   bool _isValidPhoneNumber(String value) {

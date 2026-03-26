@@ -1,6 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:kinly/app/router/app_route_names.dart';
+import 'package:kinly/contracts/flow/flow_chore_outcome.dart';
+import 'package:kinly/contracts/flow/flow_chore_prefill.dart';
+import 'package:kinly/contracts/flow/route_args.dart';
 import 'package:kinly/contracts/house_directory/models.dart';
+import 'package:kinly/contracts/house_directory/route_args.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/dialogs/kinly_dialogs.dart';
 import 'package:kinly/core/ui/kinly_app_bar.dart';
@@ -9,9 +16,10 @@ import 'package:kinly/core/ui/kinly_loader.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/features/house_directory/bloc/house_directory_bloc.dart';
-import 'package:kinly/features/house_directory/ui/house_directory_route_args.dart';
 import 'package:kinly/features/house_directory/ui/house_directory_service_screen_content.dart';
 import 'package:kinly/generated/l10n.dart';
+
+part 'house_directory_service_screen_helpers.dart';
 
 class HouseDirectoryServiceScreen extends StatefulWidget {
   const HouseDirectoryServiceScreen({
@@ -19,11 +27,13 @@ class HouseDirectoryServiceScreen extends StatefulWidget {
     required this.homeId,
     required this.isOwner,
     this.serviceId,
+    this.reminderId,
   });
 
   final String homeId;
   final bool isOwner;
   final String? serviceId;
+  final String? reminderId;
 
   bool get isCreating => serviceId == null;
 
@@ -33,6 +43,8 @@ class HouseDirectoryServiceScreen extends StatefulWidget {
 }
 
 class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScreen> {
+  static const int _daysPerMonth = 30;
+
   final _providerController = TextEditingController();
   final _customLabelController = TextEditingController();
   final _referenceController = TextEditingController();
@@ -91,30 +103,28 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
     return BlocConsumer<HouseDirectoryBloc, HouseDirectoryState>(
       listenWhen: (previous, current) => previous.notice != current.notice,
       listener: _onNoticeChanged,
-      builder: (context, state) {
-        final service = _resolveService(state);
-        _hydrateFromService(service);
+        builder: (context, state) {
+          final service = _resolveService(state);
+          final reminder = _resolveReminder(state, service);
+          _hydrateFromService(service);
 
-        return KinlyScaffold(
+          return KinlyScaffold(
           appBar: KinlyAppBar(
             title: Text(_titleForState(s)),
-            actions: [
-              if (!widget.isCreating && widget.isOwner && !_isEditing)
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(end: 8),
-                  child: Center(
-                    child: KinlyFilledButton.text(
-                      onPressed: () => setState(() => _isEditing = true),
-                      label: s.houseDirectoryEdit,
-                      compact: true,
-                      fullWidth: false,
-                    ),
-                  ),
-                ),
-            ],
+            actions: buildHouseDirectoryServiceAppBarActions(
+              isCreating: widget.isCreating,
+              isOwner: widget.isOwner,
+              isEditing: _isEditing,
+              editLabel: s.houseDirectoryEdit,
+              onEdit: () => setState(() => _isEditing = true),
+            ),
           ),
           body: SafeArea(
-            child: _buildBody(state: state, service: service),
+            child: _buildBody(
+              state: state,
+              service: service,
+              reminder: reminder,
+            ),
           ),
         );
       },
@@ -124,6 +134,7 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
   Widget _buildBody({
     required HouseDirectoryState state,
     required HouseDirectoryService? service,
+    required HouseDirectoryReminder? reminder,
   }) {
     final s = S.of(context);
     final canShow = widget.isCreating || service != null;
@@ -183,16 +194,33 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
       },
       onArchive: () => _confirmArchive(service),
       onSave: () => _save(service),
+      reminder: reminder,
+      onCreateTask: buildHouseDirectoryCreateTaskAction(
+        isOwner: widget.isOwner,
+        isEditing: _isEditing,
+        service: service,
+        reminder: reminder,
+        onCreateTask: _openCreateTask,
+      ),
     );
   }
 
   HouseDirectoryService? _resolveService(HouseDirectoryState state) {
-    final serviceId = widget.serviceId;
-    if (serviceId == null) return null;
-    for (final service in state.services) {
-      if (service.id == serviceId) return service;
-    }
-    return null;
+    return resolveHouseDirectoryService(
+      state: state,
+      serviceId: widget.serviceId,
+    );
+  }
+
+  HouseDirectoryReminder? _resolveReminder(
+    HouseDirectoryState state,
+    HouseDirectoryService? service,
+  ) {
+    return resolveHouseDirectoryReminder(
+      state: state,
+      reminderId: widget.reminderId,
+      service: service,
+    );
   }
 
   void _hydrateFromService(HouseDirectoryService? service) {
@@ -210,6 +238,7 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
     _offsetUnit = service.renewalReminderOffsetUnit;
     _startDate = service.termStartDate;
     _endDate = service.termEndDate;
+    _seedReminderDefaults();
   }
 
   String _titleForState(S s) {
@@ -250,7 +279,10 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
       lastDate: DateTime(2100),
     );
     if (picked == null || !mounted) return;
-    setState(() => _endDate = picked);
+    setState(() {
+      _endDate = picked;
+      _seedReminderDefaults();
+    });
   }
 
   void _save(HouseDirectoryService? service) {
@@ -308,6 +340,24 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
         );
   }
 
+  void _seedReminderDefaults() {
+    if (_endDate == null) {
+      _offsetValueController.clear();
+      _offsetUnit = null;
+      return;
+    }
+    final hasOffsetValue = _offsetValueController.text.trim().isNotEmpty;
+    if (hasOffsetValue && _offsetUnit != null) {
+      return;
+    }
+    _offsetValueController.text = '1';
+    _offsetUnit = defaultHouseDirectoryReminderOffsetUnit(
+      endDate: _endDate!,
+      today: DateTime.now(),
+      daysPerMonth: _daysPerMonth,
+    );
+  }
+
   Future<void> _confirmArchive(HouseDirectoryService? service) async {
     if (service == null) return;
     final s = S.of(context);
@@ -324,6 +374,46 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
         );
   }
 
+  Future<void> _openCreateTask(
+    HouseDirectoryService service,
+    HouseDirectoryReminder reminder,
+  ) async {
+    final ownerUserId = _ownerUserId(context.read<HouseDirectoryBloc>().state);
+    final result = await context.pushNamed<FlowChoreOutcome>(
+      AppRouteNames.flowChoreCreate,
+      queryParameters: {'homeId': widget.homeId},
+      extra: FlowChoreRouteArgs(
+        initialForm: FlowChorePrefill(
+          startDate: reminder.dueAt,
+          assigneeUserId: ownerUserId,
+          title: _taskTitleFor(service),
+          notes: buildHouseDirectoryTaskNotes(
+            strings: S.of(context),
+            service: service,
+            reminder: reminder,
+          ),
+          howToVideoUrl: service.linkUrl ?? '',
+        ),
+      ),
+    );
+    if (!mounted || result == null || result.isDeleted) return;
+    context.read<HouseDirectoryBloc>().add(
+      HouseDirectoryReminderDismissed(reminder.id),
+    );
+    KinlySnackBar.showSuccess(context, S.of(context).flowChoreCreateSuccess);
+  }
+
+  String _taskTitleFor(HouseDirectoryService service) {
+    return (service.customLabel ?? service.providerName).trim();
+  }
+
+  String? _ownerUserId(HouseDirectoryState state) {
+    for (final member in state.members) {
+      if (member.isOwner) return member.userId;
+    }
+    return null;
+  }
+
   void _onNoticeChanged(BuildContext context, HouseDirectoryState state) {
     final notice = state.notice;
     if (notice == null) {
@@ -335,17 +425,11 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
     switch (notice) {
       case HouseDirectoryNotice.serviceSaved:
         if (!mounted) return;
-        if (widget.isCreating) {
-          Navigator.of(
-            context,
-          ).pop(HouseDirectoryRouteResult.serviceCreated);
-          return;
-        }
-        setState(() => _isEditing = false);
-        KinlySnackBar.showSuccess(
-          context,
-          S.of(context).houseDirectoryServiceSaved,
-        );
+        final result =
+            widget.isCreating
+                ? HouseDirectoryRouteResult.serviceCreated
+                : HouseDirectoryRouteResult.serviceUpdated;
+        Navigator.of(context).pop(result);
         return;
       case HouseDirectoryNotice.serviceArchived:
         if (!mounted) return;
@@ -364,9 +448,4 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
         return;
     }
   }
-}
-
-String? _emptyToNull(String value) {
-  final trimmed = value.trim();
-  return trimmed.isEmpty ? null : trimmed;
 }

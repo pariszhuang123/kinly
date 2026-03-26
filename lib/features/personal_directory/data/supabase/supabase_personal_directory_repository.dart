@@ -104,6 +104,7 @@ class SupabasePersonalDirectoryRepository implements PersonalDirectoryRepository
           'p_contact_name': input.contactName,
           'p_phone_number': input.phoneNumber,
           'p_details': input.details,
+          'p_reference_url': input.referenceUrl,
           'p_photo_path': input.photoPath,
         },
       );
@@ -127,6 +128,7 @@ class SupabasePersonalDirectoryRepository implements PersonalDirectoryRepository
           'p_contact_name': input.contactName,
           'p_phone_number': input.phoneNumber,
           'p_details': input.details,
+          'p_reference_url': input.referenceUrl,
           'p_photo_path': input.photoPath,
         },
       );

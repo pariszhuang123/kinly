@@ -18,6 +18,7 @@ class AppRouteNames {
   static const hub = 'hub';
   static const houseDirectory = 'houseDirectory';
   static const houseDirectoryDetails = 'houseDirectoryDetails';
+  static const houseDirectoryWifi = 'houseDirectoryWifi';
   static const houseDirectoryService = 'houseDirectoryService';
   static const houseDirectoryNote = 'houseDirectoryNote';
   static const houseDirectoryPhoto = 'houseDirectoryPhoto';

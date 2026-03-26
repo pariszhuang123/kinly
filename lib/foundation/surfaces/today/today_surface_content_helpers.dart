@@ -105,14 +105,23 @@ Widget _buildTodayContentImpl(
     onHousePulseTap: () => _openHousePulseDetail(context),
     onHouseDirectoryTap:
         () => context.pushNamed(AppRouteNames.houseDirectory),
-    onHouseDirectoryReminderAcknowledge:
-        (reminder) => context.read<TodayBloc>().add(
+    onHouseDirectoryReminderOpen: (reminder) async {
+      final isOwner = state.profile?.isOwner == true;
+      if (!isOwner) {
+        context.read<TodayBloc>().add(
           TodayHouseDirectoryReminderAcknowledged(reminder.id),
+        );
+      }
+      await context.pushNamed(
+        AppRouteNames.houseDirectoryService,
+        extra: HouseDirectoryServiceRouteArgs(
+          serviceId: reminder.serviceId,
+          reminderId: isOwner ? reminder.id : null,
         ),
-    onHouseDirectoryReminderDismiss:
-        (reminder) => context.read<TodayBloc>().add(
-          TodayHouseDirectoryReminderDismissed(reminder.id),
-        ),
+      );
+      if (!context.mounted) return;
+      context.read<TodayBloc>().add(const TodayRefreshed());
+    },
     onShoppingTap: () => stateful._openShoppingList(context),
     onBankAccountPrompt: () {
       stateful._openPersonalDirectoryBank(context);

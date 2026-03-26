@@ -340,15 +340,7 @@ class _HouseDirectoryNoteScreenState extends State<HouseDirectoryNoteScreen> {
                 : (widget.isCreating
                     ? HouseDirectoryRouteResult.noteCreated
                     : HouseDirectoryRouteResult.noteUpdated);
-        if (widget.isCreating) {
-          Navigator.of(context).pop(result);
-          return;
-        }
-        setState(() => _isEditing = false);
-        KinlySnackBar.showSuccess(
-          context,
-          S.of(context).houseDirectoryNoteSaved,
-        );
+        Navigator.of(context).pop(result);
         return;
       case HouseDirectoryNotice.noteArchived:
         if (!mounted) return;

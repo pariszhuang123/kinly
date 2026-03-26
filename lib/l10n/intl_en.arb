@@ -1535,7 +1535,8 @@
   "hubHouseDirectoryTitle": "House directory",
   "hubHouseDirectorySubtitle": "Wifi, services, notes, and renewal reminders.",
   "houseDirectoryEmptyTitle": "Shared home details live here.",
-  "houseDirectoryEmptyBody": "Add your home details so everyone can find them in one place.",
+  "houseDirectoryOwnerSubtitle": "Add and manage your home details here.",
+  "houseDirectoryMemberSubtitle": "Tap here to see your home details, services, notes, and reminders.",
   "houseDirectoryWifiTitle": "Wifi",
   "houseDirectoryRentTitle": "Rent",
   "houseDirectoryServicesTitle": "Services",
@@ -1642,8 +1643,6 @@
     }
   },
   "todayHouseDirectoryOpenCta": "Open directory",
-  "todayHouseDirectoryAcknowledgeCta": "Acknowledge",
-  "todayHouseDirectoryDismissCta": "Dismiss",
   "personalProfilePersonalDirectory": "Personal directory",
   "personalDirectoryTitle": "Personal directory",
   "personalDirectoryFallbackName": "Member",
