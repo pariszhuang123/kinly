@@ -78,6 +78,7 @@ List<GoRoute> _buildRoutes(AuthBloc authBloc) {
         );
       },
     ),
+    ...buildFitCheckRoutes(),
     ...buildPaywallRoutes(),
     ...buildSplashRoutes(),
     ...buildVersionGatingRoutes(),

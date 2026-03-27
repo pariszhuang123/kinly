@@ -14,11 +14,13 @@ class HouseNormOnboardingProvider extends StatelessWidget {
     required this.repository,
     required this.homeId,
     required this.locale,
+    this.initialResponses = const <String, int>{},
   });
 
   final HouseNormsRepository repository;
   final String homeId;
   final String locale;
+  final Map<String, int> initialResponses;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class HouseNormOnboardingProvider extends StatelessWidget {
             scenarios: houseNormScenarios(),
             homeId: homeId,
             locale: locale,
+            initialResponses: initialResponses,
             logger: sl<Logger>(),
           ),
       child: const HouseNormOnboardingScreen(),

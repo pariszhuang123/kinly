@@ -23,7 +23,9 @@ import '../../../../core/ui/enums/personal_profile_entry_source.dart';
 import '../../../../core/theme/spacing.dart';
 
 class StartHomeScreen extends StatelessWidget {
-  const StartHomeScreen({super.key});
+  const StartHomeScreen({super.key, this.pendingFitCheckDraftId});
+
+  final String? pendingFitCheckDraftId;
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +34,15 @@ class StartHomeScreen extends StatelessWidget {
           (_) =>
               UserContextCubit(repository: sl<UserContextRepository>())
                 ..refresh(),
-      child: const _StartHomeView(),
+      child: _StartHomeView(pendingFitCheckDraftId: pendingFitCheckDraftId),
     );
   }
 }
 
 class _StartHomeView extends StatelessWidget {
-  const _StartHomeView();
+  const _StartHomeView({this.pendingFitCheckDraftId});
+
+  final String? pendingFitCheckDraftId;
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +104,16 @@ class _StartHomeView extends StatelessWidget {
                 context.read<AuthBloc>().add(
                   const AuthMembershipRefreshRequested(),
                 );
+                if (pendingFitCheckDraftId != null &&
+                    pendingFitCheckDraftId!.isNotEmpty &&
+                    state.createdHomeId != null &&
+                    state.createdHomeId!.isNotEmpty) {
+                  context.goNamed(
+                    AppRouteNames.fitCheckAttach,
+                    pathParameters: {'draftId': pendingFitCheckDraftId!},
+                    queryParameters: {'homeId': state.createdHomeId!},
+                  );
+                }
               }
             },
             builder: (context, state) {

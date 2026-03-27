@@ -7968,6 +7968,426 @@ class S {
       args: [],
     );
   }
+
+  /// `Candidate inbox`
+  String get fitCheckInboxTitle {
+    return Intl.message(
+      'Candidate inbox',
+      name: 'fitCheckInboxTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home summary`
+  String get fitCheckInboxSummaryTitle {
+    return Intl.message(
+      'Home summary',
+      name: 'fitCheckInboxSummaryTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No submissions yet`
+  String get fitCheckInboxEmptyTitle {
+    return Intl.message(
+      'No submissions yet',
+      name: 'fitCheckInboxEmptyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share your fit check link to start collecting candidate responses.`
+  String get fitCheckInboxEmptyBody {
+    return Intl.message(
+      'Share your fit check link to get candidate responses.',
+      name: 'fitCheckInboxEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load candidate inbox`
+  String get fitCheckInboxErrorTitle {
+    return Intl.message(
+      'Couldn\'t load candidate inbox',
+      name: 'fitCheckInboxErrorTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try again in a moment.`
+  String get fitCheckInboxErrorBody {
+    return Intl.message(
+      'Try again in a moment.',
+      name: 'fitCheckInboxErrorBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open briefing`
+  String get fitCheckOpenBriefingCta {
+    return Intl.message(
+      'Open briefing',
+      name: 'fitCheckOpenBriefingCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Candidate briefing`
+  String get fitCheckBriefingTitle {
+    return Intl.message(
+      'Candidate briefing',
+      name: 'fitCheckBriefingTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Context`
+  String get fitCheckBriefingContextTitle {
+    return Intl.message(
+      'Context',
+      name: 'fitCheckBriefingContextTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Where to start`
+  String get fitCheckBriefingFocusTitle {
+    return Intl.message(
+      'Where to start',
+      name: 'fitCheckBriefingFocusTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Alignments`
+  String get fitCheckAlignmentsTitle {
+    return Intl.message(
+      'Alignments',
+      name: 'fitCheckAlignmentsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Alignment preview`
+  String get fitCheckAlignmentPreviewTitle {
+    return Intl.message(
+      'Alignment preview',
+      name: 'fitCheckAlignmentPreviewTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Watchouts`
+  String get fitCheckWatchoutsTitle {
+    return Intl.message(
+      'Watchouts',
+      name: 'fitCheckWatchoutsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Top watchouts`
+  String get fitCheckPrimaryWatchoutsTitle {
+    return Intl.message(
+      'Top watchouts',
+      name: 'fitCheckPrimaryWatchoutsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Other watchouts`
+  String get fitCheckSecondaryWatchoutsTitle {
+    return Intl.message(
+      'Other watchouts',
+      name: 'fitCheckSecondaryWatchoutsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Questions to ask`
+  String get fitCheckQuestionsTitle {
+    return Intl.message(
+      'Questions to ask',
+      name: 'fitCheckQuestionsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Candidate answers`
+  String get fitCheckCandidateAnswersTitle {
+    return Intl.message(
+      'Candidate answers',
+      name: 'fitCheckCandidateAnswersTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep in mind`
+  String get fitCheckLimitationTitle {
+    return Intl.message(
+      'Keep in mind',
+      name: 'fitCheckLimitationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use for house norms`
+  String get fitCheckStartHouseNormsCta {
+    return Intl.message(
+      'Use for house norms',
+      name: 'fitCheckStartHouseNormsCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load house norms prefill.`
+  String get fitCheckLoadPrefillFailed {
+    return Intl.message(
+      'Couldn\'t load house norms prefill.',
+      name: 'fitCheckLoadPrefillFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Claim fit check`
+  String get fitCheckClaimTitle {
+    return Intl.message(
+      'Claim fit check',
+      name: 'fitCheckClaimTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Linking your fit check to your account.`
+  String get fitCheckClaimLoadingBody {
+    return Intl.message(
+      'Linking your fit check to your account.',
+      name: 'fitCheckClaimLoadingBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This fit check link is missing its claim token.`
+  String get fitCheckClaimMissingToken {
+    return Intl.message(
+      'This fit check link is missing its claim token.',
+      name: 'fitCheckClaimMissingToken',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attach fit check`
+  String get fitCheckAttachTitle {
+    return Intl.message(
+      'Attach fit check',
+      name: 'fitCheckAttachTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attach this fit check to your home so new responses stay connected.`
+  String get fitCheckAttachBody {
+    return Intl.message(
+      'Attach this fit check to your home so new responses stay connected.',
+      name: 'fitCheckAttachBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create your home first to finish setting up this fit check.`
+  String get fitCheckAttachNoHomeBody {
+    return Intl.message(
+      'Create your home first to finish setting up this fit check.',
+      name: 'fitCheckAttachNoHomeBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attach to home`
+  String get fitCheckAttachConfirmCta {
+    return Intl.message(
+      'Attach to home',
+      name: 'fitCheckAttachConfirmCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create home first`
+  String get fitCheckAttachCreateHomeCta {
+    return Intl.message(
+      'Create home first',
+      name: 'fitCheckAttachCreateHomeCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fit check attached.`
+  String get fitCheckAttachSuccess {
+    return Intl.message(
+      'Fit check attached.',
+      name: 'fitCheckAttachSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current share`
+  String get fitCheckShareCurrentTitle {
+    return Intl.message(
+      'Current share',
+      name: 'fitCheckShareCurrentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous share`
+  String get fitCheckSharePreviousTitle {
+    return Intl.message(
+      'Previous share',
+      name: 'fitCheckSharePreviousTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Responses open`
+  String get fitCheckShareActiveStatus {
+    return Intl.message(
+      'Responses open',
+      name: 'fitCheckShareActiveStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Responses closed`
+  String get fitCheckShareRevokedStatus {
+    return Intl.message(
+      'Responses closed',
+      name: 'fitCheckShareRevokedStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rotate link`
+  String get fitCheckRotateShareCta {
+    return Intl.message(
+      'Rotate link',
+      name: 'fitCheckRotateShareCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop responses`
+  String get fitCheckRevokeShareCta {
+    return Intl.message(
+      'Stop responses',
+      name: 'fitCheckRevokeShareCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New share link is active.`
+  String get fitCheckRotateShareSuccess {
+    return Intl.message(
+      'New share link is active.',
+      name: 'fitCheckRotateShareSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Responses are now closed.`
+  String get fitCheckRevokeShareSuccess {
+    return Intl.message(
+      'Responses are now closed.',
+      name: 'fitCheckRevokeShareSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Candidate`
+  String get fitCheckSubmissionFallbackName {
+    return Intl.message(
+      'Candidate',
+      name: 'fitCheckSubmissionFallbackName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cleanliness`
+  String get fitCheckScenarioCleanlinessTitle {
+    return Intl.message(
+      'Cleanliness',
+      name: 'fitCheckScenarioCleanlinessTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rhythm`
+  String get fitCheckScenarioRhythmTitle {
+    return Intl.message(
+      'Rhythm',
+      name: 'fitCheckScenarioRhythmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chores`
+  String get fitCheckScenarioChoresTitle {
+    return Intl.message(
+      'Shared care',
+      name: 'fitCheckScenarioChoresTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Conflict`
+  String get fitCheckScenarioConflictTitle {
+    return Intl.message(
+      'Conflict',
+      name: 'fitCheckScenarioConflictTitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

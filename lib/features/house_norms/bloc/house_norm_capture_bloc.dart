@@ -18,6 +18,7 @@ class HouseNormCaptureBloc
     required List<HouseNormScenarioDefinition> scenarios,
     required String homeId,
     required String locale,
+    Map<String, int> initialResponses = const <String, int>{},
     Logger? logger,
   }) : _repository = repository,
        _scenarios = scenarios,
@@ -26,7 +27,15 @@ class HouseNormCaptureBloc
        _logger = logger ?? const DebugLogger(),
        _storageKey = FormDraftStorage.houseNormsKey(homeId: homeId),
        _scopeHash = FormDraftStorage.hashScope(homeId),
-       super(HouseNormCaptureState.initial(scenarios)) {
+       super(
+         HouseNormCaptureState.initial(
+           scenarios,
+           initialResponses: _sanitizeInitialResponses(
+             scenarios: scenarios,
+             responses: initialResponses,
+           ),
+         ),
+       ) {
     on<HouseNormCaptureOptionSelected>(_onOptionSelected);
     on<HouseNormCapturePreviousRequested>(_onPreviousRequested);
     on<HouseNormCaptureSubmitted>(_onSubmitted);
@@ -240,5 +249,23 @@ class HouseNormCaptureBloc
   DateTime? _parseDate(Object? raw) {
     if (raw is! String) return null;
     return DateTime.tryParse(raw);
+  }
+
+  static Map<String, int> _sanitizeInitialResponses({
+    required List<HouseNormScenarioDefinition> scenarios,
+    required Map<String, int> responses,
+  }) {
+    final optionLengths = <String, int>{
+      for (final scenario in scenarios) scenario.id: scenario.options.length,
+    };
+    final sanitized = <String, int>{};
+    for (final entry in responses.entries) {
+      final length = optionLengths[entry.key];
+      if (length == null) continue;
+      final value = entry.value;
+      if (value < 0 || value >= length) continue;
+      sanitized[entry.key] = value;
+    }
+    return sanitized;
   }
 }

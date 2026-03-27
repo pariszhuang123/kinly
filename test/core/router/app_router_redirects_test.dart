@@ -163,6 +163,27 @@ void main() {
       );
     });
 
+    test('authenticated without active membership can access fit check routes', () {
+      expect(
+        redirectForTest(
+          path: '/fit-check/draft-1',
+          authStatus: AuthStatus.authenticated,
+          membershipStatus: AuthMembershipStatus.none,
+          appVersionStatus: AppVersionStatus.upToDate,
+        ),
+        isNull,
+      );
+      expect(
+        redirectForTest(
+          path: '/fit-check/draft-1/submission/submission-1',
+          authStatus: AuthStatus.authenticated,
+          membershipStatus: AuthMembershipStatus.none,
+          appVersionStatus: AppVersionStatus.upToDate,
+        ),
+        isNull,
+      );
+    });
+
     test(
       'authenticated with active membership redirects to today for welcome/start',
       () {

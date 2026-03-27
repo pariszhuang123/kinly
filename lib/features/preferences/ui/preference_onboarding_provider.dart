@@ -15,11 +15,13 @@ class PreferenceOnboardingProvider extends StatelessWidget {
     required this.repository,
     required this.userId,
     this.homeId,
+    this.initialResponses = const <String, int>{},
   });
 
   final PreferenceReportsRepository repository;
   final String userId;
   final String? homeId;
+  final Map<String, int> initialResponses;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class PreferenceOnboardingProvider extends StatelessWidget {
           scenarios: preferenceScenarios(),
           userId: userId,
           homeId: homeId,
+          initialResponses: initialResponses,
           logger: sl<Logger>(),
           ),
       child: const PreferenceOnboardingScreen(),

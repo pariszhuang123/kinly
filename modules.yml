@@ -559,6 +559,43 @@ modules:
       plan_gate: false
     notes: Owner-authored house norms onboarding/report/edit and publish controls.
 
+  - name: fit_check
+    owner_role: Planner
+    status: feature
+    killable: false
+    kill_switch_flag: null
+    plan_gates: []
+    depends_on: [core, home_membership]
+    allowed_imports_from: ["*"]
+    public_api:
+      dart: null
+    data:
+      tables_owned: []
+      cross_module_refs:
+        - homes.id
+    rpcs:
+      owner:
+        - fit_check_claim_draft
+        - fit_check_attach_draft_to_home
+        - fit_check_get_owner_review
+        - fit_check_get_owner_briefing
+        - fit_check_rotate_share_token
+        - fit_check_revoke_share_token
+        - fit_check_get_prefill_payload
+      orchestration: []
+    entrypoints:
+      routes:
+        - /fit-check/claim
+        - /fit-check/:draftId/attach
+        - /fit-check/:draftId
+        - /fit-check/:draftId/submission/:submissionId
+      deep_links: []
+      navigation_tiles: []
+    test_matrix:
+      feature_flag_off: false
+      plan_gate: false
+    notes: Owner-side flatmate fit check claim, attach, inbox, and briefing flows for mobile.
+
   - name: nps
     owner_role: Planner
     status: feature

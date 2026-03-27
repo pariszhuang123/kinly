@@ -33,14 +33,20 @@ class PreferenceCaptureState extends Equatable {
 
   factory PreferenceCaptureState.initial(
     List<PreferenceScenarioDefinition> scenarios,
+    {Map<String, int> initialResponses = const <String, int>{}}
   ) {
+    final responses = Map<String, int>.unmodifiable(initialResponses);
+    final currentIndex = _firstUnansweredIndex(
+      scenarios: scenarios,
+      responses: responses,
+    );
     return PreferenceCaptureState(
       scenarios: scenarios,
-      currentIndex: 0,
-      responses: const {},
+      currentIndex: currentIndex,
+      responses: responses,
       status: PreferenceCaptureStatus.idle,
       schemaVersion: schemaVersionV1,
-      isDirty: false,
+      isDirty: responses.isNotEmpty,
       lastEditedAt: null,
       generatedReport: null,
       reflectiveMode: null,
@@ -90,4 +96,16 @@ class PreferenceCaptureState extends Equatable {
     reflectionId,
     errorMessage,
   ];
+}
+
+int _firstUnansweredIndex({
+  required List<PreferenceScenarioDefinition> scenarios,
+  required Map<String, int> responses,
+}) {
+  for (var index = 0; index < scenarios.length; index++) {
+    if (!responses.containsKey(scenarios[index].id)) {
+      return index;
+    }
+  }
+  return scenarios.isEmpty ? 0 : scenarios.length - 1;
 }

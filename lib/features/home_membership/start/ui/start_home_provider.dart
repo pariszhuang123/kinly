@@ -8,7 +8,9 @@ import '../bloc/start_home_bloc.dart';
 import 'start_home_screen.dart';
 
 class StartHomeProvider extends StatelessWidget {
-  const StartHomeProvider({super.key});
+  const StartHomeProvider({super.key, this.pendingFitCheckDraftId});
+
+  final String? pendingFitCheckDraftId;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,9 @@ class StartHomeProvider extends StatelessWidget {
                   const AuthProfileDeactivatedDetected(),
                 ),
           ),
-      child: const StartHomeScreen(),
+      child: StartHomeScreen(
+        pendingFitCheckDraftId: pendingFitCheckDraftId,
+      ),
     );
   }
 }

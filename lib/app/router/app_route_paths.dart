@@ -60,4 +60,8 @@ class AppRoutePaths {
   static const houseNormsReport = '/house-norms/report';
   static const houseNormsEdit = '/house-norms/edit';
   static const houseNormsSectionEdit = '/house-norms/edit/:sectionKey';
+  static const fitCheckClaim = '/fit-check/claim';
+  static const fitCheckAttach = '/fit-check/:draftId/attach';
+  static const fitCheckInbox = '/fit-check/:draftId';
+  static const fitCheckBriefing = '/fit-check/:draftId/submission/:submissionId';
 }

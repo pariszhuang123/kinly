@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
+import 'package:kinly/contracts/homes/ports/fit_check_repository.dart';
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
+import 'package:kinly/features/home/data/supabase/supabase_fit_check_repository.dart';
 import 'package:kinly/features/home/data/supabase/supabase_home_repository.dart';
 import 'package:kinly/features/home/data/supabase/supabase_shopping_list_repository.dart';
 import 'package:kinly/features/home/home.dart';
@@ -15,6 +17,11 @@ void installHomeDependencies(GetIt sl) {
   if (!sl.isRegistered<ShoppingListRepository>()) {
     sl.registerLazySingleton<ShoppingListRepository>(
       () => SupabaseShoppingListRepository(),
+    );
+  }
+  if (!sl.isRegistered<FitCheckRepository>()) {
+    sl.registerLazySingleton<FitCheckRepository>(
+      () => SupabaseFitCheckRepository(),
     );
   }
   if (!sl.isRegistered<InviteCodeParser>()) {

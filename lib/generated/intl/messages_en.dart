@@ -162,6 +162,131 @@ class MessageLookup extends MessageLookupByLibrary {
     "exploreShoppingSubtitle": MessageLookupByLibrary.simpleMessage(
       "View and manage shared shopping items.",
     ),
+    "fitCheckAlignmentsTitle": MessageLookupByLibrary.simpleMessage(
+      "Alignments",
+    ),
+    "fitCheckAlignmentPreviewTitle": MessageLookupByLibrary.simpleMessage(
+      "Alignment preview",
+    ),
+    "fitCheckBriefingContextTitle": MessageLookupByLibrary.simpleMessage(
+      "Context",
+    ),
+    "fitCheckBriefingFocusTitle": MessageLookupByLibrary.simpleMessage(
+      "Where to start",
+    ),
+    "fitCheckBriefingTitle": MessageLookupByLibrary.simpleMessage(
+      "Candidate briefing",
+    ),
+    "fitCheckAttachBody": MessageLookupByLibrary.simpleMessage(
+      "Attach this fit check to your home so new responses stay connected.",
+    ),
+    "fitCheckAttachConfirmCta": MessageLookupByLibrary.simpleMessage(
+      "Attach to home",
+    ),
+    "fitCheckAttachCreateHomeCta": MessageLookupByLibrary.simpleMessage(
+      "Create home first",
+    ),
+    "fitCheckAttachNoHomeBody": MessageLookupByLibrary.simpleMessage(
+      "Create your home first to finish setting up this fit check.",
+    ),
+    "fitCheckAttachSuccess": MessageLookupByLibrary.simpleMessage(
+      "Fit check attached.",
+    ),
+    "fitCheckAttachTitle": MessageLookupByLibrary.simpleMessage(
+      "Attach fit check",
+    ),
+    "fitCheckCandidateAnswersTitle": MessageLookupByLibrary.simpleMessage(
+      "Candidate answers",
+    ),
+    "fitCheckClaimLoadingBody": MessageLookupByLibrary.simpleMessage(
+      "Linking your fit check to your account.",
+    ),
+    "fitCheckClaimMissingToken": MessageLookupByLibrary.simpleMessage(
+      "This fit check link is missing its claim token.",
+    ),
+    "fitCheckClaimTitle": MessageLookupByLibrary.simpleMessage(
+      "Claim fit check",
+    ),
+    "fitCheckInboxEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Share your fit check link to get candidate responses.",
+    ),
+    "fitCheckInboxEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "No submissions yet",
+    ),
+    "fitCheckInboxErrorBody": MessageLookupByLibrary.simpleMessage(
+      "Try again in a moment.",
+    ),
+    "fitCheckInboxErrorTitle": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t load candidate inbox",
+    ),
+    "fitCheckInboxSummaryTitle": MessageLookupByLibrary.simpleMessage(
+      "Home summary",
+    ),
+    "fitCheckInboxTitle": MessageLookupByLibrary.simpleMessage(
+      "Candidate inbox",
+    ),
+    "fitCheckLimitationTitle": MessageLookupByLibrary.simpleMessage(
+      "Keep in mind",
+    ),
+    "fitCheckLoadPrefillFailed": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t load house norms prefill.",
+    ),
+    "fitCheckOpenBriefingCta": MessageLookupByLibrary.simpleMessage(
+      "Open briefing",
+    ),
+    "fitCheckPrimaryWatchoutsTitle": MessageLookupByLibrary.simpleMessage(
+      "Top watchouts",
+    ),
+    "fitCheckQuestionsTitle": MessageLookupByLibrary.simpleMessage(
+      "Questions to ask",
+    ),
+    "fitCheckRevokeShareCta": MessageLookupByLibrary.simpleMessage(
+      "Stop responses",
+    ),
+    "fitCheckRevokeShareSuccess": MessageLookupByLibrary.simpleMessage(
+      "Responses are now closed.",
+    ),
+    "fitCheckRotateShareCta": MessageLookupByLibrary.simpleMessage(
+      "Rotate link",
+    ),
+    "fitCheckRotateShareSuccess": MessageLookupByLibrary.simpleMessage(
+      "New share link is active.",
+    ),
+    "fitCheckScenarioChoresTitle": MessageLookupByLibrary.simpleMessage(
+      "Shared care",
+    ),
+    "fitCheckScenarioCleanlinessTitle":
+        MessageLookupByLibrary.simpleMessage("Cleanliness"),
+    "fitCheckScenarioConflictTitle": MessageLookupByLibrary.simpleMessage(
+      "Conflict",
+    ),
+    "fitCheckScenarioRhythmTitle": MessageLookupByLibrary.simpleMessage(
+      "Rhythm",
+    ),
+    "fitCheckSecondaryWatchoutsTitle": MessageLookupByLibrary.simpleMessage(
+      "Other watchouts",
+    ),
+    "fitCheckShareActiveStatus": MessageLookupByLibrary.simpleMessage(
+      "Responses open",
+    ),
+    "fitCheckShareCurrentTitle": MessageLookupByLibrary.simpleMessage(
+      "Current share",
+    ),
+    "fitCheckSharePreviousTitle": MessageLookupByLibrary.simpleMessage(
+      "Previous share",
+    ),
+    "fitCheckShareRevokedStatus": MessageLookupByLibrary.simpleMessage(
+      "Responses closed",
+    ),
+    "fitCheckStartHouseNormsCta": MessageLookupByLibrary.simpleMessage(
+      "Use for house norms",
+    ),
+    "fitCheckSubmissionFallbackName": MessageLookupByLibrary.simpleMessage(
+      "Candidate",
+    ),
+    "fitCheckWatchoutsTitle": MessageLookupByLibrary.simpleMessage(
+      "Watchouts",
+    ),
     "flowChoreAssigneeLabel": MessageLookupByLibrary.simpleMessage(
       "Who\'s doing this?",
     ),

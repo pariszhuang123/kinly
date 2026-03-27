@@ -6,6 +6,7 @@ import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/preferences/ports/preference_reports_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/preferences/ui/preference_onboarding_provider.dart';
+import 'package:kinly/features/preferences/routes/preference_onboarding_args.dart';
 import 'package:kinly/features/preferences/routes/preference_report_navigation_args.dart';
 import 'package:kinly/features/preferences/ui/preference_report_edit_provider.dart';
 import 'package:kinly/features/preferences/ui/preference_report_provider.dart';
@@ -30,15 +31,16 @@ List<GoRoute> buildPreferenceRoutes({
       name: AppRouteNames.preferenceOnboarding,
       builder: (_, state) {
         final membership = resolveContext();
-        final entrySource = _entrySourceFromExtra(state.extra);
+        final args = _onboardingArgsFromExtra(state.extra);
         return PreferenceOnboardingProvider(
           key:
-              entrySource == null
+              args?.entrySource == null
                   ? null
-                  : ValueKey('preference_onboarding_$entrySource'),
+                  : ValueKey('preference_onboarding_${args!.entrySource}'),
           repository: sl<PreferenceReportsRepository>(),
           userId: membership.userId,
           homeId: membership.homeId,
+          initialResponses: args?.initialResponses ?? const <String, int>{},
         );
       },
     ),
@@ -173,9 +175,48 @@ List<GoRoute> buildPreferenceRoutes({
 }
 
 String? _entrySourceFromExtra(Object? extra) {
+  if (extra is PreferenceOnboardingArgs) {
+    return extra.entrySource;
+  }
   if (extra is Map && extra['entrySource'] is String) {
     return extra['entrySource'] as String;
   }
   if (extra is String) return extra;
   return null;
+}
+
+PreferenceOnboardingArgs? _onboardingArgsFromExtra(Object? extra) {
+  if (extra is PreferenceOnboardingArgs) {
+    return extra;
+  }
+  if (extra is String) {
+    return PreferenceOnboardingArgs(entrySource: extra);
+  }
+  if (extra is! Map<String, Object?>) {
+    return null;
+  }
+  return PreferenceOnboardingArgs(
+    initialResponses: _coerceIntMap(extra['initialResponses']),
+    entrySource: extra['entrySource'] as String?,
+  );
+}
+
+Map<String, int> _coerceIntMap(Object? raw) {
+  if (raw is! Map) {
+    return const <String, int>{};
+  }
+  final coerced = <String, int>{};
+  for (final entry in raw.entries) {
+    final key = entry.key;
+    final value = entry.value;
+    if (key is! String) continue;
+    if (value is int) {
+      coerced[key] = value;
+      continue;
+    }
+    if (value is num) {
+      coerced[key] = value.toInt();
+    }
+  }
+  return coerced;
 }

@@ -33,14 +33,20 @@ class HouseNormCaptureState extends Equatable {
 
   factory HouseNormCaptureState.initial(
     List<HouseNormScenarioDefinition> scenarios,
+    {Map<String, int> initialResponses = const <String, int>{}}
   ) {
+    final responses = Map<String, int>.unmodifiable(initialResponses);
+    final currentIndex = _firstUnansweredIndex(
+      scenarios: scenarios,
+      responses: responses,
+    );
     return HouseNormCaptureState(
       scenarios: scenarios,
-      currentIndex: 0,
-      responses: const {},
+      currentIndex: currentIndex,
+      responses: responses,
       status: HouseNormCaptureStatus.idle,
       schemaVersion: schemaVersionV1,
-      isDirty: false,
+      isDirty: responses.isNotEmpty,
       lastEditedAt: null,
       generatedDocument: null,
       reflectiveMode: null,
@@ -90,4 +96,16 @@ class HouseNormCaptureState extends Equatable {
     reflectionId,
     errorMessage,
   ];
+}
+
+int _firstUnansweredIndex({
+  required List<HouseNormScenarioDefinition> scenarios,
+  required Map<String, int> responses,
+}) {
+  for (var index = 0; index < scenarios.length; index++) {
+    if (!responses.containsKey(scenarios[index].id)) {
+      return index;
+    }
+  }
+  return scenarios.isEmpty ? 0 : scenarios.length - 1;
 }

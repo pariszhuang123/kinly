@@ -58,5 +58,9 @@ class AppRouteNames {
   static const houseNormsReport = 'houseNormsReport';
   static const houseNormsEdit = 'houseNormsEdit';
   static const houseNormsSectionEdit = 'houseNormsSectionEdit';
+  static const fitCheckClaim = 'fitCheckClaim';
+  static const fitCheckAttach = 'fitCheckAttach';
+  static const fitCheckInbox = 'fitCheckInbox';
+  static const fitCheckBriefing = 'fitCheckBriefing';
   static const personalMentions = 'personalMentions';
 }

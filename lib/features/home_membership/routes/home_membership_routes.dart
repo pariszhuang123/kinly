@@ -10,7 +10,11 @@ List<GoRoute> buildHomeMembershipRoutes() {
     GoRoute(
       path: AppRoutePaths.start,
       name: AppRouteNames.start,
-      builder: (_, __) => const StartHomeProvider(),
+      builder:
+          (_, state) => StartHomeProvider(
+            pendingFitCheckDraftId:
+                state.uri.queryParameters['fitCheckDraftId']?.trim(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.join,

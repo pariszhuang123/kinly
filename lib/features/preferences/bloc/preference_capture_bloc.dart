@@ -19,6 +19,7 @@ class PreferenceCaptureBloc
     required List<PreferenceScenarioDefinition> scenarios,
     required String userId,
     String? homeId,
+    Map<String, int> initialResponses = const <String, int>{},
     Logger? logger,
   }) : _repository = repository,
        _scenarios = scenarios,
@@ -27,7 +28,15 @@ class PreferenceCaptureBloc
        _logger = logger ?? const DebugLogger(),
        _storageKey = FormDraftStorage.personalPreferencesKey(userId: userId),
        _scopeHash = FormDraftStorage.hashScope(userId),
-       super(PreferenceCaptureState.initial(scenarios)) {
+       super(
+         PreferenceCaptureState.initial(
+           scenarios,
+           initialResponses: _sanitizeInitialResponses(
+             scenarios: scenarios,
+             responses: initialResponses,
+           ),
+         ),
+       ) {
     on<PreferenceCaptureOptionSelected>(_onOptionSelected);
     on<PreferenceCapturePreviousRequested>(_onPreviousRequested);
     on<PreferenceCaptureSubmitted>(_onSubmitted);
@@ -264,5 +273,23 @@ class PreferenceCaptureBloc
   DateTime? _parseDate(Object? raw) {
     if (raw is! String) return null;
     return DateTime.tryParse(raw);
+  }
+
+  static Map<String, int> _sanitizeInitialResponses({
+    required List<PreferenceScenarioDefinition> scenarios,
+    required Map<String, int> responses,
+  }) {
+    final optionLengths = <String, int>{
+      for (final scenario in scenarios) scenario.id: scenario.options.length,
+    };
+    final sanitized = <String, int>{};
+    for (final entry in responses.entries) {
+      final length = optionLengths[entry.key];
+      if (length == null) continue;
+      final value = entry.value;
+      if (value < 0 || value >= length) continue;
+      sanitized[entry.key] = value;
+    }
+    return sanitized;
   }
 }
