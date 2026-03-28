@@ -5,6 +5,8 @@ import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../contracts/expenses/models.dart';
+import '../../../../contracts/homes/ports/shopping_list_repository.dart';
+import '../../../../contracts/share/share_create_route_args.dart';
 import '../../../../core/media/expectation_photo_service.dart';
 import '../../../../core/media/supabase_media_repository.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
@@ -29,6 +31,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     required String homeId,
     required ExpensesRepository expensesRepository,
     required HomeRepository homeRepository,
+    ShoppingListRepository? shoppingListRepository,
     ShareCreateForm? initialForm,
     String? editingExpenseId,
     String? planStatus,
@@ -39,11 +42,14 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     bool canEdit = true,
     String? editDisabledReason,
     ExpectationPhotoService? evidencePhotoService,
+    ShareShoppingExpenseLinkRequest? shoppingExpenseLinkRequest,
   }) : _homeId = homeId,
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
+       _shoppingListRepository = shoppingListRepository,
        _initialEvidencePhotoPath = initialForm?.evidencePhotoPath.trim() ?? '',
        _evidencePhotoService = evidencePhotoService,
+       _shoppingExpenseLinkRequest = shoppingExpenseLinkRequest,
        _uuid = const Uuid(),
        super(
          ShareCreateState.initial(
@@ -86,8 +92,10 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   final String _homeId;
   final ExpensesRepository _expensesRepository;
   final HomeRepository _homeRepository;
+  final ShoppingListRepository? _shoppingListRepository;
   final String _initialEvidencePhotoPath;
   ExpectationPhotoService? _evidencePhotoService;
+  final ShareShoppingExpenseLinkRequest? _shoppingExpenseLinkRequest;
   final Uuid _uuid;
 
   Future<void> _onParticipantsRequested(
@@ -187,36 +195,61 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     ShareCreateSplitModeChanged event,
     Emitter<ShareCreateState> emit,
   ) {
-    var nextForm = state.form.copyWith(
-      splitMode: event.mode,
-      clearRecurrenceEvery: event.mode == null,
-      clearRecurrenceUnit: event.mode == null,
-    );
-
-    final isSwitchingToEqual = event.mode == ShareSplitMode.equal;
-    final isSwitchingToCustom = event.mode == ShareSplitMode.custom;
-    final hasNoSelection = nextForm.selectedParticipantIds.isEmpty;
-    if (isSwitchingToEqual && hasNoSelection && state.participants.isNotEmpty) {
-      nextForm = nextForm.copyWith(
-        selectedParticipantIds: LinkedHashSet<String>.from(
-          state.participants.map((p) => p.userId),
-        ),
-      );
-    } else if (isSwitchingToCustom) {
-      final idsWithAmount =
-          nextForm.customAmountInputs.entries
-              .where((e) {
-                final cents = ShareCreateForm.parseCurrency(e.value);
-                return cents != null && cents > 0;
-              })
-              .map((e) => e.key)
-              .toSet();
-      nextForm = nextForm.copyWith(
-        selectedParticipantIds: LinkedHashSet<String>.from(idsWithAmount),
-      );
-    }
+    final nextForm = _resolveSplitModeForm(event.mode);
 
     emit(state.copyWith(form: nextForm, hasUserEdits: true));
+  }
+
+  ShareCreateForm _resolveSplitModeForm(ShareSplitMode? mode) {
+    final nextForm = state.form.copyWith(
+      splitMode: mode,
+      clearRecurrenceEvery: mode == null,
+      clearRecurrenceUnit: mode == null,
+    );
+    if (mode == ShareSplitMode.equal) {
+      return _applyEqualSplitSelection(nextForm);
+    }
+    if (mode == ShareSplitMode.custom) {
+      return _applyCustomSplitSelection(nextForm);
+    }
+    return nextForm;
+  }
+
+  ShareCreateForm _applyEqualSplitSelection(ShareCreateForm form) {
+    if (form.selectedParticipantIds.isNotEmpty || state.participants.isEmpty) {
+      return form;
+    }
+    return form.copyWith(selectedParticipantIds: _allParticipantIds());
+  }
+
+  ShareCreateForm _applyCustomSplitSelection(ShareCreateForm form) {
+    final idsWithAmount = _selectedParticipantIdsWithAmount(form);
+    if (idsWithAmount.isNotEmpty) {
+      return form.copyWith(selectedParticipantIds: idsWithAmount);
+    }
+    if (form.selectedParticipantIds.isNotEmpty || state.participants.isEmpty) {
+      return form;
+    }
+    return form.copyWith(selectedParticipantIds: _allParticipantIds());
+  }
+
+  LinkedHashSet<String> _selectedParticipantIdsWithAmount(ShareCreateForm form) {
+    return LinkedHashSet<String>.from(
+      form.customAmountInputs.entries
+          .where(_hasPositiveCustomAmount)
+          .map((entry) => entry.key),
+    );
+  }
+
+  bool _hasPositiveCustomAmount(MapEntry<String, String> entry) {
+    final cents = ShareCreateForm.parseCurrency(entry.value);
+    return cents != null && cents > 0;
+  }
+
+  LinkedHashSet<String> _allParticipantIds() {
+    return LinkedHashSet<String>.from(
+      state.participants.map((participant) => participant.userId),
+    );
   }
 
   void _onNotesChanged(

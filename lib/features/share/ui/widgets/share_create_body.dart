@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../../../contracts/share/share_create_route_args.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../core/ui/kinly_loader.dart';
@@ -31,6 +32,7 @@ class ShareCreateBody extends StatelessWidget {
     required this.onTerminatePlan,
     required this.onPaywallOpened,
     required this.onEvidencePhotoCapture,
+    required this.presentationMode,
   });
 
   final Spacing spacing;
@@ -51,6 +53,7 @@ class ShareCreateBody extends StatelessWidget {
   final VoidCallback onTerminatePlan;
   final VoidCallback? onPaywallOpened;
   final VoidCallback onEvidencePhotoCapture;
+  final ShareCreatePresentationMode presentationMode;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +92,7 @@ class ShareCreateBody extends StatelessWidget {
                 onDeleteRequested: null,
                 showTerminatePlan: false,
                 showPrimaryActions: false,
+                presentationMode: presentationMode,
               ),
             ),
           ),

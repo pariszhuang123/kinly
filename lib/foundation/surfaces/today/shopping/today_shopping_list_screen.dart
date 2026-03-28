@@ -19,6 +19,7 @@ import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/core/ui/toggles/kinly_checkbox.dart';
 import 'package:kinly/generated/l10n.dart';
 import 'package:kinly/renderer/material/kinly_icons.dart';
+import 'package:kinly/contracts/share/share_create_route_args.dart';
 
 import '../domain/models.dart';
 import '../routes/today_shopping_route_args.dart';
@@ -55,19 +56,30 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
       listenWhen:
           (prev, curr) =>
               prev.messageTick != curr.messageTick ||
-              prev.linkedExpenseTick != curr.linkedExpenseTick ||
+              prev.pendingBillCreateTick != curr.pendingBillCreateTick ||
               prev.archivedTick != curr.archivedTick,
       listener: (context, state) async {
         if (state.messageTick > 0 && state.message != null) {
           final resolved = _resolveErrorMessage(context, state);
           KinlySnackBar.showError(context, resolved);
         }
-        if (state.linkedExpenseTick > 0 && state.linkedExpenseId != null) {
-          KinlySnackBar.showSuccess(
+        if (state.pendingBillCreateTick > 0 && state.pendingBillCreate != null) {
+          final success = await _openQuickBillCreate(
             context,
-            S.of(context).shoppingArchiveDraftBillCreated,
+            state.pendingBillCreate!,
           );
-          context.goNamed(AppRouteNames.today);
+          if (!context.mounted) return;
+          context.read<ShoppingListBloc>().add(const ConsumePendingBillCreateEvent());
+          context.read<ShoppingListBloc>().add(
+            const LoadShoppingListEvent(keepCurrent: true),
+          );
+          if (success) {
+            KinlySnackBar.showSuccess(
+              context,
+              S.of(context).shoppingArchiveDraftBillCreated,
+            );
+            context.goNamed(AppRouteNames.today);
+          }
         }
         if (state.archivedTick > 0) {
           KinlySnackBar.showSuccess(
@@ -339,6 +351,26 @@ class _TodayShoppingListScreenState extends State<TodayShoppingListScreen> {
     context.read<ShoppingListBloc>().add(
       ArchiveMyCompletedShoppingItemsEvent(triggerShareSpend: triggerShare),
     );
+  }
+
+  Future<bool> _openQuickBillCreate(
+    BuildContext context,
+    PendingShoppingBillCreate pendingBillCreate,
+  ) async {
+    final result = await context.pushNamed<bool>(
+      AppRouteNames.shareCreate,
+      extra: ShareCreateRouteArgs(
+        initialDescription: pendingBillCreate.description,
+        initialNotes: pendingBillCreate.notes,
+        preselectEqualSplit: true,
+        presentationMode: ShareCreatePresentationMode.shoppingQuickCreate,
+        shoppingExpenseLinkRequest: ShareShoppingExpenseLinkRequest(
+          homeId: widget.homeId,
+          itemIds: pendingBillCreate.itemIds,
+        ),
+      ),
+    );
+    return result == true;
   }
 }
 

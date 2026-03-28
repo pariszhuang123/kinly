@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../contracts/share/share_create_route_args.dart';
 import '../../../../../core/theme/kinly_sections.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/theme/opacity.dart';
@@ -56,6 +57,7 @@ class ShareCreateFormView extends StatelessWidget {
     this.isTerminatingPlan = false,
     this.onTerminatePlan,
     this.showPrimaryActions = true,
+    this.presentationMode = ShareCreatePresentationMode.standard,
   });
 
   final ShareCreateState state;
@@ -78,6 +80,7 @@ class ShareCreateFormView extends StatelessWidget {
   final bool isTerminatingPlan;
   final VoidCallback? onTerminatePlan;
   final bool showPrimaryActions;
+  final ShareCreatePresentationMode presentationMode;
 
   String _mapEditDisabledReason(BuildContext context, String code) {
     final s = S.of(context);
@@ -106,6 +109,8 @@ class ShareCreateFormView extends StatelessWidget {
     final expandOptional =
         state.form.notes.trim().isNotEmpty ||
         state.form.evidencePhotoPath.trim().isNotEmpty;
+    final isShoppingQuickCreate =
+        presentationMode == ShareCreatePresentationMode.shoppingQuickCreate;
 
     return ListView(
       padding: EdgeInsetsDirectional.only(bottom: spacing.lg),
@@ -122,39 +127,45 @@ class ShareCreateFormView extends StatelessWidget {
               type: KinlyBannerType.warning,
             ),
           ),
-        _DescriptionField(
-          controller: descriptionController,
-          state: state,
-          showValidation: viewState.showValidation,
-          enabled: !viewState.editingDisabled,
-        ),
-        SizedBox(height: spacing.lg),
+        if (!isShoppingQuickCreate) ...[
+          _DescriptionField(
+            controller: descriptionController,
+            state: state,
+            showValidation: viewState.showValidation,
+            enabled: !viewState.editingDisabled,
+          ),
+          SizedBox(height: spacing.lg),
+        ],
         _AmountField(
           controller: amountController,
           state: state,
           showValidation: viewState.showValidation,
           locked: viewState.locked,
         ),
-        SizedBox(height: spacing.lg),
-        _StartDateField(state: state, locked: viewState.locked),
-        if (periodLabel != null) ...[
-          SizedBox(height: spacing.xs),
-          Text(
-            s.shareCreateCyclePeriod(periodLabel),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+        if (!isShoppingQuickCreate) ...[
+          SizedBox(height: spacing.lg),
+          _StartDateField(state: state, locked: viewState.locked),
+          if (periodLabel != null) ...[
+            SizedBox(height: spacing.xs),
+            Text(
+              s.shareCreateCyclePeriod(periodLabel),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
-          ),
+          ],
         ],
         SizedBox(height: spacing.lg),
-        _RecurrenceField(
-          state: state,
-          locked: viewState.locked,
-          recurrenceNeedsSplit: viewState.recurrenceNeedsSplit,
-          recurrenceInvalid: viewState.recurrenceInvalid,
-          controller: recurrenceEveryController,
-        ),
-        SizedBox(height: spacing.lg),
+        if (!isShoppingQuickCreate) ...[
+          _RecurrenceField(
+            state: state,
+            locked: viewState.locked,
+            recurrenceNeedsSplit: viewState.recurrenceNeedsSplit,
+            recurrenceInvalid: viewState.recurrenceInvalid,
+            controller: recurrenceEveryController,
+          ),
+          SizedBox(height: spacing.lg),
+        ],
         _SplitModeSelector(state: state, locked: viewState.locked),
         SizedBox(height: spacing.lg),
         if (state.participants.isEmpty)
@@ -169,19 +180,21 @@ class ShareCreateFormView extends StatelessWidget {
             locked: viewState.locked,
             customControllers: customControllers,
           ),
-        SizedBox(height: spacing.lg),
-        _OptionalDetailsExpansion(
-          spacing: spacing,
-          title: s.flowChoreDetailMoreInfoTitle,
-          notesController: notesController,
-          notesEnabled: !viewState.editingDisabled,
-          isUploadingEvidencePhoto: isUploadingEvidencePhoto,
-          evidencePhotoUrl: evidencePhotoUrl,
-          evidencePhotoEnabled: !viewState.locked,
-          onEvidencePhotoCapture: onEvidencePhotoCapture,
-          shareColors: shareColors,
-          initiallyExpanded: expandOptional,
-        ),
+        if (!isShoppingQuickCreate) ...[
+          SizedBox(height: spacing.lg),
+          _OptionalDetailsExpansion(
+            spacing: spacing,
+            title: s.flowChoreDetailMoreInfoTitle,
+            notesController: notesController,
+            notesEnabled: !viewState.editingDisabled,
+            isUploadingEvidencePhoto: isUploadingEvidencePhoto,
+            evidencePhotoUrl: evidencePhotoUrl,
+            evidencePhotoEnabled: !viewState.locked,
+            onEvidencePhotoCapture: onEvidencePhotoCapture,
+            shareColors: shareColors,
+            initiallyExpanded: expandOptional,
+          ),
+        ],
         SizedBox(height: spacing.xl),
         if (showPrimaryActions && !viewState.hidePrimary)
           _PrimaryActionButton(

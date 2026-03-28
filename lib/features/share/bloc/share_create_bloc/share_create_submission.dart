@@ -69,34 +69,54 @@ extension _ShareCreateBlocSubmission on ShareCreateBloc {
   }
 
   Future<Expense> _submitCreate(_SubmissionPlan plan) {
-    if (plan.evidencePhotoPath == null) {
-      return _expensesRepository.create(
-        homeId: _homeId,
-        amountCents: plan.amountCents,
-        description: plan.description,
-        notes: plan.notes,
-        splitType: plan.splitType,
-        memberIds: plan.memberIds,
-        customSplits: plan.customSplits,
-        recurrenceEvery: plan.recurrenceEvery,
-        recurrenceUnit: plan.recurrenceUnit,
-        startDate: plan.startDate,
+    return _createAndLinkExpense(plan);
+  }
+
+  Future<Expense> _createAndLinkExpense(_SubmissionPlan plan) async {
+    final saved =
+        plan.evidencePhotoPath == null
+            ? await _expensesRepository.create(
+              homeId: _homeId,
+              amountCents: plan.amountCents,
+              description: plan.description,
+              notes: plan.notes,
+              splitType: plan.splitType,
+              memberIds: plan.memberIds,
+              customSplits: plan.customSplits,
+              recurrenceEvery: plan.recurrenceEvery,
+              recurrenceUnit: plan.recurrenceUnit,
+              startDate: plan.startDate,
+            )
+            : await _expensesRepository.create(
+              homeId: _homeId,
+              amountCents: plan.amountCents,
+              description: plan.description,
+              notes: plan.notes,
+              evidencePhotoPath: plan.evidencePhotoPath,
+              splitType: plan.splitType,
+              memberIds: plan.memberIds,
+              customSplits: plan.customSplits,
+              recurrenceEvery: plan.recurrenceEvery,
+              recurrenceUnit: plan.recurrenceUnit,
+              startDate: plan.startDate,
+            );
+
+    final linkRequest = _shoppingExpenseLinkRequest;
+    if (linkRequest != null && linkRequest.itemIds.isNotEmpty) {
+      final shoppingListRepository = _shoppingListRepository;
+      if (shoppingListRepository == null) {
+        throw StateError(
+          'Shopping expense link request requires a shopping list repository.',
+        );
+      }
+      await shoppingListRepository.linkItemsToExpenseForUser(
+        homeId: linkRequest.homeId,
+        expenseId: saved.id,
+        itemIds: linkRequest.itemIds,
       );
     }
 
-    return _expensesRepository.create(
-      homeId: _homeId,
-      amountCents: plan.amountCents,
-      description: plan.description,
-      notes: plan.notes,
-      evidencePhotoPath: plan.evidencePhotoPath,
-      splitType: plan.splitType,
-      memberIds: plan.memberIds,
-      customSplits: plan.customSplits,
-      recurrenceEvery: plan.recurrenceEvery,
-      recurrenceUnit: plan.recurrenceUnit,
-      startDate: plan.startDate,
-    );
+    return saved;
   }
 
   String? _resolveEvidencePhotoPathForRpc(ShareCreateState currentState) {

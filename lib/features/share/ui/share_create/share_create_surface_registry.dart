@@ -67,6 +67,7 @@ class ShareCreateRegistry {
             onTerminatePlan: scope.actions.onTerminatePlan,
             onPaywallOpened: scope.actions.onPaywallOpened,
             onEvidencePhotoCapture: scope.actions.onEvidencePhotoCapture,
+            presentationMode: scope.presentationMode,
           );
         },
       ),

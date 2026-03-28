@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'package:kinly/contracts/share/share_create_route_args.dart';
 import 'package:kinly/contracts/expenses/enums/expense_recurrence_unit.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/opacity.dart';
@@ -26,6 +27,8 @@ void main() {
       ShareCreateState state, {
       Map<String, TextEditingController>? customControllers,
       String? evidencePhotoUrl,
+      ShareCreatePresentationMode presentationMode =
+          ShareCreatePresentationMode.standard,
     }) {
       return MaterialApp(
         localizationsDelegates: const [S.delegate],
@@ -98,6 +101,7 @@ void main() {
             onEvidencePhotoCapture: () {},
             allowDelete: false,
             onDeleteRequested: null,
+            presentationMode: presentationMode,
           ),
         ),
       );
@@ -415,6 +419,38 @@ void main() {
 
       final s = S.of(tester.element(find.byType(ShareCreateFormView)));
       expect(find.text(s.shareEditDeleteButton), findsNothing);
+    });
+
+    testWidgets('shopping quick create mode hides non-essential fields', (
+      tester,
+    ) async {
+      final state = ShareCreateState.initial().copyWith(
+        isLoading: false,
+        participants: const [
+          ShareParticipant(userId: 'member_a', displayName: 'Alice'),
+          ShareParticipant(userId: 'member_b', displayName: 'Bob'),
+        ],
+        form: ShareCreateForm.initial().copyWith(
+          amountInput: '42.00',
+          splitMode: ShareSplitMode.equal,
+          selectedParticipantIds: {'member_a', 'member_b'},
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildFormView(
+          state,
+          presentationMode: ShareCreatePresentationMode.shoppingQuickCreate,
+        ),
+      );
+
+      final s = S.of(tester.element(find.byType(ShareCreateFormView)));
+      expect(find.text(s.shareCreateDescriptionLabel), findsNothing);
+      expect(find.text(s.shareCreateStartLabel), findsNothing);
+      expect(find.text(s.shareCreateRecurrenceLabel), findsNothing);
+      expect(find.text(s.flowChoreDetailMoreInfoTitle), findsNothing);
+      expect(find.text(s.shareCreateAmountLabel), findsOneWidget);
+      expect(find.text(s.shareCreateSplitLabel), findsOneWidget);
     });
   });
 }

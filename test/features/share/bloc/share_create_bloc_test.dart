@@ -4,6 +4,8 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/contracts/expenses/models.dart';
 import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
+import 'package:kinly/contracts/share/share_create_route_args.dart';
 import 'package:kinly/features/paywall/paywall.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_retry_action.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_gate_status.dart';
@@ -21,22 +23,28 @@ class _MockExpensesRepository extends Mock implements ExpensesRepository {}
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
+class _MockShoppingListRepository extends Mock implements ShoppingListRepository {}
+
 void main() {
   late _MockExpensesRepository expensesRepository;
   late _MockHomeRepository homeRepository;
+  late _MockShoppingListRepository shoppingListRepository;
 
   ShareCreateBloc buildBloc({
     ShareCreateForm? initialForm,
     String? editingExpenseId,
     bool isAmountLocked = false,
+    ShareShoppingExpenseLinkRequest? shoppingExpenseLinkRequest,
   }) {
     return ShareCreateBloc(
       homeId: 'home-1',
       expensesRepository: expensesRepository,
       homeRepository: homeRepository,
+      shoppingListRepository: shoppingListRepository,
       initialForm: initialForm,
       editingExpenseId: editingExpenseId,
       amountLocked: isAmountLocked,
+      shoppingExpenseLinkRequest: shoppingExpenseLinkRequest,
     );
   }
 
@@ -115,6 +123,14 @@ void main() {
   setUp(() {
     expensesRepository = _MockExpensesRepository();
     homeRepository = _MockHomeRepository();
+    shoppingListRepository = _MockShoppingListRepository();
+    when(
+      () => shoppingListRepository.linkItemsToExpenseForUser(
+        homeId: any(named: 'homeId'),
+        expenseId: any(named: 'expenseId'),
+        itemIds: any(named: 'itemIds'),
+      ),
+    ).thenAnswer((_) async => 1);
   });
 
   blocTest<ShareCreateBloc, ShareCreateState>(
@@ -594,6 +610,79 @@ void main() {
           startDate: any(named: 'startDate'),
         ),
       );
+    },
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'links shopping items after creating a shopping quick bill',
+    build:
+        () => buildBloc(
+          shoppingExpenseLinkRequest: const ShareShoppingExpenseLinkRequest(
+            homeId: 'home-1',
+            itemIds: ['item-1', 'item-2'],
+          ),
+        ),
+    seed: () {
+      equalSeed = seededState();
+      return equalSeed;
+    },
+    setUp: () {
+      when(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any<int?>(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      ).thenAnswer(
+        (_) async => Expense(
+          id: 'expense-linked',
+          homeId: 'home-1',
+          createdByUserId: 'user-1',
+          status: ExpenseStatus.active,
+          splitType: ExpenseSplitType.equal,
+          amountCents: 4200,
+          description: 'Dinner',
+          notes: null,
+          createdAt: DateTime.now().toUtc(),
+          updatedAt: DateTime.now().toUtc(),
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: DateTime(2024, 1, 1),
+          planId: null,
+          fullyPaidAt: null,
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    expect: () {
+      final submitting = equalSeed.copyWith(
+        isSubmitting: true,
+        showValidationErrors: true,
+        clearSubmissionError: true,
+        clearSuccess: true,
+      );
+      final success = submitting.copyWith(
+        isSubmitting: false,
+        showValidationErrors: false,
+        successExpenseId: 'expense-linked',
+      );
+      return [submitting, success];
+    },
+    verify: (_) {
+      verify(
+        () => shoppingListRepository.linkItemsToExpenseForUser(
+          homeId: 'home-1',
+          expenseId: 'expense-linked',
+          itemIds: ['item-1', 'item-2'],
+        ),
+      ).called(1);
     },
   );
 
@@ -1855,7 +1944,7 @@ void main() {
   );
 
   blocTest<ShareCreateBloc, ShareCreateState>(
-    'clears selection when switching to custom mode with blank amounts',
+    'keeps everyone selected when switching to custom mode with blank amounts',
     build: () => buildBloc(),
     seed: () {
       final form = ShareCreateForm.initial().copyWith(
@@ -1878,9 +1967,9 @@ void main() {
                 ShareSplitMode.custom,
               )
               .having(
-                (s) => s.form.selectedParticipantIds.isEmpty,
-                'no one selected',
-                true,
+                (s) => s.form.selectedParticipantIds,
+                'everyone stays selected',
+                {'member_a', 'member_b', 'member_self'},
               )
               .having((s) => s.hasUserEdits, 'hasUserEdits', true),
         ],

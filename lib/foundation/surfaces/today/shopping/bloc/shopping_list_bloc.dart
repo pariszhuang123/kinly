@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
-import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 part 'shopping_list_event.dart';
 part 'shopping_list_state.dart';
 
@@ -14,22 +13,20 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
     required String homeId,
     required String? currentUserId,
     required ShoppingListRepository shoppingListRepository,
-    required ExpensesRepository expensesRepository,
   }) : _homeId = homeId,
        _currentUserId = currentUserId,
        _shoppingListRepository = shoppingListRepository,
-       _expensesRepository = expensesRepository,
        super(const ShoppingListState.loading()) {
     on<LoadShoppingListEvent>(_onLoadShoppingList);
     on<ToggleShoppingItemEvent>(_onToggleShoppingItem);
     on<ToggleAllShoppingItemsEvent>(_onToggleAllShoppingItems);
     on<ArchiveMyCompletedShoppingItemsEvent>(_onArchiveMyCompletedShoppingItems);
+    on<ConsumePendingBillCreateEvent>(_onConsumePendingBillCreate);
   }
 
   final String _homeId;
   final String? _currentUserId;
   final ShoppingListRepository _shoppingListRepository;
-  final ExpensesRepository _expensesRepository;
 
   static bool _hasText(String? value) => (value ?? '').trim().isNotEmpty;
 
@@ -136,23 +133,16 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
           return;
         }
 
-        final draft = await _expensesRepository.create(
-          homeId: _homeId,
-          description: seed.defaultDescription.isEmpty
-              ? 'Shopping spend'
-              : seed.defaultDescription,
-          notes: _buildShoppingExpenseNotes(seed: seed, items: mine),
-          startDate: DateTime.now(),
-        );
-        await _shoppingListRepository.linkItemsToExpenseForUser(
-          homeId: _homeId,
-          expenseId: draft.id,
-          itemIds: seed.itemIds,
-        );
         emit(
           state.copyWith(
-            linkedExpenseId: draft.id,
-            linkedExpenseTick: state.linkedExpenseTick + 1,
+            pendingBillCreate: PendingShoppingBillCreate(
+              description: seed.defaultDescription.isEmpty
+                  ? 'Shopping spend'
+                  : seed.defaultDescription,
+              notes: _buildShoppingExpenseNotes(seed: seed, items: mine),
+              itemIds: seed.itemIds,
+            ),
+            pendingBillCreateTick: state.pendingBillCreateTick + 1,
           ),
         );
       } else {
@@ -170,6 +160,13 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
     } catch (error) {
       emit(state.copyWith(message: error.toString(), messageTick: state.messageTick + 1));
     }
+  }
+
+  void _onConsumePendingBillCreate(
+    ConsumePendingBillCreateEvent event,
+    Emitter<ShoppingListState> emit,
+  ) {
+    emit(state.copyWith(clearPendingBillCreate: true));
   }
 
   Future<void> _load(Emitter<ShoppingListState> emit, {required bool keepCurrent}) async {
@@ -197,6 +194,8 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
               .length,
           linkedExpenseId: state.linkedExpenseId,
           linkedExpenseTick: state.linkedExpenseTick,
+          pendingBillCreate: state.pendingBillCreate,
+          pendingBillCreateTick: state.pendingBillCreateTick,
           archivedTick: state.archivedTick,
           message: state.message,
           messageTick: state.messageTick,

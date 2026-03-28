@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
-import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 
 import '../domain/models.dart';
 import '../routes/today_shopping_route_args.dart';
@@ -14,14 +13,12 @@ class TodayShoppingListProvider extends StatelessWidget {
     super.key,
     required this.homeId,
     required this.shoppingListRepository,
-    required this.expensesRepository,
     this.mode = TodayShoppingListMode.purchase,
     this.actor,
   });
 
   final String homeId;
   final ShoppingListRepository shoppingListRepository;
-  final ExpensesRepository expensesRepository;
   final TodayShoppingListMode mode;
   final TodayUserProfile? actor;
 
@@ -33,7 +30,6 @@ class TodayShoppingListProvider extends StatelessWidget {
             homeId: homeId,
             currentUserId: actor?.userId,
             shoppingListRepository: shoppingListRepository,
-            expensesRepository: expensesRepository,
           )..add(const LoadShoppingListEvent()),
       child: TodayShoppingListScreen(homeId: homeId, actor: actor, mode: mode),
     );

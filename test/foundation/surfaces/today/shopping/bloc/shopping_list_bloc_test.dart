@@ -2,19 +2,14 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:kinly/contracts/expenses/models.dart';
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
-import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/foundation/surfaces/today/shopping/bloc/shopping_list_bloc.dart';
 
 class _MockShoppingListRepository extends Mock implements ShoppingListRepository {}
 
-class _MockExpensesRepository extends Mock implements ExpensesRepository {}
-
 void main() {
   late _MockShoppingListRepository shoppingListRepository;
-  late _MockExpensesRepository expensesRepository;
 
   const homeId = 'home-1';
   const currentUserId = 'user-me';
@@ -52,7 +47,6 @@ void main() {
       homeId: homeId,
       currentUserId: userId,
       shoppingListRepository: shoppingListRepository,
-      expensesRepository: expensesRepository,
     );
   }
 
@@ -63,7 +57,6 @@ void main() {
 
   setUp(() {
     shoppingListRepository = _MockShoppingListRepository();
-    expensesRepository = _MockExpensesRepository();
 
     when(
       () => shoppingListRepository.getForHome(homeId: any(named: 'homeId')),
@@ -121,36 +114,6 @@ void main() {
     when(
       () => shoppingListRepository.isItemCompletedByOtherError(any()),
     ).thenReturn(false);
-    when(
-      () => expensesRepository.create(
-        homeId: any(named: 'homeId'),
-        amountCents: any(named: 'amountCents'),
-        description: any(named: 'description'),
-        notes: any(named: 'notes'),
-        splitType: any(named: 'splitType'),
-        memberIds: any(named: 'memberIds'),
-        customSplits: any(named: 'customSplits'),
-        recurrenceEvery: any(named: 'recurrenceEvery'),
-        recurrenceUnit: any(named: 'recurrenceUnit'),
-        startDate: any(named: 'startDate'),
-      ),
-    ).thenAnswer(
-      (_) async => Expense(
-        id: 'expense-1',
-        homeId: homeId,
-        createdByUserId: currentUserId,
-        status: ExpenseStatus.draft,
-        splitType: null,
-        amountCents: 0,
-        description: 'Shopping spend',
-        notes: null,
-        createdAt: DateTime(2026, 2, 1, 10),
-        updatedAt: DateTime(2026, 2, 1, 10),
-        recurrenceEvery: null,
-        recurrenceUnit: null,
-        startDate: DateTime(2026, 2, 1),
-      ),
-    );
   });
 
   group('ShoppingListBloc', () {
@@ -303,7 +266,7 @@ void main() {
     );
 
     blocTest<ShoppingListBloc, ShoppingListState>(
-      'creates expense + links items when share handoff is enabled',
+      'emits pending quick bill create when share handoff is enabled',
       build: () {
         when(
           () => shoppingListRepository.prepareExpenseForUser(homeId: homeId),
@@ -342,37 +305,47 @@ void main() {
       ),
       act: (bloc) =>
           bloc.add(const ArchiveMyCompletedShoppingItemsEvent(triggerShareSpend: true)),
-      verify: (_) {
-        verify(
-          () => expensesRepository.create(
-            homeId: homeId,
-            description: 'Shopping spend',
-            notes: '- item-mine-1',
-            startDate: any(named: 'startDate'),
-          ),
-        ).called(1);
-        verify(
-          () => shoppingListRepository.linkItemsToExpenseForUser(
-            homeId: homeId,
-            expenseId: 'expense-1',
-            itemIds: ['mine-1', 'mine-2'],
-          ),
-        ).called(1);
-      },
       expect: () => [
         isA<ShoppingListState>()
-            .having((s) => s.linkedExpenseId, 'linkedExpenseId', 'expense-1')
-            .having((s) => s.linkedExpenseTick, 'linkedExpenseTick', 1)
+            .having(
+              (s) => s.pendingBillCreate?.description,
+              'pendingBillCreate.description',
+              'Shopping spend',
+            )
+            .having(
+              (s) => s.pendingBillCreate?.notes,
+              'pendingBillCreate.notes',
+              '- item-mine-1',
+            )
+            .having(
+              (s) => s.pendingBillCreate?.itemIds,
+              'pendingBillCreate.itemIds',
+              ['mine-1', 'mine-2'],
+            )
+            .having((s) => s.pendingBillCreateTick, 'pendingBillCreateTick', 1)
             .having((s) => s.archivedTick, 'archivedTick', 0),
         isA<ShoppingListState>()
-            .having((s) => s.linkedExpenseId, 'linkedExpenseId', 'expense-1')
-            .having((s) => s.linkedExpenseTick, 'linkedExpenseTick', 1)
+            .having(
+              (s) => s.pendingBillCreate?.description,
+              'pendingBillCreate.description',
+              'Shopping spend',
+            )
+            .having((s) => s.pendingBillCreateTick, 'pendingBillCreateTick', 1)
             .having((s) => s.archivedTick, 'archivedTick', 0),
       ],
+      verify: (_) {
+        verifyNever(
+          () => shoppingListRepository.linkItemsToExpenseForUser(
+            homeId: any(named: 'homeId'),
+            expenseId: any(named: 'expenseId'),
+            itemIds: any(named: 'itemIds'),
+          ),
+        );
+      },
     );
 
     blocTest<ShoppingListBloc, ShoppingListState>(
-      'formats share draft notes with quantity per item and skips empty quantity brackets',
+      'formats pending quick bill notes with quantity per item and skips empty quantity brackets',
       build: () {
         when(
           () => shoppingListRepository.prepareExpenseForUser(homeId: homeId),
@@ -421,16 +394,48 @@ void main() {
       ),
       act: (bloc) =>
           bloc.add(const ArchiveMyCompletedShoppingItemsEvent(triggerShareSpend: true)),
-      verify: (_) {
-        verify(
-          () => expensesRepository.create(
-            homeId: homeId,
-            description: 'Grocery spend',
-            notes: '- Milk (2 cartons)\n- Eggs',
-            startDate: any(named: 'startDate'),
-          ),
-        ).called(1);
-      },
+      expect: () => [
+        isA<ShoppingListState>()
+            .having(
+              (s) => s.pendingBillCreate?.description,
+              'pendingBillCreate.description',
+              'Grocery spend',
+            )
+            .having(
+              (s) => s.pendingBillCreate?.notes,
+              'pendingBillCreate.notes',
+              '- Milk (2 cartons)\n- Eggs',
+            ),
+        isA<ShoppingListState>()
+            .having(
+              (s) => s.pendingBillCreate?.notes,
+              'pendingBillCreate.notes',
+              '- Milk (2 cartons)\n- Eggs',
+            ),
+      ],
+    );
+
+    blocTest<ShoppingListBloc, ShoppingListState>(
+      'clears pending quick bill create when consumed',
+      build: () => buildBloc(),
+      seed: () => ShoppingListState.loaded(
+        pendingItems: const [],
+        completedItems: const [],
+        photoUrlsByItemId: const {},
+        myCompletedCount: 0,
+        pendingBillCreate: const PendingShoppingBillCreate(
+          description: 'Shopping spend',
+          notes: '- Milk',
+          itemIds: ['item-1'],
+        ),
+        pendingBillCreateTick: 1,
+      ),
+      act: (bloc) => bloc.add(const ConsumePendingBillCreateEvent()),
+      expect: () => [
+        isA<ShoppingListState>()
+            .having((s) => s.pendingBillCreate, 'pendingBillCreate', isNull)
+            .having((s) => s.pendingBillCreateTick, 'pendingBillCreateTick', 1),
+      ],
     );
 
     blocTest<ShoppingListBloc, ShoppingListState>(

@@ -144,7 +144,6 @@ List<GoRoute> buildTodayRoutes({
         return TodayShoppingListProvider(
           homeId: homeId,
           shoppingListRepository: sl<ShoppingListRepository>(),
-          expensesRepository: sl<ExpensesRepository>(),
           actor: args?.actor,
           mode: args?.listMode ?? TodayShoppingListMode.purchase,
         );

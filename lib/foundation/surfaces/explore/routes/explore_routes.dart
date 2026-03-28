@@ -4,7 +4,6 @@ import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
 import 'package:kinly/app/router/home_tab_navigation.dart';
 import 'package:kinly/app/router/route_fallback.dart';
-import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
@@ -54,7 +53,6 @@ List<GoRoute> buildExploreRoutes({
                   homeId: route.homeId,
                   currentUserId: route.userId,
                   shoppingListRepository: sl<ShoppingListRepository>(),
-                  expensesRepository: sl<ExpensesRepository>(),
                 )..add(const LoadShoppingListEvent()),
             child: ExploreScreen(homeId: route.homeId),
           ),

@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
+import 'package:kinly/contracts/share/share_create_route_args.dart';
 import 'package:kinly/core/theme/kinly_theme.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
 import 'package:kinly/core/ui/toggles/kinly_checkbox.dart';
@@ -89,6 +90,18 @@ void main() {
           path: '/shopping/new',
           name: AppRouteNames.todayShoppingCreate,
           builder: (_, __) => const Scaffold(body: Text('create')),
+        ),
+        GoRoute(
+          path: '/share/new',
+          name: AppRouteNames.shareCreate,
+          builder: (_, state) {
+            final args = state.extra as ShareCreateRouteArgs?;
+            return Scaffold(
+              body: Text(
+                'share-create:${args?.presentationMode.name}:${args?.shoppingExpenseLinkRequest?.itemIds.join(",")}:${args?.preselectEqualSplit}',
+              ),
+            );
+          },
         ),
         GoRoute(
           path: '/shopping/:itemId/detail',
@@ -369,29 +382,40 @@ void main() {
     expect(find.text(s.shoppingAllItemsBought), findsNothing);
   });
 
-  testWidgets('navigates to today when share draft is linked', (tester) async {
+  testWidgets('opens quick share create when pending bill handoff is emitted', (
+    tester,
+  ) async {
     final initial = ShoppingListState.loaded(
       pendingItems: const [],
       completedItems: [item(id: 'milk', name: 'Milk', isCompleted: true)],
       photoUrlsByItemId: const {},
       myCompletedCount: 1,
-      linkedExpenseId: null,
-      linkedExpenseTick: 0,
+      pendingBillCreate: null,
+      pendingBillCreateTick: 0,
     );
-    final linked = ShoppingListState.loaded(
+    final handoff = ShoppingListState.loaded(
       pendingItems: const [],
       completedItems: [item(id: 'milk', name: 'Milk', isCompleted: true)],
       photoUrlsByItemId: const {},
       myCompletedCount: 1,
-      linkedExpenseId: 'expense-1',
-      linkedExpenseTick: 1,
+      pendingBillCreate: const PendingShoppingBillCreate(
+        description: 'Shopping spend',
+        notes: '- Milk',
+        itemIds: ['item-1', 'item-2'],
+      ),
+      pendingBillCreateTick: 1,
     );
 
     await tester.pumpWidget(
-      buildRouterApp(initial, emittedStates: [linked]),
+      buildRouterApp(initial, emittedStates: [handoff]),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('today-screen'), findsOneWidget);
+    expect(
+      find.text(
+        'share-create:shoppingQuickCreate:item-1,item-2:true',
+      ),
+      findsOneWidget,
+    );
   });
 }

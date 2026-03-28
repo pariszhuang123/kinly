@@ -20,6 +20,7 @@ import 'package:kinly/features/house_directory/ui/house_directory_service_screen
 import 'package:kinly/generated/l10n.dart';
 
 part 'house_directory_service_screen_helpers.dart';
+part 'house_directory_service_screen_state_logic.dart';
 
 class HouseDirectoryServiceScreen extends StatefulWidget {
   const HouseDirectoryServiceScreen({
@@ -62,7 +63,9 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
   String? _linkError;
   String? _offsetValueError;
   bool _isEditing = false;
+  bool _isHydrating = false;
   String? _hydratedServiceId;
+  String? _pendingHydrationServiceId;
   HouseDirectoryNotice? _lastHandledNotice;
 
   @override
@@ -103,12 +106,12 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
     return BlocConsumer<HouseDirectoryBloc, HouseDirectoryState>(
       listenWhen: (previous, current) => previous.notice != current.notice,
       listener: _onNoticeChanged,
-        builder: (context, state) {
-          final service = _resolveService(state);
-          final reminder = _resolveReminder(state, service);
-          _hydrateFromService(service);
+      builder: (context, state) {
+        final service = _resolveService(state);
+        final reminder = _resolveReminder(state, service);
+        _scheduleHydration(service);
 
-          return KinlyScaffold(
+        return KinlyScaffold(
           appBar: KinlyAppBar(
             title: Text(_titleForState(s)),
             actions: buildHouseDirectoryServiceAppBarActions(
@@ -135,75 +138,12 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
     required HouseDirectoryState state,
     required HouseDirectoryService? service,
     required HouseDirectoryReminder? reminder,
-  }) {
-    final s = S.of(context);
-    final canShow = widget.isCreating || service != null;
-
-    if (!canShow && state.isLoading) {
-      return const Center(child: KinlyLoader());
-    }
-    if (!canShow) {
-      return Center(child: Text(s.houseDirectoryLoadError));
-    }
-
-    final hasChanges = houseDirectoryServiceHasChanges(
-      isCreating: widget.isCreating,
-      service: service,
-      type: _type,
-      providerController: _providerController,
-      customLabelController: _customLabelController,
-      referenceController: _referenceController,
-      linkController: _linkController,
-      notesController: _notesController,
-      offsetValueController: _offsetValueController,
-      offsetUnit: _offsetUnit,
-      startDate: _startDate,
-      endDate: _endDate,
-    );
-
-    return HouseDirectoryServiceContent(
-      service: service,
-      isEditing: _isEditing && widget.isOwner,
-      isCreating: widget.isCreating,
-      hasChanges: hasChanges,
-      canSubmit: widget.isCreating || hasChanges,
-      type: _type,
-      offsetUnit: _offsetUnit,
-      startDate: _startDate,
-      endDate: _endDate,
-      providerController: _providerController,
-      customLabelController: _customLabelController,
-      referenceController: _referenceController,
-      linkController: _linkController,
-      offsetValueController: _offsetValueController,
-      notesController: _notesController,
-      providerError: _providerError,
-      customLabelError: _customLabelError,
-      linkError: _linkError,
-      offsetValueError: _offsetValueError,
-      validationError: _validationError,
-      onTypeChanged: (value) {
-        if (value == null) return;
-        setState(() => _type = value);
-      },
-      onStartPressed: _pickStartDate,
-      onEndPressed: _pickEndDate,
-      onOffsetUnitChanged: (value) {
-        if (value == null) return;
-        setState(() => _offsetUnit = value);
-      },
-      onArchive: () => _confirmArchive(service),
-      onSave: () => _save(service),
-      reminder: reminder,
-      onCreateTask: buildHouseDirectoryCreateTaskAction(
-        isOwner: widget.isOwner,
-        isEditing: _isEditing,
-        service: service,
-        reminder: reminder,
-        onCreateTask: _openCreateTask,
-      ),
-    );
-  }
+  }) => _buildHouseDirectoryServiceBody(
+    screen: this,
+    state: state,
+    service: service,
+    reminder: reminder,
+  );
 
   HouseDirectoryService? _resolveService(HouseDirectoryState state) {
     return resolveHouseDirectoryService(
@@ -223,24 +163,6 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
     );
   }
 
-  void _hydrateFromService(HouseDirectoryService? service) {
-    if (widget.isCreating || service == null) return;
-    if (_hydratedServiceId == service.id && _isEditing) return;
-    _hydratedServiceId = service.id;
-    _providerController.text = service.providerName;
-    _customLabelController.text = service.customLabel ?? '';
-    _referenceController.text = service.accountReference ?? '';
-    _linkController.text = service.linkUrl ?? '';
-    _offsetValueController.text =
-        service.renewalReminderOffsetValue?.toString() ?? '';
-    _notesController.text = service.notes ?? '';
-    _type = service.serviceType;
-    _offsetUnit = service.renewalReminderOffsetUnit;
-    _startDate = service.termStartDate;
-    _endDate = service.termEndDate;
-    _seedReminderDefaults();
-  }
-
   String _titleForState(S s) {
     if (widget.isCreating) return s.houseDirectoryAddService;
     if (_isEditing) return s.houseDirectoryEditService;
@@ -250,7 +172,7 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
   }
 
   void _onChanged() {
-    if (!mounted) return;
+    if (!mounted || _isHydrating) return;
     setState(() {
       _validationError = null;
       _providerError = null;
@@ -285,78 +207,16 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
     });
   }
 
-  void _save(HouseDirectoryService? service) {
-    final s = S.of(context);
-    final validation = validateHouseDirectoryService(
-      s: s,
-      type: _type,
-      providerController: _providerController,
-      customLabelController: _customLabelController,
-      linkController: _linkController,
-      offsetValueController: _offsetValueController,
-      startDate: _startDate,
-      endDate: _endDate,
-    );
-    if (validation.hasError) {
-      setState(() {
-        _providerError = validation.providerError;
-        _customLabelError = validation.customLabelError;
-        _linkError = validation.linkError;
-        _offsetValueError = validation.offsetValueError;
-        _validationError = validation.summaryError;
-      });
-      return;
-    }
-    setState(() {
-      _validationError = null;
-      _providerError = null;
-      _customLabelError = null;
-      _linkError = null;
-      _offsetValueError = null;
-    });
-    final offsetValueRaw = _offsetValueController.text.trim();
-    final offsetValue =
-        _endDate != null && offsetValueRaw.isNotEmpty
-            ? int.tryParse(offsetValueRaw)
-            : null;
-    context.read<HouseDirectoryBloc>().add(
-          HouseDirectoryServiceSaved(
-            UpsertHouseDirectoryServiceInput(
-              homeId: widget.homeId,
-              serviceId: service?.id,
-              serviceType: _type,
-              providerName: _providerController.text.trim(),
-              customLabel: _emptyToNull(_customLabelController.text),
-              accountReference: _emptyToNull(_referenceController.text),
-              linkUrl: _emptyToNull(_linkController.text),
-              termStartDate: _startDate,
-              termEndDate: _endDate,
-              renewalReminderOffsetValue: offsetValue,
-              renewalReminderOffsetUnit:
-                  _endDate != null && offsetValue != null ? _offsetUnit : null,
-              notes: _emptyToNull(_notesController.text),
-            ),
-          ),
-        );
-  }
+  void _hydrateFromService(HouseDirectoryService? service) =>
+      _hydrateHouseDirectoryService(this, service);
 
-  void _seedReminderDefaults() {
-    if (_endDate == null) {
-      _offsetValueController.clear();
-      _offsetUnit = null;
-      return;
-    }
-    final hasOffsetValue = _offsetValueController.text.trim().isNotEmpty;
-    if (hasOffsetValue && _offsetUnit != null) {
-      return;
-    }
-    _offsetValueController.text = '1';
-    _offsetUnit = defaultHouseDirectoryReminderOffsetUnit(
-      endDate: _endDate!,
-      today: DateTime.now(),
-      daysPerMonth: _daysPerMonth,
-    );
-  }
+  void _scheduleHydration(HouseDirectoryService? service) =>
+      _scheduleHouseDirectoryServiceHydration(this, service);
+
+  void _save(HouseDirectoryService? service) =>
+      _saveHouseDirectoryService(this, service);
+
+  void _seedReminderDefaults() => _seedHouseDirectoryReminderDefaults(this);
 
   Future<void> _confirmArchive(HouseDirectoryService? service) async {
     if (service == null) return;
@@ -377,31 +237,7 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
   Future<void> _openCreateTask(
     HouseDirectoryService service,
     HouseDirectoryReminder reminder,
-  ) async {
-    final ownerUserId = _ownerUserId(context.read<HouseDirectoryBloc>().state);
-    final result = await context.pushNamed<FlowChoreOutcome>(
-      AppRouteNames.flowChoreCreate,
-      queryParameters: {'homeId': widget.homeId},
-      extra: FlowChoreRouteArgs(
-        initialForm: FlowChorePrefill(
-          startDate: reminder.dueAt,
-          assigneeUserId: ownerUserId,
-          title: _taskTitleFor(service),
-          notes: buildHouseDirectoryTaskNotes(
-            strings: S.of(context),
-            service: service,
-            reminder: reminder,
-          ),
-          howToVideoUrl: service.linkUrl ?? '',
-        ),
-      ),
-    );
-    if (!mounted || result == null || result.isDeleted) return;
-    context.read<HouseDirectoryBloc>().add(
-      HouseDirectoryReminderDismissed(reminder.id),
-    );
-    KinlySnackBar.showSuccess(context, S.of(context).flowChoreCreateSuccess);
-  }
+  ) => _openHouseDirectoryCreateTask(this, service, reminder);
 
   String _taskTitleFor(HouseDirectoryService service) {
     return (service.customLabel ?? service.providerName).trim();
@@ -414,38 +250,6 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
     return null;
   }
 
-  void _onNoticeChanged(BuildContext context, HouseDirectoryState state) {
-    final notice = state.notice;
-    if (notice == null) {
-      _lastHandledNotice = null;
-      return;
-    }
-    if (notice == _lastHandledNotice) return;
-    _lastHandledNotice = notice;
-    switch (notice) {
-      case HouseDirectoryNotice.serviceSaved:
-        if (!mounted) return;
-        final result =
-            widget.isCreating
-                ? HouseDirectoryRouteResult.serviceCreated
-                : HouseDirectoryRouteResult.serviceUpdated;
-        Navigator.of(context).pop(result);
-        return;
-      case HouseDirectoryNotice.serviceArchived:
-        if (!mounted) return;
-        Navigator.of(
-          context,
-        ).pop(HouseDirectoryRouteResult.serviceArchived);
-        return;
-      case HouseDirectoryNotice.actionFailed:
-        if (!mounted) return;
-        KinlySnackBar.showError(
-          context,
-          state.errorMessage ?? S.of(context).houseDirectoryActionFailed,
-        );
-        return;
-      default:
-        return;
-    }
-  }
+  void _onNoticeChanged(BuildContext context, HouseDirectoryState state) =>
+      _handleHouseDirectoryServiceNotice(this, context, state);
 }

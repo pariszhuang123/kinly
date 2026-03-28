@@ -46,3 +46,7 @@ class ArchiveMyCompletedShoppingItemsEvent extends ShoppingListEvent {
   @override
   List<Object?> get props => [triggerShareSpend];
 }
+
+class ConsumePendingBillCreateEvent extends ShoppingListEvent {
+  const ConsumePendingBillCreateEvent();
+}

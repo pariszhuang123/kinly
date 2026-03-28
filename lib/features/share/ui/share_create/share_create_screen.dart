@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/di/locator.dart';
+import '../../../../contracts/share/share_create_route_args.dart';
 import '../../../../core/supabase/storage_path_resolver.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../core/theme/kinly_sections.dart';
@@ -29,10 +30,12 @@ class ShareCreateScreen extends StatefulWidget {
     super.key,
     required this.homeId,
     this.allowDelete = false,
+    this.presentationMode = ShareCreatePresentationMode.standard,
   });
 
   final String homeId;
   final bool allowDelete;
+  final ShareCreatePresentationMode presentationMode;
 
   @override
   State<ShareCreateScreen> createState() => _ShareCreateScreenState();
@@ -404,6 +407,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
       customControllers: _customControllers,
       evidencePhotoUrl: evidencePhotoUrl,
       isUploadingEvidencePhoto: state.isUploadingEvidencePhoto,
+      presentationMode: widget.presentationMode,
     );
     final slots = ShareCreateSurfaceSlots(
       body: _buildShareCreateSections(scope, shareColors),
@@ -436,6 +440,7 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
         onTerminatePlan: scope.actions.onTerminatePlan,
         onPaywallOpened: scope.actions.onPaywallOpened,
         onEvidencePhotoCapture: scope.actions.onEvidencePhotoCapture,
+        presentationMode: scope.presentationMode,
       );
     }
     return Column(

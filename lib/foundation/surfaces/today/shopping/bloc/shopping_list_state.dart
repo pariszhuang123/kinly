@@ -12,6 +12,8 @@ class ShoppingListState extends Equatable {
     this.messageTick = 0,
     this.linkedExpenseId,
     this.linkedExpenseTick = 0,
+    this.pendingBillCreate,
+    this.pendingBillCreateTick = 0,
     this.archivedTick = 0,
   });
 
@@ -33,6 +35,8 @@ class ShoppingListState extends Equatable {
     int messageTick = 0,
     String? linkedExpenseId,
     int linkedExpenseTick = 0,
+    PendingShoppingBillCreate? pendingBillCreate,
+    int pendingBillCreateTick = 0,
     int archivedTick = 0,
   }) : this._(
          isLoading: false,
@@ -44,6 +48,8 @@ class ShoppingListState extends Equatable {
          messageTick: messageTick,
          linkedExpenseId: linkedExpenseId,
          linkedExpenseTick: linkedExpenseTick,
+         pendingBillCreate: pendingBillCreate,
+         pendingBillCreateTick: pendingBillCreateTick,
          archivedTick: archivedTick,
          );
 
@@ -67,6 +73,8 @@ class ShoppingListState extends Equatable {
   final int messageTick;
   final String? linkedExpenseId;
   final int linkedExpenseTick;
+  final PendingShoppingBillCreate? pendingBillCreate;
+  final int pendingBillCreateTick;
   final int archivedTick;
 
   ShoppingListState copyWith({
@@ -74,6 +82,9 @@ class ShoppingListState extends Equatable {
     int? messageTick,
     String? linkedExpenseId,
     int? linkedExpenseTick,
+    PendingShoppingBillCreate? pendingBillCreate,
+    bool clearPendingBillCreate = false,
+    int? pendingBillCreateTick,
     int? archivedTick,
   }) {
     return ShoppingListState._(
@@ -87,6 +98,12 @@ class ShoppingListState extends Equatable {
       messageTick: messageTick ?? this.messageTick,
       linkedExpenseId: linkedExpenseId ?? this.linkedExpenseId,
       linkedExpenseTick: linkedExpenseTick ?? this.linkedExpenseTick,
+      pendingBillCreate:
+          clearPendingBillCreate
+              ? null
+              : pendingBillCreate ?? this.pendingBillCreate,
+      pendingBillCreateTick:
+          pendingBillCreateTick ?? this.pendingBillCreateTick,
       archivedTick: archivedTick ?? this.archivedTick,
     );
   }
@@ -103,6 +120,23 @@ class ShoppingListState extends Equatable {
     messageTick,
     linkedExpenseId,
     linkedExpenseTick,
+    pendingBillCreate,
+    pendingBillCreateTick,
     archivedTick,
   ];
+}
+
+class PendingShoppingBillCreate extends Equatable {
+  const PendingShoppingBillCreate({
+    required this.description,
+    required this.notes,
+    required this.itemIds,
+  });
+
+  final String description;
+  final String? notes;
+  final List<String> itemIds;
+
+  @override
+  List<Object?> get props => [description, notes, itemIds];
 }

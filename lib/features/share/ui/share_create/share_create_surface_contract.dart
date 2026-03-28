@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../../../contracts/share/share_create_route_args.dart';
 import '../../../../core/theme/kinly_sections.dart';
 import '../../../../core/theme/spacing.dart';
 import '../../../../generated/l10n.dart';
@@ -56,6 +57,7 @@ class ShareCreateSurfaceScope {
     required this.customControllers,
     required this.evidencePhotoUrl,
     required this.isUploadingEvidencePhoto,
+    required this.presentationMode,
   });
 
   final BuildContext context;
@@ -73,4 +75,5 @@ class ShareCreateSurfaceScope {
   final Map<String, TextEditingController> customControllers;
   final String? evidencePhotoUrl;
   final bool isUploadingEvidencePhoto;
+  final ShareCreatePresentationMode presentationMode;
 }

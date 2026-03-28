@@ -1,9 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
+import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
 import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
+import 'package:kinly/contracts/share/share_create_route_args.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/features/share/ui/share_created_list/share_created_list_provider.dart';
@@ -61,10 +63,16 @@ List<GoRoute> buildShareRoutes({
             reason: 'active membership missing while opening Share create',
           );
         }
+        final args = state.extra as ShareCreateRouteArgs?;
         return ShareCreateProvider(
           homeId: membership.homeId,
           expensesRepository: sl<ExpensesRepository>(),
           homeRepository: sl<HomeRepository>(),
+          routeArgs: args,
+          shoppingListRepository:
+              args?.shoppingExpenseLinkRequest != null
+                  ? sl<ShoppingListRepository>()
+                  : null,
         );
       },
     ),
