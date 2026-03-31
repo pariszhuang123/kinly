@@ -227,6 +227,7 @@ class HouseDirectoryNoteReadOnlyContent extends StatelessWidget {
     final s = S.of(context);
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
+    final hasDetails = details.isNotEmpty;
     final hasPhoto = photoUrl.isNotEmpty;
     final heroTag = 'house-directory-note-photo-${photoUrl.hashCode}';
 
@@ -234,12 +235,14 @@ class HouseDirectoryNoteReadOnlyContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _ReadOnlyField(label: s.houseDirectoryTitleLabel, value: title),
-        SizedBox(height: spacing.md),
-        _ReadOnlyField(
-          label: s.houseDirectoryNoteDetailsLabel,
-          value: details,
-          maxLines: 10,
-        ),
+        if (hasDetails) ...[
+          SizedBox(height: spacing.md),
+          _ReadOnlyField(
+            label: s.houseDirectoryNoteDetailsLabel,
+            value: details,
+            maxLines: 10,
+          ),
+        ],
         if (referenceUrl.isNotEmpty) ...[
           SizedBox(height: spacing.md),
           KinlyOutlinedButton.text(

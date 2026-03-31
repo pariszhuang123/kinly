@@ -228,6 +228,106 @@ void main() {
         expect(find.text(s.houseDirectoryNoteSaved), findsOneWidget);
       },
     );
+
+    testWidgets('owner opens existing note directly in edit mode', (
+      tester,
+    ) async {
+      final state = _buildState();
+      when(() => bloc.state).thenReturn(state);
+      whenListen(
+        bloc,
+        const Stream<HouseDirectoryState>.empty(),
+        initialState: state,
+      );
+
+      HouseDirectoryNoteRouteArgs? receivedArgs;
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder:
+                (_, __) => BlocProvider<HouseDirectoryBloc>.value(
+                  value: bloc,
+                  child: const HouseDirectoryDetailsScreen(homeId: 'home-1'),
+                ),
+            routes: [
+              GoRoute(
+                path: 'note',
+                name: AppRouteNames.houseDirectoryNote,
+                builder: (_, routeState) {
+                  receivedArgs = routeState.extra as HouseDirectoryNoteRouteArgs?;
+                  return const Scaffold(body: Text('note-route'));
+                },
+              ),
+            ],
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(_buildRouterHarness(router));
+      await tester.pumpAndSettle();
+
+      final s = _strings(tester);
+      await tester.tap(find.text(s.houseDirectoryNotesTitle));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Move-in checklist'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('note-route'), findsOneWidget);
+      expect(receivedArgs?.noteId, 'note-1');
+      expect(receivedArgs?.startInEditMode, isTrue);
+    });
+
+    testWidgets('non-owner opens existing note in read-only mode', (
+      tester,
+    ) async {
+      final state = _buildState(isOwner: false);
+      when(() => bloc.state).thenReturn(state);
+      whenListen(
+        bloc,
+        const Stream<HouseDirectoryState>.empty(),
+        initialState: state,
+      );
+
+      HouseDirectoryNoteRouteArgs? receivedArgs;
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder:
+                (_, __) => BlocProvider<HouseDirectoryBloc>.value(
+                  value: bloc,
+                  child: const HouseDirectoryDetailsScreen(homeId: 'home-1'),
+                ),
+            routes: [
+              GoRoute(
+                path: 'note',
+                name: AppRouteNames.houseDirectoryNote,
+                builder: (_, routeState) {
+                  receivedArgs = routeState.extra as HouseDirectoryNoteRouteArgs?;
+                  return const Scaffold(body: Text('note-route'));
+                },
+              ),
+            ],
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(_buildRouterHarness(router));
+      await tester.pumpAndSettle();
+
+      final s = _strings(tester);
+      await tester.tap(find.text(s.houseDirectoryNotesTitle));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Move-in checklist'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('note-route'), findsOneWidget);
+      expect(receivedArgs?.noteId, 'note-1');
+      expect(receivedArgs?.startInEditMode, isFalse);
+    });
   });
 }
 
@@ -285,11 +385,11 @@ S _strings(WidgetTester tester) {
   return S.of(context);
 }
 
-HouseDirectoryState _buildState() {
+HouseDirectoryState _buildState({bool isOwner = true}) {
   final now = DateTime(2026, 3, 14);
   return HouseDirectoryState(
     status: HouseDirectoryStatus.success,
-    isOwner: true,
+    isOwner: isOwner,
     services: [
       HouseDirectoryService(
         id: 'service-1',

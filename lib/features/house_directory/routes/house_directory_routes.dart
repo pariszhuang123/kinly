@@ -87,6 +87,7 @@ List<GoRoute> buildHouseDirectoryRoutes({
             isOwner: context.isOwner,
             serviceId: args?.serviceId,
             reminderId: args?.reminderId,
+            startInEditMode: args?.startInEditMode ?? false,
           );
         },
       ),
@@ -107,6 +108,7 @@ List<GoRoute> buildHouseDirectoryRoutes({
             noteId: args?.noteId,
             initialNoteType:
                 args?.initialNoteType ?? HouseDirectoryNoteType.general,
+            startInEditMode: args?.startInEditMode ?? false,
           );
         },
       ),

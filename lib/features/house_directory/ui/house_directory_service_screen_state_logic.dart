@@ -91,7 +91,7 @@ void _hydrateHouseDirectoryService(
   HouseDirectoryService? service,
 ) {
   if (screen.widget.isCreating || service == null) return;
-  if (screen._hydratedServiceId == service.id && screen._isEditing) return;
+  if (screen._hydratedServiceId == service.id) return;
   screen._isHydrating = true;
   try {
     screen._hydratedServiceId = service.id;
@@ -117,7 +117,7 @@ void _scheduleHouseDirectoryServiceHydration(
   HouseDirectoryService? service,
 ) {
   if (screen.widget.isCreating || service == null) return;
-  if (screen._hydratedServiceId == service.id && screen._isEditing) return;
+  if (screen._hydratedServiceId == service.id) return;
   if (screen._pendingHydrationServiceId == service.id) return;
   screen._pendingHydrationServiceId = service.id;
   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -127,7 +127,7 @@ void _scheduleHouseDirectoryServiceHydration(
       screen.context.read<HouseDirectoryBloc>().state,
     );
     if (latestService == null) return;
-    if (screen._hydratedServiceId == latestService.id && screen._isEditing) {
+    if (screen._hydratedServiceId == latestService.id) {
       return;
     }
     screen.setState(() {
@@ -271,6 +271,9 @@ Future<void> _openHouseDirectoryCreateTask(
     screen.context,
     S.of(screen.context).flowChoreCreateSuccess,
   );
+  if (screen.widget.reminderId != null) {
+    Navigator.of(screen.context).pop();
+  }
 }
 
 void _handleHouseDirectoryServiceNotice(

@@ -645,6 +645,7 @@ void main() {
         expect(find.text('Peanuts'), findsOneWidget);
       },
     );
+
   });
 }
 
@@ -665,6 +666,7 @@ Widget _buildRouterHarness(GoRouter router) {
 PersonalDirectoryState _buildState({
   required List<PersonalDirectoryNote> notes,
   PersonalDirectoryBankAccount? bankAccount,
+  String currentUserId = 'user-1',
 }) {
   return PersonalDirectoryState(
     status: PersonalDirectoryStatus.success,
@@ -673,7 +675,7 @@ PersonalDirectoryState _buildState({
       username: 'Alex',
       isHomeOwner: false,
     ),
-    currentUserId: 'user-1',
+    currentUserId: currentUserId,
     bankAccount: bankAccount,
     notes: notes,
   );
@@ -687,6 +689,7 @@ PersonalDirectoryNote _note({
   String? contactName,
   String? phoneNumber,
   String? details,
+  String? referenceUrl,
 }) {
   final timestamp = DateTime(2026, 3, 18);
   return PersonalDirectoryNote(
@@ -697,6 +700,7 @@ PersonalDirectoryNote _note({
     contactName: contactName,
     phoneNumber: phoneNumber,
     details: details,
+    referenceUrl: referenceUrl,
     createdAt: timestamp,
     updatedAt: timestamp,
   );

@@ -62,6 +62,8 @@ const _personalDirectoryCodeMap = <String, PersonalDirectoryErrorCode>{
       PersonalDirectoryErrorCode.detailsForbidden,
   'MEMBER_DIRECTORY_INVALID_PHONE_NUMBER':
       PersonalDirectoryErrorCode.invalidPhoneNumber,
+  'MEMBER_DIRECTORY_INVALID_REFERENCE_URL':
+      PersonalDirectoryErrorCode.invalidReferenceUrl,
   'MEMBER_DIRECTORY_NOTE_TYPE_CONFLICT':
       PersonalDirectoryErrorCode.noteTypeConflict,
   'MEMBER_DIRECTORY_OTHER_NOTE_LIMIT_REACHED':

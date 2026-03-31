@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kinly/contracts/personal_directory/models.dart';
@@ -47,12 +48,26 @@ void main() {
     late _MockPersonalDirectoryRepository repository;
     late UrlLauncherPlatform previousLauncher;
     late _FakeUrlLauncherPlatform fakeLauncher;
+    String? clipboardText;
 
     setUp(() {
       repository = _MockPersonalDirectoryRepository();
       previousLauncher = UrlLauncherPlatform.instance;
       fakeLauncher = _FakeUrlLauncherPlatform();
       UrlLauncherPlatform.instance = fakeLauncher;
+      clipboardText = null;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, (call) async {
+            switch (call.method) {
+              case 'Clipboard.setData':
+                clipboardText =
+                    (call.arguments as Map?)?['text'] as String?;
+                return null;
+              case 'Clipboard.getData':
+                return <String, dynamic>{'text': clipboardText};
+            }
+            return null;
+          });
       if (!sl.isRegistered<Logger>()) {
         sl.registerLazySingleton<Logger>(() => const DebugLogger());
       }
@@ -64,6 +79,8 @@ void main() {
 
     tearDown(() {
       UrlLauncherPlatform.instance = previousLauncher;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, null);
       if (sl.isRegistered<Logger>()) {
         sl.unregister<Logger>();
       }
@@ -184,6 +201,57 @@ void main() {
       );
     });
 
+    testWidgets('view-only other note can copy details and open link', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _buildHarness(
+          PersonalDirectoryNoteScreen(
+            repository: repository,
+            canEdit: false,
+            note: PersonalDirectoryNote(
+              id: 'other-1',
+              noteType: PersonalDirectoryNoteType.other,
+              customTitle: 'Medication',
+              details: 'In the kitchen drawer.',
+              referenceUrl: 'https://example.com/medication',
+              createdAt: DateTime(2026, 3, 18),
+              updatedAt: DateTime(2026, 3, 18),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      final s = _strings(tester);
+
+      expect(
+        find.widgetWithText(OutlinedButton, s.shareOwedCopyCta),
+        findsOneWidget,
+      );
+      expect(
+        find.widgetWithText(OutlinedButton, s.houseDirectoryOpenLink),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.widgetWithText(OutlinedButton, s.shareOwedCopyCta));
+      await tester.pump();
+
+      final clipboard = await Clipboard.getData(Clipboard.kTextPlain);
+      expect(clipboard?.text, 'In the kitchen drawer.');
+
+      await tester.tap(
+        find.widgetWithText(OutlinedButton, s.houseDirectoryOpenLink),
+      );
+      await tester.pump();
+
+      expect(fakeLauncher.launchedUrl, 'https://example.com/medication');
+      expect(
+        fakeLauncher.launchOptions?.mode,
+        PreferredLaunchMode.externalApplication,
+      );
+    });
+
     testWidgets(
       'editing an existing other note swaps archive for edit when fields change',
       (tester) async {
@@ -251,6 +319,10 @@ void main() {
           KinlyChoiceChip,
           s.personalDirectoryEmergencyContactTitle,
         ),
+        findsNothing,
+      );
+      expect(
+        _findTextFieldLabel(s.houseDirectoryNoteUrlLabel),
         findsNothing,
       );
     });

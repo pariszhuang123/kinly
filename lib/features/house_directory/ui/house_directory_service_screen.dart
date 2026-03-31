@@ -29,12 +29,14 @@ class HouseDirectoryServiceScreen extends StatefulWidget {
     required this.isOwner,
     this.serviceId,
     this.reminderId,
+    this.startInEditMode = false,
   });
 
   final String homeId;
   final bool isOwner;
   final String? serviceId;
   final String? reminderId;
+  final bool startInEditMode;
 
   bool get isCreating => serviceId == null;
 
@@ -71,7 +73,8 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
   @override
   void initState() {
     super.initState();
-    _isEditing = widget.isCreating;
+    _isEditing =
+        widget.isCreating || (widget.isOwner && widget.startInEditMode);
     for (final controller in [
       _providerController,
       _customLabelController,

@@ -29,6 +29,7 @@ class HouseDirectoryNoteScreen extends StatefulWidget {
     required this.isOwner,
     this.noteId,
     this.initialNoteType = HouseDirectoryNoteType.general,
+    this.startInEditMode = false,
   });
 
   final String homeId;
@@ -36,6 +37,7 @@ class HouseDirectoryNoteScreen extends StatefulWidget {
   final bool isOwner;
   final String? noteId;
   final HouseDirectoryNoteType initialNoteType;
+  final bool startInEditMode;
 
   bool get isCreating => noteId == null;
 
@@ -62,7 +64,8 @@ class _HouseDirectoryNoteScreenState extends State<HouseDirectoryNoteScreen> {
   @override
   void initState() {
     super.initState();
-    _isEditing = widget.isCreating;
+    _isEditing =
+        widget.isCreating || (widget.isOwner && widget.startInEditMode);
     _titleController.addListener(_onChanged);
     _detailsController.addListener(_onChanged);
     _referenceUrlController.addListener(_onChanged);

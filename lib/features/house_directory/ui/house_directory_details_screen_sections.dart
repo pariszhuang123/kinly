@@ -227,7 +227,10 @@ class _ServiceSection extends StatelessWidget {
   Future<void> _openService(BuildContext context, String serviceId) async {
     final result = await context.pushNamed<HouseDirectoryRouteResult>(
       AppRouteNames.houseDirectoryService,
-      extra: HouseDirectoryServiceRouteArgs(serviceId: serviceId),
+      extra: HouseDirectoryServiceRouteArgs(
+        serviceId: serviceId,
+        startInEditMode: state.isOwner,
+      ),
     );
     if (!context.mounted) return;
     _handleRouteResult(context, result);
@@ -331,6 +334,7 @@ class _NoteSection extends StatelessWidget {
       extra: HouseDirectoryNoteRouteArgs(
         noteId: noteId,
         initialNoteType: createNoteType,
+        startInEditMode: state.isOwner,
       ),
     );
     if (!context.mounted) return;

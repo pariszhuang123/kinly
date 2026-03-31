@@ -29,6 +29,7 @@ class PersonalDirectoryNoteFormBody extends StatelessWidget {
     this.detailsError,
     this.referenceUrlError,
     required this.onNoteTypeSelected,
+    this.onCopyDetails,
     this.onCallPhoneNumber,
     this.onOpenReferenceUrl,
     required this.onSave,
@@ -53,12 +54,14 @@ class PersonalDirectoryNoteFormBody extends StatelessWidget {
   final String? detailsError;
   final String? referenceUrlError;
   final ValueChanged<PersonalDirectoryNoteType> onNoteTypeSelected;
+  final Future<void> Function()? onCopyDetails;
   final Future<void> Function()? onCallPhoneNumber;
   final Future<void> Function()? onOpenReferenceUrl;
   final VoidCallback onSave;
   final VoidCallback onArchive;
 
   bool get _showsDetailsField => noteType != PersonalDirectoryNoteType.allergy;
+  bool get _showsReferenceUrlField => noteType != PersonalDirectoryNoteType.allergy;
 
   @override
   Widget build(BuildContext context) {
@@ -98,16 +101,19 @@ class PersonalDirectoryNoteFormBody extends StatelessWidget {
               isSaving: isSaving,
               detailsController: detailsController,
               detailsError: detailsError,
+              onCopyDetails: onCopyDetails,
             ),
           ],
-          const SizedBox(height: 16),
-          _ReferenceUrlFieldSection(
-            canEdit: canEdit,
-            isSaving: isSaving,
-            referenceUrlController: referenceUrlController,
-            referenceUrlError: referenceUrlError,
-            onOpenReferenceUrl: onOpenReferenceUrl,
-          ),
+          if (_showsReferenceUrlField) ...[
+            const SizedBox(height: 16),
+            _ReferenceUrlFieldSection(
+              canEdit: canEdit,
+              isSaving: isSaving,
+              referenceUrlController: referenceUrlController,
+              referenceUrlError: referenceUrlError,
+              onOpenReferenceUrl: onOpenReferenceUrl,
+            ),
+          ],
           if (validationError != null) ...[
             const SizedBox(height: 12),
             _ValidationMessage(message: validationError!),
@@ -270,6 +276,7 @@ class _DetailsFieldSection extends StatelessWidget {
     required this.isSaving,
     required this.detailsController,
     this.detailsError,
+    this.onCopyDetails,
   });
 
   final PersonalDirectoryNoteType noteType;
@@ -277,10 +284,12 @@ class _DetailsFieldSection extends StatelessWidget {
   final bool isSaving;
   final TextEditingController detailsController;
   final String? detailsError;
+  final Future<void> Function()? onCopyDetails;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final hasDetails = detailsController.text.trim().isNotEmpty;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -293,6 +302,14 @@ class _DetailsFieldSection extends StatelessWidget {
           maxLines: 5,
           minLines: 4,
         ),
+        if (!canEdit && hasDetails && onCopyDetails != null) ...[
+          const SizedBox(height: 12),
+          KinlyOutlinedButton.text(
+            onPressed: () => onCopyDetails!.call(),
+            label: s.shareOwedCopyCta,
+            fullWidth: true,
+          ),
+        ],
       ],
     );
   }

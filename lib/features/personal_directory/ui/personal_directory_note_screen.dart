@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
@@ -132,6 +133,7 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
         detailsError: _detailsError,
         referenceUrlError: _referenceUrlError,
         onNoteTypeSelected: _updateNoteType,
+        onCopyDetails: widget.canEdit ? null : _copyDetails,
         onCallPhoneNumber: widget.canEdit ? null : _dialEmergencyContact,
         onOpenReferenceUrl: widget.canEdit ? null : _openReferenceUrl,
         onSave: _save,
@@ -322,6 +324,12 @@ class _PersonalDirectoryNoteScreenState extends State<PersonalDirectoryNoteScree
     final normalized = phoneNumber.replaceAll(RegExp(r'[\s()-]'), '');
     final uri = Uri(scheme: 'tel', path: normalized);
     await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  Future<void> _copyDetails() async {
+    final details = _trimmedDetails();
+    if (details == null) return;
+    await Clipboard.setData(ClipboardData(text: details));
   }
 
   Future<void> _openReferenceUrl() async {

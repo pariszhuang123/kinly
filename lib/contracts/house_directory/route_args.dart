@@ -16,10 +16,12 @@ class HouseDirectoryServiceRouteArgs {
   const HouseDirectoryServiceRouteArgs({
     this.serviceId,
     this.reminderId,
+    this.startInEditMode = false,
   });
 
   final String? serviceId;
   final String? reminderId;
+  final bool startInEditMode;
 }
 
 class HouseDirectoryWifiRouteArgs {
@@ -32,10 +34,12 @@ class HouseDirectoryNoteRouteArgs {
   const HouseDirectoryNoteRouteArgs({
     this.noteId,
     this.initialNoteType = HouseDirectoryNoteType.general,
+    this.startInEditMode = false,
   });
 
   final String? noteId;
   final HouseDirectoryNoteType initialNoteType;
+  final bool startInEditMode;
 }
 
 class HouseDirectoryPhotoRouteArgs {

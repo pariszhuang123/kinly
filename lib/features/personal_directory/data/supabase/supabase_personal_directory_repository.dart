@@ -96,7 +96,7 @@ class SupabasePersonalDirectoryRepository implements PersonalDirectoryRepository
   ) async {
     try {
       final response = await _client.rpc(
-        'create_member_directory_note',
+        'create_member_directory_note_v2',
         params: {
           'p_note_type': input.noteType.wireValue,
           'p_label': input.label,
@@ -120,7 +120,7 @@ class SupabasePersonalDirectoryRepository implements PersonalDirectoryRepository
   ) async {
     try {
       final response = await _client.rpc(
-        'update_member_directory_note',
+        'update_member_directory_note_v2',
         params: {
           'p_note_id': input.noteId,
           'p_label': input.label,

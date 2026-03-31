@@ -12,6 +12,7 @@ enum PersonalDirectoryErrorCode {
   contactFieldsForbidden,
   detailsForbidden,
   invalidPhoneNumber,
+  invalidReferenceUrl,
   noteTypeConflict,
   otherNoteLimitReached,
   noteNotFound,
