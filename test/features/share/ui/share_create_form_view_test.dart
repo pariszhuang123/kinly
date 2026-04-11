@@ -4,7 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:kinly/contracts/share/share_create_route_args.dart';
-import 'package:kinly/contracts/expenses/enums/expense_recurrence_unit.dart';
+import 'package:kinly/contracts/expenses/models.dart';
+import 'package:kinly/contracts/homes/home_units_models.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
 import 'package:kinly/core/theme/opacity.dart';
 import 'package:kinly/core/theme/spacing.dart';
@@ -283,8 +284,16 @@ void main() {
         isLoading: false,
         showValidationErrors: true,
         participants: const [
-          ShareParticipant(userId: 'member_a', displayName: 'Alice'),
-          ShareParticipant(userId: 'member_b', displayName: 'Bob'),
+          ShareParticipant(
+            membershipId: 'membership_a',
+            userId: 'member_a',
+            displayName: 'Alice',
+          ),
+          ShareParticipant(
+            membershipId: 'membership_b',
+            userId: 'member_b',
+            displayName: 'Bob',
+          ),
         ],
         form: form,
       );
@@ -317,8 +326,16 @@ void main() {
         isLoading: false,
         showValidationErrors: true,
         participants: const [
-          ShareParticipant(userId: 'member_a', displayName: 'Alice'),
-          ShareParticipant(userId: 'member_b', displayName: 'Bob'),
+          ShareParticipant(
+            membershipId: 'membership_a',
+            userId: 'member_a',
+            displayName: 'Alice',
+          ),
+          ShareParticipant(
+            membershipId: 'membership_b',
+            userId: 'member_b',
+            displayName: 'Bob',
+          ),
         ],
         form: form,
       );
@@ -352,7 +369,11 @@ void main() {
         showValidationErrors: true,
         currentUserId: 'member_self',
         participants: const [
-          ShareParticipant(userId: 'member_self', displayName: 'Taylor'),
+          ShareParticipant(
+            membershipId: 'membership_self',
+            userId: 'member_self',
+            displayName: 'Taylor',
+          ),
         ],
         form: form,
       );
@@ -383,8 +404,16 @@ void main() {
         showValidationErrors: true,
         currentUserId: 'member_self',
         participants: const [
-          ShareParticipant(userId: 'member_a', displayName: 'Alice'),
-          ShareParticipant(userId: 'member_self', displayName: 'Taylor'),
+          ShareParticipant(
+            membershipId: 'membership_a',
+            userId: 'member_a',
+            displayName: 'Alice',
+          ),
+          ShareParticipant(
+            membershipId: 'membership_self',
+            userId: 'member_self',
+            displayName: 'Taylor',
+          ),
         ],
         form: form,
       );
@@ -427,8 +456,16 @@ void main() {
       final state = ShareCreateState.initial().copyWith(
         isLoading: false,
         participants: const [
-          ShareParticipant(userId: 'member_a', displayName: 'Alice'),
-          ShareParticipant(userId: 'member_b', displayName: 'Bob'),
+          ShareParticipant(
+            membershipId: 'membership_a',
+            userId: 'member_a',
+            displayName: 'Alice',
+          ),
+          ShareParticipant(
+            membershipId: 'membership_b',
+            userId: 'member_b',
+            displayName: 'Bob',
+          ),
         ],
         form: ShareCreateForm.initial().copyWith(
           amountInput: '42.00',
@@ -451,6 +488,48 @@ void main() {
       expect(find.text(s.flowChoreDetailMoreInfoTitle), findsNothing);
       expect(find.text(s.shareCreateAmountLabel), findsOneWidget);
       expect(find.text(s.shareCreateSplitLabel), findsOneWidget);
+    });
+
+    testWidgets('shows localized allocation labels and shared unit name', (
+      tester,
+    ) async {
+      final state = ShareCreateState.initial().copyWith(
+        isLoading: false,
+        participants: const [
+          ShareParticipant(
+            membershipId: 'membership_a',
+            userId: 'member_a',
+            displayName: 'Alice',
+          ),
+        ],
+        selectableUnits: const [
+          HomeUnitSummary(
+            unitId: 'unit-personal',
+            homeId: 'home-1',
+            name: 'Personal',
+            unitType: HomeUnitType.personal,
+            memberUserIds: ['member_self'],
+          ),
+          HomeUnitSummary(
+            unitId: 'unit-shared',
+            homeId: 'home-1',
+            name: 'Flatmates',
+            unitType: HomeUnitType.shared,
+            memberUserIds: ['member_self', 'member_a'],
+          ),
+        ],
+        form: ShareCreateForm.initial().copyWith(
+          allocationTargetType: ExpenseAllocationTargetType.unitBased,
+          splitMode: ShareSplitMode.equal,
+          selectedUnitIds: {'unit-shared'},
+        ),
+      );
+
+      await tester.pumpWidget(buildFormView(state));
+
+      final s = S.of(tester.element(find.byType(ShareCreateFormView)));
+      expect(find.text(s.gratitudeWallStatsPeople), findsOneWidget);
+      expect(find.text('Flatmates'), findsNWidgets(2));
     });
   });
 }

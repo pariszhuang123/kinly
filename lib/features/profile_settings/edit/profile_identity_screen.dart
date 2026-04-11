@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/router/app_route_names.dart';
+import '../../../contracts/homes/ports/home_repository.dart';
 import '../../../core/profile/enums/profile_error_code.dart';
 import '../../../core/theme/kinly_sections.dart';
 import '../../../core/theme/opacity.dart';
@@ -22,9 +24,22 @@ import '../../../core/ui/kinly_scaffold.dart';
 import '../../../core/ui/kinly_app_bar.dart';
 import '../../../core/ui/kinly_theme_access.dart';
 import '../../../core/ui/kinly_material.dart';
+import '../../../core/ui/settings/kinly_settings_card.dart';
+import '../../../core/ui/settings/kinly_settings_tile.dart';
+import '../../../core/ui/kinly_icons.dart';
+import '../../../contracts/profile_settings/profile_shared_unit_hub_route_args.dart';
 
 class ProfileIdentityScreen extends StatefulWidget {
-  const ProfileIdentityScreen({super.key});
+  const ProfileIdentityScreen({
+    super.key,
+    required this.homeId,
+    required this.homeRepository,
+    this.creatorMembershipId,
+  });
+
+  final String homeId;
+  final HomeRepository homeRepository;
+  final String? creatorMembershipId;
 
   @override
   State<ProfileIdentityScreen> createState() => _ProfileIdentityScreenState();
@@ -32,6 +47,7 @@ class ProfileIdentityScreen extends StatefulWidget {
 
 class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
   late final TextEditingController _controller;
+  bool _isResolvingSharedUnitHub = false;
 
   @override
   void initState() {
@@ -206,6 +222,25 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
                                   .toList(growable: false),
                             ),
                           SliverToBoxAdapter(
+                            child: SizedBox(height: spacing.xl),
+                          ),
+                          SliverToBoxAdapter(
+                            child: KinlySettingsCard(
+                              children: [
+                                KinlySettingsTile(
+                                  title: s.profileIdentitySharedUnitShortcutTitle,
+                                  subtitle:
+                                      s.profileIdentitySharedUnitShortcutSubtitle,
+                                  icon: KinlyIcons.groupOutlined,
+                                  showProgress: _isResolvingSharedUnitHub,
+                                  onTap: _isResolvingSharedUnitHub
+                                      ? null
+                                      : () => _openSharedUnitHub(context),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SliverToBoxAdapter(
                             child: SizedBox(height: spacing.md),
                           ),
                         ],
@@ -269,6 +304,66 @@ class _ProfileIdentityScreenState extends State<ProfileIdentityScreen> {
         break;
       case ProfileIdentityAction.none:
         break;
+    }
+  }
+
+  Future<void> _openSharedUnitHub(BuildContext context) async {
+    final existingMembershipId = widget.creatorMembershipId;
+    if (existingMembershipId != null && existingMembershipId.isNotEmpty) {
+      await context.pushNamed(
+        AppRouteNames.profileSharedUnitHub,
+        extra: ProfileSharedUnitHubRouteArgs(
+          homeId: widget.homeId,
+          creatorMembershipId: existingMembershipId,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isResolvingSharedUnitHub = true);
+    try {
+      final membership = await widget.homeRepository.getCurrentMembership();
+      if (!context.mounted) {
+        return;
+      }
+      final membershipId = membership?.membershipId;
+      final homeId = membership?.homeId;
+      if (membershipId == null ||
+          membershipId.isEmpty ||
+          homeId == null ||
+          homeId.isEmpty) {
+        final accent = KinlyThemeAccess.of(
+          context,
+        ).extension<KinlySections>()?.pulse.accent;
+        KinlySnackBar.showError(
+          context,
+          S.of(context).profileMissingHomeError,
+          accentColor: accent,
+        );
+        return;
+      }
+      await context.pushNamed(
+        AppRouteNames.profileSharedUnitHub,
+        extra: ProfileSharedUnitHubRouteArgs(
+          homeId: homeId,
+          creatorMembershipId: membershipId,
+        ),
+      );
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      final accent =
+          KinlyThemeAccess.of(context).extension<KinlySections>()?.pulse.accent;
+      KinlySnackBar.showError(
+        context,
+        S.of(context).profileMissingHomeError,
+        accentColor: accent,
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isResolvingSharedUnitHub = false);
+      }
     }
   }
 

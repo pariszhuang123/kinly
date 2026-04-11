@@ -5,7 +5,9 @@ import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../contracts/expenses/models.dart';
+import '../../../../contracts/homes/home_units_models.dart';
 import '../../../../contracts/homes/ports/shopping_list_repository.dart';
+import '../../../../contracts/homes/ports/home_units_repository.dart';
 import '../../../../contracts/share/share_create_route_args.dart';
 import '../../../../core/media/expectation_photo_service.dart';
 import '../../../../core/media/supabase_media_repository.dart';
@@ -23,14 +25,20 @@ import '../../domain/share_split_mode.dart';
 
 part 'share_create_event.dart';
 part 'share_create_state.dart';
+part 'share_create_setup.dart';
 part 'share_create_validation.dart';
 part 'share_create_submission.dart';
+part 'share_create_submission_helpers.dart';
+
+const String _shareCreateUnresolvedMemberMessage =
+    'Selected members could not be resolved. Reopen the bill and try again.';
 
 class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   ShareCreateBloc({
     required String homeId,
     required ExpensesRepository expensesRepository,
     required HomeRepository homeRepository,
+    required HomeUnitsRepository homeUnitsRepository,
     ShoppingListRepository? shoppingListRepository,
     ShareCreateForm? initialForm,
     String? editingExpenseId,
@@ -46,6 +54,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   }) : _homeId = homeId,
        _expensesRepository = expensesRepository,
        _homeRepository = homeRepository,
+       _homeUnitsRepository = homeUnitsRepository,
        _shoppingListRepository = shoppingListRepository,
        _initialEvidencePhotoPath = initialForm?.evidencePhotoPath.trim() ?? '',
        _evidencePhotoService = evidencePhotoService,
@@ -66,6 +75,9 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
          ),
        ) {
     on<ShareCreateParticipantsRequested>(_onParticipantsRequested);
+    on<ShareCreateAllocationTargetChanged>(_onAllocationTargetChanged);
+    on<ShareCreateUnitToggled>(_onUnitToggled);
+    on<ShareCreateUnitCustomAmountChanged>(_onUnitCustomAmountChanged);
     on<ShareCreateDescriptionChanged>(_onDescriptionChanged);
     on<ShareCreateAmountChanged>(_onAmountChanged);
     on<ShareCreateSplitModeChanged>(_onSplitModeChanged);
@@ -92,6 +104,7 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   final String _homeId;
   final ExpensesRepository _expensesRepository;
   final HomeRepository _homeRepository;
+  final HomeUnitsRepository _homeUnitsRepository;
   final ShoppingListRepository? _shoppingListRepository;
   final String _initialEvidencePhotoPath;
   ExpectationPhotoService? _evidencePhotoService;
@@ -101,70 +114,14 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
   Future<void> _onParticipantsRequested(
     ShareCreateParticipantsRequested event,
     Emitter<ShareCreateState> emit,
-  ) async {
-    emit(state.copyWith(isLoading: true, clearLoadError: true));
-    try {
-      final members = await _homeRepository.listActiveMembers(
-        _homeId,
-        excludeSelf: false,
-      );
-      final participants = members
-          .map(
-            (member) => ShareParticipant(
-              userId: member.userId,
-              displayName: member.username,
-              avatarUrl: member.avatarUrl,
-              isOwner: member.isOwner,
-            ),
-          )
-          .toList(growable: false);
-      var currentUserId = state.currentUserId;
-      if (currentUserId == null) {
-        try {
-          currentUserId =
-              (await _homeRepository.getCurrentMembership())?.userId;
-        } catch (_) {
-          // Membership lookup is best-effort for local validation only.
-        }
-      }
+  ) => _handleParticipantsRequested(this, emit);
 
-      final availableIds = participants.map((p) => p.userId).toList();
-      Set<String> nextSelection =
-          state.form.selectedParticipantIds
-              .where((id) => availableIds.contains(id))
-              .toSet();
-
-      // For equal split (or unset), default to all to reflect shared expenses.
-      if (nextSelection.isEmpty &&
-          availableIds.isNotEmpty &&
-          state.form.splitMode != ShareSplitMode.custom) {
-        nextSelection = LinkedHashSet<String>.from(availableIds);
-      }
-
-      final filteredAmounts = Map.fromEntries(
-        state.form.customAmountInputs.entries.where(
-          (entry) => availableIds.contains(entry.key),
-        ),
-      );
-
-      emit(
-        state.copyWith(
-          isLoading: false,
-          participants: participants,
-          currentUserId: currentUserId,
-          form: state.form.copyWith(
-            selectedParticipantIds: nextSelection,
-            customAmountInputs: filteredAmounts,
-          ),
-          clearLoadError: true,
-          // NOTE: this is hydration, not a user edit, so we DO NOT touch hasUserEdits here
-        ),
-      );
-    } catch (error) {
-      emit(
-        state.copyWith(isLoading: false, loadErrorMessage: error.toString()),
-      );
-    }
+  void _onAllocationTargetChanged(
+    ShareCreateAllocationTargetChanged event,
+    Emitter<ShareCreateState> emit,
+  ) {
+    final nextForm = _resolveAllocationTargetForm(this, event.value);
+    emit(state.copyWith(form: nextForm, hasUserEdits: true));
   }
 
   void _onDescriptionChanged(
@@ -195,61 +152,8 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     ShareCreateSplitModeChanged event,
     Emitter<ShareCreateState> emit,
   ) {
-    final nextForm = _resolveSplitModeForm(event.mode);
-
+    final nextForm = _resolveSplitModeForm(this, event.mode);
     emit(state.copyWith(form: nextForm, hasUserEdits: true));
-  }
-
-  ShareCreateForm _resolveSplitModeForm(ShareSplitMode? mode) {
-    final nextForm = state.form.copyWith(
-      splitMode: mode,
-      clearRecurrenceEvery: mode == null,
-      clearRecurrenceUnit: mode == null,
-    );
-    if (mode == ShareSplitMode.equal) {
-      return _applyEqualSplitSelection(nextForm);
-    }
-    if (mode == ShareSplitMode.custom) {
-      return _applyCustomSplitSelection(nextForm);
-    }
-    return nextForm;
-  }
-
-  ShareCreateForm _applyEqualSplitSelection(ShareCreateForm form) {
-    if (form.selectedParticipantIds.isNotEmpty || state.participants.isEmpty) {
-      return form;
-    }
-    return form.copyWith(selectedParticipantIds: _allParticipantIds());
-  }
-
-  ShareCreateForm _applyCustomSplitSelection(ShareCreateForm form) {
-    final idsWithAmount = _selectedParticipantIdsWithAmount(form);
-    if (idsWithAmount.isNotEmpty) {
-      return form.copyWith(selectedParticipantIds: idsWithAmount);
-    }
-    if (form.selectedParticipantIds.isNotEmpty || state.participants.isEmpty) {
-      return form;
-    }
-    return form.copyWith(selectedParticipantIds: _allParticipantIds());
-  }
-
-  LinkedHashSet<String> _selectedParticipantIdsWithAmount(ShareCreateForm form) {
-    return LinkedHashSet<String>.from(
-      form.customAmountInputs.entries
-          .where(_hasPositiveCustomAmount)
-          .map((entry) => entry.key),
-    );
-  }
-
-  bool _hasPositiveCustomAmount(MapEntry<String, String> entry) {
-    final cents = ShareCreateForm.parseCurrency(entry.value);
-    return cents != null && cents > 0;
-  }
-
-  LinkedHashSet<String> _allParticipantIds() {
-    return LinkedHashSet<String>.from(
-      state.participants.map((participant) => participant.userId),
-    );
   }
 
   void _onNotesChanged(
@@ -400,6 +304,30 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
     emit(state.copyWith(form: updated, hasUserEdits: true));
   }
 
+  void _onUnitToggled(
+    ShareCreateUnitToggled event,
+    Emitter<ShareCreateState> emit,
+  ) {
+    final form = state.form.updateUnitSelection(event.unitId, event.isSelected);
+    emit(state.copyWith(form: form, hasUserEdits: true));
+  }
+
+  void _onUnitCustomAmountChanged(
+    ShareCreateUnitCustomAmountChanged event,
+    Emitter<ShareCreateState> emit,
+  ) {
+    var updated = state.form.updateUnitCustomAmount(event.unitId, event.amount);
+    final cents = ShareCreateForm.parseCurrency(event.amount);
+    final shouldSelect = cents != null && cents > 0;
+    final isSelected = updated.selectedUnitIds.contains(event.unitId);
+    if (shouldSelect && !isSelected) {
+      updated = updated.updateUnitSelection(event.unitId, true);
+    } else if (!shouldSelect && isSelected) {
+      updated = updated.updateUnitSelection(event.unitId, false);
+    }
+    emit(state.copyWith(form: updated, hasUserEdits: true));
+  }
+
   void _onStartDateChanged(
     ShareCreateStartDateChanged event,
     Emitter<ShareCreateState> emit,
@@ -479,7 +407,15 @@ class ShareCreateBloc extends Bloc<ShareCreateEvent, ShareCreateState> {
 
     final plan = _buildSubmissionPlan(state);
     if (plan == null) {
-      emit(state.copyWith(showValidationErrors: true));
+      final validationError = _inferSubmissionValidationError(state);
+      emit(
+        state.copyWith(
+          showValidationErrors: true,
+          submissionErrorCode: validationError.code,
+          submissionErrorMessage: validationError.message,
+          submissionErrorTick: state.submissionErrorTick + 1,
+        ),
+      );
       return;
     }
 

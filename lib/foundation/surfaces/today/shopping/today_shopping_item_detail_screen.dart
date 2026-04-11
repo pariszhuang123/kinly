@@ -34,11 +34,22 @@ class TodayShoppingItemDetailScreen extends StatelessWidget {
     final hasPhoto = resolvedPhotoUrl.isNotEmpty;
     final hasQuantity = _hasText(item.quantity);
     final hasDetails = _hasText(item.details);
+    final scopeValue = item.unitName?.trim().isNotEmpty == true
+        ? item.unitName!.trim()
+        : s.houseNormSectionSharedSpacesTitle;
     final heroTag = 'shopping-photo-${resolvedPhotoUrl.hashCode}';
 
     final detailSections = <Widget>[
       _ReadOnlyField(label: s.shoppingNameLabel, value: item.name),
     ];
+
+    if (item.scopeType == ShoppingItemScopeType.unit) {
+      detailSections
+        ..add(SizedBox(height: spacing.md))
+        ..add(
+          _ReadOnlyValueChip(value: scopeValue),
+        );
+    }
 
     if (hasQuantity) {
       detailSections
@@ -117,6 +128,32 @@ class TodayShoppingItemDetailScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ReadOnlyValueChip extends StatelessWidget {
+  const _ReadOnlyValueChip({required this.value});
+
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Container(
+        padding: EdgeInsetsDirectional.symmetric(
+          horizontal: spacing.md,
+          vertical: spacing.xs,
+        ),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(value, style: theme.textTheme.bodySmall),
       ),
     );
   }

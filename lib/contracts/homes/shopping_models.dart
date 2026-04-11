@@ -2,6 +2,100 @@ import 'package:equatable/equatable.dart';
 
 import '../time/timezone.dart';
 
+enum ShoppingItemScopeType {
+  house('house'),
+  unit('unit');
+
+  const ShoppingItemScopeType(this.wireValue);
+
+  final String wireValue;
+
+  static ShoppingItemScopeType fromWire(String? value) {
+    switch ((value ?? '').trim().toLowerCase()) {
+      case 'unit':
+        return ShoppingItemScopeType.unit;
+      case 'house':
+      default:
+        return ShoppingItemScopeType.house;
+    }
+  }
+}
+
+class ShoppingListPurchaseMemoryReminder extends Equatable {
+  const ShoppingListPurchaseMemoryReminder({
+    required this.lastPurchasedAt,
+    required this.lastPurchasedByDisplayName,
+    required this.daysSinceLastPurchase,
+    required this.warningWindowDays,
+  });
+
+  final DateTime lastPurchasedAt;
+  final String? lastPurchasedByDisplayName;
+  final int daysSinceLastPurchase;
+  final int warningWindowDays;
+
+  factory ShoppingListPurchaseMemoryReminder.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    return ShoppingListPurchaseMemoryReminder(
+      lastPurchasedAt:
+          parseTimestampToLocal(
+            json['last_purchased_at'] ?? json['lastPurchasedAt'],
+          ) ??
+          DateTime.fromMillisecondsSinceEpoch(0).toLocal(),
+      lastPurchasedByDisplayName:
+          json['last_purchased_by_display_name'] as String? ??
+          json['lastPurchasedByDisplayName'] as String?,
+      daysSinceLastPurchase:
+          (json['days_since_last_purchase'] as num?)?.toInt() ??
+          (json['daysSinceLastPurchase'] as num?)?.toInt() ??
+          0,
+      warningWindowDays:
+          (json['warning_window_days'] as num?)?.toInt() ??
+          (json['warningWindowDays'] as num?)?.toInt() ??
+          0,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    lastPurchasedAt,
+    lastPurchasedByDisplayName,
+    daysSinceLastPurchase,
+    warningWindowDays,
+  ];
+}
+
+class ShoppingListAddItemResult extends Equatable {
+  const ShoppingListAddItemResult({
+    required this.item,
+    required this.purchaseMemory,
+  });
+
+  final ShoppingListItem item;
+  final ShoppingListPurchaseMemoryReminder? purchaseMemory;
+
+  factory ShoppingListAddItemResult.fromJson(Map<String, dynamic> json) {
+    final itemPayload =
+        (json['item'] as Map?)?.cast<String, dynamic>() ?? json;
+    final purchaseMemoryPayload =
+        (json['purchase_memory'] as Map?)?.cast<String, dynamic>() ??
+        (json['purchaseMemory'] as Map?)?.cast<String, dynamic>();
+    return ShoppingListAddItemResult(
+      item: ShoppingListItem.fromJson(itemPayload),
+      purchaseMemory:
+          purchaseMemoryPayload == null
+              ? null
+              : ShoppingListPurchaseMemoryReminder.fromJson(
+                purchaseMemoryPayload,
+              ),
+    );
+  }
+
+  @override
+  List<Object?> get props => [item, purchaseMemory];
+}
+
 class ShoppingListItem extends Equatable {
   const ShoppingListItem({
     required this.id,
@@ -14,6 +108,9 @@ class ShoppingListItem extends Equatable {
     this.completedByUserId,
     this.completedByAvatarId,
     this.completedAt,
+    required this.scopeType,
+    this.unitId,
+    this.unitName,
     this.archivedAt,
     required this.createdAt,
     required this.updatedAt,
@@ -29,6 +126,9 @@ class ShoppingListItem extends Equatable {
   final String? completedByUserId;
   final String? completedByAvatarId;
   final DateTime? completedAt;
+  final ShoppingItemScopeType scopeType;
+  final String? unitId;
+  final String? unitName;
   final DateTime? archivedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -45,6 +145,11 @@ class ShoppingListItem extends Equatable {
       completedByUserId: json['completed_by_user_id'] as String?,
       completedByAvatarId: json['completed_by_avatar_id'] as String?,
       completedAt: parseTimestampToLocal(json['completed_at']),
+      scopeType: ShoppingItemScopeType.fromWire(
+        json['scope_type'] as String? ?? json['scopeType'] as String?,
+      ),
+      unitId: json['unit_id'] as String? ?? json['unitId'] as String?,
+      unitName: json['unit_name'] as String? ?? json['unitName'] as String?,
       archivedAt: parseTimestampToLocal(json['archived_at']),
       createdAt:
           parseTimestampToLocal(json['created_at']) ??
@@ -67,6 +172,9 @@ class ShoppingListItem extends Equatable {
     completedByUserId,
     completedByAvatarId,
     completedAt,
+    scopeType,
+    unitId,
+    unitName,
     archivedAt,
     createdAt,
     updatedAt,

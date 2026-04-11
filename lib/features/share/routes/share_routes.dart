@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kinly/app/router/app_route_names.dart';
 import 'package:kinly/app/router/app_route_paths.dart';
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
 import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import 'package:kinly/contracts/personal_directory/ports/personal_directory_repository.dart';
@@ -68,6 +69,7 @@ List<GoRoute> buildShareRoutes({
           homeId: membership.homeId,
           expensesRepository: sl<ExpensesRepository>(),
           homeRepository: sl<HomeRepository>(),
+          homeUnitsRepository: sl<HomeUnitsRepository>(),
           routeArgs: args,
           shoppingListRepository:
               args?.shoppingExpenseLinkRequest != null
@@ -95,6 +97,7 @@ List<GoRoute> buildShareRoutes({
           expenseId: expenseId,
           expensesRepository: sl<ExpensesRepository>(),
           homeRepository: sl<HomeRepository>(),
+          homeUnitsRepository: sl<HomeUnitsRepository>(),
           allowDelete: args?.allowDelete ?? false,
         );
       },

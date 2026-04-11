@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kinly/contracts/share/share_create_route_args.dart';
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
@@ -16,6 +17,7 @@ class ShareCreateProvider extends StatelessWidget {
     required this.homeId,
     required this.expensesRepository,
     required this.homeRepository,
+    required this.homeUnitsRepository,
     this.routeArgs,
     this.shoppingListRepository,
   });
@@ -23,6 +25,7 @@ class ShareCreateProvider extends StatelessWidget {
   final String homeId;
   final ExpensesRepository expensesRepository;
   final HomeRepository homeRepository;
+  final HomeUnitsRepository homeUnitsRepository;
   final ShareCreateRouteArgs? routeArgs;
   final ShoppingListRepository? shoppingListRepository;
 
@@ -45,6 +48,7 @@ class ShareCreateProvider extends StatelessWidget {
             homeId: homeId,
             expensesRepository: expensesRepository,
             homeRepository: homeRepository,
+            homeUnitsRepository: homeUnitsRepository,
             shoppingListRepository: shoppingListRepository,
             initialForm: initialForm,
             shoppingExpenseLinkRequest: routeArgs?.shoppingExpenseLinkRequest,

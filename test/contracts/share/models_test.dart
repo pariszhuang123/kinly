@@ -50,7 +50,7 @@ void main() {
 
     test('props contains all fields', () {
       final item = TodayShareOwedItem.fromModel(expenseOwedItem);
-      expect(item.props, hasLength(8));
+      expect(item.props, hasLength(16));
       expect(item.props, contains('exp-1'));
       expect(item.props, contains('Groceries'));
       expect(item.props, contains(2500));

@@ -210,9 +210,6 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
     });
   }
 
-  void _hydrateFromService(HouseDirectoryService? service) =>
-      _hydrateHouseDirectoryService(this, service);
-
   void _scheduleHydration(HouseDirectoryService? service) =>
       _scheduleHouseDirectoryServiceHydration(this, service);
 
@@ -220,6 +217,40 @@ class _HouseDirectoryServiceScreenState extends State<HouseDirectoryServiceScree
       _saveHouseDirectoryService(this, service);
 
   void _seedReminderDefaults() => _seedHouseDirectoryReminderDefaults(this);
+
+  void _updateType(HouseDirectoryServiceType value) {
+    setState(() => _type = value);
+  }
+
+  void _updateOffsetUnit(HouseDirectoryReminderOffsetUnit value) {
+    setState(() => _offsetUnit = value);
+  }
+
+  void _hydrateServiceInState(HouseDirectoryService service) {
+    setState(() {
+      _hydrateHouseDirectoryService(this, service);
+    });
+  }
+
+  void _clearValidationErrors() {
+    setState(() {
+      _validationError = null;
+      _providerError = null;
+      _customLabelError = null;
+      _linkError = null;
+      _offsetValueError = null;
+    });
+  }
+
+  void _applyValidationErrors(HouseDirectoryServiceValidationResult validation) {
+    setState(() {
+      _providerError = validation.providerError;
+      _customLabelError = validation.customLabelError;
+      _linkError = validation.linkError;
+      _offsetValueError = validation.offsetValueError;
+      _validationError = validation.summaryError;
+    });
+  }
 
   Future<void> _confirmArchive(HouseDirectoryService? service) async {
     if (service == null) return;

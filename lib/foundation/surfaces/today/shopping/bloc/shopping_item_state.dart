@@ -8,9 +8,15 @@ class ShoppingItemState extends Equatable {
     required this.details,
     required this.referencePhotoPath,
     required this.referencePhotoUrl,
+    required this.unitContext,
+    required this.selectedScopeType,
+    required this.selectedUnitId,
+    required this.purchaseMemoryReminder,
+    required this.purchaseMemoryTick,
     required this.hasPhotoChanged,
     required this.isSubmitting,
     required this.isUploadingPhoto,
+    required this.isLoadingUnitContext,
     required this.showValidationErrors,
     required this.submissionErrorMessage,
     required this.submissionErrorTick,
@@ -36,9 +42,15 @@ class ShoppingItemState extends Equatable {
       details: item?.details ?? '',
       referencePhotoPath: item?.referencePhotoPath,
       referencePhotoUrl: referencePhotoUrl,
+      unitContext: null,
+      selectedScopeType: item?.scopeType ?? ShoppingItemScopeType.house,
+      selectedUnitId: item?.unitId,
+      purchaseMemoryReminder: null,
+      purchaseMemoryTick: 0,
       hasPhotoChanged: false,
       isSubmitting: false,
       isUploadingPhoto: false,
+      isLoadingUnitContext: false,
       showValidationErrors: false,
       submissionErrorMessage: null,
       submissionErrorTick: 0,
@@ -59,9 +71,15 @@ class ShoppingItemState extends Equatable {
   final String details;
   final String? referencePhotoPath;
   final String? referencePhotoUrl;
+  final HomeUnitContext? unitContext;
+  final ShoppingItemScopeType selectedScopeType;
+  final String? selectedUnitId;
+  final ShoppingListPurchaseMemoryReminder? purchaseMemoryReminder;
+  final int purchaseMemoryTick;
   final bool hasPhotoChanged;
   final bool isSubmitting;
   final bool isUploadingPhoto;
+  final bool isLoadingUnitContext;
   final bool showValidationErrors;
   final String? submissionErrorMessage;
   final int submissionErrorTick;
@@ -80,9 +98,16 @@ class ShoppingItemState extends Equatable {
     String? details,
     String? referencePhotoPath,
     String? referencePhotoUrl,
+    HomeUnitContext? unitContext,
+    ShoppingItemScopeType? selectedScopeType,
+    String? selectedUnitId,
+    ShoppingListPurchaseMemoryReminder? purchaseMemoryReminder,
+    int? purchaseMemoryTick,
+    bool clearPurchaseMemory = false,
     bool? hasPhotoChanged,
     bool? isSubmitting,
     bool? isUploadingPhoto,
+    bool? isLoadingUnitContext,
     bool? showValidationErrors,
     String? submissionErrorMessage,
     int? submissionErrorTick,
@@ -105,9 +130,18 @@ class ShoppingItemState extends Equatable {
       details: details ?? this.details,
       referencePhotoPath: referencePhotoPath ?? this.referencePhotoPath,
       referencePhotoUrl: referencePhotoUrl ?? this.referencePhotoUrl,
+      unitContext: unitContext ?? this.unitContext,
+      selectedScopeType: selectedScopeType ?? this.selectedScopeType,
+      selectedUnitId: selectedUnitId ?? this.selectedUnitId,
+      purchaseMemoryReminder:
+          clearPurchaseMemory
+              ? null
+              : purchaseMemoryReminder ?? this.purchaseMemoryReminder,
+      purchaseMemoryTick: purchaseMemoryTick ?? this.purchaseMemoryTick,
       hasPhotoChanged: hasPhotoChanged ?? this.hasPhotoChanged,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isUploadingPhoto: isUploadingPhoto ?? this.isUploadingPhoto,
+      isLoadingUnitContext: isLoadingUnitContext ?? this.isLoadingUnitContext,
       showValidationErrors: showValidationErrors ?? this.showValidationErrors,
       submissionErrorMessage: clearSubmissionError
           ? null
@@ -131,6 +165,9 @@ class ShoppingItemState extends Equatable {
 
   bool get hasExistingPhoto => (referencePhotoPath ?? '').trim().isNotEmpty;
 
+  bool get canChooseUnitScope =>
+      unitContext != null && unitContext!.allowedShoppingScopes.length > 1;
+
   @override
   List<Object?> get props => [
     isEditing,
@@ -139,9 +176,15 @@ class ShoppingItemState extends Equatable {
     details,
     referencePhotoPath,
     referencePhotoUrl,
+    unitContext,
+    selectedScopeType,
+    selectedUnitId,
+    purchaseMemoryReminder,
+    purchaseMemoryTick,
     hasPhotoChanged,
     isSubmitting,
     isUploadingPhoto,
+    isLoadingUnitContext,
     showValidationErrors,
     submissionErrorMessage,
     submissionErrorTick,

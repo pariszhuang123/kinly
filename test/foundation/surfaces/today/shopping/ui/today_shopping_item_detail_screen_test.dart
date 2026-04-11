@@ -17,6 +17,7 @@ void main() {
       id: 'item-1',
       homeId: 'home-1',
       name: 'Milk',
+      scopeType: ShoppingItemScopeType.house,
       quantity: quantity,
       details: details,
       referencePhotoPath: null,

@@ -61,6 +61,10 @@ class AppRoutes {
   static const shareOwedDetail = AppRoutePaths.shareOwedDetail;
   static const sharePaidToMeDetail = AppRoutePaths.sharePaidToMeDetail;
   static const profileSettings = AppRoutePaths.profileSettings;
+  static const profileSharedUnitHub = AppRoutePaths.profileSharedUnitHub;
+  static const profileSharedUnitCreate = AppRoutePaths.profileSharedUnitCreate;
+  static const profileSharedUnitJoin = AppRoutePaths.profileSharedUnitJoin;
+  static const profileSharedUnitRename = AppRoutePaths.profileSharedUnitRename;
   static const profileIdentity = AppRoutePaths.profileIdentity;
   static const connectionSettings = AppRoutePaths.connectionSettings;
   static const harmony = AppRoutePaths.harmony;

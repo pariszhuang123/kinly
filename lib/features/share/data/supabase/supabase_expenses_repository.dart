@@ -19,44 +19,37 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     required String description,
     String? notes,
     String? evidencePhotoPath,
+    ExpenseAllocationTargetType? allocationTargetType,
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
+    List<String>? unitIds,
+    List<ExpenseUnitSplitInput>? unitSplits,
     int? recurrenceEvery,
     ExpenseRecurrenceUnit? recurrenceUnit,
     required DateTime startDate,
   }) async {
     try {
       final response = await _client.rpc(
-        'expenses_create_v3',
-        params: {
-          'p_home_id': homeId,
-          'p_description': description,
-          if (amountCents != null) 'p_amount_cents': amountCents,
-          if (notes != null) 'p_notes': notes,
-          if (evidencePhotoPath != null)
-            'p_evidence_photo_path': evidencePhotoPath,
-          if (splitType != null) 'p_split_mode': splitType.wireValue,
-          if (memberIds != null && memberIds.isNotEmpty)
-            'p_member_ids': memberIds,
-          if (customSplits != null && customSplits.isNotEmpty)
-            'p_splits': customSplits.map((split) => split.toJson()).toList(),
-          if (recurrenceEvery != null) 'p_recurrence_every': recurrenceEvery,
-          if (recurrenceUnit != null)
-            'p_recurrence_unit': recurrenceUnit.wireValue,
-          'p_start_date': _dateFormatter.format(startDate),
-        },
+        'expenses_create_v5',
+        params: _buildExpenseParams(
+          homeId: homeId,
+          description: description,
+          amountCents: amountCents,
+          notes: notes,
+          evidencePhotoPath: evidencePhotoPath,
+          allocationTargetType: allocationTargetType,
+          splitType: splitType,
+          memberIds: memberIds,
+          customSplits: customSplits,
+          unitIds: unitIds,
+          unitSplits: unitSplits,
+          recurrenceEvery: recurrenceEvery,
+          recurrenceUnit: recurrenceUnit,
+          startDate: startDate,
+        ),
       );
-
-      final payload = _coerceMap(response);
-      if (payload != null) {
-        return Expense.fromJson(payload);
-      }
-
-      throw const ExpenseException(
-        ExpenseErrorCode.unknown,
-        'Malformed expense payload from Supabase.',
-      );
+      return _parseExpense(response);
     } catch (error) {
       throw SupabaseErrorMapper.mapExpense(error);
     }
@@ -69,44 +62,37 @@ class SupabaseExpensesRepository implements ExpensesRepository {
     required String description,
     String? notes,
     String? evidencePhotoPath,
+    ExpenseAllocationTargetType? allocationTargetType,
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
+    List<String>? unitIds,
+    List<ExpenseUnitSplitInput>? unitSplits,
     int? recurrenceEvery,
     ExpenseRecurrenceUnit? recurrenceUnit,
-    required DateTime startDate,
+    DateTime? startDate,
   }) async {
     try {
       final response = await _client.rpc(
-        'expenses_edit_v3',
-        params: {
-          'p_expense_id': expenseId,
-          'p_amount_cents': amountCents,
-          'p_description': description,
-          if (notes != null) 'p_notes': notes,
-          if (evidencePhotoPath != null)
-            'p_evidence_photo_path': evidencePhotoPath,
-          if (splitType != null) 'p_split_mode': splitType.wireValue,
-          if (memberIds != null && memberIds.isNotEmpty)
-            'p_member_ids': memberIds,
-          if (customSplits != null && customSplits.isNotEmpty)
-            'p_splits': customSplits.map((split) => split.toJson()).toList(),
-          if (recurrenceEvery != null) 'p_recurrence_every': recurrenceEvery,
-          if (recurrenceUnit != null)
-            'p_recurrence_unit': recurrenceUnit.wireValue,
-          'p_start_date': _dateFormatter.format(startDate),
-        },
+        'expenses_edit_v5',
+        params: _buildExpenseParams(
+          expenseId: expenseId,
+          description: description,
+          amountCents: amountCents,
+          notes: notes,
+          evidencePhotoPath: evidencePhotoPath,
+          allocationTargetType: allocationTargetType,
+          splitType: splitType,
+          memberIds: memberIds,
+          customSplits: customSplits,
+          unitIds: unitIds,
+          unitSplits: unitSplits,
+          recurrenceEvery: recurrenceEvery,
+          recurrenceUnit: recurrenceUnit,
+          startDate: startDate,
+        ),
       );
-
-      final payload = _coerceMap(response);
-      if (payload != null) {
-        return Expense.fromJson(payload);
-      }
-
-      throw const ExpenseException(
-        ExpenseErrorCode.unknown,
-        'Malformed expense payload from Supabase.',
-      );
+      return _parseExpense(response);
     } catch (error) {
       throw SupabaseErrorMapper.mapExpense(error);
     }
@@ -154,7 +140,7 @@ class SupabaseExpensesRepository implements ExpensesRepository {
   Future<ExpenseForEdit> getForEdit(String expenseId) async {
     try {
       final response = await _client.rpc(
-        'expenses_get_for_edit',
+        'expenses_get_for_edit_v3',
         params: {'p_expense_id': expenseId},
       );
       final payload = _coerceMap(response);
@@ -188,6 +174,34 @@ class SupabaseExpensesRepository implements ExpensesRepository {
       throw const ExpenseException(
         ExpenseErrorCode.unknown,
         'Malformed payMyDue payload from Supabase.',
+      );
+    } catch (error) {
+      throw SupabaseErrorMapper.mapExpense(error);
+    }
+  }
+
+  @override
+  Future<ExpensesPayUnitDueResult> payUnitDue({
+    required String expenseId,
+    required String unitId,
+    required int amountCents,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'expenses_pay_unit_due_v2',
+        params: {
+          'p_expense_id': expenseId,
+          'p_unit_id': unitId,
+          'p_amount_cents': amountCents,
+        },
+      );
+      final payload = _coerceMap(response);
+      if (payload != null) {
+        return ExpensesPayUnitDueResult.fromJson(payload);
+      }
+      throw const ExpenseException(
+        ExpenseErrorCode.unknown,
+        'Malformed payUnitDue payload from Supabase.',
       );
     } catch (error) {
       throw SupabaseErrorMapper.mapExpense(error);
@@ -317,5 +331,87 @@ class SupabaseExpensesRepository implements ExpensesRepository {
       }
     }
     return null;
+  }
+
+  Map<String, dynamic> _buildExpenseParams({
+    String? homeId,
+    String? expenseId,
+    required String description,
+    int? amountCents,
+    String? notes,
+    String? evidencePhotoPath,
+    ExpenseAllocationTargetType? allocationTargetType,
+    ExpenseSplitType? splitType,
+    List<String>? memberIds,
+    List<ExpenseCustomSplitInput>? customSplits,
+    List<String>? unitIds,
+    List<ExpenseUnitSplitInput>? unitSplits,
+    int? recurrenceEvery,
+    ExpenseRecurrenceUnit? recurrenceUnit,
+    DateTime? startDate,
+  }) {
+    final params = <String, dynamic>{
+      'p_description': description,
+    };
+    if (startDate != null) {
+      params['p_start_date'] = _dateFormatter.format(startDate);
+    }
+    _putIfPresent(params, 'p_home_id', homeId);
+    _putIfPresent(params, 'p_expense_id', expenseId);
+    _putIfPresent(params, 'p_amount_cents', amountCents);
+    _putIfPresent(params, 'p_notes', notes);
+    _putIfPresent(params, 'p_evidence_photo_path', evidencePhotoPath);
+    _putIfPresent(
+      params,
+      'p_allocation_target_type',
+      allocationTargetType?.wireValue,
+    );
+    _putIfPresent(params, 'p_split_mode', splitType?.wireValue);
+    _putIfNotEmpty(params, 'p_member_ids', memberIds);
+    _putIfNotEmpty(
+      params,
+      'p_splits',
+      customSplits?.map((split) => split.toJson()).toList(growable: false),
+    );
+    _putIfNotEmpty(params, 'p_unit_ids', unitIds);
+    _putIfNotEmpty(
+      params,
+      'p_unit_splits',
+      unitSplits?.map((split) => split.toJson()).toList(growable: false),
+    );
+    _putIfPresent(params, 'p_recurrence_every', recurrenceEvery);
+    _putIfPresent(params, 'p_recurrence_unit', recurrenceUnit?.wireValue);
+    return params;
+  }
+
+  Expense _parseExpense(dynamic response) {
+    final payload = _coerceMap(response);
+    if (payload != null) {
+      return Expense.fromJson(payload);
+    }
+    throw const ExpenseException(
+      ExpenseErrorCode.unknown,
+      'Malformed expense payload from Supabase.',
+    );
+  }
+
+  void _putIfPresent(
+    Map<String, dynamic> params,
+    String key,
+    Object? value,
+  ) {
+    if (value != null) {
+      params[key] = value;
+    }
+  }
+
+  void _putIfNotEmpty(
+    Map<String, dynamic> params,
+    String key,
+    List<dynamic>? value,
+  ) {
+    if (value != null && value.isNotEmpty) {
+      params[key] = value;
+    }
   }
 }

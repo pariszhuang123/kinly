@@ -34,12 +34,29 @@ class ShoppingItemDetailsChangedEvent extends ShoppingItemEvent {
   List<Object?> get props => [details];
 }
 
+class ShoppingItemScopeChangedEvent extends ShoppingItemEvent {
+  const ShoppingItemScopeChangedEvent({
+    required this.scopeType,
+    this.unitId,
+  });
+
+  final ShoppingItemScopeType scopeType;
+  final String? unitId;
+
+  @override
+  List<Object?> get props => [scopeType, unitId];
+}
+
 class ShoppingItemPhotoCaptureRequestedEvent extends ShoppingItemEvent {
   const ShoppingItemPhotoCaptureRequestedEvent();
 }
 
 class ShoppingItemPhotoRecoveryRequestedEvent extends ShoppingItemEvent {
   const ShoppingItemPhotoRecoveryRequestedEvent();
+}
+
+class ShoppingItemUnitContextRequestedEvent extends ShoppingItemEvent {
+  const ShoppingItemUnitContextRequestedEvent();
 }
 
 class SubmitShoppingItemEvent extends ShoppingItemEvent {

@@ -26,10 +26,10 @@ import '../../../../../core/ui/toggles/kinly_checkbox.dart';
 import '../../../../../core/ui/selector/kinly_expand_badge.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/theme/color_tokens.dart';
+import '../../../../../contracts/expenses/models.dart';
+import '../../../../../contracts/homes/home_units_models.dart';
 import '../../../../../contracts/homes/models.dart';
-import '../../../../../contracts/expenses/enums/expense_recurrence_unit.dart';
 import '../../../../../core/time/date_only.dart';
-import '../../domain/share_participant.dart';
 import '../../domain/share_split_mode.dart';
 import '../../bloc/share_create_bloc/share_create_bloc.dart';
 import '../share_create/share_split_mismatch_message.dart';
@@ -84,21 +84,16 @@ class ShareCreateFormView extends StatelessWidget {
 
   String _mapEditDisabledReason(BuildContext context, String code) {
     final s = S.of(context);
-    switch (code) {
-      case 'CONVERTED_TO_PLAN':
-        return s.shareEditDisabledConverted;
-      case 'RECURRING_CYCLE_IMMUTABLE':
-        return s.shareEditDisabledRecurringCycle;
-      case 'ACTIVE_IMMUTABLE':
-        return s.shareEditDisabledActive;
-      default:
-        return s.shareEditDisabledGeneric;
-    }
+    final messageByCode = <String, String>{
+      'CONVERTED_TO_PLAN': s.shareEditDisabledConverted,
+      'RECURRING_CYCLE_IMMUTABLE': s.shareEditDisabledRecurringCycle,
+      'ACTIVE_IMMUTABLE': s.shareEditDisabledActive,
+    };
+    return messageByCode[code] ?? s.shareEditDisabledGeneric;
   }
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final theme = KinlyThemeAccess.of(context);
     final spacing = theme.extension<Spacing>()!;
     final viewState = _FormViewState.fromBloc(
@@ -111,118 +106,232 @@ class ShareCreateFormView extends StatelessWidget {
         state.form.evidencePhotoPath.trim().isNotEmpty;
     final isShoppingQuickCreate =
         presentationMode == ShareCreatePresentationMode.shoppingQuickCreate;
+    final children = <Widget>[
+      SizedBox(height: spacing.lg),
+      ..._buildEditDisabledBanner(
+        context: context,
+        viewState: viewState,
+        spacing: spacing,
+      ),
+      ..._buildDescriptionSection(
+        isShoppingQuickCreate: isShoppingQuickCreate,
+        viewState: viewState,
+        spacing: spacing,
+      ),
+      _AmountField(
+        controller: amountController,
+        state: state,
+        showValidation: viewState.showValidation,
+        locked: viewState.locked,
+      ),
+      ..._buildScheduleSection(
+        context: context,
+        isShoppingQuickCreate: isShoppingQuickCreate,
+        viewState: viewState,
+        periodLabel: periodLabel,
+        spacing: spacing,
+      ),
+      _AllocationTargetSelector(state: state, locked: viewState.locked),
+      SizedBox(height: spacing.lg),
+      _SplitModeSelector(state: state, locked: viewState.locked),
+      SizedBox(height: spacing.lg),
+      _buildParticipantsSection(spacing: spacing, viewState: viewState),
+      ..._buildOptionalDetailsSection(
+        context: context,
+        isShoppingQuickCreate: isShoppingQuickCreate,
+        viewState: viewState,
+        spacing: spacing,
+        expandOptional: expandOptional,
+      ),
+      SizedBox(height: spacing.xl),
+      ..._buildPrimaryActions(
+        context: context,
+        viewState: viewState,
+        spacing: spacing,
+      ),
+    ];
 
     return ListView(
       padding: EdgeInsetsDirectional.only(bottom: spacing.lg),
-      children: [
-        SizedBox(height: spacing.lg),
-        if (viewState.editingDisabled && state.editDisabledReason != null)
-          Padding(
-            padding: EdgeInsets.only(bottom: spacing.md),
-            child: KinlyInfoBanner(
-              message: _mapEditDisabledReason(
-                context,
-                state.editDisabledReason!,
-              ),
-              type: KinlyBannerType.warning,
-            ),
-          ),
-        if (!isShoppingQuickCreate) ...[
-          _DescriptionField(
-            controller: descriptionController,
-            state: state,
-            showValidation: viewState.showValidation,
-            enabled: !viewState.editingDisabled,
-          ),
-          SizedBox(height: spacing.lg),
-        ],
-        _AmountField(
-          controller: amountController,
-          state: state,
-          showValidation: viewState.showValidation,
-          locked: viewState.locked,
-        ),
-        if (!isShoppingQuickCreate) ...[
-          SizedBox(height: spacing.lg),
-          _StartDateField(state: state, locked: viewState.locked),
-          if (periodLabel != null) ...[
-            SizedBox(height: spacing.xs),
-            Text(
-              s.shareCreateCyclePeriod(periodLabel),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ],
-        SizedBox(height: spacing.lg),
-        if (!isShoppingQuickCreate) ...[
-          _RecurrenceField(
-            state: state,
-            locked: viewState.locked,
-            recurrenceNeedsSplit: viewState.recurrenceNeedsSplit,
-            recurrenceInvalid: viewState.recurrenceInvalid,
-            controller: recurrenceEveryController,
-          ),
-          SizedBox(height: spacing.lg),
-        ],
-        _SplitModeSelector(state: state, locked: viewState.locked),
-        SizedBox(height: spacing.lg),
-        if (state.participants.isEmpty)
-          _EmptyParticipantsText()
-        else
-          _ParticipantsSection(
-            state: state,
-            shareColors: shareColors,
-            spacing: spacing,
-            customSummary: state.evaluateCustomSplit(),
-            showValidation: viewState.showValidation,
-            locked: viewState.locked,
-            customControllers: customControllers,
-          ),
-        if (!isShoppingQuickCreate) ...[
-          SizedBox(height: spacing.lg),
-          _OptionalDetailsExpansion(
-            spacing: spacing,
-            title: s.flowChoreDetailMoreInfoTitle,
-            notesController: notesController,
-            notesEnabled: !viewState.editingDisabled,
-            isUploadingEvidencePhoto: isUploadingEvidencePhoto,
-            evidencePhotoUrl: evidencePhotoUrl,
-            evidencePhotoEnabled: !viewState.locked,
-            onEvidencePhotoCapture: onEvidencePhotoCapture,
-            shareColors: shareColors,
-            initiallyExpanded: expandOptional,
-          ),
-        ],
-        SizedBox(height: spacing.xl),
-        if (showPrimaryActions && !viewState.hidePrimary)
-          _PrimaryActionButton(
-            label: viewState.primaryLabel(s),
-            shareColors: shareColors,
-            isBusy: viewState.isBusy,
-            shouldDisable: viewState.shouldDisable,
-            destructive: viewState.isDeleteAction,
-            onPressed:
-                () => _handlePrimaryPressed(
-                  blocContext: context,
-                  viewState: viewState,
-                  onDeleteRequested: onDeleteRequested,
-                ),
-          ),
-        if (showTerminatePlan) ...[
-          SizedBox(height: spacing.md),
-          KinlyFilledButton.destructiveText(
-            fullWidth: true,
-            onPressed: isTerminatingPlan ? null : onTerminatePlan,
-            label:
-                isTerminatingPlan
-                    ? s.shareEditTerminatePlanBusy
-                    : s.shareEditTerminatePlan,
-          ),
-        ],
-      ],
+      children: children,
     );
+  }
+
+  List<Widget> _buildEditDisabledBanner({
+    required BuildContext context,
+    required _FormViewState viewState,
+    required Spacing spacing,
+  }) {
+    if (!viewState.editingDisabled || state.editDisabledReason == null) {
+      return const [];
+    }
+    return [
+      Padding(
+        padding: EdgeInsets.only(bottom: spacing.md),
+        child: KinlyInfoBanner(
+          message: _mapEditDisabledReason(context, state.editDisabledReason!),
+          type: KinlyBannerType.warning,
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildDescriptionSection({
+    required bool isShoppingQuickCreate,
+    required _FormViewState viewState,
+    required Spacing spacing,
+  }) {
+    if (isShoppingQuickCreate) {
+      return const [];
+    }
+    return [
+      _DescriptionField(
+        controller: descriptionController,
+        state: state,
+        showValidation: viewState.showValidation,
+        enabled: !viewState.editingDisabled,
+      ),
+      SizedBox(height: spacing.lg),
+    ];
+  }
+
+  List<Widget> _buildScheduleSection({
+    required BuildContext context,
+    required bool isShoppingQuickCreate,
+    required _FormViewState viewState,
+    required String? periodLabel,
+    required Spacing spacing,
+  }) {
+    if (isShoppingQuickCreate) {
+      return [SizedBox(height: spacing.lg)];
+    }
+    final theme = KinlyThemeAccess.of(context);
+    final s = S.of(context);
+    return [
+      SizedBox(height: spacing.lg),
+      _StartDateField(state: state, locked: viewState.locked),
+      if (periodLabel != null) ...[
+        SizedBox(height: spacing.xs),
+        Text(
+          s.shareCreateCyclePeriod(periodLabel),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+      SizedBox(height: spacing.lg),
+      _RecurrenceField(
+        state: state,
+        locked: viewState.locked,
+        recurrenceNeedsSplit: viewState.recurrenceNeedsSplit,
+        recurrenceInvalid: viewState.recurrenceInvalid,
+        controller: recurrenceEveryController,
+      ),
+      SizedBox(height: spacing.lg),
+    ];
+  }
+
+  Widget _buildParticipantsSection({
+    required Spacing spacing,
+    required _FormViewState viewState,
+  }) {
+    if (_showEmptyParticipants()) {
+      return _EmptyParticipantsText();
+    }
+    return _ParticipantsSection(
+      state: state,
+      shareColors: shareColors,
+      spacing: spacing,
+      customSummary: _resolveCustomSummary(),
+      showValidation: viewState.showValidation,
+      locked: viewState.locked,
+      customControllers: customControllers,
+    );
+  }
+
+  bool _showEmptyParticipants() {
+    final isUnitBased =
+        state.form.allocationTargetType ==
+        ExpenseAllocationTargetType.unitBased;
+    return isUnitBased
+        ? state.selectableUnits.isEmpty
+        : state.participants.isEmpty;
+  }
+
+  ShareCustomSplitSummary _resolveCustomSummary() {
+    if (state.form.allocationTargetType ==
+        ExpenseAllocationTargetType.unitBased) {
+      return state.evaluateUnitCustomSplit();
+    }
+    return state.evaluateCustomSplit();
+  }
+
+  List<Widget> _buildOptionalDetailsSection({
+    required BuildContext context,
+    required bool isShoppingQuickCreate,
+    required _FormViewState viewState,
+    required Spacing spacing,
+    required bool expandOptional,
+  }) {
+    if (isShoppingQuickCreate) {
+      return const [];
+    }
+    final s = S.of(context);
+    return [
+      SizedBox(height: spacing.lg),
+      _OptionalDetailsExpansion(
+        spacing: spacing,
+        title: s.flowChoreDetailMoreInfoTitle,
+        notesController: notesController,
+        notesEnabled: !viewState.editingDisabled,
+        isUploadingEvidencePhoto: isUploadingEvidencePhoto,
+        evidencePhotoUrl: evidencePhotoUrl,
+        evidencePhotoEnabled: !viewState.locked,
+        onEvidencePhotoCapture: onEvidencePhotoCapture,
+        shareColors: shareColors,
+        initiallyExpanded: expandOptional,
+      ),
+    ];
+  }
+
+  List<Widget> _buildPrimaryActions({
+    required BuildContext context,
+    required _FormViewState viewState,
+    required Spacing spacing,
+  }) {
+    final s = S.of(context);
+    final actions = <Widget>[];
+    if (showPrimaryActions && !viewState.hidePrimary) {
+      actions.add(
+        _PrimaryActionButton(
+          label: viewState.primaryLabel(s),
+          shareColors: shareColors,
+          isBusy: viewState.isBusy,
+          shouldDisable: viewState.shouldDisable,
+          destructive: viewState.isDeleteAction,
+          onPressed:
+              () => _handlePrimaryPressed(
+                blocContext: context,
+                viewState: viewState,
+                onDeleteRequested: onDeleteRequested,
+              ),
+        ),
+      );
+    }
+    if (showTerminatePlan) {
+      actions.add(SizedBox(height: spacing.md));
+      actions.add(
+        KinlyFilledButton.destructiveText(
+          fullWidth: true,
+          onPressed: isTerminatingPlan ? null : onTerminatePlan,
+          label:
+              isTerminatingPlan
+                  ? s.shareEditTerminatePlanBusy
+                  : s.shareEditTerminatePlan,
+        ),
+      );
+    }
+    return actions;
   }
 
   String? _formattedPeriod() {
@@ -271,6 +380,54 @@ class ShareCreateFormView extends StatelessWidget {
           start.day,
         ).subtract(const Duration(days: 1));
     }
+  }
+}
+
+class _AllocationTargetSelector extends StatelessWidget {
+  const _AllocationTargetSelector({required this.state, required this.locked});
+
+  final ShareCreateState state;
+  final bool locked;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final unitLabel = _resolveUnitLabel(s);
+    return KinlyTabBar<ExpenseAllocationTargetType>(
+      tabs: {
+        ExpenseAllocationTargetType.debtorBased: s.gratitudeWallStatsPeople,
+        ExpenseAllocationTargetType.unitBased: unitLabel,
+      },
+      selected: state.form.allocationTargetType,
+      emptySelectionAllowed: false,
+      onChanged: (value) {
+        if (locked || value == null) return;
+        context.read<ShareCreateBloc>().add(
+          ShareCreateAllocationTargetChanged(value),
+        );
+      },
+    );
+  }
+
+  String _resolveUnitLabel(S s) {
+    if (state.selectableUnits.length == 1) {
+      final name = state.selectableUnits.first.name.trim();
+      if (name.isNotEmpty) return name;
+      return state.selectableUnits.first.unitType == HomeUnitType.shared
+          ? s.houseNormSectionSharedSpacesTitle
+          : s.gratitudeWallPersonalTab;
+    }
+
+    final sharedUnit = state.selectableUnits.where(
+      (unit) => unit.unitType == HomeUnitType.shared,
+    );
+    if (sharedUnit.isNotEmpty) {
+      final sharedName = sharedUnit.first.name.trim();
+      if (sharedName.isNotEmpty) return sharedName;
+      return s.houseNormSectionSharedSpacesTitle;
+    }
+
+    return s.gratitudeWallPersonalTab;
   }
 }
 

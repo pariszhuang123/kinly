@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'package:kinly/contracts/homes/home_units_models.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
 import 'package:kinly/core/theme/spacing.dart';
 import 'package:kinly/core/ui/buttons/kinly_filled_button.dart';
@@ -11,6 +12,7 @@ import 'package:kinly/core/ui/kinly_app_bar.dart';
 import 'package:kinly/core/ui/kinly_scaffold.dart';
 import 'package:kinly/core/ui/media/kinly_photo_capture.dart';
 import 'package:kinly/core/ui/paywall/paywall_gate_listener.dart';
+import 'package:kinly/core/ui/kinly_tab_bar.dart';
 import 'package:kinly/core/ui/paywall/paywall_strings.dart';
 import 'package:kinly/core/ui/snackbars/kinly_snackbar.dart';
 import 'package:kinly/core/ui/kinly_theme_access.dart';
@@ -88,6 +90,7 @@ class _TodayShoppingItemEditorScreenState
             (prev, curr) =>
                 prev.submissionErrorTick != curr.submissionErrorTick ||
                 prev.photoErrorTick != curr.photoErrorTick ||
+                prev.purchaseMemoryTick != curr.purchaseMemoryTick ||
                 prev.successItemId != curr.successItemId,
         listener: (context, state) {
           if (state.photoErrorTick > 0) {
@@ -109,6 +112,21 @@ class _TodayShoppingItemEditorScreenState
           if (state.submissionErrorTick > 0 &&
               state.submissionErrorMessage != null) {
             KinlySnackBar.showError(context, state.submissionErrorMessage!);
+          }
+          if (state.purchaseMemoryTick > 0 &&
+              state.purchaseMemoryReminder != null) {
+            final reminder = state.purchaseMemoryReminder!;
+            final by = reminder.lastPurchasedByDisplayName;
+            final message =
+                by == null || by.trim().isEmpty
+                    ? s.shoppingPurchaseMemoryLastBought(
+                      reminder.daysSinceLastPurchase,
+                    )
+                    : s.shoppingPurchaseMemoryLastBoughtBy(
+                      reminder.daysSinceLastPurchase,
+                      by,
+                    );
+            KinlySnackBar.showInfo(context, message);
           }
           if (state.successItemId != null) {
             Navigator.of(context).pop(true);
@@ -180,6 +198,10 @@ class _TodayShoppingItemEditorScreenState
                                     ShoppingItemDetailsChangedEvent(value),
                                   ),
                             ),
+                            if (state.unitContext != null) ...[
+                              SizedBox(height: spacing.md),
+                              _ShoppingScopeSelector(state: state),
+                            ],
                             SizedBox(height: spacing.md),
                             KinlyPhotoCapture(
                               photoUrl: state.referencePhotoUrl,
@@ -243,5 +265,44 @@ class _TodayShoppingItemEditorScreenState
     );
     if (shouldDelete != true || !context.mounted) return;
     context.read<ShoppingItemBloc>().add(const DeleteShoppingItemEvent());
+  }
+}
+
+class _ShoppingScopeSelector extends StatelessWidget {
+  const _ShoppingScopeSelector({required this.state});
+
+  final ShoppingItemState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final unitContext = state.unitContext!;
+    final alternateUnit = unitContext.shoppingAlternateUnit;
+    final tabs = <ShoppingItemScopeType, String>{
+      ShoppingItemScopeType.house: s.gratitudeWallHouseTab,
+      if (state.canChooseUnitScope)
+        ShoppingItemScopeType.unit: alternateUnit.name.trim().isEmpty
+            ? (alternateUnit.isShared
+                ? s.houseNormSectionSharedSpacesTitle
+                : s.gratitudeWallPersonalTab)
+            : alternateUnit.name,
+    };
+    return KinlyTabBar<ShoppingItemScopeType>(
+      tabs: tabs,
+      selected: state.selectedScopeType,
+      emptySelectionAllowed: false,
+      onChanged: (value) {
+        if (value == null) return;
+        context.read<ShoppingItemBloc>().add(
+          ShoppingItemScopeChangedEvent(
+            scopeType: value,
+            unitId:
+                value == ShoppingItemScopeType.unit
+                    ? alternateUnit.unitId
+                    : null,
+          ),
+        );
+      },
+    );
   }
 }

@@ -75,7 +75,7 @@ void _updateHouseDirectoryServiceType(
   HouseDirectoryServiceType? value,
 ) {
   if (value == null) return;
-  screen.setState(() => screen._type = value);
+  screen._updateType(value);
 }
 
 void _updateHouseDirectoryReminderOffsetUnit(
@@ -83,7 +83,7 @@ void _updateHouseDirectoryReminderOffsetUnit(
   HouseDirectoryReminderOffsetUnit? value,
 ) {
   if (value == null) return;
-  screen.setState(() => screen._offsetUnit = value);
+  screen._updateOffsetUnit(value);
 }
 
 void _hydrateHouseDirectoryService(
@@ -130,9 +130,7 @@ void _scheduleHouseDirectoryServiceHydration(
     if (screen._hydratedServiceId == latestService.id) {
       return;
     }
-    screen.setState(() {
-      _hydrateHouseDirectoryService(screen, latestService);
-    });
+    screen._hydrateServiceInState(latestService);
   });
 }
 
@@ -155,13 +153,7 @@ void _saveHouseDirectoryService(
     return;
   }
 
-  screen.setState(() {
-    screen._validationError = null;
-    screen._providerError = null;
-    screen._customLabelError = null;
-    screen._linkError = null;
-    screen._offsetValueError = null;
-  });
+  screen._clearValidationErrors();
 
   final offsetValue = _parseHouseDirectoryReminderOffset(screen);
   screen.context.read<HouseDirectoryBloc>().add(
@@ -189,13 +181,7 @@ void _applyHouseDirectoryServiceValidationErrors(
   _HouseDirectoryServiceScreenState screen,
   HouseDirectoryServiceValidationResult validation,
 ) {
-  screen.setState(() {
-    screen._providerError = validation.providerError;
-    screen._customLabelError = validation.customLabelError;
-    screen._linkError = validation.linkError;
-    screen._offsetValueError = validation.offsetValueError;
-    screen._validationError = validation.summaryError;
-  });
+  screen._applyValidationErrors(validation);
 }
 
 int? _parseHouseDirectoryReminderOffset(

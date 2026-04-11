@@ -8,6 +8,7 @@ import '../../../core/ui/buttons/kinly_filled_button.dart';
 import '../../../generated/l10n.dart';
 import 'package:kinly/contracts/share/ports/expenses_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
 import '../bloc/share_create_bloc/share_create_bloc.dart';
 import '../domain/share_create_form.dart';
 import '../domain/share_split_mode.dart';
@@ -22,6 +23,7 @@ class ShareEditProvider extends StatelessWidget {
     required this.expenseId,
     required this.expensesRepository,
     required this.homeRepository,
+    required this.homeUnitsRepository,
     this.allowDelete = false,
   });
 
@@ -29,6 +31,7 @@ class ShareEditProvider extends StatelessWidget {
   final String expenseId;
   final ExpensesRepository expensesRepository;
   final HomeRepository homeRepository;
+  final HomeUnitsRepository homeUnitsRepository;
   final bool allowDelete;
 
   @override
@@ -100,9 +103,17 @@ class ShareEditProvider extends StatelessWidget {
           amountInput: _formatAmount(expense.amountCents),
           notes: expense.notes ?? '',
           evidencePhotoPath: expense.evidencePhotoPath ?? '',
+          allocationTargetType:
+              expense.allocationTargetType ??
+              ExpenseAllocationTargetType.debtorBased,
           splitMode: splitMode,
           selectedParticipantIds: selectedIds,
           customAmountInputs: customInputs,
+          selectedUnitIds: detail.unitSplits.map((split) => split.unitId).toSet(),
+          unitCustomAmountInputs: {
+            for (final split in detail.unitSplits)
+              split.unitId: _formatAmount(split.amountCents),
+          },
           startDate: expense.startDate,
           recurrenceEvery: expense.recurrenceEvery,
           recurrenceUnit: expense.recurrenceUnit,
@@ -114,6 +125,7 @@ class ShareEditProvider extends StatelessWidget {
                 homeId: homeId,
                 expensesRepository: expensesRepository,
                 homeRepository: homeRepository,
+                homeUnitsRepository: homeUnitsRepository,
                 planStatus: detail.planStatus,
                 planId: expense.planId,
                 initialForm: initialForm,

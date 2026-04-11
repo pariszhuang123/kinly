@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/contracts/account/ports/account_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
 import 'package:kinly/contracts/profile/ports/profile_repository.dart';
 import 'bloc/profile_settings_bloc.dart';
 import 'profile_surface.dart';
@@ -18,9 +19,12 @@ class ProfileSettingsProvider extends StatelessWidget {
     this.onSignOut,
     ProfileRepository? profileRepository,
     HomeRepository? homeRepository,
+    HomeUnitsRepository? homeUnitsRepository,
     AccountRepository? accountRepository,
   }) : _profileRepository = profileRepository ?? sl<ProfileRepository>(),
        _homeRepository = homeRepository ?? sl<HomeRepository>(),
+       _homeUnitsRepository =
+           homeUnitsRepository ?? sl<HomeUnitsRepository>(),
        _accountRepository = accountRepository ?? sl<AccountRepository>();
 
   final String homeId;
@@ -30,6 +34,7 @@ class ProfileSettingsProvider extends StatelessWidget {
   final VoidCallback? onSignOut;
   final ProfileRepository _profileRepository;
   final HomeRepository _homeRepository;
+  final HomeUnitsRepository _homeUnitsRepository;
   final AccountRepository _accountRepository;
 
   @override
@@ -47,6 +52,7 @@ class ProfileSettingsProvider extends StatelessWidget {
           (_) => ProfileSettingsBloc(
             profileRepository: _profileRepository,
             homeRepository: _homeRepository,
+            homeUnitsRepository: _homeUnitsRepository,
             accountRepository: _accountRepository,
             homeId: homeId,
             initialUser: initialUser,

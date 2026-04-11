@@ -43,6 +43,10 @@ class AppRoutePaths {
   static const sharePaidItemDetail = '/share/paid-item-detail';
   static const sharePhoto = '/share/photo';
   static const profileSettings = '/settings/profile';
+  static const profileSharedUnitHub = '/settings/profile/shared-unit';
+  static const profileSharedUnitCreate = '/settings/profile/shared-unit/create';
+  static const profileSharedUnitJoin = '/settings/profile/shared-unit/join';
+  static const profileSharedUnitRename = '/settings/profile/shared-unit/rename';
   static const profileIdentity = '/settings/profile/identity';
   static const connectionSettings = '/settings/profile/connection';
   static const harmony = '/harmony';

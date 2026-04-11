@@ -20,12 +20,14 @@ void handleProfileAction(
 
   final successMessages = {
     ProfileSettingsAction.leaveSuccess: s.profileLeaveSuccessMessage,
+    ProfileSettingsAction.sharedUnitLeaveSuccess: s.profileSharedUnitLeaveSuccess,
     ProfileSettingsAction.transferSuccess: s.profileLeaveTransferSuccessMessage,
     ProfileSettingsAction.kickSuccess: s.profileKickSuccessMessage,
     ProfileSettingsAction.deleteSuccess: s.profileDeleteSuccessMessage,
   };
   final failureActions = const {
     ProfileSettingsAction.leaveFailure,
+    ProfileSettingsAction.sharedUnitLeaveFailure,
     ProfileSettingsAction.transferFailure,
     ProfileSettingsAction.kickFailure,
     ProfileSettingsAction.deleteFailure,
@@ -424,6 +426,7 @@ Future<void> openProfileIdentity(
 
   final args = ProfileIdentityRouteArgs(
     homeId: membership.homeId,
+    creatorMembershipId: membership.membershipId,
     initialUsername: user?.displayName,
     initialAvatarStoragePath: user?.avatarStoragePath,
     initialAvatarUrl: user?.avatarUrl,

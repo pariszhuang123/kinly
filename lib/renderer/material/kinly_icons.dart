@@ -39,4 +39,5 @@ class KinlyIcons {
   static const wbCloudyRounded = Icons.wb_cloudy_rounded;
   static const cloudQueueRounded = Icons.cloud_queue_rounded;
   static const autoAwesomeRounded = Icons.auto_awesome_rounded;
+  static const groupOutlined = Icons.group_outlined;
 }

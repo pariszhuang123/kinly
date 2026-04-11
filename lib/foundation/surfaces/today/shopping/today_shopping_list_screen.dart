@@ -394,6 +394,7 @@ class _ShoppingItemsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = KinlyThemeAccess.of(context);
+    final s = S.of(context);
     final spacing = theme.extension<Spacing>()!;
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -407,6 +408,15 @@ class _ShoppingItemsList extends StatelessWidget {
         final canOpen = onTapItem != null && (canTapItem?.call(item) ?? true);
 
         final trailingChildren = <Widget>[
+          if (item.scopeType == ShoppingItemScopeType.unit) ...[
+            Text(
+              item.unitName?.trim().isNotEmpty == true
+                  ? item.unitName!.trim()
+                  : s.houseNormSectionSharedSpacesTitle,
+              style: theme.textTheme.labelSmall,
+            ),
+            SizedBox(width: spacing.xs),
+          ],
           if (hasDetails) ...[
             const Icon(KinlyIcons.notesOutlined, size: 18),
             SizedBox(width: spacing.xs),

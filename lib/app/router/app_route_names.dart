@@ -42,6 +42,10 @@ class AppRouteNames {
   static const sharePaidItemDetail = 'sharePaidItemDetail';
   static const sharePhoto = 'sharePhoto';
   static const profileSettings = 'profileSettings';
+  static const profileSharedUnitHub = 'profileSharedUnitHub';
+  static const profileSharedUnitCreate = 'profileSharedUnitCreate';
+  static const profileSharedUnitJoin = 'profileSharedUnitJoin';
+  static const profileSharedUnitRename = 'profileSharedUnitRename';
   static const profileIdentity = 'profileIdentity';
   static const connectionSettings = 'connectionSettings';
   static const infoHub = 'infoHub';

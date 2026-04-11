@@ -2,6 +2,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../contracts/expenses/models.dart';
 import '../../../../../core/theme/kinly_sections.dart';
 import '../../../../../core/theme/spacing.dart';
 import '../../../../../core/ui/kinly_circle_avatar.dart';
@@ -212,7 +213,7 @@ class _OwedList extends StatelessWidget {
               isOwner: entry.isOwner,
             ),
             title: entry.displayName,
-            subtitle: s.todayShareActiveSubtitle(entry.items.length),
+            subtitle: _buildSubtitle(s, entry),
             trailing: Text(
               _formatCurrency(entry.totalOwedCents),
               style: KinlyThemeAccess.of(context).textTheme.titleSmall
@@ -223,6 +224,23 @@ class _OwedList extends StatelessWidget {
         );
       }),
     );
+  }
+
+  String _buildSubtitle(S s, TodayShareOwed entry) {
+    if (entry.items.isEmpty) {
+      return s.todayShareActiveSubtitle(0);
+    }
+    final first = entry.items.first;
+    final tag =
+        first.liabilityKind == ExpenseLiabilityKind.shared
+            ? (first.unitName?.trim().isNotEmpty == true
+                ? first.unitName!.trim()
+                : s.houseNormSectionSharedSpacesTitle)
+            : first.liabilityKind == ExpenseLiabilityKind.personal
+            ? s.gratitudeWallPersonalTab
+            : null;
+    final base = s.todayShareActiveSubtitle(entry.items.length);
+    return tag == null ? base : '$tag - $base';
   }
 }
 

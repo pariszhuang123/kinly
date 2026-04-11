@@ -2,7 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
+import 'package:kinly/contracts/homes/home_units_models.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
 import 'package:kinly/contracts/homes/shopping_photo_capture.dart';
 import 'package:kinly/contracts/paywall/enums/paywall_gate_status.dart';
@@ -20,10 +22,12 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
   ShoppingItemBloc({
     required String homeId,
     ShoppingListItem? item,
+    required HomeUnitsRepository homeUnitsRepository,
     required ShoppingListRepository shoppingListRepository,
     Logger? logger,
   }) : _homeId = homeId,
        _item = item,
+       _homeUnitsRepository = homeUnitsRepository,
        _shoppingListRepository = shoppingListRepository,
        _logger = logger ?? const DebugLogger(),
        _uuid = const Uuid(),
@@ -39,8 +43,10 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
     on<ShoppingItemNameChangedEvent>(_onShoppingItemNameChanged);
     on<ShoppingItemQuantityChangedEvent>(_onShoppingItemQuantityChanged);
     on<ShoppingItemDetailsChangedEvent>(_onShoppingItemDetailsChanged);
+    on<ShoppingItemScopeChangedEvent>(_onShoppingItemScopeChanged);
     on<ShoppingItemPhotoCaptureRequestedEvent>(_onShoppingItemPhotoCaptureRequested);
     on<ShoppingItemPhotoRecoveryRequestedEvent>(_onShoppingItemPhotoRecoveryRequested);
+    on<ShoppingItemUnitContextRequestedEvent>(_onShoppingItemUnitContextRequested);
     on<SubmitShoppingItemEvent>(_onSubmitShoppingItem);
     on<DeleteShoppingItemEvent>(_onDeleteShoppingItem);
     on<ShoppingItemPaywallOpenedEvent>(_onShoppingItemPaywallOpened);
@@ -49,6 +55,7 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
 
   final String _homeId;
   final ShoppingListItem? _item;
+  final HomeUnitsRepository _homeUnitsRepository;
   final ShoppingListRepository _shoppingListRepository;
   final Logger _logger;
   final Uuid _uuid;
@@ -72,6 +79,18 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
     Emitter<ShoppingItemState> emit,
   ) {
     emit(state.copyWith(details: event.details));
+  }
+
+  void _onShoppingItemScopeChanged(
+    ShoppingItemScopeChangedEvent event,
+    Emitter<ShoppingItemState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        selectedScopeType: event.scopeType,
+        selectedUnitId: event.unitId,
+      ),
+    );
   }
 
   Future<void> _onShoppingItemPhotoCaptureRequested(
@@ -197,6 +216,32 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
     }
   }
 
+  Future<void> _onShoppingItemUnitContextRequested(
+    ShoppingItemUnitContextRequestedEvent event,
+    Emitter<ShoppingItemState> emit,
+  ) async {
+    emit(state.copyWith(isLoadingUnitContext: true));
+    try {
+      final context = await _homeUnitsRepository.getMyUnitContext(homeId: _homeId);
+      emit(
+        state.copyWith(
+          isLoadingUnitContext: false,
+          unitContext: context,
+          selectedScopeType:
+              state.selectedScopeType == ShoppingItemScopeType.unit
+                  ? ShoppingItemScopeType.unit
+                  : ShoppingItemScopeType.house,
+          selectedUnitId:
+              state.selectedScopeType == ShoppingItemScopeType.unit
+                  ? (state.selectedUnitId ?? context.shoppingAlternateUnit.unitId)
+                  : context.shoppingAlternateUnit.unitId,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(isLoadingUnitContext: false));
+    }
+  }
+
   Future<void> _onSubmitShoppingItem(
     SubmitShoppingItemEvent event,
     Emitter<ShoppingItemState> emit,
@@ -223,11 +268,17 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
           quantity: _normalizeOptional(state.quantity),
           details: _normalizeOptional(state.details),
           referencePhotoPath: _normalizeOptional(state.referencePhotoPath),
+          scopeType: state.selectedScopeType,
+          unitId: state.selectedScopeType == ShoppingItemScopeType.unit
+              ? state.selectedUnitId
+              : null,
         );
         emit(
           state.copyWith(
             isSubmitting: false,
-            successItemId: created.id,
+            successItemId: created.item.id,
+            purchaseMemoryReminder: created.purchaseMemory,
+            purchaseMemoryTick: state.purchaseMemoryTick + 1,
             showValidationErrors: false,
           ),
         );
@@ -244,6 +295,10 @@ class ShoppingItemBloc extends Bloc<ShoppingItemEvent, ShoppingItemState> {
         details: _normalizeOptional(state.details),
         referencePhotoPath: hasPhotoChanged ? nextPhoto : null,
         replacePhoto: hadPhotoBefore && hasPhotoChanged,
+        scopeType: state.selectedScopeType,
+        unitId: state.selectedScopeType == ShoppingItemScopeType.unit
+            ? state.selectedUnitId
+            : null,
       );
       emit(
         state.copyWith(

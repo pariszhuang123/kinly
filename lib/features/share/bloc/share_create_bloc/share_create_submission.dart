@@ -19,9 +19,15 @@ extension _ShareCreateBlocSubmission on ShareCreateBloc {
       amountCents: ctx.amountCents,
       description: ctx.description,
       notes: ctx.notes,
+      allocationTargetType:
+          splitDecision.splitType == null
+              ? null
+              : currentState.form.allocationTargetType,
       splitType: splitDecision.splitType,
       memberIds: splitDecision.memberIds,
       customSplits: splitDecision.customSplits,
+      unitIds: splitDecision.unitIds,
+      unitSplits: splitDecision.unitSplits,
       recurrenceEvery: ctx.recurrenceEvery,
       recurrenceUnit: ctx.recurrenceUnit,
       startDate: ctx.startDate,
@@ -38,18 +44,22 @@ extension _ShareCreateBlocSubmission on ShareCreateBloc {
   }
 
   Future<Expense> _submitEdit(_SubmissionPlan plan) {
+    final shouldSendStartDate = !state.isAmountLocked;
     if (plan.evidencePhotoPath == null) {
       return _expensesRepository.edit(
         expenseId: plan.editingExpenseId!,
         amountCents: plan.amountCents!,
         description: plan.description,
         notes: plan.notes,
+        allocationTargetType: plan.allocationTargetType,
         splitType: plan.splitType,
         memberIds: plan.memberIds,
         customSplits: plan.customSplits,
+        unitIds: plan.unitIds,
+        unitSplits: plan.unitSplits,
         recurrenceEvery: plan.recurrenceEvery,
         recurrenceUnit: plan.recurrenceUnit,
-        startDate: plan.startDate,
+        startDate: shouldSendStartDate ? plan.startDate : null,
       );
     }
 
@@ -59,12 +69,15 @@ extension _ShareCreateBlocSubmission on ShareCreateBloc {
       description: plan.description,
       notes: plan.notes,
       evidencePhotoPath: plan.evidencePhotoPath,
+      allocationTargetType: plan.allocationTargetType,
       splitType: plan.splitType,
       memberIds: plan.memberIds,
       customSplits: plan.customSplits,
+      unitIds: plan.unitIds,
+      unitSplits: plan.unitSplits,
       recurrenceEvery: plan.recurrenceEvery,
       recurrenceUnit: plan.recurrenceUnit,
-      startDate: plan.startDate,
+      startDate: shouldSendStartDate ? plan.startDate : null,
     );
   }
 
@@ -80,9 +93,12 @@ extension _ShareCreateBlocSubmission on ShareCreateBloc {
               amountCents: plan.amountCents,
               description: plan.description,
               notes: plan.notes,
+              allocationTargetType: plan.allocationTargetType,
               splitType: plan.splitType,
               memberIds: plan.memberIds,
               customSplits: plan.customSplits,
+              unitIds: plan.unitIds,
+              unitSplits: plan.unitSplits,
               recurrenceEvery: plan.recurrenceEvery,
               recurrenceUnit: plan.recurrenceUnit,
               startDate: plan.startDate,
@@ -93,9 +109,12 @@ extension _ShareCreateBlocSubmission on ShareCreateBloc {
               description: plan.description,
               notes: plan.notes,
               evidencePhotoPath: plan.evidencePhotoPath,
+              allocationTargetType: plan.allocationTargetType,
               splitType: plan.splitType,
               memberIds: plan.memberIds,
               customSplits: plan.customSplits,
+              unitIds: plan.unitIds,
+              unitSplits: plan.unitSplits,
               recurrenceEvery: plan.recurrenceEvery,
               recurrenceUnit: plan.recurrenceUnit,
               startDate: plan.startDate,
@@ -225,48 +244,50 @@ extension _ShareCreateBlocSubmission on ShareCreateBloc {
     ShareCreateState currentState,
     _ValidationContext ctx,
   ) {
-    if (ctx.amountLocked) {
-      return const _SplitDecision(
-        splitType: null,
-        memberIds: null,
-        customSplits: null,
-      );
+    if (ctx.amountLocked) return _noSplitDecision();
+    if (currentState.form.allocationTargetType ==
+        ExpenseAllocationTargetType.unitBased) {
+      return _buildUnitSplitDecision(currentState, ctx.splitMode);
     }
+    return _buildMemberSplitDecision(currentState, ctx.splitMode);
+  }
 
-    if (ctx.splitMode == ShareSplitMode.equal) {
-      final selection = currentState.equalSelectionIds;
-      if (selection.isEmpty) return null;
-      if (currentState.currentUserId != null &&
-          selection.length == 1 &&
-          selection.contains(currentState.currentUserId)) {
-        return null;
+  List<String> _resolveMembershipIds(
+    ShareCreateState currentState,
+    Set<String> userIds,
+  ) {
+    return userIds
+        .map((userId) => _resolveMembershipId(currentState, userId))
+        .whereType<String>()
+        .toList(growable: false);
+  }
+
+  String? _resolveMembershipId(
+    ShareCreateState currentState,
+    String userId,
+  ) {
+    for (final participant in currentState.participants) {
+      if (participant.userId == userId) {
+        final membershipId = participant.membershipId.trim();
+        return membershipId.isEmpty ? null : membershipId;
       }
-      return _SplitDecision(
-        splitType: ExpenseSplitType.equal,
-        memberIds: selection.toList(growable: false),
-        customSplits: null,
-      );
     }
+    return null;
+  }
 
-    if (ctx.splitMode == ShareSplitMode.custom) {
-      final summary = currentState.evaluateCustomSplit();
-      if (!summary.isValid) return null;
-      final splits = summary.entries
-          .map(
-            (entry) => ExpenseCustomSplitInput(
-              userId: entry.userId,
-              amountCents: entry.amountCents,
-            ),
-          )
-          .toList(growable: false);
-      return _SplitDecision(
-        splitType: ExpenseSplitType.custom,
-        memberIds: null,
-        customSplits: splits,
-      );
-    }
+  _SubmissionValidationError _inferSubmissionValidationError(
+    ShareCreateState currentState,
+  ) {
+    final form = currentState.form;
+    final topLevelError = _inferTopLevelValidationError(currentState, form);
+    if (topLevelError != null) return topLevelError;
 
-    return _SplitDecision(splitType: null, memberIds: null, customSplits: null);
+    final splitError =
+        form.allocationTargetType == ExpenseAllocationTargetType.unitBased
+            ? _inferUnitSplitValidationError(currentState, form.splitMode)
+            : _inferMemberSplitValidationError(currentState, form.splitMode);
+    if (splitError != null) return splitError;
+    return const _SubmissionValidationError(ExpenseErrorCode.invalidSplit);
   }
 }
 
@@ -277,9 +298,12 @@ class _SubmissionPlan {
     required this.amountCents,
     required this.description,
     required this.notes,
+    required this.allocationTargetType,
     required this.splitType,
     required this.memberIds,
     required this.customSplits,
+    required this.unitIds,
+    required this.unitSplits,
     required this.recurrenceEvery,
     required this.recurrenceUnit,
     required this.startDate,
@@ -291,9 +315,12 @@ class _SubmissionPlan {
   final int? amountCents;
   final String description;
   final String? notes;
+  final ExpenseAllocationTargetType? allocationTargetType;
   final ExpenseSplitType? splitType;
   final List<String>? memberIds;
   final List<ExpenseCustomSplitInput>? customSplits;
+  final List<String>? unitIds;
+  final List<ExpenseUnitSplitInput>? unitSplits;
   final int? recurrenceEvery;
   final ExpenseRecurrenceUnit? recurrenceUnit;
   final DateTime startDate;
@@ -337,9 +364,20 @@ class _SplitDecision {
     required this.splitType,
     required this.memberIds,
     required this.customSplits,
+    required this.unitIds,
+    required this.unitSplits,
   });
 
   final ExpenseSplitType? splitType;
   final List<String>? memberIds;
   final List<ExpenseCustomSplitInput>? customSplits;
+  final List<String>? unitIds;
+  final List<ExpenseUnitSplitInput>? unitSplits;
+}
+
+class _SubmissionValidationError {
+  const _SubmissionValidationError(this.code, [this.message = '']);
+
+  final ExpenseErrorCode code;
+  final String message;
 }

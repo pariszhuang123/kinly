@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/contracts/profile/models.dart';
 import 'package:kinly/contracts/profile_settings/profile_identity_route_args.dart';
+import 'package:kinly/contracts/profile_settings/profile_shared_unit_create_route_args.dart';
+import 'package:kinly/contracts/profile_settings/profile_shared_unit_rename_route_args.dart';
 import 'package:kinly/core/di/locator.dart';
 import 'package:kinly/core/notifications/profile_update_notifier.dart';
 import 'package:kinly/core/theme/kinly_sections.dart';
@@ -83,6 +85,29 @@ class ProfileSettingsScreen extends StatelessWidget {
                         ),
                   ),
                   SizedBox(height: spacing.xl),
+                  if (state.shouldShowSharedUnitSection) ...[
+                    _SharedUnitSection(
+                      state: state,
+                      onCreate:
+                          state.canCreateSharedUnit
+                              ? () => _openCreateSharedUnit(context, state)
+                              : null,
+                      onJoin:
+                          state.canJoinSharedUnit
+                              ? () => _openJoinSharedUnit(context)
+                              : null,
+                      onRename:
+                          state.homeUnitContext?.activeSharedUnit != null
+                              ? () => _openRenameSharedUnit(context, state)
+                              : null,
+                      onLeave:
+                          state.homeUnitContext?.activeSharedUnit != null &&
+                                  !state.sharedUnitLeaveInProgress
+                              ? () => _confirmLeaveSharedUnit(context, state)
+                              : null,
+                    ),
+                    SizedBox(height: spacing.md),
+                  ],
 
                   // ── General section: Info Hub + Contact ────────────────────
                   KinlySettingsCard(
@@ -230,6 +255,87 @@ class ProfileSettingsScreen extends StatelessWidget {
   Future<void> _openInfoHub(BuildContext context) async {
     await openInfoHub(context);
   }
+
+  Future<void> _openCreateSharedUnit(
+    BuildContext context,
+    ProfileSettingsState state,
+  ) async {
+    final membershipId = state.membership?.membershipId;
+    final homeId = state.membership?.homeId;
+    if (membershipId == null ||
+        membershipId.isEmpty ||
+        homeId == null ||
+        homeId.isEmpty) {
+      return;
+    }
+    final created = await context.pushNamed<bool>(
+      AppRouteNames.profileSharedUnitCreate,
+      extra: ProfileSharedUnitCreateRouteArgs(
+        homeId: homeId,
+        creatorMembershipId: membershipId,
+      ),
+    );
+    if (created == true && context.mounted) {
+      KinlySnackBar.showSuccess(
+        context,
+        S.of(context).profileSharedUnitCreateSuccess,
+      );
+      context.read<ProfileSettingsBloc>().add(const ProfileSettingsStarted());
+    }
+  }
+
+  Future<void> _openJoinSharedUnit(BuildContext context) async {
+    final joined = await context.pushNamed<bool>(AppRouteNames.profileSharedUnitJoin);
+    if (joined == true && context.mounted) {
+      KinlySnackBar.showSuccess(
+        context,
+        S.of(context).profileSharedUnitJoinSuccess,
+      );
+      context.read<ProfileSettingsBloc>().add(const ProfileSettingsStarted());
+    }
+  }
+
+  Future<void> _openRenameSharedUnit(
+    BuildContext context,
+    ProfileSettingsState state,
+  ) async {
+    final sharedUnit = state.homeUnitContext?.activeSharedUnit;
+    if (sharedUnit == null) return;
+    final renamed = await context.pushNamed<bool>(
+      AppRouteNames.profileSharedUnitRename,
+      extra: ProfileSharedUnitRenameRouteArgs(
+        unitId: sharedUnit.unitId,
+        initialName: sharedUnit.name,
+      ),
+    );
+    if (renamed == true && context.mounted) {
+      KinlySnackBar.showSuccess(
+        context,
+        S.of(context).profileSharedUnitRenameSuccess,
+      );
+      context.read<ProfileSettingsBloc>().add(const ProfileSettingsStarted());
+    }
+  }
+
+  Future<void> _confirmLeaveSharedUnit(
+    BuildContext context,
+    ProfileSettingsState state,
+  ) async {
+    final sharedUnit = state.homeUnitContext?.activeSharedUnit;
+    if (sharedUnit == null) return;
+    final s = S.of(context);
+    final confirmed = await showKinlyConfirmDialog(
+      context,
+      title: s.profileSharedUnitLeaveConfirmTitle,
+      message: s.profileSharedUnitLeaveConfirmMessage,
+      confirmLabel: s.profileSharedUnitLeaveCta,
+      destructive: true,
+    );
+    if (!context.mounted || confirmed != true) return;
+    context.read<ProfileSettingsBloc>().add(
+      ProfileSettingsSharedUnitLeaveRequested(sharedUnit.unitId),
+    );
+  }
 }
 
 class _PlanButton extends StatelessWidget {
@@ -266,6 +372,121 @@ class _PlanButton extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _SharedUnitSection extends StatelessWidget {
+  const _SharedUnitSection({
+    required this.state,
+    required this.onCreate,
+    required this.onJoin,
+    required this.onRename,
+    required this.onLeave,
+  });
+
+  final ProfileSettingsState state;
+  final VoidCallback? onCreate;
+  final VoidCallback? onJoin;
+  final VoidCallback? onRename;
+  final VoidCallback? onLeave;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = KinlyThemeAccess.of(context);
+    final spacing = theme.extension<Spacing>()!;
+    final s = S.of(context);
+    final sharedUnit = state.homeUnitContext?.activeSharedUnit;
+    final title =
+        sharedUnit == null
+            ? s.profileSharedUnitSectionTitle
+            : sharedUnit.name.trim().isEmpty
+            ? s.profileSharedUnitActiveFallbackName
+            : sharedUnit.name;
+    final subtitle =
+        sharedUnit == null
+            ? s.profileSharedUnitSectionSubtitle
+            : s.profileSharedUnitActiveSubtitle;
+
+    return KinlySettingsCard(
+      children: [
+        Padding(
+          padding: EdgeInsetsDirectional.all(spacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: spacing.xs),
+              Text(
+                subtitle,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              if (sharedUnit == null && onCreate != null) ...[
+                SizedBox(height: spacing.md),
+                KinlyFilledButton.text(
+                  onPressed: onCreate,
+                  label: s.profileSharedUnitCreateCta,
+                  fullWidth: true,
+                ),
+              ],
+              if (sharedUnit == null && onJoin != null) ...[
+                SizedBox(height: spacing.sm),
+                KinlyOutlinedButton.text(
+                  onPressed: onJoin,
+                  label: s.profileSharedUnitJoinCta,
+                  fullWidth: true,
+                ),
+              ],
+              if (sharedUnit != null) ...[
+                if (state.activeSharedUnitMembers.isNotEmpty) ...[
+                  SizedBox(height: spacing.md),
+                  Text(
+                    s.profileSharedUnitMembersTitle,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: spacing.sm),
+                  Wrap(
+                    spacing: spacing.md,
+                    runSpacing: spacing.md,
+                    children: state.activeSharedUnitMembers
+                        .map(
+                          (member) => KinlyMemberAvatarChip(
+                            displayName: member.username.isNotEmpty
+                                ? member.username
+                                : s.friendDefaultName,
+                            avatarUrl: member.avatarUrl,
+                            isOwner: member.isOwner,
+                          ),
+                        )
+                        .toList(growable: false),
+                  ),
+                ],
+                SizedBox(height: spacing.md),
+                KinlyOutlinedButton.text(
+                  onPressed: onRename,
+                  label: s.profileSharedUnitRenameCta,
+                  fullWidth: true,
+                ),
+                SizedBox(height: spacing.sm),
+                KinlyFilledButton.destructiveText(
+                  onPressed: onLeave,
+                  label: s.profileSharedUnitLeaveCta,
+                  fullWidth: true,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

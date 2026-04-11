@@ -177,6 +177,28 @@
   "shoppingArchiveShareNo": "No",
   "shoppingArchiveItemsBought": "Items marked bought and removed",
   "shoppingArchiveDraftBillCreated": "Bill created",
+  "shoppingPurchaseMemoryLastBought": "Last bought {days} days ago",
+  "@shoppingPurchaseMemoryLastBought": {
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "6"
+      }
+    }
+  },
+  "shoppingPurchaseMemoryLastBoughtBy": "Last bought {days} days ago by {name}",
+  "@shoppingPurchaseMemoryLastBoughtBy": {
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "6"
+      },
+      "name": {
+        "type": "String",
+        "example": "Alex"
+      }
+    }
+  },
   "login_tagline": "Together feels lighter",
   "login_with_google": "Continue with Google",
   "login_with_apple": "Continue with Apple",
@@ -564,6 +586,8 @@
   "profileIdentityAvatarEmpty": "No avatars are available right now.",
   "profileIdentityLoadError": "Couldn't load your profile.",
   "profileIdentityRetry": "Retry",
+  "profileIdentitySharedUnitShortcutTitle": "Shared unit",
+  "profileIdentitySharedUnitShortcutSubtitle": "Create, join, or manage your shared unit.",
   "profileIdentitySaveButton": "Save changes",
   "profileIdentitySuccessMessage": "Profile updated.",
   "profileIdentityUsernamePreviewFallback": "your username",
@@ -591,6 +615,36 @@
   "profileContactUsSubtitle": "Email support@makinglifeeasie.com",
   "profileConnectionSettingsTitle": "Notifications",
   "profileConnectionSettingsSubtitle": "Manage reminders and alerts.",
+  "profileSharedUnitSectionTitle": "Shared unit",
+  "profileSharedUnitSectionSubtitle": "Create a shared unit with one eligible housemate.",
+  "profileSharedUnitCreateCta": "Create shared unit",
+  "profileSharedUnitJoinCta": "Join existing shared unit",
+  "profileSharedUnitLeaveCta": "Leave shared unit",
+  "profileSharedUnitRenameCta": "Rename shared unit",
+  "profileSharedUnitActiveSubtitle": "This shared unit is active in your home.",
+  "profileSharedUnitActiveFallbackName": "Shared unit",
+  "profileSharedUnitMembersTitle": "Members",
+  "profileSharedUnitCreateScreenTitle": "Create shared unit",
+  "profileSharedUnitCreateScreenSubtitle": "Name the shared unit and pick eligible housemates.",
+  "profileSharedUnitNameLabel": "Shared unit name",
+  "profileSharedUnitNameHint": "e.g. Alex + Sam",
+  "profileSharedUnitMembersLabel": "Choose housemates",
+  "profileSharedUnitMembersHelper": "Add only members who are not in a shared unit yet.",
+  "profileSharedUnitNoCandidates": "No eligible housemates are available right now.",
+  "profileSharedUnitCreateSubmit": "Create shared unit",
+  "profileSharedUnitCreateSuccess": "Shared unit created.",
+  "profileSharedUnitLoadError": "Couldn't load shared unit options.",
+  "profileSharedUnitJoinScreenTitle": "Join shared unit",
+  "profileSharedUnitJoinScreenSubtitle": "Choose an active shared unit in your home to join.",
+  "profileSharedUnitJoinEmpty": "No joinable shared units are available right now.",
+  "profileSharedUnitJoinSubmit": "Join shared unit",
+  "profileSharedUnitRenameScreenTitle": "Rename shared unit",
+  "profileSharedUnitRenameSubmit": "Save name",
+  "profileSharedUnitLeaveConfirmTitle": "Leave this shared unit?",
+  "profileSharedUnitLeaveConfirmMessage": "You'll go back to managing your own personal unit.",
+  "profileSharedUnitLeaveSuccess": "You left the shared unit.",
+  "profileSharedUnitJoinSuccess": "Joined shared unit.",
+  "profileSharedUnitRenameSuccess": "Shared unit renamed.",
   "connectionSettingsTitle": "Notifications",
   "connectionSettingsSubtitle": "Control daily reminders and timing.",
   "connectionSettingsGenericError": "Couldn't update notification settings.",

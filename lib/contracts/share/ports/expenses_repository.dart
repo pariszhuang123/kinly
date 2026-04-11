@@ -12,9 +12,12 @@ abstract class ExpensesRepository {
     required String description,
     String? notes,
     String? evidencePhotoPath,
+    ExpenseAllocationTargetType? allocationTargetType,
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
+    List<String>? unitIds,
+    List<ExpenseUnitSplitInput>? unitSplits,
     int? recurrenceEvery,
     ExpenseRecurrenceUnit? recurrenceUnit,
     required DateTime startDate,
@@ -27,12 +30,15 @@ abstract class ExpensesRepository {
     required String description,
     String? notes,
     String? evidencePhotoPath,
+    ExpenseAllocationTargetType? allocationTargetType,
     ExpenseSplitType? splitType,
     List<String>? memberIds,
     List<ExpenseCustomSplitInput>? customSplits,
+    List<String>? unitIds,
+    List<ExpenseUnitSplitInput>? unitSplits,
     int? recurrenceEvery,
     ExpenseRecurrenceUnit? recurrenceUnit,
-    required DateTime startDate,
+    DateTime? startDate,
   });
 
   /// Lists unpaid shares for the current member grouped by expense creator.
@@ -48,6 +54,12 @@ abstract class ExpensesRepository {
   ///
   /// Uses the `expenses_pay_my_due` RPC; returns a summary of affected rows.
   Future<ExpensesPayMyDueResult> payMyDue({required String recipientUserId});
+
+  Future<ExpensesPayUnitDueResult> payUnitDue({
+    required String expenseId,
+    required String unitId,
+    required int amountCents,
+  });
 
   /// Lists paid shares owed to the caller (who is the expense creator).
   Future<List<ExpensePaidToMeDebtor>> listPaidToMeDebtors({

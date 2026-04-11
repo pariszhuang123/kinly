@@ -7,6 +7,7 @@ import 'package:kinly/app/router/home_tab_navigation.dart';
 import 'package:kinly/app/router/route_fallback.dart';
 import 'package:kinly/contracts/flow/ports/chores_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
 import 'package:kinly/contracts/mood/ports/mood_repository.dart';
 import 'package:kinly/contracts/mood/ports/house_pulse_repository.dart';
 import 'package:kinly/contracts/onboarding/ports/onboarding_repository.dart';
@@ -168,6 +169,7 @@ List<GoRoute> buildTodayRoutes({
         }
         return TodayShoppingItemProvider(
           homeId: homeId,
+          homeUnitsRepository: sl<HomeUnitsRepository>(),
           shoppingListRepository: sl<ShoppingListRepository>(),
           item: args?.item,
         );
@@ -200,6 +202,7 @@ List<GoRoute> buildTodayRoutes({
         }
         return TodayShoppingItemProvider(
           homeId: homeId,
+          homeUnitsRepository: sl<HomeUnitsRepository>(),
           shoppingListRepository: sl<ShoppingListRepository>(),
           editItemId: itemId,
           item: args?.item,

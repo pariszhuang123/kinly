@@ -4,6 +4,8 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:kinly/contracts/expenses/models.dart';
 import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/contracts/homes/home_units_models.dart';
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
 import 'package:kinly/contracts/share/share_create_route_args.dart';
 import 'package:kinly/features/paywall/paywall.dart';
@@ -23,11 +25,14 @@ class _MockExpensesRepository extends Mock implements ExpensesRepository {}
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
+class _MockHomeUnitsRepository extends Mock implements HomeUnitsRepository {}
+
 class _MockShoppingListRepository extends Mock implements ShoppingListRepository {}
 
 void main() {
   late _MockExpensesRepository expensesRepository;
   late _MockHomeRepository homeRepository;
+  late _MockHomeUnitsRepository homeUnitsRepository;
   late _MockShoppingListRepository shoppingListRepository;
 
   ShareCreateBloc buildBloc({
@@ -40,6 +45,7 @@ void main() {
       homeId: 'home-1',
       expensesRepository: expensesRepository,
       homeRepository: homeRepository,
+      homeUnitsRepository: homeUnitsRepository,
       shoppingListRepository: shoppingListRepository,
       initialForm: initialForm,
       editingExpenseId: editingExpenseId,
@@ -50,6 +56,7 @@ void main() {
 
   final members = <HomeMemberSummary>[
     HomeMemberSummary(
+      membershipId: 'membership_a',
       userId: 'member_a',
       username: 'Alex',
       role: 'member',
@@ -58,6 +65,7 @@ void main() {
       canTransferTo: false,
     ),
     HomeMemberSummary(
+      membershipId: 'membership_b',
       userId: 'member_b',
       username: 'Sam',
       role: 'member',
@@ -66,12 +74,30 @@ void main() {
       canTransferTo: false,
     ),
     HomeMemberSummary(
+      membershipId: 'membership_self',
       userId: 'member_self',
       username: 'Taylor',
       role: 'owner',
       validFrom: DateTime(2024, 1, 1),
       avatarUrl: 'https://example.com/me.png',
       canTransferTo: false,
+    ),
+  ];
+
+  final selectableUnits = <HomeUnitSummary>[
+    const HomeUnitSummary(
+      unitId: 'unit-personal',
+      homeId: 'home-1',
+      name: 'Personal',
+      unitType: HomeUnitType.personal,
+      memberUserIds: ['member_self'],
+    ),
+    const HomeUnitSummary(
+      unitId: 'unit-shared',
+      homeId: 'home-1',
+      name: 'Flatmates',
+      unitType: HomeUnitType.shared,
+      memberUserIds: ['member_self', 'member_a'],
     ),
   ];
 
@@ -87,6 +113,7 @@ void main() {
         members
             .map(
               (m) => ShareParticipant(
+                membershipId: m.membershipId,
                 userId: m.userId,
                 displayName: m.username,
                 avatarUrl: m.avatarUrl,
@@ -114,16 +141,24 @@ void main() {
   }
 
   setUpAll(() {
+    registerFallbackValue(ExpenseAllocationTargetType.debtorBased);
     registerFallbackValue(ExpenseSplitType.equal);
     registerFallbackValue(<String>[]);
     registerFallbackValue(<ExpenseCustomSplitInput>[]);
+    registerFallbackValue(<ExpenseUnitSplitInput>[]);
     registerFallbackValue(ExpenseRecurrenceUnit.week);
   });
 
   setUp(() {
     expensesRepository = _MockExpensesRepository();
     homeRepository = _MockHomeRepository();
+    homeUnitsRepository = _MockHomeUnitsRepository();
     shoppingListRepository = _MockShoppingListRepository();
+    when(
+      () => homeUnitsRepository.listSelectableExpenseUnits(
+        homeId: any(named: 'homeId'),
+      ),
+    ).thenAnswer((_) async => const []);
     when(
       () => shoppingListRepository.linkItemsToExpenseForUser(
         homeId: any(named: 'homeId'),
@@ -156,6 +191,7 @@ void main() {
       final loadedParticipants = members
           .map(
             (m) => ShareParticipant(
+              membershipId: m.membershipId,
               userId: m.userId,
               displayName: m.username,
               avatarUrl: m.avatarUrl,
@@ -201,6 +237,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -247,9 +286,13 @@ void main() {
           amountCents: null,
           description: 'Draft expense',
           notes: null,
+          evidencePhotoPath: null,
+          allocationTargetType: null,
           splitType: null,
           memberIds: null,
           customSplits: null,
+          unitIds: null,
+          unitSplits: null,
           recurrenceEvery: null,
           recurrenceUnit: null,
           startDate: any(named: 'startDate'),
@@ -267,7 +310,16 @@ void main() {
       return emptySeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [emptySeed.copyWith(showValidationErrors: true)],
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having((s) => s.showValidationErrors, 'showValidationErrors', true)
+              .having(
+                (s) => s.submissionErrorCode,
+                'submissionErrorCode',
+                ExpenseErrorCode.invalidDescription,
+              ),
+        ],
   );
 
   late ShareCreateState createLockedSeed;
@@ -285,7 +337,16 @@ void main() {
       return createLockedSeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [createLockedSeed.copyWith(showValidationErrors: true)],
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having((s) => s.showValidationErrors, 'showValidationErrors', true)
+              .having(
+                (s) => s.submissionErrorCode,
+                'submissionErrorCode',
+                ExpenseErrorCode.invalidAmount,
+              ),
+        ],
     verify: (_) {
       verifyNever(
         () => expensesRepository.create(
@@ -296,6 +357,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -399,7 +463,16 @@ void main() {
       return recurringDraftSeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [recurringDraftSeed.copyWith(showValidationErrors: true)],
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having((s) => s.showValidationErrors, 'showValidationErrors', true)
+              .having(
+                (s) => s.submissionErrorCode,
+                'submissionErrorCode',
+                ExpenseErrorCode.invalidRecurrence,
+              ),
+        ],
     verify: (_) {
       verifyNever(
         () => expensesRepository.create(
@@ -410,6 +483,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -436,6 +512,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -483,8 +562,87 @@ void main() {
           description: 'Dinner',
           notes: null,
           splitType: ExpenseSplitType.equal,
-          memberIds: ['member_a', 'member_b', 'member_self'],
+          memberIds: ['membership_a', 'membership_b', 'membership_self'],
           customSplits: null,
+          allocationTargetType: ExpenseAllocationTargetType.debtorBased,
+          unitIds: null,
+          unitSplits: null,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: any(named: 'startDate'),
+        ),
+      ).called(1);
+    },
+  );
+
+  late ShareCreateState unitEqualSeed;
+  blocTest<ShareCreateBloc, ShareCreateState>(
+    'submits unit-based equal split successfully',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Power',
+        amountInput: '42.00',
+        allocationTargetType: ExpenseAllocationTargetType.unitBased,
+        splitMode: ShareSplitMode.equal,
+        selectedUnitIds: {'unit-personal', 'unit-shared'},
+      );
+      unitEqualSeed = seededState(form: form).copyWith(
+        selectableUnits: selectableUnits,
+      );
+      return unitEqualSeed;
+    },
+    setUp: () {
+      when(
+        () => expensesRepository.create(
+          homeId: any(named: 'homeId'),
+          amountCents: any<int?>(named: 'amountCents'),
+          description: any(named: 'description'),
+          notes: any(named: 'notes'),
+          splitType: any(named: 'splitType'),
+          memberIds: any(named: 'memberIds'),
+          customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
+          recurrenceEvery: any(named: 'recurrenceEvery'),
+          recurrenceUnit: any(named: 'recurrenceUnit'),
+          startDate: any(named: 'startDate'),
+        ),
+      ).thenAnswer(
+        (_) async => Expense(
+          id: 'expense-unit-1',
+          homeId: 'home-1',
+          createdByUserId: 'user-1',
+          status: ExpenseStatus.active,
+          splitType: ExpenseSplitType.equal,
+          amountCents: 4200,
+          description: 'Power',
+          notes: null,
+          createdAt: DateTime.now().toUtc(),
+          updatedAt: DateTime.now().toUtc(),
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: DateTime(2024, 1, 1),
+          planId: null,
+          fullyPaidAt: null,
+        ),
+      );
+    },
+    act: (bloc) => bloc.add(const ShareCreateSubmitted()),
+    verify: (_) {
+      verify(
+        () => expensesRepository.create(
+          homeId: 'home-1',
+          amountCents: 4200,
+          description: 'Power',
+          notes: null,
+          splitType: ExpenseSplitType.equal,
+          memberIds: null,
+          customSplits: null,
+          allocationTargetType: ExpenseAllocationTargetType.unitBased,
+          unitIds: ['unit-personal', 'unit-shared'],
+          unitSplits: null,
           recurrenceEvery: null,
           recurrenceUnit: null,
           startDate: any(named: 'startDate'),
@@ -520,6 +678,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -567,8 +728,11 @@ void main() {
           description: 'Utilities',
           notes: null,
           splitType: ExpenseSplitType.equal,
-          memberIds: ['member_a'],
+          memberIds: ['membership_a'],
           customSplits: null,
+          allocationTargetType: ExpenseAllocationTargetType.debtorBased,
+          unitIds: null,
+          unitSplits: null,
           recurrenceEvery: null,
           recurrenceUnit: null,
           startDate: any(named: 'startDate'),
@@ -594,7 +758,16 @@ void main() {
       return equalCreatorOnlySeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [equalCreatorOnlySeed.copyWith(showValidationErrors: true)],
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having((s) => s.showValidationErrors, 'showValidationErrors', true)
+              .having(
+                (s) => s.submissionErrorCode,
+                'submissionErrorCode',
+                ExpenseErrorCode.invalidSplit,
+              ),
+        ],
     verify: (_) {
       verifyNever(
         () => expensesRepository.create(
@@ -605,6 +778,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -636,6 +812,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -701,7 +880,16 @@ void main() {
       return customSeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [customSeed.copyWith(showValidationErrors: true)],
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having((s) => s.showValidationErrors, 'showValidationErrors', true)
+              .having(
+                (s) => s.submissionErrorCode,
+                'submissionErrorCode',
+                ExpenseErrorCode.invalidSplitsSum,
+              ),
+        ],
     verify: (_) {
       verifyNever(
         () => expensesRepository.create(
@@ -712,6 +900,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -747,6 +938,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -793,6 +987,8 @@ void main() {
           amountCents: 1000,
           description: 'Utilities',
           notes: null,
+          evidencePhotoPath: null,
+          allocationTargetType: ExpenseAllocationTargetType.debtorBased,
           splitType: ExpenseSplitType.custom,
           memberIds: null,
           customSplits: captureAny(named: 'customSplits'),
@@ -803,7 +999,7 @@ void main() {
       ).captured;
       final splits = capture.single as List<ExpenseCustomSplitInput>;
       expect(splits.length, 1);
-      expect(splits.first.userId, 'member_a');
+      expect(splits.first.memberId, 'membership_a');
       expect(splits.first.amountCents, 1000);
     },
   );
@@ -826,7 +1022,16 @@ void main() {
       return creatorOnlySeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [creatorOnlySeed.copyWith(showValidationErrors: true)],
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having((s) => s.showValidationErrors, 'showValidationErrors', true)
+              .having(
+                (s) => s.submissionErrorCode,
+                'submissionErrorCode',
+                ExpenseErrorCode.invalidSplit,
+              ),
+        ],
     verify: (_) {
       verifyNever(
         () => expensesRepository.create(
@@ -837,6 +1042,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -863,6 +1071,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -906,7 +1117,16 @@ void main() {
       return editSeed;
     },
     act: (bloc) => bloc.add(const ShareCreateSubmitted()),
-    expect: () => [editSeed.copyWith(showValidationErrors: true)],
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having((s) => s.showValidationErrors, 'showValidationErrors', true)
+              .having(
+                (s) => s.submissionErrorCode,
+                'submissionErrorCode',
+                ExpenseErrorCode.invalidSplit,
+              ),
+        ],
   );
 
   late ShareCreateState editSuccessSeed;
@@ -937,6 +1157,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -984,8 +1207,11 @@ void main() {
           description: 'Draft expense',
           notes: null,
           splitType: ExpenseSplitType.equal,
-          memberIds: ['member_a', 'member_b'],
+          memberIds: ['membership_a', 'membership_b'],
           customSplits: null,
+          allocationTargetType: ExpenseAllocationTargetType.debtorBased,
+          unitIds: null,
+          unitSplits: null,
           recurrenceEvery: null,
           recurrenceUnit: null,
           startDate: any(named: 'startDate'),
@@ -1029,6 +1255,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -1077,8 +1306,11 @@ void main() {
           description: 'Draft expense',
           notes: null,
           splitType: ExpenseSplitType.equal,
-          memberIds: ['member_a', 'member_b'],
+          memberIds: ['membership_a', 'membership_b'],
           customSplits: null,
+          allocationTargetType: ExpenseAllocationTargetType.debtorBased,
+          unitIds: null,
+          unitSplits: null,
           recurrenceEvery: null,
           recurrenceUnit: null,
           startDate: any(named: 'startDate'),
@@ -1094,6 +1326,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -1241,6 +1476,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -1287,12 +1525,16 @@ void main() {
           amountCents: 3000,
           description: 'Paid expense',
           notes: null,
+          evidencePhotoPath: null,
+          allocationTargetType: null,
           splitType: null,
           memberIds: null,
           customSplits: null,
+          unitIds: null,
+          unitSplits: null,
           recurrenceEvery: null,
           recurrenceUnit: null,
-          startDate: any(named: 'startDate'),
+          startDate: null,
         ),
       ).called(1);
     },
@@ -1312,6 +1554,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -1363,6 +1608,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -1415,6 +1663,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -1730,6 +1981,7 @@ void main() {
         homeId: 'home-1',
         expensesRepository: expensesRepository,
         homeRepository: homeRepository,
+        homeUnitsRepository: homeUnitsRepository,
         editingExpenseId: 'expense-1',
         canEdit: false,
         editDisabledReason: 'Already paid',
@@ -1753,6 +2005,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -1775,6 +2030,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),
@@ -2041,6 +2299,39 @@ void main() {
   );
 
   blocTest<ShareCreateBloc, ShareCreateState>(
+    'selects all units when switching to equal mode with empty unit selection',
+    build: () => buildBloc(),
+    seed: () {
+      final form = ShareCreateForm.initial().copyWith(
+        description: 'Test',
+        amountInput: '20.00',
+        allocationTargetType: ExpenseAllocationTargetType.unitBased,
+        splitMode: null,
+        selectedUnitIds: <String>{},
+      );
+      return seededState(form: form).copyWith(selectableUnits: selectableUnits);
+    },
+    act:
+        (bloc) =>
+            bloc.add(const ShareCreateSplitModeChanged(ShareSplitMode.equal)),
+    expect:
+        () => [
+          isA<ShareCreateState>()
+              .having(
+                (s) => s.form.splitMode,
+                'splitMode',
+                ShareSplitMode.equal,
+              )
+              .having(
+                (s) => s.form.selectedUnitIds.length,
+                'all units selected',
+                2,
+              )
+              .having((s) => s.hasUserEdits, 'hasUserEdits', true),
+        ],
+  );
+
+  blocTest<ShareCreateBloc, ShareCreateState>(
     'clears recurrence fields when split mode is set to null',
     build: () => buildBloc(),
     seed: () {
@@ -2090,6 +2381,9 @@ void main() {
           splitType: any(named: 'splitType'),
           memberIds: any(named: 'memberIds'),
           customSplits: any(named: 'customSplits'),
+          allocationTargetType: any(named: 'allocationTargetType'),
+          unitIds: any(named: 'unitIds'),
+          unitSplits: any(named: 'unitSplits'),
           recurrenceEvery: any(named: 'recurrenceEvery'),
           recurrenceUnit: any(named: 'recurrenceUnit'),
           startDate: any(named: 'startDate'),

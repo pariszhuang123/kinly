@@ -12,6 +12,14 @@ class TodayShareOwedItem extends Equatable {
     required this.startDate,
     this.notes,
     this.evidencePhotoPath,
+    this.liabilityKind,
+    this.liabilityScope,
+    this.displayMode,
+    this.unitId,
+    this.unitName,
+    this.paidCents,
+    this.remainingCents,
+    this.containsSharedUnitBalance = false,
   });
 
   final String expenseId;
@@ -22,6 +30,14 @@ class TodayShareOwedItem extends Equatable {
   final DateTime startDate;
   final String? notes;
   final String? evidencePhotoPath;
+  final ExpenseLiabilityKind? liabilityKind;
+  final ExpenseLiabilityScope? liabilityScope;
+  final String? displayMode;
+  final String? unitId;
+  final String? unitName;
+  final int? paidCents;
+  final int? remainingCents;
+  final bool containsSharedUnitBalance;
 
   factory TodayShareOwedItem.fromModel(ExpenseOwedItem model) {
     return TodayShareOwedItem(
@@ -33,6 +49,14 @@ class TodayShareOwedItem extends Equatable {
       startDate: model.startDate,
       notes: model.notes,
       evidencePhotoPath: model.evidencePhotoPath,
+      liabilityKind: model.liabilityKind,
+      liabilityScope: model.liabilityScope,
+      displayMode: model.displayMode,
+      unitId: model.unitId,
+      unitName: model.unitName,
+      paidCents: model.paidCents,
+      remainingCents: model.remainingCents,
+      containsSharedUnitBalance: model.containsSharedUnitBalance,
     );
   }
 
@@ -46,6 +70,14 @@ class TodayShareOwedItem extends Equatable {
     startDate,
     notes,
     evidencePhotoPath,
+    liabilityKind,
+    liabilityScope,
+    displayMode,
+    unitId,
+    unitName,
+    paidCents,
+    remainingCents,
+    containsSharedUnitBalance,
   ];
 }
 

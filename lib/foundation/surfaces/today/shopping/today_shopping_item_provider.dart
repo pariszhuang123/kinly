@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
 import 'package:kinly/core/theme/spacing.dart';
@@ -18,12 +19,14 @@ class TodayShoppingItemProvider extends StatefulWidget {
   const TodayShoppingItemProvider({
     super.key,
     required this.homeId,
+    required this.homeUnitsRepository,
     required this.shoppingListRepository,
     this.editItemId,
     this.item,
   });
 
   final String homeId;
+  final HomeUnitsRepository homeUnitsRepository;
   final ShoppingListRepository shoppingListRepository;
   final String? editItemId;
   final ShoppingListItem? item;
@@ -109,8 +112,10 @@ class _TodayShoppingItemProviderState extends State<TodayShoppingItemProvider> {
         final bloc = ShoppingItemBloc(
           homeId: widget.homeId,
           item: item,
+          homeUnitsRepository: widget.homeUnitsRepository,
           shoppingListRepository: widget.shoppingListRepository,
         );
+        bloc.add(const ShoppingItemUnitContextRequestedEvent());
         bloc.add(const ShoppingItemPhotoRecoveryRequestedEvent());
         return bloc;
       },

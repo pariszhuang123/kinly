@@ -1,14 +1,20 @@
 import '../shopping_models.dart';
 
 abstract class ShoppingListRepository {
-  Future<ShoppingListSnapshot> getForHome({required String homeId});
+  Future<ShoppingListSnapshot> getForHome({
+    required String homeId,
+    ShoppingItemScopeType? scopeType,
+    String? unitId,
+  });
 
-  Future<ShoppingListItem> addItem({
+  Future<ShoppingListAddItemResult> addItem({
     required String homeId,
     required String name,
     String? quantity,
     String? details,
     String? referencePhotoPath,
+    ShoppingItemScopeType scopeType = ShoppingItemScopeType.house,
+    String? unitId,
   });
 
   Future<ShoppingListItem> updateItem({
@@ -19,6 +25,8 @@ abstract class ShoppingListRepository {
     bool? isCompleted,
     String? referencePhotoPath,
     bool replacePhoto = false,
+    ShoppingItemScopeType? scopeType,
+    String? unitId,
   });
 
   Future<ShoppingExpenseDraftSeed?> prepareExpenseForUser({

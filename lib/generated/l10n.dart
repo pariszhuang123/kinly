@@ -936,6 +936,26 @@ class S {
     );
   }
 
+  /// `Last bought {days} days ago`
+  String shoppingPurchaseMemoryLastBought(int days) {
+    return Intl.message(
+      'Last bought $days days ago',
+      name: 'shoppingPurchaseMemoryLastBought',
+      desc: '',
+      args: [days],
+    );
+  }
+
+  /// `Last bought {days} days ago by {name}`
+  String shoppingPurchaseMemoryLastBoughtBy(int days, String name) {
+    return Intl.message(
+      'Last bought $days days ago by $name',
+      name: 'shoppingPurchaseMemoryLastBoughtBy',
+      desc: '',
+      args: [days, name],
+    );
+  }
+
   /// `Together feels lighter`
   String get login_tagline {
     return Intl.message(
@@ -3446,6 +3466,26 @@ class S {
     );
   }
 
+  /// `Shared unit`
+  String get profileIdentitySharedUnitShortcutTitle {
+    return Intl.message(
+      'Shared unit',
+      name: 'profileIdentitySharedUnitShortcutTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create, join, or manage your shared unit.`
+  String get profileIdentitySharedUnitShortcutSubtitle {
+    return Intl.message(
+      'Create, join, or manage your shared unit.',
+      name: 'profileIdentitySharedUnitShortcutSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Save changes`
   String get profileIdentitySaveButton {
     return Intl.message(
@@ -3711,6 +3751,306 @@ class S {
     return Intl.message(
       'Manage reminders and alerts.',
       name: 'profileConnectionSettingsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared unit`
+  String get profileSharedUnitSectionTitle {
+    return Intl.message(
+      'Shared unit',
+      name: 'profileSharedUnitSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a shared unit with another eligible housemate.`
+  String get profileSharedUnitSectionSubtitle {
+    return Intl.message(
+      'Create a shared unit with another eligible housemate.',
+      name: 'profileSharedUnitSectionSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create shared unit`
+  String get profileSharedUnitCreateCta {
+    return Intl.message(
+      'Create shared unit',
+      name: 'profileSharedUnitCreateCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join existing shared unit`
+  String get profileSharedUnitJoinCta {
+    return Intl.message(
+      'Join existing shared unit',
+      name: 'profileSharedUnitJoinCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave shared unit`
+  String get profileSharedUnitLeaveCta {
+    return Intl.message(
+      'Leave shared unit',
+      name: 'profileSharedUnitLeaveCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rename shared unit`
+  String get profileSharedUnitRenameCta {
+    return Intl.message(
+      'Rename shared unit',
+      name: 'profileSharedUnitRenameCta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This shared unit is active in your home.`
+  String get profileSharedUnitActiveSubtitle {
+    return Intl.message(
+      'This shared unit is active in your home.',
+      name: 'profileSharedUnitActiveSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared unit`
+  String get profileSharedUnitActiveFallbackName {
+    return Intl.message(
+      'Shared unit',
+      name: 'profileSharedUnitActiveFallbackName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Members`
+  String get profileSharedUnitMembersTitle {
+    return Intl.message(
+      'Members',
+      name: 'profileSharedUnitMembersTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create shared unit`
+  String get profileSharedUnitCreateScreenTitle {
+    return Intl.message(
+      'Create shared unit',
+      name: 'profileSharedUnitCreateScreenTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a name and the other eligible housemates you want in this shared unit.`
+  String get profileSharedUnitCreateScreenSubtitle {
+    return Intl.message(
+      'Choose a name and the other eligible housemates you want in this shared unit.',
+      name: 'profileSharedUnitCreateScreenSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared unit name`
+  String get profileSharedUnitNameLabel {
+    return Intl.message(
+      'Shared unit name',
+      name: 'profileSharedUnitNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `e.g. Alex + Sam`
+  String get profileSharedUnitNameHint {
+    return Intl.message(
+      'e.g. Alex + Sam',
+      name: 'profileSharedUnitNameHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose housemates`
+  String get profileSharedUnitMembersLabel {
+    return Intl.message(
+      'Choose housemates',
+      name: 'profileSharedUnitMembersLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only members who are not already in another shared unit can be added here.`
+  String get profileSharedUnitMembersHelper {
+    return Intl.message(
+      'Only members who are not already in another shared unit can be added here.',
+      name: 'profileSharedUnitMembersHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No eligible housemates are available right now.`
+  String get profileSharedUnitNoCandidates {
+    return Intl.message(
+      'No eligible housemates are available right now.',
+      name: 'profileSharedUnitNoCandidates',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create shared unit`
+  String get profileSharedUnitCreateSubmit {
+    return Intl.message(
+      'Create shared unit',
+      name: 'profileSharedUnitCreateSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared unit created.`
+  String get profileSharedUnitCreateSuccess {
+    return Intl.message(
+      'Shared unit created.',
+      name: 'profileSharedUnitCreateSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load shared unit options.`
+  String get profileSharedUnitLoadError {
+    return Intl.message(
+      'Couldn\'t load shared unit options.',
+      name: 'profileSharedUnitLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join shared unit`
+  String get profileSharedUnitJoinScreenTitle {
+    return Intl.message(
+      'Join shared unit',
+      name: 'profileSharedUnitJoinScreenTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose an active shared unit in your home to join.`
+  String get profileSharedUnitJoinScreenSubtitle {
+    return Intl.message(
+      'Choose an active shared unit in your home to join.',
+      name: 'profileSharedUnitJoinScreenSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No joinable shared units are available right now.`
+  String get profileSharedUnitJoinEmpty {
+    return Intl.message(
+      'No joinable shared units are available right now.',
+      name: 'profileSharedUnitJoinEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Join shared unit`
+  String get profileSharedUnitJoinSubmit {
+    return Intl.message(
+      'Join shared unit',
+      name: 'profileSharedUnitJoinSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rename shared unit`
+  String get profileSharedUnitRenameScreenTitle {
+    return Intl.message(
+      'Rename shared unit',
+      name: 'profileSharedUnitRenameScreenTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save name`
+  String get profileSharedUnitRenameSubmit {
+    return Intl.message(
+      'Save name',
+      name: 'profileSharedUnitRenameSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave this shared unit?`
+  String get profileSharedUnitLeaveConfirmTitle {
+    return Intl.message(
+      'Leave this shared unit?',
+      name: 'profileSharedUnitLeaveConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You'll go back to managing your own personal unit.`
+  String get profileSharedUnitLeaveConfirmMessage {
+    return Intl.message(
+      'You\'ll go back to managing your own personal unit.',
+      name: 'profileSharedUnitLeaveConfirmMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You left the shared unit.`
+  String get profileSharedUnitLeaveSuccess {
+    return Intl.message(
+      'You left the shared unit.',
+      name: 'profileSharedUnitLeaveSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Joined shared unit.`
+  String get profileSharedUnitJoinSuccess {
+    return Intl.message(
+      'Joined shared unit.',
+      name: 'profileSharedUnitJoinSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared unit renamed.`
+  String get profileSharedUnitRenameSuccess {
+    return Intl.message(
+      'Shared unit renamed.',
+      name: 'profileSharedUnitRenameSuccess',
       desc: '',
       args: [],
     );

@@ -2,6 +2,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:kinly/contracts/homes/home_units_models.dart';
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
 import 'package:kinly/contracts/homes/ports/shopping_list_repository.dart';
 import 'package:kinly/contracts/homes/shopping_models.dart';
 import 'package:kinly/contracts/homes/shopping_photo_capture.dart';
@@ -15,8 +17,11 @@ import 'package:kinly/foundation/surfaces/today/shopping/bloc/shopping_item_bloc
 class _MockShoppingListRepository extends Mock
     implements ShoppingListRepository {}
 
+class _MockHomeUnitsRepository extends Mock implements HomeUnitsRepository {}
+
 void main() {
   late _MockShoppingListRepository shoppingListRepository;
+  late _MockHomeUnitsRepository homeUnitsRepository;
 
   const homeId = 'home-1';
 
@@ -31,6 +36,7 @@ void main() {
       id: id,
       homeId: homeId,
       name: name,
+      scopeType: ShoppingItemScopeType.house,
       quantity: quantity,
       details: details,
       referencePhotoPath: photoPath,
@@ -48,16 +54,19 @@ void main() {
     return ShoppingItemBloc(
       homeId: homeId,
       item: item,
+      homeUnitsRepository: homeUnitsRepository,
       shoppingListRepository: shoppingListRepository,
     );
   }
 
   setUpAll(() {
     registerFallbackValue(<String>[]);
+    registerFallbackValue(ShoppingItemScopeType.house);
   });
 
   setUp(() {
     shoppingListRepository = _MockShoppingListRepository();
+    homeUnitsRepository = _MockHomeUnitsRepository();
     when(() => shoppingListRepository.toPublicPhotoUrl(any())).thenAnswer((
       invocation,
     ) {
@@ -74,19 +83,48 @@ void main() {
       ),
     ).thenAnswer((_) async => null);
     when(
+      () => homeUnitsRepository.getMyUnitContext(homeId: any(named: 'homeId')),
+    ).thenAnswer(
+      (_) async => const HomeUnitContext(
+        personalUnit: HomeUnitSummary(
+          unitId: 'unit-personal',
+          homeId: homeId,
+          name: 'Personal',
+          unitType: HomeUnitType.personal,
+          memberUserIds: ['user-me'],
+        ),
+        activeSharedUnit: HomeUnitSummary(
+          unitId: 'unit-shared',
+          homeId: homeId,
+          name: 'Shared',
+          unitType: HomeUnitType.shared,
+          memberUserIds: ['user-me', 'user-other'],
+        ),
+        allowedShoppingScopes: [
+          ShoppingItemScopeType.house,
+          ShoppingItemScopeType.unit,
+        ],
+      ),
+    );
+    when(
       () => shoppingListRepository.addItem(
         homeId: any(named: 'homeId'),
         name: any(named: 'name'),
         quantity: any(named: 'quantity'),
         details: any(named: 'details'),
         referencePhotoPath: any(named: 'referencePhotoPath'),
+        scopeType: any(named: 'scopeType'),
+        unitId: any(named: 'unitId'),
       ),
     ).thenAnswer(
-      (_) async => testItem(
-        id: 'created-1',
-        name: 'Bread',
-        quantity: null,
-        details: null,
+      (_) async => ShoppingListAddItemResult(
+        item: testItem(
+          id: 'created-1',
+          name: 'Bread',
+          quantity: null,
+          details: null,
+        ),
+        purchaseMemory: null,
       ),
     );
     when(
@@ -98,6 +136,8 @@ void main() {
         isCompleted: any(named: 'isCompleted'),
         referencePhotoPath: any(named: 'referencePhotoPath'),
         replacePhoto: any(named: 'replacePhoto'),
+        scopeType: any(named: 'scopeType'),
+        unitId: any(named: 'unitId'),
       ),
     ).thenAnswer((_) async => testItem(id: 'updated-1'));
     when(
@@ -155,6 +195,8 @@ void main() {
             quantity: any(named: 'quantity'),
             details: any(named: 'details'),
             referencePhotoPath: any(named: 'referencePhotoPath'),
+            scopeType: any(named: 'scopeType'),
+            unitId: any(named: 'unitId'),
           ),
         );
       },
@@ -207,6 +249,8 @@ void main() {
             quantity: null,
             details: 'bakery',
             referencePhotoPath: null,
+            scopeType: ShoppingItemScopeType.house,
+            unitId: null,
           ),
         ).called(1);
       },
@@ -262,6 +306,8 @@ void main() {
             quantity: any(named: 'quantity'),
             details: any(named: 'details'),
             referencePhotoPath: any(named: 'referencePhotoPath'),
+            scopeType: any(named: 'scopeType'),
+            unitId: any(named: 'unitId'),
           ),
         ).thenAnswer((_) async {
           attempts += 1;
@@ -271,7 +317,10 @@ void main() {
               'cap reached',
             );
           }
-          return testItem(id: 'created-after-paywall', name: 'Eggs');
+          return ShoppingListAddItemResult(
+            item: testItem(id: 'created-after-paywall', name: 'Eggs'),
+            purchaseMemory: null,
+          );
         });
         when(() => shoppingListRepository.isPhotoLimitError(any())).thenAnswer(
           (invocation) =>

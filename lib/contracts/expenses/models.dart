@@ -12,6 +12,66 @@ export 'enums/expense_status.dart';
 export 'enums/expense_recurrence_interval.dart';
 export 'enums/expense_recurrence_unit.dart';
 
+enum ExpenseAllocationTargetType {
+  debtorBased('debtor_based'),
+  unitBased('unit_based');
+
+  const ExpenseAllocationTargetType(this.wireValue);
+
+  final String wireValue;
+
+  static ExpenseAllocationTargetType? fromWire(String? value) {
+    switch ((value ?? '').trim().toLowerCase()) {
+      case 'debtor_based':
+        return ExpenseAllocationTargetType.debtorBased;
+      case 'unit_based':
+        return ExpenseAllocationTargetType.unitBased;
+      default:
+        return null;
+    }
+  }
+}
+
+enum ExpenseLiabilityKind {
+  personal('personal'),
+  shared('shared');
+
+  const ExpenseLiabilityKind(this.wireValue);
+
+  final String wireValue;
+
+  static ExpenseLiabilityKind? fromWire(String? value) {
+    switch ((value ?? '').trim().toLowerCase()) {
+      case 'personal':
+        return ExpenseLiabilityKind.personal;
+      case 'shared':
+        return ExpenseLiabilityKind.shared;
+      default:
+        return null;
+    }
+  }
+}
+
+enum ExpenseLiabilityScope {
+  personalUnit('personal_unit'),
+  sharedUnit('shared_unit');
+
+  const ExpenseLiabilityScope(this.wireValue);
+
+  final String wireValue;
+
+  static ExpenseLiabilityScope? fromWire(String? value) {
+    switch ((value ?? '').trim().toLowerCase()) {
+      case 'personal_unit':
+        return ExpenseLiabilityScope.personalUnit;
+      case 'shared_unit':
+        return ExpenseLiabilityScope.sharedUnit;
+      default:
+        return null;
+    }
+  }
+}
+
 /// Top-level expense record returned by Supabase RPCs.
 class Expense {
   const Expense({
@@ -19,6 +79,7 @@ class Expense {
     required this.homeId,
     required this.createdByUserId,
     required this.status,
+    this.allocationTargetType,
     required this.splitType,
     required this.amountCents,
     required this.description,
@@ -37,6 +98,7 @@ class Expense {
   final String homeId;
   final String createdByUserId;
   final ExpenseStatus status;
+  final ExpenseAllocationTargetType? allocationTargetType;
   final ExpenseSplitType? splitType;
   final int amountCents;
   final String description;
@@ -54,6 +116,8 @@ class Expense {
     final id = json['id'] ?? json['expenseId'];
     final homeId = json['home_id'] ?? json['homeId'];
     final createdBy = json['created_by_user_id'] ?? json['createdByUserId'];
+    final allocationTargetTypeRaw =
+        json['allocation_target_type'] ?? json['allocationTargetType'];
     final splitTypeRaw = json['split_type'] ?? json['splitType'];
     final amountRaw = json['amount_cents'] ?? json['amountCents'];
     final description = json['description'] ?? json['description'];
@@ -72,6 +136,9 @@ class Expense {
       homeId: homeId as String,
       createdByUserId: createdBy as String,
       status: ExpenseStatusWire.fromWire(json['status'] as String?),
+      allocationTargetType: ExpenseAllocationTargetType.fromWire(
+        allocationTargetTypeRaw as String?,
+      ),
       splitType: ExpenseSplitTypeWire.fromWire(splitTypeRaw as String?),
       amountCents: (amountRaw as num?)?.toInt() ?? 0,
       description: (description as String?) ?? '',
@@ -123,23 +190,68 @@ class ExpenseSplit {
   }
 }
 
+class ExpenseUnitSplit {
+  const ExpenseUnitSplit({
+    required this.expenseId,
+    required this.homeId,
+    required this.unitId,
+    required this.amountCents,
+    required this.paidCents,
+    required this.fullyPaidAt,
+    this.unitName,
+  });
+
+  final String expenseId;
+  final String homeId;
+  final String unitId;
+  final int amountCents;
+  final int paidCents;
+  final DateTime? fullyPaidAt;
+  final String? unitName;
+
+  factory ExpenseUnitSplit.fromJson(Map<String, dynamic> json) {
+    return ExpenseUnitSplit(
+      expenseId:
+          json['expense_id'] as String? ?? json['expenseId'] as String? ?? '',
+      homeId: json['home_id'] as String? ?? json['homeId'] as String? ?? '',
+      unitId: json['unit_id'] as String? ?? json['unitId'] as String? ?? '',
+      amountCents:
+          (json['amount_cents'] as num?)?.toInt() ??
+          (json['amountCents'] as num?)?.toInt() ??
+          0,
+      paidCents:
+          (json['paid_cents'] as num?)?.toInt() ??
+          (json['paidCents'] as num?)?.toInt() ??
+          0,
+      fullyPaidAt: parseTimestampToLocal(
+        json['fully_paid_at'] ?? json['fullyPaidAt'],
+      ),
+      unitName: json['unit_name'] as String? ?? json['unitName'] as String?,
+    );
+  }
+}
+
 /// Wrapper for edit/detail payloads containing the base expense and splits.
 class ExpenseForEdit {
   const ExpenseForEdit({
     required this.expense,
     required this.splits,
+    this.unitSplits = const <ExpenseUnitSplit>[],
     required this.amountLocked,
     required this.canEdit,
     required this.editDisabledReason,
     this.planStatus,
+    this.terminationReason,
   });
 
   final Expense expense;
   final List<ExpenseSplit> splits;
+  final List<ExpenseUnitSplit> unitSplits;
   final bool amountLocked;
   final bool canEdit;
   final String? editDisabledReason;
   final String? planStatus;
+  final String? terminationReason;
 
   factory ExpenseForEdit.fromJson(Map<String, dynamic> json) {
     final rawSplits = json['splits'];
@@ -153,13 +265,28 @@ class ExpenseForEdit {
                 )
                 .toList(growable: false)
             : const <ExpenseSplit>[];
+    final rawUnitSplits = json['unitSplits'] ?? json['unit_splits'];
+    final unitSplits =
+        rawUnitSplits is Iterable
+            ? rawUnitSplits
+                .map(
+                  (entry) => ExpenseUnitSplit.fromJson(
+                    (entry as Map).cast<String, dynamic>(),
+                  ),
+                )
+                .toList(growable: false)
+            : const <ExpenseUnitSplit>[];
     return ExpenseForEdit(
       expense: Expense.fromJson(json),
       splits: splits,
+      unitSplits: unitSplits,
       amountLocked: json['amount_locked'] as bool? ?? false,
       canEdit: json['canEdit'] as bool? ?? true,
       editDisabledReason: json['editDisabledReason'] as String?,
       planStatus: json['planStatus'] as String?,
+      terminationReason:
+          json['terminationReason'] as String? ??
+          json['termination_reason'] as String?,
     );
   }
 }
@@ -175,6 +302,14 @@ class ExpenseOwedItem {
     required this.startDate,
     this.notes,
     this.evidencePhotoPath,
+    this.liabilityKind,
+    this.liabilityScope,
+    this.displayMode,
+    this.unitId,
+    this.unitName,
+    this.paidCents,
+    this.remainingCents,
+    this.containsSharedUnitBalance = false,
   });
 
   final String expenseId;
@@ -185,6 +320,14 @@ class ExpenseOwedItem {
   final DateTime startDate;
   final String? notes;
   final String? evidencePhotoPath;
+  final ExpenseLiabilityKind? liabilityKind;
+  final ExpenseLiabilityScope? liabilityScope;
+  final String? displayMode;
+  final String? unitId;
+  final String? unitName;
+  final int? paidCents;
+  final int? remainingCents;
+  final bool containsSharedUnitBalance;
 
   factory ExpenseOwedItem.fromJson(Map<String, dynamic> json) {
     final recurrence = _parseRecurrence(json);
@@ -204,6 +347,27 @@ class ExpenseOwedItem {
           DateTime.now(),
       notes: json['notes'] as String?,
       evidencePhotoPath: evidencePhotoPath as String?,
+      liabilityKind: ExpenseLiabilityKind.fromWire(
+        json['liabilityKind'] as String? ?? json['liability_kind'] as String?,
+      ),
+      liabilityScope: ExpenseLiabilityScope.fromWire(
+        json['liabilityScope'] as String? ??
+            json['liability_scope'] as String?,
+      ),
+      displayMode:
+          json['displayMode'] as String? ?? json['display_mode'] as String?,
+      unitId: json['unitId'] as String? ?? json['unit_id'] as String?,
+      unitName: json['unitName'] as String? ?? json['unit_name'] as String?,
+      paidCents:
+          (json['paidCents'] as num?)?.toInt() ??
+          (json['paid_cents'] as num?)?.toInt(),
+      remainingCents:
+          (json['remainingCents'] as num?)?.toInt() ??
+          (json['remaining_cents'] as num?)?.toInt(),
+      containsSharedUnitBalance:
+          json['containsSharedUnitBalance'] as bool? ??
+          json['contains_shared_unit_balance'] as bool? ??
+          false,
     );
   }
 }
@@ -257,6 +421,7 @@ class ExpenseCreatedSummary {
     required this.description,
     required this.amountCents,
     required this.status,
+    this.allocationTargetType,
     required this.totalShares,
     required this.paidShares,
     required this.paidAmountCents,
@@ -277,6 +442,7 @@ class ExpenseCreatedSummary {
   final String description;
   final int amountCents;
   final ExpenseStatus status;
+  final ExpenseAllocationTargetType? allocationTargetType;
   final ExpenseSplitType? splitType;
   final int totalShares;
   final int paidShares;
@@ -304,6 +470,10 @@ class ExpenseCreatedSummary {
       description: (json['description'] as String?) ?? '',
       amountCents: (json['amountCents'] as num?)?.toInt() ?? 0,
       status: ExpenseStatusWire.fromWire(json['status'] as String?),
+      allocationTargetType: ExpenseAllocationTargetType.fromWire(
+        json['allocationTargetType'] as String? ??
+            json['allocation_target_type'] as String?,
+      ),
       splitType: ExpenseSplitTypeWire.fromWire(json['splitType'] as String?),
       totalShares: (json['totalShares'] as num?)?.toInt() ?? 0,
       paidShares: (json['paidShares'] as num?)?.toInt() ?? 0,
@@ -326,15 +496,30 @@ class ExpenseCreatedSummary {
 /// Payload for custom split entries accepted by Supabase RPCs.
 class ExpenseCustomSplitInput {
   const ExpenseCustomSplitInput({
-    required this.userId,
+    required this.memberId,
     required this.amountCents,
   });
 
-  final String userId;
+  final String memberId;
   final int amountCents;
 
   Map<String, dynamic> toJson() => {
-    'user_id': userId,
+    'member_id': memberId,
+    'amount_cents': amountCents,
+  };
+}
+
+class ExpenseUnitSplitInput {
+  const ExpenseUnitSplitInput({
+    required this.unitId,
+    required this.amountCents,
+  });
+
+  final String unitId;
+  final int amountCents;
+
+  Map<String, dynamic> toJson() => {
+    'unit_id': unitId,
     'amount_cents': amountCents,
   };
 }
@@ -451,6 +636,42 @@ class ExpensePaidToMeItem {
   }
 }
 
+class ExpensesPayUnitDueResult {
+  ExpensesPayUnitDueResult({
+    required this.expenseId,
+    required this.unitId,
+    required this.amountCents,
+    required this.remainingCents,
+    required this.expenseFullyPaid,
+  });
+
+  final String expenseId;
+  final String unitId;
+  final int amountCents;
+  final int remainingCents;
+  final bool expenseFullyPaid;
+
+  factory ExpensesPayUnitDueResult.fromJson(Map<String, dynamic> json) {
+    return ExpensesPayUnitDueResult(
+      expenseId:
+          json['expenseId'] as String? ?? json['expense_id'] as String? ?? '',
+      unitId: json['unitId'] as String? ?? json['unit_id'] as String? ?? '',
+      amountCents:
+          (json['amountCents'] as num?)?.toInt() ??
+          (json['amount_cents'] as num?)?.toInt() ??
+          0,
+      remainingCents:
+          (json['remainingCents'] as num?)?.toInt() ??
+          (json['remaining_cents'] as num?)?.toInt() ??
+          0,
+      expenseFullyPaid:
+          json['expenseFullyPaid'] as bool? ??
+          json['expense_fully_paid'] as bool? ??
+          false,
+    );
+  }
+}
+
 class ExpensePlan {
   ExpensePlan({
     required this.id,
@@ -466,6 +687,7 @@ class ExpensePlan {
     required this.status,
     this.terminatedAt,
     this.evidencePhotoPath,
+    this.terminationReason,
   });
 
   final String id;
@@ -481,6 +703,7 @@ class ExpensePlan {
   final String status;
   final DateTime? terminatedAt;
   final String? evidencePhotoPath;
+  final String? terminationReason;
 
   factory ExpensePlan.fromJson(Map<String, dynamic> json) {
     final recurrence = _parseRecurrence(json);
@@ -508,6 +731,9 @@ class ExpensePlan {
       status: json['status'] as String? ?? '',
       terminatedAt: parseTimestampToLocal(terminatedRaw),
       evidencePhotoPath: evidencePhotoPath as String?,
+      terminationReason:
+          json['terminationReason'] as String? ??
+          json['termination_reason'] as String?,
     );
   }
 }

@@ -34,11 +34,27 @@ class SupabaseAuthRepository implements AuthRepository {
     // Seed current state
     final current = _client.auth.currentSession;
     _current = current != null ? AuthSession(userId: current.user.id) : null;
+    _logger.info(
+      'Auth repository initialized. '
+      'env=${AppConfig.env} '
+      'supabaseHost=${_supabaseHost()} '
+      'hasCurrentSession=${current != null} '
+      'sessionUser=${_redactUserId(current?.user.id)}',
+      tag: _logTag,
+    );
     _sessionController.add(_current);
 
     // Listen for auth changes
     _sub = _client.auth.onAuthStateChange.listen((data) {
       final session = data.session;
+      _logger.info(
+        'Supabase auth state changed. '
+        'event=${data.event.name} '
+        'hasSession=${session != null} '
+        'sessionUser=${_redactUserId(session?.user.id)} '
+        'supabaseHost=${_supabaseHost()}',
+        tag: _logTag,
+      );
       _current = session != null ? AuthSession(userId: session.user.id) : null;
       _sessionController.add(_current);
     });
@@ -172,6 +188,12 @@ class SupabaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> signOut() async {
+    _logger.info(
+      'Signing out current session. '
+      'sessionUser=${_redactUserId(_client.auth.currentSession?.user.id)} '
+      'supabaseHost=${_supabaseHost()}',
+      tag: _logTag,
+    );
     // Best effort: sign out of Google too (prevents silent reuse across envs).
     try {
       await _googleSignIn.signOut();
@@ -311,6 +333,18 @@ class SupabaseAuthRepository implements AuthRepository {
     // Show first 10 + last 6 to help debug without leaking full secret-ish strings.
     if (value.length <= 18) return value;
     return '${value.substring(0, 10)}???${value.substring(value.length - 6)}';
+  }
+
+  String _supabaseHost() {
+    final raw = AppConfig.supabaseUrl.trim();
+    if (raw.isEmpty) return '(empty)';
+    return Uri.tryParse(raw)?.host ?? raw;
+  }
+
+  static String _redactUserId(String? userId) {
+    if (userId == null || userId.isEmpty) return '(none)';
+    if (userId.length <= 10) return userId;
+    return '${userId.substring(0, 6)}...${userId.substring(userId.length - 4)}';
   }
 }
 

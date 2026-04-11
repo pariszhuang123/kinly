@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 
 import 'package:kinly/contracts/account/ports/account_repository.dart';
 import 'package:kinly/contracts/homes/ports/home_repository.dart';
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
+import 'package:kinly/contracts/homes/home_units_models.dart';
 import 'package:kinly/contracts/homes/models.dart';
 import 'package:kinly/contracts/profile/models.dart';
 import 'package:kinly/contracts/profile/ports/profile_repository.dart';
@@ -15,16 +17,19 @@ class ProfileSettingsBloc
   ProfileSettingsBloc({
     required ProfileRepository profileRepository,
     required HomeRepository homeRepository,
+    required HomeUnitsRepository homeUnitsRepository,
     required AccountRepository accountRepository,
     required String homeId,
     ProfileSettingsUser? initialUser,
   }) : _profileRepository = profileRepository,
        _homeRepository = homeRepository,
+       _homeUnitsRepository = homeUnitsRepository,
        _accountRepository = accountRepository,
        _homeId = homeId,
        super(ProfileSettingsState.initial(user: initialUser)) {
     on<ProfileSettingsStarted>(_onStarted);
     on<ProfileSettingsLeaveRequested>(_onLeaveRequested);
+    on<ProfileSettingsSharedUnitLeaveRequested>(_onSharedUnitLeaveRequested);
     on<ProfileSettingsTransferOwnerRequested>(_onTransferOwnerRequested);
     on<ProfileSettingsKickMemberRequested>(_onKickMemberRequested);
     on<ProfileSettingsDeleteRequested>(_onDeleteRequested);
@@ -34,6 +39,7 @@ class ProfileSettingsBloc
 
   final ProfileRepository _profileRepository;
   final HomeRepository _homeRepository;
+  final HomeUnitsRepository _homeUnitsRepository;
   final AccountRepository _accountRepository;
   final String _homeId;
 
@@ -45,11 +51,14 @@ class ProfileSettingsBloc
       state.copyWith(
         isLoadingUser: true,
         leaveEligibilityLoading: true,
+        homeUnitsLoading: true,
         leaveEligibilityError: null,
+        homeUnitsError: null,
       ),
     );
     await _loadProfile(emit);
     await _loadLeaveEligibility(emit);
+    await _loadHomeUnits(emit);
     await _loadPlanStatus(emit);
   }
 
@@ -106,6 +115,43 @@ class ProfileSettingsBloc
         state.copyWith(
           leaveEligibilityLoading: false,
           leaveEligibilityError: error.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _loadHomeUnits(Emitter<ProfileSettingsState> emit) async {
+    try {
+      final unitContext = await _homeUnitsRepository.getMyUnitContext(
+        homeId: _homeId,
+      );
+      final createCandidates = unitContext.hasSharedUnit
+          ? const <HomeUnitMemberCandidate>[]
+          : await _homeUnitsRepository.listCreateSharedUnitCandidates(
+              homeId: _homeId,
+            );
+      final joinableUnits = unitContext.hasSharedUnit
+          ? const <HomeUnitSummary>[]
+          : await _homeUnitsRepository.listJoinableSharedUnits(
+              homeId: _homeId,
+            );
+      emit(
+        state.copyWith(
+          homeUnitsLoading: false,
+          homeUnitsError: null,
+          homeUnitContext: unitContext,
+          sharedUnitCreateCandidates: createCandidates,
+          joinableSharedUnits: joinableUnits,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          homeUnitsLoading: false,
+          homeUnitsError: error.toString(),
+          homeUnitContext: null,
+          sharedUnitCreateCandidates: const <HomeUnitMemberCandidate>[],
+          joinableSharedUnits: const <HomeUnitSummary>[],
         ),
       );
     }
@@ -179,6 +225,38 @@ class ProfileSettingsBloc
     }
   }
 
+  Future<void> _onSharedUnitLeaveRequested(
+    ProfileSettingsSharedUnitLeaveRequested event,
+    Emitter<ProfileSettingsState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        sharedUnitLeaveInProgress: true,
+        action: ProfileSettingsAction.none,
+        actionMessage: null,
+      ),
+    );
+    try {
+      await _homeUnitsRepository.leaveSharedUnit(unitId: event.unitId);
+      emit(
+        state.copyWith(
+          sharedUnitLeaveInProgress: false,
+          action: ProfileSettingsAction.sharedUnitLeaveSuccess,
+        ),
+      );
+      emit(state.copyWith(homeUnitsLoading: true, homeUnitsError: null));
+      await _loadHomeUnits(emit);
+    } catch (error) {
+      emit(
+        state.copyWith(
+          sharedUnitLeaveInProgress: false,
+          action: ProfileSettingsAction.sharedUnitLeaveFailure,
+          actionMessage: error.toString(),
+        ),
+      );
+    }
+  }
+
   Future<void> _onKickMemberRequested(
     ProfileSettingsKickMemberRequested event,
     Emitter<ProfileSettingsState> emit,
@@ -201,10 +279,13 @@ class ProfileSettingsBloc
       emit(
         state.copyWith(
           leaveEligibilityLoading: true,
+          homeUnitsLoading: true,
           leaveEligibilityError: null,
+          homeUnitsError: null,
         ),
       );
       await _loadLeaveEligibility(emit);
+      await _loadHomeUnits(emit);
     } catch (error) {
       emit(
         state.copyWith(

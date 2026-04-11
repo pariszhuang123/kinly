@@ -29,6 +29,7 @@ void main() {
       id: id,
       homeId: homeId,
       name: name ?? 'item-$id',
+      scopeType: ShoppingItemScopeType.house,
       quantity: quantity,
       details: details,
       referencePhotoPath: photoPath,
@@ -84,6 +85,8 @@ void main() {
         isCompleted: any(named: 'isCompleted'),
         referencePhotoPath: any(named: 'referencePhotoPath'),
         replacePhoto: any(named: 'replacePhoto'),
+        scopeType: any(named: 'scopeType'),
+        unitId: any(named: 'unitId'),
       ),
     ).thenAnswer(
       (_) async => item(

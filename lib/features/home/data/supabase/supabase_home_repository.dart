@@ -121,7 +121,7 @@ class SupabaseHomeRepository implements HomeRepository {
   }) async {
     try {
       final response = await _client.rpc(
-        'members_list_active_by_home',
+        'members_list_active_by_home_v2',
         params: {'p_home_id': homeId, 'p_exclude_self': excludeSelf},
       );
       var members = _mapMembers(response);

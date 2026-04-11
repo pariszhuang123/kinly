@@ -82,7 +82,7 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     }
   }
 
-  /// Bulk pay all owed items for this recipient via expenses_pay_my_due.
+  /// Bulk pay all owed items for this recipient, using unit payments when needed.
   Future<void> _markAllPaid() async {
     final strings = S.of(context);
 
@@ -99,9 +99,40 @@ class _ShareOwedDetailScreenState extends State<ShareOwedDetailScreen> {
     });
 
     try {
-      await widget.expensesRepository.payMyDue(
-        recipientUserId: widget.owed.payerUserId,
+      var processed = false;
+      final unitItems = widget.owed.items.where(
+        (item) => (item.unitId ?? '').trim().isNotEmpty,
       );
+      for (final item in unitItems) {
+        final unitId = item.unitId?.trim() ?? '';
+        final amountCents = item.remainingCents ?? item.amountCents;
+        if (unitId.isEmpty || amountCents <= 0) {
+          continue;
+        }
+        processed = true;
+        await widget.expensesRepository.payUnitDue(
+          expenseId: item.expenseId,
+          unitId: unitId,
+          amountCents: amountCents,
+        );
+      }
+
+      final hasPersonScopedItems = widget.owed.items.any(
+        (item) => (item.unitId ?? '').trim().isEmpty,
+      );
+      if (hasPersonScopedItems) {
+        processed = true;
+        await widget.expensesRepository.payMyDue(
+          recipientUserId: widget.owed.payerUserId,
+        );
+      }
+
+      if (!processed) {
+        throw const ExpenseException(
+          ExpenseErrorCode.unknown,
+          'No payable items were found.',
+        );
+      }
 
       if (!mounted) return;
       Navigator.of(context).pop(true);

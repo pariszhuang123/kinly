@@ -20,6 +20,15 @@ class ShareCreateDescriptionChanged extends ShareCreateEvent {
   List<Object?> get props => [value];
 }
 
+class ShareCreateAllocationTargetChanged extends ShareCreateEvent {
+  const ShareCreateAllocationTargetChanged(this.value);
+
+  final ExpenseAllocationTargetType value;
+
+  @override
+  List<Object?> get props => [value];
+}
+
 class ShareCreateAmountChanged extends ShareCreateEvent {
   const ShareCreateAmountChanged(this.value);
 
@@ -110,6 +119,26 @@ class ShareCreateCustomAmountChanged extends ShareCreateEvent {
 
   @override
   List<Object?> get props => [userId, amount];
+}
+
+class ShareCreateUnitToggled extends ShareCreateEvent {
+  const ShareCreateUnitToggled(this.unitId, this.isSelected);
+
+  final String unitId;
+  final bool isSelected;
+
+  @override
+  List<Object?> get props => [unitId, isSelected];
+}
+
+class ShareCreateUnitCustomAmountChanged extends ShareCreateEvent {
+  const ShareCreateUnitCustomAmountChanged(this.unitId, this.amount);
+
+  final String unitId;
+  final String amount;
+
+  @override
+  List<Object?> get props => [unitId, amount];
 }
 
 class ShareCreateSubmitted extends ShareCreateEvent {

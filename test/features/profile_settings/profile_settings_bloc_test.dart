@@ -2,7 +2,10 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:kinly/contracts/homes/home_units_models.dart';
 import 'package:kinly/contracts/homes/models.dart';
+import 'package:kinly/contracts/homes/ports/home_units_repository.dart';
+import 'package:kinly/contracts/homes/shopping_models.dart';
 import 'package:kinly/contracts/profile/models.dart';
 import 'package:kinly/contracts/account/ports/account_repository.dart';
 import 'package:kinly/features/home/home.dart';
@@ -13,13 +16,17 @@ class _MockProfileRepository extends Mock implements ProfileRepository {}
 
 class _MockHomeRepository extends Mock implements HomeRepository {}
 
+class _MockHomeUnitsRepository extends Mock implements HomeUnitsRepository {}
+
 class _MockAccountRepository extends Mock implements AccountRepository {}
 
 void main() {
   late _MockProfileRepository profileRepository;
   late _MockHomeRepository homeRepository;
+  late _MockHomeUnitsRepository homeUnitsRepository;
   late _MockAccountRepository accountRepository;
   final currentMembership = CurrentMembership(
+    membershipId: 'membership-1',
     userId: 'user-1',
     homeId: 'home-1',
     role: 'member',
@@ -30,6 +37,7 @@ void main() {
     return ProfileSettingsBloc(
       profileRepository: profileRepository,
       homeRepository: homeRepository,
+      homeUnitsRepository: homeUnitsRepository,
       accountRepository: accountRepository,
       homeId: 'home-1',
       initialUser: initialUser,
@@ -39,6 +47,7 @@ void main() {
   setUp(() {
     profileRepository = _MockProfileRepository();
     homeRepository = _MockHomeRepository();
+    homeUnitsRepository = _MockHomeUnitsRepository();
     accountRepository = _MockAccountRepository();
     when(
       () => homeRepository.getCurrentMembership(),
@@ -55,6 +64,31 @@ void main() {
         userId: any(named: 'userId'),
       ),
     ).thenAnswer((_) async => {});
+    when(
+      () => homeUnitsRepository.getMyUnitContext(homeId: any(named: 'homeId')),
+    ).thenAnswer(
+      (_) async => HomeUnitContext(
+        personalUnit: const HomeUnitSummary(
+          unitId: 'unit-personal',
+          homeId: 'home-1',
+          name: 'Personal',
+          unitType: HomeUnitType.personal,
+          memberUserIds: <String>['user-1'],
+        ),
+        activeSharedUnit: null,
+        allowedShoppingScopes: const <ShoppingItemScopeType>[],
+      ),
+    );
+    when(
+      () => homeUnitsRepository.listCreateSharedUnitCandidates(
+        homeId: any(named: 'homeId'),
+      ),
+    ).thenAnswer((_) async => const <HomeUnitMemberCandidate>[]);
+    when(
+      () => homeUnitsRepository.listJoinableSharedUnits(
+        homeId: any(named: 'homeId'),
+      ),
+    ).thenAnswer((_) async => const <HomeUnitSummary>[]);
   });
 
   group('ProfileSettingsBloc', () {
@@ -85,7 +119,9 @@ void main() {
         final loading = initial.copyWith(
           isLoadingUser: true,
           leaveEligibilityLoading: true,
+          homeUnitsLoading: true,
           leaveEligibilityError: null,
+          homeUnitsError: null,
         );
         final loaded = loading.copyWith(
           isLoadingUser: false,
@@ -101,7 +137,24 @@ void main() {
           membership: currentMembership,
           activeMembers: const <HomeMemberSummary>[],
         );
-        final planLoading = leaveReady.copyWith(
+        final unitsReady = leaveReady.copyWith(
+          homeUnitsLoading: false,
+          homeUnitsError: null,
+          homeUnitContext: HomeUnitContext(
+            personalUnit: const HomeUnitSummary(
+              unitId: 'unit-personal',
+              homeId: 'home-1',
+              name: 'Personal',
+              unitType: HomeUnitType.personal,
+              memberUserIds: <String>['user-1'],
+            ),
+            activeSharedUnit: null,
+            allowedShoppingScopes: const <ShoppingItemScopeType>[],
+          ),
+          sharedUnitCreateCandidates: const <HomeUnitMemberCandidate>[],
+          joinableSharedUnits: const <HomeUnitSummary>[],
+        );
+        final planLoading = unitsReady.copyWith(
           planStatusLoading: true,
           planStatus: PlanStatus.unknown,
         );
@@ -109,13 +162,99 @@ void main() {
           planStatusLoading: false,
           planStatus: PlanStatus.free,
         );
-        return [loading, loaded, leaveReady, planLoading, planReady];
+        return [loading, loaded, leaveReady, unitsReady, planLoading, planReady];
       },
       verify: (_) {
         verify(() => profileRepository.getCurrentProfile()).called(1);
         verify(() => homeRepository.getCurrentMembership()).called(1);
         verify(() => homeRepository.listActiveMembers(any())).called(1);
+        verify(() => homeUnitsRepository.getMyUnitContext(homeId: 'home-1'))
+            .called(1);
+        verify(
+          () => homeUnitsRepository.listCreateSharedUnitCandidates(
+            homeId: 'home-1',
+          ),
+        ).called(1);
+        verify(
+          () => homeUnitsRepository.listJoinableSharedUnits(homeId: 'home-1'),
+        ).called(1);
         verify(() => homeRepository.getPlanStatus()).called(1);
+      },
+    );
+
+    blocTest<ProfileSettingsBloc, ProfileSettingsState>(
+      'exposes shared unit create candidates when eligible members exist',
+      build: () {
+        when(
+          () => profileRepository.getCurrentProfile(),
+        ).thenAnswer((_) async => userProfile);
+        when(
+          () => homeRepository.listActiveMembers(any()),
+        ).thenAnswer((_) async => const <HomeMemberSummary>[]);
+        when(
+          () => homeRepository.getPlanStatus(),
+        ).thenAnswer((_) async => PlanStatus.free);
+        when(
+          () => homeUnitsRepository.listCreateSharedUnitCandidates(
+            homeId: any(named: 'homeId'),
+          ),
+        ).thenAnswer(
+          (_) async => const <HomeUnitMemberCandidate>[
+            HomeUnitMemberCandidate(
+              membershipId: 'membership-2',
+              userId: 'user-2',
+              displayName: 'Sam',
+            ),
+          ],
+        );
+        when(
+          () => homeUnitsRepository.listJoinableSharedUnits(
+            homeId: any(named: 'homeId'),
+          ),
+        ).thenAnswer((_) async => const <HomeUnitSummary>[]);
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(const ProfileSettingsStarted()),
+      verify: (bloc) {
+        expect(bloc.state.canCreateSharedUnit, isTrue);
+        expect(bloc.state.sharedUnitCreateCandidates, hasLength(1));
+      },
+    );
+
+    blocTest<ProfileSettingsBloc, ProfileSettingsState>(
+      'exposes joinable shared units when available',
+      build: () {
+        when(
+          () => profileRepository.getCurrentProfile(),
+        ).thenAnswer((_) async => userProfile);
+        when(
+          () => homeRepository.listActiveMembers(any()),
+        ).thenAnswer((_) async => const <HomeMemberSummary>[]);
+        when(
+          () => homeRepository.getPlanStatus(),
+        ).thenAnswer((_) async => PlanStatus.free);
+        when(
+          () => homeUnitsRepository.listJoinableSharedUnits(
+            homeId: any(named: 'homeId'),
+          ),
+        ).thenAnswer(
+          (_) async => const <HomeUnitSummary>[
+            HomeUnitSummary(
+              unitId: 'unit-shared',
+              homeId: 'home-1',
+              name: 'Alex + Sam',
+              unitType: HomeUnitType.shared,
+              memberUserIds: <String>['user-2', 'user-3'],
+            ),
+          ],
+        );
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(const ProfileSettingsStarted()),
+      verify: (bloc) {
+        expect(bloc.state.canJoinSharedUnit, isTrue);
+        expect(bloc.state.joinableSharedUnits, hasLength(1));
+        expect(bloc.state.joinableSharedUnits.single.name, 'Alex + Sam');
       },
     );
 
@@ -168,15 +307,34 @@ void main() {
         );
         final reloading = success.copyWith(
           leaveEligibilityLoading: true,
+          homeUnitsLoading: true,
           leaveEligibilityError: null,
+          homeUnitsError: null,
         );
-        final refreshed = reloading.copyWith(
+        final leaveRefreshed = reloading.copyWith(
           leaveEligibilityLoading: false,
           leaveEligibilityError: null,
           membership: currentMembership,
           activeMembers: const <HomeMemberSummary>[],
         );
-        return [progress, success, reloading, refreshed];
+        final unitsRefreshed = leaveRefreshed.copyWith(
+          homeUnitsLoading: false,
+          homeUnitsError: null,
+          homeUnitContext: HomeUnitContext(
+            personalUnit: const HomeUnitSummary(
+              unitId: 'unit-personal',
+              homeId: 'home-1',
+              name: 'Personal',
+              unitType: HomeUnitType.personal,
+              memberUserIds: <String>['user-1'],
+            ),
+            activeSharedUnit: null,
+            allowedShoppingScopes: const <ShoppingItemScopeType>[],
+          ),
+          sharedUnitCreateCandidates: const <HomeUnitMemberCandidate>[],
+          joinableSharedUnits: const <HomeUnitSummary>[],
+        );
+        return [progress, success, reloading, leaveRefreshed, unitsRefreshed];
       },
       verify: (_) {
         verify(
@@ -184,6 +342,11 @@ void main() {
         ).called(1);
         verify(() => homeRepository.getCurrentMembership()).called(1);
         verify(() => homeRepository.listActiveMembers('home-1')).called(1);
+        verify(() => homeUnitsRepository.getMyUnitContext(homeId: 'home-1'))
+            .called(1);
+        verify(
+          () => homeUnitsRepository.listJoinableSharedUnits(homeId: 'home-1'),
+        ).called(1);
       },
     );
 
@@ -398,6 +561,82 @@ void main() {
         return [updatedState];
       },
     );
+
+    blocTest<ProfileSettingsBloc, ProfileSettingsState>(
+      'emits success after leaving shared unit',
+      build: () {
+        when(
+          () => homeUnitsRepository.leaveSharedUnit(unitId: any(named: 'unitId')),
+        ).thenAnswer((_) async => 'unit-shared');
+        return buildBloc();
+      },
+      act:
+          (bloc) => bloc.add(
+            const ProfileSettingsSharedUnitLeaveRequested('unit-shared'),
+          ),
+      expect: () {
+        final initial = ProfileSettingsState.initial();
+        final progress = initial.copyWith(
+          sharedUnitLeaveInProgress: true,
+          action: ProfileSettingsAction.none,
+          actionMessage: null,
+        );
+        final success = progress.copyWith(
+          sharedUnitLeaveInProgress: false,
+          action: ProfileSettingsAction.sharedUnitLeaveSuccess,
+        );
+        final reloading = success.copyWith(
+          homeUnitsLoading: true,
+          homeUnitsError: null,
+        );
+        final refreshed = reloading.copyWith(
+          homeUnitsLoading: false,
+          homeUnitsError: null,
+          homeUnitContext: HomeUnitContext(
+            personalUnit: const HomeUnitSummary(
+              unitId: 'unit-personal',
+              homeId: 'home-1',
+              name: 'Personal',
+              unitType: HomeUnitType.personal,
+              memberUserIds: <String>['user-1'],
+            ),
+            activeSharedUnit: null,
+            allowedShoppingScopes: const <ShoppingItemScopeType>[],
+          ),
+          sharedUnitCreateCandidates: const <HomeUnitMemberCandidate>[],
+          joinableSharedUnits: const <HomeUnitSummary>[],
+        );
+        return [progress, success, reloading, refreshed];
+      },
+    );
+
+    blocTest<ProfileSettingsBloc, ProfileSettingsState>(
+      'emits failure after leaving shared unit fails',
+      build: () {
+        when(
+          () => homeUnitsRepository.leaveSharedUnit(unitId: any(named: 'unitId')),
+        ).thenThrow(Exception('shared leave failed'));
+        return buildBloc();
+      },
+      act:
+          (bloc) => bloc.add(
+            const ProfileSettingsSharedUnitLeaveRequested('unit-shared'),
+          ),
+      expect: () {
+        final initial = ProfileSettingsState.initial();
+        final progress = initial.copyWith(
+          sharedUnitLeaveInProgress: true,
+          action: ProfileSettingsAction.none,
+          actionMessage: null,
+        );
+        final failure = progress.copyWith(
+          sharedUnitLeaveInProgress: false,
+          action: ProfileSettingsAction.sharedUnitLeaveFailure,
+          actionMessage: 'Exception: shared leave failed',
+        );
+        return [progress, failure];
+      },
+    );
   });
 
   group('ProfileSettingsEvent props equality', () {
@@ -447,6 +686,15 @@ void main() {
         equals(const ProfileSettingsDeleteRequested()),
       );
       expect(const ProfileSettingsDeleteRequested().props, isEmpty);
+    });
+
+    test('ProfileSettingsSharedUnitLeaveRequested equality', () {
+      const e1 = ProfileSettingsSharedUnitLeaveRequested('unit-a');
+      const e2 = ProfileSettingsSharedUnitLeaveRequested('unit-a');
+      const e3 = ProfileSettingsSharedUnitLeaveRequested('unit-b');
+      expect(e1, equals(e2));
+      expect(e1, isNot(equals(e3)));
+      expect(e1.props, equals(['unit-a']));
     });
 
     test('ProfileSettingsActionCleared equality', () {

@@ -190,6 +190,92 @@ void main() {
     expect(hostState.poppedResult, true);
   });
 
+  testWidgets('marks unit-based owed items paid via unit payment', (
+    tester,
+  ) async {
+    final repo = _MockExpensesRepository();
+    final personalDirectoryRepository = _MockPersonalDirectoryRepository();
+    when(
+      () => repo.payUnitDue(
+        expenseId: any(named: 'expenseId'),
+        unitId: any(named: 'unitId'),
+        amountCents: any(named: 'amountCents'),
+      ),
+    ).thenAnswer(
+      (_) async => ExpensesPayUnitDueResult(
+        expenseId: 'exp-1',
+        unitId: 'unit-shared',
+        amountCents: 2500,
+        remainingCents: 0,
+        expenseFullyPaid: true,
+      ),
+    );
+    when(
+      () => personalDirectoryRepository.getMemberBankAccount(
+        targetUserId: any(named: 'targetUserId'),
+      ),
+    ).thenAnswer((_) async => null);
+
+    final owed = TodayShareOwed(
+      payerUserId: 'user-1',
+      displayName: 'Alex',
+      totalOwedCents: 2500,
+      items: [
+        TodayShareOwedItem(
+          expenseId: 'exp-1',
+          description: 'Power',
+          amountCents: 2500,
+          recurrenceEvery: null,
+          recurrenceUnit: null,
+          startDate: DateTime(2024, 1, 1),
+          liabilityKind: ExpenseLiabilityKind.shared,
+          unitId: 'unit-shared',
+          unitName: 'Flatmates',
+          remainingCents: 2500,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: const [S.delegate],
+        supportedLocales: S.delegate.supportedLocales,
+        theme: buildKinlyTheme(Brightness.light),
+        home: _RouteHost(
+          buildRoute:
+              (_) => MaterialPageRoute<Object?>(
+                builder:
+                    (_) => MediaQuery(
+                      data: const MediaQueryData(disableAnimations: true),
+                      child: ShareOwedDetailScreen(
+                        owed: owed,
+                        expensesRepository: repo,
+                        personalDirectoryRepository: personalDirectoryRepository,
+                      ),
+                    ),
+              ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    final context = tester.element(find.byType(ShareOwedDetailScreen));
+    final label = S.of(context).shareOwedDetailPaid;
+
+    await tester.tap(find.text(label));
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    verify(
+      () => repo.payUnitDue(
+        expenseId: 'exp-1',
+        unitId: 'unit-shared',
+        amountCents: 2500,
+      ),
+    ).called(1);
+    verifyNever(() => repo.payMyDue(recipientUserId: any(named: 'recipientUserId')));
+  });
+
   testWidgets('error path shows message on failure', (tester) async {
     final repo = _MockExpensesRepository();
     final personalDirectoryRepository = _MockPersonalDirectoryRepository();

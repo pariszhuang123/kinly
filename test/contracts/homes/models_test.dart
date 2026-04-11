@@ -74,6 +74,7 @@ void main() {
   group('CurrentMembership.fromJson', () {
     test('parses complete membership', () {
       final json = {
+        'membership_id': 'membership-123',
         'user_id': 'user-123',
         'home_id': 'home-456',
         'role': 'owner',
@@ -81,12 +82,38 @@ void main() {
       };
       final result = CurrentMembership.fromJson(json);
 
+      expect(result.membershipId, 'membership-123');
       expect(result.userId, 'user-123');
       expect(result.homeId, 'home-456');
       expect(result.role, 'owner');
       expect(result.validFrom.year, 2024);
       expect(result.validFrom.month, 1);
       expect(result.validFrom.day, 15);
+    });
+
+    test('falls back to id when membership_id is absent', () {
+      final json = {
+        'id': 'membership-456',
+        'user_id': 'user-123',
+        'home_id': 'home-456',
+        'role': 'owner',
+        'valid_from': '2024-01-15T10:30:00Z',
+      };
+      final result = CurrentMembership.fromJson(json);
+
+      expect(result.membershipId, 'membership-456');
+    });
+
+    test('defaults membershipId to empty string when absent', () {
+      final json = {
+        'user_id': 'user-123',
+        'home_id': 'home-456',
+        'role': 'owner',
+        'valid_from': '2024-01-15T10:30:00Z',
+      };
+      final result = CurrentMembership.fromJson(json);
+
+      expect(result.membershipId, isEmpty);
     });
 
     test('handles null valid_from with fallback', () {

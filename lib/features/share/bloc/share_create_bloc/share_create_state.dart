@@ -4,6 +4,7 @@ class ShareCreateState extends Equatable {
   ShareCreateState({
     required this.form,
     required List<ShareParticipant> participants,
+    required List<HomeUnitSummary> selectableUnits,
     required this.currentUserId,
     required this.isLoading,
     required this.isSubmitting,
@@ -39,7 +40,8 @@ class ShareCreateState extends Equatable {
     required this.evidencePhotoErrorMessage,
     required this.evidencePhotoErrorTick,
     required this.isCameraPermissionPermanentlyDenied,
-  }) : participants = List.unmodifiable(participants);
+  }) : participants = List.unmodifiable(participants),
+       selectableUnits = List.unmodifiable(selectableUnits);
 
   factory ShareCreateState.initial({
     ShareCreateForm? form,
@@ -56,6 +58,7 @@ class ShareCreateState extends Equatable {
     return ShareCreateState(
       form: form ?? ShareCreateForm.initial(),
       participants: const [],
+      selectableUnits: const [],
       currentUserId: null,
       isLoading: true,
       isSubmitting: false,
@@ -96,6 +99,7 @@ class ShareCreateState extends Equatable {
 
   final ShareCreateForm form;
   final List<ShareParticipant> participants;
+  final List<HomeUnitSummary> selectableUnits;
   final String? currentUserId;
   final bool isLoading;
   final bool isSubmitting;
@@ -138,6 +142,7 @@ class ShareCreateState extends Equatable {
   ShareCreateState copyWith({
     ShareCreateForm? form,
     List<ShareParticipant>? participants,
+    List<HomeUnitSummary>? selectableUnits,
     String? currentUserId,
     bool? isLoading,
     bool? isSubmitting,
@@ -183,6 +188,7 @@ class ShareCreateState extends Equatable {
     return ShareCreateState(
       form: form ?? this.form,
       participants: participants ?? this.participants,
+      selectableUnits: selectableUnits ?? this.selectableUnits,
       currentUserId: currentUserId ?? this.currentUserId,
       isLoading: isLoading ?? this.isLoading,
       isSubmitting: isSubmitting ?? this.isSubmitting,
@@ -259,6 +265,15 @@ class ShareCreateState extends Equatable {
       equalSelectionIds.length == 1 &&
       equalSelectionIds.first == currentUserId;
 
+  Set<String> get equalUnitSelectionIds {
+    if (form.selectedUnitIds.isEmpty) {
+      return selectableUnits.map((unit) => unit.unitId).toSet();
+    }
+    return form.selectedUnitIds;
+  }
+
+  bool get hasEqualUnitSelection => equalUnitSelectionIds.isNotEmpty;
+
   /// Builds a summary of the custom split state for validation + RPC input.
   ShareCustomSplitSummary evaluateCustomSplit() {
     final int? total = form.amountCents;
@@ -297,10 +312,44 @@ class ShareCreateState extends Equatable {
     );
   }
 
+  ShareCustomSplitSummary evaluateUnitCustomSplit() {
+    final int? total = form.amountCents;
+    final entries = <ShareCustomSplitEntry>[];
+    var hasInvalidAmounts = false;
+
+    for (final unitId in form.selectedUnitIds) {
+      final cents = ShareCreateForm.parseCurrency(
+        form.unitCustomAmountInputs[unitId] ?? '',
+      );
+      if (cents == null || cents <= 0) {
+        hasInvalidAmounts = true;
+        continue;
+      }
+      entries.add(ShareCustomSplitEntry(userId: unitId, amountCents: cents));
+    }
+
+    final hasInsufficientParticipants = entries.isEmpty;
+    final int sum = entries.fold<int>(
+      0,
+      (sum, entry) => sum + entry.amountCents,
+    );
+    final bool sumMatchesTotal = total != null && sum == total;
+
+    return ShareCustomSplitSummary(
+      entries: entries,
+      hasInvalidAmounts: hasInvalidAmounts,
+      hasInsufficientParticipants: hasInsufficientParticipants,
+      sumMatchesTotal: sumMatchesTotal,
+      missingTotal: total == null,
+      hasSinglePayer: false,
+    );
+  }
+
   @override
   List<Object?> get props => [
     form,
     participants,
+    selectableUnits,
     currentUserId,
     isLoading,
     isSubmitting,

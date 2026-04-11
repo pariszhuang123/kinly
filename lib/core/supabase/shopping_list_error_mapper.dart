@@ -38,6 +38,8 @@ ShoppingListException mapShoppingListError(
 
 const _shoppingListCodeMap = <String, ShoppingListErrorCode>{
   'INVALID_NAME': ShoppingListErrorCode.invalidName,
+  'INVALID_SCOPE_TYPE': ShoppingListErrorCode.invalidScopeType,
+  'INVALID_UNIT_SCOPE': ShoppingListErrorCode.invalidUnitScope,
   'INVALID_REFERENCE_PHOTO_PATH': ShoppingListErrorCode.invalidReferencePhotoPath,
   'PHOTO_DELETE_NOT_ALLOWED': ShoppingListErrorCode.photoDeleteNotAllowed,
   'NOT_HOME_MEMBER': ShoppingListErrorCode.notHomeMember,

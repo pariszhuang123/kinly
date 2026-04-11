@@ -22,11 +22,19 @@ class SupabaseShoppingListRepository implements ShoppingListRepository {
   final ExpectationPhotoService _photoService;
 
   @override
-  Future<ShoppingListSnapshot> getForHome({required String homeId}) async {
+  Future<ShoppingListSnapshot> getForHome({
+    required String homeId,
+    ShoppingItemScopeType? scopeType,
+    String? unitId,
+  }) async {
     try {
       final response = await _client.rpc(
-        'shopping_list_get_for_home',
-        params: {'p_home_id': homeId},
+        'shopping_list_get_for_home_v2',
+        params: {
+          'p_home_id': homeId,
+          if (scopeType != null) 'p_scope_type': scopeType.wireValue,
+          if (_hasText(unitId)) 'p_unit_id': unitId!.trim(),
+        },
       );
       final payload = _coerceMap(response);
       if (payload == null) {
@@ -42,16 +50,18 @@ class SupabaseShoppingListRepository implements ShoppingListRepository {
   }
 
   @override
-  Future<ShoppingListItem> addItem({
+  Future<ShoppingListAddItemResult> addItem({
     required String homeId,
     required String name,
     String? quantity,
     String? details,
     String? referencePhotoPath,
+    ShoppingItemScopeType scopeType = ShoppingItemScopeType.house,
+    String? unitId,
   }) async {
     try {
       final response = await _client.rpc(
-        'shopping_list_add_item',
+        'shopping_list_add_item_v2',
         params: {
           'p_home_id': homeId,
           'p_name': name,
@@ -59,16 +69,18 @@ class SupabaseShoppingListRepository implements ShoppingListRepository {
           if (_hasText(details)) 'p_details': details!.trim(),
           if (_hasText(referencePhotoPath))
             'p_reference_photo_path': referencePhotoPath!.trim(),
+          'p_scope_type': scopeType.wireValue,
+          if (_hasText(unitId)) 'p_unit_id': unitId!.trim(),
         },
       );
-      final payload = _extractItemPayload(response);
+      final payload = _coerceMap(response);
       if (payload == null) {
         throw const ShoppingListException(
           ShoppingListErrorCode.unknown,
           'Malformed add-item payload.',
         );
       }
-      return ShoppingListItem.fromJson(payload);
+      return ShoppingListAddItemResult.fromJson(payload);
     } catch (error) {
       throw SupabaseErrorMapper.mapShoppingList(error);
     }
@@ -83,10 +95,12 @@ class SupabaseShoppingListRepository implements ShoppingListRepository {
     bool? isCompleted,
     String? referencePhotoPath,
     bool replacePhoto = false,
+    ShoppingItemScopeType? scopeType,
+    String? unitId,
   }) async {
     try {
       final response = await _client.rpc(
-        'shopping_list_update_item',
+        'shopping_list_update_item_v2',
         params: {
           'p_item_id': itemId,
           if (_hasText(name)) 'p_name': name!.trim(),
@@ -95,6 +109,8 @@ class SupabaseShoppingListRepository implements ShoppingListRepository {
           if (isCompleted != null) 'p_is_completed': isCompleted,
           if (_hasText(referencePhotoPath))
             'p_reference_photo_path': referencePhotoPath!.trim(),
+          if (scopeType != null) 'p_scope_type': scopeType.wireValue,
+          if (_hasText(unitId)) 'p_unit_id': unitId!.trim(),
           'p_replace_photo': replacePhoto,
         },
       );

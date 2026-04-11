@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/di/locator.dart';
 import '../../../../contracts/share/share_create_route_args.dart';
+import '../../../../contracts/expenses/models.dart';
 import '../../../../core/supabase/storage_path_resolver.dart';
 import '../../../../core/supabase/supabase_error_mapper.dart';
 import '../../../../core/theme/kinly_sections.dart';
@@ -24,6 +25,14 @@ import 'share_create_surface_registry.dart';
 import '../../../../core/ui/kinly_scaffold.dart';
 import '../../../../core/ui/kinly_app_bar.dart';
 import '../../../../core/ui/kinly_theme_access.dart';
+
+const _splitValidationCodes = <ExpenseErrorCode>{
+  ExpenseErrorCode.splitMembersRequired,
+  ExpenseErrorCode.splitUnitsRequired,
+  ExpenseErrorCode.invalidSplit,
+  ExpenseErrorCode.invalidSplits,
+  ExpenseErrorCode.splitRequired,
+};
 
 class ShareCreateScreen extends StatefulWidget {
   const ShareCreateScreen({
@@ -78,21 +87,32 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
   }
 
   void _syncCustomControllers(ShareCreateState state) {
-    final participantIds = state.participants.map((p) => p.userId).toSet();
+    final activeIds =
+        state.form.allocationTargetType == ExpenseAllocationTargetType.unitBased
+            ? state.selectableUnits.map((unit) => unit.unitId).toSet()
+            : state.participants.map((p) => p.userId).toSet();
 
     final staleIds = _customControllers.keys
-        .where((id) => !participantIds.contains(id))
+        .where((id) => !activeIds.contains(id))
         .toList(growable: false);
     for (final id in staleIds) {
       _customControllers.remove(id)?.dispose();
     }
 
-    for (final participant in state.participants) {
+    final desiredIds =
+        state.form.allocationTargetType == ExpenseAllocationTargetType.unitBased
+            ? state.selectableUnits.map((unit) => unit.unitId)
+            : state.participants.map((participant) => participant.userId);
+
+    for (final id in desiredIds) {
       final controller = _customControllers.putIfAbsent(
-        participant.userId,
+        id,
         () => TextEditingController(),
       );
-      final desired = state.form.customAmountFor(participant.userId);
+      final desired =
+          state.form.allocationTargetType == ExpenseAllocationTargetType.unitBased
+              ? state.form.unitCustomAmountFor(id)
+              : state.form.customAmountFor(id);
       if (controller.text != desired) {
         controller.text = desired;
       }
@@ -256,35 +276,18 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
   String _mapSubmissionError(BuildContext context, ShareCreateState state) {
     final s = S.of(context);
     final code = state.submissionErrorCode;
-    if (code == null) return s.shareCreateErrorGeneric;
-    if (code == ExpenseErrorCode.splitSumMismatch) {
+    if (code == null) return _fallbackSubmissionMessage(s, state);
+    if (_isSplitMismatchCode(code)) {
       return buildShareCreateSplitMismatchMessage(strings: s, state: state);
     }
-    if (code == ExpenseErrorCode.splitMembersRequired ||
-        code == ExpenseErrorCode.invalidSplit) {
-      if (state.form.splitMode == ShareSplitMode.custom) {
-        final summary = state.evaluateCustomSplit();
-        if (summary.hasSinglePayer) {
-          return s.shareCreateValidationCustomSinglePayer;
-        }
-        if (summary.hasInsufficientParticipants) {
-          return s.shareCreateValidationCustomParticipants;
-        }
-        if (state.submissionErrorMessage != null &&
-            state.submissionErrorMessage!.trim().isNotEmpty) {
-          return state.submissionErrorMessage!;
-        }
-        return s.shareCreateValidationCustomParticipants;
-      }
-      if (state.hasEqualSinglePayer) {
-        return s.shareCreateValidationCustomSinglePayer;
-      }
-      return s.shareCreateValidationEqualParticipants;
+    if (_splitValidationCodes.contains(code)) {
+      return _mapSplitValidationError(s, state);
     }
 
     final messageByCode = <ExpenseErrorCode, String>{
       ExpenseErrorCode.invalidAmount: s.shareCreateValidationAmount,
       ExpenseErrorCode.invalidDescription: s.shareCreateValidationDescription,
+      ExpenseErrorCode.invalidAllocationTarget: s.shareCreateErrorGeneric,
       ExpenseErrorCode.invalidRecurrence: s.shareCreateValidationRecurrence,
       ExpenseErrorCode.invalidRecurrenceDraft:
           s.shareCreateErrorRecurrenceDraft,
@@ -299,11 +302,56 @@ class _ShareCreateScreenState extends State<ShareCreateScreen> {
       ExpenseErrorCode.notHomeMember: s.shareCreateErrorForbidden,
       ExpenseErrorCode.notCreator: s.shareCreateErrorForbidden,
       ExpenseErrorCode.invalidDebtor: s.shareCreateErrorForbidden,
+      ExpenseErrorCode.invalidUnitTarget: s.shareCreateErrorGeneric,
       ExpenseErrorCode.editNotAllowed: s.shareEditNotAllowed,
       ExpenseErrorCode.invalidEvidencePhotoPath: s.flowChoreErrorInvalidPhoto,
+      ExpenseErrorCode.photoDeleteNotAllowed: s.shareCreateErrorGeneric,
     };
 
-    return messageByCode[code] ?? s.shareCreateErrorGeneric;
+    final mapped = messageByCode[code];
+    return mapped ?? _fallbackSubmissionMessage(s, state);
+  }
+
+  bool _isSplitMismatchCode(ExpenseErrorCode code) {
+    return code == ExpenseErrorCode.splitSumMismatch ||
+        code == ExpenseErrorCode.invalidSplitsSum;
+  }
+
+  String _mapSplitValidationError(S s, ShareCreateState state) {
+    if (state.form.splitMode == ShareSplitMode.custom) {
+      return _mapCustomSplitValidationError(s, state);
+    }
+    if (state.hasEqualSinglePayer) {
+      return s.shareCreateValidationCustomSinglePayer;
+    }
+    return s.shareCreateValidationEqualParticipants;
+  }
+
+  String _mapCustomSplitValidationError(S s, ShareCreateState state) {
+    final summary = state.evaluateCustomSplit();
+    if (summary.hasSinglePayer) {
+      return s.shareCreateValidationCustomSinglePayer;
+    }
+    if (summary.hasInsufficientParticipants) {
+      return s.shareCreateValidationCustomParticipants;
+    }
+    return _fallbackSubmissionMessage(
+      s,
+      state,
+      fallback: s.shareCreateValidationCustomParticipants,
+    );
+  }
+
+  String _fallbackSubmissionMessage(
+    S s,
+    ShareCreateState state, {
+    String? fallback,
+  }) {
+    final message = state.submissionErrorMessage?.trim();
+    if (message != null && message.isNotEmpty) {
+      return message;
+    }
+    return fallback ?? s.shareCreateErrorGeneric;
   }
 
   void _showEvidencePhotoError(BuildContext context, ShareCreateState state) {

@@ -48,12 +48,14 @@ class LeaveResult {
 }
 
 class CurrentMembership {
+  final String membershipId;
   final String userId;
   final String homeId;
   final String role;
   final DateTime validFrom;
 
   const CurrentMembership({
+    this.membershipId = '',
     required this.userId,
     required this.homeId,
     required this.role,
@@ -62,6 +64,10 @@ class CurrentMembership {
 
   factory CurrentMembership.fromJson(Map<String, dynamic> json) {
     return CurrentMembership(
+      membershipId:
+          json['membership_id'] as String? ??
+          json['id'] as String? ??
+          '',
       userId: json['user_id'] as String,
       homeId: json['home_id'] as String,
       role: json['role'] as String,
@@ -73,6 +79,7 @@ class CurrentMembership {
 }
 
 class HomeMemberSummary {
+  final String membershipId;
   final String userId;
   final String username;
   final String role;
@@ -82,6 +89,7 @@ class HomeMemberSummary {
   final bool canTransferTo;
 
   HomeMemberSummary({
+    this.membershipId = '',
     required this.userId,
     required this.username,
     required this.role,
@@ -94,6 +102,11 @@ class HomeMemberSummary {
   factory HomeMemberSummary.fromJson(Map<String, dynamic> json) {
     final role = json['role'] as String? ?? 'member';
     return HomeMemberSummary(
+      membershipId:
+          json['membership_id'] as String? ??
+          json['membershipId'] as String? ??
+          json['id'] as String? ??
+          '',
       userId: json['user_id'] as String,
       username: json['username'] as String? ?? '',
       role: role,

@@ -43,6 +43,15 @@ class ProfileSettingsDeleteRequested extends ProfileSettingsEvent {
   const ProfileSettingsDeleteRequested();
 }
 
+class ProfileSettingsSharedUnitLeaveRequested extends ProfileSettingsEvent {
+  const ProfileSettingsSharedUnitLeaveRequested(this.unitId);
+
+  final String unitId;
+
+  @override
+  List<Object?> get props => [unitId];
+}
+
 class ProfileSettingsActionCleared extends ProfileSettingsEvent {
   const ProfileSettingsActionCleared();
 }

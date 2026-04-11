@@ -2,6 +2,27 @@ part of 'app_router.dart';
 
 String? _pendingProtectedLocation;
 
+const _activeMembershipPrefixes = <String>[
+  AppRoutes.today,
+  AppRoutes.hub,
+  AppRoutes.explore,
+  AppRoutes.flow,
+  '/share',
+  AppRoutes.profileSharedUnitHub,
+  AppRoutes.nps,
+  AppRoutes.harmony,
+  AppRoutes.gratitudeWall,
+  AppRoutes.houseNormsOnboarding,
+  AppRoutes.houseNormsReport,
+  AppRoutes.houseNormsEdit,
+];
+
+const _activeMembershipExactPaths = <String>{
+  AppRoutes.profileSettings,
+  AppRoutes.profileIdentity,
+  AppRoutes.connectionSettings,
+};
+
 @visibleForTesting
 void resetPendingProtectedLocationForTest() {
   _pendingProtectedLocation = null;
@@ -181,21 +202,10 @@ String? _consumePendingProtectedLocation({required String path}) {
 }
 
 bool _requiresActiveMembershipPath(String path) {
-  if (_matchesPathOrChild(path, AppRoutes.today)) return true;
-  if (_matchesPathOrChild(path, AppRoutes.hub)) return true;
-  if (_matchesPathOrChild(path, AppRoutes.explore)) return true;
-  if (_matchesPathOrChild(path, AppRoutes.flow)) return true;
-  if (_matchesPathOrChild(path, '/share')) return true;
-  if (path == AppRoutes.profileSettings) return true;
-  if (path == AppRoutes.profileIdentity) return true;
-  if (path == AppRoutes.connectionSettings) return true;
-  if (_matchesPathOrChild(path, AppRoutes.nps)) return true;
-  if (_matchesPathOrChild(path, AppRoutes.harmony)) return true;
-  if (_matchesPathOrChild(path, AppRoutes.gratitudeWall)) return true;
-  if (_matchesPathOrChild(path, AppRoutes.houseNormsOnboarding)) return true;
-  if (_matchesPathOrChild(path, AppRoutes.houseNormsReport)) return true;
-  if (_matchesPathOrChild(path, AppRoutes.houseNormsEdit)) return true;
-  return false;
+  if (_activeMembershipExactPaths.contains(path)) return true;
+  return _activeMembershipPrefixes.any(
+    (basePath) => _matchesPathOrChild(path, basePath),
+  );
 }
 
 bool _matchesPathOrChild(String path, String basePath) {
